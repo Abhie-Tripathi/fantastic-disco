@@ -54,3 +54,17 @@
 .errorHighlight {
     border: 1px solid red;
 }
+
+
+.location_details__container{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.virtual_location_Container{
+    display: flex;
+    gap: 6px;
+    align-items: center;
+
+}

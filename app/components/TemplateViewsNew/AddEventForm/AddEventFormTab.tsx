@@ -15,6 +15,7 @@ import LeafOne from '/public/widgetimages/leaf1.png'
 import LeafTwo from '/public/widgetimages/leaf2.png'
 import Image from 'next/image'
 
+
 interface SpeakerProfileType {
     id: string;
     name: string;
@@ -140,12 +141,17 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
                 handleMaineventChanges('isEventNameEmpty', false)
                 // setIsEventNameEmpty(false)
             }
-            if (!mainEventState.query) {
-                handleMaineventChanges('isEventFormatEmpty', true)
-                // setIsEventFormatEmpty(true)
-            } else {
-                handleMaineventChanges('isEventFormatEmpty', false)
-                // setIsEventFormatEmpty(false)
+            // if (!mainEventState.query) {
+            //     handleMaineventChanges('isEventFormatEmpty', true)
+            //     // setIsEventFormatEmpty(true)
+            // } else {
+            //     handleMaineventChanges('isEventFormatEmpty', false)
+            //     // setIsEventFormatEmpty(false)
+            // }
+            if ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid" || mainEventState.eventFormat === "OFFLINE") && !mainEventState.query) {
+                handleMaineventChanges('isEventFormatEmpty', true);
+            } else if (mainEventState.eventFormat === "Virtual" || mainEventState.eventFormat === "ONLINE") {
+                handleMaineventChanges('isEventFormatEmpty', false); // No need for location in virtual format
             }
             if (!mainEventState.description) {
                 handleMaineventChanges('isEventDescriptionEmpty', true)
@@ -170,10 +176,28 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
                 // setIsTextValueMessageEmpty(true)
             }
 
-            if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
-                showToast("error", "Please fill in all the fields");
+            // if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
+            //     showToast("error", "Please fill in all the fields");
+            //     return; // Exit the function if any field is missing
+            // }
+            if (
+                !mainEventState.eventName.trim() || 
+                !mainEventState.eventFormat || 
+                !mainEventState.startTime || 
+                !mainEventState.endTime || 
+                !mainEventState.startDate || 
+                !mainEventState.endDate || 
+                !mainEventState.description.trim() || 
+                !mainEventState.participationType || 
+                !mainEventState.participationMessage ||
+                // Check location fields only for "In-person" or "Hybrid" events
+                ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid" || mainEventState.eventFormat === "OFFLINE") &&
+                    (!mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude))
+            ) {
+                showToast("error", "Please fill in all the required fields");
                 return; // Exit the function if any field is missing
             }
+            
 
             if (mainEventState.banner.placeHolder === Placeholder && !mainEventState.banner.file) {
                 console.log("this code is running")
@@ -204,6 +228,7 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
                 start_date: mainEventState.startDate,
                 description: mainEventState.description,
                 location_city: mainEventState.cityName,
+                virtualLink: mainEventState.virtualLink,
                 location_country: mainEventState.countryName,
                 gmt_time: mainEventState.timeZone,
                 latitude: mainEventState.latitude,

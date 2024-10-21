@@ -83,8 +83,8 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     waitlisting:false,
     // capacityModalClose:false,
     // capacityModalOpen:false
-    capacityModal:false
-
+    capacityModal:false,
+    virtualLink:""
   };
   const [mainEventState, setMainEventState] = useState<FormState>(initialFormState);
   const [subeventState, setSubeventState] = useState<FormState>(initialFormState);

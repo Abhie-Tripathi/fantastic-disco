@@ -27,9 +27,11 @@ interface Props {
     locationCity?: string;
     locationCountry?: string;
     participationType?: string;
+    format?: string;
+    virtualLink:string;
 }
 
-const EventSmallDetailView = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCountry, locationCity, participationType }: Props) => {
+const EventSmallDetailView = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCountry, locationCity, participationType, format,virtualLink}: Props) => {
 
     const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const fireConfetti = () => {
@@ -90,7 +92,7 @@ const EventSmallDetailView = ({ leavesTheme, eventId, imageUrl, eventName, start
                         <DateTimeContainer endDate={endDate || ""} startDate={startDate || ""} endTime={endTime || ""} startTime={startTime || ""} timeZone={timeZone || ""} />
                     </div>
 
-                    <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={locationCity || ""} countryName={locationCountry || ""} /></div>
+                    <div className={styles.locationContainer}><LocationContainer eventFormat={format} cityName={locationCity || ""} countryName={locationCountry || ""} virtualLink={virtualLink||""} /></div>
                 </div>
             </div>
         </div>
