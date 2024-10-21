@@ -25,7 +25,7 @@ const CapacityModal = ({eventId, setCapacityModal, setCapacityValue, capacityVal
     const handleChange = async () => {
         const formData = new FormData()
         formData.append("id", eventId);
-        formData.append("capacity", capacityValue + "")
+        formData.append("maxCapacity", capacityValue + "")
         formData.append("waitlisting", waitlistValue + "")
         const { data, error } = await myFetch(`${baseUrl}/event`, {
             method: 'PATCH',
