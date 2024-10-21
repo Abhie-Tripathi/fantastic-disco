@@ -57,14 +57,15 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
 
   const fetchGuests = async () => {
     let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}&sortType=asc`;
+
     if (sortBy.length > 0) {
       fetchUrl += `&sortBy=${sortBy}`;
     }
-    
+
     if (filterStatus.length > 0) {
       fetchUrl += `&status=${filterStatus}`;
     }
-    
+
     const { data, error } = await myFetch(`${fetchUrl}`)
 
     if (error) {
@@ -84,28 +85,28 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
   useEffect(() => {
     fetchGuests()
   }, [sortBy, filterStatus])
-  
+
   const handleSortBy = (sort: string) => {
-    if(sort === "firstname"){
+    if (sort === "firstname") {
       setActiveSortBtn("Name")
-    }else if(sort === "email"){
+    } else if (sort === "email") {
       setActiveSortBtn("Email")
-    }else{
+    } else {
       setActiveSortBtn("Register Time")
     }
     setSortBy(sort)
   }
-  const handleFilterBy = (filter : string)=>{
+  const handleFilterBy = (filter: string) => {
     setActiveFilterBtn(filter)
-    if(filter === "All Guests"){
+    if (filter === "All Guests") {
       setFilterStatus("")
-    }else if(filter === "Going"){
+    } else if (filter === "Going") {
       setFilterStatus("CONFIRMED")
-    }else if(filter === "Not going"){
+    } else if (filter === "Not going") {
       setFilterStatus("REJECTED")
-    }else if(filter === "Waitlist"){
+    } else if (filter === "Waitlist") {
       setFilterStatus("WAITLISTING")
-    }else if(filter === "Pending"){
+    } else if (filter === "Pending") {
       setFilterStatus("PENDING")
     }
   }

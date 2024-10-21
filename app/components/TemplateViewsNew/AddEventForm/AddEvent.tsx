@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './addevent.style.module.css'
 import Appearance from './Appearance/Appearance'
 import { AllEventsType, EventsType } from '@/types/alleventtype'
@@ -35,6 +35,10 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
   const [formTheme, setFormTheme] = useState<string>("light")
   const [eventFont, setEventFont] = useState<string>("Arial")
   const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
+
+  useEffect(()=>{
+    console.log("page graidet", pageGradient)
+  },[pageGradient])
   const initialFormState: FormState = {
     parentData: prefilledEvent?.parentData || "",
     descriptionModal: false,
