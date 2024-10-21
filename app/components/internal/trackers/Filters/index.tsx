@@ -188,7 +188,7 @@ const presetTemplateData = [
     trackerName: "Top 100 Companies",
     content: "This list highlights 100 global events organizers connecting industries, fostering business growth, and innovation.",
     data: top10Data,
-    enabled: true,
+    enabled: false,
     presetType: 'ALL',
   },
   {
@@ -234,7 +234,7 @@ const presetTemplateData = [
     trackerName: "Artificial Intelligence Speakers",
     content: "This list of Artificial Intelligence speakers, pioneering innovation and attracting attention with compelling talks.",
     data: top10Speakers,
-    enabled: true,
+    enabled: false,
     presetType: 'All',
   },
   {
