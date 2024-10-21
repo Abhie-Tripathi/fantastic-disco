@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-// import { useFilterState } from "@/hooks/useFilterState";
+import { useFilterState } from "@/hooks/useFilterState";
 import dynamic from "next/dynamic";
 
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
@@ -22,22 +22,41 @@ const userRatings = [
   { id: "3-4", label: "3-4" },
   { id: "4-5", label: "4-5" },
 ];
-
-export default function UserRatingSelector() {
+interface UserRatingsProps{
+  source: string,
+  selectedRatings?: string[],
+  setSeectedRatings?: React.Dispatch<React.SetStateAction<string[]>>,
+}
+export default function UserRatingSelector({
+  source,
+  selectedRatings: parentSelectedRatings=[],
+  setSeectedRatings: parentSetSelectedRatings,
+}:UserRatingsProps) {
   const [isOpen, setIsOpen] = useState(false);
-//   const { setFilter, getFilterValue, searchParams } = useFilterState();
-  const [selectedRatings, setSelectedRatings] = useState<string[]>([]);
+  const { setFilter, getFilterValue, searchParams } = useFilterState();
+  // const [selectedRatings, setSelectedRatings] = useState<string[]>([]);
+  const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<string[]>(
+    []
+  );
   const [showRatings, setShowRatings] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-
-//   useEffect(() => {
-//     setIsMounted(true);
-//     const ratings = getFilterValue("ratings").split(",").filter(Boolean);
-//     setSelectedRatings(ratings);
-//     setShowRatings(getFilterValue("show").includes("rating"));
-//   }, [searchParams]);
+  const selectedRatings=
+  source === "tracker" ? parentSelectedRatings : selectedFormatsLocal;
+const setSelectedRatings=
+  source === "tracker" ? parentSetSelectedRatings : setSelectedFormatsLocal;
+  useEffect(() => {
+    if(source!=="tracker" && setSelectedRatings){
+    setIsMounted(true);
+    const ratings = getFilterValue("ratings").split(",").filter(Boolean);
+    setSelectedRatings(ratings);
+    setShowRatings(getFilterValue("show").includes("rating"));
+    }
+  }, [searchParams]);
 
   const handleRatingToggle = (ratingId: string) => {
+    console.log(ratingId);
+    
+    if(setSelectedRatings)
     setSelectedRatings((prev) =>
       prev.includes(ratingId)
         ? prev.filter((id) => id !== ratingId)
@@ -47,19 +66,22 @@ export default function UserRatingSelector() {
 
   const handleShowRatingsToggle = (checked: boolean) => {
     setShowRatings(checked);
-    // const currentShow = getFilterValue("show").split(",").filter(Boolean);
-    // const newShow = checked
-    //   ? [...currentShow, "rating"]
-    //   : currentShow.filter((item) => item !== "rating");
-    // setFilter("show", newShow.join(","));
+    if(source!=="tracker"){
+    const currentShow = getFilterValue("show").split(",").filter(Boolean);
+    const newShow = checked
+      ? [...currentShow, "rating"]
+      : currentShow.filter((item) => item !== "rating");
+    setFilter("show", newShow.join(","));
+    }
   };
 
   const onOpenChange = (open: boolean) => {
-    if (!open) {
-    //   setFilter("ratings", selectedRatings.join(","));
+    if (!open && source!=="tracker") {
+      setFilter("ratings", selectedRatings.join(","));
     }
     setIsOpen(open);
   };
+console.log(selectedRatings);
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -73,7 +95,7 @@ export default function UserRatingSelector() {
           <span className="flex items-center gap-2">
             User Rating
             {selectedRatings.length > 0 && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground">
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {selectedRatings.length}
               </span>
             )}

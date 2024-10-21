@@ -4,13 +4,14 @@ import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import EventTypeSelector from "@/components/eventType";
 import CategorySelector from "@/components/categorySelector";
-import EventFormatSelector from '@/app/components/basicFilters/eventFormat';
-import EventStatusSelector from "@/app/components/basicFilters/eventStatus";
-import EventEntrySelector from "@/app/components/basicFilters/eventEntry";
-import UserRatingSelector from "@/app/components/basicFilters/userRatingSelector";
-import MaturitySelector from "@/app/components/advanceFilters/maturity"
+import EventFormatSelector from '@/components/eventFormat';
+import EventStatusSelector from "@/components/status";
+import DateRangeSelector from "@/components/dateRange";
+import EventEntrySelector from "@/components/eventEntry";
+import UserRatingSelector from "@/components/userRatingSelector";
+import MaturitySelector from "@/components/advancedFilters/edition"
 import LocationSelector from "@/app/components/basicFilters/location";
-import EstimatedVisitorsSelector from "@/app/components/advanceFilters/visitors";
+import EstimatedVisitorsSelector from "@/components/advancedFilters/estimatedVisitors";
 import GlobalAndTouringSelector from "@/components/advancedFilters/globalAndTouring";
 import EstimatedExhibitorsSelector from "@/components/advancedFilters/estimatedExhibitors";
 import EstimatedEconomicImpactSelector from "@/components/advancedFilters/estimatedEconomicImpact";
@@ -86,10 +87,14 @@ import { GAEvent } from "@/utils/GAEvent";
 import SearchBar from "../../searchBar/SearchBar";
 import CsvUploader from "./csvUploader";
 import { Button as Button10x } from "10xui";
-import FrequencySelector from "@/app/components/advanceFilters/frequency";
-import ForecastedStatusSelector from "@/app/components/advanceFilters/forecastedStatus";
-import EventAnalyticsSelector from "@/app/components/advanceFilters/eventAnalytics";
-import EventRankingSelector from "@/app/components/advanceFilters/eventRanking";
+import FrequencySelector from "@/components/advancedFilters/frequency";
+import ForecastedStatusSelector from "@/components/advancedFilters/forecastesStatus";
+import EventAnalyticsSelector from "@/components/advancedFilters/eventAnalytics";
+import EventRankingSelector from "@/components/advancedFilters/eventRanking";
+import AudienceZoneSelector from "@/components/advancedFilters/audienceZone";
+import AudienceQualitySelector from "@/components/advancedFilters/audienceQualityScore";
+import {Tracker, Toggle} from '@/types/trackers'
+import ExhibitorQualitySelector from "@/components/advancedFilters/exhibitorQualityScore";
 interface FilterValue {
   labels: string;
   name: string;
@@ -133,16 +138,34 @@ interface FilterValue {
   userType?:Toggle
   userName?:string;
   eventAttendanceRange: any;
+  eventImpactSocre: any;
+  globalRanking: any;
+  audienceSpread: any;
+  designation: any;
 }
 interface InputArea {
   type: string;
   placeholder: string;
 }
-interface Toggle{
-  rating?:boolean;
-  exhibit?:boolean;
-  trust?:boolean;
+export interface LocationItem {
+  id: string;
+  description: string | undefined;
 }
+// interface Toggle{
+//   rating?:boolean;
+//   exhibit?:boolean;
+//   trust?:boolean;
+//   maturity?: boolean;
+//   brandedEvent?: boolean;
+//   eventSeries?: boolean;
+//   forecastedStatus?: boolean;
+//   impactScore?: boolean;
+//   inboundScore?: boolean;
+//   internationalScore?: boolean;
+//   eventRank?: boolean;
+//   audienceZone?: boolean;
+//   audienceSpread?: boolean;
+// }
 interface Template {
   name: string;
   type?: string;
@@ -155,11 +178,11 @@ interface CategoryData {
   nonAttendedCategories?: string[];
   unscheduledCategories?: string[];
 }
-interface Tracker {
-  name: string;
-  accessLevel?:string;
-  filterValue: FilterValue;
-}
+// interface Tracker {
+//   name: string;
+//   accessLevel?:string;
+//   filterValue: FilterValue;
+// }
 interface Cat {
   name: string;
   id: string;
@@ -195,6 +218,7 @@ const templates = [
         type: "text",
         placeholder: "Competitor Name or Website",
         required:true,
+        example: "facebook.com",
       }
     ]
   },
@@ -282,12 +306,14 @@ const templates = [
         type: "text",
         placeholder: "Speaker's Name",
         required:true,
+        example: "Mark Zuckerberg",
       },
       {
         img: Company,
         type: "text",
         placeholder: "Company Name",
         required:true,
+        example: "Facebook",
       }
     ]
   },
@@ -315,18 +341,25 @@ const templates = [
     // ]
   }
 ]
+
+const formatText = (val: string) => {
+  if(val) {
+    return val?.charAt(0).toUpperCase() + val?.substring(1).toLowerCase();
+  }
+}
+
 const Pages = () => {
   const searchParams = useSearchParams();
-  const {createTracker}=useTrackerServices();
   interface SelectedLocation {
-    id: string;
-    description: string | undefined;
+    [id: string]: string;
   }
+  const {getTrackerDetail,createTracker,editTracker, error}=useTrackerServices();
   const [isRatingOpen, setRatingOpen] = useState<boolean>(false);
   const [isExhibitOpen, setExhibitOpen] = useState<boolean>(false);
+  const [isSpreadOpen, setSpreadOpen] = useState<boolean>(false);
   const { theme } = useTheme();
   const type = searchParams.get('type');
-
+  const [selectedLocationsData,setSelectedLocationsData]=useState<LocationItem[]| null>();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
   const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
@@ -335,8 +368,11 @@ const Pages = () => {
   const last = pathName[pathName.length - 1];
   const router = useRouter();
   const [selectedView, setSelectedView] = useState("list");
-  const [categoryData, setCategoryData] = useState<>();
+  const [categoryData, setCatgeoryData] = useState<CategoryData>();
+  const [designationData,setDesignationData]=useState([]);
   const [selectedRegularity, setSelectedRegularity] = useState([0, 100]);
+  const [includeKeywords, setIncludeKeywords] = useState<string[] | undefined>([]);
+  const [excludeKeywords, setExcludeKeywords] = useState<string[] | undefined>([]);
   const [selectedVisitors, setSelectedVisitors] = useState<string[]>([]);
   const [selectedReputationScore, setSelectedReputationScore] = useState([0, 100]);
   const [websiteSuggestion, setWebsiteSuggestion]=useState(null);
@@ -359,9 +395,16 @@ const Pages = () => {
   const [eventSearchLoader,setEventSearchLoader]=useState(false);
   const [selectedEventRank, setSelectedEventRank] = useState([0, 100]);
   const [selectedLocalRank, setSelectedLocalRank] = useState([0, 100]);
-  const [selectedTrustScore, setSelectedTrustScore] = useState([0, 100]);
+  const [selectedTrustScore, setSelectedTrustScore] = useState<any>([0, 100]);
   const [selectedAviationRank, setSelectedAviationRank] = useState([0, 100]);
   const [selectedDateRange, setSelectedDateRange] = useState<any[]>([]);
+  const [dateRange, setDateRange] = React.useState<{
+    from: Date | undefined;
+    to: Date | undefined;
+  }>({
+    from: undefined,
+    to: undefined,
+  });
   const [selectedEventStatus, setSelectedEventStatus] = useState<string[]>(
     searchParams.get("status")?.split(",") || []
   );
@@ -393,17 +436,18 @@ const Pages = () => {
   });
   const [isPop,setIsPop]=useState({
   rating:false,
-  exhibit:false
+  exhibit:false,
+  audienceSpread: false,
 });
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(true);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
   const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(false);
   const [selectedEventSeries, setSelectedEventSeries] = useState(false);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
-  const [selectedMaturity, setSelectedMaturity] = useState(0);
+  const [selectedMaturity, setSelectedMaturity] = useState<string>('');
   const [maturity, setMaturity] = useState<string | null>();
   const [intScore, setIntScore] = useState<string | null>();
-  const [selectedInboundScore, setSelectedInboundScore] = useState(0);
+  // const [selectedInboundScore, setSelectedInboundScore] = useState(0);
   const [selectedEventKeywords, setSelectedEventKeywords] = useState<string[]>(
     searchParams.get("eventKeywords")?.split(",") || []
   );
@@ -411,6 +455,25 @@ const Pages = () => {
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
   const [add, setAdd] = useState(false);
+  const [forecastedStatus, setForecastedStatus] = useState(false);
+
+  const [analyticsToggles, setAnalyticsToggles] = useState({
+    impactScore: false,
+    inboundScore: false,
+    internationalScore: false,
+    globalToggle: false,
+  });
+
+  const [selectedImpactScore, setSelectedImpactScore] = useState<[number,number]>([0, 100]);
+  const [selectedInboundScore, setSelectedInboundScore] = useState<[number, number]>([0, 100]);
+  const [selectedInternationalScore, setSelectedInternationalScore] = useState<[number,number]>([0, 100]);
+
+  const [audienceZone, setAudienceZone] = useState<boolean>(false);
+  const [audienceSpread, setAudienceSpread] = useState<boolean>(false);
+  const [selectedRank, setSelectedRank] = useState<string>('');
+  const [selectedCountries, setSelectedCountries] = useState<any>([]);
+  const [selectedAudProfile, setSelectedAudProfile] = useState<string[]>([]);
+
   const createTrackerHandler = () => {
     const params = new URLSearchParams(searchParams);
     if (selectedCategories.length > 0) {
@@ -474,16 +537,20 @@ const Pages = () => {
   }, [last]);
 
   const fetchData = async (secondLast: string) => {
-    const url = `${baseUrl}/tracker/${secondLast}?edit=true`;
+   // const url = `${baseUrl}/tracker/${secondLast}?edit=true`;
     try {
-      const { data, error } = await myFetch(url, {
-        method: "GET",
-      });
+      // const { data, error } = await myFetch(url, {
+      //   method: "GET",
+      // });
+      const data= await getTrackerDetail(secondLast, "edit=true");
+
+if (data) {
+  setEditData(data || null);
+  console.log(data);
+  
+}
       if (error) {
         console.error("Error fetching data:", error);
-      } else {
-        console.log("Data fetched:", data);
-        setEditData(data);
       }
     } catch (err) {
       console.error("Fetch failed:", err);
@@ -492,17 +559,17 @@ const Pages = () => {
   const [categories, setCategories] = useState(
     searchParams.get("categories")?.split(",") || []
   );
-  useEffect(() => {
-    if (selectedMaturity > 0) {
-      // queryString.maturity = selectedMaturity;
-      if (selectedMaturity >= 1 && selectedMaturity <= 25) setMaturity("new");
-      else if (selectedMaturity >= 26 && selectedMaturity <= 50)
-        setMaturity("low");
-      else if (selectedMaturity >= 51 && selectedMaturity <= 75)
-        setMaturity("medium");
-      else setMaturity("High");
-    }
-  }, [selectedMaturity]);
+  // useEffect(() => {
+  //   if (selectedMaturity > 0) {
+  //     // queryString.maturity = selectedMaturity;
+  //     if (selectedMaturity >= 1 && selectedMaturity <= 25) setMaturity("new");
+  //     else if (selectedMaturity >= 26 && selectedMaturity <= 50)
+  //       setMaturity("low");
+  //     else if (selectedMaturity >= 51 && selectedMaturity <= 75)
+  //       setMaturity("medium");
+  //     else setMaturity("High");
+  //   }
+  // }, [selectedMaturity]);
   useEffect(() => {
     if (selectedINScore > 0) {
       if (selectedINScore > 0 && selectedINScore <= 33) setIntScore("Low");
@@ -566,159 +633,220 @@ const Pages = () => {
       ...(isRatingOpen && { rating: true }),
       ...(isExhibitOpen && { exhibit: true }),
       ...(rankToggles.isTrustScore && {trust:true}),
+      ...((selectedMaturity !== '' && selectedMaturity !== 'none') && {maturity:true}),
+      ...(selectedBrandedEvent && {brandedEvent:true}),
+      ...(selectedEventSeries && {eventSeries:true}),
+      ...(forecastedStatus && {forecastedStatus:true}),
+      ...(analyticsToggles.impactScore&& {impactScore:true}),
+      ...(analyticsToggles.inboundScore&& {inboundScore:true}),
+      ...(analyticsToggles.internationalScore&& {internationalScore:true}),
+      ...(rankToggles.isEventRank&& {eventRank:true}),
+      ...(analyticsToggles.globalToggle && {globalToggle: true}),
+      ...(audienceZone && {audienceZone:true}),
+      ...(audienceSpread && {audienceSpread:true}),
+
     }
+    const formData = {
+      name: trackerName,
+      // ...(type && type.length > 0 && {
+      //   type: type.toUpperCase()
+      // }),
+      accessLevel: editData?.tracker?.accessLevel,
+      filterValue: {
+          ...(userType &&{
+           userType:JSON.stringify(userType)
+          }),
+        ...(selectedLabels?.length > 0 && {
+          labels: selectedLabels.join(","),
+        }),
+        ...(selectedEventType?.length > 0 && {
+          eventType: selectedEventTypeName
+        }),
+        ...(websites.length > 0 && {
+          orgWebsite: websites,
+        }),
+        ...(org.length > 0 && {
+          orgName : org,
+        }),
+        ...(designations.length > 0 && {
+          userDesignation: designations,
+        }),
+        ...(speakerName.length > 0 && {
+          speakerName: speakerName,
+        }),
+        ...(speakerCompany.length > 0 && {
+          speakerOrg: speakerCompany,
+        }),
+        ...(selectedEventType?.length > 0 && {
+          eventType: selectedEventType.join(",")
+        }),
+        ...(selectedEventEdition > 0 && {
+          editionRange: selectedEventEdition.toString(),
+        }),
+        // ...(
+        //   type === "competitor" && customData.length > 0
+        //     ? { orgWebsite: customData.map(item => item.companyUrl).join(', ') }
+        //     : {}
+        // )
+        ...(selectedEventKeywords.length > 0 && {
+          eventKeywords: selectedEventKeywords.join("+"),
+        }),
+        ...(includeKeywords && includeKeywords.length>0 &&{
+          includeKeywords: includeKeywords.join(' '),
+        }),
+        ...(excludeKeywords && excludeKeywords.length>0 &&{
+          excludeKeywords: excludeKeywords.join(' '),
+        }),
+        ...(selectedCategories?.length > 0 && {
+          eventCategory: selectedCategories.join(","),
+        }),
+        ...(selectedVisitors?.length>0 && {
+          eventSize: selectedVisitors.join(",")
+         }),
+         ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
+         ...(selectedRegularity[0] > 0 && {editionRange: selectedRegularity[0].toString()}),
+        // ...(selectedZone?.length > 0 && {
+        //   eventRegion: selectedZone.join(',')
+        // }),
+        // brandedEvent: selectedBrandedEvent?.toString(),
+        // labels:selectedLabels.join(','),
+        // eventKeywords:selectedEventKeywords.join(','),
+        // ...(Object.entries(selectedCountry).length > 0 && {
+        //   eventCountry: Object.keys(selectedCountry).join(","),
+        // }),
+        // ...(Object.entries(selectedCity).length > 0 && {
+        //   eventCity: Object.keys(selectedCity).join(","),
+        // }),
+        ...(selectedLabels?.length > 0 && {
+          labels: selectedLabels.join(","),
+        }),
+        ...(selectedEventFormat?.length > 0 && {
+          eventFormat: selectedEventFormat.join(","),
+        }),
+        // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
+        ...(selectedEventStatus?.length > 0 && {
+          eventStatus: selectedEventStatus.join(","),
+        }),
+        ...(selectedEntry?.length > 0 && {
+          eventEntry: selectedEntry.join(","),
+        }),
+        ...(selectedTrustScore[0] > 0 && {
+          trustScore: selectedTrustScore[0].toString(),
+        }),
+        ...(selectedEventFrequency?.length > 0 && {
+          eventFrequency: selectedEventFrequency.join(","),
+        }),
+        ...(selectedReptScore > 0 && {
+          reputationScore: selectedReptScore.toString(),
+        }),
+        // ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
+        // ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
+        //   startDate: [
+        //     new Date(selectedDateRange[0]).toISOString().split("T")[0],
+        //     new Date(selectedDateRange[1]).toISOString().split("T")[0],
+        //   ].join(","),
+        // }),
+        ...(dateRange?.from && dateRange?.to && {
+          startDate: [
+            new Date(dateRange.from).toISOString().split("T")[0],
+            new Date(dateRange.to).toISOString().split("T")[0],
+          ].join(","),
+        }),
+        ...(dateRange?.from && dateRange?.to && {
+          endDate: [
+            new Date(dateRange.from).toISOString().split("T")[0],
+            new Date(dateRange.to).toISOString().split("T")[0],
+          ].join(","),
+        }),
+        // ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
+        //   endDate: [
+        //     new Date(selectedDateRange[0]).toISOString().split("T")[0],
+        //     new Date(selectedDateRange[1]).toISOString().split("T")[0],
+        //   ].join(","),
+        // }),
+        ...(selectedLocationsData && selectedLocationsData?.length > 0
+    ? { locationIds: selectedLocationsData.map((item) => item.id).join(',') }
+    : {}),
+        ...(selectedUserRatings?.length > 0 && {
+          eventRating: selectedUserRatings.join(","),
+        }),
+        // ...(rankToggles?.isEventRank === true && {
+        //   eventRank: selectedEventRank.join(",")
+        // }),
+        ...(rankToggles?.isLocalRank === true && {
+          localRank: selectedLocalRank.join(',')
+        }),
+        ...(selectedINScore > 0 && { internationalScore: intScore?.toLowerCase() }),
+        // ...(selectedInboundScore > 0 && {
+        //   inboundScore: selectedInboundScore.toString(),
+        // }),
+        ...(selectedEventAttendanceRange?.length === 2 && {
+          eventAttendanceRange: [
+            +selectedEventAttendanceRange[0],
+            +selectedEventAttendanceRange[1],
+          ].join(","),
+        }),
+        ...((selectedMaturity !== '' && selectedMaturity !== 'none') && { maturity: selectedMaturity }),
+        ...(analyticsToggles.globalToggle && {
+          eventImpactSocre: selectedImpactScore.join("-")
+         }),
+        ...(analyticsToggles.globalToggle && {
+          inboundScore: selectedInboundScore.join("-")
+        }),
+        ...(analyticsToggles.globalToggle && {
+          internationalScore: selectedInternationalScore.join("-")
+        }),
+        ...(forecastedStatus && {
+          isforecasted: forecastedStatus.toString()
+        }),
+        // ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
+        ...((selectedRank !== '' && selectedRank !== 'none') && {
+          // globalRanking: selectedRank,
+          // categoryRanking: selectedRank,
+          // countryRanking: selectedRank,
+          eventRanking: selectedRank,
+        }),
+        ...(selectedCountries?.length > 0 && {
+          audienceSpread: selectedCountries.join(",")
+         }),
+        ...(selectedAudProfile.length > 0 && {
+          designation: selectedAudProfile.join(",")
+        }),
+        ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread'].join()}
+        // info: {
+        //   name: trackerName,
+        //   location:selectedLocations,
+        //   keywords:selectedEventKeywords.join(','),
+        //   labels: selectedLabels.join(','),
+        //   startDate: selectedDateRange[0],
+        //   endDate: selectedDateRange[1],
+        //   eventFormat: selectedEventFormat.join(','),
+        //   category: categorySlug.join(','),
+        //   eventStatus: selectedEventStatus.join(','),
+        //   eventFrequency: selectedEventFrequency.join(','),
+        //   eventEntry: selectedEntry.join(','),
+        //   eventEdition: selectedEventEdition.toString(),
+        //   eventKeywords: selectedLabels.join(','),
+        //   eventRanking: selectedEventRanking.join(','),
+        //   brandedEvent: selectedBrandedEvent,
+        //   trustScore: selectedTrustScore.toString(),
+        //   eventSeries: selectedEventSeries,
+        //   reputationScore: selectedReptScore.toString(),
+        //   maturity: selectedMaturity.toString(),
+        //   internationalScore: selectedINScore.toString(),
+        //   inboundScore: selectedInboundScore.toString(),
+        //   userRating: selectedUserRatings.join(','),
+        //   exhibitScore: selectedExhibitScore.join(','),
+        //   total_attendance_gte: selectedEventAttendanceRange[0],
+        //   total_attendance_lte:
+        //     selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : selectedEventAttendanceRange[1],
+        // }
+      },
+    };
     if (last === "editTracker") {
 
       const secondLast = pathName[pathName.length - 2];
-      const formData = {
-        name: trackerName,
-        // ...(type && type.length > 0 && {
-        //   type: type.toUpperCase()
-        // }),
-        accessLevel: editData?.tracker?.accessLevel,
-        filterValue: {
-            ...(userType &&{
-             userType:JSON.stringify(userType)
-            }),
-          ...(selectedLabels?.length > 0 && {
-            labels: selectedLabels.join(","),
-          }),
-          ...(selectedEventType?.length > 0 && {
-            eventType: selectedEventTypeName
-          }),
-          ...(websites.length > 0 && {
-            orgWebsite: websites,
-          }),
-          ...(org.length > 0 && {
-            orgName : org,
-          }),
-          ...(designations.length > 0 && {
-            userDesignation: designations,
-          }),
-          ...(speakerName.length > 0 && {
-            speakerName: speakerName,
-          }),
-          ...(speakerCompany.length > 0 && {
-            speakerOrg: speakerCompany,
-          }),
-          ...(selectedEventType?.length > 0 && {
-            eventType: selectedEventType.join(",")
-          }),
-          ...(selectedEventEdition > 0 && {
-            editionRange: selectedEventEdition.toString(),
-          }),
-          // ...(
-          //   type === "competitor" && customData.length > 0
-          //     ? { orgWebsite: customData.map(item => item.companyUrl).join(', ') }
-          //     : {}
-          // )
-          ...(selectedEventKeywords.length > 0 && {
-            eventKeywords: selectedEventKeywords.join("+"),
-          }),
-          ...(selectedCategories?.length > 0 && {
-            eventCategory: selectedCategories.join(","),
-          }),
-          ...(selectedVisitors?.length>0 && {
-            eventSize: selectedVisitors.join(",")
-           }),
-           ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
-           ...(selectedRegularity[0] > 0 && {editionRange: selectedRegularity[0].toString()}),
-          ...(selectedZone?.length > 0 && {
-            eventRegion: selectedZone.join(',')
-          }),
-          brandedEvent: selectedBrandedEvent?.toString(),
-          // labels:selectedLabels.join(','),
-          // eventKeywords:selectedEventKeywords.join(','),
-          ...(Object.entries(selectedCountry).length > 0 && {
-            eventCountry: Object.keys(selectedCountry).join(","),
-          }),
-          ...(Object.entries(selectedCity).length > 0 && {
-            eventCity: Object.keys(selectedCity).join(","),
-          }),
-          ...(selectedLabels?.length > 0 && {
-            labels: selectedLabels.join(","),
-          }),
-          ...(selectedEventFormat?.length > 0 && {
-            eventFormat: selectedEventFormat.join(","),
-          }),
-          eventSeries: selectedEventSeries.toString(),
-          ...(selectedEventStatus?.length > 0 && {
-            eventStatus: selectedEventStatus.join(","),
-          }),
-          ...(selectedEntry?.length > 0 && {
-            eventEntry: selectedEntry.join(","),
-          }),
-          ...(selectedTrustScore[0] > 0 && {
-            trustScore: selectedTrustScore[0].toString(),
-          }),
-          ...(selectedEventFrequency?.length > 0 && {
-            eventFrequency: selectedEventFrequency.join(","),
-          }),
-          ...(selectedReptScore > 0 && {
-            reputationScore: selectedReptScore.toString(),
-          }),
-          ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
-          ...(selectedDateRange?.length === 2 && {
-            startDate: [
-              new Date(selectedDateRange[0]).toISOString().split("T")[0],
-              new Date(selectedDateRange[1]).toISOString().split("T")[0],
-            ].join(","),
-          }),
-          ...(selectedDateRange?.length === 2 && {
-            endDate: [
-              new Date(selectedDateRange[0]).toISOString().split("T")[0],
-              new Date(selectedDateRange[1]).toISOString().split("T")[0],
-            ].join(","),
-          }),
-          ...(selectedUserRatings?.length > 0 && {
-            eventRating: selectedUserRatings.join(","),
-          }),
-          ...(rankToggles?.isEventRank === true && {
-            eventRank: selectedEventRank.join(",")
-          }),
-          ...(rankToggles?.isLocalRank === true && {
-            localRank: selectedLocalRank.join(',')
-          }),
-          ...(selectedINScore > 0 && { internationalScore: intScore?.toLowerCase() }),
-          ...(selectedInboundScore > 0 && {
-            inboundScore: selectedInboundScore.toString(),
-          }),
-          ...(selectedEventAttendanceRange?.length === 2 && {
-            eventAttendanceRange: [
-              +selectedEventAttendanceRange[0],
-              +selectedEventAttendanceRange[1],
-            ].join(","),
-          }),
-          // info: {
-          //   name: trackerName,
-          //   location:selectedLocations,
-          //   keywords:selectedEventKeywords.join(','),
-          //   labels: selectedLabels.join(','),
-          //   startDate: selectedDateRange[0],
-          //   endDate: selectedDateRange[1],
-          //   eventFormat: selectedEventFormat.join(','),
-          //   category: categorySlug.join(','),
-          //   eventStatus: selectedEventStatus.join(','),
-          //   eventFrequency: selectedEventFrequency.join(','),
-          //   eventEntry: selectedEntry.join(','),
-          //   eventEdition: selectedEventEdition.toString(),
-          //   eventKeywords: selectedLabels.join(','),
-          //   eventRanking: selectedEventRanking.join(','),
-          //   brandedEvent: selectedBrandedEvent,
-          //   trustScore: selectedTrustScore.toString(),
-          //   eventSeries: selectedEventSeries,
-          //   reputationScore: selectedReptScore.toString(),
-          //   maturity: selectedMaturity.toString(),
-          //   internationalScore: selectedINScore.toString(),
-          //   inboundScore: selectedInboundScore.toString(),
-          //   userRating: selectedUserRatings.join(','),
-          //   exhibitScore: selectedExhibitScore.join(','),
-          //   total_attendance_gte: selectedEventAttendanceRange[0],
-          //   total_attendance_lte:
-          //     selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : selectedEventAttendanceRange[1],
-          // }
-        },
-      };
+     
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||selectedEventKeywords.length==0)){
         setIsCreating(false);
         setIsMandatory(true);
@@ -729,176 +857,27 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type === "CUSTOM" && (selectedLocations.length === 0 || trackerName.length === 0)) {
+      else if (type === "CUSTOM" && (selectedLocationsData &&selectedLocationsData.length === 0 || trackerName.length === 0)) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      const { data, error } = await myFetch(
-        `${baseUrl}/tracker/${secondLast}`,
-        {
-          method: "PATCH",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
+      try{
+        const data = editTracker(secondLast, formData);
+        if (data) {
+          console.log(data);
+          router.replace(`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`);
+        } else {
+          console.log(error);
+          setIsCreating(false);
         }
-      );
-      if (data) {
-        console.log(data);
-        router.replace(`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`);
-      } else {
+      }catch(error){
         console.log(error);
         setIsCreating(false);
       }
-
       console.log(selectedCountry);
     } else {
-      const formData = {
-        name: trackerName,
-        ...(type && type.length > 0 && {
-          type: type.toUpperCase()
-        }),
-        filterValue: {
-          
-          
-         ...(userType &&{
-          userType:JSON.stringify(userType)
-         }),
-          
-          ...(selectedEventRanking?.length > 0 && {
-            eventRanking: selectedEventRanking.join(","),
-          }),
-          ...(Object.entries(selectedCountry).length > 0 && {
-            eventCountry: Object.keys(selectedCountry).join(","),
-          }),
-          ...(speakerName.length > 0 && {
-            speakerName: speakerName,
-          }),
-          ...(speakerCompany.length > 0 && {
-            speakerOrg: speakerCompany,
-          }),
-          ...(designations.length > 0 && {
-            userDesignation: designations,
-          }),
-          ...(selectedEventType?.length > 0 && {
-            eventType: selectedEventType.join(",")
-          }),
-          ...(websites.length > 0 && {
-            orgWebsite: websites,
-          }),
-          ...(org.length > 0 && {
-            orgName : org,
-          }),
-          ...(Object.entries(selectedCity).length > 0 && {
-            eventCity: Object.keys(selectedCity).join(","),
-          }),
-          ...(rankToggles?.isEventRank === true && {
-            eventRank: selectedEventRank.join(",")
-          }),
-          ...(rankToggles?.isLocalRank === true && {
-            localRank: selectedLocalRank.join(',')
-          }),
-          ...(selectedLabels?.length > 0 && {
-            labels: selectedLabels.join(","),
-          }),
-          ...(selectedEventEdition > 0 && {
-            editionRange: selectedEventEdition.toString(),
-          }),
-          ...(selectedEventKeywords.length > 0 && {
-            eventKeywords: selectedEventKeywords.join("+"),
-          }),
-          ...(selectedCategories?.length > 0 && {
-            eventCategory: selectedCategories.join(","),
-          }),
-          ...(selectedVisitors?.length>0 && {
-            eventSize: selectedVisitors.join(",")
-           }),
-           ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
-           ...(selectedRegularity[0] > 0 && {editionRange: selectedRegularity[0].toString()}),
-          brandedEvent: selectedBrandedEvent.toString(),
-          // labels:selectedLabels.join(','),
-          // eventKeywords:selectedEventKeywords.join(','),
-          ...(selectedEventFormat?.length > 0 && {
-            eventFormat: selectedEventFormat.join(","),
-          }),
-          ...(selectedZone?.length > 0 && {
-            eventRegion: selectedZone.join(',')
-          }),
-          eventSeries: selectedEventSeries.toString(),
-          ...(selectedEventStatus?.length > 0 && {
-            eventStatus: selectedEventStatus.join(","),
-          }),
-          ...(selectedEntry?.length > 0 && {
-            eventEntry: selectedEntry.join(","),
-          }),
-          ...(selectedTrustScore[0] > 0 && {
-            trustScore: selectedTrustScore[0].toString(),
-          }),
-          ...(selectedEventFrequency?.length > 0 && {
-            eventFrequency: selectedEventFrequency.join(","),
-          }),
-          ...(selectedReptScore > 0 && {
-            reputationScore: selectedReptScore.toString(),
-          }),
-          ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
-          ...(selectedDateRange?.length === 2 && {
-            startDate: [
-              new Date(selectedDateRange[0]).toISOString().split("T")[0],
-              new Date(selectedDateRange[1]).toISOString().split("T")[0],
-            ].join(","),
-          }),
-          ...(selectedDateRange?.length === 2 && {
-            endDate: [
-              new Date(selectedDateRange[0]).toISOString().split("T")[0],
-              new Date(selectedDateRange[1]).toISOString().split("T")[0],
-            ].join(","),
-          }),
-          ...(selectedUserRatings?.length > 0 && {
-            eventRating: selectedUserRatings.join(","),
-          }),
-          ...(selectedINScore > 0 && { internationalScore: intScore?.toLowerCase() }),
-          ...(selectedInboundScore > 0 && {
-            inboundScore: selectedInboundScore.toString(),
-          }),
-          ...(selectedEventAttendanceRange?.length === 2 && {
-            eventAttendanceRange: [
-              +selectedEventAttendanceRange[0],
-              +selectedEventAttendanceRange[1],
-            ].join(","),
-          }),
-
-          // info: {
-          //   name: trackerName,
-          //   location:selectedLocations,
-          //   keywords:selectedEventKeywords.join(','),
-          //   labels: selectedLabels.join(','),
-          //   startDate: selectedDateRange[0],
-          //   endDate: selectedDateRange[1],
-          //   eventFormat: selectedEventFormat.join(','),
-          //   category: categorySlug.join(','),
-          //   eventStatus: selectedEventStatus.join(','),
-          //   eventFrequency: selectedEventFrequency.join(','),
-          //   eventEntry: selectedEntry.join(','),
-          //   eventEdition: selectedEventEdition.toString(),
-          //   eventKeywords: selectedLabels.join(','),
-          //   eventRanking: selectedEventRanking.join(','),
-          //   brandedEvent: selectedBrandedEvent,
-          //   trustScore: selectedTrustScore.toString(),
-          //   eventSeries: selectedEventSeries,
-          //   reputationScore: selectedReptScore.toString(),
-          //   maturity: selectedMaturity.toString(),
-          //   internationalScore: selectedINScore.toString(),
-          //   inboundScore: selectedInboundScore.toString(),
-          //   userRating: selectedUserRatings.join(','),
-          //   exhibitScore: selectedExhibitScore.join(','),
-          //   total_attendance_gte: selectedEventAttendanceRange[0],
-          //   total_attendance_lte:
-          //     selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : selectedEventAttendanceRange[1],
-          // }
-        },
-      };
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||selectedEventKeywords.length==0)){
         setIsCreating(false);
         setIsMandatory(true);
@@ -909,35 +888,31 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type === "CUSTOM" && (selectedLocations.length === 0 || trackerName.length === 0)) {
+      else if (type === "CUSTOM" && (trackerName.length === 0 || (selectedLocationsData && selectedLocationsData.length === 0))) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      // const { data, error } = await myFetch(`${baseUrl}/tracker`, {
-      //   method: "POST",
-      //   body: JSON.stringify(formData),
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      // });
-      // console.log(data);
-      const result= await createTracker(formData);
-      // console.log(result);
-      if(result){
-        router.replace("/internal/trackers");
+      try{
+        const data= await createTracker(formData)
+        if (error) {
+          console.log(error);
+          setIsCreating(false);
+          return;
+        }
+        if (data) {
+          console.log(data);
+  
+          router.replace("/internal/trackers");
+        }
+      }catch(error){
+        console.log(error);
+        setIsCreating(false);
+        return;
       }
-      // if (error) {
-      //   console.log(error);
-      //   setIsCreating(false);
-      //   return;
-      // }
-      // if (data) {
-      //   console.log(data);
+     
 
-      //   router.replace("/internal/trackers");
-      // }
     }
   };
 
@@ -951,7 +926,7 @@ const Pages = () => {
 
       if (data) {
         console.log(data);
-        setCategoryData(data);
+        setCatgeoryData(data);
       }
     };
     fetchData();
@@ -965,9 +940,9 @@ const Pages = () => {
         ...(categoryData?.nonAttendedCategories ?? []),
         ...(categoryData?.unscheduledCategories ?? []),
       ];
-      if (editData.tracker.filterValue?.maturity == "low") {
-        setSelectedMaturity(25);
-      }
+      // if (editData.tracker.filterValue?.maturity == "low") {
+      //   setSelectedMaturity(25);
+      // }
       if (type === "T_COMPETITOR") {
         const orgNames = editData?.tracker?.filterValue?.orgName?.
           split(',');
@@ -995,9 +970,9 @@ const Pages = () => {
           split(',');
         const speakerNames = editData?.tracker?.filterValue?.speakerName?.
           split(',');
-        const presentCustomData = speakerNames.map((speakerName: string, index: number) => ({
+        const presentCustomData = (speakerNames ?? []).map((speakerName: string, index: number) => ({
           "Speaker's Name": speakerName.trim(),
-          "Company Name": speakerOrgs[index]?.trim()
+          "Company Name": speakerOrgs?.[index]?.trim()
         }));
         setCustomData(presentCustomData);
         // setCustomData((prevData: any) => [
@@ -1027,14 +1002,50 @@ const Pages = () => {
       }
       setRatingOpen(toggleOpend?.rating ? true : false);
       setExhibitOpen(toggleOpend?.exhibit ?true:false)
-      setRankToggles({...rankToggles, isTrustScore:toggleOpend?.trust?true:false})
+      setRankToggles({
+        ...rankToggles,
+        isTrustScore : toggleOpend?.trust?true:false,
+        isEventRank: toggleOpend?.eventRank ? true : false,
+      })
+      setForecastedStatus(toggleOpend?.forecastedStatus ? true : false);
+
+      setAnalyticsToggles({
+        ...analyticsToggles,
+        impactScore: (toggleOpend?.impactScore ? true : false),
+        inboundScore: (toggleOpend?.inboundScore ? true : false),
+        internationalScore: (toggleOpend?.internationalScore ? true : false),
+        globalToggle: toggleOpend?.globalToggle? true: false,
+      });
+
+      if(editData?.tracker?.filterValue?.inboundScore && editData?.tracker?.filterValue?.inboundScore !== "")
+        setSelectedInboundScore(editData?.tracker?.filterValue?.inboundScore?.split("-"));
+
+      if(editData?.tracker?.filterValue?.eventImpactSocre && editData?.tracker?.filterValue?.eventImpactSocre !== "")
+        setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactSocre?.split("-"));
+
+      if(editData?.tracker?.filterValue?.internationalScore && editData?.tracker?.filterValue?.internationalScore !== "")
+        setSelectedInternationalScore(editData?.tracker?.filterValue?.internationalScore?.split("-"));
+
+      if(editData?.tracker?.filterValue?.maturity && editData?.tracker?.filterValue?.maturity !== '')
+        setSelectedMaturity(editData?.tracker?.filterValue?.maturity)
+
+      if(editData?.tracker?.filterValue?.eventRanking && editData?.tracker?.filterValue?.eventRanking !== '')
+        setSelectedRank(editData?.tracker?.filterValue?.eventRanking)
+
+      setAudienceZone(toggleOpend?.audienceZone ? true : false);
+      setAudienceSpread(toggleOpend?.audienceSpread ? true : false);
+
+      setSelectedCountries(editData.tracker.filterValue?.audienceSpread ? editData.tracker.filterValue?.audienceSpread?.split(",") : []);
+
+      setSelectedAudProfile(editData.tracker.filterValue?.designation ? editData.tracker.filterValue?.designation?.split(",") : []);
+
       setSelectedEventKeywords(
         editData?.tracker?.filterValue?.eventKeywords?.length > 0
           ? editData?.tracker?.filterValue?.eventKeywords?.split("+")
           : []
       );
       setTrackerName(editData?.tracker?.name || "");
-      setSelectedLabels(
+      setSelectedLabels(editData?.tracker?.filterValue?.labels && 
         editData?.tracker?.filterValue?.labels?.length > 0
           ? editData?.tracker?.filterValue?.labels?.split(",")
           : []
@@ -1047,6 +1058,7 @@ const Pages = () => {
           : []
       );
       setSelectedEventFormat(
+        editData?.tracker?.filterValue?.eventFormat &&
         editData?.tracker?.filterValue?.eventFormat?.length > 0
           ? editData?.tracker?.filterValue?.eventFormat?.split(",")
           : []
@@ -1062,14 +1074,29 @@ const Pages = () => {
           ? editData?.tracker?.filterValue?.eventStatus?.split(",")
           : []
       );
-      setSelectedDateRange(
-        editData?.tracker?.filterValue?.startDate?.length > 0
-          ? [
-            editData?.tracker?.filterValue?.startDate?.split(",")[0],
-            editData?.tracker?.filterValue?.startDate?.split(",")[1],
-          ]
-          : []
-      );
+      setDateRange({
+        to: editData?.tracker?.filterValue?.startDate
+          ? new Date(editData.tracker.filterValue.startDate.split(",")[1])
+          : undefined,
+        from: editData?.tracker?.filterValue?.startDate
+          ? new Date(editData.tracker.filterValue.startDate.split(",")[0])
+          : undefined
+      });
+      // setDateRange({
+      //   ...dateRange,
+      //   to: editData?.tracker?.filterValue?.startDate
+      //     ? new Date(editData.tracker.filterValue.startDate.split(",")[1])
+      //     : undefined
+      // });
+      // setSelectedDateRange(
+      //   editData?.tracker?.filterValue?.startDate && 
+      //   editData?.tracker?.filterValue?.startDate?.length > 0
+      //     ? [
+      //       editData?.tracker?.filterValue?.startDate?.split(",")[0],
+      //       editData?.tracker?.filterValue?.startDate?.split(",")[1],
+      //     ]
+      //     : []
+      // );
       setCategorySlug(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
           ? editData?.tracker?.filterValue?.eventCategory?.map(
@@ -1077,6 +1104,33 @@ const Pages = () => {
           )
           : []
       );
+      const selectedCountries = 
+        typeof editData?.tracker?.filterValue?.locationIds === 'object' && 
+        editData.tracker.filterValue.locationIds.country
+        ? Object.entries(editData.tracker.filterValue.locationIds.country).map(([id, descriptionObj]) => {
+        const [locationId, description] = Object.entries(descriptionObj)[0]; 
+        return {
+          id: locationId,     
+          description,        
+        };
+      })
+    : [];
+    console.log(selectedCountries);
+    const selectedCity=typeof editData?.tracker?.filterValue?.locationIds === 'object' && 
+    editData.tracker.filterValue.locationIds.city
+    ? Object.entries(editData.tracker.filterValue.locationIds.city).map(([id, descriptionObj]) => {
+    const [locationId, description] = Object.entries(descriptionObj)[0]; 
+    return {
+      id: locationId,     
+      description,        
+    };
+  })
+: [];
+console.log(selectedCity);
+setSelectedLocationsData([...selectedCountries,...selectedCity]);
+
+      console.log(selectedLocations);
+      
       const eventCountry =
         editData?.tracker?.filterValue?.eventCountry?.map(
           (countryObj: {}) => Object.values(countryObj)[0]
@@ -1088,6 +1142,7 @@ const Pages = () => {
 
       setSelectedLocations([...eventCountry, ...eventCity]);
       setSelectedEventFrequency(
+        editData?.tracker?.filterValue?.eventFrequency && 
         editData?.tracker?.filterValue?.eventFrequency?.length > 0
           ? editData?.tracker?.filterValue?.eventFrequency?.split(",")
           : []
@@ -1106,30 +1161,30 @@ const Pages = () => {
       setSelectedEventRanking(
         editData.tracker.filterValue?.eventRanking?.split(",") || []
       );
-      setSelectedBrandedEvent(editData.tracker.filterValue?.brandedEvent);
-      setSelectedCountry(
-        editData.tracker.filterValue?.eventCountry?.length > 0
-          ? editData.tracker.filterValue.eventCountry.reduce(
-            (acc: any, current: any) => {
-              return { ...acc, ...current };
-            },
-            {}
-          )
-          : {}
-      );
-      setSelectedZone(editData.tracker.filterValue?.eventRegion?.length > 0 ? editData.tracker.filterValue?.eventRegion?.split(',') : []);
-      setSelectedCity(
-        editData.tracker.filterValue?.eventCity?.length > 0
-          ? editData.tracker.filterValue.eventCity.reduce(
-            (acc: any, current: any) => {
-              return { ...acc, ...current };
-            },
-            {}
-          )
-          : {}
-      );
+      setSelectedBrandedEvent(toggleOpend?.brandedEvent ? true : false);
+      // setSelectedCountry(
+      //   editData.tracker.filterValue?.eventCountry?.length > 0
+      //     ? editData.tracker.filterValue.eventCountry.reduce(
+      //       (acc: any, current: any) => {
+      //         return { ...acc, ...current };
+      //       },
+      //       {}
+      //     )
+      //     : {}
+      // );
+      setSelectedZone(editData.tracker.filterValue?.eventRegion && editData.tracker.filterValue?.eventRegion?.length > 0 ? editData.tracker.filterValue?.eventRegion?.split(',') : []);
+      // setSelectedCity(
+      //   editData.tracker.filterValue?.eventCity?.length > 0
+      //     ? editData.tracker.filterValue.eventCity.reduce(
+      //       (acc: any, current: any) => {
+      //         return { ...acc, ...current };
+      //       },
+      //       {}
+      //     )
+      //     : {}
+      // );
       setSelectedEventSeries(
-        editData.tracker.filterValue?.eventSeries?.toString() === "true"
+        toggleOpend?.eventSeries ? true : false
       );
       setMaturity(
         editData.tracker.filterValue?.maturity?.length > 0
@@ -1147,19 +1202,23 @@ const Pages = () => {
           ? editData.tracker.filterValue?.reputationScore
           : 0
       );
-      setSelectedMaturity(
-        editData.tracker.filterValue?.maturity > 0
-          ? editData.tracker.filterValue?.maturity
-          : 0
-      );
-      if (editData?.tracker?.filterValue?.eventType?.length > 0) {
-        setSelectedEventType(
-          editData.tracker.filterValue.eventType
-        );
-        setSelectedEventTypeName(EventStatusData
-          ?.filter(item => editData.tracker.filterValue.eventType.includes(item.id))
-          .map(item => item.name)[0]);
-      }
+      // setSelectedMaturity(
+      //   editData.tracker.filterValue?.maturity > 0
+      //     ? editData.tracker.filterValue?.maturity
+      //     : 0
+      // );
+      if (editData?.tracker?.filterValue?.eventType !== undefined) {
+        const eventTypes = editData.tracker.filterValue.eventType;
+    
+        if (Array.isArray(eventTypes) && eventTypes.length > 0) {
+            setSelectedEventType(eventTypes);
+    
+            const selectedEventTypeNames = EventStatusData
+                ?.filter(item => eventTypes.includes(item.id))
+                .map(item => item.name) || [];
+            setSelectedEventTypeName(selectedEventTypeNames[0] || "Default Event Name");
+        }
+    }
 
 
 
@@ -1168,11 +1227,11 @@ const Pages = () => {
       //     ? editData.tracker.filterValue?.internationalScore
       //     : ""
       // );
-      setSelectedInboundScore(
-        editData.tracker.filterValue?.inboundScore > 0
-          ? editData.tracker.filterValue?.inboundScore
-          : 0
-      );
+      // setSelectedInboundScore(
+      //   editData.tracker.filterValue?.inboundScore > 0
+      //     ? editData.tracker.filterValue?.inboundScore
+      //     : 0
+      // );
       setSelectedUserRatings(
         editData.tracker.filterValue?.eventRating &&
           editData.tracker.filterValue?.eventRating?.length !== 0
@@ -1202,6 +1261,8 @@ const Pages = () => {
         setSelectedTrustScore(updatedTrustScore)
       // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
       // setSelectedLocations(editData.tracker.filterValue?.location);
+      setIncludeKeywords(editData.tracker.filterValue?.includeKeywords && editData.tracker.filterValue?.includeKeywords?.split(" ").length>0?editData.tracker.filterValue?.includeKeywords?.split(" "):[]),
+      setExcludeKeywords(editData.tracker.filterValue?.excludeKeywords && editData.tracker.filterValue?.excludeKeywords?.split(" ").length>0?editData.tracker.filterValue?.excludeKeywords?.split(" "):[]),
       setSelectedEventAttendanceRange((prevArray) => {
         const gte =
           editData.tracker.filterValue?.eventAttendanceRange?.split(",")[0];
@@ -1397,6 +1458,16 @@ const commonCss={
   input_container:`w-full border-[var(--input-border-color)] border rounded-[var(--border-radius-sm)] whitespace-nowrap p-2 px-4 text-inherit bg-inherit`,
   input:'flex justify-between items-center'
 }
+useEffect(() => {
+  console.log('Selected Aviation Rank:', selectedInternationalScore);
+}, [selectedInternationalScore]);
+console.log(includeKeywords, excludeKeywords);
+// useEffect(()=>{
+//   const updatedIncludeKeywords = includeKeywords.map((keyword) => `${keyword.split(" ").join("_")}`);
+//   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
+//       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
+// },[includeKeywords, excludeKeywords])
+console.log(dateRange);
 
   return (
     <>
@@ -1772,7 +1843,7 @@ const commonCss={
                 />
               </Popover>
             </MenuTrigger> */}
-            <EventTypeSelector setSelectedCategories={setSelectedEventType} selectedCategories={selectedEventType}/>
+            <EventTypeSelector source="tracker" setSelectedCategories={setSelectedEventType} selectedCategories={selectedEventType}/>
             <CategorySelector  source="tracker"  selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}/>
             {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button>
@@ -1812,7 +1883,7 @@ const commonCss={
                 </Dialog>
               </Popover>
             </MenuTrigger> */}
-            <EventFormatSelector selectedStatuses={selectedEventFormat}
+            <EventFormatSelector source="tracker" selectedStatuses={selectedEventFormat}
                     setSelectedStatuses={setSelectedEventFormat}/>
             {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button>
@@ -1851,7 +1922,7 @@ const commonCss={
               </Popover>
             </MenuTrigger> */}
 
-            <MenuTrigger onOpenChange={setMenuOpen}>
+            {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={commonCss.input_container}
                   style={{
@@ -1899,10 +1970,11 @@ const commonCss={
                   )}
                 </Dialog>
               </Popover>
-            </MenuTrigger>
+            </MenuTrigger> */}
+            <LocationSelector source="tracker" selectedLocation={selectedLocationsData} setSelectedLocation={setSelectedLocationsData}/>
             {/* <LocationSelector/> */}
 
-            <MenuTrigger onOpenChange={setMenuOpen}>
+            {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button className={styles.dropdown_button}>
                 <div className={commonCss.input_container}>
                   <div className={commonCss.input}>
@@ -1928,15 +2000,13 @@ const commonCss={
                 </div>
               </Button>
               <Popover className={styles.filterPopover}>
-                {/* <Dialog> */}
                 <DateRange
                   state={selectedDateRange}
                   setState={setSelectedDateRange}
                 />
-                {/* </Dialog> */}
               </Popover>
-            </MenuTrigger>
-
+            </MenuTrigger> */}
+            <DateRangeSelector source="tracker" dateRange={dateRange} setDateRange={setDateRange}/>
             {/* <MenuTrigger onOpenChange={setMenuOpen}>
             <Button>
               <div className={styles.input_container}>
@@ -2006,7 +2076,7 @@ const commonCss={
           </Popover>
         </MenuTrigger> */}
 
-      <EventStatusSelector setSelectedStatuses={setSelectedEventStatus} selectedStatuses={selectedEventStatus}/>
+      <EventStatusSelector source="tracker" setSelectedStatuses={setSelectedEventStatus} selectedStatuses={selectedEventStatus}/>
             {/* <MenuTrigger onOpenChange={setMenuOpen}>
               <Button>
                 <div className={commonCss.input_container}>
@@ -2042,7 +2112,7 @@ const commonCss={
                 </Dialog>
               </Popover>
             </MenuTrigger> */}
-            <EventEntrySelector selectedStatuses={selectedEntry} setSelectedStatuses={setSelectedEntry}/>
+            <EventEntrySelector source="tracker" selectedStatuses={selectedEntry} setSelectedStatuses={setSelectedEntry}/>
             {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`}>
                     <div className={commonCss.input_container}>
@@ -2115,7 +2185,7 @@ const commonCss={
                 </Dialog>
               </Popover>
             </MenuTrigger> */}
-<UserRatingSelector/>
+<UserRatingSelector source="tracker" selectedRatings={selectedUserRatings} setSeectedRatings={setSelectedUserRatings}/>
 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                     <div className={commonCss.input_container}>
                       <div className={commonCss.input}>
@@ -2253,8 +2323,12 @@ const commonCss={
                     </Dialog>
                   </Popover>
                 </MenuTrigger> */}
-                <MaturitySelector/>
-                <GlobalAndTouringSelector source="tracker"/>
+                <MaturitySelector source="tracker" selectedStatus={selectedMaturity}
+                          setSelectedStatus={setSelectedMaturity}/>
+                <GlobalAndTouringSelector source="tracker" selectedBrandedEvent={selectedBrandedEvent}
+                      setSelectedBrandedEvent={setSelectedBrandedEvent}
+                      selectedEventSeries={selectedEventSeries}
+                      setSelectedEventSeries={setSelectedEventSeries}/>
                 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`}>
                     <div className={commonCss.input_container}>
@@ -2302,7 +2376,7 @@ const commonCss={
                 </div>
               </div>
             </MenuTrigger> */}
-<ForecastedStatusSelector/>
+<ForecastedStatusSelector source="tracker" isEnabled={forecastedStatus} setIsEnabled={setForecastedStatus}/>
 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <div>
                     <div className={commonCss.input_container}>
@@ -2316,7 +2390,7 @@ const commonCss={
                     </div>
                   </div>
                 </MenuTrigger> */}
-                <FrequencySelector selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency}/>
+                <FrequencySelector source="tracker" selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency}/>
                 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={commonCss.input_container}>
@@ -2391,7 +2465,7 @@ const commonCss={
               //     </Dialog>
               //   </Popover>
               // </MenuTrigger>
-              <ProductSelector/>
+              <ProductSelector source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords}/>
                 }
 
 
@@ -2509,7 +2583,7 @@ const commonCss={
                   </Dialog>
                 </Popover>
               </MenuTrigger> */}
-<EstimatedVisitorsSelector selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}/>
+<EstimatedVisitorsSelector source="tracker" selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}/>
 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                       <div className={commonCss.input_container}>
@@ -2670,7 +2744,15 @@ const commonCss={
                   />
                 </Popover>
               </MenuTrigger> */}
-<EventAnalyticsSelector/>
+<EventAnalyticsSelector source="tracker" selectedEventRank={selectedImpactScore}
+                          setSelectedEventRank={setSelectedImpactScore}
+                          selectedLocalRank={selectedInboundScore}
+                          setSelectedLocalRank={setSelectedInboundScore}
+                          selectedAviationRank={selectedInternationalScore}
+                          setSelectedAviationRank={setSelectedInternationalScore} 
+                          rankToggles={analyticsToggles}
+                          setRankToggles={setAnalyticsToggles}
+                          />
 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`} >
                     <div className={commonCss.input_container}>
@@ -2700,7 +2782,7 @@ const commonCss={
                     </Dialog>
                   </Popover>
                 </MenuTrigger> */}
-            <EstimatedEconomicImpactSelector source="tracker" />
+            <EstimatedEconomicImpactSelector/>
                 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                     <div className={commonCss.input_container}>
                       <div className={commonCss.input}>
@@ -2711,7 +2793,15 @@ const commonCss={
                       </div>
                     </div>
                 </MenuTrigger> */}
-                <EventRankingSelector/>
+                <EventRankingSelector 
+                source="tracker"
+                selectedTrustScore={selectedTrustScore}
+                setSelectedTrustScore={setSelectedTrustScore}
+                rankToggles={rankToggles}
+                setRankToggles={setRankToggles}
+                selectedRank={selectedRank}
+                setSelectedRank={setSelectedRank}
+                />
                 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`} >
                     <div className={commonCss.input_container}>
@@ -2830,79 +2920,13 @@ const commonCss={
           {showAdvanceFilter && selectedAdvFilter === "AI" && (
             <div className={styles.inputdropdowns_container_AI}>
 
-<MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={`${styles.dropdown_button}`} >
-                    <div className={commonCss.input_container}>
-                      <div className={commonCss.input}>
-                        <div className={styles.input_title}>
-                        Audience Quality Score
-                          {/* {selectedEventAttendanceRange[0] !== undefined ? (
-                            <span className={styles.input_selected_title}>
-                              {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
-                                }`}
-                            </span>
-                          ) : (
-                            ""
-                          )} */}
-                        </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={12}
-                          height={12}
-                          className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    <Dialog className={styles.dialogBorder}>
-                      {({ close }) => (
-                        <AudienceQuality
-                          selectedEventRank={selectedEventRank}
-                          setSelectedEventRank={setSelectedEventRank}
-                          onClose={close}
-                          type="Audience"
-                        />
-                      )}
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
+<AudienceQualitySelector/>
 
-                <MenuTrigger onOpenChange={setMenuOpen}>
-                  <Button className={`${styles.dropdown_button}`} >
-                    <div className={commonCss.input_container}>
-                      <div className={commonCss.input}>
-                        <div className={styles.input_title}>
-                          Exhibitor Quality Score
-                        </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
-                          src={DropIcon}
-                          alt="dropicon"
-                          width={20}
-                          height={20}
-                          className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
-                      </div>
-                    </div>
-                  </Button>
-                  <Popover className={styles.filterPopover}>
-                    <Dialog className={styles.dialogBorder}>
-                      {({ close }) => (
-                        <AudienceQuality
-                          selectedEventRank={selectedEventRank}
-                          setSelectedEventRank={setSelectedEventRank}
-                          onClose={close}
-                          type="Exhibitor"
-                        />
-                      )}
-                    </Dialog>
-                  </Popover>
-                </MenuTrigger>
+<ExhibitorQualitySelector/>
                 
-                <AudienceProfileSelector/>
+                <AudienceProfileSelector source="tracker" 
+                designationData={selectedAudProfile}
+                setDesignationData={setSelectedAudProfile}/>
                 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                     <div className={commonCss.input_container}>
                       <div className={commonCss.input}>
@@ -2951,7 +2975,9 @@ const commonCss={
                 </Dialog>
               </Popover>
               </MenuTrigger> */}
-<AudienceSpreadSelector/>
+            <AudienceZoneSelector source="tracker" isEnabled={audienceZone} setIsEnabled={setAudienceZone}/>
+<AudienceSpreadSelector source="tracker" selectedCountries={selectedCountries}
+                        setSelectedCountries={setSelectedCountries}/>
 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   
                     <div className={commonCss.input_container}>

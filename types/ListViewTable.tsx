@@ -56,3 +56,7 @@ export interface EventTableType {
     internationalAudience: string;
     type: string[]
 }
+export interface AllEventsType{
+     result: EventTableType[] ;
+     count: number 
+}

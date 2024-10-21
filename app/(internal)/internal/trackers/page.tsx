@@ -15,6 +15,7 @@ import {
   MagnifyingGlass,
   PencilEdit,
 } from "geist-icons";
+import {AllEventsType, EventTableType } from '@/types/ListViewTable';
 import SavedEventWidget from "@/app/components/internal/trackers/SavedEventWidget";
 import NotesDiscussionWidget from "@/app/components/internal/trackers/NotesDiscussionWidget";
 import NotificationWidget from "@/app/components/internal/trackers/NotificationWidget";
@@ -120,6 +121,8 @@ import AnalyticWidget from "@/app/components/internal/trackers/AnalyticWidget";
 import ShareModal from "@/app/components/internal/trackers/shareModal";
 import CardWidgitConfig from "@/app/components/internal/trackers/CardWidgitConfig";
 import { useTrackerServices } from "@/services/trackerServices";
+import { useNotesServices } from "@/services/notesServices";
+import { Tracker } from "@/types/trackers";
 
 interface Search {
   searchParams: {
@@ -275,10 +278,11 @@ const Trackers = ({ searchParams }: Search) => {
     },
   ];
   const [hide, setHide] = useState(false);
-  const [singleTrackerData,setSingleTrackerData]=useState();
+  const [singleTrackerData,setSingleTrackerData]=useState<Tracker>();
   const [isLoading, setIsLoading] = useState(true);
   const [currentUrl, setCurrentUrl] = useState('');
-  const {getSavedEvents, getNotes}=useTrackerServices();
+  const {getSavedEvents}=useTrackerServices();
+  const {getNotesFromTracker}=useNotesServices();
   const handleShowMore = () => {
     setOffset((prevOffset) => prevOffset + 5);
   };
@@ -390,20 +394,22 @@ const Trackers = ({ searchParams }: Search) => {
   // }, [updateSteps]);
   console.log(currentUrl);
   
-  const [note,setNote]=useState(null);
-  const [savedEvents,setSavedEvents]=useState(null);
+  const [note,setNote]=useState<any>(null);
+  const [savedEvents, setSavedEvents] = useState<{ result: EventTableType[]; count: number } | undefined>(undefined);
+
   console.log(singleTrackerData);
   useEffect(() => {
     // console.log(item?.tracker?.eventCountry);
-    
+    if(singleTrackerData){
     const eventCountry = singleTrackerData?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
     const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
     const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
     setLocations([...eventCountry, ...eventCity, ...eventZone]);
-    if(singleTrackerData){
+    if(singleTrackerData.id){
     fetchNote(singleTrackerData?.id)
   fetchSavedEvent(singleTrackerData?.id)
     }
+  }
   }, [singleTrackerData]);
   console.log(hideTemplate);
   const fetchNote=async(id:string)=>{
@@ -420,10 +426,10 @@ const Trackers = ({ searchParams }: Search) => {
     //     setNote(data.comments);
     //   }else setNote("");
     // }
-    const result= await getNotes(id,`limit=1&offset=0`)
+    const result= await getNotesFromTracker(id,`limit=1&offset=0`)
     console.log(result);
     
-    if(result.comments?.length > 0){
+    if(result && result.comments?.length > 0){
       setNote(result?.comments);
     }else 
     setNote(null);
@@ -442,10 +448,12 @@ const Trackers = ({ searchParams }: Search) => {
     //     setSavedEvents(data);
     //   }else setSavedEvents("");
     // }
-    const result= await getSavedEvents(id, `limit=2&offset=0`);
-    if(result?.count>0){
+    const result:{result: EventTableType[], count: number} | undefined = await getSavedEvents(id, `limit=2&offset=0`);
+    console.log(result);
+    
+    if(result && result?.count>0){
       setSavedEvents(result);
-    }else setSavedEvents(null);
+    }else setSavedEvents(undefined);
   }
   console.log(savedEvents);
   
@@ -502,7 +510,7 @@ const Trackers = ({ searchParams }: Search) => {
            {singleTrackerData?.name}
           </span>
           <Link
-        href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}`}
+        href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list`}
         onClick={() =>
           GAEvent(
             "trackers",

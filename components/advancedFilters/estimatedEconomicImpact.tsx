@@ -22,16 +22,8 @@ interface RankCategory {
   enabled: boolean;
   range: [number, number];
 }
-interface EconomicImpactProp{
-    source: string;
-  selectedRanges?: string[];
-  setSelectedRanges?: React.Dispatch<React.SetStateAction<string[]>>; 
-}
-export default function EstimatedEconomicSelector({
-        source,
-        selectedRanges: parentSelectedRanges = [],
-        setSelectedRanges: parentSetSelectedRanges,
-      }: EconomicImpactProp) {
+
+export default function EstimatedEconomicSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const { setFilter, getFilterValue, setMultipleFilters, searchParams } =
     useFilterState();
@@ -46,7 +38,6 @@ export default function EstimatedEconomicSelector({
 
   const handleShowEconomicImpactToggle = (checked: boolean) => {
     setShowEconomicImpact(checked);
-    
     const currentShow = getFilterValue("show").split(",").filter(Boolean);
     const newShow = checked
       ? [...currentShow, "economicImpact"]
@@ -110,7 +101,7 @@ export default function EstimatedEconomicSelector({
   };
 
   const onOpenChange = (open: boolean) => {
-    if (!open && source!=="tracker") {
+    if (!open) {
       const newFilters = {
         economic_impact_gte: category.range[0].toString(),
         economic_impact_lte: category.range[1].toString(),
@@ -124,6 +115,7 @@ export default function EstimatedEconomicSelector({
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <Button
+          disabled
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
@@ -191,11 +183,3 @@ export default function EstimatedEconomicSelector({
     </Popover>
   );
 }
-
-
-
-
-
-
-
-

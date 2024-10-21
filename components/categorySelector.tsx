@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
-import { baseUrl } from "@/constants";
 import {
   Popover,
   PopoverContent,
@@ -9,46 +8,32 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
-import { myFetch } from "@/utils/myFetch";
-// import { categories } from "@/public/data/categories";
-// import { newCategories as categories } from "@/data/categories";
+import { useFilterState } from "@/hooks/useFilterState";
+import { newCategories as categories } from "@/data/categories";
 interface categoryProps {
-    source: string;
-    selectedCategories?: string[];
-    setSelectedCategories?: React.Dispatch<React.SetStateAction<string[]>>; 
-  }
-  export default function CategorySelector({
-    source,
-    selectedCategories: parentSelectedCategories = [],
-    setSelectedCategories: parentSetSelectedCategories,
-  }: categoryProps) {
-//   const { getFilterValue, setFilter } = useFilterState();
-const [categories, setCategories] = useState<any[]>([]); 
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedCategoriesLocal, setSelectedCategoriesLocal] = useState<string[]>([]);
-  const selectedCategories = source === 'tracker' ? parentSelectedCategories : selectedCategoriesLocal;
-  const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories : setSelectedCategoriesLocal;
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
-      if (error) {
-        console.log(error);
-        return;
-      }
+  source: string;
+  selectedCategories?: string[];
+  setSelectedCategories?: React.Dispatch<React.SetStateAction<string[]>>; 
+}
+export default function CategorySelector({
+  source,
+  selectedCategories: parentSelectedCategories = [],
+  setSelectedCategories: parentSetSelectedCategories,
+}: categoryProps) {
+// const [categories, setCategories] = useState<any[]>([]); 
+const { getFilterValue, setFilter } = useFilterState();
+const [isOpen, setIsOpen] = useState(false);
+const [selectedCategoriesLocal, setSelectedCategoriesLocal] = useState<string[]>([]);
+const selectedCategories = source === 'tracker' ? parentSelectedCategories : selectedCategoriesLocal;
+const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories : setSelectedCategoriesLocal;
 
-      if (data) {
-        console.log(data);
-        setCategories(data);
-      }
-    };
-    fetchData();
-  }, []);
-  console.log(categories);
-  
-//   useEffect(() => {
-//     const eventTypes = getFilterValue("categories").split(",").filter(Boolean);
-//     setSelectedCategories(eventTypes);
-//   }, [getFilterValue]);
+  useEffect(() => {
+    if(source!=="tracker"){
+    const eventTypes = getFilterValue("categories").split(",").filter(Boolean);
+    if(setSelectedCategories)
+    setSelectedCategories(eventTypes);
+    }
+  }, [getFilterValue]);
 
   const handleCategoryToggle = useCallback((categoryId: string) => {
     if (setSelectedCategories) {
@@ -61,31 +46,28 @@ const [categories, setCategories] = useState<any[]>([]);
   }, []);
 
   const handleSelectAll = useCallback((isSelected: boolean) => {
-    if (setSelectedCategories) {
-    setSelectedCategories(isSelected ? categories.map((cat) => cat.slug) : []);
-    }
+    if(setSelectedCategories)
+    setSelectedCategories(isSelected ? categories.map((cat) => cat.id) : []);
   }, []);
 
   const isAllSelected = useMemo(
-    () => categories.every((cat) => selectedCategories.includes(cat.slug)),
+    () => categories.every((cat) => selectedCategories.includes(cat.id)),
     [selectedCategories]
   );
 
-  // const handleApply = useCallback(() => {
-  //   setFilter("categories", selectedCategories.join(","));
-  //   setIsOpen(false);
-  // }, [selectedCategories, setFilter]);
+  const handleApply = useCallback(() => {
+    if(source!=="tracker")
+    setFilter("categories", selectedCategories.join(","));
+    setIsOpen(false);
+  }, [selectedCategories, setFilter]);
 
   const renderCategories = useCallback(() => {
     const columnCount = 3;
     const allCategories = [
       { id: "all", name: "Select All", slug: "all" },
-      ...categories
+      ...categories,
     ];
-    console.log(allCategories);
-    
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);
-console.log(isAllSelected);
 
     return (
       <div className="grid grid-cols-3 gap-x-4">
@@ -102,10 +84,10 @@ console.log(isAllSelected);
                     className="rounded-none"
                     id={category.slug}
                     checked={
-                      category.slug === "all"
+                      category.id === "all"
                         ? isAllSelected
                         : selectedCategories.includes(category.id)
-                     }
+                    }
                     onCheckedChange={() =>
                       category.slug === "all"
                         ? handleSelectAll(!isAllSelected)
@@ -127,14 +109,13 @@ console.log(isAllSelected);
   }, [
     handleCategoryToggle,
     selectedCategories,
-    categories,
     isAllSelected,
     handleSelectAll,
   ]);
 
   const onOpenChange = (open: boolean) => {
     if(!open){
-    //   handleApply();
+      handleApply();
     }
     setIsOpen(open);
   };

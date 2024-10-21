@@ -62,6 +62,10 @@ const Index = () => {
 
     fetchData();
   }, [secondLast]);
+  const handleClick = (view:string) => {
+    setView(view);
+    router.push(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`);
+  };
   const fetchData=async()=>{
       const result = await getTrackerDetail(secondLast)
       if(result){
@@ -71,9 +75,11 @@ const Index = () => {
         console.error('Error fetching data:', error);
       }
   }
+  console.log(view);
+  
   return (
     <>
-      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[70px] w-[calc(100vw-70px)] bg-[var(--primary-foreground)] z-20 text-h6">
+      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[70px] w-[calc(100vw-70px)] bg-[var(--primary-foreground)] z-20 text-h6 left-[70px]">
         <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link className={styles.bottom} href={
              last === "editTracker"
@@ -94,11 +100,15 @@ const Index = () => {
         <>
           <div className="flex justify-center items-center" >
           <div className='flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md'>
-            <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}>
-              <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""}`} onClick={()=>setView("list")}>List</div>
-              </Link>
+            {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`}> */}
+            <div onClick={()=>handleClick("list")}>
+              <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""}`} onClick={()=>setView("list")}>List</div></div>
+              {/* </Link> */}
+              <div onClick={()=>handleClick("map")}>
               <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>setView("map")}>Map</div>
-              <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>setView("calendar")}>Calendar</div>
+              </div>
+              <div onClick={()=>handleClick("calendar")}>
+              <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>setView("calendar")}>Calendar</div></div>
             </div>
             {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}
               onClick={() => {

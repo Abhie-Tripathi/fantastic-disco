@@ -8,52 +8,72 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-// import { useFilterState } from "@/hooks/useFilterState";
+import { useFilterState } from "@/hooks/useFilterState";
 
 const EventEntries = [
   { id: "free", label: "Free" },
   { id: "paid", label: "Paid" },
 ];
-
-export default function EventEntrySelector({selectedStatuses, setSelectedStatuses}) {
+interface EventEntryProps{
+  source: string;
+  selectedStatuses?: string[];
+  setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
+}
+export default function EventEntrySelector({
+  source,
+  selectedStatuses: parentSelectedFormats = [],
+  setSelectedStatuses: parentSetSelectedFormats,
+}: EventEntryProps) {
+  const { setFilter, getFilterValue, searchParams } = useFilterState();
   const [isOpen, setIsOpen] = React.useState(false);
-//   const { setFilter, getFilterValue, searchParams } = useFilterState();
-//   const [selectedStatuses, setSelectedStatuses] = React.useState<string[]>([]);
+  const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<string[]>(
+    []
+  );
 
-//   React.useEffect(() => {
-//     const currentFilter = getFilterValue("entryType");
-//     setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
-//   }, [searchParams, getFilterValue]);
+  const selectedStatuses =
+    source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
+  const setSelectedStatuses =
+    source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
 
-  const selectedStatus = selectedStatuses.length;
-
-  const handleStatusToggle = (statusId: string) => {
-    setSelectedStatuses((prev) =>
-      prev.includes(statusId)
-        ? prev.filter((id) => id !== statusId)
-        : [...prev, statusId]
-    );
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    setSelectedStatuses(
-      checked ? EventEntries.map((eventEntry) => eventEntry.id) : []
-    );
-  };
-
-  const isAllSelected = selectedStatuses.length === EventEntries.length;
-
-  const handleApply = () => {
-    // setFilter("entryType", selectedStatuses.join(","));
-    setIsOpen(false);
-  };
-
-  const onOpenChange = (open: boolean) => {
-    if (!open) {
-      handleApply();
-    }
-    setIsOpen(open);
-  };
+    React.useEffect(() => {
+      if(source!=="tracker" && setSelectedStatuses){
+      const currentFilter = getFilterValue("entryType");
+      setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
+      }
+    }, [searchParams, getFilterValue]);
+  
+    const selectedStatus = selectedStatuses.length;
+  
+    const handleStatusToggle = (statusId: string) => {
+      if(setSelectedStatuses)
+      setSelectedStatuses((prev) =>
+        prev.includes(statusId)
+          ? prev.filter((id) => id !== statusId)
+          : [...prev, statusId]
+      );
+    };
+  
+    // const handleSelectAll = (checked: boolean) => {
+    //   setSelectedStatuses(
+    //     checked ? EventEntries.map((eventEntry) => eventEntry.id) : []
+    //   );
+    // };
+  
+    // const isAllSelected = selectedStatuses.length === EventEntries.length;
+  
+    const handleApply = () => {
+      if(source!=="tracker")
+      setFilter("entryType", selectedStatuses.join(","));
+      setIsOpen(false);
+    };
+  
+    const onOpenChange = (open: boolean) => {
+      if (!open) {
+        handleApply();
+      }
+      setIsOpen(open);
+    };
+  
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>

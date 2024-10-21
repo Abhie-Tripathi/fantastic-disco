@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { ChevronDown } from "lucide-react"
-// import { useFilterState } from "@/hooks/useFilterState"
+import { useFilterState } from "@/hooks/useFilterState"
 
 const visitorRanges = [
   { id: "0-100", label: "0-100", min: 0, max: 100 },
@@ -22,32 +22,49 @@ const visitorRanges = [
   { id: "50k-200k", label: "50k - 200k", min: 50000, max: 200000 },
   { id: "200k+", label: "200k+", min: 200000, max: Infinity },
 ]
+interface VisitorsProps{
+  source: string,
+  selectedRanges?: string[],
+  setSelectedRanges?: React.Dispatch<React.SetStateAction<string[]>>,
+}
+export default function EstimatedVisitorsSelector({
+  source,
+  selectedRanges: parentSelectedRanges=[],
+  setSelectedRanges: parentSetSelectedRanges,
+}:VisitorsProps) {
+  const { setFilter, getFilterValue, searchParams } = useFilterState();
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [selectedRangesLocal, setSelectedRangesLocal] = React.useState<string[]>(
+    []
+  );
 
-export default function EstimatedVisitorsSelector({selectedRanges, setSelectedRanges}) {
-  const [isOpen, setIsOpen] = useState(false)
-//   const { setFilter, getFilterValue } = useFilterState()
-//   const [selectedRanges, setSelectedRanges] = useState<string[]>([])
+  const selectedRanges =
+    source === "tracker" ? parentSelectedRanges : selectedRangesLocal;
+  const setSelectedRanges =
+    source === "tracker" ? parentSetSelectedRanges : setSelectedRangesLocal;
 
-//   useEffect(() => {
-//     const estimatedVisitors = getFilterValue("estimatedVisitors")
-//     if (estimatedVisitors) {
-//       const ranges = estimatedVisitors.split(",")
-//       const selected = visitorRanges.filter((range) =>
-//         ranges.some((r) => {
-//           const [min, max] = r.split("-").map(Number)
-//           return range.min === min && (range.max === max || (max === undefined && range.max === Infinity))
-//         })
-//       )
-//       setSelectedRanges(selected.map((range) => range.id))
-//     } else {
-//       setSelectedRanges([])
-//     }
-//   }, [getFilterValue])
+  useEffect(() => {
+    if(source!=="tracker"){
+    const estimatedVisitors = getFilterValue("estimatedVisitors")
+    if (estimatedVisitors) {
+      const ranges = estimatedVisitors.split(",")
+      const selected = visitorRanges.filter((range) =>
+        ranges.some((r) => {
+          const [min, max] = r.split("-").map(Number)
+          return range.min === min && (range.max === max || (max === undefined && range.max === Infinity))
+        })
+      )
+      setSelectedRanges?.(selected.map((range) => range.id))
+    } else {
+      setSelectedRanges?.([])
+    }
+  }
+  }, [getFilterValue])
 
   const handleRangeToggle = (rangeId: string) => {
     console.log(rangeId);
     
-    setSelectedRanges((prev) =>
+    setSelectedRanges?.((prev) =>
       prev.includes(rangeId)
         ? prev.filter((id) => id !== rangeId)
         : [...prev, rangeId]
@@ -59,16 +76,18 @@ export default function EstimatedVisitorsSelector({selectedRanges, setSelectedRa
       const selectedRangesData = visitorRanges.filter((range) =>
         selectedRanges.includes(range.id)
       )
+      if(source!=="tracker"){
       const rangeStrings = selectedRangesData.map((range) =>
         range.max === Infinity ? `${range.min}` : `${range.min}-${range.max}`
       )
-    //   setFilter("estimatedVisitors", rangeStrings.join(","))
+      setFilter("estimatedVisitors", rangeStrings.join(","))
+    }
     } else {
-    //   setFilter("estimatedVisitors", "")
+      if(source!=="tracker")
+      setFilter("estimatedVisitors", "")
     }
     setIsOpen(false)
   }
-console.log(selectedRanges);
 
   return (
     <Popover open={isOpen} onOpenChange={(open) => {
@@ -85,7 +104,7 @@ console.log(selectedRanges);
           <span className="flex items-center gap-2">
             Estimated Visitors
             {selectedRanges.length > 0 && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground">
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {selectedRanges.length}
               </span>
             )}

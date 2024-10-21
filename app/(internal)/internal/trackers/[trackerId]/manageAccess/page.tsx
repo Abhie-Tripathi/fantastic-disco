@@ -14,9 +14,12 @@ import { myFetch } from '@/utils/myFetch';
 import { usePathname } from 'next/navigation';
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from '@/utils/GAEvent';
+import { useTrackerServices } from '@/services/trackerServices';
+import SideNav from '@/app/components/trackers/sideNav';
 
 const Page = () => {
     const router = useRouter();
+    const {getShareAccess, error} = useTrackerServices();
     const [currentUrl, setCurrentUrl] = useState('');
     const [accessdata, setAccessData] = useState([]);
     const [data, setData] = useState([]);
@@ -78,22 +81,28 @@ const Page = () => {
         setFilter("");
     };
     const fetchAccess=async()=>{
-        const url = `${baseUrl}/tracker/access?accessEntity=TRACKER&accessEntityId=${path[path.length-2]}`;
-        try {
-            const { data, error } = await myFetch(url, {
-                method: 'GET',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (error) {
-                console.error('Error fetching data:', error);
-            } else {
-                console.log('Data fetched:', data);
-                setUserAccessData(data);
-            }
-        } catch (err) {
-            console.error('Fetch failed:', err);
+        // const url = `${baseUrl}/tracker/access?accessEntity=TRACKER&accessEntityId=${path[path.length-2]}`;
+        // try {
+        //     const { data, error } = await myFetch(url, {
+        //         method: 'GET',
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //     });
+        //     if (error) {
+        //         console.error('Error fetching data:', error);
+        //     } else {
+        //         console.log('Data fetched:', data);
+        //         setUserAccessData(data);
+        //     }
+        // } catch (err) {
+        //     console.error('Fetch failed:', err);
+        // }
+        const result = await getShareAccess(`${path[path.length-2]}`, "tracker");
+        if(error){
+            console.error('Error fetching data:', error);
+        }else{
+            setUserAccessData(result);
         }
       }
     useEffect(() => {
@@ -148,6 +157,7 @@ const Page = () => {
     return (
         <div className="flex flex-col items-center gap-6">
             <div className="flex fixed w-[calc(100vw-134px)] mt-[54px] items-center justify-between bg-[var(--heading-background-color)] p-3" style={{zIndex:"5"}}>
+            <SideNav/>
                 <div className='flex items-center'>
                     <div></div>
                     <div className="flex flex-col">

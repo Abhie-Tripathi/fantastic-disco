@@ -16,22 +16,55 @@ const globalAndTourings = [
   { id: "BRANDED", label: "Branded" },
   { id: "SERIES", label: "Series" },
 ];
-
-export default function GlobalAndTouringSelector() {
+interface BrandedProps{
+  source:string;
+  selectedBrandedEvent?:boolean;
+  setSelectedBrandedEvent?:React.Dispatch<React.SetStateAction<boolean>>;
+  selectedEventSeries?:boolean;
+  setSelectedEventSeries?:React.Dispatch<React.SetStateAction<boolean>>;
+}
+export default function GlobalAndTouringSelector({source, selectedBrandedEvent, setSelectedBrandedEvent, selectedEventSeries, setSelectedEventSeries}:BrandedProps) {
+  
+  
   const [isOpen, setIsOpen] = useState(false);
   const { setMultipleFilters, setFilter, getFilterValue } = useFilterState();
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  useEffect(() => {
+    const initialStatuses: string[] = [];
+  
+    if (selectedBrandedEvent) {
+      initialStatuses.push("BRANDED");
+    }
+    if (selectedEventSeries) {
+      initialStatuses.push("SERIES");
+    }
+    
+    setSelectedStatuses(initialStatuses);
+  }, [selectedBrandedEvent, selectedEventSeries]);
   const [showInFilter, setShowInFilter] = useState(false);
 
   const handleStatusToggle = (statusId: string) => {
-    setSelectedStatuses((prev) =>
-      prev.includes(statusId)
-        ? prev.filter((id) => id !== statusId)
-        : [...prev, statusId]
-    );
+    const newStatuses = selectedStatuses.includes(statusId)
+  ? selectedStatuses.filter((id) => id !== statusId)
+  : [...selectedStatuses, statusId];
+    setSelectedStatuses(newStatuses);
+    console.log(newStatuses);
+    
+    if(statusId==="BRANDED") {
+      if(newStatuses.includes("BRANDED")){
+      setSelectedBrandedEvent?.(true);
+      }
+      else setSelectedBrandedEvent?.(false);
+    }
+    if(statusId==="SERIES") {
+      if(newStatuses.includes("SERIES"))
+        setSelectedEventSeries?.(true);
+      else  setSelectedEventSeries?.(false);
+      }
   };
 
   const handleApply = () => {
+    if(source!=="tracker"){
     setMultipleFilters({
       onlyBranded: selectedStatuses.includes("BRANDED") ? "true" : "",
       onlySeries: selectedStatuses.includes("SERIES") ? "true" : "",
@@ -41,6 +74,7 @@ export default function GlobalAndTouringSelector() {
     setShowInFilter(
       showFilter.includes("branded") && showFilter.includes("series")
     );
+  }
   };
 
   const handleShowToggle = (checked: boolean) => {
@@ -71,17 +105,17 @@ export default function GlobalAndTouringSelector() {
           <span className="flex items-center gap-2">
             Brand
             {selectedStatuses.length > 0 && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground">
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {selectedStatuses.length}
               </span>
             )}
           </span>
-          <Switch
+          {/* <Switch
             checked={showInFilter}
             onCheckedChange={handleShowToggle}
             aria-label="Show Global & Touring in filter"
             onClick={(e) => e.stopPropagation()}
-          />
+          /> */}
         </Button>
       </PopoverTrigger>
       <PopoverContent

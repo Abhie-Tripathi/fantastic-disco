@@ -8,30 +8,30 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
-// import { useFilterState } from "@/hooks/useFilterState";
+import { useFilterState } from "@/hooks/useFilterState";
 
 const eventStatuses = [
   { id: "ACTIVE", label: "Active" },
   { id: "CANCELLED", label: "Cancelled" },
   { id: "POSTPONED", label: "Postponed" },
-//   { id: "PREDICTED", label: "Predicted" },
+  { id: "PREDICTED", label: "Predicted" },
 ];
 
-export default function StatusSelector({ setSelectedStatuses, selectedStatuses }) {
+export default function AudienceQualitySelector() {
   const [isOpen, setIsOpen] = useState(false);
-//   const { setFilter, getFilterValue, searchParams } = useFilterState();
-//   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const { setFilter, getFilterValue, searchParams } = useFilterState();
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
-//   useEffect(() => {
-//     const currentFilter = getFilterValue("status");
-//     setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
-//   }, [searchParams, getFilterValue]);
+  useEffect(() => {
+    setSelectedStatuses(getFilterValue("status").split(","));
+  }, [searchParams]);
 
-  const selectedStatus = selectedStatuses.length;
+  const selectedStatus =
+    getFilterValue("status") == ""
+      ? false
+      : getFilterValue("status").split(",").length;
 
   const handleStatusToggle = (statusId: string) => {
-    console.log(statusId);
-    
     setSelectedStatuses((prev) =>
       prev.includes(statusId)
         ? prev.filter((id) => id !== statusId)
@@ -48,7 +48,8 @@ export default function StatusSelector({ setSelectedStatuses, selectedStatuses }
   const isAllSelected = selectedStatuses.length === eventStatuses.length;
 
   const handleApply = () => {
-    // setFilter("status", selectedStatuses.join(","));
+    setFilter("status", selectedStatuses.join(",").toUpperCase());
+    console.log(selectedStatuses.join(",").toUpperCase());
     setIsOpen(false);
   };
 
@@ -59,11 +60,9 @@ export default function StatusSelector({ setSelectedStatuses, selectedStatuses }
     setIsOpen(open);
   };
 
-console.log(selectedStatuses);
-
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled>
         <Button
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
@@ -74,12 +73,12 @@ console.log(selectedStatuses);
           aria-haspopup="true"
         >
           <div className="flex items-center">
-            <span className="mr-2">Event Status</span>
-            {selectedStatus > 0 && (
+            <span className="mr-2">Audience Quality Score</span>
+            {/* {selectedStatus && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {selectedStatus}
               </span>
-            )}
+            )} */}
           </div>
           <ChevronDown
             className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
@@ -92,8 +91,8 @@ console.log(selectedStatuses);
         className="w-[var(--radix-popover-trigger-width)] p-0"
         align="start"
       >
-        {/* <div className="flex justify-between items-center p-4 py-2 border-b">
-          <span className="font-medium">Location</span>
+        <div className="flex justify-between items-center p-4 py-2 border-b">
+          <span className="font-medium">Audience Quality Score</span>
           <Button
             variant="link"
             className="text-primary pr-0"
@@ -101,10 +100,10 @@ console.log(selectedStatuses);
           >
             Apply
           </Button>
-        </div> */}
+        </div>
 
         <div className="p-2 space-y-2">
-          {/* <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
             <Checkbox
               id="select-all"
               className="rounded-none"
@@ -117,7 +116,7 @@ console.log(selectedStatuses);
             >
               Select All
             </label>
-          </div> */}
+          </div>
           {eventStatuses.map((status) => (
             <div key={status.id} className="flex items-center space-x-2">
               <Checkbox

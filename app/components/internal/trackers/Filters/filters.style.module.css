@@ -64,7 +64,7 @@
 .inputdropdowns_container_AI {
   display: grid;
   /* grid-template-columns: repeat(4, minmax(0px, 285px)); */
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: var(--spacing-md) var(--spacing-lg);
 }
 

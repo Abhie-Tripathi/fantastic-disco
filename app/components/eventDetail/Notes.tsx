@@ -21,6 +21,7 @@ import { transcode } from "buffer";
 import { createNoteFB, onNoteAdded } from "@/utils/notesAction";
 import { Trash } from "geist-icons";
 import UserProfile from "../userProfile/UserProfile";
+import { useNotesServices } from "@/services/notesServices";
 
 interface UserDetail {
   firstname: string;
@@ -45,6 +46,7 @@ interface Reply {
 export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Props) => {
   const { theme } = useTheme();
   const urlPath = usePathname().split('/')[2]
+  const {getNotesFromTracker, saveNotes, deleteNotes, likeNotes, getUsers, error}=useNotesServices();
   const path=usePathname().split('/');
   const { user, signOut } = useAuthContext();
   // const searchParams = useSearchParams();
@@ -97,16 +99,30 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   };
   async function fetchData() {
     if(path[path.length-1]==="notesDiscussion"){
-      const url =
-      `${baseUrl}/comment?stage=INTERNAL&entityType=TRACKER&entityId=${path[path.length-2]}&offset=${page}&limit=10`;
-      const { data, error } = await myFetch(url);
-      if (data) {
-        // setNotes([]);
-        console.log(data);
-        // setNotes(data.comments.reverse());
-        if (data.comments?.length > 0){
-          setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
-        }
+      // const url =
+      // `${baseUrl}/comment?stage=INTERNAL&entityType=TRACKER&entityId=${path[path.length-2]}&offset=${page}&limit=10`;
+      // const { data, error } = await myFetch(url);
+      // if (data) {
+      //   // setNotes([]);
+      //   console.log(data);
+      //   // setNotes(data.comments.reverse());
+      //   if (data.comments?.length > 0){
+      //     setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
+      //   }
+      // }
+      try{
+        const data = await getNotesFromTracker(path[path.length-2], `offset=${page}&limit=10`);
+        if (data && data.comments) {
+            // setNotes([]);
+            console.log(data);
+            // setNotes(data.comments.reverse());
+            if (data.comments && data.comments?.length > 0){
+              setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
+            }
+          }
+      }catch(error){
+        console.log(error);
+        
       }
     }else{
     const url =
@@ -317,24 +333,19 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     Object.keys(dataToSend).forEach(key => {
       formData.append(key, dataToSend[key as keyof typeof dataToSend])
     });
-    const { data, error } = await myFetch(url, {
-      method: "POST",
-      body: formData,
-      // headers: {
-      //   "Content-Type": "multipart/form-data"
-      // }
-    });
-    if (data) {
-      const newData = transformData(data.data);
-
-      setNotes(prevNotes => [...prevNotes, data.data]);
-      createRealtimeAction('add', data.data.id);
+    try{
+        const data = await saveNotes(formData, replyId);
+        if (data) {
+            const newData = transformData(data.data);
+      
+            setNotes(prevNotes => [...prevNotes, data.data]);
+            createRealtimeAction('add', data.data.id);
+            setScrolling(false);
+          }
+    }catch(error){
+        console.log(error);
+        
     }
-    if (!error) {
-      console.log(data);
-      setScrolling(false);
-    }
-    else console.log(error);
     setType("MESSAGE")
   }
   const transformData = (data: any) => {
@@ -487,12 +498,21 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     setNotes(updatedComments);
   };
   const likedFun = async (id: string, isLiked: boolean) => {
-    const url = `${baseUrl}/comment/${id}/interest`;
-    const { data, error } = await myFetch(url, {
-      method: "POST"
-    })
-    if(data) {
-      createRealtimeAction(isLiked? 'unlike' : 'like', id);
+    // const url = `${baseUrl}/comment/${id}/interest`;
+    // const { data, error } = await myFetch(url, {
+    //   method: "POST"
+    // })
+    // if(data) {
+    //   createRealtimeAction(isLiked? 'unlike' : 'like', id);
+    // }
+    try{
+      const data = await likeNotes(id, isLiked);
+      if(data){
+        createRealtimeAction(isLiked? 'unlike' : 'like', id);
+      }
+    }catch(error){
+        console.log(error);
+        
     }
   }
   // 22b0588a-7207-4e25-a0e7-1134c05fdf52
@@ -506,12 +526,20 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   };
 
   const deleteComment = async (id: string) => {
-    const url = `${baseUrl}/comment/${id}`;
-    const { data, error } = await myFetch(url, {
-      method: "DELETE"
-    })
-    if(data) {
-      createRealtimeAction('delete', id);
+    // const url = `${baseUrl}/comment/${id}`;
+    // const { data, error } = await myFetch(url, {
+    //   method: "DELETE"
+    // })
+    // if(data) {
+    //   createRealtimeAction('delete', id);
+    // }
+    try{
+        const data = await deleteNotes(id);
+        if(data) {
+            createRealtimeAction('delete', id);
+          }
+    }catch(error){
+        console.log(error);
     }
   }
   const [class1, setClass1] = useState(false);
@@ -584,8 +612,10 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     console.log(selectedPdfs);
   }, 5000);
   useEffect(() => {
-    const url = `${baseUrl}/auth/users?limit=100`
-    getAllUser(url);
+    // const url = `${baseUrl}/auth/users?limit=100`
+    console.log(`${baseUrl}/auth/users?limit=100`);
+    
+    getAllUser();
   }, [])
 
   const createRealtimeAction = (action: string, commentId: string) => {
@@ -632,19 +662,35 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   }
 
   const [userArr, setUserArr] = useState<string[]>([]);
-  const  [users,setUsers]=useState("");
-  const getAllUser = async (url: string) => {
-    const { data, error } = await myFetch(url);
+  const  [users,setUsers]=useState<any>("");
+  const getAllUser = async () => {
+    // const { data, error } = await myFetch(url);
 
-    if (data && data?.users?.length>0) {
-      console.log(data);
+    // if (data && data?.users?.length>0) {
+    //   console.log(data);
 
-      // Collect new items to add to the array
-      const newItems = data?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
-      setUsers(data?.users);
+    //   // Collect new items to add to the array
+    //   const newItems = data?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
+    //   setUsers(data?.users);
 
-      // Use functional form to update state
-      setUserArr(prevArr => [...prevArr, ...newItems]);
+    //   // Use functional form to update state
+    //   setUserArr(prevArr => [...prevArr, ...newItems]);
+    // }
+    try{
+        const data= await getUsers(`limit=100`);
+        if (data && data?.users?.length>0) {
+          console.log(data);
+    
+          // Collect new items to add to the array
+          const newItems = data?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
+          setUsers(data?.users);
+    
+          // Use functional form to update state
+          setUserArr(prevArr => [...prevArr, ...newItems]);
+        }
+    }catch(error){
+        console.log(error);
+        
     }
   };
   console.log(notes);
@@ -1084,7 +1130,7 @@ const Comment = ({
             {/* {comment.CommentFiles && comment?.CommentFiles?.map((item: any, index) => (
               <div key={index}>{item.Attachment.fileName}</div>
             ))} */}
-            {comment.CommentFiles.length>0 &&
+            {comment.CommentFiles && comment?.CommentFiles.length>0 &&
             <div
               className={styles.images}
               style={{ padding: comment?.parent ? "10px 20px" : "none" }}

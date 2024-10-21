@@ -1,67 +1,65 @@
-import * as React from "react";
-import { ChevronDown } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+"use client";
+import React, { useState, useEffect } from "react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-// import { useFilterState } from "@/app/hooks/useFilterState";
+import { ChevronDown } from "lucide-react";
+import { useFilterState } from "@/hooks/useFilterState";
 
-const eventFormats = [
-  { id: "online", label: "Online/Virtual" },
-  { id: "offline", label: "Offline" },
-  { id: "hybrid", label: "Hybrid" },
+const eventStatuses = [
+  { id: "ACTIVE", label: "Active" },
+  { id: "CANCELLED", label: "Cancelled" },
+  { id: "POSTPONED", label: "Postponed" },
+  { id: "PREDICTED", label: "Predicted" },
 ];
 
-export default function EventFormatSelector({selectedStatuses, setSelectedStatuses}) {
-  const [isOpen, setIsOpen] = React.useState(false);
-//   const { setFilter, getFilterValue, searchParams } = useFilterState();
-//   const [selectedStatuses, setSelectedStatuses] = React.useState<string[]>([]);
+export default function ExhibitorQualitySelector() {
+  const [isOpen, setIsOpen] = useState(false);
+  const { setFilter, getFilterValue, searchParams } = useFilterState();
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
-//   React.useEffect(() => {
-//     const currentFilter = getFilterValue("eventFormat");
-//     setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
-//   }, [searchParams, getFilterValue]);
+  useEffect(() => {
+    setSelectedStatuses(getFilterValue("status").split(","));
+  }, [searchParams]);
 
-  const selectedStatus = selectedStatuses.length;
+  const selectedStatus = 0
 
   const handleStatusToggle = (statusId: string) => {
-    console.log(statusId);
     setSelectedStatuses((prev) =>
       prev.includes(statusId)
         ? prev.filter((id) => id !== statusId)
         : [...prev, statusId]
     );
   };
-  console.log(selectedStatuses);
-  
+
   const handleSelectAll = (checked: boolean) => {
     setSelectedStatuses(
-      checked ? eventFormats.map((eventFormat) => eventFormat.id) : []
+      checked ? eventStatuses.map((status) => status.id) : []
     );
   };
 
-  const isAllSelected = selectedStatuses.length === eventFormats.length;
+  const isAllSelected = selectedStatuses.length === eventStatuses.length;
 
-//   const handleApply = () => {
-//     setFilter("eventFormat", selectedStatuses.join(","));
-//     setIsOpen(false);
-//   };
+  const handleApply = () => {
+    setFilter("status", selectedStatuses.join(",").toUpperCase());
+    console.log(selectedStatuses.join(",").toUpperCase());
+    setIsOpen(false);
+  };
 
   const onOpenChange = (open: boolean) => {
     if (!open) {
-    //   handleApply();
+      handleApply();
     }
     setIsOpen(open);
   };
- 
-  
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
+      <PopoverTrigger asChild disabled>
         <Button
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
@@ -72,12 +70,12 @@ export default function EventFormatSelector({selectedStatuses, setSelectedStatus
           aria-haspopup="true"
         >
           <div className="flex items-center">
-            <span className="mr-2">Event Format</span>
-            {selectedStatus > 0 && (
+            <span className="mr-2">Exhibitor Quality Score</span>
+            {/* {selectedStatus && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {selectedStatus}
               </span>
-            )}
+            )} */}
           </div>
           <ChevronDown
             className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
@@ -90,8 +88,8 @@ export default function EventFormatSelector({selectedStatuses, setSelectedStatus
         className="w-[var(--radix-popover-trigger-width)] p-0"
         align="start"
       >
-        {/* <div className="flex justify-between items-center p-4 py-2 border-b">
-          <span className="font-medium">Event Format</span>
+        <div className="flex justify-between items-center p-4 py-2 border-b">
+          <span className="font-medium">Exhibitor Quality Score</span>
           <Button
             variant="link"
             className="text-primary pr-0"
@@ -99,10 +97,10 @@ export default function EventFormatSelector({selectedStatuses, setSelectedStatus
           >
             Apply
           </Button>
-        </div> */}
+        </div>
 
         <div className="p-2 space-y-2">
-          {/* <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
             <Checkbox
               id="select-all"
               className="rounded-none"
@@ -115,20 +113,20 @@ export default function EventFormatSelector({selectedStatuses, setSelectedStatus
             >
               Select All
             </label>
-          </div> */}
-          {eventFormats.map((eventFormat) => (
-            <div key={eventFormat.id} className="flex items-center space-x-2">
+          </div>
+          {eventStatuses.map((status) => (
+            <div key={status.id} className="flex items-center space-x-2">
               <Checkbox
-                id={eventFormat.id}
+                id={status.id}
                 className="rounded-none"
-                checked={selectedStatuses.includes(eventFormat.id)}
-                onCheckedChange={() => handleStatusToggle(eventFormat.id)}
+                checked={selectedStatuses.includes(status.id)}
+                onCheckedChange={() => handleStatusToggle(status.id)}
               />
               <label
-                htmlFor={eventFormat.id}
+                htmlFor={status.id}
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                {eventFormat.label}
+                {status.label}
               </label>
             </div>
           ))}

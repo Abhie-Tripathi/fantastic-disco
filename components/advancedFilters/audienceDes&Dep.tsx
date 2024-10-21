@@ -1,9 +1,9 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Check, ChevronDown, X } from "lucide-react";
-import { cn } from "@/app/lib/utils";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -22,32 +22,40 @@ import { Badge } from "@/components/ui/badge";
 import { useMiscService } from "@/services/miscService";
 import { useQuery } from "@tanstack/react-query";
 import { useFilterState } from "@/hooks/useFilterState";
-// import { Designations } from "@/types";
+import { Designations} from "@/types/misc/designations";
 
-const useDesignationsAutocomplete = (input: string) => {
-  const miscService = useMiscService();
+// const useDesignationsAutocomplete = (input: string) => {
+//   const miscService = useMiscService();
 
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["designations", input],
-    queryFn: () => miscService.getDesginationAutocomplete(input),
-  });
+//   const { data, error, isLoading } = useQuery({
+//     queryKey: ["designations", input],
+//     queryFn: () => miscService.getDesginationAutocomplete(input),
+//   });
 
-  return {
-    designations: data?.designations ?? [],
-    isLoading,
-    isError: !!error,
-  };
-};
-
-export default function AudienceDesAndDepSelector() {
+//   return {
+//     designations: data?.designations ?? [],
+//     isLoading,
+//     isError: !!error,
+//   };
+// };
+interface DesAndDepProps{
+  source: string,
+  designationData?:string[],
+  setDesignationData?:React.Dispatch<React.SetStateAction<string[]>>,
+}
+export default function AudienceDesAndDepSelector({source, designationData, setDesignationData}: DesAndDepProps) {
+  const {getDesginationAutocomplete}=useMiscService();
+  console.log(designationData);
+  
   const [open, setOpen] = useState(false);
-  const [selectedLabels, setSelectedLabels] = useState<>([]);
+  const [designations,setDesignations]=useState<Designations[]>([]);
+  const [selectedLabels, setSelectedLabels] = useState<Designations[]>([]);
   const [search, setSearch] = useState("");
   const { setFilter } = useFilterState();
-  const { designations } = useDesignationsAutocomplete(search);
-
-  const handleSelect = (label) => {
-    setSelectedLabels((prev) => {
+  // const selectedLabels = source==="tracker" ? designationData : localSelectedLabels
+  // const setSelectedLabels = source==="tracker" ? setDesignationData: setLocalSelectedLabels
+  const handleSelect = (label: Designations) => {
+    setSelectedLabels?.((prev) => {
       const isSelected = prev.some((l) => l.id === label.id);
       if (isSelected) {
         return prev.filter((l) => l.id !== label.id);
@@ -58,14 +66,16 @@ export default function AudienceDesAndDepSelector() {
   };
 
   const handleApply = () => {
+    if(source!=="tracker")
     setFilter(
       "designations",
-      selectedLabels.map((l) => l.slug).join(",")
+      selectedLabels?.map((l) => l.slug).join(",")
     );
+    setDesignationData?.(selectedLabels?.map((l) => l.id));
     setOpen(false);
   };
 
-  const handleRemoveLabel = (labelId: number) => {
+  const handleRemoveLabel = (labelId: string) => {
     setSelectedLabels((prev) => prev.filter((l) => l.id !== labelId));
   };
 
@@ -75,7 +85,22 @@ export default function AudienceDesAndDepSelector() {
     }
     setOpen(open);
   };
-
+  useEffect(()=>{
+      fetchData();
+  },[search])
+  const fetchData = async () => {
+    const result = await getDesginationAutocomplete(search);
+    const filteredData: Designations[] = Array.isArray(result)
+      ? result.filter((item) =>
+          designationData?.some((designationId) => designationId === item.id)
+        )
+      : [];
+    setSelectedLabels(filteredData);
+    console.log(filteredData);
+    if(result)
+    setDesignations(result);
+  };
+  
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -122,7 +147,7 @@ export default function AudienceDesAndDepSelector() {
           <CommandEmpty>No label found.</CommandEmpty>
           <CommandGroup>
             <CommandList>
-              {designations?.map((label: Designations) => (
+              {designations && designations?.map((label: Designations) => (
                 <CommandItem
                   key={label.id}
                   onSelect={() => handleSelect(label)}

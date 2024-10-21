@@ -5,7 +5,9 @@ import Image from "next/image";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { useTrackerServices } from "@/services/trackerServices";
+import { Tracker } from "@/types/trackers";
 import Loading from "@/app/components/UI/Loading";
+import { AllTrackerTypes } from "@/types/trackers";
 function AllTrackers({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -56,11 +58,17 @@ function PremiumTracker({ fillColor }: { fillColor: string }) {
     </svg>
   );
 }
-
-const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData}:{setDataPresent:any, dataPresent:any, isData:boolean, setSingleTrackerData:any, singletTrackerData:any}) => {
+interface MyTrackersProps {
+  dataPresent: boolean;
+  setDataPresent: React.Dispatch<React.SetStateAction<boolean>>;
+  singleTrackerData: Tracker | undefined;
+  setSingleTrackerData: React.Dispatch<React.SetStateAction<Tracker | undefined>>;
+  isData: boolean;
+}
+const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData}:MyTrackersProps) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
   const [isInetialRender,setIsInetialRender]=useState(true);
-  const [allTracker, setAllTracker] = useState<any[]>([]);
+  const [allTracker, setAllTracker] = useState<AllTrackerTypes[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
   const [page, setPage] = useState(0);
@@ -133,6 +141,8 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     setLoadOne(true);
     const result= await getTrackers(`offset=${page * trackerPerPage}&limit=${trackerPerPage}`);
     // setAllTracker(result.trackerData);
+    console.log(result);
+    
     if(result){
     setAllTracker((prevAllTracker:any[])=> [
                 ...prevAllTracker,...result?.trackerData

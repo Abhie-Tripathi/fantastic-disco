@@ -10,27 +10,43 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ChevronDown } from "lucide-react";
-// import { useFilterState } from "@/hooks/useFilterState";
+import { useFilterState } from "@/hooks/useFilterState";
 
 const frequencies = [
   { id: "annual", label: "Annual" },
   { id: "bi-annual", label: "Bi-Annual" },
   { id: "quarterly", label: "Quarterly" },
 ];
+interface FrequencySelectorProps {
+  source: string;
+  selectedFrequencies?: string[];
+  setSelectedFrequencies?: React.Dispatch<React.SetStateAction<string[]>>;
+}
 
-export default function FrequencySelector({selectedFrequencies, setSelectedFrequencies}) {
-  const [isOpen, setIsOpen] = useState(false);
-//   const { setFilter, getFilterValue, searchParams } = useFilterState();
-  // const [selectedFrequencies, setSelectedFrequencies] = useState<string[]>([]);
+export default function FrequencySelector({
+  source,
+  selectedFrequencies: parentSelectedFrequencies = [],
+  setSelectedFrequencies: parentSetSelectedFrequencies,
+}: FrequencySelectorProps) {
+  const { setFilter, getFilterValue, searchParams } = useFilterState();
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [selectedFrequenciesLocal, setSelectedFrequenciesLocal] = React.useState<string[]>([]);
 
-//   useEffect(() => {
-//     setSelectedFrequencies(
-//       getFilterValue("frequencies").split(",").filter(Boolean)
-//     );
-//   }, [searchParams]);
+  const selectedFrequencies =
+    source === "tracker" ? parentSelectedFrequencies : selectedFrequenciesLocal;
+  const setSelectedFrequencies =
+    source === "tracker"
+      ? parentSetSelectedFrequencies
+      : setSelectedFrequenciesLocal;
+  useEffect(() => {
+    if(source!=="tracker")
+    setSelectedFrequencies?.(
+      getFilterValue("frequencies").split(",").filter(Boolean)
+    );
+  }, [searchParams]);
 
   const handleFrequencyToggle = (frequencyId: string) => {
-    setSelectedFrequencies((prev) =>
+    setSelectedFrequencies?.((prev) =>
       prev.includes(frequencyId)
         ? prev.filter((id) => id !== frequencyId)
         : [...prev, frequencyId]
@@ -38,7 +54,8 @@ export default function FrequencySelector({selectedFrequencies, setSelectedFrequ
   };
 
   const handleApply = () => {
-    // setFilter("frequencies", selectedFrequencies.join(","));
+    if(source!=="tracker")
+    setFilter("frequencies", selectedFrequencies.join(","));
     setIsOpen(false);
   };
 
@@ -60,7 +77,7 @@ export default function FrequencySelector({selectedFrequencies, setSelectedFrequ
           <span className="flex items-center gap-2">
             Frequency
             {selectedFrequencies.length > 0 && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground">
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {selectedFrequencies.length}
               </span>
             )}

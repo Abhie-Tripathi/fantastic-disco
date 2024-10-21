@@ -1,6 +1,8 @@
 import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
-// import { Country, Tags, Weather } from "@/types";
+import { Country } from "@/types/events/event";
+import { Designations } from "@/types/misc/designations";
+import { UndefinedInitialDataInfiniteOptions } from "@tanstack/react-query";
 // import { Designations } from "@/types/misc/designations";
 // import externalAxios from "@/lib/externalAxios";
 
@@ -25,7 +27,7 @@ export const useMiscService = () => {
 //   };
 
   const getCountries = () => {
-    return api.request<{ formattedLocations: any }>(
+    return api.request<Country[]>(
       `${endpoints.locations}`,
       {
         method: "GET",
@@ -34,7 +36,7 @@ export const useMiscService = () => {
     );
   };
   const getDesginationAutocomplete = (input: string) => {
-    return api.request<{ designations: any }>(
+    return api.request<Designations[] | undefined>(
       `${endpoints.designations}`,
       {
         method: "GET",

@@ -14,27 +14,41 @@ import { Check, ChevronDown, X } from "lucide-react";
 import * as Flags from "country-flag-icons/react/3x2";
 import Image from "next/image";
 import { useMiscService } from "@/services/miscService";
-// import { Country } from "@/types/events/events";
+import { Country } from "@/types/events/event";
 import { useFilterState } from "@/hooks/useFilterState";
-
-export default function Component() {
+interface AudienceSpreadProps{
+  source: string;
+  selectedCountries?: string[];
+  setSelectedCountries?: React.Dispatch<React.SetStateAction<string[]>>;
+}
+export default function Component({
+  source,
+  selectedCountries: selectedParentCountries = [],
+  setSelectedCountries: setSelectedParentCountries,
+}: AudienceSpreadProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [selectedLocalCountries, setSelectedLocalCountries] = useState<string[]>([]);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [countries, setCountries] = useState<>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
   const { setMultipleFilters } = useFilterState();
   const { getCountries, isLoading, error } = useMiscService();
-
+  const selectedCountries = source==="tracker"? selectedParentCountries: selectedLocalCountries;
+  const setSelectedCountries = source==="tracker"?
+  setSelectedParentCountries: setSelectedLocalCountries;
   useEffect(() => {
     const fetchData = async () => {
       try {
         const countriesResponse = await getCountries();
-        setCountries(countriesResponse || []);
-        console.log(countriesResponse)
-        // const regionsResponse = await getRegions();
-        // setRegions(regionsResponse?.regions || []);
+        // if (countriesResponse && Array.isArray(countriesResponse.formattedLocations)) {
+          console.log(countriesResponse);
+          
+          setCountries(countriesResponse || []);
+        // } else {
+        //   console.error("Expected an array of countries.");
+        //   setCountries([]);
+        // }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -43,7 +57,7 @@ export default function Component() {
     fetchData();
   }, []);
 
-  const filteredCountries = countries.filter((country) =>
+  const filteredCountries = countries?.filter((country) =>
     country.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -52,7 +66,7 @@ export default function Component() {
   );
 
   const toggleCountry = (code: string) => {
-    setSelectedCountries((prev) =>
+    setSelectedCountries?.((prev) =>
       prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]
     );
   };
@@ -66,15 +80,17 @@ export default function Component() {
   };
 
   const removeFilter = (code: string) => {
-    setSelectedCountries((prev) => prev.filter((c) => c !== code));
+    setSelectedCountries?.((prev) => prev.filter((c) => c !== code));
     setSelectedRegions((prev) => prev.filter((r) => r !== code));
   };
 
   const handleApply = () => {
+    if(source!=="tracker"){
     setMultipleFilters({
       audienceSpread: selectedCountries.join(","),
       audienceSpreadRegions: selectedRegions.join(","),
     });
+  }
   };
 
   const onOpenChange = (open: boolean) => {
@@ -83,7 +99,6 @@ export default function Component() {
     }
     setIsOpen(open);
   };
-console.log(countries);
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -115,16 +130,15 @@ console.log(countries);
       <PopoverContent className="w-[300px] p-0">
         <div className="p-4 flex flex-wrap gap-2">
           {selectedCountries.map((code) => {
-            const country = countries.find((c) => c.id === code);
+            const country = countries?.find((c) => c.id === code);
             if (!country) return null;
-            const Flag = Flags[country.iso as keyof typeof Flags];
+            const Flag = Flags[country.countryCode as keyof typeof Flags];
             return (
               <div
                 key={code}
                 className="flex items-center bg-[#E6E6F9] text-primary border border-primary text-sm rounded-full px-3 py-1"
               >
                 <Flag className="w-4 h-4 mr-2" />
-                {country.name}
                 <Button
                   variant="ghost"
                   size="sm"
@@ -158,9 +172,9 @@ console.log(countries);
             <TabsTrigger value="country" className="w-1/2">
               Country
             </TabsTrigger>
-            <TabsTrigger value="region" className="w-1/2">
+            {/* <TabsTrigger value="region" className="w-1/2">
               Region
-            </TabsTrigger>
+            </TabsTrigger> */}
           </TabsList>
           <TabsContent value="country" className="p-4 pt-2">
             <div className="space-y-4">
@@ -177,11 +191,11 @@ console.log(countries);
                   ) : error ? (
                     <div>Error loading countries</div>
                   ) : (
-                    filteredCountries.map((country) => {
-                      const Flag = Flags[country.iso as keyof typeof Flags];
+                    filteredCountries?.map((country) => {
+                      const Flag = Flags[country.countryCode as keyof typeof Flags];
                       return (
                         <div
-                          key={country.id}
+                          key={country.countryCode}
                           className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 p-1 rounded"
                           onClick={() => toggleCountry(country.id)}
                         >

@@ -1,3 +1,4 @@
+import { EventTableType } from '@/types/ListViewTable';
 import { ArrowUpRight } from 'geist-icons';
 import Link from 'next/link';
 import React,{useState, useEffect} from 'react'
@@ -7,10 +8,10 @@ interface SavedEvents{
     
 }
 interface SavedEventWidgetProps{
-    savedEvents:SavedEvents
+  savedEvents: { result: EventTableType[]; count: number } | undefined;
     redirectUrl:string
 }
-const SavedEventWidget: React.FC<SavedEventWidgetProps>= ({savedEvents, redirectUrl})=>{
+const SavedEventWidget= ({savedEvents, redirectUrl}:SavedEventWidgetProps)=>{
     console.log(savedEvents?.count);
     console.log(redirectUrl);
     
@@ -19,11 +20,11 @@ const SavedEventWidget: React.FC<SavedEventWidgetProps>= ({savedEvents, redirect
             
                 <>
                <div className='flex items-center gap-2' style={{color:"var(--primary-color)"}}>
-                {savedEvents && <div className="flex items-center justify-center w-7 h-5 rounded-full font-medium text-sm" style={{backgroundColor:"var(--primary-light-color)"}}>{savedEvents?.count}</div>}
+                {savedEvents && savedEvents.count>0 && <div className="flex items-center justify-center w-7 h-5 rounded-full font-medium text-sm" style={{backgroundColor:"var(--primary-light-color)"}}>{savedEvents?.count}</div>}
                 <div className='font-semibold'>Saved Events</div>
                </div>
-               {savedEvents ? (
-  savedEvents?.result.map((item) => (
+               {savedEvents && savedEvents.count>0  ? (
+  savedEvents?.result?.map((item: any) => (
     <div className='flex p-2 flex-col border rounded gap-2' style={{border: "1px solid var(--border-color)"}} key={item.id}>
       <div className='flex justify-between items-center w-[100%]'>
         <div className='text-[12px] font-semibold'>{item?.name?.length > 61 ? `${item.name.substring(0, 61)}...` : item?.name}</div>

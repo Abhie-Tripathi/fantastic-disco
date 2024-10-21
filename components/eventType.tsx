@@ -8,18 +8,34 @@ import {
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react"
-// import { useFilterState } from "@/hooks/useFilterState";
+import { useFilterState } from "@/hooks/useFilterState";
 
 type EventGroupType =  "business";
 
 const groupedEventTypes: Record<EventGroupType, string[]> = {
   business: ["tradeshows", "conferences", "workshops"],
 };
-
-export default function EventTypeSelector({selectedCategories,setSelectedCategories}) {
-  // const { getFilterValue, setFilter } = useFilterState();
+interface EventTypeProps{
+  source: string;
+  selectedCategories?: string[];
+  setSelectedCategories?: React.Dispatch<React.SetStateAction<string[]>>;
+}
+export default function EventTypeSelector({
+  source,
+  selectedCategories: parentSelectedCategories = [],
+  setSelectedCategories: parentSetSelectedCategories,
+}:EventTypeProps) {
+  const { getFilterValue, setFilter } = useFilterState();
   const [isOpen, setIsOpen] = useState(false);
-  const selectedCategoriesCount = selectedCategories.length;
+  const [selectedCategoriesLocal, setSelectedCategoriesLocal] = React.useState<string[]>(
+    []
+  );
+
+  const selectedCategories =
+    source === "tracker" ? parentSelectedCategories : selectedCategoriesLocal;
+  const setSelectedCategories =
+    source === "tracker" ? parentSetSelectedCategories : setSelectedCategoriesLocal;
+    const selectedCategoriesCount = selectedCategories.length;
   // const [selectedCategories, setSelectedCategories] = useState<
   //   Record<EventGroupType, string[]>
   // >({
@@ -51,7 +67,7 @@ export default function EventTypeSelector({selectedCategories,setSelectedCategor
       //     : [...prev[eventGroupType], categoryId],
       // }));
       // console.log(categoryId);
-      setSelectedCategories((prev) =>
+      setSelectedCategories?.((prev) =>
         prev.includes(categoryId)
           ? prev.filter((id) => id !== categoryId)
           : [...prev, categoryId]);
@@ -59,40 +75,42 @@ export default function EventTypeSelector({selectedCategories,setSelectedCategor
     []
   );
 
-  const handleSelectAll = useCallback(
-    (eventGroupType: EventGroupType, isSelected: boolean) => {
-      setSelectedCategories((prev) => ({
-        ...prev,
-        [eventGroupType]: isSelected ? groupedEventTypes[eventGroupType] : [],
-      }));
-    },
-    []
-  );
+  // const handleSelectAll = useCallback(
+  //   (eventGroupType: EventGroupType, isSelected: boolean) => {
+  //     setSelectedCategories?.((prev) => ({
+  //       ...prev,
+  //       [eventGroupType]: isSelected ? groupedEventTypes[eventGroupType] : [],
+  //     }));
+  //   },
+  //   []
+  // );
 
-  const isAllSelected = useCallback(
-    (eventGroupType: EventGroupType) => {
-      const allCategories = groupedEventTypes[eventGroupType];
-      return (
-        allCategories.length > 0 &&
-        allCategories.every((cat) =>
-          selectedCategories[eventGroupType].includes(cat)
-        )
-      );
-    },
-    [selectedCategories]
-  );
+  // const isAllSelected = useCallback(
+  //   (eventGroupType: EventGroupType) => {
+  //     const allCategories = groupedEventTypes[eventGroupType];
+  //     return (
+  //       allCategories.length > 0 &&
+  //       allCategories.every((cat) =>
+  //         selectedCategories[eventGroupType].includes(cat)
+  //       )
+  //     );
+  //   },
+  //   [selectedCategories]
+  // );
 
-  // const handleApply = useCallback(() => {
-  //   const allSelected = Object.values(selectedCategories).flat();
-  //   setFilter("eventTypes", allSelected.join(","));
-  //   setIsOpen(false);
-  // }, [selectedCategories, setFilter]);
+  const handleApply = useCallback(() => {
+    if(source!=="tracker"){
+    const allSelected = Object.values(selectedCategories).flat();
+    setFilter("eventTypes", allSelected.join(","));
+    }
+    setIsOpen(false);
+  }, [selectedCategories, setFilter]);
 
   const renderCategoryGroup = useCallback(
     (type: EventGroupType) => (
       <>
         {groupedEventTypes[type].map((category) => (
-          <div key={category} className="flex items-center space-x-2">
+          <div key={category} className="flex w-[210px] items-center space-x-2">
             <Checkbox
               className="rounded-[2.5px]"
               id={category}
@@ -115,7 +133,7 @@ export default function EventTypeSelector({selectedCategories,setSelectedCategor
   );
   
   const onOpenChange = (open: boolean) => {
-    // handleApply();
+    handleApply();
     setIsOpen(open);
   };
 
@@ -160,8 +178,8 @@ export default function EventTypeSelector({selectedCategories,setSelectedCategor
             Apply
           </Button>
         </div> */}
-        <div className="p-2 space-y-2">
-          {/* {renderCategoryGroup("social")} */}
+        <div className="p-2 space-y-2 ">
+          {/* {renderCategoryGroup("business")} */}
           {renderCategoryGroup("business")}
         </div>
       </PopoverContent>

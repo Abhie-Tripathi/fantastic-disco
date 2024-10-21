@@ -7,6 +7,7 @@ import { showToast } from "@/utils/showToast";
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { GAEvent } from '@/utils/GAEvent';
+import { useTrackerServices } from '@/services/trackerServices';
 interface ShareModalProps {
     fetchAccess?: any;
   closeShareModal?: () => void;
@@ -29,6 +30,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
     setAccessData
 }) => {
     const [currentUrl, setCurrentUrl] = useState('');
+    const {shareTrackerInvite,createNewAccess, error, isLoading}= useTrackerServices();
     const [filteredData, setFilteredData] = useState([]);
     const [filter, setFilter] = useState('');
     const [drop,setDrop]=useState(true);
@@ -92,49 +94,37 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 redirectUrl: `${currentUrl}`
             };
             console.log(formData);
-            const url = `${baseUrl}/access`;
             if(id){
+              
+            
             try {
-                const { data, error } = await myFetch(url, {
-                    method: 'POST',
-                    body: JSON.stringify(formData),
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-                if (error) {
-                    console.error('Error fetching data:', error);
-                    showToast("error",error.response);
-                    fetchAccess();
-                      setFilter('');
-                      setIsClicked(false);
-                      if(shareFunction)
-                      shareFunction();
-                } 
-                if(data) {
-                    console.log('Data fetched:', data);
-                    GAEvent(
-                        "trackers",
-                        "Tracker Detail",
-                        "Share",
-                        "Invite"
-                      );
-                      showToast("success","Tracker shared successfully!")
-                      fetchAccess();
-                      if(shareFunction)
-                      shareFunction();
-                      setId('');
-                      setIsClicked(false);
-                      setFilter('');
-                    // setTimeout(()=>{
-                    //     window.location.reload();
-                    // },2000)
-                    // if(sendInvite) setSendInvite(false);
-                    if(setAccessData)
-                    setAccessData(data);
-                }
-            } catch (err) {
-                console.error('Fetch failed:', err);
+                const result= await shareTrackerInvite(formData);
+
+                GAEvent(
+                                        "trackers",
+                                        "Tracker Detail",
+                                        "Share",
+                                        "Invite"
+                                      );
+                                      showToast("success","Tracker shared successfully!")
+                                      fetchAccess();
+                                      if(shareFunction)
+                                      shareFunction();
+                                      setId('');
+                                      setIsClicked(false);
+                                      setFilter('');
+                                    if(setAccessData)
+                                    setAccessData(data);
+                                console.log(isLoading);
+                                
+            } catch (error:any) {
+                console.error('Error fetching data:', error);
+                            showToast("error",error.response);
+                            fetchAccess();
+                              setFilter('');
+                              setIsClicked(false);
+                              if(shareFunction)
+                              shareFunction();
             }
             }
         }
@@ -147,33 +137,41 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 email: filter
           };
         if(emailRegex.test(filter)){
-        const url = `${baseUrl}/tracker/invite`;
-        try {
-            const { data, error } = await myFetch(url, {
-                method: 'POST',
-                body: JSON.stringify(formData),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (error) {
-                console.error('Error fetching data:', error);
-                showToast('error',error.message.charAt(0).toUpperCase() + error.message.substring(1));
-                setFilter("");
-            } else {
-                console.log(data.user.id);
-                setId(data.user.id);
-                // setData(data);
-            }
-        } catch (err) {
-            console.error('Fetch failed:', err);
-        }
+        // try{
+        //     const result= await createNewAccess(formData);
+        // }catch(error){
+
+        // }
+        const result= await createNewAccess(formData);
+        console.log(error);
+        
+        // try {
+        //     const { data, error } = await myFetch(url, {
+        //         method: 'POST',
+        //         body: JSON.stringify(formData),
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //     });
+        //     if (error) {
+        //         console.error('Error fetching data:', error);
+        //         showToast('error',error.message.charAt(0).toUpperCase() + error.message.substring(1));
+        //         setFilter("");
+        //     } else {
+        //         console.log(data.user.id);
+        //         setId(data.user.id);
+        //         // setData(data);
+        //     }
+        // } catch (err) {
+        //     console.error('Fetch failed:', err);
+        // }
         } else {
             showToast("error", "Enter Valid Name or Email");
             setFilter('');
             setIsClicked(false);
             
         }
+
         // setId("");
         }
         const saveShareInvite = (id: string, name: string, email:string) => {
@@ -196,6 +194,13 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 closeShareModal();
             }
         }, [id, isClicked]);
+        useEffect(() => {
+            if (error) {
+              console.error('API Error:', error); // This logs the error from `useApi`'s state.
+              showToast('error', error.message || 'An error occurred'); // Display error in toast
+            }
+          }, [error]);  
+        
   return (
     <div className="flex flex-col w-[500px] gap-[var(--spacing-sm)] justify-center bg-[var(--primary-foreground)] p-5 rounded-[4px]" style={{boxShadow:"var(--elevation-medium)"}}>
                         <div className="font-medium text-[var(--primary-color)]">Share Tracker</div>

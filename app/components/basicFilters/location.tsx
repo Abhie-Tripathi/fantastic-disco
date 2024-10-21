@@ -33,17 +33,28 @@ export interface LocationItem {
   id: string;
   description: string | undefined;
 }
-
+interface LocationProps{
+  source:string;
+  selectedLocation?: any;
+  setSelectedLocation?:any;
+}
 export type Location = GeoLocation | LocationItem[];
 
-export default function LocationSelector() {
+export default function LocationSelector({
+  source,
+  selectedLocation: parentSelectedLocation,
+  setSelectedLocation: parentSetSelectedLocation,
+}: LocationProps) {
 //   const { getLocationName, getLocationDetails } = useLocationService();
+const [localSelectedLocation, setLocalSelectedLocation] = useState<Location | null>(null);
   const [activeTab, setActiveTab] = useState("city");
   const [isOpen, setIsOpen] = useState(false);
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
-    null
-  );
+  const selectedLocation = source==="tracker" ? parentSelectedLocation : localSelectedLocation;
+  const setSelectedLocation = source==="tracker" ? parentSetSelectedLocation : setLocalSelectedLocation;
+  // const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+  //   null
+  // );
 //   const { replaceFilter, searchParams, deleteMultipleFilters } =
 //     useFilterState();
 
@@ -118,6 +129,7 @@ export default function LocationSelector() {
     }
     setIsOpen(open);
   };
+console.log(selectedLocation);
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -168,10 +180,10 @@ export default function LocationSelector() {
           </Button>
         </div>
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="city">City, State, Country</TabsTrigger>
+          {/* <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="city">City, State, Country</TabsTrigger> */}
             {/* <TabsTrigger value="center">Center Point & Radius</TabsTrigger> */}
-          </TabsList>
+          {/* </TabsList> */}
           <TabsContent value="city" className="p-4">
             <AutocompleteInput
               multiple

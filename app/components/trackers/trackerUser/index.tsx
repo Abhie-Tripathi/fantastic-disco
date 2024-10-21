@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 import Router from "next/router";
 import { showToast } from '@/utils/showToast';
 import UserProfile from '../../userProfile/UserProfile';
+import { useTrackerServices } from '@/services/trackerServices';
 
 type User = {
   id: string;
@@ -27,6 +28,7 @@ type TrackerUserProps = {
 
 const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetchAccess, type, heading }) => {
   const path = usePathname().split('/');
+  const {removeAccess,editAccess, error} = useTrackerServices();
   const [accessId, setAccessId] = useState<string | null>(null);
   const [drop, setDrop] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -66,28 +68,19 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
     };
 
     try {
-      const { data, error } = await myFetch(url, {
-        method: 'PATCH',
-        body: JSON.stringify(formData),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (error) {
-        console.error('Error fetching data:', error);
-      } else {
-        console.log('Data fetched:', data);
-        showToast("success","Access updated successfully")
-        if(fetchAccess)
-        fetchAccess();
-        // setTimeout(()=>{
-        //   window.location.reload();
-        // },2000)
-        
+        const data= await editAccess(accessEntry, formData)
+        if(data){
+          console.log('Data fetched:', data);
+          showToast("success","Access updated successfully")
+          if(fetchAccess)
+          fetchAccess();
+        }
+        else if (error) {
+          console.error('Error fetching data:', error);
+        }
+      } catch (err) {
+        console.error('Fetch failed:', err);
       }
-    } catch (err) {
-      console.error('Fetch failed:', err);
-    }
   }
   };
 
@@ -102,20 +95,13 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
   };
 
   const deleteEntry = async (id: string, accessEntry: string) => {
-    const url = `${baseUrl}/access/${accessEntry}`;
     const formData = {
       entityId: id,
       published: false,
     };
 
     try {
-      const { data, error } = await myFetch(url, {
-        method: 'PATCH',
-        body: JSON.stringify(formData),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const data = await removeAccess(accessEntry, formData);
       if (error) {
         console.error('Error fetching data:', error);
       } else {

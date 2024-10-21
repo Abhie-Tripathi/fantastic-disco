@@ -33,10 +33,17 @@ export const endpoints = {
 //   },
 locations: `${BASE_URL}/location/country`,
 designations: `${BASE_URL}/designation`,
+users: `${BASE_URL}/auth/users`,
 tracker:{
+    commonUrl: `${BASE_URL}/tracker`,
+    access: `${BASE_URL}/tracker/access`,
+    shareAccess: `${BASE_URL}/access`,
+    createNewAccess: `${BASE_URL}/tracker/invite`,
     create:`${BASE_URL}/tracker`,
     getTrackers: `${BASE_URL}/tracker`,
     getSavedEvents: `${BASE_URL}/tracker`,
-    getNotes:`${BASE_URL}/comment?stage=INTERNAL&entityType=TRACKER`
+    saveEvent:`${BASE_URL}/tracker/saved-events`,
+    getNotes:`${BASE_URL}/comment?stage=INTERNAL&entityType=TRACKER`,
+    saveNotes: `${BASE_URL}/comment`
 }
 };

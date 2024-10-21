@@ -16,12 +16,14 @@ import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/context';
 import { GAEvent } from "@/utils/GAEvent";
 import ShareWidget from "../ShareWidget";
+import { useTrackerServices } from "@/services/trackerServices";
 // import { useTheme } from '@/context/theme';
 const CommonTrackerCard = () => {
   // const { theme } = useTheme();
   //   console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const pathName = usePathname().split('/');
   const [loading,setLoading]=useState(false);
+  const {getTrackerDetail, error}=useTrackerServices();
   const trackerId = pathName[pathName.length - 2];
   const [id, setId] = useState<string>("");
   const [data, setData] = useState<any>([]);
@@ -29,19 +31,31 @@ const CommonTrackerCard = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const url = `${baseUrl}/tracker/${trackerId}`;
-      try {
-        const { data, error } = await myFetch(url, {
-          method: 'GET'
-        });
-        if (error) {
-          console.error('Error fetching data:', error);
-        } else {
-          setItem(data);
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error('Fetch failed:', err);
+      // const url = `${baseUrl}/tracker/${trackerId}`;
+      // try {
+      //   const { data, error } = await myFetch(url, {
+      //     method: 'GET'
+      //   });
+      //   if (error) {
+      //     console.error('Error fetching data:', error);
+      //   } else {
+      //     setItem(data);
+      //     setLoading(false);
+      //   }
+      // } catch (err) {
+      //   console.error('Fetch failed:', err);
+      // }
+      try{
+      const data = await getTrackerDetail(trackerId);
+      if (error) {
+            console.error('Error fetching data:', error);
+          } else if(data) {
+            setItem(data);
+            setLoading(false);
+          }
+      }catch(error){
+          console.log(error);
+          
       }
     };
 

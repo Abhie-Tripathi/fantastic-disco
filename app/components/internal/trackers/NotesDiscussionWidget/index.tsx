@@ -5,12 +5,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React,{useState,useEffect} from 'react';
 // Define the type for the note prop
-interface Note {
-  content: string;
-}
+// interface Note {
+//   content: string;
+// }
 
 interface NotesDiscussionWidgetProps {
-  note: Note;
+  note: any;
   redirectUrl:string;
 }
 
@@ -73,7 +73,7 @@ const NotesDiscussionWidget: React.FC<NotesDiscussionWidgetProps> = ({ note, red
             </div>
           ) : (
             <div className="text-[var(--secondary-text-color)] text-sm -mt-4">
-              Let's start taking notes and initiate the discussion with the team.
+              Let&apos;s start taking notes and initiate the discussion with the team.
             </div>
           )}
       </Link>

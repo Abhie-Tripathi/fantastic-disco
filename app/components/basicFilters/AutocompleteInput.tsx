@@ -89,7 +89,7 @@ else {
   setCountryData([]);
   setZoneData([]);
 }
-},[inputValue])
+},[inputValue, value])
   useEffect(() => {
     console.log(value);
     
@@ -142,7 +142,7 @@ else {
     },
     [selectedLocations, onSelect]
   );
-  console.log(countryData)
+  console.log(zoneData)
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -203,16 +203,17 @@ else {
             )}
           </CommandEmpty> */}
           <CommandGroup>
-            <CommandList>
-  {cityData.map((data: any) => (
-    <CommandItem key={data.id}>
-      {data.name}
-      {data.state && `, ${data.state}`}
-      {data.countryName && `, ${data.countryName}`}
-    </CommandItem>
-  ))}
-</CommandList>
-            <CommandList>
+          <CommandList>
+          {cityData.map((data: any) => (
+          <CommandItem
+            key={data.id}
+            onSelect={() => handleSelect(data.name, data.id)}
+          >
+           {`${data.name}${data.state ? `, ${data.state}` : ''}${data.countryName ? `, ${data.countryName}` : ''}`}
+            {/* {data.state && `, ${data.state}`}
+             {data.countryName && `, ${data.countryName}`} */}
+          </CommandItem>
+        ))}
           {countryData.map((data: any) => (
           <CommandItem
             key={data.id}
@@ -221,14 +222,12 @@ else {
             {data?.name}
           </CommandItem>
         ))}
-        </CommandList>
-        <CommandList>
         {zoneData.map((data: any) => (
           <CommandItem
           key={data.id}
           onSelect={()=> handleSelect(data.name, data.id)}
           >
-          {data?.name}
+          {data}
           </CommandItem>
         ))}
         </CommandList>

@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ChevronDown } from "lucide-react";
-// import { useFilterState } from "@/hooks/useFilterState";
+import { useFilterState } from "@/hooks/useFilterState";
 
 const maturityLevels = [
   { id: "new", label: "New" },
@@ -18,23 +18,39 @@ const maturityLevels = [
   { id: "established", label: "Established" },
   { id: "flagship", label: "Flagship" },
 ];
+interface EditionProps{
+  source:string,
+  selectedStatus?: string;
+  setSelectedStatus?: React.Dispatch<React.SetStateAction<string>>;
+}
+export default function EditionSelector({
+  source,
+  selectedStatus: parentSelectedFormats = "",
+  setSelectedStatus: parentSetSelectedFormats,
+}: EditionProps) {
+  const { setFilter, getFilterValue, searchParams } = useFilterState();
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<string>("");
 
-export default function EditionSelector() {
-  const [isOpen, setIsOpen] = useState(false);
-//   const { setFilter, getFilterValue, searchParams } = useFilterState();
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const selectedStatus =
+    source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
+  const setSelectedStatus =
+    source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
 
-//   useEffect(() => {
-//     setSelectedStatus(getFilterValue("maturity"));
-//   }, [searchParams]);
+  useEffect(() => {
+    if(source!=="tracker")
+    setSelectedStatus?.(getFilterValue("maturity"));
+  }, [searchParams]);
 
   const handleStatusChange = (value: string) => {
     if (value === selectedStatus) {
-      setSelectedStatus("");
-    //   setFilter("maturity", "");
+      setSelectedStatus?.("");
+      if(source!=="tracker")
+      setFilter("maturity", "");
     } else {
-      setSelectedStatus(value);
-    //   setFilter("maturity", value);
+      setSelectedStatus?.(value);
+      if(source!=="tracker")
+      setFilter("maturity", value);
     }
     setIsOpen(false);
   };
@@ -58,7 +74,7 @@ export default function EditionSelector() {
           <div className="flex items-center">
             <span className="mr-2">Maturity</span>
             {selectedStatus && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground">
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 1
               </span>
             )}

@@ -12,15 +12,14 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ChevronDown } from "lucide-react";
-// import { useFilterState } from "@/hooks/useFilterState";
-import { RadioGroup, RadioGroupItem } from "../../../components/ui/radio-group";
-import { Separator } from "../../../components/ui/separator";
-import { useSearchParams } from "next/navigation";
+import { useFilterState } from "@/hooks/useFilterState";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
+import { Separator } from "../ui/separator";
 
 interface RankCategory {
   name: string;
   enabled: boolean;
-  range: [number, number];
+  range: any;
 }
 
 const ranks = [
@@ -28,43 +27,62 @@ const ranks = [
   { id: "500", label: "Top 500" },
   { id: "1000", label: "Top 1000" },
 ];
-
-export default function EventRankingSelector() {
+interface EvenetRankingProps{
+  source:string;
+  selectedTrustScore?:any;
+  setSelectedTrustScore?:any;
+  rankToggles?:any;
+  setRankToggles?:any;
+  selectedRank?:string;
+  setSelectedRank?:React.Dispatch<React.SetStateAction<string>>;
+}
+export default function EventRankingSelector({source, selectedTrustScore, setSelectedTrustScore, rankToggles, setRankToggles, selectedRank, setSelectedRank}: EvenetRankingProps) {
+  
   const [open, setOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<string>("");
+  const [selectedStatus, setSelectedStatus] = useState<string>(selectedRank && selectedRank.length>0?selectedRank.substring(2):"");
   const [categories, setCategories] = useState<RankCategory[]>([
-    { name: "Trust Score", enabled: false, range: [0, 100] },
+    { name: "Trust Score", enabled: rankToggles.isTrustScore?rankToggles.isTrustScore:false,  range: selectedTrustScore && Array.isArray(selectedTrustScore) ? selectedTrustScore : [0, 100] },
   ]);
-
-//   const { setFilter, getFilterValue, setMultipleFilters, searchParams } =
-//     useFilterState();
+  // useEffect(()=>{
+  //   setCategories((prevCategories) =>
+  //     prevCategories.map((category) =>
+  //       category.name === "Trust Score"
+  //         ? { ...category, enabled: rankToggles.isTrustScore }
+  //         : category
+  //     )
+  //   );
+  // },[rankToggles])
+  const { setFilter, getFilterValue, setMultipleFilters, searchParams } =
+    useFilterState();
 
   useEffect(() => {
-    // const topParam = searchParams.get("top");
-    // if (topParam) {
-    //   const matchingRank = ranks.find(
-    //     (rank) => rank.id === topParam.toLowerCase()
-    //   );
-    //   if (matchingRank) {
-    //     setSelectedStatus(matchingRank.id);
-    //   }
-    // }
+    if(source!=="tracker"){
+    const topParam = searchParams.get("top");
+    if (topParam) {
+      const matchingRank = ranks.find(
+        (rank) => rank.id === topParam.toLowerCase()
+      );
+      if (matchingRank) {
+        setSelectedStatus(matchingRank.id);
+      }
+    }
 
-    // const trustScoreLte = getFilterValue("trust_score_lte");
-    // const trustScoreGte = getFilterValue("trust_score_gte");
-    // if (trustScoreLte && trustScoreGte) {
-    //   setCategories((prev) =>
-    //     prev.map((cat) =>
-    //       cat.name === "Trust Score"
-    //         ? {
-    //             ...cat,
-    //             enabled: true,
-    //             range: [parseInt(trustScoreGte), parseInt(trustScoreLte)],
-    //           }
-    //         : cat
-    //     )
-    //   );
-    // }
+    const trustScoreLte = getFilterValue("trust_score_lte");
+    const trustScoreGte = getFilterValue("trust_score_gte");
+    if (trustScoreLte && trustScoreGte) {
+      setCategories((prev) =>
+        prev.map((cat) =>
+          cat.name === "Trust Score"
+            ? {
+                ...cat,
+                enabled: true,
+                range: [parseInt(trustScoreGte), parseInt(trustScoreLte)],
+              }
+            : cat
+        )
+      );
+    }
+  }
   }, []);
 
   const handleToggle = (index: number) => {
@@ -73,6 +91,12 @@ export default function EventRankingSelector() {
         i === index ? { ...category, enabled: !category.enabled } : category
       )
     );
+    setRankToggles((prev:any) => ({
+      ...prev,
+      isTrustScore: !prev.isTrustScore,
+    }));
+    // console.log(index);
+    
   };
 
   const handleRangeChange = (index: number, newRange: [number, number]) => {
@@ -81,10 +105,12 @@ export default function EventRankingSelector() {
         i === index ? { ...category, range: newRange } : category
       )
     );
+    setSelectedTrustScore?.(newRange);
   };
 
   const handleStatusChange = (value: string) => {
     setSelectedStatus((prevStatus) => (prevStatus === value ? "" : value));
+    setSelectedRank?.(`0-${value}`);
   };
 
   const handleApply = () => {
@@ -122,6 +148,8 @@ export default function EventRankingSelector() {
   };
 
   const onOpenChange = (open: boolean) => {
+    console.log(open);
+    
     handleApply();
     setOpen(open);
   };
@@ -135,6 +163,7 @@ export default function EventRankingSelector() {
     const selectedRank = selectedStatus ? 1 : 0;
     return selectedRank + trustScoreEnabled;
   };
+console.log(categories);
 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
@@ -151,7 +180,7 @@ export default function EventRankingSelector() {
           <div className="flex items-center truncate">
             <span className="mr-2">Event Ranking</span>
             {getAppliedFiltersCount() > 0 && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground mr-1">
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
                 {getAppliedFiltersCount()}
               </span>
             )}

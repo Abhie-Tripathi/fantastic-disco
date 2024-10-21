@@ -11,7 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-// import { useFilterState } from "@/hooks/useFilterState";
+import { useFilterState } from "@/hooks/useFilterState";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
@@ -22,30 +22,49 @@ interface RankCategory {
   name: string;
   range: [number, number];
 }
-
-export default function EventAnalyticsSelector() {
+interface EventAnalyticsProps{
+  source:string;
+  selectedEventRank?: [number, number];
+  setSelectedEventRank?: React.Dispatch<React.SetStateAction<[number, number]>>;
+  selectedLocalRank?: [number, number];
+  setSelectedLocalRank?: React.Dispatch<React.SetStateAction<[number, number]>>;
+  selectedAviationRank?:[number, number];
+  setSelectedAviationRank?: React.Dispatch<React.SetStateAction<[number, number]>>;
+  rankToggles?:any;
+  setRankToggles?:any;
+}
+export default function EventAnalyticsSelector({source, selectedEventRank,setSelectedEventRank, selectedLocalRank,setSelectedLocalRank, selectedAviationRank, setSelectedAviationRank, rankToggles, setRankToggles}:EventAnalyticsProps) {
+  console.log(rankToggles);
+  
   const [open, setOpen] = useState(false);
   const [showScores, setShowScores] = useState(false);
+  useEffect(() => {
+    if (rankToggles && typeof rankToggles.globalToggle !== "undefined") {
+      console.log("showScore", rankToggles.globalToggle);
+      
+      setShowScores(rankToggles.globalToggle);
+    }
+  }, [rankToggles.globalToggle]);
   const [categories, setCategories] = useState<RankCategory[]>([
-    { name: "Impact Score", range: [0, 100] },
-    { name: "Inbound Score", range: [0, 100] },
-    { name: "International Score", range: [0, 100] },
+    { name: "Impact Score", range: selectedEventRank && Array.isArray(selectedEventRank) ? selectedEventRank : [0, 100]},
+    { name: "Inbound Score", range: selectedLocalRank && Array.isArray(selectedLocalRank) ? selectedLocalRank : [0, 100] },
+    { name: "International Score", range: selectedAviationRank && Array.isArray(selectedAviationRank) ? selectedAviationRank : [0, 100] },
   ]);
 
-//   const {
-//     setFilter,
-//     getFilterValue,
-//     setMultipleFilters,
-//     deleteMultipleFilters,
-//     searchParams,
-//   } = useFilterState();
+  const {
+    setFilter,
+    getFilterValue,
+    setMultipleFilters,
+    deleteMultipleFilters,
+    searchParams,
+  } = useFilterState();
   const router = useRouter();
   const pathname = usePathname();
 
-//   useEffect(() => {
-//     const show = getFilterValue("show").split(",").filter(Boolean);
-//     setShowScores(show.includes("scores"));
-//   }, [getFilterValue]);
+  useEffect(() => {
+    const show = getFilterValue("show").split(",").filter(Boolean);
+    setShowScores(show.includes("scores"));
+  }, [getFilterValue]);
 
   const handleRangeChange = (index: number, newRange: [number, number]) => {
     setCategories((prev) =>
@@ -53,6 +72,15 @@ export default function EventAnalyticsSelector() {
         i === index ? { ...category, range: newRange } : category
       )
     );
+    if(index===0){
+      console.log(newRange);
+      
+      setSelectedEventRank?.(newRange);
+    }else if(index===1){
+      setSelectedLocalRank?.(newRange);
+    }else if(index===2){
+      setSelectedAviationRank?.(newRange);
+    }
   };
 
   const handleInputChange = (
@@ -100,57 +128,68 @@ export default function EventAnalyticsSelector() {
 
   const handleShowScoresToggle = (checked: boolean) => {
     setShowScores(checked);
-    // const currentShow = getFilterValue("show").split(",").filter(Boolean);
-    // const newShow = checked
-    //   ? [...currentShow, "scores"]
-    //   : currentShow.filter((item) => item !== "scores");
+    setRankToggles?.((prevState: any) => ({
+      ...prevState,
+      globalToggle: checked, 
+    }));
+    if(source!=="tracker"){
+    const currentShow = getFilterValue("show").split(",").filter(Boolean);
+    const newShow = checked
+      ? [...currentShow, "scores"]
+      : currentShow.filter((item) => item !== "scores");
 
-    // const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams);
 
     // Update the 'show' parameter
-    // if (newShow.length > 0) {
-    //   params.set("show", newShow.join(","));
-    // } else {
-    //   params.delete("show");
-    // }
+    if (newShow.length > 0) {
+      params.set("show", newShow.join(","));
+    } else {
+      params.delete("show");
+    }
 
     // Remove score-related filters if unchecked, or apply them if checked
-    // const scoreFilters = [
-    //   "impact_score_gte",
-    //   "impact_score_lte",
-    //   "inbound_score_gte",
-    //   "inbound_score_lte",
-    //   "international_score_gte",
-    //   "international_score_lte",
-    // ];
+    const scoreFilters = [
+      "impact_score_gte",
+      "impact_score_lte",
+      "inbound_score_gte",
+      "inbound_score_lte",
+      "international_score_gte",
+      "international_score_lte",
+    ];
 
-    // if (!checked) {
-    //   scoreFilters.forEach((key) => params.delete(key));
-    // } else {
-    //   const newFilters = applyFilters();
-    //   Object.entries(newFilters).forEach(([key, value]) => {
-    //     params.set(key, value);
-    //   });
-    // }
+    if (!checked) {
+      scoreFilters.forEach((key) => params.delete(key));
+    } else {
+      const newFilters = applyFilters();
+      Object.entries(newFilters).forEach(([key, value]) => {
+        params.set(key, value);
+      });
+    }
 
     // Update the URL with all changes at once
-    // router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  }
   };
 
   const onOpenChange = (open: boolean) => {
-    if (!open) {
+    if (!open && source!=="tracker") {
       const newFilters = applyFilters();
-    //   setMultipleFilters(newFilters);
+      setMultipleFilters(newFilters);
     }
     setOpen(open);
   };
 
   const getAppliedFiltersCount = () => {
+    console.log(categories);
+    
     return categories.filter(
       (category) => category.range[0] > 0 || category.range[1] < 100
     ).length;
   };
-
+  useEffect(()=>{
+    console.log(showScores, rankToggles)
+  },[rankToggles])
+ 
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -163,13 +202,13 @@ export default function EventAnalyticsSelector() {
           aria-haspopup="true"
         >
           <span className="mr-2">Event Analytics</span>
-          {showScores && getAppliedFiltersCount() > 0 && (
-            <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground mr-1">
+          {(showScores || rankToggles.globalToggle) && getAppliedFiltersCount() > 0 && (
+            <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
               {getAppliedFiltersCount()}
             </span>
           )}
           <DynamicSwitch
-            checked={showScores}
+            checked={showScores || rankToggles.globalToggle}
             onCheckedChange={handleShowScoresToggle}
             aria-label="Show scores"
             onClick={(e) => e.stopPropagation()}
@@ -189,7 +228,7 @@ export default function EventAnalyticsSelector() {
                 handleRangeChange(index, newRange as [number, number])
               }
               className="mb-2"
-              disabled={!showScores}
+              disabled={!showScores && !rankToggles.globalToggle}
             />
             <div className="flex justify-between">
               <Input
@@ -201,7 +240,7 @@ export default function EventAnalyticsSelector() {
                   handleInputChange(index, "min", e.target.value)
                 }
                 className="w-16 text-center"
-                disabled={!showScores}
+                disabled={!showScores && !rankToggles.globalToggle}
                 onBlur={(e) => {
                   const value = Math.min(
                     Math.max(parseInt(e.target.value, 10), 0),
@@ -223,7 +262,7 @@ export default function EventAnalyticsSelector() {
                   handleInputChange(index, "max", e.target.value)
                 }
                 className="w-16 text-center"
-                disabled={!showScores}
+                disabled={!showScores && !rankToggles.globalToggle}
                 onBlur={(e) => {
                   const value = Math.min(
                     Math.max(parseInt(e.target.value, 10), 0),

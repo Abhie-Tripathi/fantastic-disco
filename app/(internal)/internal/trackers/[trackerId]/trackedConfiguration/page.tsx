@@ -22,6 +22,8 @@ import { showToast } from '@/utils/showToast';
 import EventType from "@/app/components/Search/Dropdowns/EventType";
 import Loading from "@/app/components/UI/Loading";
 import ToggleBtn from "@/app/components/UI/ToggleBtn";
+import { useTrackerServices } from "@/services/trackerServices";
+import SideNav from "@/app/components/trackers/sideNav";
 function CustomeTracker({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -60,29 +62,22 @@ interface EditData {
 const Page = () => {
   const pathName = usePathname().split('/');
   const router = useRouter();
+  const {delTracker, getTrackerDetail, error, isLoading}=useTrackerServices();
   const [type,setType]=useState("Custom");
   const last = pathName[pathName.length - 2];
   const searchParams = useSearchParams()
   const typeVal = searchParams.get('type')
   const [data, setData] = useState<any>([]);
   const [del, setDel] = useState(false);
-  const [loading,setLoading]=useState(true);
+  // const [loading,setLoading]=useState(true);
   useEffect(() => {
     const fetchData = async () => {
-      const url = `${baseUrl}/tracker/${last}?edit=true`;
-      try {
-        const { data, error } = await myFetch(url, {
-          method: "GET",
-        });
-        if (error) {
-          console.error("Error fetching data:", error);
-        } else {
-          console.log("Data fetched:", data);
-          setData(data);
-          setLoading(false)
-        }
-      } catch (err) {
-        console.error("Fetch failed:", err);
+      const result = await getTrackerDetail(last, "edit=true")
+      if(error){
+        console.error("Error fetching data:", error);
+      }
+      else{
+        setData(result);
       }
     };
 
@@ -132,12 +127,9 @@ const Page = () => {
   //   console.log(arr);
   // }, [arr]);
   const deleteTracker = async () => {
-    const url = `${baseUrl}/tracker/${pathName[pathName.length - 2]}`
-    const { data, error } = await myFetch(url, {
-      method: 'DELETE'
-    });
-    if (data) {
-      showToast("success", "Tracker deleted successfully")
+    const result=await delTracker(`${pathName[pathName.length - 2]}`)
+    if(result){
+       showToast("success", "Tracker deleted successfully")
       GAEvent(
         "trackers",
         "Tracker Detail",
@@ -177,7 +169,7 @@ const userRating=
   data?.tracker?.filterValue?.eventRating?.length>0
     ? data?.tracker?.filterValue?.eventRating.split(",")
     : []
-   const allKeywords=data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : [];
+   const allKeywords=data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split(' ') : [];
    let toggleOpend: Toggle={};
   if(data?.tracker?.filterValue?.userType)
   toggleOpend=JSON.parse(data?.tracker?.filterValue?.userType);
@@ -187,12 +179,13 @@ const userRating=
     data:`text-xs text-[var(--secondary-text-color)] p-1`,
     allValues: `flex gap-3`
   }
-  console.log(toggleOpend);
+  console.log(isLoading);
   
   return (
     <>
-    {loading ? <Loading/> :
+    {isLoading ? <Loading/> :
     <div className='flex w-[calc(100vw-134px)] flex-col gap-6 text-sm' >
+      <SideNav/>
     <div className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[54px] items-center justify-between bg-[var(--heading-background-color)] p-3">
       <div className="flex items-center gap-2">
         <div>

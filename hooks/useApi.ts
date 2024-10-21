@@ -34,7 +34,6 @@ export function useApi<T>() {
         url,
         ...config,
       });
-
       if ("data" in response.data) {
         setState({
           data: response.data.data as unknown as T,
@@ -47,7 +46,7 @@ export function useApi<T>() {
           data: undefined,
           error: response.data.error,
           isLoading: false,
-        });
+        }); 
         throw response.data.error;
       } else {
         const unknownError = {

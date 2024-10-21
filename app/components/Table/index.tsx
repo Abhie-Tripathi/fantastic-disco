@@ -31,6 +31,8 @@ import {
 } from "react-aria-components";
 import { useSearchParams } from "next/navigation";
 import { ArrowDown, ArrowUp } from "geist-icons";
+import { useTrackerServices } from "@/services/trackerServices";
+import { AllEventsType } from '@/types/ListViewTable';
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -209,7 +211,11 @@ const Table = ({
   setActiveValue,
   setRequestExhausted,
   handleButtonLoading,
+  savedEventCount,
+  setSavedEventCount,
 }: {
+  savedEventCount?:number;
+  setSavedEventCount?:any;
   eventData?: any;
   showInsights: any;
   queryString?: string;
@@ -220,7 +226,7 @@ const Table = ({
 }) => {
   const searchParams = useSearchParams();
   const type = searchParams.get('type');
-
+  const {getTrackerEvents, getSavedEvents, saveNewEvent, deleteNewEvent, error}=useTrackerServices();
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
   const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
@@ -436,17 +442,18 @@ const Table = ({
     setIsSaved(true);
 
     const secondLast = path[path.length - 2];
-    const { data, error } = await myFetch(
-      `${baseUrl}/tracker/${secondLast}/saved-events?max=${itemsPerPage}&offset=${(currPage - 1) * 10
-      }`
-    );
-    if (error) {
-      console.log(error);
-      return;
-    }
-
-    if (data) {
-      console.log(data);
+    // const { data, error } = await myFetch(
+    //   `${baseUrl}/tracker/${secondLast}/saved-events?max=${itemsPerPage}&offset=${(currPage - 1) * 10
+    //   }`
+    // );
+    // if (error) {
+    //   console.log(error);
+    //   return;
+    // }
+    const result=await getSavedEvents(secondLast, `max=${itemsPerPage}&offset=${(currPage - 1) * 10 }`);
+    try{
+    if (result) {
+      console.log(result);
       setIsLoaded(true);
       GAEvent(
         "trackers",
@@ -455,16 +462,20 @@ const Table = ({
         `Saved Event | ${currPage}`
       )
       // if (data?.events?.length > 0) {
-      setEventPerPage(data.result);
-      setTotalEvents(data.count);
+      setEventPerPage(result.result);
+      setTotalEvents(result.count);
       if (currPage === 1) {
-        setTotalPages(Math.ceil(data.count / itemsPerPage));
-        setEventPerPage(data.result);
+        setTotalPages(Math.ceil(result.count / itemsPerPage));
+        setEventPerPage(result.result);
       } else {
-        setEventPerPage(data.result);
+        setEventPerPage(result.result);
       }
+    }
       // }
       // setCatgeoryData(data);
+    }catch(error){
+      console.log(error);
+      
     }
   };
   const fetchAllSavedEvent = async () => {
@@ -560,44 +571,35 @@ const Table = ({
   };
 
   const fetchData = async (secondLast: string) => {
-    var url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage
-      }&type=active`;
-    if (eventType === "New Events")
-      url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage
-        }`;
-    else if (eventType === "Expired Events")
-      url = `${baseUrl}/tracker/${secondLast}/events?limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage
-        }&type=expired`;
-    else if(eventType==="Saved Events")
-      return fetchSavedData();
-    const { data, error } = await myFetch(url);
-    if (error) {
-      console.log(error);
-      return;
+    if (eventType === "Saved Events") return fetchSavedData();
+  
+    const result: { totalEvents: number; events: EventTableType[] } | undefined = await getTrackerEvents(
+      secondLast,
+      `limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage}`,
+      eventType === "Active Events" ? "active" : eventType === "Expired Events" ? "expired" : ""
+    );
+  
+    if (!result) {
+      console.error("No data returned from getTrackerEvents");
+      return; // Handle the case where result is undefined
     }
+  
     if (currPage === 1) {
-      setTotalPages(Math.ceil(data.totalEvents / itemsPerPage));
-      setEventPerPage(data.events);
+      setTotalPages(Math.ceil(result.totalEvents / itemsPerPage));
+      setEventPerPage(result.events);
     } else {
-      setEventPerPage(data.events);
+      setEventPerPage(result?.events);
     }
-    if (data) {
-      console.log(data);
-      setIsLoaded(true);
-      if (data?.events?.length > 0) {
-        setActiveValue(data?.totalEvents);
-        GAEvent(
-          "trackers",
-          "Tracker",
-          "View",
-          `${eventType} | ${currPage}`
-        );
-        setEventPerPage(data.events);
-        setTotalEvents(data.totalEvents);
-      }
-      // setCatgeoryData(data);
+  
+    if (result.events.length > 0) {
+      setActiveValue(result.totalEvents);
+      GAEvent("trackers", "Tracker", "View", `${eventType} | ${currPage}`);
+      setTotalEvents(result.totalEvents);
     }
+  
+    setIsLoaded(true);
   };
+  
   // const [isSaving, setIsSaving] = useState(false);
 
   const saveEvent = async (Id: string) => {
@@ -610,42 +612,33 @@ const Table = ({
       eventId: Id,
       trackerId: secondLast,
     };
-
-    const url = `${baseUrl}/tracker/saved-events`;
-
-    try {
-      const { data, error } = await myFetch(url, {
-        method: "POST",
-        body: JSON.stringify(dataToSend),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (data) {
+    
+    try{
+      const result = await saveNewEvent(dataToSend);
+      if(result){
         showToast('success', "Event saved");
-        let updatedData = eventPerPage?.find((event) => event.id === Id);
-
-        if (updatedData) {
-          const newUpdatedData = { ...updatedData, isSaved: true };
-          const updatedEventPerPage = eventPerPage.map((event) =>
-            event.id === Id ? newUpdatedData : event
-          );
-          setEventPerPage(updatedEventPerPage);
-        }
-
-        setSaved(Id);
-      } else {
-        console.log(error);
-        showToast('error', error.message);
-      }
-    } catch (err) {
-      console.error("Error saving event:", err);
+        setSavedEventCount(prev=>prev+1)
+            let updatedData = eventPerPage?.find((event) => event.id === Id);
+    
+            if (updatedData) {
+              const newUpdatedData = { ...updatedData, isSaved: true };
+              const updatedEventPerPage = eventPerPage.map((event) =>
+                event.id === Id ? newUpdatedData : event
+              );
+              setEventPerPage(updatedEventPerPage);
+            }
+    
+            setSaved(Id);
+          } else {
+            console.log(error);
+            showToast('error', error?.message);
+          }
+    }catch(error){
+      console.error("Error saving event:", error);
       showToast('error', "Please try again later.");
-    } 
-    // finally {
-    //   setIsSaving(false);
-    // }
+    }
+
+   
   };
 
   // const [isDelete, setIsDelete] = useState(false);
@@ -656,7 +649,6 @@ const Table = ({
 
     const url = `${baseUrl}/tracker/saved-events`;
     let dataToSend = {};
-
     if (path[path.length - 1] === "savedEvents") {
       const secondLast = path[path.length - 2];
       dataToSend = {
@@ -671,19 +663,21 @@ const Table = ({
     }
 
     try {
-      const { data, error } = await myFetch(url, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dataToSend),
-      });
-
-      if (data) {
-        if(path[path.length-1]==="savedEvents"){
-        console.log(data);
+      // const { data, error } = await myFetch(url, {
+      //   method: "DELETE",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(dataToSend),
+      // });
+      const result = await deleteNewEvent(dataToSend);
+      if (result) {
+        if(eventType==="Saved Events"){
+        console.log(result);
         showToast('error', "Saved event deleted");
         const newData = eventPerPage.filter(event => event?.id !== groupId);
+        console.log(newData);
+        
         setEventPerPage(newData);
         }else{
           let updatedData = eventPerPage?.find((event) => event.id === groupId);
@@ -697,10 +691,11 @@ const Table = ({
         }
         showToast('error', "Saved event deleted");
         }
+        setSavedEventCount(prev=>prev-1);
       }
-       else {
+       else if(error){
         console.log(error);
-        showToast('error', error.message);
+        showToast('error', error?.response);
       }
     } catch (err) {
       console.error("Error deleting event:", err);

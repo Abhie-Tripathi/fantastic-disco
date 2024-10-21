@@ -12,31 +12,46 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, Search, ChevronDown } from "lucide-react";
 import { useFilterState } from "@/hooks/useFilterState";
-
-export default function KeywordFilter() {
+interface KeywordSelectorProps{
+  source:string;
+  includeKeywords?:string[];
+  setIncludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
+  excludeKeywords?:string[];
+  setExcludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
+}
+export default function KeywordFilter({
+  source, 
+  includeKeywords : parentIncludeKeyword = [], 
+  setIncludeKeywords : setParentIncludeKeywords, 
+  excludeKeywords : parentExcludeKeyword = [], 
+  setExcludeKeywords : setParentExcludeKeywords,
+}:KeywordSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { getFilterValue, setMultipleFilters } = useFilterState();
-  const [includeKeywords, setIncludeKeywords] = useState<string[]>([]);
-  const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
+  const [localIncludeKeywords, setLocalIncludeKeywords] = useState<string[]>([]);
+  const [localExcludeKeywords, setLocalExcludeKeywords] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [activeTab, setActiveTab] = useState("include");
-
+  const includeKeywords = source==="tracker"? parentIncludeKeyword : localIncludeKeywords;
+  const setIncludeKeywords = source==="tracker"? setParentIncludeKeywords : setLocalIncludeKeywords;
+  const excludeKeywords = source==="tracker"? parentExcludeKeyword : localExcludeKeywords;
+  const setExcludeKeywords = source==="tracker"? setParentExcludeKeywords : setLocalExcludeKeywords;
   useEffect(() => {
     const savedIncludeKeywords = getFilterValue("includeKeywords");
     const savedExcludeKeywords = getFilterValue("excludeKeywords");
     if (savedIncludeKeywords)
-      setIncludeKeywords(savedIncludeKeywords.split(","));
+      setIncludeKeywords?.(savedIncludeKeywords.split(","));
     if (savedExcludeKeywords)
-      setExcludeKeywords(savedExcludeKeywords.split(","));
+      setExcludeKeywords?.(savedExcludeKeywords.split(","));
   }, [getFilterValue]);
 
   const handleAddKeyword = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim()) {
       if (activeTab === "include") {
-        setIncludeKeywords([...includeKeywords, inputValue.trim()]);
+        setIncludeKeywords?.([...includeKeywords, inputValue.trim()]);
       } else {
-        setExcludeKeywords([...excludeKeywords, inputValue.trim()]);
+        setExcludeKeywords?.([...excludeKeywords, inputValue.trim()]);
       }
       setInputValue("");
     }
@@ -47,13 +62,14 @@ export default function KeywordFilter() {
     type: "include" | "exclude"
   ) => {
     if (type === "include") {
-      setIncludeKeywords(includeKeywords.filter((k) => k !== keyword));
+      setIncludeKeywords?.(includeKeywords.filter((k) => k !== keyword));
     } else {
-      setExcludeKeywords(excludeKeywords.filter((k) => k !== keyword));
+      setExcludeKeywords?.(excludeKeywords.filter((k) => k !== keyword));
     }
   };
 
   const handleApply = () => {
+    if(source!=="tracker")
     setMultipleFilters({
       includeKeywords: includeKeywords.join(","),
       excludeKeywords: excludeKeywords.join(","),

@@ -1,6 +1,6 @@
 
 "use client";
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState} from "react";
 import Expand from "/public/expand_more.svg";
 import Notes from "@/public/notes.svg"
 import Image from "next/image";
@@ -19,17 +19,21 @@ import { Calendar, Globe, ListUnordered } from "geist-icons";
 import { showToast } from "@/utils/showToast";
 import Loading from "@/app/components/UI/Loading";
 import Link from "next/link";
+import { useTrackerServices } from "@/services/trackerServices";
+import SideNav from "@/app/components/trackers/sideNav";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
-const Map = lazy(() => import("@/app/components/employee/mapview/Map"));
+const Map = lazy(() => import("@/components/map"));
 interface Toggle{
   rating?:boolean;
   exhibit?:boolean;
   trust?:boolean;
 }
 const Page = ({ params }: { params: any }) => {
+  console.log(params);
   const [active, setActive] = useState("Active Events");
+  const {getTrackerDetail, error}=useTrackerServices();
   const [type, setType] = useState<string | undefined>();
   const [activeValue, setActiveValue] = useState();
   const [loading, setLoading] = useState(false);
@@ -37,7 +41,9 @@ const Page = ({ params }: { params: any }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
+  const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
+console.log(searchParams.get("view"));
 
   // const id = pathName[pathName.length - 2];
   console.log(active);
@@ -88,28 +94,42 @@ const Page = ({ params }: { params: any }) => {
       },
     ],
   };
+  
   useEffect(() => {
     const fetchTrackerDetail = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/tracker/${trackerId}`);
-      if (data) {
-        setTrackerDetail(data.tracker);
-        setLoading(true);
-      }
-      if (error) {
-        console.log(error);
-        showToast("error", error.message);
-        if (typeof window !== 'undefined') {
-          router.push('/internal/trackers');
-        } 
+      // console.log(11111);
+      
+      try{
+          const data= await getTrackerDetail(trackerId);
+          console.log(data);
+          
+          if (data) {
+            console.log(data);
+            
+            setTrackerDetail(data.tracker);
+            setLoading(true);
+          }
+          if (error) {
+            console.log(error);
+            showToast("error", error.message);
+            if (typeof window !== 'undefined') {
+              router.push('/internal/trackers');
+            } 
+          }
+      }catch(error){
+          console.log(error); 
       }
     };
     fetchTrackerDetail();
   }, [trackerId]);
 
   useEffect(() => {
+    setSavedEventCount(trackerDetail?.savedEventTotalCount);
     createQueryString();
   }, [trackerDetail]);
-
+  useEffect(()=>{
+    setView(searchParams.get("view"))
+  },[searchParams.get("view")])
   const lineOptions = {
     plugins: {
       legend: {
@@ -193,7 +213,7 @@ const Page = ({ params }: { params: any }) => {
   useEffect(() => {
     console.log(activeValue);
   }, [active]);
-  const formatCount = (count: number) => {
+  const formatCount = (count: number ) => {
     if (count >= 1000) {
       const value = count / 1000;
       const decimalPart = value - Math.floor(value);
@@ -357,6 +377,7 @@ const Page = ({ params }: { params: any }) => {
  
   return (
     <div className="flex w-[calc(100vw-134px)]">
+      <SideNav/>
       <Suspense fallback={<p>Loading feed...</p>}>
         <div className="flex gap-5 mt-[54px] mb-[24px] flex-col w-[100%]">
           <div className="flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
@@ -460,8 +481,7 @@ const Page = ({ params }: { params: any }) => {
                   <div className={styles.circle} style={{background: active==="Saved Events"?"white":"", color: active==="Saved Events"?"var(--primary-color)":""}}>
                     {loading ? (
                       formatCount(
-                        trackerDetail?.groupedEventsCountByStatus
-                          ?.groupedEventsByStatus?.active
+                       savedEventCount
                       )
                     ) : (
                       <div className={styles.loader}></div>
@@ -512,6 +532,8 @@ const Page = ({ params }: { params: any }) => {
           {view === "list" && (
             <div>
             <Table
+              savedEventCount={savedEventCount}
+              setSavedEventCount={setSavedEventCount}
               showInsights={showInsights}
               eventType={active}
               setActiveValue={setActiveValue}
@@ -522,7 +544,8 @@ const Page = ({ params }: { params: any }) => {
           {view === "map" && (
             <div>
               <Suspense fallback={<Loading />}>
-                <Map queryString={urlQueryString} />
+                {/* <Map queryString={urlQueryString} /> */}
+                <Map/>
               </Suspense>
             </div>
           )}
