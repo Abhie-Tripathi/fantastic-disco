@@ -79,6 +79,7 @@ import Competitor from "/public/competitor.svg";
 import Speaking from "/public/speaking.svg";
 import Keywords from "/public/keywords.svg";
 import trackerEmptyTable from "/public/internal/trackerEmptyTable.svg"
+import TemplateTable from "./templateTable";
 interface FilterValue {
   labels: string;
   name: string;
@@ -171,7 +172,7 @@ interface EditData {
   tracker: Tracker;
 }
 
-const top10Data = [['abc.com'], ['10times']];
+const top10Data = [['BMC Training'], ['Lorman Education Services'], ['http://www.iu.edu/']];
 const top10Speakers = [
   ["abc.com", "xyz.com"],
   ["Mark Zuckerberg", "Facebook"],
@@ -187,7 +188,7 @@ const presetTemplateData = [
     trackerName: "Top 100 Companies",
     content: "This list highlights 100 global events organizers connecting industries, fostering business growth, and innovation.",
     data: top10Data,
-    enabled: false,
+    enabled: true,
     presetType: 'ALL',
   },
   {
@@ -210,7 +211,7 @@ const presetTemplateData = [
     url: "T_COMPETITOR",
     trackerName: "India Top 30",
     content: "Discover leading companies in India hosting business expos, conferences, and events.",
-    data: top10Speakers,
+    data: top10Data,
     enabled: false,
     presetType: 'All',
   },
@@ -232,8 +233,8 @@ const presetTemplateData = [
     url: "T_SPEAKING_OPPORTUNITY",
     trackerName: "Artificial Intelligence Speakers",
     content: "This list of Artificial Intelligence speakers, pioneering innovation and attracting attention with compelling talks.",
-    data: top10Data,
-    enabled: false,
+    data: top10Speakers,
+    enabled: true,
     presetType: 'All',
   },
   {
@@ -242,7 +243,7 @@ const presetTemplateData = [
     url: "T_SPEAKING_OPPORTUNITY",
     trackerName: "Biotechnology Innovations Speakers",
     content: "This list of Biotechnology Innovations speakers, pioneering innovation and attracting attention with compelling talks.",
-    data: top10Data,
+    data: top10Speakers,
     enabled: false,
     presetType: 'All',
   }
@@ -658,7 +659,7 @@ const Pages = () => {
     }
   }, [type, customData])
 
-  const handlePresetClick = (id: number, trackerType: string) => {
+  const handlePresetClick = (id: number, trackerType: string, trackerName: string) => {
 
     const filteredPresetData = presetTemplateData.filter(item => item.id === id);
     if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY') {
@@ -672,6 +673,7 @@ const Pages = () => {
         presetData.push(temp);
       })      
       setCustomData(presetData);
+      setTrackerName(trackerName);
     } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
     }
 
@@ -1611,7 +1613,6 @@ useEffect(()=>{
   }
 
   const [uploadEnabled, setUploadEnabled] = useState<boolean>(false);
-  const [expandTable, setExpandTable] = useState<boolean>(false);
 
   const handleUploadEnable = () => {
     setUploadEnabled(!uploadEnabled)
@@ -1950,55 +1951,7 @@ useEffect(()=>{
             {" "} You can edit or remove unwanted entries from here.
           </div>
           {(customData && customData.length >0) ?
-            <div className={styles.allCompetitors}>
-              <div className={styles.remove_all_custom} onClick={() => setCustomData([])}>
-                Remove All
-              </div>
-              <div className={styles.table_container}>
-              <table className={styles.allCustomData}>
-                <thead>
-                  <tr>
-                    <th></th>
-                    {Object.entries(customData[0])
-                      .map(([entryKey, value]) => 
-                        <th key={entryKey} className={styles.dataColoumn}>{entryKey as string}</th>
-                      )
-                    }
-                  </tr>
-                </thead>
-                <tbody>
-                  {expandTable ? customData.map((item: any, index: number) => (
-                      <tr key={index}>
-                        <td>
-                          <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
-                        </td>
-                        {Object.entries(item)
-                          .map(([entryKey, value]) => 
-                            <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
-                          )
-                        }
-                      </tr>
-                    )) :
-                    customData.slice(0, 5).map((item: any, index: number) => (
-                      <tr key={index}>
-                        <td>
-                          <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
-                        </td>
-                        {Object.entries(item)
-                          .map(([entryKey, value]) => 
-                            <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
-                          )
-                        }
-                      </tr>
-                    ))
-                  }
-                </tbody>
-              </table>
-              </div>
-              {customData.length > 5 &&
-                <div className={styles.expandTableBtn} onClick={()=>setExpandTable(prev=>!prev)} >{expandTable ? 'Read Less' : 'Read More'}</div>
-              }
-            </div> :
+            <TemplateTable customData={customData} handleCustomData={handleCustomData} /> :
             <div className={styles.emptyTableData}>
               <Image
                 src={trackerEmptyTable}
@@ -3451,7 +3404,7 @@ useEffect(()=>{
             <div className={styles.presetTitle} >Get Started with Pre-sets</div>
             <div className={styles.presetContainer} >
               {presetTemplateData.filter(item => item.url === template?.name).map((item, ind) => (
-                <div key={ind} className={styles.innerContainerTwo} onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
+                <div key={ind} className={styles.innerContainerTwo} onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
                   <div
                     className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
                       }`}
