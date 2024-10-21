@@ -126,6 +126,7 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
 
     const router = useRouter()
     const handleMainEventClick = () => {
+        console.log("parent id :  ", parentId)
         if (parentId) {
             router.push(`/detailpage/${parentId}`)
         }

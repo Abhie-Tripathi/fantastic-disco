@@ -373,6 +373,8 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             hashtags: subEventState.hashtags.join(","),
             boothNumber: subEventState.boothNumber,
         }
+        const parentData = subEventState.parentData || "";
+        const [parenteventName, parenteventId] = parentData.split(",");
         const eventData = {
             format: subEventState.eventFormat,
             start_time: subEventState.startTime,
@@ -388,7 +390,7 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             participationType: subEventState.participationType,
             event_type: "Tradeshow",
             customizationData: JSON.stringify(eventCustomizationData),
-            parentData: subEventState.parentData ? subEventState.parentData : "",
+            parentData: parenteventName? parenteventName : "",
         };
         const formData = new FormData()
         formData.append("name", subEventState.eventName)
@@ -396,6 +398,9 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
         formData.append("type", "SUB")
         if (eventId) {
             formData.append('eventId', eventId)
+        }
+        if(parenteventId){
+            formData.append('eventId', parenteventId)
         }
         formData.append("capacity", subEventState?.capacity + "")
         formData.append("registration", subEventState?.registration + "")

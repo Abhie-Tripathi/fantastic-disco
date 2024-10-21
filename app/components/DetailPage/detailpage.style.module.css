@@ -192,6 +192,7 @@
     display: flex;
     align-items: center;
     gap: 9px;
+    z-index: 2;
 }
 
 .mainEventLinkContainer .linkIcon {
