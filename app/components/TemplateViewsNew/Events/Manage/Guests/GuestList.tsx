@@ -34,7 +34,7 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
   const [mail, setMail] = useState<string>("")
   const [sortBy, setSortBy] = useState<string>("")
   const [filterStatus, setFilterStatus] = useState<string>("")
-
+  const [inputName, setInputName] = useState<string>("")
 
   const statusModalRef = useOutsideClick(() => setStatusModal(false));
 
@@ -60,6 +60,18 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
     return `${day}${daySuffix} ${month} ${year}`;
   };
 
+  // Debouncing
+  const [debouncedInputName, setDebouncedInputName] = useState<string>(""); 
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedInputName(inputName);
+    }, 400);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [inputName]);
+
   const fetchGuests = async () => {
     let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}&sortType=asc`;
 
@@ -70,7 +82,9 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
     if (filterStatus.length > 0) {
       fetchUrl += `&status=${filterStatus}`;
     }
-
+    if (debouncedInputName) {
+      fetchUrl += `&name=${debouncedInputName}`;
+    }
     const { data, error } = await myFetch(`${fetchUrl}`)
 
     if (error) {
@@ -89,7 +103,7 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
 
   useEffect(() => {
     fetchGuests()
-  }, [sortBy, filterStatus])
+  }, [sortBy, filterStatus, debouncedInputName])
 
   const handleSortBy = (sort: string) => {
     if (sort === "firstname") {
@@ -136,15 +150,15 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
       //   position: "bottom-right",
       //   autoClose: 3000,
       // });
-      showToast("warning","No guests available to download.")
-      return; 
+      showToast("warning", "No guests available to download.")
+      return;
     }
 
     // toast.info("Downloading...", {
     //   position: "bottom-right",
     //   autoClose: 2000,
     // });
-    showToast("info","Downloading...")
+    showToast("info", "Downloading...")
     const csvConfig = mkConfig({ useKeysAsHeaders: true });
     const csv = generateCsv(csvConfig)(guests);
     download(csvConfig)(csv);
@@ -156,11 +170,11 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
       //   position: "bottom-right",
       //   autoClose: 3000,
       // });
-      showToast("warning","No guests available to download.")
+      showToast("warning", "No guests available to download.")
       return;
     }
 
-    showToast("info","Downloading...")
+    showToast("info", "Downloading...")
     // toast.info("Downloading...", {
     //   position: "bottom-right",
     //   autoClose: 2000,
@@ -182,12 +196,12 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
     return status === "PENDING"
       ? "Pending"
       : status === "CONFIRMED"
-      ? "Going"
-      : status === "WAITLISTING"
-      ? "Waitlist"
-      : status === "FOLLOWING"
-      ? "Following"
-      : "Not going";
+        ? "Going"
+        : status === "WAITLISTING"
+          ? "Waitlist"
+          : status === "FOLLOWING"
+            ? "Following"
+            : "Not going";
   };
 
   return (
@@ -205,6 +219,7 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
           type="text"
           className={styles.inputSearch}
           placeholder="Search Guests"
+          onChange={(e)=>setInputName(e.target.value)}
         />
       </div>
       <div className={styles.filterSortingContainer}>
