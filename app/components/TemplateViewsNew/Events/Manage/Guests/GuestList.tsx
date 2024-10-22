@@ -4,7 +4,6 @@ import SortIcon from "/public/filter.svg";
 import Image from "next/image";
 import useOutsideClick from "@/hooks/useOutsideClick";
 import DownloadIcon from "/public/downloadIcon.svg";
-import { useEventContext } from "@/context/eventcontext";
 import { baseUrl } from "@/constants";
 import { myFetch } from "@/utils/myFetch";
 import StatusModal from "./StatusModal";
@@ -61,7 +60,7 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
   };
 
   // Debouncing
-  const [debouncedInputName, setDebouncedInputName] = useState<string>(""); 
+  const [debouncedInputName, setDebouncedInputName] = useState<string>("");
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedInputName(inputName);
@@ -212,14 +211,13 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
           <Image src={DownloadIcon} alt="download" />
         </div>
       </div>
-
       <div className={styles.inputContainer}>
         <SearchIcon />
         <input
           type="text"
           className={styles.inputSearch}
           placeholder="Search Guests"
-          onChange={(e)=>setInputName(e.target.value)}
+          onChange={(e) => setInputName(e.target.value)}
         />
       </div>
       <div className={styles.filterSortingContainer}>

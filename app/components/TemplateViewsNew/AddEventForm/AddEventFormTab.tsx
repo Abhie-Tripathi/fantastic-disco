@@ -13,6 +13,9 @@ import { FormState } from '@/types/Formstate'
 import confetti from "canvas-confetti";
 import LeafOne from '/public/widgetimages/leaf1.png'
 import LeafTwo from '/public/widgetimages/leaf2.png'
+import LeafFour from '/public/widgetimages/leaf4.png'
+import LeafFive from '/public/widgetimages/leaf5.png'
+import LeafSix from '/public/widgetimages/leaf6.png'
 import Image from 'next/image'
 
 
@@ -684,8 +687,8 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
                     {Array.from({ length: 100 }).map((_, index) => (
                         <Image
                             key={index}
-                            // src={index % 2 === 0 ? LeafOne : LeafTwo}
-                            src={LeafTwo}
+                            src={index % 2 === 0 ? LeafFour : LeafFive}
+                            // src={LeafTwo}
                             className={styles.leaf}
                             alt={`Leaf ${index + 1}`}
                             style={{

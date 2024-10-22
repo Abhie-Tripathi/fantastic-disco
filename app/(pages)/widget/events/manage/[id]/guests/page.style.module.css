@@ -57,6 +57,16 @@
     transition-duration: .2s;
     background-color: var(--accent-color);
 }
+.guestBar{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.guestBar .heading{
+    color: var(--primary-text-color);
+    font-size: var(--font-size-h5);
+    font-weight: var(--font-weight-semibold);
+}
 .blackScreen{
     width: 100vw;
     height: 100vh;
