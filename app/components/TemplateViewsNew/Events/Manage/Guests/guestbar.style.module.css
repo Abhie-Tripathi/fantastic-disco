@@ -16,6 +16,9 @@
 .header div span{
     font-size: var(--font-size-h5);
 }
+.redCap{
+    color: var(--danger-text-color);
+}
 .bar {
     position: relative;
     height: 10px;
