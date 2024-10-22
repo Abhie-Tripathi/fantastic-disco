@@ -8,9 +8,10 @@ interface Props {
   followingGuests: number
   waitlistGuest: number
   capacity?: number;
+  setFilterStatus:(value: string) => void
 }
 
-const GuestBar = ({ goingGuests, notgoingGuests, pendingGuests, followingGuests, waitlistGuest, capacity }: Props) => {
+const GuestBar = ({ goingGuests, notgoingGuests, pendingGuests, followingGuests, waitlistGuest, capacity, setFilterStatus }: Props) => {
 
   const totalGuests = goingGuests + notgoingGuests + pendingGuests + followingGuests + waitlistGuest;
   const effectiveCapacity = Math.max(capacity || 0, totalGuests);
@@ -48,11 +49,11 @@ const GuestBar = ({ goingGuests, notgoingGuests, pendingGuests, followingGuests,
         })}
       </div>
       <div className={styles.guestContainer}>
-        {goingGuests > 0 && <div><span></span>{goingGuests} Going</div>}
-        {pendingGuests > 0 && <div><span></span>{pendingGuests} Pending</div>}
-        {notgoingGuests > 0 && <div><span></span>{notgoingGuests} Not Going</div>}
-        {waitlistGuest > 0 && <div><span></span>{waitlistGuest} Waitlist</div>}
-        {followingGuests > 0 && <div><span></span>{followingGuests} Following</div>}
+        {goingGuests > 0 && <div onClick={()=>setFilterStatus("CONFIRMED")}><span></span>{goingGuests} Going</div>}
+        {pendingGuests > 0 && <div onClick={()=>setFilterStatus("PENDING")}><span></span>{pendingGuests} Pending</div>}
+        {notgoingGuests > 0 && <div onClick={()=>setFilterStatus("REJECTED")}><span></span>{notgoingGuests} Not Going</div>}
+        {waitlistGuest > 0 && <div onClick={()=>setFilterStatus("WAITLISTING")}><span></span>{waitlistGuest} Waitlist</div>}
+        {followingGuests > 0 && <div onClick={()=>setFilterStatus("FOLLOWING")}><span></span>{followingGuests} Following</div>}
       </div>
     </div>
   )

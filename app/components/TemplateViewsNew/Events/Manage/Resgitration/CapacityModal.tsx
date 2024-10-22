@@ -66,7 +66,7 @@ const CapacityModal = ({eventId, setCapacityModal, setCapacityValue, capacityVal
             </div>
             <div className={styles.inputContainer}>
                 <div className={styles.heading}>Capacity</div>
-                <input type="number" onChange={(e)=>setCapacityValue(Number(e.target.value))} value={capacityValue}/>
+                <input type="number" onChange={(e)=>setCapacityValue(Number(e.target.value))} value={capacityValue} min={1}/>
             </div>
             <div className={styles.waitlistContainer}>
                 <div className={styles.heading}>
