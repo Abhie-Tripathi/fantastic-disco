@@ -27,7 +27,7 @@ interface Props {
     locationCity?: string;
     locationCountry?: string;
     participationType?: string;
-    format: string;
+    format?: string;
     virtualLink:string;
 }
 

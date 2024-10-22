@@ -11,37 +11,68 @@ import StatusModal from "./StatusModal";
 import { mkConfig, generateCsv, download } from "export-to-csv";
 import * as XLSX from "xlsx";
 import { showToast } from "@/utils/showToast";
-import { ToastContainer, toast } from "react-toastify";
+// import { ToastContainer, toast } from "react-toastify";
 
 interface Props {
   eventId: string;
   statusModal: boolean;
-  setStatusModal: (value: boolean) => void;
+  setStatusModal: (value: boolean) => void
 }
 
 const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
-  const [activeFilterBtn, setActiveFilterBtn] = useState<string>("All Guests");
-  const [activeSortBtn, setActiveSortBtn] = useState<string>("Name");
-  const [filterDropdown, setFilterdropdown] = useState<boolean>(false);
-  const [sortDropdown, setSortDropdown] = useState<boolean>(false);
-  const filterDropdownRef = useOutsideClick(() => setFilterdropdown(false));
-  const sortDropdownRef = useOutsideClick(() => setSortDropdown(false));
 
-  const [statusValue, setStatusValue] = useState<string>("");
-  const [interestId, setInterestId] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  const [mail, setMail] = useState<string>("");
+  const [activeFilterBtn, setActiveFilterBtn] = useState<string>("All Guests")
+  const [activeSortBtn, setActiveSortBtn] = useState<string>("Register Time")
+  const [filterDropdown, setFilterdropdown] = useState<boolean>(false)
+  const [sortDropdown, setSortDropdown] = useState<boolean>(false)
+  const filterDropdownRef = useOutsideClick(() => setFilterdropdown(false))
+  const sortDropdownRef = useOutsideClick(() => setSortDropdown(false))
+
+  const [statusValue, setStatusValue] = useState<string>("")
+  const [interestId, setInterestId] = useState<string>("")
+  const [name, setName] = useState<string>("")
+  const [mail, setMail] = useState<string>("")
+  const [sortBy, setSortBy] = useState<string>("")
+  const [filterStatus, setFilterStatus] = useState<string>("")
+
 
   const statusModalRef = useOutsideClick(() => setStatusModal(false));
 
-  const [guests, setGuests] = useState<any[]>([
-    // { name: "Walter White", email: "killguss@yahoo.com", status: "Going" }, { name: "Sheldon Cooper", email: "bazinga.buzz@gmail.com", status: "Waitlist" }, { name: "Joey Trib", email: "howyoudoin@gmail.com", status: "Not Going" }
-  ]);
+  const [guests, setGuests] = useState<any[]>(
+    [
+      // { name: "Walter White", email: "killguss@yahoo.com", status: "Going" }, { name: "Sheldon Cooper", email: "bazinga.buzz@gmail.com", status: "Waitlist" }, { name: "Joey Trib", email: "howyoudoin@gmail.com", status: "Not Going" }
+    ]
+  )
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+
+    // Get the day suffix
+    const daySuffix =
+      day === 1 || day === 21 || day === 31 ? "st" :
+        day === 2 || day === 22 ? "nd" :
+          day === 3 || day === 23 ? "rd" : "th";
+
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+
+    return `${day}${daySuffix} ${month} ${year}`;
+  };
 
   const fetchGuests = async () => {
-    const { data, error } = await myFetch(
-      `${baseUrl}/intend/users?eventId=${eventId}`
-    );
+    let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}&sortType=asc`;
+
+    if (sortBy.length > 0) {
+      fetchUrl += `&sortBy=${sortBy}`;
+    }
+
+    if (filterStatus.length > 0) {
+      fetchUrl += `&status=${filterStatus}`;
+    }
+
+    const { data, error } = await myFetch(`${fetchUrl}`)
+
     if (error) {
       console.log("error is : ", error);
     } else {
@@ -50,14 +81,40 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
         email: user.email,
         status: user.status,
         interestId: user.interestId,
+        date: formatDate(user.created)
       }));
       setGuests(fetchedGuests);
     }
   };
 
   useEffect(() => {
-    fetchGuests();
-  }, []);
+    fetchGuests()
+  }, [sortBy, filterStatus])
+
+  const handleSortBy = (sort: string) => {
+    if (sort === "firstname") {
+      setActiveSortBtn("Name")
+    } else if (sort === "email") {
+      setActiveSortBtn("Email")
+    } else {
+      setActiveSortBtn("Register Time")
+    }
+    setSortBy(sort)
+  }
+  const handleFilterBy = (filter: string) => {
+    setActiveFilterBtn(filter)
+    if (filter === "All Guests") {
+      setFilterStatus("")
+    } else if (filter === "Going") {
+      setFilterStatus("CONFIRMED")
+    } else if (filter === "Not going") {
+      setFilterStatus("REJECTED")
+    } else if (filter === "Waitlist") {
+      setFilterStatus("WAITLISTING")
+    } else if (filter === "Pending") {
+      setFilterStatus("PENDING")
+    }
+  }
 
   const handleStatusClick = (
     interestId: string,
@@ -75,37 +132,39 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
   // Function to export the data in csv
   const downloadCsv = () => {
     if (guests.length === 0) {
-      toast.warn("No guests available to download.", {
-        position: "bottom-right",
-        autoClose: 3000,
-      });
-      return;
+      // toast.warn("No guests available to download.", {
+      //   position: "bottom-right",
+      //   autoClose: 3000,
+      // });
+      showToast("warning","No guests available to download.")
+      return; 
     }
 
-    toast.info("Downloading...", {
-      position: "bottom-right",
-      autoClose: 2000,
-    });
+    // toast.info("Downloading...", {
+    //   position: "bottom-right",
+    //   autoClose: 2000,
+    // });
+    showToast("info","Downloading...")
     const csvConfig = mkConfig({ useKeysAsHeaders: true });
     const csv = generateCsv(csvConfig)(guests);
     download(csvConfig)(csv);
   };
 
- 
-
   const downloadExcel = () => {
     if (guests.length === 0) {
-      toast.warn("No guests available to download.", {
-        position: "bottom-right",
-        autoClose: 3000,
-      });
+      // toast.warn("No guests available to download.", {
+      //   position: "bottom-right",
+      //   autoClose: 3000,
+      // });
+      showToast("warning","No guests available to download.")
       return;
     }
 
-    toast.info("Downloading...", {
-      position: "bottom-right",
-      autoClose: 2000,
-    });
+    showToast("info","Downloading...")
+    // toast.info("Downloading...", {
+    //   position: "bottom-right",
+    //   autoClose: 2000,
+    // });
 
     // Map guests while excluding interestId
     const mappedGuests = guests.map(({ interestId, ...guest }) => ({
@@ -155,118 +214,50 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
             onClick={() => setFilterdropdown(!filterDropdown)}
           >
             <FilterIcon />
-            {activeFilterBtn}
-          </button>
-          {filterDropdown && (
-            <div className={styles.dropdown} ref={filterDropdownRef}>
-              <li onClick={() => setActiveFilterBtn("All Guests")}>
-                {activeFilterBtn === "All Guests" && <TickIcon />}All Guests
-              </li>
-              <li onClick={() => setActiveFilterBtn("Going")}>
-                {activeFilterBtn === "Going" && <TickIcon />}Going<span>2</span>
-              </li>
-              <li onClick={() => setActiveFilterBtn("Invited")}>
-                {activeFilterBtn === "Invited" && <TickIcon />}Invited{" "}
-                <span>0</span>
-              </li>
-              <li onClick={() => setActiveFilterBtn("Waitlist")}>
-                {activeFilterBtn === "Waitlist" && <TickIcon />}Waitlist{" "}
-                <span>1</span>
-              </li>
-              <li onClick={() => setActiveFilterBtn("Not going")}>
-                {activeFilterBtn === "Not going" && <TickIcon />}Not going{" "}
-                <span>0</span>
-              </li>
-            </div>
-          )}
+            {activeFilterBtn}</button>
+          {filterDropdown && <div className={styles.dropdown} ref={filterDropdownRef}>
+            <li onClick={() => handleFilterBy("All Guests")}>{activeFilterBtn === "All Guests" && <TickIcon />}All Guests</li>
+            <li onClick={() => handleFilterBy("Going")}>{activeFilterBtn === "Going" && <TickIcon />}Going<span>2</span></li>
+            <li onClick={() => handleFilterBy("Invited")}>{activeFilterBtn === "Invited" && <TickIcon />}Invited <span>0</span></li>
+            <li onClick={() => handleFilterBy("Pending")}>{activeFilterBtn === "Pending" && <TickIcon />}Pending <span>0</span></li>
+            <li onClick={() => handleFilterBy("Waitlist")}>{activeFilterBtn === "Waitlist" && <TickIcon />}Waitlist <span>1</span></li>
+            <li onClick={() => handleFilterBy("Not going")}>{activeFilterBtn === "Not going" && <TickIcon />}Not going <span>0</span></li>
+          </div>}
         </div>
         <div className={styles.sortBtnContainer}>
-          <button
-            className={styles.dropBtn}
-            onClick={() => setSortDropdown(!sortDropdown)}
-          >
-            <Image src={SortIcon} alt="filter" />
-            {activeSortBtn}
-          </button>
-          {sortDropdown && (
-            <div className={styles.dropdown} ref={sortDropdownRef}>
-              <li onClick={() => setActiveSortBtn("Name")}>
-                {activeSortBtn === "Name" && <TickIcon />}Name
-              </li>
-              <li onClick={() => setActiveSortBtn("Email")}>
-                {activeSortBtn === "Email" && <TickIcon />}Email
-              </li>
-              <li onClick={() => setActiveSortBtn("Register Time")}>
-                {activeSortBtn === "Register Time" && <TickIcon />}Register Time
-              </li>
-            </div>
-          )}
+          <button className={styles.dropBtn} onClick={() => setSortDropdown(!sortDropdown)}><Image src={SortIcon} alt='filter' />{activeSortBtn}</button>
+          {sortDropdown && <div className={styles.dropdown} ref={sortDropdownRef}>
+            <li onClick={() => handleSortBy("firstname")}>{activeSortBtn === "Name" && <TickIcon />}Name</li>
+            <li onClick={() => handleSortBy("email")}>{activeSortBtn === "Email" && <TickIcon />}Email</li>
+            <li onClick={() => handleSortBy("")}>{activeSortBtn === "Register Time" && <TickIcon />}Register Time</li>
+          </div>}
         </div>
       </div>
       <div className={styles.guestListContainer}>
-        {guests.length > 0 ? (
-          guests.map((guest, key) => (
-            <div
-              className={styles.guest}
-              key={key}
-              onClick={() =>
-                handleStatusClick(
-                  guest.interestId,
-                  guest.status,
-                  guest.name,
-                  guest.email
-                )
-              }
-            >
-              <div className={styles.nameMailContainer}>
-                <div className={styles.guestName}>{guest.name}</div>
-                <div className={styles.guestEmail}>{guest.email}</div>
-              </div>
-              <div
-                className={`${styles.guestStatus} 
-            ${
-              guest.status === "PENDING"
-                ? styles.pending
-                : guest.status === "CONFIRMED"
-                ? styles.going
-                : guest.status === "WAITLISTING"
-                ? styles.waitlist
-                : guest.status === "FOLLOWING"
-                ? styles.following
-                : styles.notgoing
-            }
-            `}
-              >
-                {guest.status === "PENDING"
-                  ? "Pending"
-                  : guest.status === "CONFIRMED"
-                  ? "Going"
-                  : guest.status === "WAITLISTING"
-                  ? "Waitlist"
-                  : guest.status === "FOLLOWING"
-                  ? "Following"
-                  : "Declined"}
-              </div>
+        {guests.length > 0 ? (guests.map((guest, key) => (
+          <div className={styles.guest} key={key} onClick={() => handleStatusClick(guest.interestId, guest.status, guest.name, guest.email)} >
+            <div className={styles.nameMailContainer}>
+              <div className={styles.guestName}>{guest.name}</div>
+              <div className={styles.guestEmail}>{guest.email}</div>
             </div>
-          ))
-        ) : (
-          <div className={styles.emptyList}>
-            No guest registred yet. Start by inviting
+            <div className={styles.guestDateContainer}>
+              <div className={`${styles.guestStatus} 
+            ${guest.status === "PENDING" ? styles.pending :
+                  guest.status === "CONFIRMED" ? styles.going :
+                    guest.status === "WAITLISTING" ? styles.waitlist :
+                      guest.status === "FOLLOWING" ? styles.following : styles.notgoing
+                }
+            `}>
+                {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" : "Not Going"}
+              </div>
+              <div className={styles.date}>{guest.date}</div>
+            </div>
           </div>
+        ))) : (
+          <div className={styles.emptyList}>No guest registered yet. Start by inviting</div>
         )}
       </div>
-      {statusModal && (
-        <div className={styles.modal} ref={statusModalRef}>
-          <StatusModal
-            eventId={eventId}
-            interestId={interestId}
-            mail={mail}
-            name={name}
-            statusValue={statusValue}
-            setStatusValue={setStatusValue}
-          />
-        </div>
-      )}
+      {statusModal && <div className={styles.modal} ref={statusModalRef}><StatusModal setStatusModal={setStatusModal} fetchGuests={fetchGuests} eventId={eventId} interestId={interestId} mail={mail} name={name} statusValue={statusValue} setStatusValue={setStatusValue} /></div>}
     </div>
   );
 };

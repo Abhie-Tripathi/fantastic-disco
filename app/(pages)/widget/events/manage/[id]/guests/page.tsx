@@ -8,7 +8,7 @@ import InviteGuest from '@/app/components/TemplateViewsNew/Events/Manage/Guests/
 import { useEventContext } from '@/context/eventcontext'
 
 const Page = () => {
-  const { eventId, fetchedEvent } = useEventContext();
+  const {fetchEventData, eventId, fetchedEvent } = useEventContext();
 
   const [registerModal, setRegisterModal] = useState<boolean>(false);
   const [inviteGuestModal, setInviteGuestModal] = useState<boolean>(false);
@@ -53,7 +53,7 @@ const Page = () => {
       <GuestList eventId={eventId} statusModal={statusModal} setStatusModal={setStatusModal}/>
       {/* {(registerModal || inviteGuestModal) &&<div className={styles.blackScreen}></div>} */}
       {registerModal && <div className={styles.modal} ref={registerModalRef}>
-        <RegisterModal setRegisterValue={setRegisterValue} registerValue={registerValue} setRegisterModal={setRegisterModal} eventId={eventId} />
+        <RegisterModal fetchEventData={fetchEventData} setRegisterValue={setRegisterValue} registerValue={registerValue} setRegisterModal={setRegisterModal} eventId={eventId} />
       </div>}
       {inviteGuestModal && <div className={styles.modal} ref={inviteModalRef}>
         <InviteGuest />

@@ -36,7 +36,6 @@ const RegisterForm = ({
 }: Props) => {
   const [formData, setFormData] = useState({
     firstname: "",
-    lastname: "",
     email: "",
   });
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -75,36 +74,29 @@ const RegisterForm = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === "name") {
-      const [first, ...rest] = value.split(" ");
-      setFormData({
-        ...formData,
-        firstname: first,
-        lastname: rest.join(" "), // Join the remaining parts as the last name
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+    setFormData({
+      ...formData,
+      [name]: value,
+    });  
   };
+  const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const nameParts = formData.firstname.trim().split(" ");
+    const firstName = nameParts[0]; // First word becomes the first name
+    const lastName = nameParts.slice(1).join(" "); // Remaining words become the last name
     const payload = {
       email: formData.email,
-      firstname: formData.firstname,
-      lastname: formData.lastname,
+      firstname: firstName,
+      lastname: lastName,
       eventId: eventId,
       interest: "ATTENDEE",
       note: "intend",
       source: "eventgeni",
+      redirectUrl: `${console_url}/detailpage/${eventId}`
       // sourceId: widgetId,
-      redirectUrl: `console.dev.eventgeni.com/detailpage/${eventId}`,
     };
-
     try {
       const response = await fetch(`${baseUrl}/intend`, {
         method: "POST",
@@ -547,68 +539,67 @@ const RegisterForm = ({
           onChange={handleChange}
           required
         />
-      </form>
-
-      <button
-        type="submit"
-        style={{ backgroundColor: registerBtnColor, color: fontColor }}
-        className={styles.submitBtn}
+        <button
+          type="submit"
+          style={{ backgroundColor: registerBtnColor, color: fontColor }}
+          className={styles.submitBtn}
         // onClick={handleClick}
-      >
-        {/* Past event */}
-        {isEventEnded && <span>Follow</span>}
+        >
+          {/* Past event */}
+          {isEventEnded && <span>Follow</span>}
 
-        {/* Follow event */}
-        {(!isEventEnded &&
-          registration &&
-          !approval &&
-          !waitlisting &&
-          !capacity) ||
-          (!isEventEnded &&
+          {/* Follow event */}
+          {(!isEventEnded &&
+            registration &&
+            !approval &&
+            !waitlisting &&
+            !capacity) ||
+            (!isEventEnded &&
+              registration &&
+              approval &&
+              !waitlisting &&
+              !capacity && <span>Follow</span>)}
+          {/* Registration closed */}
+          {!isEventEnded && !registration && <span>Follow</span>}
+          {/* Approval required */}
+          {!isEventEnded &&
+            approval &&
+            registration &&
+            !waitlisting &&
+            capacity && <span>Request to join</span>}
+          {/* join waitlist  */}
+          {!isEventEnded &&
+            approval &&
+            registration &&
+            waitlisting &&
+            !capacity && <span>Join waitlist</span>}
+          {!isEventEnded &&
+            !capacity &&
+            registration &&
+            !approval &&
+            !waitlisting && <span>Follow</span>}
+          {!isEventEnded &&
+            !capacity &&
+            registration &&
+            !approval &&
+            waitlisting && <span>Join waitlist</span>}
+          {!isEventEnded &&
+            capacity &&
+            registration &&
+            !approval &&
+            waitlisting && <span>{registerBtnText}</span>}
+          {!isEventEnded &&
+            capacity &&
+            registration &&
+            !approval &&
+            !waitlisting && <span>{registerBtnText}</span>}
+          {!isEventEnded &&
+            capacity &&
             registration &&
             approval &&
-            !waitlisting &&
-            !capacity && <span>Follow</span>)}
-        {/* Registration closed */}
-        {!isEventEnded && !registration && <span>Follow</span>}
-        {/* Approval required */}
-        {!isEventEnded &&
-          approval &&
-          registration &&
-          !waitlisting &&
-          capacity && <span>Request to join</span>}
-        {/* join waitlist  */}
-        {!isEventEnded &&
-          approval &&
-          registration &&
-          waitlisting &&
-          !capacity && <span>Join waitlist</span>}
-        {!isEventEnded &&
-          !capacity &&
-          registration &&
-          !approval &&
-          !waitlisting && <span>Follow</span>}
-        {!isEventEnded &&
-          !capacity &&
-          registration &&
-          !approval &&
-          waitlisting && <span>Join waitlist</span>}
-        {!isEventEnded &&
-          capacity &&
-          registration &&
-          !approval &&
-          waitlisting && <span>{registerBtnText}</span>}
-        {!isEventEnded &&
-          capacity &&
-          registration &&
-          !approval &&
-          !waitlisting && <span>{registerBtnText}</span>}
-        {!isEventEnded &&
-          capacity &&
-          registration &&
-          approval &&
-          waitlisting && <span>Request to join</span>}
-      </button>
+            waitlisting && <span>Request to join</span>}
+        </button>
+      </form>
     </div>
   );
 };

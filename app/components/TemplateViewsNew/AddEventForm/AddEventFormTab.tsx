@@ -120,10 +120,10 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
                         handleSubeventChange('isEventParticipationEmpty', false)
                         // setIsEventParticipationEmpty(false)
                     }
-                    if (!subEventState.participationMessage) {
-                        handleSubeventChange('isParticipationMessageEmpty', true)
-                        // setIsParticipationMessageEmpty(true)
-                    }
+                    // if (!subEventState.participationMessage) {
+                    //     handleSubeventChange('isParticipationMessageEmpty', true)
+                    //     // setIsParticipationMessageEmpty(true)
+                    // }
                     if (!subEventState.textValue) {
                         handleSubeventChange('isTextValueMessageEmpty', true)
                         // setIsTextValueMessageEmpty(true)
@@ -339,16 +339,18 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             handleSubeventChange('isEventParticipationEmpty', false)
             // setIsEventParticipationEmpty(false)
         }
-        if (!subEventState.participationMessage) {
-            handleSubeventChange('isParticipationMessageEmpty', true)
-            // setIsParticipationMessageEmpty(true)
-        }
+        // if (!subEventState.participationMessage) {
+        //     handleSubeventChange('isParticipationMessageEmpty', true)
+        //     // setIsParticipationMessageEmpty(true)
+        // }
         if (!subEventState.textValue) {
             handleSubeventChange('isTextValueMessageEmpty', true)
             // setIsTextValueMessageEmpty(true)
         }
 
-        if (!subEventState.eventName.trim() || !subEventState.eventFormat || !subEventState.startTime || !subEventState.endTime || !subEventState.startDate || !subEventState.endDate || !subEventState.description.trim() || !subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude || !subEventState.participationType || !subEventState.participationMessage) {
+        if (!subEventState.eventName.trim() || !subEventState.eventFormat || !subEventState.startTime || !subEventState.endTime || !subEventState.startDate || !subEventState.endDate || !subEventState.description.trim() || !subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude || !subEventState.participationType 
+        // !subEventState.participationMessage
+    ) {
 
             showToast("error", "Please fill in all the fields");
             return; // Exit the function if any field is missing
@@ -368,11 +370,13 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             registerBtnText: subEventState.registerBtnText,
             registerMessage: subEventState.registerMessage,
             // speakerProfilesData: subEventState.speakerProfilesData,
-            participationMessage: subEventState.participationMessage,
+            // participationMessage: subEventState.participationMessage,
             venue: subEventState.venue,
             hashtags: subEventState.hashtags.join(","),
             boothNumber: subEventState.boothNumber,
         }
+        const parentData = subEventState.parentData || "";
+        const [parenteventName, parenteventId] = parentData.split(",");
         const eventData = {
             format: subEventState.eventFormat,
             start_time: subEventState.startTime,
@@ -388,7 +392,7 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             participationType: subEventState.participationType,
             event_type: "Tradeshow",
             customizationData: JSON.stringify(eventCustomizationData),
-            parentData: subEventState.parentData ? subEventState.parentData : "",
+            parentData: parenteventName? parenteventName : "",
         };
         const formData = new FormData()
         formData.append("name", subEventState.eventName)
@@ -396,6 +400,9 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
         formData.append("type", "SUB")
         if (eventId) {
             formData.append('eventId', eventId)
+        }
+        if(parenteventId){
+            formData.append('eventId', parenteventId)
         }
         formData.append("capacity", subEventState?.capacity + "")
         formData.append("registration", subEventState?.registration + "")
@@ -469,16 +476,18 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             handleMaineventChanges('isEventParticipationEmpty', false);
         }
 
-        if (!eventState.participationMessage) {
-            handleMaineventChanges('isParticipationMessageEmpty', true);
-        }
+        // if (!eventState.participationMessage) {
+        //     handleMaineventChanges('isParticipationMessageEmpty', true);
+        // }
 
         if (!eventState.textValue.trim()) {
             handleMaineventChanges('isTextValueMessageEmpty', true);
         }
 
         // Check if all required fields are present
-        if (!eventState.eventName.trim() || !eventState.eventFormat || !eventState.startTime || !eventState.endTime || !eventState.startDate || !eventState.endDate || !eventState.description.trim() || !eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude || !eventState.participationType || !eventState.participationMessage) {
+        if (!eventState.eventName.trim() || !eventState.eventFormat || !eventState.startTime || !eventState.endTime || !eventState.startDate || !eventState.endDate || !eventState.description.trim() || !eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude || !eventState.participationType 
+        // !eventState.participationMessage
+    ) {
             showToast("error", "Please fill in all the fields");
             return; // Exit the function if any field is missing
         }

@@ -136,6 +136,7 @@ const fetchData = async (eventId: string) => {
             venue: data.data.event.data.customizationData.venue,
             hashtags: data.data.event.data.customizationData.hashtags,
             parentName: data.data.event.data.parentData ? data.data.event.data.parentData : data.data.event.parentInfo.name,
+            // parentName : data.data.event.parentInfo ? data.data.event.parentInfo.name : data.data.event.data.parentData,
             parentId: data.data.event.parentInfo.id,
             capacity: data?.data?.event?.capacity,
             registration: data?.data?.event?.registration,

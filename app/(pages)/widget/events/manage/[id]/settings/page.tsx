@@ -9,7 +9,7 @@ import { useEventContext } from '@/context/eventcontext'
 
 const Page = () => {
 
-  const { eventId, fetchedEvent } = useEventContext();
+  const {fetchEventData, eventId, fetchedEvent } = useEventContext();
 
   const [capacityModal, setCapacityModal] = useState<boolean>(false)
   const [approvalModal, setApprovalModal] = useState<boolean>(false)
@@ -33,7 +33,7 @@ const Page = () => {
           <span className={styles.icon1}>A</span>
           <div className={styles.sub_headingContainer}>
             Approval
-            <span>{approvalValue ? "On" : "Off"}</span>
+            <span>{fetchedEvent?.approval === true ? "On" : "Off" }</span>
           </div>
         </button>
         <button disabled={capacityModal} onClick={() => setCapacityModal(true)}>
@@ -41,7 +41,7 @@ const Page = () => {
           <div className={styles.sub_headingContainer}>
             Event Capacity
             <span className={styles.capacity}>
-              <span>{capacityValue}</span>
+              <span>{fetchedEvent?.capacity === -1 ? "Unlimited" : fetchedEvent?.capacity}</span>
               <span className={styles.dot}>{"."}</span>
               <span>{waitlistValue ? "Waitlist On" : "Waitlist Off"}</span>
             </span>
@@ -52,12 +52,12 @@ const Page = () => {
       <RegistrationQues />
       {capacityModal &&
         <div className={styles.modal} ref={capacityModalRef}>
-          <CapacityModal waitlistValue={waitlistValue} setWaitlistValue={setWaitlistValue} eventId={eventId} capacityValue={capacityValue} setCapacityValue={setCapacityValue} setCapacityModal={setCapacityModal} />
+          <CapacityModal fetchEventData={fetchEventData} waitlistValue={waitlistValue} setWaitlistValue={setWaitlistValue} eventId={eventId} capacityValue={capacityValue} setCapacityValue={setCapacityValue} setCapacityModal={setCapacityModal} />
         </div>
       }
       {approvalModal &&
         <div className={styles.modal} ref={approvalModalRef}>
-          <ApprovalModal eventId={eventId} approvalValue={approvalValue} setApprovalValue={setApprovalValue} setApprovalModal={setApprovalModal} />
+          <ApprovalModal fetchEventData={fetchEventData} eventId={eventId} approvalValue={approvalValue} setApprovalValue={setApprovalValue} setApprovalModal={setApprovalModal} />
         </div>
       }
     </div>

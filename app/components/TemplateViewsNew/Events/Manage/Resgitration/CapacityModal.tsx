@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from './capacitymodal.style.module.css'
 import { showToast } from '@/utils/showToast';
 import { myFetch } from '@/utils/myFetch';
@@ -11,14 +11,21 @@ interface Props {
     setCapacityValue: (value: number) => void
     setWaitlistValue : (value: boolean) => void
     waitlistValue : boolean;
+    fetchEventData : () => Promise<null | undefined>;
 }
 
-const CapacityModal = ({eventId, setCapacityModal, setCapacityValue, capacityValue, setWaitlistValue, waitlistValue} : Props) => {
+const CapacityModal = ({eventId, setCapacityModal, setCapacityValue, capacityValue, setWaitlistValue, waitlistValue,fetchEventData} : Props) => {
+
+    useEffect(()=>{
+        if(capacityValue === -1){
+            setCapacityValue(50)
+        }
+    },[])
 
     const handleChange = async () => {
         const formData = new FormData()
         formData.append("id", eventId);
-        formData.append("capacity", capacityValue + "")
+        formData.append("maxCapacity", capacityValue + "")
         formData.append("waitlisting", waitlistValue + "")
         const { data, error } = await myFetch(`${baseUrl}/event`, {
             method: 'PATCH',
@@ -27,10 +34,29 @@ const CapacityModal = ({eventId, setCapacityModal, setCapacityValue, capacityVal
         if(data){
             showToast("success", "Capacity and Waitlist updated")
             setCapacityModal(false)
+            fetchEventData()
         }else{
             console.log("error",error)
         }
     }
+
+    const handleRemoveLimit = async()=>{
+        const formData = new FormData()
+        formData.append("id", eventId);
+        formData.append("maxCapacity", -1 + "")
+        formData.append("waitlisting", false + "")
+        const { data, error } = await myFetch(`${baseUrl}/event`, {
+            method: 'PATCH',
+            body: formData
+        })
+        if(data){
+            showToast("success", "Removed Capacity Limit")
+            setCapacityModal(false)
+            fetchEventData()
+        }else{
+            console.log("error",error)
+        }
+    } 
 
     return (
         <div className={styles.body}>
@@ -57,7 +83,7 @@ const CapacityModal = ({eventId, setCapacityModal, setCapacityValue, capacityVal
             </div>
             <div className={styles.btnContainer}>
                 <button className={styles.setBtn} onClick={handleChange}>Set Limit</button>
-                <button className={styles.removeBtn}>Remove Limit</button>
+                <button className={styles.removeBtn} onClick={handleRemoveLimit}>Remove Limit</button>
             </div>
         </div>
     )

@@ -3,7 +3,7 @@ import styles from "./location.style.module.css";
 interface Props {
   cityName: string;
   countryName: string;
-  eventFormat: string;
+  eventFormat?: string;
   virtualLink: string;
 }
 
