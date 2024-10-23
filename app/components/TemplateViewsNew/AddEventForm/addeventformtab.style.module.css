@@ -166,7 +166,7 @@
         background-position: 0% 50%;
     }
 }
-.leafContainer {
+.themeContainer {
     position: absolute;
     top: 0;
     left: 0;
@@ -175,7 +175,7 @@
     overflow: hidden;
     pointer-events: none; /* Prevents interaction with the leaves */
 }
-.leafContainer .leaf {
+/* .leafContainer .leaf {
     position: absolute;
     animation: floatAndSpin 10s linear infinite;
     opacity: 0.8;
@@ -197,7 +197,7 @@
     100% {
         transform: translate3d(0, 0, 0) rotate(360deg);
     }
-}
+} */
 .modalOpen {
     overflow: hidden;
 }

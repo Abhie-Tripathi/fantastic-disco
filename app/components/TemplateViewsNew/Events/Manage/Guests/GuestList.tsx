@@ -4,9 +4,6 @@ import SortIcon from "/public/filter.svg";
 import Image from "next/image";
 import useOutsideClick from "@/hooks/useOutsideClick";
 import DownloadIcon from "/public/downloadIcon.svg";
-import { useEventContext } from "@/context/eventcontext";
-import { baseUrl } from "@/constants";
-import { myFetch } from "@/utils/myFetch";
 import StatusModal from "./StatusModal";
 import { mkConfig, generateCsv, download } from "export-to-csv";
 import * as XLSX from "xlsx";
@@ -17,9 +14,14 @@ interface Props {
   eventId: string;
   statusModal: boolean;
   setStatusModal: (value: boolean) => void
+  setSortBy:(value: string) => void
+  setFilterStatus:(value: string) => void
+  setInputName :(value: string) => void
+  guests : any[];
+  fetchGuests: () => Promise<void>;
 }
 
-const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
+const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterStatus, setInputName, guests,fetchGuests }: Props) => {
 
   const [activeFilterBtn, setActiveFilterBtn] = useState<string>("All Guests")
   const [activeSortBtn, setActiveSortBtn] = useState<string>("Register Time")
@@ -32,64 +34,8 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
   const [interestId, setInterestId] = useState<string>("")
   const [name, setName] = useState<string>("")
   const [mail, setMail] = useState<string>("")
-  const [sortBy, setSortBy] = useState<string>("")
-  const [filterStatus, setFilterStatus] = useState<string>("")
-
 
   const statusModalRef = useOutsideClick(() => setStatusModal(false));
-
-  const [guests, setGuests] = useState<any[]>(
-    [
-      // { name: "Walter White", email: "killguss@yahoo.com", status: "Going" }, { name: "Sheldon Cooper", email: "bazinga.buzz@gmail.com", status: "Waitlist" }, { name: "Joey Trib", email: "howyoudoin@gmail.com", status: "Not Going" }
-    ]
-  )
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    const day = date.getDate();
-
-    // Get the day suffix
-    const daySuffix =
-      day === 1 || day === 21 || day === 31 ? "st" :
-        day === 2 || day === 22 ? "nd" :
-          day === 3 || day === 23 ? "rd" : "th";
-
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const month = monthNames[date.getMonth()];
-    const year = date.getFullYear();
-
-    return `${day}${daySuffix} ${month} ${year}`;
-  };
-
-  const fetchGuests = async () => {
-    let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}&sortType=asc`;
-
-    if (sortBy.length > 0) {
-      fetchUrl += `&sortBy=${sortBy}`;
-    }
-
-    if (filterStatus.length > 0) {
-      fetchUrl += `&status=${filterStatus}`;
-    }
-
-    const { data, error } = await myFetch(`${fetchUrl}`)
-
-    if (error) {
-      console.log("error is : ", error);
-    } else {
-      const fetchedGuests = data.users.map((user: any) => ({
-        name: `${user.firstname} ${user.lastname}`,
-        email: user.email,
-        status: user.status,
-        interestId: user.interestId,
-        date: formatDate(user.created)
-      }));
-      setGuests(fetchedGuests);
-    }
-  };
-
-  useEffect(() => {
-    fetchGuests()
-  }, [sortBy, filterStatus])
 
   const handleSortBy = (sort: string) => {
     if (sort === "firstname") {
@@ -136,15 +82,15 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
       //   position: "bottom-right",
       //   autoClose: 3000,
       // });
-      showToast("warning","No guests available to download.")
-      return; 
+      showToast("warning", "No guests available to download.")
+      return;
     }
 
     // toast.info("Downloading...", {
     //   position: "bottom-right",
     //   autoClose: 2000,
     // });
-    showToast("info","Downloading...")
+    showToast("info", "Downloading...")
     const csvConfig = mkConfig({ useKeysAsHeaders: true });
     const csv = generateCsv(csvConfig)(guests);
     download(csvConfig)(csv);
@@ -156,11 +102,11 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
       //   position: "bottom-right",
       //   autoClose: 3000,
       // });
-      showToast("warning","No guests available to download.")
+      showToast("warning", "No guests available to download.")
       return;
     }
 
-    showToast("info","Downloading...")
+    showToast("info", "Downloading...")
     // toast.info("Downloading...", {
     //   position: "bottom-right",
     //   autoClose: 2000,
@@ -182,12 +128,12 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
     return status === "PENDING"
       ? "Pending"
       : status === "CONFIRMED"
-      ? "Going"
-      : status === "WAITLISTING"
-      ? "Waitlist"
-      : status === "FOLLOWING"
-      ? "Following"
-      : "Not going";
+        ? "Going"
+        : status === "WAITLISTING"
+          ? "Waitlist"
+          : status === "FOLLOWING"
+            ? "Following"
+            : "Not going";
   };
 
   return (
@@ -198,13 +144,13 @@ const GuestList = ({ eventId, statusModal, setStatusModal }: Props) => {
           <Image src={DownloadIcon} alt="download" />
         </div>
       </div>
-
       <div className={styles.inputContainer}>
         <SearchIcon />
         <input
           type="text"
           className={styles.inputSearch}
           placeholder="Search Guests"
+          onChange={(e) => setInputName(e.target.value)}
         />
       </div>
       <div className={styles.filterSortingContainer}>

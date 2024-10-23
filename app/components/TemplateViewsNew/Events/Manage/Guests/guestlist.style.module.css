@@ -11,7 +11,7 @@
 }
 .heading {
     color: var(--primary-text-color);
-    font-size: var(--font-size-h4);
+    font-size: var(--font-size-h5);
     font-weight: var(--font-weight-semibold);
 }
 .downloadBtn{

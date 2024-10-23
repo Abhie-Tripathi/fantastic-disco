@@ -14,6 +14,7 @@ interface EventProps {
     pageGradient: string;
     confettiType: string;
     leavesTheme: boolean;
+    snowTheme: boolean;
     registerBtnText: string;
     registerMessage: string;
     registerBtnColor: string;
@@ -41,14 +42,15 @@ interface EventProps {
     registration: boolean;
     approval: boolean;
     waitlisting: boolean;
-    virtualLink:string;
+    virtualLink: string;
 }
 
-const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags, participationType, childrenData, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme,virtualLink }: EventProps) => {
+const Page = ({snowTheme, venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags, participationType, childrenData, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink }: EventProps) => {
     return (
         // <div></div>
         <DetailPageComponent
+            snowTheme={snowTheme}
             pageGradient={pageGradient}
             confettiType={confettiType}
             leavesTheme={leavesTheme}
@@ -83,8 +85,8 @@ const Page = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnT
             capacity={capacity}
             registration={registration}
             approval={approval}
-            waitlisting={waitlisting} 
-            virtualLink={virtualLink}        />
+            waitlisting={waitlisting}
+            virtualLink={virtualLink} />
     )
 }
 const fetchData = async (eventId: string) => {
@@ -128,6 +130,7 @@ const fetchData = async (eventId: string) => {
             pageGradient: data.data.event.data.customizationData.pageGradient,
             confettiType: data.data.event.data.customizationData.confettiType,
             leavesTheme: data.data.event.data.customizationData.leavesTheme,
+            snowTheme: data.data.event.data.customizationData.snowTheme,
             eventFont: data.data.event.data.customizationData.eventFont,
             registerBtnColor: data.data.event.data.customizationData.registerBtnColor,
             registerBtnText: data.data.event.data.customizationData.registerBtnText,
@@ -142,7 +145,7 @@ const fetchData = async (eventId: string) => {
             registration: data?.data?.event?.registration,
             approval: data?.data?.event?.approval,
             waitlisting: data?.data?.event?.waitlisting,
-            virtualLink:data?.data?.event?.data?.virtualLink,
+            virtualLink: data?.data?.event?.data?.virtualLink,
             childrenData: data.data.event.data.children.map((child: any) => ({
                 eventId: child.id,
                 name: child.name,
@@ -164,6 +167,7 @@ const fetchData = async (eventId: string) => {
                     pageGradient: child.data.customizationData.pageGradient,
                     confettiType: child.data.customizationData.confettiType,
                     leavesTheme: child.data.customizationData.leavesTheme,
+                    snowTheme: child.data.customizationData.snowTheme,
                     eventFont: child.data.customizationData.eventFont,
                     registerBtnColor: child.data.customizationData.registerBtnColor,
                     registerBtnText: child.data.customizationData.registerBtnText,
@@ -196,7 +200,7 @@ function stripHtmlTags(inputString: string) {
     return inputString.replace(/<[^>]*>?/gm, '');
 }
 
-
+const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 export async function generateMetadata({ searchParams }: { searchParams: { widgetId: string, eventId: string } }) {
     const { widgetId, eventId } = searchParams;
     const data = await fetchData(eventId);
@@ -210,7 +214,7 @@ export async function generateMetadata({ searchParams }: { searchParams: { widge
                 title: "404 - Not Found",
                 description: "The page you are looking for does not exist.",
                 images: [], // You can include a default 404 image if desired
-                url: `https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
+                url: `${console_url}/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
                 type: "website"
             },
         };
@@ -223,7 +227,7 @@ export async function generateMetadata({ searchParams }: { searchParams: { widge
             title: name,
             description: stripHtmlTags(description),
             images: [logoUrl],
-            url: `https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
+            url: `${console_url}/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
             type: "website"
         },
     };

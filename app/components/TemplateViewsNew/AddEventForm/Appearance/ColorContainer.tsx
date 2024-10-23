@@ -6,8 +6,9 @@ import useOutsideClick from '@/hooks/useOutsideClick';
 import { myFetch } from '@/utils/myFetch';
 
 interface Props {
-    setLeavesTheme : (value : boolean) => void
-    confettiType : string;
+    setSnowTheme: (value: boolean) => void
+    setLeavesTheme: (value: boolean) => void
+    confettiType: string;
     setFormTheme: (value: string) => void
     pageBgColor: string;
     setPageBgColor: (value: string) => void
@@ -15,7 +16,7 @@ interface Props {
     setConfettiType: (value: string) => void
 }
 
-const ColorContainer = ({setLeavesTheme, confettiType, setPageBgColor, pageBgColor, setPageGradient, setConfettiType, setFormTheme }: Props) => {
+const ColorContainer = ({ setSnowTheme, setLeavesTheme, confettiType, setPageBgColor, pageBgColor, setPageGradient, setConfettiType, setFormTheme }: Props) => {
     const { theme } = useTheme()
 
     const [selectedTheme, setSelectedTheme] = useState<string>("")
@@ -29,6 +30,7 @@ const ColorContainer = ({setLeavesTheme, confettiType, setPageBgColor, pageBgCol
     const handleChange = (color: any) => {
         const colorWithOpacity = addOpacityToHex(color.hex, 0.1); // 0.1 for 10% opacity
         setPageBgColor(colorWithOpacity);
+        setPageGradient("")
     }
     const handleColorClick = (color: any, index: any, theme: string, formTheme: string) => {
         setFormTheme(formTheme)
@@ -113,13 +115,20 @@ const ColorContainer = ({setLeavesTheme, confettiType, setPageBgColor, pageBgCol
         }
     }, [selectedColorIndex])
 
-    const handleEffectClick = (type : string)=>{
-        if(type === "leaf"){
+    const handleEffectClick = (type: string) => {
+        if (type === "leaf") {
             setLeavesTheme(true)
             setConfettiType("")
-        }else{
+            setSnowTheme(false)
+        } else if (type === "snow") {
+            setSnowTheme(true)
+            setConfettiType("")
+            setLeavesTheme(false)
+        }
+        else {
             setConfettiType(type)
             setLeavesTheme(false)
+            setSnowTheme(false)
         }
     }
 
@@ -174,8 +183,8 @@ const ColorContainer = ({setLeavesTheme, confettiType, setPageBgColor, pageBgCol
                     <div onClick={() => handleColorClick("purblue", 0, "gradient", "light")} className={styles.gradientCircle} style={{ background: 'radial-gradient(circle, rgba(149,166,251,1) 0%, rgba(152,169,214,1) 25%, rgba(129,159,201,1) 52%, rgba(173,155,197,1) 78%, rgba(254,152,173,1) 100%)' }}></div>
                     <div onClick={() => handleColorClick("watermelon", 0, "gradient", "light")} className={styles.gradientCircle} style={{ background: 'linear-gradient(90deg, rgba(228, 202, 246, 1) 0%, rgba(246, 223, 255, 1) 0%, rgba(246, 177, 177, 1) 49%, rgba(193, 249, 227, 1) 100%)' }}></div>
                 </div>}
-                <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("gradient")}><PaintIcon /> <span>Dark Gradient</span></div>
-                {selectedTheme === "gradient" && <div className={styles.gradientThemeContainer}>
+                <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("darkgradient")}><PaintIcon /> <span>Dark Gradient</span></div>
+                {selectedTheme === "darkgradient" && <div className={styles.gradientThemeContainer}>
                     <div onClick={() => handleColorClick("darkgreenmint", 0, "gradient", "dark")} className={styles.gradientCircle} style={{ background: 'linear-gradient(273deg, rgba(228,202,246,1) 0%, rgba(143,186,93,1) 0%, rgba(131,193,148,1) 52%, rgba(121,182,176,1) 93%)' }}></div>
                     <div onClick={() => handleColorClick("darkcandy", 0, "gradient", "dark")} className={styles.gradientCircle} style={{ background: 'radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(240,143,168,1) 0%, rgba(201,133,138,1) 46%, rgba(191,142,186,1) 93%)' }}></div>
                     <div onClick={() => handleColorClick("darkorange", 0, "gradient", "dark")} className={styles.gradientCircle} style={{ background: 'radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(189,132,85,1) 0%, rgba(190,101,53,1) 46%, rgba(221,169,111,1) 93%)' }}></div>
@@ -184,23 +193,30 @@ const ColorContainer = ({setLeavesTheme, confettiType, setPageBgColor, pageBgCol
                     <div onClick={() => handleColorClick("darkmix", 0, "gradient", "dark")} className={styles.gradientCircle} style={{ background: 'radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(62,54,65,1) 0%, rgba(56,45,54,1) 27%, rgba(73,69,69,1) 67%, rgba(24,45,37,1) 100%)' }}></div>
                 </div>}
                 <div className={`${styles.bgContainer} ${theme == "light" ? styles.bgLightContainer : styles.bgDarkContainer}`} onClick={() => setSelectedTheme("effects")}><PaintIcon /><span>Effects</span></div>
+
                 {selectedTheme === "effects" &&
                     <div className={styles.effectsContainer}>
-                        <div className={styles.themeContainer}>
+                        <div className={`${styles.themeContainer} ${styles.leafThemeContainer}`} onClick={() => handleEffectClick("")}>
+                            <span>None</span>
+                        </div>
+                        <div className={styles.themeContainer} onClick={() => handleEffectClick("party")}>
                             <span>Confetti</span>
-                            <div className={styles.dropDownContainer} onClick={() => setConfettiDropdown(!confettiDropdown)}>
-                                <span>{confettiType === "" ? "NONE" :confettiType.toUpperCase()}</span>
+                            {/* <div className={styles.dropDownContainer} onClick={() => setConfettiDropdown(!confettiDropdown)}>
+                                <span>{confettiType === "" ? "None" : confettiType.toUpperCase()}</span>
                                 <DownArrow />
                                 {confettiDropdown && <div className={styles.confettiDropdown}>
-                                    <div onClick={() => handleEffectClick("")}>None</div>
+      
                                     <div onClick={() => handleEffectClick("party")}>Party</div>
                                     <div onClick={() => handleEffectClick("circle")}>Circle</div>
                                     <div onClick={() => handleEffectClick("star")}>Star</div>
                                 </div>}
-                            </div>
+                            </div> */}
                         </div>
-                        <div className={`${styles.themeContainer} ${styles.leafThemeContainer}`} onClick={()=>handleEffectClick("leaf")}>
+                        <div className={`${styles.themeContainer} ${styles.leafThemeContainer}`} onClick={() => handleEffectClick("leaf")}>
                             <span>Leaves</span>
+                        </div>
+                        <div className={`${styles.themeContainer} ${styles.leafThemeContainer}`} onClick={() => handleEffectClick("snow")}>
+                            <span>Snowfall</span>
                         </div>
                     </div>
                 }

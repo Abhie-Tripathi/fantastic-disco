@@ -36,6 +36,7 @@ interface CustomizationData {
   pageGradient : string;
   confettiType : string;
   leavesTheme : boolean;
+  snowTheme : boolean;
   eventFont: string;
   registerBtnColor: string;
   registerBtnText: string;
