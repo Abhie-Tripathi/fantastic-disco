@@ -590,56 +590,6 @@ width: calc(100vw - 134px);
   margin-left: 5px;
   font-size: var(--font-size-sm);
 }
-.allCompetitors{
-  display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-  /* margin-top: 16px; */
-  position: relative;
-}
-
-.remove_all_custom {
-  cursor: pointer;
-  font-size: var(--font-size-small);
-  color: var(--danger-text-color);
-  font-weight: var(--font-weight-medium);
-  width: fit-content;
-
-  position: absolute;
-  right: 0;
-  top: -32px;
-}
-
-.table_container {
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.allCustomData {
-  /* width: calc(50% - 45px); */
-  width: 100%;
-  background: var(--primary-foreground);
-}
-
-.allCustomData td:first-child {
-  width: 35px;
-}
-
-.allCustomData td {
-  padding: 10px;
-}
-
-.allCustomData , .allCustomData td {
-  border: 1px solid var(--border-color);
-  border-collapse: collapse;
-}
-
-.expandTableBtn {
-  font-size: var(--font-size-default);
-  color: var(--secondary-text-color);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
-}
 
 .presetContainer {
   /* display: flex;
@@ -650,8 +600,9 @@ width: calc(100vw - 134px);
   width: 100%;
   display: grid;
   justify-content: center;
-  grid-template-columns: repeat(auto-fill, 280px);
-  overflow: hidden; /* Ensure content does not overflow during transition */
+  /* grid-template-columns: repeat(auto-fill, 280px); */
+  display: flex;
+  overflow: hidden;
   transition: max-height 0.5s ease, opacity 0.5s ease;
   gap: 12px;
 }
@@ -671,10 +622,11 @@ width: calc(100vw - 134px);
   justify-content: center;
   flex-direction: column;
   height: 300px;
+  width: 280px;
   font-size: var(--font-size-default);
   border-radius: var(--border-radius-lg);
   border: 1px solid var(--border-color);
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .account {
@@ -716,10 +668,11 @@ width: calc(100vw - 134px);
 
 .domain {
   padding: 4px 8px;
-  /* background-color: #FFEFEF; */
+  background-color: var(--primary-light-color);
   border-radius: var(--border-radius-sm);
   color: var(--primary-color);
   font-size: var(--font-size-small);
+  font-weight: var(--font-weight-medium);
 }
 
 .bottomViewTwo {
