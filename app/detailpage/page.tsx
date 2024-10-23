@@ -200,7 +200,7 @@ function stripHtmlTags(inputString: string) {
     return inputString.replace(/<[^>]*>?/gm, '');
 }
 
-
+const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 export async function generateMetadata({ searchParams }: { searchParams: { widgetId: string, eventId: string } }) {
     const { widgetId, eventId } = searchParams;
     const data = await fetchData(eventId);
@@ -214,7 +214,7 @@ export async function generateMetadata({ searchParams }: { searchParams: { widge
                 title: "404 - Not Found",
                 description: "The page you are looking for does not exist.",
                 images: [], // You can include a default 404 image if desired
-                url: `https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
+                url: `${console_url}/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
                 type: "website"
             },
         };
@@ -227,7 +227,7 @@ export async function generateMetadata({ searchParams }: { searchParams: { widge
             title: name,
             description: stripHtmlTags(description),
             images: [logoUrl],
-            url: `https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
+            url: `${console_url}/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
             type: "website"
         },
     };

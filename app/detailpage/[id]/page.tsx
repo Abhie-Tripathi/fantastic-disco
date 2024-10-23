@@ -202,10 +202,9 @@ export default DetailPage;
 function stripHtmlTags(inputString: string) {
     return inputString.replace(/<[^>]*>?/gm, '');
 }
-
+const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 export async function generateMetadata(context: any) {
     const eventId = context.params.id;
-    // const { widgetId, eventId } = decodeHash(hash as string);
     const data = await fetchData(eventId);
 
     // Check if data is valid, if not return 404 metadata
@@ -217,7 +216,7 @@ export async function generateMetadata(context: any) {
                 title: "404 - Not Found",
                 description: "The page you are looking for does not exist.",
                 images: [], // You can include a default 404 image if desired
-                url: `https://console.eventgeni.com/${eventId}`,
+                url: `${console_url}/detailpage/${eventId}`,
                 type: "website"
             },
         };
@@ -230,7 +229,7 @@ export async function generateMetadata(context: any) {
             title: name,
             description: stripHtmlTags(description),
             images: [logoUrl],
-            url: `https://console.eventgeni.com/detailpage/${eventId}`,
+            url: `${console_url}/detailpage/${eventId}`,
             type: "website"
         },
     };

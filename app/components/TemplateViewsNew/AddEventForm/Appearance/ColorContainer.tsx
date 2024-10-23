@@ -119,6 +119,7 @@ const ColorContainer = ({ setSnowTheme, setLeavesTheme, confettiType, setPageBgC
         if (type === "leaf") {
             setLeavesTheme(true)
             setConfettiType("")
+            setSnowTheme(false)
         } else if (type === "snow") {
             setSnowTheme(true)
             setConfettiType("")
@@ -198,18 +199,18 @@ const ColorContainer = ({ setSnowTheme, setLeavesTheme, confettiType, setPageBgC
                         <div className={`${styles.themeContainer} ${styles.leafThemeContainer}`} onClick={() => handleEffectClick("")}>
                             <span>None</span>
                         </div>
-                        <div className={styles.themeContainer}>
+                        <div className={styles.themeContainer} onClick={() => handleEffectClick("party")}>
                             <span>Confetti</span>
-                            <div className={styles.dropDownContainer} onClick={() => setConfettiDropdown(!confettiDropdown)}>
+                            {/* <div className={styles.dropDownContainer} onClick={() => setConfettiDropdown(!confettiDropdown)}>
                                 <span>{confettiType === "" ? "None" : confettiType.toUpperCase()}</span>
                                 <DownArrow />
                                 {confettiDropdown && <div className={styles.confettiDropdown}>
-                                    {/* <div onClick={() => handleEffectClick("")}>None</div> */}
+      
                                     <div onClick={() => handleEffectClick("party")}>Party</div>
                                     <div onClick={() => handleEffectClick("circle")}>Circle</div>
                                     <div onClick={() => handleEffectClick("star")}>Star</div>
                                 </div>}
-                            </div>
+                            </div> */}
                         </div>
                         <div className={`${styles.themeContainer} ${styles.leafThemeContainer}`} onClick={() => handleEffectClick("leaf")}>
                             <span>Leaves</span>
