@@ -12,7 +12,10 @@ import Subeventform from './Subevent/Subeventform'
 import { FormState } from '@/types/Formstate'
 import confetti from "canvas-confetti";
 import LeafTheme from '../../UI/LeafTheme'
+import SnowfallTheme from '../../UI/SnowfallTheme'
+
 interface Props {
+    snowTheme : boolean;
     leavesTheme: boolean;
     setIsAddEventModalOpen: (value: boolean) => void
     formTheme: string;
@@ -41,7 +44,7 @@ interface Props {
     setIsApproved?: (value: boolean) => void
 }
 
-const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
+const AddEventFormTab = ({snowTheme, leavesTheme, formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
@@ -196,6 +199,7 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
                 pageGradient,
                 confettiType,
                 leavesTheme,
+                snowTheme,
                 eventFont,
                 registerBtnColor: mainEventState.registerBtnColor,
                 registerBtnText: mainEventState.registerBtnText,
@@ -352,6 +356,7 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             pageGradient,
             confettiType,
             leavesTheme,
+            snowTheme,
             eventFont,
             registerBtnColor: subEventState.registerBtnColor,
             registerBtnText: subEventState.registerBtnText,
@@ -493,6 +498,7 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             pageGradient,
             confettiType,
             leavesTheme,
+            snowTheme,
             eventFont,
             registerBtnColor: eventState.registerBtnColor,
             registerBtnText: eventState.registerBtnText,
@@ -667,9 +673,13 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             </div>
             <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`} style={{ backgroundColor: pageBgColor }} ref={formContainerRef}>
                 <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
-                {leavesTheme && <div className={styles.leafContainer}>
+                {leavesTheme && <div className={styles.themeContainer}>
                     <LeafTheme leafCount={100}/>
                 </div>}
+                {snowTheme && <div className={styles.themeContainer}>
+                    <SnowfallTheme/>
+                </div>}
+                
                 {collapseMainEventForm && eventFlow === 'main' ?
                     (<div className={styles.collapsedContainer}>
                         <div>

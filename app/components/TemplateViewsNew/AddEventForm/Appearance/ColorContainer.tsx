@@ -6,8 +6,9 @@ import useOutsideClick from '@/hooks/useOutsideClick';
 import { myFetch } from '@/utils/myFetch';
 
 interface Props {
-    setLeavesTheme : (value : boolean) => void
-    confettiType : string;
+    setSnowTheme: (value: boolean) => void
+    setLeavesTheme: (value: boolean) => void
+    confettiType: string;
     setFormTheme: (value: string) => void
     pageBgColor: string;
     setPageBgColor: (value: string) => void
@@ -15,7 +16,7 @@ interface Props {
     setConfettiType: (value: string) => void
 }
 
-const ColorContainer = ({setLeavesTheme, confettiType, setPageBgColor, pageBgColor, setPageGradient, setConfettiType, setFormTheme }: Props) => {
+const ColorContainer = ({ setSnowTheme, setLeavesTheme, confettiType, setPageBgColor, pageBgColor, setPageGradient, setConfettiType, setFormTheme }: Props) => {
     const { theme } = useTheme()
 
     const [selectedTheme, setSelectedTheme] = useState<string>("")
@@ -113,13 +114,19 @@ const ColorContainer = ({setLeavesTheme, confettiType, setPageBgColor, pageBgCol
         }
     }, [selectedColorIndex])
 
-    const handleEffectClick = (type : string)=>{
-        if(type === "leaf"){
+    const handleEffectClick = (type: string) => {
+        if (type === "leaf") {
             setLeavesTheme(true)
             setConfettiType("")
-        }else{
+        } else if (type === "snow") {
+            setSnowTheme(true)
+            setConfettiType("")
+            setLeavesTheme(false)
+        }
+        else {
             setConfettiType(type)
             setLeavesTheme(false)
+            setSnowTheme(false)
         }
     }
 
@@ -189,7 +196,7 @@ const ColorContainer = ({setLeavesTheme, confettiType, setPageBgColor, pageBgCol
                         <div className={styles.themeContainer}>
                             <span>Confetti</span>
                             <div className={styles.dropDownContainer} onClick={() => setConfettiDropdown(!confettiDropdown)}>
-                                <span>{confettiType === "" ? "NONE" :confettiType.toUpperCase()}</span>
+                                <span>{confettiType === "" ? "NONE" : confettiType.toUpperCase()}</span>
                                 <DownArrow />
                                 {confettiDropdown && <div className={styles.confettiDropdown}>
                                     <div onClick={() => handleEffectClick("")}>None</div>
@@ -199,8 +206,11 @@ const ColorContainer = ({setLeavesTheme, confettiType, setPageBgColor, pageBgCol
                                 </div>}
                             </div>
                         </div>
-                        <div className={`${styles.themeContainer} ${styles.leafThemeContainer}`} onClick={()=>handleEffectClick("leaf")}>
+                        <div className={`${styles.themeContainer} ${styles.leafThemeContainer}`} onClick={() => handleEffectClick("leaf")}>
                             <span>Leaves</span>
+                        </div>
+                        <div className={`${styles.themeContainer} ${styles.leafThemeContainer}`} onClick={() => handleEffectClick("snow")}>
+                            <span>Snowfall</span>
                         </div>
                     </div>
                 }
