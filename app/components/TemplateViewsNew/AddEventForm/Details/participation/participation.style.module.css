@@ -17,6 +17,7 @@
 }
 .header .lightHeading{
     color: var(--tertiary-text-color);
+    font-size: var(----font-size-default);
 }
 .options{
     display: flex;

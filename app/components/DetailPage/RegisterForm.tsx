@@ -77,9 +77,9 @@ const RegisterForm = ({
     setFormData({
       ...formData,
       [name]: value,
-    });  
+    });
   };
-  const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
+  const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,7 +94,7 @@ const RegisterForm = ({
       interest: "ATTENDEE",
       note: "intend",
       source: "eventgeni",
-      redirectUrl: `${console_url}/detailpage/${eventId}`
+      redirectUrl: `${console_url}/detailpage/${eventId}`,
       // sourceId: widgetId,
     };
     try {
@@ -152,8 +152,11 @@ const RegisterForm = ({
         registration &&
         !approval &&
         waitlisting && (
-          <div className={styles.header}>
-            <div>Join us at the event</div>
+          <div className={styles.customMsg_container}>
+            <div className={styles.header}>
+              <div>Join us at the event</div>
+            </div>
+            <div className={styles.customMessage}>{registerMessage}</div>
           </div>
         )}
       {!isEventEnded &&
@@ -161,8 +164,11 @@ const RegisterForm = ({
         registration &&
         !approval &&
         !waitlisting && (
-          <div className={styles.header}>
-            <div>Join us at the event</div>
+          <div className={styles.customMsg_container}>
+            <div className={styles.header}>
+              <div>Join us at the event</div>
+            </div>
+            <div className={styles.customMessage}>{registerMessage}</div>
           </div>
         )}
 
@@ -543,7 +549,7 @@ const RegisterForm = ({
           type="submit"
           style={{ backgroundColor: registerBtnColor, color: fontColor }}
           className={styles.submitBtn}
-        // onClick={handleClick}
+          // onClick={handleClick}
         >
           {/* Past event */}
           {isEventEnded && <span>Follow</span>}

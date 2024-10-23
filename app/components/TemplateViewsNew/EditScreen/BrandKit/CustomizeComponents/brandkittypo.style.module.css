@@ -18,14 +18,22 @@
 }
 
 .heading {
-    font-size: var(--font-size-default);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-text-color);
 }
 
 .subheading {
-    font-size: 10px;
-    color: #A8A8A8;
+    font-size: var(--font-size-small);
+    /* color: #A8A8A8; */
+    color: var(--dashboard-brandkit-subtext);
+    font-weight: var( --font-weight-regular);
 }
-
+.fontfamily_heading{
+    font-size: var( --font-size-small);
+    font-family: var(--font-weight-regular);
+    color: var(--primary-text-color);
+}
 .fontFamilyContainer {
     display: flex;
     align-items: center;
@@ -48,7 +56,8 @@
 }
 
 .dropDownContainer .display {
-    font-size: 10px;
+    /* font-size: 10px; */
+    font-size: var(--font-size-small);
 }
 
 .dropDownContainer .dropDown {
@@ -72,14 +81,15 @@
 
 .dropDownContainer .dropDown .dropdownFont {
     padding: 3px 10px;
-    font-size: 10px;
+    font-size: var(--font-size-small);
     cursor: pointer;
     line-height: 17px;
 }
 .dropDownContainer .dropDown .disableddropdownFont {
     cursor: default;
     padding: 3px 10px;
-    font-size: 10px;
+    /* font-size: 10px; */
+    font-size: var(--font-size-small);
     line-height: 17px;
 }
 .dropDownContainer .lightDropdown .dropdownFont:hover {

@@ -24,7 +24,8 @@
 }
 .eventLocation .eventLocationOne{
     font-weight: 500;
-    font-size: var(--font-size-medium);
+    font-size: var(--font-size-default);
+
 }
 .darkEventLocation{
     color: white;
@@ -36,9 +37,12 @@
     color: black;
 } */
 .eventLocation .eventLocationTwo{
-    /* color: #7D7D7D; */
-    font-size: 10px;
-    line-height: 20px;
+    /* color: #7D7D7D; 
+     font-size: 10px;
+    line-height: 20px; */
+    font-size: var( --font-size-small);
+    font-family: var(--font-weight-regular);
+    color: var(--primary-text-color); 
 }
 .dropdown{
     position: absolute;

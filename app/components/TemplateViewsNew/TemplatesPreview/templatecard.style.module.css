@@ -40,26 +40,27 @@
     color: #6750A4;
     padding: 4px 8px;
     border-radius: 6px;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
+    text-wrap: nowrap;
 }
 .subHeading{
     margin-top: 10px;
     color: #6E6F89;
-    font-size: 12px;
-    font-weight: 500;
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
 }
 .darkSubheading{
     color: #9d9db3;
 }
 @media screen and (max-width: 1406px) {
     .subHeading{
-        font-size: 10px;
+        font-size: var(--font-size-small);
     }
     .header{
         font-size: 14px;
     }
     .tag{
-        font-size: 10px;
+        font-size: var(--font-size-small);
     }
   }

@@ -20,9 +20,12 @@
 }
 
 .descContainer .descriptionHeading {
-    font-size: 12px;
+    /* font-size: 12px;
     color: #7D7D7D;
-    font-weight: 500;
+    font-weight: 500; */
+    font-size: var(--font-size-default);
+    color: var(--tertiary-text-color);
+    font-weight: var(--font-weight-medium);
 }
 .descContainer .darkDescriptionHeading{
     color: white;

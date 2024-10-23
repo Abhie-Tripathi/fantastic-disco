@@ -14,7 +14,7 @@
     object-fit:contain;
 }
 .companyName{
-    font-size: var(--font-size-h4);
+    font-size: var(--font-size-h5);
     font-weight: var(--font-weight-semibold);
 }
 .companyLink{
@@ -23,8 +23,9 @@
     gap: 5px;
 }
 .companyLink a{
-    color: rgb(69, 120, 239);
-    font-weight: var(--font-weight-semibold);
+    /* color: rgb(69, 120, 239); */
+    color: var(--link-color);
+    font-weight: var(--font-weight-regular);
     font-size: var(--font-size-large);
 }
 .description{

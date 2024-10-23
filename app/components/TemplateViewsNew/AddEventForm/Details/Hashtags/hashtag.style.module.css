@@ -6,11 +6,14 @@
 }
 .hashtagsContainer{
     width: 90%;
-    font-size: var(--font-size-small);
-    color: grey;
+    /* font-size: var(--font-size-small); */
+    /* color: grey; */
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
+    font-size: var(--font-size-default);
+    color: var(--tertiary-text-color);
+    font-weight: var(--font-weight-medium);
 }
 .hashtagsContainer .darkheading{
     color: white;

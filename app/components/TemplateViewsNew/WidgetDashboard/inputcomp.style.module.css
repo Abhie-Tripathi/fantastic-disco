@@ -75,6 +75,7 @@
     border-radius: 4px;
     padding: 12px 16px;
     font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-default); 
 }
 .input_btnContainer .disableBtn{
     background-color: var(--disabled-background-color);
