@@ -1,5 +1,6 @@
 .sections{
     display: flex;
+    min-height:300px;
 }
 .line{
     border-bottom: 1px solid var(--border-color);

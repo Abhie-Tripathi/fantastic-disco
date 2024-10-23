@@ -59,6 +59,8 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
       setFilterStatus("WAITLISTING")
     } else if (filter === "Pending") {
       setFilterStatus("PENDING")
+    } else if(filter === "Invited"){
+      setFilterStatus("INVITATION")
     }
   }
 
@@ -191,10 +193,11 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
             ${guest.status === "PENDING" ? styles.pending :
                   guest.status === "CONFIRMED" ? styles.going :
                     guest.status === "WAITLISTING" ? styles.waitlist :
-                      guest.status === "FOLLOWING" ? styles.following : styles.notgoing
+                      guest.status === "FOLLOWING" ? styles.following : 
+                      guest.status === "REJECTED" ? styles.notgoing : styles.invited
                 }
             `}>
-                {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" : "Not Going"}
+                {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" :guest.status === "REJECTED" ? "Not Going" : "Invited"}
               </div>
               <div className={styles.date}>{guest.date}</div>
             </div>

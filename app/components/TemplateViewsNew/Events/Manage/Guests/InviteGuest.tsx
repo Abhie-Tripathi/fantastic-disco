@@ -9,6 +9,7 @@ const InviteGuest = () => {
   const maxCount = 15;
   const [count, setCount] = useState(4); // Default starting count
   const [screen, setScreen] = useState<string>("first");
+  const [selectedMails, setSelectedMails] = useState<string[]>([])
 
   const percentageFilled = (count / maxCount) * 100;
   return (
@@ -26,7 +27,7 @@ const InviteGuest = () => {
         </div>
       </div>
       <div className={styles.line}></div>
-      {screen === "first" ? <InviteGuestsFirstScreen /> :
+      {screen === "first" ? <InviteGuestsFirstScreen selectedMails={selectedMails} setSelectedMails={setSelectedMails}/> :
       <InviteGuestsSecScreen/>}
       <div className={styles.line}></div>
       <div className={styles.selectedBtnContainer}>
