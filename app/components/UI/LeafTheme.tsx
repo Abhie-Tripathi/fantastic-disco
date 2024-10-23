@@ -5,10 +5,14 @@ import LeafFour from '/public/widgetimages/leaf4.png'
 import LeafFive from '/public/widgetimages/leaf5.png'
 import LeafSix from '/public/widgetimages/leaf6.png'
 
-const LeafTheme = () => {
+interface Props{
+    leafCount: number;
+}
+
+const LeafTheme = ({leafCount} : Props) => {
     // Generate the leaf properties once using useMemo
     const leaves = useMemo(() => {
-        return Array.from({ length: 100 }).map(() => ({
+        return Array.from({ length: leafCount }).map(() => ({
             // src: Math.random() > 0.5 ? LeafFour : LeafFive,
             src: Math.random() < 0.33 ? LeafFour : Math.random() < 0.5 ? LeafFive : LeafSix,
             left: `${Math.random() * 100}%`,

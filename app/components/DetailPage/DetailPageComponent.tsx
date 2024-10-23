@@ -19,6 +19,7 @@ import confetti from 'canvas-confetti'
 import LeafTwo from '/public/widgetimages/leaf2.png'
 import SpeakerContainer from './SpeakerContainer'
 import { usePathname } from 'next/navigation';
+import LeafTheme from '../UI/LeafTheme'
 // import LinkIcon from '/public/link.svg'
 
 interface EventProps {
@@ -151,23 +152,7 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
             <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
             <canvas ref={confettiCanvasRefTwo} className={styles.confettiCanvasTwo}></canvas>
             {leavesTheme && <div className={styles.leafContainer}>
-                {Array.from({ length: 100 }).map((_, index) => (
-                    <Image
-                        key={index}
-                        // src={index % 2 === 0 ? LeafOne : LeafTwo}
-                        src={LeafTwo}
-                        className={styles.leaf}
-                        alt={`Leaf ${index + 1}`}
-                        style={{
-                            left: `${Math.random() * 100}%`, // Random horizontal position
-                            top: `${Math.random() * 100}%`,  // Random vertical position
-                            animationDelay: `${Math.random() * 5}s`, // Random animation delay
-                            animationDuration: `${5 + Math.random() * 10}s`, // Random duration for float
-                            width: `${25 + Math.random() * 5}px`, // Random leaf width between 15px to 20px
-                            height: `${25 + Math.random() * 5}px`,
-                        }}
-                    />
-                ))}
+                <LeafTheme leafCount={130}/>
             </div>}
             <ToastContainer />
             {parentName &&

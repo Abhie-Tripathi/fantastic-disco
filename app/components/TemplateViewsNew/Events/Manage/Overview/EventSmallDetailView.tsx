@@ -8,6 +8,7 @@ import ParticipationContainer from './ParticipationContainer'
 import DateTimeContainer from './DateTimeContainer'
 import confetti from "canvas-confetti";
 import LeafTwo from '/public/widgetimages/leaf2.png'
+import LeafTheme from '@/app/components/UI/LeafTheme'
 
 interface Props {
     eventId: string
@@ -60,23 +61,7 @@ const EventSmallDetailView = ({ leavesTheme, eventId, imageUrl, eventName, start
             <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`} style={{ backgroundColor: pageBgColor }}>
                 <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
                 {leavesTheme && <div className={styles.leafContainer}>
-                    {Array.from({ length: 50 }).map((_, index) => (
-                        <Image
-                            key={index}
-                            // src={index % 2 === 0 ? LeafOne : LeafTwo}
-                            src={LeafTwo}
-                            className={styles.leaf}
-                            alt={`Leaf ${index + 1}`}
-                            style={{
-                                left: `${Math.random() * 100}%`, // Random horizontal position
-                                top: `${Math.random() * 100}%`,  // Random vertical position
-                                animationDelay: `${Math.random() * 5}s`, // Random animation delay
-                                animationDuration: `${5 + Math.random() * 10}s`, // Random duration for float
-                                width: `${25 + Math.random() * 5}px`, // Random leaf width between 15px to 20px
-                                height: `${25 + Math.random() * 5}px`,
-                            }}
-                        />
-                    ))}
+                    <LeafTheme leafCount={50}/>
                 </div>}
                 <div className={styles.leftSection}>
                     <div className={styles.posterContainer}>
