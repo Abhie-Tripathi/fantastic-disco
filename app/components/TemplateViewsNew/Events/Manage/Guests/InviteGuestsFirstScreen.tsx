@@ -8,6 +8,11 @@ interface Props {
 }
 
 const InviteGuestsFirstScreen = ({ setSelectedMails, selectedMails }: Props) => {
+
+  const handleRemoveEmail = (emailToRemove: string) => {
+    const updatedEmails = selectedMails.filter(mail => mail !== emailToRemove);
+    setSelectedMails(updatedEmails); // Update the parent component state
+  };
   return (
     <div className={styles.sections}>
       <div className={styles.leftSection}>
@@ -21,15 +26,18 @@ const InviteGuestsFirstScreen = ({ setSelectedMails, selectedMails }: Props) => 
       </div>
       <div className={styles.verticalLine}></div>
       <div className={styles.rightSection}>
-        <EnterMailContiainer setSelectedMails={setSelectedMails} />
+        <EnterMailContiainer selectedMails={selectedMails} setSelectedMails={setSelectedMails} />
         <div className={styles.usersList}>
           {selectedMails.map((mail, key) => (
             <div className={styles.invitedUser} key={key}>
-              <div className={styles.initial}>{mail.substring(0,1)}</div>
-              <div className={styles.nameMailContainer}>
-                {/* <div className={styles.name}>Walter White</div> */}
-                <div className={styles.email}>{mail}</div>
+              <div className={styles.nameContainer}>
+                <div className={styles.initial}>{mail.substring(0, 1)}</div>
+                <div className={styles.nameMailContainer}>
+                  {/* <div className={styles.name}>Walter White</div> */}
+                  <div className={styles.email}>{mail}</div>
+                </div>
               </div>
+              <button className={styles.cancelBtn} onClick={() => handleRemoveEmail(mail)}>x</button>
             </div>
           ))}
         </div>

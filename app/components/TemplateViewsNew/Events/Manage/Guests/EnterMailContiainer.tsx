@@ -4,21 +4,20 @@ import { showToast } from '@/utils/showToast';
 
 interface Props {
   setSelectedMails: (value: string[]) => void
+  selectedMails : string[]
 }
 
-const EnterMailContiainer = ({ setSelectedMails }: Props) => {
+const EnterMailContiainer = ({ setSelectedMails,selectedMails }: Props) => {
 
   const [emailInput, setEmailInput] = useState('');
-  const [emails, setEmails] = useState<string[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const trimmedEmail = emailInput.trim();
     
-    if (trimmedEmail !== '' && !emails.includes(trimmedEmail)) {
+    if (trimmedEmail !== '' && !selectedMails.includes(trimmedEmail)) {
       // Add the email to the emails state if it's not a duplicate
-      const updatedEmails = [...emails, trimmedEmail];
-      setEmails(updatedEmails);
+      const updatedEmails = [...selectedMails, trimmedEmail];
       setSelectedMails(updatedEmails); // Update parent component state
       setEmailInput(''); // Clear the input field
     }else{

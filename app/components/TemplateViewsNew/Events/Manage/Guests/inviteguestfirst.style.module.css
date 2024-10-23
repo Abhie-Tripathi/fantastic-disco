@@ -42,9 +42,23 @@
     gap: 9px;
 }
 .invitedUser{
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.invitedUser .nameContainer{
     display: flex;
     align-items: center;
     gap: 9px;
+}
+.invitedUser button{
+    background-color: var(--primary-light-color);
+    color: var(--primary-text-color);
+    padding:0px 2px 2px 2px;
+    border-radius: 2px;
 }
 .invitedUser .initial{
     width: 30px;
