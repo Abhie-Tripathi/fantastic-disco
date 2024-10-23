@@ -64,3 +64,8 @@
     color: white;
     padding: 5px 9px;
 }
+.btnContainer{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}

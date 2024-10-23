@@ -30,7 +30,7 @@ const EnterMailContiainer = ({ setSelectedMails }: Props) => {
     <form className={styles.body} onSubmit={handleSubmit}>
       <div className={styles.heading}>Add Emails</div>
       <div className={styles.inputContainer}>
-        <input type="mail" placeholder='Paste of enter emails here' value={emailInput}
+        <input type="email" placeholder='Paste of enter emails here' value={emailInput}
           onChange={(e) => setEmailInput(e.target.value)} />
         <button type="submit">Add</button>
       </div>

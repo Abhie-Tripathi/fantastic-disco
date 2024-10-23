@@ -175,7 +175,7 @@ const Page = () => {
         <RegisterModal fetchEventData={fetchEventData} setRegisterValue={setRegisterValue} registerValue={registerValue} setRegisterModal={setRegisterModal} eventId={eventId} />
       </div>}
       {inviteGuestModal && <div className={styles.modal} ref={inviteModalRef}>
-        <InviteGuest />
+        <InviteGuest eventId={eventId}/>
       </div>}
     </div>
   )
