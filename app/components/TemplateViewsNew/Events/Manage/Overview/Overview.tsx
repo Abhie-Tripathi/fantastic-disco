@@ -24,6 +24,7 @@ interface Props {
   pageBgColor?: string;
   pageGradient?: string;
   leavesTheme?: boolean;
+  snowTheme? : boolean;
   confettiType?: string;
   eventFont?: string;
   locationCity?: string;
@@ -35,7 +36,7 @@ interface Props {
   setDeleteModalTwo: (value: boolean) => void;
 }
 
-const Overview = ({format, leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget, registration, waitlist, capacity, approval }: Props) => {
+const Overview = ({format, leavesTheme,snowTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget, registration, waitlist, capacity, approval }: Props) => {
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
   const [guestCount, setGuestCount] = useState<number>(0)
@@ -61,7 +62,7 @@ const Overview = ({format, leavesTheme, eventId, imageUrl, eventName, startDate,
     <div className={styles.body}>
       <div className={styles.eventDetailView}>
         <div className={styles.viewContainer} onClick={() => setAddEventModal(true)}>
-          <EventSmallDetailView leavesTheme={leavesTheme} participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} format={format} virtualLink={''} />
+          <EventSmallDetailView snowTheme={snowTheme} leavesTheme={leavesTheme} participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} format={format} virtualLink={''} />
         </div>
         <div className={styles.eventDetailContainer}>
           <div className={styles.share_leadsContainer}>

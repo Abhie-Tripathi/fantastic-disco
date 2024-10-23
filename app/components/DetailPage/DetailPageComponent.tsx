@@ -20,9 +20,11 @@ import LeafTwo from '/public/widgetimages/leaf2.png'
 import SpeakerContainer from './SpeakerContainer'
 import { usePathname } from 'next/navigation';
 import LeafTheme from '../UI/LeafTheme'
+import SnowfallTheme from '../UI/SnowfallTheme'
 // import LinkIcon from '/public/link.svg'
 
 interface EventProps {
+    snowTheme : boolean;
     venue: string;
     latitude: number;
     eventFont: string;
@@ -62,7 +64,7 @@ interface EventProps {
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
-const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+const DetailPageComponent = ({ snowTheme,venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
     start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
@@ -151,8 +153,11 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
             > */}
             <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
             <canvas ref={confettiCanvasRefTwo} className={styles.confettiCanvasTwo}></canvas>
-            {leavesTheme && <div className={styles.leafContainer}>
+            {leavesTheme && <div className={styles.themeContainer}>
                 <LeafTheme leafCount={130}/>
+            </div>}
+            {snowTheme && <div className={styles.themeContainer}>
+                <SnowfallTheme/>
             </div>}
             <ToastContainer />
             {parentName &&

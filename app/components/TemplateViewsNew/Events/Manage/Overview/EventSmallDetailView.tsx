@@ -9,6 +9,7 @@ import DateTimeContainer from './DateTimeContainer'
 import confetti from "canvas-confetti";
 import LeafTwo from '/public/widgetimages/leaf2.png'
 import LeafTheme from '@/app/components/UI/LeafTheme'
+import SnowfallTheme from '@/app/components/UI/SnowfallTheme'
 
 interface Props {
     eventId: string
@@ -22,6 +23,7 @@ interface Props {
     timeZone?: string;
     pageBgColor?: string;
     pageGradient?: string;
+    snowTheme? : boolean;
     confettiType?: string;
     leavesTheme?: boolean;
     eventFont?: string;
@@ -32,7 +34,7 @@ interface Props {
     virtualLink:string;
 }
 
-const EventSmallDetailView = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCountry, locationCity, participationType, format,virtualLink}: Props) => {
+const EventSmallDetailView = ({snowTheme, leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCountry, locationCity, participationType, format,virtualLink}: Props) => {
 
     const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const fireConfetti = () => {
@@ -62,6 +64,9 @@ const EventSmallDetailView = ({ leavesTheme, eventId, imageUrl, eventName, start
                 <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
                 {leavesTheme && <div className={styles.leafContainer}>
                     <LeafTheme leafCount={50}/>
+                </div>}
+                {snowTheme && <div className={styles.leafContainer}>
+                    <SnowfallTheme/>
                 </div>}
                 <div className={styles.leftSection}>
                     <div className={styles.posterContainer}>

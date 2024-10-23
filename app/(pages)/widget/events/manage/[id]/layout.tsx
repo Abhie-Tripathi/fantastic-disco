@@ -58,6 +58,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 pageGradient : eventData.customizationData?.pageGradient || "",
                 confettiType : eventData.customizationData?.confettiType || "",
                 leavesTheme : eventData.customizationData?.leavesTheme || false,
+                snowTheme : eventData.customizationData?.snowTheme || false,
                 eventFont: eventData.customizationData?.eventFont || "",
                 registerBtnColor: eventData.customizationData?.registerBtnColor || "",
                 registerBtnText: eventData.customizationData?.registerBtnText || "",
