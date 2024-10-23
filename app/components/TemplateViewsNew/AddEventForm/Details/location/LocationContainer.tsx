@@ -86,7 +86,7 @@ const LocationContainer = ({
                     <div className={styles.virtual_location_Container} onClick={()=>setDropdown(!dropdown)}>
                     <LinkIcon color={formTheme === "light" ? "#7d7d7d" : "white"}/>
                     <div className={styles.eventLocation}>
-                        <div className={`${styles.eventLocationOne} ${formTheme === "dark" ? styles.darkEventLocation : styles.lightEventLocation} ${formState.virtualLink ? styles.activeLocation : ""}`}>{formState.virtualLink ? formState.virtualLink : "Add Virtual Link.."}</div>
+                        <div className={`${styles.eventLocationOne} ${formTheme === "dark" ? styles.darkEventLocation : styles.lightEventLocation} ${formState.virtualLink ? styles.activeLocation : ""}`}>{formState.virtualLink ? formState.virtualLink : "Add Virtual Link"}</div>
                     </div>
                     </div>
                 )
@@ -102,8 +102,9 @@ const LocationContainer = ({
                             <div className={`${styles.eventLocationTwo} ${formTheme === "dark" ? styles.darkEventLocation : styles.lightEventLocation}`}>{formState.countryName ? formState.countryName : "Offline location or Virtual Link"}</div>
                         </div>
                     </div>
+                    <div className={styles.divider}></div>
                     <div>
-                    
+                   
                     <div className={styles.virtual_location_Container} onClick={()=>setDropdown(!dropdown)}>
                             <LinkIcon color={formTheme === "light" ? "#7d7d7d" : "white"}/>
                             <div className={styles.eventLocation}>

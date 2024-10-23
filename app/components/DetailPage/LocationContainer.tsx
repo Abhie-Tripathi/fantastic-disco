@@ -73,7 +73,15 @@ const LocationContainer = ({
               <LinkIcon />
               <span> Or join us virtually at </span>
             </div>
-            <div className={styles.virtual_link}>{virtualLink}</div>
+            {/* <div className={styles.virtual_link}>{virtualLink}</div> */}
+            <a
+              href={virtualLink}
+              className={styles.virtual_link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {virtualLink}
+            </a>
           </div>
         </div>
       ) : null}

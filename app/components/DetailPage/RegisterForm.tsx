@@ -77,9 +77,9 @@ const RegisterForm = ({
     setFormData({
       ...formData,
       [name]: value,
-    });  
+    });
   };
-  const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
+  const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,7 +94,7 @@ const RegisterForm = ({
       interest: "ATTENDEE",
       note: "intend",
       source: "eventgeni",
-      redirectUrl: `${console_url}/detailpage/${eventId}`
+      redirectUrl: `${console_url}/detailpage/${eventId}`,
       // sourceId: widgetId,
     };
     try {
@@ -131,12 +131,10 @@ const RegisterForm = ({
       const eventEndDate = new Date(end_date);
 
       const hasEventEnded = currentDate > eventEndDate;
-      console.log("event_ended", hasEventEnded);
       if (hasEventEnded) {
         setIsEventEnded(true);
         const timeDiffInMs = currentDate.getTime() - eventEndDate.getTime();
         const daysSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60 * 24));
-        console.log("asdasd", daysSinceEnd);
         if (daysSinceEnd === 1) {
           setTimeSinceEnd("1 day ago"); // Ended yesterday
         } else if (daysSinceEnd > 1) {
@@ -147,121 +145,18 @@ const RegisterForm = ({
 
     calculateTimeDifference();
   }, [end_date]);
-  console.log("times", timeSinceEnd);
   return (
-    // <div className={styles.registerContainer}>
-    //   {/* <ToastContainer /> */}
-    //   {registration ? <div className={styles.header}>
-    //       <div>Join us at the event</div>
-    //     </div> :waitlisting || approval || isEventEnded ? (
-    //     <>Register</>
-    //   ) : (
-    //     <></>
-    //   )}
-
-    //   <form onSubmit={handleSubmit}>
-    //     {registration ? <div className={styles.formSubHeading}>{registerMessage}</div>:waitlisting ? (
-    //       <>
-    //         <div className={styles.event_container}>
-    //           <div className={styles.icon_container}>
-    //             <EventClosedIcon />
-    //           </div>
-    //           <div className={styles.text_container}>
-    //             <div className={styles.event_full_text}>Event Full</div>
-    //             <div className={styles.waitlist_text}>
-    //               If you&apos;d like, you can join the waitlist.
-    //             </div>
-    //           </div>
-    //         </div>
-    //         <div className={styles.detail_text}>
-    //           Please click on the button below to join the waitlist. You will be
-    //           notified if additional spots become available.
-    //         </div>
-    //       </>
-    //     ) : approval ?
-    //     <>
-    //       <div className={styles.event_container}>
-    //           <div className={styles.icon_container}>
-    //             <ApprovalSVG />
-    //           </div>
-    //           <div className={styles.text_container}>
-    //             <div className={styles.event_full_text}>Approval Required</div>
-    //             <div className={styles.waitlist_text}>
-    //               Your registration is subject to approval by the host.
-    //             </div>
-    //           </div>
-    //         </div>
-    //         <div className={styles.detail_text}>
-    //          Welcome! To join the event, please register below.
-    //         </div>
-
-    //     </>:
-    //     isEventEnded ? <>
-    //      <div className={styles.event_container}>
-    //           <div className={styles.icon_container}>
-    //             <EventClosedIcon />
-    //           </div>
-    //           <div className={styles.text_container}>
-    //             <div className={styles.event_full_text}>Past Event</div>
-    //             <div className={styles.waitlist_text}>
-    //               <span>This event endede 9 hours age.</span>
-    //             </div>
-    //           </div>
-    //         </div>
-    //         <div className={styles.detail_text}>
-    //          Welcome! To join the event, please register below.
-    //         </div>
-    //         </>:<></>
-    //     }
-
-    //     <input
-    //       className={styles.inputField}
-    //       type="text"
-    //       name="firstname"
-    //       placeholder="Name"
-    //       value={formData.firstname}
-    //       onChange={handleChange}
-    //       required
-    //     />
-
-    //     <input
-    //       className={styles.inputField}
-    //       type="email"
-    //       name="email"
-    //       placeholder="Email"
-    //       value={formData.email}
-    //       onChange={handleChange}
-    //       required
-    //     />
-    //     <button
-    //       type="submit"
-    //       style={{ backgroundColor: registerBtnColor, color: fontColor }}
-    //       className={styles.submitBtn}
-    //     >
-    //       {registration ?<span>{registerBtnText}</span>: waitlisting ? (
-    //         <span onClick={handleClick}>Join waitlist</span>
-    //       )  : approval ? <span>Request to join</span>: isEventEnded? <span>Follow</span>:<></> }
-
-    //     </button>
-    //   </form>
-    // </div>
-
     <div className={styles.registerContainer}>
-      {/* {(registration && approval && capacity && !waitlisting) ||
-      (registration && !approval && capacity && waitlisting) ? (
-        <div className={styles.header}>
-          <div>Join us at the event</div>
-        </div>
-      ) : (
-        <></>
-      )} */}
       {!isEventEnded &&
         capacity &&
         registration &&
         !approval &&
         waitlisting && (
-          <div className={styles.header}>
-            <div>Join us at the event</div>
+          <div className={styles.customMsg_container}>
+            <div className={styles.header}>
+              <div>Join us at the event</div>
+            </div>
+            <div className={styles.customMessage}>{registerMessage}</div>
           </div>
         )}
       {!isEventEnded &&
@@ -269,8 +164,11 @@ const RegisterForm = ({
         registration &&
         !approval &&
         !waitlisting && (
-          <div className={styles.header}>
-            <div>Join us at the event</div>
+          <div className={styles.customMsg_container}>
+            <div className={styles.header}>
+              <div>Join us at the event</div>
+            </div>
+            <div className={styles.customMessage}>{registerMessage}</div>
           </div>
         )}
 
@@ -469,8 +367,7 @@ const RegisterForm = ({
               </div>
             </div>
             <div className={styles.detail_text}>
-              Thank you for your interest! Follow to stay updated for future
-              events.
+              Welcome! To join the event, please register below.
             </div>
           </>
         )}
@@ -652,7 +549,7 @@ const RegisterForm = ({
           type="submit"
           style={{ backgroundColor: registerBtnColor, color: fontColor }}
           className={styles.submitBtn}
-        // onClick={handleClick}
+          // onClick={handleClick}
         >
           {/* Past event */}
           {isEventEnded && <span>Follow</span>}

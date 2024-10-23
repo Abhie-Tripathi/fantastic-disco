@@ -2,6 +2,7 @@ import React, { ChangeEvent, useState } from 'react'
 import styles from './logo.style.module.css'
 import Image, { StaticImageData } from 'next/image'
 import PlaceHolder from '/public/placeholder.png'
+import { usePathname } from 'next/navigation';
 
 interface Props{
     flex : boolean;
@@ -9,7 +10,8 @@ interface Props{
 }
 const LogoComponent = ({flex,fetchedLogos}: Props) => {
     const [imageSrc, setImageSrc] = useState<string | StaticImageData>(PlaceHolder);
-
+    const pathname = usePathname();
+    const pathName = pathname.split("/")[0];
     const handleFileChange = (event: ChangeEvent<HTMLInputElement>): void => {
         const file = event.target.files?.[0];
         if (file) {
@@ -27,7 +29,11 @@ const LogoComponent = ({flex,fetchedLogos}: Props) => {
         <div className={`${styles.body} ${!flex ?styles.columnbody:""}`}>
             <div className={`${styles.headingContainer} ${!flex ? styles.colheadingcontainer:""}`}>
                 <div className={styles.heading}>Company Logo</div>
-                <div className={styles.subheading}>Update your company logo</div>
+                {/* { pathName !== "dashboard" && (
+                    <div className={styles.subheading}>Update your company logo</div>
+                )} */}
+
+                
             </div>
             <div className={styles.editContainer} >
                 <div className={styles.logoContainer}>

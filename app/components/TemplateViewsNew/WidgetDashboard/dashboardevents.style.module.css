@@ -20,16 +20,21 @@
 }
 .btn{
     padding: 5px 30px;
-    font-weight: var(--font-weight-semibold);
+    /* font-weight: var(--font-weight-semibold);
     font-size: var(--font-size-small);
-    color: var(--secondary-text-color);
+    color: var(--secondary-text-color); */
+    font-weight: var(--font-weight-semibold);
+    font-size: var( --font-size-large);
+    color: var(--tertiary-text-color);
     border-radius: 2px;
     display: flex;
     align-items: center;
     gap: 4px;
+    text-wrap: nowrap;
 }
 .selectedBtn{
     background-color: var(--primary-foreground);
+    color: var(--primary-text-color);
 }
 .btn .count{
     background-color: var(--primary-light-color);
@@ -57,9 +62,14 @@
     font-weight: var(--font-weight-semibold);
 }
 .emptyScreen span{
-    color: #8F8F8F;
+    /* color: #8F8F8F;
     font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-regular); */
+
+    color: var(--dashboard-brandkit-subtext);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
+
 }
 .addEvent{
     margin-top: 25px;
@@ -103,11 +113,14 @@
     width: 100%;
     border: 1px solid var(--neutral-light-color);
     border-radius: 4px;
-    font-size: var(--font-size-small);
+    /* font-size: var(--font-size-small); */
     color: var(--primary-color);
     line-height: 18px;
     padding: 9px;
     text-align: center;
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+   
 }
 .allEventBtn:hover{
     background-color: var(--primary-light-color);
