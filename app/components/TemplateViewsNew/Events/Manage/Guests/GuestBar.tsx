@@ -34,9 +34,9 @@ const GuestBar = ({ goingGuests, notgoingGuests, pendingGuests, followingGuests,
     <div className={styles.body}>
       <div className={styles.header}>
         <div className={styles.going}><span>{goingGuests}</span> Guests</div>
-        <div className={`${styles.capacity} ${goingGuests > (capacity || 0) ? styles.redCap : ""}`}>
+        {capacity !== -1 && <div className={`${styles.capacity} ${goingGuests > (capacity || 0) ? styles.redCap : ""}`}>
           Cap <span>{capacity}</span>
-        </div>
+        </div>}
       </div>
       <div className={styles.bar}>
         {guestTypes.map((guest, index) => {
