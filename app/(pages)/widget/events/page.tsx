@@ -50,9 +50,12 @@ const Page = () => {
         setTodaysDate(getCurrentDate());
     }, []);
 
+    useEffect(()=>{
+        console.log("todays date is :", todaysDate)
+    },[todaysDate])
+
     useEffect(() => {
         fetchEvents(page * 8);
-        console.log("page is :", page)
     }, [page])
 
     useEffect(() => {

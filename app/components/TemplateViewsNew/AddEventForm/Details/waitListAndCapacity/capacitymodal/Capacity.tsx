@@ -38,7 +38,6 @@ const CapacityModal = ({capacity,handleChange,waitlisting,capacityModal}: Props)
     if(inputValue !== ""){
       handleChange("capacity", inputValue)
     }
-    
 
   }
   return (

@@ -10,6 +10,7 @@ import ProgressBar from './ProgressBar'
 import { EventsType } from '@/types/alleventtype'
 
 interface Props {
+    setSnowTheme : (value : boolean) => void
     setLeavesTheme : (value : boolean) => void
     confettiType : string;
     setFormTheme : (value : string) => void
@@ -32,7 +33,7 @@ interface Props {
     prefilledEvent?: EventsType | null
 }
 
-const Appearance = ({setLeavesTheme, confettiType, setFormTheme, setPageBgColor, pageBgColor,setConfettiType, eventFont, setEventFont, extractedColors, setExtractedColors, eventNameMain, cityNameMain, participationTypeMain, descriptionMain ,prefilledEvent, eventNameSub, participationTypeSub, descriptionSub, cityNameSub, setPageGradient}: Props) => {
+const Appearance = ({setSnowTheme, setLeavesTheme, confettiType, setFormTheme, setPageBgColor, pageBgColor,setConfettiType, eventFont, setEventFont, extractedColors, setExtractedColors, eventNameMain, cityNameMain, participationTypeMain, descriptionMain ,prefilledEvent, eventNameSub, participationTypeSub, descriptionSub, cityNameSub, setPageGradient}: Props) => {
     const { theme } = useTheme()
     return (
         <div className={styles.body} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
@@ -48,7 +49,7 @@ const Appearance = ({setLeavesTheme, confettiType, setFormTheme, setPageBgColor,
                 <BrandKit prefilledEvent={prefilledEvent} flex={false} extractedColors={extractedColors} pageBgColor={pageBgColor} setPageBgColor={setPageBgColor} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} />
                 <div className={styles.line}></div>
                 <div className={styles.colorContainer}>
-                    <ColorContainer setLeavesTheme={setLeavesTheme} confettiType={confettiType} setFormTheme={setFormTheme} setConfettiType={setConfettiType} setPageGradient={setPageGradient} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} />
+                    <ColorContainer setSnowTheme={setSnowTheme} setLeavesTheme={setLeavesTheme} confettiType={confettiType} setFormTheme={setFormTheme} setConfettiType={setConfettiType} setPageGradient={setPageGradient} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} />
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.fontContainer}>

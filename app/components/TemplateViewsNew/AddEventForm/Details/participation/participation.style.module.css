@@ -17,6 +17,7 @@
 }
 .header .lightHeading{
     color: var(--tertiary-text-color);
+    font-size: var(----font-size-default);
 }
 .options{
     display: flex;
@@ -33,6 +34,9 @@
     gap: 9px;
     cursor: pointer;
     border: 1px solid var(--border-color);
+}
+.options .activeOption{
+    border: 1px solid var(--primary-color);
 }
 .options .option:hover{
     background-color: rgba(255, 255, 255, 0.36);

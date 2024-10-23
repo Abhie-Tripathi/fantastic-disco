@@ -75,8 +75,9 @@
     width: 100%;
 }
 .header .heading{
-    font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-h6);
+    color: var(--primary-text-color);
 }
 .brandKitContainer{
     margin-top: 28px;

@@ -61,6 +61,6 @@
     font-size: var(--font-size-default);
 }
 .eventContainer .eventSummary{
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-small);
     color: var(--background-secondary-color-active);
 }

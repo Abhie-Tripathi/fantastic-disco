@@ -9,8 +9,12 @@
 }
 
 .header span {
-    font-size: 10px;
+    /* font-size: 10px; */
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-text-color);
 }
+
 
 .editContainer {
     margin-top: 18px;
@@ -40,8 +44,10 @@
 }
 
 .bgContainer span {
-    color: #7D7D7D;
-    font-size: 10px;
+    /* color: #7D7D7D; */
+    /* font-size: 10px; */
+    font-size: var(--font-size-small);
+    color: var(--tertiary-text-color);
 }
 
 .colorPickerContainer {
@@ -160,6 +166,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
 }
 .themeContainer .dropDownContainer{
     cursor: pointer;

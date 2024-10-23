@@ -49,7 +49,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             widgetTags: data?.widgetData,
             eventType: data?.type, 
             parentData: "",
-            capacity: data?.capacity || 0,
+            capacity: eventData.maxCapacity || 0,
             registration: data?.registration === true ? true : false,
             approval:data?.approval === true ? true : false,
             waitlisting:data?.waitlisting === true ? true : false,
@@ -58,6 +58,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 pageGradient : eventData.customizationData?.pageGradient || "",
                 confettiType : eventData.customizationData?.confettiType || "",
                 leavesTheme : eventData.customizationData?.leavesTheme || false,
+                snowTheme : eventData.customizationData?.snowTheme || false,
                 eventFont: eventData.customizationData?.eventFont || "",
                 registerBtnColor: eventData.customizationData?.registerBtnColor || "",
                 registerBtnText: eventData.customizationData?.registerBtnText || "",
@@ -98,11 +99,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }, [])
 
     const handleDetailPage = () => {
-        router.push(`/detailpage/${eventId}`)
+        window.open(`/detailpage/${eventId}`)
     }
 
     return (
-        <EventContext.Provider value={{ eventId, fetchedEvent, setAddEventModal, setDeleteModal, setDeleteModalTwo }}>
+        <EventContext.Provider value={{fetchEventData, eventId, fetchedEvent, setAddEventModal, setDeleteModal, setDeleteModalTwo }}>
             <div className={styles.body}>
                 <div className={styles.details}>
                     <div className={styles.header}>
@@ -116,8 +117,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                         <Link href={`/widget/events/manage/${eventId}/guests`} className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/guests` ? styles.activeItem : ""
                             }`}>Guests</Link>
 
-                        <Link href={`/widget/events/manage/${eventId}/registration`} className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/registration` ? styles.activeItem : ""
-                            }`} >Registration</Link>
+                        <Link href={`/widget/events/manage/${eventId}/settings`} className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/settings` ? styles.activeItem : ""
+                            }`} >Settings</Link>
 
                         <Link href={`/widget/events/manage/${eventId}/blasts`} className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/blasts` ? styles.activeItem : ""
                             }`} >Blasts</Link>

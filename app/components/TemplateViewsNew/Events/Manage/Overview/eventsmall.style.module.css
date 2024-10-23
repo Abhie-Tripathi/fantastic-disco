@@ -121,6 +121,12 @@
     animation: gradientMove 5s ease infinite;
     transition: all .3s ease-in-out;
 }
+.darkmix {
+    background:  radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(62,54,65,1) 0%, rgba(56,45,54,1) 27%, rgba(73,69,69,1) 67%, rgba(24,45,37,1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
 
 @keyframes gradientMove {
     0% {

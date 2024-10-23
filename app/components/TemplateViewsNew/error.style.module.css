@@ -23,15 +23,18 @@
     font-weight: var(--font-weight-medium);
 }
 .body .smallSubHeading{
-    color: #8F8F8F;
-    font-size: var(--font-size-xs);
+    color: var(--dashboard-brandkit-subtext);
+    /* font-size: var(--font-size-xs); */
+    font-size: var(--font-size-small);
     font-weight: var(--font-weight-medium);
 }
 .body button{
     background-color: var(--primary-color);
     border-radius: 4px;
     color: white;
-    font-size: var(--font-size-small);
+    /* font-size: var(--font-size-small); */
+    font: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
     padding: 9px 20px;
 }
 .body button:hover{

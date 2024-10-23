@@ -9,9 +9,10 @@ interface Props {
     setApprovalValue: (value: boolean) => void
     approvalValue: boolean;
     setApprovalModal: (value: boolean) => void
+    fetchEventData : () => Promise<null | undefined>;
 }
 
-const ApprovalModal = ({ setApprovalValue, approvalValue, setApprovalModal, eventId }: Props) => {
+const ApprovalModal = ({ setApprovalValue, approvalValue, setApprovalModal, eventId,fetchEventData }: Props) => {
 
     const handleChange = async () => {
         const formData = new FormData()
@@ -24,11 +25,11 @@ const ApprovalModal = ({ setApprovalValue, approvalValue, setApprovalModal, even
         if (data) {
             showToast("success", "Approval changes updated")
             setApprovalModal(false)
+            fetchEventData()
         } else {
             console.log("error", error)
         }
     }
-
 
     return (
         <div className={styles.body}>

@@ -18,10 +18,14 @@
     gap:4px;
 }
 .headerContainer .heading_iconContainer .heading{
-    font-weight: 500;
+    /* font-weight: 500;
     color: #7D7D7D;
-    font-size: var(--font-size-small);
+    font-size: var(--font-size-small); */
+    font-size: var(--font-size-default);
+    color: var(--tertiary-text-color);
+    font-weight: var(--font-weight-medium);
 }
+
 .headerContainer .heading_iconContainer .darkHeading{
     color: white;
 }

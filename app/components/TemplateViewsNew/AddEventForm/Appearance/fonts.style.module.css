@@ -7,7 +7,10 @@
     gap: 5px;
 }
 .header span{
-    font-size: 10px;
+    /* font-size: 10px; */
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-text-color);
 }
 .editContainer{
     padding-left: 19px;
@@ -31,8 +34,10 @@
     border: 1px solid rgb(88, 88, 88);
 }
 .bgContainer span{
-    color: #7D7D7D;
-    font-size: 10px;
+    /* color: #7D7D7D;
+    font-size: 10px; */
+    font-size: var(--font-size-small);
+    color: var(--tertiary-text-color);
 }
 .fontContainer{
     border: 1px solid var(--border-color);

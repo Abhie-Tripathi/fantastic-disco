@@ -2,8 +2,6 @@ import React from 'react'
 import styles from './registerques.style.module.css'
 import AttendeeIcon from '/public/widgetimages/attendeeIcon.svg'
 import Image from 'next/image'
-import PeopleIcon from '/public/people.svg'
-import MailIcon from '/public/page.svg'
 
 const RegistrationQues = () => {
     return (
@@ -32,19 +30,20 @@ const RegistrationQues = () => {
                         </div>
                         <span className={styles.value}>Required</span>
                     </div>
-                    <div className={`${styles.ques} ${styles.phoneQues}`}>
+                    {/* <div className={`${styles.ques} ${styles.phoneQues}`}>
                         <div className={styles.nameLogoContainer}>
                             <span></span>
                             <span>Phone</span>
                         </div>
                         <span className={styles.value}>Off</span>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className={styles.customQuesContainer}>
                 <div className={styles.quesHeader}>
                     <span className={styles.tag}>?</span>
                     <span className={styles.heading}>Custom Questions</span>
+                    <LockIcon/>
                 </div>
                 <div className={`${styles.ques} ${styles.addQues}`}>
                     <span>+</span>
@@ -56,3 +55,12 @@ const RegistrationQues = () => {
 }
 
 export default RegistrationQues
+
+function LockIcon(){
+    return(
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M14.2913 14.0166L16.9497 15.5749L16.2163 16.7666L12.9163 14.7499V10.1666H14.2913V14.0166ZM21.1663 13.8333C21.1663 17.8758 17.8755 21.1666 13.833 21.1666C11.9813 21.1666 10.2947 20.4699 9.00217 19.3333H4.66634C3.61217 19.3333 2.83301 18.5541 2.83301 17.4999V9.24992C2.83301 8.22325 3.64884 7.45325 4.66634 7.41659V6.95825C4.66634 4.67575 6.50884 2.83325 8.79134 2.83325C10.9363 2.83325 12.678 4.47409 12.8797 6.57325C13.1913 6.52742 13.5122 6.49992 13.833 6.49992C17.8755 6.49992 21.1663 9.79075 21.1663 13.8333ZM6.49967 7.41659H11.083V6.73825C10.973 5.57409 9.98301 4.66659 8.79134 4.66659C7.52634 4.66659 6.49967 5.69325 6.49967 6.95825V7.41659ZM19.333 13.8333C19.333 10.7991 16.8672 8.33325 13.833 8.33325C10.7988 8.33325 8.33301 10.7991 8.33301 13.8333C8.33301 16.8674 10.7988 19.3333 13.833 19.3333C16.8672 19.3333 19.333 16.8674 19.333 13.8333Z" fill="#7d7d7d"/>
+</svg>
+
+    )
+}

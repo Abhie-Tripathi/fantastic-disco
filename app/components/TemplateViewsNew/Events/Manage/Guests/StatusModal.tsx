@@ -3,8 +3,11 @@ import styles from './statusmodal.style.module.css'
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { showToast } from '@/utils/showToast';
+import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface Props {
+    setStatusModal : (value : boolean) => void
+    fetchGuests: () => Promise<void>;
     statusValue: string;
     setStatusValue: (value: string) => void
     mail: string;
@@ -13,9 +16,16 @@ interface Props {
     eventId: string;
 }
 
-const StatusModal = ({ statusValue, setStatusValue, mail, name, interestId, eventId }: Props) => {
+const StatusModal = ({setStatusModal, fetchGuests, statusValue, setStatusValue, mail, name, interestId, eventId }: Props) => {
     const [statusDropdown, setStatusDropdown] = useState<boolean>(false)
     const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
+
+    const statusModalRef = useOutsideClick(() => setStatusDropdown(false))
+
+    const handleStatusValue = (status : string)=>{
+        setStatusValue(status)
+        setStatusDropdown(false)
+    }
 
     const handleSubmit = async () => {
         const newObj = {
@@ -32,6 +42,8 @@ const StatusModal = ({ statusValue, setStatusValue, mail, name, interestId, even
         })
         if (data) {
             showToast("success", "Status of the user updated")
+            fetchGuests()
+            setStatusModal(false)
         }
         if (error) {
             showToast("error", "Error in updating status")
@@ -47,7 +59,7 @@ const StatusModal = ({ statusValue, setStatusValue, mail, name, interestId, even
                         statusValue === "WAITLISTING" ? styles.waitlist :
                             statusValue === "FOLLOWING" ? styles.following : styles.notgoing
                     }`}>
-                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Declined"}
+                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Not Going"}
                 </div>
             </div>
             <div className={styles.mail}>{mail}</div>
@@ -56,14 +68,14 @@ const StatusModal = ({ statusValue, setStatusValue, mail, name, interestId, even
                     Change status to:
                 </div>
                 <div className={styles.statusInputContainer} onClick={() => setStatusDropdown(!statusDropdown)}>
-                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Declined"}
+                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Not Going"}
                     <DownArrow />
                 </div>
-                {statusDropdown && <div className={styles.statusDropdown}>
-                    <div onClick={() => setStatusValue("CONFIRMED")} className={`${styles.status} ${styles.going}`}>Going</div>
-                    <div onClick={() => setStatusValue("PENDING")} className={`${styles.status} ${styles.pending}`}>Pending</div>
-                    <div onClick={() => setStatusValue("REJECTED")} className={`${styles.status} ${styles.notgoing}`}>Declined</div>
-                    <div onClick={() => setStatusValue("WAITLISTING")} className={`${styles.status} ${styles.waitlist}`}>Wailist</div>
+                {statusDropdown && <div className={styles.statusDropdown} ref={statusModalRef}>
+                    <div onClick={() => handleStatusValue("CONFIRMED")} className={`${styles.status} ${styles.going}`}>Going</div>
+                    <div onClick={() => handleStatusValue("PENDING")} className={`${styles.status} ${styles.pending}`}>Pending</div>
+                    <div onClick={() => handleStatusValue("REJECTED")} className={`${styles.status} ${styles.notgoing}`}>Not Going</div>
+                    {/* <div onClick={() => setStatusValue("WAITLISTING")} className={`${styles.status} ${styles.waitlist}`}>Wailist</div> */}
                 </div>}
             </div>
             <div className={styles.notify}>We will notify the user of the updated status through mail.</div>

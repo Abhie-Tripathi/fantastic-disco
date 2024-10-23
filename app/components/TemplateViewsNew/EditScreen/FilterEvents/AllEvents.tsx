@@ -243,6 +243,7 @@ const AllEvents = ({
       }
     }
   }, [page]);
+  console.log("fetchedAllEvents",fetchedAllEvents.length,page)
 
   const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = {
@@ -646,7 +647,13 @@ const AllEvents = ({
 
     if (data) {
       showToast("success", "Event successfully added to the widget");
-      fetchEvents(0, "update");
+      if (typeof fetchEvents === "function") {
+        fetchEvents(0, "update")
+          .then(() => {
+            window.location.reload();
+          });
+      }
+      // fetchEvents(0, "update");
       fetchAddedEvents();
     }
   };

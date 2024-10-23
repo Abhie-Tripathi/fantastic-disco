@@ -9,9 +9,10 @@ interface Props {
     setRegisterModal : (value : boolean) => void
     setRegisterValue : (value : boolean) => void
     registerValue : boolean;
+    fetchEventData : () => Promise<null | undefined>;
 }
 
-const RegisterModal = ({setRegisterModal, eventId,setRegisterValue,registerValue }: Props) => {
+const RegisterModal = ({fetchEventData,setRegisterModal, eventId,setRegisterValue,registerValue }: Props) => {
 
     const handleChange = async () => {
         const formData = new FormData()
@@ -24,6 +25,7 @@ const RegisterModal = ({setRegisterModal, eventId,setRegisterValue,registerValue
         if(data){
             showToast("success", "Registration changes updated")
             setRegisterModal(false)
+            fetchEventData()
         }else{
             console.log("error",error)
         }

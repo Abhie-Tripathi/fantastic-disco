@@ -1,10 +1,17 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './overview.style.module.css'
 import EventSmallDetailView from './EventSmallDetailView'
 import ShareButtons from '@/app/components/DetailPage/ShareButtons'
 import { showToast } from "@/utils/showToast";
+import { myFetch } from '@/utils/myFetch';
+import { baseUrl } from '@/constants';
 
 interface Props {
+  format? : string;
+  registration? : boolean;
+  approval?: boolean;
+  waitlist? : boolean;
+  capacity? : number;
   eventId: string;
   imageUrl?: string;
   eventName?: string;
@@ -17,6 +24,7 @@ interface Props {
   pageBgColor?: string;
   pageGradient?: string;
   leavesTheme?: boolean;
+  snowTheme? : boolean;
   confettiType?: string;
   eventFont?: string;
   locationCity?: string;
@@ -28,8 +36,10 @@ interface Props {
   setDeleteModalTwo: (value: boolean) => void;
 }
 
-const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget }: Props) => {
+const Overview = ({format, leavesTheme,snowTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget, registration, waitlist, capacity, approval }: Props) => {
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
+
+  const [guestCount, setGuestCount] = useState<number>(0)
 
   const handleCopy = () => {
     const textToCopy = `https://console.eventgeni.com/detailpage/${eventId}`;
@@ -37,11 +47,22 @@ const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDat
     showToast("success", "Link copied")
   };
 
+  const fetchGuests = async () => {
+    const { data, error } = await myFetch(`${baseUrl}/intend/users?eventId=${eventId}`)
+    if (error) {
+      console.log("error is : ", error)
+    } else {
+      setGuestCount(data?.totalUser)
+    }
+  }
+  useEffect(()=>{
+    fetchGuests()
+  },[])
   return (
     <div className={styles.body}>
       <div className={styles.eventDetailView}>
         <div className={styles.viewContainer} onClick={() => setAddEventModal(true)}>
-          <EventSmallDetailView leavesTheme={leavesTheme} participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} />
+          <EventSmallDetailView snowTheme={snowTheme} leavesTheme={leavesTheme} participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} format={format} virtualLink={''} />
         </div>
         <div className={styles.eventDetailContainer}>
           <div className={styles.share_leadsContainer}>
@@ -55,17 +76,17 @@ const Overview = ({ leavesTheme, eventId, imageUrl, eventName, startDate, endDat
             </div>
             <div className={styles.leadsContainer}>
               <UserIcon />
-              <span>130 Interests</span>
+              <span>{guestCount} Interests</span>
             </div>
           </div>
           <div className={styles.valuesContainer}>
             <div className={styles.valueContainer}>
-              <div><span className={`${styles.icon} ${styles.icon1}`}>R</span>Registration : <span>ON</span></div>
-              <div><span className={`${styles.icon} ${styles.icon2}`}>A</span>Approval : <span>ON</span></div>
+              <div><span className={`${styles.icon} ${styles.icon1}`}>R</span>Registration : <span>{registration === true ? "ON" : "OFF"}</span></div>
+              <div><span className={`${styles.icon} ${styles.icon2}`}>A</span>Approval : <span>{approval === true ? "ON" : "OFF"}</span></div>
             </div>
             <div className={styles.valueContainer}>
-              <div><span className={`${styles.icon} ${styles.icon3}`}>W</span>Waitlist : <span>ON</span></div>
-              <div><span className={`${styles.icon} ${styles.icon4}`}>C</span>Capacity : <span>250</span></div>
+              <div><span className={`${styles.icon} ${styles.icon3}`}>W</span>Waitlist : <span>{waitlist === true ? "ON" : "OFF"}</span></div>
+              <div><span className={`${styles.icon} ${styles.icon4}`}>C</span>Capacity : <span>{capacity === -1 ? "Unlimited" : capacity}</span></div>
             </div>
           </div>
           

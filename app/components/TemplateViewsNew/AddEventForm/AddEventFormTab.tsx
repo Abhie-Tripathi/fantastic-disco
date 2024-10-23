@@ -11,20 +11,11 @@ import Details from './Details/Details'
 import Subeventform from './Subevent/Subeventform'
 import { FormState } from '@/types/Formstate'
 import confetti from "canvas-confetti";
-import LeafOne from '/public/widgetimages/leaf1.png'
-import LeafTwo from '/public/widgetimages/leaf2.png'
-import Image from 'next/image'
-
-interface SpeakerProfileType {
-    id: string;
-    name: string;
-    linkedin: string;
-    designation: string;
-    // profileImage: string | ArrayBuffer | null;
-    profileImage: File | null
-}
+import LeafTheme from '../../UI/LeafTheme'
+import SnowfallTheme from '../../UI/SnowfallTheme'
 
 interface Props {
+    snowTheme : boolean;
     leavesTheme: boolean;
     setIsAddEventModalOpen: (value: boolean) => void
     formTheme: string;
@@ -53,7 +44,7 @@ interface Props {
     setIsApproved?: (value: boolean) => void
 }
 
-const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
+const AddEventFormTab = ({snowTheme, leavesTheme, formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
@@ -119,10 +110,10 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
                         handleSubeventChange('isEventParticipationEmpty', false)
                         // setIsEventParticipationEmpty(false)
                     }
-                    if (!subEventState.participationMessage) {
-                        handleSubeventChange('isParticipationMessageEmpty', true)
-                        // setIsParticipationMessageEmpty(true)
-                    }
+                    // if (!subEventState.participationMessage) {
+                    //     handleSubeventChange('isParticipationMessageEmpty', true)
+                    //     // setIsParticipationMessageEmpty(true)
+                    // }
                     if (!subEventState.textValue) {
                         handleSubeventChange('isTextValueMessageEmpty', true)
                         // setIsTextValueMessageEmpty(true)
@@ -140,12 +131,17 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
                 handleMaineventChanges('isEventNameEmpty', false)
                 // setIsEventNameEmpty(false)
             }
-            if (!mainEventState.query) {
-                handleMaineventChanges('isEventFormatEmpty', true)
-                // setIsEventFormatEmpty(true)
-            } else {
-                handleMaineventChanges('isEventFormatEmpty', false)
-                // setIsEventFormatEmpty(false)
+            // if (!mainEventState.query) {
+            //     handleMaineventChanges('isEventFormatEmpty', true)
+            //     // setIsEventFormatEmpty(true)
+            // } else {
+            //     handleMaineventChanges('isEventFormatEmpty', false)
+            //     // setIsEventFormatEmpty(false)
+            // }
+            if ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid" || mainEventState.eventFormat === "OFFLINE") && !mainEventState.query) {
+                handleMaineventChanges('isEventFormatEmpty', true);
+            } else if (mainEventState.eventFormat === "Virtual" || mainEventState.eventFormat === "ONLINE") {
+                handleMaineventChanges('isEventFormatEmpty', false); // No need for location in virtual format
             }
             if (!mainEventState.description) {
                 handleMaineventChanges('isEventDescriptionEmpty', true)
@@ -170,10 +166,28 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
                 // setIsTextValueMessageEmpty(true)
             }
 
-            if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
-                showToast("error", "Please fill in all the fields");
+            // if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
+            //     showToast("error", "Please fill in all the fields");
+            //     return; // Exit the function if any field is missing
+            // }
+            if (
+                !mainEventState.eventName.trim() ||
+                !mainEventState.eventFormat ||
+                !mainEventState.startTime ||
+                !mainEventState.endTime ||
+                !mainEventState.startDate ||
+                !mainEventState.endDate ||
+                !mainEventState.description.trim() ||
+                !mainEventState.participationType ||
+                !mainEventState.participationMessage ||
+                // Check location fields only for "In-person" or "Hybrid" events
+                ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid" || mainEventState.eventFormat === "OFFLINE") &&
+                    (!mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude))
+            ) {
+                showToast("error", "Please fill in all the required fields");
                 return; // Exit the function if any field is missing
             }
+
 
             if (mainEventState.banner.placeHolder === Placeholder && !mainEventState.banner.file) {
                 console.log("this code is running")
@@ -185,6 +199,7 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
                 pageGradient,
                 confettiType,
                 leavesTheme,
+                snowTheme,
                 eventFont,
                 registerBtnColor: mainEventState.registerBtnColor,
                 registerBtnText: mainEventState.registerBtnText,
@@ -204,6 +219,7 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
                 start_date: mainEventState.startDate,
                 description: mainEventState.description,
                 location_city: mainEventState.cityName,
+                virtualLink: mainEventState.virtualLink,
                 location_country: mainEventState.countryName,
                 gmt_time: mainEventState.timeZone,
                 latitude: mainEventState.latitude,
@@ -314,16 +330,18 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             handleSubeventChange('isEventParticipationEmpty', false)
             // setIsEventParticipationEmpty(false)
         }
-        if (!subEventState.participationMessage) {
-            handleSubeventChange('isParticipationMessageEmpty', true)
-            // setIsParticipationMessageEmpty(true)
-        }
+        // if (!subEventState.participationMessage) {
+        //     handleSubeventChange('isParticipationMessageEmpty', true)
+        //     // setIsParticipationMessageEmpty(true)
+        // }
         if (!subEventState.textValue) {
             handleSubeventChange('isTextValueMessageEmpty', true)
             // setIsTextValueMessageEmpty(true)
         }
 
-        if (!subEventState.eventName.trim() || !subEventState.eventFormat || !subEventState.startTime || !subEventState.endTime || !subEventState.startDate || !subEventState.endDate || !subEventState.description.trim() || !subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude || !subEventState.participationType || !subEventState.participationMessage) {
+        if (!subEventState.eventName.trim() || !subEventState.eventFormat || !subEventState.startTime || !subEventState.endTime || !subEventState.startDate || !subEventState.endDate || !subEventState.description.trim() || !subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude || !subEventState.participationType
+            // !subEventState.participationMessage
+        ) {
 
             showToast("error", "Please fill in all the fields");
             return; // Exit the function if any field is missing
@@ -338,16 +356,19 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             pageGradient,
             confettiType,
             leavesTheme,
+            snowTheme,
             eventFont,
             registerBtnColor: subEventState.registerBtnColor,
             registerBtnText: subEventState.registerBtnText,
             registerMessage: subEventState.registerMessage,
             // speakerProfilesData: subEventState.speakerProfilesData,
-            participationMessage: subEventState.participationMessage,
+            // participationMessage: subEventState.participationMessage,
             venue: subEventState.venue,
             hashtags: subEventState.hashtags.join(","),
             boothNumber: subEventState.boothNumber,
         }
+        const parentData = subEventState.parentData || "";
+        const [parenteventName, parenteventId] = parentData.split(",");
         const eventData = {
             format: subEventState.eventFormat,
             start_time: subEventState.startTime,
@@ -363,7 +384,7 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             participationType: subEventState.participationType,
             event_type: "Tradeshow",
             customizationData: JSON.stringify(eventCustomizationData),
-            parentData: subEventState.parentData ? subEventState.parentData : "",
+            parentData: parenteventName ? parenteventName : "",
         };
         const formData = new FormData()
         formData.append("name", subEventState.eventName)
@@ -371,6 +392,9 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
         formData.append("type", "SUB")
         if (eventId) {
             formData.append('eventId', eventId)
+        }
+        if (parenteventId) {
+            formData.append('eventId', parenteventId)
         }
         formData.append("capacity", subEventState?.capacity + "")
         formData.append("registration", subEventState?.registration + "")
@@ -444,16 +468,18 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             handleMaineventChanges('isEventParticipationEmpty', false);
         }
 
-        if (!eventState.participationMessage) {
-            handleMaineventChanges('isParticipationMessageEmpty', true);
-        }
+        // if (!eventState.participationMessage) {
+        //     handleMaineventChanges('isParticipationMessageEmpty', true);
+        // }
 
         if (!eventState.textValue.trim()) {
             handleMaineventChanges('isTextValueMessageEmpty', true);
         }
 
         // Check if all required fields are present
-        if (!eventState.eventName.trim() || !eventState.eventFormat || !eventState.startTime || !eventState.endTime || !eventState.startDate || !eventState.endDate || !eventState.description.trim() || !eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude || !eventState.participationType || !eventState.participationMessage) {
+        if (!eventState.eventName.trim() || !eventState.eventFormat || !eventState.startTime || !eventState.endTime || !eventState.startDate || !eventState.endDate || !eventState.description.trim() || !eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude || !eventState.participationType
+            // !eventState.participationMessage
+        ) {
             showToast("error", "Please fill in all the fields");
             return; // Exit the function if any field is missing
         }
@@ -472,6 +498,7 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             pageGradient,
             confettiType,
             leavesTheme,
+            snowTheme,
             eventFont,
             registerBtnColor: eventState.registerBtnColor,
             registerBtnText: eventState.registerBtnText,
@@ -646,25 +673,13 @@ const AddEventFormTab = ({ leavesTheme, formTheme, setPrefilledEvent, setPrefill
             </div>
             <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`} style={{ backgroundColor: pageBgColor }} ref={formContainerRef}>
                 <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
-                {leavesTheme && <div className={styles.leafContainer}>
-                    {Array.from({ length: 100 }).map((_, index) => (
-                        <Image
-                            key={index}
-                            // src={index % 2 === 0 ? LeafOne : LeafTwo}
-                            src={LeafTwo}
-                            className={styles.leaf}
-                            alt={`Leaf ${index + 1}`}
-                            style={{
-                                left: `${Math.random() * 100}%`, // Random horizontal position
-                                top: `${Math.random() * 100}%`,  // Random vertical position
-                                animationDelay: `${Math.random() * 5}s`, // Random animation delay
-                                animationDuration: `${5 + Math.random() * 10}s`, // Random duration for float
-                                width: `${25 + Math.random() * 5}px`, // Random leaf width between 15px to 20px
-                                height: `${25 + Math.random() * 5}px`,
-                            }}
-                        />
-                    ))}
+                {leavesTheme && <div className={styles.themeContainer}>
+                    <LeafTheme leafCount={100}/>
                 </div>}
+                {snowTheme && <div className={styles.themeContainer}>
+                    <SnowfallTheme/>
+                </div>}
+                
                 {collapseMainEventForm && eventFlow === 'main' ?
                     (<div className={styles.collapsedContainer}>
                         <div>

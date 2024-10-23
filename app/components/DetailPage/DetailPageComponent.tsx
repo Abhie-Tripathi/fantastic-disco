@@ -19,9 +19,12 @@ import confetti from 'canvas-confetti'
 import LeafTwo from '/public/widgetimages/leaf2.png'
 import SpeakerContainer from './SpeakerContainer'
 import { usePathname } from 'next/navigation';
+import LeafTheme from '../UI/LeafTheme'
+import SnowfallTheme from '../UI/SnowfallTheme'
 // import LinkIcon from '/public/link.svg'
 
 interface EventProps {
+    snowTheme : boolean;
     venue: string;
     latitude: number;
     eventFont: string;
@@ -57,19 +60,19 @@ interface EventProps {
     registration: boolean;
     approval: boolean;
     waitlisting: boolean;
+    virtualLink:string
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
-const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme }: EventProps) => {
+const DetailPageComponent = ({ snowTheme,venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
     const [isRegistratonClosed, setRegistrationClosed] = useState(false)
     const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const confettiCanvasRefTwo = useRef<HTMLCanvasElement | null>(null);
     const pathname = usePathname();
-    const pathName = pathname.split("/")[1]; 
-    console.log("pathnamee00",pathName)
+    const pathName = pathname.split("/")[1];
 
     const fireConfetti = () => {
         if (confettiCanvasRef.current) {
@@ -126,45 +129,35 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
 
     const router = useRouter()
     const handleMainEventClick = () => {
+        console.log("parent id :  ", parentId)
         if (parentId) {
             router.push(`/detailpage/${parentId}`)
         }
     }
 
     return (
-        <div style={{ backgroundColor: pageBgColor, position:"relative" }}>
-          <div style={{position:"absolute", top:"30px", left:"30px", cursor:"pointer", zIndex: 10}}>
-          {
-                pathName === "detailpage" &&
-                <button className={styles.backBtn} onClick={() => router.back()}>
-                    <BackIcon />
-                </button>
-            }
-          </div>
-            
-           <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`}
-           
+        <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`}
+            style={{ backgroundColor: pageBgColor }}
         >
+            <div style={{ position: "absolute", top: "30px", left: "30px", cursor: "pointer", zIndex: 10 }}>
+                {
+                    pathName === "detailpage" &&
+                    <button className={styles.backBtn} onClick={() => router.back()}>
+                        <BackIcon />
+                    </button>
+                }
+            </div>
+
+            {/* <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`}
+
+            > */}
             <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
             <canvas ref={confettiCanvasRefTwo} className={styles.confettiCanvasTwo}></canvas>
-            {leavesTheme && <div className={styles.leafContainer}>
-                {Array.from({ length: 100 }).map((_, index) => (
-                    <Image
-                        key={index}
-                        // src={index % 2 === 0 ? LeafOne : LeafTwo}
-                        src={LeafTwo}
-                        className={styles.leaf}
-                        alt={`Leaf ${index + 1}`}
-                        style={{
-                            left: `${Math.random() * 100}%`, // Random horizontal position
-                            top: `${Math.random() * 100}%`,  // Random vertical position
-                            animationDelay: `${Math.random() * 5}s`, // Random animation delay
-                            animationDuration: `${5 + Math.random() * 10}s`, // Random duration for float
-                            width: `${25 + Math.random() * 5}px`, // Random leaf width between 15px to 20px
-                            height: `${25 + Math.random() * 5}px`,
-                        }}
-                    />
-                ))}
+            {leavesTheme && <div className={styles.themeContainer}>
+                <LeafTheme leafCount={130}/>
+            </div>}
+            {snowTheme && <div className={styles.themeContainer}>
+                <SnowfallTheme/>
             </div>}
             <ToastContainer />
             {parentName &&
@@ -204,10 +197,10 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
                     <textarea className={styles.eventName} disabled placeholder='Event Name' value={name} style={{ fontFamily: eventFont }} />
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>
 
-                    <div className={styles.locationContainer}><LocationContainer eventFormat="In-Person" cityName={location_city} countryName={location_country} /></div>
+                    <div className={styles.locationContainer}><LocationContainer eventFormat={format} cityName={location_city} countryName={location_country} virtualLink={virtualLink}/></div>
                     
                     {
-                         <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} /></div>
+                         <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} end_date={end_date} start_date={start_date}/></div>
                     }
 
                     {isMobile &&
@@ -219,7 +212,7 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
                         </div>
                     }
                     <div className={styles.descriptionContainer} ><DescriptionContainer description={description} /></div>
-                    {speaker?.length > 0 && <div className={styles.speakerContainer}><SpeakerContainer speakerProfilesData={speaker}/></div>}
+                    {speaker?.length > 0 && <div className={styles.speakerContainer}><SpeakerContainer speakerProfilesData={speaker} /></div>}
                     <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Mapview latitude={latitude}
@@ -234,8 +227,8 @@ const DetailPageComponent = ({ venue, latitude, eventFont, longitude, pageBgColo
             <div className={styles.line}></div>
             <footer className={styles.footer}>Powered by Eventgeni &copy; 2024</footer>
         </div>
-        </div>
-     
+        // </div>
+
     )
 }
 
@@ -251,18 +244,18 @@ function LinkIcon() {
 
 function BackIcon() {
     return (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="16"
-        height="16"
-        fill="currentColor"
-        viewBox="0 0 16 16"
-        style={{ marginRight: "8px" }}
-      >
-        <path
-          fillRule="evenodd"
-          d="M11.354 1.354a.5.5 0 0 1 0 .707L5.707 7.707H14.5a.5.5 0 0 1 0 1H5.707l5.647 5.646a.5.5 0 0 1-.708.708l-6.5-6.5a.5.5 0 0 1 0-.708l6.5-6.5a.5.5 0 0 1 .708 0z"
-        />
-      </svg>
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            viewBox="0 0 16 16"
+            style={{ marginRight: "8px" }}
+        >
+            <path
+                fillRule="evenodd"
+                d="M11.354 1.354a.5.5 0 0 1 0 .707L5.707 7.707H14.5a.5.5 0 0 1 0 1H5.707l5.647 5.646a.5.5 0 0 1-.708.708l-6.5-6.5a.5.5 0 0 1 0-.708l6.5-6.5a.5.5 0 0 1 .708 0z"
+            />
+        </svg>
     );
-  }
+}

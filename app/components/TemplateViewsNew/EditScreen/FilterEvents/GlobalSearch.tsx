@@ -33,9 +33,11 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, handleChange }: Prop
 
   const handleClickEvent = (event: any) => {
     console.log("clicked event is :", event)
-    setSearchValue(event.name)
+    let eventId = event.data.id;
+    setSearchValue(event.name);
+    const formattedValue = eventId ? `${event.name},${eventId}` : event.name;
     if (handleChange) {
-      handleChange("parentData", event.name)
+      handleChange("parentData", formattedValue);
     } else {
       const newEvent: GolbalEventType = {
         name: event.name,
