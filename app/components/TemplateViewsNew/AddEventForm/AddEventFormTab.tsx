@@ -675,7 +675,6 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 </div>
             </div>
             <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`} 
-            // style={{ backgroundColor: pageBgColor, backgroundImage: uploadedPhoto ? `url(${URL.createObjectURL(uploadedPhoto)})` : undefined}} 
             ref={formContainerRef}>
                 <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
                 {leavesTheme && <div className={styles.themeContainer}>
