@@ -5,9 +5,11 @@ import { showToast } from '@/utils/showToast';
 interface Props {
   setSelectedMails: (value: string[]) => void
   selectedMails : string[]
+  name : string;
+  placeholder : string;
 }
 
-const EnterMailContiainer = ({ setSelectedMails,selectedMails }: Props) => {
+const EnterMailContiainer = ({ setSelectedMails,selectedMails, name, placeholder }: Props) => {
 
   const [emailInput, setEmailInput] = useState('');
 
@@ -27,9 +29,9 @@ const EnterMailContiainer = ({ setSelectedMails,selectedMails }: Props) => {
 
   return (
     <form className={styles.body} onSubmit={handleSubmit}>
-      <div className={styles.heading}>Add Emails</div>
+      <div className={styles.heading}>{name}</div>
       <div className={styles.inputContainer}>
-        <input type="email" placeholder='Paste of enter emails here' value={emailInput}
+        <input type="email" placeholder={placeholder} value={emailInput}
           onChange={(e) => setEmailInput(e.target.value)} />
         <button type="submit">Add</button>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './inviteguest.style.module.css'
 import InviteGuestsFirstScreen from './InviteGuestsFirstScreen';
 import InviteGuestsSecScreen from './InviteGuestsSecScreen';
@@ -8,16 +8,36 @@ import { showToast } from '@/utils/showToast';
 
 interface Props {
   eventId: string;
+  setInviteGuestModal : (value : boolean)=> void
 }
 
-const InviteGuest = ({ eventId }: Props) => {
+const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
 
   const maxCount = 15;
   const [count, setCount] = useState(4); // Default starting count
   const [screen, setScreen] = useState<string>("first");
   const [selectedMails, setSelectedMails] = useState<string[]>([])
+  const [suggestedMails, setSuggestedMails] = useState<string[]>([])
 
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
+
+  const fetchSuggestions = async()=>{
+    const {data, error} = await myFetch(`${baseUrl}/invite`)
+    let emailArray : string[] = []
+    if(error){
+      console.log("error occured", error)
+    }else{
+      data.invite.map((email : any)=>{
+        emailArray.push(email.email)
+      })
+    }
+    setSuggestedMails(emailArray)
+  }
+
+  useEffect(()=>{
+    fetchSuggestions()
+  },[])
+
   const handleSubmit = async () => {
     const newObj = {
       emails: selectedMails.join(),
@@ -35,6 +55,7 @@ const InviteGuest = ({ eventId }: Props) => {
     })
     if (data) {
       showToast('success', "Invitation sent")
+      setInviteGuestModal(false)
     } else {
       showToast('error', "Error sending invitation")
     }
@@ -56,7 +77,7 @@ const InviteGuest = ({ eventId }: Props) => {
         </div>
       </div>
       <div className={styles.line}></div>
-      {screen === "first" ? <InviteGuestsFirstScreen selectedMails={selectedMails} setSelectedMails={setSelectedMails} /> :
+      {screen === "first" ? <InviteGuestsFirstScreen suggestedMails={suggestedMails} selectedMails={selectedMails} setSelectedMails={setSelectedMails} /> :
         <InviteGuestsSecScreen selectedMails={selectedMails} />}
       <div className={styles.line}></div>
       <div className={styles.selectedBtnContainer}>
