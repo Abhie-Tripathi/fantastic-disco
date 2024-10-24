@@ -5,7 +5,7 @@ import Image from "next/image";
 import styles from "./search.module.css";
 import styles1 from "../../trackers/page.style.module.css"
 import { EventDataType } from "@/app/components/types/allevents";
-
+import ZeroState from "@/app/components/zerostate";
 import SearchIcon from "/public/search.svg";
 import DropIcon from "/public/internal/drop_down_angle.svg";
 // import DropIcon from "/public/downArrow.svg";
@@ -167,7 +167,7 @@ const Search = () => {
   const router = useRouter();
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
-
+  const [inetialRender,setInetialRender]=useState(true);
   const [selectedView, setSelectedView] = useState("list");
   const [searchInput, setSearchInput] = useState("");
   const [showRecentSearches, setShowRecentSearches] = useState(false);
@@ -2718,7 +2718,7 @@ const Search = () => {
                   queryString={urlQueryString}
                   setRequestExhausted={setRequestExhausted}
                   handleButtonLoading={handleButtonLoading}
-                />
+                /> 
               </Suspense>
             )}
             {selectedView === "calendar" && (
