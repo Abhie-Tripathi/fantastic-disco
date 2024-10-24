@@ -1,0 +1,118 @@
+import { useApi } from "@/hooks/useApi";
+import { endpoints } from "@/config/endpoints";
+import {
+  CalendarMonthEventsResponse,
+  CalendarWeekEventsResponse,
+  EventCoOrganizerDetailResponse,
+  EventCount,
+  EventDetailResponse,
+  EventEditionDetailResponse,
+  EventPOCDetailResponse,
+  EventsResponse,
+  MapEventsResponse,
+  RecentSearchesResponse,
+} from "@/types/events";
+import { EventSearchParams } from "@/types/events";
+import { EventsAdapter } from "@/adapters/eventsAdapter";
+
+export const useEventsService = () => {
+  const api = useApi<
+    | CalendarMonthEventsResponse
+    | CalendarWeekEventsResponse
+    | MapEventsResponse
+    | EventsResponse
+  >();
+
+  const getEvents = (params?: EventSearchParams) => {
+    return api.request(endpoints.event.events, {
+      method: "GET",
+      params,
+    });
+  };
+
+  const getEventById = (id: string) => {
+    return api.request<EventDetailResponse>(`${endpoints.event.events}/${id}`, {
+      method: "GET",
+    });
+  };
+
+  const getEventPOCDetails = (id: string) => {
+    return api.request<EventPOCDetailResponse>(
+      `${endpoints.event.events}/${id}/pocs`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
+  const getEventEditionDetails = (id: string) => {
+    return api.request<EventEditionDetailResponse>(
+      `${endpoints.event.events}/${id}/editions`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
+  const getEventCoOrganizerDetails = (id: string) => {
+    return api.request<EventCoOrganizerDetailResponse>(
+      `${endpoints.event.events}/${id}/coorganizers`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
+  const getEventsWithSearchParams = async (searchParamsString: string) => {
+    const params = new URLSearchParams(searchParamsString);
+    const adaptedParams = EventsAdapter.adaptRequestParams(params);
+    const response = await api.request(`${endpoints.event.events}`, {
+      method: "GET",
+      params: adaptedParams,
+    });
+    console.log(EventsAdapter.adaptResponse(response, params));
+    return EventsAdapter.adaptResponse(response, params);
+  };
+
+  const saveEvent = (eventId: string) => {
+    return api.request(`${endpoints.event.savedEvents}`, {
+      method: "POST",
+      data: {
+        eventIds: [eventId],
+      },
+    });
+  };
+
+  const getRecentSearches = () => {
+    return api.request<RecentSearchesResponse>(endpoints.event.recentSearches, {
+      method: "GET",
+      params: {
+        limit: 5,
+      },
+    });
+  };
+
+  const getEventsCount = async (searchParams: string) => {
+    const response = await api.request<EventCount[]>(
+      `${endpoints.event.count}?${searchParams}`,
+      {
+        method: "GET",
+      }
+    );
+    return EventsAdapter.adaptEventCountResponse(response);
+  };
+
+  return {
+    getEvents,
+    saveEvent,
+    getEventById,
+    getEventsCount,
+    getRecentSearches,
+    getEventPOCDetails,
+    getEventEditionDetails,
+    getEventsWithSearchParams,
+    getEventCoOrganizerDetails,
+    isLoading: api.isLoading,
+    error: api.error,
+  };
+};
