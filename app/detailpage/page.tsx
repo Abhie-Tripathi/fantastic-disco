@@ -232,6 +232,3 @@ export async function generateMetadata({ searchParams }: { searchParams: { widge
         },
     };
 }
-
-// //     const hashtags = await generateHashtags(eventName, description);
-// //     const { emailSubject, emailBody } = await generateEmailContent(eventName, description)

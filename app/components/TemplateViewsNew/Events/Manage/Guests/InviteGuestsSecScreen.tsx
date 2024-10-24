@@ -1,21 +1,28 @@
 import React from 'react'
 import styles from './inviteguestsecscreen.style.module.css'
 
-const InviteGuestsSecScreen = () => {
+interface Props {
+  selectedMails: string[]
+}
+const InviteGuestsSecScreen = ({ selectedMails }: Props) => {
+
   return (
     <div className={styles.sections}>
       <div className={styles.leftSection}>
         <div className={styles.inviteHeading}>
-          Inviting 1 Person
+          Inviting {selectedMails.length} Person
         </div>
         <div className={styles.invitedListContainer}>
-          <div className={styles.invitedUser}>
-            <div className={styles.initial}>R</div>
-            <div className={styles.nameMailContainer}>
-              <div className={styles.name}>Ross Geller</div>
-              <div className={styles.email}>ross@friends.com</div>
+          {selectedMails.map((mail, key) => (
+            <div className={styles.invitedUser} key={key}>
+              <div className={styles.initial}>{mail.substring(0,1)}</div>
+              <div className={styles.nameMailContainer}>
+                {/* <div className={styles.name}>Ross Geller</div> */}
+                <div className={styles.email}>{mail}</div>
+              </div>
             </div>
-          </div>
+          ))}
+
         </div>
       </div>
       <div className={styles.verticalLine}></div>

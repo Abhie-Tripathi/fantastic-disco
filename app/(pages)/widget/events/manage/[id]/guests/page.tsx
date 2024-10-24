@@ -11,7 +11,7 @@ import { myFetch } from "@/utils/myFetch";
 import GuestBar from '@/app/components/TemplateViewsNew/Events/Manage/Guests/GuestBar'
 
 const Page = () => {
-  const {fetchEventData, eventId, fetchedEvent } = useEventContext();
+  const { fetchEventData, eventId, fetchedEvent } = useEventContext();
 
   const [registerModal, setRegisterModal] = useState<boolean>(false);
   const [inviteGuestModal, setInviteGuestModal] = useState<boolean>(false);
@@ -20,13 +20,14 @@ const Page = () => {
   const [statusModal, setStatusModal] = useState<boolean>(false)
   const registerModalRef = useOutsideClick(() => setRegisterModal(false))
   const inviteModalRef = useOutsideClick(() => setInviteGuestModal(false))
-  
+
   const [goingGuests, setGoingGuests] = useState<number>(0)
   const [notgoingGuests, setNotgoingGuests] = useState<number>(0)
   const [pendingGuests, setPendingGuests] = useState<number>(0)
   const [followingGuests, setFollowingGuests] = useState<number>(0)
   const [waitlistGuests, setWaitlistGuests] = useState<number>(0)
-  
+  const [invitedGuests, setInvitedGuests] = useState<number>(0)
+
   const [sortBy, setSortBy] = useState<string>("")
   const [filterStatus, setFilterStatus] = useState<string>("")
   const [inputName, setInputName] = useState<string>("")
@@ -36,10 +37,10 @@ const Page = () => {
     ]
   )
 
-  useEffect(()=>{
+  useEffect(() => {
     setRegisterValue(fetchedEvent?.registration && fetchedEvent?.registration === true ? true : false)
     fetchCounts()
-  },[fetchedEvent])
+  }, [fetchedEvent])
 
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
@@ -59,7 +60,7 @@ const Page = () => {
   };
 
   const [debouncedInputName, setDebouncedInputName] = useState<string>("");
-  
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedInputName(inputName);
@@ -103,11 +104,11 @@ const Page = () => {
     fetchGuests()
   }, [sortBy, filterStatus, debouncedInputName])
 
-  useEffect(()=>{
-    if(registerModal || statusModal || inviteGuestModal){
+  useEffect(() => {
+    if (registerModal || statusModal || inviteGuestModal) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  },[registerModal,statusModal, inviteGuestModal])
+  }, [registerModal, statusModal, inviteGuestModal])
 
   const fetchCounts = async () => {
     let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}`;
@@ -131,6 +132,9 @@ const Page = () => {
             break;
           case "WAITLISTING":
             setWaitlistGuests(stat.count);
+            break;
+          case "INVITATION":
+            setInvitedGuests(stat.count);
             break;
           default:
             break; // Handle any unexpected statuses
@@ -163,15 +167,15 @@ const Page = () => {
       </div>
       <div className={styles.guestBar}>
         <div className={styles.heading}>At a Glance</div>
-        <GuestBar setFilterStatus={setFilterStatus} goingGuests={goingGuests} notgoingGuests={notgoingGuests} waitlistGuest={waitlistGuests} pendingGuests={pendingGuests} followingGuests={followingGuests} capacity = {fetchedEvent?.capacity}/>
+        <GuestBar setFilterStatus={setFilterStatus} goingGuests={goingGuests} notgoingGuests={notgoingGuests} waitlistGuest={waitlistGuests} invitedGuests={invitedGuests} pendingGuests={pendingGuests} followingGuests={followingGuests} capacity={fetchedEvent?.capacity} />
       </div>
-      <GuestList fetchGuests={fetchGuests} guests={guests} setSortBy={setSortBy} setFilterStatus={setFilterStatus} setInputName={setInputName} eventId={eventId} statusModal={statusModal} setStatusModal={setStatusModal}/>
+      <GuestList fetchGuests={fetchGuests} guests={guests} setSortBy={setSortBy} setFilterStatus={setFilterStatus} setInputName={setInputName} eventId={eventId} statusModal={statusModal} setStatusModal={setStatusModal} />
 
       {registerModal && <div className={styles.modal} ref={registerModalRef}>
         <RegisterModal fetchEventData={fetchEventData} setRegisterValue={setRegisterValue} registerValue={registerValue} setRegisterModal={setRegisterModal} eventId={eventId} />
       </div>}
       {inviteGuestModal && <div className={styles.modal} ref={inviteModalRef}>
-        <InviteGuest />
+        <InviteGuest setInviteGuestModal={setInviteGuestModal} eventId={eventId}/>
       </div>}
     </div>
   )

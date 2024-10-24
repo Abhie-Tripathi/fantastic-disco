@@ -5,27 +5,10 @@
 .leafContainer .leaf {
     position: absolute;
     /* animation: floatAndSpin 10s linear infinite; */
-    animation: driftAndSpin 10s linear infinite;
+    animation: driftAndSpin 20s linear infinite;
     opacity: 0.8;
 }
 
-@keyframes floatAndSpin {
-    0% {
-        transform: translate3d(0, 0, 0) rotate(0deg);
-    }
-    25% {
-        transform: translate3d(50px, -100px, 0) rotate(90deg);
-    }
-    50% {
-        transform: translate3d(-100px, -200px, 0) rotate(180deg);
-    }
-    75% {
-        transform: translate3d(75px, -100px, 0) rotate(270deg);
-    }
-    100% {
-        transform: translate3d(0, 0, 0) rotate(360deg);
-    }
-}
 /* Keyframes for drifting from right to left while spinning */
 @keyframes driftAndSpin {
     0% {

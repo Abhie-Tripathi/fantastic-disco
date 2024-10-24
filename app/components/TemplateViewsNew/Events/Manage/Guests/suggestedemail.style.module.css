@@ -1,0 +1,59 @@
+.usersList{
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    overflow-y: scroll;
+    max-height: 200px;
+}
+.suggestedUser{
+    border: 1px solid var(--accent-color);
+    border-radius: 4px;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+.suggestedUser:hover{
+    transition-duration:.3s;
+    background-color: var(--accent-color);
+}
+.suggestedUser .nameContainer{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.suggestedUser button{
+    background-color: var(--primary-light-color);
+    color: var(--primary-text-color);
+    padding:0px 2px 2px 2px;
+    border-radius: 2px;
+}
+.suggestedUser .initial{
+    width: 30px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--success-text-color);
+    font-size: var(--font-size-large);
+    background-color: #45a5573f;
+    border-radius: 5px;
+    padding: 10px;
+}
+.suggestedUser .nameMailContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.nameMailContainer .name{
+    font-size: var(--font-size-default);
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
+.nameMailContainer .email{
+    font-size: var(--font-size-small);
+    color: var(--secondary-text-color);
+    font-weight: var(--font-weight-semibold);
+}

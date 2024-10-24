@@ -46,7 +46,7 @@ const ShareButtons = ({formTheme, copyIcon, shareUrl, title, hashtags, emailSubj
           disabled={disabled}
           url={shareUrl}
           title={title}
-          hashtags={twitterArr}
+          hashtags={hashtags}
         >
           <TwitterIcon color={formTheme === "dark" ? "white" : "#7d7d7d"}/>
         </TwitterShareButton>
@@ -62,7 +62,7 @@ const ShareButtons = ({formTheme, copyIcon, shareUrl, title, hashtags, emailSubj
           <LinkedinIcon color={formTheme === "dark" ? "white" : "#7d7d7d"}/>
         </LinkedinShareButton>
       </div>
-      <div className={styles.iconWrapper} data-name="Share via Email">
+      {/* <div className={styles.iconWrapper} data-name="Share via Email">
         <EmailShareButton
           disabled={disabled}
           url={shareUrl}
@@ -72,7 +72,7 @@ const ShareButtons = ({formTheme, copyIcon, shareUrl, title, hashtags, emailSubj
         >
           <EmailIcon color={formTheme === "dark" ? "white" : "#7d7d7d"}/>
         </EmailShareButton>
-      </div>
+      </div> */}
       {copyIcon && (
         <div
           className={`${styles.iconWrapper} ${styles.copyContainer}`}

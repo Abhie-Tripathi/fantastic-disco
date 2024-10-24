@@ -6,6 +6,7 @@ import useOutsideClick from '@/hooks/useOutsideClick';
 import { myFetch } from '@/utils/myFetch';
 
 interface Props {
+    setUploadedPhoto : (value : File | undefined) => void
     setSnowTheme: (value: boolean) => void
     setLeavesTheme: (value: boolean) => void
     confettiType: string;
@@ -16,7 +17,7 @@ interface Props {
     setConfettiType: (value: string) => void
 }
 
-const ColorContainer = ({ setSnowTheme, setLeavesTheme, confettiType, setPageBgColor, pageBgColor, setPageGradient, setConfettiType, setFormTheme }: Props) => {
+const ColorContainer = ({ setUploadedPhoto,setSnowTheme, setLeavesTheme, confettiType, setPageBgColor, pageBgColor, setPageGradient, setConfettiType, setFormTheme }: Props) => {
     const { theme } = useTheme()
 
     const [selectedTheme, setSelectedTheme] = useState<string>("")
@@ -130,8 +131,17 @@ const ColorContainer = ({ setSnowTheme, setLeavesTheme, confettiType, setPageBgC
             setLeavesTheme(false)
             setSnowTheme(false)
         }
+        setUploadedPhoto(undefined)
     }
-
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setConfettiType("")
+        setLeavesTheme(false)
+        setSnowTheme(false)
+        if (e.target.files && e.target.files[0]) {
+          const file = e.target.files[0];
+          setUploadedPhoto(file)
+        }
+      };
     const formattedPageBgColor = formatColor(pageBgColor);
     return (
         <div className={styles.body}>
@@ -218,6 +228,10 @@ const ColorContainer = ({ setSnowTheme, setLeavesTheme, confettiType, setPageBgC
                         <div className={`${styles.themeContainer} ${styles.leafThemeContainer}`} onClick={() => handleEffectClick("snow")}>
                             <span>Snowfall</span>
                         </div>
+                        <label className={`${styles.themeContainer} ${styles.leafThemeContainer}`} htmlFor='upload'>
+                            <span>Upload</span>
+                        </label>
+                        <input onChange={handleFileChange} accept="image/*" style={{ display: "none" }} type="file" name="" id="upload" />
                     </div>
                 }
             </div>

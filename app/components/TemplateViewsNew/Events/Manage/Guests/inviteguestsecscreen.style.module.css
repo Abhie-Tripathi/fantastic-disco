@@ -1,5 +1,6 @@
 .sections{
     display: flex;
+    min-height: 300px;
 }
 .leftSection{
     padding: 15px;
@@ -14,6 +15,9 @@
 .invitedListContainer{
     display: flex;
     flex-direction: column;
+    gap: 10px;
+    max-height: 240px;
+    overflow-y: scroll;
 }
 .invitedUser{
     display: flex;
