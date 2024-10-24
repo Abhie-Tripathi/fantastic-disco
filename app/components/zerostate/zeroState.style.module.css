@@ -4,8 +4,8 @@
     justify-content: center;
     flex-direction: column;
     gap: 5px;
-    color: #6750A4;
-    font-weight: 500;
+    color: var(--primary-color);
+    font-weight: var(--font-weight-medium);
   }
   .text{
     color:var(--secondary-text-color);
