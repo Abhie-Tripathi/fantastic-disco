@@ -313,8 +313,7 @@ const Table = ({
   // const totalPages = Math.ceil(eventData.length / itemsPerPage);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [initialRender, setInitialRender] = useState<boolean>(false);
-  const [zeroStateData,setZeroStateData]=useState(`Oops! No events are happening in your location. 
-  Try searching in a different area to find exciting events.`);
+  const [zeroStateData,setZeroStateData]=useState(`Discover insights on business trends filtered by geography and category, all in one glance.`);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(20);
   const userMaxLimit = 100;
@@ -621,7 +620,7 @@ const Table = ({
             headers: headers,
           });
           if(data.stats.totalEvents===0) {
-            setZeroStateData("Oops! No results containing all your search terms were found.");
+            setZeroStateData("No Events Found");
           }
           if (data) {
             setTotalPages(
@@ -804,9 +803,9 @@ const Table = ({
     return (
       <div className={styles.noData}>
         {initialRender ?
-          <><ZeroState title="No Events Found" text={zeroStateData}/></> :
+          <><ZeroState title={zeroStateData}/></> :
           <>
-          <ZeroState title="No Events Found" text="Oops! No results containing all your search terms were found."/>
+          <ZeroState title="No Events Found"/>
           </>
           
         }
