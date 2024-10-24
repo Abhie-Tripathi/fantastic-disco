@@ -304,6 +304,7 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
             {
                 formState.capacityModal &&  
                  <CapacityModal
+                 eventId={prefilledEvent?.eventId}
                  capacityModal={formState.capacityModal}
                   capacity={ formState.capacity}
                   handleChange={handleChange}

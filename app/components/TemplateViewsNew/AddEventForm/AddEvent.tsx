@@ -36,7 +36,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
   const [formTheme, setFormTheme] = useState<string>("light")
   const [eventFont, setEventFont] = useState<string>("Arial")
   const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
-
+  console.log("even_data",prefilledEvent)
   useEffect(() => {
     console.log("page graidet", pageGradient)
   }, [pageGradient])
@@ -78,12 +78,15 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     isParticipationMessageEmpty: false,
     isTextValueMessageEmpty: false,
     errorMessage: 'Event name is required.',
-    capacity: -1,
+    capacity: prefilledEvent?.capacity || -1,
     registration: true,
     approval: false,
     waitlisting: false,
     capacityModal: false,
-    virtualLink: ""
+    virtualLink: "",
+    exhibitorModal: false,
+    exhibitor:prefilledEvent?.customizationData.exhibitor || [],
+    prefilledExhibitorDetails:undefined
   };
   const emptyFormState: FormState = {
     parentData: "",
@@ -128,7 +131,10 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     approval: false,
     waitlisting: false,
     capacityModal: false,
-    virtualLink: ""
+    virtualLink: "",
+    exhibitorModal: false,
+    exhibitor:[],
+    prefilledExhibitorDetails:undefined
   };
   const eventType = prefilledEvent?.eventType
   const [mainEventState, setMainEventState] = useState<FormState>(initialFormState);

@@ -47,4 +47,5 @@ interface CustomizationData {
   hashtags: string;
   boothNumber : string;
   eventFormat : string;
+  exhibitor:any[];
 }

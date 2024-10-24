@@ -200,7 +200,7 @@ const DetailPageComponent = ({ snowTheme,venue, latitude, eventFont, longitude, 
                     <div className={styles.locationContainer}><LocationContainer eventFormat={format} cityName={location_city} countryName={location_country} virtualLink={virtualLink}/></div>
                     
                     {
-                         <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} end_date={end_date} start_date={start_date}/></div>
+                         <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} end_date={end_date} start_date={start_date} end_time={end_time} start_time={start_time}/></div>
                     }
 
                     {isMobile &&

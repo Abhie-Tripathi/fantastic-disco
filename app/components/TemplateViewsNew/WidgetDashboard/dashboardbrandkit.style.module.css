@@ -76,7 +76,7 @@
 }
 .header .heading{
     font-weight: var(--font-weight-semibold);
-    font-size: var(--font-size-h6);
+    font-size: var(--font-size-large);
     color: var(--primary-text-color);
 }
 .brandKitContainer{

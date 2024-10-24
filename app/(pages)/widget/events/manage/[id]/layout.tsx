@@ -26,6 +26,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             return null;
         }
         const eventData = data?.data;
+        console.log("eventData_customizationData",eventData)
         // if (!eventData) return null;
 
         const eventObject: EventsType = {
@@ -69,6 +70,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 hashtags: eventData.customizationData?.hashtags || "",
                 boothNumber: eventData.customizationData?.boothNumber || "",
                 eventFormat: eventData.customizationData?.eventFormat || "",
+                exhibitor:eventData.customizationData?.exhibitor || [],
             }
         };
         setFetchedEvent(eventObject)

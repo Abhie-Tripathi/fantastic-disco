@@ -12,6 +12,7 @@ interface Props{
   handleChange: (field: keyof FormState, any: any) => void;
 }
 const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) => {
+  console.log("capacity_value",capacity)
   // const [inputValue, setInputValue] = useState("");
   const [isCapacityModalOpen, setIsCapacityModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("option1");

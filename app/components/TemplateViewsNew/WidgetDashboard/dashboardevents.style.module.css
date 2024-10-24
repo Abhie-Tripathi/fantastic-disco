@@ -24,7 +24,7 @@
     font-size: var(--font-size-small);
     color: var(--secondary-text-color); */
     font-weight: var(--font-weight-semibold);
-    font-size: var( --font-size-large);
+    font-size: var( --font-size-default);
     color: var(--tertiary-text-color);
     border-radius: 2px;
     display: flex;

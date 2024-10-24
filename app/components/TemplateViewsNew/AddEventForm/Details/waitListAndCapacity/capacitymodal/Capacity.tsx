@@ -1,45 +1,91 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./capacity.style.module.css";
 import { FormState } from "@/types/Formstate";
-import useOutsideClick from '@/hooks/useOutsideClick'
-interface Props{
+import useOutsideClick from "@/hooks/useOutsideClick";
+import { showToast } from "@/utils/showToast";
+import { myFetch } from "@/utils/myFetch";
+import { baseUrl } from "@/constants";
+interface Props {
   handleChange: (field: keyof FormState, value: any) => void;
-  // isOpen:boolean 
-  // onClose:()=>void;
-  capacity:number;
-  waitlisting:boolean;
-  capacityModal:boolean;
+  capacity: number;
+  waitlisting: boolean;
+  capacityModal: boolean;
+  eventId?: string;
 }
-const CapacityModal = ({capacity,handleChange,waitlisting,capacityModal}: Props) => {
-  const [inputValue, setInputValue] = useState("");
-  // const modalRef = useRef<HTMLDivElement>(null);
-  const capacityModalRef = useOutsideClick(() => handleChange("capacityModal",false))
+const CapacityModal = ({
+  capacity,
+  handleChange,
+  waitlisting,
+  capacityModal,
+  eventId,
+}: Props) => {
+  const [inputValue, setInputValue] = useState<number>(capacity === -1 ? 50:capacity);
+  const capacityModalRef = useOutsideClick(() =>
+    handleChange("capacityModal", false)
+  );
+  console.log("capacity__", capacity, eventId, inputValue);
 
-  // const handleClickOutside = (event: MouseEvent) => {
-  //   if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-  //     onClose();
-      
-  //   }
-  // };
-  // useEffect(() => {
-  //   if (isOpen) {
-  //     document.addEventListener("mousedown", handleClickOutside);
-  //   }
+ 
 
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleClickOutside);
-  //   };
-  // }, [isOpen]);
-
-  // if (!isOpen) return null;
-  const handleClose = () =>{
+  const handleClose = () => {
     // onClose();
-    handleChange("capacityModal",false)
-    if(inputValue !== ""){
-      handleChange("capacity", inputValue)
+    handleChange("capacityModal", false);
+    handleChange("capacity", inputValue);
+  };
+
+  //   const handleChangecapacity = async () => {
+  //     console.log("sdasd")
+  //     const formData = new FormData()
+  //     if(eventId){formData.append("id", eventId);}
+
+  //     formData.append("maxCapacity", inputValue + "")
+  //     formData.append("waitlisting", waitlisting + "")
+  //     const { data, error } = await myFetch(`${baseUrl}/event`, {
+  //         method: 'PATCH',
+  //         body: formData
+  //     })
+  //     if(data){
+  //         showToast("success", "Capacity and Waitlist updated")
+  //         handleChange("capacityModal",false)
+  //         // fetchEventData()
+  //     }else{
+  //         console.log("error",error)
+  //     }
+  // }
+
+  const handleChangecapacity = async () => {
+    const formData = new FormData();
+
+    if (eventId) {
+      formData.append("id", eventId);
     }
 
-  }
+    if (inputValue !== 0 || inputValue !== undefined) {
+      console.log("Adding new capacity");
+      handleChange("capacity", inputValue); 
+      handleChange("capacityModal", false);
+
+    } else {
+      // Updating existing maxCapacity
+      console.log("Updating maxCapacity");
+      formData.append("maxCapacity", inputValue + "");
+      formData.append("waitlisting", waitlisting + "");
+
+      const { data, error } = await myFetch(`${baseUrl}/event`, {
+        method: "PATCH",
+        body: formData,
+      });
+
+      if (data) {
+        showToast("success", "Capacity and Waitlist updated");
+        handleChange("capacityModal", false);
+        // fetchEventData()
+      } else {
+        console.log("API error", error);
+      }
+    }
+  };
+
   return (
     <div className={styles.body} ref={capacityModalRef}>
       <div className={styles.header}>
@@ -51,17 +97,27 @@ const CapacityModal = ({capacity,handleChange,waitlisting,capacityModal}: Props)
       </div>
       <div className={styles.inputContainer}>
         <div className={styles.heading}>Capacity</div>
-        <input type="number" value={ inputValue} onChange={(e) => setInputValue(e.target.value)}/>
+        <input
+          type="number"
+          value={inputValue}
+          onChange={(e) => setInputValue(Number(e.target.value))}
+        />
       </div>
       <div className={styles.waitlistContainer}>
         <div className={styles.heading}>Over-Capacity Waitlist</div>
-        <input type="checkbox" id="register" className={styles.checkboxInput} checked={waitlisting} 
-        onChange={(e) => handleChange("waitlisting", e.target.checked)} 
+        <input
+          type="checkbox"
+          id="register"
+          className={styles.checkboxInput}
+          checked={waitlisting}
+          onChange={(e) => handleChange("waitlisting", e.target.checked)}
         />
         <label htmlFor="register" className={styles.checkBox}></label>
       </div>
       <div className={styles.btnContainer}>
-        <button className={styles.setBtn} onClick={handleClose}>Set Limit</button>
+        <button className={styles.setBtn} onClick={handleChangecapacity}>
+          Set Limit
+        </button>
         <button className={styles.removeBtn}>Remove Limit</button>
       </div>
     </div>
@@ -69,3 +125,109 @@ const CapacityModal = ({capacity,handleChange,waitlisting,capacityModal}: Props)
 };
 
 export default CapacityModal;
+
+
+// import React, { useState } from "react";
+// import styles from "./capacity.style.module.css";
+// import { FormState } from "@/types/Formstate";
+// import useOutsideClick from "@/hooks/useOutsideClick";
+// import { showToast } from "@/utils/showToast";
+// import { myFetch } from "@/utils/myFetch";
+// import { baseUrl } from "@/constants";
+
+// interface Props {
+//   handleChange: (field: keyof FormState, value: any) => void;
+//   capacity: number;
+//   waitlisting: boolean;
+//   capacityModal: boolean;
+//   eventId?: string;
+// }
+
+// const CapacityModal = ({
+//   capacity,
+//   handleChange,
+//   waitlisting,
+//   capacityModal,
+//   eventId,
+// }: Props) => {
+//   const [inputValue, setInputValue] = useState<number>(capacity);
+//   const capacityModalRef = useOutsideClick(() =>
+//     handleChange("capacityModal", false)
+//   );
+
+//   const handleClose = () => {
+//     handleChange("capacityModal", false);
+//     handleChange("capacity", inputValue);
+//   };
+
+//   const handleChangecapacity = async () => {
+//     const formData = new FormData();
+
+//     if (eventId) {
+//       formData.append("id", eventId);
+//     }
+
+//     if (inputValue !== 0 || inputValue !== undefined) {
+//       console.log("Adding new capacity");
+//       handleChange("maxCapacity", inputValue); 
+//       handleChange("capacityModal", false);
+//       showToast("success", "Capacity set successfully!");
+//     } else {
+//       console.log("Updating maxCapacity");
+//       formData.append("maxCapacity", inputValue + "");
+//       formData.append("waitlisting", waitlisting + "");
+
+//       const { data, error } = await myFetch(`${baseUrl}/event`, {
+//         method: "PATCH",
+//         body: formData,
+//       });
+
+//       if (data) {
+//         showToast("success", "Capacity and Waitlist updated");
+//         handleChange("capacityModal", false);
+//       } else {
+//         console.log("API error", error);
+//       }
+//     }
+//   };
+
+//   return (
+//     <div className={styles.body} ref={capacityModalRef}>
+//       <div className={styles.header}>
+//         <div className={styles.heading}>Max Capacity</div>
+//         <div className={styles.subheading}>
+//           Auto-close registration when the capacity is reached. Only approved
+//           guests count toward the cap.
+//         </div>
+//       </div>
+//       <div className={styles.inputContainer}>
+//         <div className={styles.heading}>Capacity</div>
+//         <input
+//           type="number"
+//           value={inputValue}
+//           onChange={(e) => setInputValue(Number(e.target.value))}
+//         />
+//       </div>
+//       <div className={styles.waitlistContainer}>
+//         <div className={styles.heading}>Over-Capacity Waitlist</div>
+//         <input
+//           type="checkbox"
+//           id="register"
+//           className={styles.checkboxInput}
+//           checked={waitlisting}
+//           onChange={(e) => handleChange("waitlisting", e.target.checked)}
+//         />
+//         <label htmlFor="register" className={styles.checkBox}></label>
+//       </div>
+//       <div className={styles.btnContainer}>
+//         <button className={styles.setBtn} onClick={handleChangecapacity}>
+//           {capacity === 0 || capacity === undefined ? "Set Limit" : "Update Limit"}
+//         </button>
+//         <button className={styles.removeBtn} onClick={handleClose}>Remove Limit</button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CapacityModal;
+
