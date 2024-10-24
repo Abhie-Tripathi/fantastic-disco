@@ -92,11 +92,19 @@ export const EventsAdapter = {
 
     if (params.get("categories")) {
       const categorySlugs = params.get("categories")?.split(",") || [];
-      const categoryIds = categorySlugs.map(slug => {
-        const category = newCategories.find(cat => cat.slug === slug);
+      const categoryIds = categorySlugs.map((slug) => {
+        const category = newCategories.find((cat) => cat.slug === slug);
         return category ? category.id : slug;
       });
       adaptedParams.eventCategory = categoryIds.join(",");
+    }
+
+    if (params.get("viewBound")) {
+      const viewBound = JSON.parse(params.get("viewBound") || "{}");
+      const coordinates = JSON.parse(viewBound.coordinates);
+      adaptedParams.mapRadius = (coordinates.radius * 1000).toString();
+      adaptedParams.latitude = coordinates.latitude;
+      adaptedParams.longitude = coordinates.longitude;
     }
 
     return adaptedParams;
@@ -153,6 +161,19 @@ export const EventsAdapter = {
       return {
         count: totalCount,
         events: events,
+      };
+    }
+
+    if (params.get("view") === "map") {
+      return {
+        count: response.stats.totalEvents,
+        events: response.events.map((item: any) => ({
+          id: item.id,
+          eventImpactScore: null,
+          latitude: item.location.geoCordinates.latitude,
+          longitude: item.location.geoCordinates.longitude,
+          eventType: determineEventType(item),
+        })),
       };
     }
 
@@ -298,6 +319,137 @@ export const EventsAdapter = {
       latitude: item.geoCordinates.latitude,
       longitude: item.geoCordinates.longitude,
     }));
+  },
+  adaptEventByIdResponse: (response: any) => {
+    return {
+      event: {
+        id: response.events[0].id,
+        name: response.events[0].name,
+        startDateTime: response.events[0].startDate.split("T")[0],
+        endDateTime: response.events[0].endDate.split("T")[0],
+        status: response.events[0].status.toLowerCase(),
+        format: response.events[0].format.toLowerCase(),
+        createdAt: response.events[0].createdAt,
+        updatedAt: response.events[0].createdAt,
+        description: response.events[0].description,
+        logoUrl: response.events[0].logoUrl,
+        bannerUrl: null,
+        editions: 1,
+        sponsorsCount: 0,
+        speakersCount: 0,
+        frequency: null,
+        co_organizers: [],
+        rankings: {
+          rank: null,
+          rankRange: null,
+          rankType: null,
+          categoryId: null,
+          countryId: null,
+        },
+        exhibitorsCount: parseInt(response.events[0].stats.estimatedExhibitor) || null,
+        timings: {
+          [response.events[0].startDate.split("T")[0]]: {
+            endTime: response.events[0].endDate.split("T")[1].slice(0, 5),
+            startTime: response.events[0].startDate.split("T")[1].slice(0, 5),
+          },
+        },
+        entryType: response.events[0].entryType,
+        website: response.events[0].url,
+        repeatSentiment: response.events[0].repeatSentiment,
+        reputationScore: response.events[0].reputationSentiment,
+        rehostScore: 0,
+        estimatedAttendance: response.events[0].stats.estimatedVisitor,
+        currency: {
+          name: "USD",
+          symbol: "$",
+        },
+        predictedEventSpendBreakUp: [],
+        primaryEventType: (() => {
+          const type = response.events[0].type[0].toLowerCase();
+          if (type === "tradeshow") return "tradeshows";
+          if (type === "conference") return "conferences";
+          return type;
+        })(),
+        categories: response.events[0].categories.map((cat: any) => ({
+          id: cat.id,
+          name: cat.name,
+          slug: cat.slug,
+        })),
+        eventTypes: response.events[0].type.map((type: string) => ({
+          id: "",
+          name: type,
+          slug: type.toLowerCase(),
+          eventGroupType: "ATTENDED",
+        })),
+        tags: response.events[0].eventKeywords.map((keyword: string) => ({
+          id: "",
+          name: keyword,
+          slug: keyword.toLowerCase(),
+        })),
+        venueLocation: {
+          venue: {
+            id: "",
+            name: response.events[0].location.venueName,
+            cityId: response.events[0].location.cityId,
+            stateId: "",
+            countryId: response.events[0].location.countryId,
+            latitude: response.events[0].location.geoCordinates.latitude,
+            longitude: response.events[0].location.geoCordinates.longitude,
+            address: response.events[0].location.venueAddress,
+            locationType: "VENUE",
+          },
+          city: {
+            id: response.events[0].location.cityId,
+            name: response.events[0].location.cityName,
+            stateId: "",
+            countryId: response.events[0].location.countryId,
+            latitude: response.events[0].location.cityCordinates.latitude,
+            longitude: response.events[0].location.cityCordinates.longitude,
+            locationType: "CITY",
+          },
+          state: {
+            id: "",
+            name: "",
+            countryId: response.events[0].location.countryId,
+            latitude: "",
+            longitude: "",
+            locationType: "STATE",
+          },
+          country: {
+            id: response.events[0].location.countryId,
+            name: response.events[0].location.countryName,
+            latitude: "",
+            longitude: "",
+            regions: response.events[0].eventZone,
+            locationType: "COUNTRY",
+            displayName: response.events[0].location.countryName,
+            iso: response.events[0].location.countryIso,
+          },
+        },
+        organizer: response.events[0].organizer
+          ? {
+              id: response.events[0].organizer.id,
+              name: response.events[0].organizer.name,
+              website: response.events[0].organizer.website,
+              logoUrl: response.events[0].organizer.logoUrl,
+              location: response.events[0].organizer.location,
+            }
+          : null,
+        isSaved: false,
+        economicImpact: null,
+        scores: {
+          impactScore: response.events[0].eventImpactScore || null,
+          inboundScore: response.events[0].eventInboundScore || null,
+          internationalScore: response.events[0].internationalScore || null,
+        },
+        rating: response.events[0].stats.eventRating || null,
+        audienceSpread: response.events[0].audienceSpread || null,
+        rehostDate: response.events[0].isforecasted || null,
+        isBranded: response.events[0].eventBrand || null,
+        isSeries: response.events[0].eventSeries || null,
+        maturity: response.events[0].maturity || null,
+      },
+    };
   },
 };
 

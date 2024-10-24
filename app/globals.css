@@ -5,28 +5,16 @@
 @import "@/styles/map.css";
 @import "react-big-calendar/lib/css/react-big-calendar.css";
 @import "@/styles/eventCalendar.css";
-@import "react-circular-progressbar/dist/styles.css";
-
 .container {
   max-width: 100%;
   padding: 2rem;
   margin-left: auto;
   margin-right: auto;
 }
-
 @media (min-width: 1400px) {
   .container {
     max-width: 1400px;
   }
-}
-
-button {
-  border: none;
-  outline: none;
-  cursor: pointer;
-  font-size: inherit;
-  font-family: inherit;
-  background-color: transparent;
 }
 
 /* Utility classes for global use */
@@ -108,32 +96,6 @@ button {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
 }
 
 @layer base {
@@ -207,6 +169,7 @@ button {
 }
 
 :root {
+  /* --background: 0 0% 100%; */
   --primary-color: #6750a4;
   --coordinate-primary-color: #6750a4;
   --primary-color-hover: #59478c;

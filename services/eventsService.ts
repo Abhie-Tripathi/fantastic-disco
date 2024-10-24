@@ -30,10 +30,17 @@ export const useEventsService = () => {
     });
   };
 
-  const getEventById = (id: string) => {
-    return api.request<EventDetailResponse>(`${endpoints.event.events}/${id}`, {
-      method: "GET",
-    });
+  const getEventById = async (id: string) => {
+    const response = await api.request<EventDetailResponse>(
+      `${endpoints.event.events}`,
+      {
+        method: "GET",
+      params: {
+        eventIds: id,
+        },
+      }
+    );
+    return EventsAdapter.adaptEventByIdResponse(response);
   };
 
   const getEventPOCDetails = (id: string) => {
