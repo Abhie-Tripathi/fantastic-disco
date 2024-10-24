@@ -24,9 +24,10 @@ const ShareButtons = ({formTheme, copyIcon, shareUrl, title, hashtags, emailSubj
       navigator.clipboard.writeText(textToCopy);
     }
   };
-  const description = `This is the description for this event. ${hashtags ? hashtags[0] : "event"}`
-  const twitterArr = [];
-  twitterArr.push(description)
+  // const description = `This is the description for this event. ${hashtags ? hashtags[0] : "event"}`
+  // const description = `This is the description for this event. ${hashtags ? hashtags[0] : "event"}`
+  // const twitterArr = [];
+  // twitterArr.push(description)
 
   return (
     <div className={styles.shareIconContainer}>
@@ -36,7 +37,6 @@ const ShareButtons = ({formTheme, copyIcon, shareUrl, title, hashtags, emailSubj
           url={shareUrl}
           title={title}
           // hashtag={hashtags ? hashtags[0] : "#sometag"}
-          hashtag={description}
         >
           <FaceBookIcon color={formTheme === "dark" ? "white" : "#7d7d7d"}/>
         </FacebookShareButton>
@@ -44,7 +44,7 @@ const ShareButtons = ({formTheme, copyIcon, shareUrl, title, hashtags, emailSubj
       <div className={styles.iconWrapper} data-name="Share on Twitter">
         <TwitterShareButton
           disabled={disabled}
-          url={shareUrl}
+          url={`Come join us at ${title}. ${shareUrl}`}
           title={title}
           hashtags={hashtags}
         >
