@@ -55,7 +55,7 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
   // const selectedLabels = source==="tracker" ? designationData : localSelectedLabels
   // const setSelectedLabels = source==="tracker" ? setDesignationData: setLocalSelectedLabels
   const handleSelect = (label: Designations) => {
-    setSelectedLabels?.((prev) => {
+    setSelectedLabels((prev) => {
       const isSelected = prev.some((l) => l.id === label.id);
       if (isSelected) {
         return prev.filter((l) => l.id !== label.id);
@@ -100,6 +100,7 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
     if(result)
     setDesignations(result);
   };
+  console.log(selectedLabels);
   
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
