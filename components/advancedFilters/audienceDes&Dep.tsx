@@ -115,9 +115,9 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
         >
           <div className="flex items-center">
             <span className="mr-2">Audience Profile</span>
-            {selectedLabels.length > 0 && (
+            {designationData.length > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                {selectedLabels.length}
+                {designationData.length}
               </span>
             )}
           </div>
@@ -166,10 +166,10 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
             </CommandList>
           </CommandGroup>
         </Command>
-        {selectedLabels.length > 0 && (
+        {designationData.length > 0 && (
           <div className="p-2 border-t">
             <div className="flex flex-wrap gap-1">
-              {selectedLabels.map((label) => (
+              {designationData.map((label) => (
                 <Badge key={label.id} variant="secondary" className="mr-1 mb-1">
                   {label.name}
                   <button
