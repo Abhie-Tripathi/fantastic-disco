@@ -13,6 +13,7 @@ import { FormState } from '@/types/Formstate'
 import confetti from "canvas-confetti";
 import LeafTheme from '../../UI/LeafTheme'
 import SnowfallTheme from '../../UI/SnowfallTheme'
+import RandomTheme from '../../UI/RandomTheme'
 
 interface Props {
     uploadedPhoto : File | undefined
@@ -674,7 +675,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 </div>
             </div>
             <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`} 
-            style={{ backgroundColor: pageBgColor, backgroundImage: uploadedPhoto ? `url(${URL.createObjectURL(uploadedPhoto)})` : undefined}} 
+            // style={{ backgroundColor: pageBgColor, backgroundImage: uploadedPhoto ? `url(${URL.createObjectURL(uploadedPhoto)})` : undefined}} 
             ref={formContainerRef}>
                 <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
                 {leavesTheme && <div className={styles.themeContainer}>
@@ -682,6 +683,9 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 </div>}
                 {snowTheme && <div className={styles.themeContainer}>
                     <SnowfallTheme/>
+                </div>}
+                {uploadedPhoto && <div className={styles.themeContainer}>
+                    <RandomTheme uploadedPhoto={uploadedPhoto}/>
                 </div>}
                 
                 {collapseMainEventForm && eventFlow === 'main' ?

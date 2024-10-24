@@ -76,9 +76,6 @@
     overflow: auto;
     padding: 50px 120px 50px 70px;
     position: relative;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
 }
 
 .watermelon {

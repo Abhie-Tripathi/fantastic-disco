@@ -40,10 +40,8 @@ const ColorContainer = ({ setUploadedPhoto,setSnowTheme, setLeavesTheme, confett
             const colorWithOpacity = addOpacityToHex(color, 0.1); // 0.1 for 10% opacity
             setPageBgColor(colorWithOpacity);
             setPageGradient("")
-            setUploadedPhoto(undefined)
         } else if (theme === "gradient") {
             setPageBgColor("")
-            setUploadedPhoto(undefined)
             setPageGradient(color)
         }
     }
@@ -133,9 +131,12 @@ const ColorContainer = ({ setUploadedPhoto,setSnowTheme, setLeavesTheme, confett
             setLeavesTheme(false)
             setSnowTheme(false)
         }
+        setUploadedPhoto(undefined)
     }
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPageGradient("")
+        setConfettiType("")
+        setLeavesTheme(false)
+        setSnowTheme(false)
         if (e.target.files && e.target.files[0]) {
           const file = e.target.files[0];
           setUploadedPhoto(file)
