@@ -51,8 +51,6 @@ button {
 .text-primary {
   color: #6750a4;
 }
-<<<<<<< HEAD
-=======
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -118,7 +116,6 @@ button {
     @apply bg-background text-foreground;
   }
 }
->>>>>>> bfa3bb56 (Added Research Page)
 
 :root {
   --breakpoint-xs: 480px;
@@ -195,17 +192,10 @@ button {
   --tertiary-text-color: #7d7d7d;
   /* --heading-color: #ffffff; */
   /* --paragraph-color: #b7b7bb; */
-<<<<<<< HEAD
-  --danger-text-color: #E5484D;
-  --success-text-color: #45A557;
-  --info-text-color: #0072F5;
-  --warning-text-color: #A35200;
-=======
   --danger-text-color: #e5484d;
   --success-text-color: #45a557;
   --info-text-color: #0072f5;
   --warning-text-color: #ff990a;
->>>>>>> bfa3bb56 (Added Research Page)
   --subtitle-color: #8056b2;
   --title-color: #323339;
   --background-color: #0c0f1e;
@@ -475,9 +465,6 @@ body[data-theme="dark"] {
   --secondary-bg-light: #efecec;
 }
 
-<<<<<<< HEAD
-html {}
-=======
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -486,7 +473,6 @@ input::-webkit-inner-spin-button {
 
 html {
 }
->>>>>>> bfa3bb56 (Added Research Page)
 
 html,
 body {
