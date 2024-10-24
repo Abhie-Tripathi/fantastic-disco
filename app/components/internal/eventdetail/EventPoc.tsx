@@ -71,7 +71,9 @@ const EventPoc = ({ open, eventId }: Props) => {
           <div className={styles.allFollowerContainer}>
             {pocData?.length > 0 ? (
               pocData.map((poc: POCtypes) => (
-                <div className={styles.followerContainer} key={poc.id}>
+                <>
+                {poc!==null &&
+                <div className={styles.followerContainer} key={poc?.id}>
                   <Image
                     src={ poc?.profilePicture === null ? PlaceHolder : poc?.profilePicture }
                     alt="banner"
@@ -100,6 +102,8 @@ const EventPoc = ({ open, eventId }: Props) => {
                     } */}
                   </div>
                 </div>
+                }
+                </>
               ))
             ) : (
               <div className={styles.noData_text}>No Data Found</div>

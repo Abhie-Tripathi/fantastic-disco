@@ -4,11 +4,12 @@ import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import Url from '/public/url.svg'
+import CloseIcon from "/public/internal/cross.svg";
 import Add from '/public/add_Icon.svg'
 import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
-import { ChevronDown, Plus } from "geist-icons";
+import { ChevronDown, InformationFill, Plus, Share } from "geist-icons";
 import eventVisitorsData from "../../../../../public/data/eventVisitorsData.json";
 // import styles from "./search.module.css";
 import { EventDataType } from "@/app/components/types/allevents";
@@ -66,7 +67,19 @@ import eventRankData from "../../../../../public/data/eventRank.json";
 import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
 import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
-import Suggestion from "../suggestion";
+import SearchBar from "../../searchBar/SearchBar";
+import CsvUploader from "./csvUploader";
+import { Button as Button10x } from "10xui";
+import AudienceSpread from "@/app/components/dropdown/AudienceSpread";
+import AudienceDes from "@/app/components/dropdown/AudienceDes";
+
+import Template from "/public/template.svg";
+import Vector1 from "/public/vectorTemplate.svg";
+import Competitor from "/public/competitor.svg";
+import Speaking from "/public/speaking.svg";
+import Keywords from "/public/keywords.svg";
+import trackerEmptyTable from "/public/internal/trackerEmptyTable.svg"
+import TemplateTable from "./templateTable";
 interface FilterValue {
   labels: string;
   name: string;
@@ -110,6 +123,10 @@ interface FilterValue {
   userType?:Toggle
   userName?:string;
   eventAttendanceRange: any;
+  eventImpactSocre: any;
+  globalRanking: any;
+  audienceSpread: any;
+  designation: any;
 }
 interface InputArea {
   type: string;
@@ -119,6 +136,16 @@ interface Toggle{
   rating?:boolean;
   exhibit?:boolean;
   trust?:boolean;
+  maturity?: boolean;
+  brandedEvent?: boolean;
+  eventSeries?: boolean;
+  forecastedStatus?: boolean;
+  impactScore?: boolean;
+  inboundScore?: boolean;
+  internationalScore?: boolean;
+  eventRank?: boolean;
+  audienceZone?: boolean;
+  audienceSpread?: boolean;
 }
 interface Template {
   name: string;
@@ -144,6 +171,84 @@ interface Cat {
 interface EditData {
   tracker: Tracker;
 }
+
+const top10Data = [['BMC Training'], ['Lorman Education Services'], ['http://www.iu.edu/']];
+const top10Speakers = [
+  ["abc.com", "xyz.com"],
+  ["Mark Zuckerberg", "Facebook"],
+]
+
+const presetTemplateData = [
+  {
+    id: 1,
+    // type: "template",
+    // domain: "Human Resource",
+    img: Competitor,
+    url: "T_COMPETITOR",
+    trackerName: "Top 100 Companies",
+    content: "This list highlights 100 global events organizers connecting industries, fostering business growth, and innovation.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'ALL',
+  },
+  {
+    id: 2,
+    // type: "template",
+    // domain: "Sales",
+    img: Keywords,
+    url:"T_COMPETITOR",
+    trackerName: "Top 25 Trending",
+    content: "This list highlights 25 influential organizers worldwide, gaining traction with new, high-impact events.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 3,
+    // type: "template",
+    // domain: "Human Resource",
+    img: Competitor,
+    url: "T_COMPETITOR",
+    trackerName: "India Top 30",
+    content: "Discover leading companies in India hosting business expos, conferences, and events.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 4,
+    // type: "template",
+    // domain: "Human Resource",
+    img: Competitor,
+    url: "T_COMPETITOR",
+    trackerName: "Education & Training companies in India",
+    content: "Discover leading Education & Training companies in India hosting business expos, conferences, and events.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 5,
+    img: Speaking,
+    url: "T_SPEAKING_OPPORTUNITY",
+    trackerName: "Artificial Intelligence Speakers",
+    content: "This list of Artificial Intelligence speakers, pioneering innovation and attracting attention with compelling talks.",
+    data: top10Speakers,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 6,
+    img: Speaking,
+    url: "T_SPEAKING_OPPORTUNITY",
+    trackerName: "Biotechnology Innovations Speakers",
+    content: "This list of Biotechnology Innovations speakers, pioneering innovation and attracting attention with compelling talks.",
+    data: top10Speakers,
+    enabled: false,
+    presetType: 'All',
+  }
+];
+
 const templates = [
   {
     name: "T_RECRUITMENT",
@@ -170,8 +275,9 @@ const templates = [
       {
         img: Url,
         type: "text",
-        placeholder: "Add Competitor Name or Website",
+        placeholder: "Competitor Name or Website",
         required:true,
+        example: "facebook.com",
       }
     ]
   },
@@ -252,19 +358,21 @@ const templates = [
     name: "T_SPEAKING_OPPORTUNITY",
     templateName: "Speaking Opportunity",
     type: "enabled",
-    description: "Track your competitor experts, influencers and where they might be participating in events",
+    description: "Input team members and their details to keep track of the events with speaking opportunities",
     inputAreas: [
       {
         img: Name,
         type: "text",
         placeholder: "Speaker's Name",
         required:true,
+        example: "Mark Zuckerberg",
       },
       {
         img: Company,
         type: "text",
         placeholder: "Company Name",
         required:true,
+        example: "Facebook",
       }
     ]
   },
@@ -292,6 +400,13 @@ const templates = [
     // ]
   }
 ]
+
+const formatText = (val: string) => {
+  if(val) {
+    return val?.charAt(0).toUpperCase() + val?.substring(1).toLowerCase();
+  }
+}
+
 const Pages = () => {
   const searchParams = useSearchParams();
   interface SelectedLocation {
@@ -299,6 +414,7 @@ const Pages = () => {
   }
   const [isRatingOpen, setRatingOpen] = useState<boolean>(false);
   const [isExhibitOpen, setExhibitOpen] = useState<boolean>(false);
+  const [isSpreadOpen, setSpreadOpen] = useState<boolean>(false);
   const { theme } = useTheme();
   const type = searchParams.get('type');
 
@@ -310,7 +426,7 @@ const Pages = () => {
   const last = pathName[pathName.length - 1];
   const router = useRouter();
   const [selectedView, setSelectedView] = useState("list");
-  const [categoryData, setCatgeoryData] = useState<CategoryData>();
+  const [categoryData, setCatgeoryData] = useState([]);
   const [selectedRegularity, setSelectedRegularity] = useState([0, 100]);
   const [selectedVisitors, setSelectedVisitors] = useState<string[]>([]);
   const [selectedReputationScore, setSelectedReputationScore] = useState([0, 100]);
@@ -331,6 +447,7 @@ const Pages = () => {
   const [selectedLabels, setSelectedLabels] = useState<string[]>(
     searchParams.get("labels")?.split(",") || []
   );
+  const [eventSearchLoader,setEventSearchLoader]=useState(false);
   const [selectedEventRank, setSelectedEventRank] = useState([0, 100]);
   const [selectedLocalRank, setSelectedLocalRank] = useState([0, 100]);
   const [selectedTrustScore, setSelectedTrustScore] = useState([0, 100]);
@@ -367,17 +484,18 @@ const Pages = () => {
   });
   const [isPop,setIsPop]=useState({
   rating:false,
-  exhibit:false
+  exhibit:false,
+  audienceSpread: false,
 });
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(true);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
   const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(false);
   const [selectedEventSeries, setSelectedEventSeries] = useState(false);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
-  const [selectedMaturity, setSelectedMaturity] = useState(0);
+  const [selectedMaturity, setSelectedMaturity] = useState<string>('');
   const [maturity, setMaturity] = useState<string | null>();
   const [intScore, setIntScore] = useState<string | null>();
-  const [selectedInboundScore, setSelectedInboundScore] = useState(0);
+  // const [selectedInboundScore, setSelectedInboundScore] = useState(0);
   const [selectedEventKeywords, setSelectedEventKeywords] = useState<string[]>(
     searchParams.get("eventKeywords")?.split(",") || []
   );
@@ -385,6 +503,24 @@ const Pages = () => {
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
   const [add, setAdd] = useState(false);
+  const [forecastedStatus, setForecastedStatus] = useState(false);
+
+  const [analyticsToggles, setAnalyticsToggles] = useState({
+    impactScore: false,
+    inboundScore: false,
+    internationalScore: false,
+  });
+
+  const [selectedImpactScore, setSelectedImpactScore] = useState([0, 100]);
+  const [selectedInboundScore, setSelectedInboundScore] = useState([0, 100]);
+  const [selectedInternationalScore, setSelectedInternationalScore] = useState([0, 100]);
+
+  const [audienceZone, setAudienceZone] = useState<boolean>(false);
+  const [audienceSpread, setAudienceSpread] = useState<boolean>(false);
+  const [selectedRank, setSelectedRank] = useState<string>('');
+  const [selectedCountries, setSelectedCountries] = useState<any>([]);
+  const [selectedAudProfile, setSelectedAudProfile] = useState<any>([]);
+
   const createTrackerHandler = () => {
     const params = new URLSearchParams(searchParams);
     if (selectedCategories.length > 0) {
@@ -466,17 +602,17 @@ const Pages = () => {
   const [categories, setCategories] = useState(
     searchParams.get("categories")?.split(",") || []
   );
-  useEffect(() => {
-    if (selectedMaturity > 0) {
-      // queryString.maturity = selectedMaturity;
-      if (selectedMaturity >= 1 && selectedMaturity <= 25) setMaturity("new");
-      else if (selectedMaturity >= 26 && selectedMaturity <= 50)
-        setMaturity("low");
-      else if (selectedMaturity >= 51 && selectedMaturity <= 75)
-        setMaturity("medium");
-      else setMaturity("High");
-    }
-  }, [selectedMaturity]);
+  // useEffect(() => {
+  //   if (selectedMaturity > 0) {
+  //     // queryString.maturity = selectedMaturity;
+  //     if (selectedMaturity >= 1 && selectedMaturity <= 25) setMaturity("new");
+  //     else if (selectedMaturity >= 26 && selectedMaturity <= 50)
+  //       setMaturity("low");
+  //     else if (selectedMaturity >= 51 && selectedMaturity <= 75)
+  //       setMaturity("medium");
+  //     else setMaturity("High");
+  //   }
+  // }, [selectedMaturity]);
   useEffect(() => {
     if (selectedINScore > 0) {
       if (selectedINScore > 0 && selectedINScore <= 33) setIntScore("Low");
@@ -523,6 +659,30 @@ const Pages = () => {
     }
   }, [type, customData])
 
+  const handlePresetClick = (id: number, trackerType: string, trackerName: string) => {
+
+    const filteredPresetData = presetTemplateData.filter(item => item.id === id);
+    if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY') {
+      const presetData: any = [];
+
+      filteredPresetData?.[0]?.data.map((item: any) => {
+        const temp: any = {};
+        template?.inputAreas?.map((field: InputArea, index: number)=>(
+          temp[field.placeholder] = item[index]
+        ))
+        presetData.push(temp);
+      })      
+      setCustomData(presetData);
+      setTrackerName(trackerName);
+    } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
+
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
     if (type === "T_COMPETITOR" && (websites.length===0 || org.length===0)){
@@ -540,6 +700,16 @@ const Pages = () => {
       ...(isRatingOpen && { rating: true }),
       ...(isExhibitOpen && { exhibit: true }),
       ...(rankToggles.isTrustScore && {trust:true}),
+      ...((selectedMaturity !== '' && selectedMaturity !== 'none') && {maturity:true}),
+      ...(selectedBrandedEvent && {brandedEvent:true}),
+      ...(selectedEventSeries && {eventSeries:true}),
+      ...(forecastedStatus && {forecastedStatus:true}),
+      ...(analyticsToggles.impactScore&& {impactScore:true}),
+      ...(analyticsToggles.inboundScore&& {inboundScore:true}),
+      ...(analyticsToggles.internationalScore&& {internationalScore:true}),
+      ...(rankToggles.isEventRank&& {eventRank:true}),
+      ...(audienceZone && {audienceZone:true}),
+      ...(audienceSpread && {audienceSpread:true}),
     }
     if (last === "editTracker") {
 
@@ -590,7 +760,7 @@ const Pages = () => {
             eventKeywords: selectedEventKeywords.join("+"),
           }),
           ...(selectedCategories?.length > 0 && {
-            eventCategory: selectedCategories.join(","),
+            eventCategory: (selectedCategories.length === categoryData.length) ? 'all' : selectedCategories.join(','),
           }),
           ...(selectedVisitors?.length>0 && {
             eventSize: selectedVisitors.join(",")
@@ -600,7 +770,7 @@ const Pages = () => {
           ...(selectedZone?.length > 0 && {
             eventRegion: selectedZone.join(',')
           }),
-          brandedEvent: selectedBrandedEvent?.toString(),
+          // brandedEvent: selectedBrandedEvent?.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
           ...(Object.entries(selectedCountry).length > 0 && {
@@ -615,7 +785,7 @@ const Pages = () => {
           ...(selectedEventFormat?.length > 0 && {
             eventFormat: selectedEventFormat.join(","),
           }),
-          eventSeries: selectedEventSeries.toString(),
+          // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
           ...(selectedEventStatus?.length > 0 && {
             eventStatus: selectedEventStatus.join(","),
           }),
@@ -631,14 +801,14 @@ const Pages = () => {
           ...(selectedReptScore > 0 && {
             reputationScore: selectedReptScore.toString(),
           }),
-          ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
-          ...(selectedDateRange?.length === 2 && {
+          // ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
+          ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
               new Date(selectedDateRange[1]).toISOString().split("T")[0],
             ].join(","),
           }),
-          ...(selectedDateRange?.length === 2 && {
+          ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
             endDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
               new Date(selectedDateRange[1]).toISOString().split("T")[0],
@@ -647,22 +817,49 @@ const Pages = () => {
           ...(selectedUserRatings?.length > 0 && {
             eventRating: selectedUserRatings.join(","),
           }),
-          ...(rankToggles?.isEventRank === true && {
-            eventRank: selectedEventRank.join(",")
-          }),
+          // ...(rankToggles?.isEventRank === true && {
+          //   eventRank: selectedEventRank.join(",")
+          // }),
           ...(rankToggles?.isLocalRank === true && {
             localRank: selectedLocalRank.join(',')
           }),
           ...(selectedINScore > 0 && { internationalScore: intScore?.toLowerCase() }),
-          ...(selectedInboundScore > 0 && {
-            inboundScore: selectedInboundScore.toString(),
-          }),
+          // ...(selectedInboundScore > 0 && {
+          //   inboundScore: selectedInboundScore.toString(),
+          // }),
           ...(selectedEventAttendanceRange?.length === 2 && {
             eventAttendanceRange: [
               +selectedEventAttendanceRange[0],
               +selectedEventAttendanceRange[1],
             ].join(","),
           }),
+          ...((selectedMaturity !== '' && selectedMaturity !== 'none') && { maturity: selectedMaturity }),
+          ...(analyticsToggles.impactScore && {
+            eventImpactSocre: selectedImpactScore.join("-")
+           }),
+          ...(analyticsToggles.inboundScore && {
+            inboundScore: selectedInboundScore.join("-")
+          }),
+          ...(analyticsToggles.internationalScore && {
+            internationalScore: selectedInternationalScore.join("-")
+          }),
+          ...(forecastedStatus && {
+            isforecasted: forecastedStatus.toString()
+          }),
+          // ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
+          ...((selectedRank !== '' && selectedRank !== 'none') && {
+            // globalRanking: selectedRank,
+            // categoryRanking: selectedRank,
+            // countryRanking: selectedRank,
+            eventRanking: selectedRank,
+          }),
+          ...(selectedCountries?.length > 0 && {
+            audienceSpread: selectedCountries.join(",")
+           }),
+          ...(selectedAudProfile.length > 0 && {
+            designation: selectedAudProfile.join(",")
+          }),
+          ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread'].join()}
           // info: {
           //   name: trackerName,
           //   location:selectedLocations,
@@ -784,14 +981,14 @@ const Pages = () => {
             eventKeywords: selectedEventKeywords.join("+"),
           }),
           ...(selectedCategories?.length > 0 && {
-            eventCategory: selectedCategories.join(","),
+            eventCategory: (selectedCategories.length === categoryData.length) ? 'all' : selectedCategories.join(','),
           }),
           ...(selectedVisitors?.length>0 && {
             eventSize: selectedVisitors.join(",")
            }),
            ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
            ...(selectedRegularity[0] > 0 && {editionRange: selectedRegularity[0].toString()}),
-          brandedEvent: selectedBrandedEvent.toString(),
+          // brandedEvent: selectedBrandedEvent.toString(),
           // labels:selectedLabels.join(','),
           // eventKeywords:selectedEventKeywords.join(','),
           ...(selectedEventFormat?.length > 0 && {
@@ -800,7 +997,7 @@ const Pages = () => {
           ...(selectedZone?.length > 0 && {
             eventRegion: selectedZone.join(',')
           }),
-          eventSeries: selectedEventSeries.toString(),
+          // eventSeries: selectedEventSeries.toString(),
           ...(selectedEventStatus?.length > 0 && {
             eventStatus: selectedEventStatus.join(","),
           }),
@@ -816,14 +1013,14 @@ const Pages = () => {
           ...(selectedReptScore > 0 && {
             reputationScore: selectedReptScore.toString(),
           }),
-          ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
-          ...(selectedDateRange?.length === 2 && {
+          // ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
+          ...(selectedDateRange?.length === 2 && selectedDateRange[0]!=null && selectedDateRange[1]!=null && {
             startDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
               new Date(selectedDateRange[1]).toISOString().split("T")[0],
             ].join(","),
           }),
-          ...(selectedDateRange?.length === 2 && {
+          ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null &&{
             endDate: [
               new Date(selectedDateRange[0]).toISOString().split("T")[0],
               new Date(selectedDateRange[1]).toISOString().split("T")[0],
@@ -833,15 +1030,43 @@ const Pages = () => {
             eventRating: selectedUserRatings.join(","),
           }),
           ...(selectedINScore > 0 && { internationalScore: intScore?.toLowerCase() }),
-          ...(selectedInboundScore > 0 && {
-            inboundScore: selectedInboundScore.toString(),
-          }),
+          // ...(selectedInboundScore > 0 && {
+          //   inboundScore: selectedInboundScore.toString(),
+          // }),
           ...(selectedEventAttendanceRange?.length === 2 && {
             eventAttendanceRange: [
               +selectedEventAttendanceRange[0],
               +selectedEventAttendanceRange[1],
             ].join(","),
           }),
+          ...((selectedMaturity !== '' && selectedMaturity !== 'none') && { maturity: selectedMaturity }),
+          ...((selectedRank !== '' && selectedRank !== 'none') && {
+            // globalRanking: selectedRank,
+            // categoryRanking: selectedRank,
+            // countryRanking: selectedRank,
+            eventRanking: selectedRank,
+          }),
+          ...(analyticsToggles.impactScore && {
+            eventImpactSocre: selectedImpactScore.join("-")
+           }),
+           ...(analyticsToggles.inboundScore && {
+            inboundScore: selectedInboundScore.join("-")
+          }),
+           ...(analyticsToggles.internationalScore && {
+            internationalScore: selectedInternationalScore.join("-")
+          }),
+          // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
+          // ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
+          ...(forecastedStatus && {
+            isforecasted: forecastedStatus.toString()
+          }),
+          ...(selectedCountries?.length > 0 && {
+            audienceSpread: selectedCountries.join(",")
+          }),
+          ...(selectedAudProfile.length > 0 && {
+            designation: selectedAudProfile.join(",")
+          }),
+          ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread'].join()}
 
           // info: {
           //   name: trackerName,
@@ -930,14 +1155,9 @@ const Pages = () => {
 
   useEffect(() => {
     if (editData && editData?.tracker && last === "editTracker") {
-      const newArr: string[] = [
-        ...(categoryData?.attendedCategories ?? []),
-        ...(categoryData?.nonAttendedCategories ?? []),
-        ...(categoryData?.unscheduledCategories ?? []),
-      ];
-      if (editData.tracker.filterValue?.maturity == "low") {
-        setSelectedMaturity(25);
-      }
+      // if (editData.tracker.filterValue?.maturity == "low") {
+      //   setSelectedMaturity(25);
+      // }
       if (type === "T_COMPETITOR") {
         const orgNames = editData?.tracker?.filterValue?.orgName?.
           split(',');
@@ -997,7 +1217,42 @@ const Pages = () => {
       }
       setRatingOpen(toggleOpend?.rating ? true : false);
       setExhibitOpen(toggleOpend?.exhibit ?true:false)
-      setRankToggles({...rankToggles, isTrustScore:toggleOpend?.trust?true:false})
+      setRankToggles({
+        ...rankToggles,
+        isTrustScore : toggleOpend?.trust?true:false,
+        isEventRank: toggleOpend?.eventRank ? true : false,
+      })
+      setForecastedStatus(toggleOpend?.forecastedStatus ? true : false);
+
+      setAnalyticsToggles({
+        ...analyticsToggles,
+        impactScore: (toggleOpend?.impactScore ? true : false),
+        inboundScore: (toggleOpend?.inboundScore ? true : false),
+        internationalScore: (toggleOpend?.internationalScore ? true : false),
+      });
+
+      if(editData?.tracker?.filterValue?.inboundScore && editData?.tracker?.filterValue?.inboundScore !== "")
+        setSelectedInboundScore(editData?.tracker?.filterValue?.inboundScore?.split("-"));
+
+      if(editData?.tracker?.filterValue?.eventImpactSocre && editData?.tracker?.filterValue?.eventImpactSocre !== "")
+        setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactSocre?.split("-"));
+
+      if(editData?.tracker?.filterValue?.internationalScore && editData?.tracker?.filterValue?.internationalScore !== "")
+        setSelectedInternationalScore(editData?.tracker?.filterValue?.internationalScore?.split("-"));
+
+      if(editData?.tracker?.filterValue?.maturity && editData?.tracker?.filterValue?.maturity !== '')
+        setSelectedMaturity(editData?.tracker?.filterValue?.maturity)
+
+      if(editData?.tracker?.filterValue?.eventRanking && editData?.tracker?.filterValue?.eventRanking !== '')
+        setSelectedRank(editData?.tracker?.filterValue?.eventRanking)
+
+      setAudienceZone(toggleOpend?.audienceZone ? true : false);
+      setAudienceSpread(toggleOpend?.audienceSpread ? true : false);
+
+      setSelectedCountries(editData.tracker.filterValue?.audienceSpread ? editData.tracker.filterValue?.audienceSpread?.split(",") : []);
+
+      setSelectedAudProfile(editData.tracker.filterValue?.designation ? editData.tracker.filterValue?.designation?.split(",") : []);
+
       setSelectedEventKeywords(
         editData?.tracker?.filterValue?.eventKeywords?.length > 0
           ? editData?.tracker?.filterValue?.eventKeywords?.split("+")
@@ -1011,7 +1266,7 @@ const Pages = () => {
       );
       setSelectedCategories(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.map(
+          ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all').map(
             (cat: Cat) => cat.id
           )
           : []
@@ -1042,7 +1297,7 @@ const Pages = () => {
       );
       setCategorySlug(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.map(
+          ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all')?.map(
             (cat: Cat) => cat.name
           )
           : []
@@ -1076,7 +1331,7 @@ const Pages = () => {
       setSelectedEventRanking(
         editData.tracker.filterValue?.eventRanking?.split(",") || []
       );
-      setSelectedBrandedEvent(editData.tracker.filterValue?.brandedEvent);
+      setSelectedBrandedEvent(toggleOpend?.brandedEvent ? true : false);
       setSelectedCountry(
         editData.tracker.filterValue?.eventCountry?.length > 0
           ? editData.tracker.filterValue.eventCountry.reduce(
@@ -1099,7 +1354,7 @@ const Pages = () => {
           : {}
       );
       setSelectedEventSeries(
-        editData.tracker.filterValue?.eventSeries?.toString() === "true"
+        toggleOpend?.eventSeries ? true : false
       );
       setMaturity(
         editData.tracker.filterValue?.maturity?.length > 0
@@ -1117,11 +1372,11 @@ const Pages = () => {
           ? editData.tracker.filterValue?.reputationScore
           : 0
       );
-      setSelectedMaturity(
-        editData.tracker.filterValue?.maturity > 0
-          ? editData.tracker.filterValue?.maturity
-          : 0
-      );
+      // setSelectedMaturity(
+      //   editData.tracker.filterValue?.maturity > 0
+      //     ? editData.tracker.filterValue?.maturity
+      //     : 0
+      // );
       if (editData?.tracker?.filterValue?.eventType?.length > 0) {
         setSelectedEventType(
           editData.tracker.filterValue.eventType
@@ -1138,11 +1393,11 @@ const Pages = () => {
       //     ? editData.tracker.filterValue?.internationalScore
       //     : ""
       // );
-      setSelectedInboundScore(
-        editData.tracker.filterValue?.inboundScore > 0
-          ? editData.tracker.filterValue?.inboundScore
-          : 0
-      );
+      // setSelectedInboundScore(
+      //   editData.tracker.filterValue?.inboundScore > 0
+      //     ? editData.tracker.filterValue?.inboundScore
+      //     : 0
+      // );
       setSelectedUserRatings(
         editData.tracker.filterValue?.eventRating &&
           editData.tracker.filterValue?.eventRating?.length !== 0
@@ -1274,8 +1529,8 @@ const Pages = () => {
 
       if (isValid && template?.type === "enabled" && !isPresent) {
         setCustomData((prevData: any) => [
+          newEntry,
           ...prevData,
-          newEntry
         ]);
         setInputValues({});
       } else {
@@ -1334,51 +1589,8 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
   return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
 };
 const abortControllerRef = useRef<AbortController | null>(null);
-
-  const fetchSuggestionData = async () => {
-    let url = "";
-    if (inputValues[0]?.trim().length === 0) setWebsiteSuggestion(null);
-    if (inputValues[0]?.trim().length > 0) {
-      url = `${baseUrl}/company/suggestion?q=${inputValues[0].trim()}`;
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
-
-      try {
-        const { data, error } = await myFetch(url, {
-          method: "GET",
-          signal: controller.signal,
-        });
-
-        if (!controller.signal.aborted) {
-          if (data) {
-            setWebsiteSuggestion(data);
-          } else {
-            console.error(error);
-          }
-        }
-      } catch (error: any) {
-        if (error.name !== 'AbortError') {
-          console.error('Error fetching suggestion data:', error);
-        }
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (type === "T_COMPETITOR" && Object.keys(inputValues).length > 0) {
-      const debounceTimeout = setTimeout(() => {
-        fetchSuggestionData();
-      }, 500);
-
-      return () => clearTimeout(debounceTimeout);
-    }
-  }, [inputValues, type]); 
 const [selected,setSelected]=useState(false);
-const addCompany=(val:string)=>{
+const addCompany = (id:number,val: string) => {
   setSelected(true);
   setInputValues(prevValues => ({
     ...prevValues,
@@ -1396,6 +1608,16 @@ useEffect(()=>{
   if(type==="T_PRODUCT_KEYWORDS") setIsDiv(true);
 }, [type])
 
+  const handleCustomData = (data: any) => {
+    setCustomData(data);
+  }
+
+  const [uploadEnabled, setUploadEnabled] = useState<boolean>(false);
+
+  const handleUploadEnable = () => {
+    setUploadEnabled(!uploadEnabled)
+  }
+
   return (
     <>
     <div>{isLoading?<Loading/>:
@@ -1411,7 +1633,7 @@ useEffect(()=>{
         <div>
           <div className={styles.createHead}>Create {template && <span>{template.templateName}</span>} Tracker</div>
           <div className={styles.createContent}>
-            Select from the available data filters to create a tracker
+            { template ? template.description : "Select from the available data filters to create a tracker" }
           </div>
         </div>
       </div>
@@ -1453,8 +1675,18 @@ useEffect(()=>{
       {type==="T_PRODUCT_KEYWORDS" &&
       <div className={`card ${styles.hiddenFiltersOuterContainer}`} style={{gap:"var(--spacing-lg)"}}>
         <div className={styles.hiddenFilterHeading}>
-        <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px"}}>{template?.description}</div>
-        <div className={`${styles.toggleDiv}`}>
+        <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px"}}>{template?.description}
+          <Button10x
+            style={{ color: "white", float: "right" }}
+            variant="primary"
+            size="sm"
+            onClick={handleUploadEnable}
+          >
+            <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
+            {" "}Upload
+          </Button10x>
+        </div>
+        {/* <div className={`${styles.toggleDiv}`}>
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
               <div>
                 <div className={styles.manualHeading}>Add data manually
@@ -1496,8 +1728,17 @@ useEffect(()=>{
 
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
+        {template && uploadEnabled && 
+          <CsvUploader
+            templateData={template}
+            customData={customData}
+            handleCustomData={handleCustomData}
+            setUploadEnabled={setUploadEnabled}
+            setSelectedEventKeywords={setSelectedEventKeywords}
+          />
+        }
       <div style={{width:"calc(50% - 5px)"}}>
       <EventKeyword state={selectedEventKeywords}
       setState={setSelectedEventKeywords}
@@ -1510,6 +1751,7 @@ useEffect(()=>{
       }
       
       {template && template.inputAreas &&
+      <div style={{display: 'flex', gap: '25px'}}>
         <div className={`card ${styles.competitor}`}>
           {/* <div className={styles.competitorHead}>
             <div className={styles.competitorHeading}>Upload custom data </div>
@@ -1517,87 +1759,116 @@ useEffect(()=>{
           </div> */}
           <div className={styles.bar}></div>
           <div>
-          <div className={styles.subHeading} style={{color:"var(--primary-text-color)", marginBottom:"16px"}}>{template.description}</div>
-          <div className={`${styles.toggleDiv}`}>
-            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Add data manually
-                  {template?.inputAreas?.length === undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
-                </div>
-                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
-              </div>
-              <div>
-
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={template.type === "enabled"}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
-
-              </div>
-            </div>
-            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Import CSV Data
-                  {template.type === "enabled" && <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>}
-                </div>
-                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-              </div>
-              <div>
-
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={selectedExhibitScore.length !== 0}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
-
-              </div>
-            </div>
+          <div className={styles.templateInputHeading}>
+            <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
+            {" "} Please upload or manually enter the information
           </div>
+          {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") ?
+            (uploadEnabled && 
+              <CsvUploader
+                templateData={template}
+                customData={customData}
+                handleCustomData={handleCustomData}
+                setUploadEnabled={setUploadEnabled}
+                setSelectedEventKeywords={setSelectedEventKeywords}
+              />) :
+              <></>
+          // <div className={`${styles.toggleDiv}`}>
+          //   <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+          //     <div>
+          //       <div className={styles.manualHeading}>Add data manually
+          //         {template?.inputAreas?.length === undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
+          //       </div>
+          //       <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
+          //     </div>
+          //     <div>
+
+          //       <span>
+          //         <label className={styles.switch}>
+          //           <input
+          //             type="checkbox"
+          //             checked={template.type === "enabled"}
+          //           />
+          //           <span className={styles.slider}></span>
+          //         </label>
+          //       </span>
+
+          //     </div>
+          //   </div>
+          //   <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+          //     <div>
+          //       <div className={styles.manualHeading}>Import CSV Data
+          //         {template.type === "enabled" && <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>}
+          //       </div>
+          //       <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
+          //     </div>
+          //     <div>
+
+          //       <span>
+          //         <label className={styles.switch}>
+          //           <input
+          //             type="checkbox"
+          //             checked={selectedExhibitScore.length !== 0}
+          //           />
+          //           <span className={styles.slider}></span>
+          //         </label>
+          //       </span>
+
+          //     </div>
+          //   </div>
+          // </div>
+          }
           </div>
           {template?.inputAreas &&
-            <div className={`${styles.competitor}`}>
-              <div className={styles.allInputArea}>
-                {template?.inputAreas?.map((inputArea: any, index: number) => (
-                  <>
-                  <div key={index} className={styles.singleInputArea} style={{border:inputArea?.required===true && isMandatory===true && customData.length===0 ? "1px solid var(--danger-text-color)":""}}>
-                    {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
-                    <input
-                      className={styles.textArea}
-                      type="text"
-                      placeholder={inputArea.placeholder}
-                      value={inputValues[index] || ''}
-                      onChange={(e) => handleInput(index, e.target.value)}
-                      onKeyPress={handleKeyDown}
-                    />
-                    {type==="T_COMPETITOR" && inputValues[0]?.length > 0  && websiteSuggestion &&
-                    <div className={styles.suggestionBox}>
-                      <Suggestion 
-                      websiteData={websiteSuggestion}
-                      addCompany={addCompany}
-                      />
+                  <div>
+                    <div className={styles.allInputArea}>
+                      {template?.inputAreas?.map((inputArea: any, index: number) => (
+                        <>
+                          <div key={index} className={styles.singleInputArea} style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
+                            {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                            <input
+                              className={styles.textArea}
+                              type="text"
+                              placeholder={inputArea.placeholder}
+                              value={inputValues[index] || ''}
+                              onChange={(e) => handleInput(index, e.target.value)}
+                              onKeyPress={handleKeyDown}
+                            />
+                             {(eventSearchLoader && inputValues[0]?.length>0)? (
+  <div className={styles.loader}></div>
+) : (
+  inputValues[0]?.length > 0 ? (
+    <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
+      ...prevValues,
+      [index]: ""
+    }))}} />
+  ) : (
+    ""
+  )
+)}
+                            {/* {type === "T_COMPETITOR" && inputValues[0]?.length > 0 && websiteSuggestion &&
+                              <div className={styles.suggestionBox}>
+                                <Suggestion
+                                  websiteData={websiteSuggestion}
+                                  addCompany={addCompany}
+                                />
+                              </div>
+                            } */}
+          {type === "T_COMPETITOR" && inputValues[0]?.length > 0  &&
+           <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={'company/suggestion'} type={type}/>
+          }
+                          </div>
+
+                        </>
+                      ))}
+                      <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
+                        style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+                      >
+                        <Image src={Add} alt="add_Icon" />
                       </div>
-                  } 
-                  </div>
-                  
-                  </>
-                ))}
-                <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
-                  style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
-                >
-                  <Image src={Add} alt="add_Icon" />
-                </div>
-                
-              </div>
-              {/* {customData.map((item:any, index:number) => (
+
+                    </div>
+                    {/* {customData.map((item:any, index:number) => (
       // <div key={index} className={styles.customDataOuterDiv}>
       // <div className={styles.singleInputBox}>{item.name}</div>
       // <div className={styles.singleInputBox}>{item.companyName}</div>
@@ -1609,32 +1880,101 @@ useEffect(()=>{
       ))}
     ))} */}
     {!valid && (
-                <div style={{ color: "#f15050", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
+                <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
               )}
-              <div className={styles.allCompetitors}>
-              {customData.map((item: any, index: number) => (
-                
-                <div key={index} className={styles.customDataOuterDiv}>
-                  <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
-                  <div className={styles.allCustomData}>
-                    {Object.entries(item)
-                      .map(([entryKey, value]) => Array.isArray(value) ? value.join(' - ') : value as string)
-                      .join(' - ')}
+              {/* {customData && customData.length >0 &&
+                <div className={styles.allCompetitors}>
+                  <div className={styles.remove_all_custom} onClick={() => setCustomData([])}>
+                    Remove All
+                  </div>
+                  <div className={styles.table_container}>
+                  <table className={styles.allCustomData}>
+                    <tbody>
+                      {expandTable ? customData.map((item: any, index: number) => (
+                          <tr key={index}>
+                            <td>
+                              <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                            </td>
+                            {Object.entries(item)
+                              .map(([entryKey, value]) => 
+                                <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
+                              )
+                            }
+                          </tr>
+                        )) :
+                        customData.slice(0, 5).map((item: any, index: number) => (
+                          <tr key={index}>
+                            <td>
+                              <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
+                            </td>
+                            {Object.entries(item)
+                              .map(([entryKey, value]) => 
+                                <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
+                              )
+                            }
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </table>
+                  </div>
+                  {customData.length > 5 &&
+                    <div className={styles.expandTableBtn} onClick={()=>setExpandTable(prev=>!prev)} >{expandTable ? 'Read Less' : 'Read More'}</div>
+                  }
+                </div>
+              } */}
+              {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") &&
+                <div style={{textAlign: 'center'}}>
+                  <div style={{position: 'relative', color: 'var(--secondary-text-color)'}}>
+                    <div style={{borderBottom: '1px solid var(--border-color)', margin: '36px 0'}}></div>
+                    <span className={styles.orText}>OR</span>
+                  </div>
+                  <div className={styles.uploadBtnContainer}>
+                    <Button10x
+                      style={{ color: "white" }}
+                      variant="primary"
+                      size="sm"
+                      onClick={handleUploadEnable}
+                    >
+                      <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
+                      {" "}Upload
+                    </Button10x>
                   </div>
                 </div>
-               
-              ))}
-               </div>
+              }
             </div>
           }
         </div>
+        <div className={`card ${styles.competitor}`} >
+          <div className={styles.templateInputHeading}>
+            <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
+            {" "} You can edit or remove unwanted entries from here.
+          </div>
+          {(customData && customData.length >0) ?
+            <TemplateTable customData={customData} handleCustomData={handleCustomData} /> :
+            <div className={styles.emptyTableData}>
+              <Image
+                src={trackerEmptyTable}
+                alt="table"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
+              <div className={styles.emptyTableText}>No data added</div>
+              <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
+            </div>
+          }
+        </div>
+      </div>
       }
      {
-     <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`}>
+     <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} style={!opend ? {padding: '12px 24px'} : {}}>
       {type !== "CUSTOM" &&
       <div className={`${styles.hiddenFilters}`} onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
       <div className={styles.hiddenFiltersInnerDiv}>
-      <Plus style={{width:"16px", height:"16px"}} className="icons"/>
+      {/* <Plus style={{width:"16px", height:"16px"}} className="icons"/> */}
       <div className={styles.hiddenFilterHeading}>Additional filters</div>
       </div>
       <div><ChevronDown className="icons"/></div>
@@ -2137,12 +2477,10 @@ useEffect(()=>{
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Regularity & Edition
-                          {selectedRegularity[0] !== 0 && (
-                            <span className={styles.input_selected_title}>
-                              &gt;{'='} {selectedRegularity[0]}
-                            </span>
-                          )}
+                          Maturity
+                          {selectedMaturity !== '' && selectedMaturity !== 'none' &&
+                            <span className={styles.input_selected_title}>{formatText(selectedMaturity)}</span>
+                          }
                         </div>
                         <Image
                           src={DropIcon}
@@ -2165,8 +2503,8 @@ useEffect(()=>{
                     <Dialog className={styles.dialogBorder}>
                       {({ close }) => (
                         <RegularityEdition
-                          selectedRegularity={selectedRegularity}
-                          setSelectedRegularity={setSelectedRegularity}
+                          selectedMaturity={selectedMaturity}
+                          setSelectedMaturity={setSelectedMaturity}
                           onClose={close}
                         />
                       )}
@@ -2179,26 +2517,28 @@ useEffect(()=>{
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Global & Touring
+                          Branded
                         </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+                        <Image
                           src={DropIcon}
                           alt="dropicon"
-                          width={20}
-                          height={20}
+                          width={12}
+                          height={12}
                           className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
+                        />
                       </div>
                     </div>
                   </Button>
                   <Popover className={styles.filterPopover} >
                     <GlobalTouring
-                      state={selectedEntry}
-                      setState={setSelectedEntry}
-                      data={eventEntryData}
+                      // state={selectedEntry}
+                      // setState={setSelectedEntry}
+                      // data={eventEntryData}
                       selectedBrandedEvent={selectedBrandedEvent}
                       setSelectedBrandedEvent={setSelectedBrandedEvent}
+                      selectedEventSeries={selectedEventSeries}
+                      setSelectedEventSeries={setSelectedEventSeries}
                     />
                   </Popover>
                 </MenuTrigger>
@@ -2237,23 +2577,23 @@ useEffect(()=>{
                           Forecasted Status
                         </div>
 
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
 
-                        {/* <div className={styles.toggle_container}>
+                        <div className={styles.toggle_container}>
                           <span>
                             <label className={styles.switch}>
                               <input
                                 type="checkbox"
                                 onChange={() => {
-                                  setSelectedBrandedEvent((prev) => !prev);
+                                  setForecastedStatus((prev) => !prev);
                                 }}
-                                checked={selectedBrandedEvent}
-                                disabled={true}
+                                checked={forecastedStatus}
+                                // disabled={true}
                               />
                               <span className={styles.slider}></span>
                             </label>
                           </span>
-                        </div> */}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -2621,6 +2961,11 @@ useEffect(()=>{
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Event Analytics
+                          {Object.values(analyticsToggles).filter(value => value === true).length > 0 &&
+                            <span className={styles.selected_no_filters}>
+                              {Object.values(analyticsToggles).filter(value => value === true).length}
+                            </span>
+                          }
                           {/* {rankToggles.isEventRank && (
                             <span className={styles.input_selected_title}>
                               [{selectedEventRank[0]} , {selectedEventRank[1]}]
@@ -2637,14 +2982,14 @@ useEffect(()=>{
                             </span>
                           )} */}
                         </div>
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
-                        {/* <Image
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+                        <Image
                           src={DropIcon}
                           alt="dropicon"
-                          width={20}
-                          height={20}
+                          width={12}
+                          height={12}
                           className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
+                        />
                       </div>
                     </div>
                   </Button>
@@ -2652,14 +2997,14 @@ useEffect(()=>{
                     <Dialog className={styles.dialogBorder}>
                       {({ close }) => (
                         <AnalyticsDropdown
-                          selectedEventRank={selectedEventRank}
-                          setSelectedEventRank={setSelectedEventRank}
-                          selectedLocalRank={selectedLocalRank}
-                          setSelectedLocalRank={setSelectedLocalRank}
-                          selectedAviationRank={selectedAviationRank}
-                          setSelectedAviationRank={setSelectedAviationRank}
-                          rankToggles={rankToggles}
-                          setRankToggles={setRankToggles}
+                          selectedEventRank={selectedImpactScore}
+                          setSelectedEventRank={setSelectedImpactScore}
+                          selectedLocalRank={selectedInboundScore}
+                          setSelectedLocalRank={setSelectedInboundScore}
+                          selectedAviationRank={selectedInternationalScore}
+                          setSelectedAviationRank={setSelectedInternationalScore}
+                          rankToggles={analyticsToggles}
+                          setRankToggles={setAnalyticsToggles}
                           onClose={close}
                         />
                       )}
@@ -2693,17 +3038,20 @@ useEffect(()=>{
                       <div className={styles.input}>
                         <div className={styles.input_title}>
                           Event Ranking
-                          {selectedTrustScore[0] > 0 &&
-                            <span className={styles.selected_no_filters}>1</span>
+                          {(selectedTrustScore[0] > 0 && (selectedRank !== '' && selectedRank !== 'none')) ?
+                            <span className={styles.selected_no_filters}>2</span> :
+                            (selectedTrustScore[0] > 0 || (selectedRank !== '' && selectedRank !== 'none')) ?
+                              <span className={styles.selected_no_filters}>1</span> :
+                              <></>
                           }
                         </div>
-                        {/* <Image
+                        <Image
                           src={DropIcon}
                           alt="dropicon"
-                          width={20}
-                          height={20}
+                          width={12}
+                          height={12}
                           className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
+                        />
                         {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
                       </div>
                     </div>
@@ -2725,6 +3073,8 @@ useEffect(()=>{
                           rankToggles={rankToggles}
                           setRankToggles={setRankToggles}
                           onClose={close}
+                          selectedRank={selectedRank}
+                          setSelectedRank={setSelectedRank}
                         />
                       )}
                     </Dialog>
@@ -2818,7 +3168,7 @@ useEffect(()=>{
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                        Audience Quality Score
+                        Audience Quality
                           {/* {selectedEventAttendanceRange[0] !== undefined ? (
                             <span className={styles.input_selected_title}>
                               {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
@@ -2858,7 +3208,7 @@ useEffect(()=>{
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Exhibitor Quality Score
+                          Exhibitor Quality
                         </div>
                         <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
                         {/* <Image
@@ -2886,23 +3236,38 @@ useEffect(()=>{
                 </MenuTrigger>
 
                 <MenuTrigger onOpenChange={setMenuOpen}>
-                  {/* <Button className={`${styles.dropdown_button}`} > */}
+                  <Button className={`${styles.dropdown_button}`} >
                     <div className={styles.input_container}>
                       <div className={styles.input}>
                         <div className={styles.input_title}>
-                          Audience Des &amp; Dept
+                          {/* Audience Des &amp; Dept */}
+                          Audience Profile
+                          {selectedAudProfile.length > 0 ? (
+                            <span className={styles.selected_no_filters}>
+                              {selectedAudProfile.length}
+                            </span>
+                          ) : (
+                            ""
+                          )}
                         </div>
-                        {/* <Image
+                        <Image
                           src={DropIcon}
                           alt="dropicon"
-                          width={20}
-                          height={20}
+                          width={12}
+                          height={12}
                           className={`${iconClass} ${styles.dropIcon}`}
-                        /> */}
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                        />
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
                       </div>
                     </div>
-                  {/* </Button> */}
+                  </Button>
+                  <Popover className={styles.filterPopover}>
+                    <AudienceDes
+                      selectedCountries={selectedAudProfile}
+                      setSelectedCountries={setSelectedAudProfile}
+                      onClose={close}
+                    />
+                  </Popover>
                 </MenuTrigger>
 
               {/* <MenuTrigger onOpenChange={setMenuOpen}>
@@ -2943,21 +3308,50 @@ useEffect(()=>{
               </Popover>
               </MenuTrigger> */}
 
-<MenuTrigger onOpenChange={setMenuOpen}>
+                <div>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <div className={styles.input_title}>
+                        Audience Zone
+                      </div>
+
+                      {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+
+                      <div className={styles.toggle_container}>
+                        <span>
+                          <label className={styles.switch}>
+                            <input
+                              type="checkbox"
+                              onChange={() => {
+                                setAudienceZone((prev) => !prev);
+                              }}
+                              checked={audienceZone}
+                              // disabled={true}
+                            />
+                            <span className={styles.slider}></span>
+                          </label>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   {/* <Button className={`${styles.dropdown_button}`} > */}
                     <div className={styles.input_container}>
                       <div className={styles.input}>
-                        <div className={styles.input_title}>
-                        Audience Spread
-                          {/* {selectedEventAttendanceRange[0] !== undefined ? (
-                            <span className={styles.input_selected_title}>
-                              {`${selectedEventAttendanceRange[0]} - ${selectedEventAttendanceRange[1] || "Unlimited"
-                                }`}
-                            </span>
-                          ) : (
-                            ""
-                          )} */}
-                        </div>
+                        <Button className={styles.dropdown_button} >
+                          <div className={styles.input_title} onClick={()=>setSpreadOpen(true)}>
+                            Audience Spread
+                            {selectedCountries?.length > 0 ? (
+                              <span className={styles.selected_no_filters}>
+                                {selectedCountries.length}
+                              </span>
+                            ) : (
+                              ""
+                            )}
+                          </div>
+                        </Button>
                         {/* <Image
                           src={DropIcon}
                           alt="dropicon"
@@ -2965,31 +3359,97 @@ useEffect(()=>{
                           height={20}
                           className={`${iconClass} ${styles.dropIcon}`}
                         /> */}
-                        <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>
+                        {/* <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div> */}
+                        <div className={styles.toggle_container}>
+                          <span>
+                            <label className={styles.switch}>
+                              <input
+                                type="checkbox"
+                                onChange={() => {
+                                  setAudienceSpread((prev) => !prev);
+                                }}
+                                onClick={() => {
+                                  setSpreadOpen(!isSpreadOpen)
+                                  if(!isSpreadOpen) setIsPop({...isPop, audienceSpread:true})
+                                }}
+                                checked={audienceSpread}
+                                // disabled={true}
+                              />
+                              <span className={styles.slider}></span>
+                            </label>
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  {/* </Button> */}
-                  {/* <Popover>
-                    <Dialog className={styles.noBorder}>
-                      {({ close }) => (
-                        <EventAttendance
-                          state={selectedEventAttendanceRange}
-                          setState={setSelectedEventAttendanceRange}
-                          onClose={close}
-                        />
-                      )}
-                    </Dialog>
-                  </Popover> */}
+                    <Popover className={styles.filterPopover} isOpen={isSpreadOpen} onOpenChange={setSpreadOpen}>
+                      <AudienceSpread
+                        selectedCountries={selectedCountries}
+                        setSelectedCountries={setSelectedCountries}
+                        onClose={close}
+                      />
+                    </Popover>
                 </MenuTrigger>
            
             </div>
           )}
         </div>
       </div>
-    </Suspense>
+      </Suspense>
       }
      
     </div>
+      }
+      {(type !== "CUSTOM" && presetTemplateData.filter(item => item.url === template?.name).length > 0) &&
+        <div>
+            <div className={styles.presetTitle} >Get Started with Pre-sets</div>
+            <div className={styles.presetContainer} >
+              {presetTemplateData.filter(item => item.url === template?.name).map((item, ind) => (
+                <div key={ind} className={styles.innerContainerTwo} onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
+                  <div
+                    className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
+                      }`}
+                  >
+                    <div className={styles.account}>
+                      <Image src={item.img} alt="people" />
+                    </div>
+                    <div>
+                      <Image src={Template} alt="template" />
+                    </div>
+                  </div>
+                  <div className={styles.bottomView}>
+                    <div className={styles.bottomViewOne}>
+                      <div className={styles.bottomInnerView}>
+                        <Image
+                          src={Vector1}
+                          alt="vector1"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        />
+                        <div style={{ color: "#585871", fontSize: "12px" }}>
+                          PRE-SET
+                        </div>
+                      </div>
+                      {item.enabled ? 
+                        <div className={`${styles.domain}`} >
+                          {item.presetType}
+                        </div> :
+                        <div className="badge_success" style={{fontSize: 'var(--font-size-xs)'}}>
+                          Coming Soon
+                        </div>
+                      }
+                    </div>
+                    <div className={styles.bottomViewTwo}>
+                      {item?.trackerName}
+                    </div>
+                    <div className={styles.text}>{item?.content}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+        </div>
       }
     </div>
     </>

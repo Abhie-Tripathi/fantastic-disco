@@ -45,6 +45,7 @@ interface Props {
   comments?: IComment[];
   commentType?: string;
   allUsers?:any;
+  structuredUsers:any;
 }
 interface User {
   firstname: string;
@@ -84,7 +85,8 @@ export const AddComment = ({
   setSelectedPdfs,
   comments,
   commentType,
-  allUsers
+  allUsers,
+  structuredUsers
 }: Props) => {
   const commentId = replyOptions?.commentId;
   const path=usePathname().split('/');
@@ -119,7 +121,8 @@ export const AddComment = ({
     setUserDetail(user);
   }, [user]);
   useEffect(()=>{
-    setUsers(allUsers);
+    setUsers(structuredUsers);
+    setApiUserData(allUsers)
   },[allUsers])
   // useEffect(() => {
   //   const url = `${baseUrl}/auth/users?limit=100`;

@@ -20,6 +20,7 @@ import { baseUrl, headers } from "@/constants";
 import { number } from "zod";
 import { toast } from "react-toastify";
 import { showToast } from "@/utils/showToast";
+import Loading from "../../UI/Loading";
 // import "react-toastify/dist/ReactToastify.css";
 
 interface EventData {
@@ -62,6 +63,7 @@ const EventDetail = ({
   const [stage, setStage] = useState<string>("");
   const [singleEventData, setSingleEventData] = useState<EventData | any>();
   const urlPath = usePathname().split("/")[2];
+  const [isLoading,setIsLoading]=useState(true);
   const [participentData, setParticipentData] = useState({
     attendee: [],
     speakers: [],
@@ -75,7 +77,7 @@ const EventDetail = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [status, setStatus] = useState<number>(1);
+  const [status, setStatus] = useState<number>(currentEnquiryStatus==="IN PROGRESS"?2:currentEnquiryStatus==="CONFIRMED"?10:currentEnquiryStatus==="CANCELED"?12:1);
   const statusValues: { [key: string]: string } = {
     "1": "SHORTLISTED",
     "2": "IN_NEGO",
@@ -98,12 +100,13 @@ const EventDetail = ({
         });
         if (apiData.data.message === "Data updated") {
           if (handleRefresh) handleRefresh();
-          toast.success("Enquiry status updated!", {
-            position: "bottom-right",
-            autoClose: 2000,
-            closeButton: false,
-            hideProgressBar: true,
-          });
+          // toast.success("Enquiry status updated!", {
+          //   position: "bottom-right",
+          //   autoClose: 2000,
+          //   closeButton: false,
+          //   hideProgressBar: true,
+          // });
+          showToast("success","Enquiry status updated!")
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -120,10 +123,12 @@ const EventDetail = ({
     const fetchEventData = async () => {
       try {
         const { data, error } = await myFetch(
-          `${baseUrl}/event/search?eventId=${eventId}`
+          `${baseUrl}/event/${eventId}`
         );
         if (data) {
-          const eventsData = data.events[0];
+          const eventsData = data.event;
+          console.log(eventsData);
+          setIsLoading(false)
           setSingleEventData(eventsData);
         }
       } catch (error) {
@@ -163,6 +168,8 @@ const EventDetail = ({
   }, [eventId]);
 
   return (
+    <>
+    {isLoading ? <div className={styles.innerContainer} style={{height:"calc(100vh - 70px)", paddingTop:"50px"}}><div style={{width:"100%"}}><Loading/></div></div>:
     <div
       className={
         meet ? `${styles.container} ${styles.fullHeight}` : styles.container
@@ -172,14 +179,14 @@ const EventDetail = ({
         <Image src={backIcon} alt="close" height={22} width={22} />
         Back
       </div>
-
       <div className={styles.modalContainer}>
-        {pathName && pathName === "outreach" && <StatusBar status={status} />}
+        {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange}/>}
+        
         <div className={styles.innerContainer}>
           <div className={styles.containerLeft} ref={leftContainerRef}>
             <div className={styles.containerLeftTop}>
               <OwnerList label="test" eventId={123} enquiryId={enquiryId} />
-              {pathName && pathName === "outreach" && (
+              {/* {pathName && pathName === "outreach" && (
                 <StatusChangeDropdown
                   label=""
                   eventId={123}
@@ -188,7 +195,7 @@ const EventDetail = ({
                     currentEnquiryStatus ? currentEnquiryStatus : ""
                   }
                 />
-              )}
+              )} */}
             </div>
             {singleEventData && (
               <>
@@ -223,6 +230,8 @@ const EventDetail = ({
       </div>
       {/* <ToastContainer /> */}
     </div>
+    }
+    </>
   );
 };
 

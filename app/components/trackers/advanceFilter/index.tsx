@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './advanceFilter.style.module.css'
-const index = ({ freq, keywords, isBranded, eventEdition, type }: any) => {
+const index = ({ freq, keywords, isBranded, eventEdition, type, eventSeries, forecastedStatus, maturity}: any) => {
     // const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     // const freq=["Annual","Biannual","Queartly"]
     // const entry=["Free","Paid","Invites","Member Access"];
@@ -30,10 +30,10 @@ const index = ({ freq, keywords, isBranded, eventEdition, type }: any) => {
        </div>
           }
             <div className={styles.formatFreq}>
-            <div className={styles.branded}>
-          <div className={styles.formatHead}>Event Edition</div>
+            <div className={styles.format}>
+          <div className={styles.formatHead} style={{display:"flex",justifyContent:"space-between"}}>Maturity
           <div className={styles.toggle_container}>
-          <span>
+            <span>
               <label className={styles.switch}>
                 <input
                   type="checkbox"
@@ -42,10 +42,25 @@ const index = ({ freq, keywords, isBranded, eventEdition, type }: any) => {
                   defaultChecked
                   disabled
                 />
-                <span className={`${eventEdition>0 ? styles.sliderBranded : styles.slider}`}></span>
+                <span className={`${maturity ? styles.sliderBranded : styles.slider}`}></span>
               </label>
             </span>
           </div>
+          </div>
+          {maturity &&
+            <div className={styles.allCat}>
+              <label style={{ display: "flex" }} >
+                  <input
+                      className={styles.text}
+                      type="checkbox"
+                      // onChange={() => onChange()}
+                      checked={true}
+                      disabled
+                  />
+                  <span className={styles.item}>{maturity}</span>
+              </label>
+            </div>
+          }
         </div>
         <div className={styles.branded}>
           <div className={styles.formatHead}>Branded Event</div>
@@ -64,6 +79,44 @@ const index = ({ freq, keywords, isBranded, eventEdition, type }: any) => {
             </span>
           </div>
         </div>
+
+        <div className={styles.branded}>
+          <div className={styles.formatHead}>Series Event</div>
+          <div className={styles.toggle_container}>
+            <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${eventSeries ? styles.sliderBranded : styles.slider}`}></span>
+              </label>
+            </span>
+          </div>
+        </div>
+
+        <div className={styles.branded}>
+          <div className={styles.formatHead}>Forecasted Status
+</div>
+          <div className={styles.toggle_container}>
+            <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${forecastedStatus ? styles.sliderBranded : styles.slider}`}></span>
+              </label>
+            </span>
+          </div>
+        </div>
+
         <div className={styles.format}>
                     <div className={styles.formatHead}>Event Frequency</div>
                     <div className={styles.allCat}>

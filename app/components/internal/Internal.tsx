@@ -1,10 +1,18 @@
 import React, { useState, useRef, RefObject, useEffect } from 'react'
 import Image from 'next/image'
 import YourEventCard from './YourEventCard'
-import Search from '/public/search.svg'
+import DropDown from './commondropdown/DropDown'
 import styles from './internal.style.module.css'
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
-import DropIcon from "/public/downArrow.svg";
+import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
+import CloseIcon from "/public/internal/cross.svg";
+import DateRange from "@/app/components/dropdown/DateRange";
+import {
+    Button,
+    MenuTrigger,
+    Popover,
+  } from "react-aria-components";
+import DropIcon from "/public/internal/drop_down_angle.svg";
 import eventData from '@/public/data/demoEvent.json'
 import { useTheme } from '@/context'
 import { eventDataType } from "../../../types/coordinateEventType";
@@ -12,27 +20,137 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import Loading from '../UI/Loading'
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
+import SearchBar from './searchBar/SearchBar'
 
 interface Props{
     handleModal : (id: string,enquiryId:string) => void,
     handleShortlistModal: (eventId: string, enquiryId: string) => void;
     cardUpdated: boolean;
+    modalOpen:boolean;
+    setStatusChanged?: (status: boolean) => void;
+    statusChanged?:boolean;
+    selectedId?:string;
+    setSelectedId: any; 
+
 }
-const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) => {
+const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen,setSelectedId, setStatusChanged, statusChanged,selectedId } : Props) => {
+   const buttonRef = useRef(null);
     let prevDate: any = null;
     const { theme } = useTheme();
     const iconClass = theme === "light" ? "icons_light" : "icon";
     const [eventData1, setEventData1] = useState<eventDataType[]>([]);
+    // const [value,setValue]=useState("");
     const [page, setPage] = useState(0);
     const divRef: RefObject<HTMLDivElement> = useRef(null);
     const [noMoreData, setNoMoreData] = useState<boolean>(false);
     const [isLoaded, setIsLoaded] = useState<boolean>(false);
     const [coordinateCount,setCoordinateCount]=useState<any>();
+    const [selectedStatusType, setSelectedStatusType] = useState<string[]>([]);
+    const [selectedDateRange, setSelectedDateRange] = useState<any[]>([]);
+    const [selectedParticipantType, setSelectedParticipantType] = useState<string[]>([]);
+    const [selectedStatusTypeName, setSelectedStatusTypeName] = useState<string>('');
+    const [popoverState, setPopoverState] = useState<boolean | null>(false);
+    const [selectedParticipantTypeName,setSelectedParticipantTypeName]=useState<string>('');
+    const status=["Pending", "Shortlisted", "Rejected"];
+    const participants=["Exhibitor", "Sponsor", "Speaker", "Attendee"];
+    const [participant,setParticipant]=useState("");
+    const [statusType,setStatusType]=useState("IN_DISCUSSION,SHORTLISTED,REJECTED");
+    const [duration,setDuration]=useState<string>('');
+    const [searchInput, setSearchInput] = useState("");
+    const [eventId,setEventId]=useState("");
+    const [showSuggestion,setShowSuggestion]=useState(false);
+    const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
+    const [filterChanged,setFilterChanged]=useState(false);
     const handleScrollEnd = () => {
-        setTimeout(() => {
-            if(!noMoreData) setPage(prevPage => prevPage + 1);
-        }, 1000);
+      setTimeout(() => {
+          if(!noMoreData) setPage(prevPage => prevPage + 1);
+      }, 1000);
+  };
+  const [interestedUsers, setInterestedUsers] = useState<any>({
+    attendee: [],
+    speakers: [],
+    sponsors: [],
+    exhibitors: [],
+  });
+    const setMenuOpen = () => {
+        setPopoverState(!popoverState);
     };
+      // useEffect(() => {
+      //   const modalStatus = document.body.getAttribute("popover-status");
+    
+      //   if (modalStatus && modalStatus == "close") {
+      //     document.body.setAttribute("popover-status", "open");
+      //     document.documentElement.style.overflow = "";
+      //     document.documentElement.style.paddingRight = "";
+      //   } else {
+      //     document.body.setAttribute("popover-status", "close");
+      //   }
+      //   return () => {
+      //     document.body.removeAttribute("your-attribute");
+      //   };
+      // }, [popoverState]); 
+      useEffect(()=>{
+        if (selectedParticipantType.length > 0) {
+          setParticipant(selectedParticipantType.map((item) => item.toUpperCase()).join(','));
+        }else{
+          // setStatusType("PENDING");
+          setParticipant("");
+        } 
+        setPage(1);
+      },[selectedParticipantType])
+      const handleSearchChange = (event: any) => {
+        setSearchInput(event.target.value);
+      };
+      useEffect(() => {
+        if (selectedDateRange.length === 2) {
+          if(selectedDateRange[0]===null && selectedDateRange[1]===null)
+          setDuration("");
+        else
+            setDuration([
+                new Date(selectedDateRange[0]).toISOString().split("T")[0],
+                new Date(selectedDateRange[1]).toISOString().split("T")[0],
+            ].join(","));
+            setPage(1); 
+        } else {
+            setDuration("");
+            setPage(1); 
+        }
+    }, [selectedDateRange]);
+    useEffect(() => {
+      if (selectedStatusType.length > 0) {
+        let newStatusType = "";
+        
+        selectedStatusType.forEach((item) => {
+          if (item === "Pending") {
+            newStatusType += "IN_DISCUSSION,";
+          } else {
+            newStatusType += `${item.toUpperCase()},`;
+          }
+        });
+        setStatusType(newStatusType.slice(0, -1));
+      } else {
+        setStatusType("IN_DISCUSSION,SHORTLISTED,REJECTED");
+      }
+    
+      setPage(1);
+    }, [selectedStatusType]);
+    
+      const dateShowFormatter = (selectedDateRange: string[]) => {
+        const [sdDay, sdMonth, sdYear] = convertToCustomFormat(
+          selectedDateRange[0]
+        ).split(" ");
+        const [edDay, edMonth, edYear] = convertToCustomFormat(
+          selectedDateRange[1]
+        ).split(" ");
+      
+        if (sdMonth === edMonth && sdYear === edYear) {
+          return `${sdDay} - ${edDay} ${sdMonth} ${sdYear}`;
+        }
+        if (sdYear === edYear) {
+          return `${sdDay} ${sdMonth} - ${edDay} ${edMonth} ${sdYear}`;
+        }
+        return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
+      };
     useEffect(() => {
         const getCordinateList = async () => {
           try {
@@ -48,23 +166,31 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
       }, []);
     const fetchData = async () => {
         console.log('fetching data... page=', page);
+        
         if(page > 0) {
-            setIsLoaded(false);
+            let apiUrl="";
             try {
-            const apiUrl = baseUrl + "/userInterest?status=PENDING&limit=10&offset=" + (page-1)*10;
+            apiUrl = `${baseUrl}/userInterest/enquiry?status=${statusType}&limit=10&offset=${(page - 1) * 10}` +
+            (participant.length > 0 ? `&interest=${participant.toUpperCase()}` : '') +
+            (duration.length !== 0 ? `&duration=${duration}` : '') +
+            `&source=internal` + (eventId ? `&eventId=${eventId}` : '');
             const apiData = await myFetch(apiUrl, {
                 method: "GET",
                 headers: headers,
             });
             if(apiData.data) {
-                if(page==1){
-                    setEventData1(apiData.data.enquiry);
-                }else if(page>1){
-                    setEventData1(prevData => [...prevData, ...apiData.data.enquiry]);
+                if(apiData.data.enquiryData.length===0 && page===1){
+                    setEventData1([]);
                 }
-                if(apiData.data.enquiry.length < 10){
+                if(page==1){
+                    setEventData1(apiData.data.enquiryData);
+                }else if(page>1){
+                    setEventData1(prevData => [...prevData, ...apiData.data.enquiryData]);
+                }
+                if(apiData.data.enquiryData.length < 10){
                     setNoMoreData(true);}
             }
+            setFilterChanged(false);
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -72,60 +198,56 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             }
         }
     };
+  
+   
 
-    /*
-    useEffect(() => {
-        const handleScroll = () => {
-            const currentDiv = divRef.current;
-            if (currentDiv) {
-                const { scrollTop, scrollHeight, clientHeight } = currentDiv;
-                if (scrollTop + clientHeight >= (scrollHeight - 2)) {
-                    handleScrollEnd();
-                }
-            }
-        };
-
-        const currentDiv = divRef.current;
-        if (currentDiv) {
-            currentDiv.addEventListener('scroll', handleScroll);
-        }
-
-        return () => {
-            const currentDiv = divRef.current;
-            if (currentDiv) {
-                currentDiv.removeEventListener('scroll', handleScroll);
-            }
-        };
-    }, [handleScrollEnd]);
-    */
-   const scroller = useInfiniteScroll(divRef, handleScrollEnd);
-
-    useEffect(() => {
-        if(page>0)
-            fetchData();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [page]);
-
-    useEffect(() => {
-        if(page == 1)
-            fetchData();
-        else 
-            setPage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cardUpdated]);
-
-    if (!isLoaded && page <= 1) {
-        return <div style={{padding: "50px"}}><Loading /></div>;
-    } else if (isLoaded && eventData1.length == 0 && page <= 1) {
-        return (
-            <div className={styles.noData}>
-                An effective event communication and relationship management dashboard that keeps your team on the same page and makes coordination both internally and with events team easy and manageable.
-            </div>
-        );
-    }
+   useEffect(() => {
+    if(page == 1)
+        fetchData();
+    else 
+        setPage(1);
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [cardUpdated]);
+useInfiniteScroll(divRef, handleScrollEnd);
+useEffect(()=>{
+  
+  if(statusChanged===true){
+    console.log(selectedId);
+    const updatedData=eventData1.map((item)=>{
+      return item.eventId === selectedId ? { ...item, enquiryStatus: "Shortlisted" } : item;
+    })
     
+    setEventData1(updatedData);
+    setSelectedId('');
+    if (setStatusChanged) 
+    setStatusChanged(false);
+  }
+},[statusChanged])
+useEffect(()=>{
+  if(page>0){
+    setNoMoreData(false);
+    fetchData();
+    setFilterChanged(true);
+  }
+},[statusType, participant, page, duration, eventId])
+ if(!isLoaded){
+  return <div style={{padding: "50px"}}><Loading /></div>;
+} else if (isLoaded && coordinateCount[0]?.totalEvent=== 0) {
+    return (
+        <div className={styles.noData}>
+            An effective event communication and relationship management dashboard that keeps your team on the same page and makes coordination both internally and with events team easy and manageable.
+        </div>
+    );
+}
+ const handleSelect=(id: number, name: string)=>{
+    setSearchInput(name);
+    setEventId(id.toString());
+    setShowSuggestion(true);
+ }
   return (
-    <div className={styles.scrollContainer} ref={divRef} >
+    <>
+    <div className={styles.scrollContainer} ref={divRef} style={{ overflow: popoverState?"hidden":"auto"}}>
+    {/* <div className={styles.scrollContainer} ref={divRef} style={{height:popoverState?"auto":"calc(100vh - 80px)"}}> */}
     <div className={styles.container} >
     <div className={styles.countsContainer}>
         <div className={styles.exhibitorCount}>
@@ -145,23 +267,140 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
             <div className={styles.countTitle}>Attend</div>
         </div>
     </div>
-    {/* <div className={styles.filters}>
-        <div className={styles.searchBar}>
-            <input className={styles.textArea} type='text' placeholder='Search Event'/>
+    <div className={styles.filters}>
+    <div className={styles.searchContainer}>
+          <div className={styles.searchbar}>
+            <input
+            type="text"
+          placeholder="Search by event name"
+          onChange={handleSearchChange}
+          value={searchInput}
+            />
+            <span className={styles.search_logo}>
+            {(eventSearchLoader && searchInput.length>0 )? (
+  <div className={styles.loader}></div>
+) : (
+  searchInput.length > 0 ? (
+    <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setSearchInput(""); setEventId("")}} />
+  ) : (
+    ""
+  )
+)}
+              
+            </span>
+          </div>
+          {
+           <SearchBar searchInput={searchInput} setEventSearchLoader={setEventSearchLoader} handleSelect={handleSelect} endpoint={'userInterest/enquiry/suggestion'}/>
+          }
         </div>
-        <div className={styles.statusDropdown}>
-            <div>Status</div>
-            <Image
+          <div style={{width:"19%"}} className={styles.outerDiv}>
+         <MenuTrigger onOpenChange={setMenuOpen}>
+                <Button className={styles.dropdown_button}>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <div className={styles.input_title}>
+                        Status
+                        <span className={styles.input_selected_title}>
+                       {selectedStatusType.length===1&&<>{selectedStatusType[0]}</>}
+                       {selectedStatusType.length>1&&<span className={styles.selected_no}>{selectedStatusType.length}</span>}
+                            </span>
+                      </div>
+                      <Image
                         src={DropIcon}
                         alt="dropicon"
-                        width={20}
-                        height={20}
+                        width={12}
+                        height={12}
                         className={iconClass}
                       />
+                    </div>
+                  </div>
+                </Button>
+                <Popover className={styles.filterPopover}>
+                  <DropDown
+                    status={status}
+                    state={selectedStatusType}
+                    setState={setSelectedStatusType}
+                    selectedEventTypeName={selectedStatusTypeName}
+                    setSelectedEventTypeName={setSelectedStatusTypeName}
+                  />
+                </Popover>
+              </MenuTrigger>
+          </div>
+        <div style={{width:"19%"}} className={styles.outerDiv}>
+        <MenuTrigger onOpenChange={setMenuOpen}>
+                <Button className={styles.dropdown_button}>
+                  <div className={styles.input_container}>
+                    <div className={styles.input}>
+                      <div className={styles.input_title}>
+                       Type
+                       <span className={styles.input_selected_title}>
+                       {selectedParticipantType.length===1 &&(selectedParticipantType[0]==='Attendee'?"Attend":selectedParticipantType[0]==='Exhibitor'?"Exhibit":selectedParticipantType[0]==="Speaker"? "Speak": selectedParticipantType[0]==='Sponsor'?"Sponsor":"")}
+                       {selectedParticipantType.length>1 && 
+                       <span className={styles.selected_no}>{selectedParticipantType.length}</span>
+                       }
+                       </span>
+                      </div>
+                      <Image
+                        src={DropIcon}
+                        alt="dropicon"
+                        width={12}
+                        height={12}
+                        className={iconClass}
+                      />
+                    </div>
+                  </div>
+                </Button>
+                <Popover className={styles.filterPopover}>
+                  <DropDown
+                    status={participants}
+                    state={selectedParticipantType}
+                    setState={setSelectedParticipantType}
+                    selectedEventTypeName={selectedParticipantTypeName}
+                    setSelectedEventTypeName={setSelectedParticipantTypeName}
+                  />
+                </Popover>
+              </MenuTrigger>
         </div>
-        <div className={styles.participantDropdown}></div>
-        <div className={styles.dateFilter}></div>
-    </div> */}
+        <div style={{width:"22%"}} className={styles.outerDiv}>
+        <MenuTrigger onOpenChange={setMenuOpen} >
+              <Button ref={buttonRef} className={styles.dropdown_button}>
+                <div className={styles.input_container}>
+                  <div className={styles.input}>
+                    <div className={styles.input_title}>
+                      Dates
+                      {selectedDateRange.length > 0 &&
+                        selectedDateRange[0] !== null ? (
+                        <span className={styles.input_selected_title}>
+                          {dateShowFormatter(selectedDateRange)}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <Image
+                      src={DropIcon}
+                      alt="dropicon"
+                      width={12}
+                      height={12}
+                      className={iconClass}
+                    />
+                  </div>
+                </div>
+              </Button>
+              <Popover
+              className={styles.filterPopover}
+              placement="left"
+              style={{marginTop:"70px"}}
+              >
+                <DateRange
+                  state={selectedDateRange}
+                  setState={setSelectedDateRange}
+                />
+              </Popover>
+            </MenuTrigger>
+            </div>
+    </div>
+    
     <div className={styles.timelineContainer} >
     {eventData1.map((item, index) => {
         // Check if current event's date is different from previous event's date
@@ -169,36 +408,41 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, } : Props) =>
         // Update previous date
         prevDate = item.startDate;
         return (
+          <>
             <div key={index} className={styles.timeline}>
                 <TimelineItem eventDate={showDate ? item.startDate : null} />
                 <YourEventCard
-                    eventId={item.id}
+                    eventId={item.eventId}
+                    setSelectedId={setSelectedId}
+                    filterChanged={filterChanged}
                     isDateSame={showDate}
                     enquiryId={item.enquiryId}
-                    eventName={item.name}
-                    eventLocation={item.city}
-                    eventCountry={item.country}
+                    eventName={item.eventName}
+                    eventLocation={item.eventCity}
+                    eventCountry={item.eventCountry}
                     eventImage={item?.logo}
                     eventStartDate={item.startDate}
                     eventEndDate={item.endDate}
                     eventCompany={item.orgName}
                     eventDuration={item.duration}
                     userCount={item.userCount}
-                    currentEnquiryStatus={item.status}
+                    currentEnquiryStatus={item.enquiryStatus}
                     upvote={item.upvote}
                     enquiryActivity={item.enquiryActivity}
                     handleModal={handleModal}
                     handleShortlistModal={handleShortlistModal}
                 />
             </div>
+        </>
         );
     })}
 </div>
-    {noMoreData ? 
-        <></> : <Loading />
+{noMoreData ? 
+        (eventData1.length===0?<div style={{textAlign:"center"}}>No results containing all your search terms were found.</div>:<></>) : <Loading />
     }
 </div>
 </div>
+</>
   )
 }
 
