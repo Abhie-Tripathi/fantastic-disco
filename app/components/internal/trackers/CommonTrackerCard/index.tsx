@@ -17,8 +17,10 @@ import { baseUrl } from '@/context';
 import { GAEvent } from "@/utils/GAEvent";
 import ShareWidget from "../ShareWidget";
 import { useTrackerServices } from "@/services/trackerServices";
+import { useTrackerContext } from "@/context/tracker";
 // import { useTheme } from '@/context/theme';
 const CommonTrackerCard = () => {
+  const {data: item}=useTrackerContext();
   // const { theme } = useTheme();
   //   console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const pathName = usePathname().split('/');
@@ -26,41 +28,41 @@ const CommonTrackerCard = () => {
   const {getTrackerDetail, error}=useTrackerServices();
   const trackerId = pathName[pathName.length - 2];
   const [id, setId] = useState<string>("");
-  const [data, setData] = useState<any>([]);
-  const [item, setItem] = useState<any>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      // const url = `${baseUrl}/tracker/${trackerId}`;
-      // try {
-      //   const { data, error } = await myFetch(url, {
-      //     method: 'GET'
-      //   });
-      //   if (error) {
-      //     console.error('Error fetching data:', error);
-      //   } else {
-      //     setItem(data);
-      //     setLoading(false);
-      //   }
-      // } catch (err) {
-      //   console.error('Fetch failed:', err);
-      // }
-      try{
-      const data = await getTrackerDetail(trackerId);
-      if (error) {
-            console.error('Error fetching data:', error);
-          } else if(data) {
-            setItem(data);
-            setLoading(false);
-          }
-      }catch(error){
-          console.log(error);
+  // const [data, setData] = useState<any>([]);
+  // const [item, setItem] = useState<any>([]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setLoading(true);
+  //     // const url = `${baseUrl}/tracker/${trackerId}`;
+  //     // try {
+  //     //   const { data, error } = await myFetch(url, {
+  //     //     method: 'GET'
+  //     //   });
+  //     //   if (error) {
+  //     //     console.error('Error fetching data:', error);
+  //     //   } else {
+  //     //     setItem(data);
+  //     //     setLoading(false);
+  //     //   }
+  //     // } catch (err) {
+  //     //   console.error('Fetch failed:', err);
+  //     // }
+  //     try{
+  //     const data = await getTrackerDetail(trackerId);
+  //     if (error) {
+  //           console.error('Error fetching data:', error);
+  //         } else if(data) {
+  //           setItem(data);
+  //           setLoading(false);
+  //         }
+  //     }catch(error){
+  //         console.log(error);
           
-      }
-    };
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
   
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
@@ -179,16 +181,16 @@ const shareFunction = () => {
       closeShareModal();
   }
 };
-console.log(share);
+console.log(item);
 
   return (
     <div className="flex flex-col w-full gap-6">
-    {
+    {/* {
       loading && 
       <div style={{display:"flex", justifyContent:"center", width:"100%"}}>
       <Loading/>
       </div>
-    }
+    } */}
       {item?.tracker ? (
         <div className="flex flex-col w-full gap-2">
         <div className='card' style={{ width: "100%", height: "fit-content", padding:"16px" }}>

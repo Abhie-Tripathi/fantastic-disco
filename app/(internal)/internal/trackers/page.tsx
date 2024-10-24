@@ -123,6 +123,7 @@ import CardWidgitConfig from "@/app/components/internal/trackers/CardWidgitConfi
 import { useTrackerServices } from "@/services/trackerServices";
 import { useNotesServices } from "@/services/notesServices";
 import { Tracker } from "@/types/trackers";
+import { useTrackerContext } from "@/context/tracker";
 
 interface Search {
   searchParams: {
@@ -131,7 +132,7 @@ interface Search {
 }
 const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
-  
+  const {  setIsNewCall, setTrackerId } = useTrackerContext();
   const router=useRouter();
   const [type, setType] = useState("");
   useEffect(()=>{
@@ -153,7 +154,7 @@ const Trackers = ({ searchParams }: Search) => {
   const createTrackerRef = useState(null);
   const customTrackerRef = useRef(null);
   const savedEventRef = useRef(null);
-
+  
   const { theme } = useTheme();
   useEffect(() => {
     //  if(document.body.classList.contains(styles.bodyOverflowHidden))
@@ -197,7 +198,7 @@ const Trackers = ({ searchParams }: Search) => {
   const data = [
     {
       type: "template",
-      domain: "Human Resource",
+      domain: "Market Research",
       img: Competitor,
       url: "T_COMPETITOR",
       trackerName: "Competitor",
@@ -206,7 +207,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Sales",
+      domain: "Market Research",
       img: Keywords,
       url:"T_PRODUCT_KEYWORDS",
       trackerName: "Product and Topics",
@@ -215,7 +216,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Human Resource",
+      domain: "Networking & Outreach",
       img: Speaking,
       url: "T_SPEAKING_OPPORTUNITY",
       trackerName: "Speaking Opportunity",
@@ -224,7 +225,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Human Resource",
+      domain: "Networking & Outreach",
       img: PeopleFinder,
       url: "T_PEOPLE_FINDER",
       trackerName: "People Finder",
@@ -233,7 +234,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Human Resource",
+      domain: "Talent Acquisition",
       img: People,
       trackerName: "Recruitment",
       url: "T_RECRUITMENT",
@@ -242,7 +243,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Sales",
+      domain: "Audience Analysis",
       img: Audience,
       url:"T_AUDIENCE_DEPT_PROFILE",
       trackerName: "Audience Dept. & Profiles",
@@ -251,7 +252,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Sales",
+      domain: "Market Research",
       img: Customer,
       url:"T_CUSTOMER_ICP",
       trackerName: "Customer ICP",
@@ -260,7 +261,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Sales",
+      domain: "Brand & Cause Management",
       img: SocialCause,
       trackerName: "Social Cause",
       url:"T_SOCIAL_CAUSE",
@@ -270,7 +271,7 @@ const Trackers = ({ searchParams }: Search) => {
     {
       type: "template",
       img: Brand,
-      domain: "Sales",
+      domain: "Brand & Cause Management",
       trackerName: "Brand Building",
       url:"T_BRAND_BUILDING",
       content:
@@ -456,7 +457,16 @@ const Trackers = ({ searchParams }: Search) => {
     }else setSavedEvents(undefined);
   }
   console.log(savedEvents);
-  
+  const setContextData=(id:string | undefined)=>{
+    GAEvent(
+      "trackers",
+      "Trackers",
+      "Saved Tracker | Any Filter Applied",
+      "View"
+    );
+    setIsNewCall(true); 
+    setTrackerId(id);
+  }
   return (
     // <div className={styles.body}>
     //   <div className={styles.trackers_card_container}>
@@ -511,14 +521,7 @@ const Trackers = ({ searchParams }: Search) => {
           </span>
           <Link
         href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list`}
-        onClick={() =>
-          GAEvent(
-            "trackers",
-            "Trackers",
-            "Saved Tracker | Any Filter Applied",
-            "View"
-          )
-        }
+        onClick={()=>setContextData(singleTrackerData?.id)}
       >
           <button className="w-[160px] text-white font-bold py-2 px-4 rounded text-sm"
         style={{ background: "var(--primary-color)" }}>
@@ -620,11 +623,11 @@ const Trackers = ({ searchParams }: Search) => {
                             Template
                           </div>
                         </div>
-                        {/* <div
-                      className={`${styles.domain}`}
+                        <div
+                      className="badge_primary text-sm"
                     >
-                      Human Resources
-                    </div> */}
+                      {item?.domain}
+                    </div>
                       </div>
                       <div className="text-[16px] font-bold text-[var(--primary-color)]">
                         {item?.trackerName}

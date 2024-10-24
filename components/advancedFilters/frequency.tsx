@@ -13,9 +13,16 @@ import { ChevronDown } from "lucide-react";
 import { useFilterState } from "@/hooks/useFilterState";
 
 const frequencies = [
-  { id: "annual", label: "Annual" },
-  { id: "bi-annual", label: "Bi-Annual" },
+  { id: "weekly", label: "Weekly" },
+  { id: "monthly", label: "Monthly" },
   { id: "quarterly", label: "Quarterly" },
+  { id: "bi-annual", label: "Bi-Annual" },
+  { id: "annual", label: "Annual" },
+  { id: "biennial", label: "Biennial" },
+  { id: "triennial", label: "Triennial" },
+  { id: "quadrennial", label: "Quadrennial" },
+  { id: "quinquennial", label: "Quinquennial" },
+  { id: "one-time", label: "One-Time" },
 ];
 interface FrequencySelectorProps {
   source: string;

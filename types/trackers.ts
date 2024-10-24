@@ -44,6 +44,7 @@ export interface Tracker {
     locationIds?:{
       city?: LocationObject[];    
       country?: LocationObject[];  
+      zone?: LocationObject[];
     } | string | undefined;
     
     includeKeywords?:string;

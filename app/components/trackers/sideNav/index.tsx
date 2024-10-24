@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { GAEvent } from '@/utils/GAEvent';
 import { SettingsGear, User } from 'geist-icons';
 import { useTrackerServices } from '@/services/trackerServices';
+import { useTrackerContext } from '@/context/tracker';
 const Index = () => {
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
@@ -22,6 +23,7 @@ const Index = () => {
   const secondLast = pathName[pathName.length - 2];
   console.log(secondLast);
   const router = useRouter()
+  const {data}= useTrackerContext();
   const {getTrackerDetail, error}=useTrackerServices();
   const [trackerSection, setTrackerSection] = useState("Tracked Events");
   useEffect(() => {
@@ -41,8 +43,8 @@ const Index = () => {
     }
   }, [last])
   console.log(trackerSection);
-  const [data, setData] = useState<any>([]);
-  useEffect(() => {
+  // const [data, setData] = useState<any>([]);
+  // useEffect(() => {
     // const fetchData = async () => {
     //   const url = `${baseUrl}/tracker/${secondLast}`;
     //   try {
@@ -60,22 +62,21 @@ const Index = () => {
     //   }
     // };
 
-    fetchData();
-  }, [secondLast]);
+  //   fetchData();
+  // }, [secondLast]);
   const handleClick = (view:string) => {
     setView(view);
     router.push(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`);
   };
-  const fetchData=async()=>{
-      const result = await getTrackerDetail(secondLast)
-      if(result){
-        setData(result);
-      }
-      if(error){
-        console.error('Error fetching data:', error);
-      }
-  }
-  console.log(view);
+  // const fetchData=async()=>{
+  //     const result = await getTrackerDetail(secondLast)
+  //     if(result){
+  //       setData(result);
+  //     }
+  //     if(error){
+  //       console.error('Error fetching data:', error);
+  //     }
+  // }
   
   return (
     <>
@@ -102,13 +103,20 @@ const Index = () => {
           <div className='flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md'>
             {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`}> */}
             <div onClick={()=>handleClick("list")}>
-              <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""}`} onClick={()=>setView("list")}>List</div></div>
+              <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("list")}>List</div></div>
               {/* </Link> */}
-              <div onClick={()=>handleClick("map")}>
-              <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>setView("map")}>Map</div>
+              <div className="cursor-not-allowed opacity-50 disabled">
+              {/* <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>setView("map")}>Map</div> */}
+              <div className={styles.viewsTab}>
+              Map
               </div>
-              <div onClick={()=>handleClick("calendar")}>
-              <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>setView("calendar")}>Calendar</div></div>
+              </div>
+              <div className="cursor-not-allowed opacity-50 disabled">
+              {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>setView("calendar")}>Calendar</div> */}
+              <div className={styles.viewsTab}>
+              Calendar
+              </div>
+              </div>
             </div>
             {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}
               onClick={() => {

@@ -25,18 +25,18 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const secondLast = pathName[pathName.length - 2];
   console.log(isVerifiedToken);
   const [data, setData] = useState<any>([]);
-  const fetchData=async()=>{
-    const result = await getTrackerDetail(secondLast)
-    if(result){
-      setData(result);
-    }
-    if(error){
-      console.error('Error fetching data:', error);
-    }
-}
-useEffect(()=>{
-fetchData();
-},[])
+//   const fetchData=async()=>{
+//     const result = await getTrackerDetail(secondLast)
+//     if(result){
+//       setData(result);
+//     }
+//     if(error){
+//       console.error('Error fetching data:', error);
+//     }
+// }
+// useEffect(()=>{
+// fetchData();
+// },[])
   return (
     <div className={`${styles.container}`} style={{position:"relative"}}>
         {/* <div className={styles.bar}>
@@ -56,7 +56,7 @@ fetchData();
         {isVerifiedToken===false? <Loading/>:
         <div className={styles.containerBottom}>
         <div className={styles.containerLeft}>
-          {/* <SideNav/> */}
+          <SideNav/>
         </div>
         <div className={styles.containerRight}>
         <Suspense fallback={<Loading/>}>

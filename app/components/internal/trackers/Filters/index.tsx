@@ -10,7 +10,7 @@ import DateRangeSelector from "@/components/dateRange";
 import EventEntrySelector from "@/components/eventEntry";
 import UserRatingSelector from "@/components/userRatingSelector";
 import MaturitySelector from "@/components/advancedFilters/edition"
-import LocationSelector from "@/app/components/basicFilters/location";
+import LocationSelector from "@/components/location";
 import EstimatedVisitorsSelector from "@/components/advancedFilters/estimatedVisitors";
 import GlobalAndTouringSelector from "@/components/advancedFilters/globalAndTouring";
 import EstimatedExhibitorsSelector from "@/components/advancedFilters/estimatedExhibitors";
@@ -95,6 +95,7 @@ import AudienceZoneSelector from "@/components/advancedFilters/audienceZone";
 import AudienceQualitySelector from "@/components/advancedFilters/audienceQualityScore";
 import {Tracker, Toggle} from '@/types/trackers'
 import ExhibitorQualitySelector from "@/components/advancedFilters/exhibitorQualityScore";
+import { useTrackerContext } from "@/context/tracker";
 interface FilterValue {
   labels: string;
   name: string;
@@ -350,6 +351,7 @@ const formatText = (val: string) => {
 
 const Pages = () => {
   const searchParams = useSearchParams();
+  const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
   interface SelectedLocation {
     [id: string]: string;
   }
@@ -528,34 +530,34 @@ const Pages = () => {
   const [categorySlug, setCategorySlug] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
   );
-  const [editData, setEditData] = useState<EditData | null>(null);
+  // const [editData, setEditData] = useState<EditData | null>(null);
   useEffect(() => {
     if (last === "editTracker") {
       const secondLast = pathName[pathName.length - 2];
-      fetchData(secondLast);
+      // fetchData(secondLast);
     }
   }, [last]);
 
-  const fetchData = async (secondLast: string) => {
-   // const url = `${baseUrl}/tracker/${secondLast}?edit=true`;
-    try {
-      // const { data, error } = await myFetch(url, {
-      //   method: "GET",
-      // });
-      const data= await getTrackerDetail(secondLast, "edit=true");
+//   const fetchData = async (secondLast: string) => {
+//    // const url = `${baseUrl}/tracker/${secondLast}?edit=true`;
+//     try {
+//       // const { data, error } = await myFetch(url, {
+//       //   method: "GET",
+//       // });
+//       // const data= await getTrackerDetail(secondLast, "edit=true");
 
-if (data) {
-  setEditData(data || null);
-  console.log(data);
+// if (data) {
+//   // setEditData(data || null);
+//   console.log(data);
   
-}
-      if (error) {
-        console.error("Error fetching data:", error);
-      }
-    } catch (err) {
-      console.error("Fetch failed:", err);
-    }
-  };
+// }
+//       if (error) {
+//         console.error("Error fetching data:", error);
+//       }
+//     } catch (err) {
+//       console.error("Fetch failed:", err);
+//     }
+//   };
   const [categories, setCategories] = useState(
     searchParams.get("categories")?.split(",") || []
   );
@@ -618,6 +620,7 @@ if (data) {
 
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
+    setEditTrue(true);
     if (type === "T_COMPETITOR" && (websites.length===0 || org.length===0)){
       setIsMandatory(true);
     }
@@ -864,7 +867,7 @@ if (data) {
         return;
       }
       try{
-        const data = editTracker(secondLast, formData);
+        const data = await editTracker(secondLast, formData);
         if (data) {
           console.log(data);
           router.replace(`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`);
@@ -915,7 +918,17 @@ if (data) {
 
     }
   };
-
+  const extractLocations = (locations: Record<string, any> | undefined) => {
+    return locations
+      ? Object.entries(locations).map(([id, descriptionObj]) => {
+          const [locationId, description] = Object.entries(descriptionObj)[0];
+          return {
+            id: locationId,
+            description: description as string,
+          };
+        })
+      : [];
+  };
   useEffect(() => {
     const fetchData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
@@ -1037,7 +1050,7 @@ if (data) {
 
       setSelectedCountries(editData.tracker.filterValue?.audienceSpread ? editData.tracker.filterValue?.audienceSpread?.split(",") : []);
 
-      setSelectedAudProfile(editData.tracker.filterValue?.designation ? editData.tracker.filterValue?.designation?.split(",") : []);
+      setSelectedAudProfile(editData.tracker.filterValue?.designation ? editData.tracker.filterValue?.designation : []);
 
       setSelectedEventKeywords(
         editData?.tracker?.filterValue?.eventKeywords?.length > 0
@@ -1104,30 +1117,21 @@ if (data) {
           )
           : []
       );
-      const selectedCountries = 
-        typeof editData?.tracker?.filterValue?.locationIds === 'object' && 
-        editData.tracker.filterValue.locationIds.country
-        ? Object.entries(editData.tracker.filterValue.locationIds.country).map(([id, descriptionObj]) => {
-        const [locationId, description] = Object.entries(descriptionObj)[0]; 
-        return {
-          id: locationId,     
-          description,        
-        };
-      })
-    : [];
-    console.log(selectedCountries);
-    const selectedCity=typeof editData?.tracker?.filterValue?.locationIds === 'object' && 
-    editData.tracker.filterValue.locationIds.city
-    ? Object.entries(editData.tracker.filterValue.locationIds.city).map(([id, descriptionObj]) => {
-    const [locationId, description] = Object.entries(descriptionObj)[0]; 
-    return {
-      id: locationId,     
-      description,        
-    };
-  })
-: [];
-console.log(selectedCity);
-setSelectedLocationsData([...selectedCountries,...selectedCity]);
+      const selectedCountrie = 
+      typeof editData?.tracker?.filterValue?.locationIds === 'object'
+        ? extractLocations(editData.tracker.filterValue.locationIds.country)
+        : [];
+    
+    const selectedZone = 
+      typeof editData?.tracker?.filterValue?.locationIds === 'object'
+        ? extractLocations(editData.tracker.filterValue.locationIds.zone)
+        : [];
+    
+    const selectedCity = 
+      typeof editData?.tracker?.filterValue?.locationIds === 'object'
+        ? extractLocations(editData.tracker.filterValue.locationIds.city)
+        : [];
+setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedZone]);
 
       console.log(selectedLocations);
       

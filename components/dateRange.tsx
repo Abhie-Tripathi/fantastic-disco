@@ -220,7 +220,7 @@ console.log(dateRange);
                   variant="outline"
                   className={cn(
                     "w-full font-normal",
-                    selectedPreset === preset.value && "bg-[#F2F2F2]"
+                    selectedPreset === preset.value && "bg-tertiary"
                   )}
                 >
                   {preset.label}
@@ -259,8 +259,8 @@ console.log(dateRange);
                       onClick={() => setSelectedComparison(option)}
                       variant="ghost"
                       className={cn(
-                        "w-full justify-start text-left font-normal",
-                        selectedComparison === option && "bg-[#F2F2F2]"
+                        "w-full justify-center item-center text-left font-normal",
+                        selectedComparison === option && "bg-[red]"
                       )}
                     >
                       {option}

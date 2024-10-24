@@ -106,9 +106,10 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
         {locations?.length>0 && 
         <>
         <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>
-        <div className="flex items-center gap-[5px] text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)]">
-          {locations?.length > 0 && locations[0]}
-          {locations?.length > 1 && (
+        <div className="flex items-center gap-[5px] text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)]" style={{fontSize:"12px"}}>
+          {locations?.length > 0 && locations[0].length<15 &&locations[0]}
+          {locations?.length > 0 && locations[0].length>15 &&`${locations[0].substring(0,15)}...`}
+          {locations?.length > 1 &&  (
             <span className="border w-[28px] h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)]">+{locations.length - 1}</span>
           )}
         </div>

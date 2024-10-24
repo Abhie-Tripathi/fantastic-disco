@@ -196,7 +196,7 @@ export default function Component({
                       return (
                         <div
                           key={country.countryCode}
-                          className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 p-1 rounded"
+                          className="flex items-center space-x-2 cursor-pointer hover:bg-accent p-1 rounded"
                           onClick={() => toggleCountry(country.id)}
                         >
                           <div className="w-5 h-5 border rounded flex items-center justify-center">

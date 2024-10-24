@@ -96,12 +96,15 @@ export default function KeywordFilter({
           <span className="flex items-center gap-2">
             Products/Topics
             {(includeKeywords.length > 0 || excludeKeywords.length > 0) && (
-              <Badge
-                variant="secondary"
-                className="rounded-full px-1 text-xs font-normal bg-primary text-white"
-              >
+            //   <Badge
+            //   variant="secondary"
+            //   className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white"
+            // >
+            //     {includeKeywords.length + excludeKeywords.length}
+            //   </Badge>
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {includeKeywords.length + excludeKeywords.length}
-              </Badge>
+              </span>
             )}
           </span>
           <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />

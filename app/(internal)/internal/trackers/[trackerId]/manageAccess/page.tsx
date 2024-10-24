@@ -15,7 +15,7 @@ import { usePathname } from 'next/navigation';
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from '@/utils/GAEvent';
 import { useTrackerServices } from '@/services/trackerServices';
-import SideNav from '@/app/components/trackers/sideNav';
+// import SideNav from '@/app/components/trackers/sideNav';
 
 const Page = () => {
     const router = useRouter();
@@ -157,7 +157,7 @@ const Page = () => {
     return (
         <div className="flex flex-col items-center gap-6">
             <div className="flex fixed w-[calc(100vw-134px)] mt-[54px] items-center justify-between bg-[var(--heading-background-color)] p-3" style={{zIndex:"5"}}>
-            <SideNav/>
+            {/* <SideNav/> */}
                 <div className='flex items-center'>
                     <div></div>
                     <div className="flex flex-col">

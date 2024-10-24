@@ -23,7 +23,9 @@ import EventType from "@/app/components/Search/Dropdowns/EventType";
 import Loading from "@/app/components/UI/Loading";
 import ToggleBtn from "@/app/components/UI/ToggleBtn";
 import { useTrackerServices } from "@/services/trackerServices";
-import SideNav from "@/app/components/trackers/sideNav";
+// import SideNav from "@/app/components/trackers/sideNav";
+import { useTrackerContext } from "@/context/tracker";
+import { idea } from "react-syntax-highlighter/dist/esm/styles/hljs";
 function CustomeTracker({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -61,28 +63,33 @@ interface EditData {
 }
 const Page = () => {
   const pathName = usePathname().split('/');
+  const {data, setIsNewCall, editTrue}=useTrackerContext();
   const router = useRouter();
   const {delTracker, getTrackerDetail, error, isLoading}=useTrackerServices();
   const [type,setType]=useState("Custom");
   const last = pathName[pathName.length - 2];
   const searchParams = useSearchParams()
   const typeVal = searchParams.get('type')
-  const [data, setData] = useState<any>([]);
+  // const [data, setData] = useState<any>([]);
   const [del, setDel] = useState(false);
   // const [loading,setLoading]=useState(true);
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await getTrackerDetail(last, "edit=true")
-      if(error){
-        console.error("Error fetching data:", error);
-      }
-      else{
-        setData(result);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const result = await getTrackerDetail(last, "edit=true")
+  //     if(error){
+  //       console.error("Error fetching data:", error);
+  //     }
+  //     else{
+  //       setData(result);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
+  useEffect(()=>{
+    if(editTrue)
+    setIsNewCall(true);
+  },[editTrue])
   function formatDate(dateString:Date) {
     const date = new Date(dateString);
     
@@ -185,7 +192,7 @@ const userRating=
     <>
     {isLoading ? <Loading/> :
     <div className='flex w-[calc(100vw-134px)] flex-col gap-6 text-sm' >
-      <SideNav/>
+      {/* <SideNav/> */}
     <div className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[54px] items-center justify-between bg-[var(--heading-background-color)] p-3">
       <div className="flex items-center gap-2">
         <div>
@@ -227,7 +234,7 @@ const userRating=
     <div className="flex flex-col mt-[140px] gap-6">
       <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{zIndex:"3"}}></div>
     <div className="px-[27px] py-[4px] border-[0.5px] border-[var(--border-color)] rounded-lg h-[55px] flex items-center font-medium">{data?.tracker?.name}</div>
-    {data.tracker && data.tracker.type === "T_PRODUCT_KEYWORDS" &&
+    {data?.tracker && data.tracker.type === "T_PRODUCT_KEYWORDS" &&
       <>
         <div className={styles.innerContainer}>
           <div
@@ -262,7 +269,7 @@ const userRating=
         <div className={styles.line}></div>
       </>
     }
-    {data.tracker && data.tracker.type === "T_COMPETITOR" &&
+    {data?.tracker && data.tracker.type === "T_COMPETITOR" &&
       <>
         <div className={styles.innerContainer}>
           <div
@@ -298,7 +305,7 @@ const userRating=
         <div className={styles.line}></div>
       </>
     }
-    {data.tracker && data.tracker.type === "T_SPEAKING_OPPORTUNITY" &&
+    {data?.tracker && data.tracker.type === "T_SPEAKING_OPPORTUNITY" &&
       <>
         <div className={styles.innerContainer}>
           <div

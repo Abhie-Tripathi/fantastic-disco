@@ -204,7 +204,7 @@ else {
           </CommandEmpty> */}
           <CommandGroup>
           <CommandList>
-          {cityData.map((data: any) => (
+          {cityData?.map((data: any) => (
           <CommandItem
             key={data.id}
             onSelect={() => handleSelect(data.name, data.id)}
@@ -214,7 +214,7 @@ else {
              {data.countryName && `, ${data.countryName}`} */}
           </CommandItem>
         ))}
-          {countryData.map((data: any) => (
+          {countryData?.map((data: any) => (
           <CommandItem
             key={data.id}
             onSelect={() => handleSelect(data.name, data.id)}
@@ -222,10 +222,10 @@ else {
             {data?.name}
           </CommandItem>
         ))}
-        {zoneData.map((data: any) => (
+        {zoneData?.map((data: any) => (
           <CommandItem
           key={data.id}
-          onSelect={()=> handleSelect(data.name, data.id)}
+          onSelect={()=> handleSelect(data, data)}
           >
           {data}
           </CommandItem>

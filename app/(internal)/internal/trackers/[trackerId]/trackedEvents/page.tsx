@@ -21,6 +21,7 @@ import Loading from "@/app/components/UI/Loading";
 import Link from "next/link";
 import { useTrackerServices } from "@/services/trackerServices";
 import SideNav from "@/app/components/trackers/sideNav";
+import { useTrackerContext } from "@/context/tracker";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
@@ -32,6 +33,7 @@ interface Toggle{
 }
 const Page = ({ params }: { params: any }) => {
   console.log(params);
+  const {data}=useTrackerContext();
   const [active, setActive] = useState("Active Events");
   const {getTrackerDetail, error}=useTrackerServices();
   const [type, setType] = useState<string | undefined>();
@@ -47,10 +49,10 @@ console.log(searchParams.get("view"));
 
   // const id = pathName[pathName.length - 2];
   console.log(active);
-  const [data, setData] = useState<any>();
+  // const [data, setData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [eventType, setEventType] = useState("active");
-  const [view, setView] = useState("list");
+  const [view, setView] = useState<string|null>("list");
   const [urlQueryString, setUrlQueryString] = useState<string>("");
 
   const [showInsights,setShowInsights] = useState({
@@ -95,38 +97,38 @@ console.log(searchParams.get("view"));
     ],
   };
   
-  useEffect(() => {
-    const fetchTrackerDetail = async () => {
-      // console.log(11111);
+  // useEffect(() => {
+  //   const fetchTrackerDetail = async () => {
       
-      try{
-          const data= await getTrackerDetail(trackerId);
-          console.log(data);
+  //     try{
+  //         const data= await getTrackerDetail(trackerId);
+  //         console.log(data);
           
-          if (data) {
-            console.log(data);
+  //         if (data) {
+  //           console.log(data);
             
-            setTrackerDetail(data.tracker);
-            setLoading(true);
-          }
-          if (error) {
-            console.log(error);
-            showToast("error", error.message);
-            if (typeof window !== 'undefined') {
-              router.push('/internal/trackers');
-            } 
-          }
-      }catch(error){
-          console.log(error); 
-      }
-    };
-    fetchTrackerDetail();
-  }, [trackerId]);
+  //           setTrackerDetail(data.tracker);
+  //           setLoading(true);
+  //         }
+  //         if (error) {
+  //           console.log(error);
+  //           showToast("error", error.message);
+  //           if (typeof window !== 'undefined') {
+  //             router.push('/internal/trackers');
+  //           } 
+  //         }
+  //     }catch(error){
+  //         console.log(error); 
+  //     }
+  //   };
+  //   fetchTrackerDetail();
+  // }, [trackerId]);
 
   useEffect(() => {
-    setSavedEventCount(trackerDetail?.savedEventTotalCount);
+    setSavedEventCount(data?.tracker?.savedEventTotalCount);
     createQueryString();
-  }, [trackerDetail]);
+    setLoading(true);
+  }, [data]);
   useEffect(()=>{
     setView(searchParams.get("view"))
   },[searchParams.get("view")])
@@ -374,10 +376,12 @@ console.log(searchParams.get("view"));
       setShowInsights(prev=>({...prev, keywords:keywords}));
     }
  },[trackerDetail])
+ console.log(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
+ );
  
   return (
     <div className="flex w-[calc(100vw-134px)]">
-      <SideNav/>
+      {/* <SideNav/> */}
       <Suspense fallback={<p>Loading feed...</p>}>
         <div className="flex gap-5 mt-[54px] mb-[24px] flex-col w-[100%]">
           <div className="flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
@@ -402,8 +406,7 @@ console.log(searchParams.get("view"));
                   <div className={styles.circle} style={{background: active==="Active Events"?"white":"", color: active==="Active Events"?"var(--primary-color)":""}}>
                     {loading ? (
                       formatCount(
-                        trackerDetail?.groupedEventsCountByStatus
-                          ?.groupedEventsByStatus?.active
+                        data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
                       )
                     ) : (
                       <div className={styles.loader}></div>
@@ -425,8 +428,7 @@ console.log(searchParams.get("view"));
                   <div className={styles.circle}>
                     {loading ? (
                       formatCount(
-                        trackerDetail?.groupedEventsCountByStatus
-                          ?.groupedEventsByStatus?.new
+                        data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.new
                       )
                     ) : (
                       <div className={styles.loader}></div>
@@ -453,8 +455,7 @@ console.log(searchParams.get("view"));
                   <div className={styles.circle}>
                     {loading ? (
                       formatCount(
-                        trackerDetail?.groupedEventsCountByStatus
-                          ?.groupedEventsByStatus?.expired
+                        data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
                       )
                     ) : (
                       <div className={styles.loader}></div>
@@ -490,7 +491,7 @@ console.log(searchParams.get("view"));
                 }
               </button>
             </div>
-            <Link href={`/internal/trackers/${trackerId}/notesDiscussion?type=${type}`}
+            <Link href={`/internal/trackers/${trackerId}/notesDiscussion?type=${data?.tracker?.type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",
@@ -545,7 +546,7 @@ console.log(searchParams.get("view"));
             <div>
               <Suspense fallback={<Loading />}>
                 {/* <Map queryString={urlQueryString} /> */}
-                <Map/>
+                {/* <Map/> */}
               </Suspense>
             </div>
           )}
