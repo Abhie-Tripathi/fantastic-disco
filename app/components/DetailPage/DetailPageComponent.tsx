@@ -24,7 +24,7 @@ import SnowfallTheme from '../UI/SnowfallTheme'
 // import LinkIcon from '/public/link.svg'
 
 interface EventProps {
-    snowTheme : boolean;
+    snowTheme: boolean;
     venue: string;
     latitude: number;
     eventFont: string;
@@ -60,11 +60,11 @@ interface EventProps {
     registration: boolean;
     approval: boolean;
     waitlisting: boolean;
-    virtualLink:string
+    virtualLink: string
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
-const DetailPageComponent = ({ snowTheme,venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
     start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
@@ -125,7 +125,7 @@ const DetailPageComponent = ({ snowTheme,venue, latitude, eventFont, longitude, 
         }
     }, [registerSuccess])
 
-    const urlVal = window.location.href
+    // const urlVal = window.location.href
 
     const router = useRouter()
     const handleMainEventClick = () => {
@@ -134,6 +134,7 @@ const DetailPageComponent = ({ snowTheme,venue, latitude, eventFont, longitude, 
             router.push(`/detailpage/${parentId}`)
         }
     }
+    const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
     return (
         <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`}
@@ -147,17 +148,13 @@ const DetailPageComponent = ({ snowTheme,venue, latitude, eventFont, longitude, 
                     </button>
                 }
             </div>
-
-            {/* <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`}
-
-            > */}
             <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
             <canvas ref={confettiCanvasRefTwo} className={styles.confettiCanvasTwo}></canvas>
             {leavesTheme && <div className={styles.themeContainer}>
-                <LeafTheme leafCount={130}/>
+                <LeafTheme leafCount={130} />
             </div>}
             {snowTheme && <div className={styles.themeContainer}>
-                <SnowfallTheme/>
+                <SnowfallTheme />
             </div>}
             <ToastContainer />
             {parentName &&
@@ -185,7 +182,7 @@ const DetailPageComponent = ({ snowTheme,venue, latitude, eventFont, longitude, 
                     </div>}
                     <div className={styles.shareContainer}>
                         <div className={styles.heading}>Share</div>
-                        <ShareButtons formTheme='light' copyIcon disabled={false} shareUrl={`${urlVal}`} />
+                        <ShareButtons formTheme='light' copyIcon disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
                     </div>
                 </div>
                 <div className={styles.rightSection}>
@@ -197,8 +194,8 @@ const DetailPageComponent = ({ snowTheme,venue, latitude, eventFont, longitude, 
                     <textarea className={styles.eventName} disabled placeholder='Event Name' value={name} style={{ fontFamily: eventFont }} />
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>
 
-                    <div className={styles.locationContainer}><LocationContainer eventFormat={format} cityName={location_city} countryName={location_country} virtualLink={virtualLink}/></div>
-                    
+                    <div className={styles.locationContainer}><LocationContainer eventFormat={format} cityName={location_city} countryName={location_country} virtualLink={virtualLink} /></div>
+
                     {
                          <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} end_date={end_date} start_date={start_date} end_time={end_time} start_time={start_time}/></div>
                     }
@@ -207,7 +204,7 @@ const DetailPageComponent = ({ snowTheme,venue, latitude, eventFont, longitude, 
                         <div className={styles.detailPageMobileView}>
                             <div className={styles.mobile_shareContainer}>
                                 <div className={styles.heading}>Share</div>
-                                <ShareButtons formTheme='light' copyIcon hashtags={hashtags.split("")} disabled={true} shareUrl={`${urlVal}`} />
+                                <ShareButtons formTheme='light' copyIcon hashtags={hashtags.split("")} disabled={true} shareUrl={`${console_url}/detailpage/${eventId}`} />
                             </div>
                         </div>
                     }

@@ -42,7 +42,7 @@ const Overview = ({format, leavesTheme,snowTheme, eventId, imageUrl, eventName, 
   const [guestCount, setGuestCount] = useState<number>(0)
 
   const handleCopy = () => {
-    const textToCopy = `https://console.eventgeni.com/detailpage/${eventId}`;
+    const textToCopy = `${console_url}/detailpage/${eventId}`;
     navigator.clipboard.writeText(textToCopy);
     showToast("success", "Link copied")
   };

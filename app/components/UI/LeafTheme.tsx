@@ -13,16 +13,16 @@ const LeafTheme = ({leafCount} : Props) => {
     // Generate the leaf properties once using useMemo
     const leaves = useMemo(() => {
         return Array.from({ length: leafCount }).map(() => ({
-            // src: Math.random() > 0.5 ? LeafFour : LeafFive,
             src: Math.random() < 0.33 ? LeafFour : Math.random() < 0.5 ? LeafFive : LeafSix,
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
             animationDelay: `${Math.random() * 5}s`,
-            animationDuration: `${5 + Math.random() * 10}s`,
+            animationDuration: `${15 + Math.random() * 20}s`, // Slower animation duration
             width: `${28 + Math.random() * 5}px`,
             height: `${28 + Math.random() * 5}px`,
         }));
-    }, []); // The empty dependency array ensures this only runs once
+    }, [leafCount]);
+    
 
     return (
         <div className={styles.leafContainer}>
