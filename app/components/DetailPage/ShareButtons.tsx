@@ -46,7 +46,7 @@ const ShareButtons = ({formTheme, copyIcon, shareUrl, title, hashtags, emailSubj
           disabled={disabled}
           url={shareUrl}
           title={title}
-          hashtags={twitterArr}
+          hashtags={hashtags}
         >
           <TwitterIcon color={formTheme === "dark" ? "white" : "#7d7d7d"}/>
         </TwitterShareButton>
