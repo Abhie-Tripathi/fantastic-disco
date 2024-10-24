@@ -32,7 +32,7 @@ import { Button } from "../ui/button";
 import { useEventsService } from "@/services/eventsService";
 import { useToast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
-import { cn, lightenColor } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { eventTypeColors } from "@/constants/eventTypes";
 
 interface CircularProgressProps {
