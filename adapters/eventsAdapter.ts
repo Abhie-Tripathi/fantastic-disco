@@ -4,6 +4,7 @@ import {
   CalendarMonthEvent,
   CalendarWeekEventsResponse,
   MapEventsResponse,
+  GTMEventDetail,
 } from "@/types/events";
 import { newCategories } from "@/data/categories";
 import { designations } from "@/data/designations";
@@ -552,6 +553,142 @@ export const EventsAdapter = {
         isBranded: response.events[0].eventBrand || null,
         isSeries: response.events[0].eventSeries || null,
         maturity: response.events[0].maturity || null,
+      },
+    };
+  },
+  adaptEventDetailByIdResponse: (response: any): { event: GTMEventDetail } => {
+    return {
+      event: {
+        id: response.event.id,
+        name: response.event.name,
+        startDateTime: response.event.startDate.split("T")[0],
+        endDateTime: response.event.endDate.split("T")[0],
+        status: response.event.status.toLowerCase(),
+        format: response.event.format.toLowerCase(),
+        createdAt: response.event.createdAt,
+        updatedAt: response.event.createdAt,
+        description: response.event.description,
+        logoUrl: response.event.logoUrl,
+        bannerUrl: null,
+        editions: 1,
+        sponsorsCount: 0,
+        speakersCount: 0,
+        frequency: null,
+        co_organizers: [],
+        rankings: {
+          rank: null,
+          rankRange: null,
+          rankType: null,
+          categoryId: null,
+          countryId: null,
+        },
+        exhibitorsCount:
+          parseInt(response.event.stats.estimatedExhibitor) || null,
+        timings: {
+          [response.event.startDate.split("T")[0]]: {
+            endTime: response.event.endDate.split("T")[1].slice(0, 5),
+            startTime: response.event.startDate.split("T")[1].slice(0, 5),
+          },
+        },
+        entryType: response.event.entryType,
+        website: response.event.url,
+        repeatSentiment: response.event.repeatSentiment,
+        reputationScore: response.event.reputationSentiment,
+        rehostScore: 0,
+        estimatedAttendance: response.event.stats.estimatedVisitor,
+        currency: {
+          name: "USD",
+          symbol: "$",
+        },
+        predictedEventSpendBreakUp: [],
+        primaryEventType: (() => {
+          const type = response.event.type[0].toLowerCase();
+          if (type === "tradeshow") return "tradeshows";
+          if (type === "conference") return "conferences";
+          return type;
+        })(),
+        categories: response.event.categories.map((cat: any) => ({
+          id: cat.id,
+          name: cat.name,
+          slug: cat.slug,
+        })),
+        eventTypes: response.event.type.map((type: string) => ({
+          id: "",
+          name: type,
+          slug: type.toLowerCase(),
+          eventGroupType: "ATTENDED",
+        })),
+        tags: response.event.eventKeywords.map((keyword: string) => ({
+          id: "",
+          name: keyword,
+          slug: keyword.toLowerCase(),
+        })),
+        venueLocation: {
+          venue: {
+            id: "",
+            name: response.event.location.venueName,
+            cityId: response.event.location.cityId,
+            stateId: "",
+            countryId: response.event.location.countryId,
+            latitude: response.event.location.geoCordinates.latitude,
+            longitude: response.event.location.geoCordinates.longitude,
+            address: response.event.location.venueAddress,
+            locationType: "VENUE",
+          },
+          city: {
+            id: response.event.location.cityId,
+            name: response.event.location.cityName,
+            stateId: "",
+            countryId: response.event.location.countryId,
+            latitude: response.event.location.cityCordinates.latitude,
+            longitude: response.event.location.cityCordinates.longitude,
+            locationType: "CITY",
+          },
+          state: {
+            id: "",
+            name: "",
+            countryId: response.event.location.countryId,
+            latitude: "",
+            longitude: "",
+            locationType: "STATE",
+          },
+          country: {
+            id: response.event.location.countryId,
+            name: response.event.location.countryName,
+            latitude: "",
+            longitude: "",
+            regions: response.event.eventZone,
+            locationType: "COUNTRY",
+            displayName: response.event.location.countryName,
+            iso: response.event.location.countryIso,
+          },
+        },
+        organizer: response.event.organizer
+          ? {
+              id: response.event.organizer.id,
+              name: response.event.organizer.name,
+              website: response.event.organizer.website,
+              logo: response.event.organizer.logo,
+              cityName: response.event.organizer.cityName,
+              countryName: response.event.organizer.countryName,
+              totalOrganize: response.event.organizer.totalOrganize,
+            }
+          : null,
+        isSaved: false,
+        economicImpact: null,
+        "trustScore%": response.event["trustScore%"],
+        scores: {
+          impactScore: response.event.eventImpactScore || null,
+          inboundScore: response.event.eventInboundScore || null,
+          internationalScore: response.event.internationalScore || null,
+        },
+        rating: response.event.stats.eventRating || null,
+        audienceSpread: response.event.audienceSpread || null,
+        rehostDate: response.event.isforecasted || null,
+        isBranded: response.event.eventBrand || null,
+        isSeries: response.event.eventSeries || null,
+        maturity: response.event.maturity || null,
+        above5CountryEvent: response.above5CountryEvent,
       },
     };
   },

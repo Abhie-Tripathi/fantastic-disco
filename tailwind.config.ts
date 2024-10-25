@@ -19,7 +19,7 @@ const config = {
       },
     },
     extend: {
-      scrollbarWidth: "thin", // For Firefox
+      scrollbarWidth: "thin",
       width: {
         inherit: "inherit",
         fill: "-webkit-fill-available",

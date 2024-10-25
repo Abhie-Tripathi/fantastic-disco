@@ -1,0 +1,40 @@
+/* scrollArea.module.css */
+
+.scrollArea {
+  position: relative;
+  overflow: hidden;
+}
+
+.scrollViewport {
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+}
+
+.scrollBar {
+  display: flex;
+  touch-action: none;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+/* Vertical scrollbar */
+.scrollBar.vertical {
+  height: 100%;
+  width: 2.5rem;
+  border-left: 1px solid transparent;
+  padding-left: 1px;
+}
+
+/* Horizontal scrollbar */
+.scrollBar.horizontal {
+  height: 2.5rem;
+  border-top: 1px solid transparent;
+  padding-top: 1px;
+}
+
+.scrollThumb {
+  position: relative;
+  flex: 1;
+  border-radius: 9999px; /* Rounded to make it circular */
+  background-color: var(--border); /* Adjust color as per your design */
+}

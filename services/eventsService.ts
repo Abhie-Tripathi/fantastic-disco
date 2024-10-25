@@ -56,9 +56,19 @@ export const useEventsService = () => {
     return EventsAdapter.adaptEventByIdResponse(response);
   };
 
+  const getEventDetailById = async (id: string) => {
+    const response = await api.request<EventDetailResponse>(
+      `${endpoints.event.eventDetailById}/${id}`,
+      {
+        method: "GET",
+      }
+    );
+    return EventsAdapter.adaptEventDetailByIdResponse(response);
+  };
+
   const getEventPOCDetails = (id: string) => {
     return api.request<EventPOCDetailResponse>(
-      `${endpoints.event.events}/${id}/pocs`,
+      `${endpoints.event.eventPOCDetailById}/${id}`,
       {
         method: "GET",
       }
@@ -128,6 +138,7 @@ export const useEventsService = () => {
     getEventById,
     getEventsCount,
     getRecentSearches,
+    getEventDetailById,
     getEventPOCDetails,
     getEventEditionDetails,
     getEventsWithSearchParams,

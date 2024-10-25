@@ -1,0 +1,36 @@
+/* radioGroup.module.css */
+
+.radioGroup {
+  display: grid;
+  gap: 0.5rem; /* Adjust the gap as per your design */
+}
+
+.radioGroupItem {
+  height: 36px; /* Adjust height as per your design */
+  width: 36px; /* Adjust width as per your design */
+  border-radius: 9999px; /* Rounded to make it circular */
+  border: 1px solid #EBEBEB;
+  background-color: #f2f2f2;
+  outline: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.radioGroupItem:focus {
+  ring-offset: 2px;
+  ring-offset-color: var(--background);
+}
+
+.radioGroupItem:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.radioGroupIndicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.radioGroupIndicator_icon {
+  fill: var(--primary);
+}

@@ -1,0 +1,152 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s, color 0.2s;
+  outline: none;
+  position: relative;
+}
+
+.children {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.loading .children {
+  opacity: 0;
+}
+
+.primary_color {
+  background-color: hsla(var(--primary));
+  color: var(--primary-foreground);
+}
+
+.primary_color:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.white_color {
+  background-color: var(--primary-foreground);
+  color: var(--primary-text-color);
+}
+
+.white_color:hover {
+  background-color: #ffffffcc;
+}
+
+.negative_color {
+  background-color: var(--negative-color);
+  color: var(--primary-foreground);
+}
+
+.negative_color:hover {
+  background-color: var(--negative-color-hover);
+}
+
+.positive_color {
+  background-color: var(--positive-color);
+  color: var(--primary-foreground);
+}
+
+.positive_color:hover {
+  background-color: var(--positive-color-hover);
+}
+
+.secondary_primary {
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  background-color: transparent;
+}
+
+.secondary_primary:hover {
+  background-color: var(--primary-light-color);
+}
+
+.secondary_white {
+  border: 1px solid var(--primary-foreground);
+  color: var(--primary-foreground);
+  background-color: transparent;
+}
+
+.secondary_white:hover {
+  background-color: var(--primary-foreground);
+  background-color: #ffffff2e;
+}
+
+.secondary_negative {
+  border: 1px solid var(--negative-color);
+  color: var(--negative-color);
+  background-color: #fff0f0;
+}
+
+.secondary_negative:hover {
+  background-color: #ffe6e6;
+}
+
+.secondary_positive {
+  border: 1px solid #45a557;
+  color: #45a557;
+  background-color: #effbef;
+}
+
+.secondary_positive:hover {
+  background-color: #daf6da;
+}
+
+.tertiary_primary {
+  background-color: #8f8f8f1f;
+  color: #171717;
+}
+
+.tertiary_primary:hover {
+  background-color: #8f8f8f2e;
+}
+
+.primary_color {
+  background-color: var(--primary-color);
+  color: var(--primary-foreground);
+}
+.primary_color:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.xs {
+  height: 1.75rem;
+  padding: 0rem 0.5rem;
+  font-size: 10px;
+}
+
+.sm {
+  padding: 0rem 0.75rem;
+  height: 2rem;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.md {
+  padding: 0rem 1.25rem;
+  height: 2.25rem;
+  font-size: 0.875rem;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.lg {
+  height: 3rem;
+  padding: 0rem 1.25rem;
+  font-size: 1rem;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.loading {
+  pointer-events: none;
+}

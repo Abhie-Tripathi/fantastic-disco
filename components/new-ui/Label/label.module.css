@@ -1,0 +1,14 @@
+.normal {
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  line-height: 1; /* leading-none */
+}
+
+.input {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 12px;
+  line-height: 18px;
+  color: #7d7d7d;
+  font-weight: 500;
+}

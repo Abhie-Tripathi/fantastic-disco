@@ -6,11 +6,11 @@ export interface EventsResponse {
 }
 
 export interface EventDetailResponse {
-  event: Event;
+  event: GTMEventDetail;
 }
 
 export interface EventPOCDetailResponse {
-  eventPoCs: EventPOCDetails[];
+  eventPoc: GTMEventPOCDetails[];
 }
 
 export interface EventCoOrganizerDetailResponse {
@@ -175,6 +175,16 @@ export interface Country {
   regions: string[];
 }
 
+export interface GTMOrganizer {
+  id: string;
+  name: string;
+  website: string;
+  logo: string;
+  cityName: string;
+  countryName: string;
+  totalOrganize: number;
+}
+
 export interface Organizer {
   id: string;
   name: string;
@@ -195,19 +205,19 @@ export interface EventResponse {
   events: Event[];
 }
 
-export interface EventPOCDetails {
+export interface GTMEventPOCDetails {
+  id: number;
+  name: string;
   designation: string;
   email: string;
-  emailActive: string;
-  id: number;
-  level: string;
+  phoneNumber: string;
   location: {
     cityName: string | null;
     countryName: string | null;
   };
-  name: string;
-  phoneNumber: string;
   profilePicture: string;
+  level: string;
+  emailActive: string;
 }
 
 export interface AudienceSpread {
@@ -225,3 +235,22 @@ export interface EventDate {
   formattedDate: string;
   isEventDay: boolean;
 }
+
+export interface GTMEventDetail extends Omit<Event, "organizer"> {
+  above5CountryEvent: above5CountryEvent[] | [];
+  organizer: GTMOrganizer | null;
+  "trustScore%": number | null;
+}
+
+export interface above5CountryEvent {
+  countryrank: number;
+  id: string;
+  eventname: string;
+  startdate: string;
+  enddate: string;
+  description: string;
+  logoUrl: any;
+  countryname: string;
+}
+
+export type TTabs = "overview" | "insights" | "audience";

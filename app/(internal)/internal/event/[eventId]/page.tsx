@@ -1,338 +1,528 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import styles from "./eventInsight.style.module.css";
+import React, { useState } from "react";
+import { ArrowLeft, Globe, Share, Location, StarFill } from "geist-icons";
+import { Phone } from "geist-icons";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { useTheme } from "@/context";
-import LocationIcon from "/public/location.svg";
-import { Bookmark, Buildings, Globe, Location, StarFill } from "geist-icons";
-import Overview from "@/app/components/internal/insightPage/Overview";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl } from "@/constants";
+import Heading from "@/components/new-ui/Heading";
+import Text from "@/components/new-ui/Text";
+import "react-circular-progressbar/dist/styles.css";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
 import Link from "next/link";
-import Loading from "@/app/components/UI/Loading";
-import Intel from "@/app/components/internal/insightPage/Intel";
-import AudienceIntel from "@/app/components/internal/insightPage/AudienceIntel";
-
-function extractDay(startDate: Date): string {
-  const weekdays = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
+import Disable from "/public/disable.svg";
+import { Event, GTMEventDetail, TTabs } from "@/types/events";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  CalendarDays,
+  CircleSlash,
+  Forward,
+  MailIcon,
+  MapPin,
+} from "lucide-react";
+import { useEventsService } from "@/services/eventsService";
+import { GTMEventPOCDetails, EventDate } from "@/types/events";
+import { Badge } from "@/components/ui/badge";
+import { EventInfoAndMap } from "@/components/gtmDetail/eventInfoAndMap";
+import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
+import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
+import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
+const EventDetail = ({ params }: { params: { eventId: string } }) => {
+  const router = useRouter();
+  const currentDate = new Date().toISOString().split("T")[0];
+  const [activeTab, setActiveTab] = useState<TTabs>("overview");
+  const [eventDates, setEventDates] = useState<EventDate[]>();
+  const tabs = [
+    { tabName: "Overview", path: "overview" },
+    { tabName: "Insights", path: "insights" },
+    { tabName: "Audience", path: "audience" },
   ];
-  return weekdays[startDate.getDay()];
-}
-
-function extractMonth(startDate: Date): string {
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  return months[startDate.getMonth()];
-}
-
-function extractDayOfMonth(startDate: Date): number {
-  return startDate.getDate();
-}
-
-function parseTime(date: Date): string {
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const ampm = hours >= 12 ? "PM" : "AM";
-  const hours12 = hours % 12 || 12;
-  const timezoneOffset = date.getTimezoneOffset();
-  const timezoneSign = timezoneOffset > 0 ? "-" : "+";
-  const timezoneHours = Math.floor(Math.abs(timezoneOffset) / 60);
-  const timezoneMinutes = Math.abs(timezoneOffset) % 60;
-  const timezoneString = `GMT${timezoneSign}${pad(timezoneHours)}:${pad(
-    timezoneMinutes
-  )}`;
-
-  return `${hours12}:${pad(minutes)} ${ampm} ${timezoneString}`;
-}
-
-function pad(number: number): string {
-  return (number < 10 ? "0" : "") + number;
-}
-
-function formatEventDates(startDate: string, endDate: string) {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
-
-  if (start.getFullYear() === end.getFullYear()) {
-      if (start.getMonth() === end.getMonth()) {
-          if (start.getDate() === end.getDate()) {
-              return new Date(startDate).toLocaleDateString("en-GB", {
-                weekday: 'long',
-                month: "short",
-                day: "2-digit",
-                year: "numeric",
-              });
-          } else {
-              return (
-                new Date(startDate).toLocaleDateString("en-GB", {
-                  weekday: 'long',
-                }) + ', ' +
-                new Date(startDate).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                }) + ' - ' +
-                new Date(endDate).toLocaleDateString("en-GB", {
-                  month: "short",
-                  day: "2-digit",
-                  year: "numeric",
-                })
-              );
-          }
-      } else {
-          return (
-            new Date(startDate).toLocaleDateString("en-GB", {
-              weekday: 'long',
-              month: "short",
-              day: "2-digit",
-            }) + ' - ' +
-            new Date(endDate).toLocaleDateString("en-GB", {
-              month: "short",
-              day: "2-digit",
-              year: "numeric",
-            })
-          );
+  const { getEventDetailById, getEventPOCDetails, getEventCoOrganizerDetails } =
+    useEventsService();
+  const { data: event } = useQuery<any>({
+    queryKey: ["eventDetails"],
+    queryFn: async () => {
+      const [eventData, eventPOCData] = await Promise.all([
+        getEventDetailById(params.eventId),
+        getEventPOCDetails(params.eventId),
+        // getEventCoOrganizerDetails(params.eventId),
+      ]);
+      if (!eventData) {
+        throw new Error("Failed to fetch event details");
       }
-  } else {
-      return (
-        new Date(startDate).toLocaleDateString("en-GB", {
-          weekday: 'long',
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
-        }) + ' - ' +
-        new Date(endDate).toLocaleDateString("en-GB", {
-          month: "short",
-          day: "2-digit",
-          year: "numeric",
+      return {
+        eventData: eventData,
+        eventPOCData: eventPOCData,
+        // eventCoOrganizerData: eventCoOrganizerData,
+      };
+    },
+  });
+
+  if (!event) return null;
+  const { eventData, eventPOCData, eventCoOrganizerData } = event;
+  const eventDetails: GTMEventDetail = { ...eventData.event };
+  const eventPOCDetails: GTMEventPOCDetails[] = eventPOCData.eventPoc;
+  // const eventCoOrganizerDetails = eventCoOrganizerData.coorganizers;
+
+  if (!eventDetails) return null;
+  const {
+    id,
+    name,
+    bannerUrl,
+    startDateTime,
+    endDateTime,
+    organizer,
+    website,
+    venueLocation,
+    rating,
+    status,
+  } = eventDetails;
+
+  const eventStartDate = startDateTime
+    ? format(new Date(startDateTime), "dd MMM yyyy")
+    : "";
+
+  const eventEndDate = endDateTime
+    ? format(new Date(endDateTime), "dd MMM yyyy")
+    : "";
+
+  const formattedDate =
+    eventStartDate === eventEndDate
+      ? eventStartDate
+      : `${eventStartDate} - ${eventEndDate}`;
+  const eventStartTime =
+    eventDetails && startDateTime
+      ? format(new Date(startDateTime), "h:mm a")
+      : "";
+  const eventEndTime =
+    eventDetails && endDateTime ? format(new Date(endDateTime), "h:mm a") : "";
+
+  const isCancelled = status === "cancelled";
+  const isPostponed = status === "postponed";
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: name ?? "",
+          url: `https://console.eventeli.com/search/${id}`,
         })
-      );
-  }
-}
-
-const InsightsPage = () => {
-  const [eventDetail, setEventDetail] = useState<any>();
-  const pathName = usePathname();
-  const pageParams = pathName.split("/");
-  const eventId = pageParams[pageParams.length - 1];
-  const { theme } = useTheme();
-  const iconClass = theme === "light" ? "icons_light" : "icon";
-
-  const [eventStart, setEventStart] = useState<Date>(new Date());
-
-  const [tabs, setTabs] = useState<any>([
-    // { name: "Overview", status: "open", active: true },
-    { name: "Event Details", status: "open", active: true },
-    { name: "Event Intel", status: "open", active: false },
-    { name: "Exhibitor & Audience Intel", status: "open", active: false },
-    // { name: "More", status: "open", active: false },
-  ]);
-
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
-
-  const setActiveTab = (tabId: number) => {
-    setTabs(
-      tabs.map((tab: any, index: number) => ({
-        ...tab,
-        active: index === tabId,
-      }))
-    );
+        .then(() => {
+          console.log("Successfully shared");
+        })
+        .catch((error) => {
+          console.error("Something went wrong", error);
+        });
+    }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try{
-        setIsLoaded(false);
-        const { data, error } = await myFetch(
-          `${baseUrl}/event/search?eventId=${eventId}&eventRank=0,1000`
-        );
-        if (error) {
-          console.log(error);
-          return;
-        }
-        if (data) {
-          setEventDetail(data?.events[0]);
-          setEventStart(new Date(data?.events[0].startDate));
-        }
-      } catch (error) {
-        console.error("Error saving data:", error);
-      } finally {
-        setIsLoaded(true);
-      }
-    };
-    fetchData();
-  }, [eventId]);
-
-  if (!isLoaded) {
-    return (<div style={{padding: '40px'}}><Loading /></div>);
-  }
+  const handleScrollTo = (section: string) => {
+    const element = document.querySelector(`.${section}`);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
 
   return (
-    <>
-      <div className={styles.container}>
-        <div className={styles.containerLeft}>
-          {eventDetail?.logoUrl &&
-            <div className={styles.eventLogo}>
-              <Image
-                src={eventDetail.logoUrl}
-                alt="logo"
-                width={230}
-                height={230}
-                className={styles.image}
-              />
-            </div>
-          }
-          <div className={styles.actionContainer}>
-            {eventDetail.stats.rating > 0 &&
-              <div className={styles.eventRating}>
-                {eventDetail.stats.rating.toFixed(1)}
-                <StarFill color={'orange'} height="16px" width="16px" style={{verticalAlign: 'baseline'}} />
-              </div>
-            }
-            {/* <div className={styles.eventActions}>
-              <Globe color={"var(--secondary-text-color)"} height="16px" width="16px" />
-              <Bookmark color={"var(--secondary-text-color)"} height="16px" width="16px" />
-            </div> */}
+    <div className="flex flex-row h-full overflow-y-hidden gap-10 p-6">
+      <aside className="sticky w-[24%] max-[1610px]:w-[30%] max-xl:w-1/3 pb-24 bg-white pr-6 h-full overflow-y-auto shadow-[4px_0_10px_rgba(0,0,0,0.1)] scrollbar">
+        <button
+          onClick={() => router.back()}
+          className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
+        >
+          <ArrowLeft width="14px" height="14px" color="#6750A4" />
+          <Link
+            className="text-[var(--primary-color)] font-medium"
+            href={"/internal/search/events"}
+          >
+            Back to Search
+          </Link>
+        </button>
+        <Image
+          src={bannerUrl ?? "/eventDetailFallback.png"}
+          alt="eventDetails"
+          width={420}
+          height={280}
+          className="max-h-[300px] rounded-lg"
+        />
+
+        <div className="flex justify-between items-center py-4">
+          <div className="flex items-center gap-1">
+            {rating != null && rating > 0 && (
+              <span className="flex items-center gap-1">
+                <StarFill width="16px" height="16px" color="#FFB224" />
+                <span>{rating}</span>
+              </span>
+            )}
           </div>
-          <div className={styles.eventTitle}>{eventDetail?.name}</div>
-          <div className={styles.date_loactionContainer}>
-            <div className={styles.dateContainer}>
-              <div className={styles.dateIconContainer}>
-                <div className={styles.iconMonth}>
-                  {extractMonth(eventStart)}
-                </div>
-                <div className={styles.iconDate}>
-                  {extractDayOfMonth(eventStart)}
-                </div>
-              </div>
-              <div className={styles.dateDetails} style={{alignSelf:'unset'}}>
-                <div className={styles.date}>
-                  {eventDetail.status && (eventDetail.status === "CANCELLED" || eventDetail.status === "POSTPONED") ?
-                    <>
-                    <div className={styles.eventStatusTag}>{eventDetail.status}</div><br/>
-                    <del data-toggle="tooltip" title={eventDetail.status}>{formatEventDates(eventDetail.startDate, eventDetail.endDate)}</del>
-                    </> :
-                    formatEventDates(eventDetail.startDate, eventDetail.endDate)
-                  }
-                </div>
-                {/* <div className={styles.time}>{parseTime(eventStart)}</div> */}
-              </div>
-            </div>
-            <div className={styles.locationContainer}>
-              <div className={styles.locationIconContainer}>
-                <Location color={"var(--secondary-text-color)"} />
-              </div>
-              <div className={styles.dateDetails}>
-                <div className={styles.date}>
-                  {/* {eventDetail?.location?.venueName?eventDetail?.location?.venueName: "Venue to be announced" } */}
-                  {eventDetail.location.cityId !== "1" &&
-                    eventDetail.format === "ONLINE" ? (
-                      eventDetail.location.venueName !== undefined &&
-                      eventDetail.location.venueName !== null ? (
-                        
-                        <div>{eventDetail.location.venueName}</div>
-                    ) : (
-                      <div>
-                        Online
-                      </div>
-                    )
-                  ) : eventDetail.location.venueName !== undefined &&
-                  eventDetail.location.venueName !== null ? (
-                      <div>{eventDetail.location.venueName}</div>
-                  ) : eventDetail.location.cityId === "1" &&
-                    (eventDetail.format === "ONLINE" ||
-                    eventDetail.location.venueName !== undefined) ? (
-                    "Online"
-                  ) : eventDetail.location.cityId !== "1" &&
-                  eventDetail.location.venueName !== undefined ? (
-                    <div >
-                     Venue to be announced
-                    </div>
-                  ) : null}
-                </div>
-                <div className={styles.time}>
-                {eventDetail?.location?.venueAddress && `${eventDetail?.location?.venueAddress}, `}
-                    {eventDetail?.location?.countryName === eventDetail?.location?.cityName ? eventDetail?.location?.countryName : `${eventDetail?.location?.cityName}, ${eventDetail?.location?.countryName }` }
-                </div>
-              </div>
-            </div>
-            <div className={styles.locationContainer}>
-              <div className={styles.locationIconContainer}>
-                <Buildings color={"var(--secondary-text-color)"} />
-              </div>
-              <div className={styles.dateDetails}>
-                <div className={styles.date}>
-                  {eventDetail?.organizer?.name &&
-                    eventDetail?.organizer?.name }
-                  
-                  {/* San Antonio Space Center, Texas, Florida */}
-                </div>
-                <div className={styles.time}>
-                {eventDetail?.organizer?.countryName === eventDetail?.organizer?.cityName ? eventDetail?.organizer?.countryName : `${eventDetail?.organizer?.cityName}, ${eventDetail?.organizer?.countryName }` }
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* <button className={styles.interestBtn}>
-            I'm Interested in this event
-          </button> */}
-          <div className={styles.contactBtn}>
-            {eventDetail?.organizer?.website &&
-              <div>
-                <Link href={eventDetail.organizer.website} target="_blank" >Contact the Host</Link>
-            </div>
-            }
-            {/* <div>Report Event</div> */}
+
+          <div className="ml-auto flex gap-4 items-center">
+            {website && (
+              <Link href={website}>
+                <Globe width="16px" height="16px" color="#666666" />
+              </Link>
+            )}
+            <button onClick={handleShare}>
+              {/* <Forward width="18px" height="18px" color="#666666" /> */}
+              <Share width="16px" height="16px" color="#666666" />
+            </button>
           </div>
         </div>
-        <div className={styles.containerRight}>
-          <div className={styles.tabsContainer}>
-            {tabs.map((tab: any, index: number) => (
-              <div
-                key={index}
-                className={`${styles.tabItem} ${
-                  tab.active ? styles.tabActive : ""
+
+        <div className="flex flex-row gap-3 flex-wrap">
+          {eventDetails &&
+            eventDetails.eventTypes &&
+            eventDetails.eventTypes.length > 0 && (
+              <ul className="flex flex-row flex-wrap gap-3">
+                {eventDetails.eventTypes.map((type: any) => (
+                  <li
+                    className="text-[12px] font-semibold py-1 px-3 border-[#CCE6FF] border rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF]"
+                    key={type.id}
+                  >
+                    {type.name}
+                  </li>
+                ))}
+              </ul>
+            )}
+          {/* {isBranded && (
+            <span className="text-[12px] font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-fit text-[#DF2670] bg-[#FEECF2]">
+              Branded Event
+            </span>
+          )}
+          {isSeries && (
+            <span className="text-[12px] font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-fit text-[#398E4A] bg-[#E5FAF6]">
+              Series Event
+            </span>
+          )} */}
+        </div>
+        {name && (
+          <Heading as="h6" variant="titleNoMargin" className="py-2">
+            {name}
+          </Heading>
+        )}
+
+        <div className="flex gap-2 items-center my-4">
+          {startDateTime && (
+            <div className="border border-[#ebebeb] rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square">
+              <span className="text-[#666666] text-md font-bold">
+                {/* {format(new Date(startDateTime), "dd")} */}
+                <CalendarDays width={20} height={20} />
+              </span>
+            </div>
+          )}
+          <span>
+            {eventStartDate && eventEndDate && (
+              <Text
+                fontWeight="semibold"
+                variant="noMargin"
+                className={`${
+                  isCancelled || isPostponed ? "line-through" : ""
                 }`}
-                onClick={() => setActiveTab(index)}
               >
-                {tab.name}
-              </div>
-            ))}
-          </div>
-          <div className={styles.tabContent}>
-            {/* <Overview eventDetail={eventDetail} /> */}
-            {/* <Intel eventDetail={eventDetail} /> */}
-            {
-              tabs.findIndex((tab: any) => tab.active) == 0 ?
-                <Overview eventDetail={eventDetail} /> :
-              tabs.findIndex((tab: any) => tab.active) == 1 ?
-                <Intel eventDetail={eventDetail} /> : 
-              tabs.findIndex((tab: any) => tab.active) == 2 ?
-                <AudienceIntel eventDetail={eventDetail} /> : <></>
-            }
-          </div>
+                {formattedDate}
+              </Text>
+            )}
+            {/* {eventStartTime && eventEndTime && (
+              <Text variant="noMargin" color="secondary">
+                {`${eventStartTime} - ${eventEndTime} GMT+5:30`}
+              </Text>
+            )} */}
+          </span>
+          {isCancelled && (
+            <Badge
+              variant="outline"
+              className="border-destructive text-destructive"
+            >
+              Cancelled
+            </Badge>
+          )}
+          {isPostponed && (
+            <Badge
+              variant="outline"
+              className="border-[#FF990A] text-[#FF990A]"
+            >
+              Postponed
+            </Badge>
+          )}
         </div>
-      </div>
-    </>
+
+        {venueLocation && venueLocation.venue && (
+          <div className="flex gap-2 items-start my-4">
+            <span className="border border-[#ebebeb] text-[#666666] rounded-lg flex items-center justify-center text-md font-bold w-10 h-10 aspect-square">
+              {/* <Location color="#666666" width="14px" height="14px" /> */}
+              <MapPin width={20} height={20} />
+            </span>
+            <span>
+              {venueLocation.venue && (
+                <>
+                  {venueLocation.venue.name && (
+                    <Text fontWeight="semibold" variant="noMargin">
+                      {venueLocation.venue.name}
+                    </Text>
+                  )}
+                  {venueLocation.venue.address && (
+                    <Text variant="noMargin" color="secondary">
+                      {venueLocation.venue.address !== "null" &&
+                        venueLocation.venue.address}
+                    </Text>
+                  )}
+                </>
+              )}
+            </span>
+          </div>
+        )}
+        <Accordion
+          type="single"
+          className="bg-[#FAFAFA] border border-[var(--neutral-light-color)] rounded-sm mb-4"
+          collapsible
+        >
+          <AccordionItem value="item-1">
+            <AccordionTrigger className="hover:no-underline p-2 font-normal text-sm">
+              Organizer
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col p-2">
+              {organizer ? (
+                (() => {
+                  const { cityName, countryName, logo, name } = organizer;
+                  return (
+                    <div className="flex gap-4 pb-1 mb-1">
+                      <img
+                        src={
+                          logo
+                            ? logo
+                            : `https://img.10times.com/userimages/${name
+                                .charAt(0)
+                                .toLowerCase()}.jpg`
+                        }
+                        className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10"
+                        alt="Organizer Logo"
+                      />
+                      <div className="flex flex-col">
+                        <Text fontWeight="medium" size="normal">
+                          {name}
+                        </Text>
+                        {(cityName || countryName) && (
+                          <div className="flex gap-2 items-center">
+                            <Location
+                              color="#666666"
+                              width="14px"
+                              height="14px"
+                            />
+                            <Text color="secondary" variant="noMargin">{`${
+                              cityName ?? ""
+                            }, ${countryName ?? ""}`}</Text>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()
+              ) : (
+                <p className="text-[#666666] text-sm flex items-center gap-2">
+                  <CircleSlash width={15} height={15} />
+                  No organizer found
+                </p>
+              )}
+              {/* {eventCoOrganizerDetails.length > 0 ? (
+                <div className="flex items-center gap-2 border-t-[1px] py-2">
+                  <Text fontWeight="medium" color="secondary">
+                    Co-organizer
+                  </Text>
+                  <span className="text-[12px] bg-[var(--primary-color)] text-[#ffffff] py-[1px] px-2 rounded-full">
+                    {eventCoOrganizerDetails.length > 0 &&
+                    eventCoOrganizerDetails.length < 9
+                      ? `0${eventCoOrganizerDetails.length}`
+                      : eventCoOrganizerDetails.length}
+                  </span>
+                </div>
+              ) : (
+                organizer && (
+                  <p className="text-[#666666] text-sm flex items-center gap-2 border-t-[1px] py-2">
+                    <Image src={Disable} alt="Disable" width={15} height={15} />
+                    No Co-organizers found
+                  </p>
+                )
+              )} */}
+              {/* {eventCoOrganizerDetails.length > 0 &&
+                eventCoOrganizerDetails.map((coOrganizer: any) => (
+                  <div
+                    key={coOrganizer.id}
+                    className="flex gap-4 pb-1 items-center"
+                  >
+                    <img
+                      src={
+                        coOrganizer.logo !== null
+                          ? coOrganizer.logo
+                          : `https://img.10times.com/userimages/${coOrganizer.name
+                              .charAt(0)
+                              .toLowerCase()}.jpg`
+                      }
+                      className="rounded-lg bg-[var(--primary-foreground)] w-8 h-8 aspect-square"
+                      alt="Organizer Logo"
+                    />
+                    <Text fontWeight="medium" size="normal">
+                      {coOrganizer.name}
+                    </Text>
+                  </div>
+                ))} */}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+        <Accordion
+          type="single"
+          className="bg-[#FAFAFA] border border-[var(--neutral-light-color)] rounded-sm"
+          collapsible
+        >
+          <AccordionItem value="item-2">
+            <AccordionTrigger className="hover:no-underline p-2 font-normal text-sm">
+              <p className="flex gap-3 items-center">
+                Event POC
+                {eventPOCDetails.length > 0 && (
+                  <span className="text-[12px] bg-[var(--primary-color)] text-[#ffffff] py-[1px] px-2 rounded-full">
+                    {eventPOCDetails.filter((poc) => poc !== null).length > 0 &&
+                    eventPOCDetails.filter((poc) => poc !== null).length < 9
+                      ? `0${
+                          eventPOCDetails.filter((poc) => poc !== null).length
+                        }`
+                      : eventPOCDetails.filter((poc) => poc !== null).length}
+                  </span>
+                )}
+              </p>
+            </AccordionTrigger>
+            <AccordionContent
+              className={`${
+                eventPOCDetails.length > 1
+                  ? "h-36 overflow-y-auto scrollbar"
+                  : "h-fit"
+              } pb-1 overflow-x-hidden`}
+            >
+              {eventPOCDetails && eventPOCDetails.length > 0 ? (
+                eventPOCDetails.map((poc: GTMEventPOCDetails | null) => {
+                  if (!poc) {
+                    return <></>;
+                  }
+                  const {
+                    designation,
+                    email,
+                    id,
+                    phoneNumber,
+                    profilePicture,
+                    name,
+                  } = poc;
+                  return (
+                    <div key={id} className="flex flex-row gap-3 p-2">
+                      <img
+                        src={
+                          profilePicture
+                            ? profilePicture
+                            : `https://img.10times.com/userimages/${name
+                                .charAt(0)
+                                .toLowerCase()}.jpg`
+                        }
+                        alt="POC Logo"
+                        className="rounded-lg shadow-md h-10 w-10"
+                      />
+                      <div className="flex flex-col gap-2 flex-1 flex-wrap">
+                        {name && (
+                          <Text fontWeight="medium" variant="noMargin">
+                            {name}
+                          </Text>
+                        )}
+                        {designation !== null && (
+                          <p className="text-[#666666] text-[12px]">
+                            <span>{designation}</span>
+                          </p>
+                        )}
+                        {email && (
+                          <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+                            <MailIcon width="12px" height="12px" />
+                            <span className="break-normal">{email}</span>
+                          </p>
+                        )}
+                        {phoneNumber && (
+                          <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+                            <Phone width="12px" height="12px" />
+                            <span>{phoneNumber}</span>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
+                  <CircleSlash width={15} height={15} />
+                  No POC found
+                </p>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        {/* <Button className="mt-4 w-full">Track this event</Button> */}
+      </aside>
+      <section className="flex flex-col flex-1 right-0 w-[70%] overflow-y-hidden">
+        <ul className="flex flex-row gap-12 mb-4 sticky z-10 bg-[#ffffff] w-full shadow pt-3">
+          {tabs.map((tab) => (
+            <div
+              key={tab.tabName}
+              onClick={() => {
+                handleScrollTo(tab.path);
+              }}
+              className={`relative pb-2 font-semibold cursor-pointer ${
+                activeTab === tab.path
+                  ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
+                  : "text-[var(--tertiary-text-color)]"
+              }`}
+            >
+              {tab.tabName}
+              {/* {tab.tabName === "Insights" && (
+                <div className="absolute -top-1 -right-16 w-fit">
+                  <span className="bg-[#FEECF2] py-2 px-3 rounded-full text-sm text-[#DF2670] relative ml-2">
+                    NEW
+                    <Image
+                      className="absolute -right-[7px] -top-[7px]"
+                      width={20}
+                      height={20}
+                      src={Star}
+                      alt="Star"
+                    />
+                  </span>
+                </div>
+              )} */}
+            </div>
+          ))}
+        </ul>
+        <section className="flex flex-col gap-6 pr-6 pb-6 overflow-y-auto scrollbar">
+          <EventInfoAndMap
+            eventDetails={eventDetails}
+            scrollSection={tabs[0].path}
+            setActiveTab={setActiveTab}
+          />
+          <hr className="h-[1px] border-t-1 bg-[#f2f2f2]" />
+          {/* <AdvancedDetails
+            eventDetails={eventDetails}
+            eventId={params.eventId}
+          /> */}
+          <InsightsAndScores
+            eventDetails={eventDetails}
+            scrollSection={tabs[1].path}
+            setActiveTab={setActiveTab}
+          />
+          <AudienceIntel
+            eventDetails={eventDetails}
+            scrollSection={tabs[2].path}
+            setActiveTab={setActiveTab}
+          />
+        </section>
+      </section>
+    </div>
   );
 };
 
-export default InsightsPage;
+export default EventDetail;

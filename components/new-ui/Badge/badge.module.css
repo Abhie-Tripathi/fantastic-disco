@@ -1,0 +1,89 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  max-width: fit-content;
+  border-radius: 99px;
+  font-weight: 500;
+  outline: none;
+}
+
+.primary_intense {
+  background-color: var(--primary-color);
+  color: var(--primary-foreground);
+}
+
+.positive_intense {
+  background-color: var(--positive-color);
+  color: var(--primary-foreground);
+}
+
+.negative_intense {
+  background-color: var(--negative-color);
+  color: var(--primary-foreground);
+}
+
+.notice_intense {
+  background-color: var(--notice-color);
+  color: var(--primary-foreground);
+}
+
+.information_intense {
+  background-color: var(--info-color);
+  color: var(--primary-foreground);
+}
+
+.neutral_intense {
+  background-color: var(--neutral-color);
+  color: var(--primary-foreground);
+}
+
+.primary_subtle {
+  background-color: var(--primary-light-color);
+  color: var(--primary-color);
+}
+
+.positive_subtle {
+  background-color: var(--positive-light-color);
+  color: var(--positive-color);
+}
+
+.negative_subtle {
+  background-color: var(--negative-light-color);
+  color: var(--negative-color);
+}
+
+.notice_subtle {
+  background-color: var(--notice-light-color);
+  color: var(--notice-color);
+}
+
+.information_subtle {
+  background-color: var(--info-light-color);
+  color: var(--info-color);
+}
+
+.neutral_subtle {
+  background-color: var(--neutral-light-color);
+  color: var(--neutral-color);
+}
+
+.sm {
+  font-size: 10px;
+  line-height: 14px;
+  padding: 0px 4px;
+  height: 16px;
+}
+
+.md {
+  height: 20px;
+  padding: 0px 8px;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.lg {
+  height: 24px;
+  padding: 0px 12px;
+  font-size: 12px;
+  line-height: 18px;
+}
