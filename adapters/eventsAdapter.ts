@@ -39,6 +39,9 @@ export const EventsAdapter = {
         adaptedShowsParams.push("eventInboundScore");
         adaptedShowsParams.push("internationalScore");
       }
+      if (showsParams?.includes("ranking")) {
+        adaptedShowsParams.push("eventRanking");
+      }
       if (adaptedShowsParams.length > 0)
         adaptedParams.shows = adaptedShowsParams.join(",");
     }
@@ -79,6 +82,67 @@ export const EventsAdapter = {
     }
     if (params.get("entryType")) {
       adaptedParams.eventEntry = params.get("entryType")!.toUpperCase();
+    }
+    if (params.get("ratings")) {
+      adaptedParams.eventRating = params.get("ratings")!;
+    }
+    if (params.get("maturity")) {
+      adaptedParams.maturity = params.get("maturity")!;
+    }
+    if (params.get("frequencies")) {
+      adaptedParams.eventFrequency = params.get("frequencies")!;
+    }
+
+    if (params.get("includeKeywords") || params.get("excludeKeywords")) {
+      const includeKeywords = params.get("includeKeywords")
+        ? params
+            .get("includeKeywords")!
+            .split(",")
+            .map((keyword) => `+${keyword.trim()}`)
+            .join("")
+        : "";
+      const excludeKeywords = params.get("excludeKeywords")
+        ? params
+            .get("excludeKeywords")!
+            .split(",")
+            .map((keyword) => `-${keyword.trim()}`)
+            .join("")
+        : "";
+
+      adaptedParams.eventKeywords = includeKeywords + excludeKeywords;
+    }
+
+    if (params.get("estimatedVisitors")) {
+      adaptedParams.eventSize = params.get("estimatedVisitors")!;
+    }
+
+    if (params.get("estimatedExhibitors")) {
+      adaptedParams.estimatedExhibitScore = params.get("estimatedExhibitors")!;
+    }
+
+    if (params.get("impact_score_gte") && params.get("impact_score_lte")) {
+      adaptedParams.eventImpactScore = `${params.get(
+        "impact_score_gte"
+      )}-${params.get("impact_score_lte")}`;
+    }
+
+    if (params.get("inbound_score_gte") && params.get("inbound_score_lte")) {
+      adaptedParams.inboundScore = `${params.get(
+        "inbound_score_gte"
+      )}-${params.get("inbound_score_lte")}`;
+    }
+
+    if (params.get("top")) {
+      adaptedParams.eventRanking = `0-${params.get("top")}`;
+    }
+
+    if (
+      params.get("international_score_gte") &&
+      params.get("international_score_lte")
+    ) {
+      adaptedParams.internationalScore = `${params.get(
+        "international_score_gte"
+      )}-${params.get("international_score_lte")}`;
     }
 
     if (params.get("view") == "calendar") {
@@ -171,8 +235,12 @@ export const EventsAdapter = {
         events: response.events.map((item: any) => ({
           id: item.id,
           eventImpactScore: null,
-          latitude: item.location.geoCordinates.latitude,
-          longitude: item.location.geoCordinates.longitude,
+          latitude:
+            item.location.geoCordinates.latitude ||
+            item.location.cityCordinates.latitude,
+          longitude:
+            item.location.geoCordinates.longitude ||
+            item.location.cityCordinates.longitude,
           eventType: determineEventType(item),
         })),
       };
@@ -196,27 +264,17 @@ export const EventsAdapter = {
           editions: 1,
           sponsorsCount: 0,
           speakersCount: 0,
-          frequency: response.frequency || null,
+          frequency: item.frequency || null,
           co_organizers: [],
-          rankings: (() => {
-            if (
-              item.rankings &&
-              (item.rankings.rank ||
-                item.rankings.rankRange ||
-                item.rankings.rankType ||
-                item.rankings.categoryId ||
-                item.rankings.countryId)
-            ) {
-              return {
-                rank: item.rankings.rank || null,
-                rankRange: item.rankings.rankRange || null,
-                rankType: item.rankings.rankType || null,
-                categoryId: item.rankings.categoryId || null,
-                countryId: item.rankings.countryId || null,
-              };
-            }
-            return null;
-          })(),
+          rankings: item.ranking
+            ? {
+                rank: null,
+                rankRange: params.get("top") || null,
+                rankType: null,
+                categoryId: null,
+                countryId: null,
+              }
+            : null,
           exhibitorsCount: parseInt(item.stats.estimatedExhibitor) || null,
           timings: {
             [item.startDate.split("T")[0]]: {
