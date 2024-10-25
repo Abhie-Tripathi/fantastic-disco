@@ -28,9 +28,10 @@ interface Props {
     demoBanner:string
     demoDescription:string
     demoLocation:string
+    demoDate:string
 
 }
-const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData, demoEventName, demoBanner, demoDescription, demoLocation }: Props) => {
+const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData, demoEventName, demoBanner, demoDescription, demoLocation, demoDate }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -90,6 +91,7 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                             demoBanner={demoBanner} 
                             demoDescription={demoDescription}
                             demoLocation={demoLocation}
+                            demoDate={demoDate}
                         />
                         <EventCard
                             cardBgColor={cardBgColor}
@@ -99,6 +101,7 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                             demoBanner={demoBanner} 
                             demoDescription={demoDescription}
                             demoLocation={demoLocation}
+                            demoDate={demoDate}
                         />
                         <EventCard
                             cardBgColor={cardBgColor}
@@ -108,6 +111,7 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                             demoBanner={demoBanner} 
                             demoDescription={demoDescription}
                             demoLocation={demoLocation}
+                            demoDate={demoDate}
                         />
                         <EventCard
                             cardBgColor={cardBgColor}
@@ -117,6 +121,7 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                             demoBanner={demoBanner} 
                             demoDescription={demoDescription}
                             demoLocation={demoLocation}
+                            demoDate={demoDate}
                         />
                         <EventCard
                             cardBgColor={cardBgColor}
@@ -126,6 +131,7 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                             demoBanner={demoBanner} 
                             demoDescription={demoDescription}
                             demoLocation={demoLocation}
+                            demoDate={demoDate}
                         />
                     </div>
                 </div>

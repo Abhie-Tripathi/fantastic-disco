@@ -27,6 +27,7 @@ interface CardProps {
     demoBanner:string;
     demoDescription:string
     demoLocation:string
+    demoDate:string
 }
 
 const EventCard1 = ({
@@ -40,7 +41,8 @@ const EventCard1 = ({
     demoBanner,
     demoEventName,
     demoDescription,
-    demoLocation
+    demoLocation,
+    demoDate
 
 }: CardProps) => {
 
@@ -75,7 +77,7 @@ const EventCard1 = ({
             </div>
             <div className={styles.dividerLine}></div>
             <div className={styles.dateRange_typeContainer}>
-                <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : "29 Jan - 5 Feb"}</div>
+                <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
                 <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>Tradeshow</div>
                 <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>Attending</div>
             </div>

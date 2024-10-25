@@ -30,6 +30,7 @@ interface Props {
   demoEventName: string;
   demoDescription: string;
   demoLocation: string;
+  demoDate:string
 }
 
 const Popup3: React.FC<Props> = ({
@@ -78,6 +79,7 @@ const Popup3: React.FC<Props> = ({
   demoDescription,
   demoLocation,
   closeButtonSetting,
+  demoDate
 }: Props) => {
   const formatDate = (date: string) => {
     const dateObj = new Date(date);
@@ -176,7 +178,7 @@ const Popup3: React.FC<Props> = ({
               ? formatDate(fetchedAddedEvents[0].startDate) +
                 " - " +
                 formatDate(fetchedAddedEvents[0].endDate)
-              : "29 Jan - 5 Feb"}
+              : demoDate}
           </div>
         </div>
       </div>

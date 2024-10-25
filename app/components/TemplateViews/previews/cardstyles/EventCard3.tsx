@@ -25,6 +25,7 @@ interface CardProps {
     demoEventName:string,
     demoDescription:string,
     demoLocation:string
+    demoDate:string
 }
 
 const EventCard3 = ({
@@ -37,7 +38,8 @@ const EventCard3 = ({
     }, fetchedEvent,
     demoBanner,
     demoEventName,
-    demoLocation
+    demoLocation,
+    demoDate
 }: CardProps) => {
 
     const formatDate = (date: string) => {
@@ -70,7 +72,7 @@ const EventCard3 = ({
                 </div>
                 <div className={styles.dateContainer}>
                     <DateIcon color={fontSettings.subheading.fontColor} />
-                    <div className={styles.date} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : "1st April 2024 - 3rd April 2024"}</div>
+                    <div className={styles.date} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
                 </div>
             </div>
         </div>

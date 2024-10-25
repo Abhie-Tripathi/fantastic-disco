@@ -24,7 +24,8 @@ interface CardProps {
   demoBanner:string;
   demoEventName:string; 
   demoDescription:string;
-  demoLocation:string
+  demoLocation:string;
+  demoDate:string
 }
 const EventListCard1 = ({
   cardBgColor = "#ffffff",
@@ -33,7 +34,7 @@ const EventListCard1 = ({
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
     subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
-  }, fetchedEvent, demoBanner, demoEventName, demoDescription,demoLocation }: CardProps) => {
+  }, fetchedEvent, demoBanner, demoEventName, demoDescription,demoLocation, demoDate }: CardProps) => {
 
   const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short' };
@@ -77,7 +78,7 @@ const EventListCard1 = ({
         </div>
         <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: truncatedDescription }}></div>
         <div className={styles.dateRange_typeContainer}>
-          <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : "29 Jan - 5 Feb"}</div>
+          <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
           <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>Tradeshow</div>
           <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>Attending</div>
         </div>
