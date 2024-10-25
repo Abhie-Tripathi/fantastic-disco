@@ -342,7 +342,7 @@ const EventListItem = ({
 
   return (
     <div className="bg-white rounded-lg border border-[#EBEBEB] shadow-sm relative">
-      <Link href={`/search/${event.id}`} className="block">
+      <Link href={`/internal/event/${event.id}`} className="block">
         <div className="absolute w-[6px] h-full left-0 top-0 rounded-lg bg-[#5055A3]"></div>
         <div className="p-6">
           <div className="grid grid-cols-12 gap-4">
@@ -519,6 +519,16 @@ const EventListItem = ({
                 {event.scores ? (
                   <div className="flex items-center justify-between w-full">
                     <div className="flex flex-col justify-end gap-4">
+                      {event.exhibitorsCount && (
+                        <div>
+                          <p className="text-xs text-gray-600 font-medium">
+                            Estimated Exhibitors
+                          </p>
+                          <p className="text-lg font-semibold text-primary">
+                            {(event.exhibitorsCount || "0").toLocaleString()}
+                          </p>
+                        </div>
+                      )}
                       {event.estimatedAttendance && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
@@ -562,6 +572,16 @@ const EventListItem = ({
                   </div>
                 ) : (
                   <div className="grid grid-row-2 items-end gap-4">
+                    {event.exhibitorsCount && (
+                      <div>
+                        <p className="text-xs text-gray-600 font-medium">
+                          Estimated Exhibitors
+                        </p>
+                        <p className="text-lg font-semibold text-primary">
+                          {(event.exhibitorsCount || "0").toLocaleString()}
+                        </p>
+                      </div>
+                    )}
                     {event.estimatedAttendance && (
                       <div>
                         <p className="text-xs text-gray-600 font-medium">

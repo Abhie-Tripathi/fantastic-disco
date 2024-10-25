@@ -41,54 +41,54 @@ export const useLocationService = () => {
     );
     return data.data.display_name;
   };
-  const getSavedLocationAutocomplete = (input: string) => {
-    return api.request<SavedLocationsResponse>(
-      `${endpoints.savedLocationsV1}`,
-      {
-        method: "GET",
-        params: { query: input },
-      }
-    );
-  };
+  // const getSavedLocationAutocomplete = (input: string) => {
+  //   return api.request<SavedLocationsResponse>(
+  //     `${endpoints.savedLocationsV1}`,
+  //     {
+  //       method: "GET",
+  //       params: { query: input },
+  //     }
+  //   );
+  // };
 
-  const getSavedLocationsInsights = (skip: number, sortBy: string) => {
-    return api.request<SavedLocationInsightsResponse>(
-      `${endpoints.savedLocationsV1}`,
-      {
-        method: "GET",
-        params: {
-          duration: "90D",
-          offset: skip,
-          sortBy: sortBy,
-        },
-      }
-    );
-  };
+  // const getSavedLocationsInsights = (skip: number, sortBy: string) => {
+  //   return api.request<SavedLocationInsightsResponse>(
+  //     `${endpoints.savedLocationsV1}`,
+  //     {
+  //       method: "GET",
+  //       params: {
+  //         duration: "90D",
+  //         offset: skip,
+  //         sortBy: sortBy,
+  //       },
+  //     }
+  //   );
+  // };
 
-  const getSavedLocationInsightbyId = (id: string) => {
-    return api.request<SavedLocationInsightsByIdResponse>(
-      `${endpoints.savedLocations}/${id}`,
-      {
-        method: "GET",
-        params: {
-          duration: "90D",
-        },
-      }
-    );
-  };
+  // const getSavedLocationInsightbyId = (id: string) => {
+  //   return api.request<SavedLocationInsightsByIdResponse>(
+  //     `${endpoints.savedLocations}/${id}`,
+  //     {
+  //       method: "GET",
+  //       params: {
+  //         duration: "90D",
+  //       },
+  //     }
+  //   );
+  // };
 
-  const saveLocation = (data: SaveLocationDTO) => {
-    return api.request(`${endpoints.savedLocations}`, {
-      method: "POST",
-      data,
-    });
-  };
+  // const saveLocation = (data: SaveLocationDTO) => {
+  //   return api.request(`${endpoints.savedLocations}`, {
+  //     method: "POST",
+  //     data,
+  //   });
+  // };
 
-  const deleteSavedLocation = (id: string) => {
-    return api.request(`${endpoints.savedLocations}/${id}`, {
-      method: "DELETE",
-    });
-  };
+  // const deleteSavedLocation = (id: string) => {
+  //   return api.request(`${endpoints.savedLocations}/${id}`, {
+  //     method: "DELETE",
+  //   });
+  // };
 
   const getDatabaseLocationAutocomplete = async (input: string) => {
     const response = await api.request<SearchLocationResponse>(
@@ -101,11 +101,15 @@ export const useLocationService = () => {
     return LocationAdapter.adaptDatabaseLocationAutocomplete(response);
   };
 
-  const getLocationDetails = (id: string) => {
-    return api.request<SearchLocationResponse>(`${endpoints.locations}`, {
-      method: "GET",
-      params: { locationIds: id },
-    });
+  const getLocationDetails = async (id: string) => {
+    const response = await api.request<SearchLocationResponse>(
+      `${endpoints.locationSuggestion}`,
+      {
+        method: "GET",
+        params: { locationIds: id },
+      }
+    );
+    return LocationAdapter.adaptDatabaseLocationAutocomplete(response);
   };
 
   const getLocationBoundary = async (
@@ -219,17 +223,17 @@ export const useLocationService = () => {
 
   return {
     getNominatimAutocomplete,
-    getSavedLocationAutocomplete,
+    // getSavedLocationAutocomplete,
     getDatabaseLocationAutocomplete,
     getCoordinates,
     getLocationName,
-    getSavedLocationsInsights,
-    deleteSavedLocation,
-    saveLocation,
+    // getSavedLocationsInsights,
+    // deleteSavedLocation,
+    // saveLocation,
     getLocationDetails,
     getLocationBoundary,
     getLocationBBox,
-    getSavedLocationInsightbyId,
+    // getSavedLocationInsightbyId,
     isLoading: api.isLoading,
     error: api.error,
   };

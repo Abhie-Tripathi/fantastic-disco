@@ -32,12 +32,13 @@ export const EventsAdapter = {
         adaptedShowsParams.push("maturity");
       if (showsParams?.includes("forecasted"))
         adaptedShowsParams.push("isforecasted");
-      if (showsParams?.includes("impact_score"))
+      if (showsParams?.includes("estimatedExhibitors"))
+        adaptedShowsParams.push("estimatedExhibitScore");
+      if (showsParams?.includes("scores")) {
         adaptedShowsParams.push("eventImpactScore");
-      if (showsParams?.includes("inbound_score"))
         adaptedShowsParams.push("eventInboundScore");
-      if (showsParams?.includes("international_score"))
         adaptedShowsParams.push("internationalScore");
+      }
       if (adaptedShowsParams.length > 0)
         adaptedParams.shows = adaptedShowsParams.join(",");
     }
@@ -195,15 +196,27 @@ export const EventsAdapter = {
           editions: 1,
           sponsorsCount: 0,
           speakersCount: 0,
-          frequency: null,
+          frequency: response.frequency || null,
           co_organizers: [],
-          rankings: {
-            rank: null,
-            rankRange: null,
-            rankType: null,
-            categoryId: null,
-            countryId: null,
-          },
+          rankings: (() => {
+            if (
+              item.rankings &&
+              (item.rankings.rank ||
+                item.rankings.rankRange ||
+                item.rankings.rankType ||
+                item.rankings.categoryId ||
+                item.rankings.countryId)
+            ) {
+              return {
+                rank: item.rankings.rank || null,
+                rankRange: item.rankings.rankRange || null,
+                rankType: item.rankings.rankType || null,
+                categoryId: item.rankings.categoryId || null,
+                countryId: item.rankings.countryId || null,
+              };
+            }
+            return null;
+          })(),
           exhibitorsCount: parseInt(item.stats.estimatedExhibitor) || null,
           timings: {
             [item.startDate.split("T")[0]]: {
@@ -295,12 +308,17 @@ export const EventsAdapter = {
             : null,
           isSaved: false,
           economicImpact: null,
-          scores: {
-            impactScore: item.eventImpactScore || null,
-            inboundScore: item.eventInboundScore || null,
-            internationalScore: item.internationalScore || null,
-          },
-          rating: item.stats.eventRating || null,
+          scores:
+            item.eventImpactScore ||
+            item.eventInboundScore ||
+            item.internationalScore
+              ? {
+                  impactScore: item.eventImpactScore || null,
+                  inboundScore: item.eventInboundScore || null,
+                  internationalScore: item.internationalScore || null,
+                }
+              : null,
+          rating: item.stats.rating || null,
           audienceSpread: item.audienceSpread || null,
           rehostDate: item.isforecasted || null,
           isBranded: item.eventBrand || null,
@@ -346,7 +364,8 @@ export const EventsAdapter = {
           categoryId: null,
           countryId: null,
         },
-        exhibitorsCount: parseInt(response.events[0].stats.estimatedExhibitor) || null,
+        exhibitorsCount:
+          parseInt(response.events[0].stats.estimatedExhibitor) || null,
         timings: {
           [response.events[0].startDate.split("T")[0]]: {
             endTime: response.events[0].endDate.split("T")[1].slice(0, 5),

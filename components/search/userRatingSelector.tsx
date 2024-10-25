@@ -63,6 +63,7 @@ export default function UserRatingSelector() {
     setIsOpen(open);
   };
 
+  console.log("hii", showRatings);
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>

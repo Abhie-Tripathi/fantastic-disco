@@ -1,7 +1,7 @@
 "use client";
 
 import AdvancedFilters from "@/components/search/advancedFilters";
-import UserRatingSelector from "@/components/advancedFilters/userRatingSelector";
+import UserRatingSelector from "@/components/search/userRatingSelector";
 import CategorySelector from "@/components/search/categorySelector";
 import DateRangeSelector from "@/components/search/dateRange";
 import EventCalendar from "@/components/eventCalendar";
@@ -56,8 +56,7 @@ const Search = () => {
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
   const { applyFilters, localFilters } = useFilterContext();
-  // const { searchParams } = useDefaultFilters();
-  const searchParams = useSearchParams();
+  const { searchParams } = useDefaultFilters();
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const {
     data: eventData,
@@ -108,8 +107,9 @@ const Search = () => {
           <EventEntrySelector />
           <UserRatingSelector />
         </div>
-        <div className="col-span-2 flex flex-col gap-3">
+        <div className="col-span-2 flex flex-col gap-4">
           <Button
+            size="lg"
             onClick={searchHandler}
             disabled={isLoading}
             className="text-white"

@@ -8,7 +8,7 @@ export const LocationAdapter = {
       formattedLocations: response.map((item: any) => ({
         id: item.id,
         name: item.name,
-        displayName: `${item.name}, ${item.state}, ${item.countryName}`,
+        displayName: `${item.name}${item.state ? `, ${item.state}` : ''}${item.countryName ? `, ${item.countryName}` : ''}`.trim(),
         latitude: item.latitude,
         longitude: item.longitude,
         locationType: item.type,
