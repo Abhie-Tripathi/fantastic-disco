@@ -26,7 +26,7 @@ export const AudienceIntel = ({
   scrollSection,
   setActiveTab,
 }: Props) => {
-  const { audienceSpread, designations } = eventDetails;
+  const { audienceSpread } = eventDetails;
   const tabs = [
     { tabName: "Department Type", path: "department" },
     { tabName: "Designation Type", path: "designation" },
@@ -171,8 +171,8 @@ export const AudienceIntel = ({
               Other departments
             </Text> */}
             {/* <ul className="flex flex-col gap-4 max-h-80 overflow-y-auto scrollbar pr-2">
-              {designations && designations.length > 0 ? (
-                designations.map((designation) => {
+             &.length > 0 ? (
+            .map((designation) => {
                   const randomProgress = Math.floor(Math.random() * 101);
                   return (
                     <li key={designation.id}>
