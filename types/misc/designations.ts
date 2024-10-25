@@ -1,5 +1,5 @@
 export interface Designations {
-  id: number;
+  id: string;
   name: string;
   slug: string;
   description: string | null;

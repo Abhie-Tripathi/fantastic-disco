@@ -20,7 +20,7 @@ import {
 import { useFilterContext } from "@/context/filterContext";
 import AutocompleteInput from "./AutocompleteInput";
 import { useLocationService } from "@/services/locationService";
-import { getLocationByGeoCoordinates } from "@/services/searchService";
+// import { getLocationByGeoCoordinates } from "@/services/searchService";
 
 export interface GeoLocation {
   lat: number;

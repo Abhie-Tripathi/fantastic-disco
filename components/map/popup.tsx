@@ -1,4 +1,4 @@
-import { Event } from "@/types";
+import { Event } from "@/types/events";
 import React from "react";
 import { Popup } from "react-map-gl";
 import { differenceInDays, format } from "date-fns";

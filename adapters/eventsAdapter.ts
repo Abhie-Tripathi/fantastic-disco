@@ -6,6 +6,7 @@ import {
   MapEventsResponse,
 } from "@/types/events";
 import { newCategories } from "@/data/categories";
+import { designations } from "@/data/designations";
 
 export const EventsAdapter = {
   adaptRequestParams: (params: URLSearchParams): Record<string, string> => {
@@ -134,6 +135,19 @@ export const EventsAdapter = {
 
     if (params.get("top")) {
       adaptedParams.eventRanking = `0-${params.get("top")}`;
+    }
+
+    if (params.get("designations")) {
+      const designationSlugs = params.get("designations")?.split(",") || [];
+      const designationIds = designationSlugs.map((slug) => {
+        const designation = designations.find((des) => des.slug === slug);
+        return designation ? designation.id : slug;
+      });
+      adaptedParams.designation = designationIds.join(",");
+    }
+
+    if (params.get("audienceSpread")) {
+      adaptedParams.audienceSpread = params.get("audienceSpread")!;
     }
 
     if (
