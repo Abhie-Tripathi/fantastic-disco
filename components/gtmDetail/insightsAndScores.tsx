@@ -1,5 +1,5 @@
 "use client";
-import { Event, RankingDetail, TTabs } from "@/types/events";
+import { categoryRank, countryRank, Event, TTabs } from "@/types/events";
 import { EventRank } from "./eventRank";
 import { InformationFill } from "geist-icons";
 import Text from "../new-ui/Text";
@@ -13,6 +13,12 @@ interface Props {
   scrollSection: string;
   setActiveTab: Dispatch<SetStateAction<TTabs>>;
 }
+export interface RankingDetail {
+  above5CountryEvent: countryRank[] | [];
+  below5CountryEvent: countryRank[] | [];
+  above5CategoryEvent: categoryRank[] | [];
+  below5CategoryEvent: categoryRank[] | [];
+}
 export const InsightsAndScores = ({
   eventDetails,
   scrollSection,
@@ -21,10 +27,18 @@ export const InsightsAndScores = ({
   const {
     scores,
     economicImpact,
-    predictedEventSpendBreakUp,
-    rankings,
+    above5CategoryEvent,
+    below5CategoryEvent,
+    above5CountryEvent,
+    below5CountryEvent,
     "trustScore%": trustScore,
   } = eventDetails;
+  const rankings: RankingDetail = {
+    above5CategoryEvent: above5CategoryEvent,
+    below5CategoryEvent: below5CategoryEvent,
+    above5CountryEvent: above5CountryEvent,
+    below5CountryEvent: below5CountryEvent,
+  };
   const [ref, inView, entry, rootMargin] = useInView({
     threshold: 0.5,
     triggerOnce: false,

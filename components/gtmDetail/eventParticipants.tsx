@@ -2,6 +2,7 @@ import Text from "../new-ui/Text";
 import Image from "next/image";
 import Link from "next/link";
 import { GTMEventDetail } from "@/types/events";
+import { Badge } from "@/components/ui/badge";
 
 const exhibitorsData = [
   {
@@ -56,34 +57,39 @@ const sponsorsData = [
 
 const ListCard = ({ participant }: { participant: any }) => {
   return (
-    <li className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-3 rounded-sm gap-3 w-fill h-auto blur-sm">
-      <div className="flex flex-row gap-4">
-        <Image
-          src={participant.logo}
-          width={50}
-          height={50}
-          alt="Logo"
-          className="aspect-square"
-        />
-        <p className="flex flex-col justify-between">
-          <Text color="primary">{participant.name}</Text>
-          {participant.boothNo && (
-            <Text variant="noMargin" color="secondary">
-              {participant.boothNo}
-            </Text>
-          )}
-          {participant.designation && (
-            <Text variant="noMargin" color="secondary">
-              {participant.designation}
-            </Text>
-          )}
-        </p>
+    <li className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-3 rounded-sm gap-3 w-fill h-auto">
+      <div className="flex flex-row justify-between">
+        <div className="flex gap-4">
+          <Image
+            src={participant.logo}
+            width={50}
+            height={50}
+            alt="Logo"
+            className="aspect-square"
+          />
+          <p className="flex flex-col justify-between">
+            <Text color="primary">{participant.name}</Text>
+            {participant.boothNo && (
+              <Text variant="noMargin" color="secondary">
+                {participant.boothNo}
+              </Text>
+            )}
+            {participant.designation && (
+              <Text variant="noMargin" color="secondary">
+                {participant.designation}
+              </Text>
+            )}
+          </p>
+        </div>
+        <Badge variant={"secondary"} className="rounded-full h-fit">
+          Tech Demo
+        </Badge>
       </div>
     </li>
   );
 };
 
-const Badge = ({ value }: { value: number }) => {
+const BadgeCount = ({ value }: { value: number | string }) => {
   return (
     <span className="bg-[var(--primary-color)] text-white text-sm font-semibold py-1 px-3 rounded-full">
       {value}
@@ -97,7 +103,10 @@ const NullState = ({ nullState }: { nullState: any }) => {
     <div className="flex flex-col items-center gap-4 justify-between">
       <Image src={logo} width={60} height={60} alt={"Participant Logo"} />
       <p className="text-center text-[#8F8F8F] font-medium">{text}</p>
-      <Link href={""} className="text-[#6750A4] underline font-medium cursor-not-allowed">
+      <Link
+        href={""}
+        className="text-[#6750A4] underline font-medium cursor-not-allowed"
+      >
         {linkText}
       </Link>
     </div>
@@ -122,7 +131,7 @@ const ParticipantContainer = ({
           {heading}
         </Text>
         {count !== null && count !== 0 && (
-          <Badge value={count >= 3 ? 3 : count} />
+          <BadgeCount value={count >= 3 ? 3 : count} />
         )}
       </div>
       <ul className="flex flex-col gap-2">
@@ -141,7 +150,7 @@ const ParticipantContainer = ({
         {count !== null && count > 3 && (
           <Link
             href={""}
-            className="border border-[var(--neutral-light-color)] text-[var(--primary-color)] py-2 px-3 rounded-sm font-medium text-center cursor-not-allowed blur"
+            className="border border-[var(--neutral-light-color)] text-[var(--primary-color)] py-2 px-3 rounded-sm font-medium text-center cursor-not-allowed"
           >
             Show {count - 3} more
           </Link>

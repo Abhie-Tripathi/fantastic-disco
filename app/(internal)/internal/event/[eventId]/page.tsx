@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { ArrowLeft, Globe, Share, Location, StarFill } from "geist-icons";
 import { Phone } from "geist-icons";
 import { useRouter } from "next/navigation";
@@ -19,6 +19,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
+  Bookmark,
   CalendarDays,
   CircleSlash,
   Forward,
@@ -34,6 +35,7 @@ import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
 import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
+  const scrollableSectionRef = useRef<HTMLElement | null>(null);
   const currentDate = new Date().toISOString().split("T")[0];
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
   const [eventDates, setEventDates] = useState<EventDate[]>();
@@ -121,16 +123,25 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     }
   };
 
+  // const handleScrollTo = (section: string) => {
+  //   const element = document.querySelector(`.${section}`);
+  //   if (element) {
+  //     element.scrollIntoView({ behavior: "smooth", block: "start" });
+  //   }
+  // };
   const handleScrollTo = (section: string) => {
-    const element = document.querySelector(`.${section}`);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth", block: "start" });
+    const element = document.querySelector(`.${section}`) as HTMLElement; // Cast to HTMLElement
+    if (element && scrollableSectionRef.current) {
+      scrollableSectionRef.current.scrollTo({
+        top: element.offsetTop, // Now you can access offsetTop
+        behavior: "smooth",
+      });
     }
   };
 
   return (
-    <div className="flex flex-row h-full overflow-y-hidden gap-10 p-6">
-      <aside className="sticky w-[24%] max-[1610px]:w-[30%] max-xl:w-1/3 pb-24 bg-white pr-6 h-full overflow-y-auto shadow-[4px_0_10px_rgba(0,0,0,0.1)] scrollbar">
+    <div className="flex flex-row min-h-screen overflow-y-hidden gap-10 p-6 relative">
+      <aside className="sticky top-0 h-screen w-[24%] max-[1610px]:w-[30%] max-xl:w-1/3 pb-24 bg-white pr-6 overflow-y-auto shadow-[4px_0_10px_rgba(0,0,0,0.1)] scrollbar">
         <button
           onClick={() => router.back()}
           className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
@@ -463,25 +474,35 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+        <div className="flex gap-6 mt-4">
+          <button className="border border-[#6750A4] rounded-md text-[#6750A4] flex  justify-center py-2 px-4 gap-2 items-center w-full">
+            <Bookmark width={15} height={15} className="w-5 h-5" />
+            Save this event
+          </button>
+          <button className="bg-[#6750A4] rounded-md flex items-center justify-center py-2 px-4 text-white w-full">
+            Add this to tracker
+          </button>
+        </div>
 
         {/* <Button className="mt-4 w-full">Track this event</Button> */}
       </aside>
-      <section className="flex flex-col flex-1 right-0 w-[70%] overflow-y-hidden">
-        <ul className="flex flex-row gap-12 mb-4 sticky z-10 bg-[#ffffff] w-full shadow pt-3">
-          {tabs.map((tab) => (
-            <div
-              key={tab.tabName}
-              onClick={() => {
-                handleScrollTo(tab.path);
-              }}
-              className={`relative pb-2 font-semibold cursor-pointer ${
-                activeTab === tab.path
-                  ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
-                  : "text-[var(--tertiary-text-color)]"
-              }`}
-            >
-              {tab.tabName}
-              {/* {tab.tabName === "Insights" && (
+      <section className="flex flex-col flex-1 h-full right-0 w-[70%] overflow-y-hidden">
+        <ul className="flex flex-row gap-12 justify-between mb-4 sticky top-0 z-10 bg-[#ffffff] w-full shadow pt-3">
+          <div className="flex gap-12">
+            {tabs.map((tab) => (
+              <div
+                key={tab.tabName}
+                onClick={() => {
+                  handleScrollTo(tab.path);
+                }}
+                className={`relative pb-2 font-semibold cursor-pointer ${
+                  activeTab === tab.path
+                    ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
+                    : "text-[var(--tertiary-text-color)]"
+                }`}
+              >
+                {tab.tabName}
+                {/* {tab.tabName === "Insights" && (
                 <div className="absolute -top-1 -right-16 w-fit">
                   <span className="bg-[#FEECF2] py-2 px-3 rounded-full text-sm text-[#DF2670] relative ml-2">
                     NEW
@@ -495,10 +516,30 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   </span>
                 </div>
               )} */}
-            </div>
-          ))}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-4">
+            <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit">
+              <Image src={"/dollar.svg"} alt="Dollar" width={10} height={10} />
+              Cost Estimate
+            </button>
+            <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit">
+              <Image
+                src={"/eventRelevance.svg"}
+                alt="Speaker"
+                width={15}
+                height={15}
+              />
+              Event Relevance
+            </button>
+          </div>
         </ul>
-        <section className="flex flex-col gap-6 pr-6 pb-6 overflow-y-auto scrollbar">
+        <section
+          className="flex flex-col gap-6 pr-6 pb-6 h-screen overflow-y-auto scrollbar scroll-smooth"
+          ref={scrollableSectionRef}
+        >
           <EventInfoAndMap
             eventDetails={eventDetails}
             scrollSection={tabs[0].path}

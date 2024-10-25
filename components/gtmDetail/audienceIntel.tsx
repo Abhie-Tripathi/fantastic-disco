@@ -13,6 +13,12 @@ import { CircularProgressBar } from "../eventDetail/circularProgressBar";
 import { useInView } from "react-intersection-observer";
 import { Heading } from "../eventDetail/heading";
 import { GTMEventDetail } from "@/types/events";
+import {
+  audienceSpreadDummyData,
+  designationsDummyData as designations,
+} from "@/data/dummyDataEventDetail";
+import { numberWithCommas } from "@/utils/formater";
+import { Badge } from "../ui/badge";
 
 // type TTabs = "Department Type" | "Designation Type";
 interface Props {
@@ -26,7 +32,7 @@ export const AudienceIntel = ({
   scrollSection,
   setActiveTab,
 }: Props) => {
-  const { audienceSpread } = eventDetails;
+  const { audienceSpread, stats } = eventDetails;
   const tabs = [
     { tabName: "Department Type", path: "department" },
     { tabName: "Designation Type", path: "designation" },
@@ -43,22 +49,30 @@ export const AudienceIntel = ({
   }, [inView]);
   // const [activeTab, setActiveTab] = useState<TTabs>("Department Type");
   return (
-    <div className={`flex flex-col gap-6 ${scrollSection}`}>
-      <Heading heading="Audience Intel" />
+    <div className={`flex flex-col gap-6`} ref={ref}>
+      <Heading heading="Audience Intel" scrollSection={scrollSection}/>
       <div className="flex flex-col gap-6">
+        <div className="flex gap-6">
+          <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+            <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
+              Estimated Exhibitor
+            </h1>
+            <p className="text-[#6750A4] font-semibold text-lg">
+              {stats.estimatedExhibitor ?? "--"}
+            </p>
+          </div>
+          <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+            <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
+              Estimated Visitor
+            </h1>
+            <p className="text-[#6750A4] font-semibold text-lg">
+              {numberWithCommas(stats.estimatedVisitor) ?? "--"}
+            </p>
+          </div>
+        </div>
         <div className="flex gap-6 h-full max-xl:flex-col max-xl:h-full">
-          <div className="flex flex-1 flex-col gap-6 h-fit">
-            {/* <div className="flex p-3 justify-between items-center gap-8 border border-[var(--neutral-light-color)] rounded-sm">
-              <div className="flex items-center gap-2">
-                <Text variant="noMargin" fontWeight="medium">
-                  Event Reputation Score
-                </Text>
-              </div>
-              <div className="w-16 h-16">
-                <CircularProgressBar value={null} />
-              </div>
-            </div> */}
-            <div className="flex flex-col gap-6 border border-[#EBEBEB] rounded-md p-4 h-80 overflow-y-auto scrollbar">
+          <div className="flex flex-col gap-6 border border-[#EBEBEB] rounded-md p-4 h-80 overflow-y-auto scrollbar w-full">
+            <div className="flex justify-between">
               <Text
                 color="primary"
                 fontWeight="medium"
@@ -67,9 +81,14 @@ export const AudienceIntel = ({
               >
                 Audience Spread
               </Text>
-              <ul className="h-full">
-                {audienceSpread != null ? (
-                  Object.entries(audienceSpread).map(([key, value], index) => {
+              <Badge variant={"secondary"} className="rounded-full">
+                Tech Demo
+              </Badge>
+            </div>
+
+            <ul className="h-full">
+              {audienceSpread !== null && Object.keys(audienceSpread).length > 0
+                ? Object.entries(audienceSpread).map(([key, value], index) => {
                     const Flag = Flags[value.iso as keyof typeof Flags];
                     return (
                       <li
@@ -90,24 +109,51 @@ export const AudienceIntel = ({
                           <span className="text-[var(--primary-color)]">
                             {value.count}
                           </span>
-                          <span className="bg-[#FEECF2] border border-[#F9D7E2] text-sm font-medium text-[var(--highlight-text-color)] py-1 px-3 rounded-full">
+                          <span className="bg-[#FEECF2] border border-[#F9D7E2] text-sm font-medium text-[#df2670] py-1 px-3 rounded-full">
                             {value.percentage}%
                           </span>
                         </div>
                       </li>
                     );
                   })
-                ) : (
-                  <span className="text-[#666666] text-sm flex items-center gap-2">
-                    <CircleSlash width={15} height={15} />
-                    No data available
-                  </span>
-                )}
-              </ul>
-            </div>
+                : Object.entries(audienceSpreadDummyData).map(
+                    ([key, value], index) => {
+                      const Flag = Flags[value.iso as keyof typeof Flags];
+                      return (
+                        <li
+                          className={`flex items-center justify-between p-3 ${
+                            (index + 1) % 2 !== 0
+                              ? "bg-[#FAFAFA] border border-[#F2F2F2]"
+                              : ""
+                          }`}
+                          key={key}
+                        >
+                          <div className="flex items-center gap-4">
+                            <Flag className="w-8 h-8" />
+                            <Text
+                              color="primary"
+                              variant="noMargin"
+                              size="large"
+                            >
+                              {value.name}
+                            </Text>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <span className="text-[var(--primary-color)]">
+                              {value.count}
+                            </span>
+                            <span className="bg-[#FEECF2] border border-[#F9D7E2] text-sm font-medium text-[#df2670] py-1 px-3 rounded-full">
+                              {value.percentage}%
+                            </span>
+                          </div>
+                        </li>
+                      );
+                    }
+                  )}
+            </ul>
           </div>
 
-          <div className="flex flex-1 flex-col gap-4 border border-[#EBEBEB] rounded-md p-4 h-80">
+          <div className="flex flex-col gap-6 border border-[#EBEBEB] rounded-md p-4 h-80 w-full">
             {/* <ul className="flex flex-row gap-12 mb-4 sticky z-10 bg-[#ffffff] w-full shadow pt-3">
               {tabs.map((tab) => (
                 <li
@@ -123,14 +169,20 @@ export const AudienceIntel = ({
                 </li>
               ))}
             </ul> */}
-            <Text
-              color="primary"
-              fontWeight="medium"
-              variant="noMargin"
-              size="large"
-            >
-              Designation Types
-            </Text>
+            <div className="flex justify-between">
+              <Text
+                color="primary"
+                fontWeight="medium"
+                variant="noMargin"
+                size="large"
+              >
+                Designation Types
+              </Text>
+              <Badge variant={"secondary"} className="rounded-full">
+                Tech Demo
+              </Badge>
+            </div>
+
             {/* <div className="flex flex-col gap-4 bg-[#FAFAFA] border border-[#EBEBEB] p-6">
               <Text
                 color="primary"
@@ -170,9 +222,9 @@ export const AudienceIntel = ({
             >
               Other departments
             </Text> */}
-            {/* <ul className="flex flex-col gap-4 max-h-80 overflow-y-auto scrollbar pr-2">
-             &.length > 0 ? (
-            .map((designation) => {
+            <ul className="flex flex-col gap-4 max-h-80 overflow-y-auto scrollbar pr-2">
+              {designations && designations.length > 0 ? (
+                designations.map((designation, index) => {
                   const randomProgress = Math.floor(Math.random() * 101);
                   return (
                     <li key={designation.id}>
@@ -180,11 +232,8 @@ export const AudienceIntel = ({
                         <Text fontWeight="medium" color="secondary">
                           {designation.name}
                         </Text>
-                        <span className="text-[var(--primary-color)] font-medium">
-                        125
-                      </span>
                       </p>
-                      <Progress value={randomProgress} className="h-2" />
+                      <Progress value={100 - (index + 1) * 5} className="h-2" />
                     </li>
                   );
                 })
@@ -194,7 +243,7 @@ export const AudienceIntel = ({
                   No data available
                 </span>
               )}
-            </ul> */}
+            </ul>
           </div>
         </div>
         <EventParticipants eventDetails={eventDetails} />

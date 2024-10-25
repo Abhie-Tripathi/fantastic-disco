@@ -80,6 +80,27 @@ export interface Tickets {
   ticketUrl: string;
 }
 
+export interface RankingDetail {
+  categories:
+    | {
+        id: string;
+        rank: number;
+      }[]
+    | null;
+  category_country:
+    | {
+        categoryId: string;
+        countryId: string;
+        rank: number;
+      }[]
+    | null;
+  country: {
+    id: string;
+    rank: number;
+  } | null;
+  global: number;
+}
+
 export interface Currency {
   name: string;
   symbol: string;
@@ -246,20 +267,54 @@ export interface EventDate {
 }
 
 export interface GTMEventDetail extends Omit<Event, "organizer"> {
-  above5CountryEvent: above5CountryEvent[] | [];
+  above5CountryEvent: countryRank[] | [];
+  below5CountryEvent: countryRank[] | [];
+  above5GlobalEvent: globalRank[] | [];
+  below5GlobalEvent: globalRank[] | [];
+  above5CategoryEvent: categoryRank[] | [];
+  below5CategoryEvent: categoryRank[] | [];
   organizer: GTMOrganizer | null;
   "trustScore%": number | null;
+  rankData: {
+    global: number;
+    country: {
+      name: string;
+      rank: number;
+    };
+    category: {
+      name: string;
+      rank: number;
+    }[];
+  };
+  stats: {
+    score: number;
+    eventFollower: number;
+    estimatedVisitor: string;
+    rating: number;
+    estimatedExhibitor: string;
+  };
 }
 
-export interface above5CountryEvent {
-  countryrank: number;
+export interface rankingEvent {
   id: string;
   eventname: string;
   startdate: string;
   enddate: string;
   description: string;
-  logoUrl: any;
+  logoUrl: string;
+}
+
+export interface countryRank extends rankingEvent {
+  countryrank: number;
   countryname: string;
+}
+
+export interface categoryRank extends rankingEvent {
+  categoryrank: number;
+  categoryname: string;
+}
+export interface globalRank extends rankingEvent {
+  globalrank: number;
 }
 
 export type TTabs = "overview" | "insights" | "audience";

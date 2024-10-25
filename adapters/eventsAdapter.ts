@@ -688,7 +688,27 @@ export const EventsAdapter = {
         isBranded: response.event.eventBrand || null,
         isSeries: response.event.eventSeries || null,
         maturity: response.event.maturity || null,
-        above5CountryEvent: response.above5CountryEvent,
+        above5CountryEvent: response.event.above5CountryEvent || [],
+        below5CountryEvent: response.event.below5CountryEvent || [],
+        above5GlobalEvent: response.event.above5GlobalEvent || [],
+        below5GlobalEvent: response.event.below5GlobalEvent || [],
+        above5CategoryEvent: response.event.above5CategoryEvent || [],
+        below5CategoryEvent: response.event.below5CategoryEvent || [],
+        rankData: {
+          global: response.event.rankData.global,
+          country: {
+            name: response.event.rankData.country.name,
+            rank: response.event.rankData.country.rank,
+          },
+          category: response.event.rankData.category,
+        },
+        stats: {
+          score: response.event.stats.score,
+          eventFollower: response.event.stats.eventFollower,
+          estimatedVisitor: response.event.stats.estimatedVisitor,
+          rating: response.event.stats.rating,
+          estimatedExhibitor: response.event.stats.estimatedExhibitor,
+        },
       },
     };
   },
