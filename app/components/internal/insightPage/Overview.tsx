@@ -7,6 +7,8 @@ import Exhibitors from "./overviewSections/Exhibitors";
 import Speakers from "./overviewSections/Speakers";
 import Sponsors from "./overviewSections/Sponsors";
 import { Button, Tooltip, TooltipTrigger } from "react-aria-components";
+import CircularProgress from "./overviewSections/CircularProgress";
+import Link from "next/link";
 
 interface OverviewProps {
   eventDetail: any;
@@ -63,8 +65,7 @@ const Overview = ({ eventDetail }: OverviewProps) => {
               </div>
             </div>
           }
-        </div>
-        <div className={`${styles.infoCardRight} card`}>
+
           <div className={styles.categoryContainer}>
             <div className={styles.subHeading}>Category</div>
             <div className={styles.categoryBadges}>
@@ -95,6 +96,65 @@ const Overview = ({ eventDetail }: OverviewProps) => {
               </div>
             </div>
           }
+        </div>
+        <div className={`${styles.infoCardRight} card`}>
+
+          <div className={styles.relevanceHeading}>
+            <span style={{fontSize: '12px'}} >Tracker Relevance Score</span>
+            <Link className={styles.addTrackerBtn}  style={{fontSize: '10px'}} href={'/internal/trackers'} >Add to Tracker</Link>
+          </div>
+          <div style={{display: 'flex', justifyContent: 'center'}}>
+            <CircularProgress percentages={[1, 1, 1]} relevanceScore={'--'} />
+          </div>
+
+          <div style={{display: 'flex', gap: '6px'}}>
+            <div style={{width: '100%'}}>
+              <div style={{fontSize: 'var(--font-size-large)'}}>-</div>
+              <div style={{fontSize: 'var(--font-size-default)', padding: '4px 0', color: '#646BDC'}}>People</div>
+              <div style={{height: '13px', background: '#646BDC', borderRadius: '4px'}}></div>
+            </div>
+            <div style={{width: '100%'}}>
+              <div style={{fontSize: 'var(--font-size-large)'}}>-</div>
+              <div style={{fontSize: 'var(--font-size-default)', padding: '4px 0', color: '#E99CD4'}}>Purpose</div>
+              <div style={{height: '13px', background: '#E99CD4', borderRadius: '4px'}}></div>
+            </div>
+            <div style={{width: '100%'}}>
+              <div style={{fontSize: 'var(--font-size-large)'}}>-</div>
+              <div style={{fontSize: 'var(--font-size-default)', padding: '4px 0', color: '#9B86D4'}}>Prospect</div>
+              <div style={{height: '13px', background: '#9B86D4', borderRadius: '4px'}}></div>
+            </div>
+          </div>
+
+          {/* <div className={styles.categoryContainer}>
+            <div className={styles.subHeading}>Category</div>
+            <div className={styles.categoryBadges}>
+            {eventDetail?.categories &&
+              eventDetail.categories.map((cat: any, index: number) => (
+                cat?.isGroup &&
+                  <div key={index} className={styles.catItem}>{cat.name}</div>
+              ))}
+            </div>
+          </div>
+          {eventDetail?.eventKeywords && eventDetail.eventKeywords.length > 0 &&
+            <div className={styles.categoryContainer}>
+              <div className={styles.subHeading}>Event Keywords</div>
+              <div className={styles.categoryBadges}>
+                {eventDetail.eventKeywords.slice(0,4).map((cat: any, index: number) => (
+                  <div key={index} className={styles.catItem}>{cat}</div>
+                ))}
+                {eventDetail.eventKeywords.length > 4 &&
+                <>
+                  <TooltipTrigger>
+                    <Button className={styles.moreItems} >+{eventDetail.eventKeywords.length - 4} more</Button>
+                    <Tooltip className={styles['react-aria-Tooltip']}>
+                      {eventDetail.eventKeywords.join(" | ")}
+                    </Tooltip>
+                  </TooltipTrigger>
+                </>
+                }
+              </div>
+            </div>
+          } */}
         </div>
       </div>
       <div className={styles.line}></div>
