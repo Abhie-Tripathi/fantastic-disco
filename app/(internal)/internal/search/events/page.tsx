@@ -1577,7 +1577,7 @@ const Search = () => {
                       />
                     <span className={styles.clearfilter_button}>
                       {" "}
-                      Advanced Filters
+                      Advanced
                     </span>
                   </button>
                 </div>
