@@ -100,26 +100,27 @@ const Overview = ({ eventDetail }: OverviewProps) => {
         <div className={`${styles.infoCardRight} card`}>
 
           <div className={styles.relevanceHeading}>
-            <span style={{fontSize: '12px'}} >Tracker Relevance Score</span>
-            <Link className={styles.addTrackerBtn}  style={{fontSize: '10px'}} href={'/internal/trackers'} >Add to Tracker</Link>
+            <span style={{fontSize: 'var(--font-size-default)'}} >Tracker Relevance Score</span>
+            {/* <Link className={styles.addTrackerBtn} href={'/internal/trackers'} >Add to Tracker</Link> */}
+            <span className='badge_danger' style={{fontSize: 'var(--font-size-small)'}}>Demo</span>
           </div>
           <div style={{display: 'flex', justifyContent: 'center'}}>
-            <CircularProgress percentages={[1, 1, 1]} relevanceScore={'--'} />
+            <CircularProgress percentages={[80, 50, 70]} relevanceScore={'89'} />
           </div>
 
           <div style={{display: 'flex', gap: '6px'}}>
             <div style={{width: '100%'}}>
-              <div style={{fontSize: 'var(--font-size-large)'}}>-</div>
+              <div style={{fontSize: 'var(--font-size-large)'}}>80</div>
               <div style={{fontSize: 'var(--font-size-default)', padding: '4px 0', color: '#646BDC'}}>People</div>
               <div style={{height: '13px', background: '#646BDC', borderRadius: '4px'}}></div>
             </div>
             <div style={{width: '100%'}}>
-              <div style={{fontSize: 'var(--font-size-large)'}}>-</div>
+              <div style={{fontSize: 'var(--font-size-large)'}}>50</div>
               <div style={{fontSize: 'var(--font-size-default)', padding: '4px 0', color: '#E99CD4'}}>Purpose</div>
               <div style={{height: '13px', background: '#E99CD4', borderRadius: '4px'}}></div>
             </div>
             <div style={{width: '100%'}}>
-              <div style={{fontSize: 'var(--font-size-large)'}}>-</div>
+              <div style={{fontSize: 'var(--font-size-large)'}}>70</div>
               <div style={{fontSize: 'var(--font-size-default)', padding: '4px 0', color: '#9B86D4'}}>Prospect</div>
               <div style={{height: '13px', background: '#9B86D4', borderRadius: '4px'}}></div>
             </div>

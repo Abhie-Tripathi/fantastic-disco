@@ -1905,8 +1905,9 @@ useEffect(()=>{
               {(suggestions && suggestions.length > 0) &&
                 <div className={`${styles.suggestion_container}`} >
                   <div className={styles.suggestion_title}>
-                    <Image src={AiIcon} alt="AI" className={iconClass} width={14} height={14} />
-                    {" "} Suggestions
+                    {/* <Image src={AiIcon} alt="AI" className={iconClass} width={14} height={14} /> */}
+                    AI SUGGESTIONS {" "}
+                    <span className={styles.experimental_tag} >Beta</span>
                   </div>
                   <div className={styles.suggestion_items}>
                     {suggestions.map((item: string, ind: number)=>(
