@@ -1,6 +1,6 @@
 "use client";
 
-import { useFilterContext } from "@/contexts/filterContext";
+import { useFilterContext } from "@/context/filterContext";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useCallback, useState } from "react";
 

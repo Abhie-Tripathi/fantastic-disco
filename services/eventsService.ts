@@ -14,6 +14,19 @@ import {
 } from "@/types/events";
 import { EventSearchParams } from "@/types/events";
 import { EventsAdapter } from "@/adapters/eventsAdapter";
+import { myFetch } from "@/utils/myFetch";
+import { ReadonlyURLSearchParams } from "next/navigation";
+import { BaseURL } from "@/config";
+
+export const searchEvents = async (searchParams: ReadonlyURLSearchParams) => {
+  return myFetch(
+    `${BaseURL}/event/all?${searchParams.toString().replace(/%2C/g, ",")}`
+  );
+};
+
+export const searchEventId = async (id: string) => {
+  return myFetch(`${BaseURL}/event/all?id=${id}`);
+};
 
 export const useEventsService = () => {
   const api = useApi<
@@ -35,8 +48,8 @@ export const useEventsService = () => {
       `${endpoints.event.events}`,
       {
         method: "GET",
-      params: {
-        eventIds: id,
+        params: {
+          eventIds: id,
         },
       }
     );

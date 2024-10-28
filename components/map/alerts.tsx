@@ -116,7 +116,7 @@ const Alerts = () => {
     const filterGdacsEventsByBoundingBox = () => {
       const center = turf.point([lng, lat]);
       const options = { units: "kilometers" as const };
-      const circle = turf.circle(center, radius, 50, "kilometers");
+      const circle = turf.circle(center, radius, options);
       const bbox = turf.bbox(circle);
       const bboxPolygon = turf.bboxPolygon(bbox);
 

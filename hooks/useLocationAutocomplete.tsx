@@ -16,20 +16,20 @@ export const useNominatimAutocomplete = (input: string) => {
   };
 };
 
-export const useSavedLocationAutocomplete = (input: string) => {
-  const { getSavedLocationAutocomplete } = useLocationService();
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["savedLocationAutocomplete", input],
-    queryFn: () => getSavedLocationAutocomplete(input),
-    enabled: !!input,
-  });
+// export const useSavedLocationAutocomplete = (input: string) => {
+//   const { getSavedLocationAutocomplete } = useLocationService();
+//   const { data, error, isLoading } = useQuery({
+//     queryKey: ["savedLocationAutocomplete", input],
+//     queryFn: () => getSavedLocationAutocomplete(input),
+//     enabled: !!input,
+//   });
 
-  return {
-    predictions: data?.savedLocations ?? [],
-    isLoading,
-    isError: !!error,
-  };
-};
+//   return {
+//     predictions: data?.savedLocations ?? [],
+//     isLoading,
+//     isError: !!error,
+//   };
+// };
 
 export const useDatabaseLocationcomplete = (input: string) => {
   const { getDatabaseLocationAutocomplete } = useLocationService();

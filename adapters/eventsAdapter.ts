@@ -47,6 +47,11 @@ export const EventsAdapter = {
         adaptedParams.shows = adaptedShowsParams.join(",");
     }
 
+    if (params.get("eventName")) {
+      adaptedParams.eventName = params.get("eventName")!;
+      return adaptedParams;
+    }
+
     if (params.get("categories")) {
       adaptedParams.eventCategory = params.get("categories")!;
     }

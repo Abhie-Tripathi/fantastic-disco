@@ -1,6 +1,6 @@
 import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
-import { Country } from "@/types/events/event";
+// import { Country } from "@/types/events/event";
 import { Designations } from "@/types/misc/designations";
 import { UndefinedInitialDataInfiniteOptions } from "@tanstack/react-query";
 import { MiscAdapter } from "@/adapters/miscAdapter";
@@ -28,14 +28,14 @@ export const useMiscService = () => {
   //   };
 
   const getCountries = async () => {
-    const response = await api.request<Country[]>(`${endpoints.locations}`, {
+    const response = await api.request<any[]>(`${endpoints.locations}`, {
       method: "GET",
       params: { limit: 300, offset: 0 },
     });
     return MiscAdapter.adaptCountriesResponse(response);
   };
   const getDesginationAutocomplete = async (input: string) => {
-    const response = await api.request<Designations[] | undefined>(
+    const response = await api.request<any[] | undefined>(
       `${endpoints.designations}`,
       {
         method: "GET",

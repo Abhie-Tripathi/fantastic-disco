@@ -34,6 +34,8 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, Loader2, Filter } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Suspense, lazy, useCallback, useEffect, useState } from "react";
+import Table from "@/app/components/Table";
+import { EventsAdapter } from "@/adapters/eventsAdapter";
 
 const Map = lazy(() => import("@/components/map"));
 
@@ -50,6 +52,8 @@ interface LocationIds {
 }
 
 type LocationState = GeoCoordinate | LocationIds | null;
+
+
 
 const Search = () => {
   const { navigateWithParams, getFilterValue, setFilter } = useFilterState();
@@ -92,6 +96,41 @@ const Search = () => {
   const searchHandler = useCallback(() => {
     applyFilters();
   }, []);
+
+  const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
+  
+  console.log(adaptedParams)
+
+  const adaptedQueryString = (function () {
+    delete adaptedParams.offset;
+    delete adaptedParams.max;
+    delete adaptedParams.sortBy;
+    delete adaptedParams.sortType;
+    return new URLSearchParams(adaptedParams).toString();
+  })();
+
+
+  const selectedInsights = {
+    eventSize: true,
+    eventKeywords: true,
+    eventRank: true,
+    matchScore: true,
+    growth: true,
+    eventSeries: true,
+    brandedEvent: true,
+    global: true,
+    reptSent: true,
+    eventRating: true,
+    estExhibit: true,
+    repeatSent: true,
+    maturity: true,
+    impactScore: true,
+    inboundScore: true,
+    internationalScore: true,
+    forecasted: true,
+    audienceZone: false,
+    audienceSpread: false,
+  };
 
   return (
     <div className="space-y-6 p-6">
@@ -188,7 +227,12 @@ const Search = () => {
           {isLoading ? (
             <Loading />
           ) : (
-            <List events={events as Event[]} count={count} />
+            <Table
+              showInsights={selectedInsights}
+              queryString={adaptedQueryString}
+              setRequestExhausted={() => {}}
+              handleButtonLoading={() => {}}
+            />
           )}
         </TabsContent>
         <TabsContent value="map">

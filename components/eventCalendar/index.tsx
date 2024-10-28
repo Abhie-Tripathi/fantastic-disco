@@ -13,7 +13,7 @@ import {
 } from "./customHeaders";
 import { CustomView, Views } from "./constants";
 import { useFilterState } from "@/hooks/useFilterState";
-import { CalendarEvent, CalendarMonthEvent } from "@/types";
+import { CalendarEvent, CalendarMonthEvent } from "@/types/events";
 import EventList from "./eventList";
 
 const localizer = momentLocalizer(moment);

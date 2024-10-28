@@ -177,7 +177,7 @@ export default function MultiSelectSearchBar() {
                   placeholder={selectedItems.length ? "" : "Search Events"}
                   value={searchTerm}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  className="pl-2 pr-4 w-full border-none focus:ring-0 text-base"
+                  className="pl-2 pr-4 w-full border-none focus:ring-0 text-base shadow-none"
                 />
               </div>
             </div>
