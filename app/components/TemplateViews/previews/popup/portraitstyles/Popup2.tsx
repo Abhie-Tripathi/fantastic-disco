@@ -186,6 +186,7 @@ const Popup2: React.FC<Props> = ({
       <div className={styles.dividerLine}></div>
       <div className={styles.type_peopleContainer}>
         <div className={styles.typeContainer}>
+        <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType ==="MAIN"?"Main Event":fetchedAddedEvents![0]?.eventType ==="SUB"?"Side Event":"Main Event"}</div>
           <div
             className={`${styles.pill} ${styles.type1}`}
             style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}

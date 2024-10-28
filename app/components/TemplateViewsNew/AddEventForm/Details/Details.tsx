@@ -60,7 +60,6 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
   const [exhibitorIndex, setExhibitorIndex] = useState<number>(0)
 
   const handlePrefill = (profile: any, key: number) => {
-    console.log("prefilledExhibitorDetails__",profile)
     setSpeakerIndex(key)
     handleChange('prefilledProfile', profile)
     // setPrefilledProfile(profile)
@@ -69,7 +68,6 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
   }
 
   const handlePrefillExhibitorDetails = (profile: any, key: number) => {
-    console.log("prefilledExhibitorDetails",profile)
     setExhibitorIndex(key)
     handleChange("prefilledExhibitorDetails",profile)
     handleChange('exhibitorModal',true)
@@ -107,7 +105,10 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
   };
 
   const deleteExhibitorDetails = () => {
-    
+    const updatedSpeakers = formState.exhibitor.filter((_: any, index: number) => index !== exhibitorIndex)
+    handleChange('exhibitor', updatedSpeakers)
+    handleChange('exhibitorModal', false);
+    handleChange('prefilledExhibitorDetails', undefined);
   }
 
   const updateExhibitorDetails = (updatedProfile:any) => {
@@ -212,7 +213,7 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
 
   return (
     <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.exhibitorModal || formState.registerModal ? styles.modalBody : ""}`}>
-      <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.exhibitorModal || formState.registerModal ? styles.modalOpen : ""}`} >
+      <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.exhibitorModal || formState.registerModal ||formState.capacityModal? styles.modalOpen : ""}`} >
         <div>
           <div className={`${styles.participationContainer}`}><ParticipationContainer formTheme={formTheme} handleChange={handleChange} formState={formState} heading='Choose Your Mode of Participation' type='main' size="large" />
           </div>
@@ -359,14 +360,17 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
       {
           formState.participationType === "Organiser"&&
                 formState.capacityModal &&  
-                 <CapacityModal
-                 capacityModal={formState.capacityModal}
+                <div className={styles.capacityModal}>
+                  <CapacityModal
+                  capacityModal={formState.capacityModal}
                   capacity={ formState.capacity}
                   handleChange={handleChange}
                   waitlisting={formState.waitlisting}
-
-                /> 
+                 /> 
+                </div>
+                 
       }
+      
     </div >
   )
 }

@@ -26,7 +26,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             return null;
         }
         const eventData = data?.data;
-        console.log("eventData_customizationData",eventData)
+        console.log("eventData_customizationData",data.approval)
         // if (!eventData) return null;
 
         const eventObject: EventsType = {

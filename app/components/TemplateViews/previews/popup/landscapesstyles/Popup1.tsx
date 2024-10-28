@@ -5,6 +5,8 @@ import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
+import POP from '/public/partyPopIcon.svg'
+import TradeshowIcon from '/public/tradeshowIcon.svg'
 
 interface FontSettings {
   fontFamily: string;
@@ -72,8 +74,13 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
       <div className={styles.detailsContainer}>
         <div className={styles.valuesContainer}>
           <div className={styles.date_location_nameContainer}>
-            <div className={styles.dateContainer}><span className={styles.date} style={{ fontSize: fontSettings.heading.fontSize }}>{day}</span>
-              <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div>
+            {/* <div className={styles.dateContainer}><span className={styles.date} style={{ fontSize: fontSettings.heading.fontSize }}>{day}</span>
+              <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div> */}
+            <div className={styles.dateContainer}>
+              {
+                fetchedAddedEvents![0]?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedAddedEvents![0]?.eventType === "MAIN" ? <Image src={TradeshowIcon} alt=''/>:<Image src={POP} alt=''/>
+              }
+            </div>
             <div className={styles.line}></div>
             <div className={styles.name_locationContainer}>
               <div className={styles.locationContainer}>

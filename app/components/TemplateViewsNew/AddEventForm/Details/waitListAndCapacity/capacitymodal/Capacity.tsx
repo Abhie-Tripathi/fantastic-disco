@@ -19,39 +19,17 @@ const CapacityModal = ({
   capacityModal,
   eventId,
 }: Props) => {
-  const [inputValue, setInputValue] = useState<number>(capacity === -1 ? 50:capacity);
+  const [inputValue, setInputValue] = useState<number>(
+    capacity === -1 ? 50 : capacity
+  );
   const capacityModalRef = useOutsideClick(() =>
     handleChange("capacityModal", false)
   );
-  console.log("capacity__", capacity, eventId, inputValue);
-
- 
 
   const handleClose = () => {
-    // onClose();
     handleChange("capacityModal", false);
     handleChange("capacity", inputValue);
   };
-
-  //   const handleChangecapacity = async () => {
-  //     console.log("sdasd")
-  //     const formData = new FormData()
-  //     if(eventId){formData.append("id", eventId);}
-
-  //     formData.append("maxCapacity", inputValue + "")
-  //     formData.append("waitlisting", waitlisting + "")
-  //     const { data, error } = await myFetch(`${baseUrl}/event`, {
-  //         method: 'PATCH',
-  //         body: formData
-  //     })
-  //     if(data){
-  //         showToast("success", "Capacity and Waitlist updated")
-  //         handleChange("capacityModal",false)
-  //         // fetchEventData()
-  //     }else{
-  //         console.log("error",error)
-  //     }
-  // }
 
   const handleChangecapacity = async () => {
     const formData = new FormData();
@@ -61,28 +39,10 @@ const CapacityModal = ({
     }
 
     if (inputValue !== 0 || inputValue !== undefined) {
-      console.log("Adding new capacity");
-      handleChange("capacity", inputValue); 
+      handleChange("capacity", inputValue);
       handleChange("capacityModal", false);
-
     } else {
-      // Updating existing maxCapacity
       console.log("Updating maxCapacity");
-      formData.append("maxCapacity", inputValue + "");
-      formData.append("waitlisting", waitlisting + "");
-
-      const { data, error } = await myFetch(`${baseUrl}/event`, {
-        method: "PATCH",
-        body: formData,
-      });
-
-      if (data) {
-        showToast("success", "Capacity and Waitlist updated");
-        handleChange("capacityModal", false);
-        // fetchEventData()
-      } else {
-        console.log("API error", error);
-      }
     }
   };
 
@@ -126,7 +86,6 @@ const CapacityModal = ({
 
 export default CapacityModal;
 
-
 // import React, { useState } from "react";
 // import styles from "./capacity.style.module.css";
 // import { FormState } from "@/types/Formstate";
@@ -169,7 +128,7 @@ export default CapacityModal;
 
 //     if (inputValue !== 0 || inputValue !== undefined) {
 //       console.log("Adding new capacity");
-//       handleChange("maxCapacity", inputValue); 
+//       handleChange("maxCapacity", inputValue);
 //       handleChange("capacityModal", false);
 //       showToast("success", "Capacity set successfully!");
 //     } else {
@@ -230,4 +189,3 @@ export default CapacityModal;
 // };
 
 // export default CapacityModal;
-

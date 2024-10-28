@@ -235,6 +235,10 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             formData.append("name", mainEventState.eventName)
             formData.append("data", JSON.stringify(eventData))
             formData.append("type", "MAIN")
+            formData.append("capacity", mainEventState?.capacity + "")
+            formData.append("approval", mainEventState?.approval + "")
+            formData.append("waitlisting", mainEventState?.waitlisting + "")
+            
 
             if (mainEventState.banner.file || mainEventState.banner.placeHolder.includes("oaidalleapiprodscus")) {
                 if (mainEventState.banner.file) {
@@ -261,7 +265,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                     showToast("success", "Main Event Added Successfully")
                     if (fetchEvents) {
                         // fetchEvents(0, "update")
-                        // window.location.reload();
+                        window.location.reload();
                     }
                     if (mainEventState.speaker.length > 0) {
                         mainEventState.speaker.map((speaker: any) => {
@@ -293,6 +297,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
     }
 
     const addSpeakers = async (eventId: string, speaker: any) => {
+        console.log("speaker_called",speaker, eventId)
         const formData = new FormData()
         const speakerObject = {
             name: speaker.data.name,
@@ -312,6 +317,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
     }
 
     const addExhibitorDetails = async (eventId: string, exhibitor: any) => {
+        console.log("exhibitor_called",exhibitor, eventId)
         const formData = new FormData()
         const exhibitorObject = {
             companyName: exhibitor.data.companyName,

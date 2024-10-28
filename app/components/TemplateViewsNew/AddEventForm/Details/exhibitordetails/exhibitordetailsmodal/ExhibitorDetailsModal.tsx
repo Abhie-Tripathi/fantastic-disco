@@ -33,7 +33,7 @@ const ExhibitorDetailsModal = ({
     if (prefilledExhibitorDetails) {
       updateExhibitorDetails(updatedProfile);
   } else {
-      const currentExhibitor = prefilledExhibitorDetails || []; // Use an empty array if undefined
+      const currentExhibitor = exhibitorDetailsData || []; // Use an empty array if undefined
       // Add the new profile
       const updatedExhibitor = [...currentExhibitor, updatedProfile];
       // Update the state with the new array

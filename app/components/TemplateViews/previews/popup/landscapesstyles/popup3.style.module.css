@@ -37,6 +37,17 @@
     bottom: 5px;
     right: 9px;
 }
+
+.event_type{
+    position: absolute;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #6750A4;
+    background-color: #F7EFFF;
+    bottom: 5px;
+    left: 10px;
+}
 .smallerBanner{
     height: 100%;
     width: 285px;

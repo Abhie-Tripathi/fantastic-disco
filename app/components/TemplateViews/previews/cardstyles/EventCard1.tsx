@@ -3,7 +3,8 @@ import styles from './eventcard1.style.module.css'
 import Image from 'next/image'
 // import placeholder2 from '/public/placeholder2.png'
 import placeholder2 from '/public/demobanner.png'
-
+import POP from '/public/partyPopIcon.svg'
+import TradeshowIcon from '/public/tradeshowIcon.svg'
 
 import locationIcon from '/public/location_on.svg'
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
@@ -63,8 +64,13 @@ const EventCard1 = ({
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <Image width={291} height={185} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.banner} />
             <div className={styles.date_location_nameContainer}>
-                <div className={styles.dateContainer}><span className={styles.date} style={{ fontSize: fontSettings.heading.fontSize }}>{day}</span>
-                    <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div>
+                {/* <div className={styles.dateContainer}><span className={styles.date} style={{ fontSize: fontSettings.heading.fontSize }}>{day}</span>
+                    <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div> */}
+            <div className={styles.dateContainer}>
+             {
+                fetchedEvent?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedEvent?.eventType === "MAIN" ? <Image src={TradeshowIcon} alt=''/>:<Image src={POP} alt=''/>
+             }
+           </div>
                 <div className={styles.line}></div>
                 <div className={styles.name_locationContainer}>
                     <div className={styles.locationContainer}>

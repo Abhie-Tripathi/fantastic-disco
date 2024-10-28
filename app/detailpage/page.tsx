@@ -43,10 +43,11 @@ interface EventProps {
     approval: boolean;
     waitlisting: boolean;
     virtualLink: string;
+    exhibitor:any[];
 }
 
 const Page = ({snowTheme, venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags, participationType, childrenData, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags, participationType, childrenData, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink,exhibitor }: EventProps) => {
     return (
         // <div></div>
         <DetailPageComponent
@@ -68,6 +69,7 @@ const Page = ({snowTheme, venue, latitude, eventFont, longitude, pageBgColor, re
             registerMessage={registerMessage}
             registerBtnColor={registerBtnColor}
             speaker={speaker}
+            exhibitor={exhibitor}
             participationMessage={participationMessage}
             name={name}
             format={format}
@@ -136,6 +138,7 @@ const fetchData = async (eventId: string) => {
             registerBtnText: data.data.event.data.customizationData.registerBtnText,
             registerMessage: data.data.event.data.customizationData.registerMessage,
             speaker: data.data.event.data.customizationData.speaker,
+            exhibitor: data.data.event.data.customizationData.exhibitor,
             participationMessage: data.data.event.data.customizationData.participationMessage,
             venue: data.data.event.data.customizationData.venue,
             hashtags: data.data.event.data.customizationData.hashtags,
@@ -173,6 +176,7 @@ const fetchData = async (eventId: string) => {
                     registerBtnText: child.data.customizationData.registerBtnText,
                     registerMessage: child.data.customizationData.registerMessage,
                     speaker: child.data.customizationData.speaker,
+                    exhibitor: child.data.customizationData.exhibitor,
                     participationMessage: child.data.customizationData.participationMessage,
                     venue: child.data.customizationData.venue,
                     hashtags: child.data.customizationData.hashtags,

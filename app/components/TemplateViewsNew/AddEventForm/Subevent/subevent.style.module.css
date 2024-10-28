@@ -341,3 +341,13 @@
         padding: 40px 80px 20px 70px;
     }
 }
+
+
+.capacityModal {
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+}

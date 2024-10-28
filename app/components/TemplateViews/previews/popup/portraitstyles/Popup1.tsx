@@ -6,6 +6,8 @@ import placeholder2 from '/public/DemoBanner.png'
 import locationIcon from '/public/location_on.svg'
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
+import POP from '/public/partyPopIcon.svg'
+import TradeshowIcon from '/public/tradeshowIcon.svg'
 
 interface FontSettings {
     fontFamily: string;
@@ -63,9 +65,14 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
         <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <Image src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' width={300} height={smallCard ? 170 : 220} className={styles.banner} />
             <div className={`${styles.date_location_nameContainer} ${smallCard ?styles.smalldate_location_nameContainer:"" }`}>
-                <div className={smallCard ? styles.smallDateContainer : styles.dateContainer}>
+                {/* <div className={smallCard ? styles.smallDateContainer : styles.dateContainer}>
                     <span className={styles.date} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize }}>{day}</span>
                     <span className={styles.month} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize }}>{month}</span>
+                </div> */}
+                 <div className={styles.dateContainer}>
+                    {
+                        fetchedAddedEvents![0]?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedAddedEvents![0]?.eventType === "MAIN" ? <Image src={TradeshowIcon} alt=''/>:<Image src={POP} alt=''/>
+                    }
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.name_locationContainer}>

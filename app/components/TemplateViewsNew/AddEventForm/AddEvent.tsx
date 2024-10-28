@@ -81,7 +81,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     errorMessage: 'Event name is required.',
     capacity: prefilledEvent?.capacity || -1,
     registration: true,
-    approval: false,
+    approval: prefilledEvent?.approval || false,
     waitlisting: false,
     capacityModal: false,
     virtualLink: "",

@@ -150,82 +150,105 @@ const RegisterForm = ({
   //   calculateTimeDifference();
   // }, [end_date]);
 
-
-
-
-
-  // useEffect(() => {
-  //   const calculateTimeDifference = () => {
-  //     const currentDate = new Date();
-  //     const currentDateString = currentDate.toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-
-  //     // Create event end date with time included
-  //     const eventEndDateTime = new Date(`${end_date}T${end_time}`);
-
-  //     const hasEventEnded = end_date < currentDateString || (end_date === currentDateString && currentDate >= eventEndDateTime);
-
-  //     if (hasEventEnded) {
-  //       setIsEventEnded(true);
-  //       const timeDiffInMs = currentDate.getTime() - eventEndDateTime.getTime();
-  //       const daysSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60 * 24));
-  //       const hoursSinceEnd = Math.floor((timeDiffInMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-
-  //       if (daysSinceEnd > 0) {
-  //         if (daysSinceEnd === 1) {
-  //           console.log("ssssssssssssssssssssssssssssssssss_1")
-  //           setTimeSinceEnd("1 day ago"); // Ended yesterday
-  //         } else {
-  //           console.log("ssssssssssssssssssssssssssssssssss_2")
-  //           setTimeSinceEnd(`${daysSinceEnd} days ago`); // More than one day ago
-  //         }
-  //       } else if (daysSinceEnd === 0) {
-  //         // If ended today, show hours
-  //         if (hoursSinceEnd === 0) {
-  //           setTimeSinceEnd("Ended just now."); // Ended just now
-  //           console.log("ssssssssssssssssssssssssssssssssss_3")
-  //         } else if (hoursSinceEnd === 1) {
-  //           setTimeSinceEnd("1 hour ago"); // Ended 1 hour ago
-  //           console.log("ssssssssssssssssssssssssssssssssss_4")
-  //         } else {
-  //           setTimeSinceEnd(`${hoursSinceEnd} hours ago`); // Ended more than 1 hour ago
-  //           console.log("ssssssssssssssssssssssssssssssssss_5")
-  //         }
-  //       }
-  //     } else {
-  //       // Event is ongoing or hasn't started yet
-  //       setIsEventEnded(false);
-  //       console.log("ssssssssssssssssssssssssssssssssss_6")
-  //       setTimeSinceEnd("Event is ongoing or has not started yet.");
-  //     }
-  //   };
-
-  //   calculateTimeDifference();
-  // }, [end_date, end_time]);
-
-
   useEffect(() => {
+    const timeDifference = (
+      currentTimeStr: string,
+      eventEndTimeStr: string
+    ) => {
+      // Helper function to parse time strings and create date objects
+      const parseTimeString = (timeStr: string) => {
+        const [time, modifier] = timeStr.split(" ");
+        const [hours, minutes] = time.split(":");
+        const date = new Date();
+
+        // Set hours based on AM/PM modifier
+        let hours24 = parseInt(hours, 10);
+        if (modifier === "PM" && hours24 < 12) {
+          hours24 += 12; // Convert to 24-hour format
+        }
+        if (modifier === "AM" && hours24 === 12) {
+          hours24 = 0; // Midnight case
+        }
+
+        // Set the date's hours and minutes
+        date.setHours(hours24);
+        date.setMinutes(parseInt(minutes, 10));
+        date.setSeconds(0);
+        return date;
+      };
+
+      const currentDate = parseTimeString(currentTimeStr);
+      const eventEndDate = parseTimeString(eventEndTimeStr);
+
+      // Calculate time difference in milliseconds
+      const timeDiffInMs = currentDate.getTime() - eventEndDate.getTime();
+
+      // Convert milliseconds to hours and minutes
+      const hours = Math.floor(timeDiffInMs / (1000 * 60 * 60));
+      const minutes = Math.floor(
+        (timeDiffInMs % (1000 * 60 * 60)) / (1000 * 60)
+      );
+
+      return {
+        hours,
+      };
+    };
+
     const calculateTimeDifference = () => {
       const currentDate = new Date();
       const eventEndDate = new Date(end_date); // Example: "2024-10-25T23:00:00" (11:00 PM)
 
-      // Check if event has ended
+      // Helper function to format time as "HH:MM AM/PM"
+      const formatTime = (date: any) => {
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+        const period = hours >= 12 ? "PM" : "AM";
+        const formattedHours = hours % 12 || 12;
+        const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+        return `${formattedHours}:${formattedMinutes} ${period}`;
+      };
+
+      // Log formatted times for debugging
+      console.log("Current Time:", formatTime(currentDate));
+      console.log("Event End Time:", formatTime(eventEndDate), end_time);
+
+      // Check if it's the same day
+      const isSameDay =
+        currentDate.toDateString() === eventEndDate.toDateString();
+
+      // Check if the event has ended
       const hasEventEnded = currentDate > eventEndDate;
       if (hasEventEnded) {
-        setIsEventEnded(true);
-
         // Calculate time difference in milliseconds
         const timeDiffInMs = currentDate.getTime() - eventEndDate.getTime();
-        const hoursSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60)); // Hours difference
-        const isSameDay = currentDate.toDateString() === eventEndDate.toDateString();
-
+        console.log("tata", timeDiffInMs,isSameDay);
         if (isSameDay) {
-          // If the event ended today, show "Event ended X hours ago"
-          setTimeSinceEnd(`Event ended ${hoursSinceEnd} hour${hoursSinceEnd !== 1 ? 's' : ''} ago`);
+          // Event ended today, calculate hours since the event ended
+          const hoursSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60));
+          const currentTimediff = formatTime(currentDate);
+          // console.log("tata", currentTimediff, end_time);
+          const value = timeDifference(currentTimediff, end_time);
+          console.log("tata___ewew", value);
+          setTimeSinceEnd(
+            `Event ended ${value.hours} hour${value.hours !== 1 ? "s" : ""} ago`
+          );
         } else {
-          // If the event ended on a previous day, calculate days
+          // Event ended on a previous day, calculate days since the event ended
           const daysSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60 * 24));
-          setTimeSinceEnd(`Event ended ${daysSinceEnd} day${daysSinceEnd !== 1 ? 's' : ''} ago`);
+          console.log("daysSinceEnd", daysSinceEnd);
+          if(daysSinceEnd ===0){
+            setTimeSinceEnd(
+              `Event ended just now`)
+          }else{
+            setTimeSinceEnd(
+              `Event ended ${daysSinceEnd} day${
+                daysSinceEnd !== 1 ? "s" : ""
+              } ago`
+            );
+          }
+         
         }
+        setIsEventEnded(true);
       } else {
         setIsEventEnded(false);
         setTimeSinceEnd(""); // Reset if the event is ongoing
@@ -239,8 +262,7 @@ const RegisterForm = ({
     // Cleanup the interval on component unmount
     return () => clearInterval(intervalId);
   }, [end_date]);
- 
-  
+
   return (
     <div className={styles.registerContainer}>
       {!isEventEnded &&
@@ -249,8 +271,8 @@ const RegisterForm = ({
         !approval &&
         waitlisting && (
           <div className={styles.customMsg_container}>
-            <div className={styles.header}>
-              <div>Join us at the event</div>
+            <div className={styles.detail_text}>
+              <div>Join us at the event..</div>
             </div>
             <div className={styles.customMessage}>{registerMessage}</div>
           </div>
@@ -261,7 +283,7 @@ const RegisterForm = ({
         !approval &&
         !waitlisting && (
           <div className={styles.customMsg_container}>
-            <div className={styles.header}>
+            <div className={styles.detail_text}>
               <div>Join us at the event</div>
             </div>
             <div className={styles.customMessage}>{registerMessage}</div>
