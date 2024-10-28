@@ -11,6 +11,7 @@ import DetailDialog from "../eventDetail/modal";
 import { Button } from "@/components/ui/button";
 import { numberWithCommas } from "@/utils/formater";
 import { useInView } from "react-intersection-observer";
+import CircularProgress from "../gtmDetailRelevanceScore/circularProgress";
 interface Props {
   eventDetails: GTMEventDetail;
   scrollSection: string;
@@ -222,10 +223,87 @@ export const EventInfoAndMap = ({
           </div>
         </div>
         <div className="flex flex-1 flex-col gap-8 max-xl:flex-none max-xl:h-fit w-auto bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] p-6 rounded-sm">
-          <div className="h-96">
+          <div className={"gap-8 flex flex-col"}>
+            <div className={"flex justify-between items-center"}>
+              <span style={{ fontSize: "var(--font-size-default)" }}>
+                Tracker Relevance Score
+              </span>
+              {/* <Link className={styles.addTrackerBtn} href={'/internal/trackers'} >Add to Tracker</Link> */}
+              <span
+                className="badge_danger"
+                style={{ fontSize: "var(--font-size-small)" }}
+              >
+                Demo
+              </span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <CircularProgress
+                percentages={[80, 50, 70]}
+                relevanceScore={"89"}
+              />
+            </div>
 
+            <div style={{ display: "flex", gap: "6px" }}>
+              <div style={{ width: "100%" }}>
+                <div style={{ fontSize: "var(--font-size-large)" }}>80</div>
+                <div
+                  style={{
+                    fontSize: "var(--font-size-default)",
+                    padding: "4px 0",
+                    color: "#646BDC",
+                  }}
+                >
+                  People
+                </div>
+                <div
+                  style={{
+                    height: "13px",
+                    background: "#646BDC",
+                    borderRadius: "4px",
+                  }}
+                ></div>
+              </div>
+              <div style={{ width: "100%" }}>
+                <div style={{ fontSize: "var(--font-size-large)" }}>50</div>
+                <div
+                  style={{
+                    fontSize: "var(--font-size-default)",
+                    padding: "4px 0",
+                    color: "#E99CD4",
+                  }}
+                >
+                  Purpose
+                </div>
+                <div
+                  style={{
+                    height: "13px",
+                    background: "#E99CD4",
+                    borderRadius: "4px",
+                  }}
+                ></div>
+              </div>
+              <div style={{ width: "100%" }}>
+                <div style={{ fontSize: "var(--font-size-large)" }}>70</div>
+                <div
+                  style={{
+                    fontSize: "var(--font-size-default)",
+                    padding: "4px 0",
+                    color: "#9B86D4",
+                  }}
+                >
+                  Prospect
+                </div>
+                <div
+                  style={{
+                    height: "13px",
+                    background: "#9B86D4",
+                    borderRadius: "4px",
+                  }}
+                ></div>
+              </div>
+            </div>
           </div>
-          
+
           <DetailMapComponent
             eventDetails={eventDetails}
             venueLocation={venueLocation}

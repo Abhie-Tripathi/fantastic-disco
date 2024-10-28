@@ -50,7 +50,7 @@ export const AudienceIntel = ({
   // const [activeTab, setActiveTab] = useState<TTabs>("Department Type");
   return (
     <div className={`flex flex-col gap-6`} ref={ref}>
-      <Heading heading="Audience Intel" scrollSection={scrollSection}/>
+      <Heading heading="Audience Intel" scrollSection={scrollSection} />
       <div className="flex flex-col gap-6">
         <div className="flex gap-6">
           <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
@@ -58,7 +58,9 @@ export const AudienceIntel = ({
               Estimated Exhibitor
             </h1>
             <p className="text-[#6750A4] font-semibold text-lg">
-              {stats.estimatedExhibitor ?? "--"}
+              {stats.estimatedExhibitor
+                ? stats.estimatedExhibitor ?? "--"
+                : "--"}
             </p>
           </div>
           <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
@@ -66,7 +68,9 @@ export const AudienceIntel = ({
               Estimated Visitor
             </h1>
             <p className="text-[#6750A4] font-semibold text-lg">
-              {numberWithCommas(stats.estimatedVisitor) ?? "--"}
+              {stats.estimatedVisitor
+                ? numberWithCommas(stats.estimatedVisitor ?? "")
+                : "--"}
             </p>
           </div>
         </div>
