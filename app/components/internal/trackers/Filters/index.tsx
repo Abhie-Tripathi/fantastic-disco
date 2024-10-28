@@ -80,6 +80,8 @@ import Speaking from "/public/speaking.svg";
 import Keywords from "/public/keywords.svg";
 import trackerEmptyTable from "/public/internal/trackerEmptyTable.svg"
 import TemplateTable from "./templateTable";
+import { suggestionGenerator } from "@/utils/openAI";
+import AiIcon from "/public/AiIcon.svg"
 interface FilterValue {
   labels: string;
   name: string;
@@ -630,8 +632,26 @@ const Pages = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
+
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   useEffect(() => {
+    const fetchAISuggestion = async (val: any) => {
+      try{
+        const promptText = `List only name of top 5 companies similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {"data": ["company name 1","company name 2","company name 3","company name 4","company name 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`;
+        let aiResponse: any = await suggestionGenerator(promptText);
+        let temp = JSON.parse(aiResponse.choices[0].message.content);  
+        if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
+          setSuggestions(temp.data);
+      } catch (err) {
+        console.error("Fetch failed:", err);
+        setSuggestions([]);
+      }
+    }  
+
     if (type === "T_COMPETITOR") {
+      if(customData.length > 0 && Object.values(customData[0])[0]) {
+        fetchAISuggestion(Object.values(customData[0])[0]);
+      }
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       const urls = customData
       .map((item: {}) => Object.values(item)[0] as string)
@@ -1167,7 +1187,7 @@ const Pages = () => {
           setCustomData((prevData: any) => [
             ...prevData,
             ...orgNames?.map((item) => (
-              { companyUrl: item.trim() }
+              { "Competitor Name or Website": item.trim() }
             ))
           ]);
         }
@@ -1175,7 +1195,7 @@ const Pages = () => {
           setCustomData((prevData: any) => [
             ...prevData,
             ...orgWebsites?.map((item) => (
-              { companyUrl: item.trim() }
+              { "Competitor Name or Website": item.trim() }
             ))
           ]);
         }
@@ -1882,6 +1902,20 @@ useEffect(()=>{
     {!valid && (
                 <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
               )}
+              {(suggestions && suggestions.length > 0) &&
+                <div className={`${styles.suggestion_container}`} >
+                  <div className={styles.suggestion_title}>
+                    {/* <Image src={AiIcon} alt="AI" className={iconClass} width={14} height={14} /> */}
+                    AI SUGGESTIONS {" "}
+                    <span className={styles.experimental_tag} >Beta</span>
+                  </div>
+                  <div className={styles.suggestion_items}>
+                    {suggestions.map((item: string, ind: number)=>(
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{item}</div>
+                    ))}
+                  </div>
+                </div>
+              }
               {/* {customData && customData.length >0 &&
                 <div className={styles.allCompetitors}>
                   <div className={styles.remove_all_custom} onClick={() => setCustomData([])}>

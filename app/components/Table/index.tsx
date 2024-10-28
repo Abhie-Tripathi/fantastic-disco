@@ -31,6 +31,7 @@ import {
 } from "react-aria-components";
 import { useSearchParams } from "next/navigation";
 import { ArrowDown, ArrowUp } from "geist-icons";
+import ZeroState from "../zerostate";
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -312,8 +313,10 @@ const Table = ({
   // const totalPages = Math.ceil(eventData.length / itemsPerPage);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [initialRender, setInitialRender] = useState<boolean>(false);
+  const [zeroStateHeading,setZeroStateHeading]=useState(``);
+  const [zeroStateText,setZeroStateText]=useState(`Discover insights on business trends filtered by geography and category, all in one glance.`);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(20);
   const userMaxLimit = 100;
   const [pinEvent, setPinEvent] = useState<string>(
     "1b27ff90-1a46-4f49-85eb-607b4d510eb1"
@@ -617,6 +620,10 @@ const Table = ({
             method: "GET",
             headers: headers,
           });
+          if(data.stats.totalEvents===0) {
+            setZeroStateHeading("No Events Found");
+            setZeroStateText("Try using alternative or related industry/keywords to broaden your search.");
+          }
           if (data) {
             setTotalPages(
               Math.ceil(data.stats.totalEvents / itemsPerPage)
@@ -798,8 +805,11 @@ const Table = ({
     return (
       <div className={styles.noData}>
         {initialRender ?
-          <>Discover insights on business trends filtered by geography and category, all in one glance.</> :
-          <>No results containing all your search terms were found.</>
+          <><ZeroState title={zeroStateHeading} text={zeroStateText}/></> :
+          <>
+          <ZeroState title="No Events Found" text="Try using alternative or related industry/keywords to broaden your search."/>
+          </>
+          
         }
       </div>
     );
@@ -812,7 +822,6 @@ const Table = ({
     setCurrPage((page) => page + 1);
     GAEvent("research", "Filters", "Load More Clicked", "Load More");
   };
-
   return (
     <div className={styles.table_container}>
       <div
@@ -1748,7 +1757,7 @@ const Table = ({
           </div> */}
           {/* <span className={styles.itemsPerPage} >10</span>
           <div>results/Page</div> */}
-          <div>{((currPage - 1) * 10) + 1} to {Math.min(totalEvents, ((currPage) * 10))} of {totalEvents} entries</div>
+          <div>{((currPage - 1) * 20) + 1} to {Math.min(totalEvents, ((currPage) * 20))} of {totalEvents} entries</div>
           <div></div>
         </div>
 
