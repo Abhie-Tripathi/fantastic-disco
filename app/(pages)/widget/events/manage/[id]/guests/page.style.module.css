@@ -57,6 +57,17 @@
     transition-duration: .2s;
     background-color: var(--accent-color);
 }
+.btnContainer .lockedBtn{
+    cursor: default;
+}
+.btnContainer .lockedBtn .sub_headingContainer span{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.btnContainer .lockedBtn:hover{
+    background-color: var(--primary-foreground-color);
+}
 .guestBar{
     display: flex;
     flex-direction: column;
