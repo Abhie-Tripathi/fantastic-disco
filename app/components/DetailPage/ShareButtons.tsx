@@ -16,6 +16,7 @@ interface Props {
 
 const ShareButtons = ({formTheme, copyIcon, shareUrl, title, hashtags, emailSubject, emailBody, disabled }: Props) => {
   console.log("share url is : ", shareUrl)
+  console.log("title is : ", title)
   const [copyClick, setCopyClick] = useState(false)
   const handleCopy = () => {
     if (!disabled) {

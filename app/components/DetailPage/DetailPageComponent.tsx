@@ -184,7 +184,7 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                     </div>}
                     <div className={styles.shareContainer}>
                         <div className={styles.heading}>Share</div>
-                        <ShareButtons formTheme='light' copyIcon disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
+                        <ShareButtons title={name} formTheme='light' copyIcon disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
                     </div>
                 </div>
                 <div className={styles.rightSection}>
