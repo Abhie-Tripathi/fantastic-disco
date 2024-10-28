@@ -27,6 +27,7 @@ import {
 import { Card } from "../ui/card";
 import { useEffect, useState } from "react";
 import { GTMEventDetail } from "@/types/events";
+import { renderFormattedDates } from "@/utils/dateFormat";
 
 interface Props {
   eventDetails: GTMEventDetail;
@@ -106,6 +107,7 @@ const AdvancedDetailsCardSlider = ({
               <span className="text-[#6750A4] bg-[#E6E6F9] h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit cursor-pointer">
                 {`${editions} Edition${editions && editions > 1 ? "s" : ""}`}
               </span>
+            ) : (
               // <DetailDialog
               //   titleColor="text-[var(--text-foreground)]"
               //   title={"No of Editions"}
@@ -114,7 +116,6 @@ const AdvancedDetailsCardSlider = ({
               // >
               //   <PastEditions eventId={eventId} />
               // </DetailDialog>
-            ) : (
               // <span className="text-[var(--primary-color-hover)] h-fit font-semibold text-sm py-1 px-4 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)]">
               //   {maturity.charAt(0).toUpperCase() +
               //     maturity.slice(1, maturity.length)}
@@ -216,8 +217,16 @@ const CarouselComponent = ({
   eventDetails: GTMEventDetail;
   eventId: string;
 }) => {
-  const { maturity, editions, frequency, isBranded, isSeries, rehostDate } =
-    eventDetails;
+  const {
+    maturity,
+    editions,
+    frequency,
+    isBranded,
+    isSeries,
+    rehostDate,
+    futureExpectedEndDate,
+    futureExpectedStartDate,
+  } = eventDetails;
   const [api, setApi] = useState<CarouselApi>();
   // useEffect(() => {
   //   if (!api) {
@@ -257,8 +266,11 @@ const CarouselComponent = ({
                 </h1>
                 {editions ? (
                   <span className="text-[#6750A4] bg-[#E6E6F9] h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit cursor-not-allowed">
-                    {`${editions} Edition${editions && editions > 1 ? "s" : ""}`}
+                    {`${editions} Edition${
+                      editions && editions > 1 ? "s" : ""
+                    }`}
                   </span>
+                ) : (
                   // <DetailDialog
                   //   titleColor="text-[var(--text-foreground)]"
                   //   title={"No of Editions"}
@@ -269,7 +281,6 @@ const CarouselComponent = ({
                   // >
                   //   <PastEditions eventId={eventId} />
                   // </DetailDialog>
-                ) : (
                   // <span className="text-[var(--primary-color-hover)] h-fit font-semibold text-sm py-1 px-4 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)]">
                   //   {maturity.charAt(0).toUpperCase() +
                   //     maturity.slice(1, maturity.length)}
@@ -317,22 +328,19 @@ const CarouselComponent = ({
               </div>
             </CarouselItem>
           )}
-          {rehostDate && (
+          {(futureExpectedStartDate || futureExpectedEndDate) && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
               <div className="flex flex-col bg-white items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
                 <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                   Rehost Month
                 </h1>
-                {rehostDate ? (
-                  <span className="text-[var(--primary-color-hover)] font-semibold text-md">
-                    {format(new Date(rehostDate), "dd MMM, yyyy")}
-                  </span>
-                ) : (
-                  <span className="text-[#666666] text-sm flex items-center gap-2">
-                    <CircleSlash width={15} height={15} />
-                    No data available
-                  </span>
-                )}
+                <span className="text-[var(--primary-color-hover)] font-semibold text-md">
+                  {/* {format(new Date(rehostDate), "dd MMM, yyyy")} */}
+                  {renderFormattedDates(
+                    futureExpectedStartDate,
+                    futureExpectedEndDate
+                  )}
+                </span>
               </div>
             </CarouselItem>
           )}

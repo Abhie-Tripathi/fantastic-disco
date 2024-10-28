@@ -33,6 +33,7 @@ import { EventInfoAndMap } from "@/components/gtmDetail/eventInfoAndMap";
 import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
 import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
 import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
+import { renderFormattedDates } from "@/utils/dateFormat";
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
   const scrollableSectionRef = useRef<HTMLElement | null>(null);
@@ -81,7 +82,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     organizer,
     website,
     venueLocation,
-    rating,
+    stats,
     status,
   } = eventDetails;
 
@@ -97,12 +98,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     eventStartDate === eventEndDate
       ? eventStartDate
       : `${eventStartDate} - ${eventEndDate}`;
-  const eventStartTime =
-    eventDetails && startDateTime
-      ? format(new Date(startDateTime), "h:mm a")
-      : "";
-  const eventEndTime =
-    eventDetails && endDateTime ? format(new Date(endDateTime), "h:mm a") : "";
 
   const isCancelled = status === "cancelled";
   const isPostponed = status === "postponed";
@@ -164,10 +159,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center gap-1">
-            {rating != null && rating > 0 && (
+            {stats && stats.rating !== null && stats.rating > 0 && (
               <span className="flex items-center gap-1">
                 <StarFill width="16px" height="16px" color="#FFB224" />
-                <span>{rating}</span>
+                <span>{stats.rating}</span>
               </span>
             )}
           </div>
@@ -235,7 +230,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   isCancelled || isPostponed ? "line-through" : ""
                 }`}
               >
-                {formattedDate}
+                {/* {formattedDate()} */}
+                {renderFormattedDates(eventStartDate, eventEndDate)}
               </Text>
             )}
             {/* {eventStartTime && eventEndTime && (

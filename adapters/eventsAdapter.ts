@@ -192,12 +192,11 @@ export const EventsAdapter = {
       adaptedParams.longitude = coordinates.longitude;
     }
 
-    if(params.get("geoCoordinates")){
-      const geoCoordinates = JSON.parse(params.get("geoCoordinates") || "")
-      adaptedParams.mapRadius = String(geoCoordinates.radius * 1000)
-      adaptedParams.latitude = geoCoordinates.latitude
-      adaptedParams.longitude = geoCoordinates.longitude
-
+    if (params.get("geoCoordinates")) {
+      const geoCoordinates = JSON.parse(params.get("geoCoordinates") || "");
+      adaptedParams.mapRadius = String(geoCoordinates.radius * 1000);
+      adaptedParams.latitude = geoCoordinates.latitude;
+      adaptedParams.longitude = geoCoordinates.longitude;
     }
 
     return adaptedParams;
@@ -573,7 +572,7 @@ export const EventsAdapter = {
         editions: 1,
         sponsorsCount: 0,
         speakersCount: 0,
-        frequency: null,
+        frequency: response.event.frequency || null,
         co_organizers: [],
         rankings: {
           rank: null,
@@ -600,6 +599,7 @@ export const EventsAdapter = {
           name: "USD",
           symbol: "$",
         },
+        designation: response.event.designation,
         predictedEventSpendBreakUp: [],
         primaryEventType: (() => {
           const type = response.event.type[0].toLowerCase();
@@ -685,6 +685,8 @@ export const EventsAdapter = {
         rating: response.event.stats.eventRating || null,
         audienceSpread: response.event.audienceSpread || null,
         rehostDate: response.event.isforecasted || null,
+        futureExpectedStartDate: response.event.futureExpectedStartDate || null,
+        futureExpectedEndDate: response.event.futureExpectedEndDate || null,
         isBranded: response.event.eventBrand || null,
         isSeries: response.event.eventSeries || null,
         maturity: response.event.maturity || null,

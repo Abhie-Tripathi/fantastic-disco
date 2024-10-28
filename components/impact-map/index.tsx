@@ -106,7 +106,6 @@ const MapComponent: React.FC<MapProps> = ({
   // }, [activeDate]);
 
   const handleMarkerClick = async (eventData: MapEvents) => {
-    console.log(eventData);
     try {
       const eventDetails = await getEventById(eventData.id);
       console.log(eventDetails);

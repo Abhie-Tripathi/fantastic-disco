@@ -286,6 +286,7 @@ export interface GTMEventDetail extends Omit<Event, "organizer"> {
       rank: number;
     }[];
   };
+  designation: string[];
   stats: {
     score: number;
     eventFollower: number;
@@ -293,6 +294,8 @@ export interface GTMEventDetail extends Omit<Event, "organizer"> {
     rating: number;
     estimatedExhibitor: string;
   };
+  futureExpectedStartDate: string;
+  futureExpectedEndDate: string;
 }
 
 export interface rankingEvent {

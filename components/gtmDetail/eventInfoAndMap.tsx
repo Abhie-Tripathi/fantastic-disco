@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { numberWithCommas } from "@/utils/formater";
 import { useInView } from "react-intersection-observer";
 import CircularProgress from "../gtmDetailRelevanceScore/circularProgress";
+import { Badge } from "../ui/badge";
 interface Props {
   eventDetails: GTMEventDetail;
   scrollSection: string;
@@ -229,12 +230,12 @@ export const EventInfoAndMap = ({
                 Tracker Relevance Score
               </span>
               {/* <Link className={styles.addTrackerBtn} href={'/internal/trackers'} >Add to Tracker</Link> */}
-              <span
-                className="badge_danger"
-                style={{ fontSize: "var(--font-size-small)" }}
+              <Badge
+                variant={"outline"}
+                className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
               >
                 Demo
-              </span>
+              </Badge>
             </div>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <CircularProgress

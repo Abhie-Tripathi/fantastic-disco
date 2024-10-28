@@ -32,7 +32,7 @@ export const AudienceIntel = ({
   scrollSection,
   setActiveTab,
 }: Props) => {
-  const { audienceSpread, stats } = eventDetails;
+  const { audienceSpread, stats, designation } = eventDetails;
   const tabs = [
     { tabName: "Department Type", path: "department" },
     { tabName: "Designation Type", path: "designation" },
@@ -85,8 +85,11 @@ export const AudienceIntel = ({
               >
                 Audience Spread
               </Text>
-              <Badge variant={"secondary"} className="rounded-full">
-                Tech Demo
+              <Badge
+                variant={"outline"}
+                className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
+              >
+                Demo
               </Badge>
             </div>
 
@@ -182,9 +185,15 @@ export const AudienceIntel = ({
               >
                 Designation Types
               </Text>
-              <Badge variant={"secondary"} className="rounded-full">
-                Tech Demo
-              </Badge>
+
+              {!designation && (
+                <Badge
+                  variant={"outline"}
+                  className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none"
+                >
+                  Demo
+                </Badge>
+              )}
             </div>
 
             {/* <div className="flex flex-col gap-4 bg-[#FAFAFA] border border-[#EBEBEB] p-6">
@@ -227,26 +236,29 @@ export const AudienceIntel = ({
               Other departments
             </Text> */}
             <ul className="flex flex-col gap-4 max-h-80 overflow-y-auto scrollbar pr-2">
-              {designations && designations.length > 0 ? (
-                designations.map((designation, index) => {
-                  const randomProgress = Math.floor(Math.random() * 101);
-                  return (
-                    <li key={designation.id}>
+              {designation && designation.length > 0
+                ? designation.map((item, index) => (
+                    <li key={`designation-${item}-${index}`}>
                       <p className="flex justify-between">
                         <Text fontWeight="medium" color="secondary">
-                          {designation.name}
+                          {item}
                         </Text>
                       </p>
                       <Progress value={100 - (index + 1) * 5} className="h-2" />
                     </li>
-                  );
-                })
-              ) : (
-                <span className="text-[#666666] text-sm flex items-center gap-2">
-                  <CircleSlash width={15} height={15} />
-                  No data available
-                </span>
-              )}
+                  ))
+                : designations &&
+                  designations.length > 0 &&
+                  designations.map((item, index) => (
+                    <li key={item.id}>
+                      <p className="flex justify-between">
+                        <Text fontWeight="medium" color="secondary">
+                          {item.name}
+                        </Text>
+                      </p>
+                      <Progress value={100 - (index + 1) * 5} className="h-2" />
+                    </li>
+                  ))}
             </ul>
           </div>
         </div>

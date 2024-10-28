@@ -81,8 +81,11 @@ const ListCard = ({ participant }: { participant: any }) => {
             )}
           </p>
         </div>
-        <Badge variant={"secondary"} className="rounded-full h-fit">
-          Tech Demo
+        <Badge
+          variant={"outline"}
+          className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
+        >
+          Demo
         </Badge>
       </div>
     </li>
