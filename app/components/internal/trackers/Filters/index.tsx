@@ -523,55 +523,55 @@ const Pages = () => {
   const [selectedCountries, setSelectedCountries] = useState<any>([]);
   const [selectedAudProfile, setSelectedAudProfile] = useState<any>([]);
 
-  const createTrackerHandler = () => {
-    const params = new URLSearchParams(searchParams);
-    if (selectedCategories.length > 0) {
-      params.set("category", selectedCategories.join(","));
-    }
-    if (selectedLocations.length > 0) {
-      params.set("locations", selectedLocations?.join(","));
-    }
-    if (selectedEventStatus.length > 0) {
-      params.set("status", selectedEventStatus?.join(","));
-    }
-    if (selectedLabels.length > 0) {
-      params.set("labels", selectedLabels?.join(","));
-    }
-    if (selectedDateRange[0] !== null) {
-      params.set("active_gte", convertToYYYYMMDD(selectedDateRange[0]));
-      params.set("active_lte", convertToYYYYMMDD(selectedDateRange[1]));
-    }
-    if (selectedEventAttendanceRange.length > 0) {
-      params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
-      params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
-    }
-    router.push(`/trackers/create?${params.toString()}`);
-  };
+  // const createTrackerHandler = () => {
+  //   const params = new URLSearchParams(searchParams);
+  //   if (selectedCategories.length > 0) {
+  //     params.set("category", selectedCategories.join(","));
+  //   }
+  //   if (selectedLocations.length > 0) {
+  //     params.set("locations", selectedLocations?.join(","));
+  //   }
+  //   if (selectedEventStatus.length > 0) {
+  //     params.set("status", selectedEventStatus?.join(","));
+  //   }
+  //   if (selectedLabels.length > 0) {
+  //     params.set("labels", selectedLabels?.join(","));
+  //   }
+  //   if (selectedDateRange[0] !== null) {
+  //     params.set("active_gte", convertToYYYYMMDD(selectedDateRange[0]));
+  //     params.set("active_lte", convertToYYYYMMDD(selectedDateRange[1]));
+  //   }
+  //   if (selectedEventAttendanceRange.length > 0) {
+  //     params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
+  //     params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
+  //   }
+  //   router.push(`/trackers/create?${params.toString()}`);
+  // };
 
-  const searchHandler = () => {
-    const params = new URLSearchParams(searchParams);
-    if (selectedCategories.length > 0) {
-      params.set("category", selectedCategories.join(","));
-    }
-    if (selectedLocations.length > 0) {
-      params.set("city", selectedLocations?.join(","));
-    }
-    if (selectedEventStatus.length > 0) {
-      params.set("status", selectedEventStatus?.join(","));
-    }
-    if (selectedLabels.length > 0) {
-      params.set("labels", selectedLabels?.join(","));
-    }
-    if (selectedDateRange[0] !== null) {
-      params.set("active_gte", selectedDateRange[0]);
-      params.set("active_lte", selectedDateRange[1]);
-    }
-    if (selectedEventAttendanceRange.length > 0) {
-      params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
-      params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
-    }
-    router.push(`/search/events?${params.toString()}`);
-  };
+  // const searchHandler = () => {
+  //   const params = new URLSearchParams(searchParams);
+  //   if (selectedCategories.length > 0) {
+  //     params.set("category", selectedCategories.join(","));
+  //   }
+  //   if (selectedLocations.length > 0) {
+  //     params.set("city", selectedLocations?.join(","));
+  //   }
+  //   if (selectedEventStatus.length > 0) {
+  //     params.set("status", selectedEventStatus?.join(","));
+  //   }
+  //   if (selectedLabels.length > 0) {
+  //     params.set("labels", selectedLabels?.join(","));
+  //   }
+  //   if (selectedDateRange[0] !== null) {
+  //     params.set("active_gte", selectedDateRange[0]);
+  //     params.set("active_lte", selectedDateRange[1]);
+  //   }
+  //   if (selectedEventAttendanceRange.length > 0) {
+  //     params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
+  //     params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
+  //   }
+  //   router.push(`/search/events?${params.toString()}`);
+  // };
   const [trackerName, setTrackerName] = useState("");
   // const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [categorySlug, setCategorySlug] = useState<string[]>(

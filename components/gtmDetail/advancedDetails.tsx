@@ -7,7 +7,7 @@ import {
   CircleSlash,
 } from "lucide-react";
 import DetailDialog from "../eventDetail/modal";
-import PastEditions from "../eventDetail/pastEditions";
+// import PastEditions from "../eventDetail/pastEditions";
 import { capitalize } from "lodash";
 import { Event } from "@/types/events";
 import { Heading } from "../eventDetail/heading";
@@ -103,17 +103,17 @@ const AdvancedDetailsCardSlider = ({
               Edition
             </h1>
             {editions ? (
-              // <span className="text-[var(--primary-color-hover)] h-fit font-semibold text-sm py-1 px-4 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)] cursor-not-allowed">
-              //   {`${editions} Edition${editions && editions > 1 ? "s" : ""}`}
-              // </span>
-              <DetailDialog
-                titleColor="text-[var(--text-foreground)]"
-                title={"No of Editions"}
-                triggerText={`${editions} Edition${editions > 1 ? "s" : ""}`}
-                className="text-[#6750A4] bg-[#E6E6F9] h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit cursor-pointer"
-              >
-                <PastEditions eventId={eventId} />
-              </DetailDialog>
+              <span className="text-[#6750A4] bg-[#E6E6F9] h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit cursor-pointer">
+                {`${editions} Edition${editions && editions > 1 ? "s" : ""}`}
+              </span>
+              // <DetailDialog
+              //   titleColor="text-[var(--text-foreground)]"
+              //   title={"No of Editions"}
+              //   triggerText={`${editions} Edition${editions > 1 ? "s" : ""}`}
+              //   className="text-[#6750A4] bg-[#E6E6F9] h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit cursor-pointer"
+              // >
+              //   <PastEditions eventId={eventId} />
+              // </DetailDialog>
             ) : (
               // <span className="text-[var(--primary-color-hover)] h-fit font-semibold text-sm py-1 px-4 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)]">
               //   {maturity.charAt(0).toUpperCase() +

@@ -71,6 +71,15 @@ export interface Event {
   } | null;
 }
 
+export interface Tickets {
+  id: string;
+  name: string;
+  price: string;
+  type: string;
+  currency: string;
+  ticketUrl: string;
+}
+
 export interface Currency {
   name: string;
   symbol: string;

@@ -1,4 +1,4 @@
-import { Event } from "@/types";
+import { Event } from "@/types/events";
 import { differenceInDays, format } from "date-fns";
 import Text from "../new-ui/Text";
 import { useState } from "react";

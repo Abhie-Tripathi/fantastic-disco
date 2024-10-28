@@ -505,10 +505,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             setActiveTab={setActiveTab}
           />
           <hr className="h-[1px] border-t-1 bg-[#f2f2f2]" />
-          {/* <AdvancedDetails
+          <AdvancedDetails
             eventDetails={eventDetails}
             eventId={params.eventId}
-          /> */}
+          />
           <InsightsAndScores
             eventDetails={eventDetails}
             scrollSection={tabs[1].path}
