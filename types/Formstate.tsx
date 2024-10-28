@@ -22,6 +22,7 @@ export interface FormState {
     textValue: string;
     speaker: any[];
     prefilledProfile?: any;
+    prefilledExhibitorDetails?:any;
     registerMessage: string;
     registerBtnText: string;
     registerBtnColor: string;
@@ -55,5 +56,7 @@ export interface FormState {
     waitlisting:boolean;
     capacityModal:boolean
     virtualLink:string;
+    exhibitorModal:boolean;
+    exhibitor:any[];
   }
   

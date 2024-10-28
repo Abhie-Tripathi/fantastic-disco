@@ -5,19 +5,23 @@ import Image from "next/image";
 import CapacityModal from "./capacitymodal/Capacity";
 import { FormState } from "@/types/Formstate";
 
-interface Props{
-  waitlisting:boolean;
-  approval:boolean;
-  capacity:number;
+interface Props {
+  waitlisting: boolean;
+  approval: boolean;
+  capacity: number;
   handleChange: (field: keyof FormState, any: any) => void;
 }
-const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) => {
+const WaitListAndCap = ({
+  waitlisting,
+  approval,
+  capacity,
+  handleChange,
+}: Props) => {
   // const [inputValue, setInputValue] = useState("");
   const [isCapacityModalOpen, setIsCapacityModalOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("option1");
- 
   const openCapacityModal = () => {
-    handleChange("capacityModal",true)
+    handleChange("capacityModal", true);
     setIsCapacityModalOpen(true);
   };
   const closeCapacityModal = () => {
@@ -28,8 +32,8 @@ const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) =
     setSelectedOption(e.target.value);
   };
   const handleToggle = () => {
-    handleChange("approval",true)
-  }
+    handleChange("approval", !approval);
+  };
 
   return (
     <div className={`${styles.cardContainer}`}>
@@ -40,7 +44,7 @@ const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) =
         <div className={styles.itemText}>Tickets</div>
 
         <div className={styles.radioContainer}>
-          <label style={{display:"flex", alignItems:"center", gap:"5px"}}>
+          <label style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <input
               type="radio"
               name="ticketOption"
@@ -50,7 +54,7 @@ const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) =
             />
             <span className={styles.freeAndPaid_text}>Free</span>
           </label>
-          <label style={{display:"flex", alignItems:"center", gap:"5px"}}>
+          <label style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <input
               type="radio"
               name="ticketOption"
@@ -70,11 +74,7 @@ const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) =
         <div className={styles.itemText}>Require Approval</div>
         <div className={styles.toggleContainer}>
           <label className={styles.switch}>
-            <input
-              type="checkbox"
-              checked={approval}
-              onChange={handleToggle}
-            />
+            <input type="checkbox" checked={approval} onChange={handleToggle} />
             <span className={styles.slider}></span>
           </label>
         </div>
@@ -84,10 +84,15 @@ const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) =
         <div className={styles.icon}>
           <Capacity />
         </div>
-        <div className={styles.itemText}>Capacity
-        <div className={styles.waitListText}>{waitlisting? 'Waitlist Enabled':""}</div>
+        <div className={styles.itemText}>
+          Capacity
+          <div className={styles.waitListText}>
+            {waitlisting ? "Waitlist Enabled" : ""}
+          </div>
         </div>
-        <div className={styles.waitlistNumber}>{capacity === -1 ? "Unlimited" : capacity}</div>
+        <div className={styles.waitlistNumber}>
+          {capacity === -1 ? "Unlimited" : capacity}
+        </div>
         <Image
           className={styles.editBtn}
           src={EditIcon}
@@ -95,14 +100,6 @@ const WaitListAndCap = ({waitlisting, approval, capacity, handleChange}:Props) =
           onClick={openCapacityModal}
         />
       </div>
-      {/* Capacity Modal */}
-      {/* <CapacityModal
-        isOpen={isCapacityModalOpen}
-        onClose={closeCapacityModal}
-        capacity={ capacity}
-        handleChange={handleChange}
-        waitlisting={waitlisting}
-      /> */}
     </div>
   );
 };

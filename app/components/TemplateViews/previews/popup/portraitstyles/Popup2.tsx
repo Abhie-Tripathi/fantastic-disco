@@ -32,6 +32,7 @@ interface Props {
   demoEventName: string;
   demoDescription: string;
   demoLocation: string;
+  demoDate:string
 }
 
 const Popup2: React.FC<Props> = ({
@@ -80,6 +81,7 @@ const Popup2: React.FC<Props> = ({
   demoDescription,
   demoLocation,
   closeButtonSetting,
+  demoDate
 }: Props) => {
   const formatDate = (date: string) => {
     const dateObj = new Date(date);
@@ -166,7 +168,7 @@ const Popup2: React.FC<Props> = ({
               ? formatDate(fetchedAddedEvents[0].startDate) +
                 " - " +
                 formatDate(fetchedAddedEvents[0].endDate)
-              : "29 Jan - 5 Feb"}
+              : demoDate}
           </div>
         </div>
       </div>
@@ -184,6 +186,7 @@ const Popup2: React.FC<Props> = ({
       <div className={styles.dividerLine}></div>
       <div className={styles.type_peopleContainer}>
         <div className={styles.typeContainer}>
+        <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType ==="MAIN"?"Main Event":fetchedAddedEvents![0]?.eventType ==="SUB"?"Side Event":"Main Event"}</div>
           <div
             className={`${styles.pill} ${styles.type1}`}
             style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}

@@ -1,0 +1,33 @@
+.speaker{
+    border: 1px solid #EBEBEB;
+    /* background-color: #fafafa; */
+    background-color: #ffffff7c;
+    border-radius: 3px;
+    padding: 13px;
+    display: flex;
+    min-width: 250px;
+    gap: 13px;
+    cursor: pointer;
+}
+.speaker img{
+    /* border : 1px solid red; */
+}
+.speaker .detailsContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 70%;
+}
+.speaker .detailsContainer .nameLinkedinContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.speaker .nameLinkedinContainer div{
+    color: black;
+    font-size: var(--font-size-small);
+}
+.speaker .detailsContainer .designation{
+    font-size: var(--font-size-small);
+    color: #666666;
+}

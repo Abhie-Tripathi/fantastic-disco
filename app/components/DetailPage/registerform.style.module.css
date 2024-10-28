@@ -113,4 +113,6 @@
 }
 .customMessage{
     font-size: var(--font-size-small);
+    font-weight: 500;
+    color: #7d7d7d;
 }

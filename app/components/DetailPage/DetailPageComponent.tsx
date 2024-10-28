@@ -21,6 +21,7 @@ import SpeakerContainer from './SpeakerContainer'
 import { usePathname } from 'next/navigation';
 import LeafTheme from '../UI/LeafTheme'
 import SnowfallTheme from '../UI/SnowfallTheme'
+import ExhibitorContainer from './ExhibitorContainer'
 // import LinkIcon from '/public/link.svg'
 
 interface EventProps {
@@ -37,6 +38,7 @@ interface EventProps {
     registerMessage: string;
     registerBtnColor: string;
     speaker: any[];
+    exhibitor: any[];
     participationMessage: string;
     participationType?: string;
     name: string;
@@ -64,7 +66,7 @@ interface EventProps {
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
-const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker,exhibitor, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
     start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
@@ -182,7 +184,7 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                     </div>}
                     <div className={styles.shareContainer}>
                         <div className={styles.heading}>Share</div>
-                        <ShareButtons formTheme='light' copyIcon disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
+                        <ShareButtons title={name} formTheme='light' copyIcon disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
                     </div>
                 </div>
                 <div className={styles.rightSection}>
@@ -197,7 +199,7 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                     <div className={styles.locationContainer}><LocationContainer eventFormat={format} cityName={location_city} countryName={location_country} virtualLink={virtualLink} /></div>
 
                     {
-                        <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} end_date={end_date} start_date={start_date} /></div>
+                         <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} end_date={end_date} start_date={start_date} end_time={end_time} start_time={start_time}/></div>
                     }
 
                     {isMobile &&
@@ -209,6 +211,7 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                         </div>
                     }
                     <div className={styles.descriptionContainer} ><DescriptionContainer description={description} /></div>
+                    {exhibitor?.length > 0 && <div className={styles.speakerContainer}><ExhibitorContainer exhibitorsData={exhibitor} /></div>}
                     {speaker?.length > 0 && <div className={styles.speakerContainer}><SpeakerContainer speakerProfilesData={speaker} /></div>}
                     <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>

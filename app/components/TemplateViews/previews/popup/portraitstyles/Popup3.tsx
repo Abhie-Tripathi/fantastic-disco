@@ -30,6 +30,7 @@ interface Props {
   demoEventName: string;
   demoDescription: string;
   demoLocation: string;
+  demoDate:string
 }
 
 const Popup3: React.FC<Props> = ({
@@ -78,6 +79,7 @@ const Popup3: React.FC<Props> = ({
   demoDescription,
   demoLocation,
   closeButtonSetting,
+  demoDate
 }: Props) => {
   const formatDate = (date: string) => {
     const dateObj = new Date(date);
@@ -114,6 +116,7 @@ const Popup3: React.FC<Props> = ({
       className={smallCard ? styles.smallCard : styles.card}
       style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}
     >
+      <div className={styles.bannerContainer}>
       <Image
         width={380}
         height={smallCard ? 150 : 220}
@@ -125,6 +128,12 @@ const Popup3: React.FC<Props> = ({
         alt="banner"
         className={styles.banner}
       />
+
+      <div className={styles.event_type}>{fetchedAddedEvents![0]?.eventType==="MAIN"? "Main Even" : fetchedAddedEvents![0]?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
+      <div className={styles.type}>Workshop</div>
+      </div>
+      
+      
       <div
         className={smallCard ? styles.smallName : styles.eventName}
         style={{
@@ -176,7 +185,7 @@ const Popup3: React.FC<Props> = ({
               ? formatDate(fetchedAddedEvents[0].startDate) +
                 " - " +
                 formatDate(fetchedAddedEvents[0].endDate)
-              : "29 Jan - 5 Feb"}
+              : demoDate}
           </div>
         </div>
       </div>

@@ -4,7 +4,7 @@ import Placeholder from '/public/placeholder.png'
 import { useTheme } from '@/context'
 import { myFetch } from '@/utils/myFetch'
 import { baseUrl } from '@/constants'
-import { AllEventsType, EventsType } from '@/types/alleventtype'
+import { EventsType } from '@/types/alleventtype'
 import { GolbalEventType } from '@/types/globaleventtype'
 import { showToast } from "@/utils/showToast";
 import Details from './Details/Details'
@@ -211,7 +211,8 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 venue: mainEventState.venue,
                 hashtags: mainEventState.hashtags.join(","),
                 boothNumber: mainEventState.boothNumber,
-                speaker: []
+                speaker: [],
+                exhibitor:[]
             }
             const eventData = {
                 format: mainEventState.eventFormat,
@@ -234,6 +235,10 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             formData.append("name", mainEventState.eventName)
             formData.append("data", JSON.stringify(eventData))
             formData.append("type", "MAIN")
+            formData.append("capacity", mainEventState?.capacity + "")
+            formData.append("approval", mainEventState?.approval + "")
+            formData.append("waitlisting", mainEventState?.waitlisting + "")
+            
 
             if (mainEventState.banner.file || mainEventState.banner.placeHolder.includes("oaidalleapiprodscus")) {
                 if (mainEventState.banner.file) {
@@ -267,6 +272,13 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                             addSpeakers(data.data.id, speaker)
                         })
                     }
+
+                    if (mainEventState.exhibitor.length > 0) {
+                        mainEventState.exhibitor.map((exhibitor: any) => {
+                            addExhibitorDetails(data.data.id, exhibitor)
+                        })
+                    }
+
                     if (setChoiceFormModal) {
                         setChoiceFormModal(false)
                     }
@@ -285,6 +297,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
     }
 
     const addSpeakers = async (eventId: string, speaker: any) => {
+        console.log("speaker_called",speaker, eventId)
         const formData = new FormData()
         const speakerObject = {
             name: speaker.data.name,
@@ -294,6 +307,26 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
         formData.append("eventId", eventId)
         formData.append("data", JSON.stringify(speakerObject))
         formData.append("file", speaker.imageUrl || "")
+        const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
+            method: 'POST',
+            body: formData
+        })
+        if (error) {
+            console.log("error : ", error)
+        }
+    }
+
+    const addExhibitorDetails = async (eventId: string, exhibitor: any) => {
+        console.log("exhibitor_called",exhibitor, eventId)
+        const formData = new FormData()
+        const exhibitorObject = {
+            companyName: exhibitor.data.companyName,
+            boothNumber: exhibitor.data.boothNumber,
+            isExhibitor: true
+        }
+        formData.append("eventId", eventId)
+        formData.append("data", JSON.stringify(exhibitorObject))
+        formData.append("file", exhibitor.imageUrl || "")
         const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
             method: 'POST',
             body: formData
@@ -510,7 +543,8 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             venue: eventState.venue,
             hashtags: eventState.hashtags.join(","),
             boothNumber: eventState.boothNumber,
-            speaker: eventState.speaker
+            speaker: eventState.speaker,
+            exhibitor:eventState.exhibitor
         };
 
         // Prepare the event data
@@ -540,6 +574,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
         formData.append("name", eventState.eventName);
         formData.append("data", JSON.stringify(eventData));
         formData.append("sourceId", widgetId);
+        formData.append("maxCapacity", eventState?.capacity + "")
 
         // Check if the banner has been updated
         if (eventState.banner.placeHolder.includes("eventgeni") === false) {
@@ -586,12 +621,12 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
         }
     }
     useEffect(() => {
-        if (mainEventState.speakerModal || mainEventState.descriptionModal || mainEventState.registerModal || subEventState.speakerModal || subEventState.descriptionModal || subEventState.registerModal) {
+        if (mainEventState.speakerModal ||mainEventState.exhibitorModal|| mainEventState.descriptionModal || mainEventState.registerModal || subEventState.speakerModal || subEventState.descriptionModal || subEventState.registerModal) {
             setIsModalOpen(true)
         } else {
             setIsModalOpen(false)
         }
-    }, [mainEventState.speakerModal, mainEventState.descriptionModal, mainEventState.registerModal, subEventState.speakerModal, subEventState.descriptionModal, subEventState.registerModal,])
+    }, [mainEventState.speakerModal,mainEventState.exhibitorModal, mainEventState.descriptionModal, mainEventState.registerModal, subEventState.speakerModal, subEventState.descriptionModal, subEventState.registerModal,])
     const formContainerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -707,8 +742,10 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                             setCollapseMainEventForm={setCollapseMainEventForm}
                             collapseMainEventForm={collapseMainEventForm}
                             isApproved={isApproved} setIsApproved={setIsApproved}
-                        />)}
-                {(collapseMainEventForm || eventFlow === "side") && <Subeventform
+                        />
+                        )}
+                {(collapseMainEventForm || eventFlow === "side") && 
+                <Subeventform
                     // setMainEventName={setMainEventName}
                     formTheme={formTheme}
                     formState={subEventState}
@@ -720,7 +757,8 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                     prefilledEvent={prefilledEvent}
                     eventFlow={eventFlow}
                     isApproved={isApproved} setIsApproved={setIsApproved}
-                />}
+                />
+                }
             </div>
         </div >
     )

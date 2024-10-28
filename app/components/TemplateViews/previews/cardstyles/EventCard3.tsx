@@ -25,6 +25,7 @@ interface CardProps {
     demoEventName:string,
     demoDescription:string,
     demoLocation:string
+    demoDate:string
 }
 
 const EventCard3 = ({
@@ -37,7 +38,8 @@ const EventCard3 = ({
     }, fetchedEvent,
     demoBanner,
     demoEventName,
-    demoLocation
+    demoLocation,
+    demoDate
 }: CardProps) => {
 
     const formatDate = (date: string) => {
@@ -60,6 +62,7 @@ const EventCard3 = ({
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <div className={styles.bannerContainer}>
                 <Image width={280} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.banner} />
+                <div className={styles.event_type}>{fetchedEvent?.eventType==="MAIN"? "Main Even" : fetchedEvent?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
                 <div className={styles.type}>Workshop</div>
             </div>
             <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
@@ -70,7 +73,7 @@ const EventCard3 = ({
                 </div>
                 <div className={styles.dateContainer}>
                     <DateIcon color={fontSettings.subheading.fontColor} />
-                    <div className={styles.date} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : "1st April 2024 - 3rd April 2024"}</div>
+                    <div className={styles.date} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
                 </div>
             </div>
         </div>

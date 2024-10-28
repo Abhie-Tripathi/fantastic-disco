@@ -69,6 +69,12 @@
     border-bottom: 2px solid var(--primary-color);
     transition: color 0.3s ease, border-bottom 0.3s ease;
 }
+.navbar .disabled {
+    pointer-events: none; /* Disables the link interaction */
+    opacity: 0.6; /* Makes the link appear dimmed */
+    display: flex;
+    align-items: center;
+}
 
 .selectedView {
     margin-top: 20px;

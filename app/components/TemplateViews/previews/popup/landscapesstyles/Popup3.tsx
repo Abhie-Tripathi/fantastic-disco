@@ -29,6 +29,7 @@ interface Props {
   demoDescription:string
   demoLocation:string
   closeButtonSetting?:ButtonSettingsState
+  demoDate:string
 }
 
 const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
@@ -41,7 +42,7 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
   buttonSettings = {
     primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
     secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
-  }, selectedBtn = "primary", fetchedAddedEvents, smallCard, demoBanner, demoEventName, demoDescription, demoLocation,closeButtonSetting }: Props) => {
+  }, selectedBtn = "primary", fetchedAddedEvents, smallCard, demoBanner, demoEventName, demoDescription, demoLocation,closeButtonSetting, demoDate }: Props) => {
 
   const formatDate = (date: string) => {
     const dateObj = new Date(date);
@@ -71,6 +72,7 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
     <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
       <div className={smallCard ? styles.smallBannerContainer : styles.bannerContainer}>
         <Image width={smallCard ? 280 : 380} height={smallCard ? 285 : 385} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' className={smallCard ? styles.smallerBanner : styles.banner} />
+        <div className={styles.event_type}>{fetchedAddedEvents![0]?.eventType==="MAIN"? "Main Even" : fetchedAddedEvents![0]?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
         <div className={styles.type}>Workshop</div>
       </div>
       <div className={styles.eventDetails}>
@@ -83,7 +85,7 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
             </div>
             <div className={styles.dateContainer}>
             <DateIcon color={fontSettings.subheading.fontColor} />
-              <div className={styles.date} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length ? formatDate(fetchedAddedEvents[0].startDate) + " - " + formatDate(fetchedAddedEvents[0].endDate) : "29 Jan - 5 Feb"}</div>
+              <div className={styles.date} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length ? formatDate(fetchedAddedEvents[0].startDate) + " - " + formatDate(fetchedAddedEvents[0].endDate) : demoDate}</div>
             </div>
           </div>
           <div className={`${styles.description} ${smallCard ? styles.smallDescription : ""}`} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: description }}></div>

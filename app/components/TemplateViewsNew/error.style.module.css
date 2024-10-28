@@ -33,7 +33,7 @@
     border-radius: 4px;
     color: white;
     /* font-size: var(--font-size-small); */
-    font: var(--font-size-default);
+    font-size: var(--font-size-default);
     font-weight: var(--font-weight-semibold);
     padding: 9px 20px;
 }

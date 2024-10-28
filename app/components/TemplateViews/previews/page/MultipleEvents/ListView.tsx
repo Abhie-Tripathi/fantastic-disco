@@ -29,9 +29,10 @@ interface EditProps {
     demoEventName: string;
     demoDescription: string
     demoLocation: string
+    demoDate:string
 
 }
-const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoDescription, demoLocation }: EditProps) => {
+const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoDescription, demoLocation, demoDate }: EditProps) => {
 
     console.log("normal events in list view :", fetchedAddedOtherData)
     let EventListCard: ElementType;
@@ -87,6 +88,7 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
                         demoEventName={demoEventName}
                         demoDescription={demoDescription}
                         demoLocation={demoLocation}
+                        demoDate={demoDate}
                     />
                     <EventListCard
                         cardBgColor={cardBgColor}
@@ -96,6 +98,7 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
                         demoEventName={demoEventName}
                         demoDescription={demoDescription}
                         demoLocation={demoLocation}
+                        demoDate={demoDate}
                     />
                     <EventListCard
                         cardBgColor={cardBgColor}
@@ -105,6 +108,7 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
                         demoEventName={demoEventName}
                         demoDescription={demoDescription}
                         demoLocation={demoLocation}
+                        demoDate={demoDate}
                     />
                 </div>
             )}

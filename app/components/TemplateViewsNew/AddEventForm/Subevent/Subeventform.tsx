@@ -179,7 +179,7 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
     };
 
     return (
-        <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalBody : ""}`}>
+        <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ||formState.capacityModal ? styles.modalBody : ""}`}>
             {eventFlow === "side" && <div className={styles.globalSearch}>
                 <GlobalSearch widgetId='123' handleChange={handleChange} />
             </div>}
@@ -303,12 +303,15 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
             }
             {
                 formState.capacityModal &&  
-                 <CapacityModal
+                <div className={styles.capacityModal}>
+                <CapacityModal
+                 eventId={prefilledEvent?.eventId}
                  capacityModal={formState.capacityModal}
                   capacity={ formState.capacity}
                   handleChange={handleChange}
                   waitlisting={formState.waitlisting}
                 /> 
+                </div>
             }
         </div >
     )

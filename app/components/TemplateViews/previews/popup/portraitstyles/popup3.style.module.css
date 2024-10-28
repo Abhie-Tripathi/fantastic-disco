@@ -8,6 +8,38 @@
     height: 370px;
     padding: 12px 14px 24px 12px;
 }
+.smallBannerContainer{
+    height: 100%;
+    width: 280px;
+    position: relative;
+}
+.bannerContainer{
+    /* height: 100%; */
+    /* width: 385px; */
+    position: relative;
+}
+
+.type{
+    position: absolute;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #6750A4;
+    background-color: #F7EFFF;
+    bottom: 10px;
+    right: 9px;
+}
+
+.event_type{
+    position: absolute;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #6750A4;
+    background-color: #F7EFFF;
+    bottom: 10px;
+    left: 10px;
+}
 .banner{
     min-height: 220px;
     max-height: 220px;
