@@ -19,6 +19,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
+import { useLocationService } from "@/services/locationServices";
 // import {
 //   useNominatimAutocomplete,
 //   useSavedLocationAutocomplete,
@@ -47,6 +48,7 @@ export default function AutocompleteInput({
   value,
 }: AutocompleteInputProps) {
 //   const { getCoordinates } = useLocationService();
+const {getDatabaseLocationAutocomplete, isLoading, error:isError} =useLocationService();
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [selectedLocations, setSelectedLocations] = useState<Location[]>([]);
@@ -60,9 +62,10 @@ export default function AutocompleteInput({
 //       : type === "LocationId"
 //       ? databaseLocationResult
 //       : nominatimResult;
-const [cityData, setCityData] = useState([]);
-const [stateData, setStateData] = useState([]);
-const [countryData, setCountryData] = useState([]);
+// const [cityData, setCityData] = useState([]);
+// const [stateData, setStateData] = useState([]);
+// const [countryData, setCountryData] = useState([]);
+const [locationData,setLocationData]=useState();
 const [zoneData, setZoneData] = useState([]);
 const fetchSuggestions = async(text: string) => {
   try {
@@ -70,11 +73,13 @@ const fetchSuggestions = async(text: string) => {
       myFetch(`${baseUrl}/location/suggestion?q=${text}`),
       myFetch(`${baseUrl}/location/country?name=${text}`),
     ]);
-
-    setCityData(suggestionResponse.data.city);
-    setStateData(suggestionResponse.data.state);
-    setCountryData(countryResponse.data);
-    setZoneData(suggestionResponse.data.zone);
+    const result = await getDatabaseLocationAutocomplete(inputValue); 
+    console.log(result);
+    
+    setLocationData(result.formattedLocations || []); 
+    // setStateData(suggestionResponse.data.state);
+    // setCountryData(countryResponse.data);
+    // setZoneData(suggestionResponse.data.zone);
   } catch (error) {
     console.error("Error fetching location data:", error);
   } finally {
@@ -85,8 +90,9 @@ useEffect(()=>{
   if(inputValue.length>0)
   fetchSuggestions(inputValue);
 else {
-  setCityData([]);
-  setCountryData([]);
+  // setCityData([]);
+  // setCountryData([]);
+  setLocationData([]);
   setZoneData([]);
 }
 },[inputValue, value])
@@ -129,7 +135,7 @@ else {
     //     });
     //   }
     },
-    [multiple, type, onSelect, selectedLocations, cityData]
+    [multiple, type, onSelect, selectedLocations]
   );
 
   const handleRemove = useCallback(
@@ -142,7 +148,6 @@ else {
     },
     [selectedLocations, onSelect]
   );
-  console.log(zoneData)
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -190,7 +195,7 @@ else {
             value={inputValue}
             onValueChange={setInputValue}
           />
-          {/* <CommandEmpty>
+          <CommandEmpty>
             {isLoading ? (
               <div className="flex items-center justify-center p-4">
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -201,25 +206,17 @@ else {
             ) : (
               "No locations found."
             )}
-          </CommandEmpty> */}
+          </CommandEmpty>
           <CommandGroup>
           <CommandList>
-          {cityData?.map((data: any) => (
+          {locationData?.map((item: any) => (
           <CommandItem
-            key={data.id}
-            onSelect={() => handleSelect(data.name, data.id)}
+            key={item.id}
+            onSelect={() => handleSelect(item.displayName, item.id)}
           >
-           {`${data.name}${data.state ? `, ${data.state}` : ''}${data.countryName ? `, ${data.countryName}` : ''}`}
+           {item.displayName}
             {/* {data.state && `, ${data.state}`}
              {data.countryName && `, ${data.countryName}`} */}
-          </CommandItem>
-        ))}
-          {countryData?.map((data: any) => (
-          <CommandItem
-            key={data.id}
-            onSelect={() => handleSelect(data.name, data.id)}
-          >
-            {data?.name}
           </CommandItem>
         ))}
         {zoneData?.map((data: any) => (

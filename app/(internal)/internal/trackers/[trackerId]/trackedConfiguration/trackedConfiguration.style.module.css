@@ -1,11 +1,4 @@
-.container{
-    display: flex;
-    width: calc(100vw - 134px);
-    flex-direction: column;
-    gap: var(--spacing-lg);
-    font-size: var(--font-size-default);
-}
-.containerTopRight button{
+/* .containerTopRight button{
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-large);
     padding: 8px 24px;
@@ -14,7 +7,7 @@
     width: 100px;
     border: 1px solid var(--primary-color);
     border-radius:var(--border-radius-lg);
-}
+} */
 .innerContainer{
     display: grid;
     grid-template-columns: calc(45% - 5px) calc(55% - 5px);
@@ -49,7 +42,7 @@
     display: flex;
     gap:var(--spacing-xs);
 }
-.containerTopRightTwo button{
+/* .containerTopRightTwo button{
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-large);
     padding: 8px 24px;
@@ -57,7 +50,7 @@
     color:var(--primary-color);
     border: 1px solid var(--primary-color);
     border-radius: var(--border-radius-lg);
-}
+} */
 .shareModal{
     position: fixed;
     width: 100%;

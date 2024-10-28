@@ -32,6 +32,7 @@ export const endpoints = {
 //     eventTypes: `${BASE_URL}/trends/event-types`,
 //   },
 locations: `${BASE_URL}/location/country`,
+locationSuggestion: `${BASE_URL}/location/suggestion`,
 designations: `${BASE_URL}/designation`,
 users: `${BASE_URL}/auth/users`,
 tracker:{

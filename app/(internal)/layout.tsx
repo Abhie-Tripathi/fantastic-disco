@@ -13,7 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Joyride from "react-joyride";
 import { Metadata } from "next";
-
+import ReactQueryProvider from "@/components/provider/reactQueryProvider";
 const sora = Sora({
   subsets: ["latin"],
 });
@@ -37,6 +37,7 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.className}`}>
       <body>
         <ToastContainer />
+        <ReactQueryProvider>
         <AuthContextProvider>
           <ThemeProvider>
             <div className="desktop_view tablet_view">
@@ -47,6 +48,7 @@ export default function RootLayout({
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />
           </ThemeProvider>
         </AuthContextProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

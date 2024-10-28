@@ -2,16 +2,13 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
 import styles from './manageAccess.style.module.css';
-import TrackerOwner from '@/app/components/trackers/trackerOwner';
 import TrackerUser from '@/app/components/trackers/trackerUser';
-import Account from '/public/account.svg';
 import Image from 'next/image';
 import Link from 'next/link';
 import ShareModal from '@/app/components/internal/trackers/shareModal'
 import { useRouter } from 'next/navigation'
-import { baseUrl } from '@/constants';
-import { myFetch } from '@/utils/myFetch';
 import { usePathname } from 'next/navigation';
+import { Button } from "@/components/ui/button";
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from '@/utils/GAEvent';
 import { useTrackerServices } from '@/services/trackerServices';
@@ -161,16 +158,17 @@ const Page = () => {
                 <div className='flex items-center'>
                     <div></div>
                     <div className="flex flex-col">
-                        <div className="text-[var(--primary-color)] font-bold text-lg" onClick={shareFunction}>
+                        <div className="text-[var(--primary-color)] font-bold text-lg" >
                             Share Tracker
                         </div>
+                       
                         <div className="text-sm text-[var(--secondary-text-color)]">
                             Select people within your team and share your tracker details
                         </div>
                     </div>
                 </div>
                 <div className={styles.containerTopRight}>
-                    <button onClick={shareFunction}>Share Tracker</button>
+                    <Button className="text-white" onClick={shareFunction}>Share Tracker</Button>
                 </div>
             </div>
             <div className='flex gap-2 w-[calc(100vw-134px)] mt-[140px]'>

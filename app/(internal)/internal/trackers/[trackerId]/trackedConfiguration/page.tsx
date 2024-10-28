@@ -25,7 +25,7 @@ import ToggleBtn from "@/app/components/UI/ToggleBtn";
 import { useTrackerServices } from "@/services/trackerServices";
 // import SideNav from "@/app/components/trackers/sideNav";
 import { useTrackerContext } from "@/context/tracker";
-import { idea } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { Button } from "@/components/ui/button";
 function CustomeTracker({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -207,12 +207,12 @@ const userRating=
       </div>
       <div className="flex gap-2">
         <div className={styles.containerTopRightTwo} >
-          <button onClick={() => setDel(true)}>Delete</button>
+          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
         </div>
         {/* {data?.tracker?.accessLevel!=="READ" && */}
         <div className={styles.containerTopRight}>
         <Link href={`/internal/trackers/${last}/editTracker?type=${typeVal}`}>
-          <button
+          <Button className="text-white w-[100px]"
             onClick={() =>
               GAEvent(
                 "trackers",
@@ -223,7 +223,7 @@ const userRating=
             }
           >
             Edit
-          </button>
+          </Button>
         </Link>
       </div>
         {/* } */}
@@ -629,8 +629,8 @@ const userRating=
     {del &&
       (
         <div className={styles.shareModal} >
-          <div className={styles.innerModal}>
-            <div className={styles.shareHead}>Delete Tracker</div>
+          <div className={`${styles.innerModal} text-base`}>
+            <div className="font-medium text-[var(--primary-color)]">Delete Tracker</div>
             {/* <div className={styles.bar}></div> */}
             <div className={styles.linkCopy}>
 
@@ -643,8 +643,10 @@ const userRating=
 
             <div className={styles.buttons}>
 
-              <button className={styles.send} onClick={deleteTracker}>Delete</button>
-              <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
+              {/* <button className={styles.send} onClick={deleteTracker}>Delete</button> */}
+              <Button className="text-white" onClick={deleteTracker}>Delete</Button>
+              {/* <button className={styles.cancel} onClick={closeShareModal}>Cancel</button> */}
+              <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]" onClick={closeShareModal}>Cancel</Button>
             </div>
           </div>
         </div>

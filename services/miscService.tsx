@@ -2,6 +2,7 @@ import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
 import { Country } from "@/types/events/event";
 import { Designations } from "@/types/misc/designations";
+import { MiscAdapter } from "@/adapters/miscAdapter";
 import { UndefinedInitialDataInfiniteOptions } from "@tanstack/react-query";
 // import { Designations } from "@/types/misc/designations";
 // import externalAxios from "@/lib/externalAxios";
@@ -35,14 +36,15 @@ export const useMiscService = () => {
       }
     );
   };
-  const getDesginationAutocomplete = (input: string) => {
-    return api.request<Designations[] | undefined>(
+  const getDesginationAutocomplete = async (input: string) => {
+    const response = await api.request<Designations[] | undefined>(
       `${endpoints.designations}`,
       {
         method: "GET",
-        params: { name: input },
+        params: { name: input, take: 100 },
       }
     );
+    return MiscAdapter.adaptDesignationsResponse(response);
   };
 
 //   const getRegions = () => {

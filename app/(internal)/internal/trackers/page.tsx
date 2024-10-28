@@ -44,7 +44,7 @@ import Vector3 from "/public/Vector3.svg";
 import Vector4 from "/public/Vector4.svg";
 import MyTracker from "@/app/components/internal/trackers/MyTrackers";
 import Loading from "@/app/components/UI/Loading";
-import style from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark";
+import { Button } from "@/components/ui/button";
 function AllTrackers({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -494,12 +494,15 @@ const Trackers = ({ searchParams }: Search) => {
       <div className="text-sm text-[var(--secondary-text-color)]">
         Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
       </div>
-      <button
+      <div>
+      <Button className="text-white" onClick={()=>setHideTemplate(false)}>Create Tracker</Button>
+      </div>
+      {/* <button
         className="w-[160px] text-white font-bold py-2 px-4 rounded text-sm"
-        style={{ background: "var(--primary-color)" }} onClick={()=>setHideTemplate(false)}
+        style={{ background: "var(--primary-color)" }} 
       >
         Create Tracker
-      </button>
+      </button> */}
       <hr style={{borderBottom:"1px solid var(--border-color)"}}/>
       <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
@@ -523,10 +526,7 @@ const Trackers = ({ searchParams }: Search) => {
         href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list`}
         onClick={()=>setContextData(singleTrackerData?.id)}
       >
-          <button className="w-[160px] text-white font-bold py-2 px-4 rounded text-sm"
-        style={{ background: "var(--primary-color)" }}>
-            <span>View Events</span>
-          </button>
+        <Button className="text-white">View Events</Button>
           </Link>
         </div>
         <div className="flex">
@@ -596,7 +596,7 @@ const Trackers = ({ searchParams }: Search) => {
           <div className={`${styles.container}`}>
               {data.map((item, ind) => (
                 <Link href={`/internal/trackers/create?type=${item?.url}`} key={ind}>
-                  <div className="w-full p-2 gap-2 flex items-center flex-col h-[300px] text-sm border border-[var(--border-color)] rounded-[12px]">
+                  <div className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]">
                     <div
                       className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]"
                     >
@@ -624,7 +624,8 @@ const Trackers = ({ searchParams }: Search) => {
                           </div>
                         </div>
                         <div
-                      className="badge_primary text-sm"
+                      className="badge_primary"
+                      style={{fontSize:"var(--font-size-label)", padding:"6px"}}
                     >
                       {item?.domain}
                     </div>
@@ -645,13 +646,13 @@ const Trackers = ({ searchParams }: Search) => {
                   href="/internal/trackers/create?type=CUSTOM"
                   className={styles.createUrl}
                 >
-                  <button
+                  <Button
                     // onClick={() => modalOpen()}
-                    className={styles.createBtn}
-
+                    className="text-white"
+                    
                   >
                     Create Custom
-                  </button>
+                  </Button>
                 </Link>
               </div>
               </div>

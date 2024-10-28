@@ -8,6 +8,7 @@ import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { GAEvent } from '@/utils/GAEvent';
 import { useTrackerServices } from '@/services/trackerServices';
+import { Button } from "@/components/ui/button";
 interface ShareModalProps {
     fetchAccess?: any;
   closeShareModal?: () => void;
@@ -232,8 +233,10 @@ const ShareModal: React.FC<ShareModalProps> = ({
                       </div>}
                             
                         <div className="flex gap-3 flex-row-reverse" >
-                            <button className={styles.send} onClick={shareInvites}>Send Invite</button>
-                            <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
+                            {/* <button className={styles.send} onClick={shareInvites}>Send Invite</button> */}
+                            <Button className='text-white' onClick={shareInvites}>Send Invite</Button>
+                            {/* <button className={styles.cancel} onClick={closeShareModal}>Cancel</button> */}
+                            <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]" onClick={closeShareModal}>Cancel</Button>
                         </div>
                     </div>
   )

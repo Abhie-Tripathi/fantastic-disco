@@ -24,20 +24,20 @@ import { useQuery } from "@tanstack/react-query";
 import { useFilterState } from "@/hooks/useFilterState";
 import { Designations} from "@/types/misc/designations";
 
-// const useDesignationsAutocomplete = (input: string) => {
-//   const miscService = useMiscService();
+const useDesignationsAutocomplete = (input: string) => {
+  const miscService = useMiscService();
 
-//   const { data, error, isLoading } = useQuery({
-//     queryKey: ["designations", input],
-//     queryFn: () => miscService.getDesginationAutocomplete(input),
-//   });
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["designations", input],
+    queryFn: () => miscService.getDesginationAutocomplete(input),
+  });
 
-//   return {
-//     designations: data?.designations ?? [],
-//     isLoading,
-//     isError: !!error,
-//   };
-// };
+  return {
+    designations: data?.designations ?? [],
+    isLoading,
+    isError: !!error,
+  };
+};
 interface DesAndDepProps{
   source: string,
   designationData?:string[],
@@ -48,10 +48,11 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
   console.log(designationData);
   
   const [open, setOpen] = useState(false);
-  const [designations,setDesignations]=useState<Designations[]>([]);
+  // const [designations,setDesignations]=useState<Designations[]>([]);
   const [selectedLabels, setSelectedLabels] = useState<Designations[]>([]);
   const [search, setSearch] = useState("");
   const { setFilter } = useFilterState();
+  const { designations } = useDesignationsAutocomplete(search);
   // const selectedLabels = source==="tracker" ? designationData : localSelectedLabels
   // const setSelectedLabels = source==="tracker" ? setDesignationData: setLocalSelectedLabels
   const handleSelect = (label: Designations) => {
@@ -85,106 +86,112 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
     }
     setOpen(open);
   };
-  useEffect(()=>{
-      fetchData();
-  },[search])
-  const fetchData = async () => {
-    const result = await getDesginationAutocomplete(search);
-    const filteredData: Designations[] = Array.isArray(result)
-      ? result.filter((item) =>
-          designationData?.some((designationId) => designationId === item.id)
-        )
-      : [];
-    setSelectedLabels(filteredData);
-    console.log(filteredData);
-    if(result)
-    setDesignations(result);
-  };
-  console.log(selectedLabels);
+  // useEffect(()=>{
+  //     fetchData();
+  // },[search])
+  // const fetchData = async () => {
+  //   const result = await getDesginationAutocomplete(search);
+  //   const filteredData: Designations[] = Array.isArray(result)
+  //     ? result.filter((item) =>
+  //         designationData?.some((designationId) => designationId === item.id)
+  //       )
+  //     : [];
+  //   setSelectedLabels(filteredData);
+  //   console.log(filteredData);
+  //   // if(result)
+  //   // setDesignations(result);
+  // };
+  useEffect(() => {
+    setSelectedLabels(
+      designations.filter((item:Designations) =>
+        designationData?.some((data) => data=== item.id)
+      )
+    );
+  }, [designations]);
   
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            open ? "border-primary" : "border-input"
+    <PopoverTrigger asChild>
+      <Button
+        variant="outline"
+        className={`w-full justify-between px-3 py-5 text-base font-normal ${
+          open ? "border-primary" : "border-input"
+        }`}
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-haspopup="true"
+      >
+        <div className="flex items-center">
+          <span className="mr-2">Audience Profile</span>
+          {selectedLabels.length > 0 && (
+            <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+              {selectedLabels.length}
+            </span>
+          )}
+        </div>
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
+            open ? "rotate-180 transform" : ""
           }`}
-          onClick={() => setOpen(!open)}
-          aria-expanded={open}
-          aria-haspopup="true"
+        />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent className="w-full max-w-[var(--radix-popover-trigger-width)] min-w-[280px] p-0">
+      {/* <div className="flex justify-between items-center p-4 py-2 border-b">
+        <span className="font-medium">Labels</span>
+        <Button
+          variant="link"
+          className="text-primary pr-0"
+          onClick={handleApply}
         >
-          <div className="flex items-center">
-            <span className="mr-2">Audience Profile</span>
-            {designationData.length > 0 && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                {designationData.length}
-              </span>
-            )}
-          </div>
-          <ChevronDown
-            className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
-              open ? "rotate-180 transform" : ""
-            }`}
-          />
+          Apply
         </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-full max-w-[var(--radix-popover-trigger-width)] min-w-[280px] p-0">
-        {/* <div className="flex justify-between items-center p-4 py-2 border-b">
-          <span className="font-medium">Labels</span>
-          <Button
-            variant="link"
-            className="text-primary pr-0"
-            onClick={handleApply}
-          >
-            Apply
-          </Button>
-        </div> */}
-        <Command shouldFilter={false}>
-          <CommandInput
-            placeholder="Search Audience Profile"
-            onValueChange={(search) => setSearch(search)}
-          />
-          <CommandEmpty>No label found.</CommandEmpty>
-          <CommandGroup>
-            <CommandList>
-              {designations && designations?.map((label: Designations) => (
-                <CommandItem
-                  key={label.id}
-                  onSelect={() => handleSelect(label)}
+      </div> */}
+      <Command shouldFilter={false}>
+        <CommandInput
+          placeholder="Search Audience Profile"
+          onValueChange={(search) => setSearch(search)}
+        />
+        <CommandEmpty>No label found.</CommandEmpty>
+        <CommandGroup>
+          <CommandList>
+            {designations?.map((label: Designations) => (
+              <CommandItem
+                key={label.id}
+                onSelect={() => handleSelect(label)}
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+                    selectedLabels.some((l) => l.id === label.id)
+                      ? "opacity-100"
+                      : "opacity-0"
+                  )}
+                />
+                {label.name}
+              </CommandItem>
+            ))}
+          </CommandList>
+        </CommandGroup>
+      </Command>
+      {selectedLabels.length > 0 && (
+        <div className="p-2 border-t">
+          <div className="flex flex-wrap gap-1">
+            {selectedLabels.map((label) => (
+              <Badge key={label.id} variant="secondary" className="mr-1 mb-1">
+                {label.name}
+                <button
+                  className="ml-1 hover:text-destructive"
+                  onClick={() => handleRemoveLabel(label.id)}
                 >
-                  <Check
-                    className={cn(
-                      "mr-2 h-4 w-4",
-                      selectedLabels.some((l) => l.id === label.id)
-                        ? "opacity-100"
-                        : "opacity-0"
-                    )}
-                  />
-                  {label.name}
-                </CommandItem>
-              ))}
-            </CommandList>
-          </CommandGroup>
-        </Command>
-        {designationData.length > 0 && (
-          <div className="p-2 border-t">
-            <div className="flex flex-wrap gap-1">
-              {designationData.map((label) => (
-                <Badge key={label.id} variant="secondary" className="mr-1 mb-1">
-                  {label.name}
-                  <button
-                    className="ml-1 hover:text-destructive"
-                    onClick={() => handleRemoveLabel(label.id)}
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            ))}
           </div>
-        )}
-      </PopoverContent>
-    </Popover>
+        </div>
+      )}
+    </PopoverContent>
+  </Popover>
   );
 }

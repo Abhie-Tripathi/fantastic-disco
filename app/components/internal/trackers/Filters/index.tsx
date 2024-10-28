@@ -27,61 +27,22 @@ import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
 import { ChevronDown, Plus, Share } from "geist-icons";
-import eventVisitorsData from "../../../../../public/data/eventVisitorsData.json";
-// import styles from "./search.module.css";
 import { EventDataType } from "@/app/components/types/allevents";
-import EventType from "@/app/components/Search/Dropdowns/EventType";
-import RegularityEdition from "@/app/components/dropdown/RegularityEdition";
-import GlobalTouring from "@/app/components/dropdown/GlobalTouring";
-import AudienceQuality from "@/app/components/dropdown/AudienceQuality";
 import EventStatusData from "@/public/data/eventType.json";
 import userOne from "/public/userOne.svg";
-import SearchIcon from "/public/search.svg";
-import DropIcon from "/public/internal/drop_down_angle.svg";
-import ExportIcon from "/public/internal/ExportIcon.svg";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import CategoryDropdown from "@/app/components/dropdown/CategoryDropwdown";
-import LabelDropdown from "@/app/components/dropdown/LabelDropdown";
-import LocationDropdown from "@/app/components/dropdown/LocationDropdown";
 import RecentSearches from "@/app/components/Search/RecentSearches";
-import RankInput from "@/app/components/Search/Dropdowns/RankInput";
-import EventAttendance from "@/app/components/Search/Dropdowns/EventAttendence";
-import EventStatus from "@/app/components/Search/Dropdowns/EventStatus";
-import ExportModal from "@/app/components/Search/ExportModal";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
-import List from "@/app/components/List";
-import MaturitySlider from "@/app/components/Search/ui/MaturitySlider";
-import IntScoreSlider from "@/app/components/Search/ui/IntScoreSlider";
 import Loading from "@/app/components/UI/Loading";
-import { searchEvents } from "@/services/eventsService";
-import {
-  Button,
-  Dialog,
-  DialogTrigger,
-  MenuTrigger,
-  Modal,
-  ModalOverlay,
-  Popover,
-} from "react-aria-components";
-import { convertISOToOriginalFormat } from "@/utils/date";
-import DateRange from "@/app/components/dropdown/DateRange";
-import EventAdvFilter from "@/app/components/dropdown/EventAdvFilter";
+import { Button } from "@/components/ui/button";
 import EventKeyword from "@/app/components/dropdown/EventKeyword";
-import UserRatings from "@/app/components/Search/Dropdowns/UserRatings";
-import RangeSlider from "@/app/components/UI/Slider";
-import AnalyticsDropdown from "@/app/components/dropdown/AnalyticsDropdown";
 // import { MapStyle } from "@/components/Map";
 // const Calendar = lazy(() => import("@/components/Calendar"));
 // const Map = lazy(() => import("@/components/Map"));
 
 //JSON Data files:
-import eventFormatData from "../../../../../public/data/advanceFilterFormat.json";
-import eventFrequencyData from "../../../../../public/data/eventFrequency.json";
-import eventEntryData from "../../../../../public/data/eventEntry.json";
-import eventRankData from "../../../../../public/data/eventRank.json";
-import eventExhibitScoreData from "../../../../../public/data/eventExhibitScore.json";
 import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
 import SearchBar from "../../searchBar/SearchBar";
@@ -96,6 +57,7 @@ import AudienceQualitySelector from "@/components/advancedFilters/audienceQualit
 import {Tracker, Toggle} from '@/types/trackers'
 import ExhibitorQualitySelector from "@/components/advancedFilters/exhibitorQualityScore";
 import { useTrackerContext } from "@/context/tracker";
+import { Designations } from "@/types/misc";
 interface FilterValue {
   labels: string;
   name: string;
@@ -812,8 +774,8 @@ const Pages = () => {
         ...(selectedCountries?.length > 0 && {
           audienceSpread: selectedCountries.join(",")
          }),
-        ...(selectedAudProfile.length > 0 && {
-          designation: selectedAudProfile.join(",")
+         ...(selectedAudProfile.length > 0 && {
+          designation: selectedAudProfile.join(","),
         }),
         ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread'].join()}
         // info: {
@@ -1049,8 +1011,13 @@ const Pages = () => {
       setAudienceSpread(toggleOpend?.audienceSpread ? true : false);
 
       setSelectedCountries(editData.tracker.filterValue?.audienceSpread ? editData.tracker.filterValue?.audienceSpread?.split(",") : []);
-
-      setSelectedAudProfile(editData.tracker.filterValue?.designation ? editData.tracker.filterValue?.designation : []);
+      setSelectedAudProfile(
+        editData.tracker.filterValue?.designation
+          ? editData.tracker.filterValue.designation
+              .filter((item: Designations) => item.id !== undefined)
+              .map((item: Designations) => item.id)
+          : []
+      );
 
       setSelectedEventKeywords(
         editData?.tracker?.filterValue?.eventKeywords?.length > 0
@@ -1256,6 +1223,8 @@ setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedZone]);
       )
       const updatedRegularity = [...selectedRegularity];
       updatedRegularity[0] = editData.tracker.filterValue?.editionRange > 0 ? editData.tracker.filterValue?.editionRange : 0;
+      setDesignationData(editData?.tracker?.filterValue?.designation
+      )
       setSelectedRegularity(updatedRegularity);
       const updatedTrustScore=[...selectedTrustScore]
       updatedTrustScore[0]=
@@ -1471,7 +1440,7 @@ console.log(includeKeywords, excludeKeywords);
 //   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
 //       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
 // },[includeKeywords, excludeKeywords])
-console.log(dateRange);
+
 
   return (
     <>
@@ -1503,11 +1472,13 @@ console.log(dateRange);
           }
           style={{ display: "flex" }}
         >
-          <button className={styles.cancel}>Cancel</button>
+          {/* <button className={styles.cancel}>Cancel</button> */}
+          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">Cancel</Button>
         </Link>
-        <button className={styles.save} onClick={saveTrackerHandler}>
+        {/* <button className={styles.save} onClick={saveTrackerHandler}>
           Save Tracker
-        </button>
+        </button> */}
+        <Button className="text-white" onClick={saveTrackerHandler}>Save Tracker</Button>
       </div>
     </div>
     <div className="flex flex-col gap-6 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "94px" : "140px" }}>
