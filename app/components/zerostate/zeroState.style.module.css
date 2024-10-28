@@ -1,0 +1,14 @@
+.zeroState_container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    color: var(--primary-color);
+    font-weight: var(--font-weight-medium);
+  }
+  .text{
+    color:var(--secondary-text-color);
+    font-size: var(--font-size-default);
+    width: 400px;
+  }

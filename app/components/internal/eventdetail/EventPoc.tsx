@@ -25,6 +25,7 @@ interface POCtypes {
   profilePicture: null | string;
   designation: string | null;
   emailActive: string | null;
+  email: string;
 }
 
 const EventPoc = ({ open, eventId }: Props) => {
@@ -83,7 +84,10 @@ const EventPoc = ({ open, eventId }: Props) => {
                   />
                   <div className={styles.followerDetails}>
                     <div className={styles.followerName}>
-                      {poc?.name}
+                      {poc?.name ? 
+                        poc?.name : 
+                          (poc?.email?.split('@')?.[0])
+                        }
                       {/* <span className={styles.username}>{item.username}</span> */}
                     </div>
                     <div className={styles.followerPosition}>{poc?.designation}</div>

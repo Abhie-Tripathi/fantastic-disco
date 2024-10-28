@@ -321,8 +321,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 className={styles.allTagsOuterContainer}
                 onClick={handleClickEvent}
               >
-                <div className={styles.allTags}>
-                  <div className={styles.total_upvotes}>
+                <div className={styles.allTags} style={{cursor: 'default'}}>
+                  <div className={styles.total_upvotes} title="Total upvotes count of attend, speak, sponsor, or exhibit">
                     {upvote && votesCount}
                     <div style={{ display: "flex", paddingTop: "10px" }}>
                       <Image
