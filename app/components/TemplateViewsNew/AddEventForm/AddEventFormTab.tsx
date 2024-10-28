@@ -4,7 +4,7 @@ import Placeholder from '/public/placeholder.png'
 import { useTheme } from '@/context'
 import { myFetch } from '@/utils/myFetch'
 import { baseUrl } from '@/constants'
-import { AllEventsType, EventsType } from '@/types/alleventtype'
+import { EventsType } from '@/types/alleventtype'
 import { GolbalEventType } from '@/types/globaleventtype'
 import { showToast } from "@/utils/showToast";
 import Details from './Details/Details'
