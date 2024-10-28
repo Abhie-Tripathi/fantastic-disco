@@ -637,10 +637,10 @@ const Pages = () => {
   useEffect(() => {
     const fetchAISuggestion = async (val: any) => {
       try{
-        const promptText = `List top 5 companies similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {\"data\": list}`;
+        const promptText = `List only name of top 5 companies similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {"data": ["company name 1","company name 2","company name 3","company name 4","company name 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`;
         let aiResponse: any = await suggestionGenerator(promptText);
         let temp = JSON.parse(aiResponse.choices[0].message.content);  
-        if(temp && temp?.data && temp?.data?.length > 0)
+        if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
           setSuggestions(temp.data);
       } catch (err) {
         console.error("Fetch failed:", err);
@@ -1187,7 +1187,7 @@ const Pages = () => {
           setCustomData((prevData: any) => [
             ...prevData,
             ...orgNames?.map((item) => (
-              { companyUrl: item.trim() }
+              { "Competitor Name or Website": item.trim() }
             ))
           ]);
         }
@@ -1195,7 +1195,7 @@ const Pages = () => {
           setCustomData((prevData: any) => [
             ...prevData,
             ...orgWebsites?.map((item) => (
-              { companyUrl: item.trim() }
+              { "Competitor Name or Website": item.trim() }
             ))
           ]);
         }
