@@ -191,6 +191,14 @@ export const EventsAdapter = {
       adaptedParams.longitude = coordinates.longitude;
     }
 
+    if(params.get("geoCoordinates")){
+      const geoCoordinates = JSON.parse(params.get("geoCoordinates") || "")
+      adaptedParams.mapRadius = String(geoCoordinates.radius * 1000)
+      adaptedParams.latitude = geoCoordinates.latitude
+      adaptedParams.longitude = geoCoordinates.longitude
+
+    }
+
     return adaptedParams;
   },
 

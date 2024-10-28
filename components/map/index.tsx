@@ -1,5 +1,4 @@
 //@ts-nocheck
-
 "use client";
 
 import React, {
@@ -23,7 +22,7 @@ import { AlignLeft } from "lucide-react";
 import EventList from "./event-list";
 import Link from "next/link";
 import Alerts from "./alerts";
-import { Event, EventCount, MapEvents } from "@/types";
+import { Event, EventCount, MapEvents } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFilterState } from "@/hooks/useFilterState";
@@ -316,6 +315,7 @@ export default function MapComponent({ searchParams }: MapProps) {
     if (location?.type === "geoCoordinates") {
       const { latitude, longitude, radius } = location;
       const zoom = Math.log2(360 / (radius / 1000)) - 4.6;
+      setCurrentZoomGroup("event");
       mapRef.current.flyTo({
         center: [Number(longitude), Number(latitude)],
         zoom: zoom,
