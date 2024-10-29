@@ -130,7 +130,7 @@ const Popup3: React.FC<Props> = ({
       />
 
       <div className={styles.event_type}>{fetchedAddedEvents![0]?.eventType==="MAIN"? "Main Even" : fetchedAddedEvents![0]?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
-      <div className={styles.type}>Workshop</div>
+      <div className={styles.type}>{fetchedAddedEvents![0]?.eventType === "MAIN"? fetchedAddedEvents![0].event_type: fetchedAddedEvents![0]?.eventType === "SUB" ?fetchedAddedEvents![0].participationType:"Workshop"}</div>
       </div>
       
       

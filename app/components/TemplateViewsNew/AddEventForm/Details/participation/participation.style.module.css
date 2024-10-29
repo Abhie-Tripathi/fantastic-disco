@@ -23,7 +23,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 18px;
+    gap: 12px;
     white-space: nowrap;
     overflow-x: scroll; 
     scrollbar-width: none;
@@ -35,7 +35,7 @@
     border-radius: 6px;
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 8px;
     cursor: pointer;
     border: 1px solid var(--border-color);
 }

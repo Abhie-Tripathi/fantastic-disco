@@ -64,6 +64,7 @@ const EventListCard1 = ({
   const description = fetchedEvent ? truncateText(fetchedEvent.description, 130) : demoDescription;
   const truncatedDescription = description.substring(0, 130) + (description.length > 130 ? "..." : "");
   const { day, month } = fetchedEvent ? formatStartDate(fetchedEvent.startDate) : { day: 1, month: "Jan" };
+  console.log("asdasd",fetchedEvent)
   return (
     <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
       <Image width={260} height={200} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='banner' className={styles.banner} style={{objectFit : "cover"}}/>
@@ -93,8 +94,8 @@ const EventListCard1 = ({
         <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: truncatedDescription }}></div>
         <div className={styles.dateRange_typeContainer}>
           <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
-          <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.event_type:"Tradeshow"}</div>
-          <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.eventFormat:"Attending"}</div>
+          <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.event_type: fetchedEvent?.eventType === "SUB" ?fetchedEvent.participationType:"Tradeshow"}</div>
+          <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.eventFormat: fetchedEvent?.eventType==="SUB" ?fetchedEvent.eventFormat:"Attending"}</div>
         </div>
       </div>
     </div>
