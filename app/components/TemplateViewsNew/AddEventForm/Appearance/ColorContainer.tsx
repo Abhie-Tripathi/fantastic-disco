@@ -26,7 +26,6 @@ const ColorContainer = ({ setUploadedPhoto,setSnowTheme, setLeavesTheme, confett
     const colorPickerRef = useOutsideClick(() => setDisplayColorPicker(false));
     const [selectedColorIndex, setSelectedColorIndex] = useState(0);
     const [color, setColor] = useState('#2c68f6');
-    const [confettiDropdown, setConfettiDropdown] = useState<boolean>(false)
     const clickable = true
     const handleChange = (color: any) => {
         const colorWithOpacity = addOpacityToHex(color.hex, 0.1); // 0.1 for 10% opacity

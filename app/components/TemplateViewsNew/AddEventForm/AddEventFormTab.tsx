@@ -4,7 +4,7 @@ import Placeholder from '/public/placeholder.png'
 import { useTheme } from '@/context'
 import { myFetch } from '@/utils/myFetch'
 import { baseUrl } from '@/constants'
-import { AllEventsType, EventsType } from '@/types/alleventtype'
+import { EventsType } from '@/types/alleventtype'
 import { GolbalEventType } from '@/types/globaleventtype'
 import { showToast } from "@/utils/showToast";
 import Details from './Details/Details'
@@ -712,7 +712,8 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                         Save and Add event</button>
                 </div>
             </div>
-            <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`} 
+            <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`}
+            style={{ backgroundColor: pageBgColor}} 
             ref={formContainerRef}>
                 <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
                 {leavesTheme && <div className={styles.themeContainer}>
