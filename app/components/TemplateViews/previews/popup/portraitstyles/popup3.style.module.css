@@ -8,16 +8,62 @@
     height: 370px;
     padding: 12px 14px 24px 12px;
 }
+.smallBannerContainer{
+    height: 100%;
+    width: 280px;
+    position: relative;
+}
+.bannerContainer{
+    /* height: 100%; */
+    /* width: 385px; */
+    position: relative;
+}
+
+.type{
+    position: absolute;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #6750A4;
+    background-color: #F7EFFF;
+    bottom: 10px;
+    right: 9px;
+}
+
+.event_type{
+    position: absolute;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #6750A4;
+    background-color: #F7EFFF;
+    bottom: 10px;
+    left: 10px;
+}
 .banner{
-    /* height: 220px; */
+    min-height: 220px;
+    max-height: 220px;
     width: 100%;
     border-radius: 8px;
+    object-fit: cover;
+}
+.smallName{
+    margin-top: 10px;
+    min-height: 30px;
+    max-height: 30px;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 .eventName{
-    margin-top: 20px;
+    margin-top: 10px;
+    min-height: 55px;
+    max-height: 55px;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 .location_dateContainer{
-    margin-top: 12px;
+    margin-top: 10px;
+    height: 40px;
 }
 .locationContainer{
     display: flex;
@@ -34,19 +80,26 @@
     gap: 8px;
 }
 .desc{
+    word-wrap:break-word ;
     width: 100%;
-    margin-top: 20px;
+    overflow: hidden;
+    max-height: 50px;
+    min-height: 50px;
+    margin-top: 10px;
 }
 .btnContainer{
-    margin-top: 20px;
+    margin-top: 10px;
     width: 100%;
     display: flex;
     justify-content: center;
+    gap: 10px;
 }
 .btn{
     padding: 10px 20px;
     border: 1px solid;
+    min-width: 60px;
 }
 .smallBtn{
     padding: 5px 10px;
+    min-width: 60px;
 }

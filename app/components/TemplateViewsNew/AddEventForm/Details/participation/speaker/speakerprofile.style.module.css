@@ -14,9 +14,11 @@
     gap: 3px;
 }
 .header span{
-    color: #7D7D7D;
-    font-size: var(--font-size-small);
+    /* color: #7D7D7D; */
+    /* font-size: var(--font-size-small); */
     font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-default);
+    color: var(--tertiary-text-color);
 }
 .body img{
     cursor: pointer;

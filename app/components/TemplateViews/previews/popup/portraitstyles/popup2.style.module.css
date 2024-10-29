@@ -17,11 +17,21 @@
 .banner {
     border-radius: 8px;
     width: 100%;
+    object-fit: cover;
     /* height:180px; */
 }
-
+.eventName{
+    min-height: 40px;
+    max-height: 40px;
+    overflow: hidden;
+}
+.smallName{
+    min-height: 20px;
+    max-height: 20px;
+    overflow: hidden;
+}
 .location_dateContainer {
-    margin-top: 8px;
+    min-height: 40px;
     display: flex;
     flex-direction: column;
 }
@@ -121,21 +131,36 @@
 .circle:hover::before {
     opacity: 1;
 }
-
 .desc{
+    min-height: 55px;
+    max-height: 55px;
     width: 100%;
-    padding: 10px;
-
+    padding-left: 10px;
+    padding-right: 10px;
+    word-wrap: break-word;
+    overflow: hidden;
+}
+.smallDesc{
+    min-height: 30px;
+    max-height: 30px;
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 .btnContainer{
     width: 100%;
     display: flex;
     justify-content: center;
+    gap: 10px;
 }
 .smallBtn{
     padding: 5px 10px;
+    min-width: 60px;
 }
 .btn{
     padding: 10px 20px;
     border: 1px solid;
+    min-width: 60px;
 }

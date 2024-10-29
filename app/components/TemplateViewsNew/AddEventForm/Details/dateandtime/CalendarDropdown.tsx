@@ -2,23 +2,31 @@ import React from 'react'
 import styles from './calendar.style.module.css'
 import { Button, Calendar, CalendarCell, CalendarGrid, Heading } from 'react-aria-components';
 import { parseDate } from '@internationalized/date';
+import { FormState } from '@/types/Formstate';
 
 interface Props {
-    setDate: (value: string) => void
+    // setDate: (value: string) => void
+    handleChange: (field: keyof FormState, value: any) => void;
     dateValue: string
+    type : string;
     minDate?: string; 
     maxDate? : string;
 }
 
-const CalendarDropdown = ({ setDate, dateValue,minDate,maxDate }: Props) => {
+const CalendarDropdown = ({ handleChange, dateValue,minDate,maxDate,type }: Props) => {
 
-    const handleChange = (newDate: any) => {
+    const handleDateChange = (newDate: any) => {
         const formattedDate = newDate.toString(); // Assuming newDate is an instance of CalendarDate from @internationalized/date
-        setDate(formattedDate);
+        if(type === "start"){
+            handleChange('startDate', formattedDate)
+        }else{
+            handleChange('endDate',formattedDate)
+        }
+        // setDate(formattedDate);
     };
 
     return (
-        <Calendar aria-label="Appointment date" className={styles.react_aria_Calendar} defaultValue={parseDate(dateValue)} onChange={handleChange} minValue={minDate ? parseDate(minDate) : undefined} maxValue={maxDate ? parseDate(maxDate) : undefined}> 
+        <Calendar aria-label="Appointment date" className={styles.react_aria_Calendar} defaultValue={parseDate(dateValue)} onChange={handleDateChange} minValue={minDate ? parseDate(minDate) : undefined} maxValue={maxDate ? parseDate(maxDate) : undefined}> 
             <header>
                 <Heading className={styles.react_aria_Heading} />
                 <div>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import styles from './colorpicker.style.module.css'
 import { SketchPicker } from 'react-color';
-import { useTheme } from '@/context';
 import useOutsideClick from '@/hooks/useOutsideClick';
 
 interface ColorProps {
@@ -18,14 +17,12 @@ const ColorPicker = ({ color,extractedColors,heading , handleChange,handleHexInp
         setDisplayColorPicker(!displayColorPicker);
     };
     const colorPickerRef = useOutsideClick(() => setDisplayColorPicker(false));
-    const {theme} = useTheme()
 
     const handleHexInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const hexColor = e.target.value;
         handleHexInputChange(hexColor);
     };
 
-    
     return (
         <div className={styles.body} ref={colorPickerRef}>
             <div className={styles.heading}>{heading}</div>
@@ -42,7 +39,6 @@ const ColorPicker = ({ color,extractedColors,heading , handleChange,handleHexInp
             ) : null}
             <input
                 className={styles.pickedColorCode}
-                style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#1A1A1A", color: theme === "light" ? "black" : "white" }}
                 maxLength={7}
                 value={color}
                 onChange={handleHexInput}

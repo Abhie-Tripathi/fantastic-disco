@@ -1,12 +1,54 @@
-.card{
+.bigouterDiv{
+    width: 100%;
+}
+.smallouterDiv{
+    width: 85%;
+    border-left: 1px dashed var(--disabled-background-color);
+    display: flex;
+    justify-content: flex-end;
+}
+.bigCard{
+    background-color: var(--primary-foreground);
     width: 100%;
     padding: 12px;
     border: 1px solid var(--neutral-light-color);
     border-radius: 4px;
 }
-.eventName {
+.cardSubeventContainer{
+    width: 98%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 25px;
+}
+.smallCard{
+    background-color: var(--primary-foreground);
+    width: 100%;
+    filter: drop-shadow(1px 1px 2px rgb(202, 202, 202));
+    padding: 18px 30px;
+    border: 1px solid var(--neutral-light-color);
+    border-radius: 4px;
+    margin-top: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.imageContainer{
+    border-radius: 6px;
+    overflow: hidden;
+    height: 130px;
+    width: 130px;
+}
+.details{
+    width: 90%;
+}
+.smallName {
     font-size: var(--font-size-default);
     font-weight: var(--font-weight-semibold);
+}
+.bigName{
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-weight-medium);
 }
 .eventDataField{
     display: flex;
@@ -21,6 +63,12 @@
     align-items: center;
     margin-top: 4px;
     gap: 10px;
+}
+.description{
+    margin-top: 5px;
+    font-size: var(--font-size-small);
+    color: var(--tertiary-text-color);
+    font-weight: var(--font-weight-semibold);
 }
 .tags_deleteContainer{
     width: 100%;
@@ -60,4 +108,12 @@
 }
 .deleteBtn:hover{
     background-color:red;
+}
+.subEventsContainer{
+    background-color: var(--background-secondary-color);
+    padding: 18px 30px;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content:flex-end;
 }

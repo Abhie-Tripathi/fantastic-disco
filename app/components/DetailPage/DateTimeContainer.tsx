@@ -12,6 +12,7 @@ interface TimeSettingsProps {
     endDate: string;
     startTime: string;
     endTime: string;
+    mobile? : boolean;
 }
 
 const DateTimeContainer = ({
@@ -20,12 +21,15 @@ const DateTimeContainer = ({
     endDate,
     startTime,
     endTime,
+    mobile
 }: TimeSettingsProps) => {
-    const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(mobile || false);
 
     useEffect(() => {
         const handleResize = () => {
-            setIsMobile(window.innerWidth <= 821);
+            if(!isMobile){
+                setIsMobile(window.innerWidth <= 821);
+            }
         };
 
         handleResize();
@@ -37,10 +41,10 @@ const DateTimeContainer = ({
     }, []);
     return (
         <div className={styles.body}>
-            <div className={styles.dateAndTimeContainer}>
+            <div className={styles.dateAndTimeContainer} style={{padding : isMobile ? "11px 10px 11px 19px" :""}}>
                 {isMobile && <div className={styles.mobileView}>
                     <div className={styles.mobile_dateIconContainer}>
-                        <TimeZoneIcon color="#7D7D7D" />
+                        <TimeZoneIcon color="#A8A8A8" />
                         <div className={styles.mobile_dateContainer}>{formatDate(startDate)} - {formatDate(endDate)}</div>
                     </div>
                     <div className={styles.mobile_timeGmtContainer}>
@@ -48,11 +52,11 @@ const DateTimeContainer = ({
                         <div>{timeZone}</div>
                     </div>
                 </div>}
-                <div className={styles.startEndStyle}>
+                <div className={styles.startEndStyle} style={{display : isMobile ? "none":""}}>
                     <div className={styles.start}>Start</div>
                     <div className={styles.end}>End</div>
                 </div>
-                <div className={styles.dateTimeBoxes}>
+                <div className={styles.dateTimeBoxes} style={{display : isMobile ? "none":""}}>
                     <div className={styles.dateBoxes}>
                         <div className={styles.dateBox}>{formatDate(startDate)}</div>
                         <div className={styles.dateBox}>{formatDate(endDate)}</div>
@@ -63,7 +67,7 @@ const DateTimeContainer = ({
                     </div>
                 </div>
             </div>
-            <div className={styles.timeZonesContainer}>
+            <div className={styles.timeZonesContainer} style={{display : isMobile ? "none":""}}>
                 <div className={styles.header}>
                     <TimeZoneIcon color='#A8A8A8' />
                 </div>

@@ -1,0 +1,51 @@
+.body{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.header{
+    font-size: var(--font-size-default);
+}
+.statusHeading{
+    font-size: var(--font-size-small);
+    color: rgba(0, 0, 0, 0.479);
+}
+.progressBars{
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-top: 3px;
+    width: 100%;
+}
+.progressBars .activeBar{
+    flex: 1;
+    height: 4px;
+    border-radius: 4px;
+    background-color: green;
+}
+.progressBars .inactiveBar{
+    flex: 1;
+    height: 4px;
+    border-radius: 4px;
+    background-color: rgba(0, 0, 0, 0.34);
+}
+
+.listContainer{
+    width: 100%;
+    background-color: var(--primary-foreground);
+    border: 1px solid var(--neutral-light-color);
+    border-radius: 3px;
+    padding: 5px 14px;
+}
+.listContainer li{
+    list-style: none;
+    display: flex;
+    align-items: center;
+    font-size: var(--font-size-small);
+    gap: 6px;
+    padding: 3px 5px;
+}
+.listContainer .activeItem{
+    color: #A8A8A8;
+}

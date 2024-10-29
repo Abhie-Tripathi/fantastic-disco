@@ -1,0 +1,181 @@
+/* .card{
+    width: 629px;
+    min-height: 211px;
+    max-height: 211px ;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 0px 12px 12px 15px;
+    overflow: hidden;
+}
+.banner{
+    min-width: 260px;
+    max-width: 260px;
+    height: 200px;
+    filter: drop-shadow(0px 3px 2px rgb(116, 116, 116));
+}
+.detailsContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    max-height: 100%;
+    max-width: 53%;
+    word-wrap: break-word;
+}
+.date_location_nameContainer{
+    min-height: 80px;
+    max-height: 80px;
+    overflow: hidden;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.description{
+    height: 50px;
+    overflow: hidden;
+}
+.dateContainer{
+    background-color: #F6F6F6;
+    border-radius: 9px;
+    width: 50px;
+    height: 68px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.date{
+    color: black;
+    font-size: 15px;
+    font-weight: 600;
+}
+.month{
+    color: black;
+    font-size: 10px;
+    font-weight: 400;
+}
+.line{
+    height: 60px;
+    border-left: 1px solid #F6F6F6;
+}
+.name_locationContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 70%;
+}
+.locationContainer{
+    min-height: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.eventName{
+    min-height: 50px;
+    max-height: 50px;
+}
+.dateRange_typeContainer{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 7px;
+}
+.pill{
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 500;
+}
+.dateRange{
+    background-color: #F5F5F5;
+    color: #6A77A6;
+}
+.type1{
+    background-color: #FFF8E6;
+    color: #CE9921;
+}
+.type2{
+    background-color: #F7E5EE;
+    color: #6750A4;
+} */
+
+
+.card {
+    display: flex;
+    position: relative;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    height: 150px; 
+    width: 100%;
+    overflow: hidden;
+    border-radius: none;
+  }
+  
+  .banner {
+    flex-shrink: 0;
+    width: 100px;
+    height: 100%; 
+    border-radius: 10px;
+  }
+  
+  .details {
+    display: flex;
+    flex-direction: column;
+    justify-content:space-around;
+    margin-left: 15px;
+    overflow: hidden;
+    flex-grow: 1;
+  }
+  
+  .eventName {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .locationContainer, .dateContainer {
+    display: flex;
+    align-items: center;
+  }
+  
+  .locationContainer svg, .dateContainer svg {
+    margin-right: 5px;
+  }
+  
+  .registerButton {
+    position: absolute;
+    bottom: 25px;  
+    right: 10px;   
+  }
+  
+  .registerButton button {
+    padding: 5px 10px;
+    background-color: #6750A4;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  .registerButton button:hover {
+    background-color: #6750A4;
+  }
+  
+
+  .btnContainer{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.smallBtn{
+    padding: 5px 10px;
+}
+.btn{
+    padding: 10px 20px;
+    border: 1px solid;
+}

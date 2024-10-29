@@ -1,40 +1,56 @@
-.body{
+.body {
     width: 100%;
 }
-.header{
+
+.header {
     display: flex;
     align-items: center;
     gap: 5px;
+}
 
+.header span {
+    /* font-size: 10px; */
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-text-color);
 }
-.header span{
-    font-size: 10px;
-}
-.editContainer{
+
+
+.editContainer {
+    margin-top: 18px;
     padding-left: 19px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
-.bgContainer{
+
+.bgContainer {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-top: 13px;
     border-radius: 5px;
     padding: 5px;
+    cursor: pointer;
 }
-.bgLightContainer{
+
+.bgLightContainer {
     filter: drop-shadow(0px 2px 2px rgb(218, 218, 218));
     background-color: white;
 }
-.bgDarkContainer{
+
+.bgDarkContainer {
     background-color: #1a1a1a;
     border: 1px solid rgb(88, 88, 88);
 }
-.bgContainer span{
-    color: #7D7D7D;
-    font-size: 10px;
+
+.bgContainer span {
+    /* color: #7D7D7D; */
+    /* font-size: 10px; */
+    font-size: var(--font-size-small);
+    color: var(--tertiary-text-color);
 }
-.colorPickerContainer{
-    margin-top: 21px;
+
+.colorPickerContainer {
     border-radius: 5px;
     display: flex;
     align-items: center;
@@ -42,10 +58,12 @@
     padding: 7px;
     position: relative;
 }
-.colorPickerContainer span{
+
+.colorPickerContainer span {
     font-size: 10px;
 }
-.colorPickerOuter{
+
+.colorPickerOuter {
     border: 2px solid;
     width: 20px;
     height: 20px;
@@ -56,25 +74,134 @@
     cursor: pointer;
 }
 
-.colorPickerInner{
+.colorPickerInner {
     width: 12px;
     border-radius: 50%;
     height: 12px;
 }
-.sketchPicker{
+
+.sketchPicker {
     position: absolute;
     top: 30px;
     left: 0;
+    z-index: 1;
 }
-.extractedColors{
+
+.extractedColors {
     margin-top: 9px;
     display: flex;
     align-items: center;
     gap: 2px;
 }
-.extractedColor{
+
+.extractedColor {
     width: 20px;
     height: 20px;
     border-radius: 50%;
     cursor: pointer;
+}
+
+.plusIconOuter {
+    border: none;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: #F2F2F2;
+}
+
+.extractedColorOutter {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.extractedColorInner {
+    width: 10px;
+    height: 10px;
+    border-radius: 10px;
+}
+
+.activeColor {
+    border: 2px solid;
+    padding: 3.4px;
+}
+
+.colorList {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.gradientThemeContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.gradientCircle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.effectsContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.leafThemeContainer{
+    cursor: pointer;
+}
+.themeContainer{
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+.themeContainer .dropDownContainer{
+    cursor: pointer;
+}
+.themeContainer span{
+    font-size: var(--font-size-small);
+}
+.dropDownContainer{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: var(--font-size-xs);
+    width: 100px;
+    border-radius: 4px;
+    background-color: var(--accent-color);
+    padding:4px 8px;
+}
+.confettiDropdown{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    color: var(--primary-text-color);
+    background-color: var(--primary-foreground);
+    font-size: var(--font-size-xs);
+    padding: 10px;
+    top: 20px;
+    width: 100%;
+    left: 0;
+}
+.confettiDropdown div{
+    padding: 4px 9px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.confettiDropdown div:hover{
+    background-color: var(--accent-color);
 }

@@ -1,0 +1,353 @@
+.body {
+    height: fit-content;
+    position: relative;
+}
+.modalBody{
+    max-height: 70%;
+}
+.line {
+    width: 100%;
+    border-top: 1px solid #E6E6E6;
+}
+.globalSearch{
+    z-index: 1;
+    margin-bottom: 25px;
+}
+
+.detailsContainer {
+    /* padding: 50px 120px 30px 70px; */
+    display: flex;
+    flex-direction: column;
+    /* overflow-y: auto;
+    height: 89%; */
+}
+
+.sections {
+    margin-top: 30px;
+    display: flex;
+    gap: 30px;
+}
+
+.modalOpen {
+    filter: blur(1px);
+    overflow-y: hidden;
+}
+
+.leftSection {
+    width: 300px;
+}
+
+.rightSection {
+    height: fit-content;
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.btnContainer {
+    border-top-right-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 17px 14px;
+    justify-content: flex-end;
+}
+
+.btnContainer button {
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 7px 12px;
+}
+
+.btnContainer .addBtn {
+    color: white;
+    background-color: #6750a4;
+}
+
+.btnContainer .addBtn:hover {
+    background-color: #7962b8;
+}
+
+.btnContainer .addBtnDisable {
+    cursor: not-allowed;
+    background-color: var(--disabled-btn-color);
+}
+
+.btnContainer .addBtnDisable:hover {
+    cursor: not-allowed;
+    background-color: var(--disabled-btn-color);
+}
+
+.posterContainer {
+    position: relative;
+    width: 296px;
+    /* Fixed width */
+    height: 290px;
+    /* Fixed height */
+}
+
+.posterContainer .loader {
+    border: 1px solid grey;
+    border-radius: 10px;
+    height: 290px;
+    width: 296px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.posterContainer .loader .spinner {
+    border: 5px solid #EAF0F6;
+    border-radius: 50%;
+    border-top: 5px solid #6750a4;
+    width: 30px;
+    height: 30px;
+    animation: spinner 2s linear infinite;
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.posterContainer .placeHolder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.posterContainer .posterIcons {
+    position: absolute;
+    right: 19px;
+    bottom: 12px;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+/* .posterContainer .placeHolder{
+    width: 1792px;
+    height: 1024px;
+} */
+
+.posterContainer .posterIcons div {
+    border: 2px solid white;
+    background-color: #BCBCBCD9;
+    height: 37px;
+    width: 37px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    position: relative;
+}
+
+.posterContainer .posterIcons div::before {
+    content: attr(data-name);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.posterContainer .posterIcons div:hover::before {
+    opacity: 1;
+}
+
+.participationContainer {
+    height: fit-content;
+    width: 100%;
+}
+
+.hashtagsContainer {
+    margin-top: 16px;
+    background-color: #ffffff53;
+    border-radius: 10px;
+    padding: 4px 11px 4px 19px;
+}
+
+.shareContainer {
+    margin-top: 16px;
+    background-color: #ffffff53;
+    border-radius: 10px;
+    padding: 4px 11px 18px 19px;
+}
+
+.sideEventContainer {
+    background-color: #ffffff53;
+    border-radius: 10px;
+    padding: 9px 19px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sideEventSubContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.sideEventSubContainer .sideEventHeading {
+    font-size: 12px;
+    color: #7D7D7D;
+    font-weight: 500;
+}
+
+.sideEventContainer button {
+    background-color: #8F8F8F1F;
+    border-radius: 4px;
+    font-size: var(--font-size-small);
+    line-height: 18px;
+    padding: 5px 8px;
+    color: black;
+    font-weight: var(--font-weight-semibold);
+}
+
+.shareContainer .heading {
+    margin-bottom: 11px;
+    color: #A1A1A1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.eventName {
+    background: none;
+    border: none;
+    font-size: 40px;
+    width: 100%;
+    /* height: 100px; */
+    resize: none;
+    overflow: hidden;
+    color: #1a1a1a;
+    font-weight: bolder;
+}
+.darkeventName {
+    color: white;
+}
+
+.lighteventName {
+    color: #1a1a1a;
+}
+
+.darkeventName::placeholder {
+    color: rgba(239, 239, 239, 0.679);
+}
+.eventName:focus {
+    outline: none;
+}
+
+.descriptionModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+    z-index: 2;
+}
+
+.speakerModal {
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+}
+
+.registerModal {
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+}
+
+.speakerProfileContainer {
+    width: 100%;
+}
+
+.errorHighlight {
+    border: .5px solid #DA2F35;
+    transition: border-color 0.3s ease;
+    box-shadow: 0 0 5px red;
+}
+
+
+.errorBackground {
+    background-color: #D92D2017;
+    border-bottom: .5px solid #D92D20;
+}
+
+.errorMessage {
+    color: #D92D20;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+@media screen and (max-width: 1140px) {
+    .sections {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .leftSection {
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .rightSection {
+        width: 100%;
+    }
+
+    .participationContainer {
+        height: fit-content;
+        width: 100%;
+    }
+
+    .shareContainer {
+        margin-top: 16px;
+        background-color: #ffffff53;
+        border-radius: 10px;
+        padding: 4px 11px 18px 19px;
+        width: 100%;
+    }
+
+    .detailsContainer {
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 80px 20px 70px;
+    }
+}
+
+
+.capacityModal {
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+}

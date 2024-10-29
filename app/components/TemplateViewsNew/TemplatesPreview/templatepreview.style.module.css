@@ -15,9 +15,10 @@
 }
 .previewContainer{
     height: 100%;
-    width: 60%;
+    width: 60%; 
 }
 .fullPreview{
+    height: 100%;
     width: 100%;
 }
 .previewBtnContainer{
@@ -104,6 +105,7 @@
     cursor: pointer;
 }
 .heading{
+    color: var(--primary-text-color);
     font-size: 18px;
     font-weight: 500;
 }

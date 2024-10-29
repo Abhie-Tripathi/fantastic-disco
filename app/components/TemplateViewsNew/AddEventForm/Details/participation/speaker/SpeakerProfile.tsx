@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from './speakerprofile.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
 import SpeakerCard from './SpeakerCard';
+import { FormState } from '@/types/Formstate';
 
 interface SpeakerProfileType {
     id: string;
@@ -14,11 +15,16 @@ interface SpeakerProfileType {
 }
 
 interface Props {
-    setSpeakerModal: (value: boolean) => void
-    speakerProfilesData: SpeakerProfileType[]
-    handlePrefill : (value : SpeakerProfileType)=>void
+    handleChange: (field: keyof FormState, value: any) => void;
+    // setSpeakerModal: (value: boolean) => void
+    speakerProfilesData: any[]
+    handlePrefill: (value: any, key : number) => void
 }
-const SpeakerProfile = ({ setSpeakerModal, speakerProfilesData,handlePrefill }: Props) => {
+const SpeakerProfile = ({speakerProfilesData, handlePrefill, handleChange }: Props) => {
+
+    useEffect(()=>{
+        console.log("speakers are : ", speakerProfilesData)
+    },[speakerProfilesData])
     return (
         <div className={styles.body}>
             <div className={styles.container}>
@@ -26,13 +32,13 @@ const SpeakerProfile = ({ setSpeakerModal, speakerProfilesData,handlePrefill }: 
                     <SpeakerIcon />
                     <span>Add Speaker profiles</span>
                 </div>
-                <Image onClick={() => setSpeakerModal(true)} src={EditIcon} alt='edit' />
+                <Image onClick={() => handleChange('speakerModal', true)} src={EditIcon} alt='edit' />
             </div>
             {speakerProfilesData.length > 0 && (
                 <div className={styles.speakerProfiles}>
                     {speakerProfilesData.map((profile, key) => (
-                        <div onClick={()=>handlePrefill(profile)} key={key}>
-                            <SpeakerCard linkedin={profile.linkedin} profileImage={profile.profileImage} designation={profile.designation} name={profile.name} key={key}/>
+                        <div onClick={()=>handlePrefill(profile, key)} key={key}>
+                            <SpeakerCard linkedin={profile.data.linkedIn} profileImage={profile.imageUrl} designation={profile.data.designation} name={profile.data.name} key={key}/>
                         </div>
                     ))}
                 </div>

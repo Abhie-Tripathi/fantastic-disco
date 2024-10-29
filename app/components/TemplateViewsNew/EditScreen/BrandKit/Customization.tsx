@@ -5,7 +5,6 @@ import ButtonCustomization from './CustomizeComponents/ButtonCustomization'
 import TypographyCustomization from './CustomizeComponents/TypographyCustomization'
 import CardStyles from './CustomizeComponents/CardStyles'
 import BrandKit from './CustomizeComponents/BrandKit'
-import { useTheme } from '@/context'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
 
 interface EditScreenProps {
@@ -24,6 +23,7 @@ interface EditScreenProps {
   setSelectedBtn: (value: "primary" | "secondary") => void
   selectedBtn: "primary" | "secondary"
   handleUpdateCustomization: () => Promise<void>;
+  selectedTemplate:string
 }
 
 interface FontSettings {
@@ -39,12 +39,13 @@ interface FontSettingsState {
   body: FontSettings;
 }
 
-const   Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius, fontSettings, setFontSettings, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization }: EditScreenProps) => {
+
+const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius, fontSettings, setFontSettings, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization,selectedTemplate }: EditScreenProps) => {
 
   const handleUpdate = async () => {
     handleUpdateCustomization()
   }
-
+  console.log("selectedTemplate",selectedTemplate)
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
@@ -54,9 +55,12 @@ const   Customization = ({ extractedColors, setExtractedColors, setCardBgColor, 
       <div className={styles.brandKit}>
         <BrandKit setFontSettings={setFontSettings} setCardBgColor={setCardBgColor} extractedColors={extractedColors} setExtractedColors={setExtractedColors} flex />
       </div>
-      <div className={styles.cardStylesContainer}>
+      {
+        selectedTemplate ==="ST" ? <></>: <div className={styles.cardStylesContainer}>
         <CardStyles cardStyle={cardStyle} setCardStyle={setCardStyle} />
       </div>
+      }
+     
       <div className={styles.line}></div>
       <div className={styles.cardCustomizationContainer}>
         <CardCustomization cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setCardBgColor={setCardBgColor} setCardBorderRadius={setCardBorderRadius} extractedColors={extractedColors} />

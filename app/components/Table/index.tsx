@@ -856,7 +856,7 @@ const Table = ({
               {(type === null && appliedKeywords?.length > 0 )&& <th>Matched</th>}
               {(type === null && appliedKeywords?.length >= 5 )&& <th>Score</th>}
 
-              {((type === "T_SPEAKING_OPPORTUNITY" || type === "T_COMPETITOR") && path[path.length-1]!=="savedEvents") &&
+              {((type === "T_SPEAKING_OPPORTUNITY" || type === "T_COMPETITOR" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP" || type === "T_RECRUITMENT") && path[path.length-1]!=="savedEvents") &&
                 <>
                   <th
                     className={`${styles.table_actionColumn} ${styles.table_actionColumn_header
@@ -1296,7 +1296,7 @@ const Table = ({
                   </>
                 )}
 
-                {(type==="T_COMPETITOR" && path[path.length-1]!=="savedEvents" )&& (
+                {((type==="T_COMPETITOR" || type === "T_CUSTOMER_ICP") && path[path.length-1]!=="savedEvents" )&& (
                   <>
                     <td style={{ textAlign: "center", right:"150px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
                       {(event?.competitorDomainOrName && event?.competitorDomainOrName.length > 0) ? (
@@ -1410,6 +1410,76 @@ const Table = ({
                       </td>
                     )}
                 </>}
+
+                {(type==="T_PEOPLE_FINDER" && path[path.length-1]!=="savedEvents" )&& (
+                  <>
+                    <td style={{ textAlign: "center", right:"150px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
+                      {(event?.peopleFinderPersonAssociation && event?.peopleFinderPersonAssociation.length > 0) ? (
+                        <>
+                          <span title={event?.peopleFinderPersonAssociation?.[0].split('_')[1]} className={styles.capitalizeText} >{event?.peopleFinderPersonAssociation?.[0].split('_')[0]}</span>&nbsp;
+                          {event?.peopleFinderPersonAssociation.length > 1 &&
+                            <TooltipTrigger>
+                              <Button className={styles["products-list"]} >+{event.peopleFinderPersonAssociation.length - 1}</Button>
+                              <Tooltip className={styles['react-aria-Tooltip']}>
+                                {event?.peopleFinderPersonAssociation.map((item)=>(
+                                  <div key={item}>
+                                    {item.split('_')[1]}
+                                    <span className={styles.capitalizeText} > ({item.split('_')[0]})</span>
+                                  </div>
+                                ))}
+                              </Tooltip>
+                            </TooltipTrigger>
+                          }
+                        </>
+                      ) : '-'}
+                    </td>
+
+                    <td style={{ textAlign: "center", right:"50px", minWidth:"100px"  }} className={`${styles.table_actionColumn}`}>
+                      {event?.peopleFinderPersonAssociationPercentage == 'High' ? (
+                        <span className={styles.badge_success}>High</span>
+                      ) : event?.peopleFinderPersonAssociationPercentage == 'Medium' ? (
+                        <span className={styles.badge_primary}>Medium</span>
+                      ) :event?.peopleFinderPersonAssociationPercentage == 'Low' ? (
+                        <span className={styles.badge_danger}>Low</span>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                  </>
+                )}
+
+                {(type==="T_RECRUITMENT" && path[path.length-1]!=="savedEvents") &&
+                  <>
+                    <td style={{ textAlign: "center", right:"150px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
+                      {event?.recruitmentAssociation ? 
+                        (event?.recruitmentAssociation.length == 1) ?
+                          (event.recruitmentAssociation[0]) : (
+                            <>
+                              {event.recruitmentAssociation[0]}&nbsp;
+                              <TooltipTrigger>
+                                <Button className={styles["products-list"]} >+{event.recruitmentAssociation.length - 1}</Button>
+                                <Tooltip className={styles['react-aria-Tooltip']}>
+                                  {listProducts(event.recruitmentAssociation)}
+                                </Tooltip>
+                              </TooltipTrigger>
+                            </>
+                          )
+                      : '-'
+                      }
+                    </td>
+                    <td style={{ textAlign: "center", right:"50px", minWidth:"100px"  }} className={`${styles.table_actionColumn}`}>
+                      {event?.recruitmentAssociationPercentage == 'High' ? (
+                        <span className={styles.badge_success}>High</span>
+                      ) : event?.recruitmentAssociationPercentage == 'Medium' ? (
+                        <span className={styles.badge_primary}>Medium</span>
+                      ) :event?.recruitmentAssociationPercentage == 'Low' ? (
+                        <span className={styles.badge_danger}>Low</span>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                  </>
+                }
 
                 {showInsights.maturity && (
                   <td>

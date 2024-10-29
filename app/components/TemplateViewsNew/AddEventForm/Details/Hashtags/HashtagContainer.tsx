@@ -3,16 +3,20 @@ import styles from './hashtag.style.module.css'
 import Image from 'next/image';
 import AiIcon from '/public/AiIcon.svg'
 import EditIcon from '/public/EditIcon.svg'
+import { FormState } from '@/types/Formstate';
 
 interface Props {
+    formTheme: string;
     hashtags: string[];
-    setHashtags: (value: string[]) => void
+    // setHashtags: (value: string[]) => void
+    handleChange: (field: keyof FormState, value: any) => void;
     loadingState: boolean;
     handleTagsGenerate: (value: void) => void
 }
 
-const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGenerate }: Props) => {
+const HashtagContainer = ({ formTheme, hashtags, handleChange, loadingState, handleTagsGenerate }: Props) => {
 
+    console.log("hashtags are :", hashtags)
     const [showInput, setShowInput] = useState<boolean>(false)
     const [newTag, setNewTag] = useState<string>("");
 
@@ -21,7 +25,8 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
     }
     const handleTagDelete = (index: number) => {
         const updatedHashtags = hashtags.filter((_, i) => i !== index);
-        setHashtags(updatedHashtags);
+        handleChange('hashtags', updatedHashtags)
+        // setHashtags(updatedHashtags);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +36,8 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
     const handleFormSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (newTag.trim() !== "") {
-            setHashtags([...hashtags, "#" + newTag.trim()]);
+            handleChange('hashtags', [...hashtags, "#" + newTag.trim()])
+            // setHashtags([...hashtags, "#" + newTag.trim()]);
             setNewTag(""); // Clear the input field
             setShowInput(false); // Hide the input field
         }
@@ -46,8 +52,9 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
     return (
         <div className={styles.body}>
             <div className={styles.hashtagsContainer}>
-                {loadingState ? <div className={styles.tagsLoader}><div className={styles.tagSpinner}></div></div> :
-                    hashtags.length === 0 ? "Enter Event name and description to auto generate the hashtags" :
+                {loadingState ?
+                    <div className={styles.tagsLoader}><div className={styles.tagSpinner}></div></div> :
+                    hashtags.length === 0 ? <span className={formTheme === "dark" ? styles.darkheading : ""}>Enter Event name and description to auto generate the hashtags</span> :
                         hashtags.map((tag, key) => (
                             <div key={key} className={styles.hashtag}>
                                 <span onClick={() => handleTagDelete(key)} className={styles.deleteIcon}>x</span><span>{tag}</span>
@@ -60,7 +67,7 @@ const HashtagContainer = ({ hashtags, setHashtags, loadingState, handleTagsGener
                         <span className={styles.hash}>#</span>
                         <input maxLength={30} type="text" value={newTag} onChange={handleInputChange} className={styles.tagInput}
                         />
-                        <span className={styles.deleteIcon} onClick={()=>setShowInput(false)}>x</span>
+                        <span className={styles.deleteIcon} onClick={() => setShowInput(false)}>x</span>
                     </form>
                 )}
             </div>

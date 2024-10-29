@@ -16,7 +16,7 @@
   background-color: #4d4d4d53;
 }
 .startEndStyle {
-  color: #7D7D7D;
+
   font-size: 12px;
   line-height: 18px;
   display: flex;
@@ -24,7 +24,12 @@
   gap: 16px;
   /* position: relative; */
 }
-
+.darkStartEndStyle{
+  color: white;
+}
+.lightStartEndStyle{
+  color: #7D7D7D;
+}
 .startEndStyle .start,
 .startEndStyle .end {
   position: relative;
@@ -77,7 +82,7 @@
 .dateBoxes .dateBox {
   padding: 2px 15px;
   background-color: #ffffffa8;
-  width: 100px;
+  width: 110px;
   border-radius: 4px;
   position: relative;
   cursor: pointer;
@@ -116,9 +121,14 @@
 }
 
 .timeZonesContainer .timeZone {
-  color: black;
   font-size: 10px;
   margin-top: 11px;
+}
+.timeZonesContainer .darkTimeZone{
+  color: white;
+}
+.timeZonesContainer .lightTimeZone{
+  color: black;
 }
 .timeZonesContainer .themeTimeZone{
   color: var(--primary-text-color);

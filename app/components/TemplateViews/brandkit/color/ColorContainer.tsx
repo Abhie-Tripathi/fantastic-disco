@@ -4,7 +4,6 @@ import styles from './colorcontainer.style.module.css'
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 
-
 interface Props {
     setPreview: (value: string) => void
     setColorCode: (value: string) => void
@@ -105,8 +104,8 @@ const ColorContainer = ({ setPreview, setColorCode,fetchedColors,handleColorModa
 function AddIcon() {
     return (
         <svg width="45" height="45" viewBox="0 0 45 45" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="18.8984" width="8.1" height="45" fill="#EADDFF" />
-            <rect y="27" width="8.1" height="45" transform="rotate(-90 0 27)" fill="#EADDFF" />
+            <rect x="18.8984" width="8.1" height="45" fill="#7d7d7d"/>
+            <rect y="27" width="8.1" height="45" transform="rotate(-90 0 27)" fill="#7d7d7d" />
         </svg>
     )
 }

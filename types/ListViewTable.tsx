@@ -88,4 +88,8 @@ export interface EventTableType {
     speakerPersonAssociation?: string[],
     competitorPercentage?: string,
     competitorDomainOrName?: string[],
+    peopleFinderPersonAssociation?: string[],
+    peopleFinderPersonAssociationPercentage?: string,
+    recruitmentAssociation?: string[],
+    recruitmentAssociationPercentage?: string,
 }

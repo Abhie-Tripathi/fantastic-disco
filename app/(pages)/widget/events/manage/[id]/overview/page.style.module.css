@@ -1,0 +1,38 @@
+.body{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.deleteContainer .heading{
+    font-size: var(--font-size-h5);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-text-color);
+}
+.deleteContainer .subheading{
+    font-size: var(--font-size-large);
+    color: var(--primary-text-color);
+}
+.deleteContainer button{
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: var(--font-size-small);
+    color: white;
+    background-color: var(--danger-text-color);
+}
+.deleteContainer button span{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid white;
+    height: 15px;
+    width: 15px;
+    padding-bottom: 2px;
+    border-radius: 10px;
+}
+.deleteContainer button:hover{
+    background-color:rgb(196, 26, 26);
+}

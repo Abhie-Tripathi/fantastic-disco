@@ -20,7 +20,6 @@ import { baseUrl, headers } from "@/constants";
 import { number } from "zod";
 import { toast } from "react-toastify";
 import { showToast } from "@/utils/showToast";
-import Loading from "../../UI/Loading";
 // import "react-toastify/dist/ReactToastify.css";
 
 interface EventData {
@@ -37,7 +36,8 @@ interface Props {
   openPocDetails: boolean;
   closeBtn: boolean;
   openEventRequest: boolean;
-  handleModal: (id: string, enquiryId: string) => void;
+  handleModal: (id: string, enquiryId: string, enquiryStatus: string, task: any) => void;
+  handleDropdownSelect?: (target: string, source: string) => void;
   eventId: string;
   enquiryId: string;
   currentEnquiryStatus?: string;
@@ -54,7 +54,8 @@ const EventDetail = ({
   eventId,
   enquiryId,
   currentEnquiryStatus,
-  handleRefresh
+  handleRefresh,
+  handleDropdownSelect
 }: Props) => {
   const [meet, setMeet] = useState(false);
   const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
@@ -63,7 +64,6 @@ const EventDetail = ({
   const [stage, setStage] = useState<string>("");
   const [singleEventData, setSingleEventData] = useState<EventData | any>();
   const urlPath = usePathname().split("/")[2];
-  const [isLoading,setIsLoading]=useState(true);
   const [participentData, setParticipentData] = useState({
     attendee: [],
     speakers: [],
@@ -77,7 +77,7 @@ const EventDetail = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [status, setStatus] = useState<number>(currentEnquiryStatus==="IN PROGRESS"?2:currentEnquiryStatus==="CONFIRMED"?10:currentEnquiryStatus==="CANCELED"?12:1);
+  const [status, setStatus] = useState<number>(currentEnquiryStatus==="IN_NEGO"?2:currentEnquiryStatus==="CONFIRMED"?10:currentEnquiryStatus==="CANCELED"?12:1);
   const statusValues: { [key: string]: string } = {
     "1": "SHORTLISTED",
     "2": "IN_NEGO",
@@ -86,39 +86,45 @@ const EventDetail = ({
   };
   const handleStatusChange = async (changeStatusTo: number) => {
     setStatus(changeStatusTo);
-    if (enquiryId && enquiryId != "") {
-      let payloadData = {
-        enquiryId: enquiryId,
-        enquiryStatus: statusValues[changeStatusTo],
-      };
-      try {
-        const apiUrl = baseUrl + "/userInterest/enquiry";
-        const apiData = await myFetch(apiUrl, {
-          method: "PATCH",
-          headers: headers,
-          body: JSON.stringify(payloadData),
-        });
-        if (apiData.data.message === "Data updated") {
-          if (handleRefresh) handleRefresh();
-          // toast.success("Enquiry status updated!", {
-          //   position: "bottom-right",
-          //   autoClose: 2000,
-          //   closeButton: false,
-          //   hideProgressBar: true,
-          // });
-          showToast("success","Enquiry status updated!")
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    }
+    
+    // if (enquiryId && enquiryId != "") {
+    //   let payloadData = {
+    //     enquiryId: enquiryId,
+    //     enquiryStatus: statusValues[changeStatusTo],
+    //   };
+    //   try {
+    //     const apiUrl = baseUrl + "/userInterest/enquiry";
+    //     const apiData = await myFetch(apiUrl, {
+    //       method: "PATCH",
+    //       headers: headers,
+    //       body: JSON.stringify(payloadData),
+    //     });
+    //     if (apiData.data.message === "Data updated") {
+    //       // if (handleRefresh) handleRefresh();
+    //       // toast.success("Enquiry status updated!", {
+    //       //   position: "bottom-right",
+    //       //   autoClose: 2000,
+    //       //   closeButton: false,
+    //       //   hideProgressBar: true,
+    //       // });
+          
+    //       console.log("curr",currentEnquiryStatus);
+          
+          
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching data:", error);
+    //   }
+    // }
+    if (handleDropdownSelect) 
+    handleDropdownSelect(statusValues[changeStatusTo]==="SHORTLISTED"?"shortlisted":statusValues[changeStatusTo]==="IN_NEGO"?"outreach":statusValues[changeStatusTo]==="CANCELED"?"canceled":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":currentEnquiryStatus==="CANCELED"?"canceled":"prefinalised" );
+    showToast("success","Enquiry status updated!")
   };
 
   useEffect(() => {
     if (leftContainerRef.current && rightContainerRef.current) {
       const leftContainerHeight = leftContainerRef.current.clientHeight;
       rightContainerRef.current.style.height = leftContainerHeight + "px";
-      console.log(leftContainerHeight);
     }
     const fetchEventData = async () => {
       try {
@@ -127,8 +133,7 @@ const EventDetail = ({
         );
         if (data) {
           const eventsData = data.event;
-          console.log(eventsData);
-          setIsLoading(false)
+          
           setSingleEventData(eventsData);
         }
       } catch (error) {
@@ -141,7 +146,7 @@ const EventDetail = ({
 
   const handleCloseModal = () => {
     if (handleModal) {
-      handleModal("", "");
+      handleModal("", "", "", null);
     }
   };
 
@@ -168,8 +173,6 @@ const EventDetail = ({
   }, [eventId]);
 
   return (
-    <>
-    {isLoading ? <div className={styles.innerContainer} style={{height:"calc(100vh - 70px)", paddingTop:"50px"}}><div style={{width:"100%"}}><Loading/></div></div>:
     <div
       className={
         meet ? `${styles.container} ${styles.fullHeight}` : styles.container
@@ -179,9 +182,9 @@ const EventDetail = ({
         <Image src={backIcon} alt="close" height={22} width={22} />
         Back
       </div>
+
       <div className={styles.modalContainer}>
         {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange}/>}
-        
         <div className={styles.innerContainer}>
           <div className={styles.containerLeft} ref={leftContainerRef}>
             <div className={styles.containerLeftTop}>
@@ -230,8 +233,6 @@ const EventDetail = ({
       </div>
       {/* <ToastContainer /> */}
     </div>
-    }
-    </>
   );
 };
 
