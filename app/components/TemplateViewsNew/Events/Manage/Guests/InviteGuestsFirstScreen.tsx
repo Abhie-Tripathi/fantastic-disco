@@ -8,9 +8,10 @@ interface Props {
   setSelectedMails: (value: string[]) => void
   selectedMails: string[]
   suggestedMails :  string[]
+  setSuggestedMailQuery : (value: string) => void 
 }
 
-const InviteGuestsFirstScreen = ({ setSelectedMails, selectedMails, suggestedMails }: Props) => {
+const InviteGuestsFirstScreen = ({setSuggestedMailQuery, setSelectedMails, selectedMails, suggestedMails }: Props) => {
 
   const [selectedScreen, setSelectedScreen] = useState<string>("suggested")
 
@@ -27,7 +28,7 @@ const InviteGuestsFirstScreen = ({ setSelectedMails, selectedMails, suggestedMai
       </div>
       <div className={styles.verticalLine}></div>
       <div className={styles.rightSection}>
-          {selectedScreen === "suggested" ?<SuggestedEmail suggestedMails={suggestedMails} selectedMails={selectedMails} setSelectedMails={setSelectedMails}/> :<AddEmails selectedMails={selectedMails} setSelectedMails={setSelectedMails}/>}
+          {selectedScreen === "suggested" ?<SuggestedEmail setSuggestedMailQuery={setSuggestedMailQuery} suggestedMails={suggestedMails} selectedMails={selectedMails} setSelectedMails={setSelectedMails}/> :<AddEmails selectedMails={selectedMails} setSelectedMails={setSelectedMails}/>}
       </div>
     </div>
   )
