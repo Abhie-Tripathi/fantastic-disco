@@ -26,7 +26,7 @@ import WaitListAndCap from '../Details/waitListAndCapacity/WaitListAndCap'
 import CapacityModal from '../Details/waitListAndCapacity/capacitymodal/Capacity'
 import ExhibitorDetails from './exhibitordetails/ExhibitorDetails'
 import ExhibitorDetailsModal from './exhibitordetails/exhibitordetailsmodal/ExhibitorDetailsModal'
-
+import EventType from './eventtypeinmaineventform/EventType'
 interface SpeakerProfileType {
   id: string;
   name: string;
@@ -215,8 +215,12 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
     <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.exhibitorModal || formState.registerModal ? styles.modalBody : ""}`}>
       <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.exhibitorModal || formState.registerModal ||formState.capacityModal? styles.modalOpen : ""}`} >
         <div>
-          <div className={`${styles.participationContainer}`}><ParticipationContainer formTheme={formTheme} handleChange={handleChange} formState={formState} heading='Choose Your Mode of Participation' type='main' size="large" />
-          </div>
+         <div><EventType mainEventType={formState.event_type} handleChange={handleChange} /></div>
+         {
+          formState.event_type && (<div className={`${styles.participationContainer}`}><ParticipationContainer formTheme={formTheme} handleChange={handleChange} formState={formState} heading='Choose Your Mode of Participation' type='main' size="large" />
+          </div>)
+         }
+         
           {formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
         </div>
         <div className={styles.sections}>

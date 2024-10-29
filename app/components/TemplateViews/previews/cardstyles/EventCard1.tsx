@@ -5,6 +5,9 @@ import Image from 'next/image'
 import placeholder2 from '/public/demobanner.png'
 import POP from '/public/partyPopIcon.svg'
 import TradeshowIcon from '/public/tradeshowIcon.svg'
+import WorkShopIcon from '/public/workshop.svg'
+import ConferenceIcon from '/public/conference.svg'
+import DefaultIcon from '/public/widgetDefaultIcon.svg'
 
 import locationIcon from '/public/location_on.svg'
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
@@ -68,7 +71,7 @@ const EventCard1 = ({
                     <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div> */}
             <div className={styles.dateContainer}>
              {
-                fetchedEvent?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedEvent?.eventType === "MAIN" ? <Image src={TradeshowIcon} alt=''/>:<Image src={POP} alt=''/>
+                fetchedEvent?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type==="Tradeshow" ? <Image src={TradeshowIcon} alt=''/>:fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type==="Conference" ? <Image src={ConferenceIcon} alt=''/>: fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type==="Workshop" ?<Image src={WorkShopIcon} alt=''/>:<Image src={DefaultIcon} alt=''/>
              }
            </div>
                 <div className={styles.line}></div>
@@ -84,8 +87,8 @@ const EventCard1 = ({
             <div className={styles.dividerLine}></div>
             <div className={styles.dateRange_typeContainer}>
                 <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
-                <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>Tradeshow</div>
-                <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>Attending</div>
+                <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.event_type: fetchedEvent?.eventType === "SUB" ?fetchedEvent.participationType:"Tradeshow"}</div>
+                <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.eventFormat: fetchedEvent?.eventType==="SUB" ?fetchedEvent.eventFormat:"Attending"}</div>
             </div>
         </div>
     )

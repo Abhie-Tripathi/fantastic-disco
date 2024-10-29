@@ -5,6 +5,11 @@ import ShareButtons from '@/app/components/DetailPage/ShareButtons'
 import { showToast } from "@/utils/showToast";
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
+import RegisterIcon from '/public/widgetimages/manage_registerIcon.svg'
+import WaitlistIcon from '/public/widgetimages/manage_waitlistIcon.svg'
+import ApprovalIcon from '/public/widgetimages/manage_approvalIcon.svg'
+import CapacityIcon from '/public/widgetimages/manage_capacityIcon.svg'
+import Image from 'next/image';
 
 interface Props {
   format? : string;
@@ -81,12 +86,12 @@ const Overview = ({format, leavesTheme,snowTheme, eventId, imageUrl, eventName, 
           </div>
           <div className={styles.valuesContainer}>
             <div className={styles.valueContainer}>
-              <div><span className={`${styles.icon} ${styles.icon1}`}>R</span>Registration : <span>{registration === true ? "ON" : "OFF"}</span></div>
-              <div><span className={`${styles.icon} ${styles.icon2}`}>A</span>Approval : <span>{approval === true ? "ON" : "OFF"}</span></div>
+              <div><span className={styles.icon}><Image src={RegisterIcon} alt='register'/></span>Registration : <span>{registration === true ? "ON" : "OFF"}</span></div>
+              <div><span className={styles.icon}><Image src={ApprovalIcon} alt='approval'/></span>Approval : <span>{approval === true ? "ON" : "OFF"}</span></div>
             </div>
             <div className={styles.valueContainer}>
-              <div><span className={`${styles.icon} ${styles.icon3}`}>W</span>Waitlist : <span>{waitlist === true ? "ON" : "OFF"}</span></div>
-              <div><span className={`${styles.icon} ${styles.icon4}`}>C</span>Capacity : <span>{capacity === -1 ? "Unlimited" : capacity}</span></div>
+              <div><span className={styles.icon}><Image src={WaitlistIcon} alt='waitlist'/></span>Waitlist : <span>{waitlist === true ? "ON" : "OFF"}</span></div>
+              <div><span className={styles.icon}><Image src={CapacityIcon} alt='capacity'/></span>Capacity : <span>{capacity === -1 ? "Unlimited" : capacity}</span></div>
             </div>
           </div>
           

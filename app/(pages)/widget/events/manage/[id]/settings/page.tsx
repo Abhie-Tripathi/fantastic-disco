@@ -6,6 +6,9 @@ import CapacityModal from '@/app/components/TemplateViewsNew/Events/Manage/Resgi
 import useOutsideClick from '@/hooks/useOutsideClick'
 import ApprovalModal from '@/app/components/TemplateViewsNew/Events/Manage/Resgitration/ApprovalModal'
 import { useEventContext } from '@/context/eventcontext'
+import ApprovalIcon from '/public/widgetimages/manage_approvalIcon.svg'
+import CapacityIcon from '/public/widgetimages/manage_capacityIcon.svg'
+import Image from 'next/image'
 
 const Page = () => {
 
@@ -30,14 +33,14 @@ const Page = () => {
     <div className={styles.body}>
       <div className={styles.btnContainer}>
         <button disabled={approvalModal} onClick={() => setApprovalModal(true)}>
-          <span className={styles.icon1}>A</span>
+        <Image src={ApprovalIcon} alt='approval' />
           <div className={styles.sub_headingContainer}>
             Approval
             <span>{fetchedEvent?.approval === true ? "On" : "Off" }</span>
           </div>
         </button>
         <button disabled={capacityModal} onClick={() => setCapacityModal(true)}>
-          <span className={styles.icon2}>EC</span>
+        <Image src={CapacityIcon} alt='capacity' />
           <div className={styles.sub_headingContainer}>
             Event Capacity
             <span className={styles.capacity}>

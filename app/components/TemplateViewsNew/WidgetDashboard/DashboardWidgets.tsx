@@ -16,7 +16,11 @@ interface DraftWidgetsType {
   widgetStatus: string;
 }
 
-const DashboardWidgets = () => {
+interface Props {
+  setRemoveCalled: (value: boolean) => void
+  removeCalled: boolean;
+}
+const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
   const [selectedBtn, setSelectedBtn] = useState<string>("Widgets")
   const [allWidgets, setAllWidgets] = useState<DraftWidgetsType[]>([])
   const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([])
@@ -95,6 +99,8 @@ const DashboardWidgets = () => {
             {allWidgets.slice(0, 2).map((card, key) => (
               <div className={styles.widgetCard} key={key}>
                 <WidgetCard
+                  removeCalled={removeCalled}
+                  setRemoveCalled={setRemoveCalled}
                   widgetStatus={card.widgetStatus}
                   key={key}
                   widgetId={card.widgetId}
@@ -112,9 +118,11 @@ const DashboardWidgets = () => {
         <div className={styles.draftWidgetsContainer}>
           {draftWidgets.length > 0 ?
             <div className={styles.widgetList}>
-              {draftWidgets.slice(0,2).map((card, key) => (
+              {draftWidgets.slice(0, 2).map((card, key) => (
                 <div className={styles.widgetCard} key={key}>
                   <WidgetCard
+                    removeCalled={removeCalled}
+                    setRemoveCalled={setRemoveCalled}
                     widgetStatus={card.widgetStatus}
                     key={key}
                     widgetId={card.widgetId}
@@ -128,7 +136,7 @@ const DashboardWidgets = () => {
               ))}
             </div> : <Errorpage size='short' type='list' />}
         </div>}
-        <Link href={"/widget/list"} className={styles.allWidgetBtn}>Show all widgets</Link>
+      <Link href={"/widget/list"} className={styles.allWidgetBtn}>Show all widgets</Link>
     </div>
   )
 }

@@ -7,7 +7,10 @@ import locationIcon from '/public/location_on.svg'
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
 import POP from '/public/partyPopIcon.svg'
-import TradeshowIcon from '/public/tradeshowIcon.svg'
+    import TradeshowIcon from '/public/tradeshowIcon.svg'
+import WorkShopIcon from '/public/workshop.svg'
+import ConferenceIcon from '/public/conference.svg'
+import DefaultIcon from '/public/widgetDefaultIcon.svg'
 
 interface FontSettings {
     fontFamily: string;
@@ -70,8 +73,9 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
                     <span className={styles.month} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize }}>{month}</span>
                 </div> */}
                  <div className={styles.dateContainer}>
+                    
                     {
-                        fetchedAddedEvents![0]?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedAddedEvents![0]?.eventType === "MAIN" ? <Image src={TradeshowIcon} alt=''/>:<Image src={POP} alt=''/>
+                        fetchedAddedEvents![0]?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedAddedEvents![0]?.eventType === "MAIN" && fetchedAddedEvents![0].event_type==="Tradeshow" ? <Image src={TradeshowIcon} alt=''/>:fetchedAddedEvents![0]?.eventType === "MAIN" && fetchedAddedEvents![0].event_type==="Conference" ? <Image src={ConferenceIcon} alt=''/>: fetchedAddedEvents![0]?.eventType === "MAIN" && fetchedAddedEvents![0].event_type==="Workshop" ?<Image src={WorkShopIcon} alt=''/>:<Image src={DefaultIcon} alt=''/>
                     }
                 </div>
                 <div className={styles.line}></div>
@@ -86,8 +90,8 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
             <div className={styles.dividerLine}></div>
             <div className={styles.dateRange_typeContainer}>
                 <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings?.body.fontSize }}>{fetchedAddedEvents && fetchedAddedEvents.length ? formatDate(fetchedAddedEvents[0].startDate) + " - " + formatDate(fetchedAddedEvents[0].endDate) : demoDate}</div>
-                <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings?.body.fontSize }}>Tradeshow</div>
-                <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings?.body.fontSize }}>Attending</div>
+                <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings?.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN"? fetchedAddedEvents![0].event_type: fetchedAddedEvents![0]?.eventType === "SUB" ?fetchedAddedEvents![0].participationType:"Tradeshow"}</div>
+                <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings?.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN"? fetchedAddedEvents![0].eventFormat: fetchedAddedEvents![0]?.eventType==="SUB" ?fetchedAddedEvents![0].eventFormat:"Attending"}</div>
             </div>
             <div
                 className={`${styles.description} ${smallCard ? styles.smallDescription : ""}`}
