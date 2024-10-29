@@ -4,7 +4,7 @@ import { EventRank } from "./eventRank";
 import { InformationFill } from "geist-icons";
 import Text from "../new-ui/Text";
 import { CircularProgressBar } from "../eventDetail/circularProgressBar";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { Heading } from "../eventDetail/heading";
 import { GTMEventDetail } from "@/types/events";
@@ -43,7 +43,7 @@ export const InsightsAndScores = ({
     threshold: 0.5,
     triggerOnce: false,
   });
-  useEffect(() => {
+  useMemo(() => {
     if (inView) {
       setActiveTab(scrollSection as TTabs);
     }

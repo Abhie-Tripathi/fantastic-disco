@@ -17,6 +17,7 @@ export interface EventCoOrganizerDetailResponse {
   coorganizers: CoOrganizer[];
 }
 export interface EventEditionDetailResponse {
+  count: number;
   editions: Editions[];
 }
 

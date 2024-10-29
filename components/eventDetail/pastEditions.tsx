@@ -1,4 +1,4 @@
-import { Editions, Event } from "@/types/events";
+import { Editions, Event, EventEditionDetailResponse } from "@/types/events";
 import { differenceInDays, formatDate } from "date-fns";
 import Text from "@/components/new-ui/Text";
 import { useQuery } from "@tanstack/react-query";
@@ -6,8 +6,10 @@ import { useEventsService } from "@/services/eventsService";
 import { Loader2 } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import { renderFormattedDates } from "@/utils/dateFormat";
 interface IProps {
   eventId: string;
+  eventEditionData: EventEditionDetailResponse;
 }
 interface LoadMoreProps {
   eventId: string;
@@ -19,7 +21,7 @@ const LoadMore = ({ eventId, setEventEditionDetails }: LoadMoreProps) => {
   console.log("Load More");
   const { getEventEditionDetails } = useEventsService();
   const [ref, inView] = useInView();
-  const [skip, setSkip] = useState<number>(0);
+  const [skip, setSkip] = useState<number>(take);
   const { data: eventEditionData, isLoading } = useQuery<any>({
     queryKey: ["editionDetails", skip],
     queryFn: async () => getEventEditionDetails(eventId, take, skip),
@@ -52,30 +54,30 @@ const LoadMore = ({ eventId, setEventEditionDetails }: LoadMoreProps) => {
   );
 };
 
-const PastEditions = ({ eventId }: IProps) => {
-  const { getEventEditionDetails } = useEventsService();
+const PastEditions = ({ eventId, eventEditionData }: IProps) => {
+  // const { getEventEditionDetails } = useEventsService();
   const [eventEditionDetails, setEventEditionDetails] = useState<Editions[]>();
-  const { data: eventEditionData, isLoading } = useQuery<any>({
-    queryKey: ["eventEditionDetails", eventId],
-    queryFn: async () => getEventEditionDetails(eventId, take, 0),
-  });
-  const count: number = eventEditionData && eventEditionData.count;
+  const { count, editions } = eventEditionData;
+  // const { data: eventEditionData, isLoading } = useQuery<any>({
+  //   queryKey: ["eventEditionDetails", eventId],
+  //   queryFn: async () => getEventEditionDetails(eventId, take, 0),
+  // });
+  // const count: number = eventEditionData && eventEditionData.count;
   useEffect(() => {
-    if (eventEditionData) {
-      setEventEditionDetails(eventEditionData.editions);
+    if (editions) {
+      setEventEditionDetails(editions);
     }
-  }, [eventEditionData]);
+  }, [editions]);
+  console.log(eventEditionData);
   if (!eventEditionDetails) return null;
   return (
     <ul className="h-[200px] flex flex-col gap-4 max-h-[200px] overflow-y-auto scrollbar pr-4 w-[400px] max-w-[400px]">
-      {isLoading ? (
-        <Loader2 className="w-8 h-8 animate-spin self-center mt-4" />
-      ) : (
-        <>
-          <span className="text-[var(--primary-color)] font-semibold">
-            {count}
-          </span>
-          {eventEditionDetails.map((pastEdition) => {
+      <>
+        <span className="text-[var(--primary-color)] font-semibold">
+          {count}
+        </span>
+        {eventEditionDetails &&
+          eventEditionDetails.map((pastEdition) => {
             const {
               edition_id,
               edition_start_date,
@@ -90,21 +92,7 @@ const PastEditions = ({ eventId }: IProps) => {
               >
                 <Text color="primary" fontWeight="medium">
                   {edition_start_date && edition_end_date
-                    ? differenceInDays(
-                        new Date(edition_end_date),
-                        new Date(edition_start_date)
-                      ) === 0
-                      ? `${formatDate(
-                          new Date(edition_start_date),
-                          "dd MMM yyyy"
-                        )}`
-                      : `${formatDate(
-                          new Date(edition_start_date),
-                          "dd MMM yyyy"
-                        )} - ${formatDate(
-                          new Date(edition_end_date),
-                          "dd MMM yyyy"
-                        )}`
+                    ? renderFormattedDates(edition_start_date, edition_end_date)
                     : "Date information not available"}
                 </Text>
                 <Text color="secondary" fontWeight="medium">
@@ -115,14 +103,13 @@ const PastEditions = ({ eventId }: IProps) => {
               </li>
             );
           })}
-          {eventEditionDetails.length > 5 && (
-            <LoadMore
-              eventId={eventId}
-              setEventEditionDetails={setEventEditionDetails}
-            />
-          )}
-        </>
-      )}
+        {eventEditionDetails && eventEditionDetails.length > 5 && (
+          <LoadMore
+            eventId={eventId}
+            setEventEditionDetails={setEventEditionDetails}
+          />
+        )}
+      </>
     </ul>
   );
 };

@@ -9,7 +9,7 @@ import {
 import DetailDialog from "../eventDetail/modal";
 import PastEditions from "../eventDetail/pastEditions";
 import { capitalize } from "lodash";
-import { Event } from "@/types/events";
+import { Event, EventEditionDetailResponse } from "@/types/events";
 import { Heading } from "../eventDetail/heading";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -31,19 +31,21 @@ import { renderFormattedDates } from "@/utils/dateFormat";
 
 interface Props {
   eventDetails: GTMEventDetail;
+  eventEditionData: EventEditionDetailResponse;
   eventId: string;
 }
 
 const CarouselComponent = ({
   eventDetails,
+  eventEditionData,
   eventId,
 }: {
   eventDetails: GTMEventDetail;
+  eventEditionData: EventEditionDetailResponse;
   eventId: string;
 }) => {
   const {
     maturity,
-    editions,
     frequency,
     isBranded,
     isSeries,
@@ -51,6 +53,7 @@ const CarouselComponent = ({
     futureExpectedEndDate,
     futureExpectedStartDate,
   } = eventDetails;
+  const { count, editions } = eventEditionData;
   const [api, setApi] = useState<CarouselApi>();
   // useEffect(() => {
   //   if (!api) {
@@ -60,8 +63,8 @@ const CarouselComponent = ({
   // }, [api]);
   return (
     <div className="flex justify-center">
-      <Carousel className="w-10/12 px-4">
-        <CarouselContent className="justify-center -ml-1">
+      <Carousel className="w-11/12 px-4">
+        <CarouselContent className="-ml-1 flex justify-around">
           {maturity && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
               <div className="flex flex-col bg-white items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
@@ -97,12 +100,13 @@ const CarouselComponent = ({
                   <DetailDialog
                     titleColor="text-[var(--text-foreground)]"
                     title={"No of Editions"}
-                    triggerText={`${editions} Edition${
-                      editions > 1 ? "s" : ""
-                    }`}
+                    triggerText={`${count} Edition${count > 1 ? "s" : ""}`}
                     className="text-[#6750A4] bg-[#E6E6F9] h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit cursor-pointer"
                   >
-                    {/* <PastEditions eventId={eventId} /> */}
+                    <PastEditions
+                      eventId={eventId}
+                      eventEditionData={eventEditionData}
+                    />
                   </DetailDialog>
                 )}
               </div>
@@ -178,11 +182,19 @@ const CarouselComponent = ({
   );
 };
 
-export const AdvancedDetails = ({ eventDetails, eventId }: Props) => {
+export const AdvancedDetails = ({
+  eventDetails,
+  eventEditionData,
+  eventId,
+}: Props) => {
   return (
     <div className="flex flex-col gap-6">
       <Heading heading="Advanced Details" />
-      <CarouselComponent eventDetails={eventDetails} eventId={eventId} />
+      <CarouselComponent
+        eventDetails={eventDetails}
+        eventId={eventId}
+        eventEditionData={eventEditionData}
+      />
     </div>
   );
 };

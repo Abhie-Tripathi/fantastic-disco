@@ -77,7 +77,9 @@ export const useEventsService = () => {
 
   const getEventEditionDetails = (id: string, take: number, skip: number) => {
     return api.request<EventEditionDetailResponse>(
-      `${endpoints.event.eventEditionsDetailsById}/${id}`,
+      `${endpoints.event.eventEditionsDetailsById}/${id}${
+        take ? `?take=${take}` : ""
+      }${skip !== undefined && skip !== null ? `&skip=${skip}` : ""}`,
       {
         method: "GET",
       }

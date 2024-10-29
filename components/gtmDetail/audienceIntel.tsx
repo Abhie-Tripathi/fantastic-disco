@@ -7,7 +7,7 @@ import { CircleSlash } from "lucide-react";
 import Text from "../new-ui/Text";
 import * as Flags from "country-flag-icons/react/3x2";
 import Image from "next/image";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { Event, TTabs } from "@/types/events";
 import { CircularProgressBar } from "../eventDetail/circularProgressBar";
 import { useInView } from "react-intersection-observer";
@@ -42,7 +42,7 @@ export const AudienceIntel = ({
     threshold: 0.5,
     triggerOnce: false,
   });
-  useEffect(() => {
+  useMemo(() => {
     if (inView) {
       setActiveTab(scrollSection as TTabs);
     }

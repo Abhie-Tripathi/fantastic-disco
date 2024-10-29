@@ -1,7 +1,7 @@
 "use client";
 import { Event, GTMEventDetail, Tag, TTabs } from "@/types/events";
 import { DetailMapComponent } from "../trendsWeather";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { CircleSlash, TriangleAlert } from "lucide-react";
 import Text from "../new-ui/Text";
 import { differenceInDays } from "date-fns";
@@ -70,7 +70,7 @@ export const EventInfoAndMap = ({
     threshold: 0.5,
     triggerOnce: false,
   });
-  useEffect(() => {
+  useMemo(() => {
     if (inView) {
       setActiveTab(scrollSection as TTabs);
     }
