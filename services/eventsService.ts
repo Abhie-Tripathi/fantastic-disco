@@ -17,6 +17,7 @@ import { EventsAdapter } from "@/adapters/eventsAdapter";
 import { myFetch } from "@/utils/myFetch";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { BaseURL } from "@/config";
+import { ApiError } from "@/types/api";
 
 export const searchEvents = async (searchParams: ReadonlyURLSearchParams) => {
   return myFetch(
@@ -133,6 +134,6 @@ export const useEventsService = () => {
     getEventsWithSearchParams,
     getEventCoOrganizerDetails,
     isLoading: api.isLoading,
-    error: api.error,
+    error: api.error as ApiError,
   };
 };

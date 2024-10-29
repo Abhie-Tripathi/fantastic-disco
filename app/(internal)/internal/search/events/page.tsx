@@ -33,7 +33,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, Loader2, Filter } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { Suspense, lazy, useCallback, useEffect, useState } from "react";
+import { Suspense, lazy, use, useCallback, useEffect, useState } from "react";
 import Table from "@/app/components/Table";
 import { EventsAdapter } from "@/adapters/eventsAdapter";
 
@@ -58,8 +58,9 @@ const Search = () => {
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
   const { applyFilters, localFilters } = useFilterContext();
-  const { searchParams } = useDefaultFilters();
+  const searchParams = useSearchParams();
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [tableLoading, setTableLoading] = useState(true);
   const {
     data: eventData,
     error,
@@ -75,11 +76,22 @@ const Search = () => {
     queryKey: ["events", searchParams.toString()],
     queryFn: () =>
       eventService.getEventsWithSearchParams(searchParams.toString()),
-    enabled: !!searchParams.toString(),
+    enabled:
+      !!searchParams.toString() &&
+      !(selectedView == "list" || selectedView == "") &&
+      !(
+        Array.from(searchParams.values()).length == 0 ||
+        (Array.from(searchParams.values()).length == 1 &&
+          (Array.from(searchParams.values())[0] == "list" ||
+            Array.from(searchParams.values())[0] == "calendar" ||
+            Array.from(searchParams.values())[0] == "map"))
+      ),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
   });
+
+  console.log(Array.from(searchParams.values()));
 
   const displayData = eventData;
   const events = displayData?.events || [];
@@ -92,12 +104,14 @@ const Search = () => {
   }, [navigateWithParams]);
 
   const searchHandler = useCallback(() => {
+    if (selectedView == "map") return;
     applyFilters();
   }, []);
 
   const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
 
   const adaptedQueryString = (function () {
+    if (!searchParams.toString()) return;
     delete adaptedParams.offset;
     delete adaptedParams.max;
     delete adaptedParams.sortBy;
@@ -150,7 +164,7 @@ const Search = () => {
             disabled={isLoading}
             className="text-white"
           >
-            {isLoading ? (
+            {isLoading || !tableLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Searching...
@@ -182,10 +196,11 @@ const Search = () => {
         onValueChange={(value) => setFilter("view", value)}
       >
         <div className="grid grid-cols-3 items-center mb-6">
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Badge className="bg-primary text-white">{count}</Badge>
             <p className="text-primary font-semibold">Events Found</p>
-          </div>
+          </div> */}
+          <div></div>
           <div className="flex justify-center">
             <TabsList className="grid w-[450px] grid-cols-3 h-auto">
               <TabsTrigger value="list" className="text-base">
@@ -220,6 +235,13 @@ const Search = () => {
             {error.message}
           </div>
         )}
+
+        {error && (error as any).status == 429 && (
+          <div className="text-center">
+            You have reached the maximum limit to view data. Please get in touch
+            with us.
+          </div>
+        )}
         <TabsContent value="list" className="flex-grow overflow-hidden">
           {isLoading ? (
             <Loading />
@@ -228,7 +250,7 @@ const Search = () => {
               showInsights={selectedInsights}
               queryString={adaptedQueryString}
               setRequestExhausted={() => {}}
-              handleButtonLoading={() => isLoading}
+              handleButtonLoading={() => setTableLoading}
             />
           )}
         </TabsContent>

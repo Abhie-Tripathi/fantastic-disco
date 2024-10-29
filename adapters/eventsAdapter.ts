@@ -10,12 +10,12 @@ import { designations } from "@/data/designations";
 
 export const EventsAdapter = {
   adaptRequestParams: (params: URLSearchParams): Record<string, string> => {
+
     const adaptedParams: Record<string, string> = {
       sortBy: "score",
       sortType: "desc",
       max: "10",
       offset: params.get("skip") || "0",
-      eventCategory: "all",
     };
 
     if (params.get("show") || params.get("trust_score_gte")) {
@@ -110,18 +110,18 @@ export const EventsAdapter = {
         ? params
             .get("includeKeywords")!
             .split(",")
-            .map((keyword) => `+${keyword.trim().replace(/ /g, "_")}`)
-            .join("")
+            .map((keyword) => `${keyword.trim().replace(/ /g, "_")}`)
+            .join("+")
         : "";
       const excludeKeywords = params.get("excludeKeywords")
         ? params
             .get("excludeKeywords")!
             .split(",")
             .map((keyword) => `-${keyword.trim()}`)
-            .join("")
+            .join("+")
         : "";
 
-      adaptedParams.eventKeywords = includeKeywords + excludeKeywords;
+      adaptedParams.eventKeywords = includeKeywords + "+" + excludeKeywords;
     }
 
     if (params.get("estimatedVisitors")) {
