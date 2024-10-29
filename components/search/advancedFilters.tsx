@@ -15,6 +15,7 @@ import ExhibitorQualitySelector from "./advancedFilters/exhibitorQualityScores";
 import AudienceDesAndDep from "./advancedFilters/audienceDes&Dep";
 import AudienceSpread from "./advancedFilters/audienceSpread";
 import KeywordFilter from "./advancedFilters/product&Topics";
+import AudienceZoneSatusSelector from "./advancedFilters/audienceZone";
 
 const AdvancedFilters = () => {
   const [selectedView, setSelectedView] = useState("advancedDetails");
@@ -63,9 +64,10 @@ const AdvancedFilters = () => {
         </div>
       </TabsContent>
       <TabsContent value="audienceIntel">
-        <div className="grid grid-cols-4 gap-3 pb-6 border-b">
+        <div className="grid grid-cols-5 gap-3 pb-6 border-b">
           <AudienceQualitySelector />
           <ExhibitorQualitySelector />
+          <AudienceZoneSatusSelector />
           <AudienceDesAndDep />
           <AudienceSpread />
         </div>

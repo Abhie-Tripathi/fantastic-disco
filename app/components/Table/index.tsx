@@ -553,6 +553,7 @@ const Table = ({
       // setCatgeoryData(data);
     }
   };
+
   const fetchAllSavedEvent = async () => {
     const { data, error } = await myFetch(
       `${baseUrl}/tracker/saved-events?max=${itemsPerPage}&offset=${(currPage - 1) * 10
@@ -610,7 +611,8 @@ const Table = ({
             obj[key] = decodeURIComponent(value);
           });
           if (obj["eventKeywords"]) {
-            setAppliedKeywords(obj["eventKeywords"].split("+"));
+            setAppliedKeywords(obj["eventKeywords"].split("%2B"));
+            console.log("applied keywords")
           } else setAppliedKeywords([]);
 
           const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage

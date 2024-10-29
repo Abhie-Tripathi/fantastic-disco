@@ -60,6 +60,7 @@ export interface Event {
   reputationScore: number | null;
   rehostDate: string | null;
   rehostScore: number | null;
+  "trustScore%": string | null;
   primaryEventType: string | null;
   entryType: "free_and_paid" | "free" | "paid" | null;
   rankings: {

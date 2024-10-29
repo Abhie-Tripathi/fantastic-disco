@@ -53,8 +53,6 @@ interface LocationIds {
 
 type LocationState = GeoCoordinate | LocationIds | null;
 
-
-
 const Search = () => {
   const { navigateWithParams, getFilterValue, setFilter } = useFilterState();
   const eventService = useEventsService();
@@ -98,8 +96,6 @@ const Search = () => {
   }, []);
 
   const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
-  
-  console.log(adaptedParams)
 
   const adaptedQueryString = (function () {
     delete adaptedParams.offset;
@@ -109,28 +105,29 @@ const Search = () => {
     return new URLSearchParams(adaptedParams).toString();
   })();
 
-
   const selectedInsights = {
     eventSize: true,
     eventKeywords: true,
-    eventRank: true,
-    matchScore: true,
-    growth: true,
-    eventSeries: true,
-    brandedEvent: true,
-    global: true,
-    reptSent: true,
-    eventRating: true,
-    estExhibit: true,
-    repeatSent: true,
-    maturity: true,
-    impactScore: true,
-    inboundScore: true,
-    internationalScore: true,
-    forecasted: true,
-    audienceZone: false,
-    audienceSpread: false,
+    eventRank: adaptedParams.shows?.includes("eventRanking"),
+    matchScore: adaptedParams.keywords ? true : false,
+    growth: false,
+    eventSeries: adaptedParams.shows?.includes("eventSeries"),
+    brandedEvent: adaptedParams.shows?.includes("eventBrand"),
+    global: false,
+    reptSent: false,
+    eventRating: adaptedParams.shows?.includes("eventRating"),
+    estExhibit: adaptedParams.shows?.includes("estimatedExhibitScore"),
+    repeatSent: adaptedParams.trustScore ? true : false,
+    maturity: adaptedParams.shows?.includes("maturity"),
+    impactScore: adaptedParams.shows?.includes("eventImpactScore"),
+    inboundScore: adaptedParams.shows?.includes("inboundScore"),
+    internationalScore: adaptedParams.shows?.includes("internationalScore"),
+    forecasted: adaptedParams.shows?.includes("isforecasted"),
+    audienceZone: adaptedParams.shows?.includes("audienceZone"),
+    audienceSpread: adaptedParams.audienceSpread ? true : false,
   };
+
+  console.log(adaptedQueryString);
 
   return (
     <div className="space-y-6 p-6">
@@ -231,7 +228,7 @@ const Search = () => {
               showInsights={selectedInsights}
               queryString={adaptedQueryString}
               setRequestExhausted={() => {}}
-              handleButtonLoading={() => {}}
+              handleButtonLoading={() => isLoading}
             />
           )}
         </TabsContent>

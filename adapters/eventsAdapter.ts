@@ -18,7 +18,7 @@ export const EventsAdapter = {
       eventCategory: "all",
     };
 
-    if (params.get("show")) {
+    if (params.get("show") || params.get("trust_score_gte")) {
       const adaptedShowsParams = [];
       const showsParams = params.get("show");
       if (showsParams?.includes("branded"))
@@ -37,11 +37,17 @@ export const EventsAdapter = {
         adaptedShowsParams.push("estimatedExhibitScore");
       if (showsParams?.includes("scores")) {
         adaptedShowsParams.push("eventImpactScore");
-        adaptedShowsParams.push("eventInboundScore");
+        adaptedShowsParams.push("inboundScore");
         adaptedShowsParams.push("internationalScore");
       }
       if (showsParams?.includes("ranking")) {
         adaptedShowsParams.push("eventRanking");
+      }
+      if (params.get("trust_score_gte")) {
+        adaptedShowsParams.push("trustScore");
+      }
+      if (showsParams?.includes("audienceZone")) {
+        adaptedShowsParams.push("audienceZone");
       }
       if (adaptedShowsParams.length > 0)
         adaptedParams.shows = adaptedShowsParams.join(",");
@@ -104,7 +110,7 @@ export const EventsAdapter = {
         ? params
             .get("includeKeywords")!
             .split(",")
-            .map((keyword) => `+${keyword.trim()}`)
+            .map((keyword) => `+${keyword.trim().replace(/ /g, "_")}`)
             .join("")
         : "";
       const excludeKeywords = params.get("excludeKeywords")
@@ -164,6 +170,10 @@ export const EventsAdapter = {
       )}-${params.get("international_score_lte")}`;
     }
 
+    if (params.get("trust_score_gte") || params.get("trust_score_lte")) {
+      adaptedParams.trustScore = params.get("trust_score_gte")!;
+    }
+
     if (params.get("view") == "calendar") {
       adaptedParams.groupBy = adaptedParams.startDate;
       delete adaptedParams.startDate;
@@ -191,12 +201,11 @@ export const EventsAdapter = {
       adaptedParams.longitude = coordinates.longitude;
     }
 
-    if(params.get("geoCoordinates")){
-      const geoCoordinates = JSON.parse(params.get("geoCoordinates") || "")
-      adaptedParams.mapRadius = String(geoCoordinates.radius * 1000)
-      adaptedParams.latitude = geoCoordinates.latitude
-      adaptedParams.longitude = geoCoordinates.longitude
-
+    if (params.get("geoCoordinates")) {
+      const geoCoordinates = JSON.parse(params.get("geoCoordinates") || "");
+      adaptedParams.mapRadius = String(geoCoordinates.radius * 1000);
+      adaptedParams.latitude = geoCoordinates.latitude;
+      adaptedParams.longitude = geoCoordinates.longitude;
     }
 
     return adaptedParams;
@@ -222,7 +231,7 @@ export const EventsAdapter = {
                 startDateTime: item.startDate?.split("T")[0],
                 endDateTime: item.endDate?.split("T")[0],
                 impactScore: 0, // Adjust if impact score is available
-                eventType: determineEventType(item),
+                eventType: determineEventType(item.eventType),
               });
             }
           });
@@ -268,7 +277,7 @@ export const EventsAdapter = {
           longitude:
             item.location.geoCordinates.longitude ||
             item.location.cityCordinates.longitude,
-          eventType: determineEventType(item),
+          eventType: determineEventType(item.type[0]),
         })),
       };
     }
@@ -291,6 +300,7 @@ export const EventsAdapter = {
           editions: 1,
           sponsorsCount: 0,
           speakersCount: 0,
+          "trustScore%": item["trustScore%"],
           frequency: item.frequency || null,
           co_organizers: [],
           rankings: item.ranking
@@ -557,12 +567,8 @@ export const EventsAdapter = {
   },
 };
 
-function determineEventType(item: any): string {
-  if (item.type && Array.isArray(item.type) && item.type.length > 0) {
-    const type = item.type[0].toLowerCase();
-    if (type === "tradeshow") return "tradeshows";
-    if (type === "conference") return "conferences";
-    return type;
-  }
-  return "unknown";
+function determineEventType(item: string): string {
+  if (item.toLowerCase() === "tradeshow") return "tradeshows";
+  if (item.toLowerCase() === "conference") return "conferences";
+  else return "unknown";
 }
