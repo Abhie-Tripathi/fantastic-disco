@@ -13,6 +13,7 @@ export const endpoints = {
     count: `${BASE_URL}/event/search`,
     events: `${BASE_URL}/event/search`,
     eventDetailById: `${BASE_URL}/event`,
+    eventEditionsDetailsById: `${BASE_URL}/event/editions`,
     eventPOCDetailById: `${BASE_URL}/event-poc`,
     savedEvents: `${BASE_URL}/me/saved-events`,
     recentSearches: `${BASE_URL}/me/recent-searches`,

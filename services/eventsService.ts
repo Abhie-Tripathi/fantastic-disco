@@ -75,9 +75,9 @@ export const useEventsService = () => {
     );
   };
 
-  const getEventEditionDetails = (id: string) => {
+  const getEventEditionDetails = (id: string, take: number, skip: number) => {
     return api.request<EventEditionDetailResponse>(
-      `${endpoints.event.events}/${id}/editions`,
+      `${endpoints.event.eventEditionsDetailsById}/${id}`,
       {
         method: "GET",
       }

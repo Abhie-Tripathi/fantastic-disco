@@ -45,7 +45,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     { tabName: "Insights", path: "insights" },
     { tabName: "Audience", path: "audience" },
   ];
-  const { getEventDetailById, getEventPOCDetails, getEventCoOrganizerDetails } =
+  const { getEventDetailById, getEventPOCDetails, getEventEditionDetails } =
     useEventsService();
   const { data: event } = useQuery<any>({
     queryKey: ["eventDetails"],
@@ -53,6 +53,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       const [eventData, eventPOCData] = await Promise.all([
         getEventDetailById(params.eventId),
         getEventPOCDetails(params.eventId),
+        // getEventEditionDetails(),
         // getEventCoOrganizerDetails(params.eventId),
       ]);
       if (!eventData) {
@@ -137,10 +138,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   return (
     <div className="flex flex-row min-h-screen overflow-y-hidden gap-10 p-6 relative">
       <aside className="sticky top-0 h-screen w-[24%] max-[1610px]:w-[30%] max-xl:w-1/3 pb-24 bg-white pr-6 overflow-y-auto shadow-[4px_0_10px_rgba(0,0,0,0.1)] scrollbar">
-        <button
-          onClick={() => router.back()}
-          className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
-        >
+        <button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
           <Link
             className="text-[var(--primary-color)] font-medium"
@@ -175,7 +173,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             )}
             <button onClick={handleShare}>
               {/* <Forward width="18px" height="18px" color="#666666" /> */}
-              <Share width="16px" height="16px" color="#666666" />
+              <Image
+                src={"/shareLogo.svg"}
+                width="19"
+                height="19"
+                alt={"Share"}
+              />
+              {/* <Share width="16px" height="16px" color="#666666" /> */}
             </button>
           </div>
         </div>
@@ -290,7 +294,14 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         >
           <AccordionItem value="item-1">
             <AccordionTrigger className="hover:no-underline p-2 font-normal text-sm">
-              Organizer
+              <p className="flex gap-3 items-center">
+                Organizer
+                {organizer && Object.keys(organizer).length > 0 && (
+                  <span className="text-[12px] bg-[var(--primary-color)] text-[#ffffff] py-[1px] px-2 rounded-full">
+                    {"01"}
+                  </span>
+                )}
+              </p>
             </AccordionTrigger>
             <AccordionContent className="flex flex-col p-2">
               {organizer ? (
@@ -475,7 +486,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             <Bookmark width={15} height={15} className="w-5 h-5" />
             Save this event
           </button>
-          <button className="bg-[#6750A4] rounded-md flex items-center justify-center py-2 px-4 text-white w-full">
+          <button className="bg-[#6750A4] rounded-md flex items-center justify-center py-2 px-4 text-white w-full cursor-not-allowed">
             Add this to tracker
           </button>
         </div>
@@ -517,11 +528,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           </div>
 
           <div className="flex gap-4">
-            <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit">
+            <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit cursor-not-allowed">
               <Image src={"/dollar.svg"} alt="Dollar" width={10} height={10} />
               Cost Estimate
             </button>
-            <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit">
+            <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit cursor-not-allowed">
               <Image
                 src={"/eventRelevance.svg"}
                 alt="Speaker"
