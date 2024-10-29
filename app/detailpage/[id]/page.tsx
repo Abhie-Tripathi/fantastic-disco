@@ -116,6 +116,7 @@ const fetchData = async (eventId: string) => {
             name: data.data.event.name,
             format: data.data.event.data.format,
             logoUrl: data.data.event.data.logoUrl,
+            posterLink : data.data.event.data.posterLink,
             end_date: data.data.event.data.end_date,
             end_time: data.data.event.data.end_time,
             gmt_time: data.data.event.data.gmt_time,
@@ -225,14 +226,14 @@ export async function generateMetadata(context: any) {
             },
         };
     }
-    const { name, description, logoUrl } = data;
+    const { name, description, posterLink } = data;
     return {
         title: name,
         description: stripHtmlTags(description),
         openGraph: {
             title: name,
             description: stripHtmlTags(description),
-            images: [logoUrl],
+            images: [posterLink],
             url: `${console_url}/detailpage/${eventId}`,
             type: "website"
         },

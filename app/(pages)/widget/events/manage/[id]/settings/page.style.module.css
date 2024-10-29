@@ -11,6 +11,7 @@
 }
 .btnContainer button{
     flex: 1;
+    height: 60px;
     border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 10px 15px;
@@ -39,18 +40,6 @@
 
 .btnContainer button .sub_headingContainer .capacity .dot{
     padding-bottom: 7px;
-}
-.btnContainer button .icon1{
-    padding: 10px;
-    border-radius: 4px;
-    background-color: rgba(0, 0, 255, 0.282);
-    color: var(--info-text-color);
-}
-.btnContainer button .icon2{
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #45a55749;
-    color: var(--success-text-color);
 }
 .btnContainer button:hover{
     /* color: white; */

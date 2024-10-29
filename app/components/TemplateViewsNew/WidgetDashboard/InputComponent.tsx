@@ -14,21 +14,23 @@ interface Props {
     setFetchedDomain: (value: string) => void
     fetchedDomain: string;
     setBrandkitFetched : (value: boolean) => void;
+    removeCalled : boolean;
 }
 
-const InputComponent = ({ fetched, setFetchedBoolean, setBrandkitLoadingState, setPolling, setFetchedDomain, fetchedDomain, setBrandkitFetched }: Props) => {
+const InputComponent = ({removeCalled, fetched, setFetchedBoolean, setBrandkitLoadingState, setPolling, setFetchedDomain, fetchedDomain, setBrandkitFetched }: Props) => {
 
     const [domain, setDomain] = useState<string>("");
     const [disableBtn, setDisableBtn] = useState<boolean>(false)
 
     useEffect(() => {
         fetchWidget()
-    }, [])
+        console.log("this is called")
+    }, [removeCalled])
 
-    useEffect(() => {
-        const interval = setInterval(fetchWidget, 1000); 
-        return () => clearInterval(interval); 
-    }, []);
+    // useEffect(() => {
+    //     const interval = setInterval(fetchWidget, 1000); 
+    //     return () => clearInterval(interval); 
+    // }, []);
 
     useEffect(() => {
         setDomain(fetchedDomain.substring(8))

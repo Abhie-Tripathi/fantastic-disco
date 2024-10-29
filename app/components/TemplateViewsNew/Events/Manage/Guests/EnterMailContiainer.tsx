@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './entermail.style.module.css'
 import { showToast } from '@/utils/showToast';
 
@@ -27,12 +27,14 @@ const EnterMailContiainer = ({ setSuggestedMailQuery, setSelectedMails, selected
       } else {
         showToast("warning", "Email already added")
       }
-    } else if (setSuggestedMailQuery) {
-      console.log("this is caledd")
+    }
+  };
+  useEffect(()=>{
+    if(setSuggestedMailQuery){
+      const trimmedEmail = emailInput.trim();
       setSuggestedMailQuery(trimmedEmail)
     }
-
-  };
+  },[emailInput])
 
   return (
     <form className={styles.body} onSubmit={handleSubmit}>
@@ -40,7 +42,7 @@ const EnterMailContiainer = ({ setSuggestedMailQuery, setSelectedMails, selected
       <div className={styles.inputContainer}>
         <input type={setSuggestedMailQuery ? "text" : "mail"} placeholder={placeholder} value={emailInput}
           onChange={(e) => setEmailInput(e.target.value)} />
-        <button type="submit">Add</button>
+        {!setSuggestedMailQuery && <button type="submit">Add</button>}
       </div>
     </form>
   )
