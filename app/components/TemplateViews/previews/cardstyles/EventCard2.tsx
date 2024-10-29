@@ -61,6 +61,7 @@ const EventCard2 = ({
     
         return `${getDayWithSuffix(day)} ${month} ${year}`;
     };
+    
     return (
         <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
             <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
@@ -79,8 +80,8 @@ const EventCard2 = ({
             <div className={styles.type_peopleContainer}>
                 <div className={styles.typeContainer}>
                 <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType ==="MAIN"?"Main Event":fetchedEvent?.eventType ==="SUB"?"Side Event":"Main Event"}</div>
-                    <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>Tradeshow</div>
-                    <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>Attending</div>
+                    <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.event_type? fetchedEvent.event_type:"Tradeshow" }</div>
+                    <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventFormat? fetchedEvent.eventFormat:"Attending"}</div>
                 </div>
                 {/* <div className={styles.circles}>
                     <div className={styles.circle} data-name="John Doe">

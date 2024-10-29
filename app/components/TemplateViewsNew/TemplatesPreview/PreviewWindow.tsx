@@ -146,7 +146,8 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                             venue: eventData.customizationData.venue,
                             hashtags: eventData.customizationData.hashtags,
                             promoted: event.promoted,
-                            eventType : data.type
+                            eventType : data.type,
+                            event_type:eventData.event_type
                         } as PrefilledAddedEventsType;
                     })
                 );
