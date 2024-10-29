@@ -37,6 +37,8 @@ import { useRouter } from 'next/navigation';
 import { useTheme } from '@/context';
 
 interface WidgetProps {
+    removeCalled?: boolean;
+    setRemoveCalled?: (value : boolean) => void
     widgetType: string;
     templateId: TemplateId;
     widgetNumber?: number;
@@ -51,7 +53,7 @@ interface WidgetProps {
 }
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 
-const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick, widgetStatus, fetchedEventsSize, fetchAllWidgets, selected, key }: WidgetProps) => {
+const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraftWidgets, handleWidgetClick, widgetStatus, fetchedEventsSize, fetchAllWidgets, selected, key,removeCalled,setRemoveCalled }: WidgetProps) => {
     const { theme } = useTheme()
     const templateMap = {
         'ST': { image: theme === "light" ? StickyTopImage : StickyTopImageDark, heading: 'Sticky Top' },
@@ -90,7 +92,12 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
             }
         );
         if (data) {
-            console.log(data);
+            console.log("removed called")
+            console.log("data is",data);
+            if(setRemoveCalled){
+                setRemoveCalled(!removeCalled)
+                console.log("removed called")
+            }
             if (fetchAllWidgets) {
                 fetchAllWidgets();
             }
