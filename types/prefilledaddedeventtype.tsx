@@ -26,6 +26,7 @@ export interface PrefilledAddedEventsType {
     venue : string;
     promoted : string;
     eventType : string;
+    event_type: string;
   }
   interface SpeakerProfileType {
     id: string;

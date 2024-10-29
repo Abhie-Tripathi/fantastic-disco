@@ -24,6 +24,10 @@
     align-items: center;
     justify-content: space-between;
     gap: 18px;
+    white-space: nowrap;
+    overflow-x: scroll; 
+    scrollbar-width: none;
+    scroll-behavior: smooth;
 }
 .options .option{
     width: 200px;
@@ -124,3 +128,33 @@
       gap: 18px;
     }
   }
+
+
+  .carouselContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .options::-webkit-scrollbar {
+    display: none; /* Hides scrollbar in WebKit-based browsers (e.g., Chrome, Safari) */
+  }
+  .arrowButton {
+    border-radius: 50%;
+    color: white; 
+    border: none; 
+    cursor: pointer;
+    font-size: 20px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    transition: background-color 0.3s; 
+    padding: 5px; 
+    line-height: 1; 
+    border: 1px solid #F2F2F2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+  }
+  

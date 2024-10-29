@@ -26,9 +26,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             return null;
         }
         const eventData = data?.data;
-        console.log("eventData_customizationData",data.approval)
         // if (!eventData) return null;
-
+        console.log("fetchedd",eventData)
         const eventObject: EventsType = {
             eventId: eventId, // Use eventId from the URL param
             name: data?.name || "",
@@ -49,6 +48,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             logoUrl: eventData.logoUrl || "",
             widgetTags: data?.widgetData,
             eventType: data?.type, 
+            event_type:eventData?.event_type,
             parentData: "",
             capacity: eventData.maxCapacity || 0,
             registration: data?.registration === true ? true : false,

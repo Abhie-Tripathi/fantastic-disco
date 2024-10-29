@@ -8,6 +8,10 @@ import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import POP from '/public/partyPopIcon.svg'
 import TradeshowIcon from '/public/tradeshowIcon.svg'
 
+import WorkShopIcon from '/public/workshop.svg'
+import ConferenceIcon from '/public/conference.svg'
+import DefaultIcon from '/public/widgetDefaultIcon.svg'
+
 interface FontSettings {
   fontFamily: string;
   fontSize: number;
@@ -72,8 +76,8 @@ const EventListCard1 = ({
 
 
             <div className={styles.dateContainer}>
-             {
-                fetchedEvent?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedEvent?.eventType === "MAIN" ? <Image src={TradeshowIcon} alt=''/>:<Image src={POP} alt=''/>
+            {
+                fetchedEvent?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type==="Tradeshow" ? <Image src={TradeshowIcon} alt=''/>:fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type==="Conference" ? <Image src={ConferenceIcon} alt=''/>: fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type==="Workshop" ?<Image src={WorkShopIcon} alt=''/>:<Image src={DefaultIcon} alt=''/>
              }
            </div>
          
@@ -89,8 +93,8 @@ const EventListCard1 = ({
         <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: truncatedDescription }}></div>
         <div className={styles.dateRange_typeContainer}>
           <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
-          <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>Tradeshow</div>
-          <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>Attending</div>
+          <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.event_type:"Tradeshow"}</div>
+          <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.eventFormat:"Attending"}</div>
         </div>
       </div>
     </div>

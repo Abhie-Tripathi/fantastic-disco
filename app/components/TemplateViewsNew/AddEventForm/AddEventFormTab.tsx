@@ -80,6 +80,8 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
         }
     }, [confettiType]);
 
+    console.log("mainEvent",mainEventState)
+
     const handleAddEvent = async () => {
         if (eventFlow === "main") {
             if (activeBtn === "side") {
@@ -228,7 +230,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 latitude: mainEventState.latitude,
                 longitude: mainEventState.longitude,
                 participationType: mainEventState.participationType,
-                event_type: "Tradeshow",
+                event_type: mainEventState.event_type,
                 customizationData: JSON.stringify(eventCustomizationData),
             };
             const formData = new FormData()
@@ -322,11 +324,12 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
         const exhibitorObject = {
             companyName: exhibitor.data.companyName,
             boothNumber: exhibitor.data.boothNumber,
-            isExhibitor: true
+           
         }
         formData.append("eventId", eventId)
         formData.append("data", JSON.stringify(exhibitorObject))
         formData.append("file", exhibitor.imageUrl || "")
+        formData.append("isExhibitor", 'true')
         const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
             method: 'POST',
             body: formData
@@ -563,7 +566,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             gmt_time: eventState.timeZone,
             latitude: eventState.latitude,
             longitude: eventState.longitude,
-            event_type: "Tradeshow",
+            event_type: eventState.event_type,
             customizationData: JSON.stringify(eventCustomizationData),
             parentData: eventState.parentData,
         };

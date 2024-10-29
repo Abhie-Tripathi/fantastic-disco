@@ -87,7 +87,8 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     virtualLink: "",
     exhibitorModal: false,
     exhibitor:prefilledEvent?.customizationData.exhibitor || [],
-    prefilledExhibitorDetails:undefined
+    prefilledExhibitorDetails:undefined,
+    event_type:prefilledEvent?.event_type||""
   };
   const emptyFormState: FormState = {
     parentData: "",
@@ -135,7 +136,8 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     virtualLink: "",
     exhibitorModal: false,
     exhibitor:[],
-    prefilledExhibitorDetails:undefined
+    prefilledExhibitorDetails:undefined,
+    event_type:""
   };
   const eventType = prefilledEvent?.eventType
   const [mainEventState, setMainEventState] = useState<FormState>(initialFormState);
