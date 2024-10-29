@@ -3,12 +3,13 @@ import styles from './suggestedemail.style.module.css'
 import EnterMailContiainer from './EnterMailContiainer'
 
 interface Props {
+  setSuggestedMailQuery: (value: string) => void 
   setSelectedMails: (value: string[]) => void
   selectedMails: string[]
   suggestedMails: string[]
 }
 
-const SuggestedEmail = ({ setSelectedMails, suggestedMails, selectedMails }: Props) => {
+const SuggestedEmail = ({setSuggestedMailQuery, setSelectedMails, suggestedMails, selectedMails }: Props) => {
 
   const handleMailClick = (mail: string) => {
     if (selectedMails.includes(mail)) {
@@ -22,7 +23,7 @@ const SuggestedEmail = ({ setSelectedMails, suggestedMails, selectedMails }: Pro
 
   return (
     <div className={styles.body}>
-      <EnterMailContiainer name='Suggested Emails' placeholder = "Search Suggestions" selectedMails={selectedMails} setSelectedMails={setSelectedMails} />
+      <EnterMailContiainer setSuggestedMailQuery={setSuggestedMailQuery} name='Suggested Emails' placeholder = "Search Suggestions" />
       <div className={styles.usersList}>
         {suggestedMails.map((mail, key) => (
           <div className={styles.suggestedUser} key={key} onClick={() => handleMailClick(mail)}>

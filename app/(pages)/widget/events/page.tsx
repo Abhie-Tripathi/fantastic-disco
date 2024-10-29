@@ -49,7 +49,7 @@ const Page = () => {
 
         setTodaysDate(getCurrentDate());
     }, []);
-    
+  
     useEffect(() => {
         fetchEvents(page * 8);
     }, [page])

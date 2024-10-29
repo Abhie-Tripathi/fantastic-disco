@@ -21,8 +21,14 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
 
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
+  const [suggestedMailQuery, setSuggestedMailQuery] = useState<string>("")
+
   const fetchSuggestions = async()=>{
-    const {data, error} = await myFetch(`${baseUrl}/invite`)
+    let url = `${baseUrl}/invite`
+    if(suggestedMailQuery.length > 0){
+      url+=`?q=${suggestedMailQuery}`
+    }
+    const {data, error} = await myFetch(`${url}`)
     let emailArray : string[] = []
     if(error){
       console.log("error occured", error)
@@ -36,7 +42,8 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
 
   useEffect(()=>{
     fetchSuggestions()
-  },[])
+    console.log("called")
+  },[suggestedMailQuery])
 
   const handleSubmit = async () => {
     const newObj = {
@@ -77,7 +84,7 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
         </div>
       </div>
       <div className={styles.line}></div>
-      {screen === "first" ? <InviteGuestsFirstScreen suggestedMails={suggestedMails} selectedMails={selectedMails} setSelectedMails={setSelectedMails} /> :
+      {screen === "first" ? <InviteGuestsFirstScreen setSuggestedMailQuery={setSuggestedMailQuery}  suggestedMails={suggestedMails} selectedMails={selectedMails} setSelectedMails={setSelectedMails} /> :
         <InviteGuestsSecScreen selectedMails={selectedMails} />}
       <div className={styles.line}></div>
       <div className={styles.selectedBtnContainer}>
