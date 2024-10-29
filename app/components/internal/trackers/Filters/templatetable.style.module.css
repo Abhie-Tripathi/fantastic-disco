@@ -1,0 +1,31 @@
+  .allCustomData {
+    /* width: calc(50% - 45px); */
+    width: 100%;
+    background: var(--primary-foreground);
+  }
+  
+  
+  .allCustomData th {
+    background-color: var(--heading-background-color);
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-collapse: collapse;
+    color: var(--secondary-text-color);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-default);
+    text-align: start;
+  }
+  
+  .allCustomData td:first-child {
+    width: 35px;
+  }
+  
+  .allCustomData td {
+    padding: 10px;
+  }
+  
+  .allCustomData,
+  .allCustomData td {
+    border: 1px solid var(--border-color);
+    border-collapse: collapse;
+  }

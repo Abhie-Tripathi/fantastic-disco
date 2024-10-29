@@ -2,6 +2,8 @@
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Template from "/public/template.svg";
+import Vector1 from "/public/vectorTemplate.svg";
 import EventTypeSelector from "@/components/eventType";
 import CategorySelector from "@/components/categorySelector";
 import EventFormatSelector from '@/components/eventFormat';
@@ -23,10 +25,16 @@ import Image from "next/image";
 import Url from '/public/url.svg'
 import CloseIcon from "/public/internal/cross.svg";
 import Add from '/public/add_Icon.svg'
+import TemplateTable from "./templateTable";
+import Competitor from "/public/competitor.svg";
+import Speaking from "/public/speaking.svg";
+import Keywords from "/public/keywords.svg";
 import Company from '/public/company_Icon.svg'
 import Name from '/public/userName_Icon.svg'
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
-import { ChevronDown, Plus, Share } from "geist-icons";
+import { ChevronDown, InformationFill, Plus, Share } from "geist-icons";
+import eventVisitorsData from "../../../../../public/data/eventVisitorsData.json";
+// import styles from "./search.module.css";
 import { EventDataType } from "@/app/components/types/allevents";
 import EventStatusData from "@/public/data/eventType.json";
 import userOne from "/public/userOne.svg";
@@ -54,6 +62,8 @@ import EventAnalyticsSelector from "@/components/advancedFilters/eventAnalytics"
 import EventRankingSelector from "@/components/advancedFilters/eventRanking";
 import AudienceZoneSelector from "@/components/advancedFilters/audienceZone";
 import AudienceQualitySelector from "@/components/advancedFilters/audienceQualityScore";
+import trackerEmptyTable from "/public/internal/trackerEmptyTable.svg";
+import { suggestionGenerator } from "@/utils/openAI";
 import {Tracker, Toggle} from '@/types/trackers'
 import ExhibitorQualitySelector from "@/components/advancedFilters/exhibitorQualityScore";
 import { useTrackerContext } from "@/context/tracker";
@@ -153,6 +163,84 @@ interface Cat {
 interface EditData {
   tracker: Tracker;
 }
+
+const top10Data = [['BMC Training'], ['Lorman Education Services'], ['http://www.iu.edu/']];
+const top10Speakers = [
+  ["abc.com", "xyz.com"],
+  ["Mark Zuckerberg", "Facebook"],
+]
+
+const presetTemplateData = [
+  {
+    id: 1,
+    // type: "template",
+    // domain: "Human Resource",
+    img: Competitor,
+    url: "T_COMPETITOR",
+    trackerName: "Top 100 Companies",
+    content: "This list highlights 100 global events organizers connecting industries, fostering business growth, and innovation.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'ALL',
+  },
+  {
+    id: 2,
+    // type: "template",
+    // domain: "Sales",
+    img: Keywords,
+    url:"T_COMPETITOR",
+    trackerName: "Top 25 Trending",
+    content: "This list highlights 25 influential organizers worldwide, gaining traction with new, high-impact events.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 3,
+    // type: "template",
+    // domain: "Human Resource",
+    img: Competitor,
+    url: "T_COMPETITOR",
+    trackerName: "India Top 30",
+    content: "Discover leading companies in India hosting business expos, conferences, and events.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 4,
+    // type: "template",
+    // domain: "Human Resource",
+    img: Competitor,
+    url: "T_COMPETITOR",
+    trackerName: "Education & Training companies in India",
+    content: "Discover leading Education & Training companies in India hosting business expos, conferences, and events.",
+    data: top10Data,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 5,
+    img: Speaking,
+    url: "T_SPEAKING_OPPORTUNITY",
+    trackerName: "Artificial Intelligence Speakers",
+    content: "This list of Artificial Intelligence speakers, pioneering innovation and attracting attention with compelling talks.",
+    data: top10Speakers,
+    enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 6,
+    img: Speaking,
+    url: "T_SPEAKING_OPPORTUNITY",
+    trackerName: "Biotechnology Innovations Speakers",
+    content: "This list of Biotechnology Innovations speakers, pioneering innovation and attracting attention with compelling talks.",
+    data: top10Speakers,
+    enabled: false,
+    presetType: 'All',
+  }
+];
+
 const templates = [
   {
     name: "T_RECRUITMENT",
@@ -262,7 +350,7 @@ const templates = [
     name: "T_SPEAKING_OPPORTUNITY",
     templateName: "Speaking Opportunity",
     type: "enabled",
-    description: "Track your competitor experts, influencers and where they might be participating in events",
+    description: "Input team members and their details to keep track of the events with speaking opportunities",
     inputAreas: [
       {
         img: Name,
@@ -551,8 +639,26 @@ const Pages = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
+
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   useEffect(() => {
+    const fetchAISuggestion = async (val: any) => {
+      try{
+        const promptText = `List only name of top 5 companies similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {"data": ["company name 1","company name 2","company name 3","company name 4","company name 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`;
+        let aiResponse: any = await suggestionGenerator(promptText);
+        let temp = JSON.parse(aiResponse.choices[0].message.content);  
+        if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
+          setSuggestions(temp.data);
+      } catch (err) {
+        console.error("Fetch failed:", err);
+        setSuggestions([]);
+      }
+    }  
+
     if (type === "T_COMPETITOR") {
+      if(customData.length > 0 && Object.values(customData[0])[0]) {
+        fetchAISuggestion(Object.values(customData[0])[0]);
+      }
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       const urls = customData
       .map((item: {}) => Object.values(item)[0] as string)
@@ -579,6 +685,30 @@ const Pages = () => {
       setDesignations(designation);
     }
   }, [type, customData])
+
+  const handlePresetClick = (id: number, trackerType: string, trackerName: string) => {
+
+    const filteredPresetData = presetTemplateData.filter(item => item.id === id);
+    if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY') {
+      const presetData: any = [];
+
+      filteredPresetData?.[0]?.data.map((item: any) => {
+        const temp: any = {};
+        template?.inputAreas?.map((field: InputArea, index: number)=>(
+          temp[field.placeholder] = item[index]
+        ))
+        presetData.push(temp);
+      })      
+      setCustomData(presetData);
+      setTrackerName(trackerName);
+    } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
 
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
@@ -613,9 +743,9 @@ const Pages = () => {
     }
     const formData = {
       name: trackerName,
-      // ...(type && type.length > 0 && {
-      //   type: type.toUpperCase()
-      // }),
+      ...(type && type.length > 0 && {
+        type: type.toUpperCase()
+      }),
       accessLevel: editData?.tracker?.accessLevel,
       filterValue: {
           ...(userType &&{
@@ -927,7 +1057,7 @@ const Pages = () => {
           setCustomData((prevData: any) => [
             ...prevData,
             ...orgNames?.map((item) => (
-              { companyUrl: item.trim() }
+              { "Competitor Name or Website": item.trim() }
             ))
           ]);
         }
@@ -935,7 +1065,7 @@ const Pages = () => {
           setCustomData((prevData: any) => [
             ...prevData,
             ...orgWebsites?.map((item) => (
-              { companyUrl: item.trim() }
+              { "Competitor Name or Website": item.trim() }
             ))
           ]);
         }
@@ -1032,7 +1162,7 @@ const Pages = () => {
       );
       setSelectedCategories(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.map(
+          ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all').map(
             (cat: Cat) => cat.id
           )
           : []
@@ -1079,7 +1209,7 @@ const Pages = () => {
       // );
       setCategorySlug(
         editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.map(
+          ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all')?.map(
             (cat: Cat) => cat.name
           )
           : []
@@ -1422,7 +1552,6 @@ useEffect(()=>{
   }
 
   const [uploadEnabled, setUploadEnabled] = useState<boolean>(false);
-  const [expandTable, setExpandTable] = useState<boolean>(false);
 
   const handleUploadEnable = () => {
     setUploadEnabled(!uploadEnabled)
@@ -1578,26 +1707,17 @@ console.log(includeKeywords, excludeKeywords);
       }
       
       {template && template.inputAreas &&
-        <div className={`card flex flex-col gap-6`} style={{gap:"var(--spacing-lg)", borderRadius:"var(--border-radius-sm)", boxShadow:"none"}}>
+      <div style={{display: 'flex', gap: '25px'}}>
+        <div className={`card ${styles.competitor}`}>
           {/* <div className={styles.competitorHead}>
             <div className={styles.competitorHeading}>Upload custom data </div>
             {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
           </div> */}
           <div className={styles.bar}></div>
           <div>
-          <div className="mb-4">{template.description}
-            {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") &&
-              <Button10x
-                className={styles.uploadBtn}
-                style={{ color: "white", float: "right" }}
-                variant="primary"
-                size="sm"
-                onClick={handleUploadEnable}
-              >
-                <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
-                {" "}Upload
-              </Button10x>
-            }
+          <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)]" style={{fontSize:"var(--font-size-small)"}}>
+            <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
+            {" "} Please upload or manually enter the information
           </div>
           {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") ?
             (uploadEnabled && 
@@ -1608,61 +1728,62 @@ console.log(includeKeywords, excludeKeywords);
                 setUploadEnabled={setUploadEnabled}
                 setSelectedEventKeywords={setSelectedEventKeywords}
               />) :
-          <div className={`${styles.toggleDiv}`}>
-            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Add data manually
-                  {template?.inputAreas?.length === undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
-                </div>
-                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
-              </div>
-              <div>
+              <></>
+          // <div className={`${styles.toggleDiv}`}>
+          //   <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+          //     <div>
+          //       <div className={styles.manualHeading}>Add data manually
+          //         {template?.inputAreas?.length === undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
+          //       </div>
+          //       <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
+          //     </div>
+          //     <div>
 
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={template.type === "enabled"}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
+          //       <span>
+          //         <label className={styles.switch}>
+          //           <input
+          //             type="checkbox"
+          //             checked={template.type === "enabled"}
+          //           />
+          //           <span className={styles.slider}></span>
+          //         </label>
+          //       </span>
 
-              </div>
-            </div>
-            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Import CSV Data
-                  {template.type === "enabled" && <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>}
-                </div>
-                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-              </div>
-              <div>
+          //     </div>
+          //   </div>
+          //   <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
+          //     <div>
+          //       <div className={styles.manualHeading}>Import CSV Data
+          //         {template.type === "enabled" && <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>}
+          //       </div>
+          //       <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
+          //     </div>
+          //     <div>
 
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={selectedExhibitScore.length !== 0}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
+          //       <span>
+          //         <label className={styles.switch}>
+          //           <input
+          //             type="checkbox"
+          //             checked={selectedExhibitScore.length !== 0}
+          //           />
+          //           <span className={styles.slider}></span>
+          //         </label>
+          //       </span>
 
-              </div>
-            </div>
-          </div>
+          //     </div>
+          //   </div>
+          // </div>
           }
           </div>
           {template?.inputAreas &&
                   <div>
-                    <div className="flex w-[50%] items-stretch gap-2">
+                    <div className="flex items-stretch gap-2.5">
                       {template?.inputAreas?.map((inputArea: any, index: number) => (
                         <>
-                          <div key={index} className="flex w-full items-center gap-[10px] relative px-[10px] py-0 border border-[var(--border-color)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
+                          <div key={index} className="relative px-2.5 border flex w-full items-center gap-2.5 bg-[var(--primary-foreground)] border-[var(--border-color)] rounded-[var(--border-radius-sm)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
                             {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                             <input
-                              className="bg-inherit text-inherit outline-none py-2 px-0 border-none w-full"
+                              className={styles.textArea}
                               type="text"
                               placeholder={inputArea.placeholder}
                               value={inputValues[index] || ''}
@@ -1699,7 +1820,7 @@ console.log(includeKeywords, excludeKeywords);
                       <div onClick={() => template.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px]"
                         style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
                       >
-                        <Image src={Add} alt="add_Icon" style={{width:"12px", height:"12px", maxWidth:"none"}} />
+                        <Image src={Add} alt="add_Icon" />
                       </div>
 
                     </div>
@@ -1715,11 +1836,25 @@ console.log(includeKeywords, excludeKeywords);
       ))}
     ))} */}
     {!valid && (
-                <div style={{ color: "#f15050", fontSize:"12px", marginTop:"-8px" }}>Enter valid input</div>
+                <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
               )}
-              {customData && customData.length >0 &&
-                <div className="flex flex-col gap-2 mt-4">
-                  <div className="cursor-pointer text-[var(--danger-text-color)] text-sm font-medium w-fit" onClick={() => setCustomData([])}>
+              {(suggestions && suggestions.length > 0) &&
+                <div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full" >
+                  <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">
+                    {/* <Image src={AiIcon} alt="AI" className={iconClass} width={14} height={14} /> */}
+                    AI SUGGESTIONS {" "}
+                    <span className={styles.experimental_tag} >Beta</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {suggestions.map((item: string, ind: number)=>(
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{item}</div>
+                    ))}
+                  </div>
+                </div>
+              }
+              {/* {customData && customData.length >0 &&
+                <div className={styles.allCompetitors}>
+                  <div className={styles.remove_all_custom} onClick={() => setCustomData([])}>
                     Remove All
                   </div>
                   <div className="max-h-[300px] overflow-y-auto">
@@ -1757,23 +1892,64 @@ console.log(includeKeywords, excludeKeywords);
                     <div className={styles.expandTableBtn} onClick={()=>setExpandTable(prev=>!prev)} >{expandTable ? 'Read Less' : 'Read More'}</div>
                   }
                 </div>
+              } */}
+              {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") &&
+                <div style={{textAlign: 'center'}}>
+                  <div style={{position: 'relative', color: 'var(--secondary-text-color)'}}>
+                    <div style={{borderBottom: '1px solid var(--border-color)', margin: '36px 0'}}></div>
+                    <span className="absolute text-[10px] -top-1.5 bg-[var(--background-secondary-color)] px-2 font-semibold">OR</span>
+                  </div>
+                  <div className="flex justify-center items-center h-[140px] border border-dashed rounded-[18px] bg-primary-foreground border-[var(--border-color)]">
+                    <Button
+                      className="text-white gap-1"
+                      size="sm"
+                      onClick={handleUploadEnable}
+                    >
+                      <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
+                      {" "}Upload
+                    </Button>
+                  </div>
+                </div>
               }
             </div>
           }
         </div>
+        <div className={`card ${styles.competitor}`} >
+          <div className="flex items-center text-[#0062D1] font-[var(--font-weight-regular)] mb-4 leading-[var(--line-height-small)]" style={{fontSize:"var(--font-size-small)"}}>
+            <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
+            {" "} You can edit or remove unwanted entries from here.
+          </div>
+          {(customData && customData.length >0) ?
+            <TemplateTable customData={customData} handleCustomData={handleCustomData} /> :
+            <div className={styles.emptyTableData}>
+              <Image
+                src={trackerEmptyTable}
+                alt="table"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              />
+              <div className={styles.emptyTableText}>No data added</div>
+              <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
+            </div>
+          }
+        </div>
+      </div>
       }
      {
-     <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`}>
+     <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} style={!opend ? {padding: '12px 24px'} : {}}>
       {type !== "CUSTOM" &&
-      <div className="flex justify-between cursor-pointer" onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
-      <div className="flex items-center gap-1">
-      <Plus style={{width:"16px", height:"16px"}} className="icons"/>
-      <div className="text-large font-bold text-[var(--primary-color)]">Additional filters</div>
+      <div className={`${styles.hiddenFilters}`} onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
+      <div className={styles.hiddenFiltersInnerDiv}>
+      {/* <Plus style={{width:"16px", height:"16px"}} className="icons"/> */}
+      <div className={styles.hiddenFilterHeading}>Additional filters</div>
       </div>
       <div><ChevronDown className="icons"/></div>
       </div>
       }
-      {(type==="CUSTOM" || opend )&&
+    {(type==="CUSTOM" || opend )&&
       <Suspense fallback={<Loading />}>
       <div className={styles.container}>
         <div className={styles.sub_container}>
@@ -2977,6 +3153,57 @@ console.log(includeKeywords, excludeKeywords);
       }
      
     </div>
+      }
+      {(type !== "CUSTOM" && presetTemplateData.filter(item => item.url === template?.name).length > 0) &&
+        <div>
+            <div className={styles.presetTitle} >Get Started with Pre-sets</div>
+            <div className={styles.presetContainer} >
+              {presetTemplateData.filter(item => item.url === template?.name).map((item, ind) => (
+                <div key={ind} className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]" onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
+                  <div
+                    className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]"
+                  >
+                    <div className={styles.account}>
+                      <Image src={item.img} alt="people" />
+                    </div>
+                    <div>
+                      <Image src={Template} alt="template" />
+                    </div>
+                  </div>
+                  <div className="w-full h-[60%] flex flex-col gap-2">
+                    <div className="flex justify-between items-center">
+                      <div className="flex h-full items-center gap-1">
+                        <Image
+                          src={Vector1}
+                          alt="vector1"
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        />
+                        <div style={{ color: "#585871", fontSize: "12px" }}>
+                          PRE-SET
+                        </div>
+                      </div>
+                      {item.enabled ? 
+                        <div className={`${styles.domain}`} >
+                          {item.presetType}
+                        </div> :
+                        <div className="badge_success" style={{fontSize: 'var(--font-size-xs)'}}>
+                          Coming Soon
+                        </div>
+                      }
+                    </div>
+                    <div className={styles.bottomViewTwo}>
+                      {item?.trackerName}
+                    </div>
+                    <div className={styles.text}>{item?.content}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+        </div>
       }
     </div>
     </>
