@@ -201,7 +201,7 @@ const Dashboard = () => {
           <div className={styles.primary_container}>
             <div className={styles.primary_header}>Welcome back!</div>
             <div className={styles.secondary_header}>
-              Unlock the possibility of EventGeni
+              Unlock the possibility of Whr.ai
             </div>
             {isLoading ? (
               <>

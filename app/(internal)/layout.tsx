@@ -23,7 +23,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Eventgeni",
+  title: "Whr.ai",
   description: "All-in-one solution to maximize ROI from your event GTM strategy.",
 };
 
