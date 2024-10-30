@@ -208,6 +208,7 @@ const SubEventCard = ({
               </div>
             </div>
           </div>
+          <div className={styles.detail_button}>VIEW DETAILS</div>
           {/* <div className={styles.description} dangerouslySetInnerHTML={{
                             __html:
                                 normalEvent
@@ -219,6 +220,7 @@ const SubEventCard = ({
                     >
                     </div> */}
           <div className={styles.tags_deleteContainer}>
+        
             {/* <div className={styles.tags}>
                             <div className={styles.tag1}>{normalEvent?.mainEvent.participationType || subEvent?.participationType}</div>
                             <div className={styles.tag2}>In-Person</div>

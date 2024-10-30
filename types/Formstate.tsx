@@ -58,6 +58,7 @@ export interface FormState {
     virtualLink:string;
     exhibitorModal:boolean;
     exhibitor:any[];
-    event_type:string
+    event_type:string;
+    isEventTypeEmpty:boolean
   }
   

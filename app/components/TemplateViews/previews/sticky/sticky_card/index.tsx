@@ -210,7 +210,7 @@ const StickyCard = ({
                 : buttonSettings?.secondary.borderColor,
           }}
         >
-          {"REGISTER NOW"}
+          {"VIEW DETAILS"}
         </button>
       </div>
     </div>

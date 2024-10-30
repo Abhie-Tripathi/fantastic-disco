@@ -165,6 +165,12 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 handleMaineventChanges('isParticipationMessageEmpty', true)
                 // setIsParticipationMessageEmpty(true)
             }
+            if (!mainEventState.event_type) {
+                handleMaineventChanges('isEventTypeEmpty', true)
+                // setIsParticipationMessageEmpty(true)
+            }
+            
+
             if (!mainEventState.textValue) {
                 handleMaineventChanges('isTextValueMessageEmpty', true)
                 // setIsTextValueMessageEmpty(true)
@@ -260,7 +266,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             })
             if (data) {
                 console.log("event added :", data)
-                if (!subEventState.isEventNameEmpty && !subEventState.isEventFormatEmpty && !subEventState.isEventDescriptionEmpty && !subEventState.isEventParticipationEmpty && !subEventState.isParticipationMessageEmpty && (subEventState.banner.placeHolder !== Placeholder || subEventState.banner.file)) {
+                if (!subEventState.isEventNameEmpty && !subEventState.isEventFormatEmpty && !subEventState.isEventDescriptionEmpty && !subEventState.isEventParticipationEmpty && !subEventState.event_type&& !subEventState.isParticipationMessageEmpty && (subEventState.banner.placeHolder !== Placeholder || subEventState.banner.file)) {
                     addSubEvent(data.data.id)
                 } else {
                     setIsAddEventModalOpen(false)
@@ -682,6 +688,11 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                     handleMaineventChanges('isParticipationMessageEmpty', true)
                     // setIsParticipationMessageEmpty(true)
                 }
+                if (!mainEventState.event_type) {
+                    handleMaineventChanges('isEventTypeEmpty', true)
+                    // setIsParticipationMessageEmpty(true)
+                }
+                
                 if (!mainEventState.textValue.trim()) {
                     handleMaineventChanges('isTextValueMessageEmpty', true)
                     // setIsTextValueMessageEmpty(true)
