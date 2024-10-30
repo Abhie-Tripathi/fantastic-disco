@@ -124,8 +124,8 @@ export default function Component() {
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0">
-        <div className="p-4 flex flex-wrap gap-2">
+      <PopoverContent className="w-[300px] p-0 z-[120]" side="bottom" >
+        <div className="p-2 flex flex-wrap gap-2 max-h-[60px] overflow-auto">
           {selectedCountries.map((code) => {
             const country = countries.find((c) => c.id === code);
             if (!country) return null;
@@ -182,7 +182,7 @@ export default function Component() {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
-              <ScrollArea className="h-[300px] pr-4">
+              <ScrollArea className="h-44 pr-4">
                 <div className="space-y-2">
                   {isLoading ? (
                     <div>Loading countries...</div>

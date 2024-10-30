@@ -621,13 +621,13 @@ const Table = ({
             method: "GET",
             headers: headers,
           });
-          if (data.stats.totalEvents === 0) {
-            setZeroStateHeading("No Events Found");
-            setZeroStateText(
-              "Try using alternative or related industry/keywords to broaden your search."
-            );
-          }
           if (data) {
+            if (data.stats.totalEvents === 0) {              
+              setZeroStateHeading("No Events Found");
+              setZeroStateText(
+                "Try using alternative or related industry/keywords to broaden your search."
+              );
+            }
             setTotalPages(Math.ceil(data.stats.totalEvents / itemsPerPage));
             setTotalEvents(data.stats.totalEvents);
             setEventPerPage(data.events);
@@ -635,6 +635,10 @@ const Table = ({
           if (error) {
             if (error.status === 429) {
               setRequestExhausted(true);
+              setZeroStateHeading("");
+              setZeroStateText(
+                "You have reached the maximum limit to view data. Please get in touch with us."
+              );
             }
           }
         } catch (error) {
@@ -806,18 +810,7 @@ const Table = ({
   } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
-        {initialRender ? (
-          <>
-            <ZeroState title={zeroStateHeading} text={zeroStateText} />
-          </>
-        ) : (
-          <>
-            <ZeroState
-              title="No Events Found"
-              text="Try using alternative or related industry/keywords to broaden your search."
-            />
-          </>
-        )}
+        <ZeroState title={zeroStateHeading} text={zeroStateText} />
       </div>
     );
   }
@@ -1266,6 +1259,7 @@ const Table = ({
                                 height: "14px",
                                 color: "var(--success-text-color)",
                                 marginBottom: "5px",
+                                display: "inline"
                               }}
                             />
                           </span>
@@ -1284,6 +1278,7 @@ const Table = ({
                                 height: "14px",
                                 color: "var(--danger-text-color)",
                                 marginBottom: "5px",
+                                display: "inline"
                               }}
                             />
                           </span>
@@ -1291,7 +1286,7 @@ const Table = ({
                         &nbsp;
                         {getEventRating(event.stats.rating)}
                         &nbsp;
-                        <Image src={StarIcon} alt="star" width={14} />
+                        <Image src={StarIcon} alt="star" width={14} className="inline" />
                       </>
                     ) : (
                       <>-</>
@@ -1321,6 +1316,7 @@ const Table = ({
                                       height: "14px",
                                       color: "var(--success-text-color)",
                                       marginBottom: "5px",
+                                      display: "inline"
                                     }}
                                   />
                                 </span>
@@ -1340,6 +1336,7 @@ const Table = ({
                                       height: "14px",
                                       color: "var(--danger-text-color)",
                                       marginBottom: "5px",
+                                      display: "inline"
                                     }}
                                   />
                                 </span>

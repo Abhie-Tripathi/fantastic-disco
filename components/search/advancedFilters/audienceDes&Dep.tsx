@@ -119,7 +119,7 @@ export default function AudienceDesAndDepSelector() {
           />
           <CommandEmpty>No label found.</CommandEmpty>
           <CommandGroup>
-            <CommandList>
+            <CommandList className="max-h-48" >
               {designations?.map((label: Designations) => (
                 <CommandItem
                   key={label.id}
@@ -140,7 +140,7 @@ export default function AudienceDesAndDepSelector() {
           </CommandGroup>
         </Command>
         {selectedLabels.length > 0 && (
-          <div className="p-2 border-t">
+          <div className="p-2 border-t max-h-[60px] overflow-auto">
             <div className="flex flex-wrap gap-1">
               {selectedLabels.map((label) => (
                 <Badge key={label.id} variant="secondary" className="mr-1 mb-1">
