@@ -134,12 +134,23 @@ export const useEventsService = () => {
     return EventsAdapter.adaptEventCountResponse(response);
   };
 
+  const bookmarkThisEvent = async (id: string) => {
+    const response = await api.request(`${endpoints.tracker.saveEvent}`, {
+      method: "POST",
+      data: {
+        eventId: id,
+      },
+    });
+    return response;
+  };
+
   return {
     getEvents,
     saveEvent,
     getEventById,
     getEventsCount,
     getRecentSearches,
+    bookmarkThisEvent,
     getEventDetailById,
     getEventPOCDetails,
     getEventEditionDetails,

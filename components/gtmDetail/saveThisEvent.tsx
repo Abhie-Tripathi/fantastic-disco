@@ -33,6 +33,7 @@ import { useSearchParams } from "next/navigation";
 import { ArrowDown, ArrowUp } from "geist-icons";
 import { GTMEventDetail } from "@/types/events";
 import { Bookmark } from "lucide-react";
+import { useEventsService } from "@/services/eventsService";
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -631,13 +632,24 @@ const SaveThisEvent = ({ eventDetails }: { eventDetails: GTMEventDetail }) => {
     // }
   };
 
+  const { bookmarkThisEvent } = useEventsService();
+
+  const handleSaveEvent = async () => {
+    const response = await bookmarkThisEvent(id);
+    showToast("success", "Saved Event Successfully");
+    console.log(response);
+  };
+
   return (
     <MenuTrigger>
-      <Button className="border border-[#6750A4] rounded-md text-[#6750A4] flex justify-center py-2 px-4 gap-2 items-center w-fit">
+      <Button
+        onPress={handleSaveEvent}
+        className="border border-[#6750A4] rounded-md text-[#6750A4] flex justify-center py-2 px-4 gap-2 items-center w-fit"
+      >
         <Bookmark width={15} height={15} className="w-5 h-5" />
         Save this event
       </Button>
-      <Popover className={styles.interestPopover} placement="left">
+      {/* <Popover className={styles.interestPopover} placement="left">
         <Dialog className={styles.dialogBorder}>
           {({ close }) => (
             <div style={{ maxWidth: "500px" }}>
@@ -720,7 +732,7 @@ const SaveThisEvent = ({ eventDetails }: { eventDetails: GTMEventDetail }) => {
             </div>
           )}
         </Dialog>
-      </Popover>
+      </Popover> */}
     </MenuTrigger>
   );
 };
