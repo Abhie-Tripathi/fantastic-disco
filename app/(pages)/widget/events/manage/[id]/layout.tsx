@@ -33,7 +33,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 } else if (modifier === 'A.M' && hours === '12') {
                     hours = '00';
                 }
-            
                 return `${hours}:${minutes}`;
             }
             function getCurrentTime24Hour() {
