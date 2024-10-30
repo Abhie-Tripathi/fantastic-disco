@@ -206,6 +206,34 @@ export const EventsAdapter = {
       adaptedParams.latitude = geoCoordinates.latitude;
       adaptedParams.longitude = geoCoordinates.longitude;
     }
+    if (!params.get("active_gte") && params.get("view") == "calendar") {
+      const currentYear = new Date().getFullYear();
+      const startDate = new Date(currentYear, 0, 1).toISOString().split("T")[0];
+      const endDate = new Date(currentYear, 11, 31).toISOString().split("T")[0];
+      adaptedParams.groupBy = `${startDate},${endDate}`;
+    }
+
+    if (
+      !params.get("active_gte") &&
+      params.get("view") == "calendar" &&
+      params.get("calendar_type") == "week"
+    ) {
+      const today = new Date();
+      const firstDayOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        1
+      );
+      const lastDayOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        0
+      );
+
+      const startDate = firstDayOfMonth.toISOString().split("T")[0];
+      const endDate = lastDayOfMonth.toISOString().split("T")[0];
+      adaptedParams.groupBy = `${startDate},${endDate}`;
+    }
 
     return adaptedParams;
   },

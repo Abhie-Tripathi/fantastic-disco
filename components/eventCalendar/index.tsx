@@ -15,6 +15,9 @@ import { CustomView, Views } from "./constants";
 import { useFilterState } from "@/hooks/useFilterState";
 import { CalendarEvent, CalendarMonthEvent } from "@/types/events";
 import EventList from "./eventList";
+import { useFilterContext } from "@/context/filterContext";
+import ZeroState from "@/app/components/zerostate";
+import { useSearchParams } from "next/navigation";
 
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
@@ -42,7 +45,12 @@ export default function EventCalendar({
 }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [filter, setFilter] = useState("all");
-  const { getFilterValue, setFilter: setGlobalFilter , setMultipleFilters } = useFilterState();
+  const searchParams = useSearchParams();
+  const {
+    getFilterValue,
+    setFilter: setGlobalFilter,
+    setMultipleFilters,
+  } = useFilterState();
   const [showEventList, setShowEventList] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
@@ -118,99 +126,105 @@ export default function EventCalendar({
     setShowEventList(true);
   }, []);
 
+  const shouldShowZeroState = useMemo(() => {
+    const filterKeys = Array.from(searchParams.keys());
+    const allowedParams = new Set(["view", "calendar_type"]);
 
-  useEffect(() => {
-    if (!getFilterValue("active_gte") || !getFilterValue("active_lte")) {
-      const startOfYear = new Date(new Date().getFullYear(), 0, 1); // January 1st of current year
-      const endOfYear = new Date(new Date().getFullYear(), 11, 31); // December 31st of current year
-      
-      setMultipleFilters({
-        active_gte: startOfYear.toISOString(),
-        active_lte: endOfYear.toISOString()
-      });
-    }
-  }, [getFilterValue, setMultipleFilters]);
+    // Check if all filter keys are either 'view' or 'calendar_type'
+    return (
+      filterKeys.length === 0 ||
+      filterKeys.every((key) => allowedParams.has(key))
+    );
+  }, [searchParams]);
 
   return (
-    <div className="flex">
-      <div
-        className={`bg-white custom-calendar ${
-          showEventList ? "w-[calc(100%-345px)]" : "w-full"
-        }`}
-      >
-        {view === Views.YEAR ? (
-          <div>
-            <CustomToolbar
-              date={currentDate}
-              view={view}
-              setView={setView as any}
-              onNavigate={(action) => {
-                const newDate = new Date(currentDate);
-                if (action === "PREV")
-                  newDate.setFullYear(currentDate.getFullYear() - 1);
-                if (action === "NEXT")
-                  newDate.setFullYear(currentDate.getFullYear() + 1);
-                setCurrentDate(newDate);
-              }}
-              filter={filter}
-              onFilterChange={handleFilterChange}
-            />
-            <YearView
-              date={currentDate}
-              events={processedEvents as CalendarMonthEventWithHeatmap[]}
-            />
-          </div>
-        ) : (
-          <Calendar
-            localizer={localizer}
-            events={processedEvents}
-            startAccessor="start"
-            endAccessor="end"
-            defaultView={Views.MONTH as any}
-            view={view as any}
-            onView={setView as any}
-            components={{
-              toolbar: (props) => (
+    <>
+      {shouldShowZeroState ? (
+        <div className="flex justify-center items-center">
+          <ZeroState text="Discover insights on business trends filtered by geography and category, all in one glance." />
+        </div>
+      ) : (
+        <div className="flex">
+          <div
+            className={`bg-white custom-calendar ${
+              showEventList ? "w-[calc(100%-345px)]" : "w-full"
+            }`}
+          >
+            {view === Views.YEAR ? (
+              <div>
                 <CustomToolbar
-                  {...props}
+                  date={currentDate}
                   view={view}
                   setView={setView as any}
+                  onNavigate={(action) => {
+                    const newDate = new Date(currentDate);
+                    if (action === "PREV")
+                      newDate.setFullYear(currentDate.getFullYear() - 1);
+                    if (action === "NEXT")
+                      newDate.setFullYear(currentDate.getFullYear() + 1);
+                    setCurrentDate(newDate);
+                  }}
                   filter={filter}
                   onFilterChange={handleFilterChange}
                 />
-              ),
-              event: (props) => {
-                return view === Views.WEEK ? (
-                  <CustomEvent event={props.event as any} />
-                ) : (
-                  <CustomMonthEvent event={props.event as any} />
-                );
-              },
-              week: { header: CustomDayHeader },
-              month: {
-                header: CustomMonthHeader,
-                dateHeader: (props) => (
-                  <CustomDateHeader
-                    {...props}
-                    monthEvents={processedEvents as any}
-                    onDateClick={handleDateClick}
-                  />
-                ),
-              },
-            }}
-            date={currentDate}
-            onNavigate={(date) => setCurrentDate(date)}
-            className={`h-[850px] ${showEventList ? "pr-4" : ""}`}
-          />
-        )}
-      </div>
+                <YearView
+                  date={currentDate}
+                  events={processedEvents as CalendarMonthEventWithHeatmap[]}
+                />
+              </div>
+            ) : (
+              <Calendar
+                localizer={localizer}
+                events={processedEvents}
+                startAccessor="start"
+                endAccessor="end"
+                defaultView={Views.MONTH as any}
+                view={view as any}
+                onView={setView as any}
+                components={{
+                  toolbar: (props) => (
+                    <CustomToolbar
+                      {...props}
+                      view={view}
+                      setView={setView as any}
+                      filter={filter}
+                      onFilterChange={handleFilterChange}
+                    />
+                  ),
+                  event: (props) => {
+                    return view === Views.WEEK ? (
+                      <CustomEvent event={props.event as any} />
+                    ) : (
+                      <CustomMonthEvent event={props.event as any} />
+                    );
+                  },
+                  week: { header: CustomDayHeader },
+                  month: {
+                    header: CustomMonthHeader,
+                    dateHeader: (props) => (
+                      <CustomDateHeader
+                        {...props}
+                        monthEvents={processedEvents as any}
+                        onDateClick={handleDateClick}
+                      />
+                    ),
+                  },
+                }}
+                date={currentDate}
+                onNavigate={(date) => setCurrentDate(date)}
+                className={`h-[850px] ${showEventList ? "pr-4" : ""}`}
+              />
+            )}
+          </div>
 
-      {showEventList && (
-        <EventList
-          eventDate={selectedDate || currentDate}
-          onClose={() => setShowEventList(false)}
-        />
+          {showEventList && (
+            <EventList
+              eventDate={selectedDate || currentDate}
+              onClose={() => setShowEventList(false)}
+            />
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }
