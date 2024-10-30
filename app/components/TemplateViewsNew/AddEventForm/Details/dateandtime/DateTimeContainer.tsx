@@ -173,10 +173,12 @@ const DateTimeContainer = ({
 
 
     const handleTimeSelect = (label: string, value: string, key: number) => {
+        console.log("labeel ", label)
+        console.log("value ", value)
         handleChange('timeZoneKey',key)
         // setTimeZoneKey(key)
         const timeZoneString = `${value} ${label}`;
-        handleChange('timeZoneKey',truncateString(timeZoneString, 20))
+        handleChange('timeZone',truncateString(timeZoneString, 20))
         // setTimeZone(truncateString(timeZoneString, 20));
     };
     const truncateString = (str: string, num: number) => {

@@ -42,9 +42,7 @@ const RegisterForm = ({
     firstname: "",
     email: "",
   });
-  const [emailError, setEmailError] = useState<string | null>(null);
-  const [isCapacityFull, setIsCapacityFull] = useState(true);
-  const [isApproved, setIsApproved] = useState(false);
+
   const [isEventEnded, setIsEventEnded] = useState(false);
   const [timeSinceEnd, setTimeSinceEnd] = useState("");
   console.log("value_s", start_time, end_time, start_date);
@@ -128,140 +126,176 @@ const RegisterForm = ({
     showToast("error", "You have already registered for this event");
   };
 
+
   // useEffect(() => {
+  //   const timeDifference = (
+  //     currentTimeStr: string,
+  //     eventEndTimeStr: string
+  //   ) => {
+  //     // Helper function to parse time strings and create date objects
+  //     const parseTimeString = (timeStr: string) => {
+  //       const [time, modifier] = timeStr.split(" ");
+  //       const [hours, minutes] = time.split(":");
+  //       const date = new Date();
+
+  //       // Set hours based on AM/PM modifier
+  //       let hours24 = parseInt(hours, 10);
+  //       if (modifier === "PM" && hours24 < 12) {
+  //         hours24 += 12; // Convert to 24-hour format
+  //       }
+  //       if (modifier === "AM" && hours24 === 12) {
+  //         hours24 = 0; // Midnight case
+  //       }
+
+  //       // Set the date's hours and minutes
+  //       date.setHours(hours24);
+  //       date.setMinutes(parseInt(minutes, 10));
+  //       date.setSeconds(0);
+  //       return date;
+  //     };
+
+  //     const currentDate = parseTimeString(currentTimeStr);
+  //     const eventEndDate = parseTimeString(eventEndTimeStr);
+
+  //     // Calculate time difference in milliseconds
+  //     const timeDiffInMs = currentDate.getTime() - eventEndDate.getTime();
+
+  //     // Convert milliseconds to hours and minutes
+  //     const hours = Math.floor(timeDiffInMs / (1000 * 60 * 60));
+  //     const minutes = Math.floor(
+  //       (timeDiffInMs % (1000 * 60 * 60)) / (1000 * 60)
+  //     );
+
+  //     return {
+  //       hours,
+  //     };
+  //   };
+
   //   const calculateTimeDifference = () => {
   //     const currentDate = new Date();
+  //     const eventEndDate = new Date(end_date); // Example: "2024-10-25T23:00:00" (11:00 PM)
 
-  //     const eventEndDate = new Date(end_date);
+  //     // Helper function to format time as "HH:MM AM/PM"
+  //     const formatTime = (date: any) => {
+  //       const hours = date.getHours();
+  //       const minutes = date.getMinutes();
+  //       const period = hours >= 12 ? "PM" : "AM";
+  //       const formattedHours = hours % 12 || 12;
+  //       const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+  //       return `${formattedHours}:${formattedMinutes} ${period}`;
+  //     };
 
+  //     // Log formatted times for debugging
+  //     console.log("Current Time:", formatTime(currentDate));
+  //     console.log("Event End Time:", formatTime(eventEndDate), end_time);
+
+  //     // Check if it's the same day
+  //     const isSameDay =
+  //       currentDate.toDateString() === eventEndDate.toDateString();
+
+  //     // Check if the event has ended
   //     const hasEventEnded = currentDate > eventEndDate;
   //     if (hasEventEnded) {
-  //       setIsEventEnded(true);
+  //       // Calculate time difference in milliseconds
   //       const timeDiffInMs = currentDate.getTime() - eventEndDate.getTime();
-  //       const daysSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60 * 24));
-  //       if (daysSinceEnd === 1) {
-  //         setTimeSinceEnd("1 day ago"); // Ended yesterday
-  //       } else if (daysSinceEnd > 1) {
-  //         setTimeSinceEnd(`${daysSinceEnd} days ago`); // More than one day ago
+  //       console.log("tata", timeDiffInMs, isSameDay);
+  //       if (isSameDay) {
+  //         // Event ended today, calculate hours since the event ended
+  //         const hoursSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60));
+  //         const currentTimediff = formatTime(currentDate);
+
+  //         const value = timeDifference(currentTimediff, end_time);
+  //         setTimeSinceEnd(`Event ended ${value.hours} hour${value.hours !== 1 ? "s" : ""} ago`);
+  //       } else {
+  //         // Event ended on a previous day, calculate days since the event ended
+  //         const daysSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60 * 24));
+  //         console.log("daysSinceEnd", daysSinceEnd);
+  //         if (daysSinceEnd === 0) {
+  //           setTimeSinceEnd(
+  //             `Event ended just now`)
+  //         } else {
+  //           setTimeSinceEnd(
+  //             `Event ended ${daysSinceEnd} day${daysSinceEnd !== 1 ? "s" : ""
+  //             } ago`
+  //           );
+  //         }
+
   //       }
+  //       setIsEventEnded(true);
+  //     } else {
+  //       setIsEventEnded(false);
+  //       setTimeSinceEnd(""); // Reset if the event is ongoing
   //     }
   //   };
 
+  //   // Run the function initially and set up an interval to check every minute
   //   calculateTimeDifference();
+  //   const intervalId = setInterval(calculateTimeDifference, 60000); // Check every minute
+
+  //   // Cleanup the interval on component unmount
+  //   return () => clearInterval(intervalId);
   // }, [end_date]);
-
   useEffect(() => {
-    const timeDifference = (
-      currentTimeStr: string,
-      eventEndTimeStr: string
-    ) => {
-      // Helper function to parse time strings and create date objects
-      const parseTimeString = (timeStr: string) => {
-        const [time, modifier] = timeStr.split(" ");
-        const [hours, minutes] = time.split(":");
-        const date = new Date();
+    const calculateIsPastEvent = () => {
+      function convertTo24Hour(time: string) {
+        // Use a regex to parse the hour, minute, and AM/PM part
+        const [timeString, modifier] = time.split(' ');
+        let [hours, minutes] = timeString.split(':');
 
-        // Set hours based on AM/PM modifier
-        let hours24 = parseInt(hours, 10);
-        if (modifier === "PM" && hours24 < 12) {
-          hours24 += 12; // Convert to 24-hour format
+        // Convert hours based on AM/PM
+        if (modifier === 'P.M' && hours !== '12') {
+          hours = `${parseInt(hours, 10) + 12}`;
+        } else if (modifier === 'A.M' && hours === '12') {
+          hours = '00';
         }
-        if (modifier === "AM" && hours24 === 12) {
-          hours24 = 0; // Midnight case
-        }
-
-        // Set the date's hours and minutes
-        date.setHours(hours24);
-        date.setMinutes(parseInt(minutes, 10));
-        date.setSeconds(0);
-        return date;
-      };
-
-      const currentDate = parseTimeString(currentTimeStr);
-      const eventEndDate = parseTimeString(eventEndTimeStr);
-
-      // Calculate time difference in milliseconds
-      const timeDiffInMs = currentDate.getTime() - eventEndDate.getTime();
-
-      // Convert milliseconds to hours and minutes
-      const hours = Math.floor(timeDiffInMs / (1000 * 60 * 60));
-      const minutes = Math.floor(
-        (timeDiffInMs % (1000 * 60 * 60)) / (1000 * 60)
-      );
-
-      return {
-        hours,
-      };
-    };
-
-    const calculateTimeDifference = () => {
-      const currentDate = new Date();
-      const eventEndDate = new Date(end_date); // Example: "2024-10-25T23:00:00" (11:00 PM)
-
-      // Helper function to format time as "HH:MM AM/PM"
-      const formatTime = (date: any) => {
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-        const period = hours >= 12 ? "PM" : "AM";
-        const formattedHours = hours % 12 || 12;
-        const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-        return `${formattedHours}:${formattedMinutes} ${period}`;
-      };
-
-      // Log formatted times for debugging
-      console.log("Current Time:", formatTime(currentDate));
-      console.log("Event End Time:", formatTime(eventEndDate), end_time);
-
-      // Check if it's the same day
-      const isSameDay =
-        currentDate.toDateString() === eventEndDate.toDateString();
-
-      // Check if the event has ended
-      const hasEventEnded = currentDate > eventEndDate;
-      if (hasEventEnded) {
-        // Calculate time difference in milliseconds
-        const timeDiffInMs = currentDate.getTime() - eventEndDate.getTime();
-        console.log("tata", timeDiffInMs,isSameDay);
-        if (isSameDay) {
-          // Event ended today, calculate hours since the event ended
-          const hoursSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60));
-          const currentTimediff = formatTime(currentDate);
-          // console.log("tata", currentTimediff, end_time);
-          const value = timeDifference(currentTimediff, end_time);
-          console.log("tata___ewew", value);
-          setTimeSinceEnd(
-            `Event ended ${value.hours} hour${value.hours !== 1 ? "s" : ""} ago`
-          );
-        } else {
-          // Event ended on a previous day, calculate days since the event ended
-          const daysSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60 * 24));
-          console.log("daysSinceEnd", daysSinceEnd);
-          if(daysSinceEnd ===0){
-            setTimeSinceEnd(
-              `Event ended just now`)
-          }else{
-            setTimeSinceEnd(
-              `Event ended ${daysSinceEnd} day${
-                daysSinceEnd !== 1 ? "s" : ""
-              } ago`
-            );
-          }
-         
-        }
-        setIsEventEnded(true);
-      } else {
-        setIsEventEnded(false);
-        setTimeSinceEnd(""); // Reset if the event is ongoing
+        return `${hours}:${minutes}`;
       }
+      function getCurrentTime24Hour() {
+        const now = new Date();
+        return now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+      }
+      function getCurrentDateFormatted() {
+        const now = new Date();
+        return now.toISOString().split('T')[0]; // returns "YYYY-MM-DD"
+      }
+      function calculateTimeDifference(eventDate : string, eventTime: string) {
+        const now = new Date();
+        const eventEndDate = new Date(`${eventDate}T${eventTime}`);
+        
+        // Get the difference in milliseconds as a number
+        const timeDiffMs = now.getTime() - eventEndDate.getTime();
+    
+        const diffMinutes = Math.floor((timeDiffMs / (1000 * 60)) % 60);
+        const diffHours = Math.floor((timeDiffMs / (1000 * 60 * 60)) % 24);
+        const diffDays = Math.floor(timeDiffMs / (1000 * 60 * 60 * 24));
+    
+        if (diffDays > 0) {
+            return `Event has ended ${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+        } else if (diffHours > 0) {
+            return `Event has ended ${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+        } else {
+            return `Event has ended ${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+        }
+    }
+    
+      const eventTime = convertTo24Hour(end_time || "12:00 AM")
+      const currentTime = getCurrentTime24Hour()
+      const currentDate = getCurrentDateFormatted()
+      if (currentDate > (end_date || "1")) {
+        setIsEventEnded(true)
+        setTimeSinceEnd(calculateTimeDifference(end_date, eventTime));
+
+      } else if (currentDate === end_date) {
+        if (currentTime > eventTime) {
+          setIsEventEnded(true)
+          setTimeSinceEnd(calculateTimeDifference(end_date, eventTime));
+        } else setIsEventEnded(false)
+      } else setIsEventEnded(false)
     };
 
-    // Run the function initially and set up an interval to check every minute
-    calculateTimeDifference();
-    const intervalId = setInterval(calculateTimeDifference, 60000); // Check every minute
-
-    // Cleanup the interval on component unmount
-    return () => clearInterval(intervalId);
-  }, [end_date]);
+    // Call the function to set the state
+    calculateIsPastEvent();
+  }, [])
 
   return (
     <div className={styles.registerContainer}>
@@ -289,186 +323,6 @@ const RegisterForm = ({
             <div className={styles.customMessage}>{registerMessage}</div>
           </div>
         )}
-
-      {/* <form onSubmit={handleSubmit}>
-        {isEventEnded && registration && approval && waitlisting && capacity ? (
-          <>
-            <div className={styles.event_container}>
-              <div className={styles.icon_container}>
-                <EventClosedIcon />
-              </div>
-              <div className={styles.text_container}>
-                <div className={styles.event_full_text}>Past Event</div>
-                <div className={styles.waitlist_text}>
-                  <span>This event ended {timeSinceEnd}.</span>
-                </div>
-              </div>
-            </div>
-            <div className={styles.detail_text}>
-              Thank you for your interest! Follow to stay updated for future
-              events.
-            </div>
-          </>
-        ) :  registration && !approval && !waitlisting && !capacity ? (
-          <>
-            <div className={styles.event_container}>
-              <div className={styles.icon_container}>
-                <EventClosedIcon />
-              </div>
-              <div className={styles.text_container}>
-                <div className={styles.event_full_text}>Follow Event</div>
-                <div className={styles.waitlist_text}>
-                  This event is full. Please follow for future updates.
-                </div>
-              </div>
-            </div>
-          </>
-        ): registration && !approval && !capacity && !waitlisting ? (
-          <div className={styles.formSubHeading}>{registerMessage}</div>
-        ) : !registration ||
-          (waitlisting && capacity && !registration && approval) ? (
-          // When cap, waitlist, approve may be true or false but registration should be false
-          <>
-            <div className={styles.icon_text_container}>
-              <div style={{ marginTop: "5px" }}>
-                <RegistrationClosedSVG />
-              </div>
-              <div>Registration Closed</div>
-            </div>
-            <div className={styles.dec_text}>
-              This event is not currently taking registrations. You may contact
-              the host to receive updates.
-            </div>
-          </>
-        ) : approval && registration && !capacity && !waitlisting ? (
-          // When approval is true and cap is true (remaining)
-          <>
-            <div className={styles.event_container}>
-              <div className={styles.icon_container}>
-                <ApprovalSVG />
-              </div>
-              <div className={styles.text_container}>
-                <div className={styles.event_full_text}>Approval Required</div>
-                <div className={styles.waitlist_text}>
-                  Your registration is subject to approval by the host.
-                </div>
-              </div>
-            </div>
-            <div className={styles.detail_text}>
-              Welcome! To join the event, please register below.
-            </div>
-          </>
-        ) : registration && approval && waitlisting && !capacity ? (
-          // When waitlisting is true and cap is false (full)
-          <>
-            <div className={styles.event_container}>
-              <div className={styles.icon_container}>
-                <EventClosedIcon />
-              </div>
-              <div className={styles.text_container}>
-                <div className={styles.event_full_text}>Event Full</div>
-                <div className={styles.waitlist_text}>
-                  If you&apos;d like, you can join the waitlist.
-                </div>
-              </div>
-            </div>
-            <div className={styles.detail_text}>
-              Please click on the button below to join the waitlist. You will be
-              notified if additional spots become available.
-            </div>
-          </>
-        ) : registration && approval && capacity && !waitlisting ? (
-          // When approval is true and cap is true (remaining)
-          <>
-            <div className={styles.event_container}>
-              <div className={styles.icon_container}>
-                <ApprovalSVG />
-              </div>
-              <div className={styles.text_container}>
-                <div className={styles.event_full_text}>Approval Required</div>
-                <div className={styles.waitlist_text}>
-                  Your registration is subject to approval by the host.
-                </div>
-              </div>
-            </div>
-            <div className={styles.detail_text}>
-              Welcome! To join the event, please register below.
-            </div>
-          </>
-        ) : registration && approval && capacity && waitlisting ? (
-          // When approval is true and cap is true (remaining)
-          <>
-            <div className={styles.event_container}>
-              <div className={styles.icon_container}>
-                <ApprovalSVG />
-              </div>
-              <div className={styles.text_container}>
-                <div className={styles.event_full_text}>Approval Required</div>
-                <div className={styles.waitlist_text}>
-                  Your registration is subject to approval by the host.
-                </div>
-              </div>
-            </div>
-            <div className={styles.detail_text}>
-              Welcome! To join the event, please register below.
-            </div>
-          </>
-        ) : (
-          <></>
-        )}
-
-        <input
-          className={styles.inputField}
-          type="text"
-          name="firstname"
-          placeholder="Name"
-          value={formData.firstname}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          className={styles.inputField}
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-
-        <button
-          type="submit"
-          style={{ backgroundColor: registerBtnColor, color: fontColor }}
-          className={styles.submitBtn}
-          // onClick={handleClick}
-        >
-          {isEventEnded &&
-          registration &&
-          approval &&
-          waitlisting &&
-          capacity ? (
-            <span>Follow</span>
-          ) :registration && !approval && !waitlisting && !capacity ? <span>Follow</span>: registration && !approval && !capacity && !waitlisting ||  (registration && !approval && capacity && waitlisting ) ? (
-            <span>{registerBtnText}</span>
-          ) : !registration ? (
-            <span>Follow</span>
-          ) : registration && approval && waitlisting && !capacity ? (
-            <span>Join waitlist</span>
-          ) : registration && approval && capacity && !waitlisting ? (
-            <span>Request to join</span>
-          ) : registration && !approval && !capacity && !waitlisting ? (
-            <span>Request to join</span>
-          ) : registration && approval && !capacity && !waitlisting ? (
-            <span>Request to join</span>
-          ) : registration && approval && capacity && waitlisting ? (
-            <span>Request to join</span>
-          ) : (
-            <></>
-          )}
-        </button>
-      </form> */}
-
       <form onSubmit={handleSubmit}>
         {/* Past event */}
         {isEventEnded && (
@@ -667,7 +521,7 @@ const RegisterForm = ({
           type="submit"
           style={{ backgroundColor: registerBtnColor, color: fontColor }}
           className={styles.submitBtn}
-          // onClick={handleClick}
+        // onClick={handleClick}
         >
           {/* Past event */}
           {isEventEnded && <span>Follow</span>}
