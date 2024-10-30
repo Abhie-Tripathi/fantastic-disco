@@ -141,6 +141,7 @@ export const useEventsService = () => {
         eventId: id,
       },
     });
+    console.log(response)
     return response;
   };
 

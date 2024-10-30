@@ -85,97 +85,57 @@ export const AudienceIntel = ({
               >
                 Audience Spread
               </Text>
-              <Badge
-                variant={"outline"}
-                className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
-              >
-                Demo
-              </Badge>
+              {!audienceSpread && (
+                <Badge
+                  variant={"outline"}
+                  className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
+                >
+                  Demo
+                </Badge>
+              )}
             </div>
 
             <ul className="h-full">
-              {audienceSpread !== null && Object.keys(audienceSpread).length > 0
-                ? Object.entries(audienceSpread).map(([key, value], index) => {
-                    const Flag = Flags[value.iso as keyof typeof Flags];
-                    return (
-                      <li
-                        className={`flex items-center justify-between p-3 ${
-                          (index + 1) % 2 !== 0
-                            ? "bg-[#FAFAFA] border border-[#F2F2F2]"
-                            : ""
-                        }`}
-                        key={key}
-                      >
-                        <div className="flex items-center gap-4">
-                          <Flag className="w-8 h-8" />
-                          <Text color="primary" variant="noMargin" size="large">
-                            {value.name}
-                          </Text>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <span className="text-[var(--primary-color)]">
-                            {value.count}
-                          </span>
-                          <span className="bg-[#FEECF2] border border-[#F9D7E2] text-sm font-medium text-[#df2670] py-1 px-3 rounded-full">
-                            {value.percentage}%
-                          </span>
-                        </div>
-                      </li>
-                    );
-                  })
-                : Object.entries(audienceSpreadDummyData).map(
-                    ([key, value], index) => {
-                      const Flag = Flags[value.iso as keyof typeof Flags];
-                      return (
-                        <li
-                          className={`flex items-center justify-between p-3 ${
-                            (index + 1) % 2 !== 0
-                              ? "bg-[#FAFAFA] border border-[#F2F2F2]"
-                              : ""
-                          }`}
-                          key={key}
-                        >
-                          <div className="flex items-center gap-4">
-                            <Flag className="w-8 h-8" />
-                            <Text
-                              color="primary"
-                              variant="noMargin"
-                              size="large"
-                            >
-                              {value.name}
-                            </Text>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <span className="text-[var(--primary-color)]">
-                              {value.count}
-                            </span>
-                            <span className="bg-[#FEECF2] border border-[#F9D7E2] text-sm font-medium text-[#df2670] py-1 px-3 rounded-full">
-                              {value.percentage}%
-                            </span>
-                          </div>
-                        </li>
-                      );
-                    }
-                  )}
+              {audienceSpread && Object.keys(audienceSpread).length > 0 ? (
+                Object.entries(audienceSpread).map(([key, value], index) => {
+                  const Flag = Flags[value.iso as keyof typeof Flags]; // Ensure that value.iso exists and is a valid key in Flags
+                  return (
+                    <li
+                      className={`flex items-center justify-between p-3 ${
+                        (index + 1) % 2 !== 0
+                          ? "bg-[#FAFAFA] border border-[#F2F2F2]"
+                          : ""
+                      }`}
+                      key={key}
+                    >
+                      <div className="flex items-center gap-4">
+                        {Flag && <Flag className="w-8 h-8" />}{" "}
+                        {/* Ensure Flag exists before rendering */}
+                        <Text color="primary" variant="noMargin" size="large">
+                          {value.name}
+                        </Text>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className="text-[var(--primary-color)]">
+                          {value.count}
+                        </span>
+                        <span className="bg-[#FEECF2] border border-[#F9D7E2] text-sm font-medium text-[#df2670] py-1 px-3 rounded-full">
+                          {value.percentage}%
+                        </span>
+                      </div>
+                    </li>
+                  );
+                })
+              ) : (
+                <span className="text-[#666666] text-sm flex items-center gap-2">
+                  <CircleSlash width={15} height={15} />
+                  No data available
+                </span>
+              )}
             </ul>
           </div>
 
           <div className="flex flex-col gap-6 border border-[#EBEBEB] rounded-md p-4 h-80 w-full">
-            {/* <ul className="flex flex-row gap-12 mb-4 sticky z-10 bg-[#ffffff] w-full shadow pt-3">
-              {tabs.map((tab) => (
-                <li
-                  key={tab.tabName}
-                  onClick={() => setActiveTab(tab.tabName as TTabs)}
-                  className={`relative pb-2 font-semibold cursor-pointer ${
-                    activeTab === tab.tabName
-                      ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
-                      : "text-[var(--tertiary-text-color)]"
-                  }`}
-                >
-                  {tab.tabName}
-                </li>
-              ))}
-            </ul> */}
             <div className="flex justify-between">
               <Text
                 color="primary"
@@ -236,29 +196,23 @@ export const AudienceIntel = ({
               Other departments
             </Text> */}
             <ul className="flex flex-col gap-4 max-h-80 overflow-y-auto scrollbar pr-2">
-              {designation && designation.length > 0
-                ? designation.map((item, index) => (
-                    <li key={`designation-${item}-${index}`}>
-                      <p className="flex justify-between">
-                        <Text fontWeight="medium" color="secondary">
-                          {item}
-                        </Text>
-                      </p>
-                      <Progress value={100 - (index + 1) * 5} className="h-2" />
-                    </li>
-                  ))
-                : designations &&
-                  designations.length > 0 &&
-                  designations.map((item, index) => (
-                    <li key={item.id}>
-                      <p className="flex justify-between">
-                        <Text fontWeight="medium" color="secondary">
-                          {item.name}
-                        </Text>
-                      </p>
-                      <Progress value={100 - (index + 1) * 5} className="h-2" />
-                    </li>
-                  ))}
+              {designation && designation.length > 0 ? (
+                designation.map((item, index) => (
+                  <li key={`designation-${item}-${index}`}>
+                    <p className="flex justify-between">
+                      <Text fontWeight="medium" color="secondary">
+                        {item}
+                      </Text>
+                    </p>
+                    <Progress value={100 - (index + 1) * 5} className="h-2" />
+                  </li>
+                ))
+              ) : (
+                <span className="text-[#666666] text-sm flex items-center gap-2">
+                  <CircleSlash width={15} height={15} />
+                  No data available
+                </span>
+              )}
             </ul>
           </div>
         </div>

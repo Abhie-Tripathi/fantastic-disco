@@ -10,6 +10,7 @@ import { useRef } from "react";
 import { Event, GTMEventDetail } from "@/types/events";
 import { RankingDetail } from "./insightsAndScores";
 import { formatDate } from "date-fns";
+import Link from "next/link";
 
 interface EventRank {
   id?: string;
@@ -43,7 +44,7 @@ export const EventRank = ({
   const categoryName =
     rankData.category.find((category) => category.rank === categoryRank)
       ?.name ?? "";
-  const { name, startDateTime } = eventDetails;
+  const { name, startDateTime, id: eventId } = eventDetails;
   return (
     <>
       <div className="flex flex-row justify-center border border-[var(--neutral-light-color)] p-3 rounded-sm gap-12 w-fill h-auto">
@@ -69,10 +70,14 @@ export const EventRank = ({
           </div>
           <div className="flex flex-col">
             <button
-              className={`flex items-center bg-[#FAFAFA] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-${countryRank}`}
+              className={`flex items-center bg-[#FAFAFA] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-country-${countryRank}`}
             >
               <Text color="secondary" variant="noMargin" className="w-full">
-                see {below5CountryEvent.length - 1} more events
+                see{" "}
+                {below5CategoryEvent.length > 0
+                  ? below5CountryEvent.length - 1
+                  : ""}{" "}
+                more events
               </Text>
               <ArrowUp width={15} height={15} color="#45A557" />
             </button>
@@ -82,7 +87,9 @@ export const EventRank = ({
               direction="vertical"
               centeredSlides={true}
               slidesPerView={3}
-              initialSlide={below5CountryEvent.length}
+              initialSlide={
+                below5CountryEvent.length > 0 ? below5CountryEvent.length : 1
+              }
               coverflowEffect={{
                 rotate: 0,
                 stretch: -1,
@@ -91,8 +98,8 @@ export const EventRank = ({
                 slideShadows: false,
               }}
               navigation={{
-                nextEl: `.swiper-button-next-${countryRank}`,
-                prevEl: `.swiper-button-prev-${countryRank}`,
+                nextEl: `.swiper-button-next-country-${countryRank}`,
+                prevEl: `.swiper-button-prev-country-${countryRank}`,
               }}
               modules={[EffectCoverflow, Navigation]}
               className="h-60 w-fit"
@@ -104,7 +111,10 @@ export const EventRank = ({
                     belowCountryEvent;
                   return (
                     <SwiperSlide className="h-fit w-fit bg-white z-40" key={id}>
-                      <li className="flex flex-row gap-2 border border-[var(--neutral-light-color)] rounded-sm p-3">
+                      <Link
+                        href={`/internal/event/${id}`}
+                        className="flex flex-row gap-2 border border-[var(--neutral-light-color)] rounded-sm p-3"
+                      >
                         <p className="text-xl font-semibold p-2">
                           #{countryrank ?? "--"}
                         </p>
@@ -126,12 +136,15 @@ export const EventRank = ({
                             </Text>
                           </div>
                         </div>
-                      </li>
+                      </Link>
                     </SwiperSlide>
                   );
                 })}
                 <SwiperSlide className="h-fit w-fit bg-white z-40">
-                  <li className="flex flex-row gap-2 bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3">
+                  <Link
+                    href={`/internal/event/${eventId}`}
+                    className="flex flex-row gap-2 bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
+                  >
                     <p className="text-xl font-semibold p-2">
                       #{countryRank ?? "--"}
                     </p>
@@ -153,14 +166,17 @@ export const EventRank = ({
                         </Text>
                       </div>
                     </div>
-                  </li>
+                  </Link>
                 </SwiperSlide>
                 {above5CountryEvent.map((aboveCountryEvent) => {
                   const { countryrank, startdate, enddate, eventname, id } =
                     aboveCountryEvent;
                   return (
                     <SwiperSlide className="h-fit w-fit bg-white z-40" key={id}>
-                      <li className="flex flex-row gap-2 border border-[var(--neutral-light-color)] rounded-sm p-3">
+                      <Link
+                        href={`/internal/event/${id}`}
+                        className="flex flex-row gap-2 border border-[var(--neutral-light-color)] rounded-sm p-3"
+                      >
                         <p className="text-xl font-semibold p-2">
                           #{countryrank ?? "--"}
                         </p>
@@ -182,17 +198,21 @@ export const EventRank = ({
                             </Text>
                           </div>
                         </div>
-                      </li>
+                      </Link>
                     </SwiperSlide>
                   );
                 })}
               </>
             </Swiper>
             <button
-              className={`flex items-center bg-[#FAFAFA] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-${countryRank}`}
+              className={`flex items-center bg-[#FAFAFA] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-country-${countryRank}`}
             >
               <Text color="secondary" variant="noMargin">
-                see {above5CountryEvent.length - 1} more events
+                see{" "}
+                {above5CountryEvent.length > 0
+                  ? above5CountryEvent.length - 1
+                  : ""}{" "}
+                more events
               </Text>
               <ArrowDown width={15} height={15} color="#E5484D" />
             </button>
@@ -221,10 +241,14 @@ export const EventRank = ({
             </div>
             <div className="flex flex-col">
               <button
-                className={`flex items-center bg-[#FAFAFA] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-${categoryRank}`}
+                className={`flex items-center bg-[#FAFAFA] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-category-${categoryRank}`}
               >
                 <Text color="secondary" variant="noMargin" className="w-full">
-                  see {below5CategoryEvent.length - 1} more events
+                  see{" "}
+                  {below5CategoryEvent.length > 0
+                    ? below5CategoryEvent.length - 1
+                    : ""}{" "}
+                  more events
                 </Text>
                 <ArrowUp width={15} height={15} color="#45A557" />
               </button>
@@ -234,7 +258,11 @@ export const EventRank = ({
                 direction="vertical"
                 centeredSlides={true}
                 slidesPerView={3}
-                initialSlide={below5CategoryEvent.length}
+                initialSlide={
+                  below5CategoryEvent.length > 0
+                    ? below5CategoryEvent.length
+                    : 1
+                }
                 coverflowEffect={{
                   rotate: 0,
                   stretch: -1,
@@ -243,8 +271,8 @@ export const EventRank = ({
                   slideShadows: false,
                 }}
                 navigation={{
-                  nextEl: `.swiper-button-next-${categoryRank}`,
-                  prevEl: `.swiper-button-prev-${categoryRank}`,
+                  nextEl: `.swiper-button-next-category-${categoryRank}`,
+                  prevEl: `.swiper-button-prev-category-${categoryRank}`,
                 }}
                 modules={[EffectCoverflow, Navigation]}
                 className="h-60 w-fit"
@@ -266,7 +294,10 @@ export const EventRank = ({
                         className="h-fit w-fit bg-white z-40"
                         key={id}
                       >
-                        <li className="flex flex-row gap-2 border border-[var(--neutral-light-color)] rounded-sm p-3">
+                        <Link
+                          href={`/internal/event/${id}`}
+                          className="flex flex-row gap-2 border border-[var(--neutral-light-color)] rounded-sm p-3"
+                        >
                           <p className="text-xl font-semibold p-2">
                             #{categoryrank ?? "--"}
                           </p>
@@ -288,12 +319,15 @@ export const EventRank = ({
                               </Text>
                             </div>
                           </div>
-                        </li>
+                        </Link>
                       </SwiperSlide>
                     );
                   })}
                   <SwiperSlide className="h-fit w-fit bg-white z-40">
-                    <li className="flex flex-row gap-2 bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3">
+                    <Link
+                      href={`/internal/event/${eventId}`}
+                      className="flex flex-row gap-2 bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
+                    >
                       <p className="text-xl font-semibold p-2">
                         #{categoryRank ?? "--"}
                       </p>
@@ -315,7 +349,7 @@ export const EventRank = ({
                           </Text>
                         </div>
                       </div>
-                    </li>
+                    </Link>
                   </SwiperSlide>
                   {above5CategoryEvent.map((aboveCategoryEvent) => {
                     const { categoryrank, startdate, enddate, eventname, id } =
@@ -325,7 +359,10 @@ export const EventRank = ({
                         className="h-fit w-fit bg-white z-40"
                         key={id}
                       >
-                        <li className="flex flex-row gap-2 border border-[var(--neutral-light-color)] rounded-sm p-3">
+                        <Link
+                          href={`/internal/event/${id}`}
+                          className="flex flex-row gap-2 border border-[var(--neutral-light-color)] rounded-sm p-3"
+                        >
                           <p className="text-xl font-semibold p-2">
                             #{categoryrank ?? "--"}
                           </p>
@@ -347,17 +384,21 @@ export const EventRank = ({
                               </Text>
                             </div>
                           </div>
-                        </li>
+                        </Link>
                       </SwiperSlide>
                     );
                   })}
                 </>
               </Swiper>
               <button
-                className={`flex items-center bg-[#FAFAFA] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-${categoryRank}`}
+                className={`flex items-center bg-[#FAFAFA] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-category-${categoryRank}`}
               >
                 <Text color="secondary" variant="noMargin">
-                  see {above5CategoryEvent.length - 1} more events
+                  see{" "}
+                  {above5CategoryEvent.length > 0
+                    ? above5CategoryEvent.length - 1
+                    : ""}{" "}
+                  more events
                 </Text>
                 <ArrowDown width={15} height={15} color="#E5484D" />
               </button>

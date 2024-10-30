@@ -90,6 +90,7 @@ const MapComponent: React.FC<MapProps> = ({
   });
 
   useEffect(() => {
+    console.log(eventsData);
     if (eventsData) {
       setEvents((eventsData?.events as MapEvents[]) || []);
     }
@@ -153,6 +154,23 @@ const MapComponent: React.FC<MapProps> = ({
                 </Marker>
               );
             })}
+          <Marker
+            key={id}
+            // onClick={() => handleMarkerClick(event)}
+            longitude={parseFloat(longitude || "")}
+            latitude={parseFloat(latitude || "")}
+            anchor="bottom"
+          >
+            <div className="marker">
+              {primaryEventType && (
+                <img
+                  src={iconUrls[primaryEventType]}
+                  alt={primaryEventType}
+                  className={`${eventId === id ? "w-10 h-10" : "w-6 h-6"}`}
+                />
+              )}
+            </div>
+          </Marker>
         </div>
         {popupInfo && (
           <MapPopup popupInfo={popupInfo} setPopupInfo={setPopupInfo} />

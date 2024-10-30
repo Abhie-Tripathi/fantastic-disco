@@ -20,6 +20,7 @@ import { EventTableType } from "@/types/ListViewTable";
 import { usePathname } from "next/navigation";
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
+import { Toaster } from "@/components/ui/toaster";
 import {
   TooltipTrigger,
   Button,
@@ -34,6 +35,7 @@ import { ArrowDown, ArrowUp } from "geist-icons";
 import { GTMEventDetail } from "@/types/events";
 import { Bookmark } from "lucide-react";
 import { useEventsService } from "@/services/eventsService";
+import { error } from "console";
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -634,10 +636,31 @@ const SaveThisEvent = ({ eventDetails }: { eventDetails: GTMEventDetail }) => {
 
   const { bookmarkThisEvent } = useEventsService();
 
-  const handleSaveEvent = async () => {
-    const response = await bookmarkThisEvent(id);
-    showToast("success", "Saved Event Successfully");
-    console.log(response);
+  const handleSaveEvent = () => {
+    try {
+      bookmarkThisEvent(id)
+        .then((response) => {
+          if (response) {
+            toast.success("Event Saved Successfully", {
+              position: "bottom-center",
+              autoClose: 2000,
+              closeButton: true,
+              hideProgressBar: true,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.info("Event already saved", {
+            position: "bottom-center",
+            autoClose: 2000,
+            closeButton: true,
+            hideProgressBar: true,
+          });
+        });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
