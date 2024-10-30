@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './advanceFilter.style.module.css'
 import ToggleBtn from '../../UI/ToggleBtn';
-const index = ({ freq, keywords, isBranded, eventEdition, type }: any) => {
+const index = ({ freq, keywords, isBranded, eventEdition, type, eventSeries, forecastedStatus, maturity}: any) => {
     // const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     // const freq=["Annual","Biannual","Queartly"]
     // const entry=["Free","Paid","Invites","Member Access"];
@@ -12,6 +12,7 @@ const index = ({ freq, keywords, isBranded, eventEdition, type }: any) => {
       filterHeading:`text-[var(--primary-color)] font-medium`,
       toggleContainer:`p-[12px] border border-[var(--border-color)] flex justify-between items-center gap-[var(--spacing-sm)] rounded-[var(--border-radius-sm)]`,
     }
+    
     return (
         <div className='flex flex-col gap-3'>
           {type!=="Product and Topics" &&
@@ -36,9 +37,9 @@ const index = ({ freq, keywords, isBranded, eventEdition, type }: any) => {
           }
             <div className={styles.formatFreq}>
             <div className={commonClasses.toggleContainer}>
-          <div className={commonClasses.filterHeading}>Event Edition</div>
+          <div className={commonClasses.filterHeading}>Maturity</div>
           <div className={styles.toggle_container}>
-            <ToggleBtn isTrue={eventEdition>0}/>
+            <ToggleBtn isTrue={maturity}/>
           </div>
         </div>
         <div className={commonClasses.toggleContainer}>
