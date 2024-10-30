@@ -1,24 +1,97 @@
-.body{
-    padding: 9px 19px;
+.body {
+    padding: 9px 11px;
     width: 100%;
-    background-color: #ffffff55;
-    border-radius: 10px;
+    background-color: #ffffff55;    
+    border-radius: 4px;
     display: flex;
-    justify-content: space-between;
-    position: relative;
-    height: fit-content;
-}
-.participationContainer{
-    display: flex;
-    gap: 5px;
     align-items: center;
-    font-size: 12px;
-    color: #7D7D7D;
-    font-weight: 500;
-    height: fit-content;
 }
-.inputMessage{
-    width: 86%;
+
+.selectedOption {
+    display: flex;
+    /* gap: 18px; */
+}
+
+.selectedOption .option {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    cursor: pointer;
+}
+
+.selectedOption .option img{
+    height: 30px;
+    width: 30px;
+}
+.selectedOption .option span {
     font-size: var(--font-size-small);
-    word-wrap: break-word;
+    color: #171717;
+    font-weight: var(--font-weight-semibold);
+}
+
+.line {
+    margin-left: 9px;
+}
+
+.message {
+    font-size: var(--font-size-small);
+    font-weight: 500;
+    margin-left: 16px;
+}
+
+.lineattendee {
+    height: 29px;
+    border-left: 2px solid #0072F5;
+}
+
+.linespeaker {
+    height: 29px;
+    border-left: 2px solid #45A557;
+}
+
+.lineorganiser {
+    height: 29px;
+    border-left: 2px solid #D93036;
+}
+
+.lineexhibitor {
+    height: 29px;
+    border-left: 2px solid #FFB224;
+}
+.linehappyhours{
+    height: 29px;
+    border-left: 2px solid #FFB224;
+}
+
+.linehappycocktailhours{
+    height: 29px;
+    border-left: 2px solid #FFB224;
+}
+.linehappyfoundersparty{
+    height: 29px;
+    border-left: 2px solid #FFB224;
+}
+.messageattendee {
+    color: #0072F5;
+}
+
+.messagespeaker {
+    color: #45A557;
+}
+
+.messageorganiser {
+    color: #D93036;
+}
+
+.messageexhibitor {
+    color: #FFB224;
+}
+.messagehappyhours {
+    color: #FFB224;
+}
+.messagecocktailhours {
+    color: #FFB224;
+}
+.messagefoundersparty {
+    color: #FFB224;
 }

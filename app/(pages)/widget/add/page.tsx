@@ -11,7 +11,7 @@ import { baseUrl } from '@/constants';
 import useOutsideClick from '@/hooks/useOutsideClick'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useRouter } from 'next/navigation'
 
 interface DraftWidgetsType {
     widgetType: string;
@@ -30,7 +30,8 @@ const Page = () => {
     const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([])
     const dropdownRef = useOutsideClick(() => setYourWidgetModal(false))
     const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
-    const [isDraftSaved, setIsDraftSaved]= useState<boolean>(false)
+    const [isDraftSaved, setIsDraftSaved] = useState<boolean>(false)
+    const router = useRouter();
 
     const handleExplore = () => {
         if (widgetSelected) {
@@ -72,15 +73,29 @@ const Page = () => {
         }
     };
     useEffect(() => {
+        checkBrandkit()
         fetchDraftWidgets()
     }, [])
-    useEffect(()=>{
+    useEffect(() => {
         // This is to trigger the toast container when widget is saved to draft
-        if(isDraftSaved){
+        if (isDraftSaved) {
             toast.success("Widget Added to draft")
         }
         setIsDraftSaved(false)
-    },[isDraftSaved])
+    }, [isDraftSaved])
+
+    const checkBrandkit = async () => {
+        const { data, error } = await myFetch(`${baseUrl}/kit`)
+
+        if (error) {
+            console.log(error);
+            return;
+        }
+        if (!data.domain.domain) {
+            router.push('/widget/dashboard')
+        }
+    }
+
     return (
         <div className={`${styles.body}`}>
             <ToastContainer />

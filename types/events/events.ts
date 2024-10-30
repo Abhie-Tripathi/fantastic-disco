@@ -6,17 +6,18 @@ export interface EventsResponse {
 }
 
 export interface EventDetailResponse {
-  event: Event;
+  event: GTMEventDetail;
 }
 
 export interface EventPOCDetailResponse {
-  eventPoCs: EventPOCDetails[];
+  eventPoc: GTMEventPOCDetails[];
 }
 
 export interface EventCoOrganizerDetailResponse {
   coorganizers: CoOrganizer[];
 }
 export interface EventEditionDetailResponse {
+  count: number;
   editions: Editions[];
 }
 
@@ -70,6 +71,36 @@ export interface Event {
     categoryId: string | null;
     countryId: string | null;
   } | null;
+}
+
+export interface Tickets {
+  id: string;
+  name: string;
+  price: string;
+  type: string;
+  currency: string;
+  ticketUrl: string;
+}
+
+export interface RankingDetail {
+  categories:
+    | {
+        id: string;
+        rank: number;
+      }[]
+    | null;
+  category_country:
+    | {
+        categoryId: string;
+        countryId: string;
+        rank: number;
+      }[]
+    | null;
+  country: {
+    id: string;
+    rank: number;
+  } | null;
+  global: number;
 }
 
 export interface Currency {
@@ -176,6 +207,16 @@ export interface Country {
   regions: string[];
 }
 
+export interface GTMOrganizer {
+  id: string;
+  name: string;
+  website: string;
+  logo: string;
+  cityName: string;
+  countryName: string;
+  totalOrganize: number;
+}
+
 export interface Organizer {
   id: string;
   name: string;
@@ -196,19 +237,19 @@ export interface EventResponse {
   events: Event[];
 }
 
-export interface EventPOCDetails {
+export interface GTMEventPOCDetails {
+  id: number;
+  name: string;
   designation: string;
   email: string;
-  emailActive: string;
-  id: number;
-  level: string;
+  phoneNumber: string;
   location: {
     cityName: string | null;
     countryName: string | null;
   };
-  name: string;
-  phoneNumber: string;
   profilePicture: string;
+  level: string;
+  emailActive: string;
 }
 
 export interface AudienceSpread {
@@ -226,3 +267,59 @@ export interface EventDate {
   formattedDate: string;
   isEventDay: boolean;
 }
+
+export interface GTMEventDetail extends Omit<Event, "organizer"> {
+  above5CountryEvent: countryRank[] | [];
+  below5CountryEvent: countryRank[] | [];
+  above5GlobalEvent: globalRank[] | [];
+  below5GlobalEvent: globalRank[] | [];
+  above5CategoryEvent: categoryRank[] | [];
+  below5CategoryEvent: categoryRank[] | [];
+  organizer: GTMOrganizer | null;
+  "trustScore%": number | null;
+  rankData: {
+    global: number;
+    country: {
+      name: string;
+      rank: number;
+    };
+    category: {
+      name: string;
+      rank: number;
+    }[];
+  };
+  designation: string[];
+  stats: {
+    score: number;
+    eventFollower: number;
+    estimatedVisitor: string;
+    rating: number;
+    estimatedExhibitor: string;
+  };
+  futureExpectedStartDate: string;
+  futureExpectedEndDate: string;
+}
+
+export interface rankingEvent {
+  id: string;
+  eventname: string;
+  startdate: string;
+  enddate: string;
+  description: string;
+  logoUrl: string;
+}
+
+export interface countryRank extends rankingEvent {
+  countryrank: number;
+  countryname: string;
+}
+
+export interface categoryRank extends rankingEvent {
+  categoryrank: number;
+  categoryname: string;
+}
+export interface globalRank extends rankingEvent {
+  globalrank: number;
+}
+
+export type TTabs = "overview" | "insights" | "audience";

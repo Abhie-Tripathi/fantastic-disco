@@ -10,6 +10,7 @@ const config = {
           'images.ladepeche.fr',
           'cdn.choosechicago.com',
           'api.eventgeni.com',
+          'console.dev.eventgeni.com',
           'api.dev.eventgeni.com',
           'logo.clearbit.com',
           'c1.10times.com',

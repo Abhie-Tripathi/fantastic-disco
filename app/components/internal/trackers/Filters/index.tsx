@@ -123,7 +123,7 @@ interface FilterValue {
   orgWebsite: string;
   orgName:string;
   userType?:Toggle
-  userName?:string;
+  userName:string;
   eventAttendanceRange: any;
   eventImpactSocre: any;
   globalRanking: any;
@@ -155,6 +155,7 @@ interface Template {
   templateName?: string;
   description?: string | undefined;
   inputAreas?: InputArea[] | undefined;
+  isUploadEnable?: boolean;
 }
 interface CategoryData {
   attendedCategories?: string[];
@@ -255,18 +256,19 @@ const templates = [
   {
     name: "T_RECRUITMENT",
     templateName: "Recruitment",
-    type: "disabled",
+    type: "enabled",
     description: "Input designations and upload job descriptions to identify relevant events effortlessly",
     inputAreas: [
-      {
-        type: "text",
-        placeholder: "Designation",
-      },
-      {
-        type: "text",
-        placeholder: "Department"
-      }
-    ]
+      // {
+      //   type: "text",
+      //   placeholder: "Designation",
+      // },
+      // {
+      //   type: "text",
+      //   placeholder: "Department"
+      // }
+    ],
+    isUploadEnable: false,
   },
   {
     name: "T_COMPETITOR",
@@ -281,7 +283,8 @@ const templates = [
         required:true,
         example: "facebook.com",
       }
-    ]
+    ],
+    isUploadEnable: true,
   },
   {
     name: "T_AUDIENCE_DEPT_PROFILE",
@@ -297,30 +300,33 @@ const templates = [
       //   type: "text",
       //   placeholder: "Profile",
       // }
-    ]
-
+    ],
+    isUploadEnable: false,
   },
   {
     name: "T_CUSTOMER_ICP",
     templateName: "Customer ICP",
-    type: "disabled",
+    type: "enabled",
     description: "Input ideal customer profile details like company, location or websites to track their interests",
     inputAreas: [
       {
-        img: Company,
-        type: "text",
-        placeholder: "Company Name",
-      },
-      {
         img: Url,
         type: "text",
-        placeholder: "Url",
+        placeholder: "Company Name or Website",
+        required:true,
+        example: "facebook.com",
       },
-      {
-        type: "text",
-        placeholder: "Location",
-      }
-    ]
+      // {
+      //   img: Url,
+      //   type: "text",
+      //   placeholder: "Url",
+      // },
+      // {
+      //   type: "text",
+      //   placeholder: "Location",
+      // }
+    ],
+    isUploadEnable: true,
   },
   {
     name: "T_BRAND_BUILDING",
@@ -336,25 +342,31 @@ const templates = [
       //   type: "text",
       //   placeholder: "Job Description",
       // }
-    ]
+    ],
+    isUploadEnable: false,
   },
   {
     name: "T_PEOPLE_FINDER",
     templateName: "People Finder",
-    type: "disabled",
+    type: "enabled",
     description: "Track experts, influencers and where they might be participating in various events",
     inputAreas: [
       {
         img: Name,
         type: "text",
         placeholder: "Name",
+        required:true,
+        example: "Mark Zuckerberg",
       },
       {
         img: Company,
         type: "text",
         placeholder: "Company Name",
+        required:true,
+        example: "Facebook",
       }
-    ]
+    ],
+    isUploadEnable: true,
   },
   {
     name: "T_SPEAKING_OPPORTUNITY",
@@ -376,7 +388,8 @@ const templates = [
         required:true,
         example: "Facebook",
       }
-    ]
+    ],
+    isUploadEnable: true,
   },
   {
     name: "T_SOCIAL_CAUSE",
@@ -523,55 +536,55 @@ const Pages = () => {
   const [selectedCountries, setSelectedCountries] = useState<any>([]);
   const [selectedAudProfile, setSelectedAudProfile] = useState<any>([]);
 
-  const createTrackerHandler = () => {
-    const params = new URLSearchParams(searchParams);
-    if (selectedCategories.length > 0) {
-      params.set("category", selectedCategories.join(","));
-    }
-    if (selectedLocations.length > 0) {
-      params.set("locations", selectedLocations?.join(","));
-    }
-    if (selectedEventStatus.length > 0) {
-      params.set("status", selectedEventStatus?.join(","));
-    }
-    if (selectedLabels.length > 0) {
-      params.set("labels", selectedLabels?.join(","));
-    }
-    if (selectedDateRange[0] !== null) {
-      params.set("active_gte", convertToYYYYMMDD(selectedDateRange[0]));
-      params.set("active_lte", convertToYYYYMMDD(selectedDateRange[1]));
-    }
-    if (selectedEventAttendanceRange.length > 0) {
-      params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
-      params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
-    }
-    router.push(`/trackers/create?${params.toString()}`);
-  };
+  // const createTrackerHandler = () => {
+  //   const params = new URLSearchParams(searchParams);
+  //   if (selectedCategories.length > 0) {
+  //     params.set("category", selectedCategories.join(","));
+  //   }
+  //   if (selectedLocations.length > 0) {
+  //     params.set("locations", selectedLocations?.join(","));
+  //   }
+  //   if (selectedEventStatus.length > 0) {
+  //     params.set("status", selectedEventStatus?.join(","));
+  //   }
+  //   if (selectedLabels.length > 0) {
+  //     params.set("labels", selectedLabels?.join(","));
+  //   }
+  //   if (selectedDateRange[0] !== null) {
+  //     params.set("active_gte", convertToYYYYMMDD(selectedDateRange[0]));
+  //     params.set("active_lte", convertToYYYYMMDD(selectedDateRange[1]));
+  //   }
+  //   if (selectedEventAttendanceRange.length > 0) {
+  //     params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
+  //     params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
+  //   }
+  //   router.push(`/trackers/create?${params.toString()}`);
+  // };
 
-  const searchHandler = () => {
-    const params = new URLSearchParams(searchParams);
-    if (selectedCategories.length > 0) {
-      params.set("category", selectedCategories.join(","));
-    }
-    if (selectedLocations.length > 0) {
-      params.set("city", selectedLocations?.join(","));
-    }
-    if (selectedEventStatus.length > 0) {
-      params.set("status", selectedEventStatus?.join(","));
-    }
-    if (selectedLabels.length > 0) {
-      params.set("labels", selectedLabels?.join(","));
-    }
-    if (selectedDateRange[0] !== null) {
-      params.set("active_gte", selectedDateRange[0]);
-      params.set("active_lte", selectedDateRange[1]);
-    }
-    if (selectedEventAttendanceRange.length > 0) {
-      params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
-      params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
-    }
-    router.push(`/search/events?${params.toString()}`);
-  };
+  // const searchHandler = () => {
+  //   const params = new URLSearchParams(searchParams);
+  //   if (selectedCategories.length > 0) {
+  //     params.set("category", selectedCategories.join(","));
+  //   }
+  //   if (selectedLocations.length > 0) {
+  //     params.set("city", selectedLocations?.join(","));
+  //   }
+  //   if (selectedEventStatus.length > 0) {
+  //     params.set("status", selectedEventStatus?.join(","));
+  //   }
+  //   if (selectedLabels.length > 0) {
+  //     params.set("labels", selectedLabels?.join(","));
+  //   }
+  //   if (selectedDateRange[0] !== null) {
+  //     params.set("active_gte", selectedDateRange[0]);
+  //     params.set("active_lte", selectedDateRange[1]);
+  //   }
+  //   if (selectedEventAttendanceRange.length > 0) {
+  //     params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
+  //     params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
+  //   }
+  //   router.push(`/search/events?${params.toString()}`);
+  // };
   const [trackerName, setTrackerName] = useState("");
   // const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [categorySlug, setCategorySlug] = useState<string[]>(
@@ -594,7 +607,7 @@ const Pages = () => {
       if (error) {
         console.error("Error fetching data:", error);
       } else {
-        console.log("Data fetched:", data);
+        // console.log("Data fetched:", data);
         setEditData(data);
       }
     } catch (err) {
@@ -629,29 +642,17 @@ const Pages = () => {
   const [org,setOrg]=useState("");
   const [speakerName, setSpeakerName] = useState("");
   const [speakerCompany, setSpeakerCompany] = useState("");
+
+  const [userName, setUserName] = useState("");
+  const [userCompany, setUserCompany] = useState("");
+
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
   useEffect(() => {
-    const fetchAISuggestion = async (val: any) => {
-      try{
-        const promptText = `List only name of top 5 companies similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {"data": ["company name 1","company name 2","company name 3","company name 4","company name 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`;
-        let aiResponse: any = await suggestionGenerator(promptText);
-        let temp = JSON.parse(aiResponse.choices[0].message.content);  
-        if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
-          setSuggestions(temp.data);
-      } catch (err) {
-        console.error("Fetch failed:", err);
-        setSuggestions([]);
-      }
-    }  
-
-    if (type === "T_COMPETITOR") {
-      if(customData.length > 0 && Object.values(customData[0])[0]) {
-        fetchAISuggestion(Object.values(customData[0])[0]);
-      }
+    if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       const urls = customData
       .map((item: {}) => Object.values(item)[0] as string)
@@ -671,8 +672,12 @@ const Pages = () => {
       const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
       setSpeakerName(speakerName);
       setSpeakerCompany(speakerCompany);
-      console.log(speakerName, speakerCompany);
+      // console.log(speakerName, speakerCompany);
 
+    }
+    else if (type === "T_PEOPLE_FINDER") {
+      setUserName(customData.map((item: {}) => Object.values(item)[0]).join(','))
+      setUserCompany(customData.map((item: {}) => Object.values(item)[1]).join(','))
     } else if (type === "T_BRAND_BUILDING") {
       const designation = customData.map((item: {}) => Object.values(item)[0]).join(',');
       setDesignations(designation);
@@ -764,6 +769,12 @@ const Pages = () => {
           }),
           ...(speakerCompany.length > 0 && {
             speakerOrg: speakerCompany,
+          }),
+          ...(userName.length > 0 && {
+            userName: userName,
+          }),
+          ...(userCompany.length > 0 && {
+            speakerOrg: userCompany,
           }),
           ...(selectedEventType?.length > 0 && {
             eventType: selectedEventType.join(",")
@@ -910,41 +921,40 @@ const Pages = () => {
           // }
         },
       };
-      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||selectedEventKeywords.length==0)){
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
-      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
-      else if (type === "CUSTOM" && (selectedLocations.length === 0 || trackerName.length === 0)) {
-        console.log("Please, Fill all the details");
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
-      const { data, error } = await myFetch(
-        `${baseUrl}/tracker/${secondLast}`,
-        {
-          method: "PATCH",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (data) {
-        console.log(data);
-        router.replace(`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`);
-      } else {
-        console.log(error);
-        setIsCreating(false);
+
+      let isValid = false;
+      if(type === "CUSTOM" && selectedLocations.length > 0)
+        isValid = true;
+      else if (type !== "CUSTOM") {
+        if (type === "T_PRODUCT_KEYWORDS" && selectedEventKeywords.length > 0 ) isValid = true;
+        else if (type === "T_RECRUITMENT" && selectedAudProfile.length > 0) isValid = true;
+        else if (customData.length > 0) isValid = true;
       }
 
-      console.log(selectedCountry);
+      if(trackerName.length === 0) isValid = false;
+
+      if(isValid) {
+        const { data, error } = await myFetch(
+          `${baseUrl}/tracker/${secondLast}`,
+          {
+            method: "PATCH",
+            body: JSON.stringify(formData),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (data) {
+          router.replace(`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`);
+        } else {
+          console.log(error);
+          setIsCreating(false);
+        }
+      }
+      else {
+        setIsCreating(false);
+        setIsMandatory(true);
+      }
     } else {
       const formData = {
         name: trackerName,
@@ -969,6 +979,12 @@ const Pages = () => {
           }),
           ...(speakerCompany.length > 0 && {
             speakerOrg: speakerCompany,
+          }),
+          ...(userName.length > 0 && {
+            userName: userName,
+          }),
+          ...(userCompany.length > 0 && {
+            speakerOrg: userCompany,
           }),
           ...(designations.length > 0 && {
             userDesignation: designations,
@@ -1118,40 +1134,39 @@ const Pages = () => {
           // }
         },
       };
-      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||selectedEventKeywords.length==0)){
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
-      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
-      else if (type === "CUSTOM" && (selectedLocations.length === 0 || trackerName.length === 0)) {
-        console.log("Please, Fill all the details");
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
-      const { data, error } = await myFetch(`${baseUrl}/tracker`, {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      console.log(data);
 
-      if (error) {
-        console.log(error);
-        setIsCreating(false);
-        return;
+      let isValid = false;
+      if(type === "CUSTOM" && selectedLocations.length > 0)
+        isValid = true;
+      else if (type !== "CUSTOM") {
+        if (type === "T_PRODUCT_KEYWORDS" && selectedEventKeywords.length > 0 ) isValid = true;
+        else if (type === "T_RECRUITMENT" && selectedAudProfile.length > 0) isValid = true;
+        else if (customData.length > 0) isValid = true;
       }
-      if (data) {
-        console.log(data);
 
-        router.replace("/internal/trackers");
+      if(trackerName.length === 0) isValid = false;
+
+      if(isValid) {
+        const { data, error } = await myFetch(`${baseUrl}/tracker`, {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+  
+        if (error) {
+          console.log(error);
+          setIsCreating(false);
+          return;
+        }
+        if (data) {  
+          router.replace("/internal/trackers");
+        }
+      }
+      else {
+        setIsCreating(false);
+        setIsMandatory(true);
       }
     }
   };
@@ -1165,20 +1180,20 @@ const Pages = () => {
       }
 
       if (data) {
-        console.log(data);
+        // console.log(data);
         setCatgeoryData(data);
       }
     };
     fetchData();
   }, []);
-  console.log(categoryData);
+  // console.log(categoryData);
 
   useEffect(() => {
     if (editData && editData?.tracker && last === "editTracker") {
       // if (editData.tracker.filterValue?.maturity == "low") {
       //   setSelectedMaturity(25);
       // }
-      if (type === "T_COMPETITOR") {
+      if (type === "T_COMPETITOR" || type == "T_CUSTOMER_ICP") {
         const orgNames = editData?.tracker?.filterValue?.orgName?.
           split(',');
         const orgWebsites = editData?.tracker?.filterValue?.orgWebsite?.
@@ -1216,6 +1231,17 @@ const Pages = () => {
         //     { companyUrl: item.trim() }
         //   ))
         // ]);
+      }
+      if (type === "T_PEOPLE_FINDER") {
+        const speakerOrgs = editData?.tracker?.filterValue?.speakerOrg?.
+          split(',');
+        const speakerNames = editData?.tracker?.filterValue?.userName?.
+          split(',');
+        const presentCustomData = speakerNames.map((speakerName: string, index: number) => ({
+          "Name": speakerName.trim(),
+          "Company Name": speakerOrgs[index]?.trim()
+        }));
+        setCustomData(presentCustomData);
       }
       if (editData.tracker.filterValue?.localRank?.length > 0 || editData.tracker.filterValue?.eventRank?.length > 0) {
         const newToggles = { ...rankToggles };
@@ -1271,7 +1297,7 @@ const Pages = () => {
 
       setSelectedCountries(editData.tracker.filterValue?.audienceSpread ? editData.tracker.filterValue?.audienceSpread?.split(",") : []);
 
-      setSelectedAudProfile(editData.tracker.filterValue?.designation ? editData.tracker.filterValue?.designation?.split(",") : []);
+      setSelectedAudProfile(editData.tracker.filterValue?.designation ? editData.tracker.filterValue?.designation?.map((item: any) => item.id) : []);
 
       setSelectedEventKeywords(
         editData?.tracker?.filterValue?.eventKeywords?.length > 0
@@ -1465,7 +1491,7 @@ const Pages = () => {
     }
   }, [editData]);
 
-  console.log(selectedLabels);
+  // console.log(selectedLabels);
   const [popoverState, setPopoverState] = useState<boolean>(false);
   const setMenuOpen = () => {
     setPopoverState(!popoverState);
@@ -1485,8 +1511,8 @@ const Pages = () => {
       document.body.removeAttribute("your-attribute");
     };
   }, [popoverState]);
-  console.log(selectedEventRank);
-  console.log(type);
+  // console.log(selectedEventRank);
+  // console.log(type);
   const [companyUrl, setCompanyUrl] = useState('');
   const [name, setName] = useState('');
   const [companyName, setCompanyName] = useState('');
@@ -1495,7 +1521,7 @@ const Pages = () => {
       addNew();
     }
   }
-  console.log(customData);
+  // console.log(customData);
   const [isLoading,setIsLoading]=useState(true);
   const [template, setTemplate] = useState<Template | null | undefined>(null);
   const [inputValues, setInputValues] = useState<{ [key: number]: string }>({});
@@ -1507,7 +1533,7 @@ const Pages = () => {
     setIsLoading(false);
   },[template])
   const handleInput = (index: number, value: string) => {
-    console.log(value);
+    // console.log(value);
     setInputValues(prevValues => ({
       ...prevValues,
       [index]: value
@@ -1562,16 +1588,16 @@ const Pages = () => {
     }else setValid(false);
   }
   }
-  console.log(valid);
+  // console.log(valid);
   const truncate = (val: string) => {
     if (val.length > 24) return val.substring(0, 25) + "...";
     else return val;
   }
   const deleteEntry = (entryKey: string, itemIndex: number) => {
-    console.log(itemIndex);
+    // console.log(itemIndex);
     const filteredData = customData.filter((item, index) => index !== itemIndex);
     setCustomData(filteredData);
-    console.log(filteredData);
+    // console.log(filteredData);
 
     // setCustomData((prevData) => 
     //   prevData.map((item, index) => {
@@ -1706,49 +1732,6 @@ useEffect(()=>{
             {" "}Upload
           </Button10x>
         </div>
-        {/* <div className={`${styles.toggleDiv}`}>
-            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Add data manually
-                </div>
-                <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
-              </div>
-              <div>
-
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={true}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
-
-              </div>
-            </div>
-            <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-              <div>
-                <div className={styles.manualHeading}>Import CSV Data
-                  <div className={styles.badgeSuccess}>Coming Soon</div>
-                </div>
-                <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-              </div>
-              <div>
-
-                <span>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={selectedExhibitScore.length !== 0}
-                    />
-                    <span className={styles.slider}></span>
-                  </label>
-                </span>
-
-              </div>
-            </div>
-          </div> */}
         </div>
         {template && uploadEnabled && 
           <CsvUploader
@@ -1773,17 +1756,13 @@ useEffect(()=>{
       {template && template.inputAreas &&
       <div style={{display: 'flex', gap: '25px'}}>
         <div className={`card ${styles.competitor}`}>
-          {/* <div className={styles.competitorHead}>
-            <div className={styles.competitorHeading}>Upload custom data </div>
-            {template?.type !== "enabled" && <div className={styles.badgeSuccess}>Comming Soon</div>}
-          </div> */}
           <div className={styles.bar}></div>
           <div>
           <div className={styles.templateInputHeading}>
             <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
             {" "} Please upload or manually enter the information
           </div>
-          {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") ?
+          {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP") ?
             (uploadEnabled && 
               <CsvUploader
                 templateData={template}
@@ -1793,171 +1772,97 @@ useEffect(()=>{
                 setSelectedEventKeywords={setSelectedEventKeywords}
               />) :
               <></>
-          // <div className={`${styles.toggleDiv}`}>
-          //   <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-          //     <div>
-          //       <div className={styles.manualHeading}>Add data manually
-          //         {template?.inputAreas?.length === undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
-          //       </div>
-          //       <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
-          //     </div>
-          //     <div>
-
-          //       <span>
-          //         <label className={styles.switch}>
-          //           <input
-          //             type="checkbox"
-          //             checked={template.type === "enabled"}
-          //           />
-          //           <span className={styles.slider}></span>
-          //         </label>
-          //       </span>
-
-          //     </div>
-          //   </div>
-          //   <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-          //     <div>
-          //       <div className={styles.manualHeading}>Import CSV Data
-          //         {template.type === "enabled" && <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>}
-          //       </div>
-          //       <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-          //     </div>
-          //     <div>
-
-          //       <span>
-          //         <label className={styles.switch}>
-          //           <input
-          //             type="checkbox"
-          //             checked={selectedExhibitScore.length !== 0}
-          //           />
-          //           <span className={styles.slider}></span>
-          //         </label>
-          //       </span>
-
-          //     </div>
-          //   </div>
-          // </div>
           }
           </div>
           {template?.inputAreas &&
-                  <div>
-                    <div className={styles.allInputArea}>
-                      {template?.inputAreas?.map((inputArea: any, index: number) => (
-                        <>
-                          <div key={index} className={styles.singleInputArea} style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
-                            {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
-                            <input
-                              className={styles.textArea}
-                              type="text"
-                              placeholder={inputArea.placeholder}
-                              value={inputValues[index] || ''}
-                              onChange={(e) => handleInput(index, e.target.value)}
-                              onKeyPress={handleKeyDown}
-                            />
-                             {(eventSearchLoader && inputValues[0]?.length>0)? (
-  <div className={styles.loader}></div>
-) : (
-  inputValues[0]?.length > 0 ? (
-    <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
-      ...prevValues,
-      [index]: ""
-    }))}} />
-  ) : (
-    ""
-  )
-)}
-                            {/* {type === "T_COMPETITOR" && inputValues[0]?.length > 0 && websiteSuggestion &&
-                              <div className={styles.suggestionBox}>
-                                <Suggestion
-                                  websiteData={websiteSuggestion}
-                                  addCompany={addCompany}
-                                />
-                              </div>
-                            } */}
-          {type === "T_COMPETITOR" && inputValues[0]?.length > 0  &&
-           <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={'company/suggestion'} type={type}/>
-          }
-                          </div>
+            <div>
+              {(template?.inputAreas && template?.inputAreas?.length > 0) ?
+              <>
+                <div className={styles.allInputArea}>
+                  {template?.inputAreas?.map((inputArea: any, index: number) => (
+                    <>
+                      <div key={index} className={styles.singleInputArea} style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
+                        {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
+                        <input
+                          className={styles.textArea}
+                          type="text"
+                          placeholder={inputArea.placeholder}
+                          value={inputValues[index] || ''}
+                          onChange={(e) => handleInput(index, e.target.value)}
+                          onKeyPress={handleKeyDown}
+                        />
+                        {(eventSearchLoader && inputValues[0]?.length>0)? (
+                          <div className={styles.loader}></div>
+                        ) : (
+                          inputValues[0]?.length > 0 ? (
+                            <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
+                              ...prevValues,
+                              [index]: ""
+                            }))}} />
+                          ) : (
+                            ""
+                          )
+                        )}
 
-                        </>
-                      ))}
-                      <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
-                        style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
-                      >
-                        <Image src={Add} alt="add_Icon" />
+                        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") && inputValues[0]?.length > 0  &&
+                        <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={'company/suggestion'} type={"T_COMPETITOR"}/>
+                        }
                       </div>
 
-                    </div>
-                    {/* {customData.map((item:any, index:number) => (
-      // <div key={index} className={styles.customDataOuterDiv}>
-      // <div className={styles.singleInputBox}>{item.name}</div>
-      // <div className={styles.singleInputBox}>{item.companyName}</div>
-      // </div>
-      {Object.entries(item).map(([key, value]) => (
-        <div key={key} className="data-field">
-          <strong>{key}:</strong> {value}
-        </div>
-      ))}
-    ))} */}
-    {!valid && (
-                <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
-              )}
-              {(suggestions && suggestions.length > 0) &&
-                <div className={`${styles.suggestion_container}`} >
-                  <div className={styles.suggestion_title}>
-                    {/* <Image src={AiIcon} alt="AI" className={iconClass} width={14} height={14} /> */}
-                    AI SUGGESTIONS {" "}
-                    <span className={styles.experimental_tag} >Beta</span>
+                    </>
+                  ))}
+                  <div onClick={() => template.type === "enabled" && addNew()} className={styles.addIcon}
+                    style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+                  >
+                    <Image src={Add} alt="add_Icon" />
                   </div>
-                  <div className={styles.suggestion_items}>
-                    {suggestions.map((item: string, ind: number)=>(
-                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{item}</div>
-                    ))}
-                  </div>
+
                 </div>
+                {!valid && (
+                  <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
+                )}
+              </> :
+              <>
+                {type==="T_RECRUITMENT" &&
+                  <div>
+                    <MenuTrigger onOpenChange={setMenuOpen}>
+                      <Button style={{width: '100%', background: 'var(--primary-foreground)', color: 'var(--primary-text-color)'}} >
+                        <div className={styles.input_container} style={{border: isMandatory === true && selectedAudProfile.length === 0 ? "1px solid var(--danger-text-color)" : ""}}>
+                          <div className={styles.input}>
+                            <div className={styles.input_title}>
+                              Audience Profile
+                              {selectedAudProfile.length > 0 ? (
+                                <span className={styles.selected_no_filters}>
+                                  {selectedAudProfile.length}
+                                </span>
+                              ) : (
+                                ""
+                              )}
+                            </div>
+                            <Image
+                              src={DropIcon}
+                              alt="dropicon"
+                              width={12}
+                              height={12}
+                              className={`${iconClass} ${styles.dropIcon}`}
+                            />
+                          </div>
+                        </div>
+                      </Button>
+                      <Popover className={styles.filterPopover}>
+                        <AudienceDes
+                          selectedCountries={selectedAudProfile}
+                          setSelectedCountries={setSelectedAudProfile}
+                          onClose={close}
+                        />
+                      </Popover>
+                    </MenuTrigger>
+                  </div>
+                }
+              </>
               }
-              {/* {customData && customData.length >0 &&
-                <div className={styles.allCompetitors}>
-                  <div className={styles.remove_all_custom} onClick={() => setCustomData([])}>
-                    Remove All
-                  </div>
-                  <div className={styles.table_container}>
-                  <table className={styles.allCustomData}>
-                    <tbody>
-                      {expandTable ? customData.map((item: any, index: number) => (
-                          <tr key={index}>
-                            <td>
-                              <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
-                            </td>
-                            {Object.entries(item)
-                              .map(([entryKey, value]) => 
-                                <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
-                              )
-                            }
-                          </tr>
-                        )) :
-                        customData.slice(0, 5).map((item: any, index: number) => (
-                          <tr key={index}>
-                            <td>
-                              <div className={styles.square} onClick={() => deleteEntry(item, index)}>-</div>
-                            </td>
-                            {Object.entries(item)
-                              .map(([entryKey, value]) => 
-                                <td key={entryKey} className={styles.dataColoumn}>{value as string}</td>
-                              )
-                            }
-                          </tr>
-                        ))
-                      }
-                    </tbody>
-                  </table>
-                  </div>
-                  {customData.length > 5 &&
-                    <div className={styles.expandTableBtn} onClick={()=>setExpandTable(prev=>!prev)} >{expandTable ? 'Read Less' : 'Read More'}</div>
-                  }
-                </div>
-              } */}
-              {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") &&
+
+              {/* {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") && */}
                 <div style={{textAlign: 'center'}}>
                   <div style={{position: 'relative', color: 'var(--secondary-text-color)'}}>
                     <div style={{borderBottom: '1px solid var(--border-color)', margin: '36px 0'}}></div>
@@ -1965,19 +1870,22 @@ useEffect(()=>{
                   </div>
                   <div className={styles.uploadBtnContainer}>
                     <Button10x
-                      style={{ color: "white" }}
+                      style={{ color: "white", cursor: (template?.isUploadEnable ? 'pointer' : 'not-allowed') }}
                       variant="primary"
                       size="sm"
                       onClick={handleUploadEnable}
+                      disabled={!template?.isUploadEnable}
                     >
                       <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
                       {" "}Upload
                     </Button10x>
                   </div>
                 </div>
-              }
+              {/* } */}
             </div>
           }
+
+          
         </div>
         <div className={`card ${styles.competitor}`} >
           <div className={styles.templateInputHeading}>
@@ -3197,7 +3105,7 @@ useEffect(()=>{
           {showAdvanceFilter && selectedAdvFilter === "AI" && (
             <div className={styles.inputdropdowns_container_AI}>
 
-<MenuTrigger onOpenChange={setMenuOpen}>
+                <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`} >
                     <div className={styles.input_container}>
                       <div className={styles.input}>
@@ -3269,6 +3177,7 @@ useEffect(()=>{
                   </Popover>
                 </MenuTrigger>
 
+              {type !== "T_RECRUITMENT" &&
                 <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`} >
                     <div className={styles.input_container}>
@@ -3303,6 +3212,7 @@ useEffect(()=>{
                     />
                   </Popover>
                 </MenuTrigger>
+              }
 
               {/* <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.disabledBtn}>

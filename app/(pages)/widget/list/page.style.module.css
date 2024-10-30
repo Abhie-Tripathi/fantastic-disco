@@ -82,7 +82,6 @@
     width: 100%;
 }
 .yourWidgetModal {
-    /* filter: drop-shadow(1px 1px 5px rgb(180, 180, 180)); */
     border: 1px solid var(--border-color);
     height: 89%;
     width: 600px;

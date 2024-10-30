@@ -1,0 +1,113 @@
+.modalContainer {
+  display: flex;
+  width: 100%;
+  height: 400px;
+}
+
+.leftPanel {
+  flex: 1;
+  padding: 20px;
+  border-right: 1px solid #ddd;
+}
+
+.rightPanel {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.importOptions {
+  margin-bottom: 20px;
+}
+
+.importOptions button {
+  margin-right: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.selectedOption {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.fontList {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+}
+
+.modalActions button {
+  background-color: var(--primary-color);
+  color: white;
+  margin-left: 10px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.modalActions button:hover {
+  background-color: var(--primary-color);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.preview_screen {
+  display: flex;
+  margin-top: 16px;
+  justify-content: center;
+  align-items: center;
+  background-color: #F2F2F2;
+  padding: 20px;
+  height: 90%;
+}
+
+.fonts_container {
+  margin-top: 16px;
+}
+
+.fontItem {
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  transition: background-color 0.3s ease;
+  border-radius: 6px;
+}
+
+.fontItem:hover {
+  background-color:#F2F2F2;
+}
+
+.selected {
+  background-color: #F2F2F2;
+  color: black;
+}
+
+.tickIcon {
+  margin-right: 10px;
+  visibility: hidden;
+}
+
+.selected .tickIcon {
+  visibility: visible;
+}
+

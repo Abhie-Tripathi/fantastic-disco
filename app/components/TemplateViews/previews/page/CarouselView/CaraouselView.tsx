@@ -4,6 +4,7 @@ import EventCard1 from '../../cardstyles/EventCard1';
 import EventCard2 from '../../cardstyles/EventCard2';
 import EventCard3 from '../../cardstyles/EventCard3';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
+import { useRouter } from 'next/navigation';
 
 interface FontSettings {
     fontFamily: string;
@@ -22,13 +23,17 @@ interface Props {
         subheading: FontSettings;
         body: FontSettings;
     };
-    fetchedAddedOtherData?: PrefilledAddedEventsType[]
+    fetchedAddedOtherData?: PrefilledAddedEventsType[];
+    widgetId?: string;
+    demoBanner: string;
+    demoEventName: string;
+    demoDescription: string
+    demoLocation:string
+    demoDate:string
 }
 
-const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData }: Props) => {
+const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoDescription, demoLocation, demoDate}: Props) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [bannersPerPage, setBannersPerPage] = useState(1);
-    const carouselRef = useRef<HTMLDivElement>(null);
 
     let EventCard: ElementType;
 
@@ -44,77 +49,69 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
     }
 
     const demoBanners = [
-        <EventCard key="1" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />,
-        <EventCard key="2" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />,
-        <EventCard key="3" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />,
-        <EventCard key="4" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />,
-        <EventCard key="5" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />,
-        <EventCard key="6" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />,
-        <EventCard key="7" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />,
+        <EventCard key="1" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="2" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="3" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="4" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="5" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="6" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="7" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
     ];
 
-    const banners = fetchedAddedOtherData && fetchedAddedOtherData.length > 0
+    const banners = fetchedAddedOtherData && widgetId && fetchedAddedOtherData.length > 0
         ? fetchedAddedOtherData.map((event, index) => (
-            <EventCard
-                key={event.id}
-                cardBgColor={cardBgColor}
-                cardBorderRadius={cardBorderRadius}
-                fontSettings={fontSettings}
-                fetchedEvent = {event}  
-            // Pass additional event-specific props here if needed
-            />
+            <div onClick={() => handleCardClick(event.id, widgetId)} key={index} className={styles.listcard}>
+                <EventCard
+                    key={event.id}
+                    cardBgColor={cardBgColor}
+                    cardBorderRadius={cardBorderRadius}
+                    fontSettings={fontSettings}
+                    fetchedEvent={event}
+                // Pass additional event-specific props here if needed
+                />
+            </div >
         ))
         : demoBanners;
-
-    useEffect(() => {
-        const handleResize = () => {
-            if (carouselRef.current) {
-                const containerWidth = carouselRef.current.offsetWidth;
-                const cardWidth = 300; // Adjust based on your card's width
-                const newBannersPerPage = Math.floor(containerWidth / cardWidth);
-                setBannersPerPage(newBannersPerPage > 0 ? newBannersPerPage : 1);
-            }
-        };
-
-        handleResize();
-        window.addEventListener('resize', handleResize);
-
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [isFullScreen]);
-
-    const maxIndex = Math.max(0, banners.length - bannersPerPage);
-
     const handleNext = () => {
-        if (currentIndex < maxIndex) {
-            setCurrentIndex(currentIndex + 1);
+        if (currentIndex < banners.length - 1) {
+            setCurrentIndex((prevIndex) => prevIndex + 1);
         }
     };
 
     const handlePrev = () => {
         if (currentIndex > 0) {
-            setCurrentIndex(currentIndex - 1);
+            setCurrentIndex((prevIndex) => prevIndex - 1);
         }
     };
-
+    // const handleDotClick = (index: number) => {
+    //     setCurrentIndex(index);
+    // };
+    const router = useRouter();
+    const handleCardClick = (eventId: string, widgetId: string) => {
+        router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`)
+        // router.push(`/detailpage/${eventId}`)
+    }
     return (
-        <div className={styles.carousel} ref={carouselRef}>
+        <div className={styles.sliderContainer}>
             <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>
                 <LeftArrowIcon />
             </button>
-            <div className={styles.innerSlider} style={{ transform: `translateX(-${currentIndex * (100 / bannersPerPage)}%)` }}>
-                {banners.map((banner, index) => (
-                    <div className={styles.banner} key={index}>
-                        {banner}
-                    </div>
-                ))}
+            <div className={styles.cards}>
+                {banners.map((banner, index) => {
+                    const isActive = currentIndex === index;
+                    const isLeft = currentIndex - 1 === index;
+                    const isRight = currentIndex + 1 === index;
+                    return (
+                        <div
+                            key={index}
+                            className={`${styles.card} ${isActive ? styles.active : ''} ${isLeft ? styles.left : ''} ${isRight ? styles.right : ''}`}
+                        >
+                            {banner}
+                        </div>
+                    );
+                })}
             </div>
-            <button
-                className={styles.navButton}
-                onClick={handleNext}
-                disabled={currentIndex === maxIndex}
-            >
+            <button className={styles.navButton} onClick={handleNext} disabled={currentIndex === banners.length - 1}>
                 <RightArrowIcon />
             </button>
         </div>

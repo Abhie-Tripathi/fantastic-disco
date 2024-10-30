@@ -6,6 +6,26 @@
     background-color: #2E1938;
     width: 100%;
 }
+.warningContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.warningContainer a{
+    background-color: var(--primary-color);
+    padding: 5px 9px;
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+    font-size: var(--font-size-small);
+}
+.warning{
+    color: var(--primary-text-color);
+    font-size: var(--font-size-small);
+    text-align: center;
+}
 .loader{
     width: 100%;
     display: flex;

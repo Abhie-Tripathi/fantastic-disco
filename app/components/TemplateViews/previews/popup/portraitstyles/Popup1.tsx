@@ -1,10 +1,13 @@
 import React from 'react'
 import styles from './popup1.style.module.css'
 import Image from 'next/image'
-import placeholder2 from '/public/placeholder.png'
+// import placeholder2 from '/public/placeholder.png'
+import placeholder2 from '/public/DemoBanner.png'
 import locationIcon from '/public/location_on.svg'
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
+import POP from '/public/partyPopIcon.svg'
+import TradeshowIcon from '/public/tradeshowIcon.svg'
 
 interface FontSettings {
     fontFamily: string;
@@ -22,15 +25,21 @@ interface Props {
         body: FontSettings;
     };
     buttonSettings?: ButtonSettingsState
+    closeButtonSetting?:ButtonSettingsState
     selectedBtn?: "primary" | "secondary"
     fetchedAddedEvents?: PrefilledAddedEventsType[];
     smallCard: boolean;
+    demoBanner:string;
+    demoEventName:string,
+    demoDescription:string
+    demoLocation:string
+    demoDate:string
 }
 
 const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
     cardBorderRadius,
     fontSettings,
-    buttonSettings, selectedBtn, fetchedAddedEvents, smallCard }: Props) => {
+    buttonSettings, selectedBtn, fetchedAddedEvents, smallCard,demoEventName, demoBanner, demoDescription, demoLocation,closeButtonSetting,demoDate }: Props) => {
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
         return new Date(date).toLocaleDateString('en-US', options);
@@ -49,46 +58,52 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
         const month = months[date.getMonth()];
         return { day, month };
     };
-    const description = fetchedAddedEvents && fetchedAddedEvents.length ? truncateText(fetchedAddedEvents[0].description, 150) : "Some Description";
+    const description = fetchedAddedEvents && fetchedAddedEvents.length ? truncateText(fetchedAddedEvents[0].description, 150) : demoDescription;
     const { day, month } = fetchedAddedEvents && fetchedAddedEvents.length ? formatStartDate(fetchedAddedEvents[0].startDate) : { day: 1, month: "Jan" };
+    const truncatedDescription = description.substring(0, 150) + (description.length > 150 ? "..." : "");
     return (
         <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-            <Image src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : placeholder2} alt='banner' width={300} height={smallCard ? 170 : 220} className={styles.banner} />
-            <div className={styles.date_location_nameContainer}>
-                <div className={smallCard ? styles.smallDateContainer : styles.dateContainer}>
+            <Image src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' width={300} height={smallCard ? 170 : 220} className={styles.banner} />
+            <div className={`${styles.date_location_nameContainer} ${smallCard ?styles.smalldate_location_nameContainer:"" }`}>
+                {/* <div className={smallCard ? styles.smallDateContainer : styles.dateContainer}>
                     <span className={styles.date} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize }}>{day}</span>
                     <span className={styles.month} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize }}>{month}</span>
+                </div> */}
+                 <div className={styles.dateContainer}>
+                    {
+                        fetchedAddedEvents![0]?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedAddedEvents![0]?.eventType === "MAIN" ? <Image src={TradeshowIcon} alt=''/>:<Image src={POP} alt=''/>
+                    }
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.name_locationContainer}>
                     <div className={styles.locationContainer}>
                         <LocationIcon color={fontSettings?.subheading.fontColor || "black"} />
-                        <div className={styles.location} style={{ fontSize: fontSettings?.subheading.fontSize, color: fontSettings?.subheading.fontColor, fontFamily: fontSettings?.subheading.fontFamily, fontWeight: fontSettings?.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : "Corpus Christi, USA"}</div>
+                        <div className={styles.location} style={{ fontSize: fontSettings?.subheading.fontSize, color: fontSettings?.subheading.fontColor, fontFamily: fontSettings?.subheading.fontFamily, fontWeight: fontSettings?.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? (fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName).substring(0,30) : demoLocation}</div>
                     </div>
-                    <div className={styles.eventName} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize, color: fontSettings?.heading.fontColor, fontFamily: fontSettings?.heading.fontFamily, fontWeight: fontSettings?.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].name : "Join Gifts World Expo 2024"}</div>
+                    <div className={`${styles.eventName} ${smallCard ? styles.smallName : ""}`} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize, color: fontSettings?.heading.fontColor, fontFamily: fontSettings?.heading.fontFamily, fontWeight: fontSettings?.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0,40)} ${fetchedAddedEvents[0].name.length > 40 ? "..." : ""}` : demoEventName}</div>
                 </div>
             </div>
             <div className={styles.dividerLine}></div>
             <div className={styles.dateRange_typeContainer}>
-                <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings?.body.fontSize }}>{fetchedAddedEvents && fetchedAddedEvents.length ? formatDate(fetchedAddedEvents[0].startDate) + " - " + formatDate(fetchedAddedEvents[0].endDate) : "29 Jan - 5 Feb"}</div>
+                <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings?.body.fontSize }}>{fetchedAddedEvents && fetchedAddedEvents.length ? formatDate(fetchedAddedEvents[0].startDate) + " - " + formatDate(fetchedAddedEvents[0].endDate) : demoDate}</div>
                 <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings?.body.fontSize }}>Tradeshow</div>
                 <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings?.body.fontSize }}>Attending</div>
             </div>
             <div
-                className={styles.desc}
+                className={`${styles.description} ${smallCard ? styles.smallDescription : ""}`}
                 style={{
                     fontSize: fontSettings?.body.fontSize,
                     color: fontSettings?.body.fontColor,
                     fontFamily: fontSettings?.body.fontFamily,
                     fontWeight: fontSettings?.body.fontWeight,
                 }}
-                dangerouslySetInnerHTML={{ __html: description }}
+                dangerouslySetInnerHTML={{ __html: truncatedDescription }}
             />
             <div className={styles.btnContainer}>
                 <button
                     className={smallCard ? styles.smallBtn : styles.btn}
                     style={{
-                        fontSize: smallCard ? 14 : fontSettings?.subheading.fontSize,
+                        fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
                         color: selectedBtn === "primary" ? buttonSettings?.primary.fontColor : buttonSettings?.secondary.fontColor,
                         backgroundColor: selectedBtn === "primary" ? buttonSettings?.primary.buttonColor : "transparent",
                         borderRadius: selectedBtn === "primary" ? buttonSettings?.primary.borderRadius : buttonSettings?.secondary.borderRadius,
@@ -96,6 +111,19 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
                     }}
                 >
                     {selectedBtn === "primary" ? buttonSettings?.primary.buttonText : buttonSettings?.secondary.buttonText}
+                </button>
+
+                <button
+                    className={smallCard ? styles.smallBtn : styles.btn}
+                    style={{
+                        fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
+                        color: selectedBtn === "primary" ? closeButtonSetting?.primary.fontColor : closeButtonSetting?.secondary.fontColor,
+                        backgroundColor: selectedBtn === "primary" ? closeButtonSetting?.primary.buttonColor : "transparent",
+                        borderRadius: selectedBtn === "primary" ? closeButtonSetting?.primary.borderRadius : closeButtonSetting?.secondary.borderRadius,
+                        border: "none"
+                    }}
+                >
+                    {selectedBtn === "primary" ? closeButtonSetting?.primary.buttonText : closeButtonSetting?.secondary.buttonText}
                 </button>
             </div>
         </div>

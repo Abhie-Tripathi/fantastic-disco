@@ -5,8 +5,9 @@
 }
 
 .heading {
-    font-size: var(--font-size-h4);
+    font-size: var(--font-size-h5);
     font-weight: var(--font-weight-semibold);
+    color: var(--primary-text-color);
 }
 
 .fontFamily {
@@ -22,7 +23,7 @@
 .font {
     width: 200px;
     height: 150px;
-    font-size: var(--font-size-small);
+    font-size: var(--font-size-default);
     border-radius: 4px;
     background-color: var(--background-secondary-color);
     display: flex;
@@ -66,4 +67,5 @@
     justify-content: center;
     border: 1px solid var(--border-color);
     flex-shrink: 0;
+    cursor: pointer;
 }

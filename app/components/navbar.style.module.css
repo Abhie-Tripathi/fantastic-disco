@@ -8,9 +8,10 @@
   align-items: center;
   position: fixed;
   width: 100%;
-  z-index: 111;
+  z-index: 11; 
   height: 70px;
   border-bottom: 1px solid var(--border-color);
+  /* 10 */
 }
 
 .settings {
@@ -112,16 +113,18 @@
 }
 
 .page_title {
-  font-size: 22px;
-  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-h6);
+  font-weight: var(--font-weight-semibold);
   margin-left: 70px;
   display: flex;
   gap: 3px;
   align-items: center;
+  color: var(--primary-text-color);
 }
 .page_title .backBtn{
   cursor: pointer;
-  font-size: 15px;
+  font-size: var(--font-size-h6);
+  color: var(--primary-text-color);
 }
 
 .dotMenu_icons {

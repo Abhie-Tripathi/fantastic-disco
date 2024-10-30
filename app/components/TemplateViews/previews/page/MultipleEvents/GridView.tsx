@@ -4,6 +4,7 @@ import EventCard1 from '../../cardstyles/EventCard1';
 import EventCard2 from '../../cardstyles/EventCard2';
 import EventCard3 from '../../cardstyles/EventCard3';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
+import { useRouter } from 'next/navigation';
 interface FontSettings {
     fontFamily: string;
     fontSize: number;
@@ -21,9 +22,14 @@ interface EditProps {
         body: FontSettings;
     };
     fetchedAddedOtherData?: PrefilledAddedEventsType[]
+    widgetId?: string;
+    demoBanner:string;
+    demoEventName:string
+    demoLocation:string
+    demoDate:string;
 }
 
-const GridView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData }: EditProps) => {
+const GridView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoLocation,demoDate  }: EditProps) => {
 
     let EventCard: ElementType;
 
@@ -37,28 +43,35 @@ const GridView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
         default:
             EventCard = EventCard3; // Or some default component or message
     }
+    const router = useRouter();
+    const handleCardClick = (eventId: string, widgetId: string) => {
+        router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`)
+        // router.push(`/detailpage/${eventId}`)
+    }
     return (
         <div className={styles.body}>
-            {fetchedAddedOtherData && fetchedAddedOtherData?.length > 0 ? (
+            {fetchedAddedOtherData && widgetId && fetchedAddedOtherData?.length > 0 ? (
                 <div className={styles.gridView}>
                     {fetchedAddedOtherData.map((event, key) => (
-                        <EventCard
-                            key={key}
-                            cardBgColor={cardBgColor}
-                            cardBorderRadius={cardBorderRadius}
-                            fontSettings={fontSettings}
-                            fetchedEvent={event}
-                        />
+                        <div onClick={() => handleCardClick(event.id, widgetId)} key={key} className={styles.listcard}>
+                            <EventCard
+                                key={key}
+                                cardBgColor={cardBgColor}
+                                cardBorderRadius={cardBorderRadius}
+                                fontSettings={fontSettings}
+                                fetchedEvent={event}
+                            />
+                        </div>
                     ))}
                 </div>
             ) : (
                 <div className={styles.gridView}>
-                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
-                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} />
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} demoDate={demoDate}/>
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} demoDate={demoDate}/>
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} demoDate={demoDate}/>
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} demoDate={demoDate}/>
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} demoDate={demoDate}/>
+                    <EventCard cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings}  demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} demoDate={demoDate}/>
                 </div>
             )}
         </div>

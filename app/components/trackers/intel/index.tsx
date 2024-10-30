@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './intel.style.module.css'
-const index = ({internationalScore,inboundScore, exhibitScore, audienceZone, audienceSpread, audienceSpreadCount, audienceProfile}:any) => {
+const index = ({internationalScore,inboundScore, exhibitScore, audienceZone, audienceSpread, audienceSpreadCount, audienceProfile, type}:any) => {
     const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     const freq=["Annual","Biannual","Queartly"]
     const entry=["Free","Paid","Invites","Member Access"];
@@ -49,25 +49,28 @@ const index = ({internationalScore,inboundScore, exhibitScore, audienceZone, aud
             </span>
           </div>
         </div>
-        <div className={styles.branded}>
-          <div className={styles.formatHead}>
-          Audience Profile
+
+        {type !== 'Recruitment' &&
+          <div className={styles.branded}>
+            <div className={styles.formatHead}>
+            Audience Profile
+            </div>
+            <div className={styles.toggle_container}>
+              <span>
+                <label className={styles.switch}>
+                  <input
+                    type="checkbox"
+                    // onChange={() => {}}
+                    // checked={}
+                    defaultChecked
+                    disabled
+                  />
+                  <span className={`${audienceProfile ? styles.sliderBranded : styles.slider}`}></span>
+                </label>
+              </span>
+            </div>
           </div>
-          <div className={styles.toggle_container}>
-            <span>
-              <label className={styles.switch}>
-                <input
-                  type="checkbox"
-                  // onChange={() => {}}
-                  // checked={}
-                  defaultChecked
-                  disabled
-                />
-                <span className={`${audienceProfile ? styles.sliderBranded : styles.slider}`}></span>
-              </label>
-            </span>
-          </div>
-        </div>
+        }
 
         <div className={styles.branded}>
           <div className={styles.formatHead}>

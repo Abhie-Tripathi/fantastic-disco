@@ -1,0 +1,234 @@
+.body {
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 100%;
+    position: relative;
+    background-color: white;
+}
+
+.btnContainer {
+    border-top-right-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 17px 14px;
+    justify-content: space-between;
+}
+
+.endBtnContainer {
+    justify-content: flex-end;
+}
+
+.eventBtns {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border-radius: 6px;
+    background-color: var(--accent-color);
+    padding: 4.5px;
+    border: 1px solid var(--border-color);
+    margin-left: 20px;
+}
+
+.eventBtns button {
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+    color: var(--secondary-text-color);
+    border-radius: 4px;
+    padding: 6px 24px;
+}
+
+.eventBtns .activebtn {
+    color: var(--primary-text-color);
+    background-color: var(--primary-foreground);
+}
+
+.saveCancelBtns button {
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 7px 12px;
+}
+
+.saveCancelBtns .addBtn {
+    color: white;
+    background-color: #6750a4;
+}
+
+.saveCancelBtns .addBtn:hover {
+    background-color: #7962b8;
+}
+
+.saveCancelBtns .addBtnDisable {
+    cursor: not-allowed;
+    background-color: var(--disabled-btn-color);
+}
+
+.saveCancelBtns .addBtnDisable:hover {
+    cursor: not-allowed;
+    background-color: var(--disabled-btn-color);
+}
+
+.formContainer {
+    height: 89%;
+    overflow: auto;
+    padding: 50px 120px 50px 70px;
+    position: relative;
+}
+
+.watermelon {
+    background: linear-gradient(90deg, rgba(228, 202, 246, 1) 0%, rgba(246, 223, 255, 1) 0%, rgba(246, 177, 177, 1) 49%, rgba(193, 249, 227, 1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.greenmint {
+    background: linear-gradient(273deg, rgba(228, 202, 246, 1) 0%, rgba(220, 255, 180, 1) 0%, rgba(197, 231, 207, 1) 52%, rgba(169, 231, 224, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.candy {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(240, 194, 206, 1) 0%, rgba(252, 206, 210, 1) 46%, rgba(246, 186, 239, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.orange {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(255, 196, 147, 1) 0%, rgba(255, 168, 122, 1) 46%, rgba(235, 205, 171, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.purblue {
+    background: radial-gradient(circle, rgba(149, 166, 251, 1) 0%, rgba(152, 169, 214, 1) 25%, rgba(129, 159, 201, 1) 52%, rgba(173, 155, 197, 1) 78%, rgba(254, 152, 173, 1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkgreenmint {
+    background: linear-gradient(273deg, rgba(228, 202, 246, 1) 0%, rgba(143, 186, 93, 1) 0%, rgba(131, 193, 148, 1) 52%, rgba(121, 182, 176, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkcandy {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(240, 143, 168, 1) 0%, rgba(201, 133, 138, 1) 46%, rgba(191, 142, 186, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkorange {
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(189, 132, 85, 1) 0%, rgba(190, 101, 53, 1) 46%, rgba(221, 169, 111, 1) 93%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+.darkpurblue {
+    background: radial-gradient(circle, rgba(89, 114, 241, 1) 0%, rgba(92, 131, 235, 1) 25%, rgba(111, 137, 173, 1) 52%, rgba(173, 155, 197, 1) 78%, rgba(186, 114, 129, 1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+.darkwatermelon {
+    background:  linear-gradient(90deg, rgba(228,202,246,1) 0%, rgba(194,150,212,1) 0%, rgba(200,117,117,1) 49%, rgba(130,199,172,1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+.darkmix {
+    background:  radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(62,54,65,1) 0%, rgba(56,45,54,1) 27%, rgba(73,69,69,1) 67%, rgba(24,45,37,1) 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 5s ease infinite;
+    transition: all .3s ease-in-out;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+.themeContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 115%;
+    overflow: hidden;
+    pointer-events: none; /* Prevents interaction with the leaves */
+}
+/* .leafContainer .leaf {
+    position: absolute;
+    animation: floatAndSpin 10s linear infinite;
+    opacity: 0.8;
+}
+
+@keyframes floatAndSpin {
+    0% {
+        transform: translate3d(0, 0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate3d(50px, -100px, 0) rotate(90deg);
+    }
+    50% {
+        transform: translate3d(-100px, -200px, 0) rotate(180deg);
+    }
+    75% {
+        transform: translate3d(75px, -100px, 0) rotate(270deg);
+    }
+    100% {
+        transform: translate3d(0, 0, 0) rotate(360deg);
+    }
+} */
+.modalOpen {
+    overflow: hidden;
+}
+
+.collapsedContainer {
+    background-color: #ffffff53;
+    border-radius: 10px;
+    padding: 14px 38px;
+    font-size: 12px;
+    color: #7D7D7D;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    justify-content: space-between;
+    line-height: 18px;
+    margin-bottom: 32px;
+}
+
+.collapsedContainer div {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.collapsedContainer .collapseBtn {
+    cursor: pointer;
+}
+
+.confettiCanvas {
+    position: absolute;
+    left: 0;
+    bottom: -80px;
+    width: 100%;
+}

@@ -57,18 +57,30 @@ export const useEventsService = () => {
     return EventsAdapter.adaptEventByIdResponse(response);
   };
 
+  const getEventDetailById = async (id: string) => {
+    const response = await api.request<EventDetailResponse>(
+      `${endpoints.event.eventDetailById}/${id}?shows=eventBrand%2CeventSeries%2Cmaturity%2CeventImpactScore%2CeventInboundScore%2CinternationalScore%2Cisforecasted%2CtrustScore%2CeventRating%2CestimatedExhibitScore%2CaudienceSpread`,
+      {
+        method: "GET",
+      }
+    );
+    return EventsAdapter.adaptEventDetailByIdResponse(response);
+  };
+
   const getEventPOCDetails = (id: string) => {
     return api.request<EventPOCDetailResponse>(
-      `${endpoints.event.events}/${id}/pocs`,
+      `${endpoints.event.eventPOCDetailById}/${id}`,
       {
         method: "GET",
       }
     );
   };
 
-  const getEventEditionDetails = (id: string) => {
+  const getEventEditionDetails = (id: string, take: number, skip: number) => {
     return api.request<EventEditionDetailResponse>(
-      `${endpoints.event.events}/${id}/editions`,
+      `${endpoints.event.eventEditionsDetailsById}/${id}${
+        take ? `?take=${take}` : ""
+      }${skip !== undefined && skip !== null ? `&skip=${skip}` : ""}`,
       {
         method: "GET",
       }
@@ -123,12 +135,25 @@ export const useEventsService = () => {
     return EventsAdapter.adaptEventCountResponse(response);
   };
 
+  const bookmarkThisEvent = async (id: string) => {
+    const response = await api.request(`${endpoints.tracker.saveEvent}`, {
+      method: "POST",
+      data: {
+        eventId: id,
+      },
+    });
+    console.log(response)
+    return response;
+  };
+
   return {
     getEvents,
     saveEvent,
     getEventById,
     getEventsCount,
     getRecentSearches,
+    bookmarkThisEvent,
+    getEventDetailById,
     getEventPOCDetails,
     getEventEditionDetails,
     getEventsWithSearchParams,
