@@ -50,7 +50,7 @@ export const useEventsService = () => {
       {
         method: "GET",
         params: {
-          eventIds: id,
+          eventId: id,
         },
       }
     );

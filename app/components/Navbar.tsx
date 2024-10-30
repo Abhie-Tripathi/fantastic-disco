@@ -186,7 +186,7 @@ const Navbar = () => {
         )}
 
         {/* ThemeSwitch */}
-        {pathName === "internal" && (
+        {/* {pathName === "internal" && (
           <div className="desktop_view tablet_view">
             <div
               className={`${styles.circle}`}
@@ -197,7 +197,7 @@ const Navbar = () => {
               <Image src={lightModeIcon} alt="theme" className={iconClass} width={20}/>
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Home */}
         {/* {pathName === "internal" && (
