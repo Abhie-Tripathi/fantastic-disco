@@ -91,7 +91,6 @@ export default function KeywordFilter({
  },[type])
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
-      {type!=="T_PRODUCT_KEYWORDS" && 
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -115,8 +114,7 @@ export default function KeywordFilter({
           </span>
           <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
-      </PopoverTrigger> 
-      }
+      </PopoverTrigger>
       <PopoverContent className="w-[348px] p-0">
         <Tabs
           defaultValue="include"
