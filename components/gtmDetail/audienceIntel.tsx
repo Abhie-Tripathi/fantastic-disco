@@ -55,21 +55,21 @@ export const AudienceIntel = ({
         <div className="flex gap-6">
           <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
             <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
-              Estimated Exhibitor
-            </h1>
-            <p className="text-[#6750A4] font-semibold text-lg">
-              {stats.estimatedExhibitor
-                ? stats.estimatedExhibitor ?? "--"
-                : "--"}
-            </p>
-          </div>
-          <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
-            <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
               Estimated Visitor
             </h1>
             <p className="text-[#6750A4] font-semibold text-lg">
               {stats.estimatedVisitor
                 ? numberWithCommas(stats.estimatedVisitor ?? "")
+                : "--"}
+            </p>
+          </div>
+          <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+            <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
+              Estimated Exhibitor
+            </h1>
+            <p className="text-[#6750A4] font-semibold text-lg">
+              {stats.estimatedExhibitor
+                ? stats.estimatedExhibitor ?? "--"
                 : "--"}
             </p>
           </div>

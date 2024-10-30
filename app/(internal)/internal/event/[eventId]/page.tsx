@@ -34,6 +34,7 @@ import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
 import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
 import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { renderFormattedDates } from "@/utils/dateFormat";
+import SaveThisEvent from "@/components/gtmDetail/saveThisEvent";
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
   const scrollableSectionRef = useRef<HTMLElement | null>(null);
@@ -142,7 +143,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           alt="eventDetails"
           width={420}
           height={280}
-          className="max-h-[300px] rounded-lg"
+          className="max-h-[300px] w-fill rounded-lg"
         />
 
         <div className="flex justify-between items-center py-4">
@@ -469,14 +470,15 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-        <div className="flex gap-6 mt-4">
-          <button className="border border-[#6750A4] rounded-md text-[#6750A4] flex  justify-center py-2 px-4 gap-2 items-center w-full">
+        <div className="flex gap-6 mt-4 justify-center">
+          {/* <button className="border border-[#6750A4] rounded-md text-[#6750A4] flex  justify-center py-2 px-4 gap-2 items-center w-full">
             <Bookmark width={15} height={15} className="w-5 h-5" />
             Save this event
-          </button>
-          <button className="bg-[#6750A4] rounded-md flex items-center justify-center py-2 px-4 text-white w-full cursor-not-allowed">
+          </button> */}
+          <SaveThisEvent eventDetails={eventDetails} />
+          {/* <button className="bg-[#6750A4] rounded-md flex items-center justify-center py-2 px-4 text-white w-full cursor-not-allowed">
             Add this to tracker
-          </button>
+          </button> */}
         </div>
 
         {/* <Button className="mt-4 w-full">Track this event</Button> */}
@@ -514,7 +516,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               </div>
             ))}
           </div>
-          <div className="flex gap-4 pb-2 pr-2">
+          {/* <div className="flex gap-4 pb-2 pr-2">
             <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit cursor-not-allowed">
               <Image src={"/dollar.svg"} alt="Dollar" width={10} height={10} />
               Cost Estimate
@@ -528,7 +530,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               />
               Event Relevance
             </button>
-          </div>
+          </div> */}
         </ul>
 
         <section className="flex flex-col gap-6 pb-6 h-[calc(100vh-180px)] mt-5 w-full pr-4 overflow-y-auto scroll-smooth">
@@ -540,7 +542,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           <hr className="h-[1px] border-t-1 bg-[#f2f2f2]" />
           <AdvancedDetails
             eventDetails={eventDetails}
-            eventEditionData = {eventEditionData}
+            eventEditionData={eventEditionData}
             eventId={params.eventId}
           />
           <InsightsAndScores
