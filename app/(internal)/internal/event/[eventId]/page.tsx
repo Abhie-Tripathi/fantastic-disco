@@ -138,13 +138,15 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             Back to Search
           </Link>
         </button>
-        <Image
-          src={bannerUrl ?? "/eventDetailFallback.png"}
-          alt="eventDetails"
-          width={420}
-          height={280}
-          className="max-h-[300px] w-fill rounded-lg"
-        />
+        {bannerUrl && (
+          <Image
+            src={bannerUrl ?? "/eventDetailFallback.png"}
+            alt="eventDetails"
+            width={420}
+            height={280}
+            className="max-h-[300px] w-fill rounded-lg"
+          />
+        )}
 
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center gap-1">
