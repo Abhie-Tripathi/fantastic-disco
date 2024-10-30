@@ -8,7 +8,8 @@ import Link from "next/link";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import Carousel from "@/app/components/carousel";
-import logo from "/public/Logo_Light mode.png";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg"
 import { showToast } from "@/utils/showToast";
 import { SignInWithOTPSchema } from "@/types";
 import { z } from "zod";
@@ -71,7 +72,8 @@ const ForgetPassword = () => {
         <form className={styles.loginForm} onSubmit={forgetPasswordHandler}>
           <div className={styles.form_container}>
             <div className={styles.form_heading}>
-              <Image src={logo} alt="logo" />
+            <Image src={logo} alt="logo" width={45} height={50} />
+                <Image src={whr} alt="whr"/>
             </div>
             <div className={styles.form_heading}>Forgot Password</div>
 

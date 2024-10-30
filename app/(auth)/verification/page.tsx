@@ -10,7 +10,8 @@ import { useRouter } from "next/navigation";
 import { baseUrl } from "@/constants";
 import { myFetch } from "@/utils/myFetch";
 import { useAuthContext } from "@/context";
-import logo from "/public/Logo_Light mode.png";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg"
 
 interface VerificationProps {
   params: {
@@ -119,7 +120,8 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
         </div>
         <div className={styles.form_container}>
           <div className={styles.heading}>
-            <Image src={logo} alt="logo" />
+          <Image src={logo} alt="logo" width={45} height={55} />
+          <Image src={whr} alt="whr"/>
           </div>
 
           <div className={styles.message}>

@@ -16,6 +16,7 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "@/context";
 import Image from "next/image";
 import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg"
 import { Step } from "react-joyride";
 import JoyRideCustom from "../internal/walkthrough/JoyRideCustom";
 
@@ -25,7 +26,7 @@ const Sidebar = () => {
   const { theme } = useTheme();
   const [run, setRun] = useState(false);
   const [steps, setSteps] = useState<Step[]>([]);
-
+  const iconClass = theme !== "light" ? "icons_light" : "icon";
   const dashboardRef = useRef(null);
   const researchRef = useRef(null);
   const trendsRef = useRef(null);
@@ -176,7 +177,7 @@ const Sidebar = () => {
           height={50}
           alt="logo"
         />
-        <div className={styles.logo_title}>EventGeni</div>
+        <Image src={whr} alt="whr" className={iconClass} style={{marginBottom:"17px"}}/>
       </Link>
 
       {!isWidgetPath ? (

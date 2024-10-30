@@ -125,6 +125,9 @@
   color: #242424;
   font-weight: 500;
   font-size: 24px;
+  display: flex;
+    align-items: center;
+    justify-content: center;
   /* margin-bottom: 20px; */
   text-align: center;
 }
