@@ -64,7 +64,7 @@ const EventCard3 = ({
             <div className={styles.bannerContainer}>
                 <Image width={280} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.banner} />
                 <div className={styles.event_type}>{fetchedEvent?.eventType==="MAIN"? "Main Even" : fetchedEvent?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
-                <div className={styles.type}>{fetchedEvent?.event_type?fetchedEvent.event_type:"Workshop"}</div>
+                <div className={styles.type}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.event_type: fetchedEvent?.eventType === "SUB" ?fetchedEvent.participationType:"Workshop"}</div>
             </div>
             <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
             <div className={styles.location_dateContainer}>

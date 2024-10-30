@@ -191,13 +191,13 @@ const Popup2: React.FC<Props> = ({
             className={`${styles.pill} ${styles.type1}`}
             style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}
           >
-            Tradeshow
+           {fetchedAddedEvents![0]?.eventType === "MAIN"? fetchedAddedEvents![0].event_type: fetchedAddedEvents![0]?.eventType === "SUB" ?fetchedAddedEvents![0].participationType:"Tradeshow"}
           </div>
           <div
             className={`${styles.pill} ${styles.type2}`}
             style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}
           >
-            Attending
+          {fetchedAddedEvents![0]?.eventType === "MAIN"? fetchedAddedEvents![0].eventFormat: fetchedAddedEvents![0]?.eventType==="SUB" ?fetchedAddedEvents![0].eventFormat:"Attending"}
           </div>
         </div>
         {/* <div className={styles.circles}>

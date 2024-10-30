@@ -25,6 +25,8 @@ import Gameday from '/public/widgetimages/gameday.jpeg';
 import MiniGolf from '/public/widgetimages/minigolf.jpeg';
 import OpenMic from '/public/widgetimages/openMic.jpeg';
 import Retro from '/public/widgetimages/retro.jpeg';
+import Marathon from '/public/widgetimages/marathon.jpeg';
+
 interface Props {
   handleChange: (field: keyof FormState, value: any) => void;
   formState: FormState
@@ -61,6 +63,7 @@ const ParticipationContainer = ({ size, theme, type, handleChange, formState, fo
     { type: "Mini-Golf", icon: MiniGolf, label: "Mini-Golf" },
     { type: "Open mic", icon: OpenMic, label: "Open mic" },
     { type: "Retro", icon: Retro, label: "Retro" },
+    { type: "Marathon", icon: Marathon, label: "Retro" }
     // { type: "Others", icon: CocktailHoursIcon, label: "Others" },
   ];
   // const sideOptions = [
@@ -164,7 +167,7 @@ const ParticipationContainer = ({ size, theme, type, handleChange, formState, fo
         <div ref={optionsRef} className={styles.options}>
           {optionsData.map((option) => (
             <div key={option.type} className={`${styles.option} ${formState.participationType === option.type ? styles.activeOption : ""}`} onClick={() => handleChange("participationType", option.type)}>
-              <Image src={option.icon} alt={`${option.label} icon`} height={54} width={54} />
+              <Image src={option.icon} alt={`${option.label} icon`} height={54} width={54} style={{borderRadius:"4px"}}/>
               <span className={formTheme === "dark" ? styles.darkLabel : styles.lightLabel}>{option.label}</span>
             </div>
           ))}
