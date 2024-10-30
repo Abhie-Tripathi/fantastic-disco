@@ -147,14 +147,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <EventContext.Provider value={{ fetchEventData, eventId, fetchedEvent, setAddEventModal, setDeleteModal, setDeleteModalTwo }}>
+        <EventContext.Provider value={{ fetchEventData, eventId, fetchedEvent, setAddEventModal, setDeleteModal, setDeleteModalTwo,isPastEvent }}>
             <div className={styles.body}>
                 <div className={styles.details}>
                     <div className={styles.header}>
                         <div className={styles.eventNameHeading}>{fetchedEvent?.name}</div>
                         <button onClick={handleDetailPage} className={styles.detailPageBtn}>Detail Page<Arrow /> </button>
-                    </div>
-                    {isPastEvent && <div>This is past event</div>}
+                    </div>  
                     <div className={styles.navbar}>
                         <Link href={`/widget/events/manage/${eventId}/overview`}
                             className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/overview` ? styles.activeItem : ""
