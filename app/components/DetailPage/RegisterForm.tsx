@@ -126,115 +126,6 @@ const RegisterForm = ({
     showToast("error", "You have already registered for this event");
   };
 
-
-  // useEffect(() => {
-  //   const timeDifference = (
-  //     currentTimeStr: string,
-  //     eventEndTimeStr: string
-  //   ) => {
-  //     // Helper function to parse time strings and create date objects
-  //     const parseTimeString = (timeStr: string) => {
-  //       const [time, modifier] = timeStr.split(" ");
-  //       const [hours, minutes] = time.split(":");
-  //       const date = new Date();
-
-  //       // Set hours based on AM/PM modifier
-  //       let hours24 = parseInt(hours, 10);
-  //       if (modifier === "PM" && hours24 < 12) {
-  //         hours24 += 12; // Convert to 24-hour format
-  //       }
-  //       if (modifier === "AM" && hours24 === 12) {
-  //         hours24 = 0; // Midnight case
-  //       }
-
-  //       // Set the date's hours and minutes
-  //       date.setHours(hours24);
-  //       date.setMinutes(parseInt(minutes, 10));
-  //       date.setSeconds(0);
-  //       return date;
-  //     };
-
-  //     const currentDate = parseTimeString(currentTimeStr);
-  //     const eventEndDate = parseTimeString(eventEndTimeStr);
-
-  //     // Calculate time difference in milliseconds
-  //     const timeDiffInMs = currentDate.getTime() - eventEndDate.getTime();
-
-  //     // Convert milliseconds to hours and minutes
-  //     const hours = Math.floor(timeDiffInMs / (1000 * 60 * 60));
-  //     const minutes = Math.floor(
-  //       (timeDiffInMs % (1000 * 60 * 60)) / (1000 * 60)
-  //     );
-
-  //     return {
-  //       hours,
-  //     };
-  //   };
-
-  //   const calculateTimeDifference = () => {
-  //     const currentDate = new Date();
-  //     const eventEndDate = new Date(end_date); // Example: "2024-10-25T23:00:00" (11:00 PM)
-
-  //     // Helper function to format time as "HH:MM AM/PM"
-  //     const formatTime = (date: any) => {
-  //       const hours = date.getHours();
-  //       const minutes = date.getMinutes();
-  //       const period = hours >= 12 ? "PM" : "AM";
-  //       const formattedHours = hours % 12 || 12;
-  //       const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
-  //       return `${formattedHours}:${formattedMinutes} ${period}`;
-  //     };
-
-  //     // Log formatted times for debugging
-  //     console.log("Current Time:", formatTime(currentDate));
-  //     console.log("Event End Time:", formatTime(eventEndDate), end_time);
-
-  //     // Check if it's the same day
-  //     const isSameDay =
-  //       currentDate.toDateString() === eventEndDate.toDateString();
-
-  //     // Check if the event has ended
-  //     const hasEventEnded = currentDate > eventEndDate;
-  //     if (hasEventEnded) {
-  //       // Calculate time difference in milliseconds
-  //       const timeDiffInMs = currentDate.getTime() - eventEndDate.getTime();
-  //       console.log("tata", timeDiffInMs, isSameDay);
-  //       if (isSameDay) {
-  //         // Event ended today, calculate hours since the event ended
-  //         const hoursSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60));
-  //         const currentTimediff = formatTime(currentDate);
-
-  //         const value = timeDifference(currentTimediff, end_time);
-  //         setTimeSinceEnd(`Event ended ${value.hours} hour${value.hours !== 1 ? "s" : ""} ago`);
-  //       } else {
-  //         // Event ended on a previous day, calculate days since the event ended
-  //         const daysSinceEnd = Math.floor(timeDiffInMs / (1000 * 60 * 60 * 24));
-  //         console.log("daysSinceEnd", daysSinceEnd);
-  //         if (daysSinceEnd === 0) {
-  //           setTimeSinceEnd(
-  //             `Event ended just now`)
-  //         } else {
-  //           setTimeSinceEnd(
-  //             `Event ended ${daysSinceEnd} day${daysSinceEnd !== 1 ? "s" : ""
-  //             } ago`
-  //           );
-  //         }
-
-  //       }
-  //       setIsEventEnded(true);
-  //     } else {
-  //       setIsEventEnded(false);
-  //       setTimeSinceEnd(""); // Reset if the event is ongoing
-  //     }
-  //   };
-
-  //   // Run the function initially and set up an interval to check every minute
-  //   calculateTimeDifference();
-  //   const intervalId = setInterval(calculateTimeDifference, 60000); // Check every minute
-
-  //   // Cleanup the interval on component unmount
-  //   return () => clearInterval(intervalId);
-  // }, [end_date]);
   useEffect(() => {
     const calculateIsPastEvent = () => {
       function convertTo24Hour(time: string) {
@@ -258,26 +149,26 @@ const RegisterForm = ({
         const now = new Date();
         return now.toISOString().split('T')[0]; // returns "YYYY-MM-DD"
       }
-      function calculateTimeDifference(eventDate : string, eventTime: string) {
+      function calculateTimeDifference(eventDate: string, eventTime: string) {
         const now = new Date();
         const eventEndDate = new Date(`${eventDate}T${eventTime}`);
-        
+
         // Get the difference in milliseconds as a number
         const timeDiffMs = now.getTime() - eventEndDate.getTime();
-    
+
         const diffMinutes = Math.floor((timeDiffMs / (1000 * 60)) % 60);
         const diffHours = Math.floor((timeDiffMs / (1000 * 60 * 60)) % 24);
         const diffDays = Math.floor(timeDiffMs / (1000 * 60 * 60 * 24));
-    
+
         if (diffDays > 0) {
-            return `Event has ended ${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+          return `Event has ended ${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
         } else if (diffHours > 0) {
-            return `Event has ended ${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+          return `Event has ended ${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
         } else {
-            return `Event has ended ${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+          return `Event has ended ${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
         }
-    }
-    
+      }
+
       const eventTime = convertTo24Hour(end_time || "12:00 AM")
       const currentTime = getCurrentTime24Hour()
       const currentDate = getCurrentDateFormatted()
