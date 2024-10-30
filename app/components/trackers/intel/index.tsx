@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './intel.style.module.css'
 import ToggleBtn from '../../UI/ToggleBtn'
-const index = ({internationalScore,inboundScore, userRating, exhibitScore, trustScore, reputation}:any) => {
+const index = ({internationalScore,inboundScore, exhibitScore, audienceZone, audienceSpread, audienceSpreadCount, audienceProfile}:any) => {
     const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     const freq=["Annual","Biannual","Queartly"]
     const entry=["Free","Paid","Invites","Member Access"];
@@ -31,17 +31,27 @@ const index = ({internationalScore,inboundScore, userRating, exhibitScore, trust
         </div>
         <div className={commonClasses.toggleContainer}>
           <div className={commonClasses.filterHeading}>
-          Audience Des & Dept
+          Audience Profile
           </div>
-          <ToggleBtn isTrue={false}/>
+          <ToggleBtn isTrue={audienceProfile}/>
         </div>
         <div className={commonClasses.toggleContainer}>
           <div className={commonClasses.filterHeading}>
-          Audience Spread
+          Audience Zone
           </div>
-          <ToggleBtn isTrue={false}/>
+          <ToggleBtn isTrue={audienceZone}/>
         </div>
-      
+        <div className={commonClasses.toggleContainer}>
+          <div className={commonClasses.filterHeading} style={{display:"flex", gap:"4px"}}>
+          Audience Spread
+            {audienceSpreadCount > 0 &&
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">{audienceSpreadCount}</span>
+            }
+          </div>
+          {/* <div className={styles.toggle_container}>
+            <ToggleBtn isTrue={audienceSpread}/>
+          </div> */}
+        </div>
                 
             </div>
         </div>

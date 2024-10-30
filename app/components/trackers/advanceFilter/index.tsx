@@ -45,8 +45,33 @@ const index = ({ freq, keywords, isBranded, eventEdition, type, eventSeries, for
         <div className={commonClasses.toggleContainer}>
           <div className={commonClasses.filterHeading}>Branded Event</div>
           <div className={styles.toggle_container}>
-           <ToggleBtn isTrue={false}/>
+           <ToggleBtn isTrue={isBranded}/>
           </div>
+        </div>
+        <div className={commonClasses.toggleContainer}>
+        <div className={commonClasses.filterHeading}>Series Event</div>
+          <div className={styles.toggle_container}>
+            {/* <span>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  // onChange={() => {}}
+                  // checked={}
+                  defaultChecked
+                  disabled
+                />
+                <span className={`${eventSeries ? styles.sliderBranded : styles.slider}`}></span>
+              </label>
+            </span> */}
+            <ToggleBtn isTrue={eventSeries}/>
+          </div>
+        </div>
+        <div className={commonClasses.toggleContainer}>
+          <div className={commonClasses.filterHeading}>Forecasted Status
+            </div>
+                <div className={styles.toggle_container}>
+                    <ToggleBtn isTrue={forecastedStatus}/>
+                </div>
         </div>
         <div className={commonClasses.filter}>
                     <div className={commonClasses.filterHeading}>Event Frequency</div>

@@ -1631,16 +1631,15 @@ console.log(includeKeywords, excludeKeywords);
       <div className={`card flex flex-col gap-6`} style={{gap:"var(--spacing-lg)", borderRadius:"var(--border-radius-sm)", boxShadow:"none"}}>
         <div>
         <div className="mb-4">{template?.description}
-          <Button10x
+          <Button
             className={styles.uploadBtn}
-            style={{ color: "white", float: "right" }}
-            variant="primary"
+            style={{ color: "white", float: "right", gap:"4px"}}
             size="sm"
             onClick={handleUploadEnable}
           >
             <Share style={{marginBottom: "3px", color: "white", display:"flex", gap:"4px"}} height="15px" width="15px" />
             {" "}Upload
-          </Button10x>
+          </Button>
         </div>
         {/* <div className={`${styles.toggleDiv}`}>
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
@@ -1696,12 +1695,13 @@ console.log(includeKeywords, excludeKeywords);
           />
         }
       <div style={{width:"calc(50% - 5px)"}}>
-      <EventKeyword state={selectedEventKeywords}
+      {/* <EventKeyword state={selectedEventKeywords}
       setState={setSelectedEventKeywords}
       onClose={close} type={isDiv}
       isMandatory={isMandatory}
       setIsMandatory={setIsMandatory}
-      />
+      /> */}
+      <ProductSelector type="T_PRODUCT_KEYWORDS" source="tracker"/>
       </div>
       </div>
       }

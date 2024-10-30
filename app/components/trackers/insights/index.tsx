@@ -1,12 +1,13 @@
 import React from 'react'
 import styles from './insights.style.module.css'
 import ToggleBtn from '../../UI/ToggleBtn'
-const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank, start, end, eventSize, isTrustOpen, isExhibitOpen}: any) => {
+const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank, start, end, eventSize, isTrustOpen, isExhibitOpen, eventImpactScore, eventRankToggle}: any) => {
   const format = ["Hybrid", "In-person", "Virtual", "Offline"]
   const freq = ["Annual", "Biannual", "Queartly"]
   const entry = ["Free", "Paid", "Invites", "Member Access"];
   // const rank=["Country Rank","Category Rank"];
   const key = ["Tags", "Airport", "Animal", "Sea", "Arson", "Cruise", "National", "Shows"];
+  const isAnalyticsOpen = (internationalScore || inboundScore || eventImpactScore);
   const commonClasses={
     filter:`flex flex-col gap-[var(--spacing-sm)] p-3 border border-[var(--border-color)] rounded-[var(--border-radius-sm)]`,
     filterHeading:`text-[var(--primary-color)] font-medium`,
@@ -17,7 +18,24 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
       <div className={styles.formatFreq}>
       <div className={commonClasses.filter}>
                     <div className={commonClasses.filterHeading}>Event Visitors</div>
-                    <div className="flex flex-wrap gap-3" style={{display:"grid", gridTemplateColumns:" repeat(2, 1fr)"}}>
+                    {/* <div className="flex flex-wrap gap-3" style={{display:"grid", gridTemplateColumns:" repeat(2, 1fr)"}}>
+                        {eventSize?.map((item: string, id: number) => (
+                            <>
+                                <label style={{ display: "flex" }} >
+                                    <input
+
+                                        className={styles.text}
+                                        type="checkbox"
+                                        // onChange={() => onChange()}
+                                        checked={true}
+                                        disabled
+                                    />
+                                    <span className={styles.item}>{item}</span>
+                                </label>
+                            </>
+                        ))}
+                    </div> */}
+                    <div className="gap-3 grid grid-cols-2">
                         {eventSize?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -36,13 +54,13 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                     </div>
                 </div>
       <div className={commonClasses.filter}>
-                    <div className="items-center text-[var(--primary-color)] font-medium" style={{display:"flex", justifyContent:"space-between"}}>
+                    <div className="flex justify-between items-center text-[var(--primary-color)] font-medium">
                     Estimated Exhibitor
                     <div className={styles.toggle_container}>
-            <ToggleBtn isTrue={isExhibitOpen}/>
-          </div>
+                    <ToggleBtn isTrue={isExhibitOpen}/>
+      </div>
                     </div>
-                    <div className="flex flex-wrap gap-3" style={{display:"grid", gridTemplateColumns:" repeat(2, 1fr)"}}>
+                    <div className="gap-3 grid grid-cols-2" >
                         {exhibitScore?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -63,7 +81,7 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                         <div className={commonClasses.toggleContainer}>
                     <div className="flex items-center text-[var(--primary-color)] font-medium">Event Analytics</div>
                     <div className={styles.toggle_container}>
-                     <ToggleBtn isTrue={false}/>
+                     <ToggleBtn isTrue={isAnalyticsOpen}/>
                         </div>
             </div>
             <div className={commonClasses.toggleContainer}>
@@ -118,7 +136,14 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
             <ToggleBtn isTrue={isTrustOpen}/>
           </div>
         </div>
-      
+        <div className={commonClasses.toggleContainer}>
+          <div className="flex items-center text-[var(--primary-color)] font-medium">
+            Event Ranking
+          </div>
+          <div className={styles.toggle_container}>
+          <ToggleBtn isTrue={eventRankToggle}/>
+          </div>
+        </div>
       {/* <div className={styles.branded}>
                     <div className={styles.formatHead}>Inbound Score</div>
                     <div className={styles.toggle_container}>

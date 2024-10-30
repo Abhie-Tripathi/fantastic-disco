@@ -14,12 +14,14 @@ import { X, Search, ChevronDown } from "lucide-react";
 import { useFilterState } from "@/hooks/useFilterState";
 interface KeywordSelectorProps{
   source:string;
+  type?:string;
   includeKeywords?:string[];
   setIncludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
   excludeKeywords?:string[];
   setExcludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
 }
 export default function KeywordFilter({
+  type,
   source, 
   includeKeywords : parentIncludeKeyword = [], 
   setIncludeKeywords : setParentIncludeKeywords, 
@@ -83,9 +85,13 @@ export default function KeywordFilter({
       handleApply();
     }
   };
-
+ useEffect(()=>{
+  if(type==="T_PRODUCT_KEYWORDS")
+  setIsOpen(true);  
+ },[type])
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
+      {type!=="T_PRODUCT_KEYWORDS" && 
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -109,7 +115,8 @@ export default function KeywordFilter({
           </span>
           <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
-      </PopoverTrigger>
+      </PopoverTrigger> 
+      }
       <PopoverContent className="w-[348px] p-0">
         <Tabs
           defaultValue="include"
