@@ -128,7 +128,7 @@ export default function EstimatedEconomicSelector() {
           <span className="flex items-center gap-2">
             Economic Impact
             {category.enabled && showEconomicImpact && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground">
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 ✓
               </span>
             )}

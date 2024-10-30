@@ -40,16 +40,16 @@ export default function EventRankingSelector() {
     setLocalFilter,
     getLocalFilterValue,
     setMultipleLocalFilters,
-    searchParams,
+    localFilters,
   } = useFilterContext();
 
   useEffect(() => {
-    const showParam = searchParams.get("show");
+    const showParam = localFilters.show;
     if (showParam && showParam.includes("rankings")) {
       setShowRank(true);
     }
 
-    const topParam = searchParams.get("top");
+    const topParam = localFilters.top;
     if (topParam) {
       const matchingRank = ranks.find(
         (rank) => rank.id === topParam.toLowerCase()
@@ -101,7 +101,7 @@ export default function EventRankingSelector() {
       (cat) => cat.name === "Trust Score"
     );
 
-    const currentShowParam = searchParams.get("show") || "";
+    const currentShowParam = localFilters.show || "";
     const showParamArray = currentShowParam.split(",").filter(Boolean);
 
     if (showRank && !showParamArray.includes("rankings")) {
@@ -180,7 +180,7 @@ export default function EventRankingSelector() {
           <div className="flex items-center truncate">
             <span className="mr-2">Event Ranking</span>
             {getAppliedFiltersCount() > 0 && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground mr-1">
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
                 {getAppliedFiltersCount()}
               </span>
             )}

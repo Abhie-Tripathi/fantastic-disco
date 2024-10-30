@@ -28,7 +28,8 @@ import { usePathname } from "next/navigation";
 import { useFilterContext } from "@/context/filterContext";
 
 const presets = [
-  { label: "Custom", value: "custom" },
+  { label: "Any", value: "any" },
+  // { label: "Custom", value: "custom" },
   { label: "This week", value: "this-week" },
   { label: "This month", value: "this-month" },
   { label: "3 months", value: "3-months" },
@@ -72,7 +73,8 @@ export default function DateRangeSelector() {
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("this-month");
   const [compareEnabled, setCompareEnabled] = React.useState(false);
-  const { getLocalFilterValue, setMultipleLocalFilters, searchParams } = useFilterContext();
+  const { getLocalFilterValue, setMultipleLocalFilters, searchParams } =
+    useFilterContext();
   const [selectedComparison, setSelectedComparison] = React.useState(
     comparisonOptions[0]
   );
@@ -125,8 +127,12 @@ export default function DateRangeSelector() {
   const handlePresetChange = (preset: string) => {
     setSelectedPreset(preset);
     const currentDate = new Date();
-    let from: Date, to: Date;
+    let from: Date | undefined, to: Date | undefined;
     switch (preset) {
+      case "any":
+        from = undefined;
+        to = undefined;
+        break;
       case "this-week":
         from = startOfWeek(currentDate);
         to = endOfWeek(currentDate);
@@ -155,7 +161,7 @@ export default function DateRangeSelector() {
         return;
     }
     setDateRange({ from, to });
-    setCalendarDate(from);
+    setCalendarDate(currentDate);
   };
 
   const handleDateSelect = (selectedDate: Date | undefined) => {

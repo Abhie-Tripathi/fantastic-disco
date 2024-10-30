@@ -157,7 +157,7 @@ export default function EventAnalyticsSelector() {
         >
           <span className="mr-2">Event Analytics</span>
           {showScores && getAppliedFiltersCount() > 0 && (
-            <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground mr-1">
+            <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
               {getAppliedFiltersCount()}
             </span>
           )}

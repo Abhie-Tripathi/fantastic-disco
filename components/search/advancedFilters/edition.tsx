@@ -70,7 +70,7 @@ export default function EditionSelector() {
           <div className="flex items-center">
             <span className="mr-2">Maturity</span>
             {selectedStatus && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground">
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 1
               </span>
             )}

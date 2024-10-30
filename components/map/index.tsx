@@ -30,6 +30,8 @@ import { circle, point } from "@turf/turf";
 import { LayerProps } from "react-map-gl";
 import { format } from "date-fns";
 import MapPopup from "./popup";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import ZeroState from "@/app/components/zerostate";
 
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
@@ -123,6 +125,71 @@ export default function MapComponent({ searchParams }: MapProps) {
     }
   }, []);
 
+  const saveTrackerHandler = async () => {
+    const userType = {
+      ...(selectedInsights.eventRating && { rating: true }),
+      ...(selectedInsights.estExhibit && { exhibit: true }),
+      ...(selectedInsights.repeatSent && { trust: true }),
+      ...(selectedMaturity !== "" &&
+        selectedMaturity !== "none" && { maturity: true }),
+      ...(selectedBrandedEvent && { brandedEvent: true }),
+      ...(selectedEventSeries && { eventSeries: true }),
+      ...(forecastedStatus && { forecastedStatus: true }),
+      ...(analyticsToggles.impactScore && { impactScore: true }),
+      ...(analyticsToggles.inboundScore && { inboundScore: true }),
+      ...(analyticsToggles.internationalScore && { internationalScore: true }),
+      ...(selectedRank !== "" &&
+        selectedRank !== "none" && { eventRank: true }),
+      ...(audienceZone && { audienceZone: true }),
+      ...(audienceSpread && { audienceSpread: true }),
+    };
+    if (customTrackerName != "") {
+      const formData = {
+        name: customTrackerName,
+        filterValue: adaptedParams,
+      };
+
+      try {
+        const { data, error } = await myFetch(`${baseUrl}/tracker`, {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(data);
+
+        if (error) {
+          console.log(error);
+          return;
+        }
+        if (data) {
+          toast.success(
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
+              Tracker created successfully!{" "}
+              <span
+                className={styles["seeTracker-btn"]}
+                onClick={() => router.replace("/internal/trackers")}
+              >
+                See Tracker
+              </span>
+            </div>,
+            {
+              position: "bottom-right",
+              autoClose: 2000,
+              // closeButton: false,
+              hideProgressBar: true,
+            }
+          );
+        }
+      } catch (error) {
+        console.error("Error saving tracker:", error);
+      } finally {
+        setTrackerModalOpen(false);
+      }
+    }
+  };
+
   useEffect(() => {
     const newZoomGroup = determineZoomGroup(viewport.zoom);
     if (newZoomGroup !== currentZoomGroup) {
@@ -139,7 +206,7 @@ export default function MapComponent({ searchParams }: MapProps) {
       return response || [];
     },
     staleTime: 60 * 1000,
-    enabled: currentZoomGroup !== "event",
+    enabled: currentZoomGroup !== "event" && location !== null,
   });
 
   useEffect(() => {
@@ -357,102 +424,108 @@ export default function MapComponent({ searchParams }: MapProps) {
 
   return (
     <div className="relative">
-      <ReactMapGL
-        style={{ width: "100%", height: "78vh" }}
-        onMove={onMove}
-        onClick={handleMapClick}
-        projection={{ name: "mercator" }}
-        mapStyle={MapStyle.Street}
-        mapboxAccessToken={MapboxToken}
-        minZoom={ZOOM_LEVELS.INITIAL}
-        interactiveLayerIds={["event-counts"]}
-        ref={mapRef}
-        {...viewport}
-      >
-        <Button
-          variant="default"
-          className="absolute top-4 right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
-          onClick={() => setShowEventList(!showEventList)}
-        >
-          <AlignLeft className="w-5 h-5" />
-          <span>Event List</span>
-        </Button>
-
-        <EventList
-          isVisible={showEventList}
-          onClose={() => setShowEventList(false)}
+      {!location ? (
+        <ZeroState
+          text="Please select a country, state, or city to view events. (Multiple Allowed)"
         />
-
-        {eventCountsQuery.isSuccess && currentZoomGroup !== "event" && (
-          <Source
-            id="event-counts-source"
-            type="geojson"
-            data={eventCountsGeoJSON}
+      ) : (
+        <ReactMapGL
+          style={{ width: "100%", height: "78vh" }}
+          onMove={onMove}
+          onClick={handleMapClick}
+          projection={{ name: "mercator" }}
+          mapStyle={MapStyle.Street}
+          mapboxAccessToken={MapboxToken}
+          minZoom={ZOOM_LEVELS.INITIAL}
+          interactiveLayerIds={["event-counts"]}
+          ref={mapRef}
+          {...viewport}
+        >
+          <Button
+            variant="default"
+            className="absolute top-4 right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
+            onClick={() => setShowEventList(!showEventList)}
           >
-            <Layer
-              id="event-counts"
-              type="circle"
-              paint={{
-                "circle-color": "#6F48AD",
-                "circle-radius": 20,
-                "circle-stroke-width": 1,
-                "circle-stroke-color": "#fff",
-              }}
-            />
-            <Layer
-              id="event-counts-label"
-              type="symbol"
-              layout={{
-                "text-field": "{count}",
-                "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-                "text-size": 12,
-              }}
-              paint={{
-                "text-color": "#ffffff",
-              }}
-            />
-          </Source>
-        )}
+            <AlignLeft className="w-5 h-5" />
+            <span>Event List</span>
+          </Button>
 
-        {circleLayer && (
-          <Source
-            id="circle-source"
-            type="geojson"
-            data={circleLayer.source?.data}
-          >
-            <Layer {...circleLayer} />
-          </Source>
-        )}
+          <EventList
+            isVisible={showEventList}
+            onClose={() => setShowEventList(false)}
+          />
 
-        {circleLayer && <Alerts />}
+          {eventCountsQuery.isSuccess && currentZoomGroup !== "event" && (
+            <Source
+              id="event-counts-source"
+              type="geojson"
+              data={eventCountsGeoJSON}
+            >
+              <Layer
+                id="event-counts"
+                type="circle"
+                paint={{
+                  "circle-color": "#6F48AD",
+                  "circle-radius": 20,
+                  "circle-stroke-width": 1,
+                  "circle-stroke-color": "#fff",
+                }}
+              />
+              <Layer
+                id="event-counts-label"
+                type="symbol"
+                layout={{
+                  "text-field": "{count}",
+                  "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+                  "text-size": 12,
+                }}
+                paint={{
+                  "text-color": "#ffffff",
+                }}
+              />
+            </Source>
+          )}
 
-        {(currentZoomGroup === "event" || circleLayer) &&
-          events.map((event: MapEvents) => {
-            return (
-              <Marker
-                onClick={() => handleMarkerClick(event)}
-                key={event.id}
-                longitude={parseFloat(event.longitude)}
-                latitude={parseFloat(event.latitude)}
-                anchor="bottom"
-              >
-                <div className="marker">
-                  {event.eventType && (
-                    <img
-                      src={iconUrls[event.eventType]}
-                      alt={event.eventType}
-                      className="w-6 h-6"
-                    />
-                  )}
-                </div>
-              </Marker>
-            );
-          })}
+          {circleLayer && (
+            <Source
+              id="circle-source"
+              type="geojson"
+              data={circleLayer.source?.data}
+            >
+              <Layer {...circleLayer} />
+            </Source>
+          )}
 
-        {popupInfo && (
-          <MapPopup popupInfo={popupInfo} setPopupInfo={setPopupInfo} />
-        )}
-      </ReactMapGL>
+          {circleLayer && <Alerts />}
+
+          {(currentZoomGroup === "event" || circleLayer) &&
+            events.map((event: MapEvents) => {
+              return (
+                <Marker
+                  onClick={() => handleMarkerClick(event)}
+                  key={event.id}
+                  longitude={parseFloat(event.longitude)}
+                  latitude={parseFloat(event.latitude)}
+                  anchor="bottom"
+                >
+                  <div className="marker">
+                    {event.eventType && (
+                      <img
+                        src={iconUrls[event.eventType]}
+                        alt={event.eventType}
+                        className="w-6 h-6"
+                      />
+                    )}
+                  </div>
+                </Marker>
+              );
+            })}
+
+          {popupInfo && (
+            <MapPopup popupInfo={popupInfo} setPopupInfo={setPopupInfo} />
+          )}
+        </ReactMapGL>
+      )}
     </div>
   );
 }

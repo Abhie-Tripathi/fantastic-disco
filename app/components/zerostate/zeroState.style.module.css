@@ -8,6 +8,7 @@
     font-weight: var(--font-weight-medium);
   }
   .text{
+    text-align: center;
     color:var(--secondary-text-color);
     font-size: var(--font-size-default);
     width: 400px;

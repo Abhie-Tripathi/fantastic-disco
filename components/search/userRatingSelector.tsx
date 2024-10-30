@@ -76,14 +76,14 @@ export default function UserRatingSelector() {
           <span className="flex items-center gap-2">
             User Rating
             {selectedRatings.length > 0 && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground">
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {selectedRatings.length}
               </span>
             )}
           </span>
           {isMounted && (
             <DynamicSwitch
-              checked={showRatings}
+              checked={showRatings} 
               onCheckedChange={handleShowRatingsToggle}
               aria-label="Show ratings"
               onClick={(e: React.MouseEvent<HTMLButtonElement>) =>

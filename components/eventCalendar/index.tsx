@@ -42,7 +42,7 @@ export default function EventCalendar({
 }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [filter, setFilter] = useState("all");
-  const { getFilterValue, setFilter: setGlobalFilter } = useFilterState();
+  const { getFilterValue, setFilter: setGlobalFilter , setMultipleFilters } = useFilterState();
   const [showEventList, setShowEventList] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
@@ -117,6 +117,19 @@ export default function EventCalendar({
     setSelectedDate(updatedDate);
     setShowEventList(true);
   }, []);
+
+
+  useEffect(() => {
+    if (!getFilterValue("active_gte") || !getFilterValue("active_lte")) {
+      const startOfYear = new Date(new Date().getFullYear(), 0, 1); // January 1st of current year
+      const endOfYear = new Date(new Date().getFullYear(), 11, 31); // December 31st of current year
+      
+      setMultipleFilters({
+        active_gte: startOfYear.toISOString(),
+        active_lte: endOfYear.toISOString()
+      });
+    }
+  }, [getFilterValue, setMultipleFilters]);
 
   return (
     <div className="flex">

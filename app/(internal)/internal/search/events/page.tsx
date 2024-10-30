@@ -31,11 +31,27 @@ import {
   MapEventsResponse,
 } from "@/types/events";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Loader2, Filter } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { ArrowUpRight, Loader2, Filter, Cross } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, lazy, use, useCallback, useEffect, useState } from "react";
 import Table from "@/app/components/Table";
 import { EventsAdapter } from "@/adapters/eventsAdapter";
+import { showToast } from "@/utils/showToast";
+import moment from "moment";
+import {
+  Button as Button10x,
+  Dialog as Dialog10x,
+  DialogContent as DialogContent10x,
+  DialogTitle as DialogTitle10x,
+  Input as Input10x,
+} from "10xui";
+import { GAEvent } from "@/utils/GAEvent";
+import { BaseURL } from "@/config";
+import { myFetch } from "@/utils/myFetch";
+import { toast } from "react-toastify";
+import styles from "./search.module.css";
+import ZeroState from "@/app/components/zerostate";
+import { ApiError } from "@/types/api";
 
 const Map = lazy(() => import("@/components/map"));
 
@@ -54,13 +70,18 @@ interface LocationIds {
 type LocationState = GeoCoordinate | LocationIds | null;
 
 const Search = () => {
-  const { navigateWithParams, getFilterValue, setFilter } = useFilterState();
+  const router = useRouter();
+  const { navigateWithParams, getFilterValue, setFilter, setMultipleFilters } =
+    useFilterState();
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
-  const { applyFilters, localFilters } = useFilterContext();
+  const { applyFilters, setMultipleLocalFilters } = useFilterContext();
   const searchParams = useSearchParams();
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
+  const [validationError, setValidationError] = useState("");
+  const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
+  const [customTrackerName, setCustomTrackerName] = useState<string>("");
   const {
     data: eventData,
     error,
@@ -99,12 +120,7 @@ const Search = () => {
 
   console.log(events);
 
-  const createTrackerHandler = useCallback(() => {
-    navigateWithParams("/trackers/create");
-  }, [navigateWithParams]);
-
   const searchHandler = useCallback(() => {
-    if (selectedView == "map") return;
     applyFilters();
   }, []);
 
@@ -118,6 +134,10 @@ const Search = () => {
     delete adaptedParams.sortType;
     return new URLSearchParams(adaptedParams).toString();
   })();
+
+  const onTabsChange = (value: string) => {
+    setFilter("view", value);
+  };
 
   const selectedInsights = {
     eventSize: true,
@@ -142,6 +162,101 @@ const Search = () => {
   };
 
   console.log(adaptedQueryString);
+
+  const createTrackerHandler = async () => {
+    GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
+
+    if (!getFilterValue("locationIds")) {
+      toast.error("Please select location", {
+        position: "bottom-right",
+        autoClose: 2000,
+        // closeButton: false,
+        hideProgressBar: true,
+      });
+    } else {
+      setTrackerModalOpen(true);
+    }
+  };
+
+  const saveTrackerHandler = async () => {
+    const userType = {
+      ...(selectedInsights.eventRating && { rating: true }),
+      ...(selectedInsights.estExhibit && { exhibit: true }),
+      ...(selectedInsights.repeatSent && { trust: true }),
+      // ...((selectedMaturity !== '' && selectedMaturity !== 'none') && {maturity:true}),
+      // ...(selectedBrandedEvent && {brandedEvent:true}),
+      // ...(selectedEventSeries && {eventSeries:true}),
+      // ...(forecastedStatus && {forecastedStatus:true}),
+      // ...(analyticsToggles.impactScore&& {impactScore:true}),
+      // ...(analyticsToggles.inboundScore&& {inboundScore:true}),
+      // ...(analyticsToggles.internationalScore&& {internationalScore:true}),
+      // ...((selectedRank !== '' && selectedRank !== 'none') && {eventRank:true}),
+      // ...(audienceZone && {audienceZone:true}),
+      // ...(audienceSpread && {audienceSpread:true}),
+    };
+    if (customTrackerName != "") {
+      const formData = {
+        name: customTrackerName,
+        filterValue: {
+          ...adaptedParams,
+          ...{
+            shows: [
+              "eventBrand",
+              "eventSeries",
+              "maturity",
+              "eventImpactScore",
+              "eventInboundScore",
+              "internationalScore",
+              "isforecasted",
+              "trustScore",
+              "eventRating",
+              "estimatedExhibitScore",
+              "audienceSpread",
+            ].join(),
+          },
+        },
+      };
+
+      try {
+        const { data, error } = await myFetch(`${BaseURL}/tracker`, {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(data);
+
+        if (error) {
+          console.log(error);
+          return;
+        }
+        if (data) {
+          toast.success(
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
+              Tracker created successfully!{" "}
+              <span
+                className={styles["seeTracker-btn"]}
+                onClick={() => router.replace("/internal/trackers")}
+              >
+                See Tracker
+              </span>
+            </div>,
+            {
+              position: "bottom-right",
+              autoClose: 2000,
+              // closeButton: false,
+              hideProgressBar: true,
+            }
+          );
+        }
+      } catch (error) {
+        console.error("Error saving tracker:", error);
+      } finally {
+        setTrackerModalOpen(false);
+      }
+    }
+  };
 
   return (
     <div className="space-y-6 p-6">
@@ -174,7 +289,11 @@ const Search = () => {
             )}
           </Button>
           <div className="flex items-center justify-evenly">
-            <Button variant="link" className="p-0 block text-wrap">
+            <Button
+              variant="link"
+              className="p-0 block text-wrap"
+              onClick={createTrackerHandler}
+            >
               Save as Tracker
             </Button>
             <Button
@@ -193,7 +312,7 @@ const Search = () => {
       <Tabs
         defaultValue="list"
         value={selectedView}
-        onValueChange={(value) => setFilter("view", value)}
+        onValueChange={onTabsChange}
       >
         <div className="grid grid-cols-3 items-center mb-6">
           {/* <div className="flex items-center gap-2">
@@ -230,18 +349,7 @@ const Search = () => {
             </Dialog>
           </div>
         </div>
-        {error && (
-          <div className="text-red-500 mb-4" role="alert">
-            {error.message}
-          </div>
-        )}
 
-        {error && (error as any).status == 429 && (
-          <div className="text-center">
-            You have reached the maximum limit to view data. Please get in touch
-            with us.
-          </div>
-        )}
         <TabsContent value="list" className="flex-grow overflow-hidden">
           {isLoading ? (
             <Loading />
@@ -256,17 +364,65 @@ const Search = () => {
         </TabsContent>
         <TabsContent value="map">
           <Suspense fallback={<Loading />}>
-            <Map searchParams={searchParams.toString()} />
+            {isLoading ? (
+              <Loading />
+            ) : eventData?.count == 0 ? (
+              <ZeroState text="No events were found in the selected area." />
+            ) : error ? (
+              <ZeroState text={(error as ApiError).message} />
+            ) : (
+              <Map searchParams={searchParams.toString()} />
+            )}
           </Suspense>
         </TabsContent>
         <TabsContent value="calendar">
           <Suspense fallback={<Loading />}>
-            <EventCalendar
-              events={events as CalendarEvent[] | CalendarMonthEvent[]}
-            />
+            {isLoading ? (
+              <Loading />
+            ) : eventData?.count == 0 ? (
+              <ZeroState text="No events were found in the selected area." />
+            ) : error ? (
+              <ZeroState text={(error as ApiError).message} />
+            ) : (
+              <EventCalendar
+                events={events as CalendarEvent[] | CalendarMonthEvent[]}
+              />
+            )}
           </Suspense>
         </TabsContent>
       </Tabs>
+
+      <Dialog10x open={trackerModalOpen}>
+        <DialogContent10x>
+          <DialogTitle10x style={{ width: "35vw" }}>
+            <span>Create Tracker</span>
+            <Cross
+              onClick={() => setTrackerModalOpen(false)}
+              style={{ float: "right", cursor: "pointer" }}
+              color={"primary"}
+              height={"15px"}
+              width={"15px"}
+            />
+          </DialogTitle10x>
+          <div>
+            <Input10x
+              placeholder="Enter Tracker Name"
+              onChange={(e) => setCustomTrackerName(e.target.value)}
+              value={customTrackerName}
+            />
+          </div>
+          <div>
+            <Button10x
+              onClick={saveTrackerHandler}
+              style={{ float: "right", border: "unset" }}
+              color={"primary"}
+              variant={"secondary"}
+            >
+              Save
+            </Button10x>
+          </div>
+        </DialogContent10x>
+      </Dialog10x>
     </div>
   );
 };

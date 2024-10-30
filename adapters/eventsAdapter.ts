@@ -10,7 +10,6 @@ import { designations } from "@/data/designations";
 
 export const EventsAdapter = {
   adaptRequestParams: (params: URLSearchParams): Record<string, string> => {
-
     const adaptedParams: Record<string, string> = {
       sortBy: "score",
       sortType: "desc",
@@ -568,6 +567,7 @@ export const EventsAdapter = {
 };
 
 function determineEventType(item: string): string {
+  if (!item) return "";
   if (item.toLowerCase() === "tradeshow") return "tradeshows";
   if (item.toLowerCase() === "conference") return "conferences";
   else return "unknown";

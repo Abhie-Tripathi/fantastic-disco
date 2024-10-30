@@ -93,7 +93,7 @@ export default function KeywordFilter() {
           <span className="flex items-center gap-2">
             Products/Topics
             {(includeKeywords.length > 0 || excludeKeywords.length > 0) && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground">
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {includeKeywords.length + excludeKeywords.length}
               </span>
             )}

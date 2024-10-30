@@ -85,9 +85,7 @@ export default function EventList({
     return (
       <Link href={`/search/${event.id}`}>
         <Card key={event.id} className="mb-4 relative">
-          <div
-            className="absolute left-0 top-0 bottom-0 w-1 rounded-md bg-[#5055A3]"
-          />
+          <div className="absolute left-0 top-0 bottom-0 w-1 rounded-md bg-[#5055A3]" />
           <CardContent className="p-4">
             <div className="flex items-center mb-2 pb-2 border-b">
               {eventTypeIcons[event.primaryEventType || "festivals"]}
@@ -215,25 +213,7 @@ export default function EventList({
     return (
       <>
         <div className="p-4 rounded-t-lg">
-          <div className="flex justify-between items-center mb-4 border-b">
-            <span className="font-semibold text-sm text-primary">
-              {new Date().toLocaleDateString("en-US", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-lg"
-              onClick={onClose}
-            >
-              &times;
-            </Button>
-          </div>
-
-          <div className="flex space-x-2 mt-4">
+          <div className="flex justify-between items-center border-b pb-2">
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="text-white bg-primary">
                 {count}
@@ -242,6 +222,14 @@ export default function EventList({
                 Events Found
               </span>
             </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-lg"
+              onClick={onClose}
+            >
+              &times;
+            </Button>
           </div>
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">

@@ -79,7 +79,7 @@ export default function FrequencySelector() {
           <span className="flex items-center gap-2">
             Frequency
             {selectedFrequencies.length > 0 && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground">
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {selectedFrequencies.length}
               </span>
             )}
