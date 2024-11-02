@@ -5,7 +5,6 @@ import { ReactSpreadsheetImport } from "react-spreadsheet-import";
 interface InputArea {
   type: string;
   placeholder: string;
-  example?: string;
 }
 
 interface Template {
@@ -43,7 +42,7 @@ const CsvUploader = ({
           fieldType: {
             type: "input",
           },
-          example: "Technology",
+          example: "Stephanie",
           validations: [
             {
               rule: "required",
@@ -59,7 +58,7 @@ const CsvUploader = ({
           fieldType: {
             type: "input",
           },
-          example: "Medical",
+          example: "Stephanie",
           validations: [
             {
               rule: "unique",
@@ -76,11 +75,11 @@ const CsvUploader = ({
         tempData.push({
           label: t_name,
           key: t_name,
-          alternateMatches: [t_name, "Competitor Name / Website", "Competitor"],
+          alternateMatches: [t_name],
           fieldType: {
             type: "input",
           },
-          example: item.example,
+          example: "Stephanie",
           validations: [
             {
               rule: "required",
@@ -113,21 +112,7 @@ const CsvUploader = ({
           finalData2.push("-" + data["Excluded Keywords"]);
       });
       setSelectedEventKeywords(finalData2);
-    } else {
-      const cleanedSpeakers = data.validData
-      .map((item: any) => {
-          const trimmedItem: any = {};
-          Object.keys(item).forEach(key => {
-              trimmedItem[key] = item[key].trim();
-          });
-          return trimmedItem;
-      })
-      .filter((item: any) => {
-          return Object.values(item).every(value => value !== '');
-      });
-
-      handleCustomData(cleanedSpeakers);
-    }
+    } else handleCustomData(data.validData);
   };
 
   const [csvFields, setCsvFields] = useState<any[]>([]);
@@ -135,16 +120,6 @@ const CsvUploader = ({
   return (
     <>
       <ReactSpreadsheetImport
-        uploadStepHook={(data: any) => {
-          if(data.length == 0) {
-            let fieldArr: any = [];
-            csvFields.map((fieldItem)=>{
-              fieldArr.push(fieldItem.key);
-            })
-            return [fieldArr, ...data];
-          }
-          return data
-        }}
         isOpen={uploaderOpen}
         onClose={onClose}
         onSubmit={onSubmit}
@@ -160,7 +135,7 @@ const CsvUploader = ({
             border: "var(--border-color)",
             rsi: {
               50: "var(--tabs-background-color)",
-              100: "var(--tabs-background-color)",
+              100: "var(--primary-color)",
               200: "var(--primary-color)",
               300: "var(--primary-color)",
               400: "var(--primary-color)",
@@ -171,139 +146,6 @@ const CsvUploader = ({
               900: "var(--primary-color)",
             },
           },
-          components: {
-            UploadStep: {
-              baseStyle: {
-                heading: {
-                  fontSize: "2xl",
-                  mb: "0.5rem",
-                  fontWeight: "semibold",
-                },
-                title: {
-                  fontSize: "1xl",
-                  lineHeight: 8,
-                  fontWeight: "medium",
-                },
-                subtitle: {
-                  fontSize: "sm",
-                  lineHeight: 6,
-                  mb: "1rem",
-                },
-                dropzoneText: {
-                  size: "lg",
-                  lineHeight: 7,
-                  fontWeight: "medium",
-                  color: "textColor",
-                },
-              }
-            },
-            SelectHeaderStep: {
-              baseStyle: {
-                heading: {
-                  mb: 3,
-                  fontSize: "1xl",
-                },
-              },
-            },
-            MatchColumnsStep: {
-              baseStyle: {
-                heading: {
-                  mb: 3,
-                  fontSize: "2xl",
-                },
-                title: {
-                  fontSize: "1xl",
-                  lineHeight: 8,
-                  fontWeight: "medium",
-                  mb: 2,
-                },
-              }
-            },
-            ValidationStep: {
-              baseStyle: {
-                heading: {
-                  fontSize: "2xl",
-                },
-              }
-            },
-            Modal: {
-              variants: {
-                rsi: {
-                  header: {
-                    px: "2rem",
-                    py: "1rem",
-                  },
-                  body: {
-                    paddingX: "2rem",
-                    paddingY: "1rem",
-                  },
-                  footer: {
-                    py: "1rem",
-                    px: "2rem",
-                  },
-                }
-              }
-            },
-            MatchIcon: {
-              baseStyle: {
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                bg: "background",
-                color: "background",
-
-                borderColor: "var(--primary-color)",
-                borderRadius: "50%",
-                borderWidth: "2px",
-                transitionDuration: "ultra-fast",
-                _highlighted: {
-                  bg: "var(--primary-color)",
-                  borderColor: "var(--primary-color)",
-                },
-              }
-            },
-          },
-          styles: {
-            global: {
-              ".rdg-cell-error": {
-                backgroundColor: 'var(--danger-background-color)'
-              },
-              ".cui-steps__step-icon-container[data-highlighted]": {
-                background: 'var(--primary-color)!important',
-                borderColor: 'var(--primary-color)!important'
-              },
-              ".cui-steps__step-icon-container[aria-current=step]": {
-                borderColor: 'var(--primary-color)!important'
-              },
-              ".cui-steps__horizontal-step[data-highlighted]:not(:last-child):after": {
-                backgroundColor: 'var(--primary-color)!important'
-              },
-              ".chakra-switch__track[data-checked]": {
-                backgroundColor: 'var(--primary-color)!important'
-              },
-              ".chakra-checkbox__control[data-checked]": {
-                backgroundColor: 'var(--primary-color)!important',
-                borderColor: 'var(--primary-color)!important'
-              },
-            }
-          }
-        }}
-        translations={{
-          uploadStep: {
-            // manifestTitle: "",
-            manifestDescription: "(You can rename or remove columns in the next steps. The first row will be used as the header)",
-            // <ul style={{fontSize: '12px'}}>
-            //   <li>Text line 1</li>
-            //   <li>Text line 2</li>
-            // </ul>,
-            dropzone: {
-              title: "Upload .xlsx, .xls or .csv file (File size should be less than 5MB)",
-              errorToastDescription: "upload rejected",
-              activeDropzoneTitle: "Drop file here...",
-              buttonTitle: "Select file",
-              loadingTitle: "Processing...",
-            },
-          }
         }}
       />
     </>

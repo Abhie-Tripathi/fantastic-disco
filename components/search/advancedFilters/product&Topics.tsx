@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, Search, ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
+import KeywordTabs from "./keywordTabs";
 interface KeywordSelectorProps{
   source:string;
   type?:string;
@@ -59,6 +60,8 @@ export default function KeywordFilter({
         const uniqueNewKeywords = newKeywords.filter(
           (k) => !includeKeywords.includes(k)
         );
+        console.log(includeKeywords);
+        
         setIncludeKeywords?.([...includeKeywords, ...uniqueNewKeywords]);
       } else {
         const uniqueNewKeywords = newKeywords.filter(
@@ -69,8 +72,6 @@ export default function KeywordFilter({
       setInputValue("");
     }
   };
-
-  console.log(includeKeywords);
 
   const handleRemoveKeyword = (
     keyword: string,
@@ -97,9 +98,15 @@ export default function KeywordFilter({
       handleApply();
     }
   };
-
+  useEffect(() => {
+    if (type === "T_PRODUCT_KEYWORDS" && !isOpen) {
+      handleOpenChange(true);
+    }
+  }, [type, isOpen]);
+  console.log(includeKeywords);
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
+      {type!=="T_PRODUCT_KEYWORDS" &&
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -118,78 +125,17 @@ export default function KeywordFilter({
           <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[348px] p-0">
-        <Tabs
-          defaultValue="include"
-          onValueChange={(value) =>
-            setActiveTab(value as "include" | "exclude")
-          }
-        >
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="include">Include</TabsTrigger>
-            <TabsTrigger value="exclude">Exclude</TabsTrigger>
-          </TabsList>
-          <div className="p-4 space-y-4">
-            <form onSubmit={handleAddKeyword} className="flex space-x-2">
-              <div className="relative flex-grow">
-                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                <Input
-                  type="text"
-                  placeholder={`Type Products/Topics to ${
-                    activeTab === "include" ? "include" : "exclude"
-                  }`}
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  className="pl-8"
-                />
-              </div>
-              <Button type="submit" size="sm" className="h-10 px-4">
-                +
-              </Button>
-            </form>
-            <TabsContent value="include" className="mt-0">
-              <div className="flex flex-wrap gap-2">
-                {includeKeywords.map((keyword) => (
-                  <Badge
-                    key={keyword}
-                    variant="secondary"
-                    className="text-sm py-1 px-2"
-                  >
-                    {keyword}
-                    <button
-                      onClick={() => handleRemoveKeyword(keyword, "include")}
-                      className="ml-1 hover:text-destructive"
-                      aria-label={`Remove keyword ${keyword}`}
-                    >
-                      <X size={14} />
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-            </TabsContent>
-            <TabsContent value="exclude" className="mt-0">
-              <div className="flex flex-wrap gap-2">
-                {excludeKeywords.map((keyword) => (
-                  <Badge
-                    key={keyword}
-                    variant="secondary"
-                    className="text-sm py-1 px-2"
-                  >
-                    {keyword}
-                    <button
-                      onClick={() => handleRemoveKeyword(keyword, "exclude")}
-                      className="ml-1 hover:text-destructive"
-                      aria-label={`Remove keyword ${keyword}`}
-                    >
-                      <X size={14} />
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-            </TabsContent>
-          </div>
-        </Tabs>
+      }
+      {type==="T_PRODUCT_KEYWORDS"?(
+      <KeywordTabs  activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword}/>
+    ):
+        (
+          <PopoverContent className="w-[348px] p-0">
+        <KeywordTabs  activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword}/>
       </PopoverContent>
+        )
+        }
+      
     </Popover>
   );
 }

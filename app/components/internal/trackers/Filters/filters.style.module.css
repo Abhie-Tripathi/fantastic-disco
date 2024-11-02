@@ -56,7 +56,6 @@
   display: grid;
   /* grid-template-columns: repeat(4, minmax(0px, 285px)); */
   grid-template-columns: repeat(5, 1fr);
-  grid-template-columns: repeat(5, 1fr);
   gap: var(--spacing-md) var(--spacing-lg);
 }
 
@@ -607,22 +606,7 @@ width: calc(100vw - 134px);
   /* background-color: var(--neutral-light-color); */
   font-weight: var(--font-weight-medium);
   text-wrap: nowrap;
-  text-wrap: nowrap;
   cursor: pointer;
-}
-
-.suggestion_badge:hover {
-  background: var(--neutral-light-color); ;
-}
-
-.experimental_tag {
-  background: linear-gradient(to right, #ff6699, #0072F5);
-  border: none;
-  border-radius: 20px;
-  color: #fff;
-  font-size: var(--font-size-small);
-  padding: 4px 10px;
-  font-weight: var(--font-weight-semibold);
 }
 
 .suggestion_badge:hover {
