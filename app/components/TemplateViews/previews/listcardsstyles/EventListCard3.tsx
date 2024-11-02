@@ -25,6 +25,7 @@ interface CardProps {
   demoEventName:string; 
   demoDescription:string;
   demoLocation:string
+  demoDate:string
 }
 const EventListCard3 = ({
   cardBgColor = "#ffffff",
@@ -33,7 +34,7 @@ const EventListCard3 = ({
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
     subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
     body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
-  },fetchedEvent, demoBanner, demoEventName, demoDescription,  demoLocation}: CardProps) => {
+  },fetchedEvent, demoBanner, demoEventName, demoDescription,  demoLocation, demoDate}: CardProps) => {
     
     const formatDate = (date: string) => {
       const dateObj = new Date(date);
@@ -62,8 +63,9 @@ const EventListCard3 = ({
     <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
       <div className={styles.bannerContainer}>
       <Image width={271} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.banner} />
-        <div className={styles.type}>Workshop</div>
-      </div>
+        <div className={styles.event_type}>{fetchedEvent?.eventType==="MAIN"? "Main Even" : fetchedEvent?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
+        <div className={styles.type}>Workshop</div></div>
+      
       <div className={styles.eventDetails}>
         <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
         <div className={styles.location_dateContainer}>
@@ -73,7 +75,7 @@ const EventListCard3 = ({
           </div>
           <div className={styles.dateContainer}>
             <DateIcon color={fontSettings.subheading.fontColor}/>
-            <div className={styles.date} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : "1st April 2024 - 3rd April 2024"}</div>
+            <div className={styles.date} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
           </div>
         </div>
         <div className={styles.description} style={{fontSize : fontSettings.body.fontSize , color : fontSettings.body.fontColor, fontFamily : fontSettings.body.fontFamily, fontWeight : fontSettings.body.fontWeight}} dangerouslySetInnerHTML={{ __html: description }}></div>

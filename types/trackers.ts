@@ -79,6 +79,7 @@ export interface Tracker {
     audienceZone?: boolean;
     audienceSpread?: boolean;
     globalToggle?:boolean;
+    brandSeries?:boolean;
   }
    export interface Access{
     entityId: string;

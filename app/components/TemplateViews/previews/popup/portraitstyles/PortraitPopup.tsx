@@ -21,6 +21,7 @@ interface Props {
         body: FontSettings;
     };
     buttonSettings?: ButtonSettingsState
+    closeButtonSetting?:ButtonSettingsState
     fetchedAddedOtherData? : PrefilledAddedEventsType[]
     selectedBtn? : "primary"|"secondary";
     smallCard : boolean;
@@ -28,10 +29,11 @@ interface Props {
     demoEventName:string,
     demoDescription:string
     demoLocation:string
+    demoDate:string
 }
 
 const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings, selectedBtn,fetchedAddedOtherData,smallCard,  demoBanner,
-    demoEventName, demoDescription,demoLocation }: Props) => {
+    demoEventName, demoDescription,demoLocation,closeButtonSetting,demoDate }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -45,7 +47,7 @@ const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettin
             EventCard = Popup3; // Or some default component or message
     }
     return (
-        <EventCard smallCard={smallCard} fetchedAddedEvents={fetchedAddedOtherData} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn}  demoEventName={demoEventName} demoBanner={demoBanner} demoDescription={demoDescription} demoLocation={demoLocation}/>
+        <EventCard smallCard={smallCard} fetchedAddedEvents={fetchedAddedOtherData} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} closeButtonSetting={closeButtonSetting} selectedBtn={selectedBtn}  demoEventName={demoEventName} demoBanner={demoBanner} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>
     )
 }
 

@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react'
 import styles from './timedropdown.style.module.css'
+import { FormState } from '@/types/Formstate';
 
 interface Props {
-    setTime: (value: string) => void;
+    // setTime: (value: string) => void;
     time: string;
     minTime?: string;
+    handleChange: (field: keyof FormState, value: any) => void;
 }
 
-const TimeDropdown = ({ setTime, time, minTime }: Props) => {
+const TimeDropdown = ({ handleChange, time, minTime }: Props) => {
     const times = [
         "12:00 A.M", "12:30 A.M", "1:00 A.M", "1:30 A.M", "2:00 A.M", "2:30 A.M", "3:00 A.M", "3:30 A.M",
         "4:00 A.M", "4:30 A.M", "5:00 A.M", "5:30 A.M", "6:00 A.M", "6:30 A.M", "7:00 A.M", "7:30 A.M",
@@ -34,7 +36,7 @@ const TimeDropdown = ({ setTime, time, minTime }: Props) => {
                 <div
                     key={key}
                     className={`${styles.time} ${value === time ? styles.activeTime : ""} ${isDisabled(value) ? styles.disabledTime : ""}`}
-                    onClick={() => !isDisabled(value) && setTime(value)}
+                    onClick={() => !isDisabled(value) && minTime ? handleChange('endTime',value) :handleChange('startTime',value) }
                 >
                     {value}
                 </div>

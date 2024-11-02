@@ -1,5 +1,5 @@
 import type { Config } from "tailwindcss";
-import type { PluginAPI } from "tailwindcss/types/config"; 
+import type { PluginAPI } from "tailwindcss/types/config"; // Import PluginAPI type
 
 const config = {
   darkMode: ["class"],
@@ -19,7 +19,7 @@ const config = {
       },
     },
     extend: {
-      scrollbarWidth: "thin", // For Firefox
+      scrollbarWidth: "thin",
       width: {
         inherit: "inherit",
         fill: "-webkit-fill-available",
@@ -31,7 +31,6 @@ const config = {
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
-        tertiary: "hsl(var(--tertiary))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

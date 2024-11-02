@@ -3,18 +3,22 @@ import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import { notFound } from 'next/navigation';
 import DetailPageComponent from '../components/DetailPage/DetailPageComponent'
+import { EventsType } from '@/types/alleventtype';
 // export const revalidate = 0;
 interface EventProps {
     venue: string;
     latitude: number;
-    bannerUrl: string;
     eventFont: string;
     longitude: number;
     pageBgColor: string;
+    pageGradient: string;
+    confettiType: string;
+    leavesTheme: boolean;
+    snowTheme: boolean;
     registerBtnText: string;
     registerMessage: string;
     registerBtnColor: string;
-    speakerProfilesData: any[];
+    speaker: any[];
     participationMessage: string;
     name: string;
     format: string;
@@ -27,27 +31,45 @@ interface EventProps {
     description: string;
     location_city: string;
     location_country: string;
-    widgetId: string;
     eventId: string;
     hashtags: string;
-    participationType : string;
+    participationType: string;
+    parentName: string;
+    parentId: string;
+    childrenData: EventsType[];
+    widgetId: string;
+    capacity: number;
+    registration: boolean;
+    approval: boolean;
+    waitlisting: boolean;
+    virtualLink: string;
+    exhibitor:any[];
 }
 
-const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speakerProfilesData, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags,participationType }: EventProps) => {
+const Page = ({snowTheme, venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+    start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags, participationType, childrenData, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink,exhibitor }: EventProps) => {
     return (
+        // <div></div>
         <DetailPageComponent
+            snowTheme={snowTheme}
+            pageGradient={pageGradient}
+            confettiType={confettiType}
+            leavesTheme={leavesTheme}
+            parentName={parentName}
+            parentId={parentId}
+            childrenData={childrenData}
+            widgetId={widgetId}
             hashtags={hashtags}
             venue={venue}
             latitude={latitude}
-            bannerUrl={bannerUrl}
             eventFont={eventFont}
             longitude={longitude}
             pageBgColor={pageBgColor}
             registerBtnText={registerBtnText}
             registerMessage={registerMessage}
             registerBtnColor={registerBtnColor}
-            speakerProfilesData={speakerProfilesData}
+            speaker={speaker}
+            exhibitor={exhibitor}
             participationMessage={participationMessage}
             name={name}
             format={format}
@@ -60,16 +82,19 @@ const Page = ({ venue, latitude, bannerUrl, eventFont, longitude, pageBgColor, r
             description={description}
             location_city={location_city}
             location_country={location_country}
-            widgetId={widgetId}
             eventId={eventId}
             participationType={participationType}
-        />
+            capacity={capacity}
+            registration={registration}
+            approval={approval}
+            waitlisting={waitlisting}
+            virtualLink={virtualLink} />
     )
 }
-const fetchData = async (widgetId: string, eventId: string) => {
+const fetchData = async (eventId: string) => {
     try {
         // Manually fetching data instead of using the myFetch hook
-        const response = await fetch(`${baseUrl}/public/widget/${widgetId}/event?ts=${Date.now()}`, {
+        const response = await fetch(`${baseUrl}/public/widget/${eventId}/event?ts=${Date.now()}`, {
             headers: {
                 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
             },
@@ -81,51 +106,111 @@ const fetchData = async (widgetId: string, eventId: string) => {
 
         const data = await response.json();
         // Check if data is valid
-        if (!data || !data.data.widgetData || !data.data.widgetData.id) {
+        if (data.data.length === 0) {
             console.log("Invalid widgetId or error encountered");
             notFound();
         }
+        console.log("data is : ", data)
+        console.log("children data is: ", data.data.event.data.children);
+        const event = {
+            eventId: data.data.event.id,
+            name: data.data.event.name,
+            format: data.data.event.data.format,
+            logoUrl: data.data.event.data.logoUrl,
+            end_date: data.data.event.data.end_date,
+            end_time: data.data.event.data.end_time,
+            gmt_time: data.data.event.data.gmt_time,
+            latitude: data.data.event.data.latitude,
+            longitude: data.data.event.data.longitude,
+            start_date: data.data.event.data.start_date,
+            start_time: data.data.event.data.start_time,
+            description: data.data.event.data.description,
+            location_city: data.data.event.data.location_city,
+            location_country: data.data.event.data.location_country,
+            participationType: data.data.event.data.participationType,
+            pageBgColor: data.data.event.data.customizationData.pageBgColor,
+            pageGradient: data.data.event.data.customizationData.pageGradient,
+            confettiType: data.data.event.data.customizationData.confettiType,
+            leavesTheme: data.data.event.data.customizationData.leavesTheme,
+            snowTheme: data.data.event.data.customizationData.snowTheme,
+            eventFont: data.data.event.data.customizationData.eventFont,
+            registerBtnColor: data.data.event.data.customizationData.registerBtnColor,
+            registerBtnText: data.data.event.data.customizationData.registerBtnText,
+            registerMessage: data.data.event.data.customizationData.registerMessage,
+            speaker: data.data.event.data.customizationData.speaker,
+            exhibitor: data.data.event.data.customizationData.exhibitor,
+            participationMessage: data.data.event.data.customizationData.participationMessage,
+            venue: data.data.event.data.customizationData.venue,
+            hashtags: data.data.event.data.customizationData.hashtags,
+            parentName: data.data.event.data.parentData ? data.data.event.data.parentData : data.data.event.parentInfo.name,
+            parentId: data.data.event.parentInfo.id,
+            capacity: data?.data?.event?.capacity,
+            registration: data?.data?.event?.registration,
+            approval: data?.data?.event?.approval,
+            waitlisting: data?.data?.event?.waitlisting,
+            virtualLink: data?.data?.event?.data?.virtualLink,
+            childrenData: data.data.event.data.children.map((child: any) => ({
+                eventId: child.id,
+                name: child.name,
+                format: child.data.format,
+                logoUrl: child.data.logoUrl,
+                endDate: child.data.end_date,
+                endTime: child.data.end_time,
+                gmtZone: child.data.gmt_time,
+                latitude: child.data.latitude,
+                longitude: child.data.longitude,
+                startDate: child.data.start_date,
+                startTime: child.data.start_time,
+                description: child.data.description,
+                cityName: child.data.location_city,
+                countryName: child.data.location_country,
+                participationType: child.data.participationType,
+                customizationData: {
+                    pageBgColor: child.data.customizationData.pageBgColor,
+                    pageGradient: child.data.customizationData.pageGradient,
+                    confettiType: child.data.customizationData.confettiType,
+                    leavesTheme: child.data.customizationData.leavesTheme,
+                    snowTheme: child.data.customizationData.snowTheme,
+                    eventFont: child.data.customizationData.eventFont,
+                    registerBtnColor: child.data.customizationData.registerBtnColor,
+                    registerBtnText: child.data.customizationData.registerBtnText,
+                    registerMessage: child.data.customizationData.registerMessage,
+                    speaker: child.data.customizationData.speaker,
+                    exhibitor: child.data.customizationData.exhibitor,
+                    participationMessage: child.data.customizationData.participationMessage,
+                    venue: child.data.customizationData.venue,
+                    hashtags: child.data.customizationData.hashtags,
+                    boothNumber: child.data.customizationData.boothNumber,
+                    eventFormat: child.data.customizationData.eventFormat
+                }
+            }))
 
-        console.log("data is: ", data);
-        console.log("Event data is :", data.data.eventData)
-        console.log("event id is: ", eventId);
-
-        // Find the event in otherdata or eventData
-        const eventFromOtherData = data.data.widgetData.otherdata?.event.find((event: any) => event.id === eventId);
-        const eventFromEventData = data.data.eventData?.find((event: any) => event.id === eventId);
-
-        // If the event is not found in either dataset, return 404
-        if (!eventFromOtherData && !eventFromEventData) {
-            console.log("Invalid eventId");
-            notFound();
-        }
-
-        // Merge event data from both sources
-        const mergedEventData = {
-            ...eventFromOtherData,
-            ...eventFromEventData,
         };
 
-        return mergedEventData;
+        return event;
     } catch (error) {
         console.log("Error fetching data:", error);
         notFound(); // Handle the error by redirecting to a not found page or similar
     }
 };
-const DetailPage = async ({ searchParams }: { searchParams: { widgetId: string; eventId: string } }) => {
+const DetailPage = async ({ searchParams }: { searchParams: { widgetId: string, eventId: string } }) => {
     const { widgetId, eventId } = searchParams;
-    const data = await fetchData(widgetId, eventId);
-    console.log("data is ,", data)
-    return <Page {...data} widgetId={widgetId} eventId={eventId} />;
+    const data = await fetchData(eventId);
+    return <Page {...data} eventId={eventId} widgetId={widgetId} />;
 };
 export default DetailPage;
 
-export async function generateMetadata({ searchParams }: { searchParams: { widgetId: string; eventId: string } }) {
-    const { widgetId, eventId } = searchParams
-    const data = await fetchData(widgetId, eventId);
+function stripHtmlTags(inputString: string) {
+    return inputString.replace(/<[^>]*>?/gm, '');
+}
+
+const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
+export async function generateMetadata({ searchParams }: { searchParams: { widgetId: string, eventId: string } }) {
+    const { widgetId, eventId } = searchParams;
+    const data = await fetchData(eventId);
 
     // Check if data is valid, if not return 404 metadata
-    if (!data || !data.name || !data.description || !data.bannerUrl) {
+    if (!data || !data.name || !data.description || !data.logoUrl) {
         return {
             title: "404 - Not Found",
             description: "The page you are looking for does not exist.",
@@ -133,24 +218,21 @@ export async function generateMetadata({ searchParams }: { searchParams: { widge
                 title: "404 - Not Found",
                 description: "The page you are looking for does not exist.",
                 images: [], // You can include a default 404 image if desired
-                url: `https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
+                url: `${console_url}/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
                 type: "website"
             },
         };
     }
-    const { name, description, bannerUrl } = data;
+    const { name, description, logoUrl } = data;
     return {
         title: name,
-        description: description,
+        description: stripHtmlTags(description),
         openGraph: {
             title: name,
-            description: description,
-            images: [bannerUrl],
-            url: `https://console.eventgeni.com/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
+            description: stripHtmlTags(description),
+            images: [logoUrl],
+            url: `${console_url}/detailpage?widgetId=${widgetId}&eventId=${eventId}`,
             type: "website"
         },
     };
 }
-
-//     const hashtags = await generateHashtags(eventName, description);
-//     const { emailSubject, emailBody } = await generateEmailContent(eventName, description)

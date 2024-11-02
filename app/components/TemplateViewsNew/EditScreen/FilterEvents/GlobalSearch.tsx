@@ -8,13 +8,15 @@ import Image from "next/image";
 import logo from "/public/10timeslogo.png";
 import { GolbalEventType } from "@/types/globaleventtype";
 import useOutsideClick from "@/hooks/useOutsideClick";
+import { FormState } from "@/types/Formstate";
 
 interface Props {
   widgetId: string;
-  handlePrefillGlobalEvent: (event: GolbalEventType, type: string) => void;
+  handlePrefillGlobalEvent?: (event: GolbalEventType) => void;
+  handleChange?: (field: keyof FormState, value: any) => void;
 }
 
-const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
+const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, handleChange }: Props) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const [dataDropdown, setDatadropdown] = useState<boolean>(false);
   const [searchData, setSearchData] = useState<any[]>([]);
@@ -29,27 +31,37 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
     return () => clearTimeout(debounceTimeout);
   }, [searchValue]);
 
-  const handleClickEvent = (event: any, type: string) => {
-    const newEvent: GolbalEventType = {
-      name: event.name,
-      cityName: event.data.location_city,
-      countryName: event.data.location_country,
-      startDate: formatDate(event.data.start_date),
-      endDate: formatDate(event.data.end_date),
-      description: event.data.description,
-      format: event.data.format,
-      latitude: event.data.latitude,
-      longitude: event.data.longitude,
-      venue: event.data.venue_address,
-    };
+  const handleClickEvent = (event: any) => {
+    console.log("clicked event is :", event)
+    let eventId = event.data.id;
+    setSearchValue(event.name);
+    const formattedValue = eventId ? `${event.name},${eventId}` : event.name;
+    if (handleChange) {
+      handleChange("parentData", formattedValue);
+    } else {
+      const newEvent: GolbalEventType = {
+        name: event.name,
+        cityName: event.data.location_city,
+        countryName: event.data.location_country,
+        startDate: formatDate(event.data.start_date),
+        endDate: formatDate(event.data.end_date),
+        description: event.data.description,
+        format: event.data.format,
+        latitude: event.data.latitude,
+        longitude: event.data.longitude,
+        venue: event.data.venue_address,
+      };
+      if (handlePrefillGlobalEvent)
+        handlePrefillGlobalEvent(newEvent);
+    }
     setDatadropdown(false);
-    handlePrefillGlobalEvent(newEvent, type);
   };
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
+    console.log(`date is : ${year}-${month}-${day}`)
     return `${year}-${month}-${day}`;
   };
 
@@ -92,6 +104,7 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
         type="text"
         placeholder="Search for events"
         onChange={(e) => setSearchValue(e.target.value)}
+        value={searchValue}
         style={{
           color: theme === "light" ? "black" : "white",
           backgroundColor: theme === "light" ? "white" : "#131313",
@@ -99,13 +112,12 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
       />
       {dataDropdown && (
         <div
-          className={`${styles.dropdownContainer} ${
-            theme === "dark" ? styles.darkDropdown : styles.lightDropdown
-          }`}
+          className={`${styles.dropdownContainer} ${theme === "dark" ? styles.darkDropdown : styles.lightDropdown
+            }`}
         >
           {searchData.length > 0 ? (
             searchData.map((event) => (
-              <div className={styles.dropdownEvent} key={event.id}>
+              <div className={styles.dropdownEvent} key={event.id} onClick={() => handleClickEvent(event)}>
                 <div className={styles.eventNameContaier}>
                   <span className={styles.dropeventName}>
                     {truncateName(event.name)},
@@ -117,20 +129,20 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
 
                 {event.data.isMicroServiceData && (
                   <div className={styles.buttons}>
-                    <div
+                    {/* <div
                       className={styles.button}
                       data-name="Add Event"
-                      onClick={() => handleClickEvent(event, "normal")}
+                      
                     >
                       <Addevent />
-                    </div>
-                    <div
+                    </div> */}
+                    {/* <div
                       className={styles.button}
                       data-name="Add Event to widget"
                       onClick={() => handleClickEvent(event, "widget")}
                     >
                       <AddeventToWidget />
-                    </div>
+                    </div> */}
                     <Image src={logo} alt="logo" width={15} height={15} />
                   </div>
                 )}
@@ -160,24 +172,7 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent }: Props) => {
 
 export default GlobalSearch;
 
-function AddeventToWidget() {
-  return (
-    <svg
-      width="12"
-      height="12"
-      viewBox="0 0 20 20"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M0 0H9V9H0V0ZM2 2V7H7V2H2ZM11 0H20V9H11V0ZM13 2V7H18V2H13ZM0 11H9V20H0V11ZM2 13V18H7V13H2ZM14.5 11.5H16.5V14.5H19.5V16.5H16.5V19.5H14.5V16.5H11.5V14.5H14.5V11.5Z"
-        fill="#6750A4"
-      />
-    </svg>
-  );
-}
-
-function  Addevent() {
+function Addevent() {
   return (
     <svg
       width="13"

@@ -20,17 +20,30 @@ import { showToast } from "@/utils/showToast";
 import Loading from "@/app/components/UI/Loading";
 import Link from "next/link";
 import { useTrackerServices } from "@/services/trackerServices";
+import {Toggle} from "@/types/trackers"
 import SideNav from "@/app/components/trackers/sideNav";
 import { useTrackerContext } from "@/context/tracker";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
 const Map = lazy(() => import("@/components/map"));
-interface Toggle{
-  rating?:boolean;
-  exhibit?:boolean;
-  trust?:boolean;
-}
+// interface Toggle{
+//   rating?:boolean;
+//   exhibit?:boolean;
+//   trust?:boolean;
+//   maturity?: boolean;
+//   brandedEvent?: boolean;
+//   eventSeries?: boolean;
+//   forecastedStatus?: boolean;
+//   impactScore?: boolean;
+//   inboundScore?: boolean;
+//   internationalScore?: boolean;
+//   eventRank?: boolean;
+//   audienceZone?: boolean;
+//   audienceSpread?: boolean;
+//   globalToggle?:boolean;
+//   brandSeries?:boolean;
+// }
 const Page = ({ params }: { params: any }) => {
   console.log(params);
   const {data}=useTrackerContext();
@@ -126,6 +139,7 @@ console.log(searchParams.get("view"));
 
   useEffect(() => {
     setSavedEventCount(data?.tracker?.savedEventTotalCount);
+    setTrackerDetail(data?.tracker);
     createQueryString();
     setLoading(true);
   }, [data]);
@@ -355,7 +369,6 @@ console.log(searchParams.get("view"));
   let toggleOpend:Toggle ={};
   if(trackerDetail?.filterValue?.userType)
   toggleOpend=JSON.parse(trackerDetail?.filterValue?.userType);
-  
     if(trackerDetail?.filterValue?.internationalScore){
       setShowInsights(prev=>({...prev, global:true}));
     }
@@ -375,9 +388,25 @@ console.log(searchParams.get("view"));
       const keywords=trackerDetail?.filterValue?.eventKeywords?.split('+');
       setShowInsights(prev=>({...prev, keywords:keywords}));
     }
+    if(trackerDetail?.filterValue) {
+      const toggleObj = {
+        maturity: (toggleOpend?.maturity ? true : false),
+        brandedEvent: (toggleOpend?.brandSeries ? true : false),
+        eventSeries: (toggleOpend?.brandSeries ? true : false),
+        forecasted: (toggleOpend?.forecastedStatus ? true : false),
+        impactScore: (toggleOpend?.globalToggle ? true : false),
+        inboundScore: (toggleOpend?.globalToggle ? true : false),
+        internationalScore: (toggleOpend?.globalToggle ? true : false),
+        eventRank: (toggleOpend?.eventRank ? true : false),
+        audienceZone: (toggleOpend?.audienceZone ? true : false),
+        audienceSpread: (toggleOpend?.audienceSpread ? true : false),
+      };
+      setShowInsights(prev=>({...prev, ...toggleObj}));
+    }
  },[trackerDetail])
  console.log(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
  );
+ 
  
   return (
     <div className="flex w-[calc(100vw-134px)]">

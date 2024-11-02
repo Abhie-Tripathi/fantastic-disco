@@ -6,6 +6,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 }
 .btnContainer{
     padding: 6px;
@@ -19,16 +20,21 @@
 }
 .btn{
     padding: 5px 30px;
-    font-weight: var(--font-weight-semibold);
+    /* font-weight: var(--font-weight-semibold);
     font-size: var(--font-size-small);
-    color: var(--secondary-text-color);
+    color: var(--secondary-text-color); */
+    font-weight: var(--font-weight-semibold);
+    font-size: var( --font-size-default);
+    color: var(--tertiary-text-color);
     border-radius: 2px;
     display: flex;
     align-items: center;
     gap: 4px;
+    text-wrap: nowrap;
 }
 .selectedBtn{
     background-color: var(--primary-foreground);
+    color: var(--primary-text-color);
 }
 .btn .count{
     background-color: var(--primary-light-color);
@@ -56,9 +62,14 @@
     font-weight: var(--font-weight-semibold);
 }
 .emptyScreen span{
-    color: #8F8F8F;
+    /* color: #8F8F8F;
     font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-regular);
+    font-weight: var(--font-weight-regular); */
+
+    color: var(--dashboard-brandkit-subtext);
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-medium);
+
 }
 .addEvent{
     margin-top: 25px;
@@ -102,12 +113,72 @@
     width: 100%;
     border: 1px solid var(--neutral-light-color);
     border-radius: 4px;
-    font-size: var(--font-size-small);
+    /* font-size: var(--font-size-small); */
     color: var(--primary-color);
     line-height: 18px;
     padding: 9px;
     text-align: center;
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+   
 }
 .allEventBtn:hover{
     background-color: var(--primary-light-color);
+}
+.blackScreen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    width: 100%;
+    background-color: var(--background-color);
+    opacity: .3;
+    z-index: 1;
+    border-radius: 4px;
+}
+
+.deleteModal{
+    position: absolute;
+    width: 70%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background-color: var(--background-secondary-color);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    border: 1px solid var(--border-color);
+}
+
+.deleteModal .deleteHeading{
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
+.deleteModal .btns{
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+.deleteModal .btns button{
+    font-size: var(--font-size-default);
+    border-radius: 4px;
+    padding: 5px 9px;
+    color: white;
+}
+.deleteModal .deleteBtn{
+    background-color: var(--danger-text-color);
+}
+.deleteModal .cancelBtn{
+    background-color: var(--primary-color);
+}
+.deleteModal .deleteBtn:hover{
+    background-color: #eb6368;
+}
+.deleteModal .cancelBtn:hover{
+    background-color: #7d62c7;
 }

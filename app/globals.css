@@ -1,6 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "mapbox-gl/dist/mapbox-gl.css";
+@import "@/styles/map.css";
+@import "react-big-calendar/lib/css/react-big-calendar.css";
+@import "@/styles/eventCalendar.css";
 .container {
   max-width: 100%;
   padding: 2rem;
@@ -182,19 +186,20 @@
   --tertiary-text-color: #7d7d7d;
   /* --heading-color: #ffffff; */
   /* --paragraph-color: #b7b7bb; */
-  --danger-text-color: #E5484D;
-  --success-text-color: #45A557;
-  --info-text-color: #0072F5;
-  --warning-text-color: #FF990A;
+  --danger-text-color: #e5484d;
+  --success-text-color: #45a557;
+  --info-text-color: #0072f5;
+  --warning-text-color: #ff990a;
   --subtitle-color: #8056b2;
   --title-color: #323339;
   --background-color: #0c0f1e;
-  --background-secondary-color: #FAFAFA;
+  --background-secondary-color: #fafafa;
   --background-secondary-color-hover: #3f424f;
   --background-secondary-color-active: #545769;
   --background-color-faded: rgba(12, 15, 30, 0.1);
   --card-background-color: #1d1f36;
-
+  --dashboard-brandkit-subtext: #8F8F8F;
+  --link-color:#0062D1;
   --border-color: #dcdfe4;
   --card-border-color: #dcdfe4;
   --heading-background-color: #f7f7f9;
@@ -232,15 +237,15 @@
   --tabs-background-color: #fbf8ff;
   --background-color-hover: #f2f2f2;
   --input-border-color: #efefef;
-  --bold-border-color: #A8A8A8;
-  --danger-background-color: #FFF0F0;
-  --warning-background-color: #FFF6E6;
-  --success-background-color: #EFFBEF;
-  --info-background-color: #F0F7FF;
-  --disabled-background-color: #C9C9C9;
+  --bold-border-color: #a8a8a8;
+  --danger-background-color: #fff0f0;
+  --warning-background-color: #fff6e6;
+  --success-background-color: #effbef;
+  --info-background-color: #f0f7ff;
+  --disabled-background-color: #c9c9c9;
   --img-filter: invert(0);
   --disabled-btn-color: #c9c9c966;
-  --card-backgroud: #FFFFFF;
+  --card-backgroud: #ffffff;
 }
 
 .card {
@@ -252,29 +257,33 @@
 
 body[data-theme="dark"] {
   --primary-foreground: #131313;
-  --primary-text-color: #EDEDED;
+  --primary-text-color: #ededed;
   --sidebar-active: #242424;
-  --border-color: #2E2E2E;
-  --coordinate-primary-color: #FFFFFF;
+  --border-color: #2e2e2e;
+  --coordinate-primary-color: #ffffff;
   --primary-light-color: #1a1a1a;
   --heading-background-color: #212121;
   --tabs-background-color: #1a1a1a;
-  --secondary-text-color: #A1A1A1;
-  --background-color-hover: #1A1A1A;
+  --secondary-text-color: #a1a1a1;
+  --background-color-hover: #1a1a1a;
   --input-border-color: #454545;
   --bold-border-color: #878787;
   --background-secondary-color: #171717;
-  --danger-background-color: #2A1314;
+  --danger-background-color: #2a1314;
   --warning-background-color: #291800;
-  --success-background-color: #0B2212;
-  --info-background-color: #0F1C2E;
+  --success-background-color: #0b2212;
+  --info-background-color: #0f1c2e;
   --disabled-background-color: #454545;
   --img-filter: invert(1);
   --disabled-btn-color: #454545;
-  --neutral-light-color: #1F1F1F;
+  --neutral-light-color: #1f1f1f;
   --accent-color: #1a1a1a;
-  --card-background: linear-gradient(118deg, #0c0c0c 0%, rgba(103, 80, 164, 0.4) 100%);
-  --warning-text-color: #FF990A;
+  --card-background: linear-gradient(
+    118deg,
+    #0c0c0c 0%,
+    rgba(103, 80, 164, 0.4) 100%
+  );
+  --warning-text-color: #ff990a;
 }
 
 /* :root {
@@ -431,12 +440,16 @@ body[data-theme="dark"] {
 }
 
 :root {
-  --dark-gradient: linear-gradient(118deg,
-      rgba(36, 36, 36, 1) 0%,
-      rgba(0, 0, 0, 1) 100%);
-  --light-gradient: linear-gradient(118deg,
-      rgba(224, 224, 224, 1) 0%,
-      rgba(255, 255, 255, 1) 100%);
+  --dark-gradient: linear-gradient(
+    118deg,
+    rgba(36, 36, 36, 1) 0%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  --light-gradient: linear-gradient(
+    118deg,
+    rgba(224, 224, 224, 1) 0%,
+    rgba(255, 255, 255, 1) 100%
+  );
   /* Add more variables as needed */
   --disabled-color: #6d6d6d;
   --primary-bg: #111010;

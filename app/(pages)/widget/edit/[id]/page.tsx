@@ -9,17 +9,15 @@ import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
+// import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
 import { AllEventsType } from '@/types/alleventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
-import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
-import { GolbalEventType } from '@/types/globaleventtype'
+// import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
+// import { GolbalEventType } from '@/types/globaleventtype'
 import Errorpage from '@/app/components/TemplateViewsNew/Errorpage'
-import { useTheme } from '@/context'
 
 const Page = () => {
-  const { theme } = useTheme()
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [cardBgColor, setCardBgColor] = useState<string>("#d4d4d4");
   const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
@@ -42,13 +40,12 @@ const Page = () => {
   const [fetchedAddedEvents, setfetchedAddedEvents] = useState<AddedEventsType[]>([])
   const [addedEventIds, setAddedEventIds] = useState<string[]>([]);
   const [widgetType, setWidgetType] = useState<string>("");
-  const [prefilledAddedEvent, setPrefilledAddedEvent] = useState<PrefilledAddedEventsType>()
   const [prefilledNormalEvent, setPrefilledNormalEvent] = useState<AllEventsType>()
-  const [prefilledGlobalEvent, setPrefilledGlobalEvent] = useState<GolbalEventType>()
   const [isValid, setIsValid] = useState(true); // Track if the data is valid
   const [loading, setLoading] = useState(true); // Track loading state
   const [allEventsCount, setAllEventsCount] = useState<number>(0)
-
+  const [isCustomisationWindowDisable, setIsCustomisationWindowDisable] = useState(false)
+  const [isCodeWindowDisable, setIsCodeWindowDisable] = useState(false)
   const pathName = usePathname();
   const trackerParams = pathName.split("/");
   const widgetId = trackerParams[3]
@@ -65,32 +62,80 @@ const Page = () => {
 
 
   // This function is fetching all the events regardless added in the widget or not
-  const fetchEvents = async (page: number, type? : string) => {
+  const fetchEvents = async (page: number, type?: string) => {
     const { data, error } = await myFetch(`${baseUrl}/event?widgetId=${widgetId}&offset=${page}&limit=8`)
     if (data) {
-      const events: AllEventsType[] = data.data.map((event: any) => ({
-        eventId: event.id,
-        name: event.name,
-        cityName: event.data.location_city,
-        countryName: event.data.location_country,
-        description: event.data.description,
-        startDate: event.data.start_date,
-        endDate: event.data.end_date,
-        format: event.data.format,
-        isLinkedToWidget: event.isWidgetLinked,
-        startTime: event.data.start_time,
-        endTime: event.data.end_time,
-        gmtZone: event.data.gmt_time,
-        latitude: event.data.latitude,
-        longitude: event.data.longitude,
-        participationType: event.data.participationType
-      }))
-      if(type === "update"){ // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events
-        setFetchedAllEvents(events)
-      }else{
-        setFetchedAllEvents(prevEvents => [...prevEvents, ...events]);
+      const transformedEvents = data.data.map((event: any) => ({
+        mainEvent: {
+          eventId: event.id,
+          name: event.name,
+          cityName: event.data.location_city,
+          countryName: event.data.location_country,
+          startDate: event.data.start_date,
+          logoUrl: event.data.logoUrl,
+          endDate: event.data.end_date,
+          startTime: event.data.start_time,
+          endTime: event.data.end_time,
+          description: event.data.description,
+          format: event.data.format,
+          isLinkedToWidget: event.isWidgetLinked,
+          gmtZone: event.data.gmt_time,
+          latitude: event.data.latitude,
+          eventType: event.type,
+          longitude: event.data.longitude,
+          participationType: event.data.participationType,
+          widgetTags: event.widgetData.map((item: { type: any }) => item.type).join(', '),
+          customizationData: {
+            pageBgColor: event.data.customizationData.pageBgColor,
+            eventFont: event.data.customizationData.eventFont,
+            registerBtnColor: event.data.customizationData.registerBtnColor,
+            registerBtnText: event.data.customizationData.registerBtnText,
+            registerMessage: event.data.customizationData.registerMessage,
+            speakerProfilesData: event.data.customizationData.speakerProfilesData,
+            participationMessage: event.data.customizationData.participationMessage,
+            venue: event.data.customizationData.venue,
+            hashtags: event.data.customizationData.hashtags,
+            boothNumber: event.data.customizationData.boothNumber
+          }
+        },
+        subEvents: event.children.map((subEvent: any) => ({
+          eventId: subEvent.id,
+          name: subEvent.name,
+          cityName: subEvent.data.location_city,
+          countryName: subEvent.data.location_country,
+          startDate: subEvent.data.start_date,
+          logoUrl: subEvent.data.logoUrl,
+          endDate: subEvent.data.end_date,
+          startTime: subEvent.data.start_time,
+          endTime: subEvent.data.end_time,
+          description: subEvent.data.description,
+          format: subEvent.data.format,
+          isLinkedToWidget: false,
+          gmtZone: subEvent.data.gmt_time,
+          latitude: subEvent.data.latitude,
+          eventType: subEvent.type,
+          longitude: subEvent.data.longitude,
+          participationType: subEvent.data.participationType,
+          // widgetTags: subEvent.widgetData.map((item: { type: any }) => item.type).join(', '),
+          customizationData: {
+            pageBgColor: subEvent.data.customizationData.pageBgColor,
+            eventFont: subEvent.data.customizationData.eventFont,
+            registerBtnColor: subEvent.data.customizationData.registerBtnColor,
+            registerBtnText: subEvent.data.customizationData.registerBtnText,
+            registerMessage: subEvent.data.customizationData.registerMessage,
+            speakerProfilesData: subEvent.data.customizationData.speakerProfilesData,
+            participationMessage: subEvent.data.customizationData.participationMessage,
+            venue: subEvent.data.customizationData.venue,
+            hashtags: subEvent.data.customizationData.hashtags,
+            boothNumber: subEvent.data.customizationData.boothNumber
+          }
+        }))
+      }));
+      if (type === "update") { // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events
+        setFetchedAllEvents(transformedEvents)
+      } else {
+        setFetchedAllEvents(prevEvents => [...prevEvents, ...transformedEvents]);
       }
-
       setAllEventsCount(data.totalCount)
     } if (error) {
       console.log(error)
@@ -109,7 +154,6 @@ const Page = () => {
     }
   }
 
-
   useEffect(() => {
     const fetchWidgetData = async () => {
       const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`);
@@ -127,7 +171,7 @@ const Page = () => {
         setSelectedTemplate(asciiToString(data.templatePublicId));
         setAddedEventIds(data.eventId.map((obj: { id: string }) => obj.id));
         setWidgetType(data.type)
-        setfetchedAddedEvents( data.otherdata?.event);
+        setfetchedAddedEvents(data.otherdata?.event);
       }
       setLoading(false);
     }
@@ -164,36 +208,6 @@ const Page = () => {
     }
   }
 
-  const handleAddEventModal = () => {
-    setPrefilledAddedEvent(undefined)
-    setPrefilledNormalEvent(undefined)
-    setPrefilledGlobalEvent(undefined)
-    setIsAddEventModalOpen(true)
-  }
-  const handleNormalEventModal = () => {
-    setPrefilledNormalEvent(undefined)
-    setIsNormalEventModalOpen(true)
-  }
-
-  const handlePrefilledAddedEvent = (event: PrefilledAddedEventsType) => {
-    setPrefilledAddedEvent(event)
-    setIsAddEventModalOpen(true)
-  }
-
-  const handlePrefillNormalEvent = (event: AllEventsType, type: string) => {
-    setPrefilledNormalEvent(event)
-    if (type === "add") {
-      setIsAddEventModalOpen(true)
-    } else setIsNormalEventModalOpen(true)
-
-  }
-  const handlePrefillGlobalEvent = (event: GolbalEventType, type: string) => {
-    setPrefilledGlobalEvent(event)
-    if (type === "widget") {
-      setIsAddEventModalOpen(true)
-    } else setIsNormalEventModalOpen(true)
-
-  }
   if (loading) {
     return <div>Loading...</div>; // Show a loading state
   }
@@ -208,6 +222,12 @@ const Page = () => {
       {!isFullScreen && <div className={styles.editContainer}>
         <EditScreen
           selectedTemplate={selectedTemplate}
+
+          isCustomisationWindowDisable={isCustomisationWindowDisable}
+          setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}
+          isCodeWindowDisable={isCodeWindowDisable} 
+          setIsCodeWindowDisable={setIsCodeWindowDisable}
+         
           handleUpdateCustomization={handleUpdateCustomization}
           selectedBtn={selectedBtn}
           setSelectedBtn={setSelectedBtn}
@@ -227,13 +247,9 @@ const Page = () => {
           fetchAddedEvents={fetchAddedEvents}
           widgetId={widgetId}
           widgetType={widgetType}
-          handlePrefilledAddedEvent={handlePrefilledAddedEvent}
-          handlePrefillNormalEvent={handlePrefillNormalEvent}
-          handlePrefillGlobalEvent={handlePrefillGlobalEvent}
-          handleAddEventModal={handleAddEventModal}
+          // handlePrefillEvent={handlePrefillEvent}
           addedEventIds={addedEventIds}
-          handleNormalEventModal={handleNormalEventModal}
-          allEventsCount = {allEventsCount}
+          allEventsCount={allEventsCount}
         />
       </div>}
       <div className={`${styles.previewContainer} ${isFullScreen ? styles.fullPreview : ""}`}>
@@ -252,13 +268,13 @@ const Page = () => {
           fetchedAddedEvents={fetchedAddedEvents}
         />
       </div>
-      {(isAddEventModalOpen || isNormalEventModalOpen) && <div className={styles.blackScreen}></div>}
+      {/* {(isAddEventModalOpen || isNormalEventModalOpen) && <div className={styles.blackScreen}></div>}
       {isAddEventModalOpen && <div className={styles.addEventModal}>
         <AddEvent prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} prefilledAddedEvent={prefilledAddedEvent} fetchedAddedEvents={fetchedAddedEvents} addedEventIds={addedEventIds} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} widgetId={widgetId} setIsAddEventModalOpen={setIsAddEventModalOpen} />
-      </div>}
-      {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
+      </div>} */}
+      {/* {isNormalEventModalOpen && <div className={styles.addNormalEventModal}>
         <AddNormalEvent theme={theme === "dark" ? "dark" : "light"} prefilledGlobalEvent={prefilledGlobalEvent} prefilledNormalEvent={prefilledNormalEvent} fetchEvents={fetchEvents} setIsNormalEventModalOpen={setIsNormalEventModalOpen} fetchAddedEvents={fetchAddedEvents}/>
-      </div>}
+      </div>} */}
     </div>
   )
 }

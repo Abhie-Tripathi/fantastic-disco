@@ -1,0 +1,107 @@
+.body{
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    background-color: var(--primary-foreground);
+    display: flex;
+    flex-direction: column;
+    filter: drop-shadow(1px 1px 2px rgb(171, 171, 171));
+    width: 400px;
+}
+.nameStatusContainer{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.nameStatusContainer .name{
+    color: var(--primary-text-color);
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-semibold);
+}
+.mail{
+    color: var(--secondary-text-color);
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+}
+.statusContainer{
+    margin-top: 15px;
+}
+.statusContainer .statusHeading{
+    color: var(--primary-text-color);
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-semibold);
+}
+.statusInputContainer{
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.statusInputContainer:hover{
+    transition-duration: .2s;
+    border: 1px solid var(--primary-text-color);
+    background-color: var(--accent-color);
+}
+.statusDropdown{
+    position: absolute;
+    top: 65%;
+    left: 20px;
+    width:90%;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--primary-foreground);
+}
+.notify{
+    margin-top: 5px;
+    color: var(--secondary-text-color);
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+}
+.updateBtn{
+    margin-top: 10px;
+    width: 100%;
+    text-align: center;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+    border-radius: 4px;
+    padding: 5px;
+}
+.updateBtn:hover{
+    background-color: var(--primary-color-hover);
+}
+.status{
+    cursor: pointer;
+    margin: 10px;
+    width: fit-content;
+    font-size: var(--font-size-small);
+    font-weight: var(--font-weight-semibold);
+    padding: 3px 5px;
+    border-radius: 10px;
+}
+.pending{
+    background-color: #ffcb5c3f;
+    color: var(--notice-color-hover);
+}
+.going{
+    background-color: #45a55749;
+    color: var(--success-text-color);   
+}
+.waitlist{
+    background-color: #ffcb5c3f;
+    color: var(--notice-color-hover);
+}
+.following{
+    background-color: #0072f54e;
+    color: var(--info-text-color);   
+}
+.notgoing{
+    background-color: #e5484d3f;
+    color: var(--danger-text-color);
+}

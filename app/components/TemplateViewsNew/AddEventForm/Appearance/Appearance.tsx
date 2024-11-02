@@ -7,21 +7,34 @@ import FontContainer from './FontContainer'
 import BrandKit from '../../EditScreen/BrandKit/CustomizeComponents/BrandKit'
 import { useTheme } from '@/context'
 import ProgressBar from './ProgressBar'
+import { EventsType } from '@/types/alleventtype'
 
 interface Props {
+    setUploadedPhoto : (value : File | undefined) => void
+    setSnowTheme : (value : boolean) => void
+    setLeavesTheme : (value : boolean) => void
+    confettiType : string;
+    setFormTheme : (value : string) => void
     pageBgColor: string;
     setPageBgColor: (value: string) => void
+    setPageGradient : (value : string) => void
+    setConfettiType : (value : string) => void
     eventFont: string;
     setEventFont: (value: string) => void
     extractedColors: string[]
     setExtractedColors: (value: string[]) => void
-    eventName: string;
-    cityName: string;
-    participationType: string;
-    description: string;
+    eventNameMain: string;
+    cityNameMain: string;
+    participationTypeMain: string;
+    descriptionMain: string;
+    eventNameSub: string;
+    cityNameSub: string;
+    participationTypeSub: string;
+    descriptionSub: string;
+    prefilledEvent?: EventsType | null
 }
 
-const Appearance = ({ setPageBgColor, pageBgColor, eventFont, setEventFont, extractedColors, setExtractedColors,eventName, cityName, participationType, description }: Props) => {
+const Appearance = ({setUploadedPhoto,setSnowTheme, setLeavesTheme, confettiType, setFormTheme, setPageBgColor, pageBgColor,setConfettiType, eventFont, setEventFont, extractedColors, setExtractedColors, eventNameMain, cityNameMain, participationTypeMain, descriptionMain ,prefilledEvent, eventNameSub, participationTypeSub, descriptionSub, cityNameSub, setPageGradient}: Props) => {
     const { theme } = useTheme()
     return (
         <div className={styles.body} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
@@ -31,13 +44,13 @@ const Appearance = ({ setPageBgColor, pageBgColor, eventFont, setEventFont, extr
             </div>
             <div className={styles.container}>
                 <div className={styles.progressContainer}>
-                    <ProgressBar cityName={cityName} description={description} eventName={eventName} participationType={participationType}/>
+                    <ProgressBar eventNameSub={eventNameSub} participationTypeSub={participationTypeSub} descriptionSub={descriptionSub} cityNameSub={cityNameSub} cityNameMain={cityNameMain} descriptionMain={descriptionMain} eventNameMain={eventNameMain} participationTypeMain={participationTypeMain} />
                 </div>
                 <div className={styles.line}></div>
-                <BrandKit flex={false} extractedColors={extractedColors} pageBgColor={pageBgColor} setPageBgColor={setPageBgColor} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} />
+                <BrandKit prefilledEvent={prefilledEvent} flex={false} extractedColors={extractedColors} pageBgColor={pageBgColor} setPageBgColor={setPageBgColor} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} />
                 <div className={styles.line}></div>
                 <div className={styles.colorContainer}>
-                    <ColorContainer setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} />
+                    <ColorContainer setUploadedPhoto={setUploadedPhoto} setSnowTheme={setSnowTheme} setLeavesTheme={setLeavesTheme} confettiType={confettiType} setFormTheme={setFormTheme} setConfettiType={setConfettiType} setPageGradient={setPageGradient} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} />
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.fontContainer}>

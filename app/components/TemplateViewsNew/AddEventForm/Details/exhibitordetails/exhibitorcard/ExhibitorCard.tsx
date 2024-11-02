@@ -1,0 +1,65 @@
+import React from "react";
+import styles from "./exhibitorcard.style.module.css";
+import Image from "next/image";
+
+interface ExhibitorCardProps {
+  // profileImage?: string | ArrayBuffer | null;
+  profileImage: File | null;
+  companyName: string;
+  boothNumber: string;
+}
+
+const ExhibitorCard = ({
+  profileImage,
+  companyName,
+  boothNumber,
+}: ExhibitorCardProps) => {
+  let imageSrc: string | undefined;
+
+  if (profileImage instanceof File) {
+    imageSrc = URL.createObjectURL(profileImage);
+  } else if (typeof profileImage === "string") {
+    imageSrc = profileImage;
+  }
+
+  return (
+    <div className={styles.speaker}>
+      {imageSrc && (
+        <Image
+          src={imageSrc}
+          alt="profile"
+          width={63}
+          height={63}
+          style={{ borderRadius: 6 }}
+        />
+      )}
+      <div className={styles.detailsContainer}>
+        <div className={styles.nameLinkedinContainer}>
+          <div>{companyName}</div>
+        </div>
+        <div className={styles.designation}>{boothNumber}</div>
+      </div>
+    </div>
+  );
+};
+
+export default ExhibitorCard;
+
+function LinkedinIcon() {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M2.25 0C1.00736 0 0 1.00736 0 2.25V15.75C0 16.9927 1.00736 18 2.25 18H15.75C16.9927 18 18 16.9927 18 15.75V2.25C18 1.00736 16.9927 0 15.75 0H2.25ZM5.625 7.59375V14.625H3.375V7.59375H5.625ZM5.625 5.06259C5.625 5.68748 5.19085 6.1875 4.49334 6.1875H4.4803C3.80905 6.1875 3.375 5.68748 3.375 5.06259C3.375 4.42365 3.82236 3.9375 4.50657 3.9375C5.19085 3.9375 5.61201 4.42365 5.625 5.06259ZM9.5625 14.625H7.3125C7.3125 14.625 7.34825 8.36127 7.31258 7.59375H9.5625V8.75667C9.5625 8.75667 10.125 7.59375 11.8125 7.59375C13.5 7.59375 14.625 8.54755 14.625 11.06V14.625H12.375V11.3741C12.375 11.3741 12.375 9.52443 10.9531 9.52443C9.53123 9.52443 9.5625 11.1822 9.5625 11.1822V14.625Z"
+        fill="#A1A1A1"
+      />
+    </svg>
+  );
+}

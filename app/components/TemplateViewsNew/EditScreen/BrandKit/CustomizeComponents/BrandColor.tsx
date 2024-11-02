@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import styles from './brandcolor.style.module.css'
 import ColorPicker from './ColorPicker';
+import { AllEventsType, EventsType } from '@/types/alleventtype';
+import { usePathname } from 'next/navigation';
 
 interface Props {
     extractedColors: string[]
@@ -11,13 +13,15 @@ interface Props {
     pageBgColor?: string;
     setCardBgColor?: (value: string) => void
     clickable: boolean;
+    prefilledEvent?: EventsType | null
 }
 
-const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex, setPageBgColor, pageBgColor, setCardBgColor, clickable }: Props) => {
-
+const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex, setPageBgColor, pageBgColor, setCardBgColor, clickable, prefilledEvent }: Props) => {
     const [color, setColor] = useState('#2c68f6');
     const [selectedColorIndex, setSelectedColorIndex] = useState(0);
-
+    const pathname = usePathname();
+    const pathName = pathname.split("/")[2];
+console.log("pathname",pathName)
     const handleSelectColor = (index: number, color: any) => {
         setSelectedColorIndex(index)
         const rgbaColor = hexToRgba(color, 0.1);
@@ -26,6 +30,7 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
         }
         if (setCardBgColor) {
             setCardBgColor(color)
+            // setCardBgColor(rgbaColor)
         }
     }
     const hexToRgba = (hex: string, opacity: number) => {
@@ -52,6 +57,13 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
         }
     }, [selectedColorIndex])
 
+    useEffect(() => {
+        if (extractedColors.length > 0 && setPageBgColor) {
+            if (setPageBgColor && !prefilledEvent) {
+                setPageBgColor(hexToRgba(extractedColors[0], 0.1));
+            }
+        }
+    }, [extractedColors, setPageBgColor]);
 
     // const handleChange = (color: any) => {
     //     setValueUpdated(true)
@@ -84,7 +96,10 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
         <div className={`${styles.body} ${!flex ? styles.columnbody : ""}`}>
             <div className={`${styles.headingContainer} ${!flex ? styles.colheadingcontainer : ""}`}>
                 <div className={styles.heading}>Brand Colour</div>
-                <div className={styles.subheading}>Select or customise your brand colour</div>
+                {
+                    pathName !== "dashboard" &&(<div className={styles.subheading}>Select or customise your brand colour</div>)
+                }
+              
             </div>
             <div className={styles.editContainer}>
                 <div className={styles.colorList}>

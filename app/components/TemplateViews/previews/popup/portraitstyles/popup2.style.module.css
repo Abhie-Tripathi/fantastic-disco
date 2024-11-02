@@ -17,6 +17,7 @@
 .banner {
     border-radius: 8px;
     width: 100%;
+    object-fit: cover;
     /* height:180px; */
 }
 .eventName{
@@ -152,11 +153,14 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    gap: 10px;
 }
 .smallBtn{
     padding: 5px 10px;
+    min-width: 60px;
 }
 .btn{
     padding: 10px 20px;
     border: 1px solid;
+    min-width: 60px;
 }

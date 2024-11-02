@@ -10,8 +10,7 @@ import { baseUrl, headers } from "@/constants";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
-import Loading from "@/app/components/UI/Loading";import { showToast } from "@/utils/showToast";
-
+import Loading from "@/app/components/UI/Loading";
 const Page: React.FC = () => {
   const [shortlistedTasks, setShortlistedTasks] = useState<enquiryType[]>([]);
   const [outreachTasks, setOutreachTasks] = useState<enquiryType[]>([]);
@@ -88,24 +87,20 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
     event: React.DragEvent<HTMLDivElement>,
     target: string
   ) => {
-    console.log(event);
     
     // if(selectedShortlisted.length===10) setShortlistPage(prev=>prev+1);
-    console.log(event.dataTransfer.getData("source_container"),target);
     
     event.preventDefault();
     const taskName: enquiryType = JSON.parse(
       event.dataTransfer.getData("taskName")
     );
     const source = event.dataTransfer.getData("source_container");
-console.log(target,source);
 
     // To prevent adding the task into the same container
     if (target !== source) {
       console.log(source);
       
       if (source === "shortlisted") {
-        console.log(shortlistedTasks);
         
         setShortlistedTasks(
           shortlistedTasks.filter((task) => task.eventId !== taskName.eventId)
@@ -115,7 +110,6 @@ console.log(target,source);
         // fetchShortlistData();
         setShortlistedCount(prev=>prev-1)
       } else if (source === "outreach") {
-        console.log(outreachTasks);
         
         setOutreachTasks(
           outreachTasks.filter((task) => task.eventId !== taskName.eventId)
@@ -138,7 +132,8 @@ console.log(target,source);
             setShortlistedTasks([taskName,...shortlistedTasks.slice(0,-1)]);
         }
         setShortlistedCount(prev=>prev+1);
-        changeEnquiryStatus("SHORTLISTED", taskName.enquiryId, source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
+        changeEnquiryStatus("SHORTLISTED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
+        setCurrentEnquiryStatus("SHORTLISTED");
         // setShortlistPage(1);
         // setShortlistedTasks([]);
         // fetchShortlistData();
@@ -149,17 +144,19 @@ console.log(target,source);
           setOutreachTasks([taskName,...outreachTasks.slice(0,-1)])
         }
         setInProgressCount(prev=>prev+1);
-        changeEnquiryStatus("IN_NEGO", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
+        changeEnquiryStatus("IN_NEGO", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
+        setCurrentEnquiryStatus("IN_NEGO")
       } else if (target === "prefinalised") {
         if(noMoreConfirmData){
           setPreFinalisedTasks([taskName,...preFinalisedTasks]);
         }else
         setPreFinalisedTasks([taskName,...preFinalisedTasks.slice(0,-1)]);
         setConfirmedCount(prev=>prev+1)
-        console.log(taskName.eventId);
-        changeEnquiryStatus("CONFIRMED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
+        changeEnquiryStatus("CONFIRMED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
+        setCurrentEnquiryStatus("CONFIRMED")
       }else if(target==="canceled"){
-        changeEnquiryStatus("CANCELED", taskName.enquiryId, source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":"SHORTLISTED");
+        changeEnquiryStatus("CANCELED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
+        setCurrentEnquiryStatus("CANCELED")
       }
     }
   };
@@ -221,8 +218,6 @@ console.log(target,source);
           //   closeButton: false,
           //   hideProgressBar: true,
           // });
-          if(!modalOpen)
-          showToast("success","Enquiry status updated!")
         }
       } catch (error) {
         console.error("Error fetching data:", error);

@@ -10,9 +10,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react"
 import { useFilterState } from "@/hooks/useFilterState";
 
-type EventGroupType =  "business";
+type EventGroupType = "social" | "business";
 
 const groupedEventTypes: Record<EventGroupType, string[]> = {
+  social: ["festival", "concert", "sport", "performing-arts", "community"],
   business: ["tradeshows", "conferences", "workshops"],
 };
 interface EventTypeProps{

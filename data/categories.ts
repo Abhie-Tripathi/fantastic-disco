@@ -1,4 +1,4 @@
-// import { Category } from "@/types/events/category";
+import { Category } from "@/types/events/category";
 
 export const newCategories = [
   {

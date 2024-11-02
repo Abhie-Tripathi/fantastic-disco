@@ -5,7 +5,7 @@
     display: flex;
 }
 .appearance{
-    width: 20%;
+    min-width: 230px;
     height: 100%;
 }
 .details{

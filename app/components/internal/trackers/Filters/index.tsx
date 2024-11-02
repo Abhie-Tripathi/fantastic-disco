@@ -2,23 +2,21 @@
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Template from "/public/template.svg";
-import Vector1 from "/public/vectorTemplate.svg";
 import EventTypeSelector from "@/components/eventType";
-import CategorySelector from "@/components/categorySelector";
-import EventFormatSelector from '@/components/eventFormat';
-import EventStatusSelector from "@/components/status";
-import DateRangeSelector from "@/components/dateRange";
-import EventEntrySelector from "@/components/eventEntry";
-import UserRatingSelector from "@/components/userRatingSelector";
-import MaturitySelector from "@/components/advancedFilters/edition"
+import CategorySelector from "@/components/search/categorySelector";
+import EventFormatSelector from '@/components/search/eventFormat';
+import EventStatusSelector from "@/components/search/status";
+import DateRangeSelector from "@/components/search/dateRange";
+import EventEntrySelector from "@/components/search/eventEntry";
+import UserRatingSelector from "@/components/search/userRatingSelector";
+import MaturitySelector from "@/components/search/advancedFilters/edition"
 import LocationSelector from "@/components/location";
-import EstimatedVisitorsSelector from "@/components/advancedFilters/estimatedVisitors";
-import GlobalAndTouringSelector from "@/components/advancedFilters/globalAndTouring";
-import EstimatedExhibitorsSelector from "@/components/advancedFilters/estimatedExhibitors";
+import EstimatedVisitorsSelector from "@/components/search/advancedFilters/estimatedVisitors";
+import GlobalAndTouringSelector from "@/components/search/advancedFilters/globalAndTouring";
+import EstimatedExhibitorsSelector from "@/components/search/advancedFilters/estimatedExhibitors";
 import EstimatedEconomicImpactSelector from "@/components/advancedFilters/estimatedEconomicImpact";
-import AudienceProfileSelector from "@/components/advancedFilters/audienceDes&Dep";
-import ProductSelector from "@/components/product&Topics"
+import AudienceProfileSelector from "@/components/search/advancedFilters/audienceDes&Dep";
+import ProductSelector from "@/components/search/advancedFilters/product&Topics"
 import AudienceSpreadSelector from "@/components/advancedFilters/audienceSpread"
 import {useTrackerServices} from '@/services/trackerServices'
 import Image from "next/image";
@@ -56,11 +54,11 @@ import { GAEvent } from "@/utils/GAEvent";
 import SearchBar from "../../searchBar/SearchBar";
 import CsvUploader from "./csvUploader";
 import { Button as Button10x } from "10xui";
-import FrequencySelector from "@/components/advancedFilters/frequency";
-import ForecastedStatusSelector from "@/components/advancedFilters/forecastesStatus";
+import FrequencySelector from "@/components/search/advancedFilters/frequency";
+import ForecastedStatusSelector from "@/components/search/advancedFilters/forecastedStatus";
 import EventAnalyticsSelector from "@/components/advancedFilters/eventAnalytics";
-import EventRankingSelector from "@/components/advancedFilters/eventRanking";
-import AudienceZoneSelector from "@/components/advancedFilters/audienceZone";
+import EventRankingSelector from "@/components/search/advancedFilters/eventRanking";
+import AudienceZoneSelector from "@/components/search/advancedFilters/audienceZone";
 import AudienceQualitySelector from "@/components/advancedFilters/audienceQualityScore";
 import trackerEmptyTable from "/public/internal/trackerEmptyTable.svg";
 import { suggestionGenerator } from "@/utils/openAI";
@@ -497,6 +495,8 @@ const Pages = () => {
   const [selectedEventSeries, setSelectedEventSeries] = useState(false);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
   const [selectedMaturity, setSelectedMaturity] = useState<string>('');
+  const [isMaturity,setIsMaturity]=useState<boolean>(false);
+  const [isBrand,setIsBrand]=useState<boolean>(false);
   const [maturity, setMaturity] = useState<string | null>();
   const [intScore, setIntScore] = useState<string | null>();
   // const [selectedInboundScore, setSelectedInboundScore] = useState(0);
@@ -728,9 +728,10 @@ const Pages = () => {
       ...(isRatingOpen && { rating: true }),
       ...(isExhibitOpen && { exhibit: true }),
       ...(rankToggles.isTrustScore && {trust:true}),
-      ...((selectedMaturity !== '' && selectedMaturity !== 'none') && {maturity:true}),
+      ...(isMaturity && {maturity:true}),
       ...(selectedBrandedEvent && {brandedEvent:true}),
       ...(selectedEventSeries && {eventSeries:true}),
+      ...(isBrand && {brandSeries:true}),
       ...(forecastedStatus && {forecastedStatus:true}),
       ...(analyticsToggles.impactScore&& {impactScore:true}),
       ...(analyticsToggles.inboundScore&& {inboundScore:true}),
@@ -743,9 +744,9 @@ const Pages = () => {
     }
     const formData = {
       name: trackerName,
-      ...(type && type.length > 0 && {
-        type: type.toUpperCase()
-      }),
+      // ...(type && type.length > 0 && {
+      //   type: type.toUpperCase()
+      // }),
       accessLevel: editData?.tracker?.accessLevel,
       filterValue: {
           ...(userType &&{
@@ -843,14 +844,14 @@ const Pages = () => {
         // }),
         ...(dateRange?.from && dateRange?.to && {
           startDate: [
-            new Date(dateRange.from).toISOString().split("T")[0],
-            new Date(dateRange.to).toISOString().split("T")[0],
+            dateRange.from.toLocaleDateString("en-CA"),
+            dateRange.to.toLocaleDateString("en-CA"),
           ].join(","),
         }),
         ...(dateRange?.from && dateRange?.to && {
           endDate: [
-            new Date(dateRange.from).toISOString().split("T")[0],
-            new Date(dateRange.to).toISOString().split("T")[0],
+            dateRange.from.toLocaleDateString("en-CA"),
+            dateRange.to.toLocaleDateString("en-CA"),
           ].join(","),
         }),
         // ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
@@ -1106,6 +1107,7 @@ const Pages = () => {
           toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
       }
       setRatingOpen(toggleOpend?.rating ? true : false);
+      setIsMaturity(toggleOpend?.maturity ? true : false);
       setExhibitOpen(toggleOpend?.exhibit ?true:false)
       setRankToggles({
         ...rankToggles,
@@ -1263,6 +1265,7 @@ setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedZone]);
         editData.tracker.filterValue?.eventRanking?.split(",") || []
       );
       setSelectedBrandedEvent(toggleOpend?.brandedEvent ? true : false);
+      setIsBrand(toggleOpend?.brandSeries ? true : false);
       // setSelectedCountry(
       //   editData.tracker.filterValue?.eventCountry?.length > 0
       //     ? editData.tracker.filterValue.eventCountry.reduce(
@@ -1631,15 +1634,16 @@ console.log(includeKeywords, excludeKeywords);
       <div className={`card flex flex-col gap-6`} style={{gap:"var(--spacing-lg)", borderRadius:"var(--border-radius-sm)", boxShadow:"none"}}>
         <div>
         <div className="mb-4">{template?.description}
-          <Button
+          <Button10x
             className={styles.uploadBtn}
-            style={{ color: "white", float: "right", gap:"4px"}}
+            style={{ color: "white", float: "right" }}
+            variant="primary"
             size="sm"
             onClick={handleUploadEnable}
           >
             <Share style={{marginBottom: "3px", color: "white", display:"flex", gap:"4px"}} height="15px" width="15px" />
             {" "}Upload
-          </Button>
+          </Button10x>
         </div>
         {/* <div className={`${styles.toggleDiv}`}>
             <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
@@ -1695,13 +1699,12 @@ console.log(includeKeywords, excludeKeywords);
           />
         }
       <div style={{width:"calc(50% - 5px)"}}>
-      {/* <EventKeyword state={selectedEventKeywords}
+      <EventKeyword state={selectedEventKeywords}
       setState={setSelectedEventKeywords}
       onClose={close} type={isDiv}
       isMandatory={isMandatory}
       setIsMandatory={setIsMandatory}
-      /> */}
-      <ProductSelector type="T_PRODUCT_KEYWORDS" source="tracker"/>
+      />
       </div>
       </div>
       }
@@ -1715,7 +1718,7 @@ console.log(includeKeywords, excludeKeywords);
           </div> */}
           <div className={styles.bar}></div>
           <div>
-          <div className="flex items-center text-[#0062D1] mb-4 font-[var(--font-weight-regular)] leading-[var(--line-height-small)]" style={{fontSize:"var(--font-size-small)"}}>
+          <div className={styles.templateInputHeading}>
             <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
             {" "} Please upload or manually enter the information
           </div>
@@ -1777,10 +1780,10 @@ console.log(includeKeywords, excludeKeywords);
           </div>
           {template?.inputAreas &&
                   <div>
-                    <div className="flex items-stretch gap-2.5">
+                    <div className={styles.allInputArea}>
                       {template?.inputAreas?.map((inputArea: any, index: number) => (
                         <>
-                          <div key={index} className="relative px-2.5 border flex w-full items-center gap-2.5 bg-[var(--primary-foreground)] border-[var(--border-color)] rounded-[var(--border-radius-sm)]" style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
+                          <div key={index} className={styles.singleInputArea} style={{ border: inputArea?.required === true && isMandatory === true && customData.length === 0 ? "1px solid var(--danger-text-color)" : "" }}>
                             {inputArea.img && <Image src={inputArea.img} alt="url_Icon" className="icons" width={10} />}
                             <input
                               className={styles.textArea}
@@ -1839,13 +1842,13 @@ console.log(includeKeywords, excludeKeywords);
                 <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
               )}
               {(suggestions && suggestions.length > 0) &&
-                <div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full" >
-                  <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">
+                <div className={`${styles.suggestion_container}`} >
+                  <div className={styles.suggestion_title}>
                     {/* <Image src={AiIcon} alt="AI" className={iconClass} width={14} height={14} /> */}
                     AI SUGGESTIONS {" "}
                     <span className={styles.experimental_tag} >Beta</span>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className={styles.suggestion_items}>
                     {suggestions.map((item: string, ind: number)=>(
                       <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{item}</div>
                     ))}
@@ -1897,17 +1900,18 @@ console.log(includeKeywords, excludeKeywords);
                 <div style={{textAlign: 'center'}}>
                   <div style={{position: 'relative', color: 'var(--secondary-text-color)'}}>
                     <div style={{borderBottom: '1px solid var(--border-color)', margin: '36px 0'}}></div>
-                    <span className="absolute text-[10px] -top-1.5 bg-[var(--background-secondary-color)] px-2 font-semibold">OR</span>
+                    <span className={styles.orText}>OR</span>
                   </div>
-                  <div className="flex justify-center items-center h-[140px] border border-dashed rounded-[18px] bg-primary-foreground border-[var(--border-color)]">
-                    <Button
-                      className="text-white gap-1"
+                  <div className={styles.uploadBtnContainer}>
+                    <Button10x
+                      style={{ color: "white" }}
+                      variant="primary"
                       size="sm"
                       onClick={handleUploadEnable}
                     >
                       <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
                       {" "}Upload
-                    </Button>
+                    </Button10x>
                   </div>
                 </div>
               }
@@ -1915,7 +1919,7 @@ console.log(includeKeywords, excludeKeywords);
           }
         </div>
         <div className={`card ${styles.competitor}`} >
-          <div className="flex items-center text-[#0062D1] font-[var(--font-weight-regular)] mb-4 leading-[var(--line-height-small)]" style={{fontSize:"var(--font-size-small)"}}>
+          <div className={styles.templateInputHeading}>
             <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
             {" "} You can edit or remove unwanted entries from here.
           </div>
@@ -2336,7 +2340,7 @@ console.log(includeKeywords, excludeKeywords);
                 </Dialog>
               </Popover>
             </MenuTrigger> */}
-<UserRatingSelector source="tracker" selectedRatings={selectedUserRatings} setSeectedRatings={setSelectedUserRatings}/>
+<UserRatingSelector source="tracker" selectedRatings={selectedUserRatings} setSeectedRatings={setSelectedUserRatings} isEnabled={isRatingOpen} setIsEnabled={setRatingOpen}/>
 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                     <div className={commonCss.input_container}>
                       <div className={commonCss.input}>
@@ -2475,11 +2479,17 @@ console.log(includeKeywords, excludeKeywords);
                   </Popover>
                 </MenuTrigger> */}
                 <MaturitySelector source="tracker" selectedStatus={selectedMaturity}
-                          setSelectedStatus={setSelectedMaturity}/>
+                setSelectedStatus={setSelectedMaturity}
+                isEnabled={isMaturity}
+                setIsEnabled={setIsMaturity}
+                          />
                 <GlobalAndTouringSelector source="tracker" selectedBrandedEvent={selectedBrandedEvent}
                       setSelectedBrandedEvent={setSelectedBrandedEvent}
                       selectedEventSeries={selectedEventSeries}
-                      setSelectedEventSeries={setSelectedEventSeries}/>
+                      setSelectedEventSeries={setSelectedEventSeries}
+                      isEnabled={isBrand}
+                      setIsEnabled={setIsBrand}
+                      />
                 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={`${styles.dropdown_button}`}>
                     <div className={commonCss.input_container}>
@@ -2541,7 +2551,8 @@ console.log(includeKeywords, excludeKeywords);
                     </div>
                   </div>
                 </MenuTrigger> */}
-                <FrequencySelector source="tracker" selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency}/>
+                <FrequencySelector source="tracker" selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency}
+                />
                 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                   <Button className={styles.dropdown_button}>
                     <div className={commonCss.input_container}>
@@ -2772,7 +2783,10 @@ console.log(includeKeywords, excludeKeywords);
                   </Popover>
                 </MenuTrigger> */}
         <EstimatedExhibitorsSelector selectedRanges={selectedExhibitScore}
-                        setSelectedRanges={setSelectedExhibitScore}source="tracker"/>
+                        setSelectedRanges={setSelectedExhibitScore}
+                        isEnabled={isExhibitOpen}
+                        setIsEnabled={setExhibitOpen}
+                        source="tracker"/>
                 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                     <div className={commonCss.input_container}>
                       <div className={commonCss.input}>
@@ -3075,9 +3089,7 @@ console.log(includeKeywords, excludeKeywords);
 
 <ExhibitorQualitySelector/>
                 
-                <AudienceProfileSelector source="tracker" 
-                designationData={selectedAudProfile}
-                setDesignationData={setSelectedAudProfile}/>
+                
                 {/* <MenuTrigger onOpenChange={setMenuOpen}>
                     <div className={commonCss.input_container}>
                       <div className={commonCss.input}>
@@ -3127,6 +3139,9 @@ console.log(includeKeywords, excludeKeywords);
               </Popover>
               </MenuTrigger> */}
             <AudienceZoneSelector source="tracker" isEnabled={audienceZone} setIsEnabled={setAudienceZone}/>
+            <AudienceProfileSelector source="tracker" 
+                designationData={selectedAudProfile}
+                setDesignationData={setSelectedAudProfile}/>
 <AudienceSpreadSelector source="tracker" selectedCountries={selectedCountries}
                         setSelectedCountries={setSelectedCountries}/>
 {/* <MenuTrigger onOpenChange={setMenuOpen}>
@@ -3153,57 +3168,6 @@ console.log(includeKeywords, excludeKeywords);
       }
      
     </div>
-      }
-      {(type !== "CUSTOM" && presetTemplateData.filter(item => item.url === template?.name).length > 0) &&
-        <div>
-            <div className={styles.presetTitle} >Get Started with Pre-sets</div>
-            <div className={styles.presetContainer} >
-              {presetTemplateData.filter(item => item.url === template?.name).map((item, ind) => (
-                <div key={ind} className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]" onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
-                  <div
-                    className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]"
-                  >
-                    <div className={styles.account}>
-                      <Image src={item.img} alt="people" />
-                    </div>
-                    <div>
-                      <Image src={Template} alt="template" />
-                    </div>
-                  </div>
-                  <div className="w-full h-[60%] flex flex-col gap-2">
-                    <div className="flex justify-between items-center">
-                      <div className="flex h-full items-center gap-1">
-                        <Image
-                          src={Vector1}
-                          alt="vector1"
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        />
-                        <div style={{ color: "#585871", fontSize: "12px" }}>
-                          PRE-SET
-                        </div>
-                      </div>
-                      {item.enabled ? 
-                        <div className={`${styles.domain}`} >
-                          {item.presetType}
-                        </div> :
-                        <div className="badge_success" style={{fontSize: 'var(--font-size-xs)'}}>
-                          Coming Soon
-                        </div>
-                      }
-                    </div>
-                    <div className={styles.bottomViewTwo}>
-                      {item?.trackerName}
-                    </div>
-                    <div className={styles.text}>{item?.content}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-        </div>
       }
     </div>
     </>

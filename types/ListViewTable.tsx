@@ -33,6 +33,16 @@ export interface EventTableType {
         categoryRank: [{name: string, rank: number}]
         eventRank: number;
     };
+    ranking: {
+        globalRank?: number;
+        countryRank?: number;
+        categoryRank?: {
+            [key: string]: number;
+        };
+        countryCategoryRank?: {
+            [key: string]: number;
+        };
+    };
     reputationSentiment: number;
     interestsGrowth: number;
     interestsGrowthRange: any,

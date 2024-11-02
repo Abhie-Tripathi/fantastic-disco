@@ -86,10 +86,7 @@ const EventDetail = ({
   };
   const handleStatusChange = async (changeStatusTo: number) => {
     setStatus(changeStatusTo);
-    console.log(handleDropdownSelect);
-    if (handleDropdownSelect) 
-      handleDropdownSelect(statusValues[status]==="SHORTLISTED"?"shortlisted":statusValues[status]==="IN_NEGO"?"outreach":statusValues[status]==="CANCELED"?"canceled":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":"prefinalised" );
-    showToast("success","Enquiry status updated!")
+    
     // if (enquiryId && enquiryId != "") {
     //   let payloadData = {
     //     enquiryId: enquiryId,
@@ -104,12 +101,13 @@ const EventDetail = ({
     //     });
     //     if (apiData.data.message === "Data updated") {
     //       // if (handleRefresh) handleRefresh();
-    //       toast.success("Enquiry status updated!", {
-    //         position: "bottom-right",
-    //         autoClose: 2000,
-    //         closeButton: false,
-    //         hideProgressBar: true,
-    //       });
+    //       // toast.success("Enquiry status updated!", {
+    //       //   position: "bottom-right",
+    //       //   autoClose: 2000,
+    //       //   closeButton: false,
+    //       //   hideProgressBar: true,
+    //       // });
+          
     //       console.log("curr",currentEnquiryStatus);
           
           
@@ -118,14 +116,15 @@ const EventDetail = ({
     //     console.error("Error fetching data:", error);
     //   }
     // }
-    
+    if (handleDropdownSelect) 
+    handleDropdownSelect(statusValues[changeStatusTo]==="SHORTLISTED"?"shortlisted":statusValues[changeStatusTo]==="IN_NEGO"?"outreach":statusValues[changeStatusTo]==="CANCELED"?"canceled":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":currentEnquiryStatus==="CANCELED"?"canceled":"prefinalised" );
+    showToast("success","Enquiry status updated!")
   };
 
   useEffect(() => {
     if (leftContainerRef.current && rightContainerRef.current) {
       const leftContainerHeight = leftContainerRef.current.clientHeight;
       rightContainerRef.current.style.height = leftContainerHeight + "px";
-      console.log(leftContainerHeight);
     }
     const fetchEventData = async () => {
       try {
@@ -134,7 +133,6 @@ const EventDetail = ({
         );
         if (data) {
           const eventsData = data.event;
-          console.log(eventsData);
           
           setSingleEventData(eventsData);
         }

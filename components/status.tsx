@@ -14,7 +14,7 @@ const eventStatuses = [
   { id: "ACTIVE", label: "Active" },
   { id: "CANCELLED", label: "Cancelled" },
   { id: "POSTPONED", label: "Postponed" },
-//   { id: "PREDICTED", label: "Predicted" },
+  { id: "PREDICTED", label: "Predicted" },
 ];
 interface StatusSelectorProps{
   source: string;

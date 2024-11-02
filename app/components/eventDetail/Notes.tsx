@@ -662,35 +662,19 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   }
 
   const [userArr, setUserArr] = useState<string[]>([]);
-  const  [users,setUsers]=useState<any>("");
-  const getAllUser = async () => {
-    // const { data, error } = await myFetch(url);
+  const  [users,setUsers]=useState("");
+  const getAllUser = async (url: string) => {
+    const { data, error } = await myFetch(url);
 
-    // if (data && data?.users?.length>0) {
-    //   console.log(data);
+    if (data && data?.users?.length>0) {
+      console.log(data);
 
-    //   // Collect new items to add to the array
-    //   const newItems = data?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
-    //   setUsers(data?.users);
+      // Collect new items to add to the array
+      const newItems = data?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
+      setUsers(data?.users);
 
-    //   // Use functional form to update state
-    //   setUserArr(prevArr => [...prevArr, ...newItems]);
-    // }
-    try{
-        const data= await getUsers(`limit=100`);
-        if (data && data?.users?.length>0) {
-          console.log(data);
-    
-          // Collect new items to add to the array
-          const newItems = data?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
-          setUsers(data?.users);
-    
-          // Use functional form to update state
-          setUserArr(prevArr => [...prevArr, ...newItems]);
-        }
-    }catch(error){
-        console.log(error);
-        
+      // Use functional form to update state
+      setUserArr(prevArr => [...prevArr, ...newItems]);
     }
   };
   console.log(notes);

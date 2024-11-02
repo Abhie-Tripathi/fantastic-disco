@@ -65,3 +65,9 @@ const CardTask: React.FC<CardTaskProps> = ({ name, draggable, eventLocation , ev
 }
 
 export default CardTask
+
+
+
+
+
+

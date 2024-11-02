@@ -8,7 +8,7 @@ import LogoModal from "@/app/components/TemplateViews/brandkit/logo/LogoModal";
 import { baseUrl } from "@/constants";
 import { myFetch } from "@/utils/myFetch";
 import Errorpage from "@/app/components/TemplateViewsNew/Errorpage";
-import TypographyModa from "@/app/components/TemplateViews/brandkit/typography/TypographyModal";
+import TypographyModal from "@/app/components/TemplateViews/brandkit/typography/TypographyModal";
 
 const Page = () => {
   const [preview, setPreview] = useState<string>("");
@@ -111,7 +111,7 @@ const Page = () => {
                 colorModalIndex={colorModalIndex}
               />
             ) : preview === "typography" ? (
-              <TypographyModa
+              <TypographyModal
                 setPreview={setPreview}
                 setFetchedFonts={setFetchedFonts}
                 fetchedFonts={fetchedFonts}

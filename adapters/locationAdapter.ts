@@ -1,9 +1,9 @@
-// import { SearchLocationResponse } from "@/types/locations";
+import { SearchLocationResponse } from "@/types/locations";
 
 export const LocationAdapter = {
   adaptDatabaseLocationAutocomplete: (
     response: any
-  ): any => {
+  ): SearchLocationResponse => {
     return {
       formattedLocations: response.map((item: any) => ({
         id: item.id,

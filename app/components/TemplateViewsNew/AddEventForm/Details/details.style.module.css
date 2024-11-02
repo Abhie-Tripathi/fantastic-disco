@@ -1,9 +1,10 @@
 .body {
-    border-bottom-right-radius: 10px;
-    border-top-right-radius: 10px;
-    height: 100%;
+    height: fit-content;
     position: relative;
-    background-color: white;
+}
+
+.modalBody {
+    max-height: 70%;
 }
 
 .line {
@@ -12,11 +13,8 @@
 }
 
 .detailsContainer {
-    padding: 50px 120px 30px 70px;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
-    height: 89%;
 }
 
 .sections {
@@ -27,7 +25,6 @@
 
 .modalOpen {
     filter: blur(1px);
-    overflow-y: hidden;
 }
 
 .leftSection {
@@ -173,6 +170,7 @@
 .participationContainer {
     height: fit-content;
     width: 100%;
+    font-size: var( --font-size-default);
 }
 
 .hashtagsContainer {
@@ -187,6 +185,48 @@
     background-color: #ffffff53;
     border-radius: 10px;
     padding: 4px 11px 18px 19px;
+}
+
+.sideEventContainer {
+    background-color: #ffffff53;
+    border-radius: 10px;
+    padding: 9px 19px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sideEventSubContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.sideEventSubContainer .sideEventHeading {
+    /* font-size: 12px;
+    color: #7D7D7D;
+    font-weight: 500; */
+
+    font-size: var(--font-size-default);
+    color: var(--tertiary-text-color);
+    font-weight: var(--font-weight-medium);
+}
+
+.sideEventSubContainer .darkSideEventHeading {
+    color: white;
+}
+
+.sideEventContainer button {
+    background-color: #8F8F8F1F;
+    border-radius: 4px;
+    font-size: var(--font-size-small);
+    line-height: 18px;
+    padding: 5px 8px;
+    color: black;
+    font-weight: var(--font-weight-semibold);
+}
+.sideEventContainer .darkBtn{
+    color: white;
+    background-color: #e1e1e15f;
 }
 
 .shareContainer .heading {
@@ -204,8 +244,20 @@
     /* height: 100px; */
     resize: none;
     overflow: hidden;
-    color: #1a1a1a;
+
     font-weight: bolder;
+}
+
+.darkeventName {
+    color: white;
+}
+
+.lighteventName {
+    color: #1a1a1a;
+}
+
+.darkeventName::placeholder {
+    color: rgba(239, 239, 239, 0.679);
 }
 
 .eventName:focus {
@@ -259,4 +311,58 @@
     color: #D92D20;
     font-size: 12px;
     margin-top: 4px;
+}
+
+@media screen and (max-width: 1140px) {
+    .sections {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .leftSection {
+        width: 80%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .rightSection {
+        width: 100%;
+    }
+
+    .participationContainer {
+        height: fit-content;
+        width: 100%;
+    }
+
+    .shareContainer {
+        margin-top: 16px;
+        background-color: #ffffff53;
+        border-radius: 10px;
+        padding: 4px 11px 18px 19px;
+        width: 100%;
+    }
+
+    .detailsContainer {
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 80px 20px 70px;
+    }
+}
+
+.exhibitorModal{
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
+}
+.capacityModal{
+    position: absolute;
+    top: 50%;
+    width: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(1px 1px 2px rgb(200, 200, 200));
 }

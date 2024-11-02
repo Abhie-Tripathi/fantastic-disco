@@ -1,5 +1,6 @@
 "use client";
 
+import { useFilterContext } from "@/context/filterContext";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useCallback, useState } from "react";
 
@@ -7,7 +8,6 @@ export function useFilterState() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const [shouldTriggerSearch, setShouldTriggerSearch] = useState(false);
 
   const getFilterValue = useCallback(
     (key: string) => searchParams.get(key) || "",
@@ -17,8 +17,8 @@ export function useFilterState() {
   const setFilter = useCallback(
     (key: string, value: string) => {
       const params = new URLSearchParams(searchParams);
-      if (key !== 'skip') {
-        params.delete('skip'); // Remove 'skip' when any other filter changes
+      if (key !== "skip") {
+        params.delete("skip"); // Remove 'skip' when any other filter changes
       }
       if (value) {
         params.set(key, value);
@@ -34,8 +34,8 @@ export function useFilterState() {
     (key: string) => {
       const params = new URLSearchParams(searchParams);
       params.delete(key);
-      if (key !== 'skip') {
-        params.delete('skip'); // Remove 'skip' when any other filter is deleted
+      if (key !== "skip") {
+        params.delete("skip"); // Remove 'skip' when any other filter is deleted
       }
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     },
@@ -48,8 +48,8 @@ export function useFilterState() {
       keys.forEach((key) => {
         params.delete(key);
       });
-      if (!keys.includes('skip')) {
-        params.delete('skip'); // Remove 'skip' if it's not in the list of keys to delete
+      if (!keys.includes("skip")) {
+        params.delete("skip"); // Remove 'skip' if it's not in the list of keys to delete
       }
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     },
@@ -63,8 +63,8 @@ export function useFilterState() {
       if (newValue) {
         params.set(newKey, newValue);
       }
-      if (oldKey !== 'skip' && newKey !== 'skip') {
-        params.delete('skip'); // Remove 'skip' when replacing any other filter
+      if (oldKey !== "skip" && newKey !== "skip") {
+        params.delete("skip"); // Remove 'skip' when replacing any other filter
       }
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     },
@@ -76,7 +76,7 @@ export function useFilterState() {
       const params = new URLSearchParams(searchParams);
       let skipChanged = false;
       Object.entries(filters).forEach(([key, value]) => {
-        if (key === 'skip') skipChanged = true;
+        if (key === "skip") skipChanged = true;
         if (value) {
           params.set(key, value);
         } else {
@@ -84,21 +84,12 @@ export function useFilterState() {
         }
       });
       if (!skipChanged) {
-        params.delete('skip'); // Remove 'skip' if it wasn't explicitly set
+        params.delete("skip"); // Remove 'skip' if it wasn't explicitly set
       }
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     },
     [searchParams, router, pathname]
   );
-
-  const clearFilters = useCallback(() => {
-    router.push(pathname, { scroll: false });
-    setShouldTriggerSearch(true);
-  }, [router, pathname]);
-
-  const triggerSearch = useCallback(() => {
-    setShouldTriggerSearch(true);
-  }, []);
 
   const navigateWithParams = useCallback(
     (newPathname: string) => {
@@ -116,10 +107,6 @@ export function useFilterState() {
     deleteMultipleFilters,
     replaceFilter,
     setMultipleFilters,
-    clearFilters,
-    triggerSearch,
-    shouldTriggerSearch,
-    setShouldTriggerSearch,
     navigateWithParams,
   };
 }

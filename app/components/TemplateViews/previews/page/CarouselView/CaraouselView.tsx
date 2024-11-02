@@ -29,9 +29,10 @@ interface Props {
     demoEventName: string;
     demoDescription: string
     demoLocation:string
+    demoDate:string
 }
 
-const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoDescription, demoLocation}: Props) => {
+const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoDescription, demoLocation, demoDate}: Props) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     let EventCard: ElementType;
@@ -48,13 +49,13 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
     }
 
     const demoBanners = [
-        <EventCard key="1" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/>,
-        <EventCard key="2" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/>,
-        <EventCard key="3" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/>,
-        <EventCard key="4" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/>,
-        <EventCard key="5" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/>,
-        <EventCard key="6" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/>,
-        <EventCard key="7" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/>,
+        <EventCard key="1" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="2" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="3" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="4" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="5" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="6" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="7" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
     ];
 
     const banners = fetchedAddedOtherData && widgetId && fetchedAddedOtherData.length > 0
@@ -88,6 +89,7 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
     const router = useRouter();
     const handleCardClick = (eventId: string, widgetId: string) => {
         router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`)
+        // router.push(`/detailpage/${eventId}`)
     }
     return (
         <div className={styles.sliderContainer}>
@@ -112,16 +114,6 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
             <button className={styles.navButton} onClick={handleNext} disabled={currentIndex === banners.length - 1}>
                 <RightArrowIcon />
             </button>
-            {/* <div className={styles.dotsContainer}>
-                {[currentIndex - 1, currentIndex, currentIndex + 1].map((index, dotIdx) => (
-                    <button
-                        key={dotIdx}
-                        className={`${styles.dotButton} ${dotIdx === 1 ? styles.activeDot : styles.fadedDot}`}
-                        onClick={() => handleDotClick(index)}
-                        disabled={index < 0 || index >= banners.length} // Disable dots if out of bounds
-                    />
-                ))}
-            </div> */}
         </div>
     );
 };

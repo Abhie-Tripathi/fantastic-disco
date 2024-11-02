@@ -142,22 +142,27 @@ import React, { useEffect, useRef, useState } from "react";
 import { showToast } from "@/utils/showToast";
 import styles from './modal.style.module.css'
 import "quill/dist/quill.snow.css";
+import { FormState } from "@/types/Formstate";
 interface Props {
-    setDescriptionModal: (value: boolean) => void;
+    // setDescriptionModal: (value: boolean) => void;
     handleDescClick: () => void;
-    setTextValue: (value: string) => void;
+    // setTextValue: (value: string) => void;
+    handleChange: (field: keyof FormState, value: any) => void;
     textValue: string;
 }
 
 const DescriptionModal: React.FC<Props> = ({
-    setDescriptionModal,
+    // setDescriptionModal,
     handleDescClick,
-    setTextValue,
+    handleChange,
+    // setTextValue,
     textValue
 }) => {
     const editorRef = useRef<HTMLDivElement>(null);
     const [editor, setEditor] = useState<any>(null);
-    const phoneRegex = /(\+?\d{1,4}[-.\s]?)?(\(?\d{1,4}\)?[-.\s]?)?[\d-\s]{7,14}/;
+    // const phoneRegex = /(\+?\d{1,4}[-.\s]?)?(\(?\d{1,4}\)?[-.\s]?)?[\d-\s]{7,14}/;
+    const phoneRegex = /.*(\+?\d{1,4}[-.\s]?\(?\d{1,4}\)?[-.\s]?[\d-\s]{7,14}).*/;
+
     const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
 
     
@@ -165,21 +170,35 @@ const DescriptionModal: React.FC<Props> = ({
         // Replace multiple consecutive empty <p> or <br> tags with a single one
         return content.replace(/(<p><br><\/p>|\s)*<p><br><\/p>(<p><br><\/p>|\s)*/g, '<p><br></p>');
     };
+    
     const handleInputChange = (value: string) => {
         const cleanedValue = cleanUpEmptyLines(value);
-        setTextValue(cleanedValue);
+        const isEmptyHTML = /^<p>(\s|<br>)*<\/p>$/i.test(value.trim());
+        if (isEmptyHTML) {
+            handleChange('textValue', "")
+            // setTextValue(""); 
+            return; 
+        }
+        handleChange('textValue', cleanedValue)
+        // setTextValue(cleanedValue);
     }
     const handleSave = () => {
         // Check for phone numbers and emails
-        if (phoneRegex.test(textValue)) {
+        const trimmedInput = textValue.trim();
+        if (trimmedInput.length === 0) {
+            showToast("error", "Input cannot be an empty string!");
+            return;
+        }
+       
+        if (phoneRegex.test(trimmedInput)) {
             showToast("error", "Please do not include Phone numbers or Email address in the description.");
             return; // Prevent save
         }
-        if (emailRegex.test(textValue)) {
+        if (emailRegex.test(trimmedInput)) {
             showToast("error", "Please do not include Phone numbers or Email address in the description.");
             return; // Prevent save
         }
-        if(textValue.length > 1500){
+        if(trimmedInput.length > 1500){
             showToast("error", "Description should not be more then 1500 characters");
             return; // Prevent save
         }
@@ -230,7 +249,7 @@ const DescriptionModal: React.FC<Props> = ({
             <div className={styles.header}>
                 <span>Add your description</span>
                 <div className={styles.btnContainer}>
-                    <span className={styles.close} onClick={() => setDescriptionModal(false)}>Close</span>
+                    <span className={styles.close} onClick={() => handleChange('descriptionModal', false)}>Close</span>
                     <button className={styles.saveBtn} onClick={handleSave}>Save</button>
                 </div>
 

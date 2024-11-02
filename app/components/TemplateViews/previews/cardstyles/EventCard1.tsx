@@ -3,7 +3,8 @@ import styles from './eventcard1.style.module.css'
 import Image from 'next/image'
 // import placeholder2 from '/public/placeholder2.png'
 import placeholder2 from '/public/demobanner.png'
-
+import POP from '/public/partyPopIcon.svg'
+import TradeshowIcon from '/public/tradeshowIcon.svg'
 
 import locationIcon from '/public/location_on.svg'
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
@@ -27,6 +28,7 @@ interface CardProps {
     demoBanner:string;
     demoDescription:string
     demoLocation:string
+    demoDate:string
 }
 
 const EventCard1 = ({
@@ -40,7 +42,8 @@ const EventCard1 = ({
     demoBanner,
     demoEventName,
     demoDescription,
-    demoLocation
+    demoLocation,
+    demoDate
 
 }: CardProps) => {
 
@@ -61,8 +64,13 @@ const EventCard1 = ({
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <Image width={291} height={185} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.banner} />
             <div className={styles.date_location_nameContainer}>
-                <div className={styles.dateContainer}><span className={styles.date} style={{ fontSize: fontSettings.heading.fontSize }}>{day}</span>
-                    <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div>
+                {/* <div className={styles.dateContainer}><span className={styles.date} style={{ fontSize: fontSettings.heading.fontSize }}>{day}</span>
+                    <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div> */}
+            <div className={styles.dateContainer}>
+             {
+                fetchedEvent?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedEvent?.eventType === "MAIN" ? <Image src={TradeshowIcon} alt=''/>:<Image src={POP} alt=''/>
+             }
+           </div>
                 <div className={styles.line}></div>
                 <div className={styles.name_locationContainer}>
                     <div className={styles.locationContainer}>
@@ -75,7 +83,7 @@ const EventCard1 = ({
             </div>
             <div className={styles.dividerLine}></div>
             <div className={styles.dateRange_typeContainer}>
-                <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : "29 Jan - 5 Feb"}</div>
+                <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
                 <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>Tradeshow</div>
                 <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>Attending</div>
             </div>

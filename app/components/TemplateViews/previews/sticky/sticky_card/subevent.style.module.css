@@ -1,0 +1,188 @@
+.bigouterDiv {
+    width: 100%;
+}
+
+.smallMainOuterDiv {
+    width: 85%;
+    border-left: 1px dashed var(--disabled-background-color);
+    display: flex;
+    justify-content: flex-end;
+    /* justify-content: space-between; */
+}
+.smallSubOuterDiv{
+    border-left: 1px dashed var(--disabled-background-color);
+    display: flex;
+    justify-content: flex-end;
+}
+.bigCard {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--neutral-light-color);
+    border-radius: 4px;
+}
+
+.smallCard {
+    position: relative;
+    width: 100%;
+    padding: 20px;
+    background-color: var(--primary-light-color);
+    border: 1px solid var(--neutral-light-color);
+    border-radius: 4px;
+    /* margin-top: 20px; */
+    /* margin-bottom: 25px; */
+    height: 150px; 
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    overflow: hidden;
+}
+
+/* .smallMainCard {
+    position: relative;
+    width: 98%;
+    padding: 18px 30px;
+    background-color: var(--primary-light-color);
+    border: 1px solid var(--neutral-light-color);
+    border-radius: 4px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    overflow: hidden;
+} */
+
+.popperImg {
+    position: absolute;
+    right: 20px;
+    height: 200px;
+    width: 100px;
+    z-index: 1;
+}
+
+.imageContainer {
+    border-radius: 6px;
+    position: relative;
+    height: 130px;
+    width: 130px;
+}
+
+.imageContainer img {
+    position: absolute;
+    border-radius: 6px;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+}
+
+.squareOne,
+.squareTwo {
+    position: absolute;
+    z-index: 0;
+    border-radius: 16px;
+}
+
+.squareOne {
+    width: 112px;
+    height: 129px;
+    top: 10px;
+    left: 0px;
+    transform: rotate(-8deg);
+    background-color: #59478C;
+}
+
+.squareTwo {
+    width: 130px;
+    height: 130px;
+    top: 0px;
+    left: 0px;
+    transform: rotate(10deg);
+
+    background-color: #A099E0;
+}
+
+.details {
+    width: 90%;
+}
+
+.smallName {
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+}
+
+.bigName {
+    font-size: var(--font-size-h4);
+    font-weight: var(--font-weight-medium);
+}
+
+.eventDataField {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--font-size-small);
+    color: var(--secondary-text-color);
+    line-height: 18px;
+}
+
+.eventDateTimeContainer {
+    display: flex;
+    align-items: center;
+    margin-top: 4px;
+    gap: 10px;
+}
+
+.description {
+    margin-top: 5px;
+    font-size: var(--font-size-small);
+    color: var(--tertiary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
+
+.tags_deleteContainer {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.tags {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.tags div {
+    font-size: var(--font-size-small);
+    line-height: 18px;
+    padding: 1px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.tags .tag1 {
+    color: #0062D1;
+    border: 1px solid #CCE6FF;
+    background-color: #EBF5FF;
+}
+
+.tags .tag2 {
+    color: #12A594;
+    border: 1px solid #BEF4EB;
+    background-color: #E5FAF6;
+}
+
+.deleteBtn {
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    font-size: var(--font-size-small);
+    padding: 5px 9px;
+    color: white;
+    z-index: 2;
+}
+
+.deleteBtn:hover {
+    background-color: red;
+}
