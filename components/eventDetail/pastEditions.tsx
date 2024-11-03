@@ -18,7 +18,6 @@ interface LoadMoreProps {
 const take = 10;
 
 const LoadMore = ({ eventId, setEventEditionDetails }: LoadMoreProps) => {
-  console.log("Load More");
   const { getEventEditionDetails } = useEventsService();
   const [ref, inView] = useInView();
   const [skip, setSkip] = useState<number>(0);
@@ -60,7 +59,6 @@ const PastEditions = ({ eventId, eventEditionData }: IProps) => {
       setEventEditionDetails(editions);
     }
   }, [editions]);
-  console.log(eventEditionDetails);
   if (!eventEditionDetails) return null;
   return (
     <ul className="h-[200px] flex flex-col gap-4 max-h-[200px] overflow-y-auto scrollbar pr-4 w-[400px] max-w-[400px]">

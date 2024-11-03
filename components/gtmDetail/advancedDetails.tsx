@@ -140,11 +140,7 @@ const CarouselComponent = ({
                   Rehost Month
                 </h1>
                 <span className="text-[var(--primary-color-hover)] font-semibold text-md">
-                  {/* {format(new Date(rehostDate), "dd MMM, yyyy")} */}
-                  {renderFormattedDates(
-                    futureExpectedStartDate,
-                    futureExpectedEndDate
-                  )}
+                  {format(futureExpectedStartDate, "MMM, yyyy")}
                 </span>
               </div>
             </CarouselItem>

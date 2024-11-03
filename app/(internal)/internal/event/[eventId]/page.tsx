@@ -35,6 +35,7 @@ import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
 import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import SaveThisEvent from "@/components/gtmDetail/saveThisEvent";
+import { toast } from "react-toastify";
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
   const scrollableSectionRef = useRef<HTMLElement | null>(null);
@@ -102,21 +103,23 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
   const isCancelled = status === "cancelled";
   const isPostponed = status === "postponed";
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: name ?? "",
-          url: `https://console.eventeli.com/search/${id}`,
-        })
-        .then(() => {
-          console.log("Successfully shared");
-        })
-        .catch((error) => {
-          console.error("Something went wrong", error);
+  const handleCopyToClipboard = () => {
+    const url = window.location.href;
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        toast.success("Link copied to clipboard!", {
+          position: "bottom-center",
+          autoClose: 2000,
         });
-    }
+      })
+      .catch((error) => {
+        console.error("Failed to copy URL: ", error);
+        toast.error("Failed to copy link.", {
+          position: "bottom-center",
+          autoClose: 2000,
+        });
+      });
   };
 
   const handleScrollTo = (section: string) => {
@@ -164,7 +167,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 <Globe width="16px" height="16px" color="#666666" />
               </Link>
             )}
-            <button onClick={handleShare}>
+            <button onClick={handleCopyToClipboard}>
               {/* <Forward width="18px" height="18px" color="#666666" /> */}
               <Image
                 src={"/shareLogo.svg"}
