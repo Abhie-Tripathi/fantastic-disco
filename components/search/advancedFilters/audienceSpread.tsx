@@ -16,17 +16,27 @@ import Image from "next/image";
 import { useMiscService } from "@/services/miscService";
 import { Country } from "@/types/events/events";
 import { useFilterContext } from "@/context/filterContext";
-
-export default function Component() {
+interface AudienceSpreadProps{
+  source: string;
+  selectedCountries?: string[];
+  setSelectedCountries?: React.Dispatch<React.SetStateAction<string[]>>;
+}
+export default function Component({
+  source,
+  selectedCountries: selectedParentCountries = [],
+  setSelectedCountries: setSelectedParentCountries,
+}: AudienceSpreadProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCountries, setSelectedCountries] = useState<string[]>([]);
+  const [selectedLocalCountries, setSelectedLocalCountries] = useState<string[]>([]);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [countries, setCountries] = useState<Country[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
   const { setMultipleLocalFilters, getLocalFilterValue } = useFilterContext();
   const { getCountries, getRegions, isLoading, error } = useMiscService();
-
+  const selectedCountries = source==="tracker"? selectedParentCountries: selectedLocalCountries;
+  const setSelectedCountries = source==="tracker"?
+  setSelectedParentCountries: setSelectedLocalCountries;
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -46,16 +56,18 @@ export default function Component() {
   }, []);
 
   useEffect(() => {
+    if(source!=="tracker"){
     const audienceSpread = getLocalFilterValue("audienceSpread");
     const audienceSpreadRegions = getLocalFilterValue("audienceSpreadRegions");
 
     if (audienceSpread) {
-      setSelectedCountries(audienceSpread.split(","));
+      setSelectedCountries?.(audienceSpread.split(","));
     }
 
     if (audienceSpreadRegions) {
       setSelectedRegions(audienceSpreadRegions.split(","));
     }
+  }
   }, [getLocalFilterValue]);
 
   const filteredCountries = countries.filter((country) =>
@@ -67,7 +79,7 @@ export default function Component() {
   );
 
   const toggleCountry = (code: string) => {
-    setSelectedCountries((prev) =>
+    setSelectedCountries?.((prev) =>
       prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]
     );
   };
@@ -81,7 +93,7 @@ export default function Component() {
   };
 
   const removeFilter = (code: string) => {
-    setSelectedCountries((prev) => prev.filter((c) => c !== code));
+    setSelectedCountries?.((prev) => prev.filter((c) => c !== code));
     setSelectedRegions((prev) => prev.filter((r) => r !== code));
   };
 

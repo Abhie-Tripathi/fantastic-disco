@@ -17,15 +17,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl } from "@/constants";
-import { useLocationService } from "@/services/locationServices";
-// import {
-//   useNominatimAutocomplete,
-//   useSavedLocationAutocomplete,
-//   useDatabaseLocationcomplete,
-// } from "@/hooks/useLocationAutocomplete";
-// import { useLocationService } from "@/services/locationService";
+import {
+  useNominatimAutocomplete,
+  useDatabaseLocationcomplete,
+} from "@/hooks/useLocationAutocomplete";
+import { useLocationService } from "@/services/locationService";
 
 interface Location {
   id: string;
@@ -47,58 +43,23 @@ export default function AutocompleteInput({
   multiple = false,
   value,
 }: AutocompleteInputProps) {
-//   const { getCoordinates } = useLocationService();
-const {getDatabaseLocationAutocomplete, isLoading, error:isError} =useLocationService();
+  const { getCoordinates } = useLocationService();
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [selectedLocations, setSelectedLocations] = useState<Location[]>([]);
-//   const savedLocationsResult = useSavedLocationAutocomplete(inputValue);
-//   const databaseLocationResult = useDatabaseLocationcomplete(inputValue);
-//   const nominatimResult = useNominatimAutocomplete(inputValue);
+  // const savedLocationsResult = useSavedLocationAutocomplete(inputValue);
+  const databaseLocationResult = useDatabaseLocationcomplete(inputValue);
+  const nominatimResult = useNominatimAutocomplete(inputValue);
+  const savedLocationsResult = {predictions: [], isLoading: false, isError: false}
 
-//   const { predictions, isLoading, isError } =
-//     type === "SavedLocations"
-//       ? savedLocationsResult
-//       : type === "LocationId"
-//       ? databaseLocationResult
-//       : nominatimResult;
-// const [cityData, setCityData] = useState([]);
-// const [stateData, setStateData] = useState([]);
-// const [countryData, setCountryData] = useState([]);
-const [locationData,setLocationData]=useState();
-const [zoneData, setZoneData] = useState([]);
-const fetchSuggestions = async(text: string) => {
-  try {
-    const [suggestionResponse, countryResponse] = await Promise.all([
-      myFetch(`${baseUrl}/location/suggestion?q=${text}`),
-      myFetch(`${baseUrl}/location/country?name=${text}`),
-    ]);
-    const result = await getDatabaseLocationAutocomplete(inputValue); 
-    console.log(result);
-    
-    setLocationData(result.formattedLocations || []); 
-    // setStateData(suggestionResponse.data.state);
-    // setCountryData(countryResponse.data);
-    // setZoneData(suggestionResponse.data.zone);
-  } catch (error) {
-    console.error("Error fetching location data:", error);
-  } finally {
-    // setLocationSearchLoader(false);
-  }
-}
-useEffect(()=>{
-  if(inputValue.length>0)
-  fetchSuggestions(inputValue);
-else {
-  // setCityData([]);
-  // setCountryData([]);
-  setLocationData([]);
-  setZoneData([]);
-}
-},[inputValue, value])
+  const { predictions, isLoading, isError } =
+    type === "SavedLocations"
+      ? savedLocationsResult
+      : type === "LocationId"
+      ? databaseLocationResult
+      : nominatimResult;
+
   useEffect(() => {
-    console.log(value);
-    
     if (value) {
       if (Array.isArray(value)) {
         setSelectedLocations(value);
@@ -120,22 +81,22 @@ else {
         onSelect(updatedLocations);
       } else {
         setSelectedLocations([newLocation]);
-        setInputValue("");
+        setInputValue(description);
         setOpen(false);
         onSelect(newLocation);
       }
 
-    //   if (type === "GeoCoordinate") {
-    //     // const location = await getCoordinates(placeId);
-    //     onSelect({
-    //       description: description,
-    //       lat: location.lat,
-    //       lng: location.lng,
-    //       radius: 5,
-    //     });
-    //   }
+      if (type === "GeoCoordinate") {
+        const location = await getCoordinates(placeId);
+        onSelect({
+          description: description,
+          lat: location.lat,
+          lng: location.lng,
+          radius: 5,
+        });
+      }
     },
-    [multiple, type, onSelect, selectedLocations]
+    [multiple, type, getCoordinates, onSelect, selectedLocations]
   );
 
   const handleRemove = useCallback(
@@ -148,6 +109,7 @@ else {
     },
     [selectedLocations, onSelect]
   );
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -208,27 +170,7 @@ else {
             )}
           </CommandEmpty>
           <CommandGroup>
-          <CommandList>
-          {locationData?.map((item: any) => (
-          <CommandItem
-            key={item.id}
-            onSelect={() => handleSelect(item.displayName, item.id)}
-          >
-           {item.displayName}
-            {/* {data.state && `, ${data.state}`}
-             {data.countryName && `, ${data.countryName}`} */}
-          </CommandItem>
-        ))}
-        {zoneData?.map((data: any) => (
-          <CommandItem
-          key={data.id}
-          onSelect={()=> handleSelect(data, data)}
-          >
-          {data}
-          </CommandItem>
-        ))}
-        </CommandList>
-            {/* <CommandList>
+            <CommandList>
               {predictions?.map((prediction: any) => {
                 const description =
                   type === "GeoCoordinate"
@@ -251,7 +193,7 @@ else {
                   </CommandItem>
                 );
               })}
-            </CommandList> */}
+            </CommandList>
           </CommandGroup>
         </Command>
       </PopoverContent>

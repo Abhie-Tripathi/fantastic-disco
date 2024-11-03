@@ -17,7 +17,7 @@ import EstimatedExhibitorsSelector from "@/components/search/advancedFilters/est
 import EstimatedEconomicImpactSelector from "@/components/advancedFilters/estimatedEconomicImpact";
 import AudienceProfileSelector from "@/components/search/advancedFilters/audienceDes&Dep";
 import ProductSelector from "@/components/search/advancedFilters/product&Topics"
-import AudienceSpreadSelector from "@/components/advancedFilters/audienceSpread"
+import AudienceSpreadSelector from "@/components/search/advancedFilters/audienceSpread"
 import {useTrackerServices} from '@/services/trackerServices'
 import Image from "next/image";
 import Url from '/public/url.svg'
@@ -77,6 +77,7 @@ export interface LocationItem {
   id: string;
   description: string | undefined;
 }
+export type Location =  LocationItem[];
 // interface Toggle{
 //   rating?:boolean;
 //   exhibit?:boolean;
@@ -364,7 +365,7 @@ const Pages = () => {
   const [isSpreadOpen, setSpreadOpen] = useState<boolean>(false);
   const { theme } = useTheme();
   const type = searchParams.get('type');
-  const [selectedLocationsData,setSelectedLocationsData]=useState<LocationItem[]| null>();
+  const [selectedLocationsData,setSelectedLocationsData]=useState<any>();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
   const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
@@ -821,7 +822,7 @@ const Pages = () => {
         //   ].join(","),
         // }),
         ...(selectedLocationsData && selectedLocationsData?.length > 0
-    ? { locationIds: selectedLocationsData.map((item) => item.id).join(',') }
+    ? { locationIds: selectedLocationsData.map((item:LocationItem) => item.id).join(',') }
     : {}),
         ...(selectedUserRatings?.length > 0 && {
           eventRating: selectedUserRatings.join(","),

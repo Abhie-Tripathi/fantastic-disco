@@ -662,20 +662,36 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   }
 
   const [userArr, setUserArr] = useState<string[]>([]);
-  const  [users,setUsers]=useState("");
-  const getAllUser = async (url: string) => {
-    const { data, error } = await myFetch(url);
+  const  [users,setUsers]=useState<{}>();
+  const getAllUser = async () => {
+    // const { data, error } = await myFetch(url);
 
-    if (data && data?.users?.length>0) {
-      console.log(data);
+    // if (data && data?.users?.length>0) {
+    //   console.log(data);
 
-      // Collect new items to add to the array
-      const newItems = data?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
-      setUsers(data?.users);
+    //   // Collect new items to add to the array
+    //   const newItems = data?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
+    //   setUsers(data?.users);
 
-      // Use functional form to update state
+    //   // Use functional form to update state
+    //   setUserArr(prevArr => [...prevArr, ...newItems]);
+    // }
+    try{
+      const result= await getUsers('limit=100')
+      console.log(result?.users);
+      if(result){
+      setUsers(result?.users);
+      const newItems = result?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
       setUserArr(prevArr => [...prevArr, ...newItems]);
+      }else{
+        console.log(error);
+        
+      }
+    }catch(error){
+      console.log(error);
+      
     }
+    
   };
   console.log(notes);
   return (

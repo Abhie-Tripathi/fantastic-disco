@@ -35,10 +35,12 @@ export interface LocationItem {
 }
 
 export type Location = GeoLocation | LocationItem[];
-interface LocationProps{
-  source:string;
+export interface LocationProps {
+  source: string;
   selectedLocation?: Location | null;
-  setSelectedLocation?: React.Dispatch<React.SetStateAction<Location | null>>;
+  setSelectedLocation?: React.Dispatch<
+    React.SetStateAction<GeoLocation | LocationItem[] | null>
+  >;
 }
 export default function LocationSelector({
   source,

@@ -65,26 +65,31 @@ export interface EventTableType {
     };
     internationalAudience: string;
     type: string[];
-    eventBrand?:string;
-    isEventSeries?:string;
-    "trustScore%"?: number;
-    futureExpectedStartDate?:any;
-    competitorDomainOrName?:string[];
-    competitorPercentage?:string;
-    speakerPersonAssociation?:string[];
-    speakerPersonAssociationPercentage?:string;
-    peopleFinderPersonAssociation?:string[];
-    peopleFinderPersonAssociationPercentage?:string;
-    recruitmentAssociation?:string[];
-    recruitmentAssociationPercentage?:string;
-    maturity?:string;
-    eventImpactScore?:number;
-    eventInboundScore?:number;
-    internationalScore?:number;
-    audienceZone?:string;
-    audienceSpread?:any;
-}
-export interface AllEventsType{
-     result: EventTableType[] ;
-     count: number 
+    isEventBrand?: boolean;
+    eventBrand?: string;
+    isEventSeries?: boolean;
+    maturity?: string;
+    eventImpactScore?: number | null;
+    eventInboundScore?: number | null;
+    internationalScore?: number | null;
+    "trustScore%"?: number | null;
+    audienceZone?: string,
+    futureExpectedStartDate?: Date;
+    futureExpectedEndDate?: Date;
+    audienceSpread?: {
+        [key: string]: {
+            iso: string;
+            name: string;
+            count: number;
+            percentage: number;
+        };
+    },
+    speakerPersonAssociationPercentage?: string,
+    speakerPersonAssociation?: string[],
+    competitorPercentage?: string,
+    competitorDomainOrName?: string[],
+    peopleFinderPersonAssociation?: string[],
+    peopleFinderPersonAssociationPercentage?: string,
+    recruitmentAssociation?: string[],
+    recruitmentAssociationPercentage?: string,
 }

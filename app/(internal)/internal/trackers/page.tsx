@@ -15,11 +15,10 @@ import {
   MagnifyingGlass,
   PencilEdit,
 } from "geist-icons";
-import {AllEventsType, EventTableType } from '@/types/ListViewTable';
+import {EventTableType } from '@/types/ListViewTable';
 import SavedEventWidget from "@/app/components/internal/trackers/SavedEventWidget";
 import NotesDiscussionWidget from "@/app/components/internal/trackers/NotesDiscussionWidget";
 import NotificationWidget from "@/app/components/internal/trackers/NotificationWidget";
-import CardWidgitNote from "@/app/components/internal/trackers/CardWidgitNote";
 import Calendar from '@/public/internal/calendar.svg'
 import TrackerLocation from '@/public/internal/location.svg'
 import Table from "@/app/components/Table";
@@ -40,8 +39,6 @@ import Keywords from "/public/keywords.svg";
 import SocialCause from "/public/socialCause.svg";
 import Brand from "/public/brand.svg";
 import Vector1 from "/public/vectorTemplate.svg";
-import Vector3 from "/public/Vector3.svg";
-import Vector4 from "/public/Vector4.svg";
 import MyTracker from "@/app/components/internal/trackers/MyTrackers";
 import Loading from "@/app/components/UI/Loading";
 import { Button } from "@/components/ui/button";

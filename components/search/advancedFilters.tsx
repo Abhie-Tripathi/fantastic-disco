@@ -69,7 +69,7 @@ const AdvancedFilters = () => {
           <ExhibitorQualitySelector />
           <AudienceZoneSatusSelector source="search"/>
           <AudienceDesAndDep source="search"/>
-          <AudienceSpread />
+          <AudienceSpread source="search"/>
         </div>
       </TabsContent>
       <TabsContent value="trackers">

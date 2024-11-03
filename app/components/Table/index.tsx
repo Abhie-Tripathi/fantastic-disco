@@ -32,7 +32,7 @@ import {
 import { useSearchParams } from "next/navigation";
 import { ArrowDown, ArrowUp } from "geist-icons";
 import { useTrackerServices } from "@/services/trackerServices";
-import { AllEventsType } from '@/types/ListViewTable';
+// import { AllEventsType } from '@/types/ListViewTable';
 import ZeroState from "../zerostate";
 interface FormDataType {
   entityId_id: string;
