@@ -247,7 +247,6 @@ const userRating=
       <>
         <div className={styles.innerContainer}>
           <div
-            className="border rounded-[var(--border-radius-sm)]" 
             style={{ paddingLeft: "20px" }}
           >
             <div className={styles.advanceHead}>Product and Topics</div>
@@ -261,15 +260,18 @@ const userRating=
           </div>
           <div className={styles.innerContainerRight}>
           <div className={keyStyles.allCat1}>
-                   {allKeywords?.map((item: string, id: number) => (
-                       item?.charAt(0) !== '-' ? (
-                           <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.key}`}>{item.replaceAll("_"," ")}
+                   {data?.tracker?.filterValue?.includeKeywords?.split(" ")?.map((item: string, id: number) => (
+                        (
+                           <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.key}`}>{item}
                            <span className={keyStyles.tooltipText}>Included Keyword</span>
                            </div>
-                       ) : (
-                           <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.keyNegative}`}>{item.replaceAll("_"," ").substring(1)}
-                           <span className={keyStyles.tooltipText}>Excluded Keyword</span>
-                           </div>
+                       )
+                   ))}
+                   {data?.tracker?.filterValue?.excludeKeywords?.split(" ")?.map((item: string, id: number) => (
+                        (
+                          <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.keyNegative}`}>{item}
+                          <span className={keyStyles.tooltipText}>Excluded Keyword</span>
+                          </div>
                        )
                    ))}
                </div>
@@ -660,7 +662,9 @@ const userRating=
         </div>
       </div>
       <div className={styles.innerContainerRight}>
-        <AdvanceFilter keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
+        <AdvanceFilter includeKeywords={data?.tracker?.filterValue?.includeKeywords?.length !== 0 ? data?.tracker?.filterValue?.includeKeywords?.split(' ') : []} 
+        excludeKeywords={data?.tracker?.filterValue?.excludeKeywords?.length !== 0 ? data?.tracker?.filterValue?.excludeKeywords?.split(' ') : []}
+         freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
           isBranded={toggleOpend?.brandedEvent}
           eventEdition={data?.tracker?.filterValue?.editionRange}
           type={type}

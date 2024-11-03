@@ -47,28 +47,28 @@ const AdvancedFilters = () => {
       </div>
       <TabsContent value="advancedDetails">
         <div className="grid grid-cols-5 gap-3 pb-6 border-b">
-          <EditionSelector />
-          <GlobalAndTouringSelector />
-          <ForecastedStatusSelector />
-          <FrequencySelector />
-          <KeywordFilter />
+          <EditionSelector source="search"/>
+          <GlobalAndTouringSelector source="search"/>
+          <ForecastedStatusSelector source="search"/>
+          <FrequencySelector source="search"/>
+          <KeywordFilter source="search"/>
         </div>
       </TabsContent>
       <TabsContent value="insightsAndScores">
         <div className="grid grid-cols-5 gap-3 pb-6 border-b">
-          <EstimatedVisitorsSelector />
-          <EstimatedExhibitorsSelector />
-          <EventAnalyticsSelector />
+          <EstimatedVisitorsSelector source="search"/>
+          <EstimatedExhibitorsSelector source="search"/>
+          <EventAnalyticsSelector source="search"/>
           <EstimatedEconomicImpactSelector />
-          <EventRankingSelector />
+          <EventRankingSelector source="search"/>
         </div>
       </TabsContent>
       <TabsContent value="audienceIntel">
         <div className="grid grid-cols-5 gap-3 pb-6 border-b">
           <AudienceQualitySelector />
           <ExhibitorQualitySelector />
-          <AudienceZoneSatusSelector />
-          <AudienceDesAndDep />
+          <AudienceZoneSatusSelector source="search"/>
+          <AudienceDesAndDep source="search"/>
           <AudienceSpread />
         </div>
       </TabsContent>

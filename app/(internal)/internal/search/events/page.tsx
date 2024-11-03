@@ -263,14 +263,14 @@ const Search = () => {
       <SearchBar />
       <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
         <div className="col-span-8 grid grid-cols-4 gap-3">
-          <EventTypeSelector />
-          <CategorySelector />
-          <EventFormatSelector />
-          <LocationSelector />
-          <DateRangeSelector />
-          <StatusSelector />
-          <EventEntrySelector />
-          <UserRatingSelector />
+          <EventTypeSelector source="search"/>
+          <CategorySelector source="search"/>
+          <EventFormatSelector source="search"/>
+          <LocationSelector source="search"/>
+          <DateRangeSelector source="search"/>
+          <StatusSelector source="search"/>
+          <EventEntrySelector source="search"/>
+          <UserRatingSelector source="search"/>
         </div>
         <div className="col-span-2 flex flex-col gap-4">
           <Button

@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './advanceFilter.style.module.css'
 import ToggleBtn from '../../UI/ToggleBtn';
-const index = ({ freq, keywords, isBranded, eventEdition, type, eventSeries, forecastedStatus, maturity}: any) => {
+const index = ({ freq, includeKeywords, excludeKeywords, isBranded, eventEdition, type, eventSeries, forecastedStatus, maturity}: any) => {
     // const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     // const freq=["Annual","Biannual","Queartly"]
     // const entry=["Free","Paid","Invites","Member Access"];
@@ -20,15 +20,18 @@ const index = ({ freq, keywords, isBranded, eventEdition, type, eventSeries, for
            <div className={commonClasses.filter}>
                <div className={commonClasses.filterHeading}>Product / Topics</div>
                <div className={styles.allCat1}>
-                   {keywords?.map((item: string, id: number) => (
-                       item?.charAt(0) !== '-' ? (
-                           <div key={id} className={`${styles.tooltipContainer} ${styles.key}`}>{item.replaceAll("_"," ")}
+               {includeKeywords?.map((item: string, id: number) => (
+                        (
+                           <div key={id} className={`${styles.tooltipContainer} ${styles.key}`}>{item}
                            <span className={styles.tooltipText}>Included Keyword</span>
                            </div>
-                       ) : (
-                           <div key={id} className={`${styles.tooltipContainer} ${styles.keyNegative}`}>{item.replaceAll("_"," ").substring(1)}
-                           <span className={styles.tooltipText}>Excluded Keyword</span>
-                           </div>
+                       )
+                   ))}
+                   {excludeKeywords?.map((item: string, id: number) => (
+                        (
+                          <div key={id} className={`${styles.tooltipContainer} ${styles.keyNegative}`}>{item}
+                          <span className={styles.tooltipText}>Excluded Keyword</span>
+                          </div>
                        )
                    ))}
                </div>

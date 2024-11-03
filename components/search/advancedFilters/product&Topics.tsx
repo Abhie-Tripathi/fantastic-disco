@@ -6,10 +6,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { X, Search, ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 import KeywordTabs from "./keywordTabs";
@@ -34,7 +31,7 @@ export default function KeywordFilter({
   const [localIncludeKeywords, setLocalIncludeKeywords] = useState<string[]>([]);
   const [localExcludeKeywords, setLocalExcludeKeywords] = useState<string[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const [activeTab, setActiveTab] = useState("include");
+  const [activeTab, setActiveTab] = useState<"include" | "exclude">("include");
   const includeKeywords = source==="tracker"? parentIncludeKeyword : localIncludeKeywords;
   const setIncludeKeywords = source==="tracker"? setParentIncludeKeywords : setLocalIncludeKeywords;
   const excludeKeywords = source==="tracker"? parentExcludeKeyword : localExcludeKeywords;
@@ -127,11 +124,11 @@ export default function KeywordFilter({
       </PopoverTrigger>
       }
       {type==="T_PRODUCT_KEYWORDS"?(
-      <KeywordTabs  activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword}/>
+      <KeywordTabs type="T_PRODUCT_KEYWORDS" activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword}/>
     ):
         (
           <PopoverContent className="w-[348px] p-0">
-        <KeywordTabs  activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword}/>
+        <KeywordTabs type="" activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword}/>
       </PopoverContent>
         )
         }

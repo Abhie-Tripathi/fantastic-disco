@@ -711,7 +711,7 @@ const Table = ({
       const result = await saveNewEvent(dataToSend);
       if(result){
         showToast('success', "Event saved");
-        setSavedEventCount(prev=>prev+1)
+        setSavedEventCount((prev:number)=>prev+1)
             let updatedData = eventPerPage?.find((event) => event.id === Id);
     
             if (updatedData) {
@@ -785,7 +785,7 @@ const Table = ({
           }
           showToast("error", "Saved event deleted");
         }
-        setSavedEventCount(prev=>prev-1);
+        setSavedEventCount((prev:number)=>prev-1);
       }
        else if(error){
         console.log(error);

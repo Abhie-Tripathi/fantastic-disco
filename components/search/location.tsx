@@ -35,15 +35,25 @@ export interface LocationItem {
 }
 
 export type Location = GeoLocation | LocationItem[];
-
-export default function LocationSelector() {
+interface LocationProps{
+  source:string;
+  selectedLocation?: Location | null;
+  setSelectedLocation?: React.Dispatch<React.SetStateAction<Location | null>>;
+}
+export default function LocationSelector({
+  source,
+  selectedLocation: parentSelectedLocation,
+  setSelectedLocation: parentSetSelectedLocation,
+}: LocationProps) {
   const { getLocationName, getLocationDetails } = useLocationService();
   const [activeTab, setActiveTab] = useState("city");
   const [isOpen, setIsOpen] = useState(false);
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
-  const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+  const [localSelectedLocation, setLocalSelectedLocation] = useState<Location | null>(
     null
   );
+  const selectedLocation = source==="tracker" ? parentSelectedLocation : localSelectedLocation;
+  const setSelectedLocation = parentSetSelectedLocation || setLocalSelectedLocation;
   const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
     useFilterContext();
 
@@ -58,7 +68,7 @@ export default function LocationSelector() {
         geoCoordinate.latitude,
         geoCoordinate.longitude
       );
-      setSelectedLocation({
+      setSelectedLocation?.({
         lat: geoCoordinate.latitude,
         lng: geoCoordinate.longitude,
         radius: geoCoordinate.radius,
@@ -74,13 +84,14 @@ export default function LocationSelector() {
           };
         })
       );
-      setSelectedLocation(locations);
+      setSelectedLocation?.(locations);
     } else {
-      setSelectedLocation(null);
+      setSelectedLocation?.(null);
     }
   };
 
   useEffect(() => {
+    if(source!=="tracker")
     fetchUrlLocation();
   }, [searchParams]);
 
@@ -228,7 +239,7 @@ export default function LocationSelector() {
                   className="mt-1"
                   value={(selectedLocation as GeoLocation)?.radius}
                   onChange={(e) =>
-                    setSelectedLocation((prev) =>
+                    setSelectedLocation?.((prev) =>
                       prev
                         ? {
                             ...prev,
@@ -267,7 +278,7 @@ export default function LocationSelector() {
                   className="mt-1"
                   value={(selectedLocation as GeoLocation)?.lat}
                   onChange={(e) =>
-                    setSelectedLocation((prev) =>
+                    setSelectedLocation?.((prev) =>
                       prev
                         ? {
                             ...prev,
@@ -288,7 +299,7 @@ export default function LocationSelector() {
                   className="mt-1"
                   value={(selectedLocation as GeoLocation)?.lng}
                   onChange={(e) =>
-                    setSelectedLocation((prev) =>
+                    setSelectedLocation?.((prev) =>
                       prev
                         ? {
                             ...prev,

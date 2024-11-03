@@ -50,7 +50,7 @@ export interface EventTableType {
     eventSize: number;
     isSaved?:boolean;
     "internationalAudience%": string;
-    price: any;
+    price: any;   
     matchedKeywords: any;
     keywordsMatchedScore: number;
     stats: {
@@ -64,7 +64,25 @@ export interface EventTableType {
         estimatedVisitor: string | null;
     };
     internationalAudience: string;
-    type: string[]
+    type: string[];
+    eventBrand?:string;
+    isEventSeries?:string;
+    "trustScore%"?: number;
+    futureExpectedStartDate?:any;
+    competitorDomainOrName?:string[];
+    competitorPercentage?:string;
+    speakerPersonAssociation?:string[];
+    speakerPersonAssociationPercentage?:string;
+    peopleFinderPersonAssociation?:string[];
+    peopleFinderPersonAssociationPercentage?:string;
+    recruitmentAssociation?:string[];
+    recruitmentAssociationPercentage?:string;
+    maturity?:string;
+    eventImpactScore?:number;
+    eventInboundScore?:number;
+    internationalScore?:number;
+    audienceZone?:string;
+    audienceSpread?:any;
 }
 export interface AllEventsType{
      result: EventTableType[] ;

@@ -2,7 +2,7 @@
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import EventTypeSelector from "@/components/eventType";
+import EventTypeSelector from "@/components/search/eventType";
 import CategorySelector from "@/components/search/categorySelector";
 import EventFormatSelector from '@/components/search/eventFormat';
 import EventStatusSelector from "@/components/search/status";
@@ -10,7 +10,7 @@ import DateRangeSelector from "@/components/search/dateRange";
 import EventEntrySelector from "@/components/search/eventEntry";
 import UserRatingSelector from "@/components/search/userRatingSelector";
 import MaturitySelector from "@/components/search/advancedFilters/edition"
-import LocationSelector from "@/components/location";
+import LocationSelector from "@/components/search/location";
 import EstimatedVisitorsSelector from "@/components/search/advancedFilters/estimatedVisitors";
 import GlobalAndTouringSelector from "@/components/search/advancedFilters/globalAndTouring";
 import EstimatedExhibitorsSelector from "@/components/search/advancedFilters/estimatedExhibitors";
@@ -68,54 +68,7 @@ import {Tracker, Toggle} from '@/types/trackers'
 import ExhibitorQualitySelector from "@/components/advancedFilters/exhibitorQualityScore";
 import { useTrackerContext } from "@/context/tracker";
 import { Designations } from "@/types/misc";
-interface FilterValue {
-  labels: string;
-  name: string;
-  category: any;
-  eventFormat: string;
-  eventStatus: string;
-  eventFrequency: string;
-  eventEntry: string;
-  eventEdition: any;
-  eventRanking: string;
-  brandedEvent: boolean;
-  trustScore: any;
-  eventSeries: boolean;
-  reputationScore: any;
-  maturity: any;
-  internationalScore: any;
-  inboundScore: any;
-  userRating: string;
-  exhibitScore: string;
-  total_attendance_gte: any;
-  total_attendance_lte: any;
-  location: string[];
-  startDate: string;
-  endDate: string;
-  eventRating: string;
-  eventRank: any;
-  localRank: any;
-  eventKeywords: any;
-  eventCategory: any;
-  editionRange: number;
-  eventSize: any;
-  eventCity: any;
-  eventCountry: any;
-  eventRegion: string;
-  eventType: string[];
-  estimatedExhibitScore: string;
-  speakerOrg: string;
-  speakerName: string;
-  orgWebsite: string;
-  orgName:string;
-  userType?:Toggle
-  userName?:string;
-  eventAttendanceRange: any;
-  eventImpactSocre: any;
-  globalRanking: any;
-  audienceSpread: any;
-  designation: any;
-}
+type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
   placeholder: string;
@@ -432,7 +385,12 @@ const Pages = () => {
   const [searchInput, setSearchInput] = useState("");
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [eventData, setEventData] = useState<EventDataType | null>(null);
-  const [selectedEventType, setSelectedEventType] = useState<string[]>([]);
+  const [selectedEventType, setSelectedEventType] = useState<
+  Record<EventGroupType, string[]>
+>({
+  social: [],
+  business: [],
+});
   const [selectedEventTypeName, setSelectedEventTypeName] = useState<string>('');
   const [selectedZone, setSelectedZone] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
@@ -746,9 +704,9 @@ const Pages = () => {
     }
     const formData = {
       name: trackerName,
-      // ...(type && type.length > 0 && {
-      //   type: type.toUpperCase()
-      // }),
+      ...(type && type.length > 0 && {
+        type: type.toUpperCase()
+      }),
       accessLevel: editData?.tracker?.accessLevel,
       filterValue: {
           ...(userType &&{
@@ -757,9 +715,9 @@ const Pages = () => {
         ...(selectedLabels?.length > 0 && {
           labels: selectedLabels.join(","),
         }),
-        ...(selectedEventType?.length > 0 && {
-          eventType: selectedEventTypeName
-        }),
+        // ...(selectedEventType?.length > 0 && {
+        //   eventType: selectedEventTypeName
+        // }),
         ...(websites.length > 0 && {
           orgWebsite: websites,
         }),
@@ -775,8 +733,8 @@ const Pages = () => {
         ...(speakerCompany.length > 0 && {
           speakerOrg: speakerCompany,
         }),
-        ...(selectedEventType?.length > 0 && {
-          eventType: selectedEventType.join(",")
+        ...(selectedEventType?.business?.length > 0 && {
+          eventType: selectedEventType?.business?.join(",")
         }),
         ...(selectedEventEdition > 0 && {
           editionRange: selectedEventEdition.toString(),
@@ -976,12 +934,15 @@ const Pages = () => {
       }
       console.log(selectedCountry);
     } else {
-      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||selectedEventKeywords.length==0)){
+      console.log(formData);
+      
+      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(includeKeywords?.length==0 && excludeKeywords?.length===0))){
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
       else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
+        console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1024,21 +985,6 @@ const Pages = () => {
         })
       : [];
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/category/all?take=30&skip=0`);
-      if (error) {
-        console.log(error);
-        return;
-      }
-
-      if (data) {
-        console.log(data);
-        setCatgeoryData(data);
-      }
-    };
-    fetchData();
-  }, []);
   console.log(categoryData);
 
   useEffect(() => {
@@ -1317,7 +1263,10 @@ setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedZone]);
         const eventTypes = editData.tracker.filterValue.eventType;
     
         if (Array.isArray(eventTypes) && eventTypes.length > 0) {
-            setSelectedEventType(eventTypes);
+          setSelectedEventType((prev) => ({
+            ...prev,
+            business: [...prev.business, ...eventTypes],
+          }));
     
             const selectedEventTypeNames = EventStatusData
                 ?.filter(item => eventTypes.includes(item.id))
@@ -1574,6 +1523,7 @@ console.log(includeKeywords, excludeKeywords);
 //   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
 //       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
 // },[includeKeywords, excludeKeywords])
+console.log(selectedEventType);
 
 
 return (
@@ -1734,50 +1684,6 @@ return (
               setSelectedEventKeywords={setSelectedEventKeywords}
             />) :
             <></>
-        // <div className={`${styles.toggleDiv}`}>
-        //   <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-        //     <div>
-        //       <div className={styles.manualHeading}>Add data manually
-        //         {template?.inputAreas?.length === undefined && <div className={styles.badgeSuccess}>Comming Soon</div>}
-        //       </div>
-        //       <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
-        //     </div>
-        //     <div>
-
-        //       <span>
-        //         <label className={styles.switch}>
-        //           <input
-        //             type="checkbox"
-        //             checked={template.type === "enabled"}
-        //           />
-        //           <span className={styles.slider}></span>
-        //         </label>
-        //       </span>
-
-        //     </div>
-        //   </div>
-        //   <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-        //     <div>
-        //       <div className={styles.manualHeading}>Import CSV Data
-        //         {template.type === "enabled" && <div className={`${styles.comingSoon_badge} badge_success`} >Coming Soon</div>}
-        //       </div>
-        //       <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-        //     </div>
-        //     <div>
-
-        //       <span>
-        //         <label className={styles.switch}>
-        //           <input
-        //             type="checkbox"
-        //             checked={selectedExhibitScore.length !== 0}
-        //           />
-        //           <span className={styles.slider}></span>
-        //         </label>
-        //       </span>
-
-        //     </div>
-        //   </div>
-        // </div>
         }
         </div>
         {template?.inputAreas &&
@@ -1796,17 +1702,17 @@ return (
                             onKeyPress={handleKeyDown}
                           />
                            {(eventSearchLoader && inputValues[0]?.length>0)? (
-<div className={styles.loader}></div>
-) : (
-inputValues[0]?.length > 0 ? (
-  <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
-    ...prevValues,
-    [index]: ""
-  }))}} />
-) : (
-  ""
-)
-)}
+                    <div className={styles.loader}></div>
+                    ) : (
+                      inputValues[0]?.length > 0 ? (
+                      <Image src={CloseIcon} alt="close" className={iconClass} style={{cursor:"pointer"}} onClick={()=>{setInputValues(prevValues => ({
+                      ...prevValues,
+                      [index]: ""
+                      }))}} />
+                    ) : (
+                    ""
+                    )
+                    )}
                           {/* {type === "T_COMPETITOR" && inputValues[0]?.length > 0 && websiteSuggestion &&
                             <div className={styles.suggestionBox}>
                               <Suggestion
@@ -1944,7 +1850,7 @@ inputValues[0]?.length > 0 ? (
     </div>
     }
    {
-   <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} style={!opend ? {padding: '12px 24px'} : {}}>
+   <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} >
     {type !== "CUSTOM" &&
     <div className={`${styles.hiddenFilters}`} onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
     <div className={styles.hiddenFiltersInnerDiv}>
@@ -2007,7 +1913,7 @@ inputValues[0]?.length > 0 ? (
             </div>
           </div>
         </div>
-
+        
         {/* ADVANCE DETAILS SECTION */}
         {showAdvanceFilter && selectedAdvFilter === "AP" && (
           <div className={styles.inputdropdowns_container}>
@@ -2027,44 +1933,6 @@ inputValues[0]?.length > 0 ? (
               <FrequencySelector source="tracker" selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency}/>
 
             {type!=="T_PRODUCT_KEYWORDS" &&
-            // <MenuTrigger onOpenChange={setMenuOpen}>
-            //   <Button>
-            //     <div className={commonCss.input_container}>
-            //       <div className={commonCss.input}>
-            //         <div className={styles.input_title}>
-            //           Product / Topics
-            //           {selectedEventKeywords?.length > 1 ? (
-            //             <span className={styles.input_selected_no}>
-            //               {selectedEventKeywords.length}
-            //             </span>
-            //           ) : (
-            //             <span className={styles.input_selected_title}>
-            //               {selectedEventKeywords[0]?.charAt(0)==="-"?selectedEventKeywords[0]?.replaceAll("_", " ").substring(1):selectedEventKeywords[0]?.replaceAll("_", " ")}
-            //             </span>
-            //           )}
-            //         </div>
-            //         <Image
-            //           src={DropIcon}
-            //           alt="dropicon"
-            //           width={12}
-            //           height={12}
-            //           className={iconClass}
-            //         />
-            //       </div>
-            //     </div>
-            //   </Button>
-            //   <Popover className={styles.filterPopover}>
-            //     <Dialog className={`${styles.dialogBorder} ${styles.noBorder}`}>
-            //       {({ close }) => (
-            //         <EventKeyword
-            //           state={selectedEventKeywords}
-            //           setState={setSelectedEventKeywords}
-            //           onClose={close}
-            //         />
-            //       )}
-            //     </Dialog>
-            //   </Popover>
-            // </MenuTrigger>
             <ProductSelector source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords}/>
               }
 

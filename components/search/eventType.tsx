@@ -16,18 +16,30 @@ const groupedEventTypes: Record<EventGroupType, string[]> = {
   social: ["festival", "concert", "sport", "performing-arts", "community"],
   business: ["tradeshows", "conferences", "workshops"],
 };
-
-export default function EventTypeSelector() {
+interface EventTypeProps{
+  source: string;
+  selectedCategories?: Record<EventGroupType, string[]>;
+  setSelectedCategories?: React.Dispatch<React.SetStateAction<Record<EventGroupType, string[]>>>;
+}
+export default function EventTypeSelector({
+  source,
+  selectedCategories: parentSelectedCategories = { social: [], business: [] },
+  setSelectedCategories: parentSetSelectedCategories,
+}:EventTypeProps) {
   const { getLocalFilterValue, setLocalFilter } = useFilterContext();
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCategories, setSelectedCategories] = useState<
+  const [selectedCategoriesLocal, setSelectedCategoriesLocal] = useState<
     Record<EventGroupType, string[]>
   >({
     social: [],
     business: [],
   });
-
+  const selectedCategories =
+    source === "tracker" ? parentSelectedCategories : selectedCategoriesLocal;
+  const setSelectedCategories =
+    source === "tracker" ? parentSetSelectedCategories : setSelectedCategoriesLocal;
   useEffect(() => {
+    if(source!=="tracker"){
     const eventTypes = getLocalFilterValue("eventTypes")
       .split(",")
       .filter(Boolean);
@@ -37,7 +49,8 @@ export default function EventTypeSelector() {
         values.filter((type) => eventTypes.includes(type)),
       ])
     ) as Record<EventGroupType, string[]>;
-    setSelectedCategories(initialSelectedCategories);
+    setSelectedCategories?.(initialSelectedCategories);
+  }
   }, [getLocalFilterValue]);
 
   const selectedCategoriesCount = useMemo(
@@ -47,7 +60,7 @@ export default function EventTypeSelector() {
 
   const handleCategoryToggle = useCallback(
     (eventGroupType: EventGroupType, categoryId: string) => {
-      setSelectedCategories((prev) => ({
+      setSelectedCategories?.((prev) => ({
         ...prev,
         [eventGroupType]: prev[eventGroupType].includes(categoryId)
           ? prev[eventGroupType].filter((slug) => slug !== categoryId)
@@ -59,7 +72,7 @@ export default function EventTypeSelector() {
 
   const handleSelectAll = useCallback(
     (eventGroupType: EventGroupType, isSelected: boolean) => {
-      setSelectedCategories((prev) => ({
+      setSelectedCategories?.((prev) => ({
         ...prev,
         [eventGroupType]: isSelected ? groupedEventTypes[eventGroupType] : [],
       }));
@@ -85,7 +98,8 @@ export default function EventTypeSelector() {
     setLocalFilter("eventTypes", allSelected.join(","));
     setIsOpen(false);
   }, [selectedCategories, setLocalFilter]);
-
+  console.log(selectedCategories);
+  
   const renderCategoryGroup = useCallback(
     (type: EventGroupType) => (
       <div key={type}>
@@ -152,9 +166,9 @@ export default function EventTypeSelector() {
         >
           <div className="flex items-center">
             <span className="mr-2">Event Type</span>
-            {selectedCategoriesCount > 0 && (
+            {(selectedCategories.social.length > 0 || selectedCategories.business.length > 0) && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                {selectedCategoriesCount}
+                {selectedCategories.social.length + selectedCategories.business.length}
               </span>
             )}
           </div>
