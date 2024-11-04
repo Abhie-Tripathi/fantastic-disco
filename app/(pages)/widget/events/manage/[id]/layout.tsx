@@ -97,7 +97,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             registration: data?.registration === true ? true : false,
             approval: data?.approval === true ? true : false,
             waitlisting: data?.waitlisting === true ? true : false,
-            eventFormat:"",
+            eventFormat:eventData.format || "",
             customizationData: {
                 pageBgColor: eventData.customizationData?.pageBgColor || "",
                 pageGradient: eventData.customizationData?.pageGradient || "",

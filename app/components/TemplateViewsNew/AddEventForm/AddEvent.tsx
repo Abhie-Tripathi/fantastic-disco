@@ -63,7 +63,8 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     endDate: prefilledEvent?.endDate || prefilledSubEvent?.endDate || prefilledGlobalEvent?.endDate || '',
     startTime: prefilledEvent?.startTime || prefilledSubEvent?.startTime || '12:00 A.M',
     endTime: prefilledEvent?.endTime || prefilledSubEvent?.endTime || '12:00 A.M',
-    eventFormat: prefilledEvent?.customizationData.eventFormat || prefilledSubEvent?.customizationData.eventFormat || prefilledGlobalEvent?.format || "In-person",
+    // eventFormat: prefilledEvent?.customizationData.eventFormat || prefilledSubEvent?.customizationData.eventFormat || prefilledGlobalEvent?.format || "In-person",
+    eventFormat: prefilledEvent?.eventFormat || prefilledSubEvent?.eventFormat || prefilledGlobalEvent?.format || "In-person",
     boothNumber: prefilledEvent?.customizationData.boothNumber || prefilledSubEvent?.customizationData.boothNumber || "",
     participationMessage: prefilledEvent?.customizationData.participationMessage || prefilledSubEvent?.customizationData.participationMessage || "",
     banner: { placeHolder: prefilledEvent?.logoUrl || prefilledSubEvent?.logoUrl || Placeholder, file: null }, // Customize placeholder as needed
@@ -85,7 +86,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     approval: prefilledEvent?.approval || false,
     waitlisting: false,
     capacityModal: false,
-    virtualLink: "",
+    virtualLink: prefilledEvent?.virtualLink || "",
     exhibitorModal: false,
     exhibitor:prefilledEvent?.customizationData.exhibitor || [],
     prefilledExhibitorDetails:undefined,
