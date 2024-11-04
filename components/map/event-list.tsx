@@ -274,7 +274,7 @@ export default function EventList({
 
   return (
     <div
-      className={`absolute z-10 top-0 right-0 h-full w-[345px] bg-white rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform ${
+      className={`absolute z-10 top-0 right-0 h-full w-[345px] bg-[var(--primary-foreground)] rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform ${
         isVisible ? "translate-x-0" : "translate-x-full"
       }`}
     >

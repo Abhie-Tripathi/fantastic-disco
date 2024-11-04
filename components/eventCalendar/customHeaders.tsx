@@ -10,7 +10,7 @@ interface CustomDayHeaderProps {
 
 export const CustomDayHeader = ({ date, label }: CustomDayHeaderProps) => (
   <div
-    className={`h-16 text-center w-full flex items-center justify-center flex-col border bg-[#FAFAFA]`}
+    className={`h-16 text-center w-full flex items-center justify-center flex-col border bg-[var(--heading-background-color)]`}
   >
     <div className={`text-sm font-semibold`}>
       {moment(date).format("D MMM")}
@@ -27,7 +27,7 @@ interface CustomMonthHeaderProps {
 }
 
 export const CustomMonthHeader = ({ date, label }: CustomMonthHeaderProps) => (
-  <div className="h-16 text-center w-full flex items-center justify-center flex-col border bg-[#FAFAFA]">
+  <div className="h-16 text-center w-full flex items-center justify-center flex-col border bg-[var(--heading-background-color)]">
     <div className="text-sm font-semibold">{moment(date).format("ddd")}</div>
   </div>
 );
@@ -80,7 +80,7 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
 
   return (
     <div
-      className={`p-2 h-36 flex flex-col justify-between cursor-pointer border-r-[0.5px] border-l-[0.5px]`} // Add cursor-pointer
+      className={`p-2 h-[147px] flex flex-col justify-between cursor-pointer text-black`} // Add cursor-pointer
       style={{ backgroundColor }}
       onClick={() => onDateClick(date)} // Add onClick handler
     >

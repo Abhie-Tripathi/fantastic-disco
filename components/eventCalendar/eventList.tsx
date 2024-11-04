@@ -200,7 +200,7 @@ export default function EventList({
 
     if (isLoading) {
       return (
-        <div className="flex items-center justify-center h-full">
+        <div className="flex items-center justify-center h-full bg-[var(--primary-foreground)]">
           <div className="text-center">
             <Loader2 className="w-12 h-12 text-primary mx-auto mb-4 animate-spin" />
             <p className="text-lg font-semibold text-primary">
@@ -285,7 +285,7 @@ export default function EventList({
 
   return (
     <div
-      className={`h-[800px] w-[345px] mt-[54px] bg-white rounded-l-lg border`}
+      className={`h-[800px] w-[345px] mt-[54px] bg-[var(--primary-foreground)] rounded-l-lg border`}
     >
       {renderContent()}
     </div>

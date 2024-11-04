@@ -169,23 +169,11 @@ export default function LocationSelector() {
             Apply
           </Button>
         </div>
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        {/* <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            {/* <TabsTrigger value="saved">Saved Locations</TabsTrigger> */}
             <TabsTrigger value="city">City, State, Country</TabsTrigger>
             <TabsTrigger value="center">Center Point & Radius</TabsTrigger>
           </TabsList>
-          {/* <TabsContent value="saved" className="p-4 space-y-4">
-            <AutocompleteInput
-              type="SavedLocations"
-              placeholder="Search Locations"
-              onSelect={handleAddLocation}
-            />
-            <Button className="text-primary" variant="link">
-              <PlusCircle className="h-4 w-4 mr-2" />
-              <span>Add Location</span>
-            </Button>
-          </TabsContent> */}
           <TabsContent value="city" className="p-4">
             <AutocompleteInput
               multiple
@@ -301,7 +289,22 @@ export default function LocationSelector() {
               </div>
             </div>
           </TabsContent>
-        </Tabs>
+        </Tabs> */}
+
+        <AutocompleteInput
+          multiple
+          type="LocationId"
+          placeholder="E.g. Bangalore, Karnataka"
+          onSelect={setSelectedLocation}
+          value={
+            selectedLocation && Array.isArray(selectedLocation)
+              ? selectedLocation.map((loc) => ({
+                  id: loc.id,
+                  description: loc.description || "",
+                }))
+              : null
+          }
+        />
       </PopoverContent>
     </Popover>
   );
