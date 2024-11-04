@@ -56,3 +56,20 @@
     left: 50%;
     transform: translate(-50%,-50%);
 }
+@media screen and (max-width: 576px) {
+    .btnContainer button{
+        font-size: var(--font-size-default);
+    }
+    .btnContainer button .sub_headingContainer .capacity{
+        font-size: var(--font-size-small);
+    }
+}
+@media screen and (max-width: 400px) {
+    .btnContainer{
+        overflow-y: hidden;
+        overflow-x: scroll;
+    }
+    .btnContainer button{
+        min-width: 220px;
+    }
+}
