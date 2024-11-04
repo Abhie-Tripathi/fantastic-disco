@@ -27,8 +27,8 @@
     padding: 20px;
     border: 1px solid var(--border-color);
     display: flex;
-    /* justify-content: space-between; */
-    gap: 60px;
+    justify-content: space-between;
+    /* gap: 60px; */
 }
 .valueContainer{
     display: flex;

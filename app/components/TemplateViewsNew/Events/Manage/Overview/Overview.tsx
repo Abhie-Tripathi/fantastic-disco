@@ -82,18 +82,9 @@ const Overview = ({ format, leavesTheme, snowTheme, eventId, imageUrl, eventName
           case "CONFIRMED":
             setGoingGuests(stat.count);
             break;
-          // case "REJECTED":
-          //   setNotgoingGuests(stat.count);
-          //   break;
-          // case "PENDING":
-          //   setPendingGuests(stat.count);
-          //   break;
           case "FOLLOWING":
             setFollowingGuests(stat.count);
             break;
-          // case "WAITLISTING":
-          //   setWaitlistGuests(stat.count);
-          //   break;
           case "INVITATION":
             setInvitedGuests(stat.count);
             break;
