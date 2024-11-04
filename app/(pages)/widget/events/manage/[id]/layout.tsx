@@ -76,6 +76,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             latitude: eventData.latitude || 0,
             longitude: eventData.longitude || 0,
             cityName: eventData.location_city || "",
+            virtualLink : eventData.virtualLink || "",
             countryName: eventData.location_country || "",
             startDate: eventData.start_date || "",
             endDate: eventData.end_date || "",

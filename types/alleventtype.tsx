@@ -12,6 +12,7 @@ export interface EventsType{
   latitude: number;
   longitude: number;
   cityName: string;
+  virtualLink : string;
   countryName: string;
   startDate: string;
   endDate: string;
