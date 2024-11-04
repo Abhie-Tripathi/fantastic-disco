@@ -93,13 +93,18 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                         handleSubeventChange('isEventNameEmpty', false)
                         // setIsEventNameEmpty(false)
                     }
-                    if (!subEventState.query) {
-                        handleSubeventChange('isEventFormatEmpty', true)
-                        // setIsEventFormatEmpty(true)
-                    } else {
-                        handleSubeventChange('isEventFormatEmpty', false)
-                        // setIsEventFormatEmpty(false)
+                    if ((subEventState.eventFormat === "In-person" || subEventState.eventFormat === "Hybrid" || subEventState.eventFormat === "OFFLINE") && !subEventState.query) {
+                        handleSubeventChange('isEventFormatEmpty', true);
+                    } else if (subEventState.eventFormat === "Virtual" || subEventState.eventFormat === "ONLINE") {
+                        handleSubeventChange('isEventFormatEmpty', false); // No need for location in virtual format
                     }
+                    // if (!subEventState.query) {
+                    //     handleSubeventChange('isEventFormatEmpty', true)
+                    //     // setIsEventFormatEmpty(true)
+                    // } else {
+                    //     handleSubeventChange('isEventFormatEmpty', false)
+                    //     // setIsEventFormatEmpty(false)
+                    // }
                     if (!subEventState.description) {
                         handleSubeventChange('isEventDescriptionEmpty', true)
                         // setIsEventDescriptionEmpty(true)
@@ -114,10 +119,6 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                         handleSubeventChange('isEventParticipationEmpty', false)
                         // setIsEventParticipationEmpty(false)
                     }
-                    // if (!subEventState.participationMessage) {
-                    //     handleSubeventChange('isParticipationMessageEmpty', true)
-                    //     // setIsParticipationMessageEmpty(true)
-                    // }
                     if (!subEventState.textValue) {
                         handleSubeventChange('isTextValueMessageEmpty', true)
                         // setIsTextValueMessageEmpty(true)
@@ -135,13 +136,6 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 handleMaineventChanges('isEventNameEmpty', false)
                 // setIsEventNameEmpty(false)
             }
-            // if (!mainEventState.query) {
-            //     handleMaineventChanges('isEventFormatEmpty', true)
-            //     // setIsEventFormatEmpty(true)
-            // } else {
-            //     handleMaineventChanges('isEventFormatEmpty', false)
-            //     // setIsEventFormatEmpty(false)
-            // }
             if ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid" || mainEventState.eventFormat === "OFFLINE") && !mainEventState.query) {
                 handleMaineventChanges('isEventFormatEmpty', true);
             } else if (mainEventState.eventFormat === "Virtual" || mainEventState.eventFormat === "ONLINE") {
@@ -165,15 +159,17 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 handleMaineventChanges('isParticipationMessageEmpty', true)
                 // setIsParticipationMessageEmpty(true)
             }
+            if (!mainEventState.event_type) {
+                handleMaineventChanges('isEventTypeEmpty', true)
+                // setIsParticipationMessageEmpty(true)
+            }
+            
+
             if (!mainEventState.textValue) {
                 handleMaineventChanges('isTextValueMessageEmpty', true)
                 // setIsTextValueMessageEmpty(true)
             }
 
-            // if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
-            //     showToast("error", "Please fill in all the fields");
-            //     return; // Exit the function if any field is missing
-            // }
             if (
                 !mainEventState.eventName.trim() ||
                 !mainEventState.eventFormat ||
@@ -260,7 +256,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             })
             if (data) {
                 console.log("event added :", data)
-                if (!subEventState.isEventNameEmpty && !subEventState.isEventFormatEmpty && !subEventState.isEventDescriptionEmpty && !subEventState.isEventParticipationEmpty && !subEventState.isParticipationMessageEmpty && (subEventState.banner.placeHolder !== Placeholder || subEventState.banner.file)) {
+                if (!subEventState.isEventNameEmpty && !subEventState.isEventFormatEmpty && !subEventState.isEventDescriptionEmpty && !subEventState.isEventParticipationEmpty && !subEventState.event_type&& !subEventState.isParticipationMessageEmpty && (subEventState.banner.placeHolder !== Placeholder || subEventState.banner.file)) {
                     addSubEvent(data.data.id)
                 } else {
                     setIsAddEventModalOpen(false)
@@ -347,12 +343,10 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             handleSubeventChange('isEventNameEmpty', false)
             // setIsEventNameEmpty(false)
         }
-        if (!subEventState.query) {
-            handleSubeventChange('isEventFormatEmpty', true)
-            // setIsEventFormatEmpty(true)
-        } else {
-            handleSubeventChange('isEventFormatEmpty', false)
-            // setIsEventFormatEmpty(false)
+        if ((subEventState.eventFormat === "In-person" || subEventState.eventFormat === "Hybrid" || subEventState.eventFormat === "OFFLINE") && !subEventState.query) {
+            handleSubeventChange('isEventFormatEmpty', true);
+        } else if (subEventState.eventFormat === "Virtual" || subEventState.eventFormat === "ONLINE") {
+            handleSubeventChange('isEventFormatEmpty', false); // No need for location in virtual format
         }
         if (!subEventState.description) {
             handleSubeventChange('isEventDescriptionEmpty', true)
@@ -368,20 +362,27 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             handleSubeventChange('isEventParticipationEmpty', false)
             // setIsEventParticipationEmpty(false)
         }
-        // if (!subEventState.participationMessage) {
-        //     handleSubeventChange('isParticipationMessageEmpty', true)
-        //     // setIsParticipationMessageEmpty(true)
-        // }
+
         if (!subEventState.textValue) {
             handleSubeventChange('isTextValueMessageEmpty', true)
             // setIsTextValueMessageEmpty(true)
         }
 
-        if (!subEventState.eventName.trim() || !subEventState.eventFormat || !subEventState.startTime || !subEventState.endTime || !subEventState.startDate || !subEventState.endDate || !subEventState.description.trim() || !subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude || !subEventState.participationType
-            // !subEventState.participationMessage
+        if (
+            !subEventState.eventName.trim() ||
+            !subEventState.eventFormat ||
+            !subEventState.startTime ||
+            !subEventState.endTime ||
+            !subEventState.startDate ||
+            !subEventState.endDate ||
+            !subEventState.description.trim() ||
+            !subEventState.participationType ||
+            // !eventState.participationMessage ||
+            // Check location fields only for "In-person" or "Hybrid" events
+            ((subEventState.eventFormat === "In-person" || subEventState.eventFormat === "Hybrid" || subEventState.eventFormat === "OFFLINE") &&
+                (!subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude))
         ) {
-
-            showToast("error", "Please fill in all the fields");
+            showToast("error", "Please fill in all the required fields");
             return; // Exit the function if any field is missing
         }
 
@@ -415,6 +416,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             start_date: subEventState.startDate,
             description: subEventState.description,
             location_city: subEventState.cityName,
+            virtualLink: subEventState.virtualLink,
             location_country: subEventState.countryName,
             gmt_time: subEventState.timeZone,
             latitude: subEventState.latitude,
@@ -505,23 +507,27 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
         } else {
             handleMaineventChanges('isEventParticipationEmpty', false);
         }
-
-        // if (!eventState.participationMessage) {
-        //     handleMaineventChanges('isParticipationMessageEmpty', true);
-        // }
-
         if (!eventState.textValue.trim()) {
             handleMaineventChanges('isTextValueMessageEmpty', true);
         }
 
-        // Check if all required fields are present
-        if (!eventState.eventName.trim() || !eventState.eventFormat || !eventState.startTime || !eventState.endTime || !eventState.startDate || !eventState.endDate || !eventState.description.trim() || !eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude || !eventState.participationType
-            // !eventState.participationMessage
+        if (
+            !eventState.eventName.trim() ||
+            !eventState.eventFormat ||
+            !eventState.startTime ||
+            !eventState.endTime ||
+            !eventState.startDate ||
+            !eventState.endDate ||
+            !eventState.description.trim() ||
+            !eventState.participationType ||
+            // !eventState.participationMessage ||
+            // Check location fields only for "In-person" or "Hybrid" events
+            ((eventState.eventFormat === "In-person" || eventState.eventFormat === "Hybrid" || eventState.eventFormat === "OFFLINE") &&
+                (!eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude))
         ) {
-            showToast("error", "Please fill in all the fields");
+            showToast("error", "Please fill in all the required fields");
             return; // Exit the function if any field is missing
         }
-
         // Check if banner exists, if not, show error for missing poster
         if (!prefilledEvent?.logoUrl) {
             if (!eventState.banner.placeHolder && !eventState.banner.file) {
@@ -562,6 +568,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             logoUrl: eventState.banner.placeHolder,
             location_city: eventState.cityName,
             location_country: eventState.countryName,
+            virtualLink: eventState.virtualLink,
             participationType: eventState.participationType,
             gmt_time: eventState.timeZone,
             latitude: eventState.latitude,
@@ -682,6 +689,11 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                     handleMaineventChanges('isParticipationMessageEmpty', true)
                     // setIsParticipationMessageEmpty(true)
                 }
+                if (!mainEventState.event_type) {
+                    handleMaineventChanges('isEventTypeEmpty', true)
+                    // setIsParticipationMessageEmpty(true)
+                }
+                
                 if (!mainEventState.textValue.trim()) {
                     handleMaineventChanges('isTextValueMessageEmpty', true)
                     // setIsTextValueMessageEmpty(true)

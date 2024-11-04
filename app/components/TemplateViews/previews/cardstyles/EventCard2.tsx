@@ -68,7 +68,7 @@ const EventCard2 = ({
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <LocationIcon color={fontSettings.subheading.fontColor}/>
-                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName :  demoLocation}</div>
+                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent?.eventFormat==="Virtual"?"Virtual":fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName :  demoLocation}</div>
                 </div>
                 <div className={styles.dateContainer}>
                     <DateIcon color={fontSettings.subheading.fontColor} />
@@ -80,7 +80,7 @@ const EventCard2 = ({
             <div className={styles.type_peopleContainer}>
                 <div className={styles.typeContainer}>
                 <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType ==="MAIN"?"Main Event":fetchedEvent?.eventType ==="SUB"?"Side Event":"Main Event"}</div>
-                    <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.event_type: fetchedEvent?.eventType === "SUB" ?fetchedEvent.participationType:"Tradeshow"}</div>
+                    <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.event_type: fetchedEvent?.eventType === "SUB" ?fetchedEvent.participationType ==="Brunch/Lunch/Dinner"?"Bru../Lun../Din..":fetchedEvent.participationType:"Tradeshow"}</div>
                     <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.eventFormat: fetchedEvent?.eventType==="SUB" ?fetchedEvent.eventFormat:"Attending"}</div>
                 </div>
                 {/* <div className={styles.circles}>

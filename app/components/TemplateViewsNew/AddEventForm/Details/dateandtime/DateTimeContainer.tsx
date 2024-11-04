@@ -12,21 +12,9 @@ const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('en-US', options);
 };
 interface TimeSettingsProps {
-    formTheme : string;
+    formTheme: string;
     formState: FormState;
     handleChange: (field: keyof FormState, value: any) => void;
-    // timeZone: string;
-    // setTimeZone: React.Dispatch<React.SetStateAction<string>>;
-    // timeZoneKey: number;
-    // setTimeZoneKey: React.Dispatch<React.SetStateAction<number>>;
-    // startDate: string;
-    // setStartDate: React.Dispatch<React.SetStateAction<string>>;
-    // endDate: string;
-    // setEndDate: React.Dispatch<React.SetStateAction<string>>;
-    // startTime: string;
-    // setStartTime: React.Dispatch<React.SetStateAction<string>>;
-    // endTime: string;
-    // setEndTime: React.Dispatch<React.SetStateAction<string>>;
     theme?: string;
 }
 
@@ -34,18 +22,6 @@ const DateTimeContainer = ({
     formTheme,
     formState,
     handleChange,
-    // timeZone,
-    // setTimeZone,
-    // timeZoneKey = 1,
-    // setTimeZoneKey,
-    // startDate,
-    // setStartDate,
-    // endDate,
-    // setEndDate,
-    // startTime,
-    // setStartTime,
-    // endTime,
-    // setEndTime,
     theme
 }: TimeSettingsProps) => {
 
@@ -73,32 +49,27 @@ const DateTimeContainer = ({
     ];
 
     useEffect(() => {
-        console.log("start date :", formState.startDate)
-        console.log("end date :", formState.endDate)
         if (!formState.startDate) {
             const currentDate = new Date();
             const formattedStartDate = currentDate.toISOString().split('T')[0]; // Format the start date as "yyyy-mm-dd"
             handleChange('startDate', formattedStartDate)
             handleChange('endDate', formattedStartDate)
-            // setStartDate(formattedStartDate);
-            // setEndDate(formattedStartDate)
             setTodaysDate(formattedStartDate);
         }
-        if(!formState.startTime){
+        // if (!formState.startTime) {
             const closestTime = findClosestTime();
-            const halfHourAddedTime = addMinutesToTime(closestTime,30)
-            handleChange('startDate', closestTime)
-            // setStartTime(closestTime);
+            const halfHourAddedTime = addMinutesToTime(closestTime, 60)
+            handleChange('startTime', closestTime)
             console.log("half hour added time : ", halfHourAddedTime)
-            handleChange('startDate', halfHourAddedTime)
-            // setEndTime(halfHourAddedTime)
-        }
+            handleChange('endTime', halfHourAddedTime)
+        // }
     }, []);
+
     const addMinutesToTime = (time: string, minutesToAdd: number): string => {
         // Extract the time and period (AM/PM) parts
         const [timePart, period] = time.split(' ');  // e.g., "2:00 P.M" -> ["2:00", "P.M"]
         let [hours, minutes] = timePart.split(':').map(Number);  // e.g., "2:00" -> [2, 0]
-        
+
         // Convert 12-hour time to 24-hour time
         if (period === 'P.M' && hours !== 12) {
             hours += 12;  // Convert P.M hours to 24-hour format (except for 12 P.M)
@@ -106,28 +77,28 @@ const DateTimeContainer = ({
         if (period === 'A.M' && hours === 12) {
             hours = 0;  // Midnight case (12 A.M should be 00:00 in 24-hour format)
         }
-    
+
         // Create a new Date object
         const date = new Date();
         date.setHours(hours);
         date.setMinutes(minutes);
-        
+
         // Add the minutes
         date.setMinutes(date.getMinutes() + minutesToAdd);
-    
+
         // Get the updated hours and minutes
         let updatedHours = date.getHours();
         const updatedMinutes = date.getMinutes().toString().padStart(2, '0');
-    
+
         // Convert back to 12-hour format
         const updatedPeriod = updatedHours >= 12 ? 'P.M' : 'A.M';
         if (updatedHours > 12) updatedHours -= 12;  // Convert from 24-hour to 12-hour format
         if (updatedHours === 0) updatedHours = 12;  // Midnight case
         const updatedTime = `${updatedHours}:${updatedMinutes} ${updatedPeriod}`;
-    
+
         return updatedTime;
     };
-    
+
     const addDays = (date: string, days: number) => {
         const initialDate = new Date(date);
         initialDate.setDate(initialDate.getDate() + days);
@@ -140,7 +111,7 @@ const DateTimeContainer = ({
             handleChange("endDate", formState.startDate)
             // setEndDate(startDate);
         }
-        if(formState.startDate){
+        if (formState.startDate) {
             const maxDate = addDays(formState.startDate, 28)
             setMaxEndDate(maxDate)
         }
@@ -152,8 +123,6 @@ const DateTimeContainer = ({
         return (parseInt(hour) % 12 + (isPM ? 12 : 0)) * 60 + parseInt(minute);
     };
 
-
-    
     const findClosestTime = () => {
         const now = new Date();
         const currentMinutes = now.getHours() * 60 + now.getMinutes();
@@ -173,10 +142,12 @@ const DateTimeContainer = ({
 
 
     const handleTimeSelect = (label: string, value: string, key: number) => {
-        handleChange('timeZoneKey',key)
+        console.log("labeel ", label)
+        console.log("value ", value)
+        handleChange('timeZoneKey', key)
         // setTimeZoneKey(key)
         const timeZoneString = `${value} ${label}`;
-        handleChange('timeZoneKey',truncateString(timeZoneString, 20))
+        handleChange('timeZone', truncateString(timeZoneString, 20))
         // setTimeZone(truncateString(timeZoneString, 20));
     };
     const truncateString = (str: string, num: number) => {
@@ -217,39 +188,37 @@ const DateTimeContainer = ({
                         <div className={styles.dateBox} onClick={() => handleCalendardropdown("start")}>
                             {formatDate(formState.startDate)}
                             {startCalendarDropdown && <div ref={startCalDropdownRef} className={styles.calendarDropdown}>
-                                <CalendarDropdown minDate={todaysDate} 
-                                 // setDate={setEndDate} 
-                                type ="start"
-                                handleChange={handleChange}
-                                 dateValue={formState.startDate} />
+                                <CalendarDropdown minDate={todaysDate}
+                                    // setDate={setEndDate} 
+                                    type="start"
+                                    handleChange={handleChange}
+                                    dateValue={formState.startDate} />
                             </div>}
                         </div>
                         <div className={styles.dateBox} onClick={() => handleCalendardropdown("end")}>
                             {formatDate(formState.endDate)}
                             {endCalendarDropdown && <div ref={endCalDropdownRef} className={styles.calendarDropdown}>
-                                <CalendarDropdown  maxDate={maxEndDate} minDate={formState.startDate}
-                                // setDate={setEndDate} 
-                                type ="start"
-                                handleChange={handleChange}
-                                dateValue={formState.endDate} />
+                                <CalendarDropdown maxDate={maxEndDate} minDate={formState.startDate}
+                                    // setDate={setEndDate} 
+                                    type="end"
+                                    handleChange={handleChange}
+                                    dateValue={formState.endDate} />
                             </div>}
                         </div>
                     </div>
                     <div className={styles.timeBoxes}>
                         <div className={styles.timeBox} onClick={() => handleTimedropdown("start")}>{formState.startTime}
                             {startTimeDropdown && <div ref={startTimeDropdownRef} className={styles.timeDropdown}>
-                                <TimeDropdown 
-                                // setTime={setStartTime} 
-                                handleChange={handleChange}
-                                time={formState.startTime} />
+                                <TimeDropdown
+                                    handleChange={handleChange}
+                                    time={formState.startTime} />
                             </div>}
                         </div>
                         <div className={styles.timeBox} onClick={() => handleTimedropdown("end")}>{formState.endTime}
                             {endTimeDropdown && <div ref={endTimeDropdownRef} className={styles.timeDropdown}>
-                                <TimeDropdown 
-                                // setTime={setEndTime} 
-                                handleChange={handleChange}
-                                time={formState.endTime} minTime={addMinutesToTime(formState.startTime,30)}/>
+                                <TimeDropdown
+                                    handleChange={handleChange}
+                                    time={formState.endTime} minTime={addMinutesToTime(formState.startTime, 30)} />
                             </div>}
                         </div>
                     </div>
@@ -258,8 +227,8 @@ const DateTimeContainer = ({
             </div>
             <div ref={timezoneDropdownRef} className={`${styles.timeZonesContainer} ${theme && theme === "dark" ? styles.darktimeZonesContainer : ""}`} onClick={() => setTimezoneDropdown(!timezoneDropdown)}>
                 <div className={styles.header}>
-                    <TimeZoneIcon color={formTheme === "light" ? "#A8A8A8" : "white"}/>
-                    <div className={styles.dropdownIcon}><DownIcon color={formTheme === "light" ? "black" : "white"}/></div>
+                    <TimeZoneIcon color={formTheme === "light" ? "#A8A8A8" : "white"} />
+                    <div className={styles.dropdownIcon}><DownIcon color={formTheme === "light" ? "black" : "white"} /></div>
                 </div>
                 <div className={`${styles.timeZone} ${theme && styles.themeTimeZone} ${formTheme === "dark" ? styles.darkTimeZone : styles.lightTimeZone}`}>
                     {formState.timeZone}
@@ -274,11 +243,11 @@ const DateTimeContainer = ({
 
 export default DateTimeContainer
 
-interface IconProps{
-    color : string;
+interface IconProps {
+    color: string;
 }
 
-function TimeZoneIcon({color} : IconProps) {
+function TimeZoneIcon({ color }: IconProps) {
     return (
         <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M14.6623 6.91534C14.4627 5.68935 13.9287 4.54221 13.119 3.60021C12.3094 2.65821 11.2555 1.95789 10.0734 1.57634C8.89134 1.19479 7.62691 1.14681 6.41931 1.43769C5.21172 1.72857 4.10781 2.34702 3.22911 3.22495C2.35041 4.10289 1.731 5.20626 1.43907 6.4136C1.14714 7.62094 1.19402 8.88542 1.57454 10.0678C1.95505 11.2502 2.65446 12.3047 3.59575 13.1152C4.53705 13.9256 5.68372 14.4607 6.90953 14.6613M1.69928 5.74984H14.2993M1.69928 10.2498H6.87428" stroke={color} stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
@@ -287,7 +256,7 @@ function TimeZoneIcon({color} : IconProps) {
         </svg>
     )
 }
-function DownIcon({color} : IconProps) {
+function DownIcon({ color }: IconProps) {
     return (
         <svg width="8" height="4" viewBox="0 0 8 4" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd" d="M4.35341 3.85361C4.25965 3.94734 4.13249 4 3.99991 4C3.86733 4 3.74017 3.94734 3.64641 3.85361L0.817909 1.02511C0.72683 0.930806 0.676433 0.804505 0.677572 0.673406C0.678711 0.542308 0.731296 0.416902 0.824 0.324198C0.916704 0.231493 1.04211 0.178909 1.17321 0.17777C1.30431 0.176631 1.43061 0.227028 1.52491 0.318107L3.99991 2.79311L6.47491 0.318107C6.56921 0.227028 6.69551 0.176631 6.82661 0.17777C6.95771 0.178909 7.08312 0.231493 7.17582 0.324198C7.26852 0.416902 7.32111 0.542308 7.32225 0.673406C7.32339 0.804505 7.27299 0.930806 7.18191 1.02511L4.35341 3.85361Z" fill={color} />

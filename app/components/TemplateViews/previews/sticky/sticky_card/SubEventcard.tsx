@@ -104,27 +104,7 @@ const SubEventCard = ({
     }
   }
   const router = useRouter();
-  // const handleCardClick = () => {
-  //     if (width === "small" && handlePrefillEvent && normalEvent) {
-  //         // handlePrefillEvent(normalEvent)
-  //         router.push(`/widget/events/manage/${normalEvent.mainEvent.eventId}/overview`)
-  //     }else if(width === "small" && handlePrefillSubEvent && subEvent){
-  //         // handlePrefillSubEvent(subEvent)
-  //         router.push(`/widget/events/manage/${subEvent.eventId}/overview`)
-  //     }
-  // }
-
-  // const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
-  //     e.stopPropagation()
-  //     if (normalEvent)
-  //         handleDeleteModal(normalEvent.mainEvent.eventId, normalEvent.mainEvent.name, normalEvent.mainEvent.widgetTags.length > 0)
-  //     else if(subEvent){
-  //         handleDeleteModal(subEvent.eventId, subEvent.name, false)
-  //     }
-  //     if(setSelectedEventType){
-  //         setSelectedEventType("side")
-  //     }
-  // }
+ 
   const width = "small";
 
   return (
@@ -186,7 +166,6 @@ const SubEventCard = ({
                 className="icons"
               />
               <div>
-                {/* {normalEvent && formatEventDates(normalEvent?.mainEvent.startDate, normalEvent?.mainEvent.endDate)} */}
                 {formatEventDates(
                   fetchedAddedOtherData[0]?.startDate,
                   fetchedAddedOtherData[0]?.endDate
@@ -208,23 +187,29 @@ const SubEventCard = ({
               </div>
             </div>
           </div>
-          {/* <div className={styles.description} dangerouslySetInnerHTML={{
-                            __html:
-                                normalEvent
-                                    ? (normalEvent?.mainEvent.description?.substring(0, 100) +
-                                        (normalEvent?.mainEvent.description?.length > 100 ? "..." : "")):
-                                subEvent ? (subEvent?.description?.substring(0, 100) +
-                                        (subEvent?.description?.length > 100 ? "..." : "")) : ""
-                        }}
-                    >
-                    </div> */}
-          <div className={styles.tags_deleteContainer}>
-            {/* <div className={styles.tags}>
-                            <div className={styles.tag1}>{normalEvent?.mainEvent.participationType || subEvent?.participationType}</div>
-                            <div className={styles.tag2}>In-Person</div>
-                        </div> */}
-            {/* <button className={styles.deleteBtn} onClick={(e) => handleDelete(e)}>Delete</button> */}
-          </div>
+          <div className={styles.detail_button}
+          style={{
+            fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
+            color:
+              selectedBtn === "primary"
+                ? buttonSettings?.primary.fontColor
+                : buttonSettings?.secondary.fontColor,
+            backgroundColor:
+              selectedBtn === "primary"
+                ? buttonSettings?.primary.buttonColor
+                : "transparent",
+            borderRadius:
+              selectedBtn === "primary"
+                ? buttonSettings?.primary.borderRadius
+                : buttonSettings?.secondary.borderRadius,
+            borderColor:
+              selectedBtn === "primary"
+                ? buttonSettings?.primary.borderColor
+                : buttonSettings?.secondary.borderColor,
+          }}
+          >VIEW DETAILS</div>
+
+          <div className={styles.tags_deleteContainer}></div>
         </div>
       </div>
     </div>

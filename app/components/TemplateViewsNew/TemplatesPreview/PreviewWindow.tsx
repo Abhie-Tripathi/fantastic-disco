@@ -116,7 +116,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                         }
 
                         const eventData = data?.data;
-                        console.log("fetcched event data : ", eventData)
+                        // console.log("fetcched event data : ", eventData)
                         if (!eventData) return null;
 
                         return {

@@ -44,11 +44,13 @@ const ParticipationContainer = ({ participationType }: Props) => {
     participationType === "Mini-Golf" ? MiniGolf :
     participationType === "Open mic" ? OpenMic :
     participationType === "Retro" ? Retro :
-    participationType === "Marathon" ? Marathon :""
+    participationType === "Marathon" ? Marathon :
+    participationType === "Summit" ? Summit :
+    ""
     return (
         <div className={styles.body}>
             <Image src={participationImage} alt='icon' height={30} width={30} style={{borderRadius:"2px"}}/>
-            <div className={styles.type}>{participationType}</div>
+            <div className={styles.type}>{participationType === "Brunch/Lunch/Dinner"?"Bru../Lun../Din..": participationType }</div>
         </div>
     )
 }

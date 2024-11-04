@@ -12,11 +12,11 @@ import CapacityIcon from '/public/widgetimages/manage_capacityIcon.svg'
 import Image from 'next/image';
 
 interface Props {
-  format? : string;
-  registration? : boolean;
+  format?: string;
+  registration?: boolean;
   approval?: boolean;
-  waitlist? : boolean;
-  capacity? : number;
+  waitlist?: boolean;
+  capacity?: number;
   eventId: string;
   imageUrl?: string;
   eventName?: string;
@@ -29,22 +29,30 @@ interface Props {
   pageBgColor?: string;
   pageGradient?: string;
   leavesTheme?: boolean;
-  snowTheme? : boolean;
+  snowTheme?: boolean;
   confettiType?: string;
   eventFont?: string;
   locationCity?: string;
+  virtualLink? : string;
   locationCountry?: string;
   participationType?: string;
   isPresentinWidget?: boolean;
   setAddEventModal: (value: boolean) => void
   setDeleteModal: (value: boolean) => void;
   setDeleteModalTwo: (value: boolean) => void;
+  isPastEvent: boolean;
 }
 
-const Overview = ({format, leavesTheme,snowTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget, registration, waitlist, capacity, approval }: Props) => {
+const Overview = ({virtualLink, format, leavesTheme, snowTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget, registration, waitlist, capacity, approval, isPastEvent }: Props) => {
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
   const [guestCount, setGuestCount] = useState<number>(0)
+
+  const [goingGuests, setGoingGuests] = useState<number>(0)
+  // const [pendingGuests, setPendingGuests] = useState<number>(0)
+  const [followingGuests, setFollowingGuests] = useState<number>(0)
+  // const [waitlistGuests, setWaitlistGuests] = useState<number>(0)
+  const [invitedGuests, setInvitedGuests] = useState<number>(0)
 
   const handleCopy = () => {
     const textToCopy = `${console_url}/detailpage/${eventId}`;
@@ -60,17 +68,41 @@ const Overview = ({format, leavesTheme,snowTheme, eventId, imageUrl, eventName, 
       setGuestCount(data?.totalUser)
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     fetchGuests()
-  },[])
+    fetchCounts()
+  }, [])
+  const fetchCounts = async () => {
+    let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}`;
+    const { data, error } = await myFetch(`${fetchUrl}`)
+    if (error) {
+      console.log("error is : ", error);
+    } else {
+      data.stats.map((stat: any) => {
+        switch (stat.status) {
+          case "CONFIRMED":
+            setGoingGuests(stat.count);
+            break;
+          case "FOLLOWING":
+            setFollowingGuests(stat.count);
+            break;
+          case "INVITATION":
+            setInvitedGuests(stat.count);
+            break;
+          default:
+            break; // Handle any unexpected statuses
+        }
+      });
+    }
+  }
   return (
     <div className={styles.body}>
       <div className={styles.eventDetailView}>
         <div className={styles.viewContainer} onClick={() => setAddEventModal(true)}>
-          <EventSmallDetailView snowTheme={snowTheme} leavesTheme={leavesTheme} participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} format={format} virtualLink={''} />
+          <EventSmallDetailView virtualLink={virtualLink} snowTheme={snowTheme} leavesTheme={leavesTheme} participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} format={format}  />
         </div>
         <div className={styles.eventDetailContainer}>
-          <div className={styles.share_leadsContainer}>
+          {!isPastEvent && <div className={styles.share_leadsContainer}>
             <div className={styles.shareContainer}>
               <div className={styles.shareHeading}>Share Event</div>
               <ShareButtons formTheme='light' copyIcon={false} disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
@@ -83,18 +115,29 @@ const Overview = ({format, leavesTheme,snowTheme, eventId, imageUrl, eventName, 
               <UserIcon />
               <span>{guestCount} Interests</span>
             </div>
-          </div>
+          </div>}
+          {isPastEvent &&
+            <div className={styles.pastLeadsContainer}>
+              <div className={styles.countContainerTwo}>
+                <span><span className={`${styles.icon3} ${styles.icon}`}>{guestCount}</span> Interests</span>
+                <span><span className={`${styles.icon2} ${styles.icon}`}>{goingGuests}</span>Attended</span>
+              </div>
+              <div className={styles.countContainerTwo}>
+                <span><span className={`${styles.icon1} ${styles.icon}`}>{followingGuests}</span> Followed</span>
+                <span><span className={`${styles.icon4} ${styles.icon}`}>{invitedGuests}</span> Invited</span>
+              </div>
+            </div>}
           <div className={styles.valuesContainer}>
             <div className={styles.valueContainer}>
-              <div><span className={styles.icon}><Image src={RegisterIcon} alt='register'/></span>Registration : <span>{registration === true ? "ON" : "OFF"}</span></div>
-              <div><span className={styles.icon}><Image src={ApprovalIcon} alt='approval'/></span>Approval : <span>{approval === true ? "ON" : "OFF"}</span></div>
+              <div><span className={styles.icon}><Image src={RegisterIcon} alt='register' /></span>Registration : <span>{registration === true ? "ON" : "OFF"}</span></div>
+              <div><span className={styles.icon}><Image src={ApprovalIcon} alt='approval' /></span>Approval : <span>{approval === true ? "ON" : "OFF"}</span></div>
             </div>
             <div className={styles.valueContainer}>
-              <div><span className={styles.icon}><Image src={WaitlistIcon} alt='waitlist'/></span>Waitlist : <span>{waitlist === true ? "ON" : "OFF"}</span></div>
-              <div><span className={styles.icon}><Image src={CapacityIcon} alt='capacity'/></span>Capacity : <span>{capacity === -1 ? "Unlimited" : capacity}</span></div>
+              <div><span className={styles.icon}><Image src={WaitlistIcon} alt='waitlist' /></span>Waitlist : <span>{waitlist === true ? "ON" : "OFF"}</span></div>
+              <div><span className={styles.icon}><Image src={CapacityIcon} alt='capacity' /></span>Capacity : <span>{capacity === -1 ? "Unlimited" : capacity}</span></div>
             </div>
           </div>
-          
+
         </div>
       </div>
     </div>

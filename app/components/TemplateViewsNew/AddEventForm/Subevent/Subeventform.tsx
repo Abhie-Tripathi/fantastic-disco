@@ -38,7 +38,7 @@ interface SpeakerProfileType {
     profileImage: File | null
 }
 interface Props {
-    formTheme : string;
+    formTheme: string;
     formState: FormState;
     handleChange: (field: keyof FormState, value: any) => void;
     prefilledEvent?: EventsType | null
@@ -51,13 +51,13 @@ interface Props {
     isApproved?: boolean;
     setIsApproved?: (value: boolean) => void
 }
-const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow, prefilledSubEvent, isApproved, setIsApproved }: Props) => {
+const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow, prefilledSubEvent, isApproved, setIsApproved }: Props) => {
     // const [isApproved, setIsApproved] = useState(false)
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
     const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
     const [speakerIndex, setSpeakerIndex] = useState<number>(0)
-    
+
 
     const handlePrefill = (profile: SpeakerProfileType) => {
         handleChange('prefilledProfile', profile)
@@ -82,7 +82,7 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
         handleChange('speaker', updatedSpeakers)
         handleChange('speakerModal', false);
         handleChange('prefilledProfile', undefined);
-      };
+    };
 
     const updateSpeaker = (updatedProfile: SpeakerProfileType) => {
         const currentSpeakers = formState.speaker || [];
@@ -179,7 +179,7 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
     };
 
     return (
-        <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ||formState.capacityModal ? styles.modalBody : ""}`}>
+        <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal ? styles.modalBody : ""}`}>
             {eventFlow === "side" && <div className={styles.globalSearch}>
                 <GlobalSearch widgetId='123' handleChange={handleChange} />
             </div>}
@@ -240,7 +240,7 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
                         {formState.isEventFormatEmpty && <span className={styles.errorMessage}>Event location is required.</span>}
                     </div>
                     <div className={styles.resgitrationContainer}><RegistrationForm
-                    formTheme={formTheme}
+                        formTheme={formTheme}
                         isApproved={isApproved} setIsApproved={setIsApproved}
                         registerBtnColor={formState.registerBtnColor} registerBtnText={formState.registerBtnText} registerMessage={formState.registerMessage}
                         // setRegisterModal={setRegisterModal}
@@ -248,7 +248,7 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
                     /></div>
                     <div>
                         <div className={`${styles.descriptionContainer}`} ><DescriptionContainer
-                        formTheme={formTheme}
+                            formTheme={formTheme}
                             // setDescriptionModal={setDescriptionModal}
                             description={formState.description} isEventDescriptionEmpty={formState.isEventDescriptionEmpty}
                             // setIsEventDescriptionEmpty={setIsEventDescriptionEmpty} 
@@ -302,15 +302,15 @@ const Subeventform = ({formTheme, handleChange, formState, prefilledEvent, event
                 </div>
             }
             {
-                formState.capacityModal &&  
+                formState.capacityModal &&
                 <div className={styles.capacityModal}>
-                <CapacityModal
-                 eventId={prefilledEvent?.eventId}
-                 capacityModal={formState.capacityModal}
-                  capacity={ formState.capacity}
-                  handleChange={handleChange}
-                  waitlisting={formState.waitlisting}
-                /> 
+                    <CapacityModal
+                        eventId={prefilledEvent?.eventId}
+                        capacityModal={formState.capacityModal}
+                        capacity={formState.capacity}
+                        handleChange={handleChange}
+                        waitlisting={formState.waitlisting}
+                    />
                 </div>
             }
         </div >

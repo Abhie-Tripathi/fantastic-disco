@@ -25,7 +25,7 @@ interface CardProps {
   smallCard: boolean;
   selectedBtn?: "primary" | "secondary";
   buttonSettings?: ButtonSettingsState;
-  fetchedEvent?: PrefilledAddedEventsType;
+  fetchedEvent?: PrefilledAddedEventsType[];
   demoBanner: string;
   demoEventName: string;
   demoDescription: string;
@@ -87,14 +87,14 @@ const StickyCard = ({
     return text.slice(0, maxLength) + "...";
   };
   const description = fetchedEvent
-    ? truncateText(fetchedEvent.description, 150)
+    ? truncateText(fetchedEvent[0]?.description, 150)
     : demoDescription;
   return (
     <div className={styles.card} style={{ backgroundColor: cardBgColor }}>
       <Image
         width={100}
         height={150}
-        src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner}
+        src={fetchedEvent ? fetchedEvent[0].bannerUrl : demoBanner}
         alt="banner"
         className={styles.banner}
       />
@@ -110,7 +110,7 @@ const StickyCard = ({
             fontWeight: fontSettings.heading.fontWeight,
           }}
         >
-          {fetchedEvent ? fetchedEvent.name.substring(0, 40) : demoEventName}
+          {fetchedEvent ? fetchedEvent[0].name.substring(0, 40) : demoEventName}
         </div>
 
         {/* Location */}
@@ -126,7 +126,7 @@ const StickyCard = ({
             }}
           >
             {fetchedEvent
-              ? fetchedEvent.cityName + ", " + fetchedEvent.countryName
+              ? fetchedEvent[0].cityName + ", " + fetchedEvent[0].countryName
               : demoLocation}
           </div>
         </div>
@@ -144,9 +144,9 @@ const StickyCard = ({
             }}
           >
             {fetchedEvent
-              ? formatDate(fetchedEvent.startDate) +
+              ? formatDate(fetchedEvent[0].startDate) +
                 " - " +
-                formatDate(fetchedEvent.endDate)
+                formatDate(fetchedEvent[0].endDate)
               : "1st April 2024 - 3rd April 2024"}
           </div>
         </div>
@@ -210,7 +210,7 @@ const StickyCard = ({
                 : buttonSettings?.secondary.borderColor,
           }}
         >
-          {"REGISTER NOW"}
+          {"VIEW DETAILS"}
         </button>
       </div>
     </div>

@@ -146,7 +146,7 @@ const Popup2: React.FC<Props> = ({
           >
             {fetchedAddedEvents && fetchedAddedEvents.length > 0
               ? (
-                  fetchedAddedEvents[0].cityName +
+                 fetchedAddedEvents[0].eventFormat ==="Virtual"?"Virtual": fetchedAddedEvents[0].cityName +
                   ", " +
                   fetchedAddedEvents[0].countryName
                 ).substring(0, 30)

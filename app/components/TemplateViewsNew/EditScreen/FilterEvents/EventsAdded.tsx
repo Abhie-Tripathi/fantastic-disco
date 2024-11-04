@@ -49,7 +49,7 @@ const EventsAdded = ({
   const [minNumberOfEvents, setMinNumberOfEvents] = useState("");
   // const [nearestEvent, setNearestEvent] = useState<any[]>([]);
   const [locationEnabled, setLocationEnabled] = useState(false);
-  let closestEvent:any = null
+  let closestEvent: any = null;
   const showPromote =
     selectedTemplate === "HBL" ||
     selectedTemplate === "HBG" ||
@@ -199,46 +199,90 @@ const EventsAdded = ({
     }
   }, [selectedTemplate, fetchedAddedOtherData]);
 
+  // const handlePromoteEvent = async (newEvent: AddedEventsType) => {
+
+  //   const customizedFormData = new FormData();
+  //   const existingEvents = fetchedAddedEvents || [];
+  //   const updatedEvent = {
+  //     id: newEvent.id,
+  //     pageBgColor: newEvent.pageBgColor,
+  //     registerBtnColor: newEvent.registerBtnColor,
+  //     registerBtnText: newEvent.registerBtnColor,
+  //     registerMessage: newEvent.registerMessage,
+  //     boothNumber: newEvent.boothNumber,
+  //     speakerProfilesData: newEvent.speakerProfilesData,
+  //     participationMessage: newEvent.participationMessage,
+  //     bannerUrl: newEvent.bannerUrl,
+  //     eventFont: newEvent.eventFont,
+  //     latitude: newEvent.latitude,
+  //     longitude: newEvent.longitude,
+  //     venue: newEvent.venue,
+  //     hashtags: newEvent.hashtags,
+  //     promoted: true,
+  //   };
+  //   console.log("logggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",newEvent,updatedEvent)
+  //   // Find and update the existing event
+  //   const updatedEvents = existingEvents.map((event) =>
+  //     event.id === newEvent.id ? updatedEvent : event
+  //   );
+
+  //   const otherData = {
+  //     event: updatedEvents,
+  //   };
+  //   const eventIds = updatedEvents.map((event) => event.id).join(",");
+
+  //   customizedFormData.append("widgetId", widgetId);
+  //   customizedFormData.append("otherdata", JSON.stringify(otherData));
+  //   customizedFormData.append("eventId", eventIds);
+  //   const { data, error } = await myFetch(`${baseUrl}/widget`, {
+  //     method: "POST",
+  //     body: customizedFormData,
+  //   });
+  //   if (data) {
+  //     console.log("widget event promote data", data);
+  //     fetchAddedEvents();
+  //   }
+  //   if (error) {
+  //     console.log("error in updating event in widget ", error);
+  //   }
+  // };
+
   const handlePromoteEvent = async (newEvent: AddedEventsType) => {
     const customizedFormData = new FormData();
     const existingEvents = fetchedAddedEvents || [];
-    const updatedEvent = {
-      id: newEvent.id,
-      pageBgColor: newEvent.pageBgColor,
-      registerBtnColor: newEvent.registerBtnColor,
-      registerBtnText: newEvent.registerBtnColor,
-      registerMessage: newEvent.registerMessage,
-      boothNumber: newEvent.boothNumber,
-      speakerProfilesData: newEvent.speakerProfilesData,
-      participationMessage: newEvent.participationMessage,
-      bannerUrl: newEvent.bannerUrl,
-      eventFont: newEvent.eventFont,
-      latitude: newEvent.latitude,
-      longitude: newEvent.longitude,
-      venue: newEvent.venue,
-      hashtags: newEvent.hashtags,
-      promoted: true,
-    };
-    // Find and update the existing event
+
+    // Find the previous promoted event and set it to promoted: false
     const updatedEvents = existingEvents.map((event) =>
-      event.id === newEvent.id ? updatedEvent : event
+      event.promoted ? { ...event, promoted: false } : event
     );
 
-    const otherData = {
-      event: updatedEvents,
+    // Set the new event's promoted status to true and add it to the 0th index
+    const updatedEvent = {
+      ...newEvent,
+      promoted: true,
     };
-    const eventIds = updatedEvents.map((event) => event.id).join(",");
+    const newEventList = [
+      updatedEvent,
+      ...updatedEvents.filter((event) => event.id !== newEvent.id),
+    ];
+
+    const otherData = {
+      event: newEventList,
+    };
+    const eventIds = newEventList.map((event) => event.id).join(",");
 
     customizedFormData.append("widgetId", widgetId);
     customizedFormData.append("otherdata", JSON.stringify(otherData));
     customizedFormData.append("eventId", eventIds);
+
     const { data, error } = await myFetch(`${baseUrl}/widget`, {
       method: "POST",
       body: customizedFormData,
     });
+
     if (data) {
       console.log("widget event promote data", data);
-      fetchAddedEvents();
+      fetchAddedEvents(); // Refresh the list after promoting
     }
     if (error) {
       console.log("error in updating event in widget ", error);
@@ -321,101 +365,124 @@ const EventsAdded = ({
     }
   };
 
-
-    useEffect(() => {
+  useEffect(() => {
+    if (
+      selectedTemplate === "PUVP" ||
+      selectedTemplate === "PUVL" ||
+      selectedTemplate === "ST"
+    ) {
       const savedLocationEnabled = localStorage.getItem("locationEnabled");
       if (savedLocationEnabled !== null) {
         const isLocationEnabled = JSON.parse(savedLocationEnabled);
         setLocationEnabled(isLocationEnabled);
-  
         if (isLocationEnabled) {
-          getUserLocation(); 
+          getUserLocation();
         } else {
-          showFirstEvent(); 
+          showFirstEvent();
         }
-      }
-    }, []);
-
-
-  
-
-    useEffect(() => {
-      if( selectedTemplate === "PUVP" || selectedTemplate ==="PUVL" || selectedTemplate === "ST"){
-        if (locationEnabled && fetchedAddedOtherData.length > 0) {
-          getUserLocation(); 
-        } else if (!locationEnabled && fetchedAddedOtherData.length > 0) {
-          showFirstEvent(); 
-        }
-      }
-    }, [locationEnabled, fetchedAddedOtherData]);
-    
-    const getUserLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const userLat = position.coords.latitude;
-            const userLong = position.coords.longitude;
-    
-            console.log(`User coordinates: ${userLat}, ${userLong}`);
-    
-             closestEvent = findClosestEvent(userLat, userLong);
-            if (closestEvent) {
-              
-              if (closestEvent.promoted === "false" || closestEvent.promoted === false) {
-                promoteEvent(closestEvent.id); 
-              }
-            } else {
-              console.warn("No closest event found.");
-            }
-          },
-          (error) => {
-            console.error("Error getting location:", error);
-            getLocationByIP(); // Fallback to IP-based location
-          }
-        );
       } else {
-        console.warn("Geolocation is not supported by this browser.");
-        getLocationByIP(); 
+        setLocationEnabled(true);
+        localStorage.setItem("locationEnabled", JSON.stringify(true));
+        getUserLocation();
       }
-    };
-    
-    const showFirstEvent = () => {
-      if (fetchedAddedOtherData.length > 0) {
-        const firstEventId = fetchedAddedOtherData[0].id;
-        
-        if (!fetchedAddedOtherData[0].promoted) {
-          promoteEvent(firstEventId); 
-        }
-      }
-    };
-    
-    const promoteEvent = (eventId:any) => {
-      const updatedEvents = fetchedAddedOtherData.map((event) => ({
-        ...event,
-        promoted: event.id === eventId ? true : false, 
-      }));
-      setFetchedAddedOtherData(updatedEvents);
-    };
-  
+    }
+  }, [locationEnabled, fetchedAddedOtherData.length]);
 
+  useEffect(() => {
+    if (
+      selectedTemplate === "PUVP" ||
+      selectedTemplate === "PUVL" ||
+      selectedTemplate === "ST"
+    ) {
+      if (locationEnabled) {
+        getUserLocation();
+      } else {
+        showFirstEvent();
+      }
+    }
+  }, [locationEnabled, fetchedAddedOtherData.length]);
+
+  const getUserLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const userLat = position.coords.latitude;
+          const userLong = position.coords.longitude;
+          const closestEvent: any = findClosestEvent(userLat, userLong);
+
+          if (closestEvent) {
+            promoteEvent(closestEvent.id);
+          } else {
+            console.warn("No closest event found.");
+          }
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          getLocationByIP();
+        }
+      );
+    } else {
+      console.warn("Geolocation is not supported by this browser.");
+      getLocationByIP();
+    }
+  };
+
+  const showFirstEvent = () => {
+    if (fetchedAddedOtherData.length === 1) {
+      // If there's only one event, mark it as promoted
+      promoteEvent(fetchedAddedOtherData[0].id);
+    } else if (fetchedAddedOtherData.length > 0) {
+      // Otherwise, proceed with promoting the first event
+      promoteEvent(fetchedAddedOtherData[0].id);
+    }
+  };
+
+  const promoteEvent = (eventId: string) => {
+    const updatedEvents = fetchedAddedOtherData
+      .map((event) => ({
+        ...event,
+        promoted: event.id === eventId,
+      }))
+      .sort((a, b) => (a.id === eventId ? -1 : b.id === eventId ? 1 : 0));
+    setFetchedAddedOtherData(updatedEvents);
+    updateWidgetAgain(updatedEvents);
+  };
+  const updateWidgetAgain = async (mergedEvents: any) => {
+    const otherData = { event: mergedEvents };
+    const eventIds = mergedEvents.map((event: any) => event.id).join(",");
+    const customizedFormData = new FormData();
+    customizedFormData.append("widgetId", widgetId);
+    customizedFormData.append("eventId", eventIds);
+    customizedFormData.append("otherdata", JSON.stringify(otherData));
+    customizedFormData.append("status", "active");
+
+    const { data, error } = await myFetch(`${baseUrl}/widget`, {
+      method: "POST",
+      body: customizedFormData,
+    });
+
+    if (data) {
+      if (typeof fetchEvents === "function") {
+        fetchEvents(0, "update");
+      }
+      // fetchEvents(0, "update");
+      fetchAddedEvents();
+    }
+  };
 
   const handleLocation = () => {
     setLocationEnabled((prevState) => {
       const newState = !prevState;
       localStorage.setItem("locationEnabled", JSON.stringify(newState));
-
       if (newState) {
-        getUserLocation(); // Nearest event promoted
+        getUserLocation();
       } else {
-        showFirstEvent(); // First event promoted
+        showFirstEvent();
       }
 
       return newState;
     });
   };
-
- 
-
 
   const getLocationByIP = async () => {
     try {
@@ -424,52 +491,45 @@ const EventsAdded = ({
       );
       const data = await response.json();
       const [lat, long] = data.loc.split(",").map(Number);
-      const closestEvent:any = findClosestEvent(lat, long);
+      const closestEvent: any = findClosestEvent(lat, long);
+
       if (closestEvent) {
-        const updatedNearestEvent = {
-          ...closestEvent,
-          promoted: true,
-        };
-
-        const updatedFetchedData = fetchedAddedOtherData.map((event) => {
-          return event.id === updatedNearestEvent.id
-            ? { ...event, promoted: true }
-            : { ...event, promoted: false }; 
-        });
-
-        setFetchedAddedOtherData(updatedFetchedData);
-        console.log("Updated data with promoted event:", updatedFetchedData);
+        promoteEvent(closestEvent.id);
       } else {
-        console.log("No closest event found.");
+        console.warn("No closest event found.");
       }
-      
     } catch (error) {
       console.error("Error fetching location by IP:", error);
     }
   };
 
-
-const findClosestEvent = (userLat:number, userLong:number) => {
-  if (!fetchedAddedOtherData || fetchedAddedOtherData.length === 0) {
-    console.warn("No events available to find the closest.");
-    return null;
-  }
-
-  let closestEvent = null;
-  let shortestDistance = Infinity;
-
-  fetchedAddedOtherData.forEach((event) => {
-    if (event.latitude && event.longitude) {
-      const distance = haversineDistance(userLat, userLong, event.latitude, event.longitude);
-      if (distance < shortestDistance) {
-        shortestDistance = distance;
-        closestEvent = event;
-      }
+  const findClosestEvent = (userLat: number, userLong: number) => {
+    if (!fetchedAddedOtherData || fetchedAddedOtherData.length === 0) {
+      console.warn("No events available to find the closest.");
+      return null;
     }
-  });
 
-  return closestEvent;
-};
+    let closestEvent = null;
+    let shortestDistance = Infinity;
+
+    fetchedAddedOtherData.forEach((event) => {
+      if (event.latitude && event.longitude) {
+        const distance = haversineDistance(
+          userLat,
+          userLong,
+          event.latitude,
+          event.longitude
+        );
+        if (distance < shortestDistance) {
+          shortestDistance = distance;
+          closestEvent = event;
+        }
+      }
+    });
+
+    return closestEvent;
+  };
+
   const haversineDistance = (
     lat1: number,
     lon1: number,
@@ -477,7 +537,7 @@ const findClosestEvent = (userLat:number, userLong:number) => {
     lon2: number
   ) => {
     const toRad = (x: number) => (x * Math.PI) / 180;
-    const R = 6371; // Radius of Earth in kilometers
+    const R = 6371;
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
     const a =
@@ -487,11 +547,9 @@ const findClosestEvent = (userLat:number, userLong:number) => {
         Math.sin(dLon / 2) *
         Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c;
-    return distance;
+    return R * c;
   };
-
-  
+  console.log("fetchedAddedOtherData____",fetchedAddedOtherData)
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
@@ -548,7 +606,10 @@ const findClosestEvent = (userLat:number, userLong:number) => {
                 )} ${event.name.length > 30 ? "..." : ""}`}</div>
                 <div className={styles.eventLocationContainer}>
                   <LocationIcon />
-                  <div>{event.cityName}</div>
+                  {/* {
+                    // event
+                  } */}
+                  <div>{event.eventFormat==="Virtual"?"Virtual" :event.cityName}</div>
                 </div>
                 <div className={styles.eventDateContainer}>
                   <DateIcon />
@@ -587,11 +648,66 @@ const findClosestEvent = (userLat:number, userLong:number) => {
                     </div>
                   )} */}
 
-                  {(event.promoted === true || event.promoted === "true") && (
+                  {(selectedTemplate === "ST" ||
+                  selectedTemplate === "SB" ||
+                  selectedTemplate === "PUVP" ||
+                  selectedTemplate === "PUVL") && locationEnabled ? (
                     <div style={{ cursor: "text" }}>
-                      <Image src={StarIconFilled} alt="Promoted" />
-                      <span>Promoted</span>
+                      <Image
+                        src={
+                          event.promoted === true || event.promoted === "true"
+                            ? StarIconFilled
+                            : StarIcon
+                        }
+                        alt="promote"
+                      />
+                      <span>
+                        {event.promoted === true || event.promoted === "true"
+                          ? "Promoted"
+                          : "Promote"}
+                      </span>
                     </div>
+                  ) : (selectedTemplate === "ST" ||
+                    selectedTemplate === "SB" ||
+                    selectedTemplate === "PUVP" ||
+                    selectedTemplate === "PUVL")&&!locationEnabled ? (
+                    <div onClick={() => handlePromoteEvent(event)}>
+                      <Image
+                        src={
+                          event.promoted === true || event.promoted === "true"
+                            ? StarIconFilled
+                            : StarIcon
+                        }
+                        alt="promote"
+                      />
+                      <span>
+                        {event.promoted === true || event.promoted === "true"
+                          ? "Promoted"
+                          : "Promote"}
+                      </span>
+                    </div>
+                  ) : (
+                    (
+                      selectedTemplate === "CVG" ||
+                      selectedTemplate === "CVL") ?
+                    (
+                    // <div style={{ cursor: "text" }} onClick={() => handlePromoteEvent(event)}>
+                    //   <Image
+                    //     src={
+                    //       event.promoted === true || event.promoted === "true"
+                    //         ? StarIconFilled
+                    //         : StarIcon
+                    //     }
+                    //     alt="promote"
+                    //   />
+                    //   <span>
+                    //     {event.promoted === true || event.promoted === "true"
+                    //       ? "Promoted"
+                    //       : "Promote"}
+                    //   </span>
+                    // </div>
+                    ""
+                    ):""
                   )}
 
                   {/* <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span>

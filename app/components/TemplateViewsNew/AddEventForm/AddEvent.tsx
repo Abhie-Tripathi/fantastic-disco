@@ -63,7 +63,8 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     endDate: prefilledEvent?.endDate || prefilledSubEvent?.endDate || prefilledGlobalEvent?.endDate || '',
     startTime: prefilledEvent?.startTime || prefilledSubEvent?.startTime || '12:00 A.M',
     endTime: prefilledEvent?.endTime || prefilledSubEvent?.endTime || '12:00 A.M',
-    eventFormat: prefilledEvent?.customizationData.eventFormat || prefilledSubEvent?.customizationData.eventFormat || prefilledGlobalEvent?.format || "In-person",
+    // eventFormat: prefilledEvent?.customizationData.eventFormat || prefilledSubEvent?.customizationData.eventFormat || prefilledGlobalEvent?.format || "In-person",
+    eventFormat: prefilledEvent?.eventFormat || prefilledSubEvent?.eventFormat || prefilledGlobalEvent?.format || "In-person",
     boothNumber: prefilledEvent?.customizationData.boothNumber || prefilledSubEvent?.customizationData.boothNumber || "",
     participationMessage: prefilledEvent?.customizationData.participationMessage || prefilledSubEvent?.customizationData.participationMessage || "",
     banner: { placeHolder: prefilledEvent?.logoUrl || prefilledSubEvent?.logoUrl || Placeholder, file: null }, // Customize placeholder as needed
@@ -77,6 +78,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     isEventDescriptionEmpty: false,
     isEventParticipationEmpty: false,
     isParticipationMessageEmpty: false,
+    isEventTypeEmpty:false,
     isTextValueMessageEmpty: false,
     errorMessage: 'Event name is required.',
     capacity: prefilledEvent?.capacity || -1,
@@ -84,7 +86,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     approval: prefilledEvent?.approval || false,
     waitlisting: false,
     capacityModal: false,
-    virtualLink: "",
+    virtualLink: prefilledEvent?.virtualLink || "",
     exhibitorModal: false,
     exhibitor:prefilledEvent?.customizationData.exhibitor || [],
     prefilledExhibitorDetails:undefined,
@@ -126,6 +128,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     isEventDescriptionEmpty: false,
     isEventParticipationEmpty: false,
     isParticipationMessageEmpty: false,
+    isEventTypeEmpty:false,
     isTextValueMessageEmpty: false,
     errorMessage: 'Event name is required.',
     capacity: -1,
@@ -154,7 +157,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
 
   return (
     <div className={styles.body}>
-      <div className={styles.appearance}><Appearance setUploadedPhoto={setUploadedPhoto} setSnowTheme={setSnowTheme} setLeavesTheme={setLeavesTheme} confettiType={confettiType} setFormTheme={setFormTheme} setConfettiType={setConfettiType} setPageGradient={setPageGradient} eventNameSub={subeventState.eventName} participationTypeSub={subeventState.participationType} descriptionSub={subeventState.description} cityNameSub={subeventState.cityName} prefilledEvent={prefilledEvent} cityNameMain={mainEventState.cityName} descriptionMain={mainEventState.description} eventNameMain={mainEventState.eventName} participationTypeMain={mainEventState.participationType} extractedColors={extractedColors} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} /></div>
+      <div className={styles.appearance}><Appearance setUploadedPhoto={setUploadedPhoto} setSnowTheme={setSnowTheme} setLeavesTheme={setLeavesTheme} confettiType={confettiType} setFormTheme={setFormTheme} setConfettiType={setConfettiType} setPageGradient={setPageGradient} eventNameSub={subeventState.eventName} participationTypeSub={subeventState.participationType} descriptionSub={subeventState.description} virtualLinkSub = {subeventState.virtualLink} cityNameSub={subeventState.cityName} prefilledEvent={prefilledEvent} cityNameMain={mainEventState.cityName} virutalLinkMain = {mainEventState.virtualLink} descriptionMain={mainEventState.description} eventTypeMain={mainEventState.event_type} eventNameMain={mainEventState.eventName} participationTypeMain={mainEventState.participationType} extractedColors={extractedColors} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} /></div>
       <div className={styles.details}>
         <AddEventFormTab uploadedPhoto={uploadedPhoto} snowTheme={snowTheme} leavesTheme={leavesTheme} formTheme={formTheme} confettiType={confettiType} pageGradient={pageGradient} setPrefilledSubEvent={setPrefilledSubEvent} prefilledSubEvent={prefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} fetchEventData={fetchEventData}
           prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} mainEventState={mainEventState} subEventState={subeventState} handleMaineventChanges={handleMaineventChanges} handleSubeventChange={handleSubeventChange} setChoiceFormModal={setChoiceFormModal} />

@@ -24,6 +24,9 @@ interface Props {
     extractedColors: string[]
     setExtractedColors: (value: string[]) => void
     eventNameMain: string;
+    virutalLinkMain : string;
+    virtualLinkSub : string;
+    eventTypeMain: string;
     cityNameMain: string;
     participationTypeMain: string;
     descriptionMain: string;
@@ -34,7 +37,7 @@ interface Props {
     prefilledEvent?: EventsType | null
 }
 
-const Appearance = ({setUploadedPhoto,setSnowTheme, setLeavesTheme, confettiType, setFormTheme, setPageBgColor, pageBgColor,setConfettiType, eventFont, setEventFont, extractedColors, setExtractedColors, eventNameMain, cityNameMain, participationTypeMain, descriptionMain ,prefilledEvent, eventNameSub, participationTypeSub, descriptionSub, cityNameSub, setPageGradient}: Props) => {
+const Appearance = ({eventTypeMain,setUploadedPhoto,setSnowTheme, setLeavesTheme, confettiType, setFormTheme, setPageBgColor, pageBgColor,setConfettiType, eventFont, setEventFont, extractedColors, setExtractedColors, eventNameMain, cityNameMain, participationTypeMain, virutalLinkMain, virtualLinkSub, descriptionMain ,prefilledEvent, eventNameSub, participationTypeSub, descriptionSub, cityNameSub, setPageGradient}: Props) => {
     const { theme } = useTheme()
     return (
         <div className={styles.body} style={{ backgroundColor: theme === "dark" ? "#131313" : "#FAFAFA" }}>
@@ -44,7 +47,7 @@ const Appearance = ({setUploadedPhoto,setSnowTheme, setLeavesTheme, confettiType
             </div>
             <div className={styles.container}>
                 <div className={styles.progressContainer}>
-                    <ProgressBar eventNameSub={eventNameSub} participationTypeSub={participationTypeSub} descriptionSub={descriptionSub} cityNameSub={cityNameSub} cityNameMain={cityNameMain} descriptionMain={descriptionMain} eventNameMain={eventNameMain} participationTypeMain={participationTypeMain} />
+                    <ProgressBar virtualLinkSub={virtualLinkSub} virutalLinkMain={virutalLinkMain} eventNameSub={eventNameSub} participationTypeSub={participationTypeSub} descriptionSub={descriptionSub} cityNameSub={cityNameSub} cityNameMain={cityNameMain} descriptionMain={descriptionMain} eventNameMain={eventNameMain} participationTypeMain={participationTypeMain} eventTypeMain={eventTypeMain}/>
                 </div>
                 <div className={styles.line}></div>
                 <BrandKit prefilledEvent={prefilledEvent} flex={false} extractedColors={extractedColors} pageBgColor={pageBgColor} setPageBgColor={setPageBgColor} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} />

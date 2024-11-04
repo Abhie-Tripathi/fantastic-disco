@@ -1,14 +1,26 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./eventtype.style.module.css";
 import eventTypeSVG from "/public/eventTypeSVG.svg";
 import Image from "next/image";
-const EventTypeSelector = ({mainEventType,handleChange}:any) => {
+const EventTypeSelector = ({
+  mainEventType,
+  handleChange,
+  prefilledEvent,
+}: any) => {
   const [selectedEventType, setSelectedEventType] = useState("");
+
+  useEffect(() => {
+    if (prefilledEvent) {
+      setSelectedEventType(prefilledEvent.event_type);
+      handleChange("event_type", prefilledEvent.event_type); // Call handleChange to ensure the value is set
+    }
+  }, []);
 
   const handleOptionChange = (event: any) => {
     const value = event.target.value;
     setSelectedEventType(value);
-    handleChange('event_type', value);
+    handleChange("event_type", value);
+    handleChange("isEventTypeEmpty", false);
   };
 
   return (
