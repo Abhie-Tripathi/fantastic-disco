@@ -35,6 +35,7 @@ import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
 import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import SaveThisEvent from "@/components/gtmDetail/saveThisEvent";
+import { toast } from "react-toastify";
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
   const scrollableSectionRef = useRef<HTMLElement | null>(null);
@@ -102,7 +103,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
   const isCancelled = status === "cancelled";
   const isPostponed = status === "postponed";
-
   const handleShare = () => {
     if (navigator.share) {
       navigator
@@ -138,13 +138,15 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             Back to Search
           </Link>
         </button>
-        <Image
-          src={bannerUrl ?? "/eventDetailFallback.png"}
-          alt="eventDetails"
-          width={420}
-          height={280}
-          className="max-h-[300px] w-fill rounded-lg"
-        />
+        {bannerUrl && (
+          <Image
+            src={bannerUrl ?? "/eventDetailFallback.png"}
+            alt="eventDetails"
+            width={420}
+            height={280}
+            className="max-h-[300px] w-fill rounded-lg"
+          />
+        )}
 
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center gap-1">
