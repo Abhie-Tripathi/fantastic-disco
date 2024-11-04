@@ -126,7 +126,7 @@ const StickyCard = ({
             }}
           >
             {fetchedEvent
-              ? fetchedEvent[0].cityName + ", " + fetchedEvent[0].countryName
+              ?fetchedEvent[0].eventFormat==="Virtual"?"Virtual": fetchedEvent[0].cityName + ", " + fetchedEvent[0].countryName
               : demoLocation}
           </div>
         </div>

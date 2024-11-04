@@ -41,7 +41,7 @@ const SubEventCard = ({
   demoLocation,
   fetchedAddedOtherData,
 }: any) => {
-  console.log("sdasdasd", fetchedEvent);
+  console.log("sdasdasd", fetchedAddedOtherData);
   function formatEventDates(startDate: string, endDate: string) {
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -151,6 +151,7 @@ const SubEventCard = ({
             />
             <div>
               {
+                fetchedAddedOtherData[0]?.eventFormat ==="Virtual"?"Virtual":
                 (fetchedAddedOtherData[0]?.cityName,
                 fetchedAddedOtherData[0]?.countryName)
               }
