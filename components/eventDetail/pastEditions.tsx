@@ -18,10 +18,9 @@ interface LoadMoreProps {
 const take = 10;
 
 const LoadMore = ({ eventId, setEventEditionDetails }: LoadMoreProps) => {
-  console.log("Load More");
   const { getEventEditionDetails } = useEventsService();
   const [ref, inView] = useInView();
-  const [skip, setSkip] = useState<number>(take);
+  const [skip, setSkip] = useState<number>(0);
   const { data: eventEditionData, isLoading } = useQuery<any>({
     queryKey: ["editionDetails", skip],
     queryFn: async () => getEventEditionDetails(eventId, take, skip),
@@ -32,12 +31,10 @@ const LoadMore = ({ eventId, setEventEditionDetails }: LoadMoreProps) => {
   });
   useEffect(() => {
     if (inView) {
-      console.log(inView);
       setSkip((prev) => prev + take);
     }
   }, [inView]);
   useEffect(() => {
-    console.log("Getting data");
     if (eventEditionData) {
       setEventEditionDetails((prev = []) => [
         ...prev,
@@ -55,20 +52,13 @@ const LoadMore = ({ eventId, setEventEditionDetails }: LoadMoreProps) => {
 };
 
 const PastEditions = ({ eventId, eventEditionData }: IProps) => {
-  // const { getEventEditionDetails } = useEventsService();
   const [eventEditionDetails, setEventEditionDetails] = useState<Editions[]>();
   const { count, editions } = eventEditionData;
-  // const { data: eventEditionData, isLoading } = useQuery<any>({
-  //   queryKey: ["eventEditionDetails", eventId],
-  //   queryFn: async () => getEventEditionDetails(eventId, take, 0),
-  // });
-  // const count: number = eventEditionData && eventEditionData.count;
   useEffect(() => {
     if (editions) {
       setEventEditionDetails(editions);
     }
   }, [editions]);
-  console.log(eventEditionData);
   if (!eventEditionDetails) return null;
   return (
     <ul className="h-[200px] flex flex-col gap-4 max-h-[200px] overflow-y-auto scrollbar pr-4 w-[400px] max-w-[400px]">
