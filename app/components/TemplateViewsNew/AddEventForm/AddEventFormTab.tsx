@@ -114,10 +114,6 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                         handleSubeventChange('isEventParticipationEmpty', false)
                         // setIsEventParticipationEmpty(false)
                     }
-                    // if (!subEventState.participationMessage) {
-                    //     handleSubeventChange('isParticipationMessageEmpty', true)
-                    //     // setIsParticipationMessageEmpty(true)
-                    // }
                     if (!subEventState.textValue) {
                         handleSubeventChange('isTextValueMessageEmpty', true)
                         // setIsTextValueMessageEmpty(true)
@@ -135,13 +131,6 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 handleMaineventChanges('isEventNameEmpty', false)
                 // setIsEventNameEmpty(false)
             }
-            // if (!mainEventState.query) {
-            //     handleMaineventChanges('isEventFormatEmpty', true)
-            //     // setIsEventFormatEmpty(true)
-            // } else {
-            //     handleMaineventChanges('isEventFormatEmpty', false)
-            //     // setIsEventFormatEmpty(false)
-            // }
             if ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid" || mainEventState.eventFormat === "OFFLINE") && !mainEventState.query) {
                 handleMaineventChanges('isEventFormatEmpty', true);
             } else if (mainEventState.eventFormat === "Virtual" || mainEventState.eventFormat === "ONLINE") {
@@ -176,10 +165,6 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 // setIsTextValueMessageEmpty(true)
             }
 
-            // if (!mainEventState.eventName.trim() || !mainEventState.eventFormat || !mainEventState.startTime || !mainEventState.endTime || !mainEventState.startDate || !mainEventState.endDate || !mainEventState.description.trim() || !mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude || !mainEventState.participationType || !mainEventState.participationMessage) {
-            //     showToast("error", "Please fill in all the fields");
-            //     return; // Exit the function if any field is missing
-            // }
             if (
                 !mainEventState.eventName.trim() ||
                 !mainEventState.eventFormat ||
@@ -511,23 +496,27 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
         } else {
             handleMaineventChanges('isEventParticipationEmpty', false);
         }
-
-        // if (!eventState.participationMessage) {
-        //     handleMaineventChanges('isParticipationMessageEmpty', true);
-        // }
-
         if (!eventState.textValue.trim()) {
             handleMaineventChanges('isTextValueMessageEmpty', true);
         }
 
-        // Check if all required fields are present
-        if (!eventState.eventName.trim() || !eventState.eventFormat || !eventState.startTime || !eventState.endTime || !eventState.startDate || !eventState.endDate || !eventState.description.trim() || !eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude || !eventState.participationType
-            // !eventState.participationMessage
+        if (
+            !eventState.eventName.trim() ||
+            !eventState.eventFormat ||
+            !eventState.startTime ||
+            !eventState.endTime ||
+            !eventState.startDate ||
+            !eventState.endDate ||
+            !eventState.description.trim() ||
+            !eventState.participationType ||
+            !eventState.participationMessage ||
+            // Check location fields only for "In-person" or "Hybrid" events
+            ((eventState.eventFormat === "In-person" || eventState.eventFormat === "Hybrid" || eventState.eventFormat === "OFFLINE") &&
+                (!eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude))
         ) {
-            showToast("error", "Please fill in all the fields");
+            showToast("error", "Please fill in all the required fields");
             return; // Exit the function if any field is missing
         }
-
         // Check if banner exists, if not, show error for missing poster
         if (!prefilledEvent?.logoUrl) {
             if (!eventState.banner.placeHolder && !eventState.banner.file) {
