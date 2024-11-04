@@ -103,23 +103,20 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
   const isCancelled = status === "cancelled";
   const isPostponed = status === "postponed";
-  const handleCopyToClipboard = () => {
-    const url = window.location.href;
-    navigator.clipboard
-      .writeText(url)
-      .then(() => {
-        toast.success("Link copied to clipboard!", {
-          position: "bottom-center",
-          autoClose: 2000,
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator
+        .share({
+          title: name ?? "",
+          url: `https://console.eventeli.com/search/${id}`,
+        })
+        .then(() => {
+          console.log("Successfully shared");
+        })
+        .catch((error) => {
+          console.error("Something went wrong", error);
         });
-      })
-      .catch((error) => {
-        console.error("Failed to copy URL: ", error);
-        toast.error("Failed to copy link.", {
-          position: "bottom-center",
-          autoClose: 2000,
-        });
-      });
+    }
   };
 
   const handleScrollTo = (section: string) => {
@@ -167,7 +164,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 <Globe width="16px" height="16px" color="#666666" />
               </Link>
             )}
-            <button onClick={handleCopyToClipboard}>
+            <button onClick={handleShare}>
               {/* <Forward width="18px" height="18px" color="#666666" /> */}
               <Image
                 src={"/shareLogo.svg"}
