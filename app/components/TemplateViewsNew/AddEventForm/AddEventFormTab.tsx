@@ -93,13 +93,18 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                         handleSubeventChange('isEventNameEmpty', false)
                         // setIsEventNameEmpty(false)
                     }
-                    if (!subEventState.query) {
-                        handleSubeventChange('isEventFormatEmpty', true)
-                        // setIsEventFormatEmpty(true)
-                    } else {
-                        handleSubeventChange('isEventFormatEmpty', false)
-                        // setIsEventFormatEmpty(false)
+                    if ((subEventState.eventFormat === "In-person" || subEventState.eventFormat === "Hybrid" || subEventState.eventFormat === "OFFLINE") && !subEventState.query) {
+                        handleSubeventChange('isEventFormatEmpty', true);
+                    } else if (subEventState.eventFormat === "Virtual" || subEventState.eventFormat === "ONLINE") {
+                        handleSubeventChange('isEventFormatEmpty', false); // No need for location in virtual format
                     }
+                    // if (!subEventState.query) {
+                    //     handleSubeventChange('isEventFormatEmpty', true)
+                    //     // setIsEventFormatEmpty(true)
+                    // } else {
+                    //     handleSubeventChange('isEventFormatEmpty', false)
+                    //     // setIsEventFormatEmpty(false)
+                    // }
                     if (!subEventState.description) {
                         handleSubeventChange('isEventDescriptionEmpty', true)
                         // setIsEventDescriptionEmpty(true)
@@ -338,12 +343,10 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             handleSubeventChange('isEventNameEmpty', false)
             // setIsEventNameEmpty(false)
         }
-        if (!subEventState.query) {
-            handleSubeventChange('isEventFormatEmpty', true)
-            // setIsEventFormatEmpty(true)
-        } else {
-            handleSubeventChange('isEventFormatEmpty', false)
-            // setIsEventFormatEmpty(false)
+        if ((subEventState.eventFormat === "In-person" || subEventState.eventFormat === "Hybrid" || subEventState.eventFormat === "OFFLINE") && !subEventState.query) {
+            handleSubeventChange('isEventFormatEmpty', true);
+        } else if (subEventState.eventFormat === "Virtual" || subEventState.eventFormat === "ONLINE") {
+            handleSubeventChange('isEventFormatEmpty', false); // No need for location in virtual format
         }
         if (!subEventState.description) {
             handleSubeventChange('isEventDescriptionEmpty', true)
@@ -359,20 +362,27 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             handleSubeventChange('isEventParticipationEmpty', false)
             // setIsEventParticipationEmpty(false)
         }
-        // if (!subEventState.participationMessage) {
-        //     handleSubeventChange('isParticipationMessageEmpty', true)
-        //     // setIsParticipationMessageEmpty(true)
-        // }
+
         if (!subEventState.textValue) {
             handleSubeventChange('isTextValueMessageEmpty', true)
             // setIsTextValueMessageEmpty(true)
         }
 
-        if (!subEventState.eventName.trim() || !subEventState.eventFormat || !subEventState.startTime || !subEventState.endTime || !subEventState.startDate || !subEventState.endDate || !subEventState.description.trim() || !subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude || !subEventState.participationType
-            // !subEventState.participationMessage
+        if (
+            !subEventState.eventName.trim() ||
+            !subEventState.eventFormat ||
+            !subEventState.startTime ||
+            !subEventState.endTime ||
+            !subEventState.startDate ||
+            !subEventState.endDate ||
+            !subEventState.description.trim() ||
+            !subEventState.participationType ||
+            // !eventState.participationMessage ||
+            // Check location fields only for "In-person" or "Hybrid" events
+            ((subEventState.eventFormat === "In-person" || subEventState.eventFormat === "Hybrid" || subEventState.eventFormat === "OFFLINE") &&
+                (!subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude))
         ) {
-
-            showToast("error", "Please fill in all the fields");
+            showToast("error", "Please fill in all the required fields");
             return; // Exit the function if any field is missing
         }
 
@@ -406,6 +416,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             start_date: subEventState.startDate,
             description: subEventState.description,
             location_city: subEventState.cityName,
+            virtualLink: subEventState.virtualLink,
             location_country: subEventState.countryName,
             gmt_time: subEventState.timeZone,
             latitude: subEventState.latitude,
@@ -509,7 +520,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             !eventState.endDate ||
             !eventState.description.trim() ||
             !eventState.participationType ||
-            !eventState.participationMessage ||
+            // !eventState.participationMessage ||
             // Check location fields only for "In-person" or "Hybrid" events
             ((eventState.eventFormat === "In-person" || eventState.eventFormat === "Hybrid" || eventState.eventFormat === "OFFLINE") &&
                 (!eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude))
@@ -557,6 +568,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             logoUrl: eventState.banner.placeHolder,
             location_city: eventState.cityName,
             location_country: eventState.countryName,
+            virtualLink: eventState.virtualLink,
             participationType: eventState.participationType,
             gmt_time: eventState.timeZone,
             latitude: eventState.latitude,
