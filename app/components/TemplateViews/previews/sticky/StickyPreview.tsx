@@ -92,27 +92,47 @@ const StickyPreview = ({
       {fetchedAddedOtherData &&
       fetchedAddedOtherData.length > 0 &&
       fetchedAddedOtherData[0].eventType === "MAIN" ? (
-        fetchedAddedOtherData.map((event, key) => (
-          <div
-            className={type === "top" ? styles.stickyTop : styles.stickyFooter}
-            key={key}
-            // onClick={() => handleCardClick(event.id, widgetId)} key={key}
-          >
-            <StickyCard
-              fetchedEvent={event}
-              cardBgColor={cardBgColor}
-              cardBorderRadius={cardBorderRadius}
-              fontSettings={fontSettings}
-              selectedBtn={selectedBtn}
-              smallCard={smallCard}
-              buttonSettings={buttonSettings}
-              demoBanner={""}
-              demoEventName={""}
-              demoDescription={""}
-              demoLocation={""}
-            />
-          </div>
-        ))
+        // fetchedAddedOtherData.map((event, key) => (
+        //   <div
+        //     className={type === "top" ? styles.stickyTop : styles.stickyFooter}
+        //     key={key}
+        //     // onClick={() => handleCardClick(event.id, widgetId)} key={key}
+        //   >
+        //     <StickyCard
+        //       fetchedEvent={event}
+        //       cardBgColor={cardBgColor}
+        //       cardBorderRadius={cardBorderRadius}
+        //       fontSettings={fontSettings}
+        //       selectedBtn={selectedBtn}
+        //       smallCard={smallCard}
+        //       buttonSettings={buttonSettings}
+        //       demoBanner={""}
+        //       demoEventName={""}
+        //       demoDescription={""}
+        //       demoLocation={""}
+        //     />
+        //   </div>
+        // )
+        <div
+        className={type === "top" ? styles.stickyTop : styles.stickyFooter}
+        // key={key}
+        // onClick={() => handleCardClick(event.id, widgetId)} key={key}
+      >
+        <StickyCard
+          fetchedEvent={fetchedAddedOtherData}
+          cardBgColor={cardBgColor}
+          cardBorderRadius={cardBorderRadius}
+          fontSettings={fontSettings}
+          selectedBtn={selectedBtn}
+          smallCard={smallCard}
+          buttonSettings={buttonSettings}
+          demoBanner={""}
+          demoEventName={""}
+          demoDescription={""}
+          demoLocation={""}
+        />
+      </div>
+      
       ) : fetchedAddedOtherData &&
         fetchedAddedOtherData.length > 0 &&
         fetchedAddedOtherData[0].eventType === "SUB" ? (
