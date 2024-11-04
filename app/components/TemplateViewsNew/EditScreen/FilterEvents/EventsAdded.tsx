@@ -549,7 +549,7 @@ const EventsAdded = ({
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
-
+console.log("fetchedAddedOtherData",fetchedAddedOtherData)
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
@@ -684,21 +684,27 @@ const EventsAdded = ({
                       </span>
                     </div>
                   ) : (
-                    <div style={{ cursor: "text" }}>
-                      <Image
-                        src={
-                          event.promoted === true || event.promoted === "true"
-                            ? StarIconFilled
-                            : StarIcon
-                        }
-                        alt="promote"
-                      />
-                      <span>
-                        {event.promoted === true || event.promoted === "true"
-                          ? "Promoted"
-                          : "Promote"}
-                      </span>
-                    </div>
+                    (
+                      selectedTemplate === "CVG" ||
+                      selectedTemplate === "CVL") ?
+                    (
+                    // <div style={{ cursor: "text" }} onClick={() => handlePromoteEvent(event)}>
+                    //   <Image
+                    //     src={
+                    //       event.promoted === true || event.promoted === "true"
+                    //         ? StarIconFilled
+                    //         : StarIcon
+                    //     }
+                    //     alt="promote"
+                    //   />
+                    //   <span>
+                    //     {event.promoted === true || event.promoted === "true"
+                    //       ? "Promoted"
+                    //       : "Promote"}
+                    //   </span>
+                    // </div>
+                    ""
+                    ):""
                   )}
 
                   {/* <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span>
