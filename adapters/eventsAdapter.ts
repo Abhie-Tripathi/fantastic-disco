@@ -239,6 +239,97 @@ export const EventsAdapter = {
     return adaptedParams;
   },
 
+  adaptEventCountRequestParam: (params: URLSearchParams) => {
+    const adaptedParams: any = {};
+
+    if (params.get("locationIds")) {
+      adaptedParams.locationIds = params.get("locationIds");
+    }
+
+    if (params.get("groupBy")) {
+      adaptedParams.groupBy = params.get("groupBy");
+    }
+
+    if (params.get("categories")) {
+      const categorySlugs = params.get("categories")?.split(",") || [];
+      const categoryIds = categorySlugs.map((slug) => {
+        const category = newCategories.find((cat) => cat.slug === slug);
+        return category ? category.id : slug;
+      });
+      adaptedParams.eventCategory = categoryIds.join(",");
+    }
+
+    if (params.get("includeKeywords") || params.get("excludeKeywords")) {
+      const includeKeywords = params.get("includeKeywords")
+        ? params
+            .get("includeKeywords")!
+            .split(",")
+            .map((keyword) => `${keyword.trim().replace(/ /g, "_")}`)
+            .join("+")
+        : "";
+      const excludeKeywords = params.get("excludeKeywords")
+        ? params
+            .get("excludeKeywords")!
+            .split(",")
+            .map((keyword) => `-${keyword.trim()}`)
+            .join("+")
+        : "";
+
+      adaptedParams.eventKeywords = includeKeywords + "+" + excludeKeywords;
+    }
+
+    if (params.get("estimatedVisitors")) {
+      adaptedParams.eventSize = params.get("estimatedVisitors")!;
+    }
+
+    if (params.get("estimatedExhibitors")) {
+      adaptedParams.estimatedExhibitScore = params.get("estimatedExhibitors")!;
+    }
+
+    if (params.get("impact_score_gte") && params.get("impact_score_lte")) {
+      adaptedParams.eventImpactScore = `${params.get(
+        "impact_score_gte"
+      )}-${params.get("impact_score_lte")}`;
+    }
+
+    if (params.get("inbound_score_gte") && params.get("inbound_score_lte")) {
+      adaptedParams.inboundScore = `${params.get(
+        "inbound_score_gte"
+      )}-${params.get("inbound_score_lte")}`;
+    }
+
+    if (params.get("top")) {
+      adaptedParams.eventRanking = `0-${params.get("top")}`;
+    }
+
+    if (params.get("designations")) {
+      const designationSlugs = params.get("designations")?.split(",") || [];
+      const designationIds = designationSlugs.map((slug) => {
+        const designation = designations.find((des) => des.slug === slug);
+        return designation ? designation.id : slug;
+      });
+      adaptedParams.designation = designationIds.join(",");
+    }
+
+    if (params.get("audienceSpread")) {
+      adaptedParams.audienceSpread = params.get("audienceSpread")!;
+    }
+
+    if (
+      params.get("international_score_gte") &&
+      params.get("international_score_lte")
+    ) {
+      adaptedParams.internationalScore = `${params.get(
+        "international_score_gte"
+      )}-${params.get("international_score_lte")}`;
+    }
+
+    if (params.get("trust_score_gte") || params.get("trust_score_lte")) {
+      adaptedParams.trustScore = params.get("trust_score_gte")!;
+    }
+    return adaptedParams;
+  },
+
   adaptResponse: (
     response: any,
     params: URLSearchParams
@@ -461,6 +552,7 @@ export const EventsAdapter = {
       longitude: item.geoCordinates.longitude,
     }));
   },
+
   adaptEventByIdResponse: (response: any) => {
     return {
       event: {

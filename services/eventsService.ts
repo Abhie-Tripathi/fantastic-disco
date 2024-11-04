@@ -126,10 +126,13 @@ export const useEventsService = () => {
   };
 
   const getEventsCount = async (searchParams: string) => {
+    const params = new URLSearchParams(searchParams);
+    const adaptedParams = EventsAdapter.adaptEventCountRequestParam(params);
     const response = await api.request<EventCount[]>(
-      `${endpoints.event.count}?${searchParams}`,
+      `${endpoints.event.count}`,
       {
         method: "GET",
+        params: adaptedParams,
       }
     );
     return EventsAdapter.adaptEventCountResponse(response);
@@ -142,7 +145,7 @@ export const useEventsService = () => {
         eventId: id,
       },
     });
-    console.log(response)
+    console.log(response);
     return response;
   };
 

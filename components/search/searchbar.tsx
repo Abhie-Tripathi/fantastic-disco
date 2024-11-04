@@ -151,7 +151,7 @@ export default function MultiSelectSearchBar() {
       <div ref={searchBarRef} className="relative">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <div className="flex items-center flex-wrap bg-white rounded-md shadow-sm border border-[#EBEBEB] p-2">
+            <div className="flex items-center flex-wrap bg-background rounded-md shadow-sm border p-2">
               <Search className="ml-2 text-gray-400" />
               {selectedItems.map((item) => (
                 <div

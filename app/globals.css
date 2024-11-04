@@ -12,6 +12,7 @@
 @import "@/styles/map.css";
 @import "react-big-calendar/lib/css/react-big-calendar.css";
 @import "@/styles/eventCalendar.css";
+
 .container {
   max-width: 100%;
   padding: 2rem;
@@ -116,6 +117,28 @@
   }
 }
 
+@layer utilities {
+  .scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    border-radius: 100vh;
+    background: #e5e7eb;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: #a1a1aa;
+    border-radius: 100vh;
+    border: 1px solid #a1a1aa;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a1a1aa;
+  }
+}
+
 :root {
   --breakpoint-xs: 480px;
   --breakpoint-sm: 768px;
@@ -185,7 +208,7 @@
   --coordinate-primary-color: #6750a4;
   --primary-color-hover: #59478c;
   --primary-color-active: #4b3f70;
-  --primary-foreground: #ffffff;
+  --primary-foreground: #fff;
   /* --primary-color-faded: rgba(8, 139, 234, 0.1); */
   --primary-light-color: #e6e6f9;
   /* --primary-light-color-faded: rgba(249, 249, 219, 0.1); */
@@ -211,10 +234,8 @@
   --background-secondary-color-active: #545769;
   --background-color-faded: rgba(12, 15, 30, 0.1);
   --card-background-color: #1d1f36;
-  --dashboard-brandkit-subtext: #8F8F8F;
-  --link-color:#0062D1;
-  --dashboard-brandkit-subtext: #8F8F8F;
-  --link-color:#0062D1;
+  --dashboard-brandkit-subtext: #8f8f8f;
+  --link-color: #0062d1;
   --border-color: #dcdfe4;
   --card-border-color: #dcdfe4;
   --heading-background-color: #f7f7f9;
