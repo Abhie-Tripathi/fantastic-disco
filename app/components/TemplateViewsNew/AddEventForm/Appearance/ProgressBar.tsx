@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './progressbar.style.module.css'
 
 interface Props {
+    eventTypeMain: string;
     eventNameMain: string;
     cityNameMain: string;
     participationTypeMain: string;
@@ -12,7 +13,7 @@ interface Props {
     descriptionSub: string;
 }
 
-const ProgressBar = ({ eventNameMain, cityNameMain, participationTypeMain, descriptionMain,eventNameSub, participationTypeSub, descriptionSub, cityNameSub }: Props) => {
+const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participationTypeMain, descriptionMain, eventNameSub, participationTypeSub, descriptionSub, cityNameSub }: Props) => {
 
     const [activeBars, setActiveBars] = useState<string[]>([])
 
@@ -42,6 +43,7 @@ const ProgressBar = ({ eventNameMain, cityNameMain, participationTypeMain, descr
         updateActiveBars('eventName', eventNameMain);
         updateActiveBars('cityName', cityNameMain);
         updateActiveBars('description', descriptionMain);
+        updateActiveBars('eventType', eventTypeMain);
         // Check for combined sub-fields to activate the 5th step
         if (eventNameSub && cityNameSub && participationTypeSub && descriptionSub) {
             updateActiveBars('subEvent', 'combinedSubFields');
@@ -49,8 +51,8 @@ const ProgressBar = ({ eventNameMain, cityNameMain, participationTypeMain, descr
             updateActiveBars('subEvent', ''); // Remove if not all sub-fields are filled
         }
 
-    }, [participationTypeMain, eventNameMain, cityNameMain, descriptionMain, eventNameSub, cityNameSub, participationTypeSub, descriptionSub]);
-    const totalSteps = 5;
+    }, [participationTypeMain, eventNameMain, cityNameMain, descriptionMain, eventNameSub, cityNameSub, participationTypeSub, descriptionSub, eventTypeMain]);
+    const totalSteps = 6;
     return (
         <div className={styles.body}>
             <div className={styles.header}>PROGRESS</div>
@@ -66,6 +68,7 @@ const ProgressBar = ({ eventNameMain, cityNameMain, participationTypeMain, descr
                 </div>
             </div>
             <div className={styles.listContainer}>
+                <li className={eventTypeMain ? styles.activeItem : ""}>{eventTypeMain && <TickIcon />}<span>Event Type</span></li>
                 <li className={participationTypeMain ? styles.activeItem : ""}>{participationTypeMain && <TickIcon />}<span>Mode Of Participation</span></li>
                 <li className={eventNameMain ? styles.activeItem : ""}>{eventNameMain && <TickIcon />}<span>Event Name</span></li>
                 <li className={cityNameMain ? styles.activeItem : ""}>{cityNameMain && <TickIcon />}<span>Location</span></li>

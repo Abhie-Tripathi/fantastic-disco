@@ -12,6 +12,7 @@
 .disabledTime{
     color: rgb(166, 166, 166);
     cursor: not-allowed;
+    pointer-events: none;
 }
 .time:hover{
     background-color: #F2F2F2;

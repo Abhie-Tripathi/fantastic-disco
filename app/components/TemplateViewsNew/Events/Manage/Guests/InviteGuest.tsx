@@ -13,11 +13,11 @@ interface Props {
 
 const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
 
-  const maxCount = 15;
   const [count, setCount] = useState(4); // Default starting count
   const [screen, setScreen] = useState<string>("first");
   const [selectedMails, setSelectedMails] = useState<string[]>([])
   const [suggestedMails, setSuggestedMails] = useState<string[]>([])
+  const maxCount = 15
 
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
@@ -40,9 +40,17 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
     setSuggestedMails(emailArray)
   }
 
+  const fetchInviteCount = async()=>{
+    const {data, error} = await myFetch(`${baseUrl}/invite?invites=true`)
+    if(data){
+      setCount(data.inviteCount)
+    }else{
+      console.log("error is", error)
+    }
+  }
   useEffect(()=>{
     fetchSuggestions()
-    console.log("called")
+    fetchInviteCount()
   },[suggestedMailQuery])
 
   const handleSubmit = async () => {
@@ -68,7 +76,7 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
     }
   }
 
-  const percentageFilled = (count / maxCount) * 100;
+  const percentageFilled = ((maxCount-count) / maxCount) * 100;
   return (
     <div className={styles.body}>
       <div className={styles.header}>
@@ -80,7 +88,7 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
               background: `conic-gradient(#4caf50 ${percentageFilled}%, #e0e0e0 0)`,
             }}
           ></div>
-          <div>{15 - count} left</div>
+          <div>{count} left</div>
         </div>
       </div>
       <div className={styles.line}></div>

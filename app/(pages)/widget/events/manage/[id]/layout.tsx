@@ -18,6 +18,48 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     const [addEventModal, setAddEventModal] = useState<boolean>(false)
     const [deleteModal, setDeleteModal] = useState<boolean>(false)
     const [deleteModalTwo, setDeleteModalTwo] = useState<boolean>(false)
+    const [isPastEvent, setIsPastEvent] = useState<boolean>(false)
+
+    useEffect(() => {
+        const calculateIsPastEvent = () => {
+            function convertTo24Hour(time : string) {
+                // Use a regex to parse the hour, minute, and AM/PM part
+                const [timeString, modifier] = time.split(' ');
+                let [hours, minutes] = timeString.split(':');
+            
+                // Convert hours based on AM/PM
+                if (modifier === 'P.M' && hours !== '12') {
+                    hours = `${parseInt(hours, 10) + 12}`;
+                } else if (modifier === 'A.M' && hours === '12') {
+                    hours = '00';
+                }
+                return `${hours}:${minutes}`;
+            }
+            function getCurrentTime24Hour() {
+                const now = new Date();
+                return now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+            }  
+            function getCurrentDateFormatted() {
+                const now = new Date();
+                return now.toISOString().split('T')[0]; // returns "YYYY-MM-DD"
+            }          
+            const eventTime = convertTo24Hour(fetchedEvent?.endTime || "12:00 AM")
+            const currentTime = getCurrentTime24Hour()
+            const currentDate = getCurrentDateFormatted()
+            if(currentDate > (fetchedEvent?.endDate || "1")){
+                setIsPastEvent(true)
+                console.log("this is being called")
+            }else if(currentDate === fetchedEvent?.endDate){
+                if(currentTime > eventTime){
+                    setIsPastEvent(true)
+                    console.log("this is being called")
+                }else setIsPastEvent(false)
+            }else setIsPastEvent(false)
+        };
+
+        // Call the function to set the state
+        calculateIsPastEvent();
+    }, [fetchedEvent])
 
     const fetchEventData = async () => {
         const { data, error } = await myFetch(`${baseUrl}/event/${eventId}?source=eventgtm`);
@@ -27,7 +69,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         }
         const eventData = data?.data;
         // if (!eventData) return null;
-        console.log("fetchedd",eventData)
+        console.log("fetchedd", eventData)
         const eventObject: EventsType = {
             eventId: eventId, // Use eventId from the URL param
             name: data?.name || "",
@@ -47,8 +89,8 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             interest: "", // Assuming this is missing from API, set default or handle later
             logoUrl: eventData.logoUrl || "",
             widgetTags: data?.widgetData,
-            eventType: data?.type, 
-            event_type:eventData?.event_type,
+            eventType: data?.type,
+            event_type: eventData?.event_type,
             parentData: "",
             capacity: eventData.maxCapacity || 0,
             registration: data?.registration === true ? true : false,
@@ -105,13 +147,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <EventContext.Provider value={{ fetchEventData, eventId, fetchedEvent, setAddEventModal, setDeleteModal, setDeleteModalTwo }}>
+        <EventContext.Provider value={{ fetchEventData, eventId, fetchedEvent, setAddEventModal, setDeleteModal, setDeleteModalTwo,isPastEvent }}>
             <div className={styles.body}>
                 <div className={styles.details}>
                     <div className={styles.header}>
                         <div className={styles.eventNameHeading}>{fetchedEvent?.name}</div>
                         <button onClick={handleDetailPage} className={styles.detailPageBtn}>Detail Page<Arrow /> </button>
-                    </div>
+                    </div>  
                     <div className={styles.navbar}>
                         <Link href={`/widget/events/manage/${eventId}/overview`}
                             className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/overview` ? styles.activeItem : ""

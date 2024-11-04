@@ -25,7 +25,8 @@
     font-size: var(--font-size-medium);
 }
 .eventLocation .activeLocation{
-    color: var(--primary-text-color)
+    color: black;
+    /* color: var(--primary-text-color) */
 }
 .eventLocation .eventLocationTwo{
     color: var(--secondary-text-color);
