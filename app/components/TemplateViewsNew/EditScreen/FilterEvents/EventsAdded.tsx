@@ -549,7 +549,7 @@ const EventsAdded = ({
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
-
+  console.log("fetchedAddedOtherData____",fetchedAddedOtherData)
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
@@ -606,7 +606,10 @@ const EventsAdded = ({
                 )} ${event.name.length > 30 ? "..." : ""}`}</div>
                 <div className={styles.eventLocationContainer}>
                   <LocationIcon />
-                  <div>{event.cityName}</div>
+                  {/* {
+                    // event
+                  } */}
+                  <div>{event.eventFormat==="Virtual"?"Virtual" :event.cityName}</div>
                 </div>
                 <div className={styles.eventDateContainer}>
                   <DateIcon />
@@ -684,21 +687,27 @@ const EventsAdded = ({
                       </span>
                     </div>
                   ) : (
-                    <div style={{ cursor: "text" }}>
-                      <Image
-                        src={
-                          event.promoted === true || event.promoted === "true"
-                            ? StarIconFilled
-                            : StarIcon
-                        }
-                        alt="promote"
-                      />
-                      <span>
-                        {event.promoted === true || event.promoted === "true"
-                          ? "Promoted"
-                          : "Promote"}
-                      </span>
-                    </div>
+                    (
+                      selectedTemplate === "CVG" ||
+                      selectedTemplate === "CVL") ?
+                    (
+                    // <div style={{ cursor: "text" }} onClick={() => handlePromoteEvent(event)}>
+                    //   <Image
+                    //     src={
+                    //       event.promoted === true || event.promoted === "true"
+                    //         ? StarIconFilled
+                    //         : StarIcon
+                    //     }
+                    //     alt="promote"
+                    //   />
+                    //   <span>
+                    //     {event.promoted === true || event.promoted === "true"
+                    //       ? "Promoted"
+                    //       : "Promote"}
+                    //   </span>
+                    // </div>
+                    ""
+                    ):""
                   )}
 
                   {/* <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span>
