@@ -51,7 +51,7 @@ const CustomToolbar = ({
   };
 
   return (
-    <div className="flex justify-between items-center mb-4">
+    <div className="grid grid-cols-3 mb-4">
       <Select value={view} onValueChange={(newView) => setView(newView as any)}>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Display" />
@@ -62,7 +62,7 @@ const CustomToolbar = ({
           <SelectItem value={Views.YEAR}>Yearly</SelectItem>
         </SelectContent>
       </Select>
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 place-self-center">
         <Button variant="ghost" size="icon" onClick={goToBack}>
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -71,7 +71,7 @@ const CustomToolbar = ({
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
-      <Select
+      {/* <Select
         value={filter}
         onValueChange={onFilterChange}
         disabled={view === Views.WEEK}
@@ -84,7 +84,7 @@ const CustomToolbar = ({
           <SelectItem value="social">Social Events</SelectItem>
           <SelectItem value="business">Business Events</SelectItem>
         </SelectContent>
-      </Select>
+      </Select> */}
     </div>
   );
 };

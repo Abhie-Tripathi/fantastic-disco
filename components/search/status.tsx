@@ -14,7 +14,6 @@ const eventStatuses = [
   { id: "active", label: "Active" },
   { id: "cancelled", label: "Cancelled" },
   { id: "postponed", label: "Postponed" },
-  { id: "predicted", label: "Predicted" },
 ];
 
 export default function StatusSelector() {

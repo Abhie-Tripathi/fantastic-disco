@@ -52,6 +52,7 @@ import { toast } from "react-toastify";
 import styles from "./search.module.css";
 import ZeroState from "@/app/components/zerostate";
 import { ApiError } from "@/types/api";
+import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 
 const Map = lazy(() => import("@/components/map"));
 
@@ -392,7 +393,7 @@ const Search = () => {
         </TabsContent>
       </Tabs>
 
-      <Dialog10x open={trackerModalOpen}>
+      {/* <Dialog10x open={trackerModalOpen}>
         <DialogContent10x>
           <DialogTitle10x style={{ width: "35vw" }}>
             <span>Create Tracker</span>
@@ -422,7 +423,12 @@ const Search = () => {
             </Button10x>
           </div>
         </DialogContent10x>
-      </Dialog10x>
+      </Dialog10x> */}
+
+      <CreateTrackerDialog
+        open={trackerModalOpen}
+        onOpenChange={setTrackerModalOpen}
+      />
     </div>
   );
 };
