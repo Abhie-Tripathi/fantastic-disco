@@ -662,7 +662,7 @@ const AllEvents = ({
   const handleSelectOption = (option: string) => {
     setSelectedOption(option);
   };
-
+ 
   return (
     <div className={styles.body} ref={scrollableDivRef}>
       <div className={styles.headerContainer}>
@@ -703,7 +703,7 @@ const AllEvents = ({
                 }`}</div>
                 <div className={styles.eventLocationContainer}>
                   <LocationIcon />
-                  <div>{event.mainEvent.cityName}</div>
+                  <div>{event.mainEvent.format === "Virtual"?"Virtual":event.mainEvent.cityName}</div>
                 </div>
                 <div className={styles.eventDateContainer}>
                   <DateIcon />

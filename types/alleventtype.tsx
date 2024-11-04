@@ -1,10 +1,12 @@
 export interface AllEventsType {
+  eventFormat: string;
   mainEvent : EventsType;
   subEvents : EventsType[]
   promoted : string;
   selectedOption: string
 }
 export interface EventsType{
+  eventFormat: string;
   eventId: string;
   name: string;
   latitude: number;

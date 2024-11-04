@@ -549,7 +549,7 @@ const EventsAdded = ({
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
-console.log("fetchedAddedOtherData",fetchedAddedOtherData)
+  console.log("fetchedAddedOtherData____",fetchedAddedOtherData)
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
@@ -606,7 +606,10 @@ console.log("fetchedAddedOtherData",fetchedAddedOtherData)
                 )} ${event.name.length > 30 ? "..." : ""}`}</div>
                 <div className={styles.eventLocationContainer}>
                   <LocationIcon />
-                  <div>{event.cityName}</div>
+                  {/* {
+                    // event
+                  } */}
+                  <div>{event.eventFormat==="Virtual"?"Virtual" :event.cityName}</div>
                 </div>
                 <div className={styles.eventDateContainer}>
                   <DateIcon />
