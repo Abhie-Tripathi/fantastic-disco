@@ -1,7 +1,7 @@
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
 import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes } from '@/types/trackers';
-import { AllEventsType, EventTableType } from '@/types/ListViewTable';
+import { EventTableType } from '@/types/ListViewTable';
 export const useTrackerServices = () => {
     const api = useApi();
     const createTracker = (formData: Tracker) => {
