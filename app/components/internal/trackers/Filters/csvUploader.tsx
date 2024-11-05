@@ -109,10 +109,8 @@ const CsvUploader = ({
     console.log("onSubmit", data);
 
     if (templateData.name === "T_PRODUCT_KEYWORDS") {
-      console.log(data["Keywords"]);
       const includeKeywords:any=[]
       const excludeKeywords: any=[]
-      const finalData2: any = [];
       data.validData.map((data: any) => {
         if (data["Keywords"] && data["Keywords"] !== "")
           includeKeywords.push(data["Keywords"]);

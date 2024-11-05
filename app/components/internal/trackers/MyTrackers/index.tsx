@@ -208,9 +208,9 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
       </div>
       <div style={{ width: "100%" }}>
       
-      {!isData &&(
+      {/* {!isData &&(
             <div>Unlock your business potential—create your first tracker today to explore trends and receive real-time updates!</div>
-          )}
+          )} */}
         <div className="grid gap-[var(--spacing-md)] grid-cols-[repeat(auto-fill,minmax(470px,1fr))]">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">

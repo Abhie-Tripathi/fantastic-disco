@@ -156,7 +156,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             <Line data={lineData} options={lineOptions} />
           </div> */}
         </div> 
-            <div><Image  src={GoTo} alt="goTo" /></div>
+            {/* <div><Image  src={GoTo} alt="goTo" /></div> */}
           </div>
         </div>
         {/* <div className={styles.cardOne}>

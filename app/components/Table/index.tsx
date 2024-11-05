@@ -34,6 +34,7 @@ import { ArrowDown, ArrowUp } from "geist-icons";
 import { useTrackerServices } from "@/services/trackerServices";
 // import { AllEventsType } from '@/types/ListViewTable';
 import ZeroState from "../zerostate";
+import { useTrackerContext } from "@/context/tracker";
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -309,6 +310,7 @@ const Table = ({
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
   const {getTrackerEvents, getSavedEvents, saveNewEvent, deleteNewEvent, error}=useTrackerServices();
+  const {setData, data}=useTrackerContext();
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
   const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
@@ -543,6 +545,10 @@ const Table = ({
       // if (data?.events?.length > 0) {
       setEventPerPage(result.result);
       setTotalEvents(result.count);
+      if(result.count===0){
+        setZeroStateHeading(`No ${eventType} Found`)
+      setZeroStateText("Try using alternative or related industry/keywords to create a tracker.")
+      }
       if (currPage === 1) {
         setTotalPages(Math.ceil(result.count / itemsPerPage));
         setEventPerPage(result.result);
@@ -684,7 +690,10 @@ const Table = ({
     } else {
       setEventPerPage(result?.events);
     }
-  
+    if(result.totalEvents===0){
+      setZeroStateHeading(`No ${eventType} Found`)
+      setZeroStateText("Try using alternative or related industry/keywords to create a tracker.")
+    }
     if (result.events.length > 0) {
       setActiveValue(result.totalEvents);
       GAEvent("trackers", "Tracker", "View", `${eventType} | ${currPage}`);
@@ -712,6 +721,13 @@ const Table = ({
       if(result){
         showToast('success', "Event saved");
         setSavedEventCount((prev:number)=>prev+1)
+        setData({
+          ...data,
+          tracker: {
+            ...data.tracker,
+            savedEventTotalCount: data.tracker.savedEventTotalCount + 1
+          }
+        });
             let updatedData = eventPerPage?.find((event) => event.id === Id);
     
             if (updatedData) {
@@ -786,6 +802,13 @@ const Table = ({
           showToast("error", "Saved event deleted");
         }
         setSavedEventCount((prev:number)=>prev-1);
+        setData({
+          ...data,
+          tracker: {
+            ...data.tracker,
+            savedEventTotalCount: data.tracker.savedEventTotalCount - 1
+          }
+        });
       }
        else if(error){
         console.log(error);
