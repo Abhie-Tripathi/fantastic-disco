@@ -21,6 +21,7 @@ import { baseUrl, headers } from "@/constants";
 import Loading from '../UI/Loading'
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
 import SearchBar from './searchBar/SearchBar'
+import InterestSelector from '@/components/coordinate/interest'
 
 interface Props{
     handleModal : (id: string,enquiryId:string) => void,
@@ -291,6 +292,9 @@ useEffect(()=>{
           {
            <SearchBar searchInput={searchInput} setEventSearchLoader={setEventSearchLoader} handleSelect={handleSelect} endpoint={'userInterest/enquiry/suggestion'}/>
           }
+        </div>
+        <div style={{width:"19%"}} className={styles.outerDiv}>
+          <InterestSelector />
         </div>
           <div style={{width:"19%"}} className={styles.outerDiv}>
          <MenuTrigger onOpenChange={setMenuOpen}>
