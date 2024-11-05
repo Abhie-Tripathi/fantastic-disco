@@ -425,6 +425,7 @@ const Pages = () => {
   const [selectedEventFrequency, setSelectedEventFrequency] = useState<
     string[]
   >(searchParams.get("frequency")?.split(",") || []);
+  const [freqToggle,setFreqToggle]=useState<boolean>(false);
   const [selectedEntry, setSelectedEntry] = useState<string[]>(
     searchParams.get("entry")?.split(",") || []
   );
@@ -709,7 +710,7 @@ const Pages = () => {
       ...(analyticsToggles.globalToggle && {globalToggle: true}),
       ...(audienceZone && {audienceZone:true}),
       ...(audienceSpread && {audienceSpread:true}),
-
+      ...(freqToggle && {eventFrequency:true}),
     }
     const formData = {
       name: trackerName,
@@ -753,14 +754,14 @@ const Pages = () => {
         //     ? { orgWebsite: customData.map(item => item.companyUrl).join(', ') }
         //     : {}
         // )
-        ...(selectedEventKeywords.length > 0 && {
-          eventKeywords: selectedEventKeywords.join("+"),
-        }),
+        // ...(selectedEventKeywords.length > 0 && {
+        //   eventKeywords: selectedEventKeywords.join("+"),
+        // }),
         ...(includeKeywords && includeKeywords.length>0 &&{
-          includeKeywords: includeKeywords.join(' '),
+          includeKeywords: includeKeywords.join(','),
         }),
         ...(excludeKeywords && excludeKeywords.length>0 &&{
-          excludeKeywords: excludeKeywords.join(' '),
+          excludeKeywords: excludeKeywords.join(','),
         }),
         ...(selectedCategories?.length > 0 && {
           eventCategory: categoryIds.join(","),
@@ -912,7 +913,7 @@ const Pages = () => {
 
       const secondLast = pathName[pathName.length - 2];
      
-      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||selectedEventKeywords.length==0)){
+      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(includeKeywords?.length==0 && excludeKeywords?.length===0))){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1072,7 +1073,7 @@ const Pages = () => {
         isEventRank: toggleOpend?.eventRank ? true : false,
       })
       setForecastedStatus(toggleOpend?.forecastedStatus ? true : false);
-
+      setFreqToggle(toggleOpend?.eventFrequency ? true : false);
       setAnalyticsToggles({
         ...analyticsToggles,
         impactScore: (toggleOpend?.impactScore ? true : false),
@@ -1190,16 +1191,20 @@ const Pages = () => {
         ? extractLocations(editData.tracker.filterValue.locationIds.country)
         : [];
     
-    const selectedZone = 
-      typeof editData?.tracker?.filterValue?.locationIds === 'object'
-        ? extractLocations(editData.tracker.filterValue.locationIds.zone)
-        : [];
+    // const selectedZone = 
+    //   typeof editData?.tracker?.filterValue?.locationIds === 'object'
+    //     ? extractLocations(editData.tracker.filterValue.locationIds.zone)
+    //     : [];
     
     const selectedCity = 
       typeof editData?.tracker?.filterValue?.locationIds === 'object'
         ? extractLocations(editData.tracker.filterValue.locationIds.city)
         : [];
-setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedZone]);
+    const selectedState = 
+      typeof editData?.tracker?.filterValue?.locationIds === 'object'
+        ? extractLocations(editData.tracker.filterValue.locationIds.state)
+        : [];
+    setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedState]);
 
       console.log(selectedLocations);
       
@@ -1339,8 +1344,8 @@ setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedZone]);
         setSelectedTrustScore(updatedTrustScore)
       // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
       // setSelectedLocations(editData.tracker.filterValue?.location);
-      setIncludeKeywords(editData.tracker.filterValue?.includeKeywords && editData.tracker.filterValue?.includeKeywords?.split(" ").length>0?editData.tracker.filterValue?.includeKeywords?.split(" "):[]),
-      setExcludeKeywords(editData.tracker.filterValue?.excludeKeywords && editData.tracker.filterValue?.excludeKeywords?.split(" ").length>0?editData.tracker.filterValue?.excludeKeywords?.split(" "):[]),
+      setIncludeKeywords(editData.tracker.filterValue?.includeKeywords && editData.tracker.filterValue?.includeKeywords?.split(",").length>0?editData.tracker.filterValue?.includeKeywords?.split(","):[]),
+      setExcludeKeywords(editData.tracker.filterValue?.excludeKeywords && editData.tracker.filterValue?.excludeKeywords?.split(",").length>0?editData.tracker.filterValue?.excludeKeywords?.split(","):[]),
       setSelectedEventAttendanceRange((prevArray) => {
         const gte =
           editData.tracker.filterValue?.eventAttendanceRange?.split(",")[0];
@@ -1544,7 +1549,7 @@ console.log(includeKeywords, excludeKeywords);
 //   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
 //       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
 // },[includeKeywords, excludeKeywords])
-console.log(selectedEventType);
+console.log(includeKeywords, excludeKeywords);
 
 
 return (
@@ -1667,7 +1672,9 @@ return (
           customData={customData}
           handleCustomData={handleCustomData}
           setUploadEnabled={setUploadEnabled}
-          setSelectedEventKeywords={setSelectedEventKeywords}
+          setIncludeKeywords={setIncludeKeywords}
+          setExcludeKeywords={setExcludeKeywords}
+          // setSelectedEventKeywords={setSelectedEventKeywords}
         />
       }
     <div style={{width:"calc(50% - 5px)"}}>
@@ -1702,7 +1709,6 @@ return (
               customData={customData}
               handleCustomData={handleCustomData}
               setUploadEnabled={setUploadEnabled}
-              setSelectedEventKeywords={setSelectedEventKeywords}
             />) :
             <></>
         }
@@ -1885,7 +1891,7 @@ return (
     <Suspense fallback={<Loading />}>
     <div className={styles.container}>
       <div className={styles.sub_container}>
-        <div className="grid grid-cols-5 gap-[var(--spacing-lg)]">
+        <div className="grid grid-cols-5 gap-3">
           <EventTypeSelector source="tracker" setSelectedCategories={setSelectedEventType} selectedCategories={selectedEventType}/>
           <CategorySelector  source="tracker"  selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}/>
           <EventFormatSelector source="tracker" selectedStatuses={selectedEventFormat}
@@ -1951,7 +1957,7 @@ return (
               setIsEnabled={setIsBrand}
               />
               <ForecastedStatusSelector source="tracker" isEnabled={forecastedStatus} setIsEnabled={setForecastedStatus}/>
-              <FrequencySelector source="tracker" selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency}/>
+              <FrequencySelector source="tracker" selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency} isEnabled={freqToggle} setIsEnabled={setFreqToggle}/>
 
             {type!=="T_PRODUCT_KEYWORDS" &&
             <ProductSelector source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords}/>

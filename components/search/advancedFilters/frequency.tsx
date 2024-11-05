@@ -28,18 +28,23 @@ interface FrequencySelectorProps {
   source: string;
   selectedFrequencies?: string[];
   setSelectedFrequencies?: React.Dispatch<React.SetStateAction<string[]>>;
+  isEnabled?: boolean;
+  setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export default function FrequencySelector({
   source,
   selectedFrequencies: parentSelectedFrequencies = [],
   setSelectedFrequencies: parentSetSelectedFrequencies,
+  isEnabled: parentIsEnabled = false,
+  setIsEnabled: parentSetIsEnabled,
 }: FrequencySelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, searchParams } =
     useFilterContext();
-  const [showInFilter, setShowInFilter] = useState(false);
   const [selectedFrequenciesLocal, setSelectedFrequenciesLocal] = React.useState<string[]>([]);
-
+  const [localIsEnabled, setLocalIsEnabled] = useState(false);
+  const showInFilter = source === "tracker" ? parentIsEnabled : localIsEnabled;
+  const setShowInFilter = source === "tracker" ? parentSetIsEnabled : setLocalIsEnabled;
   const selectedFrequencies =
     source === "tracker" ? parentSelectedFrequencies : selectedFrequenciesLocal;
   const setSelectedFrequencies =
@@ -47,11 +52,12 @@ export default function FrequencySelector({
       ? parentSetSelectedFrequencies
       : setSelectedFrequenciesLocal;
   useEffect(() => {
-    if(source!=="tracker")
+    if(source!=="tracker"){
     setSelectedFrequencies?.(
       getLocalFilterValue("frequencies").split(",").filter(Boolean)
     );
-    setShowInFilter(getLocalFilterValue("show").includes("frequency"));
+    setShowInFilter?.(getLocalFilterValue("show").includes("frequency"));
+    }
   }, [searchParams]);
 
   const handleFrequencyToggle = (frequencyId: string) => {
@@ -68,7 +74,7 @@ export default function FrequencySelector({
   };
 
   const handleShowToggle = (checked: boolean) => {
-    setShowInFilter(checked);
+    setShowInFilter?.(checked);
     const currentShow = getLocalFilterValue("show").split(",").filter(Boolean);
     const newShow = checked
       ? Array.from(new Set([...currentShow, "frequency"]))
