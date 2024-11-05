@@ -77,9 +77,15 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handlePrefillEvent,h
             );
         }
     }
+    const handleDetailPage = () => {
+        window.open(`/detailpage/${subEvent?.eventId}`)
+    }
     const router = useRouter()
     const handleCardClick = () => {
-        if (width === "small" && handlePrefillEvent && normalEvent) {
+        if(width === "small" && !handlePrefillEvent && !handlePrefillSubEvent){
+            handleDetailPage()
+        }
+        else if (width === "small" && handlePrefillEvent && normalEvent) {
             // handlePrefillEvent(normalEvent)
             router.push(`/widget/events/manage/${normalEvent.mainEvent.eventId}/overview`)
         }else if(width === "small" && handlePrefillSubEvent && subEvent){
@@ -88,17 +94,6 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handlePrefillEvent,h
         }
     }
 
-    // const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    //     e.stopPropagation()
-    //     if (normalEvent)
-    //         handleDeleteModal(normalEvent.mainEvent.eventId, normalEvent.mainEvent.name, normalEvent.mainEvent.widgetTags.length > 0)
-    //     else if(subEvent){
-    //         handleDeleteModal(subEvent.eventId, subEvent.name, false)
-    //     }
-    //     if(setSelectedEventType){
-    //         setSelectedEventType("side")
-    //     } 
-    // }
     return (
         <div className={(width === "small" && normalEvent) ? styles.smallMainOuterDiv : (width === "small" && subEvent) ? styles.smallSubOuterDiv : styles.bigouterDiv}>
             <div className={width === "small"  ? styles.smallCard :  styles.bigCard} onClick={handleCardClick}>
@@ -131,16 +126,6 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handlePrefillEvent,h
                             </div>
                         </div>
                     </div>
-                    {/* <div className={styles.description} dangerouslySetInnerHTML={{
-                            __html:
-                                normalEvent
-                                    ? (normalEvent?.mainEvent.description?.substring(0, 100) +
-                                        (normalEvent?.mainEvent.description?.length > 100 ? "..." : "")):
-                                subEvent ? (subEvent?.description?.substring(0, 100) +
-                                        (subEvent?.description?.length > 100 ? "..." : "")) : ""
-                        }}
-                    >
-                    </div> */}
                     <div className={styles.tags_deleteContainer}>
                         <div className={styles.tags}>
                             <div className={styles.tag1}>{normalEvent?.mainEvent.participationType || subEvent?.participationType}</div>
