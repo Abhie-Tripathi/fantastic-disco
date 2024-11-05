@@ -1,0 +1,67 @@
+.primary {
+  color: var(--primary-text-color);
+}
+.secondary {
+  color: var(--secondary-text-color);
+}
+
+.tertiary {
+  color: var(--tertiary-text-color);
+}
+.xl {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-large);
+}
+.large {
+  font-size: var(--font-size-large);
+  line-height: var(--line-height-large);
+}
+.normal {
+  font-size: var(--font-size-default);
+  line-height: var(--line-height-default);
+}
+
+.small {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height-small);
+}
+
+.extraSmall {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+}
+
+.noMargin {
+  margin: 0;
+}
+
+.normalMargin {
+  margin-bottom: 4px;
+}
+
+.smallMargin {
+  margin-bottom: 8px;
+}
+
+.largeMargin {
+  margin-bottom: 12px;
+}
+
+.regular {
+  font-weight: 400;
+}
+.medium {
+  font-weight: 500;
+}
+.semibold {
+  font-weight: 600;
+}
+.bold {
+  font-weight: 700;
+}
+.justify {
+  text-align: justify;
+}
+.listItem {
+  margin-left: 1rem;
+}

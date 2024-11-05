@@ -1,34 +1,3 @@
-.allCompetitors {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
-  /* margin-top: 16px; */
-  position: relative;
-}
-
-.totalRecords {
-  font-size: var(--font-size-default);
-  color: var(--secondary-text-color);
-  font-weight: var(--font-weight-medium);
-}
-
-.remove_all_custom {
-  cursor: pointer;
-  font-size: var(--font-size-small);
-  color: var(--danger-text-color);
-  font-weight: var(--font-weight-medium);
-  /* width: fit-content;
-  
-    position: absolute;
-    right: 0;
-    top: -32px; */
-}
-
-.table_container {
-  max-height: 300px;
-  overflow-y: auto;
-}
-
 .allCustomData {
   /* width: calc(50% - 45px); */
   width: 100%;
@@ -59,11 +28,4 @@
 .allCustomData td {
   border: 1px solid var(--border-color);
   border-collapse: collapse;
-}
-
-.expandTableBtn {
-  font-size: var(--font-size-default);
-  color: var(--secondary-text-color);
-  font-weight: var(--font-weight-medium);
-  cursor: pointer;
 }

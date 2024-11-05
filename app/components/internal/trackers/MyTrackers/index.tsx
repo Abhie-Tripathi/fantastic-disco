@@ -4,7 +4,10 @@ import Trackers from ".././AllTrackers";
 import Image from "next/image";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
+import { useTrackerServices } from "@/services/trackerServices";
+import { Tracker } from "@/types/trackers";
 import Loading from "@/app/components/UI/Loading";
+import { AllTrackerTypes } from "@/types/trackers";
 function AllTrackers({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -55,76 +58,108 @@ function PremiumTracker({ fillColor }: { fillColor: string }) {
     </svg>
   );
 }
-
-const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPresent:any, isData:boolean}) => {
+interface MyTrackersProps {
+  dataPresent: boolean;
+  setDataPresent: React.Dispatch<React.SetStateAction<boolean>>;
+  singleTrackerData: Tracker | undefined;
+  setSingleTrackerData: React.Dispatch<React.SetStateAction<Tracker | undefined>>;
+  isData: boolean;
+}
+const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData}:MyTrackersProps) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
-  const [allTracker, setAllTracker] = useState<any[]>([]);
+  const [isInetialRender,setIsInetialRender]=useState(true);
+  const [allTracker, setAllTracker] = useState<AllTrackerTypes[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
   const [page, setPage] = useState(0);
   const [trackerPerPage, setTrackerPerPage] = useState(4);
   const [totalPage, setTotalPage] = useState<number>(0);
+  const [totalCount,setTotalCount]=useState(0);
   const [loadOne,setLoadOne]=useState(false);
   const [loadTwo,setLoadTwo]=useState(false);
+  const {getTrackers, isLoading}=useTrackerServices();
   const endOfListRef = useRef(null);
   useEffect(() => {
-    const fetchData = async () => {
-     if(isData){
-      setLoading(true);
-      setError(null);
-      setLoadOne(true);
+    // const fetchData = async () => {
+    //  if(isData){
+    //   setLoading(true);
+    //   setError(null);
+    //   setLoadOne(true);
       
-      try {
-        const firstFetchResult = await myFetch(
-          `${baseUrl}/tracker?offset=${page * trackerPerPage}&limit=${trackerPerPage}`
-        );
+    //   try {
+    //     const firstFetchResult = await myFetch(
+    //       `${baseUrl}/tracker?offset=${page * trackerPerPage}&limit=${trackerPerPage}`
+    //     );
 
-        if (firstFetchResult.error) {
-          setError('Create your first tracker!');
-          setLoading(false);
-          setLoading(false);
-          setLoadOne(false);
-          console.log(firstFetchResult.error);
-          return;
-        } else if (firstFetchResult.data) {
-          if (firstFetchResult.data.trackerData.length === 0) {
-            setLoading(false);
-            setLoadOne(false);
-            return;
-          } else {
-            setAllTracker((prevAllTracker:any[])=> [
-              ...prevAllTracker,...firstFetchResult.data.trackerData
+    //     if (firstFetchResult.error) {
+    //       setError('Create your first tracker!');
+    //       setLoading(false);
+    //       setLoadOne(false);
+    //       console.log(firstFetchResult.error);
+    //       return;
+    //     } else if (firstFetchResult.data) {
+    //       if (firstFetchResult.data.trackerData.length === 0) {
+    //         setLoading(false);
+    //         setLoadOne(false);
+    //         return;
+    //       } else {
+    //         setAllTracker((prevAllTracker:any[])=> [
+    //           ...prevAllTracker,...firstFetchResult.data.trackerData
               
-            ]);
-            setTotalPage(Math.ceil(firstFetchResult.data.totalCount / trackerPerPage));
-          setLoadOne(false);
-          setLoadTwo(true);
-            // const secondFetchResult = await myFetch(
-            //   `${baseUrl}/tracker?offset=${(page + 1) * trackerPerPage}&limit=${trackerPerPage}`
-            // );
+    //         ]);
+    //         if(allTracker.length===0)
+    //         setSingleTrackerData(firstFetchResult.data.trackerData[0]);
+    //         setTotalPage(Math.ceil(firstFetchResult.data.totalCount / trackerPerPage));
+    //         setTotalCount(firstFetchResult.data.totalCount)
+    //       setLoadOne(false);
+    //       setLoadTwo(true);
+    //         // const secondFetchResult = await myFetch(
+    //         //   `${baseUrl}/tracker?offset=${(page + 1) * trackerPerPage}&limit=${trackerPerPage}`
+    //         // );
 
-            // if (secondFetchResult.data) {
-            //   setAllTracker((prevAllTracker:any[]) => [
-            //     ...prevAllTracker, ...secondFetchResult.data.trackerData
+    //         // if (secondFetchResult.data) {
+    //         //   setAllTracker((prevAllTracker:any[]) => [
+    //         //     ...prevAllTracker, ...secondFetchResult.data.trackerData
                 
-            //   ]);
-            //   setLoadTwo(false);
-            // }
-          }
-        }
+    //         //   ]);
+    //         //   setLoadTwo(false);
+    //         // }
+    //       }
+    //     }
 
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError('Error fetching data.');
-      } finally {
-        setLoading(false);
-      }}
+    //   } catch (err) {
+    //     console.error('Error fetching data:', err);
+    //     setError('Error fetching data.');
+    //   } finally {
+    //     setLoading(false);
+    //   }}
      
-    };
-
+    // };
     fetchData();
   }, [page, trackerPerPage]);
-
+  const fetchData=async()=>{
+    setLoadOne(true);
+    const result= await getTrackers(`offset=${page * trackerPerPage}&limit=${trackerPerPage}`);
+    // setAllTracker(result.trackerData);
+    console.log(result);
+    
+    if(result){
+    setAllTracker((prevAllTracker:any[])=> [
+                ...prevAllTracker,...result?.trackerData
+                
+              ]);
+              if(allTracker.length===0)
+                console.log(Math.ceil(result.totalCount / trackerPerPage));
+       if(isInetialRender){         
+      setSingleTrackerData(result.trackerData[0]);
+      setIsInetialRender(false);
+       }
+    setTotalPage(Math.ceil(result.totalCount / trackerPerPage));
+    setTotalCount(result.totalCount)
+    setLoading(false);
+    setLoadOne(false);
+            }
+  }
   const handleNextPage = () => {
     if (page < totalPage - 1) {
       setPage(page + 1);
@@ -176,13 +211,26 @@ const Index = ({setDataPresent, dataPresent, isData}:{setDataPresent:any, dataPr
       {!isData &&(
             <div>Unlock your business potential—create your first tracker today to explore trends and receive real-time updates!</div>
           )}
-        <div className={styles.containerRight}>
-          
+        <div className="grid gap-[var(--spacing-md)] grid-cols-[repeat(auto-fill,minmax(470px,1fr))]">
+        <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="text-sm font-medium">Your Trackers</div>
+              <span className="bg-[#E6E6F9] rounded-full font-medium w-7 h-7 flex items-center justify-center text-sm" style={{ color: "var(--primary-color)" }}>
+               {totalCount}
+              </span>
+            </div>
+            {/* <FilterDropdown
+              filterName="Sort by"
+              selectItems={["Name", "Last Modified"]}
+              setState={setSort}
+              state={sort}
+            /> */}
+          </div>
           {/* {error && <div>{error}</div>} */}
           {allTracker.length > 0 &&
             (trackerType === "All Trackers" ||
               trackerType === "Custom Trackers") &&
-            allTracker.map((item, id) => <Trackers key={id} item={item} />)}
+            allTracker.map((item, id) => <Trackers key={id} item={item} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>)}
           {loadOne &&  <div className={`${styles.loadingContainer} loadingIndicator`}>
           <div className={styles.loadingBar}></div>
         </div>}

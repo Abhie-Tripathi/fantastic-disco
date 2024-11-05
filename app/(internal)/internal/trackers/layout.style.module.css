@@ -1,13 +1,12 @@
 .container {
-  padding: var(--spacing-lg);
-  min-height: calc(100vh - 80px);
+  /* padding: var(--spacing-lg); */
   /* background-color: #131313;
   color: #ffffff; */
   min-width: 810px;
   display: flex;
   flex-direction: column;
   gap: 35px;
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 70px);
   /* background-color: red; */
 }
 

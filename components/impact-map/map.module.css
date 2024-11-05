@@ -1,0 +1,217 @@
+.map_event_button {
+    background-color: transparent;
+    border: none;
+  }
+  
+  .popup {
+    left: 11px !important;
+    top: 12px !important;
+    width: 380px !important;
+    z-index: 1;
+    pointer-events: auto;
+  }
+  
+  .popup > div {
+    padding: 5px;
+  }
+  
+  .popup > div > div {
+    padding: 10px;
+  }
+  
+  .popup button {
+    right: 10px;
+    top: 5px;
+    font-size: 20px;
+    opacity: 0.66;
+    color: gray;
+  }
+  
+  .mapboxgl-popup-content {
+    padding: 10px;
+  }
+  
+  .event_details_popup_link {
+    text-decoration: none;
+    font-family: IBM Plex Sans, Arial, Helvetica, sans-serif;
+    font-weight: 600;
+    color: #292929;
+  }
+  
+  .event_country {
+    font-size: 12px;
+    line-height: 18px;
+  }
+  
+  .event_datetime {
+    color: #9ba5af;
+    font-style: italic;
+    font-size: 12px;
+    line-height: 18px;
+  }
+  
+  .event_details_action {
+    margin-top: 10px;
+    padding: 10px 0px;
+    border-top: 1px solid #f0f1f2;
+    border-bottom: 1px solid #f0f1f2;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .event_view_details {
+    font-weight: 600;
+    padding: 7px 15px;
+    border: 2px solid #6750a4;
+    color: #6750a4;
+    font-family: IBM Plex Mono, Arial, Helvetica, sans-serif;
+    white-space: nowrap;
+    text-transform: uppercase;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  
+  .event_details_category {
+    text-transform: uppercase;
+    font-weight: 400;
+    color: #222;
+    font-size: 14px;
+    padding: 9px 18px;
+  }
+  
+  .container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .eventList_container {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    z-index: 10;
+  }
+  
+  .event_list_button {
+    cursor: pointer;
+    position: absolute;
+    border: none;
+    left: -124px;
+    top: 25px;
+    background-color: #6750a4;
+    border-radius: 12px 0px 0px 12px;
+    color: white;
+    white-space: nowrap;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 12px 24px;
+  }
+  
+  .eventList {
+    display: none;
+    max-width: 375px;
+    height: 90vh;
+    background-color: white;
+    padding: 0px 20px;
+    overflow: hidden;
+  }
+  
+  .eventList.active {
+    display: block;
+  }
+  
+  .eventList_header {
+    padding: 15px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .eventList_header span {
+    color: #604a98;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .eventList_header button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  .eventList_list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    padding-bottom: 80px;
+    overflow-y: scroll;
+  }
+  
+  .eventListCard {
+    border: 1px solid #f6edff;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .eventListCard_title {
+    font-weight: 500;
+  }
+  
+  .eventListCard_location {
+    padding-top: 8px;
+    color: #696b83;
+    font-size: 14px;
+  }
+  
+  .eventListCard_date {
+    padding-top: 6px;
+    font-size: 14px;
+    color: #696b83;
+  }
+  
+  .eventListCard_footer {
+    padding-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .eventListCard_footer_info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .eventListCard_category {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  .eventListCard_category span {
+    text-transform: uppercase;
+    font-size: 12px;
+  }
+  
+  .eventListCard_label {
+    background-color: #f6edff;
+    border-radius: 8px;
+    padding: 5px 10px;
+    color: #604a98;
+    font-size: 12px;
+  }
+  
+  .eventListCard_footer a {
+    cursor: pointer;
+    color: white;
+    font-size: 12px;
+    font-family: inherit;
+    background-color: #6750a4;
+    padding: 8px 15px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+  }
+  

@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 export function convertToYYYYMMDD(dateStr: string) {
   // Split the date string into day and month parts
   var parts = dateStr.split(" ");
@@ -149,64 +150,98 @@ export const formatEventDates = (startDate: string, endDate: string) => {
   const end = new Date(endDate);
 
   if (start.getFullYear() === end.getFullYear()) {
-      if (start.getMonth() === end.getMonth()) {
-          if (start.getDate() === end.getDate()) {
-              return new Date(startDate).toLocaleDateString("en-GB", {
-                weekday: 'long',
-              }) + ', ' +
-              new Date(endDate).toLocaleDateString("en-GB", {
-                month: "short",
-                day: "2-digit",
-                year: "numeric",
-              });
-          } else {
-              return (
-                new Date(startDate).toLocaleDateString("en-GB", {
-                  weekday: 'long',
-                }) + ', ' +
-                new Date(startDate).toLocaleDateString("en-GB", {
-                  day: "2-digit",
-                }) + ' - ' +
-                new Date(endDate).toLocaleDateString("en-GB", {
-                  month: "short",
-                  day: "2-digit",
-                  year: "numeric",
-                })
-              );
-          }
+    if (start.getMonth() === end.getMonth()) {
+      if (start.getDate() === end.getDate()) {
+        return (
+          new Date(startDate).toLocaleDateString("en-GB", {
+            weekday: "long",
+          }) +
+          ", " +
+          new Date(endDate).toLocaleDateString("en-GB", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          })
+        );
       } else {
-          return (
-            new Date(startDate).toLocaleDateString("en-GB", {
-              weekday: 'long',
-            })+', '+
-            new Date(startDate).toLocaleDateString("en-GB", {
-              month: "short",
-              day: "2-digit",
-            })
-             + ' - ' +
-            new Date(endDate).toLocaleDateString("en-GB", {
-              month: "short",
-              day: "2-digit",
-              year: "numeric",
-            })
-          );
+        return (
+          new Date(startDate).toLocaleDateString("en-GB", {
+            weekday: "long",
+          }) +
+          ", " +
+          new Date(startDate).toLocaleDateString("en-GB", {
+            day: "2-digit",
+          }) +
+          " - " +
+          new Date(endDate).toLocaleDateString("en-GB", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          })
+        );
       }
-  } else {
+    } else {
       return (
         new Date(startDate).toLocaleDateString("en-GB", {
-          weekday: 'long',
-        })+', '+
+          weekday: "long",
+        }) +
+        ", " +
         new Date(startDate).toLocaleDateString("en-GB", {
           month: "short",
           day: "2-digit",
-          year: "numeric",
-        })
-         + ' - ' +
+        }) +
+        " - " +
         new Date(endDate).toLocaleDateString("en-GB", {
           month: "short",
           day: "2-digit",
           year: "numeric",
         })
       );
+    }
+  } else {
+    return (
+      new Date(startDate).toLocaleDateString("en-GB", {
+        weekday: "long",
+      }) +
+      ", " +
+      new Date(startDate).toLocaleDateString("en-GB", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      }) +
+      " - " +
+      new Date(endDate).toLocaleDateString("en-GB", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      })
+    );
   }
-}
+};
+
+export const renderFormattedDates = (startDate: string, endDate: string) => {
+  if (startDate && !endDate) {
+    return format(new Date(startDate), "dd MMM yyyy");
+  }
+  if (!startDate && endDate) {
+    return format(new Date(endDate), "dd MMM yyyy");
+  }
+  if (!startDate && !endDate) {
+    return "";
+  }
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  if (start.getTime() === end.getTime()) {
+    return format(start, "dd MMM yyyy");
+  }
+  const isSameMonth = start.getMonth() === end.getMonth();
+  const isSameYear = start.getFullYear() === end.getFullYear();
+
+  if (isSameMonth && isSameYear) {
+    return `${format(start, "dd")} - ${format(end, "dd MMM yyyy")}`;
+  } else if (!isSameMonth && isSameYear) {
+    return `${format(start, "dd MMM")} - ${format(end, "dd MMM yyyy")}`;
+  } else {
+    return `${format(start, "dd MMM yyyy")} - ${format(end, "dd MMM yyyy")}`;
+  }
+};

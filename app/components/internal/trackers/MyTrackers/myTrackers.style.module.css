@@ -8,7 +8,7 @@
 .containerRight{
     /* width: 80%; */
     display: grid;
-    gap:var(--spacing-lg);
+    gap:var(--spacing-md);
     grid-template-columns: repeat(auto-fill, minmax(470px, 1fr));
 }
 .leftContainer{

@@ -1,7 +1,7 @@
 // "use client";
 import { Inter } from "next/font/google";
 import { useState } from "react";
-import { GeistSans } from "geist/font/sans"
+import { GeistSans } from "geist/font/sans";
 import "./../globals.css";
 import styles from "./layout.module.css";
 import { AuthContextProvider, ThemeProvider, useTheme } from "@/context";
@@ -13,6 +13,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import Joyride from "react-joyride";
 import { Metadata } from "next";
+import { FilterProvider } from "@/context/filterContext";
+import ReactQueryProvider from "@/components/provider/reactQueryProvider";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -24,7 +26,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Eventgeni",
-  description: "All-in-one solution to maximize ROI from your event GTM strategy.",
+  description:
+    "All-in-one solution to maximize ROI from your event GTM strategy.",
 };
 
 export default function RootLayout({
@@ -37,16 +40,20 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.className}`}>
       <body>
         <ToastContainer />
+        <ReactQueryProvider>
         <AuthContextProvider>
-          <ThemeProvider>
-            <div className="desktop_view tablet_view">
-              <Sidebar />
-            </div>
-            <Navbar />
-            <div className="body_layout">{children}</div>
-            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />
-          </ThemeProvider>
+          <FilterProvider>
+            <ThemeProvider>
+              <div className="desktop_view tablet_view">
+                <Sidebar />
+              </div>
+              <Navbar />
+              <div className="body_layout">{children}</div>
+              <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />
+            </ThemeProvider>
+          </FilterProvider>
         </AuthContextProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

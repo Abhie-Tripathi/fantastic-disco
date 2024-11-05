@@ -10,52 +10,80 @@ import Manage from '/public/manageTracker.svg';
 import Image from "next/image";
 import styles from './sideNav.style.module.css';
 import Link from 'next/link';
-import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
 import { GAEvent } from '@/utils/GAEvent';
+import { SettingsGear, User } from 'geist-icons';
+import { useTrackerServices } from '@/services/trackerServices';
+import { useTrackerContext } from '@/context/tracker';
 const Index = () => {
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
   const type  = searchParams.get('type');
+  const [view,setView]=useState("list");
   const secondLast = pathName[pathName.length - 2];
   console.log(secondLast);
   const router = useRouter()
+  const {data}= useTrackerContext();
+  const {getTrackerDetail, error}=useTrackerServices();
   const [trackerSection, setTrackerSection] = useState("Tracked Events");
   useEffect(() => {
     if (last === "trackedEvents") setTrackerSection("Tracked Events")
-    if (last === "trackedConfiguration" || last === "editTracker") setTrackerSection("Tracker Configurations")
-    if (last === "notesDiscussion") setTrackerSection("Notes & Discussions")
+    if (last === "trackedConfiguration" || last === "editTracker") {
+      setTrackerSection("Tracker Configurations")
+      setView('');
+    }
+    if (last === "notesDiscussion") {
+      setTrackerSection("Notes & Discussions")
+      setView("");
+    }
     if (last === "savedEvents") setTrackerSection("Saved Events")
-    if (last === "manageAccess") setTrackerSection("Manage Access")
+    if (last === "manageAccess") {
+      setTrackerSection("Manage Access")
+      setView("");
+    }
   }, [last])
   console.log(trackerSection);
-  const [data, setData] = useState<any>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      const url = `${baseUrl}/tracker/${secondLast}`;
-      try {
-        const { data, error } = await myFetch(url, {
-          method: 'GET'
-        });
-        if (error) {
-          console.error('Error fetching data:', error);
-        } else {
-          console.log('Data fetched:', data);
-          setData(data);
-        }
-      } catch (err) {
-        console.error('Fetch failed:', err);
-      }
-    };
+  // const [data, setData] = useState<any>([]);
+  // useEffect(() => {
+    // const fetchData = async () => {
+    //   const url = `${baseUrl}/tracker/${secondLast}`;
+    //   try {
+    //     const { data, error } = await myFetch(url, {
+    //       method: 'GET'
+    //     });
+    //     if (error) {
+    //       console.error('Error fetching data:', error);
+    //     } else {
+    //       console.log('Data fetched:', data);
+    //       setData(data);
+    //     }
+    //   } catch (err) {
+    //     console.error('Fetch failed:', err);
+    //   }
+    // };
 
-    fetchData();
-  }, [secondLast]);
+  //   fetchData();
+  // }, [secondLast]);
+  const handleClick = (view:string) => {
+    setView(view);
+    router.push(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`);
+  };
+  // const fetchData=async()=>{
+  //     const result = await getTrackerDetail(secondLast)
+  //     if(result){
+  //       setData(result);
+  //     }
+  //     if(error){
+  //       console.error('Error fetching data:', error);
+  //     }
+  // }
+  
   return (
     <>
-      <div className={styles.bar}>
-        <div className={styles.leftNav}>
+      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[70px] w-[calc(100vw-70px)] bg-[var(--primary-foreground)] z-20 text-h6 left-[70px]">
+        <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link className={styles.bottom} href={
-            last === "trackedConfiguration" || last === "editTracker" || last === "manageAccess"
+             last === "editTracker"
               ? (last === "editTracker"
                 ? `/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`
                 : `/internal/trackers/${secondLast}/trackedEvents?type=${type}`)
@@ -71,8 +99,26 @@ const Index = () => {
         </div>
 
         <>
-          <div className={styles.leftContainer}>
-            <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}
+          <div className="flex justify-center items-center" >
+          <div className='flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md'>
+            {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`}> */}
+            <div onClick={()=>handleClick("list")}>
+              <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("list")}>List</div></div>
+              {/* </Link> */}
+              <div className="cursor-not-allowed opacity-50 disabled">
+              {/* <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>setView("map")}>Map</div> */}
+              <div className={styles.viewsTab}>
+              Map
+              </div>
+              </div>
+              <div className="cursor-not-allowed opacity-50 disabled">
+              {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>setView("calendar")}>Calendar</div> */}
+              <div className={styles.viewsTab}>
+              Calendar
+              </div>
+              </div>
+            </div>
+            {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",
@@ -114,7 +160,7 @@ const Index = () => {
               <div className={`${styles.heading} ${trackerSection === "Saved Events" ? styles.active : ""}`} onClick={() => setTrackerSection("Saved Events")}>
                 Saved Events
               </div>
-            </Link>
+            </Link> */}
 
           </div>
           <div className={styles.configAccess}>
@@ -128,8 +174,8 @@ const Index = () => {
                 )
               }}>
               <div style={{ padding: "10px 5px", display: "flex" }} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Tracker Configurations" ? styles.active : ""}`} onClick={() => setTrackerSection("Tracker Configurations")}>
-                <Image src={Settings} alt="setting" />
-                <span className={styles.tooltipText}>Configurations</span>
+                <SettingsGear width='12px' height='12px' style={{color: trackerSection === "Tracker Configurations" ? "var(--primary-color)" :"var(--tertiary-text-color)"}}/>
+                <span>Configurations</span>
               </div>
             </Link>
             <Link href={`/internal/trackers/${secondLast}/manageAccess?type=${type}`}
@@ -143,8 +189,8 @@ const Index = () => {
               }}
             >
               <div style={{ padding: "10px 5px", display: "flex" }} className={`${styles.heading} ${styles.tooltipContainer} ${trackerSection === "Manage Access" ? styles.active : ""}`} onClick={() => setTrackerSection("Manage Access")}>
-                <Image src={Manage} alt="setting" />
-                <span className={styles.tooltipText}>Manage Access</span>
+                <User width='12px' height='12px' style={{color: trackerSection === "Manage Access" ? "var(--primary-color)" :"var(--tertiary-text-color)"}}/>
+                <span>Manage Access</span>
               </div>
             </Link>
           </div>

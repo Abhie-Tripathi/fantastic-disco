@@ -50,7 +50,7 @@ export interface EventTableType {
     eventSize: number;
     isSaved?:boolean;
     "internationalAudience%": string;
-    price: any;
+    price: any;   
     matchedKeywords: any;
     keywordsMatchedScore: number;
     stats: {
@@ -68,6 +68,7 @@ export interface EventTableType {
     isEventBrand?: boolean;
     eventBrand?: string;
     isEventSeries?: boolean;
+    frequency?: string;
     maturity?: string;
     eventImpactScore?: number | null;
     eventInboundScore?: number | null;

@@ -6,6 +6,8 @@ import { myFetch } from '@/utils/myFetch';
 import { usePathname } from 'next/navigation';
 import Router from "next/router";
 import { showToast } from '@/utils/showToast';
+import UserProfile from '../../userProfile/UserProfile';
+import { useTrackerServices } from '@/services/trackerServices';
 
 type User = {
   id: string;
@@ -13,16 +15,20 @@ type User = {
   email: string;
   accessLevel: string;
   accessId: string;
+  profilePicture?:string
 };
 
 type TrackerUserProps = {
-  setSendInvite: (value: boolean) => void;
-  fetchAccess: ()=>void;
+  setSendInvite?: (value: boolean) => void;
+  fetchAccess?: ()=>void;
   userData: User[];
+  type:string;
+  heading:string;
 };
 
-const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetchAccess }) => {
+const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetchAccess, type, heading }) => {
   const path = usePathname().split('/');
+  const {removeAccess,editAccess, error} = useTrackerServices();
   const [accessId, setAccessId] = useState<string | null>(null);
   const [drop, setDrop] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -62,27 +68,19 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
     };
 
     try {
-      const { data, error } = await myFetch(url, {
-        method: 'PATCH',
-        body: JSON.stringify(formData),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      if (error) {
-        console.error('Error fetching data:', error);
-      } else {
-        console.log('Data fetched:', data);
-        showToast("success","Access updated successfully")
-        fetchAccess();
-        // setTimeout(()=>{
-        //   window.location.reload();
-        // },2000)
-        
+        const data= await editAccess(accessEntry, formData)
+        if(data){
+          console.log('Data fetched:', data);
+          showToast("success","Access updated successfully")
+          if(fetchAccess)
+          fetchAccess();
+        }
+        else if (error) {
+          console.error('Error fetching data:', error);
+        }
+      } catch (err) {
+        console.error('Fetch failed:', err);
       }
-    } catch (err) {
-      console.error('Fetch failed:', err);
-    }
   }
   };
 
@@ -97,25 +95,19 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
   };
 
   const deleteEntry = async (id: string, accessEntry: string) => {
-    const url = `${baseUrl}/access/${accessEntry}`;
     const formData = {
       entityId: id,
       published: false,
     };
 
     try {
-      const { data, error } = await myFetch(url, {
-        method: 'PATCH',
-        body: JSON.stringify(formData),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const data = await removeAccess(accessEntry, formData);
       if (error) {
         console.error('Error fetching data:', error);
       } else {
         console.log('Data fetched:', data);
         showToast("success", "Access removed successfully")
+        if(fetchAccess)
         fetchAccess();
       }
     } catch (err) {
@@ -124,33 +116,38 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.containerFirst}>
-        <div className={styles.owner}>Tracker Users</div>
+    <div className="flex w-[100%] p-5 flex-col gap-3 border border-[var(--border-color)] rounded-[12px]">
+      <div className="flex w-[100%] justify-between items-center">
+        <div className="text-[var(--secondary-text-color)] font-medium">{heading}</div>
         {/* <div className={styles.add} onClick={() => setSendInvite(true)}>Add Users</div> */}
       </div>
-      <div className={styles.bar}></div>
-      <div className={styles.profiles}>
+      <div style={{border:"1px solid var(--border-color)"}}></div>
+      <div className="flex flex-col gap-6">
         {userData && userData.map((item, index) => (
-          <div key={index} className={styles.profile}>
-            <div className={styles.profileInner}>
-              <div className={styles.square} onClick={() => deleteEntry(item.id, item.accessId)}>-</div>
-              <div className={styles.profileCircle}>{abbreviation(item.name)}</div>
+          <div key={index} className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              {type==="others" &&
+              <div className="w-[15px] flex items-center justify-center h-[15px] text-[var(--primary-color)] border border-[var(--primary-color)] cursor-pointer" onClick={() => deleteEntry(item.id, item.accessId)}>-</div>
+              }       
+              {item.profilePicture?<Image src={item.profilePicture} alt="profilePhoto" height={40} width={40} style={{borderRadius:"50%", height:"40px", width:"40px"}} />:
+              <UserProfile name={item.name}/>
+              }
               <div>
-                <div className={styles.name}>{item.name}{" "}</div>
-                <span className={styles.tag}>{userHandle(item.name)}</span>
+                <div className="text-[var(--primary-text-color)]">{item.name}{" "}</div>
+                <span className="text-[var(--primary-color)] text-sm">{userHandle(item.name)}</span>
                 {/* <div className={styles.email}>{item?.email}</div> */}
               </div>
             </div>
+            {type==="others"?
             <div
-              className={styles.add}
+              className="text-[var(--primary-color)] text-sm font-medium"
               // ref={dropdownRef}
               style={{ textDecoration: "none", position: "relative", cursor: "pointer" }}
               onClick={() => toggleDropdown(item.id)}
             >
               {item.accessLevel.charAt(0).toUpperCase()}{item.accessLevel.substring(1).toLowerCase()}
               {drop && item.id === accessId && (
-                <div className={styles.dropdownContainer}>
+                <div className="absolute top-full left-0" style={{boxShadow:"0 2px 10px rgba(0, 0, 0, 0.1"}}>
                   <div className={styles.dropdown}>
                     <div className={styles.edit} onClick={() => changeAccess(item.accessId, "EDIT", item.accessLevel )}>Edit</div>
                     <div className={styles.read} onClick={() => changeAccess(item.accessId, "READ", item.accessLevel)}>Read</div>
@@ -158,7 +155,11 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
                   {/* <div onClick={() => changeAccess(item.accessId, "ADMIN")}>Admin</div> */}
                 </div>
               )}
-            </div>
+            </div>:
+            <div className="text-sm text-[var(--primary-color)] font-medium" style={{ textDecoration: "none" }}>
+            Super Admin
+          </div>
+            }
           </div>
         ))}
       </div>
