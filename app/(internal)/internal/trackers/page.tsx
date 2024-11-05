@@ -586,7 +586,7 @@ const Trackers = ({ searchParams }: Search) => {
 {(!hideTemplate || !isData)&& (
           <div className="absolute left-[70px] top-[70px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-70px)]">
             <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
-          {!isData && <div className="flex items-center pb-6 justify-center">Track key events in real-time to make informed decisions and seize opportunities as they arise.</div>}
+          {!isData && <div className="flex items-center pb-6 !pl-14 text-lg">Track key events in real-time to make informed decisions and seize opportunities as they arise.</div>}
         {isData && 
             <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center"
         style={{ color: "var(--primary-color)" }} onClick={()=>setHideTemplate(true)}>
