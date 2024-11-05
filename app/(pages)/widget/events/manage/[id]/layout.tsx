@@ -15,6 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     const eventId = trackerParams[4]
 
     const [fetchedEvent, setFetchedEvent] = useState<EventsType>()
+    const [fetchedSubEvents, setFetchedSubEvents] = useState<EventsType[]>()
     const [addEventModal, setAddEventModal] = useState<boolean>(false)
     const [deleteModal, setDeleteModal] = useState<boolean>(false)
     const [deleteModalTwo, setDeleteModalTwo] = useState<boolean>(false)
@@ -117,6 +118,54 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 exhibitor: eventData.customizationData?.exhibitor || [],
             }
         };
+        // const subEvents : EventsType[] = data?.children.map((subevent : any)=>({
+        //     eventId: subevent.id, // Use eventId from the URL param
+        //     name: subevent.name || "",
+        //     latitude: subevent.data.latitude || 0,
+        //     longitude: subevent.data.longitude || 0,
+        //     cityName: subevent.data.location_city || "",
+        //     virtualLink : subevent.data.virtualLink || "",
+        //     countryName: subevent.data.location_country || "",
+        //     startDate: subevent.data.start_date || "",
+        //     endDate: subevent.data.end_date || "",
+        //     startTime: subevent.data.start_time || "",
+        //     endTime: subevent.data.end_time || "",
+        //     participationType: subevent.data.participationType || "",
+        //     description: subevent.data.description || "",
+        //     format: subevent.data.format || "",
+        //     isLinkedToWidget: false, // Assuming this is not available in API, set a default value
+        //     gmtZone: subevent.data.gmt_time || "", // Assuming this is `gmt_time` from the API
+        //     interest: "", // Assuming this is missing from API, set default or handle later
+        //     logoUrl: subevent.data.logoUrl || "",
+        //     widgetTags: subevent?.widgetData,
+        //     eventType: subevent?.type,
+        //     event_type: subevent.data?.event_type,
+        //     parentData: "",
+        //     capacity: subevent.data.maxCapacity || 0,
+        //     registration: subevent?.registration === true ? true : false,
+        //     approval: subevent?.approval === true ? true : false,
+        //     waitlisting: subevent?.waitlisting === true ? true : false,
+        //     eventFormat:subevent.data.format || "",
+        //     customizationData: {
+        //         pageBgColor: subevent.data.customizationData?.pageBgColor || "",
+        //         pageGradient: subevent.data.customizationData?.pageGradient || "",
+        //         confettiType: subevent.data.customizationData?.confettiType || "",
+        //         leavesTheme: subevent.data.customizationData?.leavesTheme || false,
+        //         snowTheme: subevent.data.customizationData?.snowTheme || false,
+        //         eventFont: subevent.data.customizationData?.eventFont || "",
+        //         registerBtnColor: subevent.data.customizationData?.registerBtnColor || "",
+        //         registerBtnText: subevent.data.customizationData?.registerBtnText || "",
+        //         registerMessage: subevent.data.customizationData?.registerMessage || "",
+        //         speaker: subevent.data.customizationData?.speaker || [],
+        //         participationMessage: subevent.data.customizationData?.participationMessage || "",
+        //         venue: subevent.data.customizationData?.venue || "",
+        //         hashtags: subevent.data.customizationData?.hashtags || "",
+        //         boothNumber: subevent.data.customizationData?.boothNumber || "",
+        //         eventFormat: subevent.data.customizationData?.eventFormat || "",
+        //         exhibitor: subevent.data.customizationData?.exhibitor || [],
+        //     }
+        // }))
+        // setFetchedSubEvents(subEvents)
         setFetchedEvent(eventObject)
     }
     const router = useRouter()
@@ -144,6 +193,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         fetchEventData()
     }, [])
 
+    useEffect(() => {
+        console.log("sub events :", fetchedSubEvents)
+    }, [fetchedSubEvents])
     const handleDetailPage = () => {
         window.open(`/detailpage/${eventId}`)
     }

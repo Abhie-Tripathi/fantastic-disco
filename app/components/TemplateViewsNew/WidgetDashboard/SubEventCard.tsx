@@ -113,7 +113,8 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
                     <div className={width === "small" ? styles.bigName : styles.smallName}>{normalEvent?.mainEvent.name || subEvent?.name}</div>
                     <div className={styles.eventDataField} style={{ marginTop: 10 }}>
                         <Image src={PlaceIcon} alt="locationIcon" width={14} height={14} className="icons" />
-                        <div>{normalEvent ? `${normalEvent?.mainEvent.cityName, normalEvent?.mainEvent.countryName}` : `${subEvent?.cityName, subEvent?.countryName}`}</div>
+                        {(normalEvent?.mainEvent.format === "Virtual" || subEvent?.format === "Virtual") ? <>Virtual</>:
+                        <div>{normalEvent ? `${normalEvent?.mainEvent.cityName, normalEvent?.mainEvent.countryName}` : `${subEvent?.cityName, subEvent?.countryName}`}</div>}
                     </div>
                     <div className={styles.eventDateTimeContainer}>
                         <div className={styles.eventDataField}>
