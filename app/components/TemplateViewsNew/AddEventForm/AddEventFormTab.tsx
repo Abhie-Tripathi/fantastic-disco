@@ -651,7 +651,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
 
     const handleCollapseForm = (type: string) => {
         if (type === "side") { // This is when we click on sideevent button or Yes button
-            if (mainEventState.eventName && mainEventState.description && mainEventState.participationType && mainEventState.participationMessage && mainEventState.cityName && (mainEventState.banner.placeHolder !== Placeholder || mainEventState.banner.file)) {
+            if (mainEventState.eventName && mainEventState.description && mainEventState.participationType && mainEventState.participationMessage && (mainEventState.cityName || mainEventState.virtualLink) && (mainEventState.banner.placeHolder !== Placeholder || mainEventState.banner.file)) {
                 setCollapseMainEventForm(true)
                 setActiveBtn("side")
             }
