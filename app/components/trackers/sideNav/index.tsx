@@ -105,16 +105,20 @@ const Index = () => {
             <div onClick={()=>handleClick("list")}>
               <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("list")}>List</div></div>
               {/* </Link> */}
-              <div className="cursor-not-allowed opacity-50 disabled">
+              <div className="cursor-not-allowed disabled">
               {/* <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>setView("map")}>Map</div> */}
+              <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
               <div className={styles.viewsTab}>
-              Map
+                Map
+              <span className={`${styles.tooltipText}`} style={{marginLeft:"-30%"}}>Coming Soon</span>
               </div>
               </div>
-              <div className="cursor-not-allowed opacity-50 disabled">
+              </div>
+              <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
               {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>setView("calendar")}>Calendar</div> */}
               <div className={styles.viewsTab}>
               Calendar
+              <span className={`${styles.tooltipText}`} style={{marginLeft:"-30%"}}>Coming Soon</span>
               </div>
               </div>
             </div>
