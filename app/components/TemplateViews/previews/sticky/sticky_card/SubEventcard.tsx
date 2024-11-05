@@ -8,6 +8,12 @@ import ClockIcon from "/public/clock.svg";
 import PopperImage from "/public/widgetimages/Popper.png";
 import { useRouter } from "next/navigation";
 
+import DefaultIcon from "/public/stickyWidgetDefaultIcon.svg";
+import POP from "/public/stickyCardPartyPopIcon.svg";
+import TradeshowIcon from "/public/stickyCardTradeShow.svg";
+import WorkShopIcon from "/public/stickyCardWorkshop.svg";
+import ConferenceIcon from "/public/stickyCardConference.svg";
+
 interface Props {
   normalEvent?: AllEventsType;
   subEvent?: EventsType;
@@ -104,7 +110,7 @@ const SubEventCard = ({
     }
   }
   const router = useRouter();
- 
+  console.log("dasdasdasd",buttonSettings,buttonSettings?.primary.fontColor)
   const width = "small";
 
   return (
@@ -150,11 +156,10 @@ const SubEventCard = ({
               className="icons"
             />
             <div>
-              {
-                fetchedAddedOtherData[0]?.eventFormat ==="Virtual"?"Virtual":
-                (fetchedAddedOtherData[0]?.cityName,
-                fetchedAddedOtherData[0]?.countryName)
-              }
+              {fetchedAddedOtherData[0]?.eventFormat === "Virtual"
+                ? "Virtual"
+                : (fetchedAddedOtherData[0]?.cityName,
+                  fetchedAddedOtherData[0]?.countryName)}
             </div>
           </div>
           <div className={styles.eventDateTimeContainer}>
@@ -188,29 +193,116 @@ const SubEventCard = ({
               </div>
             </div>
           </div>
-          <div className={styles.detail_button}
-          style={{
-            fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
-            color:
-              selectedBtn === "primary"
-                ? buttonSettings?.primary.fontColor
-                : buttonSettings?.secondary.fontColor,
-            backgroundColor:
-              selectedBtn === "primary"
-                ? buttonSettings?.primary.buttonColor
-                : "transparent",
-            borderRadius:
-              selectedBtn === "primary"
-                ? buttonSettings?.primary.borderRadius
-                : buttonSettings?.secondary.borderRadius,
-            borderColor:
-              selectedBtn === "primary"
-                ? buttonSettings?.primary.borderColor
-                : buttonSettings?.secondary.borderColor,
-          }}
-          >VIEW DETAILS</div>
+          {/* <div className={styles.icon_tags_container}>
+          {fetchedAddedOtherData && fetchedAddedOtherData![0]?.eventType === "SUB" ? (
+            <>
+              <Image src={POP} alt="" />
+            </>
+          ) : fetchedAddedOtherData![0]?.eventType === "MAIN" &&
+            fetchedAddedOtherData![0].event_type === "Tradeshow" ? (
+            <Image src={TradeshowIcon} alt="" />
+          ) : fetchedAddedOtherData![0]?.eventType === "MAIN" &&
+            fetchedAddedOtherData![0].event_type === "Conference" ? (
+            <Image src={ConferenceIcon} alt="" />
+          ) : fetchedAddedOtherData![0]?.eventType === "MAIN" &&
+            fetchedAddedOtherData![0].event_type === "Workshop" ? (
+            <Image src={WorkShopIcon} alt="" />
+          ) : (
+            <Image src={DefaultIcon} alt="" />
+          )}
+          <div
+            className={`${styles.pill} ${styles.type1}`}
+            style={{ fontSize: fontSettings?.body.fontSize }}
+          >
+            {fetchedAddedOtherData![0]?.eventType === "MAIN"
+              ? fetchedAddedOtherData![0].event_type
+              : fetchedAddedOtherData![0]?.eventType === "SUB"
+              ? fetchedAddedOtherData![0].participationType
+              : "Tradeshow"}
+          </div>
+          <div
+            className={`${styles.pill} ${styles.type2}`}
+            style={{ fontSize: fontSettings?.body.fontSize }}
+          >
+            {fetchedAddedOtherData![0]?.eventType === "MAIN"
+              ? fetchedAddedOtherData![0].eventFormat
+              : fetchedAddedOtherData![0]?.eventType === "SUB"
+              ? fetchedAddedOtherData![0].eventFormat
+              : "Attending"}
+          </div>
+          </div> */}
+          <div className={styles.button_And_tags_container}>
+            <div className={styles.icon_tags_container}>
+              {fetchedAddedOtherData &&
+              fetchedAddedOtherData![0]?.eventType === "SUB" ? (
+                <>
+                  <Image src={POP} alt="" />
+                </>
+              ) : fetchedAddedOtherData![0]?.eventType === "MAIN" &&
+                fetchedAddedOtherData![0].event_type === "Tradeshow" ? (
+                <Image src={TradeshowIcon} alt="" />
+              ) : fetchedAddedOtherData![0]?.eventType === "MAIN" &&
+                fetchedAddedOtherData![0].event_type === "Conference" ? (
+                <Image src={ConferenceIcon} alt="" />
+              ) : fetchedAddedOtherData![0]?.eventType === "MAIN" &&
+                fetchedAddedOtherData![0].event_type === "Workshop" ? (
+                <Image src={WorkShopIcon} alt="" />
+              ) : (
+                <Image src={DefaultIcon} alt="" />
+              )}
+              <div
+                className={`${styles.pill} ${styles.type1}`}
+                style={{ fontSize: fontSettings?.body.fontSize }}
+              >
+                {fetchedEvent?.eventType === "MAIN"
+                  ? fetchedEvent.event_type
+                  : fetchedEvent?.eventType === "SUB"
+                  ? fetchedEvent.participationType === "Brunch/Lunch/Dinner"
+                    ? "Bru../Lun../Din.."
+                    : fetchedEvent.participationType
+                  : "Tradeshow"}
+              </div>
+              <div
+                className={`${styles.pill} ${styles.type2}`}
+                style={{ fontSize: fontSettings?.body.fontSize }}
+              >
+                {fetchedAddedOtherData![0]?.eventType === "MAIN"
+                  ? fetchedAddedOtherData![0].eventFormat
+                  : fetchedAddedOtherData![0]?.eventType === "SUB"
+                  ? fetchedAddedOtherData![0].eventFormat
+                  : "Attending"}
+              </div>
+            </div>
 
-          <div className={styles.tags_deleteContainer}></div>
+            <div
+              className={styles.detail_button}
+              style={{
+                fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
+                color:
+                  selectedBtn === "primary"
+                    ? buttonSettings?.primary.fontColor
+                    : buttonSettings?.secondary.fontColor,
+                backgroundColor:
+                  selectedBtn === "primary"
+                    ? buttonSettings?.primary.buttonColor
+                    : "transparent",
+                borderRadius:
+                  selectedBtn === "primary"
+                    ? buttonSettings?.primary.borderRadius
+                    : buttonSettings?.secondary.borderRadius,
+                borderColor:
+                  selectedBtn === "primary"
+                    ? buttonSettings?.primary.borderColor
+                    : buttonSettings?.secondary.borderColor,
+                    borderWidth: selectedBtn === "secondary" ? "1px" : "1px",
+                    borderStyle: selectedBtn === "secondary" ? "solid" : "solid",
+              }}
+            >
+              VIEW DETAILS
+            </div>
+          </div>
+
+          {/* <div className={styles.tags_deleteContainer}></div> */}
         </div>
       </div>
     </div>
