@@ -88,7 +88,7 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
               background: `conic-gradient(#4caf50 ${percentageFilled}%, #e0e0e0 0)`,
             }}
           ></div>
-          <div>{count} left</div>
+          <div>{count < 0 ? "0" : count} left</div>
         </div>
       </div>
       <div className={styles.line}></div>

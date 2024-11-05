@@ -12,14 +12,13 @@ interface Props {
     normalEvent?: AllEventsType;
     subEvent?: EventsType;
     fetchEvents?: (value: void) => void
-    handleDeleteModal: (id: string, name: string, isPresentinWidget: boolean) => void
     handlePrefillEvent?: (value: EventsType) => void
     width: string;
     handlePrefillSubEvent? : (value : EventsType) => void
     setSelectedEventType?: (value : string)=>void
 }
 
-const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, handlePrefillEvent,handlePrefillSubEvent, width,setSelectedEventType }: Props) => {
+const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handlePrefillEvent,handlePrefillSubEvent, width,setSelectedEventType }: Props) => {
 
     function formatEventDates(startDate: string, endDate: string) {
         const start = new Date(startDate);

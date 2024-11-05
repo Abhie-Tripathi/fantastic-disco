@@ -14,10 +14,12 @@ import confetti from "canvas-confetti";
 import LeafTheme from '../../UI/LeafTheme'
 import SnowfallTheme from '../../UI/SnowfallTheme'
 import RandomTheme from '../../UI/RandomTheme'
+import SubEventCard from '../WidgetDashboard/SubEventCard'
+import TimelineItem from '../../employee/listView/TimelineItem'
 
 interface Props {
-    uploadedPhoto : File | undefined
-    snowTheme : boolean;
+    uploadedPhoto: File | undefined
+    snowTheme: boolean;
     leavesTheme: boolean;
     setIsAddEventModalOpen: (value: boolean) => void
     formTheme: string;
@@ -44,10 +46,10 @@ interface Props {
     setChoiceFormModal?: (value: boolean) => void,
     isApproved?: boolean;
     setIsApproved?: (value: boolean) => void
-    fetchedSubEvents? : EventsType[]
+    fetchedSubEvents?: EventsType[]
 }
 
-const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
+const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved, fetchedSubEvents }: Props) => {
     const [loadingState, setLoadingState] = useState<boolean>(false)
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const [activeBtn, setActiveBtn] = useState<string>("main")
@@ -57,7 +59,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
 
     // const [mainEventName, setMainEventName] = useState<string>("");
     const { theme } = useTheme()
-
+    let prevDate: any = null;
     const fireConfetti = () => {
         if (confettiCanvasRef.current) {
             const myConfetti = confetti.create(confettiCanvasRef.current, { resize: true });
@@ -81,7 +83,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
         }
     }, [confettiType]);
 
-    console.log("mainEvent",mainEventState)
+    console.log("mainEvent", mainEventState)
 
     const handleAddEvent = async () => {
         if (eventFlow === "main") {
@@ -157,7 +159,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 handleMaineventChanges('isEventTypeEmpty', true)
                 // setIsParticipationMessageEmpty(true)
             }
-            
+
 
             if (!mainEventState.textValue) {
                 handleMaineventChanges('isTextValueMessageEmpty', true)
@@ -204,7 +206,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 hashtags: mainEventState.hashtags.join(","),
                 boothNumber: mainEventState.boothNumber,
                 speaker: [],
-                exhibitor:[]
+                exhibitor: []
             }
             const eventData = {
                 format: mainEventState.eventFormat,
@@ -230,7 +232,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             formData.append("capacity", mainEventState?.capacity + "")
             formData.append("approval", mainEventState?.approval + "")
             formData.append("waitlisting", mainEventState?.waitlisting + "")
-            
+
 
             if (mainEventState.banner.file || mainEventState.banner.placeHolder.includes("oaidalleapiprodscus")) {
                 if (mainEventState.banner.file) {
@@ -248,7 +250,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             })
             if (data) {
                 console.log("event added :", data)
-                if (!subEventState.isEventNameEmpty && !subEventState.isEventFormatEmpty && !subEventState.isEventDescriptionEmpty && !subEventState.isEventParticipationEmpty && !subEventState.event_type&& !subEventState.isParticipationMessageEmpty && (subEventState.banner.placeHolder !== Placeholder || subEventState.banner.file)) {
+                if (!subEventState.isEventNameEmpty && !subEventState.isEventFormatEmpty && !subEventState.isEventDescriptionEmpty && !subEventState.isEventParticipationEmpty && !subEventState.event_type && !subEventState.isParticipationMessageEmpty && (subEventState.banner.placeHolder !== Placeholder || subEventState.banner.file)) {
                     addSubEvent(data.data.id)
                 } else {
                     setIsAddEventModalOpen(false)
@@ -287,7 +289,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
     }
 
     const addSpeakers = async (eventId: string, speaker: any) => {
-        console.log("speaker_called",speaker, eventId)
+        console.log("speaker_called", speaker, eventId)
         const formData = new FormData()
         const speakerObject = {
             name: speaker.data.name,
@@ -307,12 +309,12 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
     }
 
     const addExhibitorDetails = async (eventId: string, exhibitor: any) => {
-        console.log("exhibitor_called",exhibitor, eventId)
+        console.log("exhibitor_called", exhibitor, eventId)
         const formData = new FormData()
         const exhibitorObject = {
             companyName: exhibitor.data.companyName,
             boothNumber: exhibitor.data.boothNumber,
-           
+
         }
         formData.append("eventId", eventId)
         formData.append("data", JSON.stringify(exhibitorObject))
@@ -427,6 +429,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
         }
         if (parenteventId) {
             formData.append('eventId', parenteventId)
+            console.log("parent id is :", parenteventId)
         }
         formData.append("capacity", subEventState?.capacity + "")
         formData.append("registration", subEventState?.registration + "")
@@ -545,7 +548,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             hashtags: eventState.hashtags.join(","),
             boothNumber: eventState.boothNumber,
             speaker: eventState.speaker,
-            exhibitor:eventState.exhibitor
+            exhibitor: eventState.exhibitor
         };
 
         // Prepare the event data
@@ -623,12 +626,12 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
         }
     }
     useEffect(() => {
-        if (mainEventState.speakerModal ||mainEventState.exhibitorModal|| mainEventState.descriptionModal || mainEventState.registerModal || subEventState.speakerModal || subEventState.descriptionModal || subEventState.registerModal) {
+        if (mainEventState.speakerModal || mainEventState.exhibitorModal || mainEventState.descriptionModal || mainEventState.registerModal || subEventState.speakerModal || subEventState.descriptionModal || subEventState.registerModal) {
             setIsModalOpen(true)
         } else {
             setIsModalOpen(false)
         }
-    }, [mainEventState.speakerModal,mainEventState.exhibitorModal, mainEventState.descriptionModal, mainEventState.registerModal, subEventState.speakerModal, subEventState.descriptionModal, subEventState.registerModal,])
+    }, [mainEventState.speakerModal, mainEventState.exhibitorModal, mainEventState.descriptionModal, mainEventState.registerModal, subEventState.speakerModal, subEventState.descriptionModal, subEventState.registerModal,])
     const formContainerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
@@ -685,7 +688,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                     handleMaineventChanges('isEventTypeEmpty', true)
                     // setIsParticipationMessageEmpty(true)
                 }
-                
+
                 if (!mainEventState.textValue.trim()) {
                     handleMaineventChanges('isTextValueMessageEmpty', true)
                     // setIsTextValueMessageEmpty(true)
@@ -717,19 +720,19 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 </div>
             </div>
             <div className={`${styles.formContainer} ${isModalOpen ? styles.modalOpen : ""} ${pageGradient ? styles[pageGradient] : ""}`}
-            style={{ backgroundColor: pageBgColor}} 
-            ref={formContainerRef}>
+                style={{ backgroundColor: pageBgColor }}
+                ref={formContainerRef}>
                 <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
                 {leavesTheme && <div className={styles.themeContainer}>
-                    <LeafTheme leafCount={100}/>
+                    <LeafTheme leafCount={100} />
                 </div>}
                 {snowTheme && <div className={styles.themeContainer}>
-                    <SnowfallTheme/>
+                    <SnowfallTheme />
                 </div>}
                 {uploadedPhoto && <div className={styles.themeContainer}>
-                    <RandomTheme uploadedPhoto={uploadedPhoto}/>
+                    <RandomTheme uploadedPhoto={uploadedPhoto} />
                 </div>}
-                
+
                 {collapseMainEventForm && eventFlow === 'main' ?
                     (<div className={styles.collapsedContainer}>
                         <div>
@@ -737,7 +740,8 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                             <span>Main Event</span>
                         </div>
                         <div className={styles.collapseBtn} onClick={() => handleCollapseForm("main")}><DownArrow /></div>
-                    </div>) : (eventFlow === 'main' &&
+                    </div>) :
+                    (eventFlow === 'main' &&
                         <Details
                             formTheme={formTheme}
                             handleCollapseForm={handleCollapseForm}
@@ -751,21 +755,38 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                             collapseMainEventForm={collapseMainEventForm}
                             isApproved={isApproved} setIsApproved={setIsApproved}
                         />
-                        )}
-                {(collapseMainEventForm || eventFlow === "side") && 
-                <Subeventform
-                    // setMainEventName={setMainEventName}
-                    formTheme={formTheme}
-                    formState={subEventState}
-                    handleChange={handleSubeventChange}
-                    eventFont={eventFont}
-                    setLoadingState={setLoadingState}
-                    fileInputRef={fileInputRef}
-                    prefilledSubEvent={prefilledSubEvent}
-                    prefilledEvent={prefilledEvent}
-                    eventFlow={eventFlow}
-                    isApproved={isApproved} setIsApproved={setIsApproved}
-                />
+                    )}
+                {(collapseMainEventForm && (fetchedSubEvents && fetchedSubEvents?.length > 0)) &&
+                    <div className={styles.subEventsContainer}>
+                        {fetchedSubEvents.map((subEvent, index) => {
+                            const showDate = subEvent.startDate !== prevDate;
+                            prevDate = subEvent.startDate; // Ensure prevDate is defined before mapping
+                            return (
+                                <div key={index} className={styles.container}>
+                                    <TimelineItem eventDate={showDate ? subEvent.startDate : null} />
+                                    <SubEventCard
+                                        width="small"
+                                        subEvent={subEvent}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+                }
+                {(collapseMainEventForm || eventFlow === "side") && (!fetchedSubEvents || fetchedSubEvents.length === 0) &&
+                    <Subeventform
+                        formTheme={formTheme}
+                        formState={subEventState}
+                        handleChange={handleSubeventChange}
+                        eventFont={eventFont}
+                        setLoadingState={setLoadingState}
+                        fileInputRef={fileInputRef}
+                        prefilledSubEvent={prefilledSubEvent}
+                        prefilledEvent={prefilledEvent}
+                        eventFlow={eventFlow}
+                        isApproved={isApproved}
+                        setIsApproved={setIsApproved}
+                    />
                 }
             </div>
         </div >

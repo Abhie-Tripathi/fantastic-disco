@@ -125,11 +125,6 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
         }
     }
     useEffect(() => {
-        // if (!prefilledAddedEvent && !banner.file) { // we dont want the poster to start generating it self if prefilled event is there
-        //   if (description && eventName && countryName) {
-        //     generatePrompt(countryName, description, eventName, 1024, 1024)
-        //   }
-        // }
         if (!prefilledEvent && !prefilledSubEvent) {
             if (formState.description && formState.eventName) {
                 generateHashtags(formState.eventName, formState.description)
@@ -262,14 +257,10 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
                             <ExhibitorContainer handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
 
                     {formState.cityName &&
-                        // <div className={styles.map} ref={mapDivRef}>
-                        // <Suspense fallback={<div>Loading...</div>}>
                         <MapView latitude={formState.latitude}
                             longitude={formState.longitude}
                             venue={formState.cityName}
                             zoom={6} />
-                        // </Suspense>
-                        // </div>
                     }
                 </div>
             </div>
