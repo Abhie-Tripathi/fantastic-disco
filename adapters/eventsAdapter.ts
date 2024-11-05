@@ -58,10 +58,6 @@ export const EventsAdapter = {
       return adaptedParams;
     }
 
-    if (params.get("categories")) {
-      adaptedParams.eventCategory = params.get("categories")!;
-    }
-
     if (params.get("eventTypes")) {
       adaptedParams.eventType = params
         .get("eventTypes")!
@@ -102,7 +98,9 @@ export const EventsAdapter = {
       adaptedParams.maturity = params.get("maturity")!;
     }
     if (params.get("frequencies")) {
-      adaptedParams.eventFrequency = params.get("frequencies")!;
+      adaptedParams.eventFrequency =
+        params.get("frequencies")!.charAt(0).toUpperCase() +
+        params.get("frequencies")!.slice(1);
     }
 
     if (params.get("includeKeywords") || params.get("excludeKeywords")) {
@@ -259,6 +257,27 @@ export const EventsAdapter = {
       adaptedParams.eventCategory = categoryIds.join(",");
     }
 
+    if (params.get("status")) {
+      adaptedParams.eventStatus = params.get("status")!.toUpperCase();
+    }
+    if (params.get("eventFormats")) {
+      adaptedParams.eventFormat = params.get("eventFormats")!;
+    }
+    if (params.get("entryType")) {
+      adaptedParams.eventEntry = params.get("entryType")!.toUpperCase();
+    }
+    if (params.get("ratings")) {
+      adaptedParams.eventRating = params.get("ratings")!;
+    }
+    if (params.get("maturity")) {
+      adaptedParams.maturity = params.get("maturity")!;
+    }
+    if (params.get("frequencies")) {
+      adaptedParams.eventFrequency =
+        params.get("frequencies")!.charAt(0).toUpperCase() +
+        params.get("frequencies")!.slice(1);
+    }
+
     if (params.get("includeKeywords") || params.get("excludeKeywords")) {
       const includeKeywords = params.get("includeKeywords")
         ? params
@@ -327,6 +346,27 @@ export const EventsAdapter = {
     if (params.get("trust_score_gte") || params.get("trust_score_lte")) {
       adaptedParams.trustScore = params.get("trust_score_gte")!;
     }
+
+    if (params.get("eventTypes")) {
+      adaptedParams.eventType = params
+        .get("eventTypes")!
+        .split(",")
+        .map(
+          (type) =>
+            type.charAt(0).toUpperCase() + type.slice(1).replace(/s$/, "")
+        )
+        .join(",");
+    }
+
+    const activeGte = params.get("active_gte");
+    const activeLte = params.get("active_lte");
+    if (activeGte && activeLte) {
+      const startDate = new Date(activeGte).toISOString().split("T")[0];
+      const endDate = new Date(activeLte).toISOString().split("T")[0];
+      adaptedParams.startDate = `${startDate},${endDate}`;
+      adaptedParams.endDate = `${startDate},${endDate}`;
+    }
+
     return adaptedParams;
   },
 
