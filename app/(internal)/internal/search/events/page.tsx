@@ -180,86 +180,6 @@ const Search = () => {
     }
   };
 
-  const saveTrackerHandler = async () => {
-    const userType = {
-      ...(selectedInsights.eventRating && { rating: true }),
-      ...(selectedInsights.estExhibit && { exhibit: true }),
-      ...(selectedInsights.repeatSent && { trust: true }),
-      // ...((selectedMaturity !== '' && selectedMaturity !== 'none') && {maturity:true}),
-      // ...(selectedBrandedEvent && {brandedEvent:true}),
-      // ...(selectedEventSeries && {eventSeries:true}),
-      // ...(forecastedStatus && {forecastedStatus:true}),
-      // ...(analyticsToggles.impactScore&& {impactScore:true}),
-      // ...(analyticsToggles.inboundScore&& {inboundScore:true}),
-      // ...(analyticsToggles.internationalScore&& {internationalScore:true}),
-      // ...((selectedRank !== '' && selectedRank !== 'none') && {eventRank:true}),
-      // ...(audienceZone && {audienceZone:true}),
-      // ...(audienceSpread && {audienceSpread:true}),
-    };
-    if (customTrackerName != "") {
-      const formData = {
-        name: customTrackerName,
-        filterValue: {
-          ...adaptedParams,
-          ...{
-            shows: [
-              "eventBrand",
-              "eventSeries",
-              "maturity",
-              "eventImpactScore",
-              "eventInboundScore",
-              "internationalScore",
-              "isforecasted",
-              "trustScore",
-              "eventRating",
-              "estimatedExhibitScore",
-              "audienceSpread",
-            ].join(),
-          },
-        },
-      };
-
-      try {
-        const { data, error } = await myFetch(`${BaseURL}/tracker`, {
-          method: "POST",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        // console.log(data);
-
-        if (error) {
-          console.log(error);
-          return;
-        }
-        if (data) {
-          toast.success(
-            <div style={{ display: "flex", flexWrap: "wrap" }}>
-              Tracker created successfully!{" "}
-              <span
-                className={styles["seeTracker-btn"]}
-                onClick={() => router.replace("/internal/trackers")}
-              >
-                See Tracker
-              </span>
-            </div>,
-            {
-              position: "bottom-right",
-              autoClose: 2000,
-              // closeButton: false,
-              hideProgressBar: true,
-            }
-          );
-        }
-      } catch (error) {
-        console.error("Error saving tracker:", error);
-      } finally {
-        setTrackerModalOpen(false);
-      }
-    }
-  };
-
   return (
     <div className="space-y-6 p-6">
       <SearchBar />
@@ -365,32 +285,32 @@ const Search = () => {
           )}
         </TabsContent>
         <TabsContent value="map">
-          <Suspense fallback={<Loading />}>
-            {isLoading ? (
-              <Loading />
-            ) : eventData?.count == 0 ? (
-              <ZeroState text="No events were found in the selected area." />
-            ) : error ? (
-              <ZeroState text={(error as ApiError).message} />
-            ) : (
-              <Map searchParams={searchParams.toString()} />
-            )}
-          </Suspense>
+          {/* <Suspense fallback={<Loading />}> */}
+          {isLoading ? (
+            <Loading />
+          ) : eventData?.count == 0 ? (
+            <ZeroState text="No events were found in the selected area." />
+          ) : error ? (
+            <ZeroState text={(error as ApiError).message} />
+          ) : (
+            <Map searchParams={searchParams.toString()} />
+          )}
+          {/* </Suspense> */}
         </TabsContent>
         <TabsContent value="calendar">
-          <Suspense fallback={<Loading />}>
-            {isLoading ? (
-              <Loading />
-            ) : eventData?.count == 0 ? (
-              <ZeroState text="No events were found in the selected area." />
-            ) : error ? (
-              <ZeroState text={(error as ApiError).message} />
-            ) : (
-              <EventCalendar
-                events={events as CalendarEvent[] | CalendarMonthEvent[]}
-              />
-            )}
-          </Suspense>
+          {/* <Suspense fallback={<Loading />}> */}
+          {isLoading ? (
+            <Loading />
+          ) : eventData?.count == 0 ? (
+            <ZeroState text="No events were found in the selected area." />
+          ) : error ? (
+            <ZeroState text={(error as ApiError).message} />
+          ) : (
+            <EventCalendar
+              events={events as CalendarEvent[] | CalendarMonthEvent[]}
+            />
+          )}
+          {/* </Suspense> */}
         </TabsContent>
       </Tabs>
 

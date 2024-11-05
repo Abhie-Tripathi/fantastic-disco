@@ -146,7 +146,7 @@ export default function EventCalendar({
       ) : (
         <div className="flex">
           <div
-            className={`bg-white custom-calendar ${
+            className={`custom-calendar ${
               showEventList ? "w-[calc(100%-345px)]" : "w-full"
             }`}
           >

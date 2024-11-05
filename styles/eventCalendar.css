@@ -80,3 +80,7 @@
 .rbc-date-cell {
   padding-right: 0 !important;
 }
+
+.rbc-month-view{
+  border: none;
+}

@@ -139,7 +139,7 @@ export default function Component({
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0 z-[120]" side="bottom" >
+      <PopoverContent className="w-[300px] p-0 z-[120]" side="bottom">
         <div className="p-2 flex flex-wrap gap-2 max-h-[60px] overflow-auto">
           {selectedCountries.map((code) => {
             const country = countries.find((c) => c.id === code);
@@ -180,7 +180,7 @@ export default function Component({
             </div>
           ))}
         </div>
-        <Tabs defaultValue="country" className="w-full">
+        {/* <Tabs defaultValue="country" className="w-full">
           <TabsList className="w-full">
             <TabsTrigger value="country" className="w-1/2">
               Country
@@ -261,7 +261,46 @@ export default function Component({
               </ScrollArea>
             </div>
           </TabsContent>
-        </Tabs>
+        </Tabs> */}
+
+        <div className="space-y-4 p-4 pt-0">
+          <Input
+            type="search"
+            placeholder="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <ScrollArea className="h-44 pr-4">
+            <div className="space-y-2">
+              {isLoading ? (
+                <div>Loading countries...</div>
+              ) : error ? (
+                <div>Error loading countries</div>
+              ) : filteredCountries.length === 0 ? (
+                <div className="text-gray-500">No countries found</div>
+              ) : (
+                filteredCountries.map((country) => {
+                  const Flag = Flags[country.iso as keyof typeof Flags];
+                  return (
+                    <div
+                      key={country.id}
+                      className="flex items-center space-x-2 cursor-pointer hover:bg-gray-100 p-1 rounded"
+                      onClick={() => toggleCountry(country.id)}
+                    >
+                      <div className="w-5 h-5 border rounded flex items-center justify-center">
+                        {selectedCountries.includes(country.id) && (
+                          <Check className="h-4 w-4 text-purple-600" />
+                        )}
+                      </div>
+                      {Flag && <Flag className="w-6 h-4 mr-2" />}
+                      <span>{country.displayName}</span>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </ScrollArea>
+        </div>
       </PopoverContent>
     </Popover>
   );

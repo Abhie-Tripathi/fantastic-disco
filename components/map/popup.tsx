@@ -4,6 +4,7 @@ import { Popup } from "react-map-gl";
 import { differenceInDays, format } from "date-fns";
 import Link from "next/link";
 import { eventTypeColors } from "@/constants/eventTypes";
+import { Card } from "../ui/card";
 
 const iconUrls: Record<string, string> = {
   "performing-arts": "/eventType/arts.png",
@@ -70,38 +71,40 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
       offset={10}
       closeOnMove
     >
-      <div
-        className="absolute left-0 top-0 bottom-0 w-2 rounded-md"
-        style={{
-          backgroundColor: eventTypeColors[popupInfo.primaryEventType || ""],
-        }}
-      />
-      <div className="pl-4 pr-2 py-2">
-        <div className="flex items-center justify-between pb-2 border-b">
-          <div className="flex items-center gap-2">
-            <img
-              src={iconUrls[popupInfo.primaryEventType || "festival"]}
-              alt={popupInfo.primaryEventType || "Event"}
-              className="w-5 h-5"
-            />
-            <span className="text-primary font-medium text-xs">
-              {popupInfo.primaryEventType?.toUpperCase() || "EVENT"}
-            </span>
+      <Card className="rounded-lg">
+        <div
+          className="absolute left-0 top-0 bottom-0 w-2 rounded-md"
+          style={{
+            backgroundColor: eventTypeColors[popupInfo.primaryEventType || ""],
+          }}
+        />
+        <div className="pl-4 pr-2 py-2">
+          <div className="flex items-center justify-between pb-2 border-b">
+            <div className="flex items-center gap-2">
+              <img
+                src={iconUrls[popupInfo.primaryEventType || "festival"]}
+                alt={popupInfo.primaryEventType || "Event"}
+                className="w-5 h-5"
+              />
+              <span className="text-primary font-medium text-xs">
+                {popupInfo.primaryEventType?.toUpperCase() || "EVENT"}
+              </span>
+            </div>
+            <Link
+              href={`/internal/event/${popupInfo.id}`}
+              className="text-primary text-xs py-0 h-5 pr-0"
+              target="_blank"
+            >
+              View Details
+            </Link>
           </div>
-          <Link
-            href={`/internal/event/${popupInfo.id}`}
-            className="text-primary text-xs py-0 h-5 pr-0"
-            target="_blank"
-          >
-            View Details
-          </Link>
+          <h3 className="font-medium text-sm my-2">{popupInfo.name}</h3>
+          <p className="text-xs mb-2 font-medium">{address}</p>
+          <div className="flex items-start text-xs text-primary">
+            {formattedRange}
+          </div>
         </div>
-        <h3 className="font-medium text-sm my-2">{popupInfo.name}</h3>
-        <p className="text-xs mb-2 font-medium">{address}</p>
-        <div className="flex items-start text-xs text-primary">
-          {formattedRange}
-        </div>
-      </div>
+      </Card>
     </Popup>
   );
 }

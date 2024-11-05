@@ -32,9 +32,11 @@ import { format } from "date-fns";
 import MapPopup from "./popup";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import ZeroState from "@/app/components/zerostate";
+import { useTheme } from "@/context";
 
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
+  Dark: "mapbox://styles/mapbox/dark-v11",
 };
 
 const iconUrls: Record<string, string> = {
@@ -69,6 +71,7 @@ interface MapProps {
 type ZoomGroup = "country" | "state" | "city" | "event";
 
 export default function MapComponent({ searchParams }: MapProps) {
+  const {theme} = useTheme();
   const mapRef = useRef<MapRef>(null);
   const { getFilterValue } = useFilterState();
   const [viewport, setViewport] = useState<ViewState>({
@@ -422,19 +425,19 @@ export default function MapComponent({ searchParams }: MapProps) {
     return null;
   }, [location]);
 
+
+  console.log(theme,"ohh yeah")
   return (
     <div className="relative">
       {!location ? (
-        <ZeroState
-          text="Please select a country, state, or city to view events. (Multiple Allowed)"
-        />
+        <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
       ) : (
         <ReactMapGL
           style={{ width: "100%", height: "78vh" }}
           onMove={onMove}
           onClick={handleMapClick}
           projection={{ name: "mercator" }}
-          mapStyle={MapStyle.Street}
+          mapStyle={theme == "dark" ? MapStyle.Dark : MapStyle.Street}
           mapboxAccessToken={MapboxToken}
           minZoom={ZOOM_LEVELS.INITIAL}
           interactiveLayerIds={["event-counts"]}
