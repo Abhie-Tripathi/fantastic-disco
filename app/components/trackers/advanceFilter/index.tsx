@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './advanceFilter.style.module.css'
 import ToggleBtn from '../../UI/ToggleBtn';
-const index = ({ freq, includeKeywords, excludeKeywords, isBranded, eventEdition, type, eventSeries, forecastedStatus, maturity}: any) => {
+const index = ({ freq, includeKeywords, excludeKeywords, isBranded, eventEdition, type, eventSeries, forecastedStatus, maturity, isFreqToggle}: any) => {
     // const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     // const freq=["Annual","Biannual","Queartly"]
     // const entry=["Free","Paid","Invites","Member Access"];
@@ -77,7 +77,10 @@ const index = ({ freq, includeKeywords, excludeKeywords, isBranded, eventEdition
                 </div>
         </div>
         <div className={commonClasses.filter}>
+                  <div className='flex justify-between items-center'>
                     <div className={commonClasses.filterHeading}>Event Frequency</div>
+                    <ToggleBtn isTrue={isFreqToggle}/>
+                  </div>
                     <div className="flex gap-3">
                         {freq?.map((item: string, id: number) => (
                             <>
