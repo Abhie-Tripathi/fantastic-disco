@@ -1,4 +1,4 @@
-import React, { useState, useRef, RefObject, useEffect } from 'react'
+import React, { useState, useRef, RefObject, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import YourEventCard from './YourEventCard'
 import DropDown from './commondropdown/DropDown'
@@ -22,6 +22,9 @@ import Loading from '../UI/Loading'
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
 import SearchBar from './searchBar/SearchBar'
 import InterestSelector from '@/components/coordinate/interest'
+import DateRangeSelector from '@/components/search/dateRange'
+import { Button as Button2 } from "@/components/ui/button";
+import { useFilterContext } from '@/context/filterContext'
 
 interface Props{
     handleModal : (id: string,enquiryId:string) => void,
@@ -76,6 +79,11 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen,set
     const setMenuOpen = () => {
         setPopoverState(!popoverState);
     };
+
+    const { applyFilters } = useFilterContext();
+    const searchHandler = useCallback(() => {
+      applyFilters();
+    }, []);
       // useEffect(() => {
       //   const modalStatus = document.body.getAttribute("popover-status");
     
@@ -402,6 +410,18 @@ useEffect(()=>{
               </Popover>
             </MenuTrigger>
             </div>
+            <DateRangeSelector source="search"/>
+    </div>
+
+    {/* Temporary Button */}
+    <div>
+      <Button2
+        size="lg"
+        onClick={searchHandler}
+        className="text-white"
+      >
+        Apply
+      </Button2>
     </div>
     
     <div className={styles.timelineContainer} >

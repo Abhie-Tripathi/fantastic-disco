@@ -43,7 +43,7 @@ export default function InterestSelector() {
   };
 
   const handleApply = () => {
-    setLocalFilter("status", selectedStatuses.join(","));
+    setLocalFilter("votedBy", selectedStatuses.join(","));
     setIsOpen(false);
   };
 
