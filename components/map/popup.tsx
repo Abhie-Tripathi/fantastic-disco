@@ -5,6 +5,7 @@ import { differenceInDays, format } from "date-fns";
 import Link from "next/link";
 import { eventTypeColors } from "@/constants/eventTypes";
 import { Card } from "../ui/card";
+import { renderFormattedDates } from "@/utils/dateFormat";
 
 const iconUrls: Record<string, string> = {
   "performing-arts": "/eventType/arts.png",
