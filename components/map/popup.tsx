@@ -29,12 +29,10 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
   const days =
     differenceInDays(popupInfo.endDateTime, popupInfo.startDateTime) + 1;
 
-  const formattedRange =
-    formattedStartDate === formattedEndDate
-      ? formattedStartDate
-      : `${formattedStartDate} - ${formattedEndDate} (${days} ${
-          days === 1 ? "day" : "days"
-        })`;
+  const formattedRange = renderFormattedDates(
+    formattedStartDate,
+    formattedEndDate
+  );
 
   const address = popupInfo.venueLocation
     ? popupInfo.venueLocation.city?.name === "Online"

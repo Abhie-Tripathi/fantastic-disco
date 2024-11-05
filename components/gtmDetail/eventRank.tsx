@@ -51,10 +51,10 @@ export const EventRank = ({
   const { name, startDateTime, id: eventId } = eventDetails;
   return (
     <>
-      <div className="flex flex-row justify-center border border-[var(--neutral-light-color)] p-3 rounded-sm gap-12 w-fill h-auto">
+      <div className="flex flex-row justify-center border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] p-3 rounded-sm gap-12 w-fill h-auto">
         {countryRank && (
           <div className="flex flex-col p-3 rounded-sm gap-6 w-auto h-auto items-center">
-            <div className="flex flex-col items-center border border-[var(--neutral-light-color)] w-48 rounded-sm">
+            <div className="flex flex-col items-center border border-[var(--neutral-light-color)] dark:bg-[var(--primary-foreground)] dark:border-[var(--border-color)] w-48 rounded-sm">
               <p className="text-3xl font-semibold p-2">
                 {countryRank ?? "--"}
               </p>
@@ -62,7 +62,7 @@ export const EventRank = ({
                 color="secondary"
                 variant="noMargin"
                 fontWeight="medium"
-                className="bg-[#F2F2F2] w-full p-2 text-center"
+                className="bg-[#F2F2F2] dark:bg-[var(--primary-foreground)] dark:border-t dark:border-t-2-[var(--border-color)] w-full p-2 text-center"
               >
                 Country Rank
               </Text>
@@ -77,7 +77,7 @@ export const EventRank = ({
             </div>
             <div className="flex flex-col">
               <button
-                className={`flex items-center bg-[#FAFAFA] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-country-${countryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:bg-[var(--primary-foreground)] dark:border dark:border-[var(--border-color)]  gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-country-${countryRank}`}
                 disabled={countryActiveIndex === 1}
               >
                 <Text color="secondary" variant="noMargin" className="w-full">
@@ -125,12 +125,12 @@ export const EventRank = ({
                       belowCountryEvent;
                     return (
                       <SwiperSlide
-                        className="h-fit w-fit bg-white z-40"
+                        className="h-fit w-fit bg-white z-40 dark:bg-[var(--primary-foreground)] "
                         key={id}
                       >
                         <Link
                           href={`/internal/event/${id}`}
-                          className="flex flex-row justify-between border border-[var(--neutral-light-color)] rounded-sm p-3"
+                          className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                         >
                           <p className="text-xl font-semibold p-2">
                             #{countryrank ?? "--"}
@@ -157,7 +157,7 @@ export const EventRank = ({
                       </SwiperSlide>
                     );
                   })}
-                  <SwiperSlide className="h-fit w-fit bg-white z-40">
+                  <SwiperSlide className="h-fit w-fit bg-white z-40 dark:bg-[var(--primary-foreground)] ">
                     <Link
                       href={`/internal/event/${eventId}`}
                       className="flex flex-row justify-between bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
@@ -190,12 +190,12 @@ export const EventRank = ({
                       aboveCountryEvent;
                     return (
                       <SwiperSlide
-                        className="h-fit w-fit bg-white z-40"
+                        className="h-fit w-fit bg-white dark:bg-[var(--primary-foreground)]  z-40"
                         key={id}
                       >
                         <Link
                           href={`/internal/event/${id}`}
-                          className="flex flex-row justify-between border border-[var(--neutral-light-color)] rounded-sm p-3"
+                          className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                         >
                           <p className="text-xl font-semibold p-2">
                             #{countryrank ?? "--"}
@@ -225,7 +225,7 @@ export const EventRank = ({
                 </>
               </Swiper>
               <button
-                className={`flex items-center bg-[#FAFAFA] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-country-${countryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:bg-[var(--primary-foreground)] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-country-${countryRank}`}
                 disabled={countryActiveIndex === countryTotalSlides - 2}
               >
                 <Text color="secondary" variant="noMargin">
@@ -242,13 +242,13 @@ export const EventRank = ({
         )}
         {categoryRank && (
           <div className="flex flex-col p-3 rounded-sm gap-6 w-auto h-auto items-center">
-            <div className="flex flex-col items-center border border-[var(--neutral-light-color)] w-48 rounded-sm">
+            <div className="flex flex-col items-center border border-[var(--neutral-light-color)] dark:bg-[var(--primary-foreground)] dark:border-[var(--border-color)] w-48 rounded-sm">
               <p className="text-3xl font-semibold p-2">{categoryRank}</p>
               <Text
                 color="secondary"
                 variant="noMargin"
                 fontWeight="medium"
-                className="bg-[#F2F2F2] w-full p-2 text-center"
+                className="bg-[#F2F2F2] dark:bg-[var(--primary-foreground)] dark:border-t dark:border-t-2-[var(--border-color)] w-full p-2 text-center"
               >
                 Category Rank
               </Text>
@@ -263,7 +263,7 @@ export const EventRank = ({
             </div>
             <div className="flex flex-col">
               <button
-                className={`flex items-center bg-[#FAFAFA] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-category-${categoryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:bg-[var(--primary-foreground)] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-category-${categoryRank}`}
                 disabled={categoryActiveIndex === 1}
               >
                 <Text color="secondary" variant="noMargin" className="w-full">
@@ -320,12 +320,12 @@ export const EventRank = ({
                     } = belowCategoryEvent;
                     return (
                       <SwiperSlide
-                        className="h-fit w-fit bg-white z-40"
+                        className="h-fit w-fit bg-white dark:bg-[var(--primary-foreground)] z-40"
                         key={id}
                       >
                         <Link
                           href={`/internal/event/${id}`}
-                          className="flex flex-row justify-between border border-[var(--neutral-light-color)] rounded-sm p-3"
+                          className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                         >
                           <p className="text-xl font-semibold p-2">
                             #{categoryrank ?? "--"}
@@ -352,7 +352,7 @@ export const EventRank = ({
                       </SwiperSlide>
                     );
                   })}
-                  <SwiperSlide className="h-fit w-fit bg-white z-40">
+                  <SwiperSlide className="h-fit w-fit bg-white dark:bg-[var(--primary-foreground)] z-40">
                     <Link
                       href={`/internal/event/${eventId}`}
                       className="flex flex-row justify-between bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
@@ -385,12 +385,12 @@ export const EventRank = ({
                       aboveCategoryEvent;
                     return (
                       <SwiperSlide
-                        className="h-fit w-fit bg-white z-40"
+                        className="h-fit w-fit bg-white dark:bg-[var(--primary-foreground)] z-40"
                         key={id}
                       >
                         <Link
                           href={`/internal/event/${id}`}
-                          className="flex flex-row justify-between border border-[var(--neutral-light-color)] rounded-sm p-3"
+                          className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                         >
                           <p className="text-xl font-semibold p-2">
                             #{categoryrank ?? "--"}
@@ -420,7 +420,7 @@ export const EventRank = ({
                 </>
               </Swiper>
               <button
-                className={`flex items-center bg-[#FAFAFA] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-category-${categoryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:bg-[var(--primary-foreground)] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-category-${categoryRank}`}
                 disabled={categoryActiveIndex === categoryTotalSlides - 2}
               >
                 <Text color="secondary" variant="noMargin">

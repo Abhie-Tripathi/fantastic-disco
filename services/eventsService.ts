@@ -145,7 +145,25 @@ export const useEventsService = () => {
         eventId: id,
       },
     });
-    console.log(response);
+    return response;
+  };
+
+  const getIsEventBookMarked = async (id: string) => {
+    const response = await api.request(
+      `${endpoints.tracker.saveEvent}?eventId=${id}`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
+  const UnBookmarkThisEvent = async (id: string) => {
+    const response = await api.request(`${endpoints.tracker.saveEvent}`, {
+      method: "DELETE",
+      data: {
+        eventIds: [id.toString()],
+      },
+    });
     return response;
   };
 
@@ -156,6 +174,8 @@ export const useEventsService = () => {
     getEventsCount,
     getRecentSearches,
     bookmarkThisEvent,
+    UnBookmarkThisEvent,
+    getIsEventBookMarked,
     getEventDetailById,
     getEventPOCDetails,
     getEventEditionDetails,
