@@ -15,6 +15,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     const eventId = trackerParams[4]
 
     const [fetchedEvent, setFetchedEvent] = useState<EventsType>()
+    const [fetchedSubEvents, setFetchedSubEvents] = useState<EventsType[]>()
     const [addEventModal, setAddEventModal] = useState<boolean>(false)
     const [deleteModal, setDeleteModal] = useState<boolean>(false)
     const [deleteModalTwo, setDeleteModalTwo] = useState<boolean>(false)
@@ -22,11 +23,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         const calculateIsPastEvent = () => {
-            function convertTo24Hour(time : string) {
+            function convertTo24Hour(time: string) {
                 // Use a regex to parse the hour, minute, and AM/PM part
                 const [timeString, modifier] = time.split(' ');
                 let [hours, minutes] = timeString.split(':');
-            
+
                 // Convert hours based on AM/PM
                 if (modifier === 'P.M' && hours !== '12') {
                     hours = `${parseInt(hours, 10) + 12}`;
@@ -38,23 +39,23 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             function getCurrentTime24Hour() {
                 const now = new Date();
                 return now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-            }  
+            }
             function getCurrentDateFormatted() {
                 const now = new Date();
                 return now.toISOString().split('T')[0]; // returns "YYYY-MM-DD"
-            }          
+            }
             const eventTime = convertTo24Hour(fetchedEvent?.endTime || "12:00 AM")
             const currentTime = getCurrentTime24Hour()
             const currentDate = getCurrentDateFormatted()
-            if(currentDate > (fetchedEvent?.endDate || "1")){
+            if (currentDate > (fetchedEvent?.endDate || "1")) {
                 setIsPastEvent(true)
                 console.log("this is being called")
-            }else if(currentDate === fetchedEvent?.endDate){
-                if(currentTime > eventTime){
+            } else if (currentDate === fetchedEvent?.endDate) {
+                if (currentTime > eventTime) {
                     setIsPastEvent(true)
                     console.log("this is being called")
-                }else setIsPastEvent(false)
-            }else setIsPastEvent(false)
+                } else setIsPastEvent(false)
+            } else setIsPastEvent(false)
         };
 
         // Call the function to set the state
@@ -76,7 +77,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             latitude: eventData.latitude || 0,
             longitude: eventData.longitude || 0,
             cityName: eventData.location_city || "",
-            virtualLink : eventData.virtualLink || "",
+            virtualLink: eventData.virtualLink || "",
             countryName: eventData.location_country || "",
             startDate: eventData.start_date || "",
             endDate: eventData.end_date || "",
@@ -97,7 +98,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             registration: data?.registration === true ? true : false,
             approval: data?.approval === true ? true : false,
             waitlisting: data?.waitlisting === true ? true : false,
-            eventFormat:eventData.format || "",
+            eventFormat: eventData.format || "",
             customizationData: {
                 pageBgColor: eventData.customizationData?.pageBgColor || "",
                 pageGradient: eventData.customizationData?.pageGradient || "",
@@ -117,6 +118,56 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 exhibitor: eventData.customizationData?.exhibitor || [],
             }
         };
+        const { data: subEventData, error: subEventError } = await myFetch(`${baseUrl}/public/widget/${eventId}/event`);
+        const childrenData = subEventData.event.data.children
+        const subEvents : EventsType[] = childrenData.map((subevent : any)=>({
+            eventId: subevent.id, // Use eventId from the URL param
+            name: subevent.name || "",
+            latitude: subevent.data.latitude || 0,
+            longitude: subevent.data.longitude || 0,
+            cityName: subevent.data.location_city || "",
+            virtualLink : subevent.data.virtualLink || "",
+            countryName: subevent.data.location_country || "",
+            startDate: subevent.data.start_date || "",
+            endDate: subevent.data.end_date || "",
+            startTime: subevent.data.start_time || "",
+            endTime: subevent.data.end_time || "",
+            participationType: subevent.data.participationType || "",
+            description: subevent.data.description || "",
+            format: subevent.data.format || "",
+            isLinkedToWidget: false, // Assuming this is not available in API, set a default value
+            gmtZone: subevent.data.gmt_time || "", // Assuming this is `gmt_time` from the API
+            interest: "", // Assuming this is missing from API, set default or handle later
+            logoUrl: subevent.data.logoUrl || "",
+            widgetTags: subevent?.widgetData,
+            eventType: subevent?.type,
+            event_type: subevent.data?.event_type,
+            parentData: "",
+            capacity: subevent.data.maxCapacity || 0,
+            registration: subevent?.registration === true ? true : false,
+            approval: subevent?.approval === true ? true : false,
+            waitlisting: subevent?.waitlisting === true ? true : false,
+            eventFormat:subevent.data.format || "",
+            customizationData: {
+                pageBgColor: subevent.data.customizationData?.pageBgColor || "",
+                pageGradient: subevent.data.customizationData?.pageGradient || "",
+                confettiType: subevent.data.customizationData?.confettiType || "",
+                leavesTheme: subevent.data.customizationData?.leavesTheme || false,
+                snowTheme: subevent.data.customizationData?.snowTheme || false,
+                eventFont: subevent.data.customizationData?.eventFont || "",
+                registerBtnColor: subevent.data.customizationData?.registerBtnColor || "",
+                registerBtnText: subevent.data.customizationData?.registerBtnText || "",
+                registerMessage: subevent.data.customizationData?.registerMessage || "",
+                speaker: subevent.data.customizationData?.speaker || [],
+                participationMessage: subevent.data.customizationData?.participationMessage || "",
+                venue: subevent.data.customizationData?.venue || "",
+                hashtags: subevent.data.customizationData?.hashtags || "",
+                boothNumber: subevent.data.customizationData?.boothNumber || "",
+                eventFormat: subevent.data.customizationData?.eventFormat || "",
+                exhibitor: subevent.data.customizationData?.exhibitor || [],
+            }
+        }))
+        setFetchedSubEvents(subEvents)
         setFetchedEvent(eventObject)
     }
     const router = useRouter()
@@ -149,13 +200,13 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <EventContext.Provider value={{ fetchEventData, eventId, fetchedEvent, setAddEventModal, setDeleteModal, setDeleteModalTwo,isPastEvent }}>
+        <EventContext.Provider value={{ fetchEventData, eventId, fetchedEvent, setAddEventModal, setDeleteModal, setDeleteModalTwo, isPastEvent }}>
             <div className={styles.body}>
                 <div className={styles.details}>
                     <div className={styles.header}>
                         <div className={styles.eventNameHeading}>{fetchedEvent?.name}</div>
                         <button onClick={handleDetailPage} className={styles.detailPageBtn}>Detail Page<Arrow /> </button>
-                    </div>  
+                    </div>
                     <div className={styles.navbar}>
                         <Link href={`/widget/events/manage/${eventId}/overview`}
                             className={`${styles.item} ${pathName == `/widget/events/manage/${eventId}/overview` ? styles.activeItem : ""
@@ -182,7 +233,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     </div>
                 </div>
                 {addEventModal && <div className={styles.addEventModal}>
-                    <AddEvent fetchEventData={fetchEventData} eventFlow={fetchedEvent?.eventType === "MAIN" ? "main" : "side"} widgetId='22323' prefilledEvent={fetchedEvent} setIsAddEventModalOpen={setAddEventModal} addedEventIds={[""]} />
+                    <AddEvent fetchedSubEvents={fetchedSubEvents} fetchEventData={fetchEventData} eventFlow={fetchedEvent?.eventType === "MAIN" ? "main" : "side"} widgetId='22323' prefilledEvent={fetchedEvent} setIsAddEventModalOpen={setAddEventModal} addedEventIds={[""]} />
                 </div>}
                 {deleteModal && <div className={styles.deleteModal}>
                     <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>

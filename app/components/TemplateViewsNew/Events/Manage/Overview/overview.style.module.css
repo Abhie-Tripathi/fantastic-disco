@@ -126,6 +126,7 @@
 }
 .shareContainer .inputContainer{
     border-radius: 7px;
+    font-size: var(--font-size-default);
     padding: 5px;
     background-color: var(--primary-light-color);
     display: flex;

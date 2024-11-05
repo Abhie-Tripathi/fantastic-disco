@@ -88,7 +88,7 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
               background: `conic-gradient(#4caf50 ${percentageFilled}%, #e0e0e0 0)`,
             }}
           ></div>
-          <div>{count} left</div>
+          <div>{count < 0 ? "0" : count} left</div>
         </div>
       </div>
       <div className={styles.line}></div>
@@ -97,11 +97,16 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
       <div className={styles.line}></div>
       <div className={styles.selectedBtnContainer}>
         <div>0 Selected</div>
-        {screen === "first" ? <button onClick={() => setScreen("second")} className={styles.nextBtn}>Next</button> :
+        {/* {screen === "first" ? <button onClick={() => setScreen("second")} className={styles.nextBtn}>Next</button> :
           <div className={styles.btnContainer}>
             <button onClick={() => setScreen("first")} className={styles.nextBtn}>Back</button>
             <button className={styles.nextBtn} onClick={handleSubmit}>Send Invites</button>
-          </div>}
+          </div>} */}
+          
+          <div className={styles.btnContainer}>
+            {/* <button onClick={() => setScreen("first")} className={styles.nextBtn}>Back</button> */}
+            <button className={styles.nextBtn} onClick={handleSubmit}>Send Invites</button>
+          </div>
       </div>
 
     </div>

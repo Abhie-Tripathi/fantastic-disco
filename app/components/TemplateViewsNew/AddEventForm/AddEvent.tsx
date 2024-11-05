@@ -25,8 +25,9 @@ interface Props {
   setChoiceFormModal?: (value: boolean) => void
   isApproved?: boolean;
   setIsApproved?: (value: boolean) => void
+  fetchedSubEvents? : EventsType[]
 }
-const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds, prefilledEvent, prefilledGlobalEvent, eventFlow, setEventFlow, setPrefilledGlobalEvent, setPrefilledEvent, prefilledSubEvent, setPrefilledSubEvent, fetchEventData, setChoiceFormModal, isApproved, setIsApproved }: Props) => {
+const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds, prefilledEvent, prefilledGlobalEvent, eventFlow, setEventFlow, setPrefilledGlobalEvent, setPrefilledEvent, prefilledSubEvent, setPrefilledSubEvent, fetchEventData, setChoiceFormModal, isApproved, setIsApproved,fetchedSubEvents}: Props) => {
 
   const [pageBgColor, setPageBgColor] = useState<string>(prefilledEvent?.customizationData.pageBgColor || "")
   const [pageGradient, setPageGradient] = useState<string>(prefilledEvent?.customizationData.pageGradient || "")
@@ -159,7 +160,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
     <div className={styles.body}>
       <div className={styles.appearance}><Appearance setUploadedPhoto={setUploadedPhoto} setSnowTheme={setSnowTheme} setLeavesTheme={setLeavesTheme} confettiType={confettiType} setFormTheme={setFormTheme} setConfettiType={setConfettiType} setPageGradient={setPageGradient} eventNameSub={subeventState.eventName} participationTypeSub={subeventState.participationType} descriptionSub={subeventState.description} virtualLinkSub = {subeventState.virtualLink} cityNameSub={subeventState.cityName} prefilledEvent={prefilledEvent} cityNameMain={mainEventState.cityName} virutalLinkMain = {mainEventState.virtualLink} descriptionMain={mainEventState.description} eventTypeMain={mainEventState.event_type} eventNameMain={mainEventState.eventName} participationTypeMain={mainEventState.participationType} extractedColors={extractedColors} setExtractedColors={setExtractedColors} setEventFont={setEventFont} eventFont={eventFont} setPageBgColor={setPageBgColor} pageBgColor={pageBgColor} /></div>
       <div className={styles.details}>
-        <AddEventFormTab uploadedPhoto={uploadedPhoto} snowTheme={snowTheme} leavesTheme={leavesTheme} formTheme={formTheme} confettiType={confettiType} pageGradient={pageGradient} setPrefilledSubEvent={setPrefilledSubEvent} prefilledSubEvent={prefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} fetchEventData={fetchEventData}
+        <AddEventFormTab fetchedSubEvents={fetchedSubEvents} uploadedPhoto={uploadedPhoto} snowTheme={snowTheme} leavesTheme={leavesTheme} formTheme={formTheme} confettiType={confettiType} pageGradient={pageGradient} setPrefilledSubEvent={setPrefilledSubEvent} prefilledSubEvent={prefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} fetchEventData={fetchEventData}
           prefilledGlobalEvent={prefilledGlobalEvent} prefilledEvent={prefilledEvent} addedEventIds={addedEventIds} fetchEvents={fetchEvents} widgetId={widgetId} eventFont={eventFont} pageBgColor={pageBgColor} setIsAddEventModalOpen={setIsAddEventModalOpen} mainEventState={mainEventState} subEventState={subeventState} handleMaineventChanges={handleMaineventChanges} handleSubeventChange={handleSubeventChange} setChoiceFormModal={setChoiceFormModal} />
 
       </div>

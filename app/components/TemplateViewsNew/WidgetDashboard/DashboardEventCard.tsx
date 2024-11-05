@@ -138,7 +138,6 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
                                         setSelectedEventType={setSelectedEventType}
                                         handlePrefillSubEvent={handlePrefillSubEvent}
                                         width="small"
-                                        handleDeleteModal={handleDeleteModal}
                                         subEvent={subEvent}
                                     />
                                 </div>

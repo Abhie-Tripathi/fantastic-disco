@@ -33,7 +33,12 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, handleChange }: Prop
 
   const handleClickEvent = (event: any) => {
     console.log("clicked event is :", event)
-    let eventId = event.data.id;
+    let isMicroServiceData = false
+    isMicroServiceData = event.data.isMicroServiceData
+    let eventId = ""
+    if(!isMicroServiceData){
+      eventId = event.id;
+    }
     setSearchValue(event.name);
     const formattedValue = eventId ? `${event.name},${eventId}` : event.name;
     if (handleChange) {
@@ -68,7 +73,7 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, handleChange }: Prop
   const handleSearchInput = async (text: string) => {
     if (text) {
       const { data, error } = await myFetch(
-        `${baseUrl}/event/suggestion?name=${text}&widgetId=${widgetId}`
+        `${baseUrl}/event/suggestion?name=${text}`
       );
       if (error) {
         console.log(error);
