@@ -44,6 +44,7 @@ interface Props {
     setChoiceFormModal?: (value: boolean) => void,
     isApproved?: boolean;
     setIsApproved?: (value: boolean) => void
+    fetchedSubEvents? : EventsType[]
 }
 
 const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPrefilledEvent, setPrefilledGlobalEvent, setIsAddEventModalOpen, pageBgColor, eventFont, widgetId, prefilledEvent, prefilledGlobalEvent, fetchEvents, addedEventIds, eventFlow, setEventFlow, mainEventState, subEventState, handleSubeventChange, handleMaineventChanges, prefilledSubEvent, setPrefilledSubEvent, setChoiceFormModal, fetchEventData, pageGradient, confettiType, isApproved, setIsApproved }: Props) => {
@@ -98,13 +99,6 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                     } else if (subEventState.eventFormat === "Virtual" || subEventState.eventFormat === "ONLINE") {
                         handleSubeventChange('isEventFormatEmpty', false); // No need for location in virtual format
                     }
-                    // if (!subEventState.query) {
-                    //     handleSubeventChange('isEventFormatEmpty', true)
-                    //     // setIsEventFormatEmpty(true)
-                    // } else {
-                    //     handleSubeventChange('isEventFormatEmpty', false)
-                    //     // setIsEventFormatEmpty(false)
-                    // }
                     if (!subEventState.description) {
                         handleSubeventChange('isEventDescriptionEmpty', true)
                         // setIsEventDescriptionEmpty(true)
@@ -246,8 +240,6 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                 }
             }
 
-            // formData.append("interest", participationType.toUpperCase())
-            // formData.append("source", "eventgeni/widget/event")
             formData.append("sourceId", widgetId)
 
             const { data, error } = await myFetch(`${baseUrl}/event`, {

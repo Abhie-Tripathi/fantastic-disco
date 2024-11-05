@@ -2,16 +2,10 @@
     display: flex;
     gap: 20px;
 }
-
-.copyContainer {
-    cursor: pointer;
-}
-
-
 .iconWrapper {
     position: relative;
+    cursor: pointer;
 }
-
 .iconWrapper::before {
     content: attr(data-name);
     position: absolute;
@@ -29,7 +23,9 @@
     transition: opacity 0.2s ease;
     z-index: 10;
 }
-
 .iconWrapper:hover::before {
     opacity: 1;
+}
+.iconDisabled{
+    cursor: not-allowed;
 }
