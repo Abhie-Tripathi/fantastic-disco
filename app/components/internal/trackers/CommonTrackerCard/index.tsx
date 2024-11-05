@@ -4,7 +4,7 @@ import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import Loading from "@/app/components/UI/Loading";
 import Image from "next/image";
-import Location from "/public/location_on.svg";
+import { Location } from "geist-icons";
 import GoTo from "/public/goTo.svg";
 import Vectore6 from "/public/newVector.svg";
 import Vectore7 from "/public/lucide_timer.svg";
@@ -15,37 +15,54 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/context';
 import { GAEvent } from "@/utils/GAEvent";
+import ShareWidget from "../ShareWidget";
+import { useTrackerServices } from "@/services/trackerServices";
+import { useTrackerContext } from "@/context/tracker";
 // import { useTheme } from '@/context/theme';
 const CommonTrackerCard = () => {
+  const {data: item}=useTrackerContext();
   // const { theme } = useTheme();
   //   console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const pathName = usePathname().split('/');
   const [loading,setLoading]=useState(false);
+  const {getTrackerDetail, error}=useTrackerServices();
   const trackerId = pathName[pathName.length - 2];
   const [id, setId] = useState<string>("");
-  const [data, setData] = useState<any>([]);
-  const [item, setItem] = useState<any>([]);
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const url = `${baseUrl}/tracker/${trackerId}`;
-      try {
-        const { data, error } = await myFetch(url, {
-          method: 'GET'
-        });
-        if (error) {
-          console.error('Error fetching data:', error);
-        } else {
-          setItem(data);
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error('Fetch failed:', err);
-      }
-    };
+  // const [data, setData] = useState<any>([]);
+  // const [item, setItem] = useState<any>([]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setLoading(true);
+  //     // const url = `${baseUrl}/tracker/${trackerId}`;
+  //     // try {
+  //     //   const { data, error } = await myFetch(url, {
+  //     //     method: 'GET'
+  //     //   });
+  //     //   if (error) {
+  //     //     console.error('Error fetching data:', error);
+  //     //   } else {
+  //     //     setItem(data);
+  //     //     setLoading(false);
+  //     //   }
+  //     // } catch (err) {
+  //     //   console.error('Fetch failed:', err);
+  //     // }
+  //     try{
+  //     const data = await getTrackerDetail(trackerId);
+  //     if (error) {
+  //           console.error('Error fetching data:', error);
+  //         } else if(data) {
+  //           setItem(data);
+  //           setLoading(false);
+  //         }
+  //     }catch(error){
+  //         console.log(error);
+          
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
   
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
@@ -164,30 +181,30 @@ const shareFunction = () => {
       closeShareModal();
   }
 };
-console.log(share);
+console.log(item);
 
   return (
-    <div className={styles.commonCardOuter}>
-    {
+    <div className="flex flex-col w-full gap-6">
+    {/* {
       loading && 
       <div style={{display:"flex", justifyContent:"center", width:"100%"}}>
       <Loading/>
       </div>
-    }
+    } */}
       {item?.tracker ? (
-        <div className={styles.commonCardOuter} style={{gap:"10px"}}>
-        <div className='card' style={{ width: "100%", height: "fit-content" }}>
+        <div className="flex flex-col w-full gap-2">
+        <div className='card' style={{ width: "100%", height: "fit-content", padding:"16px" }}>
 
           <div className={styles.cardOne}>
-            <div className={styles.heading}>{item?.tracker?.name}</div>
+            <div className="font-semibold">{item?.tracker?.name}</div>
             {/* <div className={styles.heading}>one</div> */}
             {/* <Image src={GoTo} alt="goTo" /> */}
           </div>
-          <div className={styles.cardTwo}>
+          <div className="flex gap-1 items-center">
           {locations?.length>0 && 
             <>
-            <Image src={Location} alt="location" />
-            <div className={styles.location}>
+            <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>
+            <div className="flex items-center gap-[5px] text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)]">
               {locations?.length > 0 && locations[0]}
               {locations?.length > 1 && (
                 <span className={styles.moreBtn}>+{locations.length - 1}</span>
@@ -196,49 +213,49 @@ console.log(share);
             </>
           }
           </div>
-          <div className={styles.cardThree} style={{ height: "auto" }}>
-            <div className={styles.cardThreeLeft} style={{ flexDirection: "column" }}>
-              <div style={{ display: "flex", gap: "20px" }}>
-                <div className={`${styles.cardType} card`}style={{ width: "50%" }}>
+          <div className="flex w-full pt-1" style={{ height: "auto" }}>
+            <div className="flex gap-4 w-full flex-col">
+              <div className="flex gap-5">
+                <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   {/* <div className={styles.new}>
                 <Image src={Vectore6} alt="newVector" />
                 New
               </div> */}
-                  <div className={`${styles.number} ${styles.numberCol}`} >
-                    {item?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.new.toLocaleString('en-US')}
+                  <div>
+                    {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.new.toLocaleString('en-US')}
                   </div>
-                  <div className={styles.new} style={{ borderBottom: "0px" }}>
-                    <Image src={Vectore6} alt="newVector" width={12} height={12}/>
+                  <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px" }}>
+                    <Image src={Vectore6} alt="newVector" width={10} height={10}/>
                     <div >New</div>
                   </div>
                 </div>
-                <div className={`${styles.cardType} card`} style={{ width: "50%" }}>
+                <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   {/* <div className={styles.new}>
                 <Image src={Vectore7} alt="lucide_timer" />
                 Active
               </div> */}
-                  <div className={`${styles.number} ${styles.numberCol}`}>
-                    {item?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active.toLocaleString('en-US')}
+                  <div>
+                    {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.active.toLocaleString('en-US')}
                   </div>
-                  <div className={styles.new} style={{ borderBottom: "0px" }}>
+                  <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px" }}>
                     <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
                     Active</div>
                 </div>
               </div>
-              <div style={{ display: "flex", gap: "20px" }}>
-                <div className={`${styles.cardType} card`}style={{ width: "50%" }}>
-                  <div className={`${styles.number} ${styles.numberCol}`}>
-                    {item?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired.toLocaleString('en-US')}
+              <div className="flex gap-5">
+                <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
+                  <div>
+                    {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired.toLocaleString('en-US')}
                   </div>
-                  <div className={styles.new} style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
+                  <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                     <Image src={Vectore8} alt="expired" width={12} height={12} />
                     Expired</div>
                 </div>
-                <div className={`${styles.cardType} card`} style={{ width: "50%" }}>
-                  <div className={`${styles.number} ${styles.numberCol}`}>
+                <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
+                  <div>
                     0
                   </div>
-                  <div className={styles.new} style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
+                  <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                     <Image src={Vectore8} alt="expired" />
                     Saved</div>
                 </div>
@@ -250,10 +267,12 @@ console.log(share);
           </div>
           
         </div>
+        {/* <ShareWidget/> */}
         <div onClick={()=>setShare(!share)} className={styles.shareTracker}>Share Tracker</div>
         {share && 
         <div className={styles.shareModal} onClick={closeModal}>
           <ShareModal id={id} setId={setId} closeShareModal={closeShareModal} share={share} setShare={setShare} shareFunction={shareFunction}/>
+          {/* <ShareWidget/> */}
         </div>
         }
         </div>

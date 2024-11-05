@@ -652,10 +652,10 @@ export const AddComment = ({
   
   
   return (
-    <div className={styles.container}>
+    <div className="flex flex-col">
       
       {/* <div>{renderNote()}</div> */}
-      <form onSubmit={notes} ref={formRef1} className={styles.form}>
+      <form onSubmit={notes} ref={formRef1} className="flex flex-col">
         
         { last!=="notesDiscussion" && commentType === 'mainComment' ? 
         <div className={styles.recommendBtn}>
@@ -688,13 +688,13 @@ export const AddComment = ({
         : <></>}
         <div style={{ display: "flex", gap: "10px" }}>
           {selectedPdfs?.map((item: File, ind: number) => (
-            <div key={ind} className={styles.pdf}>
+            <div key={ind} className={`mb-2 flex relative bg-[var(--primary-color)] items-center p-1 ${styles.fileDiv} `} style={{borderRadius:"0px"}}>
               <Image src={Pdf} width={50} height={50} alt="pdf" />
               <p key={ind} style={{ display: "flex" }}>
                 {item.name}
               </p>
-              <div className={styles.closeOuter} style={{paddingRight:"5px"}}>
-                <Image src={Close} alt="close" width={20} height={20} className={styles.pdfClose} onClick={()=>removePdf(ind)}/>
+              <div className={`absolute flex justify-end w-full h-full top-[0px] ${styles.closeOuter}`} style={{paddingRight:"5px"}}>
+                <Image src={Close} alt="close" width={20} height={20} className={`${styles.close}`} onClick={()=>removePdf(ind)}/>
                 </div>
             </div>
           ))}
@@ -703,17 +703,17 @@ export const AddComment = ({
           <>
             <div className={styles.filePreview}>
               {filePreviews.map((filePreview:any, index: number) => (
-                <div className={styles.fileDiv} key={index}>
+                <div className={`mb-2 ${styles.fileDiv}`} key={index}>
                   <Image
-                  style={{borderRadius:"5px"}}
+                  style={{borderRadius:"5px", width:"80px", height:"80px"}}
                     src={URL.createObjectURL(filePreview)}
                     width={80}
                     height={80}
                     alt="File Preview"
                   />
-                  <div className={styles.closeOuter}>
+                  <div className={`absolute flex justify-end w-full h-full top-[0px] ${styles.closeOuter}`}>
                   <Image
-                    className={styles.close}
+                    className={`${styles.close}`}
                     width={20}
                     height={20}
                     src={Close}
@@ -726,11 +726,11 @@ export const AddComment = ({
             </div>
           </>
         )}
-        <div className={styles.addNotes}>
+        <div className="flex justify-between relative gap-6 rounded-[30px] border border-[var(--border-color)] outline outline-[0.9px] outline-transparent p-[10px] w-full items-center">
           <textarea
             readOnly={disable}
             ref={textareaRef}
-            className={`${styles.textArea} ${theme === 'light' && styles.textArea_light}`}
+            className="flex h-[20px] w-[90%] bg-transparent border-none outline-none resize-none pl-[5px] text-[var(--primary-text-color)]"
             placeholder="Take a note"
             value={note}
             onChange={(e) => noteFun(e)}
@@ -738,7 +738,7 @@ export const AddComment = ({
             onKeyDown={handleKeyDown1}
           />
           <div style={{display:"flex", gap:"5px", alignItems:"center"}}>
-          <button style={{ display: "flex", background:"transparent" }}  className={styles.attachIconContainer} data-name="Add File">
+          <button style={{ display: "flex", background:"transparent" }}  className={`relative cursor-pointer h-[25px] w-[25px] ${styles.attachIconContainer}`} data-name="Add File">
           <Image
             className={`${styles.attachIcon} ${iconClass}`}
             onClick={pdfSelect}
@@ -746,7 +746,7 @@ export const AddComment = ({
             alt="drive"
           />
           </button>
-          <button style={{ display: "flex", background:"transparent" }}  className={styles.attachIconContainer} data-name="Send" type="submit">
+          <button style={{ display: "flex", background:"transparent" }}  className={`relative cursor-pointer h-[25px] w-[25px] ${styles.attachIconContainer}`} data-name="Send" type="submit">
             <Image src={Send} alt="send" className={iconClass} />
           </button>
          

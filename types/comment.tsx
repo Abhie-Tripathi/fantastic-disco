@@ -2,7 +2,7 @@ import { UserResponse } from "./user";
 
 export interface Comment {
   CommentFiles?:[
-    Attachment:[]
+    Attachment?:[]
   ];
   created:Date;
   id: string;
@@ -26,4 +26,7 @@ export interface Comment {
   replyId?:string;
   user: Omit<UserResponse, "email">|any;
   replies?: Comment[];
+}
+export interface NotesResponse {
+  comments: Comment[];
 }

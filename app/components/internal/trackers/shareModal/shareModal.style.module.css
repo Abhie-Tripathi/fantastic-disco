@@ -1,24 +1,4 @@
-.innerModal{
-    display: flex;
-    flex-direction: column;
-    width: 500px;
-    gap: var(--spacing-sm);
-    /* align-items: center; */
-    box-shadow: var(--elevation-medium);
-    justify-content: center;
-    background-color: var(--primary-foreground);
-    padding: 20px;
-    border-radius: var(--border-radius-sm);
-}
-.shareHead{
-    color:var(--primary-color);
-    font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-large);
-}
-.bar{
-    border: 1px solid var(--border-color);
-    width:100%;
-}
+
 .linkCopy{
     display: flex;
     justify-content: space-between;
@@ -34,21 +14,6 @@
         font-size: var(--font-size-small);
         cursor: pointer;
     }
-.inviteAccess{
-    display: flex;
-    gap: var(--spacing-xxs);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-sm);
-    align-items: stretch;
-}
-.inviteAccess input{
-    width: 100%;
-    border: none;
-    color: var(--primary-text-color);
-    outline: none;
-    background: inherit;
-    padding: 10px;
-}
 .accountImg{
     display: flex;
     align-items: center;
@@ -56,30 +21,8 @@
 .inputArea{
     width: 94%;
 }
-.buttons{
-    display: flex;
-    flex-direction: row-reverse;
-    gap:var(--spacing-sm);
-}
-.send{
-    background: var(--primary-color);
-    text-wrap: nowrap;
-    padding: 4px 12px;
-    color: white;
-    border-radius: var(--border-radius-sm);
-}
-.cancel{
-    color: var(--primary-color);
-}
-/* manageAccess.style.module.css */
-.dropdown {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-}
 
 .dropdownContent {
-    display: block;
     display: block;
     position: absolute;
     background-color: var(--background-secondary-color);

@@ -42,10 +42,10 @@ const BasicFilter = ({category}:any) => {
     
   // setCatgeoryData.filter((item)=>)
   return (
-    <div className={styles.containerOuter}>
-     <div className={styles.heading}>Category</div>
-     <div className={styles.allCat1}>
-      <div className={styles.allCat}>
+    <div className="p-3 flex gap-2 flex-col">
+     <div className="text-[var(--primary-color)] font-semibold text-lg">Category</div>
+     <div className="grid">
+      <div className="grid grid-cols-3 gap-[var(--spacing-xs)]">
       {category?.map((item:any,id:any)=>(
       <div key={id}>
       <label >

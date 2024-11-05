@@ -25,9 +25,9 @@ const TrackerOwner: React.FC<TrackerOwnerProps> = ({ adminData }) => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.containerFirst}>
-        <div className={styles.owner}>Tracker Owners</div>
+    <div className="flex w-[100%] p-5 flex-col gap-3 border border-[var(--border-color)] rounded-[12px]">
+      <div className="flex w-[100%] justify-between items-center">
+        <div className="text-[var(--secondary-text-color)] font-medium">Tracker Owners</div>
         {/* <div className={styles.add}>Add owners</div> */}
       </div>
       <div className={styles.bar}></div>
