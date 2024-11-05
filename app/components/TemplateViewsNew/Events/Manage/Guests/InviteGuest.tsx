@@ -16,7 +16,7 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
   const [count, setCount] = useState(4); // Default starting count
   const [screen, setScreen] = useState<string>("first");
   const [selectedMails, setSelectedMails] = useState<string[]>([])
-  const [suggestedMails, setSuggestedMails] = useState<string[]>([])
+  const [suggestedMails, setSuggestedMails] = useState<string[]>([]) // This is array for showing the suggested mails
   const maxCount = 15
 
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
@@ -54,12 +54,15 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
   },[suggestedMailQuery])
 
   const handleSubmit = async () => {
+    if(selectedMails.length === 0){
+      showToast("warning","Select or Enter atleast one email to send invite")
+      return;
+    }
     const newObj = {
       emails: selectedMails.join(),
       eventId,
       redirectUrl: `${console_url}/detailpage/${eventId}`
     }
-    console.log(newObj)
     const { data, error } = await myFetch(`${baseUrl}/invite/send`, {
       method: 'POST',
       headers: {
