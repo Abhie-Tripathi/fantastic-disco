@@ -22,7 +22,9 @@ interface Props {
   customData: any[];
   handleCustomData: (data: any) => void;
   setUploadEnabled: any;
-  setSelectedEventKeywords: any;
+  // setSelectedEventKeywords: any;
+  setIncludeKeywords?:any;
+  setExcludeKeywords?:any;
 }
 
 const CsvUploader = ({
@@ -30,7 +32,9 @@ const CsvUploader = ({
   customData,
   handleCustomData,
   setUploadEnabled,
-  setSelectedEventKeywords,
+  setIncludeKeywords,
+  setExcludeKeywords,
+  // setSelectedEventKeywords,
 }: Props) => {
   useEffect(() => {
     let tempData: any = [];
@@ -105,14 +109,19 @@ const CsvUploader = ({
     console.log("onSubmit", data);
 
     if (templateData.name === "T_PRODUCT_KEYWORDS") {
+      console.log(data["Keywords"]);
+      const includeKeywords:any=[]
+      const excludeKeywords: any=[]
       const finalData2: any = [];
       data.validData.map((data: any) => {
         if (data["Keywords"] && data["Keywords"] !== "")
-          finalData2.push(data["Keywords"]);
+          includeKeywords.push(data["Keywords"]);
         if (data["Excluded Keywords"] && data["Excluded Keywords"] !== "")
-          finalData2.push("-" + data["Excluded Keywords"]);
+          excludeKeywords.push(data["Excluded Keywords"]);
       });
-      setSelectedEventKeywords(finalData2);
+      setIncludeKeywords(includeKeywords)
+      setExcludeKeywords(excludeKeywords)
+      // setSelectedEventKeywords(finalData2);
     } else {
       const cleanedSpeakers = data.validData
       .map((item: any) => {

@@ -80,6 +80,7 @@ console.log(searchParams.get("view"));
     repeatSent: false,
     trackerKeywords: true,
     eventRating:false, 
+    eventFrequency:false,
     keywords:[]
   });
   const lineData = {

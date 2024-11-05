@@ -67,6 +67,7 @@ interface Toggle{
   eventRank?: boolean;
   audienceZone?: boolean;
   audienceSpread?: boolean;
+  eventFrequency?:boolean;
 }
 interface EditData {
   tracker: Tracker;
@@ -168,7 +169,8 @@ const Page = () => {
     const eventCountry = data?.tracker?.filterValue?.eventCountry?.map((countryObj: any) => Object.values(countryObj)[0]) || [];
     const eventCity = data?.tracker?.filterValue?.eventCity?.map((cityObj: any) => Object.values(cityObj)[0]) || [];
     const eventZone = data?.tracker?.filterValue?.eventRegion?.split(",") || [];
-    setLocations([...eventCountry, ...eventCity, ...eventZone]);
+    const eventState = data?.tracker?.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
+    setLocations([...eventCountry, ...eventCity, ...eventZone, ...eventState]);
   }, [data]);
 const eventType=data?.tracker?.filterValue?.eventType?
 data?.tracker?.filterValue?.eventType
@@ -260,14 +262,14 @@ const userRating=
           </div>
           <div className={styles.innerContainerRight}>
           <div className={keyStyles.allCat1}>
-                   {data?.tracker?.filterValue?.includeKeywords?.split(" ")?.map((item: string, id: number) => (
+                   {data?.tracker?.filterValue?.includeKeywords?.split(",")?.map((item: string, id: number) => (
                         (
                            <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.key}`}>{item}
                            <span className={keyStyles.tooltipText}>Included Keyword</span>
                            </div>
                        )
                    ))}
-                   {data?.tracker?.filterValue?.excludeKeywords?.split(" ")?.map((item: string, id: number) => (
+                   {data?.tracker?.filterValue?.excludeKeywords?.split(",")?.map((item: string, id: number) => (
                         (
                           <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.keyNegative}`}>{item}
                           <span className={keyStyles.tooltipText}>Excluded Keyword</span>
@@ -662,9 +664,10 @@ const userRating=
         </div>
       </div>
       <div className={styles.innerContainerRight}>
-        <AdvanceFilter includeKeywords={data?.tracker?.filterValue?.includeKeywords?.length !== 0 ? data?.tracker?.filterValue?.includeKeywords?.split(' ') : []} 
-        excludeKeywords={data?.tracker?.filterValue?.excludeKeywords?.length !== 0 ? data?.tracker?.filterValue?.excludeKeywords?.split(' ') : []}
+        <AdvanceFilter includeKeywords={data?.tracker?.filterValue?.includeKeywords?.length !== 0 ? data?.tracker?.filterValue?.includeKeywords?.split(',') : []} 
+        excludeKeywords={data?.tracker?.filterValue?.excludeKeywords?.length !== 0 ? data?.tracker?.filterValue?.excludeKeywords?.split(',') : []}
          freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
+         isFreqToggle={toggleOpend?.eventFrequency}
           isBranded={toggleOpend?.brandedEvent}
           eventEdition={data?.tracker?.filterValue?.editionRange}
           type={type}

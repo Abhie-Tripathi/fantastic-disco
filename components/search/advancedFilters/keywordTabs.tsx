@@ -63,7 +63,7 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
         </form>
         <TabsContent value="include" className="mt-0">
           <div className="flex flex-wrap gap-2">
-            {includeKeywords.map((keyword) => (
+            {includeKeywords?.map((keyword) => (
               <Badge
                 key={keyword}
                 variant="secondary"
@@ -83,7 +83,7 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
         </TabsContent>
         <TabsContent value="exclude" className="mt-0">
           <div className="flex flex-wrap gap-2">
-            {excludeKeywords.map((keyword) => (
+            {excludeKeywords?.map((keyword) => (
               <Badge
                 key={keyword}
                 variant="secondary"
