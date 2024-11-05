@@ -6,7 +6,10 @@ interface CircularProgressProps {
   relevanceScore: string;
 }
 
-const CircularProgress = ({ percentages, relevanceScore }: CircularProgressProps) => {
+const CircularProgress = ({
+  percentages,
+  relevanceScore,
+}: CircularProgressProps) => {
   const colors = ["#646BDC", "#E99CD4", "#9B86D4"];
 
   const baseRadius = 22;
@@ -28,7 +31,7 @@ const CircularProgress = ({ percentages, relevanceScore }: CircularProgressProps
 
           return (
             radius > 0 && (
-              <>
+              <React.Fragment key={`circle-${percentage}`}>
                 <circle
                   className="text-gray-200"
                   strokeWidth={strokeWidth}
@@ -54,13 +57,13 @@ const CircularProgress = ({ percentages, relevanceScore }: CircularProgressProps
                   style={{ color: colors[index] }}
                   transform="rotate(-90 26 26)"
                 />
-              </>
+              </React.Fragment>
             )
           );
         })}
       </svg>
       <span className={styles.circleVal} aria-hidden="true">
-        {relevanceScore ? relevanceScore : '--'}
+        {relevanceScore ? relevanceScore : "--"}
       </span>
     </div>
   );

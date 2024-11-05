@@ -213,25 +213,20 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               </span>
             </div>
           )}
-          <span>
-            {eventStartDate && eventEndDate && (
-              <Text
-                fontWeight="semibold"
-                variant="noMargin"
-                className={`${
-                  isCancelled || isPostponed ? "line-through" : ""
-                }`}
-              >
-                {/* {formattedDate()} */}
-                {renderFormattedDates(eventStartDate, eventEndDate)}
-              </Text>
-            )}
-            {/* {eventStartTime && eventEndTime && (
+            <Text
+              fontWeight="semibold"
+              variant="noMargin"
+              className={`${isCancelled || isPostponed ? "line-through" : ""}`}
+            >
+              {eventStartDate &&
+                eventEndDate &&
+                renderFormattedDates(eventStartDate, eventEndDate)}
+            </Text>
+          {/* {eventStartTime && eventEndTime && (
               <Text variant="noMargin" color="secondary">
                 {`${eventStartTime} - ${eventEndTime} GMT+5:30`}
               </Text>
             )} */}
-          </span>
           {isCancelled && (
             <Badge
               variant="outline"
@@ -256,7 +251,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               {/* <Location color="#666666" width="14px" height="14px" /> */}
               <MapPin width={20} height={20} />
             </span>
-            <span>
+            <div>
               {venueLocation.venue && (
                 <>
                   {venueLocation.venue.name && (
@@ -272,7 +267,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   )}
                 </>
               )}
-            </span>
+            </div>
           </div>
         )}
         <Accordion
