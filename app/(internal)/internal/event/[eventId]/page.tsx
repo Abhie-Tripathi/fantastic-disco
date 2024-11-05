@@ -25,6 +25,8 @@ import {
   Forward,
   MailIcon,
   MapPin,
+  PhoneIcon,
+  Share2,
 } from "lucide-react";
 import { useEventsService } from "@/services/eventsService";
 import { GTMEventPOCDetails, EventDate } from "@/types/events";
@@ -128,7 +130,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
   return (
     <div className="pt-0 p-6">
-      <aside className="fixed h-screen w-[25%] pb-24 bg-white pt-6 pr-6 overflow-y-auto shadow-[4px_0_10px_rgba(0,0,0,0.1)] max-xl:w-[30%]">
+      <aside className="fixed h-screen w-[25%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[4px_0_10px_rgba(0,0,0,0.1)] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
         <button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
           <Link
@@ -165,14 +167,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               </Link>
             )}
             <button onClick={handleShare}>
-              {/* <Forward width="18px" height="18px" color="#666666" /> */}
-              <Image
-                src={"/shareLogo.svg"}
-                width="19"
-                height="19"
-                alt={"Share"}
-              />
-              {/* <Share width="16px" height="16px" color="#666666" /> */}
+              <Share2 width="17px" height="17px" color="#666666" />
             </button>
           </div>
         </div>
@@ -211,7 +206,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         <div className="flex gap-2 items-center my-4">
           {startDateTime && (
-            <div className="border border-[#ebebeb] rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square">
+            <div className="border border-[#ebebeb] dark:border-[var(--border-color)] rounded-lg flex flex-col items-center justify-center w-10 h-10 aspect-square">
               <span className="text-[#666666] text-md font-bold">
                 {/* {format(new Date(startDateTime), "dd")} */}
                 <CalendarDays width={20} height={20} />
@@ -257,7 +252,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         {venueLocation && venueLocation.venue && (
           <div className="flex gap-2 items-start my-4">
-            <span className="border border-[#ebebeb] text-[#666666] rounded-lg flex items-center justify-center text-md font-bold w-10 h-10 aspect-square">
+            <span className="border border-[#ebebeb] dark:border-[var(--border-color)] text-[#666666] rounded-lg flex items-center justify-center text-md font-bold w-10 h-10 aspect-square">
               {/* <Location color="#666666" width="14px" height="14px" /> */}
               <MapPin width={20} height={20} />
             </span>
@@ -282,7 +277,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         )}
         <Accordion
           type="single"
-          className="bg-[#FAFAFA] border border-[var(--neutral-light-color)] rounded-sm mb-4"
+          className="bg-[#FAFAFA] dark:bg-transparent border border-[var(--neutral-light-color)] rounded-sm mb-4"
           collapsible
         >
           <AccordionItem value="item-1">
@@ -386,7 +381,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         </Accordion>
         <Accordion
           type="single"
-          className="bg-[#FAFAFA] border border-[var(--neutral-light-color)] rounded-sm"
+          className="bg-[#FAFAFA] dark:bg-transparent border border-[var(--neutral-light-color)] rounded-sm"
           collapsible
         >
           <AccordionItem value="item-2">
@@ -455,7 +450,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                         )}
                         {phoneNumber && (
                           <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-                            <Phone width="12px" height="12px" />
+                            <PhoneIcon width="12px" height="12px" />
                             <span>{phoneNumber}</span>
                           </p>
                         )}
@@ -486,7 +481,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         {/* <Button className="mt-4 w-full">Track this event</Button> */}
       </aside>
       <div className="ml-auto w-[70%] max-xl:w-[62%]">
-        <ul className="flex flex-row gap-12 justify-between mb-4 z-10 bg-[#ffffff] shadow pt-3 items-end w-full">
+        <ul className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white dark:bg-[var(--heading-background-color)] shadow pt-3 items-end w-full">
           <div className="flex gap-12">
             {tabs.map((tab) => (
               <div

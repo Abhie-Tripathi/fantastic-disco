@@ -29,7 +29,7 @@ const TagList = ({
   const displayedTags = isExpanded ? tags : tags.slice(0, tags.length);
   return displayedTags.map((tag) => (
     <li key={tag.id}>
-      <span className="text-[#171717] text-sm py-1 px-3 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)]">
+      <span className="text-[var(--primary-text-color)] text-sm py-1 px-3 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)]">
         {capitalize(tag.name)}
       </span>
     </li>
@@ -105,7 +105,7 @@ export const EventInfoAndMap = ({
         </span>
       </div> */}
       <div className="flex flex-row gap-6 max-xl:flex-col w-full">
-        <div className="flex flex-1 flex-col gap-5 max-xl:flex-none bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] p-6 rounded-sm max-xl:h-96 max-h-[800px] overflow-y-auto scrollbar">
+        <div className="flex flex-1 flex-col gap-5 max-xl:flex-none bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] p-6 rounded-sm max-xl:h-96 max-h-[800px] overflow-y-auto scrollbar">
           {
             <div>
               <h1 className="text-[1rem] mb-2 font-medium">
@@ -142,7 +142,7 @@ export const EventInfoAndMap = ({
               <ul className="flex flex-row flex-wrap gap-3">
                 {categories.map((category: any) => (
                   <li key={category.id}>
-                    <span className="text-[#171717] text-sm py-1 px-3 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)]">
+                    <span className="text-[var(--primary-text-color)] text-sm py-1 px-3 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)]">
                       {category.name}
                     </span>
                   </li>
@@ -157,13 +157,13 @@ export const EventInfoAndMap = ({
             </div>
           }
           <div className="flex flex-row gap-6">
-            <div className="flex flex-col border border-[var(--neutral-light-color)] bg-[#FAFAFA] p-3 rounded-sm w-fill">
+            <div className="flex flex-col border border-[var(--neutral-light-color)] bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] p-3 rounded-sm w-fill">
               <h1 className="text-[1rem] mb-2 font-medium border-b-[1px] pb-2">
                 Entry Fees
               </h1>
 
               {entryType ? (
-                <span className="text-[var(--primary-color)] font-semibold">
+                <span className="text-[var(--primary-text-color)] font-semibold">
                   {capitalize(entryType ?? "")}
                 </span>
               ) : (
@@ -187,7 +187,7 @@ export const EventInfoAndMap = ({
               </span> */}
             </div>
             {startDateTime && endDateTime && (
-              <div className="flex flex-col border border-[var(--neutral-light-color)] bg-[#FAFAFA] p-3 rounded-sm w-fill">
+              <div className="flex flex-col border border-[var(--neutral-light-color)] bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] p-3 rounded-sm w-fill">
                 <h1 className="text-[1rem] mb-2 font-medium border-b-[1px] pb-2">
                   Event Timings
                 </h1>
@@ -223,7 +223,7 @@ export const EventInfoAndMap = ({
             )}
           </div>
         </div>
-        <div className="flex flex-1 flex-col gap-8 max-xl:flex-none max-xl:h-fit w-auto bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] p-6 rounded-sm">
+        <div className="flex flex-1 flex-col gap-8 max-xl:flex-none max-xl:h-fit w-auto bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] p-6 rounded-sm">
           <div className={"gap-8 flex flex-col"}>
             <div className={"flex justify-between items-center"}>
               <span style={{ fontSize: "var(--font-size-default)" }}>

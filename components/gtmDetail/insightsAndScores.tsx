@@ -56,25 +56,25 @@ export const InsightsAndScores = ({
           <div className="grid grid-cols-4 grid-rows-1 gap-6 w-full">
             {scores && (
               <>
-                <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+                <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                   <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                     Impact Score
                   </h1>
                   <CircularProgressBar value={scores.impactScore} />
                 </div>
-                <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+                <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                   <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                     Trust Score
                   </h1>
                   <CircularProgressBar value={Math.round(trustScore ?? 0)} />
                 </div>
-                <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+                <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                   <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                     Inbound Score
                   </h1>
                   <CircularProgressBar value={scores.inboundScore} />
                 </div>
-                <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+                <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                   <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                     International Score
                   </h1>
