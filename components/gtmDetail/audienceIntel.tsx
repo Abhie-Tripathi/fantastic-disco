@@ -53,7 +53,7 @@ export const AudienceIntel = ({
       <Heading heading="Audience Intel" scrollSection={scrollSection} />
       <div className="flex flex-col gap-6">
         <div className="flex gap-6">
-          <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+          <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
             <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
               Estimated Visitor
             </h1>
@@ -63,7 +63,7 @@ export const AudienceIntel = ({
                 : "--"}
             </p>
           </div>
-          <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+          <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
             <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
               Estimated Exhibitor
             </h1>
@@ -75,7 +75,7 @@ export const AudienceIntel = ({
           </div>
         </div>
         <div className="flex gap-6 h-full max-xl:flex-col max-xl:h-full">
-          <div className="flex flex-col gap-6 border border-[#EBEBEB] rounded-md p-4 h-80 overflow-y-auto scrollbar w-full">
+          <div className="flex flex-col gap-6 border border-[#EBEBEB] dark:bg-transparent dark:border-[var(--border-color)] rounded-md p-4 h-80 overflow-y-auto scrollbar w-full">
             <div className="flex justify-between">
               <Text
                 color="primary"
@@ -135,7 +135,7 @@ export const AudienceIntel = ({
             </ul>
           </div>
 
-          <div className="flex flex-col gap-6 border border-[#EBEBEB] rounded-md p-4 h-80 w-full">
+          <div className="flex flex-col gap-6 border border-[#EBEBEB] dark:bg-transparent dark:border-[var(--border-color)] rounded-md p-4 h-80 w-full">
             <div className="flex justify-between">
               <Text
                 color="primary"
@@ -195,7 +195,7 @@ export const AudienceIntel = ({
             >
               Other departments
             </Text> */}
-            <ul className="flex flex-col gap-4 max-h-80 overflow-y-auto scrollbar pr-2">
+            <ul className="flex flex-col gap-4 max-h-80 overflow-y-auto pr-2">
               {designation && designation.length > 0 ? (
                 designation.map((item, index) => (
                   <li key={`designation-${item}-${index}`}>

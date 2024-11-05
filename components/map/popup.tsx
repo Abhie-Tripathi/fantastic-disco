@@ -4,6 +4,7 @@ import { Popup } from "react-map-gl";
 import { differenceInDays, format } from "date-fns";
 import Link from "next/link";
 import { eventTypeColors } from "@/constants/eventTypes";
+import { renderFormattedDates } from "@/utils/dateFormat";
 
 const iconUrls: Record<string, string> = {
   "performing-arts": "/eventType/arts.png",
@@ -28,12 +29,10 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
   const days =
     differenceInDays(popupInfo.endDateTime, popupInfo.startDateTime) + 1;
 
-  const formattedRange =
-    formattedStartDate === formattedEndDate
-      ? formattedStartDate
-      : `${formattedStartDate} - ${formattedEndDate} (${days} ${
-          days === 1 ? "day" : "days"
-        })`;
+  const formattedRange = renderFormattedDates(
+    formattedStartDate,
+    formattedEndDate
+  );
 
   const address = popupInfo.venueLocation
     ? popupInfo.venueLocation.city?.name === "Online"
@@ -96,8 +95,8 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
             View Details
           </Link>
         </div>
-        <h3 className="font-medium text-sm my-2">{popupInfo.name}</h3>
-        <p className="text-xs mb-2 font-medium">{address}</p>
+        <h3 className="font-medium text-sm my-2 text-black">{popupInfo.name}</h3>
+        <p className="text-xs mb-2 font-medium text-black">{address}</p>
         <div className="flex items-start text-xs text-primary">
           {formattedRange}
         </div>

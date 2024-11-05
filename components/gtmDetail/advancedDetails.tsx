@@ -63,11 +63,11 @@ const CarouselComponent = ({
   // }, [api]);
   return (
     <div className="flex justify-center">
-      <Carousel className="w-11/12 px-4">
+      <Carousel className="w-11/12 px-4"> 
         <CarouselContent className="-ml-1 flex justify-around">
           {maturity && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
-              <div className="flex flex-col bg-white items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
                 <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                   Maturity
                 </h1>
@@ -87,7 +87,7 @@ const CarouselComponent = ({
           )}
           {editions && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
-              <div className="flex flex-col bg-white items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
                 <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                   Edition
                 </h1>
@@ -98,7 +98,7 @@ const CarouselComponent = ({
                   //   }`}
                   // </span>
                   <DetailDialog
-                    titleColor="text-[var(--text-foreground)]"
+                    titleColor="text-[var(--primary-text-color)]"
                     title={"No of Editions"}
                     triggerText={`${count} Edition${count > 1 ? "s" : ""}`}
                     className="text-[#6750A4] bg-[#E6E6F9] h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit cursor-pointer"
@@ -114,7 +114,7 @@ const CarouselComponent = ({
           )}
           {frequency && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
-              <div className="flex flex-col bg-white items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
                 <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                   Frequency
                 </h1>
@@ -135,7 +135,7 @@ const CarouselComponent = ({
           )}
           {(futureExpectedStartDate || futureExpectedEndDate) && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
-              <div className="flex flex-col bg-white items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
                 <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                   Rehost Month
                 </h1>
@@ -147,7 +147,7 @@ const CarouselComponent = ({
           )}
           {(isBranded || isSeries) && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
-              <div className="flex flex-col bg-white items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
                 <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                   Brand
                 </h1>
@@ -171,8 +171,8 @@ const CarouselComponent = ({
             </CarouselItem>
           )}
         </CarouselContent>
-        <CarouselPrevious className="bg-[#F2F2F2] rounded-full border-[var(--neutral-light-color)] w-8 h-w-8  my-[0.8rem]" />
-        <CarouselNext className="bg-[#F2F2F2] rounded-full border-[var(--neutral-light-color)] w-8 h-w-8 my-[0.8rem]" />
+        <CarouselPrevious className="bg-[#F2F2F2] rounded-full border-[var(--neutral-light-color)] dark:bg-transparent dark:border-2 dark:border-[var(--border-color)] w-8 h-w-8  my-[0.8rem]" />
+        <CarouselNext className="bg-[#F2F2F2] rounded-full border-[var(--neutral-light-color)] dark:bg-transparent dark:border-2 dark:border-[var(--border-color)] w-8 h-w-8 my-[0.8rem]" />
       </Carousel>
     </div>
   );

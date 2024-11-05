@@ -57,7 +57,7 @@ const sponsorsData = [
 
 const ListCard = ({ participant }: { participant: any }) => {
   return (
-    <li className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-3 rounded-sm gap-3 w-fill h-auto">
+    <li className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-3 rounded-sm gap-3 w-fill h-auto">
       <div className="flex flex-row justify-between">
         <div className="flex gap-4">
           <Image
@@ -128,7 +128,7 @@ const ParticipantContainer = ({
   nullState: any;
 }) => {
   return (
-    <div className="flex flex-col border border-[var(--neutral-light-color)] p-3 rounded-sm gap-6 w-full h-auto">
+    <div className="flex flex-col border border-[var(--neutral-light-color)] p-3 rounded-sm gap-6 w-full h-auto dark:bg-transparent dark:border-[var(--border-color)]">
       <div className="flex gap-4 items-center">
         <Text variant="noMargin" fontWeight="medium">
           {heading}
@@ -153,7 +153,7 @@ const ParticipantContainer = ({
         {count !== null && count > 3 && (
           <Link
             href={""}
-            className="border border-[var(--neutral-light-color)] text-[var(--primary-color)] py-2 px-3 rounded-sm font-medium text-center cursor-not-allowed"
+            className="border border-[var(--neutral-light-color)] text-[var(--primary-color)] dark:bg-transparent dark:border-[var(--border-color)] py-2 px-3 rounded-sm font-medium text-center cursor-not-allowed"
           >
             Show {count - 3} more
           </Link>
