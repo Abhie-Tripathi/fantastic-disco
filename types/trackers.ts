@@ -80,6 +80,7 @@ export interface Tracker {
     audienceSpread?: boolean;
     globalToggle?:boolean;
     brandSeries?:boolean;
+    eventFrequency?: boolean;
   }
    export interface Access{
     entityId: string;

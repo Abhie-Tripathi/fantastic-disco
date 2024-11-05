@@ -27,10 +27,12 @@ const selectedCategories = source === 'tracker' ? parentSelectedCategories : sel
 const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories : setSelectedCategoriesLocal;
 
   useEffect(() => {
-    const eventTypes = getLocalFilterValue("categories")
-      .split(",")
-      .filter(Boolean);
-    setSelectedCategories?.(eventTypes);
+    if(source !== 'tracker') {
+      const eventTypes = getLocalFilterValue("categories")
+        .split(",")
+        .filter(Boolean);
+      setSelectedCategories?.(eventTypes);
+    }
   }, [getLocalFilterValue]);
 
   const handleCategoryToggle = useCallback((categorySlug: string) => {

@@ -59,23 +59,24 @@ export default function CreateTrackerDialog({
     setIsLoading(true);
 
     const userType = {
-      ...(adaptedParams.eventRating && { rating: true }),
-      ...(adaptedParams.estExhibit && { exhibit: true }),
-      ...(adaptedParams.repeatSent && { trust: true }),
+      ...(adaptedParams.shows.includes("eventRating") && { rating: true }),
+      ...(adaptedParams.shows.includes("estimatedExhibitScore") && { exhibit: true }),
+      ...(adaptedParams.shows.includes("trustScore") && { trust: true }),
       ...(adaptedParams.shows.includes("maturity") && { maturity: true }),
-      ...(adaptedParams.shows.includes("brandedEvent") && {
+      ...(adaptedParams.shows.includes("eventBrand") && adaptedParams.shows.includes("eventSeries") && {brandSeries: true}),
+      ...(adaptedParams.shows.includes("eventBrand") && {
         brandedEvent: true,
       }),
       ...(adaptedParams.shows.includes("eventSeries") && { eventSeries: true }),
-      ...(adaptedParams.shows.includes("forecastedStatus") && {
+      ...(adaptedParams.shows.includes("isforecasted") && {
         forecastedStatus: true,
       }),
-      ...(adaptedParams.shows.includes("impactScore") && { impactScore: true }),
-      ...(adaptedParams.shows.includes("inboundScore") && {
-        inboundScore: true,
-      }),
-      ...(adaptedParams.shows.includes("internationalScore") && {
-        internationalScore: true,
+      // ...(adaptedParams.shows.includes("eventImpactScore") && { impactScore: true }),
+      // ...(adaptedParams.shows.includes("inboundScore") && {
+      //   inboundScore: true,
+      // }),
+      ...(adaptedParams.shows.includes("eventImpactScore") && adaptedParams.shows.includes("inboundScore") && adaptedParams.shows.includes("internationalScore") && {
+        globalToggle: true,
       }),
       ...(adaptedParams.shows.includes("eventRank") && { eventRank: true }),
       ...(adaptedParams.shows.includes("audienceZone") && {
@@ -83,6 +84,9 @@ export default function CreateTrackerDialog({
       }),
       ...(adaptedParams.shows.includes("audienceSpread") && {
         audienceSpread: true,
+      }),
+      ...(adaptedParams.shows.includes("eventFrequency") && {
+        eventFrequency: true,
       }),
     };
 
@@ -104,6 +108,7 @@ export default function CreateTrackerDialog({
             "eventRating",
             "estimatedExhibitScore",
             "audienceSpread",
+            "eventFrequency",
           ].join(),
         },
       },

@@ -68,6 +68,7 @@ export interface EventTableType {
     isEventBrand?: boolean;
     eventBrand?: string;
     isEventSeries?: boolean;
+    frequency?: string;
     maturity?: string;
     eventImpactScore?: number | null;
     eventInboundScore?: number | null;

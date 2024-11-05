@@ -140,7 +140,7 @@ console.log(searchParams.get("view"));
   useEffect(() => {
     setSavedEventCount(data?.tracker?.savedEventTotalCount);
     setTrackerDetail(data?.tracker);
-    createQueryString();
+    // createQueryString();
     setLoading(true);
   }, [data]);
   useEffect(()=>{
@@ -400,6 +400,7 @@ console.log(searchParams.get("view"));
         eventRank: (toggleOpend?.eventRank ? true : false),
         audienceZone: (toggleOpend?.audienceZone ? true : false),
         audienceSpread: (toggleOpend?.audienceSpread ? true : false),
+        eventFrequency: (toggleOpend?.eventFrequency ? true : false),
       };
       setShowInsights(prev=>({...prev, ...toggleObj}));
     }

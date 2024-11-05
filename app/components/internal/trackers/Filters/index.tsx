@@ -68,6 +68,7 @@ import {Tracker, Toggle} from '@/types/trackers'
 import ExhibitorQualitySelector from "@/components/advancedFilters/exhibitorQualityScore";
 import { useTrackerContext } from "@/context/tracker";
 import { Designations } from "@/types/misc";
+import { newCategories } from "@/data/categories";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -685,6 +686,13 @@ const Pages = () => {
     );
     if (isCreating) return;
     setIsCreating(true);
+
+    const categorySlugs = selectedCategories;
+    const categoryIds = categorySlugs.map((slug) => {
+      const category = newCategories.find((cat) => cat.slug === slug);
+      return category ? category.id : slug;
+    });
+
     const userType = {
       ...(isRatingOpen && { rating: true }),
       ...(isExhibitOpen && { exhibit: true }),
@@ -755,7 +763,7 @@ const Pages = () => {
           excludeKeywords: excludeKeywords.join(' '),
         }),
         ...(selectedCategories?.length > 0 && {
-          eventCategory: selectedCategories.join(","),
+          eventCategory: categoryIds.join(","),
         }),
         ...(selectedVisitors?.length>0 && {
           eventSize: selectedVisitors.join(",")
@@ -869,7 +877,7 @@ const Pages = () => {
          ...(selectedAudProfile.length > 0 && {
           designation: selectedAudProfile.join(","),
         }),
-        ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread'].join()}
+        ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency'].join()}
         // info: {
         //   name: trackerName,
         //   location:selectedLocations,
@@ -1111,13 +1119,25 @@ const Pages = () => {
           ? editData?.tracker?.filterValue?.labels?.split(",")
           : []
       );
-      setSelectedCategories(
-        editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all').map(
-            (cat: Cat) => cat.id
-          )
-          : []
-      );
+      if(editData?.tracker?.filterValue?.eventCategory?.length > 0) {
+        const categories = editData?.tracker?.filterValue?.eventCategory;
+        const categorySlugs = categories.map((item: any) => {
+          const category = newCategories.find((cat) => cat.id === item.id);
+          return category ? category.slug : item.id;
+        });
+        setSelectedCategories(
+          categorySlugs?.length > 0
+            ? categorySlugs
+            : []
+        );
+      }
+      // setSelectedCategories(
+      //   editData?.tracker?.filterValue?.eventCategory?.length > 0
+      //     ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all').map(
+      //       (cat: Cat) => cat.id
+      //     )
+      //     : []
+      // );
       setSelectedEventFormat(
         editData?.tracker?.filterValue?.eventFormat &&
         editData?.tracker?.filterValue?.eventFormat?.length > 0

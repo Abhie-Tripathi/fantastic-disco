@@ -862,6 +862,9 @@ const Table = ({
               {showInsights.repeatSent && (
                 <th style={{ textAlign: "center" }}>Trust</th>
               )}
+              {showInsights.eventFrequency && (
+                <th className="text-center" >Frequency</th>
+              )}
               {showInsights.forecasted && <th>Forecasted</th>}
               {/* {showInsights.eventSize && <th>Event Size</th>} */}
               {/* {showInsights.global && <th>International</th>} */}
@@ -1367,6 +1370,21 @@ const Table = ({
                           {event.repeatSentiment}
                         </> + "%"
                       : "-"} */}
+
+                {showInsights.eventFrequency && (
+                  <td className="text-center" >
+                    {event?.frequency && event?.frequency !== "" ? (
+                      <span
+                        style={{ textTransform: "capitalize" }}
+                        className="badge_primary"
+                      >
+                        {event?.frequency}
+                      </span>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+                )}
 
                 {showInsights.forecasted && (
                   <td>{getForecastedStatus(event.futureExpectedStartDate)}</td>

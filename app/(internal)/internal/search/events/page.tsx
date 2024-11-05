@@ -113,13 +113,13 @@ const Search = () => {
     staleTime: 0,
   });
 
-  console.log(Array.from(searchParams.values()));
+  // console.log(Array.from(searchParams.values()));
 
   const displayData = eventData;
   const events = displayData?.events || [];
   const count = displayData?.count || 0;
 
-  console.log(events);
+  // console.log(events);
 
   const searchHandler = useCallback(() => {
     applyFilters();
@@ -160,9 +160,10 @@ const Search = () => {
     forecasted: adaptedParams.shows?.includes("isforecasted"),
     audienceZone: adaptedParams.shows?.includes("audienceZone"),
     audienceSpread: adaptedParams.audienceSpread ? true : false,
+    eventFrequency: adaptedParams.shows?.includes("eventFrequency"),
   };
 
-  console.log(adaptedQueryString);
+  // console.log(adaptedQueryString);
 
   const createTrackerHandler = async () => {
     GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
@@ -226,7 +227,7 @@ const Search = () => {
             "Content-Type": "application/json",
           },
         });
-        console.log(data);
+        // console.log(data);
 
         if (error) {
           console.log(error);
