@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 import type { PluginAPI } from "tailwindcss/types/config"; // Import PluginAPI type
 
 const config = {
-  darkMode: ["class"],
+  darkMode: ["class", '[data-theme="dark"]'],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",

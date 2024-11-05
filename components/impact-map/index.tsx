@@ -130,30 +130,30 @@ const MapComponent: React.FC<MapProps> = ({
         <div key={event.id}>
           {events &&
             events.length > 0 &&
-            events.map((event: MapEvents) => {
-              const { id, longitude, latitude, eventType } = event;
-              return (
-                <Marker
-                  key={id}
-                  onClick={() => handleMarkerClick(event)}
-                  longitude={parseFloat(longitude)}
-                  latitude={parseFloat(latitude)}
-                  anchor="bottom"
-                >
-                  <div className="marker">
-                    {eventType && (
-                      <img
-                        src={iconUrls[eventType]}
-                        alt={eventType}
-                        className={`${
-                          eventId === id ? "w-10 h-10" : "w-6 h-6"
-                        }`}
-                      />
-                    )}
-                  </div>
-                </Marker>
-              );
-            })}
+            events
+              .filter((event: MapEvents) => event.id !== eventId)
+              .map((event: MapEvents) => {
+                const { id, longitude, latitude, eventType } = event;
+                return (
+                  <Marker
+                    key={id}
+                    onClick={() => handleMarkerClick(event)}
+                    longitude={parseFloat(longitude)}
+                    latitude={parseFloat(latitude)}
+                    anchor="bottom"
+                  >
+                    <div className="marker">
+                      {eventType && (
+                        <img
+                          src={iconUrls[eventType]}
+                          alt={eventType}
+                          className={"w-6 h-6"}
+                        />
+                      )}
+                    </div>
+                  </Marker>
+                );
+              })}
           <Marker
             key={id}
             // onClick={() => handleMarkerClick(event)}

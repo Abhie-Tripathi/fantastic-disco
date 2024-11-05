@@ -5,6 +5,7 @@ import { differenceInDays, format } from "date-fns";
 import Link from "next/link";
 import { eventTypeColors } from "@/constants/eventTypes";
 import { Card } from "../ui/card";
+import { renderFormattedDates } from "@/utils/dateFormat";
 
 const iconUrls: Record<string, string> = {
   "performing-arts": "/eventType/arts.png",
@@ -29,12 +30,10 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
   const days =
     differenceInDays(popupInfo.endDateTime, popupInfo.startDateTime) + 1;
 
-  const formattedRange =
-    formattedStartDate === formattedEndDate
-      ? formattedStartDate
-      : `${formattedStartDate} - ${formattedEndDate} (${days} ${
-          days === 1 ? "day" : "days"
-        })`;
+  const formattedRange = renderFormattedDates(
+    formattedStartDate,
+    formattedEndDate
+  );
 
   const address = popupInfo.venueLocation
     ? popupInfo.venueLocation.city?.name === "Online"

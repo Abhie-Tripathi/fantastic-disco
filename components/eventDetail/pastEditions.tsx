@@ -61,7 +61,7 @@ const PastEditions = ({ eventId, eventEditionData }: IProps) => {
   }, [editions]);
   if (!eventEditionDetails) return null;
   return (
-    <ul className="h-[200px] flex flex-col gap-4 max-h-[200px] overflow-y-auto scrollbar pr-4 w-[400px] max-w-[400px]">
+    <ul className="h-[200px] flex flex-col gap-4 max-h-[200px] overflow-y-auto pr-4 w-[400px] max-w-[400px]">
       <>
         <span className="text-[var(--primary-color)] font-semibold">
           {count}
@@ -78,7 +78,7 @@ const PastEditions = ({ eventId, eventEditionData }: IProps) => {
             return (
               <li
                 key={edition_id}
-                className={`flex flex-col gap-2 bg-[#FAFAFA] border-[var(--neutral-light-color)]" border py-3 px-6 rounded-sm`}
+                className={`flex flex-col gap-2 bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border-[var(--neutral-light-color)]" border py-3 px-6 rounded-sm`}
               >
                 <Text color="primary" fontWeight="medium">
                   {edition_start_date && edition_end_date

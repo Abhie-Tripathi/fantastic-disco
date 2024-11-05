@@ -36,6 +36,7 @@ import { GTMEventDetail } from "@/types/events";
 import { Bookmark } from "lucide-react";
 import { useEventsService } from "@/services/eventsService";
 import { error } from "console";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -633,8 +634,8 @@ const SaveThisEvent = ({ eventDetails }: { eventDetails: GTMEventDetail }) => {
     //   setIsDelete(false);
     // }
   };
-
-  const { bookmarkThisEvent } = useEventsService();
+  const { bookmarkThisEvent, getIsEventBookMarked, UnBookmarkThisEvent } =
+    useEventsService();
 
   const handleSaveEvent = () => {
     try {
