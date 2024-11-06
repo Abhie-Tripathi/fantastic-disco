@@ -228,7 +228,7 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                 </div>
             </div>
             <div className={styles.line}></div>
-            <footer className={styles.footer}>Powered by Eventgeni &copy; 2024</footer>
+            <footer className={styles.footer}>Powered by Whr.ai &copy; 2024</footer>
         </div>
         // </div>
 

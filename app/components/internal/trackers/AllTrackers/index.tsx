@@ -77,16 +77,15 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
       },
     ],
   };
-  console.log(item);
   const [locations, setLocations] = useState<any>();
 
   useEffect(() => {
-    console.log(item?.tracker?.eventCountry);
     
     const eventCountry = item?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
     const eventCity = item?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
+    const eventState = item?.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
     const eventZone=item?.filterValue?.eventRegion?.split(",")||[];
-    setLocations([...eventCountry, ...eventCity, ...eventZone]);
+    setLocations([...eventCountry, ...eventCity, ...eventZone, ...eventState]);
   }, [item]);
   const formatType=(type:string)=>{
     if(type==="CUSTOM") return "Custom"
@@ -157,7 +156,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             <Line data={lineData} options={lineOptions} />
           </div> */}
         </div> 
-            <div><Image  src={GoTo} alt="goTo" /></div>
+            {/* <div><Image  src={GoTo} alt="goTo" /></div> */}
           </div>
         </div>
         {/* <div className={styles.cardOne}>
