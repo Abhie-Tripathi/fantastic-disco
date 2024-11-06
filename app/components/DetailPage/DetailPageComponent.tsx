@@ -216,14 +216,14 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                     <div className={styles.descriptionContainer} ><DescriptionContainer description={description} /></div>
                     {exhibitor?.length > 0 && <div className={styles.speakerContainer}><ExhibitorContainer exhibitorsData={exhibitor} /></div>}
                     {speaker?.length > 0 && <div className={styles.speakerContainer}><SpeakerContainer speakerProfilesData={speaker} /></div>}
-                    <div className={styles.map}>
+                    {format !== "Virtual" && <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Mapview latitude={latitude}
                                 venue={location_city}
                                 longitude={longitude}
                                 zoom={6} />
                         </Suspense>
-                    </div>
+                    </div>}
 
                 </div>
             </div>
