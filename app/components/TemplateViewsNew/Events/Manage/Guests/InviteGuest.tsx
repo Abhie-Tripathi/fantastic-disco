@@ -99,7 +99,7 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
         <InviteGuestsSecScreen selectedMails={selectedMails} />}
       <div className={styles.line}></div>
       <div className={styles.selectedBtnContainer}>
-        <div>0 Selected</div>
+        <div>{selectedMails.length} Selected</div>
         {/* {screen === "first" ? <button onClick={() => setScreen("second")} className={styles.nextBtn}>Next</button> :
           <div className={styles.btnContainer}>
             <button onClick={() => setScreen("first")} className={styles.nextBtn}>Back</button>
