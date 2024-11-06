@@ -304,7 +304,7 @@ console.log("prefilled",prefilledEvent)
               handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
                 <ExhibitorContainer handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
 
-            {formState.cityName &&
+            {(formState.cityName && formState.eventFormat !== "Virtual") &&
               // <div className={styles.map} ref={mapDivRef}>
               // <Suspense fallback={<div>Loading...</div>}>
               <MapView latitude={formState.latitude}
