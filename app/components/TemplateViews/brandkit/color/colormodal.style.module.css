@@ -8,7 +8,7 @@
 }
 .colorContainer{
     width:70%;
-    height: 400px;
+    height: 320px;
     border-radius: 5px;
     display:flex;
     align-items: center;
@@ -16,7 +16,7 @@
     filter: drop-shadow(2px 3px 2px rgb(150, 150, 150));
 }
 .colorContainer span{
-    font-size: var(--font-size-h3);
+    font-size: var(--font-size-h4);
     font-weight: var(--font-weight-semibold);
 }
 .configure{

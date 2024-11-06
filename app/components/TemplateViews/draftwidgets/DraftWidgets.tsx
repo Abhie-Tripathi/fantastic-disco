@@ -28,7 +28,8 @@ const DraftWidgets = ({ setYourWidgetModal, setDraftWidgets, draftWidgets, fetch
         <button onClick={() => setYourWidgetModal(false)}>Close</button>
       </div>
       <div className={styles.drafts}>
-        <div>Drafts</div><span>{draftWidgets.length}</span></div>
+        <div>Drafts</div><span>{draftWidgets.length}</span>
+      </div>
       <div className={styles.line}></div>
       <div className={styles.widgets}>
         {draftWidgets.length > 0 ? (

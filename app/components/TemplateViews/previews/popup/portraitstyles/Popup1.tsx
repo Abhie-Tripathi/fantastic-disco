@@ -66,7 +66,12 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
     const truncatedDescription = description.substring(0, 150) + (description.length > 150 ? "..." : "");
     return (
         <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-            <Image src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' width={300} height={smallCard ? 170 : 220} className={styles.banner} />
+            <Image src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' 
+            width={200}
+            height={smallCard ? 170 : 220}
+            className={`w-full ${styles.banner} ${smallCard ? 'h-[170px]' : 'h-[220px]'} rounded-b-[50px] shadow-md`}
+            // className={styles.banner}
+            />
             <div className={`${styles.date_location_nameContainer} ${smallCard ?styles.smalldate_location_nameContainer:"" }`}>
                 {/* <div className={smallCard ? styles.smallDateContainer : styles.dateContainer}>
                     <span className={styles.date} style={{ fontSize: smallCard ? 16 : fontSettings?.heading.fontSize }}>{day}</span>

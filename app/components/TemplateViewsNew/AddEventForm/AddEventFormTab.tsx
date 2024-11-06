@@ -84,6 +84,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
     }, [confettiType]);
 
     console.log("mainEvent", mainEventState)
+    console.log("mainEvent",mainEventState,subEventState)
 
     const handleAddEvent = async () => {
         if (eventFlow === "main") {
@@ -257,7 +258,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
                     showToast("success", "Main Event Added Successfully")
                     if (fetchEvents) {
                         // fetchEvents(0, "update")
-                        window.location.reload();
+                        // window.location.reload();
                     }
                     if (mainEventState.speaker.length > 0) {
                         mainEventState.speaker.map((speaker: any) => {
@@ -477,7 +478,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
     const handleSaveEvent = async (eventId: string) => {
         // Use the eventFlow variable to decide which state to use
         const eventState = eventFlow === "main" ? mainEventState : subEventState;
-
+        console.log("eventState",eventState)
         // Perform the necessary validation checks with the selected state
         if (!eventState.eventName || eventState.eventName === "") {
             handleMaineventChanges('isEventNameEmpty', true);
@@ -571,6 +572,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
             event_type: eventState.event_type,
             customizationData: JSON.stringify(eventCustomizationData),
             parentData: eventState.parentData,
+            
         };
 
         // Prepare formData for the request
