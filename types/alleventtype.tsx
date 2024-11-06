@@ -33,6 +33,7 @@ export interface EventsType{
   approval : boolean;
   waitlisting : boolean;
   event_type:string;
+  virtualLink:string
 }
 interface CustomizationData {
   pageBgColor: string;

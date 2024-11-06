@@ -31,11 +31,11 @@ interface Props {
     locationCountry?: string;
     participationType?: string;
     format?: string;
-    virtualLink:string;
+    virtualLink?:string;
 }
 
 const EventSmallDetailView = ({snowTheme, leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCountry, locationCity, participationType, format,virtualLink}: Props) => {
-
+    console.log("zxcz",virtualLink)
     const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const fireConfetti = () => {
         if (confettiCanvasRef.current) {

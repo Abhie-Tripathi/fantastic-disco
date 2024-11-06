@@ -80,7 +80,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
         }
     }, [confettiType]);
 
-    console.log("mainEvent",mainEventState)
+    console.log("mainEvent",mainEventState,subEventState)
 
     const handleAddEvent = async () => {
         if (eventFlow === "main") {
@@ -273,7 +273,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
                     showToast("success", "Main Event Added Successfully")
                     if (fetchEvents) {
                         // fetchEvents(0, "update")
-                        window.location.reload();
+                        // window.location.reload();
                     }
                     if (mainEventState.speaker.length > 0) {
                         mainEventState.speaker.map((speaker: any) => {
@@ -305,7 +305,6 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
     }
 
     const addSpeakers = async (eventId: string, speaker: any) => {
-        console.log("speaker_called",speaker, eventId)
         const formData = new FormData()
         const speakerObject = {
             name: speaker.data.name,
@@ -325,7 +324,6 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
     }
 
     const addExhibitorDetails = async (eventId: string, exhibitor: any) => {
-        console.log("exhibitor_called",exhibitor, eventId)
         const formData = new FormData()
         const exhibitorObject = {
             companyName: exhibitor.data.companyName,
@@ -353,12 +351,17 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             handleSubeventChange('isEventNameEmpty', false)
             // setIsEventNameEmpty(false)
         }
-        if (!subEventState.query) {
-            handleSubeventChange('isEventFormatEmpty', true)
-            // setIsEventFormatEmpty(true)
-        } else {
-            handleSubeventChange('isEventFormatEmpty', false)
-            // setIsEventFormatEmpty(false)
+        // if (!subEventState.query) {
+        //     handleSubeventChange('isEventFormatEmpty', true)
+        //     // setIsEventFormatEmpty(true)
+        // } else {
+        //     handleSubeventChange('isEventFormatEmpty', false)
+        //     // setIsEventFormatEmpty(false)
+        // }
+        if ((subEventState.eventFormat === "In-person" || subEventState.eventFormat === "Hybrid" || subEventState.eventFormat === "OFFLINE") && !subEventState.query) {
+            handleSubeventChange('isEventFormatEmpty', true);
+        } else if (subEventState.eventFormat === "Virtual" || subEventState.eventFormat === "ONLINE") {
+            handleSubeventChange('isEventFormatEmpty', false); // No need for location in virtual format
         }
         if (!subEventState.description) {
             handleSubeventChange('isEventDescriptionEmpty', true)
@@ -383,10 +386,27 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             // setIsTextValueMessageEmpty(true)
         }
 
-        if (!subEventState.eventName.trim() || !subEventState.eventFormat || !subEventState.startTime || !subEventState.endTime || !subEventState.startDate || !subEventState.endDate || !subEventState.description.trim() || !subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude || !subEventState.participationType
-            // !subEventState.participationMessage
-        ) {
+        // if (!subEventState.eventName.trim() || !subEventState.eventFormat || !subEventState.startTime || !subEventState.endTime || !subEventState.startDate || !subEventState.endDate || !subEventState.description.trim() || !subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude || !subEventState.participationType
+        //     // !subEventState.participationMessage
+        // ) {
 
+        //     showToast("error", "Please fill in all the fields....");
+        //     return; // Exit the function if any field is missing
+        // }
+        if (
+            !subEventState.eventName.trim() ||
+            !subEventState.eventFormat ||
+            !subEventState.startTime ||
+            !subEventState.endTime ||
+            !subEventState.startDate ||
+            !subEventState.endDate ||
+            !subEventState.description.trim() ||
+            !subEventState.participationType ||
+            // !subEventState.participationMessage ||
+            // Check location fields only for "In-person" or "Hybrid" events
+            ((subEventState.eventFormat === "In-person" || subEventState.eventFormat === "Hybrid" || subEventState.eventFormat === "OFFLINE") &&
+                (!subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude))
+        ){
             showToast("error", "Please fill in all the fields");
             return; // Exit the function if any field is missing
         }
@@ -429,6 +449,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             event_type: "Tradeshow",
             customizationData: JSON.stringify(eventCustomizationData),
             parentData: parenteventName ? parenteventName : "",
+            virtualLink: mainEventState.virtualLink,
         };
         const formData = new FormData()
         formData.append("name", subEventState.eventName)
@@ -486,7 +507,7 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
     const handleSaveEvent = async (eventId: string) => {
         // Use the eventFlow variable to decide which state to use
         const eventState = eventFlow === "main" ? mainEventState : subEventState;
-
+        console.log("eventState",eventState)
         // Perform the necessary validation checks with the selected state
         if (!eventState.eventName || eventState.eventName === "") {
             handleMaineventChanges('isEventNameEmpty', true);
@@ -521,9 +542,24 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
         }
 
         // Check if all required fields are present
-        if (!eventState.eventName.trim() || !eventState.eventFormat || !eventState.startTime || !eventState.endTime || !eventState.startDate || !eventState.endDate || !eventState.description.trim() || !eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude || !eventState.participationType
-            // !eventState.participationMessage
-        ) {
+        // if (!eventState.eventName.trim() || !eventState.eventFormat || !eventState.startTime || !eventState.endTime || !eventState.startDate || !eventState.endDate || !eventState.description.trim() || !eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude || !eventState.participationType
+        //     // !eventState.participationMessage
+        // ) 
+        const isVirtualEvent = eventState.eventFormat === "Virtual";
+        if (
+            !eventState.eventName.trim() || 
+            !eventState.eventFormat || 
+            !eventState.startTime || 
+            !eventState.endTime || 
+            !eventState.startDate || 
+            !eventState.endDate || 
+            !eventState.description.trim() || 
+            !eventState.timeZone || 
+            (!isVirtualEvent && (!eventState.cityName || !eventState.countryName || !eventState.latitude || !eventState.longitude)) || 
+            !eventState.participationType 
+            // !eventState.participationMessage 
+        )
+        {
             showToast("error", "Please fill in all the fields");
             return; // Exit the function if any field is missing
         }
@@ -575,6 +611,8 @@ const AddEventFormTab = ({uploadedPhoto,snowTheme, leavesTheme, formTheme, setPr
             event_type: eventState.event_type,
             customizationData: JSON.stringify(eventCustomizationData),
             parentData: eventState.parentData,
+            virtualLink:eventState.virtualLink
+            
         };
 
         // Prepare formData for the request

@@ -84,6 +84,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             participationType: eventData.participationType || "",
             description: eventData.description || "",
             format: eventData.format || "",
+            virtualLink:eventData.virtualLink||"",
             isLinkedToWidget: false, // Assuming this is not available in API, set a default value
             gmtZone: eventData.gmt_time || "", // Assuming this is `gmt_time` from the API
             interest: "", // Assuming this is missing from API, set default or handle later

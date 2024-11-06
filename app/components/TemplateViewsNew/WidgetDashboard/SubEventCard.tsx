@@ -100,6 +100,7 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
     //         setSelectedEventType("side")
     //     } 
     // }
+    console.log("dasdasdadad__",normalEvent?.mainEvent?.format)
     return (
         <div className={(width === "small" && normalEvent) ? styles.smallMainOuterDiv : (width === "small" && subEvent) ? styles.smallSubOuterDiv : styles.bigouterDiv}>
             <div className={width === "small"  ? styles.smallCard :  styles.bigCard} onClick={handleCardClick}>
@@ -113,7 +114,8 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handleDeleteModal, h
                     <div className={width === "small" ? styles.bigName : styles.smallName}>{normalEvent?.mainEvent.name || subEvent?.name}</div>
                     <div className={styles.eventDataField} style={{ marginTop: 10 }}>
                         <Image src={PlaceIcon} alt="locationIcon" width={14} height={14} className="icons" />
-                        <div>{normalEvent ? `${normalEvent?.mainEvent.cityName, normalEvent?.mainEvent.countryName}` : `${subEvent?.cityName, subEvent?.countryName}`}</div>
+                        {/* <div>{normalEvent ? `${normalEvent?.mainEvent?.format==="Virtual"?<>Virtual</>:normalEvent?.mainEvent.cityName, normalEvent?.mainEvent.countryName}` : `${subEvent?.format==="Virtual"?<>Virtual</>: subEvent?.cityName, subEvent?.countryName}`}</div> */}
+                       <div>{normalEvent?.mainEvent?.format==="Virtual"?<>Virtual</>:`${normalEvent?.mainEvent.cityName, normalEvent?.mainEvent.countryName}`}</div> 
                     </div>
                     <div className={styles.eventDateTimeContainer}>
                         <div className={styles.eventDataField}>
