@@ -289,7 +289,6 @@ const AllEvents = ({
     }
   };
 
-
   // const handleAddToWidget = async (event: AllEventsType, isLinked: boolean) => {
 
   //   const existingEvents = fetchedAddedEvents || [];
@@ -343,7 +342,6 @@ const AllEvents = ({
     }
   }, []);
 
-
   const getUserLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -390,9 +388,9 @@ const AllEvents = ({
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(toRad(lat1)) *
-      Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
 
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   };
@@ -507,6 +505,88 @@ const AllEvents = ({
     }
   };
 
+
+  const handleSideEventAddToWidget = async (event: any, isLinked: boolean) => {
+    console.log("fsdfsdf",event,isLinked)
+    if (
+      selectedTemplate === "ST" ||
+      selectedTemplate === "SB" ||
+      selectedTemplate === "PUVP" ||
+      selectedTemplate === "PUVL"
+    ) {
+      const existingEvents = fetchedAddedEvents || [];
+      event.isLinkedToWidget = !isLinked;
+
+      if (!isLinked) {
+        const newEvent = {
+          id: event.eventId,
+          promoted: true,
+          location: {
+            latitude: event.latitude,
+            longitude: event.longitude,
+          },
+        };
+
+        const updatedEvents = [...existingEvents, newEvent];
+
+        if (updatedEvents.length > 1) {
+          const closestEvent: any = findClosestEvent(updatedEvents);
+
+          const reorderedEvents = updatedEvents.filter(
+            (e) => e.id !== closestEvent.id
+          );
+          reorderedEvents.unshift(closestEvent);
+
+          reorderedEvents.forEach((e) => {
+            e.promoted = e.id === closestEvent.id;
+          });
+
+          await updateWidgetAgain(reorderedEvents);
+        } else {
+          await updateWidgetAgain(updatedEvents);
+        }
+      } else {
+        await handleRemoveEventFromWidget(event.eventId);
+      }
+    } else {
+      const existingEvents = fetchedAddedEvents || [];
+      event.isLinkedToWidget = !isLinked;
+
+      if (!isLinked) {
+        setSelectedOptions((prev: any) => ({
+          ...prev,
+          [event.eventId]: "carousel",
+        }));
+      }
+
+      const eventIndex = existingEvents.findIndex(
+        (existingEvent) => existingEvent.id === event.eventId
+      );
+
+      const isPromotedEventPresent = existingEvents.some(
+        (existingEvent) => existingEvent.promoted === "true"
+      );
+
+      const shouldPromote =
+        selectedTemplate === "CVG" ||
+        selectedTemplate === "CVL" ||
+        (!isPromotedEventPresent &&
+          ["PUVP", "PUVL", "ST", "SB"].includes(selectedTemplate));
+
+      if (isLinked) {
+        await handleRemoveEventFromWidget(event.mainEvent.eventId);
+      } else {
+        const newEvents = {
+          id: event.eventId,
+          promoted: shouldPromote ? "true" : "false",
+        };
+
+        const mergedEvents = [...existingEvents, newEvents];
+        await updateWidgetAgain(mergedEvents);
+      }
+    }
+  };
+
   const handleRemoveEventFromWidget = async (eventId: string) => {
     const updatedEvents = fetchedAddedEvents?.filter(
       (event) => event.id !== eventId
@@ -587,6 +667,69 @@ const AllEvents = ({
     }
   };
 
+  const handleAddSideEventToWidgetList = async (
+    event: any,
+    check: boolean,
+    option: string
+  ) => {
+    if (check && option === "list") {
+      setSelectedOptions((prev: any) => ({
+        ...prev,
+        [event.mainEvent.eventId]: "list",
+      }));
+
+      const existingEvents = fetchedAddedEvents || [];
+      const eventIndex = existingEvents.findIndex(
+        (existingEvent) => existingEvent.id === event.mainEvent.eventId
+      );
+
+      if (eventIndex !== -1) {
+        const updatedEvents = existingEvents.filter(
+          (existingEvent) => existingEvent.id !== event.mainEvent.eventId
+        );
+
+        const newEvents = {
+          id: event.mainEvent.eventId,
+          promoted: "false",
+        };
+
+        const mergedEvents = [...updatedEvents, newEvents];
+        await updateWidgetAgain(mergedEvents);
+      } else {
+        const newEvents = {
+          id: event.mainEvent.eventId,
+          promoted: "false",
+        };
+        const mergedEvents = [...existingEvents, newEvents];
+        await updateWidgetAgain(mergedEvents);
+      }
+    } else if (check && option === "carousel") {
+      setSelectedOptions((prev: any) => ({
+        ...prev,
+        [event.mainEvent.eventId]: "carousel",
+      }));
+
+      const existingEvents = fetchedAddedEvents || [];
+      const eventIndex = existingEvents.findIndex(
+        (existingEvent) => existingEvent.id === event.mainEvent.eventId
+      );
+
+      if (eventIndex !== -1) {
+        const updatedEvents = existingEvents.filter(
+          (existingEvent) => existingEvent.id !== event.mainEvent.eventId
+        );
+
+        const newEvents = {
+          id: event.mainEvent.eventId,
+          promoted: "true",
+        };
+
+        const mergedEvents = [...updatedEvents, newEvents];
+        await updateWidgetAgain(mergedEvents);
+      }
+    }
+  };
+
   const updateWidgetAgain = async (mergedEvents: any) => {
     const otherData = { event: mergedEvents };
     const eventIds = mergedEvents.map((event: any) => event.id).join(",");
@@ -604,10 +747,9 @@ const AllEvents = ({
     if (data) {
       showToast("success", "Event successfully added to the widget");
       if (typeof fetchEvents === "function") {
-        fetchEvents(0, "update")
-          .then(() => {
-            window.location.reload();
-          });
+        fetchEvents(0, "update").then(() => {
+          // window.location.reload();
+        });
       }
       // fetchEvents(0, "update");
       fetchAddedEvents();
@@ -664,6 +806,7 @@ const AllEvents = ({
     setSelectedOption(option);
   };
 
+  console.log("fetchedAllEvents",fetchedAllEvents)
   return (
     <div className={styles.body} ref={scrollableDivRef}>
       <div className={styles.headerContainer}>
@@ -692,7 +835,7 @@ const AllEvents = ({
         </>
       )}
 
-      {fetchedAllEvents.length > 0 ? (
+      {/* {fetchedAllEvents.length > 0 ? (
         <div className={styles.allEventsContainer}>
           {fetchedAllEvents.map((event, key) => (
             <div className={styles.event} key={key}>
@@ -763,7 +906,6 @@ const AllEvents = ({
                       selectedTemplate === "CVL") &&
                       event.mainEvent.isLinkedToWidget && (
                         <div className={styles.addEventOptionsContainer}>
-                          {/* Option to add the event to the list */}
                           <span
                             className={`${styles.addOption} ${selectedOptions[event.mainEvent.eventId] ===
                                 "list"
@@ -786,7 +928,6 @@ const AllEvents = ({
                               : "Add Event to Grid"}
                           </span>
 
-                          {/* Option to add the event to the carousel */}
                           <span
                             className={`${styles.addOption} ${selectedOptions[event.mainEvent.eventId] ===
                                 "carousel" ||
@@ -818,12 +959,231 @@ const AllEvents = ({
                 </div>
 
                 <div className={styles.delete_spanBtn}>
-                  {/* <button onClick={() => handlePrefillNormalEvent(event ,"edit")}><Image src={EditIcon} alt='edit' /></button> */}
-                  {/* <div onClick={() => handlePrefillNormalEvent(event, "edit")}><EditIcon /><span>Edit</span></div> */}
-                  {/* <button onClick={() => handleDelete(event.mainEvent.eventId)}><DeleteIcon /></button> */}
                 </div>
               </div>
             </div>
+          ))}
+        </div>
+      )  */}
+
+      {fetchedAllEvents.length > 0 ? (
+        <div className={styles.allEventsContainer}>
+          {fetchedAllEvents.map((event, key) => (
+            <React.Fragment key={key}>
+              {/* Main Event */}
+              <div className={styles.event}>
+                <div className={styles.eventDetailsContainer}>
+                  <div className={styles.eventName}>
+                    {`${event.mainEvent.name.substring(0, 30)}${
+                      event.mainEvent.name.length > 30 ? "..." : ""
+                    }`}
+                  </div>
+                  <div className={styles.eventLocationContainer}>
+                    <LocationIcon />
+                    <div>
+                      {event.mainEvent.format === "Virtual"
+                        ? "Virtual"
+                        : event.mainEvent.cityName}
+                    </div>
+                  </div>
+                  <div className={styles.eventDateContainer}>
+                    <DateIcon />
+                    <div>
+                      {formatDate(event.mainEvent.startDate)} -{" "}
+                      {formatDate(event.mainEvent.endDate)}
+                    </div>
+                  </div>
+                  <div className={styles.tags}>
+                    <span className={styles.mainEventTag}>Main Event</span>
+                  </div>
+                </div>
+                <div className={styles.btnContainer}>
+                  <div className={styles.addButtonContainer}>
+                    <div className={styles.heading}>
+                      {event.mainEvent.isLinkedToWidget
+                        ? "Added to Widget"
+                        : "Add to Widget"}
+                    </div>
+                    <input
+                      type="checkbox"
+                      id={event.mainEvent.eventId.toString()}
+                      className={styles.checkboxInput}
+                      checked={event.mainEvent.isLinkedToWidget}
+                      onChange={() =>
+                        handleAddToWidget(
+                          event,
+                          event.mainEvent.isLinkedToWidget
+                        )
+                      }
+                    />
+                    <label
+                      htmlFor={event.mainEvent.eventId.toString()}
+                      className={styles.checkBox}
+                    ></label>
+                    {/* Option to add the main event to list or carousel */}
+                    {(selectedTemplate === "CVG" ||
+                      selectedTemplate === "CVL") &&
+                      event.mainEvent.isLinkedToWidget && (
+                        <div className={styles.addEventOptionsContainer}>
+                          <span
+                            className={`${styles.addOption} ${
+                              selectedOptions[event.mainEvent.eventId] ===
+                              "list"
+                                ? styles.selectedOption
+                                : ""
+                            }`}
+                            onClick={() =>
+                              handleAddToWidgetList(
+                                event,
+                                event.mainEvent.isLinkedToWidget,
+                                "list"
+                              )
+                            }
+                          >
+                            {selectedOptions[event.mainEvent.eventId] ===
+                              "list" && <TickIcon />}
+                            <AddeventIcon />
+                            {selectedTemplate === "CVL"
+                              ? "Add Event to List"
+                              : "Add Event to Grid"}
+                          </span>
+                          <span
+                            className={`${styles.addOption} ${
+                              selectedOptions[event.mainEvent.eventId] ===
+                                "carousel" ||
+                              (!selectedOptions[event.mainEvent.eventId] &&
+                                event.mainEvent.isLinkedToWidget)
+                                ? styles.selectedOption
+                                : ""
+                            }`}
+                            onClick={() =>
+                              handleAddToWidgetList(
+                                event,
+                                event.mainEvent.isLinkedToWidget,
+                                "carousel"
+                              )
+                            }
+                          >
+                            {(selectedOptions[event.mainEvent.eventId] ===
+                              "carousel" ||
+                              (!selectedOptions[event.mainEvent.eventId] &&
+                                event.mainEvent.isLinkedToWidget)) && (
+                              <TickIcon />
+                            )}
+                            <AddeventToWidgetIcon />
+                            <span>Add Event to Carousel</span>
+                          </span>
+                        </div>
+                      )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Side Events - Displayed below main event as separate entries */}
+              {event.subEvents.map((subEvent, subKey) => (
+                <div className={styles.event} key={`${key}-${subKey}`}>
+                  <div className={styles.eventDetailsContainer}>
+                    <div className={styles.eventName}>
+                      {`${subEvent.name.substring(0, 30)}${
+                        subEvent.name.length > 30 ? "..." : ""
+                      }`}
+                    </div>
+                    <div className={styles.eventLocationContainer}>
+                      <LocationIcon />
+                      <div>
+                        {subEvent.format === "Virtual"
+                          ? "Virtual"
+                          : subEvent.cityName}
+                      </div>
+                    </div>
+                    <div className={styles.eventDateContainer}>
+                      <DateIcon />
+                      <div>
+                        {formatDate(subEvent.startDate)} -{" "}
+                        {formatDate(subEvent.endDate)}
+                      </div>
+                    </div>
+                    <div className={styles.tags}>
+                      <span className={styles.subEventTag}>Side Event</span>
+                    </div>
+                  </div>
+                  <div className={styles.btnContainer}>
+                    <div className={styles.addButtonContainer}>
+                      <div className={styles.heading}>
+                        {subEvent.isLinkedToWidget
+                          ? "Added to Widget"
+                          : "Add to Widget"}
+                      </div>
+                      <input
+                        type="checkbox"
+                        id={subEvent.eventId.toString()}
+                        className={styles.checkboxInput}
+                        checked={subEvent.isLinkedToWidget}
+                        onChange={() =>
+                          handleSideEventAddToWidget(subEvent, subEvent.isLinkedToWidget)
+                        }
+                      />
+                      <label
+                        htmlFor={subEvent.eventId.toString()}
+                        className={styles.checkBox}
+                      ></label>
+                      {(selectedTemplate === "CVG" ||
+                        selectedTemplate === "CVL") &&
+                        subEvent.isLinkedToWidget && (
+                          <div className={styles.addEventOptionsContainer}>
+                            <span
+                              className={`${styles.addOption} ${
+                                selectedOptions[subEvent.eventId] === "list"
+                                  ? styles.selectedOption
+                                  : ""
+                              }`}
+                              onClick={() =>
+                                handleAddSideEventToWidgetList(
+                                  subEvent,
+                                  subEvent.isLinkedToWidget,
+                                  "list"
+                                )
+                              }
+                            >
+                              {selectedOptions[subEvent.eventId] === "list" && (
+                                <TickIcon />
+                              )}
+                              <AddeventIcon />
+                              {selectedTemplate === "CVL"
+                                ? "Add Event to List"
+                                : "Add Event to Grid"}
+                            </span>
+                            <span
+                              className={`${styles.addOption} ${
+                                selectedOptions[subEvent.eventId] ===
+                                  "carousel" ||
+                                (!selectedOptions[subEvent.eventId] &&
+                                  subEvent.isLinkedToWidget)
+                                  ? styles.selectedOption
+                                  : ""
+                              }`}
+                              onClick={() =>
+                                handleAddSideEventToWidgetList(
+                                  subEvent,
+                                  subEvent.isLinkedToWidget,
+                                  "carousel"
+                                )
+                              }
+                            >
+                              {(selectedOptions[subEvent.eventId] ===
+                                "carousel" ||
+                                (!selectedOptions[subEvent.eventId] &&
+                                  subEvent.isLinkedToWidget)) && <TickIcon />}
+                              <AddeventToWidgetIcon />
+                              <span>Add Event to Carousel</span>
+                            </span>
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </React.Fragment>
           ))}
         </div>
       ) : (

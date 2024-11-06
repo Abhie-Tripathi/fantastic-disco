@@ -13,6 +13,7 @@ const Page = () => {
             setDeleteModal(true)
         }
     }
+    console.log("fetchedEvent",fetchedEvent)
     return (
         <div className={styles.body}>
             {isPastEvent &&

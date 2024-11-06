@@ -181,3 +181,24 @@
     padding: 10px 20px;
     border: 1px solid;
 }
+
+.pill{
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-weight: 500;
+}
+
+.type1{
+    background-color: #FFF8E6;
+    color: #CE9921;
+}
+.type2{
+    background-color: #F7E5EE;
+    color: #6750A4;
+}
+
+.icon_tags_container{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}

@@ -12,7 +12,7 @@ export interface EventsType{
   latitude: number;
   longitude: number;
   cityName: string;
-  virtualLink : string;
+  // virtualLink : string;
   countryName: string;
   startDate: string;
   endDate: string;
@@ -34,6 +34,7 @@ export interface EventsType{
   approval : boolean;
   waitlisting : boolean;
   event_type:string;
+  virtualLink:string
 }
 interface CustomizationData {
   pageBgColor: string;

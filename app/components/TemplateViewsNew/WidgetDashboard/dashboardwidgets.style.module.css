@@ -45,7 +45,7 @@
 }
 .addWidget{
     margin-top: 25px;
-    justify-content: flex-end;
+    justify-content: center;
     display: flex;
     align-items: center;
     gap: 8px;

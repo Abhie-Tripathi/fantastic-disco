@@ -115,6 +115,7 @@
 .bigName {
     font-size: var(--font-size-h4);
     font-weight: var(--font-weight-medium);
+    color: var(--primary-text-color);
 }
 
 .eventDataField {
@@ -194,8 +195,8 @@
 }
 
 .detail_button {
-    /* align-self: flex-end; */
-    align-self: flex-start;
+    align-self: flex-end;
+    /* align-self: flex-start; */
     padding: 8px 12px;
     margin-top: 10px;
     background-color: var(--primary-color);
@@ -204,5 +205,34 @@
     font-size: var(--font-size-small);
     cursor: pointer;
     text-align: center;
+    z-index: 1;
 }
 
+
+.pill{
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-weight: 500;
+}
+
+.type1{
+    background-color: #FFF8E6;
+    color: #CE9921;
+}
+.type2{
+    background-color: #F7E5EE;
+    color: #6750A4;
+}
+
+
+.icon_tags_container{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.button_And_tags_container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
