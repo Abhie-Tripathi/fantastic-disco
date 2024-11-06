@@ -9,6 +9,7 @@ const config = {
           'palmbeach.floridaweekly.com',
           'images.ladepeche.fr',
           'cdn.choosechicago.com',
+          'api.whr.ai',
           'api.eventgeni.com',
           'console.dev.eventgeni.com',
           'api.dev.eventgeni.com',

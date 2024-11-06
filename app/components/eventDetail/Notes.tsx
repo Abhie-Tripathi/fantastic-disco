@@ -51,7 +51,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   const { user, signOut } = useAuthContext();
   // const searchParams = useSearchParams();
   const [suggest, setSuggest] = useState();
-
+  const [zeroState,setZeroState]=useState(false);
   // console.log(searchParams);
 
   const [isDraggingOver, setIsDraggingOver] = useState(true);
@@ -117,7 +117,11 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
             console.log(data);
             // setNotes(data.comments.reverse());
             if (data.comments && data.comments?.length > 0){
+              setZeroState(false);
               setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
+            }
+            if(data.comments.length===0){
+              setZeroState(true);
             }
           }
       }catch(error){
@@ -135,7 +139,11 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       console.log(data);
       // setNotes(data.comments.reverse());
       if (data?.comments?.length > 0){
+        setZeroState(false);
         setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
+        }
+        if(data.comments.length===0){
+          setZeroState(true);
         }
     // else setNotes(CommentsData );
   }
@@ -338,10 +346,11 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         const data = await saveNotes(formData, replyId);
         if (data) {
             const newData = transformData(data.data);
-      
+            
             setNotes(prevNotes => [...prevNotes, data.data]);
             createRealtimeAction('add', data.data.id);
             setScrolling(false);
+            setZeroState(false);
           }
     }catch(error){
         console.log(error);
@@ -522,6 +531,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     console.log(id);
 
     const updatedNotes = notes.filter((comment: any) => comment.id !== id);
+    if(updatedNotes.length===0) setZeroState(true);
     deleteComment(id);
     setNotes(updatedNotes);
   };
@@ -539,6 +549,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         if(data) {
             createRealtimeAction('delete', id);
           }
+          
     }catch(error){
         console.log(error);
     }
@@ -697,12 +708,14 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   console.log(notes);
   return (
     <div className="flex flex-col items-start w-full h-full border rounded-[12px]" style={{border:"1px solid var(--border-color)"}}>
+      
       {notes ? (
         <div
           className="h-[85%] w-full overflow-y-scroll relative"
           ref={containerRef}
           // style={{ position: "relative" }}
         >
+          {zeroState && <div className="h-[100%] flex items-center justify-center">Be the first to drop your notes and ignite the team discussion.</div>}
           <div
            className="min-h-full absolute w-full top-0 left-0 flex justify-center items-center overflow-y-scroll bg-[var(--primary-foreground)]"
            style={{
