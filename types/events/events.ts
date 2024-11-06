@@ -13,6 +13,12 @@ export interface EventPOCDetailResponse {
   eventPoc: GTMEventPOCDetails[];
 }
 
+export interface EventBookmarkResponse {
+    savedEvent: {
+      bookmark: boolean;
+    };
+}
+
 export interface EventCoOrganizerDetailResponse {
   coorganizers: CoOrganizer[];
 }

@@ -59,33 +59,33 @@ export default function CreateTrackerDialog({
     setIsLoading(true);
 
     const userType = {
-      ...(adaptedParams.shows.includes("eventRating") && { rating: true }),
-      ...(adaptedParams.shows.includes("estimatedExhibitScore") && { exhibit: true }),
-      ...(adaptedParams.shows.includes("trustScore") && { trust: true }),
-      ...(adaptedParams.shows.includes("maturity") && { maturity: true }),
-      ...(adaptedParams.shows.includes("eventBrand") && adaptedParams.shows.includes("eventSeries") && {brandSeries: true}),
-      ...(adaptedParams.shows.includes("eventBrand") && {
+      ...(adaptedParams.shows?.includes("eventRating") && { rating: true }),
+      ...(adaptedParams.shows?.includes("estimatedExhibitScore") && { exhibit: true }),
+      ...(adaptedParams.shows?.includes("trustScore") && { trust: true }),
+      ...(adaptedParams.shows?.includes("maturity") && { maturity: true }),
+      ...(adaptedParams.shows?.includes("eventBrand") && adaptedParams.shows.includes("eventSeries") && {brandSeries: true}),
+      ...(adaptedParams.shows?.includes("eventBrand") && {
         brandedEvent: true,
       }),
-      ...(adaptedParams.shows.includes("eventSeries") && { eventSeries: true }),
-      ...(adaptedParams.shows.includes("isforecasted") && {
+      ...(adaptedParams.shows?.includes("eventSeries") && { eventSeries: true }),
+      ...(adaptedParams.shows?.includes("isforecasted") && {
         forecastedStatus: true,
       }),
       // ...(adaptedParams.shows.includes("eventImpactScore") && { impactScore: true }),
       // ...(adaptedParams.shows.includes("inboundScore") && {
       //   inboundScore: true,
       // }),
-      ...(adaptedParams.shows.includes("eventImpactScore") && adaptedParams.shows.includes("inboundScore") && adaptedParams.shows.includes("internationalScore") && {
+      ...(adaptedParams.shows?.includes("eventImpactScore") && adaptedParams.shows.includes("inboundScore") && adaptedParams.shows.includes("internationalScore") && {
         globalToggle: true,
       }),
-      ...(adaptedParams.shows.includes("eventRank") && { eventRank: true }),
-      ...(adaptedParams.shows.includes("audienceZone") && {
+      ...(adaptedParams.shows?.includes("eventRank") && { eventRank: true }),
+      ...(adaptedParams.shows?.includes("audienceZone") && {
         audienceZone: true,
       }),
-      ...(adaptedParams.shows.includes("audienceSpread") && {
+      ...(adaptedParams.shows?.includes("audienceSpread") && {
         audienceSpread: true,
       }),
-      ...(adaptedParams.shows.includes("eventFrequency") && {
+      ...(adaptedParams.shows?.includes("eventFrequency") && {
         eventFrequency: true,
       }),
     };

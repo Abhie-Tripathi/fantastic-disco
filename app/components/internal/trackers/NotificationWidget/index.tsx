@@ -21,9 +21,9 @@ const NotificationWidget: React.FC = ({ }) => {
         <div className='font-semibold text-[var(--primary-color)]'>Notify me</div>
       </div>
       <div className='relative flex items-center justify-center text-sm text-[var(--secondary-text-color)]'>
-      Quickly customise your notification preferences for instant updates
+      Stay updated with all your notifications in one place. No new notification found.
       </div>
-      <div className='flex justify-between h-[40px] items-center'>
+      {/* <div className='flex justify-between h-[40px] items-center'>
         <div>
         <span className='flex items-center'>
                   <label className={styles.switch}>
@@ -36,7 +36,7 @@ const NotificationWidget: React.FC = ({ }) => {
                 </span>
         </div>
         <div className='text-[var(--primary-color)] text-sm'>Configure</div>
-      </div>
+      </div> */}
     </div>
   );
 };

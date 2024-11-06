@@ -12,8 +12,9 @@ import Visibility from "../../../public/visibility.svg";
 import VisibilityOff from "../../../public/visibilityOff.svg";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
-import logo from "/public/Logo_Light mode.png";
-
+// import logo from "/public/Logo_Light mode.png";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg"
 const SignUp = () => {
   const [showVerification, setShowVerification] = useState(false);
   const { signup } = useAuthContext();
@@ -139,7 +140,8 @@ const SignUp = () => {
           <form onSubmit={handleSignUp} className={styles.formContainer}>
             <div className={styles.form_container}>
               <div className={styles.form_heading}>
-                <Image src={logo} alt="logo" />
+                <Image src={logo} alt="logo" width={45} height={55} />
+                <Image src={whr} alt="whr"/>
               </div>
               <div className={styles.form_heading}>Create Your Account</div>
 

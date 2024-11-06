@@ -67,7 +67,7 @@ const ListCard = ({ participant }: { participant: any }) => {
             alt="Logo"
             className="aspect-square"
           />
-          <p className="flex flex-col justify-between">
+          <div className="flex flex-col justify-between">
             <Text color="primary">{participant.name}</Text>
             {participant.boothNo && (
               <Text variant="noMargin" color="secondary">
@@ -79,7 +79,7 @@ const ListCard = ({ participant }: { participant: any }) => {
                 {participant.designation}
               </Text>
             )}
-          </p>
+          </div>
         </div>
         <Badge
           variant={"outline"}

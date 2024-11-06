@@ -485,6 +485,7 @@ const Trackers = ({ searchParams }: Search) => {
     // </div>
     <>{isLoading ? <Loading /> : (
       <div>
+    {isData &&
       <div className="flex flex-row">
   <div className="w-1/2 p-8 h-[calc(100vh-70px)] overflow-y-auto">
     <div className="flex flex-col gap-4">
@@ -501,21 +502,21 @@ const Trackers = ({ searchParams }: Search) => {
         Create Tracker
       </button> */}
       <hr style={{borderBottom:"1px solid var(--border-color)"}}/>
-      <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
+      {/* <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
               className="outline-none w-full bg-[var(--primary-foreground)]"
               placeholder="Search by name, address or tag"
-              // value={searchValue}
-              // onChange={(e) => setSearchValue(e.target.value)}
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
             />
-          </div>
+          </div> */}
           <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>
     </div>
   </div>
-  <div className="w-1/2 p-8 h-[calc(100vh-70px)] overflow-y-auto bg-[var(--background-secondary-color)]">
+  <div className="w-1/2 p-8 h-[calc(100vh-70px)] bg-[var(--background-secondary-color)]" style={{padding:"32px 0px"}}>
     <div className="flex flex-col gap-4">
-  <div className="flex items-center justify-between border border-[var(--border-color)] p-3">
+  <div className="flex items-center justify-between border border-[var(--border-color)] p-3" style={{margin:"0px 32px"}}>
           <span className="flex items-center gap-2 text-[#696B83]">
            {singleTrackerData?.name}
           </span>
@@ -526,7 +527,7 @@ const Trackers = ({ searchParams }: Search) => {
         <Button className="text-white">View Events</Button>
           </Link>
         </div>
-        <div className="flex">
+        <div className="flex h-[calc(100vh-180px)] overflow-y-auto flex-col px-8 gap-4">
   {/* <div className="flex w-[45%] items-stretch">
     <div className="flex flex-col w-[100%] gap-3">
     <div className="w-[100%]">
@@ -538,14 +539,13 @@ const Trackers = ({ searchParams }: Search) => {
     </div>
   </div> */}
   
-  <div className="relative w-full h-full flex justify-center">
+  {/* <div className="relative w-full h-full flex justify-center">
     <Image 
       src={TrackerLocation} 
       alt="trackerLocation"  
     />
-  </div>
-        </div>
-        <div className="flex flex-row gap-3">
+  </div> */}
+  <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch">
     <SavedEventWidget savedEvents={savedEvents} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}`}/>
   </div>
@@ -553,7 +553,7 @@ const Trackers = ({ searchParams }: Search) => {
   <NotesDiscussionWidget note={note} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/notesDiscussion?type=${singleTrackerData?.type}`}/>
   </div>
         </div>
-        <div className="flex flex-row gap-3">
+        <div className="flex flex-row gap-3 mb-8">
           <div className="flex w-1/2 items-stretch">
             <NotificationWidget/>
           </div>
@@ -561,6 +561,8 @@ const Trackers = ({ searchParams }: Search) => {
           <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/manageAccess?type=${singleTrackerData?.type}`}/>
           </div>
         </div>
+        </div>
+       
         {/* <div className="flex gap-4">
         <div className="flex w-1/2 items-stretch">
         <CardWidgitNote heading={"Saved Event"} content={"136 Events"} updatedDate={"3 Sep 2024 5:30 pm IST"} imgUrl={BookmarkBackground} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/savedEvents?type=${singleTrackerData?.type}`}/>
@@ -581,15 +583,18 @@ const Trackers = ({ searchParams }: Search) => {
   </div>
  
   </div>
-</div>
-{!hideTemplate && (
+</div>}
+{(!hideTemplate || !isData)&& (
           <div className="absolute left-[70px] top-[70px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-70px)]">
             <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
+          {!isData && <div className="flex items-center pb-6 !pl-14 text-lg">Track key events in real-time to make informed decisions and seize opportunities as they arise.</div>}
+        {isData && 
             <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center"
         style={{ color: "var(--primary-color)" }} onClick={()=>setHideTemplate(true)}>
           <Image src={Back} alt="close" height={22} width={22} />
             Back
           </button>
+        }
           <div className={`${styles.container}`}>
               {data.map((item, ind) => (
                 <Link href={`/internal/trackers/create?type=${item?.url}`} key={ind}>
@@ -606,20 +611,6 @@ const Trackers = ({ searchParams }: Search) => {
                     </div>
                     <div className="w-full h-[60%] flex flex-col gap-2">
                       <div className="flex justify-between items-center">
-                        <div className="flex h-full items-center gap-1">
-                          <Image
-                            src={Vector1}
-                            alt="vector1"
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          />
-                          <div style={{ color: "#585871", fontSize: "12px" }}>
-                            Template
-                          </div>
-                        </div>
                         <div
                       className="badge_primary"
                       style={{fontSize:"var(--font-size-label)", padding:"6px"}}

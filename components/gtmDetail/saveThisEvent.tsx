@@ -33,7 +33,7 @@ import {
 import { useSearchParams } from "next/navigation";
 import { ArrowDown, ArrowUp } from "geist-icons";
 import { GTMEventDetail } from "@/types/events";
-import { Bookmark } from "lucide-react";
+import { Bookmark, Loader2 } from "lucide-react";
 import { useEventsService } from "@/services/eventsService";
 import { error } from "console";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -634,44 +634,107 @@ const SaveThisEvent = ({ eventDetails }: { eventDetails: GTMEventDetail }) => {
     //   setIsDelete(false);
     // }
   };
-  const { bookmarkThisEvent, getIsEventBookMarked, UnBookmarkThisEvent } =
+  const queryClient = useQueryClient();
+  const { bookmarkThisEvent, getIsEventBookMarked, unBookmarkThisEvent } =
     useEventsService();
 
-  const handleSaveEvent = () => {
-    try {
-      bookmarkThisEvent(id)
-        .then((response) => {
-          if (response) {
-            toast.success("Event Saved Successfully", {
-              position: "bottom-center",
-              autoClose: 2000,
-              closeButton: true,
-              hideProgressBar: true,
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          toast.info("Event already saved", {
-            position: "bottom-center",
-            autoClose: 2000,
-            closeButton: true,
-            hideProgressBar: true,
-          });
-        });
-    } catch (error) {
-      console.log(error);
+  const { data: isEventBookmarked, isSuccess } = useQuery({
+    queryKey: ["isBookmarked", id],
+    queryFn: () => getIsEventBookMarked(id),
+  });
+
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(
+    isEventBookmarked ?? false
+  );
+
+  const bookmarkEventMutation = useMutation({
+    mutationFn: () => bookmarkThisEvent(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["isBookmarked"] });
+      toast.success("Event Saved Successfully", {
+        theme: "colored",
+        position: "bottom-center",
+        autoClose: 2000,
+        closeOnClick: true,
+        hideProgressBar: true,
+      });
+    },
+    onError: () => {
+      toast.error("Failed to save the event", {
+        theme: "colored",
+        position: "bottom-center",
+        autoClose: 2000,
+        closeOnClick: true,
+        hideProgressBar: true,
+      });
+    },
+  });
+
+  const unBookmarkEventMutation = useMutation({
+    mutationFn: () => unBookmarkThisEvent(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["isBookmarked"] });
+      toast.error("Saved Event Deleted", {
+        theme: "colored",
+        position: "bottom-center",
+        autoClose: 2000,
+        closeOnClick: true,
+        hideProgressBar: true,
+      });
+    },
+    onError: () => {
+      toast.error("Failed to delete the event", {
+        theme: "colored",
+        position: "bottom-center",
+        autoClose: 2000,
+        closeOnClick: true,
+        hideProgressBar: true,
+      });
+    },
+  });
+
+  useEffect(() => {
+    if (
+      isSuccess &&
+      isEventBookmarked !== null &&
+      isEventBookmarked !== undefined
+    ) {
+      setIsBookmarked(isEventBookmarked);
+    }
+  }, [isSuccess, isEventBookmarked]);
+
+  const toggleEventBookmark = () => {
+    if (isBookmarked) {
+      unBookmarkEventMutation.mutate();
+    } else {
+      bookmarkEventMutation.mutate();
     }
   };
+
+  const isBookmarkPending =
+    bookmarkEventMutation.isPending || unBookmarkEventMutation.isPending;
 
   return (
     <MenuTrigger>
       <Button
-        onPress={handleSaveEvent}
-        className="border border-[#6750A4] rounded-md text-[#6750A4] flex justify-center py-2 px-4 gap-2 items-center w-fit"
+        onPress={toggleEventBookmark}
+        className="border border-[#6750A4] rounded-md text-[#6750A4] flex justify-center py-2 px-4 gap-2 w-48 h-auto items-center"
+        isDisabled={isBookmarkPending}
       >
-        <Bookmark width={15} height={15} className="w-5 h-5" />
-        Save this event
+        {isBookmarkPending ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <>
+            <Bookmark
+              width={15}
+              height={15}
+              className={`w-5 h-5 ${
+                isBookmarked ? "fill-[#6750A4]" : "fill-transparent"
+              }`}
+            />
+            <p>{isBookmarked ? "Event Saved" : "Save this event"}</p>
+          </>
+        )}
       </Button>
       {/* <Popover className={styles.interestPopover} placement="left">
         <Dialog className={styles.dialogBorder}>

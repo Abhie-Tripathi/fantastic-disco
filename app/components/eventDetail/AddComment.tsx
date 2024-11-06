@@ -730,7 +730,7 @@ export const AddComment = ({
           <textarea
             readOnly={disable}
             ref={textareaRef}
-            className="flex h-[20px] w-[90%] bg-transparent border-none outline-none resize-none pl-[5px] text-[var(--primary-text-color)]"
+            className="flex h-[25px] w-[90%] bg-transparent border-none outline-none resize-none pl-[5px] text-[var(--primary-text-color)]"
             placeholder="Take a note"
             value={note}
             onChange={(e) => noteFun(e)}
