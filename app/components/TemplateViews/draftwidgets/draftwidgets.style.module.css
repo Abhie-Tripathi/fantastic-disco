@@ -21,6 +21,7 @@
     display: flex;
     gap: 8px;
     margin-top: 29px;
+    align-items: center;
 }
 .drafts div{
     color: #6750A4;

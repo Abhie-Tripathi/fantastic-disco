@@ -32,7 +32,7 @@ interface Props {
   demoEventName: string;
   demoDescription: string;
   demoLocation: string;
-  demoDate:string
+  demoDate: string
 }
 
 const Popup2: React.FC<Props> = ({
@@ -127,9 +127,8 @@ const Popup2: React.FC<Props> = ({
         }}
       >
         {fetchedAddedEvents && fetchedAddedEvents.length > 0
-          ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${
-              fetchedAddedEvents[0].name.length > 30 ? "..." : ""
-            }`
+          ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""
+          }`
           : demoEventName}
       </div>
       <div className={styles.location_dateContainer}>
@@ -146,10 +145,10 @@ const Popup2: React.FC<Props> = ({
           >
             {fetchedAddedEvents && fetchedAddedEvents.length > 0
               ? (
-                 fetchedAddedEvents[0].eventFormat ==="Virtual"?"Virtual": fetchedAddedEvents[0].cityName +
+                fetchedAddedEvents[0].eventFormat === "Virtual" ? "Virtual" : fetchedAddedEvents[0].cityName +
                   ", " +
                   fetchedAddedEvents[0].countryName
-                ).substring(0, 30)
+              ).substring(0, 30)
               : demoLocation}
           </div>
         </div>
@@ -166,38 +165,38 @@ const Popup2: React.FC<Props> = ({
           >
             {fetchedAddedEvents && fetchedAddedEvents.length
               ? formatDate(fetchedAddedEvents[0].startDate) +
-                " - " +
-                formatDate(fetchedAddedEvents[0].endDate)
+              " - " +
+              formatDate(fetchedAddedEvents[0].endDate)
               : demoDate}
           </div>
         </div>
       </div>
       <Image
-        width={350}
-        height={smallCard ? 150 : 200}
         src={
           fetchedAddedEvents && fetchedAddedEvents.length > 0
             ? fetchedAddedEvents[0].bannerUrl
             : demoBanner
         }
         alt="banner"
-        className={styles.banner}
+        width={350}
+        height={smallCard ? 150 : 220}
+        className={`w-full ${styles.banner} ${smallCard ? 'h-[150px]' : 'h-[200px]'} rounded-b-[50px] shadow-md`}
       />
       <div className={styles.dividerLine}></div>
       <div className={styles.type_peopleContainer}>
         <div className={styles.typeContainer}>
-        <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType ==="MAIN"?"Main Event":fetchedAddedEvents![0]?.eventType ==="SUB"?"Side Event":"Main Event"}</div>
+          <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? "Main Event" : fetchedAddedEvents![0]?.eventType === "SUB" ? "Side Event" : "Main Event"}</div>
           <div
             className={`${styles.pill} ${styles.type1}`}
             style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}
           >
-           {fetchedAddedEvents![0]?.eventType === "MAIN"? fetchedAddedEvents![0].event_type: fetchedAddedEvents![0]?.eventType === "SUB" ?fetchedAddedEvents![0].participationType:"Tradeshow"}
+            {fetchedAddedEvents![0]?.eventType === "MAIN" ? fetchedAddedEvents![0].event_type : fetchedAddedEvents![0]?.eventType === "SUB" ? fetchedAddedEvents![0].participationType : "Tradeshow"}
           </div>
           <div
             className={`${styles.pill} ${styles.type2}`}
             style={{ fontSize: smallCard ? 10 : fontSettings?.body.fontSize }}
           >
-          {fetchedAddedEvents![0]?.eventType === "MAIN"? fetchedAddedEvents![0].eventFormat: fetchedAddedEvents![0]?.eventType==="SUB" ?fetchedAddedEvents![0].eventFormat:"Attending"}
+            {fetchedAddedEvents![0]?.eventType === "MAIN" ? fetchedAddedEvents![0].eventFormat : fetchedAddedEvents![0]?.eventType === "SUB" ? fetchedAddedEvents![0].eventFormat : "Attending"}
           </div>
         </div>
         {/* <div className={styles.circles}>

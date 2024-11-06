@@ -27,11 +27,11 @@ interface CardProps {
         body: FontSettings;
     };
     fetchedEvent?: PrefilledAddedEventsType
-    demoEventName:string;
-    demoBanner:string;
-    demoDescription:string
-    demoLocation:string
-    demoDate:string
+    demoEventName: string;
+    demoBanner: string;
+    demoDescription: string
+    demoLocation: string
+    demoDate: string
 }
 
 const EventCard1 = ({
@@ -65,30 +65,33 @@ const EventCard1 = ({
 
     return (
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-            <Image width={291} height={185} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.banner} />
+            <Image
+                width={291} height={185}
+                src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder'
+                className={`${styles.banner}`} />
             <div className={styles.date_location_nameContainer}>
                 {/* <div className={styles.dateContainer}><span className={styles.date} style={{ fontSize: fontSettings.heading.fontSize }}>{day}</span>
                     <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div> */}
-            <div className={styles.dateContainer}>
-             {
-                fetchedEvent?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type==="Tradeshow" ? <Image src={TradeshowIcon} alt=''/>:fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type==="Conference" ? <Image src={ConferenceIcon} alt=''/>: fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type==="Workshop" ?<Image src={WorkShopIcon} alt=''/>:<Image src={DefaultIcon} alt=''/>
-             }
-           </div>
+                <div className={styles.dateContainer}>
+                    {
+                        fetchedEvent?.eventType === "SUB" ? <><Image src={POP} alt='' /></> : fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type === "Tradeshow" ? <Image src={TradeshowIcon} alt='' /> : fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type === "Conference" ? <Image src={ConferenceIcon} alt='' /> : fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type === "Workshop" ? <Image src={WorkShopIcon} alt='' /> : <Image src={DefaultIcon} alt='' />
+                    }
+                </div>
                 <div className={styles.line}></div>
                 <div className={styles.name_locationContainer}>
                     <div className={styles.locationContainer}>
                         {/* <Image src={locationIcon} alt='location' /> */}
-                        <LocationIcon color={fontSettings.subheading.fontColor}/>
-                        <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent?.eventFormat==="Virtual"?"Virtual": fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName : demoLocation}</div>
+                        <LocationIcon color={fontSettings.subheading.fontColor} />
+                        <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent?.eventFormat === "Virtual" ? "Virtual" : fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName : demoLocation}</div>
                     </div>
-                    <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? fetchedEvent.name.substring(0,15) : demoEventName}</div>
+                    <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? fetchedEvent.name.substring(0, 15) : demoEventName}</div>
                 </div>
             </div>
             <div className={styles.dividerLine}></div>
             <div className={styles.dateRange_typeContainer}>
                 <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
-                <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.event_type: fetchedEvent?.eventType === "SUB" ?fetchedEvent.participationType ==="Brunch/Lunch/Dinner"?"Bru../Lun../Din..":fetchedEvent.participationType:"Tradeshow"}</div>
-                <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.eventFormat: fetchedEvent?.eventType==="SUB" ?fetchedEvent.eventFormat:"Attending"}</div>
+                <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN" ? fetchedEvent.event_type : fetchedEvent?.eventType === "SUB" ? fetchedEvent.participationType === "Brunch/Lunch/Dinner" ? "Bru../Lun../Din.." : fetchedEvent.participationType : "Tradeshow"}</div>
+                <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN" ? fetchedEvent.eventFormat : fetchedEvent?.eventType === "SUB" ? fetchedEvent.eventFormat : "Attending"}</div>
             </div>
         </div>
     )
