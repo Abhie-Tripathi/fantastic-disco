@@ -61,14 +61,21 @@ const EventCard2 = ({
     
         return `${getDayWithSuffix(day)} ${month} ${year}`;
     };
+    const formatLocation = (event : any) => {
+        if (event?.eventFormat === "Virtual") {
+            return "Virtual";
+        }
     
+        const location = `${event?.cityName}, ${event?.countryName}`;
+        return location.length > 20 ? `${location.slice(0, 17)}...` : location;
+    };
     return (
         <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
             <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <LocationIcon color={fontSettings.subheading.fontColor}/>
-                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent?.eventFormat==="Virtual"?"Virtual":fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName :  demoLocation}</div>
+                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent ? formatLocation(fetchedEvent) : demoLocation}</div>
                 </div>
                 <div className={styles.dateContainer}>
                     <DateIcon color={fontSettings.subheading.fontColor} />
