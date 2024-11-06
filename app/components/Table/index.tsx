@@ -624,9 +624,8 @@ const Table = ({
           params.forEach((value, key) => {
             obj[key] = decodeURIComponent(value);
           });
-          if (obj["eventKeywords"]) {
-            setAppliedKeywords(obj["eventKeywords"].split("+"));
-            console.log(obj["eventKeywords"]);
+          if (obj["includeKeywords"] || obj["excludeKeywords"]) {
+            setAppliedKeywords([...obj["includeKeywords"]?.split(","), ...obj["excludeKeywords"]?.split(",")]);
           } else setAppliedKeywords([]);
 
           const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${
