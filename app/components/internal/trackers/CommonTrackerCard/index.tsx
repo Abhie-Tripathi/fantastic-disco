@@ -4,7 +4,7 @@ import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import Loading from "@/app/components/UI/Loading";
 import Image from "next/image";
-import { Location } from "geist-icons";
+import { Bookmark, Location } from "geist-icons";
 import GoTo from "/public/goTo.svg";
 import Vectore6 from "/public/newVector.svg";
 import Vectore7 from "/public/lucide_timer.svg";
@@ -253,10 +253,10 @@ console.log(item);
                 </div>
                 <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
-                    0
+                    {item?.tracker?.savedEventTotalCount}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
-                    <Image src={Vectore8} alt="expired" />
+                  <Bookmark style={{color:"var(--primary-color)"}} width="12px" height="12px"/>
                     Saved</div>
                 </div>
               </div>

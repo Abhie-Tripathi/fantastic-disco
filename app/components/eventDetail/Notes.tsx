@@ -210,7 +210,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   console.log(comments);
   const addNote = async (event: any) => {
     event.preventDefault();
-    // console.log(notes);
+    console.log(note);
 
 
     // const { user } = useAuthContext();
@@ -221,12 +221,13 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
     if (filePreviews) console.log("file file");
 
     if (
-      note.length !== 0 ||
+      note.trim().length !== 0  ||
       filePreviews.length !== 0 ||
-      selectedPdfs?.length !== 0
+      selectedPdfs.length !== 0
     ) {
       event.preventDefault();
       console.log("number of hits");
+      
       // const updatedNotes = [
       //   ...notes,
       //   {

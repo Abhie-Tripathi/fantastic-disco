@@ -109,17 +109,21 @@ export const EventsAdapter = {
             .get("includeKeywords")!
             .split(",")
             .map((keyword) => `${keyword.trim().replace(/ /g, "_")}`)
-            .join("+")
+            .join(",")
         : "";
       const excludeKeywords = params.get("excludeKeywords")
         ? params
             .get("excludeKeywords")!
             .split(",")
-            .map((keyword) => `-${keyword.trim()}`)
-            .join("+")
+            .map((keyword) => `${keyword.trim().replace(/ /g, "_")}`)
+            .join(",")
         : "";
 
-      adaptedParams.eventKeywords = includeKeywords + "+" + excludeKeywords;
+        if (includeKeywords)
+          adaptedParams.includeKeywords = includeKeywords;
+        if (excludeKeywords)
+          adaptedParams.excludeKeywords = excludeKeywords;
+      // adaptedParams.eventKeywords = includeKeywords + "+" + excludeKeywords;
     }
 
     if (params.get("estimatedVisitors")) {

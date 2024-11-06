@@ -96,6 +96,9 @@
 
 .heading {
   font-weight: 500;
+  display: flex;
+    justify-content: center;
+    align-items: center;
   /* color: #242424; */
   text-align: center;
 }

@@ -11,7 +11,9 @@ import { SignInFormSchema, SignInWithOTPSchema } from "@/types";
 import { ZodError } from "zod";
 import Visibility from "../../../public/visibility.svg";
 import VisibilityOff from "../../../public/visibilityOff.svg";
-import logo from "/public/Logo_Light mode.png";
+// import logo from "/public/Logo_Light mode.png";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg"
 import Verification from "../verification/page";
 import { showToast } from "@/utils/showToast";
 import { myFetch } from "@/utils/myFetch";
@@ -144,7 +146,8 @@ const SignIn = () => {
           <form className={styles.loginForm}>
             <div className={styles.form_container}>
               <div className={styles.form_heading}>
-                <Image src={logo} alt="logo" />
+                <Image src={logo} alt="logo" width={45} height={50} />
+                <Image src={whr} alt="whr"/>
               </div>
 
               <div className={styles.input_container}>
