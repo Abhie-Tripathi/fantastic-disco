@@ -98,6 +98,8 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
 
     // To prevent adding the task into the same container
     if (target !== source) {
+      console.log(source);
+      
       if (source === "shortlisted") {
         
         setShortlistedTasks(

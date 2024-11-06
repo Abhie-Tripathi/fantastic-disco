@@ -180,6 +180,10 @@ const Page = () => {
     // fetchAddedEvents();
   }, [])
 
+  useEffect(()=>{
+    console.log("All events",fetchedAllEvents)
+  },[fetchedAllEvents])
+
   const handleUpdateCustomization = async () => {
     const customizeData = new FormData();
     const customizationData = {
@@ -222,12 +226,10 @@ const Page = () => {
       {!isFullScreen && <div className={styles.editContainer}>
         <EditScreen
           selectedTemplate={selectedTemplate}
-
           isCustomisationWindowDisable={isCustomisationWindowDisable}
           setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}
           isCodeWindowDisable={isCodeWindowDisable} 
           setIsCodeWindowDisable={setIsCodeWindowDisable}
-         
           handleUpdateCustomization={handleUpdateCustomization}
           selectedBtn={selectedBtn}
           setSelectedBtn={setSelectedBtn}

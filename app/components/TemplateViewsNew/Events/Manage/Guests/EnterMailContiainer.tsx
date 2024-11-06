@@ -40,7 +40,7 @@ const EnterMailContiainer = ({ setSuggestedMailQuery, setSelectedMails, selected
     <form className={styles.body} onSubmit={handleSubmit}>
       <div className={styles.heading}>{name}</div>
       <div className={styles.inputContainer}>
-        <input type={setSuggestedMailQuery ? "text" : "mail"} placeholder={placeholder} value={emailInput}
+        <input type={setSuggestedMailQuery ? "text" : "email"} placeholder={placeholder} value={emailInput}
           onChange={(e) => setEmailInput(e.target.value)} />
         {!setSuggestedMailQuery && <button type="submit">Add</button>}
       </div>

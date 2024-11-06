@@ -1,0 +1,21 @@
+export type EventSearchParams = {
+  query?: string;
+  status?: string;
+  eventTypes?: string;
+  locationIds?: string;
+  geoCoordinates?: string;
+  event_rank_gte?: string;
+  event_rank_lte?: string;
+  local_rank_gte?: string;
+  local_rank_lte?: string;
+  aviation_rank_gte?: string;
+  aviation_rank_lte?: string;
+  active_lte?: string;
+  active_gte?: string;
+  total_attendance_gte?: string;
+  total_attendance_lte?: string;
+  skip?: string;
+  take?: string;
+  view?: "list" | "calendar" | "map";
+  calendar_type?: "month" | "week";
+};

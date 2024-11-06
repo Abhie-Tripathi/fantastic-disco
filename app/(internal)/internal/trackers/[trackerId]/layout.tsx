@@ -1,12 +1,14 @@
 "use client"
-import React,{Suspense} from "react";
+import React,{Suspense, useEffect, useState} from "react";
 import styles from "./layout.style.module.css";
 import SideNav from '@/app/components/trackers/sideNav';
 import Back from '/public/back.svg';
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import Loading from "@/app/components/UI/Loading";
 import { useAuthContext } from "@/context";
+import { useTrackerServices } from '@/services/trackerServices';
 // import { useTheme } from "@/context/theme";
 // import Image from "next/image";
 // import MoreIcon from "/public/dots.svg";
@@ -18,8 +20,23 @@ function Location({ fillColor }:{fillColor:string}) {
 }
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const {isVerifiedToken}=useAuthContext();
+  const {getTrackerDetail, error}=useTrackerServices();
+  const pathName = usePathname().split('/');
+  const secondLast = pathName[pathName.length - 2];
   console.log(isVerifiedToken);
-  
+  const [data, setData] = useState<any>([]);
+//   const fetchData=async()=>{
+//     const result = await getTrackerDetail(secondLast)
+//     if(result){
+//       setData(result);
+//     }
+//     if(error){
+//       console.error('Error fetching data:', error);
+//     }
+// }
+// useEffect(()=>{
+// fetchData();
+// },[])
   return (
     <div className={`${styles.container}`} style={{position:"relative"}}>
         {/* <div className={styles.bar}>

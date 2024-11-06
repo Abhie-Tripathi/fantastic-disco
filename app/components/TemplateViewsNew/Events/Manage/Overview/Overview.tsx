@@ -33,6 +33,7 @@ interface Props {
   confettiType?: string;
   eventFont?: string;
   locationCity?: string;
+  virtualLink? : string;
   locationCountry?: string;
   participationType?: string;
   isPresentinWidget?: boolean;
@@ -40,10 +41,9 @@ interface Props {
   setDeleteModal: (value: boolean) => void;
   setDeleteModalTwo: (value: boolean) => void;
   isPastEvent: boolean;
-  virtualLink?:string
 }
 
-const Overview = ({ format, leavesTheme, snowTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget, registration, waitlist, capacity, approval, isPastEvent,virtualLink }: Props) => {
+const Overview = ({virtualLink, format, leavesTheme, snowTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget, registration, waitlist, capacity, approval, isPastEvent }: Props) => {
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
   const [guestCount, setGuestCount] = useState<number>(0)
@@ -83,18 +83,9 @@ const Overview = ({ format, leavesTheme, snowTheme, eventId, imageUrl, eventName
           case "CONFIRMED":
             setGoingGuests(stat.count);
             break;
-          // case "REJECTED":
-          //   setNotgoingGuests(stat.count);
-          //   break;
-          // case "PENDING":
-          //   setPendingGuests(stat.count);
-          //   break;
           case "FOLLOWING":
             setFollowingGuests(stat.count);
             break;
-          // case "WAITLISTING":
-          //   setWaitlistGuests(stat.count);
-          //   break;
           case "INVITATION":
             setInvitedGuests(stat.count);
             break;
@@ -108,7 +99,7 @@ const Overview = ({ format, leavesTheme, snowTheme, eventId, imageUrl, eventName
     <div className={styles.body}>
       <div className={styles.eventDetailView}>
         <div className={styles.viewContainer} onClick={() => setAddEventModal(true)}>
-          <EventSmallDetailView snowTheme={snowTheme} leavesTheme={leavesTheme} participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} format={format} virtualLink={virtualLink} />
+          <EventSmallDetailView virtualLink={virtualLink} snowTheme={snowTheme} leavesTheme={leavesTheme} participationType={participationType} eventId={eventId} imageUrl={imageUrl} eventName={eventName} startDate={startDate} endDate={endDate} startTime={startTime} endTime={endTime} hashtags={hashtags} timeZone={timeZone} pageBgColor={pageBgColor} pageGradient={pageGradient} confettiType={confettiType} eventFont={eventFont} locationCity={locationCity} locationCountry={locationCountry} format={format}  />
         </div>
         <div className={styles.eventDetailContainer}>
           {!isPastEvent && <div className={styles.share_leadsContainer}>

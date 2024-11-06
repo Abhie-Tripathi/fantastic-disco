@@ -5,6 +5,22 @@ import Link from "next/link";
 import { Suspense, lazy } from "react";
 import MoreIcon from "/public/dots.svg";
 import Back from "/public/back.svg";
+import BookmarkBackground from '@/public/BookmarkBackground.svg'
+import NotesBackground from "@/public/NotesBackground.svg"
+import AccessBackground from '@/public/AccessBackground.svg'
+import ConfigBackground from '@/public/ConfigBackground.svg'
+import {
+  InformationFill,
+  Location,
+  MagnifyingGlass,
+  PencilEdit,
+} from "geist-icons";
+import {EventTableType } from '@/types/ListViewTable';
+import SavedEventWidget from "@/app/components/internal/trackers/SavedEventWidget";
+import NotesDiscussionWidget from "@/app/components/internal/trackers/NotesDiscussionWidget";
+import NotificationWidget from "@/app/components/internal/trackers/NotificationWidget";
+import Calendar from '@/public/internal/calendar.svg'
+import TrackerLocation from '@/public/internal/location.svg'
 import Table from "@/app/components/Table";
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
 import { baseUrl } from "@/constants";
@@ -23,11 +39,9 @@ import Keywords from "/public/keywords.svg";
 import SocialCause from "/public/socialCause.svg";
 import Brand from "/public/brand.svg";
 import Vector1 from "/public/vectorTemplate.svg";
-import Vector3 from "/public/Vector3.svg";
-import Vector4 from "/public/Vector4.svg";
 import MyTracker from "@/app/components/internal/trackers/MyTrackers";
 import Loading from "@/app/components/UI/Loading";
-import style from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark";
+import { Button } from "@/components/ui/button";
 function AllTrackers({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -99,6 +113,15 @@ import { useTheme } from "@/context";
 import { Step } from "react-joyride";
 import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import ShareWidget from "@/app/components/internal/trackers/ShareWidget";
+import AnalyticWidget from "@/app/components/internal/trackers/AnalyticWidget";
+import ShareModal from "@/app/components/internal/trackers/shareModal";
+import CardWidgitConfig from "@/app/components/internal/trackers/CardWidgitConfig";
+import { useTrackerServices } from "@/services/trackerServices";
+import { useNotesServices } from "@/services/notesServices";
+import { Tracker } from "@/types/trackers";
+import { useTrackerContext } from "@/context/tracker";
+
 interface Search {
   searchParams: {
     tab:string;
@@ -106,7 +129,7 @@ interface Search {
 }
 const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
-  
+  const {  setIsNewCall, setTrackerId } = useTrackerContext();
   const router=useRouter();
   const [type, setType] = useState("");
   useEffect(()=>{
@@ -114,6 +137,7 @@ const Trackers = ({ searchParams }: Search) => {
     else if(tab==="customTrackers") setType("Custom Trackers")
     else setType("All Trackers")
   },[tab])
+  const [locations, setLocations] = useState<any>();
   const [trackers, setTrackers] = useState<any[]>([]);
  
   const [offset, setOffset] = useState(0);
@@ -127,7 +151,7 @@ const Trackers = ({ searchParams }: Search) => {
   const createTrackerRef = useState(null);
   const customTrackerRef = useRef(null);
   const savedEventRef = useRef(null);
-
+  
   const { theme } = useTheme();
   useEffect(() => {
     //  if(document.body.classList.contains(styles.bodyOverflowHidden))
@@ -171,7 +195,7 @@ const Trackers = ({ searchParams }: Search) => {
   const data = [
     {
       type: "template",
-      domain: "Human Resource",
+      domain: "Market Research",
       img: Competitor,
       url: "T_COMPETITOR",
       trackerName: "Competitor",
@@ -180,7 +204,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Sales",
+      domain: "Market Research",
       img: Keywords,
       url:"T_PRODUCT_KEYWORDS",
       trackerName: "Product and Topics",
@@ -189,7 +213,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Human Resource",
+      domain: "Networking & Outreach",
       img: Speaking,
       url: "T_SPEAKING_OPPORTUNITY",
       trackerName: "Speaking Opportunity",
@@ -198,7 +222,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Human Resource",
+      domain: "Networking & Outreach",
       img: PeopleFinder,
       url: "T_PEOPLE_FINDER",
       trackerName: "People Finder",
@@ -207,7 +231,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Human Resource",
+      domain: "Talent Acquisition",
       img: People,
       trackerName: "Recruitment",
       url: "T_RECRUITMENT",
@@ -216,7 +240,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Sales",
+      domain: "Audience Analysis",
       img: Audience,
       url:"T_AUDIENCE_DEPT_PROFILE",
       trackerName: "Audience Dept. & Profiles",
@@ -225,7 +249,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Sales",
+      domain: "Market Research",
       img: Customer,
       url:"T_CUSTOMER_ICP",
       trackerName: "Customer ICP",
@@ -234,7 +258,7 @@ const Trackers = ({ searchParams }: Search) => {
     },
     {
       type: "template",
-      domain: "Sales",
+      domain: "Brand & Cause Management",
       img: SocialCause,
       trackerName: "Social Cause",
       url:"T_SOCIAL_CAUSE",
@@ -244,7 +268,7 @@ const Trackers = ({ searchParams }: Search) => {
     {
       type: "template",
       img: Brand,
-      domain: "Sales",
+      domain: "Brand & Cause Management",
       trackerName: "Brand Building",
       url:"T_BRAND_BUILDING",
       content:
@@ -252,10 +276,21 @@ const Trackers = ({ searchParams }: Search) => {
     },
   ];
   const [hide, setHide] = useState(false);
+  const [singleTrackerData,setSingleTrackerData]=useState<Tracker>();
   const [isLoading, setIsLoading] = useState(true);
+  const [currentUrl, setCurrentUrl] = useState('');
+  const {getSavedEvents}=useTrackerServices();
+  const {getNotesFromTracker}=useNotesServices();
   const handleShowMore = () => {
     setOffset((prevOffset) => prevOffset + 5);
   };
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+        const url = window.location.href;
+        const baseUrl = url.substring(0, url.lastIndexOf('/'));
+        setCurrentUrl(`${baseUrl}/trackers`);
+    }
+}, []);
   const modalOpen = () => {
     setShowModal(true);
     console.log(document.body.style);
@@ -277,10 +312,10 @@ const Trackers = ({ searchParams }: Search) => {
     }
   };
   const [showTracker, setShowTracker] = useState(false);
-  const viewTracker = () => {
-    setShowTracker(true);
-    setHideTemplate(!hideTemplate);
-  };
+  // const viewTracker = () => {
+  //   setShowTracker(true);
+  //   setHideTemplate(!hideTemplate);
+  // };
   const [hideTemplate, setHideTemplate] = useState(true);
   const [dataPresent, setDataPresent] = useState(false);
   // useEffect(() => {
@@ -295,7 +330,7 @@ const Trackers = ({ searchParams }: Search) => {
       );
       if (data) setIsLoading(false)
       if (data.trackerExists) {
-        setHideTemplate(false);
+        // setHideTemplate(false);
         setIsData(true)
       }
 
@@ -355,8 +390,80 @@ const Trackers = ({ searchParams }: Search) => {
   //     setRun(true);
   //   }
   // }, [updateSteps]);
-  console.log(hideTemplate);
+  console.log(currentUrl);
+  
+  const [note,setNote]=useState<any>(null);
+  const [savedEvents, setSavedEvents] = useState<{ result: EventTableType[]; count: number } | undefined>(undefined);
 
+  console.log(singleTrackerData);
+  useEffect(() => {
+    // console.log(item?.tracker?.eventCountry);
+    if(singleTrackerData){
+    const eventCountry = singleTrackerData?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
+    const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
+    const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
+    setLocations([...eventCountry, ...eventCity, ...eventZone]);
+    if(singleTrackerData.id){
+    fetchNote(singleTrackerData?.id)
+  fetchSavedEvent(singleTrackerData?.id)
+    }
+  }
+  }, [singleTrackerData]);
+  console.log(hideTemplate);
+  const fetchNote=async(id:string)=>{
+    // const url =
+    // `${baseUrl}/comment?stage=INTERNAL&entityType=TRACKER&entityId=${id}&offset=0&limit=1`;
+    // const { data, error } = await myFetch(url);
+    // if (data) {
+    //   // setNotes([]);
+    //   console.log(data);
+    //   // setNotes(data.comments.reverse());
+    //   if (data.comments?.length > 0){
+    //     console.log(data);
+        
+    //     setNote(data.comments);
+    //   }else setNote("");
+    // }
+    const result= await getNotesFromTracker(id,`limit=1&offset=0`)
+    console.log(result);
+    
+    if(result && result.comments?.length > 0){
+      setNote(result?.comments);
+    }else 
+    setNote(null);
+    
+  }
+  const fetchSavedEvent=async(id:string)=>{
+    // const url=`${baseUrl}/tracker/${id}/saved-events?limit=2&offset=0`
+    // const { data, error } = await myFetch(url);
+    // if (data) {
+    //   // setNotes([]);
+    //   console.log(data);
+    //   // setNotes(data.comments.reverse());
+    //   if (data?.count > 0){
+    //     console.log(data);
+        
+    //     setSavedEvents(data);
+    //   }else setSavedEvents("");
+    // }
+    const result:{result: EventTableType[], count: number} | undefined = await getSavedEvents(id, `limit=2&offset=0`);
+    console.log(result);
+    
+    if(result && result?.count>0){
+      setSavedEvents(result);
+    }else setSavedEvents(undefined);
+  }
+  console.log(savedEvents);
+  const setContextData=(id:string | undefined)=>{
+    GAEvent(
+      "trackers",
+      "Trackers",
+      "Saved Tracker | Any Filter Applied",
+      "View"
+    );
+    setIsNewCall(true); 
+    setTrackerId(id);
+  }
   return (
     // <div className={styles.body}>
     //   <div className={styles.trackers_card_container}>
@@ -377,107 +484,118 @@ const Trackers = ({ searchParams }: Search) => {
     //   </div>
     // </div>
     <>{isLoading ? <Loading /> : (
-      <>
-        <div className={styles.outerContainer}>
-          {steps?.length > 0 && (
-            <JoyRideCustom
-              steps={steps}
-              run={run}
-              onFinish={() => setRun(false)}
-              pathName="tracker"
+      <div>
+      <div className="flex flex-row">
+  <div className="w-1/2 p-8 h-[calc(100vh-70px)] overflow-y-auto">
+    <div className="flex flex-col gap-4">
+      <div className="text-sm text-[var(--secondary-text-color)]">
+        Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
+      </div>
+      <div>
+      <Button className="text-white" onClick={()=>setHideTemplate(false)}>Create Tracker</Button>
+      </div>
+      {/* <button
+        className="w-[160px] text-white font-bold py-2 px-4 rounded text-sm"
+        style={{ background: "var(--primary-color)" }} 
+      >
+        Create Tracker
+      </button> */}
+      <hr style={{borderBottom:"1px solid var(--border-color)"}}/>
+      <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
+            <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
+            <input
+              className="outline-none w-full bg-[var(--primary-foreground)]"
+              placeholder="Search by name, address or tag"
+              // value={searchValue}
+              // onChange={(e) => setSearchValue(e.target.value)}
             />
-          )}
-          <div className={styles.header_container}>
-            <div className={styles.tab_container}>
-
-              <div className={`${styles.tab}`}>Create Your Event Tracker</div>
-
-              {/* <Link
-            href="/internal/trackers/savedevents"
-            className={`${styles.tab} ${pathName == "/internal/trackers/savedevents" ? styles.active : ""
-              }`}
-          >
-            Saved Events
-          </Link> */}
-            </div>
-
-            <div className={styles.trackers_header}>
-
-              <Link
-                href="/internal/trackers/create?type=CUSTOM"
-                onClick={() =>
-                  GAEvent(
-                    "trackers",
-                    "Tracker",
-                    "Saved Tracker | New Tracker Created",
-                    "Create New Tracker"
-                  )
-                }
-                // ref={allTrackerRef}
-                className={styles.trackers_header_newtracker_button}
-              >
-                Create Tracker
-              </Link>
-              {!hideTemplate ?
-                (<div
-                  className={styles.trackers_header_newtracker_button}
-                  onClick={viewTracker}
-                >
-                  Explore Templates
-                </div>) : (
-                  <div
-                    className={styles.trackers_header_newtracker_button}
-                    onClick={viewTracker}
-                  >
-                    Hide Templates
-                  </div>
-                )
-
-              }
-              {/* <Image src={Add} alt="add" /> */}
-
-              {/* <div
-            onClick={() => setHide(!hide)}
-            className={styles.trackers_header_more_button}
-          >
-            <Image src={MoreIcon} alt="moreicon" />
-            {hide && (
-              <div
-                className={styles.hide}
-                onClick={() => setHideTemplate(!hideTemplate)}
-              >
-                {hideTemplate ?
-                  <div
-                    onClick={() => GAEvent(
-                      "trackers",
-                      "Tracker",
-                      "Hide Templates",
-                      "Hide Templates"
-                    )}
-                  >Hide Templates</div> :
-                  <div
-                    onClick={() => GAEvent(
-                      "trackers",
-                      "Tracker",
-                      "Show Templates",
-                      "Show Templates"
-                    )}
-                  >Show Templates</div>}
-              </div>
-            )}
-          </div> */}
-            </div>
           </div>
-
-          {hideTemplate && (
-            <div className={`${styles.container}`}>
-
+          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>
+    </div>
+  </div>
+  <div className="w-1/2 p-8 h-[calc(100vh-70px)] overflow-y-auto bg-[var(--background-secondary-color)]">
+    <div className="flex flex-col gap-4">
+  <div className="flex items-center justify-between border border-[var(--border-color)] p-3">
+          <span className="flex items-center gap-2 text-[#696B83]">
+           {singleTrackerData?.name}
+          </span>
+          <Link
+        href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list`}
+        onClick={()=>setContextData(singleTrackerData?.id)}
+      >
+        <Button className="text-white">View Events</Button>
+          </Link>
+        </div>
+        <div className="flex">
+  {/* <div className="flex w-[45%] items-stretch">
+    <div className="flex flex-col w-[100%] gap-3">
+    <div className="w-[100%]">
+      <Image src={Calendar} alt="Calendar" style={{width:"100%"}}/>
+    </div>
+    <div>
+      <AnalyticWidget/>
+    </div>
+    </div>
+  </div> */}
+  
+  <div className="relative w-full h-full flex justify-center">
+    <Image 
+      src={TrackerLocation} 
+      alt="trackerLocation"  
+    />
+  </div>
+        </div>
+        <div className="flex flex-row gap-3">
+  <div className="flex w-1/2 items-stretch">
+    <SavedEventWidget savedEvents={savedEvents} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}`}/>
+  </div>
+  <div className="flex w-1/2 items-stretch">
+  <NotesDiscussionWidget note={note} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/notesDiscussion?type=${singleTrackerData?.type}`}/>
+  </div>
+        </div>
+        <div className="flex flex-row gap-3">
+          <div className="flex w-1/2 items-stretch">
+            <NotificationWidget/>
+          </div>
+          <div className="flex w-1/2 items-stretch">
+          <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/manageAccess?type=${singleTrackerData?.type}`}/>
+          </div>
+        </div>
+        {/* <div className="flex gap-4">
+        <div className="flex w-1/2 items-stretch">
+        <CardWidgitNote heading={"Saved Event"} content={"136 Events"} updatedDate={"3 Sep 2024 5:30 pm IST"} imgUrl={BookmarkBackground} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/savedEvents?type=${singleTrackerData?.type}`}/>
+        </div>
+        <div className="flex w-1/2 items-stretch">
+        <CardWidgitNote heading={"Notes & Discussions"} content={"9 New Messages"} updatedDate={"3 Sep 2024 5:30 pm IST"} imgUrl={NotesBackground}/>
+        </div>
+   
+  </div>
+  <div className="flex gap-4">
+        <div className="flex w-1/2 items-stretch">
+        <CardWidgitConfig heading={"Configurations"} content={"Manage your tracker configurations using our configurable filters, tailored to your specific needs."} imgUrl={ConfigBackground}/>
+        </div>
+        <div className="flex w-1/2 items-stretch">
+        <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground}/>
+        </div>
+        </div> */}
+  </div>
+ 
+  </div>
+</div>
+{!hideTemplate && (
+          <div className="absolute left-[70px] top-[70px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-70px)]">
+            <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
+            <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center"
+        style={{ color: "var(--primary-color)" }} onClick={()=>setHideTemplate(true)}>
+          <Image src={Back} alt="close" height={22} width={22} />
+            Back
+          </button>
+          <div className={`${styles.container}`}>
               {data.map((item, ind) => (
                 <Link href={`/internal/trackers/create?type=${item?.url}`} key={ind}>
-                  <div className={styles.innerContainerTwo}>
+                  <div className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]">
                     <div
-                      className={`${styles.topView} ${theme === "dark" ? "darkMode" : "lightMode_secondary"
-                        }`}
+                      className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]"
                     >
                       <div className={styles.account}>
                         <Image src={item.img} alt="people" />
@@ -486,9 +604,9 @@ const Trackers = ({ searchParams }: Search) => {
                         <Image src={Template} alt="template" />
                       </div>
                     </div>
-                    <div className={styles.bottomView}>
-                      <div className={styles.bottomViewOne}>
-                        <div className={styles.bottomInnerView}>
+                    <div className="w-full h-[60%] flex flex-col gap-2">
+                      <div className="flex justify-between items-center">
+                        <div className="flex h-full items-center gap-1">
                           <Image
                             src={Vector1}
                             alt="vector1"
@@ -502,16 +620,17 @@ const Trackers = ({ searchParams }: Search) => {
                             Template
                           </div>
                         </div>
-                        {/* <div
-                      className={`${styles.domain}`}
+                        <div
+                      className="badge_primary"
+                      style={{fontSize:"var(--font-size-label)", padding:"6px"}}
                     >
-                      Human Resources
-                    </div> */}
+                      {item?.domain}
+                    </div>
                       </div>
-                      <div className={styles.bottomViewTwo}>
+                      <div className="text-[16px] font-bold text-[var(--primary-color)]">
                         {item?.trackerName}
                       </div>
-                      <div className={styles.text}>{item?.content}</div>
+                      <div className="font-medium text-[var(--tertiary-text-color)]">{item?.content}</div>
                     </div>
                   </div>
                 </Link>
@@ -524,137 +643,21 @@ const Trackers = ({ searchParams }: Search) => {
                   href="/internal/trackers/create?type=CUSTOM"
                   className={styles.createUrl}
                 >
-                  <button
+                  <Button
                     // onClick={() => modalOpen()}
-                    className={styles.createBtn}
-
+                    className="text-white"
+                    
                   >
                     Create Custom
-                  </button>
+                  </Button>
                 </Link>
               </div>
-            </div>
-          )}
-
-
-
-          {(
-            <>
-              {/* {loading ? <Loading/>:<> */}
-              <div
-                className={`${styles.trackers}`}
-              >
-                <div
-                  className={`${styles.trackersHead} ${type === "All Trackers" ? styles.active : ""
-                    }`}
-                  onClick={() => setType("All Trackers")}
-
-                >
-                  <AllTrackers
-                    fillColor={type === "All Trackers" ? "#6750A4" : "#696B83"}
-                  />
-                  All Trackers
-                </div>
-                <div
-                  className={`${styles.trackersHead} ${type === "Custom Trackers" ? styles.active : ""
-                    }`}
-                  onClick={() => {
-                    GAEvent(
-                      "trackers",
-                      "Tracker",
-                      "View",
-                      "Custom Trackers"
-                    )
-                    setType("Custom Trackers")
-                  }}
-                >
-                  <CustomeTracker
-                    fillColor={type === "Custom Trackers" ? "#6750A4" : "#696B83"}
-                  />
-                  Custom Trackers
-                </div>
-                {/* <div
-              className={`${styles.trackersHead} ${
-                type === "Premium Trackers" ? styles.active : ""
-              }`}
-              onClick={() => setType("Premium Trackers")}
-            >
-              <PremiumTracker
-                fillColor={type === "Premium Trackers" ? "#6750A4" : "#696B83"}
-              />
-              Premium Trackers
-            </div> */}
-                <div
-                  className={`${styles.trackersHead} ${type === "Saved Events" ? styles.active : ""
-                    }`}
-                  onClick={() => {
-                    GAEvent(
-                      "trackers",
-                      "Tracker",
-                      "View",
-                      "Saved Events"
-                    )
-                    setType("Saved Events")
-                  }}
-                  ref={savedEventRef}
-                >
-                  <Bookmark
-                    fillColor={type === "Saved Events" ? "#6750A4" : "#696B83"}
-                  />
-                  Saved Events
-                </div>
-              </div>
-              {/* </>
-    } */}
-              {type === "All Trackers" && (
-                <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} />
-              )}
-              {type === "Custom Trackers" && (
-                <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} />
-              )}
-              {/* {type === "Premium Trackers" && <div style={{padding: "0px 10px",display: "flex"}}>Create your first tracker!</div>} */}
-              {type === "Saved Events" && (
-                <div>
-                  <Table showInsights={showInsights} />
-                </div>
-              )}
-            </>
-          )}
-
-          {showModal && (
-            <div className={styles.modalContainer} onClick={(e) => closeModal(e)}>
-              <div className={styles.modalInnerContainer}>
-                <div className={styles.newTrackerHead}>Choose Tracker Type</div>
-                <Link href="/internal/trackers/create">
-                  <div className={styles.customTracker}>
-                    <div style={{ display: "flex" }}>
-                      <Image src={Vector3} alt="vector3" />
-                    </div>
-                    <div>
-                      <div className={styles.head}>Custom Tracker</div>
-                      <div className={styles.content}>
-                        Select from the available data filters to create a tracker
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-                <div className={styles.customTracker}>
-                  <div style={{ display: "flex" }}>
-                    <Image src={Vector4} alt="vector4" />
-                  </div>
-                  <div>
-                    <div className={styles.head}>Premium Tracker</div>
-                    <div className={styles.content}>
-                      Seamlessly integrate your own data to tailor your event
-                      tracking experience.
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
+            </div>
+          
           )}
-        </div>
-      </>
+      </div>
     )}</>
 
   );

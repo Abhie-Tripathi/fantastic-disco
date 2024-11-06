@@ -35,12 +35,12 @@ const TemplateTable = ({ customData, handleCustomData }: Props) => {
   };
 
   return (
-    <div className={styles.allCompetitors}>
+    <div className="flex flex-col gap-[var(--spacing-xs)] relative">
       
       <div style={{display: 'flex', justifyContent: 'space-between'}}>
-        <div className={styles.totalRecords} >Total {customData.length} records</div>
+        <div className="text-sm text-[var(--secondary-text-color)] font-medium" >Total {customData.length} records</div>
         {selectedIdArray.length > 0 && (
-          <div className={styles.remove_all_custom} onClick={removeCustomData}>
+          <div className="cursor-pointer text-xs text-[var(--danger-text-color)] font-medium" onClick={removeCustomData}>
             Remove Selected
           </div>
         )}
@@ -50,8 +50,8 @@ const TemplateTable = ({ customData, handleCustomData }: Props) => {
           Remove Selected
         </div>
       )} */}
-      <div className={styles.table_container}>
-        <table className={styles.allCustomData}>
+      <div className="max-h-[300px] overflow-y-auto">
+        <table className={`${styles.allCustomData} w-[100%] bg-[var(--primary-foreground)]`}>
           <thead>
             <tr>
               <th>
@@ -109,7 +109,7 @@ const TemplateTable = ({ customData, handleCustomData }: Props) => {
       </div>
       {customData.length > 5 && (
         <div
-          className={styles.expandTableBtn}
+          className="text-sm text-[var(--secondary-text-color)] font-medium cursor-pointer"
           onClick={() => setExpandTable((prev) => !prev)}
         >
           {expandTable ? "Read Less" : "Read More"}
