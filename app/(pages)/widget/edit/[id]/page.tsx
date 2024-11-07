@@ -110,7 +110,7 @@ const Page = () => {
           endTime: subEvent.data.end_time,
           description: subEvent.data.description,
           format: subEvent.data.format,
-          isLinkedToWidget: false,
+          isLinkedToWidget: subEvent.isWidgetLinked,
           gmtZone: subEvent.data.gmt_time,
           latitude: subEvent.data.latitude,
           eventType: subEvent.type,
