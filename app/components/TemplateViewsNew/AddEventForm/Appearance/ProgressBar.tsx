@@ -9,13 +9,13 @@ interface Props {
     descriptionMain: string;
     eventNameSub: string;
     cityNameSub: string;
-    participationTypeSub: string;
+    eventTypeSub: string;
     descriptionSub: string;
     virutalLinkMain : string;
     virtualLinkSub : string;
 }
 
-const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participationTypeMain, descriptionMain, eventNameSub, participationTypeSub, descriptionSub, cityNameSub, virutalLinkMain, virtualLinkSub }: Props) => {
+const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participationTypeMain, descriptionMain, eventNameSub, eventTypeSub, descriptionSub, cityNameSub, virutalLinkMain, virtualLinkSub }: Props) => {
 
     const [activeBars, setActiveBars] = useState<string[]>([])
 
@@ -51,13 +51,13 @@ const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participation
         updateActiveBars('description', descriptionMain);
         updateActiveBars('eventType', eventTypeMain);
         // Check for combined sub-fields to activate the 5th step
-        if (eventNameSub && cityNameSub && participationTypeSub && descriptionSub) {
+        if (eventNameSub && cityNameSub && eventTypeSub && descriptionSub) {
             updateActiveBars('subEvent', 'combinedSubFields');
         } else {
             updateActiveBars('subEvent', ''); // Remove if not all sub-fields are filled
         }
 
-    }, [participationTypeMain, eventNameMain, cityNameMain, descriptionMain, eventNameSub, cityNameSub, participationTypeSub, descriptionSub, eventTypeMain, virutalLinkMain]);
+    }, [participationTypeMain, eventNameMain, cityNameMain, descriptionMain, eventNameSub, cityNameSub, eventTypeSub, descriptionSub, eventTypeMain, virutalLinkMain]);
     const totalSteps = 6;
     return (
         <div className={styles.body}>
@@ -79,8 +79,8 @@ const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participation
                 <li className={eventNameMain ? styles.activeItem : ""}>{eventNameMain && <TickIcon />}<span>Event Name</span></li>
                 <li className={(cityNameMain || virutalLinkMain) ? styles.activeItem : ""}>{(cityNameMain || virutalLinkMain) && <TickIcon />}<span>Location</span></li>
                 <li className={descriptionMain ? styles.activeItem : ""}>{descriptionMain && <TickIcon />}<span>Description</span></li>
-                <li className={(eventNameSub && (cityNameSub || virtualLinkSub) && participationTypeSub && descriptionSub) ? styles.activeItem : ""}>
-                    {(eventNameSub && (cityNameSub || virtualLinkSub) && participationTypeSub && descriptionSub) && <TickIcon />}<span>Side-Event</span>
+                <li className={(eventNameSub && (cityNameSub || virtualLinkSub) && eventTypeSub && descriptionSub) ? styles.activeItem : ""}>
+                    {(eventNameSub && (cityNameSub || virtualLinkSub) && eventTypeSub && descriptionSub) && <TickIcon />}<span>Side-Event</span>
                 </li>
             </div>
         </div>

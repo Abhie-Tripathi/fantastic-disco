@@ -9,9 +9,10 @@ import { showToast } from '@/utils/showToast';
 interface Props {
   eventId: string;
   setInviteGuestModal : (value : boolean)=> void
+  fetchGuests: () => Promise<void>;
 }
 
-const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
+const InviteGuest = ({ eventId, setInviteGuestModal,fetchGuests }: Props) => {
 
   const [count, setCount] = useState(4); // Default starting count
   const [screen, setScreen] = useState<string>("first");
@@ -54,6 +55,10 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
   },[suggestedMailQuery])
 
   const handleSubmit = async () => {
+    if(count === 0){
+      showToast("error","You have reached the limit for inviting the guests")
+      return
+    }
     if(selectedMails.length === 0){
       showToast("warning","Select or Enter atleast one email to send invite")
       return;
@@ -74,6 +79,7 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
     if (data) {
       showToast('success', "Invitation sent")
       setInviteGuestModal(false)
+      fetchGuests()
     } else {
       showToast('error', "Error sending invitation")
     }
