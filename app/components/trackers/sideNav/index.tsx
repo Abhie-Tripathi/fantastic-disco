@@ -66,7 +66,7 @@ const Index = () => {
   // }, [secondLast]);
   const handleClick = (view:string) => {
     setView(view);
-    router.push(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`);
+    router.push(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=activeEvent`);
   };
   // const fetchData=async()=>{
   //     const result = await getTrackerDetail(secondLast)
