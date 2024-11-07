@@ -299,7 +299,7 @@ const Navbar = () => {
                   style={{ width: "fit-content", padding: "8px" }}
                 >
                   {/* <Link href="/internal" className=""> */}
-                  <Link href={"/widget/dashboard"} style={{cursor : "pointer"}}
+                  <div
                     className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
                   >
                     <Image
@@ -310,7 +310,7 @@ const Navbar = () => {
                       className={iconClass}
                     />
                     Promote
-                  </Link>
+                  </div>
                   {/* </Link> */}
                   <div
                     className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
