@@ -70,7 +70,7 @@ interface MapProps {
 
 type ZoomGroup = "country" | "state" | "city" | "event";
 
-export default function MapComponent({ searchParams }: MapProps) {
+export default function MapComponent({ source, searchParams, locations }: {string, MapProps}) {
   const {theme} = useTheme();
   const mapRef = useRef<MapRef>(null);
   const { getFilterValue } = useFilterState();
@@ -100,8 +100,9 @@ export default function MapComponent({ searchParams }: MapProps) {
 
   const location = useMemo(() => {
     const geoCoordinates = getFilterValue("geoCoordinates");
-    const locationIds = getFilterValue("locationIds");
-
+    const locationIds = source!=="tracker"?getFilterValue("locationIds"):"226e11ef-32fc-5484-9843-7087fdfb413d";
+    console.log(locationIds);
+    
     if (geoCoordinates) {
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
     } else if (locationIds) {

@@ -179,6 +179,7 @@ const Search = () => {
       setTrackerModalOpen(true);
     }
   };
+console.log(searchParams.toString());
 
   return (
     <div className="space-y-6 p-6">

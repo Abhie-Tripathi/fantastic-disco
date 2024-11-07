@@ -272,96 +272,96 @@ console.log(searchParams.get("view"));
     const filters = trackerDetail.filterValue;
     const queries: { [key: string]: any } = {};
 
-    if (filters?.eventCategory) {
-      queries.eventCategory = filters.eventCategory?.map(
-        (item: any) => item.id
-      );
-    }
+    // if (filters?.eventCategory) {
+    //   queries.eventCategory = filters.eventCategory?.map(
+    //     (item: any) => item.id
+    //   );
+    // }
 
-    if (filters?.eventCountry) {
-      queries.eventCountry = filters.eventCountry.map(
-        (item: any) => Object.keys(item)[0]
-      );
-    }
+    // if (filters?.eventCountry) {
+    //   queries.eventCountry = filters.eventCountry.map(
+    //     (item: any) => Object.keys(item)[0]
+    //   );
+    // }
 
-    if (filters?.eventCity) {
-      queries.eventCity = filters.eventCity.map(
-        (item: any) => Object.keys(item)[0]
-      );
-    }
+    // if (filters?.eventCity) {
+    //   queries.eventCity = filters.eventCity.map(
+    //     (item: any) => Object.keys(item)[0]
+    //   );
+    // }
 
-    if(filters?.eventRegion){
-      queries.eventRegion = filters.eventRegion;
-    }
+    // if(filters?.eventRegion){
+    //   queries.eventRegion = filters.eventRegion;
+    // }
 
-    if (filters?.startDate) {
-      queries.startDate = filters.startDate;
-    }
+    // if (filters?.startDate) {
+    //   queries.startDate = filters.startDate;
+    // }
 
-    if (filters?.endDate) {
-      queries.endDate = filters.endDate;
-    }
+    // if (filters?.endDate) {
+    //   queries.endDate = filters.endDate;
+    // }
 
-    if (filters?.eventStatus) {
-      queries.eventStatus = filters.eventStatus;
-    }
+    // if (filters?.eventStatus) {
+    //   queries.eventStatus = filters.eventStatus;
+    // }
 
-    if (filters?.eventFormat) {
-      queries.eventFormat = filters.eventFormat;
-    }
+    // if (filters?.eventFormat) {
+    //   queries.eventFormat = filters.eventFormat;
+    // }
 
-    if (filters?.eventFrequency) {
-      queries.eventFrequency = filters.eventFrequency;
-    }
+    // if (filters?.eventFrequency) {
+    //   queries.eventFrequency = filters.eventFrequency;
+    // }
 
-    if (filters?.editionRange) {
-      queries.editionRange = filters.editionRange;
-    }
+    // if (filters?.editionRange) {
+    //   queries.editionRange = filters.editionRange;
+    // }
 
-    if(filters?.eventKeywords){
-      queries.eventKeywords = filters.eventKeywords;
-    }
+    // if(filters?.eventKeywords){
+    //   queries.eventKeywords = filters.eventKeywords;
+    // }
 
-    if (filters?.eventRank) {
-      queries.eventRank = filters.eventRank;
-    }
+    // if (filters?.eventRank) {
+    //   queries.eventRank = filters.eventRank;
+    // }
 
-    if (filters?.localRank) {
-      queries.localRank = filters.localRank;
-    }
+    // if (filters?.localRank) {
+    //   queries.localRank = filters.localRank;
+    // }
 
-    if (filters?.trustScore) {
-      queries.trustScore = filters.trustScore;
-    }
+    // if (filters?.trustScore) {
+    //   queries.trustScore = filters.trustScore;
+    // }
 
-    if (filters?.eventSeries) {
-      queries.eventSeries = filters.eventSeries;
-    }
+    // if (filters?.eventSeries) {
+    //   queries.eventSeries = filters.eventSeries;
+    // }
 
-    if (filters?.reputationScore) {
-      queries.reputationScore = filters.reputationScore;
-    }
+    // if (filters?.reputationScore) {
+    //   queries.reputationScore = filters.reputationScore;
+    // }
 
-    if (filters?.maturity) {
-      queries.maturity = filters.maturity;
-    }
+    // if (filters?.maturity) {
+    //   queries.maturity = filters.maturity;
+    // }
 
-    if (filters?.internationalScore) {
-      queries.internationalScore = filters.internationalScore;
-    }
+    // if (filters?.internationalScore) {
+    //   queries.internationalScore = filters.internationalScore;
+    // }
 
-    if (filters?.inboundScore) {
-      queries.inboundScore = filters.inboundScore;
-    }
+    // if (filters?.inboundScore) {
+    //   queries.inboundScore = filters.inboundScore;
+    // }
 
-    if (filters?.eventRating) {
-      queries.eventRating = filters.eventRating;
-    }
+    // if (filters?.eventRating) {
+    //   queries.eventRating = filters.eventRating;
+    // }
 
-    if (filters?.eventSize) {
-      queries.eventSize = filters.eventSize;
-    }
-
+    // if (filters?.eventSize) {
+    //   queries.eventSize = filters.eventSize;
+    // }
+    
     let query = new URLSearchParams(queries);
     const finalQueryString = query.toString();
     setUrlQueryString(finalQueryString);
@@ -409,6 +409,7 @@ console.log(searchParams.get("view"));
  console.log(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
  );
  
+ console.log(view);
  
   return (
     <div className="flex w-[calc(100vw-134px)]">
@@ -576,7 +577,8 @@ console.log(searchParams.get("view"));
           {view === "map" && (
             <div>
               <Suspense fallback={<Loading />}>
-                {/* <Map queryString={urlQueryString} /> */}
+                <Map source="tracker" searchParams="categories=baby-kids%2Cautomotive&locationIds=226e11ef-32fc-5484-9843-7087fdfb413d%2C01ac0d6d-a090-591f-957f-66aece6b72fc&view=map&eventTypes=tradeshows%2Cconferences&eventFormats=offline%2Chybrid&active_gte=2024-11-01T00%3A00%3A00.000Z&active_lte=2025-10-31T00%3A00%3A00.000Z&status=active%2Ccancelled"
+                 />
                 {/* <Map/> */}
               </Suspense>
             </div>
