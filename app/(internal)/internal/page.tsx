@@ -371,7 +371,7 @@ const Dashboard = () => {
             ) : trackerList.length > 0 ? (
               trackerList.map((tracker: any) => (
                 <Link
-                  href={`/internal/trackers/${tracker.id}/trackedEvents`}
+                  href={`/internal/trackers/${tracker.id}/trackedEvents?type=${tracker.type}&view=list&eventType=activeEvent`}
                   className={`${styles.tracker_card} card `}
                   key={tracker.id}
                 >

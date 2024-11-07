@@ -11,7 +11,7 @@ const Trackers = React.lazy(
   () => import("@/app/components/internal/trackers/CommonTrackerCard")
 );
 import Table from "@/app/components/Table";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl} from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
@@ -47,7 +47,9 @@ const Map = lazy(() => import("@/components/map"));
 const Page = ({ params }: { params: any }) => {
   console.log(params);
   const {data}=useTrackerContext();
-  const [active, setActive] = useState("Active Events");
+  
+  
+  const pathname = usePathname();
   const {getTrackerDetail, error}=useTrackerServices();
   const [type, setType] = useState<string | undefined>();
   const [activeValue, setActiveValue] = useState();
@@ -59,9 +61,12 @@ const Page = ({ params }: { params: any }) => {
   const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
 console.log(searchParams.get("view"));
-
+  const typeOfEvent=searchParams.get("eventType");
+  console.log(typeOfEvent);
+  
+  const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
   // const id = pathName[pathName.length - 2];
-  console.log(active);
+  // console.log(active);
   // const [data, setData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [eventType, setEventType] = useState("active");
@@ -144,6 +149,9 @@ console.log(searchParams.get("view"));
     // createQueryString();
     setLoading(true);
   }, [data]);
+  // useEffect(()=>{
+  //   if(typeOfEvent==="savedEvent") setActive("Saved Events");
+  // },[typeOfEvent])
   useEffect(()=>{
     setView(searchParams.get("view"))
   },[searchParams.get("view")])
@@ -408,7 +416,12 @@ console.log(searchParams.get("view"));
  },[trackerDetail])
  console.log(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
  );
- 
+ const addQueryString = (value:string) => {
+  const params = new URLSearchParams(searchParams);
+  params.set('eventType', value); 
+  const newUrl = `${pathname}?${params.toString()}`;
+  router.replace(newUrl);
+};
  
   return (
     <div className="flex w-[calc(100vw-134px)]">
@@ -430,6 +443,7 @@ console.log(searchParams.get("view"));
                     "Active Events"
                   );
                   setActive("Active Events");
+                  addQueryString("activeEvent");
                 }}
               >
                 Active Events
@@ -452,6 +466,7 @@ console.log(searchParams.get("view"));
                 onClick={() => {
                   GAEvent("trackers", "Tracker Detail", "View", "New Events");
                   setActive("New Events");
+                  addQueryString("newEvent");
                 }}
               >
                 New Events
@@ -479,6 +494,7 @@ console.log(searchParams.get("view"));
                     "Expired Events"
                   );
                   setActive("Expired Events");
+                  addQueryString("expiredEvent");
                 }}
               >
                 Expired Events
@@ -506,6 +522,7 @@ console.log(searchParams.get("view"));
                     "Active Events"
                   );
                   setActive("Saved Events");
+                  addQueryString("savedEvent");
                 }}
               >
                 Saved Events

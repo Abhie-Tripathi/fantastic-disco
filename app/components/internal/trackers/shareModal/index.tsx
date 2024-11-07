@@ -138,13 +138,17 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 email: filter
           };
         if(emailRegex.test(filter)){
+            console.log(filter);
+            
         // try{
         //     const result= await createNewAccess(formData);
         // }catch(error){
 
         // }
         const result= await createNewAccess(formData);
-        console.log(error);
+        if(result){
+            setId(result.user.id);
+        }
         
         // try {
         //     const { data, error } = await myFetch(url, {
