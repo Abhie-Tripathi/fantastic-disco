@@ -138,7 +138,6 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 email: filter
           };
         if(emailRegex.test(filter)){
-            console.log(filter);
             
         // try{
         //     const result= await createNewAccess(formData);

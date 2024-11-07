@@ -62,8 +62,6 @@ const Page = ({ params }: { params: any }) => {
   const { trackerId } = params;
 console.log(searchParams.get("view"));
   const typeOfEvent=searchParams.get("eventType");
-  console.log(typeOfEvent);
-  
   const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
   // const id = pathName[pathName.length - 2];
   // console.log(active);
