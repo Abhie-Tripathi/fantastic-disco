@@ -52,16 +52,15 @@ const ParticipationContainer = ({ size, theme, type, handleChange, formState, fo
     { type: "FoundersParty", icon: FoundersIcon, label: "Founders Party" },
     { type: "CocktailHours", icon: CocktailHoursIcon, label: "Cocktail Hours" },
     { type: "Summit", icon: Summit, label: "Summit" },
-    { type: "Brunch/Lunch/Dinner", icon: Brunch, label: "Brunch/Lunch/Dinner" },
-    
-    { type: "Music festival", icon: MusicFestival, label: "Music festival" },
-    { type: "Tea Party", icon: Teaparty, label: "Tea Party" },
+    { type: "Brunch", icon: Brunch, label: "Brunch/Lunch/Dinner" },
+    { type: "Musicfestival", icon: MusicFestival, label: "Music festival" },
+    { type: "TeaParty", icon: Teaparty, label: "Tea Party" },
     { type: "Masquerade", icon: Masquerade, label: "Masquerade" },
     { type: "Carnival", icon: Carnival, label: "Carnival" },
     { type: "BBQ", icon: BBQ, label: "BBQ" },
     { type: "Gameday", icon: Gameday, label: "Gameday" },
-    { type: "Mini-Golf", icon: MiniGolf, label: "Mini-Golf" },
-    { type: "Open mic", icon: OpenMic, label: "Open mic" },
+    { type: "MiniGolf", icon: MiniGolf, label: "Mini-Golf" },
+    { type: "Openmic", icon: OpenMic, label: "Open mic" },
     { type: "Retro", icon: Retro, label: "Retro" },
     { type: "Marathon", icon: Marathon, label: "Retro" }
     // { type: "Others", icon: CocktailHoursIcon, label: "Others" },
@@ -142,31 +141,12 @@ const ParticipationContainer = ({ size, theme, type, handleChange, formState, fo
   return (
     <div className={`${styles.body} ${theme === "dark" ? styles.darkBody : ""}`}>
       {type === "side" ?
-        // <div className={styles.options}>
-        //   <div className={`${styles.option} ${formState.participationType === "HappyHours" ? styles.activeOption : ""}`} onClick={() => handleSelection("HappyHours")}
-        //   >
-        //     <Image src={HappyHoursIcon} alt={`icon`} height={54} width={54} />
-        //     <span className={formTheme === "dark" ? styles.darkLabel : styles.lightLabel}>Happy Hours</span>
-        //   </div>
-        //   <div className={`${styles.option} ${formState.participationType === "FoundersParty" ? styles.activeOption : ""}`} onClick={() => handleSelection("FoundersParty")}
-        //   >
-        //     <Image src={FoundersIcon} alt={`icon`} height={54} width={54} />
-        //     <span className={formTheme === "dark" ? styles.darkLabel : styles.lightLabel}>Founders Party</span>
-        //   </div>
-        //   <div className={`${styles.option} ${formState.participationType === "CocktailHours" ? styles.activeOption : ""}`} onClick={() => handleSelection("CocktailHours")}
-        //   >
-        //     <Image src={CocktailHoursIcon} alt={`icon`} height={54} width={54} />
-        //     <span className={formTheme === "dark" ? styles.darkLabel : styles.lightLabel}>Cocktail Hours</span>
-        //   </div>
-        // </div> 
-
-
         <div className={styles.carouselContainer}>
         <button onClick={handlePrev} className={styles.arrowButton}><LeftArrow/></button>
         
         <div ref={optionsRef} className={styles.options}>
           {optionsData.map((option) => (
-            <div key={option.type} className={`${styles.option} ${formState.participationType === option.type ? styles.activeOption : ""}`} onClick={() => handleChange("participationType", option.type)}>
+            <div key={option.type} className={`${styles.option} ${formState.event_type === option.type ? styles.activeOption : ""}`} onClick={() => handleChange("event_type", option.type)}>
               <Image src={option.icon} alt={`${option.label} icon`} height={54} width={54} style={{borderRadius:"4px"}}/>
               <span className={formTheme === "dark" ? styles.darkLabel : styles.lightLabel}>{option.label}</span>
             </div>

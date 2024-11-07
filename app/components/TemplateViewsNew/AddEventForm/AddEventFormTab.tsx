@@ -89,7 +89,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
     const handleAddEvent = async () => {
         if (eventFlow === "main") {
             if (activeBtn === "side") {
-                if (subEventState.eventName || subEventState.description || subEventState.query || subEventState.participationType) {
+                if (subEventState.eventName || subEventState.description || subEventState.query || subEventState.event_type) {
                     if (!subEventState.eventName || subEventState.eventName === "") {
                         handleSubeventChange('isEventNameEmpty', true)
                         // setIsEventNameEmpty(true)
@@ -109,11 +109,11 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
                         handleSubeventChange('isEventDescriptionEmpty', false)
                         // setIsEventDescriptionEmpty(false)
                     }
-                    if (!subEventState.participationType) {
-                        handleSubeventChange('isEventParticipationEmpty', true)
+                    if (!subEventState.event_type) {
+                        handleSubeventChange('isEventTypeEmpty', true)
                         // setIsEventParticipationEmpty(true)
                     } else {
-                        handleSubeventChange('isEventParticipationEmpty', false)
+                        handleSubeventChange('isEventTypeEmpty', false)
                         // setIsEventParticipationEmpty(false)
                     }
                     if (!subEventState.textValue) {
@@ -251,14 +251,14 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
             })
             if (data) {
                 console.log("event added :", data)
-                if (!subEventState.isEventNameEmpty && !subEventState.isEventFormatEmpty && !subEventState.isEventDescriptionEmpty && !subEventState.isEventParticipationEmpty && !subEventState.event_type && !subEventState.isParticipationMessageEmpty && (subEventState.banner.placeHolder !== Placeholder || subEventState.banner.file)) {
+                if (!subEventState.isEventNameEmpty && !subEventState.isEventFormatEmpty && !subEventState.isEventDescriptionEmpty && !subEventState.isEventTypeEmpty  && (subEventState.banner.placeHolder !== Placeholder || subEventState.banner.file)) {
                     addSubEvent(data.data.id)
                 } else {
                     setIsAddEventModalOpen(false)
                     showToast("success", "Main Event Added Successfully")
                     if (fetchEvents) {
                         // fetchEvents(0, "update")
-                        // window.location.reload();
+                        window.location.reload();
                     }
                     if (mainEventState.speaker.length > 0) {
                         mainEventState.speaker.map((speaker: any) => {
@@ -349,11 +349,11 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
             handleSubeventChange('isEventDescriptionEmpty', false)
             // setIsEventDescriptionEmpty(false)
         }
-        if (!subEventState.participationType) {
-            handleSubeventChange('isEventParticipationEmpty', true)
+        if (!subEventState.event_type) {
+            handleSubeventChange('isEventTypeEmpty', true)
             // setIsEventParticipationEmpty(true)
         } else {
-            handleSubeventChange('isEventParticipationEmpty', false)
+            handleSubeventChange('isEventTypeEmpty', false)
             // setIsEventParticipationEmpty(false)
         }
 
@@ -370,7 +370,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
             !subEventState.startDate ||
             !subEventState.endDate ||
             !subEventState.description.trim() ||
-            !subEventState.participationType ||
+            !subEventState.event_type ||
             // !eventState.participationMessage ||
             // Check location fields only for "In-person" or "Hybrid" events
             ((subEventState.eventFormat === "In-person" || subEventState.eventFormat === "Hybrid" || subEventState.eventFormat === "OFFLINE") &&
@@ -415,8 +415,8 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
             gmt_time: subEventState.timeZone,
             latitude: subEventState.latitude,
             longitude: subEventState.longitude,
-            participationType: subEventState.participationType,
-            event_type: "Tradeshow",
+            participationType: "Organiser",
+            event_type: subEventState.event_type,
             customizationData: JSON.stringify(eventCustomizationData),
             parentData: parenteventName ? parenteventName : "",
         };
