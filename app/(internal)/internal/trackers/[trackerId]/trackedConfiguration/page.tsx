@@ -189,6 +189,14 @@ const userRating=
     ? data?.tracker?.filterValue?.eventRating.split(",")
     : []
    const allKeywords=data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : [];
+   const includeKeywords=data?.tracker?.filterValue?.includeKeywords &&
+   data.tracker.filterValue?.includeKeywords.split(",").length > 0
+       ? data.tracker.filterValue.includeKeywords.split(",").filter(Boolean)
+       : [];
+    const excludeKeywords=data?.tracker?.filterValue?.excludeKeywords &&
+    data.tracker.filterValue?.excludeKeywords.split(",").length > 0
+        ? data.tracker.filterValue.excludeKeywords.split(",").filter(Boolean)
+        : [];
    let toggleOpend: Toggle={};
   if(data?.tracker?.filterValue?.userType)
   toggleOpend=JSON.parse(data?.tracker?.filterValue?.userType);
@@ -262,14 +270,14 @@ const userRating=
           </div>
           <div className={styles.innerContainerRight}>
           <div className={keyStyles.allCat1}>
-                   {data?.tracker?.filterValue?.includeKeywords?.split(",")?.map((item: string, id: number) => (
+                   {includeKeywords?.map((item: string, id: number) => (
                         (
                            <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.key}`}>{item}
                            <span className={keyStyles.tooltipText}>Included Keyword</span>
                            </div>
                        )
                    ))}
-                   {data?.tracker?.filterValue?.excludeKeywords?.split(",")?.map((item: string, id: number) => (
+                   {excludeKeywords?.map((item: string, id: number) => (
                         (
                           <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.keyNegative}`}>{item}
                           <span className={keyStyles.tooltipText}>Excluded Keyword</span>
@@ -664,8 +672,8 @@ const userRating=
         </div>
       </div>
       <div className={styles.innerContainerRight}>
-        <AdvanceFilter includeKeywords={data?.tracker?.filterValue?.includeKeywords?.length !== 0 ? data?.tracker?.filterValue?.includeKeywords?.split(',') : []} 
-        excludeKeywords={data?.tracker?.filterValue?.excludeKeywords?.length !== 0 ? data?.tracker?.filterValue?.excludeKeywords?.split(',') : []}
+        <AdvanceFilter includeKeywords={includeKeywords} 
+        excludeKeywords={excludeKeywords}
          freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
          isFreqToggle={toggleOpend?.eventFrequency}
           isBranded={toggleOpend?.brandedEvent}
