@@ -1344,8 +1344,16 @@ const Pages = () => {
         setSelectedTrustScore(updatedTrustScore)
       // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
       // setSelectedLocations(editData.tracker.filterValue?.location);
-      setIncludeKeywords(editData.tracker.filterValue?.includeKeywords && editData.tracker.filterValue?.includeKeywords?.split(",").length>0?editData.tracker.filterValue?.includeKeywords?.split(","):[]),
-      setExcludeKeywords(editData.tracker.filterValue?.excludeKeywords && editData.tracker.filterValue?.excludeKeywords?.split(",").length>0?editData.tracker.filterValue?.excludeKeywords?.split(","):[]),
+      setIncludeKeywords(
+        editData.tracker.filterValue?.includeKeywords &&
+        editData.tracker.filterValue?.includeKeywords.split(",").length > 0
+            ? editData.tracker.filterValue.includeKeywords.split(",").filter(Boolean)
+            : []
+    );    
+      setExcludeKeywords(editData.tracker.filterValue?.excludeKeywords &&
+        editData.tracker.filterValue?.excludeKeywords.split(",").length > 0
+            ? editData.tracker.filterValue.excludeKeywords.split(",").filter(Boolean)
+            : []),
       setSelectedEventAttendanceRange((prevArray) => {
         const gte =
           editData.tracker.filterValue?.eventAttendanceRange?.split(",")[0];

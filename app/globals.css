@@ -573,13 +573,15 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-/* button {
+/* 
+button {
   background-color: transparent;
   border: none;
   font-size: inherit;
   outline: none;
   cursor: pointer;
-} */
+}
+ */
 
 .icons_light {
   filter: invert(1);

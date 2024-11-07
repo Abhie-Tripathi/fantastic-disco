@@ -715,7 +715,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
           ref={containerRef}
           // style={{ position: "relative" }}
         >
-          {zeroState && <div className="h-[100%] flex items-center justify-center">Your notes will appear here once added. Start by creating a new note!</div>}
+          {zeroState && <div className="h-[100%] flex items-center justify-center">Be the first to drop your notes and ignite the team discussion.</div>}
           <div
            className="min-h-full absolute w-full top-0 left-0 flex justify-center items-center overflow-y-scroll bg-[var(--primary-foreground)]"
            style={{

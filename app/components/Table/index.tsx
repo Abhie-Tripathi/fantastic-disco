@@ -526,43 +526,53 @@ const Table = ({
   const [isSaved, setIsSaved] = useState(false);
   const fetchSavedData = async () => {
     setIsSaved(true);
-
-    const secondLast = path[path.length - 2];
-    // const { data, error } = await myFetch(
-    //   `${baseUrl}/tracker/${secondLast}/saved-events?max=${itemsPerPage}&offset=${(currPage - 1) * 10
-    //   }`
-    // );
-    // if (error) {
-    //   console.log(error);
-    //   return;
-    // }
-    const result=await getSavedEvents(secondLast, `max=${itemsPerPage}&offset=${(currPage - 1) * 10 }`);
-    try{
-    if (result) {
-      console.log(result);
-      setIsLoaded(true);
-      GAEvent("trackers", "Tracker", "View", `Saved Event | ${currPage}`);
-      // if (data?.events?.length > 0) {
-      setEventPerPage(result.result);
-      setTotalEvents(result.count);
-      if(result.count===0){
-        setZeroStateHeading(`No ${eventType} Found`)
-      setZeroStateText("Try using alternative or related industry/keywords to create a tracker.")
-      }
-      if (currPage === 1) {
-        setTotalPages(Math.ceil(result.count / itemsPerPage));
-        setEventPerPage(result.result);
-      } else {
-        setEventPerPage(result.result);
-      }
+  
+    // Abort previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
     }
-      // }
-      // setCatgeoryData(data);
-    }catch(error){
-      console.log(error);
-      
+  
+    // Create a new AbortController for the new request
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+  
+    const secondLast = path[path.length - 2];
+    
+    try {
+      const result = await getSavedEvents(
+        secondLast, 
+        `max=${itemsPerPage}&offset=${(currPage - 1) * 10}`,
+        abortController.signal // Pass the signal here
+      );
+  
+      if (result) {
+        setIsLoaded(true);
+        GAEvent("trackers", "Tracker", "View", `Saved Event | ${currPage}`);
+  
+        setEventPerPage(result.result);
+        setTotalEvents(result.count);
+  
+        if (result.count === 0) {
+          setZeroStateHeading(`No ${eventType} Found`);
+          setZeroStateText("Try using alternative or related industry/keywords to create a tracker.");
+        }
+  
+        if (currPage === 1) {
+          setTotalPages(Math.ceil(result.count / itemsPerPage));
+        }
+      }
+    } catch (error:any) {
+      if (error.name === "AbortError") {
+        console.log("Saved events request was aborted");
+      } else {
+        console.error("Fetch saved data error: ", error);
+      }
+    } finally {
+      // Reset the controller after request completes or is aborted
+      abortControllerRef.current = null;
     }
   };
+  
 
   const fetchAllSavedEvent = async () => {
     const { data, error } = await myFetch(
@@ -669,38 +679,58 @@ const Table = ({
       }
     }
   };
-
+  const abortControllerRef = useRef<AbortController | null>(null);
   const fetchData = async (secondLast: string) => {
-    if (eventType === "Saved Events") return fetchSavedData();
-  
-    const result: { totalEvents: number; events: EventTableType[] } | undefined = await getTrackerEvents(
-      secondLast,
-      `limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage}`,
-      eventType === "Active Events" ? "active" : eventType === "Expired Events" ? "expired" : ""
-    );
-  
-    if (!result) {
-      console.error("No data returned from getTrackerEvents");
-      return; // Handle the case where result is undefined
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
     }
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
   
-    if (currPage === 1) {
-      setTotalPages(Math.ceil(result.totalEvents / itemsPerPage));
+    try {
+      if (eventType === "Saved Events") return fetchSavedData();
+  
+      const result = await getTrackerEvents(
+        secondLast,
+        `limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage}`,
+        eventType === "Active Events" ? "active" : eventType === "Expired Events" ? "expired" : "",
+        abortController.signal
+      );
+  
+      if (!result) {
+        console.error("No data returned from getTrackerEvents");
+        return;
+      }
+      
       setEventPerPage(result.events);
-    } else {
-      setEventPerPage(result?.events);
-    }
-    if(result.totalEvents===0){
-      setZeroStateHeading(`No ${eventType} Found`)
-      setZeroStateText("Try using alternative or related industry/keywords to create a tracker.")
-    }
-    if (result.events.length > 0) {
-      setActiveValue(result.totalEvents);
-      GAEvent("trackers", "Tracker", "View", `${eventType} | ${currPage}`);
-      setTotalEvents(result.totalEvents);
-    }
   
-    setIsLoaded(true);
+      if (currPage === 1) {
+        setTotalPages(Math.ceil(result.totalEvents / itemsPerPage));
+      }
+  
+      if (result.totalEvents === 0) {
+        setZeroStateHeading(`No ${eventType} Found`);
+        setZeroStateText("Try using alternative or related industry/keywords to create a tracker.");
+      }
+  
+      if (result.events.length > 0) {
+        setActiveValue(result.totalEvents);
+        GAEvent("trackers", "Tracker", "View", `${eventType} | ${currPage}`);
+        setTotalEvents(result.totalEvents);
+      }
+  
+      setIsLoaded(true);
+  
+    } catch (error:any) {
+      if (error.name === "AbortError") {
+        console.log("Request was aborted");
+      } else {
+        console.error("Fetch error: ", error);
+      }
+    } finally {
+      // Reset the controller after the request completes or is aborted
+      abortControllerRef.current = null;
+    }
   };
   
   // const [isSaving, setIsSaving] = useState(false);
