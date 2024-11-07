@@ -11,11 +11,12 @@ import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 
 const eventStatuses = [
-  { id: "me", label: "Me" },
-  { id: "others", label: "Others" },
+  { id: "IN_DISCUSSION", label: "Pending" },
+  { id: "SHORTLISTED", label: "Shortlisted" },
+  { id: "REJECTED", label: "Rejected" },
 ];
 
-export default function InterestSelector() {
+export default function InterestStatusSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, searchParams } =
     useFilterContext();
@@ -43,7 +44,7 @@ export default function InterestSelector() {
   };
 
   const handleApply = () => {
-    setLocalFilter("votedBy", selectedStatuses.join(","));
+    setLocalFilter("status", selectedStatuses.join(","));
     setIsOpen(false);
   };
 
@@ -67,7 +68,7 @@ export default function InterestSelector() {
           aria-haspopup="true"
         >
           <div className="flex items-center">
-            <span className="mr-2">Upvoted By</span>
+            <span className="mr-2">Status</span>
             {selectedStatus > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {selectedStatus}

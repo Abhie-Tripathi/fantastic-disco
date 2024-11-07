@@ -115,7 +115,7 @@
     position: absolute !important;
 }
 .searchContainer {
-    width: 40%;
+    width: 25%;
     position: relative;
     border: 1px solid var(--input-border-color);
     border-radius: var(--border-radius-sm);

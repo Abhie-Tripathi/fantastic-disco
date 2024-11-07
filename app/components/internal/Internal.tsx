@@ -21,10 +21,15 @@ import { baseUrl, headers } from "@/constants";
 import Loading from '../UI/Loading'
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
 import SearchBar from './searchBar/SearchBar'
-import InterestSelector from '@/components/coordinate/interest'
 import DateRangeSelector from '@/components/search/dateRange'
 import { Button as Button2 } from "@/components/ui/button";
 import { useFilterContext } from '@/context/filterContext'
+import UpvoteSelector from '@/components/coordinate/upvote'
+import InterestStatusSelector from '@/components/coordinate/interestStatus'
+import InterestTypeSelector from '@/components/coordinate/interestType'
+import { useCoordinateService } from '@/services/coordinateService'
+import { useSearchParams } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
 
 interface Props{
     handleModal : (id: string,enquiryId:string) => void,
@@ -38,6 +43,28 @@ interface Props{
 
 }
 const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen,setSelectedId, setStatusChanged, statusChanged,selectedId } : Props) => {
+
+  const searchParams = useSearchParams();
+  const coordinateService = useCoordinateService();
+
+  const {
+    data: eventData,
+    error,
+    isLoading,
+    refetch,
+  } = useQuery<
+    | eventDataType[]
+    | undefined
+  >({
+    queryKey: ["events", searchParams.toString()],
+    queryFn: () =>
+    coordinateService.getEventsWithSearchParams(searchParams.toString()),
+    enabled:
+      !!searchParams.toString(),
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
    const buttonRef = useRef(null);
     let prevDate: any = null;
     const { theme } = useTheme();
@@ -302,10 +329,11 @@ useEffect(()=>{
           }
         </div>
         <div style={{width:"19%"}} className={styles.outerDiv}>
-          <InterestSelector />
+          <UpvoteSelector />
         </div>
-          <div style={{width:"19%"}} className={styles.outerDiv}>
-         <MenuTrigger onOpenChange={setMenuOpen}>
+          <div style={{width:"15%"}} className={styles.outerDiv}>
+            <InterestStatusSelector />
+         {/* <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
                   <div className={styles.input_container}>
                     <div className={styles.input}>
@@ -335,10 +363,11 @@ useEffect(()=>{
                     setSelectedEventTypeName={setSelectedStatusTypeName}
                   />
                 </Popover>
-              </MenuTrigger>
+              </MenuTrigger> */}
           </div>
-        <div style={{width:"19%"}} className={styles.outerDiv}>
-        <MenuTrigger onOpenChange={setMenuOpen}>
+        <div style={{width:"15%"}} className={styles.outerDiv}>
+          <InterestTypeSelector />
+        {/* <MenuTrigger onOpenChange={setMenuOpen}>
                 <Button className={styles.dropdown_button}>
                   <div className={styles.input_container}>
                     <div className={styles.input}>
@@ -370,9 +399,9 @@ useEffect(()=>{
                     setSelectedEventTypeName={setSelectedParticipantTypeName}
                   />
                 </Popover>
-              </MenuTrigger>
+              </MenuTrigger> */}
         </div>
-        <div style={{width:"22%"}} className={styles.outerDiv}>
+        {/* <div style={{width:"22%"}} className={styles.outerDiv}>
         <MenuTrigger onOpenChange={setMenuOpen} >
               <Button ref={buttonRef} className={styles.dropdown_button}>
                 <div className={styles.input_container}>
@@ -409,8 +438,10 @@ useEffect(()=>{
                 />
               </Popover>
             </MenuTrigger>
+            </div> */}
+            <div style={{width:"30%"}} className={styles.outerDiv}>
+              <DateRangeSelector source="search"/>
             </div>
-            <DateRangeSelector source="search"/>
     </div>
 
     {/* Temporary Button */}

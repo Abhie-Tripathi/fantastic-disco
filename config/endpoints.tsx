@@ -50,4 +50,7 @@ export const endpoints = {
     getNotes: `${BASE_URL}/comment?stage=INTERNAL&entityType=TRACKER`,
     saveNotes: `${BASE_URL}/comment`,
   },
+  coordinate: {
+    list: `${BASE_URL}/userInterest/enquiry`,
+  }
 };
