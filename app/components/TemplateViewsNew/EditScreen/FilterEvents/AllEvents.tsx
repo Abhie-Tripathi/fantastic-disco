@@ -505,9 +505,7 @@ const AllEvents = ({
     }
   };
 
-
   const handleSideEventAddToWidget = async (event: any, isLinked: boolean) => {
-    console.log("fsdfsdf",event,isLinked)
     if (
       selectedTemplate === "ST" ||
       selectedTemplate === "SB" ||
@@ -574,7 +572,7 @@ const AllEvents = ({
           ["PUVP", "PUVL", "ST", "SB"].includes(selectedTemplate));
 
       if (isLinked) {
-        await handleRemoveEventFromWidget(event.mainEvent.eventId);
+        await handleRemoveEventFromWidget(event.eventId);
       } else {
         const newEvents = {
           id: event.eventId,
@@ -675,21 +673,21 @@ const AllEvents = ({
     if (check && option === "list") {
       setSelectedOptions((prev: any) => ({
         ...prev,
-        [event.mainEvent.eventId]: "list",
+        [event.eventId]: "list",
       }));
 
       const existingEvents = fetchedAddedEvents || [];
       const eventIndex = existingEvents.findIndex(
-        (existingEvent) => existingEvent.id === event.mainEvent.eventId
+        (existingEvent) => existingEvent.id === event.eventId
       );
 
       if (eventIndex !== -1) {
         const updatedEvents = existingEvents.filter(
-          (existingEvent) => existingEvent.id !== event.mainEvent.eventId
+          (existingEvent) => existingEvent.id !== event.eventId
         );
 
         const newEvents = {
-          id: event.mainEvent.eventId,
+          id: event.eventId,
           promoted: "false",
         };
 
@@ -697,7 +695,7 @@ const AllEvents = ({
         await updateWidgetAgain(mergedEvents);
       } else {
         const newEvents = {
-          id: event.mainEvent.eventId,
+          id: event.eventId,
           promoted: "false",
         };
         const mergedEvents = [...existingEvents, newEvents];
@@ -706,21 +704,21 @@ const AllEvents = ({
     } else if (check && option === "carousel") {
       setSelectedOptions((prev: any) => ({
         ...prev,
-        [event.mainEvent.eventId]: "carousel",
+        [event.eventId]: "carousel",
       }));
 
       const existingEvents = fetchedAddedEvents || [];
       const eventIndex = existingEvents.findIndex(
-        (existingEvent) => existingEvent.id === event.mainEvent.eventId
+        (existingEvent) => existingEvent.id === event.eventId
       );
 
       if (eventIndex !== -1) {
         const updatedEvents = existingEvents.filter(
-          (existingEvent) => existingEvent.id !== event.mainEvent.eventId
+          (existingEvent) => existingEvent.id !== event.eventId
         );
 
         const newEvents = {
-          id: event.mainEvent.eventId,
+          id: event.eventId,
           promoted: "true",
         };
 
@@ -748,7 +746,7 @@ const AllEvents = ({
       showToast("success", "Event successfully added to the widget");
       if (typeof fetchEvents === "function") {
         fetchEvents(0, "update").then(() => {
-          // window.location.reload();
+          window.location.reload();
         });
       }
       // fetchEvents(0, "update");
@@ -806,7 +804,7 @@ const AllEvents = ({
     setSelectedOption(option);
   };
 
-  console.log("fetchedAllEvents",fetchedAllEvents)
+  console.log("fetchedAllEvents", fetchedAllEvents);
   return (
     <div className={styles.body} ref={scrollableDivRef}>
       <div className={styles.headerContainer}>
@@ -970,14 +968,13 @@ const AllEvents = ({
         <div className={styles.allEventsContainer}>
           {fetchedAllEvents.map((event, key) => (
             <React.Fragment key={key}>
-              {/* Main Event */}
-              <div className={styles.event}>
+              <div className={styles.event} key={key}>
                 <div className={styles.eventDetailsContainer}>
-                  <div className={styles.eventName}>
-                    {`${event.mainEvent.name.substring(0, 30)}${
-                      event.mainEvent.name.length > 30 ? "..." : ""
-                    }`}
-                  </div>
+                  <div
+                    className={styles.eventName}
+                  >{`${event.mainEvent.name.substring(0, 30)} ${
+                    event.mainEvent.name.length > 30 ? "..." : ""
+                  }`}</div>
                   <div className={styles.eventLocationContainer}>
                     <LocationIcon />
                     <div>
@@ -994,92 +991,116 @@ const AllEvents = ({
                     </div>
                   </div>
                   <div className={styles.tags}>
-                    <span className={styles.mainEventTag}>Main Event</span>
+                    {event.mainEvent.eventType === "MAIN" ? (
+                      <span className={styles.mainEventTag}>Main Event</span>
+                    ) : (
+                      <span className={styles.subEventTag}>Side Event</span>
+                    )}
+                    {event.subEvents.length > 0 && (
+                      <span className={styles.subEventTag}>
+                        {event.subEvents.length} Side Events
+                      </span>
+                    )}
                   </div>
                 </div>
+
                 <div className={styles.btnContainer}>
-                  <div className={styles.addButtonContainer}>
-                    <div className={styles.heading}>
-                      {event.mainEvent.isLinkedToWidget
-                        ? "Added to Widget"
-                        : "Add to Widget"}
-                    </div>
-                    <input
-                      type="checkbox"
-                      id={event.mainEvent.eventId.toString()}
-                      className={styles.checkboxInput}
-                      checked={event.mainEvent.isLinkedToWidget}
-                      onChange={() =>
-                        handleAddToWidget(
-                          event,
-                          event.mainEvent.isLinkedToWidget
-                        )
-                      }
-                    />
-                    <label
-                      htmlFor={event.mainEvent.eventId.toString()}
-                      className={styles.checkBox}
-                    ></label>
-                    {/* Option to add the main event to list or carousel */}
-                    {(selectedTemplate === "CVG" ||
-                      selectedTemplate === "CVL") &&
-                      event.mainEvent.isLinkedToWidget && (
-                        <div className={styles.addEventOptionsContainer}>
-                          <span
-                            className={`${styles.addOption} ${
-                              selectedOptions[event.mainEvent.eventId] ===
-                              "list"
-                                ? styles.selectedOption
-                                : ""
-                            }`}
-                            onClick={() =>
-                              handleAddToWidgetList(
-                                event,
-                                event.mainEvent.isLinkedToWidget,
-                                "list"
-                              )
-                            }
-                          >
-                            {selectedOptions[event.mainEvent.eventId] ===
-                              "list" && <TickIcon />}
-                            <AddeventIcon />
-                            {selectedTemplate === "CVL"
-                              ? "Add Event to List"
-                              : "Add Event to Grid"}
-                          </span>
-                          <span
-                            className={`${styles.addOption} ${
-                              selectedOptions[event.mainEvent.eventId] ===
-                                "carousel" ||
-                              (!selectedOptions[event.mainEvent.eventId] &&
-                                event.mainEvent.isLinkedToWidget)
-                                ? styles.selectedOption
-                                : ""
-                            }`}
-                            onClick={() =>
-                              handleAddToWidgetList(
-                                event,
-                                event.mainEvent.isLinkedToWidget,
-                                "carousel"
-                              )
-                            }
-                          >
-                            {(selectedOptions[event.mainEvent.eventId] ===
-                              "carousel" ||
-                              (!selectedOptions[event.mainEvent.eventId] &&
-                                event.mainEvent.isLinkedToWidget)) && (
-                              <TickIcon />
-                            )}
-                            <AddeventToWidgetIcon />
-                            <span>Add Event to Carousel</span>
-                          </span>
+                  <div
+                    className={`${
+                      event.mainEvent.isLinkedToWidget &&
+                      (selectedTemplate === "CVG" || selectedTemplate === "CVL")
+                        ? styles.rectangularBorder
+                        : ""
+                    }`}
+                  >
+                    <div>
+                      <div className={styles.addButtonContainer}>
+                        <div className={styles.heading}>
+                          {event.mainEvent.isLinkedToWidget
+                            ? "Added to Widget"
+                            : "Add to Widget"}
                         </div>
-                      )}
+
+                        <input
+                          type="checkbox"
+                          id={event.mainEvent.eventId.toString()}
+                          className={styles.checkboxInput}
+                          checked={event.mainEvent.isLinkedToWidget}
+                          onChange={() =>
+                            handleAddToWidget(
+                              event,
+                              event.mainEvent.isLinkedToWidget
+                            )
+                          }
+                        />
+                        <label
+                          htmlFor={event.mainEvent.eventId.toString()}
+                          className={styles.checkBox}
+                        ></label>
+                      </div>
+
+                      {(selectedTemplate === "CVG" ||
+                        selectedTemplate === "CVL") &&
+                        event.mainEvent.isLinkedToWidget && (
+                          <div className={styles.addEventOptionsContainer}>
+                            <span
+                              className={`${styles.addOption} ${
+                                selectedOptions[event.mainEvent.eventId] ===
+                                "list"
+                                  ? styles.selectedOption
+                                  : ""
+                              }`}
+                              onClick={() =>
+                                handleAddToWidgetList(
+                                  event,
+                                  event.mainEvent.isLinkedToWidget,
+                                  "list"
+                                )
+                              }
+                            >
+                              {selectedOptions[event.mainEvent.eventId] ===
+                                "list" && <TickIcon />}
+                              <AddeventIcon />
+                              {selectedTemplate === "CVL"
+                                ? "Add Event to List"
+                                : "Add Event to Grid"}
+                            </span>
+
+                            <span
+                              className={`${styles.addOption} ${
+                                selectedOptions[event.mainEvent.eventId] ===
+                                  "carousel" ||
+                                (!selectedOptions[event.mainEvent.eventId] &&
+                                  event.mainEvent.isLinkedToWidget) // Default carousel if no option
+                                  ? styles.selectedOption
+                                  : ""
+                              }`}
+                              onClick={() =>
+                                handleAddToWidgetList(
+                                  event,
+                                  event.mainEvent.isLinkedToWidget,
+                                  "carousel"
+                                )
+                              }
+                            >
+                              {(selectedOptions[event.mainEvent.eventId] ===
+                                "carousel" ||
+                                (!selectedOptions[event.mainEvent.eventId] &&
+                                  event.mainEvent.isLinkedToWidget)) && (
+                                <TickIcon />
+                              )}
+                              <AddeventToWidgetIcon />
+                              <span>Add Event to Carousel</span>
+                            </span>
+                          </div>
+                        )}
+                    </div>
                   </div>
+
+                  <div className={styles.delete_spanBtn}></div>
                 </div>
               </div>
 
-              {/* Side Events - Displayed below main event as separate entries */}
               {event.subEvents.map((subEvent, subKey) => (
                 <div className={styles.event} key={`${key}-${subKey}`}>
                   <div className={styles.eventDetailsContainer}>
@@ -1107,79 +1128,99 @@ const AllEvents = ({
                       <span className={styles.subEventTag}>Side Event</span>
                     </div>
                   </div>
+
                   <div className={styles.btnContainer}>
-                    <div className={styles.addButtonContainer}>
-                      <div className={styles.heading}>
-                        {subEvent.isLinkedToWidget
-                          ? "Added to Widget"
-                          : "Add to Widget"}
-                      </div>
-                      <input
-                        type="checkbox"
-                        id={subEvent.eventId.toString()}
-                        className={styles.checkboxInput}
-                        checked={subEvent.isLinkedToWidget}
-                        onChange={() =>
-                          handleSideEventAddToWidget(subEvent, subEvent.isLinkedToWidget)
-                        }
-                      />
-                      <label
-                        htmlFor={subEvent.eventId.toString()}
-                        className={styles.checkBox}
-                      ></label>
-                      {(selectedTemplate === "CVG" ||
-                        selectedTemplate === "CVL") &&
-                        subEvent.isLinkedToWidget && (
-                          <div className={styles.addEventOptionsContainer}>
-                            <span
-                              className={`${styles.addOption} ${
-                                selectedOptions[subEvent.eventId] === "list"
-                                  ? styles.selectedOption
-                                  : ""
-                              }`}
-                              onClick={() =>
-                                handleAddSideEventToWidgetList(
-                                  subEvent,
-                                  subEvent.isLinkedToWidget,
-                                  "list"
-                                )
-                              }
-                            >
-                              {selectedOptions[subEvent.eventId] === "list" && (
-                                <TickIcon />
-                              )}
-                              <AddeventIcon />
-                              {selectedTemplate === "CVL"
-                                ? "Add Event to List"
-                                : "Add Event to Grid"}
-                            </span>
-                            <span
-                              className={`${styles.addOption} ${
-                                selectedOptions[subEvent.eventId] ===
-                                  "carousel" ||
-                                (!selectedOptions[subEvent.eventId] &&
-                                  subEvent.isLinkedToWidget)
-                                  ? styles.selectedOption
-                                  : ""
-                              }`}
-                              onClick={() =>
-                                handleAddSideEventToWidgetList(
-                                  subEvent,
-                                  subEvent.isLinkedToWidget,
-                                  "carousel"
-                                )
-                              }
-                            >
-                              {(selectedOptions[subEvent.eventId] ===
-                                "carousel" ||
-                                (!selectedOptions[subEvent.eventId] &&
-                                  subEvent.isLinkedToWidget)) && <TickIcon />}
-                              <AddeventToWidgetIcon />
-                              <span>Add Event to Carousel</span>
-                            </span>
+                    <div
+                      className={`${
+                        subEvent.isLinkedToWidget &&
+                        (selectedTemplate === "CVG" ||
+                          selectedTemplate === "CVL")
+                          ? styles.rectangularBorder
+                          : ""
+                      }`}
+                    >
+                      <div>
+                        <div className={styles.addButtonContainer}>
+                          <div className={styles.heading}>
+                            {subEvent.isLinkedToWidget
+                              ? "Added to Widget"
+                              : "Add to Widget"}
                           </div>
-                        )}
+
+                          <input
+                            type="checkbox"
+                            id={subEvent.eventId.toString()}
+                            className={styles.checkboxInput}
+                            checked={subEvent.isLinkedToWidget}
+                            onChange={() =>
+                              handleSideEventAddToWidget(
+                                subEvent,
+                                subEvent.isLinkedToWidget
+                              )
+                            }
+                          />
+                          <label
+                            htmlFor={subEvent.eventId.toString()}
+                            className={styles.checkBox}
+                          ></label>
+                        </div>
+
+                        {(selectedTemplate === "CVG" ||
+                          selectedTemplate === "CVL") &&
+                          subEvent.isLinkedToWidget && (
+                            <div className={styles.addEventOptionsContainer}>
+                              <span
+                                className={`${styles.addOption} ${
+                                  selectedOptions[subEvent.eventId] === "list"
+                                    ? styles.selectedOption
+                                    : ""
+                                }`}
+                                onClick={() =>
+                                  handleAddSideEventToWidgetList(
+                                    subEvent,
+                                    subEvent.isLinkedToWidget,
+                                    "list"
+                                  )
+                                }
+                              >
+                                {selectedOptions[subEvent.eventId] ===
+                                  "list" && <TickIcon />}
+                                <AddeventIcon />
+                                {selectedTemplate === "CVL"
+                                  ? "Add Event to List"
+                                  : "Add Event to Grid"}
+                              </span>
+
+                              <span
+                                className={`${styles.addOption} ${
+                                  selectedOptions[subEvent.eventId] ===
+                                    "carousel" ||
+                                  (!selectedOptions[subEvent.eventId] &&
+                                    subEvent.isLinkedToWidget) // Default carousel if no option
+                                    ? styles.selectedOption
+                                    : ""
+                                }`}
+                                onClick={() =>
+                                  handleAddSideEventToWidgetList(
+                                    subEvent,
+                                    subEvent.isLinkedToWidget,
+                                    "carousel"
+                                  )
+                                }
+                              >
+                                {(selectedOptions[subEvent.eventId] ===
+                                  "carousel" ||
+                                  (!selectedOptions[subEvent.eventId] &&
+                                    subEvent.isLinkedToWidget)) && <TickIcon />}
+                                <AddeventToWidgetIcon />
+                                <span>Add Event to Carousel</span>
+                              </span>
+                            </div>
+                          )}
+                      </div>
                     </div>
+
+                    <div className={styles.delete_spanBtn}></div>
                   </div>
                 </div>
               ))}

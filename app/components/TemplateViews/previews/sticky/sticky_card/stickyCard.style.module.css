@@ -202,3 +202,17 @@
     align-items: center;
     gap: 5px;
 }
+
+.detail_button {
+    align-self: flex-end;
+    /* align-self: flex-start; */
+    padding: 8px 12px;
+    margin-top: 10px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+    font-size: var(--font-size-small);
+    cursor: pointer;
+    text-align: center;
+    z-index: 1;
+}

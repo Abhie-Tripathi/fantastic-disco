@@ -329,7 +329,6 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
             console.log("error : ", error)
         }
     }
-
     const addSubEvent = async (eventId?: string) => {
         if (!subEventState.eventName || subEventState.eventName === "") {
             handleSubeventChange('isEventNameEmpty', true)

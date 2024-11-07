@@ -234,7 +234,7 @@ const StickyCard = ({
             : buttonSettings?.secondary.buttonText}
         </button> */}
 
-        <button
+        {/* <button
           className={smallCard ? styles.smallBtn : styles.btn}
           style={{
             fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
@@ -259,7 +259,33 @@ const StickyCard = ({
           }}
         >
           {selectedBtn === "primary" ? buttonSettings?.primary.buttonText : buttonSettings?.secondary.buttonText}
-        </button>
+        </button> */}
+        <div
+              className={styles.detail_button}
+              style={{
+                fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
+                color:
+                  selectedBtn === "primary"
+                    ? buttonSettings?.primary.fontColor
+                    : buttonSettings?.secondary.fontColor,
+                backgroundColor:
+                  selectedBtn === "primary"
+                    ? buttonSettings?.primary.buttonColor
+                    : "transparent",
+                borderRadius:
+                  selectedBtn === "primary"
+                    ? buttonSettings?.primary.borderRadius
+                    : buttonSettings?.secondary.borderRadius,
+                borderColor:
+                  selectedBtn === "primary"
+                    ? buttonSettings?.primary.borderColor
+                    : buttonSettings?.secondary.borderColor,
+                    borderWidth: selectedBtn === "secondary" ? "1px" : "1px",
+                    borderStyle: selectedBtn === "secondary" ? "solid" : "solid",
+              }}
+            >
+              VIEW DETAILS
+            </div>
       </div>
     </div>
   );

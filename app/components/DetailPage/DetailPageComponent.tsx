@@ -64,11 +64,12 @@ interface EventProps {
     waitlisting: boolean;
     virtualLink: string;
     event_type:string;
+    type:string
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
 const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker,exhibitor, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink,event_type }: EventProps) => {
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink,event_type,type }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
     const [isRegistratonClosed, setRegistrationClosed] = useState(false)
@@ -199,7 +200,7 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                     }
                     <div style={{position:"relative"}}>
                     <textarea className={styles.eventName} disabled placeholder='Event Name' value={name} style={{ fontFamily: eventFont }} />
-                    <span className={`${styles.pill} ${styles.type1}`} style={{position:"absolute", top:"20px", right:"200px"}}>{event_type}</span>
+                    <span className={`${styles.pill} ${styles.type1}`} style={{position:"absolute", top:"20px", right:"200px"}}>{type==="SUB"?participationType:event_type}</span>
                     </div>
                     
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>

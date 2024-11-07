@@ -45,9 +45,10 @@ interface EventProps {
     virtualLink: string;
     exhibitor:any[];
     event_type:string;
+    type:string
 }
 
-const Page = ({snowTheme,event_type, venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+const Page = ({snowTheme,event_type,type, venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
     start_date, start_time, description, location_city, location_country, widgetId, eventId, hashtags, participationType, childrenData, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink,exhibitor }: EventProps) => {
     return (
         // <div></div>
@@ -90,7 +91,8 @@ const Page = ({snowTheme,event_type, venue, latitude, eventFont, longitude, page
             approval={approval}
             waitlisting={waitlisting}
             virtualLink={virtualLink} 
-            event_type={event_type} />
+            event_type={event_type} type={type} />
+            
     )
 }
 const fetchData = async (eventId: string) => {
@@ -153,6 +155,7 @@ const fetchData = async (eventId: string) => {
             waitlisting: data?.data?.event?.waitlisting,
             virtualLink: data?.data?.event?.data?.virtualLink,
             event_type:data?.data?.event?.data.event_type,
+            type:data?.data?.event.type,
             childrenData: data.data.event.data.children.map((child: any) => ({
                 eventId: child.id,
                 name: child.name,
