@@ -29,11 +29,20 @@ export const useTrackerServices = () => {
         `${endpoints.tracker.getTrackers}?${params}`,
       )
     }
-    const getSavedEvents =(trackerId:string, params: string):Promise<{result: EventTableType[], count: number} | undefined>=>{
+    const getSavedEvents = (
+      trackerId: string, 
+      params: string, 
+      signal?: AbortSignal
+    ): Promise<{ result: EventTableType[], count: number } | undefined> => {
       return api.request(
-        `${endpoints.tracker.getSavedEvents}/${trackerId}/saved-events?${params}`
-      )
-    }
+        `${endpoints.tracker.getSavedEvents}/${trackerId}/saved-events?${params}`,
+        {
+          method: "GET",
+          signal: signal, // Pass the signal here
+        }
+      );
+    };
+    
     const getTrackerDetail=(trackerId:string, params?:string):Promise<{tracker: Tracker }| undefined>=>{
       return api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}${params ? `?${params}` : ''}`,
@@ -61,7 +70,7 @@ export const useTrackerServices = () => {
           }
         )
     }
-    const createNewAccess=(formData: NewAccess)=>{
+    const createNewAccess=(formData: NewAccess):Promise<{ user: { id: string } } | undefined> =>{
         return api.request(
           `${endpoints.tracker.createNewAccess}`,
           {
@@ -88,11 +97,19 @@ export const useTrackerServices = () => {
         }
       )
     }
-    const getTrackerEvents=(trackerId:string, params:string, eventType:string):Promise<{totalEvents: number, events: EventTableType[]} | undefined>=>{
-        return api.request(
-          `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}&${eventType.length!==0? `&type=${eventType}`: ''}`
-        )
-    }
+    const getTrackerEvents = (
+      trackerId:string, params:string, eventType:string,
+      abortSignal?: AbortSignal
+    ): Promise<{ totalEvents: number, events: EventTableType[] } | undefined> => {
+      return api.request(
+        `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&type=${eventType}` : ''}`,
+        {
+          method: "GET",
+          signal: abortSignal,
+        }
+      );
+    };
+    
     const saveNewEvent=(formData:any)=>{
         return api.request(
           `${endpoints.tracker.saveEvent}`,
