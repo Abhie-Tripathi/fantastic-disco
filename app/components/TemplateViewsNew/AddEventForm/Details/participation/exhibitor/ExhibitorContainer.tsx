@@ -5,12 +5,14 @@ import EditIcon from "/public/EditIcon.svg";
 import Image from "next/image";
 import ExhibitorIcon from "/public/exhibitoricon.svg";
 import useOutsideClick from "@/hooks/useOutsideClick";
+import { FormState } from "@/types/Formstate";
 interface Props {
-  setBoothNumber: (value: string) => void;
+  // setBoothNumber: (value: string) => void;
+  handleChange: (field: keyof FormState, value: any) => void;
   boothNumber: string;
 }
 
-const ExhibitorContainer = ({ setBoothNumber, boothNumber }: Props) => {
+const ExhibitorContainer = ({ handleChange, boothNumber }: Props) => {
   const dropdownRef = useOutsideClick(() => setDropdown(false));
   const [dropdown, setDropdown] = useState<boolean>(false);
   // const dropdownRef = useRef<HTMLDivElement>(null);
@@ -41,7 +43,7 @@ const ExhibitorContainer = ({ setBoothNumber, boothNumber }: Props) => {
           <input
             placeholder="Stall/booth number"
             value={boothNumber}
-            onChange={(e) => setBoothNumber(e.target.value)}
+            onChange={(e) => handleChange('boothNumber', e.target.value)}
             maxLength={40}
           />
         </div>

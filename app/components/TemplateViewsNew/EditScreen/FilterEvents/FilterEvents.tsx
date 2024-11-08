@@ -3,36 +3,63 @@ import styles from './filter.style.module.css'
 import AllEvents from './AllEvents'
 import EventsAdded from './EventsAdded';
 import { AddedEventsType } from '@/types/addedeventtype';
-import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype';
 import { AllEventsType } from '@/types/alleventtype';
-import { GolbalEventType } from '@/types/globaleventtype';
 
 interface Props{
     fetchedAllEvents : AllEventsType[]
-    fetchEvents : () => Promise<void>;
+    fetchEvents : (page : number) => Promise<void>;
     fetchedAddedEvents : AddedEventsType[]
     fetchAddedEvents : ()=>Promise<void>;
-    handlePrefilledAddedEvent : (event : PrefilledAddedEventsType)=>void
-    handlePrefillNormalEvent : (event :  AllEventsType , type : string)=>void
-    handlePrefillGlobalEvent : (event : GolbalEventType,type : string)=>void
-    handleAddEventModal : (value : void)=>void
+    // handlePrefillEvent : (event :  AllEventsType , type : string)=>void
     widgetId : string;
     addedEventIds : string[]
-    handleNormalEventModal : (value : void)=> void
+    allEventsCount : number;
+    selectedTemplate : string;
+    isCustomisationWindowDisable:boolean
+    setIsCustomisationWindowDisable:(value: boolean) => void;
+    isCodeWindowDisable:boolean
+    setIsCodeWindowDisable:(value: boolean) => void;
+
 }
 
-const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAddedEvents,handlePrefilledAddedEvent,handleAddEventModal,widgetId,addedEventIds,handlePrefillNormalEvent,handleNormalEventModal,handlePrefillGlobalEvent} : Props) => {
+const FilterEvents = ({fetchedAllEvents,fetchEvents,fetchedAddedEvents,fetchAddedEvents,
+    // handlePrefillEvent,
+    widgetId,addedEventIds, allEventsCount, selectedTemplate, isCustomisationWindowDisable,setIsCustomisationWindowDisable,isCodeWindowDisable,setIsCodeWindowDisable} : Props) => {
 
     const [selectedBtn, setSelectedBtn] = useState<string>("allevents")
+    const [promotedEvents, setPromotedEvents] = useState<string[]>([]);
+    const [normalEvents, setNormalEvents] = useState<string[]>([])
+
     return (
         <div className={styles.body}>
             <div className={styles.navbar}>
-                <li onClick={() => setSelectedBtn("allevents")} className={selectedBtn === "allevents" ? styles.activeItem : ""}>All Events</li>
-                <li onClick={() => setSelectedBtn("addedevents")} className={selectedBtn === "addedevents" ? styles.activeItem : ""}>Events Added</li>
+                <li onClick={() => setSelectedBtn("allevents")} className={selectedBtn === "allevents" ? styles.activeItem : ""}>All Events <span className={styles.count}>{allEventsCount}</span></li>
+                <li onClick={() => setSelectedBtn("addedevents")} className={selectedBtn === "addedevents" ? styles.activeItem : ""}>Events Added <span className={styles.count}>{fetchedAddedEvents?.length || 0}</span></li>
             </div>
             <div className={styles.line}></div>
             <div className={styles.container}>
-                {selectedBtn === "allevents" ? <AllEvents handlePrefillGlobalEvent={handlePrefillGlobalEvent} handleNormalEventModal={handleNormalEventModal} widgetId={widgetId} handlePrefillNormalEvent={handlePrefillNormalEvent} fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} handleAddEventModal={handleAddEventModal} /> : <EventsAdded fetchAddedEvents={fetchAddedEvents} widgetId={widgetId} fetchEvents={fetchEvents} handlePrefilledAddedEvent={handlePrefilledAddedEvent} handleAddEventModal={handleAddEventModal} fetchedAddedEvents={fetchedAddedEvents}/>}
+                {selectedBtn === "allevents" ? <AllEvents
+                promotedEvents={promotedEvents}
+                setPromotedEvents={setPromotedEvents}
+                normalEvents={normalEvents}
+                setNormalEvents={setNormalEvents}
+                isCustomisationWindowDisable={isCustomisationWindowDisable}
+                setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}
+                isCodeWindowDisable={isCodeWindowDisable} 
+                setIsCodeWindowDisable={setIsCodeWindowDisable}
+                fetchedAddedEvents={fetchedAddedEvents}
+                selectedTemplate={selectedTemplate}
+                //  handlePrefillEvent={handlePrefillEvent}
+                addedEventIds={addedEventIds}
+                  allEventsCount={allEventsCount} widgetId={widgetId}  fetchAddedEvents={fetchAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} /> : <EventsAdded fetchAddedEvents={fetchAddedEvents} widgetId={widgetId} fetchEvents={fetchEvents} fetchedAddedEvents={fetchedAddedEvents} selectedTemplate={selectedTemplate} isCustomisationWindowDisable={isCustomisationWindowDisable}
+                  setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}
+                  isCodeWindowDisable={isCodeWindowDisable} 
+                  setIsCodeWindowDisable={setIsCodeWindowDisable}
+                  promotedEvents={promotedEvents}
+                  setPromotedEvents={setPromotedEvents}
+                  normalEvents={normalEvents}
+                  setNormalEvents={setNormalEvents}
+                  />}
             </div>
         </div>
     )

@@ -24,6 +24,9 @@ export interface PrefilledAddedEventsType {
     latitude : number;
     longitude: number;
     venue : string;
+    promoted : string;
+    eventType : string;
+    event_type: string;
   }
   interface SpeakerProfileType {
     id: string;

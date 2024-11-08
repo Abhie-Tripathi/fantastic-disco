@@ -15,14 +15,14 @@ const LogoContainer = ({ setPreview,fetchedLogos }: Props) => {
       <div className={styles.container}>
         <div className={styles.logoContainer}>
           <Image src={fetchedLogos[0]} alt='logo' height={40} width={40} />
-          <div className={styles.uploadBtn}>
+          {/* <div className={styles.uploadBtn}>
             <input type="file" id='upload' />
             <label htmlFor="upload"><UploadIcon /></label>
-          </div>
+          </div> */}
         </div>
-        <div className={styles.addLogo}>
+        {/* <div className={styles.addLogo}>
           <AddIcon />
-        </div>
+        </div> */}
       </div>
     </div>
   )

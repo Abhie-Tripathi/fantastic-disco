@@ -1,8 +1,9 @@
 
 "use client";
-import React, { lazy, Suspense, useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState} from "react";
 import Expand from "/public/expand_more.svg";
-import { Notes } from "@/app/components/eventDetail/Notes";
+import Notes from "@/public/notes.svg"
+import Image from "next/image";
 import ExportModal from "@/app/components/Search/ExportModal";
 import styles from "./trackedEvents.style.module.css";
 import "chart.js/auto";
@@ -10,34 +11,46 @@ const Trackers = React.lazy(
   () => import("@/app/components/internal/trackers/CommonTrackerCard")
 );
 import Table from "@/app/components/Table";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl} from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
 import { Calendar, Globe, ListUnordered } from "geist-icons";
 import { showToast } from "@/utils/showToast";
 import Loading from "@/app/components/UI/Loading";
+import Link from "next/link";
+import { useTrackerServices } from "@/services/trackerServices";
+import {Toggle} from "@/types/trackers"
+import SideNav from "@/app/components/trackers/sideNav";
+import { useTrackerContext } from "@/context/tracker";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
-const Map = lazy(() => import("@/app/components/employee/mapview/Map"));
-interface Toggle{
-  rating?:boolean;
-  exhibit?:boolean;
-  trust?:boolean;
-  maturity?: boolean;
-  brandedEvent?: boolean;
-  eventSeries?: boolean;
-  forecastedStatus?: boolean;
-  impactScore?: boolean;
-  inboundScore?: boolean;
-  internationalScore?: boolean;
-  eventRank?: boolean;
-  audienceZone?: boolean;
-  audienceSpread?: boolean;
-}
+const Map = lazy(() => import("@/components/map"));
+// interface Toggle{
+//   rating?:boolean;
+//   exhibit?:boolean;
+//   trust?:boolean;
+//   maturity?: boolean;
+//   brandedEvent?: boolean;
+//   eventSeries?: boolean;
+//   forecastedStatus?: boolean;
+//   impactScore?: boolean;
+//   inboundScore?: boolean;
+//   internationalScore?: boolean;
+//   eventRank?: boolean;
+//   audienceZone?: boolean;
+//   audienceSpread?: boolean;
+//   globalToggle?:boolean;
+//   brandSeries?:boolean;
+// }
 const Page = ({ params }: { params: any }) => {
-  const [active, setActive] = useState("Active Events");
+  console.log(params);
+  const {data}=useTrackerContext();
+  
+  
+  const pathname = usePathname();
+  const {getTrackerDetail, error}=useTrackerServices();
   const [type, setType] = useState<string | undefined>();
   const [activeValue, setActiveValue] = useState();
   const [loading, setLoading] = useState(false);
@@ -45,14 +58,17 @@ const Page = ({ params }: { params: any }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const token = searchParams.get("token");
+  const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
-
+console.log(searchParams.get("view"));
+  const typeOfEvent=searchParams.get("eventType");
+  const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
   // const id = pathName[pathName.length - 2];
-  console.log(active);
-  const [data, setData] = useState<any>();
+  // console.log(active);
+  // const [data, setData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [eventType, setEventType] = useState("active");
-  const [view, setView] = useState("list");
+  const [view, setView] = useState<string|null>("list");
   const [urlQueryString, setUrlQueryString] = useState<string>("");
 
   const [showInsights,setShowInsights] = useState({
@@ -67,6 +83,7 @@ const Page = ({ params }: { params: any }) => {
     repeatSent: false,
     trackerKeywords: true,
     eventRating:false, 
+    eventFrequency:false,
     keywords:[]
   });
   const lineData = {
@@ -96,28 +113,46 @@ const Page = ({ params }: { params: any }) => {
       },
     ],
   };
-  useEffect(() => {
-    const fetchTrackerDetail = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/tracker/${trackerId}`);
-      if (data) {
-        setTrackerDetail(data.tracker);
-        setLoading(true);
-      }
-      if (error) {
-        console.log(error);
-        showToast("error", error.message);
-        if (typeof window !== 'undefined') {
-          router.push('/internal/trackers');
-        } 
-      }
-    };
-    fetchTrackerDetail();
-  }, [trackerId]);
+  
+  // useEffect(() => {
+  //   const fetchTrackerDetail = async () => {
+      
+  //     try{
+  //         const data= await getTrackerDetail(trackerId);
+  //         console.log(data);
+          
+  //         if (data) {
+  //           console.log(data);
+            
+  //           setTrackerDetail(data.tracker);
+  //           setLoading(true);
+  //         }
+  //         if (error) {
+  //           console.log(error);
+  //           showToast("error", error.message);
+  //           if (typeof window !== 'undefined') {
+  //             router.push('/internal/trackers');
+  //           } 
+  //         }
+  //     }catch(error){
+  //         console.log(error); 
+  //     }
+  //   };
+  //   fetchTrackerDetail();
+  // }, [trackerId]);
 
   useEffect(() => {
-    createQueryString();
-  }, [trackerDetail]);
-
+    setSavedEventCount(data?.tracker?.savedEventTotalCount);
+    setTrackerDetail(data?.tracker);
+    // createQueryString();
+    setLoading(true);
+  }, [data]);
+  // useEffect(()=>{
+  //   if(typeOfEvent==="savedEvent") setActive("Saved Events");
+  // },[typeOfEvent])
+  useEffect(()=>{
+    setView(searchParams.get("view"))
+  },[searchParams.get("view")])
   const lineOptions = {
     plugins: {
       legend: {
@@ -201,7 +236,7 @@ const Page = ({ params }: { params: any }) => {
   useEffect(() => {
     console.log(activeValue);
   }, [active]);
-  const formatCount = (count: number) => {
+  const formatCount = (count: number ) => {
     if (count >= 1000) {
       const value = count / 1000;
       const decimalPart = value - Math.floor(value);
@@ -341,7 +376,6 @@ const Page = ({ params }: { params: any }) => {
   let toggleOpend:Toggle ={};
   if(trackerDetail?.filterValue?.userType)
   toggleOpend=JSON.parse(trackerDetail?.filterValue?.userType);
-  
     if(trackerDetail?.filterValue?.internationalScore){
       setShowInsights(prev=>({...prev, global:true}));
     }
@@ -364,29 +398,39 @@ const Page = ({ params }: { params: any }) => {
     if(trackerDetail?.filterValue) {
       const toggleObj = {
         maturity: (toggleOpend?.maturity ? true : false),
-        brandedEvent: (toggleOpend?.brandedEvent ? true : false),
-        eventSeries: (toggleOpend?.eventSeries ? true : false),
+        brandedEvent: (toggleOpend?.brandSeries ? true : false),
+        eventSeries: (toggleOpend?.brandSeries ? true : false),
         forecasted: (toggleOpend?.forecastedStatus ? true : false),
-        impactScore: (toggleOpend?.impactScore ? true : false),
-        inboundScore: (toggleOpend?.inboundScore ? true : false),
-        internationalScore: (toggleOpend?.internationalScore ? true : false),
-        eventRank: (trackerDetail?.filterValue?.eventRanking ? true : false),
+        impactScore: (toggleOpend?.globalToggle ? true : false),
+        inboundScore: (toggleOpend?.globalToggle ? true : false),
+        internationalScore: (toggleOpend?.globalToggle ? true : false),
+        eventRank: (toggleOpend?.eventRank ? true : false),
         audienceZone: (toggleOpend?.audienceZone ? true : false),
         audienceSpread: (toggleOpend?.audienceSpread ? true : false),
+        eventFrequency: (toggleOpend?.eventFrequency ? true : false),
       };
       setShowInsights(prev=>({...prev, ...toggleObj}));
     }
  },[trackerDetail])
+ console.log(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
+ );
+ const addQueryString = (value:string) => {
+  const params = new URLSearchParams(searchParams);
+  params.set('eventType', value); 
+  const newUrl = `${pathname}?${params.toString()}`;
+  router.replace(newUrl);
+};
  
   return (
-    <div className={styles.container}>
+    <div className="flex w-[calc(100vw-134px)]">
+      {/* <SideNav/> */}
       <Suspense fallback={<p>Loading feed...</p>}>
-        <div className={styles.innerRight}>
-          <div className={styles.eventStatus}>
+        <div className="flex gap-5 mt-[54px] mb-[24px] flex-col w-[100%]">
+          <div className="flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
           {/* <div className={styles.new}></div> */}
-            <div className={styles.eventStatusLeft}>
+            <div className="flex gap-2">
               <button
-                className={`${styles.eventStatusBtn} ${
+                 className={`${styles.eventStatusBtn} ${
                   active === "Active Events" ? styles.active : ""
                 }`}
                 onClick={() => {
@@ -397,15 +441,15 @@ const Page = ({ params }: { params: any }) => {
                     "Active Events"
                   );
                   setActive("Active Events");
+                  addQueryString("activeEvent");
                 }}
               >
                 Active Events
                 {
-                  <div className={styles.circle}>
+                  <div className={styles.circle} style={{background: active==="Active Events"?"white":"", color: active==="Active Events"?"var(--primary-color)":""}}>
                     {loading ? (
                       formatCount(
-                        trackerDetail?.groupedEventsCountByStatus
-                          ?.groupedEventsByStatus?.active
+                        data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
                       )
                     ) : (
                       <div className={styles.loader}></div>
@@ -414,12 +458,13 @@ const Page = ({ params }: { params: any }) => {
                 }
               </button>
               <button
-                className={`${styles.eventStatusBtn} ${
-                  active === "New Events" ? styles.active : ""
-                }`}
+               className={`${styles.eventStatusBtn} ${
+                active === "New Events" ? styles.active : ""
+              }`}
                 onClick={() => {
                   GAEvent("trackers", "Tracker Detail", "View", "New Events");
                   setActive("New Events");
+                  addQueryString("newEvent");
                 }}
               >
                 New Events
@@ -427,8 +472,7 @@ const Page = ({ params }: { params: any }) => {
                   <div className={styles.circle}>
                     {loading ? (
                       formatCount(
-                        trackerDetail?.groupedEventsCountByStatus
-                          ?.groupedEventsByStatus?.new
+                        data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.new
                       )
                     ) : (
                       <div className={styles.loader}></div>
@@ -448,6 +492,7 @@ const Page = ({ params }: { params: any }) => {
                     "Expired Events"
                   );
                   setActive("Expired Events");
+                  addQueryString("expiredEvent");
                 }}
               >
                 Expired Events
@@ -455,8 +500,35 @@ const Page = ({ params }: { params: any }) => {
                   <div className={styles.circle}>
                     {loading ? (
                       formatCount(
-                        trackerDetail?.groupedEventsCountByStatus
-                          ?.groupedEventsByStatus?.expired
+                        data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
+                      )
+                    ) : (
+                      <div className={styles.loader}></div>
+                    )}
+                  </div>
+                }
+              </button>
+              <button
+                 className={`${styles.eventStatusBtn} ${
+                  active === "Saved Events" ? styles.active : ""
+                }`}
+                onClick={() => {
+                  GAEvent(
+                    "trackers",
+                    "Tracker Detail",
+                    "View",
+                    "Active Events"
+                  );
+                  setActive("Saved Events");
+                  addQueryString("savedEvent");
+                }}
+              >
+                Saved Events
+                {
+                  <div className={styles.circle} style={{background: active==="Saved Events"?"white":"", color: active==="Saved Events"?"var(--primary-color)":""}}>
+                    {loading ? (
+                      formatCount(
+                       savedEventCount
                       )
                     ) : (
                       <div className={styles.loader}></div>
@@ -465,7 +537,19 @@ const Page = ({ params }: { params: any }) => {
                 }
               </button>
             </div>
-            <div className={styles.eventStatusRight}>
+            <Link href={`/internal/trackers/${trackerId}/notesDiscussion?type=${data?.tracker?.type}`}
+              onClick={() => {
+                GAEvent(
+                  "trackers",
+                  "Tracker Detail",
+                  "View",
+                  "Notes and Discussion"
+                )
+              }}
+            >
+            <div className="flex text-[var(--secondary-text-color)] text-sm font-medium cursor-pointer gap-1">
+            <Image src={Notes} alt="Notes"/>
+            Notes and Discussion
               {/* <ListUnordered
                 height="16px"
                 width="16px"
@@ -489,12 +573,14 @@ const Page = ({ params }: { params: any }) => {
                 onClick={() => setView("calendar")}
               /> */}
             </div>
+            </Link>
           </div>
 
           {view === "list" && (
-            <div style={{marginTop:"140px",width: "calc(100vw - 134px)"}}>
-              <div className='dummyDiv'></div> 
+            <div>
             <Table
+              savedEventCount={savedEventCount}
+              setSavedEventCount={setSavedEventCount}
               showInsights={showInsights}
               eventType={active}
               setActiveValue={setActiveValue}
@@ -505,7 +591,8 @@ const Page = ({ params }: { params: any }) => {
           {view === "map" && (
             <div>
               <Suspense fallback={<Loading />}>
-                <Map queryString={urlQueryString} />
+                {/* <Map queryString={urlQueryString} /> */}
+                {/* <Map/> */}
               </Suspense>
             </div>
           )}

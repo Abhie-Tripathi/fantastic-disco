@@ -46,7 +46,6 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
   const [shortlistedExhibitor, setShortlistedExhibitor] = useState<string[]>([]);
   const [shortlistedSpeaker, setShortlistedSpeaker] = useState<string[]>([]);
   const [shortlistedSponsor, setShortlistedSponosor] = useState<string[]>([]);
-console.log(shortlistedVisitors.concat(shortlistedSpeaker, shortlistedExhibitor, shortlistedSponsor).join());
 
   const handleSubmit = async() => {
     if(user){

@@ -4,7 +4,8 @@ import EventListCard1 from '../../listcardsstyles/EventListCard1';
 import EventListCard2 from '../../listcardsstyles/EventListCard2';
 import EventListCard3 from '../../listcardsstyles/EventListCard3';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"
+import crypto from 'crypto';
 
 interface FontSettings {
     fontFamily: string;
@@ -24,8 +25,16 @@ interface EditProps {
     };
     fetchedAddedOtherData?: PrefilledAddedEventsType[]
     widgetId?: string;
+    demoBanner: string;
+    demoEventName: string;
+    demoDescription: string
+    demoLocation: string
+    demoDate:string
+
 }
-const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId }: EditProps) => {
+const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoDescription, demoLocation, demoDate }: EditProps) => {
+
+    console.log("normal events in list view :", fetchedAddedOtherData)
     let EventListCard: ElementType;
 
     switch (selectedCard) {
@@ -38,9 +47,22 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
         default:
             EventListCard = EventListCard3; // Or some default component or message
     }
+    // utils/hashUtils.ts
+    const createHash = (widgetId: string, eventId: string): string => {
+        const combinedString = `${widgetId}:${eventId}`;
+        // Base64 encode and replace URL-unsafe characters
+        return Buffer.from(combinedString)
+            .toString('base64')
+            .replace(/\+/g, '-')  // Replace '+' with '-'
+            .replace(/\//g, '_')  // Replace '/' with '_'
+            .replace(/=+$/, '');  // Remove padding '=' characters
+    };
+
     const router = useRouter();
     const handleCardClick = (eventId: string, widgetId: string) => {
+        // const hash = createHash(widgetId, eventId);
         router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`)
+        // router.push(`/detailpage/${eventId}`);
     }
     return (
         <div className={styles.listView}>
@@ -62,16 +84,31 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
                         cardBgColor={cardBgColor}
                         cardBorderRadius={cardBorderRadius}
                         fontSettings={fontSettings}
+                        demoBanner={demoBanner}
+                        demoEventName={demoEventName}
+                        demoDescription={demoDescription}
+                        demoLocation={demoLocation}
+                        demoDate={demoDate}
                     />
                     <EventListCard
                         cardBgColor={cardBgColor}
                         cardBorderRadius={cardBorderRadius}
                         fontSettings={fontSettings}
+                        demoBanner={demoBanner}
+                        demoEventName={demoEventName}
+                        demoDescription={demoDescription}
+                        demoLocation={demoLocation}
+                        demoDate={demoDate}
                     />
                     <EventListCard
                         cardBgColor={cardBgColor}
                         cardBorderRadius={cardBorderRadius}
                         fontSettings={fontSettings}
+                        demoBanner={demoBanner}
+                        demoEventName={demoEventName}
+                        demoDescription={demoDescription}
+                        demoLocation={demoLocation}
+                        demoDate={demoDate}
                     />
                 </div>
             )}

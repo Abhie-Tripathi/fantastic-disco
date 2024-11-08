@@ -1,0 +1,32 @@
+
+.body{
+    width: 100%;
+}
+.heading{
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+}
+.inputContainer{
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+.inputContainer input{
+    background-color: var(--accent-color);
+    width: 100%;
+    border: none;
+    border-radius: 5px;
+    font-size: var(--font-size-default);
+    font-weight: 500;
+    color: var(--primary-text-color);
+    padding: 12px;
+}
+.inputContainer button{
+    font-size: var(--font-size-default);
+    color: white;
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    padding: 12px;
+}

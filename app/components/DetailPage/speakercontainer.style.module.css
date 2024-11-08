@@ -1,0 +1,26 @@
+.body {
+    width: 100%;
+    background-color: #ffffff55;
+    border-radius: 10px;
+    position: relative;
+}
+.header{
+    padding: 9px 19px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.header div{
+    font-size: 12px;
+    color: #7D7D7D;
+    font-weight: 500;
+}
+.speakerProfiles{
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    flex-shrink: 0;
+    padding: 9px 19px;
+}

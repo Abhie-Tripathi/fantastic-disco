@@ -1,10 +1,9 @@
-.container {
-  /* margin: 1rem 0; */
+/* .container {
   display: flex;
   flex-direction: column;
-}
+} */
 
-.userAccount {
+/* .userAccount {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -20,7 +19,7 @@
   width: 1rem;
   height: 1rem;
   transform: scale(1.1);
-}
+} */
 
 .container h2 {
   color: #21293c;
@@ -58,7 +57,7 @@
   opacity: 1;
 }
 
-.addNotes {
+/* .addNotes {
   display: flex;
   justify-content: space-between;
   position: relative;
@@ -68,7 +67,7 @@
   outline: 0.9px solid transparent;
   padding: 10px;
   width: 100%;
-}
+} */
 .allUser {
   position: absolute;
   display: flex;
@@ -125,13 +124,6 @@
   display: flex;
   gap: 2px;
 }
-.attachIconContainer {
-  position: relative;
-  cursor: pointer;
-  height: 25px;
-  width: 25px;
-  padding: 1px;
-}
 .attachIconContainer:hover {
   background-color: rgb(15, 15, 15);
   border-radius: 10px;
@@ -165,12 +157,10 @@
   padding: 5px 10px;
   cursor: pointer;
 }
-.form {
-  /* gap: 10px; */
-  /* width: 100%; */
+/* .form {
   flex-direction: column;
   display: flex;
-}
+} */
 .form button {
   border: none;
   outline: none;
@@ -231,15 +221,7 @@
   transition: border-radius 0.3s ease; /* Smooth transition for border-radius */
 }
 
-.closeOuter {
-  position: absolute;
-  display: flex;
-  justify-content: end;
-  width: 100%;
-  top: 0;
-  height: 100%;
-  /* transition: backdrop-filter 0.3s ease; Smooth transition for backdrop-filter */
-}
+
 
 .closeOuter:hover {
   backdrop-filter: blur(1px);
@@ -247,8 +229,10 @@
 
 .close {
   display: none;
-  transition: display 0.3s ease, opacity 0.3s ease; /* Smooth transition for visibility and opacity */
-  opacity: 0; /* Start with zero opacity */
+  width: 20px;
+  height: 20px;
+  transition: display 0.3s ease, opacity 0.3s ease;
+  opacity: 0; 
 }
 
 .fileDiv:hover .close {
@@ -267,19 +251,21 @@
   transition: border-radius 0.3s ease; /* Smooth transition for border-radius */
 }
 
-.pdf {
+/* .pdf {
   display: flex;
     background: rgb(103 80 164);
     position: relative;
     gap: var(--spacing-xs);
     align-items: center;
     padding: 5px;
-    /* border-radius: 10px; */
-}
-.pdfClose{
+    
+} */
+/* .pdfClose{
   display: none;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
-}
+} */
 .pdf:hover .pdfClose{
   color: transparent;
     background: white;

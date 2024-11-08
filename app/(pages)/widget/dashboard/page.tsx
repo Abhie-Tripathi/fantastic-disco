@@ -10,10 +10,14 @@ import { baseUrl } from '@/constants'
 
 const Page = () => {
 
-  const [fetchedBoolean, setFetchedBoolean] = useState<boolean>(false);
+  const [fetchedBoolean, setFetchedBoolean] = useState<boolean>(false); // To check if atleast once the user has fetched the brandkit
   const [brandkitLoadingState ,setBrandkitLoadingState] = useState<boolean>(true)
   const [polling, setPolling] = useState<boolean>(true);
+  const [fetchedDomain, setFetchedDomain] = useState<string>("")
+  const [brandkitFetched, setBrandkitFetched] = useState<boolean>(true)
 
+  const [removeCalled, setRemoveCalled] = useState<boolean>(false) // This is a variable so that when ever a widget is deleted we can call the function in input container to make the button disbaled 
+  
   // This is to see if the brandkit was used atleast once by user
   const checkBrandkit = async()=>{
     const {data,error} = await myFetch(`${baseUrl}/kit`)
@@ -33,12 +37,12 @@ const Page = () => {
   return (
     <div className={styles.body}>
       <div className={fetchedBoolean ? styles.fetchedInputScreen : styles.inputScreen}>
-        <InputComponent setPolling={setPolling} setBrandkitLoadingState={setBrandkitLoadingState} setFetchedBoolean={setFetchedBoolean} fetched={fetchedBoolean} />
+        <InputComponent removeCalled={removeCalled} setBrandkitFetched={setBrandkitFetched} fetchedDomain={fetchedDomain} setFetchedDomain={setFetchedDomain} setPolling={setPolling} setBrandkitLoadingState={setBrandkitLoadingState} setFetchedBoolean={setFetchedBoolean} fetched={fetchedBoolean} />
       </div>
       {fetchedBoolean && <div className={styles.container}>
-        <div className={styles.brandKitContainer}><DashboardBrandkit polling={polling} setPolling={setPolling} setBrandkitLoadingState={setBrandkitLoadingState} brandkitLoadingState={brandkitLoadingState}/></div>
+        <div className={styles.brandKitContainer}><DashboardBrandkit setBrandkitFetched={setBrandkitFetched} brandkitFetched={brandkitFetched} setFetchedDomain={setFetchedDomain} polling={polling} setPolling={setPolling} setBrandkitLoadingState={setBrandkitLoadingState} brandkitLoadingState={brandkitLoadingState}/></div>
         <div className={styles.widgetEventsContainer}>
-          <div className={styles.widgetContainer}><DashboardWidgets /></div>
+          <div className={styles.widgetContainer}><DashboardWidgets removeCalled={removeCalled} setRemoveCalled={setRemoveCalled} /></div>
           <div className={styles.eventContainer}><DashboardEvents /></div>
         </div>
       </div>}

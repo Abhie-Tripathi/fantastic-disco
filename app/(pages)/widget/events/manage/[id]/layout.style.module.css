@@ -1,0 +1,153 @@
+/* .body{
+    padding: 50px;
+} */
+.body {
+    padding-top: 50px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    min-height: 89vh;
+}
+.details{
+    width: 900px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.eventNameHeading {
+    color: var(--primary-text-color);
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-semibold);
+    width: 70%;
+}
+
+.detailPageBtn {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border-radius: 4px;
+    color: white;
+    font-size: var(--font-size-default);
+    padding: 5px 9px;
+    background-color: var(--primary-color);
+}
+
+.detailPageBtn:hover {
+    background-color: var(--primary-color-hover);
+}
+
+.navbar {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    gap: 15px;
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+    line-height: 35px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.navbar .item {
+    cursor: pointer;
+    color: var(--primary-text-color);
+    border-bottom: 2px solid transparent;
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.navbar .item:hover {
+    color: var(--primary-color-hover);
+}
+
+.navbar .activeItem {
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+}
+
+.navbar .disabled {
+    pointer-events: none;
+    /* Disables the link interaction */
+    opacity: 0.6;
+    /* Makes the link appear dimmed */
+    display: flex;
+    align-items: center;
+}
+
+.selectedView {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.addEventModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    width: 90%;
+    z-index: 1001;
+}
+
+.deleteModal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    padding: 10px 15px;
+    border-radius: 10px;
+    background-color: var(--background-secondary-color);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    border: 1px solid var(--border-color);
+}
+
+.deleteModal .deleteHeading {
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+}
+
+.deleteModal .btns {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.deleteModal .btns button {
+    font-size: var(--font-size-default);
+    border-radius: 4px;
+    padding: 5px 9px;
+    color: white;
+}
+
+.deleteModal .deleteBtn {
+    background-color: var(--danger-text-color);
+}
+
+.deleteModal .cancelBtn {
+    background-color: var(--primary-color);
+}
+
+.deleteModal .deleteBtn:hover {
+    background-color: #eb6368;
+}
+
+.deleteModal .cancelBtn:hover {
+    background-color: #7d62c7;
+}
+
+@media screen and (max-width: 986px) {
+    .details {
+        width: 95%;
+    }
+}

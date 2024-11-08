@@ -104,7 +104,7 @@
   background-color: var(--heading-background-color);
   position: sticky;
   right: 0;
-  /* z-index: 12; */
+  z-index: 5;
   /* box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px; */
   /* cursor: pointer; */
   text-align: center;

@@ -1,37 +1,4 @@
-.container{
-    display: flex;
-    width: calc(100vw - 134px);
-    flex-direction: column;
-    gap: var(--spacing-lg);
-    font-size: var(--font-size-default);
-}
-.containerTop{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--heading-background-color);
-    padding:12px;
-}
-.containerTopLeft{
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-}
-.trackerType{
-    display: flex;
-    flex-direction: column;
-}
-.heading{
-    color:var(--primary-color);
-    font-weight: var(--font-weight-bold);
-    font-size: var(--font-size-h6);
-}
-.content{
-    color:#777777;
-    font-weight: var(--font-weight-regular);
-    font-size: var(--font-size-small);
-}
-.containerTopRight button{
+/* .containerTopRight button{
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-large);
     padding: 8px 24px;
@@ -40,16 +7,7 @@
     width: 100px;
     border: 1px solid var(--primary-color);
     border-radius:var(--border-radius-lg);
-}
-.containerTopTwo{
-    padding: 4px 27px;
-    border: 0.5px solid var(--border-color);
-    border-radius:var(--border-radius-lg);
-    height: 55px;
-    display: flex;
-    align-items: center;
-    font-weight: var(--font-weight-medium);
-}
+} */
 .innerContainer{
     display: grid;
     grid-template-columns: calc(45% - 5px) calc(55% - 5px);
@@ -57,10 +15,7 @@
     /* border-radius: 5px; */
     gap: var(--spacing-xs);
 }
-.innerContainerLeft{
-    /* width:40%; */
-    border-radius:var(--border-radius-sm);
-}
+
 .innerContainerRight{
     display: flex;
     /* width: 50%; */
@@ -87,7 +42,7 @@
     display: flex;
     gap:var(--spacing-xs);
 }
-.containerTopRightTwo button{
+/* .containerTopRightTwo button{
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-large);
     padding: 8px 24px;
@@ -95,7 +50,7 @@
     color:var(--primary-color);
     border: 1px solid var(--primary-color);
     border-radius: var(--border-radius-lg);
-}
+} */
 .shareModal{
     position: fixed;
     width: 100%;
@@ -251,21 +206,6 @@
     color: var(--primary-color);
     font-size: var(--font-size-default);
     font-weight: var(--font-weight-medium);
-}
-.item{
-    color: #2D3748;
-    padding-left: 5px;
-    font-size: var(--font-size-small);
-}
-.allCat{
-    display: flex;
-    gap: var(--spacing-sm);
-}
-.outerContainer{
-    display: flex;
-    flex-direction: column;
-    margin-top: 140px;
-    gap:24px;
 }
 .keywordsIncluded, .keywordsExcluded{
     flex-wrap: wrap;

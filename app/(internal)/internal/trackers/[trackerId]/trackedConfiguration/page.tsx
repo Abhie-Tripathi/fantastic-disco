@@ -21,6 +21,11 @@ import { GAEvent } from "@/utils/GAEvent";
 import { showToast } from '@/utils/showToast';
 import EventType from "@/app/components/Search/Dropdowns/EventType";
 import Loading from "@/app/components/UI/Loading";
+import ToggleBtn from "@/app/components/UI/ToggleBtn";
+import { useTrackerServices } from "@/services/trackerServices";
+// import SideNav from "@/app/components/trackers/sideNav";
+import { useTrackerContext } from "@/context/tracker";
+import { Button } from "@/components/ui/button";
 function CustomeTracker({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -62,41 +67,40 @@ interface Toggle{
   eventRank?: boolean;
   audienceZone?: boolean;
   audienceSpread?: boolean;
+  eventFrequency?:boolean;
 }
 interface EditData {
   tracker: Tracker;
 }
 const Page = () => {
   const pathName = usePathname().split('/');
+  const {data, setIsNewCall, editTrue}=useTrackerContext();
   const router = useRouter();
+  const {delTracker, getTrackerDetail, error, isLoading}=useTrackerServices();
   const [type,setType]=useState("Custom");
   const last = pathName[pathName.length - 2];
   const searchParams = useSearchParams()
   const typeVal = searchParams.get('type')
-  const [data, setData] = useState<any>([]);
+  // const [data, setData] = useState<any>([]);
   const [del, setDel] = useState(false);
-  const [loading,setLoading]=useState(true);
-  useEffect(() => {
-    const fetchData = async () => {
-      const url = `${baseUrl}/tracker/${last}?edit=true`;
-      try {
-        const { data, error } = await myFetch(url, {
-          method: "GET",
-        });
-        if (error) {
-          console.error("Error fetching data:", error);
-        } else {
-          console.log("Data fetched:", data);
-          setData(data);
-          setLoading(false)
-        }
-      } catch (err) {
-        console.error("Fetch failed:", err);
-      }
-    };
+  // const [loading,setLoading]=useState(true);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const result = await getTrackerDetail(last, "edit=true")
+  //     if(error){
+  //       console.error("Error fetching data:", error);
+  //     }
+  //     else{
+  //       setData(result);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
+  useEffect(()=>{
+    if(editTrue)
+    setIsNewCall(true);
+  },[editTrue])
   function formatDate(dateString:Date) {
     const date = new Date(dateString);
     
@@ -118,9 +122,10 @@ const Page = () => {
     if(typeVal === "T_COMPETITOR") setType("Competitor");
     else if(typeVal === "T_SPEAKING_OPPORTUNITY") setType("Speaking Opportunity")
     else if(typeVal === "T_PRODUCT_KEYWORDS") setType("Product and Topics")
+    else if(typeVal === "T_PEOPLE_FINDER") setType("People Finder")
+    else if(typeVal === "T_RECRUITMENT") setType("Recruitment")
+    else if(typeVal === "T_CUSTOMER_ICP") setType("Customer ICP")
   },[])
-  const [editData, setEditData] = useState<EditData | null>(null);
-  const [arr, setArr] = useState<any>();
 
   // useEffect(() => {
   //   const newArr: string[] = [
@@ -141,12 +146,9 @@ const Page = () => {
   //   console.log(arr);
   // }, [arr]);
   const deleteTracker = async () => {
-    const url = `${baseUrl}/tracker/${pathName[pathName.length - 2]}`
-    const { data, error } = await myFetch(url, {
-      method: 'DELETE'
-    });
-    if (data) {
-      showToast("success", "Tracker deleted successfully")
+    const result=await delTracker(`${pathName[pathName.length - 2]}`)
+    if(result){
+       showToast("success", "Tracker deleted successfully")
       GAEvent(
         "trackers",
         "Tracker Detail",
@@ -167,9 +169,9 @@ const Page = () => {
     const eventCountry = data?.tracker?.filterValue?.eventCountry?.map((countryObj: any) => Object.values(countryObj)[0]) || [];
     const eventCity = data?.tracker?.filterValue?.eventCity?.map((cityObj: any) => Object.values(cityObj)[0]) || [];
     const eventZone = data?.tracker?.filterValue?.eventRegion?.split(",") || [];
-    setLocations([...eventCountry, ...eventCity, ...eventZone]);
+    const eventState = data?.tracker?.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
+    setLocations([...eventCountry, ...eventCity, ...eventZone, ...eventState]);
   }, [data]);
-console.log(type);
 const eventType=data?.tracker?.filterValue?.eventType?
 data?.tracker?.filterValue?.eventType
   :[];
@@ -187,33 +189,49 @@ const userRating=
     ? data?.tracker?.filterValue?.eventRating.split(",")
     : []
    const allKeywords=data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : [];
+   const includeKeywords=data?.tracker?.filterValue?.includeKeywords &&
+   data.tracker.filterValue?.includeKeywords.split(",").length > 0
+       ? data.tracker.filterValue.includeKeywords.split(",").filter(Boolean)
+       : [];
+    const excludeKeywords=data?.tracker?.filterValue?.excludeKeywords &&
+    data.tracker.filterValue?.excludeKeywords.split(",").length > 0
+        ? data.tracker.filterValue.excludeKeywords.split(",").filter(Boolean)
+        : [];
    let toggleOpend: Toggle={};
   if(data?.tracker?.filterValue?.userType)
   toggleOpend=JSON.parse(data?.tracker?.filterValue?.userType);
+  const commonClasses={
+    filter:`flex flex-col gap-[var(--spacing-sm)] p-3 border border-[var(--border-color)] rounded-[var(--border-radius-sm)]`,
+    filterHeading:`text-[var(--primary-color)] font-medium`,
+    data:`text-xs text-[var(--secondary-text-color)] p-1`,
+    allValues: `flex gap-3`
+  }
+  
   return (
     <>
-    {loading ? <Loading/> :
-    <div className={styles.container}>
-    <div className={`fixedNav ${styles.containerTop}`}>
-      <div className={styles.containerTopLeft}>
+    {isLoading ? <Loading/> :
+    <div className='flex w-[calc(100vw-134px)] flex-col gap-6 text-sm' >
+      {/* <SideNav/> */}
+    <div className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[54px] items-center justify-between bg-[var(--heading-background-color)] p-3">
+      <div className="flex items-center gap-2">
         <div>
           <CustomeTracker fillColor="#6750a4" />
         </div>
-        <div className={styles.trackerType}>
-          <div className={styles.heading}>{type} Tracker</div>
-          <div className={styles.content}>
+        <div className="flex flex-col">
+          <div className="text-[var(--primary-color)] font-bold text-lg">{type} Tracker</div>
+          <div className="text-sm text-[var(--secondary-text-color)]">
             Select from the available data filters to create a tracker
           </div>
         </div>
       </div>
-      <div className={styles.outerRight}>
+      <div className="flex gap-2">
         <div className={styles.containerTopRightTwo} >
-          <button onClick={() => setDel(true)}>Delete</button>
+          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
         </div>
         {/* {data?.tracker?.accessLevel!=="READ" && */}
         <div className={styles.containerTopRight}>
         <Link href={`/internal/trackers/${last}/editTracker?type=${typeVal}`}>
-          <button
+          <Button className="text-white w-[100px]"
             onClick={() =>
               GAEvent(
                 "trackers",
@@ -224,7 +242,7 @@ const userRating=
             }
           >
             Edit
-          </button>
+          </Button>
         </Link>
       </div>
         {/* } */}
@@ -232,14 +250,13 @@ const userRating=
 
       </div>
     </div>
-    <div className={styles.outerContainer}>
-      <div className='dummyDiv'></div>
-    <div className={styles.containerTopTwo}>{data?.tracker?.name}</div>
-    {data.tracker && data.tracker.type === "T_PRODUCT_KEYWORDS" &&
+    <div className="flex flex-col mt-[140px] gap-6">
+      <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{zIndex:"3"}}></div>
+    <div className="px-[27px] py-[4px] border-[0.5px] border-[var(--border-color)] rounded-lg h-[55px] flex items-center font-medium">{data?.tracker?.name}</div>
+    {data?.tracker && data.tracker.type === "T_PRODUCT_KEYWORDS" &&
       <>
         <div className={styles.innerContainer}>
           <div
-            className={styles.innerContainerLeft}
             style={{ paddingLeft: "20px" }}
           >
             <div className={styles.advanceHead}>Product and Topics</div>
@@ -253,15 +270,18 @@ const userRating=
           </div>
           <div className={styles.innerContainerRight}>
           <div className={keyStyles.allCat1}>
-                   {allKeywords?.map((item: string, id: number) => (
-                       item?.charAt(0) !== '-' ? (
-                           <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.key}`}>{item.replaceAll("_"," ")}
+                   {includeKeywords?.map((item: string, id: number) => (
+                        (
+                           <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.key}`}>{item}
                            <span className={keyStyles.tooltipText}>Included Keyword</span>
                            </div>
-                       ) : (
-                           <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.keyNegative}`}>{item.replaceAll("_"," ").substring(1)}
-                           <span className={keyStyles.tooltipText}>Excluded Keyword</span>
-                           </div>
+                       )
+                   ))}
+                   {excludeKeywords?.map((item: string, id: number) => (
+                        (
+                          <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.keyNegative}`}>{item}
+                          <span className={keyStyles.tooltipText}>Excluded Keyword</span>
+                          </div>
                        )
                    ))}
                </div>
@@ -270,7 +290,7 @@ const userRating=
         <div className={styles.line}></div>
       </>
     }
-    {data.tracker && data.tracker.type === "T_COMPETITOR" &&
+    {data?.tracker && data.tracker.type === "T_COMPETITOR" &&
       <>
         <div className={styles.innerContainer}>
           <div
@@ -306,7 +326,7 @@ const userRating=
         <div className={styles.line}></div>
       </>
     }
-    {data.tracker && data.tracker.type === "T_SPEAKING_OPPORTUNITY" &&
+    {data?.tracker && data.tracker.type === "T_SPEAKING_OPPORTUNITY" &&
       <>
         <div className={styles.innerContainer}>
           <div
@@ -352,10 +372,110 @@ const userRating=
         <div className={styles.line}></div>
       </>
     }
+    {data?.tracker && data.tracker.type === "T_PEOPLE_FINDER" &&
+      <>
+        <div className={styles.innerContainer}>
+          <div
+            className={styles.innerContainerLeft}
+            style={{ paddingLeft: "20px" }}
+          >
+            <div className={styles.advanceHead}>People Finder</div>
+            <div className={styles.customContent}>
+              Track experts, influencers and where they might be participating in various events
+            </div>
+          </div>
+          <div className={styles.innerContainerRight} style={{flexDirection:"row"}}>
+          <div className={styles.speakerAllInputBox}>
+          <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
+                  {/* <Image src={Name} alt="url_icon" className="icons" width={10}/> */}
+                  <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)"}}>Name</div>
+          </div>
+                {data?.tracker?.filterValue?.userName?.split(',')?.map((item: string, ind: number) => (
+                  <div className={styles.singleUrl} key={ind}>
+                  <Image src={Name} alt="url_icon" className="icons" width={10}/>
+                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  </div>
+                ))}
+          </div>
+          <div className={styles.speakerAllInputBox}>
+          <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
+                  {/* <Image src={Company} alt="url_icon" className="icons" width={10}/> */}
+                  <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)", padding:"0"}}>Company Name</div>
+                  </div>
+                {data?.tracker?.filterValue?.speakerOrg?.split(',')?.map((item: string, ind: number) => (
+                  <div className={styles.singleUrl} key={ind}>
+                  <Image src={Company} alt="url_icon" className="icons" width={10}/>
+                  <div key={ind} className={styles.singleInputBox}>{item}</div>
+                  </div>
+                ))}
+          </div>
+          </div>
+        </div>
+        <div className={styles.line}></div>
+      </>
+    }
+    {data?.tracker && data.tracker.type === "T_RECRUITMENT" &&
+      <>
+        <div className={styles.innerContainer}>
+          <div
+            className={styles.innerContainerLeft}
+            style={{ paddingLeft: "20px" }}
+          >
+            <div className={styles.advanceHead}>Recruitment</div>
+            <div className={styles.customContent}>
+              Input designations and upload job descriptions to identify relevant events effortlessly
+            </div>
+          </div>
+          <div className={styles.innerContainerRight}>
+            <div className={styles.allInputBox}>
+              {data?.tracker?.filterValue?.designation?.map((item: any, ind: number) => (
+                <div className={styles.singleUrl} key={ind}>
+                {/* <Image src={ <div className={styles.line}></div>Url} alt="url_icon"/> */}
+                <div key={ind} title={item.name} className={styles.singleInputBox}>{item.name}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className={styles.line}></div>
+      </>
+    }
+    {data?.tracker && data.tracker.type === "T_CUSTOMER_ICP" &&
+      <>
+        <div className={styles.innerContainer}>
+          <div
+            className={styles.innerContainerLeft}
+            style={{ paddingLeft: "20px" }}
+          >
+            <div className={styles.advanceHead}>Company Name / Website</div>
+            <div className={styles.customContent}>
+              Input ideal customer profile details like company, location or websites to track their interests
+            </div>
+          </div>
+          <div className={styles.innerContainerRight}>
+          <div className={styles.allInputBox}>
+          {data?.tracker?.filterValue?.orgName?.split(',')?.map((item: string, ind: number) => (
+                  <div className={styles.singleUrl} key={ind}>
+                  {/* <Image src={ <div className={styles.line}></div>Url} alt="url_icon"/> */}
+                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
+                  </div>
+                ))}
+                {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
+                  <div className={styles.singleUrl} key={ind}>
+                  {/* <Image src={Url} alt="url_icon"/> */}
+                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
+                  </div>
+                ))}
+              </div>
+          </div>
+        </div>
+        <div className={styles.line}></div>
+      </>
+    }
     
     <div className={styles.innerContainer}>
       <div
-        className={styles.innerContainerLeft}
+        className="border rounded-[var(--border-radius-sm)]" 
         style={{ border: "1px solid var(--border-color)" }}
       >
         {data && (
@@ -370,19 +490,19 @@ const userRating=
       </div>
       <div className={styles.innerContainerRight}>
       <div className={styles.formatFreq}>
-      <div className={styles.format}>
-                    <div className={styles.formatHead}>Location</div>
-                    <div className={styles.location}>
+      <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Location</div>
+                    <div className="flex flex-col">
                         {locations?.map((item: string, id: number) => (
                             <>
-                                <span className={styles.item}>{item}</span>
+                                <span className="text-xs text-[var(--secondary-text-color)]">{item}</span>
                             </>
                         ))}
                     </div>
                 </div>
-      <div className={styles.format}>
-                    <div className={styles.formatHead}>Event Type</div>
-                    <div className={styles.allCat}>
+      <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Event Type</div>
+                    <div className={commonClasses.allValues}>
                         {eventType?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -394,16 +514,16 @@ const userRating=
                                         checked={true}
                                         disabled
                                     />
-                                    <span className={styles.item}>{item}</span>
+                                    <span className={commonClasses.data}>{item}</span>
                                 </label>
                             </>
                         ))}
                     </div>
                 </div>
 
-      <div className={styles.format}>
-                    <div className={styles.formatHead}>Event Format</div>
-                    <div className={styles.allCat}>
+      <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Event Format</div>
+                    <div className={commonClasses.allValues}>
                         {format?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -415,7 +535,7 @@ const userRating=
                                         checked={true}
                                         disabled
                                     />
-                                    <span className={styles.item}>{item.charAt(0).toUpperCase()}{item.substring(1)}</span>
+                                    <span className={commonClasses.data}>{item.charAt(0).toUpperCase()}{item.substring(1)}</span>
                                 </label>
                             </>
                         ))}
@@ -431,17 +551,17 @@ const userRating=
                         ))}
                     </div>
                 </div> */}
-      <div className={styles.format}>
-                    <div className={styles.formatHead}>Date</div>
-                    <div className={styles.allCat}>
-                    <div className={styles.item}>
+      <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Date</div>
+                    <div className={commonClasses.allValues}>
+                    <div className={commonClasses.data}>
                     {startDate?.length>0&&formatDate(startDate)}{"-"}{endDate?.length>0&&formatDate(endDate)}
                     </div>
                     </div>
                 </div>
-                <div className={styles.format}>
-                    <div className={styles.formatHead}>Event Status</div>
-                    <div className={styles.allCat}>
+                <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Event Status</div>
+                    <div className={commonClasses.allValues}>
                         {eventStatus?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -453,15 +573,15 @@ const userRating=
                                         checked={true}
                                         disabled
                                     />
-                                    <span className={styles.item}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
+                                    <span className={commonClasses.data}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
                                 </label>
                             </>
                         ))}
                     </div>
                 </div>
-                <div className={styles.format}>
-                    <div className={styles.formatHead}>Event Entry</div>
-                    <div className={styles.allCat}>
+                <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading}>Event Entry</div>
+                    <div className={commonClasses.allValues}>
                         {eventEntry?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -473,16 +593,16 @@ const userRating=
                                         checked={true}
                                         disabled
                                     />
-                                    <span className={styles.item}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
+                                    <span className={commonClasses.data}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
                                 </label>
                             </>
                         ))}
                     </div>
                 </div>
-                <div className={styles.format}>
-                    <div className={styles.formatHead} style={{display:"flex",justifyContent:"space-between"}}>User Ratings
+                <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading} style={{display:"flex",justifyContent:"space-between"}}>User Ratings
                     <div className={keyStyles.toggle_container}>
-            <span>
+            {/* <span>
               <label className={keyStyles.switch}>
                 <input
                   type="checkbox"
@@ -493,10 +613,11 @@ const userRating=
                 />
                 <span className={`${toggleOpend?.rating ? keyStyles.sliderBranded : keyStyles.slider}`}></span>
               </label>
-            </span>
+            </span> */}
+            <ToggleBtn isTrue={toggleOpend?.rating === true}/>
           </div>
                     </div>
-                    <div className={styles.allCat}>
+                    <div className={commonClasses.allValues}>
                         {userRating?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >
@@ -542,7 +663,6 @@ const userRating=
     <div className={styles.line}></div>
     <div className={styles.innerContainer}>
       <div
-        className={styles.innerContainerLeft}
         style={{ paddingLeft: "20px" }}
       >
         <div className={styles.advanceHead}>Advance Intel</div>
@@ -552,7 +672,10 @@ const userRating=
         </div>
       </div>
       <div className={styles.innerContainerRight}>
-        <AdvanceFilter keywords={data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : []} freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
+        <AdvanceFilter includeKeywords={includeKeywords} 
+        excludeKeywords={excludeKeywords}
+         freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
+         isFreqToggle={toggleOpend?.eventFrequency}
           isBranded={toggleOpend?.brandedEvent}
           eventEdition={data?.tracker?.filterValue?.editionRange}
           type={type}
@@ -565,7 +688,6 @@ const userRating=
     <div className={styles.line}></div>
     <div className={styles.innerContainer}>
       <div
-        className={styles.innerContainerLeft}
         style={{ paddingLeft: "20px" }}
       >
         <div className={styles.advanceHead}>Insights &#x26; Score</div>
@@ -576,37 +698,36 @@ const userRating=
       </div>
       <div className={styles.innerContainerRight}>
         <Insights
-          exhibitScore={
-            data?.tracker?.filterValue?.estimatedExhibitScore
-              ? data?.tracker?.filterValue?.estimatedExhibitScore?.split(",")
-              : []
-          }
-          isExhibitOpen={toggleOpend?.exhibit===true}
-          internationalScore={data?.tracker?.filterValue?.internationalScore}
-          isTrustOpen={toggleOpend?.trust===true}
-          trustScore={data?.tracker?.filterValue?.trustScore}
-         reputation={data?.tracker?.filterValue?.reputationScore}
-          inboundScore={data?.tracker?.filterValue?.inboundScore}
-          eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
-          localRank={
-            data?.tracker?.filterValue?.localRank?.length > 0 ? data?.tracker?.filterValue?.localRank.split(',') : []
-          }
-          start={
-            data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]
-          }
-          end={
-            data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]
-          }
-          eventSize={eventSize}
-          eventImpactScore={data?.tracker?.filterValue?.eventImpactSocre}
-          eventRankToggle={data?.tracker?.filterValue?.eventRanking}
+            exhibitScore={
+              data?.tracker?.filterValue?.estimatedExhibitScore
+                ? data?.tracker?.filterValue?.estimatedExhibitScore?.split(",")
+                : []
+            }
+            isExhibitOpen={toggleOpend?.exhibit===true}
+            internationalScore={data?.tracker?.filterValue?.internationalScore}
+            isTrustOpen={toggleOpend?.trust===true}
+            trustScore={data?.tracker?.filterValue?.trustScore}
+           reputation={data?.tracker?.filterValue?.reputationScore}
+            inboundScore={data?.tracker?.filterValue?.inboundScore}
+            eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
+            localRank={
+              data?.tracker?.filterValue?.localRank?.length > 0 ? data?.tracker?.filterValue?.localRank.split(',') : []
+            }
+            start={
+              data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]
+            }
+            end={
+              data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]
+            }
+            eventSize={eventSize}
+            eventImpactScore={data?.tracker?.filterValue?.eventImpactSocre}
+            eventRankToggle={data?.tracker?.filterValue?.eventRanking}
         />
       </div>
     </div>
     <div className={styles.line}></div>
-    <div className={styles.innerContainer}>
+    <div className={styles.innerContainer} style={{paddingBottom:"24px"}}>
       <div
-        className={styles.innerContainerLeft}
         style={{ paddingLeft: "20px" }}
       >
         <div className={styles.advanceHead}>Audience Intel</div>
@@ -617,6 +738,7 @@ const userRating=
       </div>
       <div className={styles.innerContainerRight}>
         <Intel
+          type={type}
         //  trustScore={data?.tracker?.filterValue?.trustScore}
         //  reputation={data?.tracker?.filterValue?.reputationScore}
           inboundScore={data?.tracker?.filterValue?.inboundScore}
@@ -641,8 +763,8 @@ const userRating=
     {del &&
       (
         <div className={styles.shareModal} >
-          <div className={styles.innerModal}>
-            <div className={styles.shareHead}>Delete Tracker</div>
+          <div className={`${styles.innerModal} text-base`}>
+            <div className="font-medium text-[var(--primary-color)]">Delete Tracker</div>
             {/* <div className={styles.bar}></div> */}
             <div className={styles.linkCopy}>
 
@@ -655,8 +777,10 @@ const userRating=
 
             <div className={styles.buttons}>
 
-              <button className={styles.send} onClick={deleteTracker}>Delete</button>
-              <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
+              {/* <button className={styles.send} onClick={deleteTracker}>Delete</button> */}
+              <Button className="text-white" onClick={deleteTracker}>Delete</Button>
+              {/* <button className={styles.cancel} onClick={closeShareModal}>Cancel</button> */}
+              <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]" onClick={closeShareModal}>Cancel</Button>
             </div>
           </div>
         </div>

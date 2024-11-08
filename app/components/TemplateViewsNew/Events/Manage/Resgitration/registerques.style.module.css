@@ -1,0 +1,92 @@
+.body{
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+.header{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.heading{
+    color: var(--primary-text-color);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-h4);
+}
+.subheading{
+    color: var(--secondary-text-color);
+    font-weight: var(--font-weight-semibold);
+    font-size: var(--font-size-default);
+}
+.personalInfoContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.quesHeader{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.quesHeader .tag{
+    font-size: var(--font-size-large);
+    height: 30px;
+    width: 30px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #45a55749;
+    color: var(--success-text-color);
+}
+.quesHeader .heading{
+    font-size: var(--font-size-large);
+}
+.quesList{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.ques{
+    flex: 1;
+    border: 1px solid var(--border-color);
+    padding: 12px 10px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--primary-light-color);
+}
+.ques .nameLogoContainer{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.ques .nameLogoContainer span{
+    font-size: var(--font-size-large);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-text-color);
+}
+.ques .value{
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+    color: var(--secondary-text-color);
+}
+.phoneQues{
+    cursor: pointer;
+}
+.phoneQues:hover{
+    background-color: var(--accent-color);
+}
+.customQuesContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.addQues{
+    width: 290px;
+    cursor: pointer;
+}
+.addQues:hover{
+    background-color: var(--accent-color);
+}

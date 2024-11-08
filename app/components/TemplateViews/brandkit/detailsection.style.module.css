@@ -4,17 +4,17 @@
     gap: 25px;
 }
 .logo{
-    width: 140px;
-    height: 140px;
+    width: 100px;
+    height: 100px;
+    border: 1px solid var(--border-color);
     border-radius: 10px;
     overflow: hidden;
-    filter: drop-shadow(0px 4px 4px rgb(199, 199, 199));
 }
 .logo img{
     object-fit:contain;
 }
 .companyName{
-    font-size: var(--font-size-h4);
+    font-size: var(--font-size-h5);
     font-weight: var(--font-weight-semibold);
 }
 .companyLink{
@@ -23,8 +23,9 @@
     gap: 5px;
 }
 .companyLink a{
-    color: rgb(69, 120, 239);
-    font-weight: var(--font-weight-semibold);
+    /* color: rgb(69, 120, 239); */
+    color: var(--link-color);
+    font-weight: var(--font-weight-regular);
     font-size: var(--font-size-large);
 }
 .description{

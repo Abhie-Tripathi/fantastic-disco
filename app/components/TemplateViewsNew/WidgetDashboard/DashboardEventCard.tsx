@@ -1,20 +1,27 @@
 import React from 'react'
 import styles from './dashboardeventcard.style.module.css'
-import { AllEventsType } from '@/types/alleventtype';
+import { AllEventsType, EventsType } from '@/types/alleventtype';
 import calendarIcon from "/public/calendar.svg";
 import PlaceIcon from "/public/location.svg";
 import Image from 'next/image';
 import ClockIcon from "/public/clock.svg";
-import { myFetch } from '@/utils/myFetch';
-import { baseUrl } from '@/constants';
+import TimelineItem from '@/app/components/employee/listView/TimelineItem'
+import SubEventCard from './SubEventCard';
+import { useRouter } from 'next/navigation';
 
 interface Props {
     event: AllEventsType;
-    fetchEvents: (value: void) => void
+    fetchEvents?: (value: void) => void
+    handleDeleteModal: (id: string, name: string, isPresentinWidget: boolean) => void
+    handlePrefillEvent?: (value: EventsType) => void
+    handlePrefillSubEvent?: (value: EventsType) => void
+    width: string;
+    setSelectedEventType?: (value: string) => void
 }
 
-const DashboardEventCard = ({ event, fetchEvents }: Props) => {
+const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefillEvent, handlePrefillSubEvent, width, setSelectedEventType }: Props) => {
     function formatEventDates(startDate: string, endDate: string) {
+
         const start = new Date(startDate);
         const end = new Date(endDate);
         if (start.getFullYear() === end.getFullYear()) {
@@ -71,51 +78,74 @@ const DashboardEventCard = ({ event, fetchEvents }: Props) => {
             );
         }
     }
-
-    const handleDelete = async (eventId: string) => {
-        const customizeData = new FormData();
-        customizeData.append("id", eventId)
-        customizeData.append('published', "false");
-        const { data, error } = await myFetch(
-            `${baseUrl}/event`,
-            {
-                method: 'PATCH',
-                body: customizeData,
-            }
-        );
-        if (data) {
-            fetchEvents()
+    const router = useRouter()
+    const handleCardClick = () => {
+        if (width === "small" && handlePrefillEvent) {
+            // handlePrefillEvent(event)
+            router.push(`/widget/events/manage/${event.mainEvent.eventId}/overview`)
         }
-        if (error) {
-            console.log(error);
-        }
-
     }
+    
+    let prevDate: any = null;
     return (
-        <div className={styles.card}>
-            <div className={styles.eventName}>{event.name}</div>
-            <div className={styles.eventDataField} style={{ marginTop: 10 }}>
-                <Image src={PlaceIcon} alt="locationIcon" width={14} height={14} className="icons" />
-                <div>{event.cityName}, {event.countryName}</div>
-            </div>
-            <div className={styles.eventDateTimeContainer}>
-                <div className={styles.eventDataField}>
-                    <Image src={calendarIcon} alt="calendarIcon" width={14} height={14} className='icons' />
-                    <div>
-                        {formatEventDates(event.startDate, event.endDate)}
+        <div className={width === "small" ? styles.smallouterDiv : styles.bigouterDiv}>
+            <div className={width === "small" ? styles.cardSubeventContainer : ""}>
+                <div className={width === "small" ? styles.smallCard : styles.bigCard} onClick={handleCardClick}>
+                    {width === "small" && <div className={styles.imageContainer}>
+                        <Image src={event.mainEvent.logoUrl} alt='Banner' height={130} width={130} />
+                    </div>}
+                    <div className={styles.details}>
+                        <div className={width === "small" ? styles.bigName : styles.smallName}>{event.mainEvent.name}</div>
+                        <div className={styles.eventDataField} style={{ marginTop: 10 }}>
+                            <Image src={PlaceIcon} alt="locationIcon" width={14} height={14} className="icons" />
+                            {
+                                event?.mainEvent.format === "Virtual"?<>Virtual</>: <div>{event.mainEvent.cityName}, {event.mainEvent.countryName}</div>
+                            }
+                            {/* <div>{event.mainEvent.cityName}, {event.mainEvent.countryName}</div> */}
+                        </div>
+                        <div className={styles.eventDateTimeContainer}>
+                            <div className={styles.eventDataField}>
+                                <Image src={calendarIcon} alt="calendarIcon" width={14} height={14} className='icons' />
+                                <div>
+                                    {formatEventDates(event.mainEvent.startDate, event.mainEvent.endDate)}
+                                </div>
+                            </div>
+                            <div className={styles.eventDataField}>
+                                <Image src={ClockIcon} alt="clockIcon" width={14} height={14} className='icons' />
+                                <div>{event.mainEvent.startTime}{" - "}{event.mainEvent.endTime}{", "}{event.mainEvent.gmtZone}</div>
+                            </div>
+                        </div>
+                        {/* <div className={styles.description} dangerouslySetInnerHTML={{ __html: event.mainEvent.description.substring(0, 100) + (event.mainEvent.description.length > 100 ? "..." : "") }}>
+                        </div> */}
+                        <div className={styles.tags_deleteContainer}>
+                            <div className={styles.tags}>
+                                <div className={styles.tag1}>{event.mainEvent.participationType}</div>
+                                <div className={styles.tag2}>{event.mainEvent?.format}</div>
+                            </div>
+                            {/* <button className={styles.deleteBtn} onClick={(e) => handleDelete(e)}>Delete</button> */}
+                        </div>
                     </div>
                 </div>
-                <div className={styles.eventDataField}>
-                    <Image src={ClockIcon} alt="clockIcon" width={14} height={14} className='icons' />
-                    <div>{event.startTime}{" - "}{event.endTime}{", "}{event.gmtZone}</div>
-                </div>
-            </div>
-            <div className={styles.tags_deleteContainer}>
-                <div className={styles.tags}>
-                    <div className={styles.tag1}>Tradeshow</div>
-                    <div className={styles.tag2}>In-Person</div>
-                </div>
-                <button className={styles.deleteBtn} onClick={()=>handleDelete(event.eventId)}>Delete</button>
+                {(event.subEvents.length > 0 && width==="small") && (
+                    <div className={styles.subEventsContainer}>
+                        {event.subEvents.map((subEvent, index) => {
+                            const showDate = subEvent.startDate !== prevDate;
+                            prevDate = subEvent.startDate; // Ensure prevDate is defined before mapping
+                            return (
+                                <div key={index} className={styles.container}>
+                                    <TimelineItem eventDate={showDate ? subEvent.startDate : null} />
+                                    <SubEventCard
+                                        setSelectedEventType={setSelectedEventType}
+                                        handlePrefillSubEvent={handlePrefillSubEvent}
+                                        width="small"
+                                        subEvent={subEvent}
+                                    />
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
+
             </div>
         </div>
     )

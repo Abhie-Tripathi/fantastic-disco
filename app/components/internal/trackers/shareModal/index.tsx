@@ -7,15 +7,17 @@ import { showToast } from "@/utils/showToast";
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { GAEvent } from '@/utils/GAEvent';
+import { useTrackerServices } from '@/services/trackerServices';
+import { Button } from "@/components/ui/button";
 interface ShareModalProps {
     fetchAccess?: any;
-  closeShareModal: () => void;
+  closeShareModal?: () => void;
  
   id: string;
-  setId: any;
-  shareFunction: () => void;
-  share: boolean;
-  setShare: any
+  setId?: any;
+  shareFunction?: () => void;
+  share?: boolean;
+  setShare?: any
   setAccessData?: (data: any) => void;
 }
 const ShareModal: React.FC<ShareModalProps> = ({
@@ -29,6 +31,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
     setAccessData
 }) => {
     const [currentUrl, setCurrentUrl] = useState('');
+    const {shareTrackerInvite,createNewAccess, error, isLoading}= useTrackerServices();
     const [filteredData, setFilteredData] = useState([]);
     const [filter, setFilter] = useState('');
     const [drop,setDrop]=useState(true);
@@ -92,47 +95,37 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 redirectUrl: `${currentUrl}`
             };
             console.log(formData);
-            const url = `${baseUrl}/access`;
             if(id){
+              
+            
             try {
-                const { data, error } = await myFetch(url, {
-                    method: 'POST',
-                    body: JSON.stringify(formData),
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-                if (error) {
-                    console.error('Error fetching data:', error);
-                    showToast("error",error.response);
-                    fetchAccess();
-                      setFilter('');
-                      setIsClicked(false);
-                      shareFunction();
-                } 
-                if(data) {
-                    console.log('Data fetched:', data);
-                    GAEvent(
-                        "trackers",
-                        "Tracker Detail",
-                        "Share",
-                        "Invite"
-                      );
-                      showToast("success","Tracker shared successfully!")
-                      fetchAccess();
-                      shareFunction();
-                      setId('');
-                      setIsClicked(false);
-                      setFilter('');
-                    // setTimeout(()=>{
-                    //     window.location.reload();
-                    // },2000)
-                    // if(sendInvite) setSendInvite(false);
-                    if(setAccessData)
-                    setAccessData(data);
-                }
-            } catch (err) {
-                console.error('Fetch failed:', err);
+                const result= await shareTrackerInvite(formData);
+
+                GAEvent(
+                                        "trackers",
+                                        "Tracker Detail",
+                                        "Share",
+                                        "Invite"
+                                      );
+                                      showToast("success","Tracker shared successfully!")
+                                      fetchAccess();
+                                      if(shareFunction)
+                                      shareFunction();
+                                      setId('');
+                                      setIsClicked(false);
+                                      setFilter('');
+                                    if(setAccessData)
+                                    setAccessData(data);
+                                console.log(isLoading);
+                                
+            } catch (error:any) {
+                console.error('Error fetching data:', error);
+                            showToast("error",error.response);
+                            fetchAccess();
+                              setFilter('');
+                              setIsClicked(false);
+                              if(shareFunction)
+                              shareFunction();
             }
             }
         }
@@ -145,33 +138,44 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 email: filter
           };
         if(emailRegex.test(filter)){
-        const url = `${baseUrl}/tracker/invite`;
-        try {
-            const { data, error } = await myFetch(url, {
-                method: 'POST',
-                body: JSON.stringify(formData),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            });
-            if (error) {
-                console.error('Error fetching data:', error);
-                showToast('error',error.message.charAt(0).toUpperCase() + error.message.substring(1));
-                setFilter("");
-            } else {
-                console.log(data.user.id);
-                setId(data.user.id);
-                // setData(data);
-            }
-        } catch (err) {
-            console.error('Fetch failed:', err);
+            
+        // try{
+        //     const result= await createNewAccess(formData);
+        // }catch(error){
+
+        // }
+        const result= await createNewAccess(formData);
+        if(result){
+            setId(result.user.id);
         }
+        
+        // try {
+        //     const { data, error } = await myFetch(url, {
+        //         method: 'POST',
+        //         body: JSON.stringify(formData),
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //     });
+        //     if (error) {
+        //         console.error('Error fetching data:', error);
+        //         showToast('error',error.message.charAt(0).toUpperCase() + error.message.substring(1));
+        //         setFilter("");
+        //     } else {
+        //         console.log(data.user.id);
+        //         setId(data.user.id);
+        //         // setData(data);
+        //     }
+        // } catch (err) {
+        //     console.error('Fetch failed:', err);
+        // }
         } else {
             showToast("error", "Enter Valid Name or Email");
             setFilter('');
             setIsClicked(false);
             
         }
+
         // setId("");
         }
         const saveShareInvite = (id: string, name: string, email:string) => {
@@ -190,29 +194,38 @@ const ShareModal: React.FC<ShareModalProps> = ({
             
             if (id && isClicked) {
                 shareInvite();
+                if(closeShareModal)
                 closeShareModal();
             }
         }, [id, isClicked]);
+        useEffect(() => {
+            if (error) {
+              console.error('API Error:', error); // This logs the error from `useApi`'s state.
+              showToast('error', error.message || 'An error occurred'); // Display error in toast
+            }
+          }, [error]);  
+        
   return (
-    <div className={styles.innerModal}>
-                        <div className={styles.shareHead}>Share Tracker</div>
+    <div className="flex flex-col w-[500px] gap-[var(--spacing-sm)] justify-center bg-[var(--primary-foreground)] p-5 rounded-[4px]" style={{boxShadow:"var(--elevation-medium)"}}>
+                        <div className="font-medium text-[var(--primary-color)]">Share Tracker</div>
                         {/* <div className={styles.bar}></div> */}
                         {/* <div className={styles.linkCopy}>
                             <div className={styles.link}>{currentUrl}</div>
                             <div className={styles.copy} onClick={copyURL}>Copy link</div>
                         </div> */}
-                        <div className={styles.inviteAccess}>
+                        <div className="flex gap-1 border border-[var(--border-color)] rounded-[4px] items-stretch">
                         <div className={styles.accountImg}>
                             <Image src={Account} alt="account" />
                         </div>
                             <div className={styles.inputArea}>
                                 <input type="text" 
+                                className='w-full border-0 text-[var(--primary-text-color)] outline-none bg-inherit p-2'
                                 value={filter}
                                 placeholder='Invite others by email or name' onChange={handleFilterChange} />
                             </div>
                         </div>
                         {filter?.length > 0 && filteredData?.length > 0 && drop &&
-                      <div className={styles.dropdown}>
+                      <div className="relative w-full inline-block">
                           <div className={styles.dropdownContent}>
                               {filteredData.map((item: any) => (
                                   <div key={item?.id} className={styles.dropdownItem} onClick={() => saveShareInvite(item?.id, item?.aliasName, item?.email)}>
@@ -222,9 +235,11 @@ const ShareModal: React.FC<ShareModalProps> = ({
                           </div>
                       </div>}
                             
-                        <div className={styles.buttons} >
-                            <button className={styles.send} onClick={shareInvites}>Send Invite</button>
-                            <button className={styles.cancel} onClick={closeShareModal}>Cancel</button>
+                        <div className="flex gap-3 flex-row-reverse" >
+                            {/* <button className={styles.send} onClick={shareInvites}>Send Invite</button> */}
+                            <Button className='text-white' onClick={shareInvites}>Send Invite</Button>
+                            {/* <button className={styles.cancel} onClick={closeShareModal}>Cancel</button> */}
+                            <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]" onClick={closeShareModal}>Cancel</Button>
                         </div>
                     </div>
   )

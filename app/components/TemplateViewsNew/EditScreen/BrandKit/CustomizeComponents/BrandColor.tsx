@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import styles from './brandcolor.style.module.css'
 import ColorPicker from './ColorPicker';
-
+import { AllEventsType, EventsType } from '@/types/alleventtype';
+import { usePathname } from 'next/navigation';
 
 interface Props {
     extractedColors: string[]
@@ -10,22 +11,26 @@ interface Props {
     flex: boolean;
     setPageBgColor?: (value: string) => void
     pageBgColor?: string;
-    setCardBgColor? :(value : string)=>void
+    setCardBgColor?: (value: string) => void
+    clickable: boolean;
+    prefilledEvent?: EventsType | null
 }
 
-const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex, setPageBgColor, pageBgColor,setCardBgColor }: Props) => {
-
+const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex, setPageBgColor, pageBgColor, setCardBgColor, clickable, prefilledEvent }: Props) => {
     const [color, setColor] = useState('#2c68f6');
     const [selectedColorIndex, setSelectedColorIndex] = useState(0);
-
-    const handleSelectColor = (index: number, color : any) => {
+    const pathname = usePathname();
+    const pathName = pathname.split("/")[2];
+console.log("pathname",pathName)
+    const handleSelectColor = (index: number, color: any) => {
         setSelectedColorIndex(index)
         const rgbaColor = hexToRgba(color, 0.1);
-        if(setPageBgColor){
-            setPageBgColor(rgbaColor);    
+        if (setPageBgColor) {
+            setPageBgColor(rgbaColor);
         }
-        if(setCardBgColor){
+        if (setCardBgColor) {
             setCardBgColor(color)
+            // setCardBgColor(rgbaColor)
         }
     }
     const hexToRgba = (hex: string, opacity: number) => {
@@ -47,54 +52,71 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
         return `rgba(${r}, ${g}, ${b}, ${opacity})`;
     }
     useEffect(() => {
-        setColor(extractedColors[selectedColorIndex]);
+        if (clickable) {
+            setColor(extractedColors[selectedColorIndex]);
+        }
     }, [selectedColorIndex])
 
+    useEffect(() => {
+        if (extractedColors.length > 0 && setPageBgColor) {
+            if (setPageBgColor && !prefilledEvent) {
+                setPageBgColor(hexToRgba(extractedColors[0], 0.1));
+            }
+        }
+    }, [extractedColors, setPageBgColor]);
 
-    const handleChange = (color: any) => {
-        setValueUpdated(true)
-        setColor(color.hex);
-        const updatedColors = [...extractedColors];
-        if (selectedColorIndex !== null) {
-            updatedColors[selectedColorIndex] = color.hex;
-            setExtractedColors(updatedColors);
-        }
-        const rgbaColor = hexToRgba(color.hex, 0.1);
-        if(setPageBgColor){
-            setPageBgColor(rgbaColor);    
-        }
-        if(setCardBgColor){
-            setCardBgColor(color)
-        }
-    };
+    // const handleChange = (color: any) => {
+    //     setValueUpdated(true)
+    //     setColor(color.hex);
+    //     const updatedColors = [...extractedColors];
+    //     if (selectedColorIndex !== null) {
+    //         updatedColors[selectedColorIndex] = color.hex;
+    //         setExtractedColors(updatedColors);
+    //     }
+    //     const rgbaColor = hexToRgba(color.hex, 0.1);
+    //     if(setPageBgColor){
+    //         setPageBgColor(rgbaColor);    
+    //     }
+    //     if(setCardBgColor){
+    //         setCardBgColor(color)
+    //     }
+    // };
 
-    const handleHexInputChange = (hexColor: string) => {
-        setValueUpdated(true);
-        setColor(hexColor);
-        const updatedColors = [...extractedColors];
-        if (selectedColorIndex !== null) {
-            updatedColors[selectedColorIndex] = hexColor;
-            setExtractedColors(updatedColors);
-        }
-    };
+    // const handleHexInputChange = (hexColor: string) => {
+    //     setValueUpdated(true);
+    //     setColor(hexColor);
+    //     const updatedColors = [...extractedColors];
+    //     if (selectedColorIndex !== null) {
+    //         updatedColors[selectedColorIndex] = hexColor;
+    //         setExtractedColors(updatedColors);
+    //     }
+    // };
 
     return (
         <div className={`${styles.body} ${!flex ? styles.columnbody : ""}`}>
             <div className={`${styles.headingContainer} ${!flex ? styles.colheadingcontainer : ""}`}>
                 <div className={styles.heading}>Brand Colour</div>
-                <div className={styles.subheading}>Select or customise your brand colour</div>
+                {
+                    pathName !== "dashboard" &&(<div className={styles.subheading}>Select or customise your brand colour</div>)
+                }
+              
             </div>
             <div className={styles.editContainer}>
                 <div className={styles.colorList}>
-                    {extractedColors.map((color, key) => (
-                        <div key={key} className={`${styles.extractedColorOutter} ${key === selectedColorIndex ? styles.activeColor : ""}`} style={{ backgroundColor: key === selectedColorIndex ? "transparent" : color, borderColor: key === selectedColorIndex ? color : "transparent" }} onClick={() => handleSelectColor(key, color)}>
+                    {clickable ? extractedColors.map((color, key) => (
+                        <div key={key} className={`${styles.extractedColorOutter} ${key === selectedColorIndex ? styles.activeColor : ""}`}
+                            style={{ backgroundColor: key === selectedColorIndex ? "transparent" : color, borderColor: key === selectedColorIndex ? color : "transparent" }} onClick={() => handleSelectColor(key, color)}>
                             {key === selectedColorIndex && <div className={styles.extractedColorInner} style={{ backgroundColor: color }}></div>}
                         </div>
-                    ))}
+                    )) :
+                        extractedColors.map((color, key) => (
+                            <div key={key} className={styles.extractedColorOutter} style={{ backgroundColor: color, cursor:"default" }}></div>
+                        ))
+                    }
                 </div>
-                <div className={styles.pickColorContainer}>
+                {/* <div className={styles.pickColorContainer}>
                     <ColorPicker heading='Pick Colour' extractedColors={extractedColors} color={color} handleChange={handleChange} handleHexInputChange={handleHexInputChange} />
-                </div>
+                </div> */}
             </div>
         </div>
     )

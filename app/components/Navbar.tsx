@@ -18,6 +18,9 @@ import BellIcon from "/public/bell.svg";
 import dotMenuIcon from "/public/internal/dotMenus.svg";
 import promoteIcon from "/public/internal/promote.svg";
 import prospectIcon from "/public/internal/prospect.svg";
+import { useRouter } from "next/navigation";
+import ArrowDownIcon from "/public/DownArrow.svg";
+import ArrowUpIcon from "/public/UpArrow.svg";
 interface UserDetail {
   firstname: string;
   email: string;
@@ -41,6 +44,9 @@ const Navbar = () => {
   const { user, signOut } = useAuthContext();
   const { theme, toggleTheme } = useTheme();
   const [title, setTitle] = useState("");
+  const router = useRouter();
+  const pathname = usePathname();
+  const [shouldShowBackButton, setShouldShowBackButton] = useState(false);
 
   const [showSidebar, setShowSidebar] = useState(false);
   const iconClass = theme === "light" ? "icons_light" : "icon";
@@ -58,7 +64,7 @@ const Navbar = () => {
     if (user) setUserDetail(user);
   }, [user]);
 
-  console.log("Navbar",user,userDetail)
+  console.log("Navbar", user, userDetail);
 
   const toggleDropdown = () => {
     profilectas.setIsOpen(!profilectas.isOpen);
@@ -133,8 +139,30 @@ const Navbar = () => {
     if (currPath.startsWith("/widget/dashboard")) {
       setTitle("Dashboard");
     }
+    if (currPath.startsWith("/widget/events/manage")) {
+      setTitle("Manage");
+    }
   }, [currPath]);
-  console.log(userDetail)
+  console.log(userDetail);
+
+  useEffect(() => {
+    const referrer = document.referrer;
+
+    if (!referrer || !referrer.includes(window.location.origin)) {
+      setShouldShowBackButton(false);
+    } else {
+      setShouldShowBackButton(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      window.location.origin === document.referrer ||
+      document.referrer === ""
+    ) {
+      setShouldShowBackButton(true);
+    }
+  }, [pathname]);
 
   return (
     <div className={`${styles.navbar} ${theme === "dark" && styles.dark}`}>
@@ -155,11 +183,34 @@ const Navbar = () => {
           />
         )}
         {/* {pathName === "internal" ? ( */}
-          <div className={styles.page_title}>
-            {currPath.startsWith("/widget/edit") && <Link href={"/widget/add"} className={styles.backBtn}>{`<-`}</Link>}
-            {title.length !== 0 && title}</div>
+        {/* <div className={styles.page_title}>
+            {currPath.startsWith("/widget/edit") && <Link href={"/widget/add"} className={styles.backBtn}>
+            <BackIcon/>
+            </Link>}
+            {title.length !== 0 && title}</div> */}
+
+        {/* <div className={styles.page_title}>
+          {shouldShowBackButton && (
+            <button className={styles.backBtn} onClick={() => router.back()}>
+              <BackIcon />
+            </button>
+          )}
+          {title.length !== 0 && title}
+        </div> */}
+
+        <div className={styles.page_title}>
+          {shouldShowBackButton &&
+            (currPath.startsWith("/widget/edit") ||
+              currPath.startsWith("/widget/add")) && (
+              <button className={styles.backBtn} onClick={() => router.back()}>
+                <BackIcon />
+              </button>
+            )}
+          {title.length !== 0 && title}
+        </div>
+
         {/* ) : ( */}
-          {/* <Link href="/">
+        {/* <Link href="/">
             <Image
               className={styles.logo}
               src={logo}
@@ -194,7 +245,12 @@ const Navbar = () => {
               onClick={themeSwitchHandler}
               data-name="Switch Theme"
             >
-              <Image src={lightModeIcon} alt="theme" className={iconClass} width={20}/>
+              <Image
+                src={lightModeIcon}
+                alt="theme"
+                className={iconClass}
+                width={20}
+              />
             </div>
           </div>
         )}
@@ -240,21 +296,21 @@ const Navbar = () => {
               {dotMenuCtas.isOpen && (
                 <div
                   className={`${styles.userDropdown} card ${styles.dotmenu_dropdown} `}
-                  style={{ width: "fit-content", padding: '8px' }}
+                  style={{ width: "fit-content", padding: "8px" }}
                 >
                   {/* <Link href="/internal" className=""> */}
-                    <div
-                      className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
-                    >
-                      <Image
-                        src={promoteIcon}
-                        alt="promote"
-                        width={28}
-                        height={28}
-                        className={iconClass}
-                      />
-                      Promote
-                    </div>
+                  <div
+                    className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
+                  >
+                    <Image
+                      src={promoteIcon}
+                      alt="promote"
+                      width={28}
+                      height={28}
+                      className={iconClass}
+                    />
+                    Promote
+                  </div>
                   {/* </Link> */}
                   <div
                     className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
@@ -289,7 +345,7 @@ const Navbar = () => {
         {pathName !== "internal" && (
           <>
             <div
-              className={`${styles.circle} `}
+              className={`${styles.square} `}
               style={{ marginRight: "10px" }}
               onClick={themeSwitchHandler}
               data-name="Switch Theme"
@@ -297,7 +353,7 @@ const Navbar = () => {
               <Image src={lightModeIcon} alt="theme" className={iconClass} />
             </div>
             <Link
-              className={`${styles.circle}`}
+              className={`${styles.square}`}
               style={{ marginRight: "10px" }}
               href={"/internal"}
               data-name="Internal"
@@ -339,6 +395,7 @@ const Navbar = () => {
                 display: "flex",
                 gap: "8px",
                 cursor: "pointer",
+                alignItems: "center",
                 position: "relative",
               }}
               ref={profilectas.dropdownRef}
@@ -362,8 +419,28 @@ const Navbar = () => {
                 </div>
               )}
 
+              <div
+                className={`${styles.iconContainer} ${
+                  profilectas.isOpen
+                    ? styles.iconRotateUp
+                    : styles.iconRotateDown
+                }`}
+              >
+                {profilectas.isOpen ? (
+                  <Image src={ArrowDownIcon} alt="" className={iconClass} />
+                ) : (
+                  <Image src={ArrowUpIcon} alt="" className={iconClass} />
+                )}
+              </div>
+
               {profilectas.isOpen && (
-                <div className={`${styles.userDropdown} card`} style={{padding: '8px', borderRadius: 'var(--border-radius-sm)' }} >
+                <div
+                  className={`${styles.userDropdown}  ${styles.dropdownAnimation} card`}
+                  style={{
+                    padding: "8px",
+                    borderRadius: "var(--border-radius-sm)",
+                  }}
+                >
                   <Link
                     href={
                       pathName === "internal" ? "/internal/profile" : "/profile"
@@ -392,3 +469,21 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+function BackIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      fill="currentColor"
+      viewBox="0 0 16 16"
+      style={{ marginRight: "8px" }}
+    >
+      <path
+        fillRule="evenodd"
+        d="M11.354 1.354a.5.5 0 0 1 0 .707L5.707 7.707H14.5a.5.5 0 0 1 0 1H5.707l5.647 5.646a.5.5 0 0 1-.708.708l-6.5-6.5a.5.5 0 0 1 0-.708l6.5-6.5a.5.5 0 0 1 .708 0z"
+      />
+    </svg>
+  );
+}

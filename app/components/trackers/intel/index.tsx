@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './intel.style.module.css'
+import ToggleBtn from '../../UI/ToggleBtn'
 const index = ({internationalScore,inboundScore, exhibitScore, audienceZone, audienceSpread, audienceSpreadCount, audienceProfile}:any) => {
     const format = ["Hybrid", "In-person", "Virtual", "Offline"]
     const freq=["Annual","Biannual","Queartly"]
@@ -8,108 +9,49 @@ const index = ({internationalScore,inboundScore, exhibitScore, audienceZone, aud
     const key=["Tags","Airport","Animal","Sea","Arson","Cruise","National","Shows"];
     const rate=['2-3','3-4'];
     const score=['1,000-2,000','5,000-10,000'];
+    const commonClasses={
+      filter:`flex flex-col gap-[var(--spacing-sm)] p-3 border border-[var(--border-color)] rounded-[var(--border-radius-sm)]`,
+      filterHeading:`text-[var(--primary-color)] font-medium`,
+      toggleContainer:`p-[12px] border border-[var(--border-color)] flex justify-between items-center gap-[var(--spacing-sm)] rounded-[var(--border-radius-sm)]`,
+    }
     return (
-        <div className={styles.container}>
-           <div className={styles.formatFreq}>
-        <div className={styles.branded}>
-          <div className={styles.formatHead}>
+        <div className="flex flex-col gap-3">
+           <div className="grid grid-cols-2 gap-3" >
+        <div className={commonClasses.toggleContainer}>
+          <div className={commonClasses.filterHeading}>
             Audience Quality Score
           </div>
-          <div className={styles.toggle_container}>
-            <span>
-              <label className={styles.switch}>
-                <input
-                  type="checkbox"
-                  // onChange={() => {}}
-                  // checked={}
-                  defaultChecked
-                  disabled
-                />
-                <span className={`${styles.slider}`}></span>
-              </label>
-            </span>
-          </div>
+          <ToggleBtn isTrue={false}/>
         </div>
-        <div className={styles.branded}>
-          <div className={styles.formatHead}>
+        <div className={commonClasses.toggleContainer}>
+          <div className={commonClasses.filterHeading}>
           Exhibitor Quality Score
           </div>
-          <div className={styles.toggle_container}>
-            <span>
-              <label className={styles.switch}>
-                <input
-                  type="checkbox"
-                  // onChange={() => {}}
-                  // checked={}
-                  defaultChecked
-                  disabled
-                />
-                <span className={`${styles.slider}`}></span>
-              </label>
-            </span>
-          </div>
+          <ToggleBtn isTrue={false}/>
         </div>
-        <div className={styles.branded}>
-          <div className={styles.formatHead}>
+        <div className={commonClasses.toggleContainer}>
+          <div className={commonClasses.filterHeading}>
           Audience Profile
           </div>
-          <div className={styles.toggle_container}>
-            <span>
-              <label className={styles.switch}>
-                <input
-                  type="checkbox"
-                  // onChange={() => {}}
-                  // checked={}
-                  defaultChecked
-                  disabled
-                />
-                <span className={`${audienceProfile ? styles.sliderBranded : styles.slider}`}></span>
-              </label>
-            </span>
-          </div>
+          <ToggleBtn isTrue={audienceProfile}/>
         </div>
-
-        <div className={styles.branded}>
-          <div className={styles.formatHead}>
+        <div className={commonClasses.toggleContainer}>
+          <div className={commonClasses.filterHeading}>
           Audience Zone
           </div>
-          <div className={styles.toggle_container}>
-            <span>
-              <label className={styles.switch}>
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  disabled
-                />
-                <span className={`${audienceZone ? styles.sliderBranded : styles.slider}`}></span>
-              </label>
-            </span>
-          </div>
+          <ToggleBtn isTrue={audienceZone}/>
         </div>
-
-        <div className={styles.branded}>
-          <div className={styles.formatHead}>
+        <div className={commonClasses.toggleContainer}>
+          <div className={commonClasses.filterHeading} style={{display:"flex", gap:"4px"}}>
           Audience Spread
             {audienceSpreadCount > 0 &&
-              <span className={styles.selected_no_filters}>{audienceSpreadCount}</span>
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">{audienceSpreadCount}</span>
             }
           </div>
-          <div className={styles.toggle_container}>
-            <span>
-              <label className={styles.switch}>
-                <input
-                  type="checkbox"
-                  // onChange={() => {}}
-                  // checked={} audienceSpread
-                  defaultChecked
-                  disabled
-                />
-                <span className={`${audienceSpread ? styles.sliderBranded : styles.slider}`}></span>
-              </label>
-            </span>
-          </div>
+          {/* <div className={styles.toggle_container}>
+            <ToggleBtn isTrue={audienceSpread}/>
+          </div> */}
         </div>
-      
                 
             </div>
         </div>

@@ -5,7 +5,7 @@ import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
 import person1 from "@/public/person1.svg";
 import person2 from "@/public/person2.svg";
-import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype' 
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 
 interface FontSettings {
     fontFamily: string;
@@ -23,6 +23,11 @@ interface CardProps {
         body: FontSettings;
     };
     fetchedEvent?: PrefilledAddedEventsType
+    demoEventName:string;
+    demoBanner:string
+    demoDescription:string
+    demoLocation:string
+    demoDate:string
 }
 
 const EventCard2 = ({
@@ -30,16 +35,21 @@ const EventCard2 = ({
     cardBorderRadius = 20,
     fontSettings = {
       heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bolder" },
-      subheading: { fontFamily: "arial", fontSize: 16, fontColor: "#000000", fontWeight: "bolder" },
+      subheading: { fontFamily: "arial", fontSize: 14, fontColor: "#000000", fontWeight: "bolder" },
       body: { fontFamily: "arial", fontSize: 12, fontColor: "#000000", fontWeight: "bolder" }
-    },fetchedEvent
+    },fetchedEvent,
+    demoEventName,
+    demoBanner,
+    demoDescription,
+    demoLocation,
+    demoDate
 }: CardProps) => {
 
     const formatDate = (date: string) => {
         const dateObj = new Date(date);
     
         const day = dateObj.getDate();
-        const month = dateObj.toLocaleString('en-US', { month: 'long' });
+        const month = dateObj.toLocaleString('en-US', { month: 'short' });
         const year = dateObj.getFullYear();
     
         // Function to get the appropriate suffix for the day
@@ -51,27 +61,36 @@ const EventCard2 = ({
     
         return `${getDayWithSuffix(day)} ${month} ${year}`;
     };
+    const formatLocation = (event : any) => {
+        if (event?.eventFormat === "Virtual") {
+            return "Virtual";
+        }
+    
+        const location = `${event?.cityName}, ${event?.countryName}`;
+        return location.length > 20 ? `${location.slice(0, 17)}...` : location;
+    };
     return (
         <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
-            <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name : "Join Gifts World Expo 2024"}</div>
+            <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <LocationIcon color={fontSettings.subheading.fontColor}/>
-                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName : "Corpus Christi, USA"}</div>
+                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent ? formatLocation(fetchedEvent) : demoLocation}</div>
                 </div>
                 <div className={styles.dateContainer}>
                     <DateIcon color={fontSettings.subheading.fontColor} />
-                    <div className={styles.date} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : "1st April 2024 - 3rd April 2024"}</div>
+                    <div className={styles.date} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
                 </div> 
             </div>
-            <Image width={100} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : placeholder2} alt='placeholder' className={styles.banner} />
+            <Image width={280} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.banner} />
             <div className={styles.dividerLine}></div>
             <div className={styles.type_peopleContainer}>
                 <div className={styles.typeContainer}>
-                    <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>Tradeshow</div>
-                    <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>Attending</div>
+                <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType ==="MAIN"?"Main Event":fetchedEvent?.eventType ==="SUB"?"Side Event":"Main Event"}</div>
+                    <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.event_type: fetchedEvent?.eventType === "SUB" ?fetchedEvent.participationType ==="Brunch/Lunch/Dinner"?"Bru../Lun../Din..":fetchedEvent.participationType:"Tradeshow"}</div>
+                    <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.eventFormat: fetchedEvent?.eventType==="SUB" ?fetchedEvent.eventFormat:"Attending"}</div>
                 </div>
-                <div className={styles.circles}>
+                {/* <div className={styles.circles}>
                     <div className={styles.circle} data-name="John Doe">
                         <Image className={styles.image} src={person1} alt="person1" />
                     </div>
@@ -92,7 +111,7 @@ const EventCard2 = ({
                     >
                         <Image className={styles.image} src={person2} alt="person2" />
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     )

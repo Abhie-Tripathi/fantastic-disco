@@ -3,7 +3,7 @@ import { useState } from "react";
 
 const useHashtagsGenerator = () => {
   const [loadingState, setIsLoading] = useState<boolean>(false);
-  const [generatedHashtags, setHashtags] = useState<string[]>([]);
+  const [generatedHashtags, setGeneratedHashtags] = useState<string[]>([]);
 
   const generateHashtags = async (eventname: string, description: string) => {
     try {
@@ -15,10 +15,10 @@ const useHashtagsGenerator = () => {
       const response = result.response;
       const text = await response.text();
       const hashtagsArray = text.match(/#\w+/g) || [];
-      setHashtags(hashtagsArray);
+      setGeneratedHashtags(hashtagsArray);
     } catch (error) {
       console.error("Error generating hashtags:", error);
-      setHashtags([]);
+      setGeneratedHashtags([]);
     } finally {
       setIsLoading(false);
     }
