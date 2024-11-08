@@ -13,6 +13,7 @@ import { numberWithCommas } from "@/utils/formater";
 import { useInView } from "react-intersection-observer";
 import CircularProgress from "../gtmDetailRelevanceScore/circularProgress";
 import { Badge } from "../ui/badge";
+import Link from "next/link";
 interface Props {
   eventDetails: GTMEventDetail;
   scrollSection: string;
@@ -85,6 +86,7 @@ export const EventInfoAndMap = ({
     tags,
     // tickets,
     entryType,
+    "10TimesUrl": websiteUrl,
   } = eventDetails;
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
@@ -167,10 +169,16 @@ export const EventInfoAndMap = ({
                   {capitalize(entryType ?? "")}
                 </span>
               ) : (
-                <span className="text-[#666666] text-sm flex items-center gap-2">
-                  <CircleSlash width={15} height={15} />
-                  No data available
-                </span>
+                websiteUrl ? (
+                  <Link href={`https://10times.com/${websiteUrl}`} target="_blank" className="text-[var(--primary-color)] cursor-pointer font-medium">
+                    Click Here
+                  </Link>
+                ) : (
+                  <span className="text-[#666666] text-sm flex items-center gap-2">
+                    <CircleSlash width={15} height={15} />
+                    No data available
+                  </span>
+                )
               )}
               {/* {entryType && tickets && tickets.length > 0 && (
                 <DetailDialog
