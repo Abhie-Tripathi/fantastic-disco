@@ -1,19 +1,10 @@
 import React, { useState, useRef, RefObject, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import YourEventCard from './YourEventCard'
-import DropDown from './commondropdown/DropDown'
 import styles from './internal.style.module.css'
 import TimelineItem from '@/app/components/employee/listView/TimelineItem'
 import { convertToCustomFormat, convertToYYYYMMDD } from "@/utils/dateFormat";
 import CloseIcon from "/public/internal/cross.svg";
-import DateRange from "@/app/components/dropdown/DateRange";
-import {
-    Button,
-    MenuTrigger,
-    Popover,
-  } from "react-aria-components";
-import DropIcon from "/public/internal/drop_down_angle.svg";
-import eventData from '@/public/data/demoEvent.json'
 import { useTheme } from '@/context'
 import { eventDataType } from "../../../types/coordinateEventType";
 import { myFetch } from "@/utils/myFetch";
@@ -29,7 +20,7 @@ import InterestStatusSelector from '@/components/coordinate/interestStatus'
 import InterestTypeSelector from '@/components/coordinate/interestType'
 import { useCoordinateService } from '@/services/coordinateService'
 import { useSearchParams } from 'next/navigation'
-import { useQuery } from '@tanstack/react-query'
+import { useFilterState } from '@/hooks/useFilterState'
 
 interface Props{
     handleModal : (id: string,enquiryId:string) => void,
@@ -46,25 +37,8 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen,set
 
   const searchParams = useSearchParams();
   const coordinateService = useCoordinateService();
+  const { setFilter } = useFilterState();
 
-  const {
-    data: eventData,
-    error,
-    isLoading,
-    refetch,
-  } = useQuery<
-    | eventDataType[]
-    | undefined
-  >({
-    queryKey: ["events", searchParams.toString()],
-    queryFn: () =>
-    coordinateService.getEventsWithSearchParams(searchParams.toString()),
-    enabled:
-      !!searchParams.toString(),
-    refetchOnWindowFocus: false,
-    gcTime: 0,
-    staleTime: 0,
-  });
    const buttonRef = useRef(null);
     let prevDate: any = null;
     const { theme } = useTheme();
@@ -111,6 +85,10 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen,set
     const searchHandler = useCallback(() => {
       applyFilters();
     }, []);
+
+    const handlePageChange = (page: number) => {
+      setFilter("offset", ((page - 1) * 10).toString());
+    };
       // useEffect(() => {
       //   const modalStatus = document.body.getAttribute("popover-status");
     
@@ -200,40 +178,69 @@ const Internal = ({handleModal, handleShortlistModal, cardUpdated, modalOpen,set
         };
         getCordinateList();
       }, []);
-    const fetchData = async () => {
-        console.log('fetching data... page=', page);
+    // const fetchData = async () => {
+    //     console.log('fetching data... page=', page);
         
-        if(page > 0) {
-            let apiUrl="";
-            try {
-            apiUrl = `${baseUrl}/userInterest/enquiry?status=${statusType}&limit=10&offset=${(page - 1) * 10}` +
-            (participant.length > 0 ? `&interest=${participant.toUpperCase()}` : '') +
-            (duration.length !== 0 ? `&duration=${duration}` : '') +
-            `&source=internal` + (eventId ? `&eventId=${eventId}` : '');
-            const apiData = await myFetch(apiUrl, {
-                method: "GET",
-                headers: headers,
-            });
-            if(apiData.data) {
-                if(apiData.data.enquiryData.length===0 && page===1){
-                    setEventData1([]);
-                }
-                if(page==1){
-                    setEventData1(apiData.data.enquiryData);
-                }else if(page>1){
-                    setEventData1(prevData => [...prevData, ...apiData.data.enquiryData]);
-                }
-                if(apiData.data.enquiryData.length < 10){
-                    setNoMoreData(true);}
-            }
-            setFilterChanged(false);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            } finally {
-                setIsLoaded(true);
-            }
-        }
-    };
+    //     if(page > 0) {
+    //         let apiUrl="";
+    //         try {
+    //         apiUrl = `${baseUrl}/userInterest/enquiry?status=${statusType}&limit=10&offset=${(page - 1) * 10}` +
+    //         (participant.length > 0 ? `&interest=${participant.toUpperCase()}` : '') +
+    //         (duration.length !== 0 ? `&duration=${duration}` : '') +
+    //         `&source=internal` + (eventId ? `&eventId=${eventId}` : '');
+    //         const apiData = await myFetch(apiUrl, {
+    //             method: "GET",
+    //             headers: headers,
+    //         });
+    //         if(apiData.data) {
+    //             if(apiData.data.enquiryData.length===0 && page===1){
+    //                 setEventData1([]);
+    //             }
+    //             if(page==1){
+    //                 setEventData1(apiData.data.enquiryData);
+    //             }else if(page>1){
+    //                 setEventData1(prevData => [...prevData, ...apiData.data.enquiryData]);
+    //             }
+    //             if(apiData.data.enquiryData.length < 10){
+    //                 setNoMoreData(true);}
+    //         }
+    //         setFilterChanged(false);
+    //         } catch (error) {
+    //             console.error("Error fetching data:", error);
+    //         } finally {
+    //             setIsLoaded(true);
+    //         }
+    //     }
+    // };
+
+    const fetchData = async () => {
+      console.log('fetching data... page=', page);
+      
+      if(page > 0) {
+          let apiUrl="";
+          try {
+            let offset: number = (page - 1) * 10;
+            const apiData = await coordinateService.fetchProjects({ offset, searchParams });
+          if(apiData?.enquiryData) {
+              if(apiData.enquiryData.length===0 && page===1){
+                  setEventData1([]);
+              }
+              if(page==1){
+                  setEventData1(apiData.enquiryData);
+              }else if(page>1){
+                  setEventData1(prevData => [...prevData, ...apiData.enquiryData]);
+              }
+              if(apiData.enquiryData.length < 10){
+                  setNoMoreData(true);}
+          }
+          setFilterChanged(false);
+          } catch (error) {
+              console.error("Error fetching data:", error);
+          } finally {
+              setIsLoaded(true);
+          }
+      }
+  };
   
    
 
@@ -445,7 +452,7 @@ useEffect(()=>{
     </div>
 
     {/* Temporary Button */}
-    <div>
+    <div className="flex justify-end my-0 mx-[85px]">
       <Button2
         size="lg"
         onClick={searchHandler}
@@ -456,7 +463,7 @@ useEffect(()=>{
     </div>
     
     <div className={styles.timelineContainer} >
-    {eventData1.map((item, index) => {
+    {eventData1?.map((item, index) => {
         // Check if current event's date is different from previous event's date
         const showDate = item.startDate !== prevDate;
         // Update previous date
@@ -492,7 +499,7 @@ useEffect(()=>{
     })}
 </div>
 {noMoreData ? 
-        (eventData1.length===0?<div style={{textAlign:"center"}}>No results containing all your search terms were found.</div>:<></>) : <Loading />
+        (eventData1?.length===0?<div style={{textAlign:"center"}}>No results containing all your search terms were found.</div>:<></>) : <Loading />
     }
 </div>
 </div>

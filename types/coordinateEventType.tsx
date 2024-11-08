@@ -18,3 +18,8 @@ export interface eventDataType {
     upvote: any;
     enquiryActivity: any;
 }
+
+export interface CoordinateListResponse {
+    totalCount: number;
+    enquiryData: eventDataType[];
+  }

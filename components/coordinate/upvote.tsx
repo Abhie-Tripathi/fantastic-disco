@@ -22,7 +22,7 @@ export default function UpvoteSelector() {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
   useEffect(() => {
-    const currentFilter = getLocalFilterValue("votedBy");
+    const currentFilter = getLocalFilterValue("liked");
     setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
   }, [searchParams, getLocalFilterValue]);
 
@@ -43,7 +43,7 @@ export default function UpvoteSelector() {
   };
 
   const handleApply = () => {
-    setLocalFilter("votedBy", selectedStatuses.join(","));
+    setLocalFilter("liked", selectedStatuses.join(","));
     setIsOpen(false);
   };
 
