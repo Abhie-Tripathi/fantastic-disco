@@ -135,7 +135,6 @@ const LocationDropdown = ({
     : [];
     const cityNames = selectedCity ? Object.entries(selectedCity).map(([id, name]) => name):[];
     const zoneNames = selectedZone ? Object.entries(selectedZone).map(([id, name]) => name):[];
-    console.log(countryNames);
     
     setState([...countryNames, ...cityNames, ...zoneNames])
   }, [selectedCity, selectedCountry, selectedZone]);
@@ -150,7 +149,6 @@ const LocationDropdown = ({
   };
 
   const addLocationHandler = (type: string, id: string, name: string) => {
-    console.log(type);
     
     if (type.toLowerCase() === 'city' && setSelectedCity) {
       setSelectedCity((prev) => ({...prev, [id]: name }));  
@@ -167,7 +165,6 @@ const LocationDropdown = ({
     //   setSelectedLocations((prev) => [...prev, name]);
     // }
     else if(type.toLowerCase() === 'state') {
-      console.log(name);
       
         setSelectedZone?.((prev) => ({...prev, [id]: name }));;
         setSelectedLocations((prev) => [...prev, name]);
@@ -191,9 +188,6 @@ const LocationDropdown = ({
     //   setSelectedZone((prev) => prev.filter((item) => item !== id));
     // }
   };
-console.log(selectedCity);
-console.log(selectedCountry);
-console.log(selectedZone);
 
   return (
     <div>
