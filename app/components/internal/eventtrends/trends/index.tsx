@@ -52,6 +52,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
   const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
+  const [selectedState, setSelectedState] = useState<SelectedLocation>({});
   const [selectedDateRange, setSelectedDateRange] = useState<string[]>([]);
 
   const [selectedEventRank, setSelectedEventRank] = useState<number[]>([
@@ -304,6 +305,8 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                     state={selectedLocations}
                     setState={setSelectedLocations}
                     onClose={close}
+                    selectedZone={selectedState}
+                    setSelectedZone={setSelectedState}
                     selectedCity={selectedCity}
                     setSelectedCity={setSelectedCity}
                     selectedCountry={selectedCountry}
