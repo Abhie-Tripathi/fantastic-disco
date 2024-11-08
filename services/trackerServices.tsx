@@ -1,6 +1,8 @@
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
 import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes } from '@/types/trackers';
+import { EventsAdapter } from "@/adapters/eventsAdapter";
+import {EventCount} from "@/types/events";
 import { EventTableType } from '@/types/ListViewTable';
 export const useTrackerServices = () => {
     const api = useApi();
@@ -109,7 +111,6 @@ export const useTrackerServices = () => {
         }
       );
     };
-    
     const saveNewEvent=(formData:any)=>{
         return api.request(
           `${endpoints.tracker.saveEvent}`,
@@ -128,8 +129,36 @@ export const useTrackerServices = () => {
           }
         )
     }
+    const getMapViewData=async(trackerId:string, currentZoomGroup:string)=>{
+        const response = await api.request<EventCount[]>(
+          `${endpoints.tracker.commonUrl}/${trackerId}/events?limit=20&offset=0&type=active&groupBy=${currentZoomGroup}`,
+          {
+            method: "GET",
+          }
+        );
+        return EventsAdapter.adaptEventCountResponse(response);
+    }
+    const getEventsLatLong = async (trackerId:string,searchParams:string) => {
+      const response = await api.request(`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=20&offset=0&type=active&${searchParams}`, {
+        method: "GET",
+      });
+      return EventsAdapter.adaptResponse(response, new URLSearchParams("view=map"));
+    };
+    // const getEventsCount = async (searchParams: string) => {
+    //   const params = new URLSearchParams(searchParams);
+    //   const adaptedParams = EventsAdapter.adaptEventCountRequestParam(params);
+    //   const response = await api.request<EventCount[]>(
+    //     `${endpoints.event.count}`,
+    //     {
+    //       method: "GET",
+    //       params: adaptedParams,
+    //     }
+    //   );
+    //   return EventsAdapter.adaptEventCountResponse(response);
+    // };
     return {
       createTracker,
+      getMapViewData,
       editTracker,
       getShareAccess,
       editAccess,

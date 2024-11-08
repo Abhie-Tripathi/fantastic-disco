@@ -274,9 +274,10 @@ console.log(searchParams.get("view"));
       router.replace("/internal/trackers");
     }
   };
-
   const createQueryString = () => {
     const filters = trackerDetail.filterValue;
+    console.log(trackerDetail.filterValue);
+    
     const queries: { [key: string]: any } = {};
 
     // if (filters?.eventCategory) {
@@ -368,11 +369,36 @@ console.log(searchParams.get("view"));
     // if (filters?.eventSize) {
     //   queries.eventSize = filters.eventSize;
     // }
+    if (trackerDetail.filterValue?.eventType) {
+      queries.eventTypes = trackerDetail.filterValue.eventType.join(',');
+    }
+    if (trackerDetail.filterValue?.eventFormat) {
+      queries.eventFormats = trackerDetail.filterValue.eventFormat;
+    }
+    if (trackerDetail.filterValue?.eventStatus) {
+      queries.status = trackerDetail.filterValue.eventStatus;
+    }
+    if (trackerDetail.filterValue?.eventEntry) {
+      queries.eventType = trackerDetail.filterValue.eventEntry;
+    }
+    if(trackerDetail.filterValue?.eventRating){
+      queries.ratings = trackerDetail.filterValue.eventRating;
+    }
+    if(trackerDetail.filterValue?.maturity){
+      queries.maturity = trackerDetail.filterValue?.maturity;
+    }
+    console.log(trackerDetail);
     
     let query = new URLSearchParams(queries);
+    console.log(query.toString());
+    
     const finalQueryString = query.toString();
     setUrlQueryString(finalQueryString);
   };
+  useEffect(()=>{
+    if(view==="map")
+    createQueryString();
+  },[view])
  useEffect(()=>{
   let toggleOpend:Toggle ={};
   if(trackerDetail?.filterValue?.userType)
@@ -421,7 +447,22 @@ console.log(searchParams.get("view"));
   const newUrl = `${pathname}?${params.toString()}`;
   router.replace(newUrl);
 };
- console.log(view);
+const cityIds = trackerDetail?.filterValue?.locationIds?.city?.length > 0 
+  ? trackerDetail.filterValue.locationIds.city.map(city => Object.keys(city)[0]) 
+  : [];
+
+const countryIds = trackerDetail?.filterValue?.locationIds?.country?.length > 0 
+  ? trackerDetail.filterValue.locationIds.country.map(country => Object.keys(country)[0]) 
+  : [];
+
+const stateIds = trackerDetail?.filterValue?.locationIds?.state?.length > 0 
+  ? trackerDetail.filterValue.locationIds.state.map(state => Object.keys(state)[0]) 
+  : [];
+
+const locationIds = [...cityIds, ...countryIds, ...stateIds];
+console.log(locationIds);
+
+ console.log(params);
  
   return (
     <div className="flex w-[calc(100vw-134px)]">
@@ -596,6 +637,8 @@ console.log(searchParams.get("view"));
             <div>
               <Suspense fallback={<Loading />}>
                 <Map source="tracker" searchParams="categories=baby-kids%2Cautomotive&locationIds=226e11ef-32fc-5484-9843-7087fdfb413d%2C01ac0d6d-a090-591f-957f-66aece6b72fc&view=map&eventTypes=tradeshows%2Cconferences&eventFormats=offline%2Chybrid&active_gte=2024-11-01T00%3A00%3A00.000Z&active_lte=2025-10-31T00%3A00%3A00.000Z&status=active%2Ccancelled"
+                trackerId={params.trackerId}
+                locations={locationIds}
                  />
                 {/* <Map/> */}
               </Suspense>

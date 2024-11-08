@@ -33,6 +33,7 @@ import MapPopup from "./popup";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import ZeroState from "@/app/components/zerostate";
 import { useTheme } from "@/context";
+import { useTrackerServices } from "@/services/trackerServices";
 
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
@@ -70,9 +71,10 @@ interface MapProps {
 
 type ZoomGroup = "country" | "state" | "city" | "event";
 
-export default function MapComponent({ source, searchParams, locations }: {string, MapProps}) {
+export default function MapComponent({ source, searchParams, locations, trackerId }: {string, MapProps, string}) {
   const {theme} = useTheme();
   const mapRef = useRef<MapRef>(null);
+  const {getMapViewData}=useTrackerServices();
   const { getFilterValue } = useFilterState();
   const [viewport, setViewport] = useState<ViewState>({
     latitude: 20.5937,
@@ -82,6 +84,8 @@ export default function MapComponent({ source, searchParams, locations }: {strin
     pitch: 0,
     padding: { top: 0, bottom: 0, left: 0, right: 0 },
   });
+  console.log(locations);
+  
   const [events, setEvents] = useState<MapEvents[]>([]);
   const [popupInfo, setPopupInfo] = useState<Event | null>(null);
   const [showEventList, setShowEventList] = useState(false);
@@ -100,7 +104,7 @@ export default function MapComponent({ source, searchParams, locations }: {strin
 
   const location = useMemo(() => {
     const geoCoordinates = getFilterValue("geoCoordinates");
-    const locationIds = source!=="tracker"?getFilterValue("locationIds"):"226e11ef-32fc-5484-9843-7087fdfb413d";
+    const locationIds = source!=="tracker"?getFilterValue("locationIds"):locations;
     console.log(locationIds);
     
     if (geoCoordinates) {
@@ -201,13 +205,31 @@ export default function MapComponent({ source, searchParams, locations }: {strin
     }
   }, [viewport.zoom, currentZoomGroup, determineZoomGroup]);
 
+  // const eventCountsQuery = useQuery<EventCount[], Error>({
+  //   queryKey: ["eventCounts", currentZoomGroup, searchParams],
+  //   queryFn: async () => {
+  //     const response = source === 'tracker' 
+  //     ? await getMapViewData(trackerId, currentZoomGroup)
+  //     :await memoizedGetEventsCount(
+  //       `${searchParams}&groupBy=${currentZoomGroup}`
+  //     );
+  //     return response || [];
+  //   },
+  //   staleTime: 60 * 1000,
+  //   enabled: currentZoomGroup !== "event" && location !== null,
+  // });
   const eventCountsQuery = useQuery<EventCount[], Error>({
-    queryKey: ["eventCounts", currentZoomGroup, searchParams],
+    queryKey: source === "tracker" ? ["eventCounts", trackerId, currentZoomGroup] : ["eventCounts", currentZoomGroup, searchParams],
     queryFn: async () => {
-      const response = await memoizedGetEventsCount(
-        `${searchParams}&groupBy=${currentZoomGroup}`
-      );
-      return response || [];
+      if (source === "tracker") {
+        const response = await getMapViewData(trackerId, currentZoomGroup);
+        return response || [];
+      } else {
+        const response = await memoizedGetEventsCount(
+          `${searchParams}&groupBy=${currentZoomGroup}`
+        );
+        return response || [];
+      }
     },
     staleTime: 60 * 1000,
     enabled: currentZoomGroup !== "event" && location !== null,
@@ -271,10 +293,21 @@ export default function MapComponent({ source, searchParams, locations }: {strin
             );
 
             const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}`;
-
+            console.log(finalSearchParams);
+            
+            // let eventData={};
+            // console.log(source);
+            console.log(viewBoundString);
+            
+            // if(source===tracker){
+            //   eventData = await getMapViewData(trackerId)
+            // }else 
             const eventsData = await memoizedGetEventsWithSearchParams(
               `${finalSearchParams}`
             );
+          // }else{
+          //   eventsData = await getMapViewData(trackerId);
+          // }
             setEvents((eventsData?.events as MapEvents[]) || []);
           } catch (error) {
             console.error("Error fetching events:", error);
@@ -426,7 +459,8 @@ export default function MapComponent({ source, searchParams, locations }: {strin
     return null;
   }, [location]);
 
-
+  console.log(events);
+  
   console.log(theme,"ohh yeah")
   return (
     <div className="relative">
@@ -455,6 +489,9 @@ export default function MapComponent({ source, searchParams, locations }: {strin
           </Button>
 
           <EventList
+            source={source}
+            trackerId={trackerId}
+            searchParam={searchParams}
             isVisible={showEventList}
             onClose={() => setShowEventList(false)}
           />

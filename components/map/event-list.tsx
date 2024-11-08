@@ -22,28 +22,35 @@ import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import Link from "next/link";
-
+import { myFetch } from "@/utils/myFetch";
+import { useTrackerServices } from "@/services/trackerServices";
 export default function EventList({
   isVisible,
   onClose,
+  source,
+  searchParam,
+  trackerId
 }: {
   isVisible: boolean;
   onClose: () => void;
+  source:any;
+  searchParam:any;
+  trackerId:string;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const searchParams = useSearchParams();
+  const searchParams = source!=="tracker"?useSearchParams():searchParam;
   const eventService = useEventsService();
-
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.delete("view");
   filteredParams.set("skip", String((currentPage - 1) * 10));
-
+  const {getTrackerEvents}=useTrackerServices(); 
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString()],
-    queryFn: () =>
-      eventService.getEventsWithSearchParams(filteredParams.toString()),
+    queryFn: () => source === 'tracker' 
+      ? getTrackerEvents(trackerId, "limit=20&offset=0", "active")
+      : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
-
+  
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -70,18 +77,19 @@ export default function EventList({
             .join(", ")
       : "Venue to be announced";
 
-    const formattedStartDate = format(event.startDateTime, "dd MMM yyyy");
-    const formattedEndDate = format(event.endDateTime, "dd MMM yyyy");
+    // const formattedStartDate = format(event.startDateTime, "dd MMM yyyy");
+    // const formattedEndDate = format(event.endDateTime, "dd MMM yyyy");
 
-    const days = differenceInDays(event.endDateTime, event.startDateTime) + 1;
+    // const days = differenceInDays(event.endDateTime, event.startDateTime) + 1;
 
-    const formattedRange =
-      formattedStartDate === formattedEndDate
-        ? formattedStartDate
-        : `${formattedStartDate} - ${formattedEndDate} (${days} ${
-            days === 1 ? "day" : "days"
-          })`;
-
+    // const formattedRange =
+    //   formattedStartDate === formattedEndDate
+    //     ? formattedStartDate
+    //     : `${formattedStartDate} - ${formattedEndDate} (${days} ${
+    //         days === 1 ? "day" : "days"
+    //       })`;
+          
+          
     return (
       <Link href={`/search/${event.id}`}>
         <Card key={event.id} className="mb-4 relative">
@@ -98,7 +106,7 @@ export default function EventList({
               <span>{address}</span>
             </div>
             <div className="flex items-start text-xs text-[#666666]">
-              {formattedRange}
+              {/* {formattedRange} */}
             </div>
           </CardContent>
         </Card>
