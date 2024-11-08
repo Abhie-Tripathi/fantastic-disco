@@ -99,8 +99,8 @@ const EventCard1 = ({
             <div className={styles.dividerLine}></div>
             <div className={styles.dateRange_typeContainer}>
                 <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
-                <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN" ? fetchedEvent.event_type : fetchedEvent?.eventType === "SUB" ? fetchedEvent.participationType === "Brunch/Lunch/Dinner" ? "Bru../Lun../Din.." : fetchedEvent.participationType : "Tradeshow"}</div>
-                <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN" ? fetchedEvent.eventFormat : fetchedEvent?.eventType === "SUB" ? fetchedEvent.eventFormat : "Attending"}</div>
+                <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.event_type}</div>
+                <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventFormat}</div>
             </div>
         </div>
     )
