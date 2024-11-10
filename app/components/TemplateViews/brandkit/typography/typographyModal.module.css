@@ -8,6 +8,9 @@
   flex: 1;
   padding: 20px;
   border-right: 1px solid #ddd;
+  color: var(--primary-text-color);
+  font-size: var(--font-size-default);
+  font-weight: var(--font-weight-medium);
 }
 
 .rightPanel {
@@ -91,6 +94,9 @@
   align-items: center;
   transition: background-color 0.3s ease;
   border-radius: 6px;
+  color: var(--primary-text-color);
+  font-size: var(--font-size-default);
+  font-weight: var(--font-weight-medium);
 }
 
 .fontItem:hover {

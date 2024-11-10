@@ -99,8 +99,9 @@ const WidgetCard = ({ widgetType, setWidgetSelected, widgetSelected, smallCard }
                                         widgetType === "Pop" ? PopupWidgetImage : "")
                     }
                     alt='page'
-                    width={imageWidth}
-                    height={imageHeight}
+                    style={{width : imageWidth, height : imageHeight}}
+                    // width={imageWidth}
+                    // height={imageHeight}
                 />
             </div>
             <div className={styles.content}>

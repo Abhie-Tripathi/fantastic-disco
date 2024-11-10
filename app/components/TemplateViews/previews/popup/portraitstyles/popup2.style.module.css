@@ -31,7 +31,7 @@
     overflow: hidden;
 }
 .location_dateContainer {
-    min-height: 40px;
+    /* min-height: 40px; */
     display: flex;
     flex-direction: column;
 }
@@ -43,7 +43,7 @@
 }
 
 .dateContainer {
-    margin-top: 8px;
+    margin-top: 0px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -141,8 +141,8 @@
     overflow: hidden;
 }
 .smallDesc{
-    min-height: 30px;
-    max-height: 30px;
+    min-height: 20px;
+    max-height: 20px;
     width: 100%;
     padding-left: 10px;
     padding-right: 10px;

@@ -8,6 +8,11 @@ import person1 from "@/public/person1.svg";
 import person2 from "@/public/person2.svg";
 import { PrefilledAddedEventsType } from "@/types/prefilledaddedeventtype";
 import { ButtonSettingsState } from "@/types/buttoncustomizetypes";
+import DefaultIcon from "/public/stickyWidgetDefaultIcon.svg";
+import POP from "/public/stickyCardPartyPopIcon.svg";
+import TradeshowIcon from "/public/stickyCardTradeShow.svg";
+import WorkShopIcon from "/public/stickyCardWorkshop.svg";
+import ConferenceIcon from "/public/stickyCardConference.svg";
 interface FontSettings {
   fontFamily: string;
   fontSize: number;
@@ -25,11 +30,12 @@ interface CardProps {
   smallCard: boolean;
   selectedBtn?: "primary" | "secondary";
   buttonSettings?: ButtonSettingsState;
-  fetchedEvent?: PrefilledAddedEventsType;
+  fetchedEvent?: PrefilledAddedEventsType[];
   demoBanner: string;
   demoEventName: string;
   demoDescription: string;
   demoLocation: string;
+  demoDate: string;
 }
 const StickyCard = ({
   cardBgColor = "#ffffff",
@@ -62,6 +68,7 @@ const StickyCard = ({
   smallCard,
   buttonSettings,
   selectedBtn,
+  demoDate,
 }: CardProps) => {
   const formatDate = (date: string) => {
     const dateObj = new Date(date);
@@ -81,20 +88,24 @@ const StickyCard = ({
     return `${getDayWithSuffix(day)} ${month} ${year}`;
   };
   const truncateText = (text: string, maxLength: number): string => {
-    if (text.length <= maxLength) {
+    if (text?.length <= maxLength) {
       return text;
     }
-    return text.slice(0, maxLength) + "...";
+    return text?.slice(0, maxLength) + "...";
   };
   const description = fetchedEvent
-    ? truncateText(fetchedEvent.description, 150)
+    ? truncateText(fetchedEvent[0]?.description, 150)
     : demoDescription;
   return (
     <div className={styles.card} style={{ backgroundColor: cardBgColor }}>
       <Image
         width={100}
         height={150}
-        src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner}
+        src={
+          fetchedEvent && fetchedEvent.length > 0
+            ? fetchedEvent[0]?.bannerUrl
+            : demoBanner
+        }
         alt="banner"
         className={styles.banner}
       />
@@ -110,7 +121,9 @@ const StickyCard = ({
             fontWeight: fontSettings.heading.fontWeight,
           }}
         >
-          {fetchedEvent ? fetchedEvent.name.substring(0, 40) : demoEventName}
+          {fetchedEvent && fetchedEvent.length > 0
+            ? fetchedEvent[0]?.name.substring(0, 40)
+            : demoEventName}
         </div>
 
         {/* Location */}
@@ -125,12 +138,15 @@ const StickyCard = ({
               fontWeight: fontSettings.subheading.fontWeight,
             }}
           >
-            {fetchedEvent
-              ? fetchedEvent.cityName + ", " + fetchedEvent.countryName
+            {fetchedEvent && fetchedEvent.length > 0
+              ? fetchedEvent[0]?.eventFormat === "Virtual"
+                ? "Virtual"
+                : fetchedEvent[0]?.cityName +
+                  ", " +
+                  fetchedEvent[0]?.countryName
               : demoLocation}
           </div>
         </div>
-
         {/* Date */}
         <div className={styles.dateContainer}>
           <DateIcon color={fontSettings.subheading.fontColor} />
@@ -143,22 +159,52 @@ const StickyCard = ({
               fontWeight: fontSettings.subheading.fontWeight,
             }}
           >
-            {fetchedEvent
-              ? formatDate(fetchedEvent.startDate) +
+            {fetchedEvent && fetchedEvent.length > 0
+              ? formatDate(fetchedEvent[0]?.startDate) +
                 " - " +
-                formatDate(fetchedEvent.endDate)
-              : "1st April 2024 - 3rd April 2024"}
+                formatDate(fetchedEvent[0]?.endDate)
+              : demoDate}
+          </div>
+        </div>
+        <div className={styles.icon_tags_container}>
+          {fetchedEvent && fetchedEvent![0]?.eventType === "SUB" ? (
+            <>
+              <Image src={POP} alt="" />
+            </>
+          ) : fetchedEvent![0]?.eventType === "MAIN" &&
+            fetchedEvent![0].event_type === "Tradeshow" ? (
+            <Image src={TradeshowIcon} alt="" />
+          ) : fetchedEvent![0]?.eventType === "MAIN" &&
+            fetchedEvent![0].event_type === "Conference" ? (
+            <Image src={ConferenceIcon} alt="" />
+          ) : fetchedEvent![0]?.eventType === "MAIN" &&
+            fetchedEvent![0].event_type === "Workshop" ? (
+            <Image src={WorkShopIcon} alt="" />
+          ) : (
+            <Image src={DefaultIcon} alt="" />
+          )}
+          <div
+            className={`${styles.pill} ${styles.type1}`}
+            style={{ fontSize: fontSettings?.body.fontSize }}
+          >
+            {fetchedEvent![0]?.eventType === "MAIN"
+              ? fetchedEvent![0].event_type
+              : fetchedEvent![0]?.eventType === "SUB"
+              ? fetchedEvent![0].participationType
+              : "Tradeshow"}
+          </div>
+          <div
+            className={`${styles.pill} ${styles.type2}`}
+            style={{ fontSize: fontSettings?.body.fontSize }}
+          >
+            {fetchedEvent![0]?.eventType === "MAIN"
+              ? fetchedEvent![0].eventFormat
+              : fetchedEvent![0]?.eventType === "SUB"
+              ? fetchedEvent![0].eventFormat
+              : "Attending"}
           </div>
         </div>
       </div>
-
-      {/* Registration Button */}
-      {/* <div className={styles.registerButton}>
-        <button
-        >
-          REGISTER NOW
-        </button>
-      </div> */}
 
       <div className={styles.registerButton}>
         {/* <button
@@ -188,7 +234,7 @@ const StickyCard = ({
             : buttonSettings?.secondary.buttonText}
         </button> */}
 
-        <button
+        {/* <button
           className={smallCard ? styles.smallBtn : styles.btn}
           style={{
             fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
@@ -208,10 +254,38 @@ const StickyCard = ({
               selectedBtn === "primary"
                 ? buttonSettings?.primary.borderColor
                 : buttonSettings?.secondary.borderColor,
+            borderWidth: selectedBtn === "secondary" ? "1px" : "1px",
+            borderStyle: selectedBtn === "secondary" ? "solid" : "solid",
           }}
         >
-          {"REGISTER NOW"}
-        </button>
+          {selectedBtn === "primary" ? buttonSettings?.primary.buttonText : buttonSettings?.secondary.buttonText}
+        </button> */}
+        <div
+              className={styles.detail_button}
+              style={{
+                fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
+                color:
+                  selectedBtn === "primary"
+                    ? buttonSettings?.primary.fontColor
+                    : buttonSettings?.secondary.fontColor,
+                backgroundColor:
+                  selectedBtn === "primary"
+                    ? buttonSettings?.primary.buttonColor
+                    : "transparent",
+                borderRadius:
+                  selectedBtn === "primary"
+                    ? buttonSettings?.primary.borderRadius
+                    : buttonSettings?.secondary.borderRadius,
+                borderColor:
+                  selectedBtn === "primary"
+                    ? buttonSettings?.primary.borderColor
+                    : buttonSettings?.secondary.borderColor,
+                    borderWidth: selectedBtn === "secondary" ? "1px" : "1px",
+                    borderStyle: selectedBtn === "secondary" ? "solid" : "solid",
+              }}
+            >
+              VIEW DETAILS
+            </div>
       </div>
     </div>
   );

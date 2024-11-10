@@ -31,10 +31,12 @@ interface Props {
     locationCountry?: string;
     participationType?: string;
     format?: string;
-    virtualLink:string;
+    virtualLink?:string;
+    eventMainSubType? : string;
+    eventType? : string
 }
 
-const EventSmallDetailView = ({snowTheme, leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCountry, locationCity, participationType, format,virtualLink}: Props) => {
+const EventSmallDetailView = ({snowTheme, leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCountry, locationCity, participationType, format, virtualLink, eventMainSubType, eventType}: Props) => {
 
     const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const fireConfetti = () => {
@@ -74,7 +76,7 @@ const EventSmallDetailView = ({snowTheme, leavesTheme, eventId, imageUrl, eventN
                             width={146} height={160}
                             style={{ borderRadius: 20, objectFit: "cover" }} />
                     </div>
-                    <ParticipationContainer participationType={participationType} />
+                    <ParticipationContainer participationType={eventMainSubType === "SUB" ? eventType : participationType} />
                 </div>
                 <div className={styles.rightSection}>
                     <textarea className={styles.eventName} disabled placeholder='Event Name' value={eventName} style={{ fontFamily: eventFont }} />

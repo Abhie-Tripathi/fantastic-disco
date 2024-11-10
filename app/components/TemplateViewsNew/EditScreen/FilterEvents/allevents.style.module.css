@@ -359,3 +359,28 @@
     background-color: #f0f0f0; 
     border: 1px solid #ccc;
 }
+
+.allEventsContainer {
+    display: flex;
+    flex-direction: column;
+    /* width: 100%; */
+  }
+  
+  
+  
+ 
+
+  
+  .subEvent {
+    padding: 8px;
+    border-top: 1px solid #ddd; /* Optional: separates each sub-event */
+    width: 100%;
+    margin-top: 5px;
+  }
+  
+  .EventName, .subEventDetails {
+    display: block;
+    font-size: 0.9em;
+    color: #555;
+  }
+  

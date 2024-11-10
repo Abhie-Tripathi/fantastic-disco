@@ -44,7 +44,8 @@ const LocationContainer = ({
   }: Props) => {
     const [dropdown, setDropdown] = useState<boolean>(false)
     const dropdownRef = useOutsideClick(()=>setDropdown(false))
-    console.log("formstate",formState.isEventFormatEmpty)
+    // console.log("formstate",formState.isEventFormatEmpty)
+    console.log("formstate",formState)
     return (
         <div className={`${styles.body} ${formState.isEventFormatEmpty ? styles.errorHighlight : ""} ${theme && theme === "dark" ? styles.darkBody : ""}`}>
            

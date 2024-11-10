@@ -10,6 +10,7 @@ interface EventContextType {
   setDeleteModal : (value: boolean) => void;
   setDeleteModalTwo : (value: boolean) => void;
   fetchEventData : () => Promise<null | undefined>;
+  isPastEvent : boolean;
 }
 
 export const EventContext = createContext<EventContextType | null>(null);

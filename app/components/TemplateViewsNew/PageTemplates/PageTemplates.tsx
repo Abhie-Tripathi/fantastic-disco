@@ -28,7 +28,7 @@ const PageTemplates = ({ setSelectedTemplate, selectedTemplate, setTempelateName
 
     const NonHighlightedTemplates =
         [
-            { key: "GS", name: "Grid Style", desc: "Display Multiple Events as a Grid View for a clear and organized presentation .", tag: "Multiple Events", image1: GridViewImage, image2: GridViewImageDark },
+            { key: "GS", name: "Grid Style", desc: "Display Multiple Events as a Grid View for a clear and organized presentation.", tag: "Multiple Events", image1: GridViewImage, image2: GridViewImageDark },
             { key: "LS", name: "List Style", desc: "Present Multiple Events as a List View for a streamlined, easy-to-read schedule display.", tag: "Multiple Events", image1: ListViewImage, image2: ListViewImageDark }
         ]
     const HighlightedTemplates =

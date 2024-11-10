@@ -2,17 +2,20 @@ import React, { useEffect, useState } from 'react'
 import styles from './progressbar.style.module.css'
 
 interface Props {
+    eventTypeMain: string;
     eventNameMain: string;
     cityNameMain: string;
     participationTypeMain: string;
     descriptionMain: string;
     eventNameSub: string;
     cityNameSub: string;
-    participationTypeSub: string;
+    eventTypeSub: string;
     descriptionSub: string;
+    virutalLinkMain : string;
+    virtualLinkSub : string;
 }
 
-const ProgressBar = ({ eventNameMain, cityNameMain, participationTypeMain, descriptionMain,eventNameSub, participationTypeSub, descriptionSub, cityNameSub }: Props) => {
+const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participationTypeMain, descriptionMain, eventNameSub, eventTypeSub, descriptionSub, cityNameSub, virutalLinkMain, virtualLinkSub }: Props) => {
 
     const [activeBars, setActiveBars] = useState<string[]>([])
 
@@ -40,17 +43,22 @@ const ProgressBar = ({ eventNameMain, cityNameMain, participationTypeMain, descr
         // Update the activeBars based on the changes in each field
         updateActiveBars('participationType', participationTypeMain);
         updateActiveBars('eventName', eventNameMain);
-        updateActiveBars('cityName', cityNameMain);
+        if(virutalLinkMain){
+            updateActiveBars('cityName', virutalLinkMain);
+        }else if(cityNameMain){
+            updateActiveBars('cityName', cityNameMain);
+        }
         updateActiveBars('description', descriptionMain);
+        updateActiveBars('eventType', eventTypeMain);
         // Check for combined sub-fields to activate the 5th step
-        if (eventNameSub && cityNameSub && participationTypeSub && descriptionSub) {
+        if (eventNameSub && cityNameSub && eventTypeSub && descriptionSub) {
             updateActiveBars('subEvent', 'combinedSubFields');
         } else {
             updateActiveBars('subEvent', ''); // Remove if not all sub-fields are filled
         }
 
-    }, [participationTypeMain, eventNameMain, cityNameMain, descriptionMain, eventNameSub, cityNameSub, participationTypeSub, descriptionSub]);
-    const totalSteps = 5;
+    }, [participationTypeMain, eventNameMain, cityNameMain, descriptionMain, eventNameSub, cityNameSub, eventTypeSub, descriptionSub, eventTypeMain, virutalLinkMain]);
+    const totalSteps = 6;
     return (
         <div className={styles.body}>
             <div className={styles.header}>PROGRESS</div>
@@ -66,12 +74,13 @@ const ProgressBar = ({ eventNameMain, cityNameMain, participationTypeMain, descr
                 </div>
             </div>
             <div className={styles.listContainer}>
+                <li className={eventTypeMain ? styles.activeItem : ""}>{eventTypeMain && <TickIcon />}<span>Event Type</span></li>
                 <li className={participationTypeMain ? styles.activeItem : ""}>{participationTypeMain && <TickIcon />}<span>Mode Of Participation</span></li>
                 <li className={eventNameMain ? styles.activeItem : ""}>{eventNameMain && <TickIcon />}<span>Event Name</span></li>
-                <li className={cityNameMain ? styles.activeItem : ""}>{cityNameMain && <TickIcon />}<span>Location</span></li>
+                <li className={(cityNameMain || virutalLinkMain) ? styles.activeItem : ""}>{(cityNameMain || virutalLinkMain) && <TickIcon />}<span>Location</span></li>
                 <li className={descriptionMain ? styles.activeItem : ""}>{descriptionMain && <TickIcon />}<span>Description</span></li>
-                <li className={(eventNameSub && cityNameSub && participationTypeSub && descriptionSub) ? styles.activeItem : ""}>
-                    {(eventNameSub && cityNameSub && participationTypeSub && descriptionSub) && <TickIcon />}<span>Side-Event</span>
+                <li className={(eventNameSub && (cityNameSub || virtualLinkSub) && eventTypeSub && descriptionSub) ? styles.activeItem : ""}>
+                    {(eventNameSub && (cityNameSub || virtualLinkSub) && eventTypeSub && descriptionSub) && <TickIcon />}<span>Side-Event</span>
                 </li>
             </div>
         </div>

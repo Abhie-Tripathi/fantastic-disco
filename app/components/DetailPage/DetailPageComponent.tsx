@@ -62,12 +62,14 @@ interface EventProps {
     registration: boolean;
     approval: boolean;
     waitlisting: boolean;
-    virtualLink: string
+    virtualLink: string;
+    event_type: string;
+    type: string
 }
 
 const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
-const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker,exhibitor, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
-    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink }: EventProps) => {
+const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude, pageBgColor, registerBtnText, registerMessage, registerBtnColor, speaker, exhibitor, participationMessage, name, format, logoUrl, end_date, end_time, gmt_time,
+    start_date, start_time, description, location_city, location_country, eventId, hashtags, participationType, childrenData, widgetId, parentName, parentId, capacity, registration, approval, waitlisting, pageGradient, confettiType, leavesTheme, virtualLink, event_type, type }: EventProps) => {
     const [isMobile, setIsMobile] = useState(false);
     const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
     const [isRegistratonClosed, setRegistrationClosed] = useState(false)
@@ -75,6 +77,10 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
     const confettiCanvasRefTwo = useRef<HTMLCanvasElement | null>(null);
     const pathname = usePathname();
     const pathName = pathname.split("/")[1];
+
+    // const [textWidth, setTextWidth] = useState(0);
+    // const textRef = useRef(null);
+
 
     const fireConfetti = () => {
         if (confettiCanvasRef.current) {
@@ -142,14 +148,14 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
         <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`}
             style={{ backgroundColor: pageBgColor }}
         >
-            <div style={{ position: "absolute", top: "30px", left: "30px", cursor: "pointer", zIndex: 10 }}>
+            {/* <div style={{ position: "absolute", top: "30px", left: "30px", cursor: "pointer", zIndex: 10 }}>
                 {
                     pathName === "detailpage" &&
                     <button className={styles.backBtn} onClick={() => router.back()}>
                         <BackIcon />
                     </button>
                 }
-            </div>
+            </div> */}
             <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
             <canvas ref={confettiCanvasRefTwo} className={styles.confettiCanvasTwo}></canvas>
             {leavesTheme && <div className={styles.themeContainer}>
@@ -166,8 +172,8 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                     <div className={styles.linkline}></div>
                     <div className={styles.maineventName} onClick={handleMainEventClick} style={{ cursor: parentId ? "pointer" : "default" }}>{parentName.toUpperCase()}</div>
                 </div>}
-            {(participationType !== "HappyHours" && participationType !== "CocktailHours" && participationType !== "FoundersParty") && <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType={participationType ? participationType : "Speaker"} /></div>}
 
+            {type !== "SUB" && <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType={participationType ? participationType : "Speaker"} /></div>}
             {childrenData.length > 0 && <div className={styles.carousel}><SideEventCarousel childrenData={childrenData} /></div>}
 
             <div className={styles.detailsContainer}>
@@ -193,13 +199,33 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                             {(participationType !== "HappyHours" && participationType !== "CocktailHours" && participationType !== "FoundersParty") && <div className={styles.mobile_participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType={participationType ? participationType : "Speaker"} /></div>}
                         </div>
                     }
-                    <textarea className={styles.eventName} disabled placeholder='Event Name' value={name} style={{ fontFamily: eventFont }} />
+                    {/* <div style={{ position: "relative" }}>
+                        <textarea className={styles.eventName} disabled placeholder='Event Name' value={name} style={{ fontFamily: eventFont }} />
+                        <span className={`${styles.pill} ${styles.type1}`} style={{ position: "absolute", top: "20px", right: "200px" }}>{type === "SUB" ? participationType : event_type}</span>
+                    </div> */}
+                    <div style={{ display: "inline-flex", alignItems: "center" }}>
+                        <textarea
+                            className={styles.eventName}
+                            disabled
+                            placeholder="Event Name"
+                            value={name}
+                            style={{ fontFamily: eventFont }}
+                        />
+                        <span
+                            className={`${styles.pill} ${styles.type1}`}
+                            style={{ marginLeft: "10px" }} // Adjust spacing as needed
+                        >
+                            {event_type}
+                        </span>
+                    </div>
+
+
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>
 
                     <div className={styles.locationContainer}><LocationContainer eventFormat={format} cityName={location_city} countryName={location_country} virtualLink={virtualLink} /></div>
 
                     {
-                         <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} end_date={end_date} start_date={start_date} end_time={end_time} start_time={start_time}/></div>
+                        <div className={styles.resgitrationContainer}><RegisterForm setRegisterSuccess={setRegisterSuccess} registerBtnColor={registerBtnColor} registerBtnText={registerBtnText} registerMessage={registerMessage} eventId={eventId} widgetId={widgetId} capacity={capacity} registration={registration} approval={approval} waitlisting={waitlisting} end_date={end_date} start_date={start_date} end_time={end_time} start_time={start_time} /></div>
                     }
 
                     {isMobile &&
@@ -213,19 +239,19 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                     <div className={styles.descriptionContainer} ><DescriptionContainer description={description} /></div>
                     {exhibitor?.length > 0 && <div className={styles.speakerContainer}><ExhibitorContainer exhibitorsData={exhibitor} /></div>}
                     {speaker?.length > 0 && <div className={styles.speakerContainer}><SpeakerContainer speakerProfilesData={speaker} /></div>}
-                    <div className={styles.map}>
+                    {format !== "Virtual" && <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Mapview latitude={latitude}
                                 venue={location_city}
                                 longitude={longitude}
                                 zoom={6} />
                         </Suspense>
-                    </div>
+                    </div>}
 
                 </div>
             </div>
             <div className={styles.line}></div>
-            <footer className={styles.footer}>Powered by Eventgeni &copy; 2024</footer>
+            <footer className={styles.footer}>Powered by Whr.ai &copy; 2024</footer>
         </div>
         // </div>
 

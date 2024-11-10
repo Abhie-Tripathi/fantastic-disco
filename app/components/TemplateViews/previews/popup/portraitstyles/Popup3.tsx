@@ -30,7 +30,7 @@ interface Props {
   demoEventName: string;
   demoDescription: string;
   demoLocation: string;
-  demoDate:string
+  demoDate: string
 }
 
 const Popup3: React.FC<Props> = ({
@@ -117,23 +117,24 @@ const Popup3: React.FC<Props> = ({
       style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}
     >
       <div className={styles.bannerContainer}>
-      <Image
-        width={380}
-        height={smallCard ? 150 : 220}
-        src={
-          fetchedAddedEvents && fetchedAddedEvents.length > 0
-            ? fetchedAddedEvents[0].bannerUrl
-            : demoBanner
-        }
-        alt="banner"
-        className={styles.banner}
-      />
+        <Image
+          // height={smallCard ? 150 : 220}
+          src={
+            fetchedAddedEvents && fetchedAddedEvents.length > 0
+              ? fetchedAddedEvents[0].bannerUrl
+              : demoBanner
+          }
+          alt="banner"
+          width={350}
+          height={smallCard ? 170 : 220}
+          className={`w-full ${styles.banner} ${smallCard ? 'h-[170px]' : 'h-[220px]'} rounded-b-[50px] shadow-md`}
+        />
 
-      <div className={styles.event_type}>{fetchedAddedEvents![0]?.eventType==="MAIN"? "Main Even" : fetchedAddedEvents![0]?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
-      <div className={styles.type}>Workshop</div>
+        <div className={styles.event_type}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? "Main Event" : fetchedAddedEvents![0]?.eventType === "SUB" ? "Side Event" : "Main Event"}</div>
+        <div className={styles.type}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? fetchedAddedEvents![0].event_type : fetchedAddedEvents![0]?.eventType === "SUB" ? fetchedAddedEvents![0].participationType : "Workshop"}</div>
       </div>
-      
-      
+
+
       <div
         className={smallCard ? styles.smallName : styles.eventName}
         style={{
@@ -144,9 +145,8 @@ const Popup3: React.FC<Props> = ({
         }}
       >
         {fetchedAddedEvents && fetchedAddedEvents.length > 0
-          ? `${fetchedAddedEvents[0].name.substring(0, 40)} ${
-              fetchedAddedEvents[0].name.length > 40 ? "..." : ""
-            }`
+          ? `${fetchedAddedEvents[0].name.substring(0, 40)} ${fetchedAddedEvents[0].name.length > 40 ? "..." : ""
+          }`
           : demoEventName}
       </div>
       <div className={styles.location_dateContainer}>
@@ -162,11 +162,11 @@ const Popup3: React.FC<Props> = ({
             }}
           >
             {fetchedAddedEvents && fetchedAddedEvents.length > 0
-              ? (
-                  fetchedAddedEvents[0].cityName +
-                  ", " +
-                  fetchedAddedEvents[0].countryName
-                ).substring(0, 30)
+              ? fetchedAddedEvents[0].eventFormat === "Virtual" ? "Virtual" : (
+                fetchedAddedEvents[0].cityName +
+                ", " +
+                fetchedAddedEvents[0].countryName
+              ).substring(0, 30)
               : demoLocation}
           </div>
         </div>
@@ -183,14 +183,14 @@ const Popup3: React.FC<Props> = ({
           >
             {fetchedAddedEvents && fetchedAddedEvents.length
               ? formatDate(fetchedAddedEvents[0].startDate) +
-                " - " +
-                formatDate(fetchedAddedEvents[0].endDate)
+              " - " +
+              formatDate(fetchedAddedEvents[0].endDate)
               : demoDate}
           </div>
         </div>
       </div>
       <div
-        className={styles.desc}
+        className={smallCard ? styles.smallDesc : styles.desc}
         style={{
           fontSize: fontSettings.body.fontSize,
           color: fontSettings.body.fontColor,
