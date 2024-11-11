@@ -86,8 +86,8 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
         <div className={styles.type_peopleContainer}>
           <div className={styles.typeContainer}>
             <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType ==="MAIN"?"Main Event":fetchedAddedEvents![0]?.eventType ==="SUB"?"Side Event":"Main Event"}</div>
-            <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>Tradeshow</div>
-            <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>Attending</div>
+            <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN"? fetchedAddedEvents![0].event_type: fetchedAddedEvents![0]?.eventType === "SUB" ?fetchedAddedEvents![0].event_type:"Tradeshow"}</div>
+            <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN"? fetchedAddedEvents![0].eventFormat: fetchedAddedEvents![0]?.eventType==="SUB" ?fetchedAddedEvents![0].eventFormat:"In-Person"}</div>
           </div>
           {/* <div className={styles.circles}>
             <div className={styles.circle} data-name="John Doe">

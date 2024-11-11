@@ -87,8 +87,8 @@ const EventCard2 = ({
             <div className={styles.type_peopleContainer}>
                 <div className={styles.typeContainer}>
                 <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType ==="MAIN"?"Main Event":fetchedEvent?.eventType ==="SUB"?"Side Event":"Main Event"}</div>
-                    <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.event_type: fetchedEvent?.eventType === "SUB" ?fetchedEvent.participationType ==="Brunch/Lunch/Dinner"?"Bru../Lun../Din..":fetchedEvent.participationType:"Tradeshow"}</div>
-                    <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.eventFormat: fetchedEvent?.eventType==="SUB" ?fetchedEvent.eventFormat:"Attending"}</div>
+                    <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent ? fetchedEvent?.event_type : "Tradeshow"}</div>
+                    <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent ? fetchedEvent?.eventFormat : "In-Person"}</div>
                 </div>
                 {/* <div className={styles.circles}>
                     <div className={styles.circle} data-name="John Doe">
