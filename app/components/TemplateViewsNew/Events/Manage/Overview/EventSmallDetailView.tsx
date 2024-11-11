@@ -72,7 +72,7 @@ const EventSmallDetailView = ({snowTheme, leavesTheme, eventId, imageUrl, eventN
                 </div>}
                 <div className={styles.leftSection}>
                     <div className={styles.posterContainer}>
-                        <Image className={styles.poster} src={imageUrl || Placeholder} alt='Poster'
+                        <Image className={`${styles.poster} h-[146px] w-[160px]`} src={imageUrl || Placeholder} alt='Poster'
                             width={146} height={160}
                             style={{ borderRadius: 20, objectFit: "cover" }} />
                     </div>

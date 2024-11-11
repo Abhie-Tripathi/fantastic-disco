@@ -179,9 +179,9 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
             <div className={styles.detailsContainer}>
                 <div className={styles.leftSection}>
                     <div className={styles.posterContainer}>
-                        <Image className={styles.poster} src={logoUrl} alt='Poster'
+                        <Image className={`${styles.poster} h-[290px] w-[296px]`} src={logoUrl} alt='Poster'
                             width={296} height={290}
-                            style={{ borderRadius: 20, objectFit: "cover" }} />
+                            style={{ borderRadius: 20, objectFit: "cover" }} unoptimized/>
                     </div>
                     {hashtags && <div className={styles.hashtagsContainer}>
                         {hashtags?.split(",").map((tag, key) => (
