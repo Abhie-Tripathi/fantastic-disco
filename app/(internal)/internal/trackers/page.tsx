@@ -521,7 +521,7 @@ const Trackers = ({ searchParams }: Search) => {
            {singleTrackerData?.name}
           </span>
           <Link
-        href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list`}
+        href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=activeEvent`}
         onClick={()=>setContextData(singleTrackerData?.id)}
       >
         <Button className="text-white">View Events</Button>
@@ -546,10 +546,10 @@ const Trackers = ({ searchParams }: Search) => {
     />
   </div> */}
   <div className="flex flex-row gap-3">
-  <div className="flex w-1/2 items-stretch">
-    <SavedEventWidget savedEvents={savedEvents} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}`}/>
+  <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
+    <SavedEventWidget savedEvents={savedEvents} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=savedEvent`}/>
   </div>
-  <div className="flex w-1/2 items-stretch">
+  <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
   <NotesDiscussionWidget note={note} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/notesDiscussion?type=${singleTrackerData?.type}`}/>
   </div>
         </div>
@@ -557,7 +557,7 @@ const Trackers = ({ searchParams }: Search) => {
           <div className="flex w-1/2 items-stretch">
             <NotificationWidget/>
           </div>
-          <div className="flex w-1/2 items-stretch">
+          <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
           <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/manageAccess?type=${singleTrackerData?.type}`}/>
           </div>
         </div>
