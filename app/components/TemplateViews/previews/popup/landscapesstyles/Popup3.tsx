@@ -73,7 +73,7 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
       <div className={smallCard ? styles.smallBannerContainer : styles.bannerContainer}>
         <Image width={smallCard ? 280 : 380} height={smallCard ? 285 : 385} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' className={smallCard ? styles.smallerBanner : styles.banner} />
         <div className={styles.event_type}>{fetchedAddedEvents![0]?.eventType==="MAIN"? "Main Event" : fetchedAddedEvents![0]?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
-        <div className={styles.type}>Workshop</div>
+        <div className={styles.type}>{fetchedAddedEvents![0]?.eventType === "MAIN"? fetchedAddedEvents![0].event_type: fetchedAddedEvents![0]?.eventType === "SUB" ?fetchedAddedEvents![0].event_type:"Tradeshow"}</div>
       </div>
       <div className={styles.eventDetails}>
         <div className={styles.values}>

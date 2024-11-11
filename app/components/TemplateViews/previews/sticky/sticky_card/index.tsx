@@ -190,7 +190,7 @@ const StickyCard = ({
             {fetchedEvent![0]?.eventType === "MAIN"
               ? fetchedEvent![0].event_type
               : fetchedEvent![0]?.eventType === "SUB"
-              ? fetchedEvent![0].participationType
+              ? fetchedEvent![0].event_type
               : "Tradeshow"}
           </div>
           <div
@@ -201,7 +201,7 @@ const StickyCard = ({
               ? fetchedEvent![0].eventFormat
               : fetchedEvent![0]?.eventType === "SUB"
               ? fetchedEvent![0].eventFormat
-              : "Attending"}
+              : "In-Person"}
           </div>
         </div>
       </div>

@@ -39,6 +39,9 @@
     min-height: 130px;
     min-width: 130px;
 }
+.imageContainer img{
+    object-fit: cover;
+}
 .details{
     width: 90%;
 }
