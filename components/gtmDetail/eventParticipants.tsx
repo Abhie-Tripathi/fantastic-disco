@@ -169,7 +169,7 @@ export const EventParticipants = ({
 }: {
   eventDetails: GTMEventDetail;
 }) => {
-  const { exhibitorsCount, speakersCount, sponsorsCount, "10TimesUrl": websiteUrl } = eventDetails;  
+  const { exhibitorsCount, speakersCount, sponsorsCount, "10TimesUrl": websiteUrl } = eventDetails;
   const participantData = [
     {
       heading: "Exhibitors",
@@ -177,7 +177,7 @@ export const EventParticipants = ({
       data: exhibitorsData,
       nullState: {
         logo: "/exhibitorsIcon.svg",
-        text: "No Exhibitor mapped to this event. Want to Exhibit?",
+        text: "No Exhibitor mapped to this event. Are you interested to Exhibit ?",
         linkText: "Exhibit Request",
         redirectLink: `https://10times.com/${websiteUrl}`
       },

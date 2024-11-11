@@ -86,7 +86,7 @@ export const EventInfoAndMap = ({
     tags,
     // tickets,
     entryType,
-    "10TimesUrl": websiteUrl,
+    website,
   } = eventDetails;
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
@@ -169,9 +169,9 @@ export const EventInfoAndMap = ({
                   {capitalize(entryType ?? "")}
                 </span>
               ) : (
-                websiteUrl ? (
-                  <Link href={`https://10times.com/${websiteUrl}`} target="_blank" className="text-[var(--primary-color)] cursor-pointer font-medium">
-                    Click Here
+                website ? (
+                  <Link href={website} target="_blank" className="text-[var(--primary-color)] cursor-pointer font-medium">
+                    Check website
                   </Link>
                 ) : (
                   <span className="text-[#666666] text-sm flex items-center gap-2">
