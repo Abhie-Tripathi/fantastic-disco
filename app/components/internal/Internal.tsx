@@ -249,7 +249,7 @@ const Internal = ({
               <InterestStatusSelector />
             </div>
 
-            <div style={{ width: "30%" }} className={styles.outerDiv}>
+            <div style={{ width: "25%" }} className={styles.outerDiv}>
               <DateRangeSelector source="coordinate" />
             </div>
 
