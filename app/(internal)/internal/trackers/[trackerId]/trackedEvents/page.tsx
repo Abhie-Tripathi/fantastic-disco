@@ -315,19 +315,19 @@ const Page = ({ params }: { params: any }) => {
   const newUrl = `${pathname}?${params.toString()}`;
   router.replace(newUrl);
 };
-const cityIds = trackerDetail?.filterValue?.locationIds?.city?.length > 0 
-  ? trackerDetail.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0]) 
-  : [];
+// const cityIds = trackerDetail?.filterValue?.locationIds?.city?.length > 0 
+//   ? trackerDetail.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0]) 
+//   : [];
 
-const countryIds = trackerDetail?.filterValue?.locationIds?.country?.length > 0 
-  ? trackerDetail.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0]) 
-  : [];
+// const countryIds = trackerDetail?.filterValue?.locationIds?.country?.length > 0 
+//   ? trackerDetail.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0]) 
+//   : [];
 
-const stateIds = trackerDetail?.filterValue?.locationIds?.state?.length > 0 
-  ? trackerDetail.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0]) 
-  : [];
+// const stateIds = trackerDetail?.filterValue?.locationIds?.state?.length > 0 
+//   ? trackerDetail.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0]) 
+//   : [];
 
-const locationIds:string[] = [...cityIds, ...countryIds, ...stateIds];
+// const locationIds:string[] = [...cityIds, ...countryIds, ...stateIds];
   return (
     <div className="flex w-[calc(100vw-134px)]">
       {/* <SideNav/> */}
@@ -503,7 +503,6 @@ const locationIds:string[] = [...cityIds, ...countryIds, ...stateIds];
                 <Map source="tracker" 
                 searchParams={`type=${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":"active"}`}
                 trackerId={params.trackerId}
-                locations={locationIds}
                  />
                 {/* <Map/> */}
               </Suspense>

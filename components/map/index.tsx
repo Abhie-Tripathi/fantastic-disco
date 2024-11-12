@@ -71,9 +71,8 @@ interface MapProps {
 
 type ZoomGroup = "country" | "state" | "city" | "event";
 
-export default function MapComponent({ source, searchParams, locations, trackerId }: {source: string;
+export default function MapComponent({ source, searchParams, trackerId }: {source: string;
   searchParams?: string;
-  locations?: string[];
   trackerId?: string;}) {
   const {theme} = useTheme();
   const mapRef = useRef<MapRef>(null);
@@ -106,7 +105,7 @@ export default function MapComponent({ source, searchParams, locations, trackerI
   
   const location = useMemo(() => {
     const geoCoordinates = getFilterValue("geoCoordinates");
-    const locationIds = source!=="tracker"?getFilterValue("locationIds"):locations;
+    const locationIds = source!=="tracker" ? getFilterValue("locationIds"):"some random location from tracker";
     
     if (geoCoordinates) {
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
@@ -249,7 +248,7 @@ export default function MapComponent({ source, searchParams, locations, trackerI
       queryClient.prefetchQuery({
         queryKey: ["eventCounts", nextZoomGroup, searchParams],
         queryFn: async () => {
-          const response = await memoizedGetEventsCount(
+          const response = source === "tracker"?await getMapViewData(trackerId, currentZoomGroup, searchParams) :await memoizedGetEventsCount(
             `${searchParams}&groupBy=${nextZoomGroup}`
           );
           return response || [];
@@ -451,7 +450,7 @@ export default function MapComponent({ source, searchParams, locations, trackerI
   console.log(theme,"ohh yeah")
   return (
     <div className="relative">
-      {!location ? (
+      {(!location && !trackerId)? (
         <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
       ) : (
         <ReactMapGL

@@ -116,9 +116,8 @@ export const useTrackerServices = () => {
       trackerId:string, params:string, eventType:string,
       abortSignal?: AbortSignal
     ) => {
-      console.log(params);
       
-      const response= await api.request(
+      const response:any= await api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&${eventType}` : ''}`,
         {
           method: "GET",
@@ -126,7 +125,6 @@ export const useTrackerServices = () => {
         }
       );
       const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
-      console.log(updatedResponse);
       
       return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=Map"));
     };
@@ -149,7 +147,7 @@ export const useTrackerServices = () => {
           }
         )
     }
-    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type=string)=>{
+    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:string)=>{
         const response = await api.request<EventCount[]>(
           `${endpoints.tracker.commonUrl}/${trackerId}/events?limit=20&offset=0&${type}&groupBy=${currentZoomGroup}`,
           {
@@ -165,7 +163,6 @@ export const useTrackerServices = () => {
       method: "GET",
       params: adaptedParams,
     });
-    console.log(TrackersAdapter.adaptTrackerMapEventData(response));
     return  TrackersAdapter.adaptTrackerMapEventData(response)
     };
     // const getEventsCount = async (searchParams: string) => {

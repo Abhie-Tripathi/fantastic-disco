@@ -38,7 +38,8 @@ export default function EventList({
   trackerId:string;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const searchParams = source!=="tracker"?useSearchParams():searchParam;
+  const defaultSearchParams = useSearchParams();
+  const searchParams = source !== "tracker" ? defaultSearchParams : searchParam;
   const eventService = useEventsService();
   const filteredParams = new URLSearchParams(searchParams?.toString());
   filteredParams.delete("view");
@@ -89,6 +90,7 @@ export default function EventList({
             days === 1 ? "day" : "days"
           })`;
           
+
           
     return (
       <Link href={`/search/${event.id}`}>
