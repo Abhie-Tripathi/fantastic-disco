@@ -14,7 +14,7 @@ interface GroupingByDate {
 const calculateTotal = (data: any) => {
   let total = 0;
   for (const key in data) {
-    total += data[key];
+    total += Number(data[key]);
   }
   return formatCount(total);
 };

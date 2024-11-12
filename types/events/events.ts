@@ -77,6 +77,7 @@ export interface Event {
     categoryId: string | null;
     countryId: string | null;
   } | null;
+  "10TimesUrl": string | null;
 }
 
 export interface Tickets {

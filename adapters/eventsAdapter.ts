@@ -464,6 +464,7 @@ export const EventsAdapter = {
           sponsorsCount: 0,
           speakersCount: 0,
           "trustScore%": item["trustScore%"],
+          "10TimesUrl": item["10TimesUrl"],
           frequency: item.frequency || null,
           co_organizers: [],
           rankings: item.ranking
@@ -755,8 +756,8 @@ export const EventsAdapter = {
           categoryId: null,
           countryId: null,
         },
-        exhibitorsCount:
-          parseInt(response.event.stats.estimatedExhibitor) || null,
+        // exhibitorsCount: parseInt(response.event.stats.estimatedExhibitor) || null,
+        exhibitorsCount: 0,
         timings: {
           [response.event.startDate.split("T")[0]]: {
             endTime: response.event.endDate.split("T")[1].slice(0, 5),
@@ -851,6 +852,7 @@ export const EventsAdapter = {
         isSaved: false,
         economicImpact: null,
         "trustScore%": response.event["trustScore%"],
+        "10TimesUrl": response.event["10TimesUrl"],
         scores: {
           impactScore: response.event.eventImpactScore || null,
           inboundScore: response.event.eventInboundScore || null,

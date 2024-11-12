@@ -1,6 +1,9 @@
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
 import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes } from '@/types/trackers';
+import { EventsAdapter } from "@/adapters/eventsAdapter";
+import {TrackersAdapter } from '@/adapters/trackerAdapter';
+import {EventCount} from "@/types/events";
 import { EventTableType } from '@/types/ListViewTable';
 export const useTrackerServices = () => {
     const api = useApi();
@@ -109,6 +112,22 @@ export const useTrackerServices = () => {
         }
       );
     };
+    const getTrackerMapEvents = async(
+      trackerId:string, params:string, eventType:string,
+      abortSignal?: AbortSignal
+    ) => {
+      
+      const response:any= await api.request(
+        `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&${eventType}` : ''}`,
+        {
+          method: "GET",
+          signal: abortSignal,
+        }
+      );
+      const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
+      
+      return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=Map"));
+    };
     
     const saveNewEvent=(formData:any)=>{
         return api.request(
@@ -128,9 +147,42 @@ export const useTrackerServices = () => {
           }
         )
     }
+    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:string)=>{
+        const response = await api.request<EventCount[]>(
+          `${endpoints.tracker.commonUrl}/${trackerId}/events?limit=20&offset=0&${type}&groupBy=${currentZoomGroup}`,
+          {
+            method: "GET",
+          }
+        );
+        return EventsAdapter.adaptEventCountResponse(response);
+    }
+    const getEventsLatLongData = async (trackerId:string,searchParams:string, type:string) => {
+      const params = new URLSearchParams(searchParams);
+    const adaptedParams = EventsAdapter.adaptRequestParams(params);
+    const response = await api.request(`${endpoints.tracker.commonUrl}/${trackerId}/events?${type}`, {
+      method: "GET",
+      params: adaptedParams,
+    });
+    return  TrackersAdapter.adaptTrackerMapEventData(response)
+    };
+    // const getEventsCount = async (searchParams: string) => {
+    //   const params = new URLSearchParams(searchParams);
+    //   const adaptedParams = EventsAdapter.adaptEventCountRequestParam(params);
+    //   const response = await api.request<EventCount[]>(
+    //     `${endpoints.event.count}`,
+    //     {
+    //       method: "GET",
+    //       params: adaptedParams,
+    //     }
+    //   );
+    //   return EventsAdapter.adaptEventCountResponse(response);
+    // };
     return {
       createTracker,
+      getMapViewData,
+      getEventsLatLongData,
       editTracker,
+      getTrackerMapEvents,
       getShareAccess,
       editAccess,
       shareTrackerInvite,

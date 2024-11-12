@@ -293,7 +293,7 @@ const Search = () => {
           ) : error ? (
             <ZeroState text={(error as ApiError).message} />
           ) : (
-            <Map searchParams={searchParams.toString()} />
+            <Map source="search" searchParams={searchParams.toString()} />
           )}
           {/* </Suspense> */}
         </TabsContent>
