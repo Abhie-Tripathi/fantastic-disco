@@ -18,7 +18,7 @@ const eventStatuses = [
 
 export default function InterestStatusSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, searchParams } =
+  const { setLocalFilter, getLocalFilterValue, searchParams, applyFilters } =
     useFilterContext();
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
@@ -46,6 +46,7 @@ export default function InterestStatusSelector() {
   const handleApply = () => {
     setLocalFilter("status", selectedStatuses.join(","));
     setIsOpen(false);
+    applyFilters();
   };
 
   const onOpenChange = (open: boolean) => {

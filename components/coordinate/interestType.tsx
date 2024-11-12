@@ -20,7 +20,7 @@ const eventStatuses = [
 
 export default function InterestTypeSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, searchParams } =
+  const { setLocalFilter, getLocalFilterValue, searchParams, applyFilters } =
     useFilterContext();
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
@@ -48,6 +48,7 @@ export default function InterestTypeSelector() {
   const handleApply = () => {
     setLocalFilter("interest", selectedStatuses.join(","));
     setIsOpen(false);
+    applyFilters();
   };
 
   const onOpenChange = (open: boolean) => {

@@ -89,7 +89,7 @@ export default function DateRangeSelector({
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("this-month");
   const [compareEnabled, setCompareEnabled] = React.useState(false);
-  const { getLocalFilterValue, setMultipleLocalFilters, searchParams } =
+  const { getLocalFilterValue, setMultipleLocalFilters, searchParams, applyFilters } =
     useFilterContext();
   const [selectedComparison, setSelectedComparison] = React.useState(
     comparisonOptions[0]
@@ -217,6 +217,10 @@ export default function DateRangeSelector({
     }
 
     setMultipleLocalFilters(filters);
+
+    if (source === 'coordinate') {
+      applyFilters();
+    }
     }
     setIsOpen(false);
   };

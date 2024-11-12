@@ -1,59 +1,177 @@
 import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
-import { CoordinateListResponse, eventDataType } from "@/types/coordinateEventType";
+import { CoordinateListResponse, UserInterestResponse, eventPocResponse } from "@/types/coordinateEventType";
 import { ApiError } from "@/types/api";
+import { MiscAdapter } from "@/adapters/miscAdapter";
 
 interface fnProp {
-    offset: number,
-    searchParams: URLSearchParams
+  offset: number;
+  searchParams: URLSearchParams;
+}
+
+interface upVoteProp {
+  enquiryId: string,
+  like: number,
+  type: string
+}
+
+interface setOwnerProp {
+  enquiryId: string,
+  userId: string,
+}
+
+interface updateEnquiryStatusProp {
+  enquiryId: string,
+  enquiryStatus: string,
+}
+
+interface shortlistProp {
+  entityId: string,
+  status: string,
+  id: string,
+  modifiedBy: string,
+  enquiryStatus: string,
+}
+
+interface outreachListProp {
+  offset: number,
+  status: string,
 }
 
 export const useCoordinateService = () => {
-  const api = useApi<CoordinateListResponse>();
+  const api = useApi<CoordinateListResponse | UserInterestResponse | eventPocResponse | undefined>();
 
-  const getEventsWithSearchParams1 = async (searchParamsString: string) => {
-    const params = new URLSearchParams(searchParamsString);
-    console.log("params", params);
-
-    return api.request(`${endpoints.coordinate.list}`,
-    {
+  const getEventsWithSearchParams = async ({
+    offset,
+    searchParams,
+  }: fnProp) => {
+    const params = new URLSearchParams(searchParams);
+    const adaptedParams = MiscAdapter.adaptCoordinateRequestParam(params);
+    return api.request<CoordinateListResponse>(`${endpoints.coordinate.enquiry}?offset=${offset}`, {
       method: "GET",
-      params: params,
+      params: adaptedParams,
     });
   };
 
-  
-
-  const fetchProjects = async ({ offset, searchParams }: fnProp) => {
-    // const res = await fetch('/api/projects?cursor=' + pageParam + '&' + searchParams)
-    // return res.json()
-    const params = new URLSearchParams(searchParams);
-    console.log("params", params.get('status'));
-    if(!params.get('status')) {
-        params.set('status', 'IN_DISCUSSION,SHORTLISTED,REJECTED');
-    }
-    return api.request(`${endpoints.coordinate.list}?limit=10&source=internal&offset=${offset}`, {
+  const getParticipentCount = () => {
+    return api.request(`${endpoints.coordinate.participent}`, {
       method: "GET",
-      params: params,
+    });
+  };
+
+  const getInterestedUsers = (eventId: string) => {
+    return api.request<UserInterestResponse>(`${endpoints.coordinate.iterestedUsers}/${eventId}`, {
+      method: "GET",
+    });
+  };
+
+  const upVote = async ({
+    enquiryId,
+    like,
+    type
+  }: upVoteProp) => {
+    const response = await api.request(`${endpoints.coordinate.iterestedUsers}/${enquiryId}/activity`, {
+      method: "POST",
+      data: {
+        source: "GTM",
+        like: like,
+        for: type?.toUpperCase(),
+      },
+    });
+    return response;
+  }
+
+  const getEventDetailById = (eventId: string) => {
+    return api.request(`${endpoints.event.eventDetailById}/${eventId}`, {
+      method: "GET",
+    });
+  };
+
+  const getEventPOC = (eventId: string) => {
+    return api.request<eventPocResponse>(`${endpoints.event.poc}/${eventId}`, {
+      method: "GET",
     });
   }
 
-  const getEventsWithSearchParams = (searchParamsString: string) => {
-    console.log('searchParamsString1', searchParamsString);
-    const params = new URLSearchParams(searchParamsString);
-    console.log("params", params.get('status'));
-    if(!params.get('status')) {
-        params.set('status', 'IN_DISCUSSION,SHORTLISTED,REJECTED');
-    }
-    return api.request(`${endpoints.coordinate.list}?limit=10&source=internal`, {
+  const getEnquiryOwner = (enquiryId: string) => {
+    return api.request(`${endpoints.coordinate.enquiryDetail}/${enquiryId}/owner`, {
       method: "GET",
-      params: params,
     });
-  };
+  }
+
+  const setEnquiryOwner = async ({
+    enquiryId,
+    userId,
+  }: setOwnerProp) => {
+    const response = await api.request(`${endpoints.coordinate.enquiryDetail}/owner`, {
+      method: "POST",
+      data: {
+        enquiryId: enquiryId,
+        userId: userId,
+      },
+    });
+    return response;
+  }
+
+  const setEnquiryStatus = async ({
+    enquiryId,
+    enquiryStatus,
+  }: updateEnquiryStatusProp) => {
+    const response = await api.request(`${endpoints.coordinate.enquiry}`, {
+      method: "PATCH",
+      data: {
+        enquiryId: enquiryId,
+        enquiryStatus: enquiryStatus,
+      },
+    });
+    return response;
+  }
+
+  const shortlistUsers = async ({
+    entityId,
+    status,
+    id,
+    modifiedBy,
+    enquiryStatus
+  }: shortlistProp) => {
+    const response = await api.request(`${endpoints.coordinate.iterestedUsers}`, {
+      method: "PATCH",
+      data: {
+        entityId: entityId,
+        status: status,
+        id: id,
+        modifiedBy: modifiedBy,
+        enquiryStatus: enquiryStatus,
+      },
+    });
+    return response;
+  }
+
+  const getOutreachEventList = ({offset, status}: outreachListProp) => {
+    return api.request<CoordinateListResponse>(`${endpoints.coordinate.enquiry}?limit=10&offset=${offset}&status=${status}`, {
+      method: "GET",
+    });
+  }
+
+  const getOutreachSingleEvent = ({offset, status}: outreachListProp) => {
+    return api.request<CoordinateListResponse>(`${endpoints.coordinate.enquiry}?limit=1&offset=${offset}&status=${status}`, {
+      method: "GET",
+    });
+  }
 
   return {
     getEventsWithSearchParams,
-    fetchProjects,
+    getParticipentCount,
+    getInterestedUsers,
+    upVote,
+    getEventDetailById,
+    getEventPOC,
+    getEnquiryOwner,
+    setEnquiryOwner,
+    setEnquiryStatus,
+    shortlistUsers,
+    getOutreachEventList,
+    getOutreachSingleEvent,
     isLoading: api.isLoading,
     error: api.error as ApiError,
   };

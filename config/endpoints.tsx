@@ -17,6 +17,7 @@ export const endpoints = {
     eventPOCDetailById: `${BASE_URL}/event-poc`,
     savedEvents: `${BASE_URL}/me/saved-events`,
     recentSearches: `${BASE_URL}/me/recent-searches`,
+    poc: `${BASE_URL}/event-poc`
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
@@ -51,6 +52,9 @@ export const endpoints = {
     saveNotes: `${BASE_URL}/comment`,
   },
   coordinate: {
-    list: `${BASE_URL}/userInterest/enquiry`,
+    enquiry: `${BASE_URL}/userInterest/enquiry`,
+    participent: `${BASE_URL}/userInterest/totalParticipent`,
+    iterestedUsers: `${BASE_URL}/userInterest`,
+    enquiryDetail: `${BASE_URL}/enquiry`,
   }
 };

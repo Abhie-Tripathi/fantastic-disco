@@ -11,13 +11,13 @@ import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 
 const eventStatuses = [
-  { id: "me", label: "Me" },
-  { id: "others", label: "Others" },
+  { id: "me", label: "By me" },
+  { id: "others", label: "By others" },
 ];
 
 export default function UpvoteSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, searchParams } =
+  const { setLocalFilter, getLocalFilterValue, searchParams, applyFilters } =
     useFilterContext();
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
@@ -45,6 +45,7 @@ export default function UpvoteSelector() {
   const handleApply = () => {
     setLocalFilter("liked", selectedStatuses.join(","));
     setIsOpen(false);
+    applyFilters();
   };
 
   const onOpenChange = (open: boolean) => {
@@ -67,7 +68,7 @@ export default function UpvoteSelector() {
           aria-haspopup="true"
         >
           <div className="flex items-center">
-            <span className="mr-2">Upvoted By</span>
+            <span className="mr-2">Upvote</span>
             {selectedStatus > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 {selectedStatus}
