@@ -40,14 +40,14 @@ export default function EventList({
   const [currentPage, setCurrentPage] = useState(1);
   const searchParams = source!=="tracker"?useSearchParams():searchParam;
   const eventService = useEventsService();
-  const filteredParams = new URLSearchParams(searchParams.toString());
+  const filteredParams = new URLSearchParams(searchParams?.toString());
   filteredParams.delete("view");
   filteredParams.set("skip", String((currentPage - 1) * 10));
-  const {getTrackerEvents}=useTrackerServices(); 
+  const {getTrackerMapEvents}=useTrackerServices(); 
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString()],
     queryFn: () => source === 'tracker' 
-      ? getTrackerEvents(trackerId, "limit=20&offset=0", "active")
+      ? getTrackerMapEvents(trackerId,`limit=10&offset=${(currentPage - 1) * 10 + 1}`, searchParam.toString())
       : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
   
@@ -77,17 +77,17 @@ export default function EventList({
             .join(", ")
       : "Venue to be announced";
 
-    // const formattedStartDate = format(event.startDateTime, "dd MMM yyyy");
-    // const formattedEndDate = format(event.endDateTime, "dd MMM yyyy");
+    const formattedStartDate = format(event.startDateTime, "dd MMM yyyy");
+    const formattedEndDate = format(event.endDateTime, "dd MMM yyyy");
 
-    // const days = differenceInDays(event.endDateTime, event.startDateTime) + 1;
+    const days = differenceInDays(event.endDateTime, event.startDateTime) + 1;
 
-    // const formattedRange =
-    //   formattedStartDate === formattedEndDate
-    //     ? formattedStartDate
-    //     : `${formattedStartDate} - ${formattedEndDate} (${days} ${
-    //         days === 1 ? "day" : "days"
-    //       })`;
+    const formattedRange =
+      formattedStartDate === formattedEndDate
+        ? formattedStartDate
+        : `${formattedStartDate} - ${formattedEndDate} (${days} ${
+            days === 1 ? "day" : "days"
+          })`;
           
           
     return (
@@ -106,7 +106,7 @@ export default function EventList({
               <span>{address}</span>
             </div>
             <div className="flex items-start text-xs text-[#666666]">
-              {/* {formattedRange} */}
+              {formattedRange}
             </div>
           </CardContent>
         </Card>

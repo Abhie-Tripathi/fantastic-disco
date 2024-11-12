@@ -44,8 +44,8 @@ const Map = lazy(() => import("@/components/map"));
 //   globalToggle?:boolean;
 //   brandSeries?:boolean;
 // }
+interface LocationObject  { [id: string]: string };
 const Page = ({ params }: { params: any }) => {
-  console.log(params);
   const {data}=useTrackerContext();
   
   
@@ -61,7 +61,6 @@ const Page = ({ params }: { params: any }) => {
   const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
   const viewType=searchParams.get("view");
-console.log(searchParams.get("view"));
   const typeOfEvent=searchParams.get("eventType");
   const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
   // const id = pathName[pathName.length - 2];
@@ -234,16 +233,12 @@ console.log(searchParams.get("view"));
     if (active === "New Events") setType("NEW");
     if (active === "Expired Events") setType("EXPIRED");
   }, [active]);
-  useEffect(() => {
-    console.log(activeValue);
-  }, [active]);
   const formatCount = (count: number ) => {
     if (count >= 1000) {
       const value = count / 1000;
       const decimalPart = value - Math.floor(value);
         return `${Math.floor(value)}k`;
     }
-    console.log(count);
     return count;
   };
   const saveTracker = async () => {
@@ -274,131 +269,6 @@ console.log(searchParams.get("view"));
       router.replace("/internal/trackers");
     }
   };
-  const createQueryString = () => {
-    const filters = trackerDetail.filterValue;
-    console.log(trackerDetail.filterValue);
-    
-    const queries: { [key: string]: any } = {};
-
-    // if (filters?.eventCategory) {
-    //   queries.eventCategory = filters.eventCategory?.map(
-    //     (item: any) => item.id
-    //   );
-    // }
-
-    // if (filters?.eventCountry) {
-    //   queries.eventCountry = filters.eventCountry.map(
-    //     (item: any) => Object.keys(item)[0]
-    //   );
-    // }
-
-    // if (filters?.eventCity) {
-    //   queries.eventCity = filters.eventCity.map(
-    //     (item: any) => Object.keys(item)[0]
-    //   );
-    // }
-
-    // if(filters?.eventRegion){
-    //   queries.eventRegion = filters.eventRegion;
-    // }
-
-    // if (filters?.startDate) {
-    //   queries.startDate = filters.startDate;
-    // }
-
-    // if (filters?.endDate) {
-    //   queries.endDate = filters.endDate;
-    // }
-
-    // if (filters?.eventStatus) {
-    //   queries.eventStatus = filters.eventStatus;
-    // }
-
-    // if (filters?.eventFormat) {
-    //   queries.eventFormat = filters.eventFormat;
-    // }
-
-    // if (filters?.eventFrequency) {
-    //   queries.eventFrequency = filters.eventFrequency;
-    // }
-
-    // if (filters?.editionRange) {
-    //   queries.editionRange = filters.editionRange;
-    // }
-
-    // if(filters?.eventKeywords){
-    //   queries.eventKeywords = filters.eventKeywords;
-    // }
-
-    // if (filters?.eventRank) {
-    //   queries.eventRank = filters.eventRank;
-    // }
-
-    // if (filters?.localRank) {
-    //   queries.localRank = filters.localRank;
-    // }
-
-    // if (filters?.trustScore) {
-    //   queries.trustScore = filters.trustScore;
-    // }
-
-    // if (filters?.eventSeries) {
-    //   queries.eventSeries = filters.eventSeries;
-    // }
-
-    // if (filters?.reputationScore) {
-    //   queries.reputationScore = filters.reputationScore;
-    // }
-
-    // if (filters?.maturity) {
-    //   queries.maturity = filters.maturity;
-    // }
-
-    // if (filters?.internationalScore) {
-    //   queries.internationalScore = filters.internationalScore;
-    // }
-
-    // if (filters?.inboundScore) {
-    //   queries.inboundScore = filters.inboundScore;
-    // }
-
-    // if (filters?.eventRating) {
-    //   queries.eventRating = filters.eventRating;
-    // }
-
-    // if (filters?.eventSize) {
-    //   queries.eventSize = filters.eventSize;
-    // }
-    if (trackerDetail.filterValue?.eventType) {
-      queries.eventTypes = trackerDetail.filterValue.eventType.join(',');
-    }
-    if (trackerDetail.filterValue?.eventFormat) {
-      queries.eventFormats = trackerDetail.filterValue.eventFormat;
-    }
-    if (trackerDetail.filterValue?.eventStatus) {
-      queries.status = trackerDetail.filterValue.eventStatus;
-    }
-    if (trackerDetail.filterValue?.eventEntry) {
-      queries.eventType = trackerDetail.filterValue.eventEntry;
-    }
-    if(trackerDetail.filterValue?.eventRating){
-      queries.ratings = trackerDetail.filterValue.eventRating;
-    }
-    if(trackerDetail.filterValue?.maturity){
-      queries.maturity = trackerDetail.filterValue?.maturity;
-    }
-    console.log(trackerDetail);
-    
-    let query = new URLSearchParams(queries);
-    console.log(query.toString());
-    
-    const finalQueryString = query.toString();
-    setUrlQueryString(finalQueryString);
-  };
-  useEffect(()=>{
-    if(view==="map")
-    createQueryString();
-  },[view])
  useEffect(()=>{
   let toggleOpend:Toggle ={};
   if(trackerDetail?.filterValue?.userType)
@@ -439,8 +309,6 @@ console.log(searchParams.get("view"));
       setShowInsights(prev=>({...prev, ...toggleObj}));
     }
  },[trackerDetail])
- console.log(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
- );
  const addQueryString = (value:string) => {
   const params = new URLSearchParams(searchParams);
   params.set('eventType', value); 
@@ -448,22 +316,18 @@ console.log(searchParams.get("view"));
   router.replace(newUrl);
 };
 const cityIds = trackerDetail?.filterValue?.locationIds?.city?.length > 0 
-  ? trackerDetail.filterValue.locationIds.city.map(city => Object.keys(city)[0]) 
+  ? trackerDetail.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0]) 
   : [];
 
 const countryIds = trackerDetail?.filterValue?.locationIds?.country?.length > 0 
-  ? trackerDetail.filterValue.locationIds.country.map(country => Object.keys(country)[0]) 
+  ? trackerDetail.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0]) 
   : [];
 
 const stateIds = trackerDetail?.filterValue?.locationIds?.state?.length > 0 
-  ? trackerDetail.filterValue.locationIds.state.map(state => Object.keys(state)[0]) 
+  ? trackerDetail.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0]) 
   : [];
 
-const locationIds = [...cityIds, ...countryIds, ...stateIds];
-console.log(locationIds);
-
- console.log(params);
- 
+const locationIds:string[] = [...cityIds, ...countryIds, ...stateIds];
   return (
     <div className="flex w-[calc(100vw-134px)]">
       {/* <SideNav/> */}
@@ -619,7 +483,7 @@ console.log(locationIds);
             </Link>
           </div>
 
-          {view === "list" && (
+          {(view === "list" || active === "Saved Events") && (
             <div>
               <Suspense fallback={<Loading />}>
             <Table
@@ -633,10 +497,11 @@ console.log(locationIds);
             </div>
           )}
 
-          {view === "map" && (
+          {(view === "map" && active !== "Saved Events") && (
             <div>
               <Suspense fallback={<Loading />}>
-                <Map source="tracker" searchParams="categories=baby-kids%2Cautomotive&locationIds=226e11ef-32fc-5484-9843-7087fdfb413d%2C01ac0d6d-a090-591f-957f-66aece6b72fc&view=map&eventTypes=tradeshows%2Cconferences&eventFormats=offline%2Chybrid&active_gte=2024-11-01T00%3A00%3A00.000Z&active_lte=2025-10-31T00%3A00%3A00.000Z&status=active%2Ccancelled"
+                <Map source="tracker" 
+                searchParams={`type=${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":"active"}`}
                 trackerId={params.trackerId}
                 locations={locationIds}
                  />

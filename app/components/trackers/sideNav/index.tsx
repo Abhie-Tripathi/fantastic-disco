@@ -19,7 +19,9 @@ const Index = () => {
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
   const type  = searchParams.get('type');
-  const [view,setView]=useState("list");
+  const typeOfView  = searchParams.get('view');
+  const typeOfEvent = searchParams.get('eventType')
+  const [view,setView]=useState(typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"list");
   const secondLast = pathName[pathName.length - 2];
   console.log(secondLast);
   const router = useRouter()

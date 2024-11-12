@@ -71,10 +71,13 @@ interface MapProps {
 
 type ZoomGroup = "country" | "state" | "city" | "event";
 
-export default function MapComponent({ source, searchParams, locations, trackerId }: {string, MapProps, string}) {
+export default function MapComponent({ source, searchParams, locations, trackerId }: {source: string;
+  searchParams?: string;
+  locations?: string[];
+  trackerId?: string;}) {
   const {theme} = useTheme();
   const mapRef = useRef<MapRef>(null);
-  const {getMapViewData}=useTrackerServices();
+  const {getMapViewData, getEventsLatLongData}=useTrackerServices();
   const { getFilterValue } = useFilterState();
   const [viewport, setViewport] = useState<ViewState>({
     latitude: 20.5937,
@@ -84,7 +87,6 @@ export default function MapComponent({ source, searchParams, locations, trackerI
     pitch: 0,
     padding: { top: 0, bottom: 0, left: 0, right: 0 },
   });
-  console.log(locations);
   
   const [events, setEvents] = useState<MapEvents[]>([]);
   const [popupInfo, setPopupInfo] = useState<Event | null>(null);
@@ -101,11 +103,10 @@ export default function MapComponent({ source, searchParams, locations, trackerI
     getEventsWithSearchParams,
     []
   );
-
+  
   const location = useMemo(() => {
     const geoCoordinates = getFilterValue("geoCoordinates");
     const locationIds = source!=="tracker"?getFilterValue("locationIds"):locations;
-    console.log(locationIds);
     
     if (geoCoordinates) {
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
@@ -219,10 +220,10 @@ export default function MapComponent({ source, searchParams, locations, trackerI
   //   enabled: currentZoomGroup !== "event" && location !== null,
   // });
   const eventCountsQuery = useQuery<EventCount[], Error>({
-    queryKey: source === "tracker" ? ["eventCounts", trackerId, currentZoomGroup] : ["eventCounts", currentZoomGroup, searchParams],
+    queryKey: source === "tracker" ? ["eventCounts", trackerId, currentZoomGroup,searchParams] : ["eventCounts", currentZoomGroup, searchParams],
     queryFn: async () => {
       if (source === "tracker") {
-        const response = await getMapViewData(trackerId, currentZoomGroup);
+        const response = await getMapViewData(trackerId, currentZoomGroup, searchParams);
         return response || [];
       } else {
         const response = await memoizedGetEventsCount(
@@ -231,10 +232,9 @@ export default function MapComponent({ source, searchParams, locations, trackerI
         return response || [];
       }
     },
-    staleTime: 60 * 1000,
+    staleTime: source === "tracker" ? 0 : 60 * 1000,
     enabled: currentZoomGroup !== "event" && location !== null,
   });
-
   useEffect(() => {
     const nextZoomGroup =
       currentZoomGroup === "country"
@@ -254,13 +254,14 @@ export default function MapComponent({ source, searchParams, locations, trackerI
           );
           return response || [];
         },
-        staleTime: 60 * 1000,
+        staleTime: source === "tracker" ? 0 : 60 * 1000,
       });
     }
   }, [currentZoomGroup, searchParams, queryClient, memoizedGetEventsCount]);
 
   useEffect(() => {
     const fetchEvents = async () => {
+      
       if (currentZoomGroup === "event" && mapRef.current) {
         const map = mapRef.current.getMap();
         const center = map.getCenter();
@@ -269,10 +270,7 @@ export default function MapComponent({ source, searchParams, locations, trackerI
           const ne = bounds.getNorthEast();
           const sw = bounds.getSouthWest();
           const radius =
-            (Math.max(Math.abs(ne.lng - sw.lng), Math.abs(ne.lat - sw.lat)) *
-              111) /
-            2;
-
+            (Math.max(Math.abs(ne.lng - sw.lng), Math.abs(ne.lat - sw.lat)) * 111) / 2;
           const viewBound = {
             boundType: "point",
             coordinates: JSON.stringify({
@@ -281,33 +279,23 @@ export default function MapComponent({ source, searchParams, locations, trackerI
               radius: radius,
             }),
           };
-
+    
           try {
-            const modifiedSearchParams = searchParams.replace(
-              /locationIds=[^&]*&?/,
-              ""
-            );
-
-            const viewBoundString = encodeURIComponent(
-              JSON.stringify(viewBound)
-            );
-
+            const modifiedSearchParams = searchParams
+              ? searchParams.replace(/locationIds=[^&]*&?/, "")
+              : ""; // Ensure searchParams exists
+    
+            const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
             const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}`;
-            console.log(finalSearchParams);
-            
-            // let eventData={};
-            // console.log(source);
-            console.log(viewBoundString);
-            
-            // if(source===tracker){
-            //   eventData = await getMapViewData(trackerId)
-            // }else 
-            const eventsData = await memoizedGetEventsWithSearchParams(
-              `${finalSearchParams}`
-            );
-          // }else{
-          //   eventsData = await getMapViewData(trackerId);
-          // }
+    
+            let eventsData: any = {}; // Define type if in TypeScript
+    
+            if (source === "tracker") {
+              eventsData = await getEventsLatLongData(trackerId, `viewBound=${viewBoundString}`, searchParams);
+            } else {
+              eventsData = await memoizedGetEventsWithSearchParams(finalSearchParams);
+            }
+    
             setEvents((eventsData?.events as MapEvents[]) || []);
           } catch (error) {
             console.error("Error fetching events:", error);
@@ -327,7 +315,7 @@ export default function MapComponent({ source, searchParams, locations, trackerI
     memoizedGetEventsWithSearchParams,
     location,
   ]);
-
+  
   // Handle map movement
   const onMove = useCallback(({ viewState }: { viewState: ViewState }) => {
     setViewport(viewState);
@@ -459,7 +447,6 @@ export default function MapComponent({ source, searchParams, locations, trackerI
     return null;
   }, [location]);
 
-  console.log(events);
   
   console.log(theme,"ohh yeah")
   return (

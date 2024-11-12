@@ -103,6 +103,7 @@ export const useEventsService = () => {
       method: "GET",
       params: adaptedParams,
     });
+    console.log(response);
     console.log(EventsAdapter.adaptResponse(response, params));
     return EventsAdapter.adaptResponse(response, params);
   };
