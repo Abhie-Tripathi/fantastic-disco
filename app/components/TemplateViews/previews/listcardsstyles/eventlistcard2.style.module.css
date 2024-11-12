@@ -16,8 +16,8 @@
     gap: 10px;
 }
 .eventName{
-    min-height: 30px;
-    max-height: 30px;
+    min-height: 40px;
+    max-height: 40px;
     overflow: hidden;
 }
 .banner{

@@ -41,7 +41,9 @@
     object-fit:cover;
 }
 .eventName{
-    height: 60px;
+    min-height: 60px;
+    max-height: 60px;
+    line-height: 25px;
     word-wrap: break-word;
     overflow: hidden;
 }
