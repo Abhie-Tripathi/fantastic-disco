@@ -98,7 +98,10 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
                         <div className={width === "small" ? styles.bigName : styles.smallName}>{event.mainEvent.name}</div>
                         <div className={styles.eventDataField} style={{ marginTop: 10 }}>
                             <Image src={PlaceIcon} alt="locationIcon" width={14} height={14} className="icons" />
-                            <div>{event.mainEvent.cityName}, {event.mainEvent.countryName}</div>
+                            {
+                                event?.mainEvent.format === "Virtual"?<>Virtual</>: <div>{event.mainEvent.cityName}, {event.mainEvent.countryName}</div>
+                            }
+                            {/* <div>{event.mainEvent.cityName}, {event.mainEvent.countryName}</div> */}
                         </div>
                         <div className={styles.eventDateTimeContainer}>
                             <div className={styles.eventDataField}>
@@ -117,7 +120,7 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
                         <div className={styles.tags_deleteContainer}>
                             <div className={styles.tags}>
                                 <div className={styles.tag1}>{event.mainEvent.participationType}</div>
-                                <div className={styles.tag2}>In-Person</div>
+                                <div className={styles.tag2}>{event.mainEvent?.format}</div>
                             </div>
                             {/* <button className={styles.deleteBtn} onClick={(e) => handleDelete(e)}>Delete</button> */}
                         </div>
@@ -135,7 +138,6 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
                                         setSelectedEventType={setSelectedEventType}
                                         handlePrefillSubEvent={handlePrefillSubEvent}
                                         width="small"
-                                        handleDeleteModal={handleDeleteModal}
                                         subEvent={subEvent}
                                     />
                                 </div>

@@ -121,7 +121,8 @@
     width: 100%;
     /* z-index: -1; */
 }
-.confettiCanvasTwo{
+
+.confettiCanvasTwo {
     position: absolute;
     left: 0;
     top: 0;
@@ -129,9 +130,11 @@
     width: 100%;
     /* z-index: -1; */
 }
-.resgitrationContainer{
+
+.resgitrationContainer {
     z-index: 2;
 }
+
 .detailsContainer {
     display: flex;
     gap: 30px;
@@ -262,7 +265,7 @@
     font-weight: 500;
 }
 
-.eventName {
+/* .eventName {
     background: none;
     border: none;
     font-size: 40px;
@@ -271,7 +274,19 @@
     overflow: hidden;
     color: #1a1a1a;
     font-weight: bolder;
+} */
+.eventName { 
+    background: none;
+    border: none;
+    font-size: 40px;
+    width: auto; /* Allow the width to adjust to content */
+    resize: none;
+    overflow: hidden;
+    color: #1a1a1a;
+    font-weight: bolder;
+    display: inline; /* Keep it inline with the span */
 }
+
 
 .speakerProfileContainer {
     width: 100%;
@@ -328,7 +343,19 @@
     }
 }
 
-.backBtn{
+.backBtn {
     cursor: pointer;
     font-size: 15px;
-  }
+}
+
+.pill {
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.type1 {
+    background-color: #FFF8E6;
+    color: #CE9921;
+}

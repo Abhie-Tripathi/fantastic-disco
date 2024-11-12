@@ -26,7 +26,7 @@ import WaitListAndCap from '../Details/waitListAndCapacity/WaitListAndCap'
 import CapacityModal from '../Details/waitListAndCapacity/capacitymodal/Capacity'
 import ExhibitorDetails from './exhibitordetails/ExhibitorDetails'
 import ExhibitorDetailsModal from './exhibitordetails/exhibitordetailsmodal/ExhibitorDetailsModal'
-
+import EventType from './eventtypeinmaineventform/EventType'
 interface SpeakerProfileType {
   id: string;
   name: string;
@@ -52,7 +52,7 @@ interface Props {
 }
 const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
   handleCollapseForm, isApproved, setIsApproved }: Props) => {
-
+console.log("prefilled",prefilledEvent)
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
   const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
@@ -190,6 +190,7 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
       });
     }
   }, [imageUrl]);
+  
 
   const handleInputChange = (value: string) => {
     console.log("value typed : ", value)
@@ -214,11 +215,20 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
   return (
     <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.exhibitorModal || formState.registerModal ? styles.modalBody : ""}`}>
       <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.exhibitorModal || formState.registerModal ||formState.capacityModal? styles.modalOpen : ""}`} >
+       
+       <div>
+       <div><EventType prefilledEvent={prefilledEvent} mainEventType={formState.event_type} handleChange={handleChange} /></div>
+       <div> {formState.isEventTypeEmpty && <p className={styles.errorMessage}>Please select any event type</p>}</div>
+       </div>
         <div>
-          <div className={`${styles.participationContainer}`}><ParticipationContainer formTheme={formTheme} handleChange={handleChange} formState={formState} heading='Choose Your Mode of Participation' type='main' size="large" />
-          </div>
-          {formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
+        {
+          formState.event_type && (<div className={`${styles.participationContainer}`}><ParticipationContainer formTheme={formTheme} handleChange={handleChange} formState={formState} heading='Choose Your Mode of Participation' type='main' size="large" />
+          </div>)
+         }
+         {formState.event_type&& formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please select any mode of participation</p>}
         </div>
+          
+      
         <div className={styles.sections}>
           <div className={styles.leftSection}>
             <div className={styles.posterContainer}>
@@ -294,7 +304,7 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
               handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
                 <ExhibitorContainer handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
 
-            {formState.cityName &&
+            {(formState.cityName && formState.eventFormat !== "Virtual") &&
               // <div className={styles.map} ref={mapDivRef}>
               // <Suspense fallback={<div>Loading...</div>}>
               <MapView latitude={formState.latitude}

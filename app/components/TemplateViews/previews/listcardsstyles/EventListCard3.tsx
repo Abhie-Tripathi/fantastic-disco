@@ -63,15 +63,15 @@ const EventListCard3 = ({
     <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
       <div className={styles.bannerContainer}>
       <Image width={271} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.banner} />
-        <div className={styles.event_type}>{fetchedEvent?.eventType==="MAIN"? "Main Even" : fetchedEvent?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
-        <div className={styles.type}>Workshop</div></div>
+        <div className={styles.event_type}>{fetchedEvent?.eventType==="MAIN"? "Main Event" : fetchedEvent?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
+        <div className={styles.type}>{fetchedEvent?.event_type}</div></div>
       
       <div className={styles.eventDetails}>
         <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
         <div className={styles.location_dateContainer}>
           <div className={styles.locationContainer}>
             <LocationIcon color={fontSettings.subheading.fontColor}/>
-            <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName :  demoLocation}</div>
+            <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent?.eventFormat==="Virtual"?"Virtual": fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName :  demoLocation}</div>
           </div>
           <div className={styles.dateContainer}>
             <DateIcon color={fontSettings.subheading.fontColor}/>

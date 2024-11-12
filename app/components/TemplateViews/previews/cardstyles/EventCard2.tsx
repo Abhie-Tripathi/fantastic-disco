@@ -5,7 +5,7 @@ import placeholder2 from '/public/placeholder2.png'
 import locationIcon from '/public/location_on.svg'
 import person1 from "@/public/person1.svg";
 import person2 from "@/public/person2.svg";
-import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype' 
+import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 
 interface FontSettings {
     fontFamily: string;
@@ -61,13 +61,21 @@ const EventCard2 = ({
     
         return `${getDayWithSuffix(day)} ${month} ${year}`;
     };
+    const formatLocation = (event : any) => {
+        if (event?.eventFormat === "Virtual") {
+            return "Virtual";
+        }
+    
+        const location = `${event?.cityName}, ${event?.countryName}`;
+        return location.length > 20 ? `${location.slice(0, 17)}...` : location;
+    };
     return (
         <div className={styles.card} style={{backgroundColor : cardBgColor, borderRadius: cardBorderRadius}}>
             <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <LocationIcon color={fontSettings.subheading.fontColor}/>
-                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName :  demoLocation}</div>
+                    <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent ? formatLocation(fetchedEvent) : demoLocation}</div>
                 </div>
                 <div className={styles.dateContainer}>
                     <DateIcon color={fontSettings.subheading.fontColor} />
@@ -79,8 +87,8 @@ const EventCard2 = ({
             <div className={styles.type_peopleContainer}>
                 <div className={styles.typeContainer}>
                 <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType ==="MAIN"?"Main Event":fetchedEvent?.eventType ==="SUB"?"Side Event":"Main Event"}</div>
-                    <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>Tradeshow</div>
-                    <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>Attending</div>
+                    <div className={`${styles.pill} ${styles.type1}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.event_type: fetchedEvent?.eventType === "SUB" ?fetchedEvent.participationType ==="Brunch/Lunch/Dinner"?"Bru../Lun../Din..":fetchedEvent.participationType:"Tradeshow"}</div>
+                    <div className={`${styles.pill} ${styles.type2}`} style={{fontSize : fontSettings.body.fontSize}}>{fetchedEvent?.eventType === "MAIN"? fetchedEvent.eventFormat: fetchedEvent?.eventType==="SUB" ?fetchedEvent.eventFormat:"Attending"}</div>
                 </div>
                 {/* <div className={styles.circles}>
                     <div className={styles.circle} data-name="John Doe">

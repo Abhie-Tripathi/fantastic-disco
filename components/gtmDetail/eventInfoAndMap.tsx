@@ -13,6 +13,7 @@ import { numberWithCommas } from "@/utils/formater";
 import { useInView } from "react-intersection-observer";
 import CircularProgress from "../gtmDetailRelevanceScore/circularProgress";
 import { Badge } from "../ui/badge";
+import Link from "next/link";
 interface Props {
   eventDetails: GTMEventDetail;
   scrollSection: string;
@@ -28,7 +29,7 @@ const TagList = ({
 }) => {
   const displayedTags = isExpanded ? tags : tags.slice(0, tags.length);
   return displayedTags.map((tag) => (
-    <li key={tag.id}>
+    <li key={tag.slug}>
       <span className="text-[var(--primary-text-color)] text-sm py-1 px-3 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)]">
         {capitalize(tag.name)}
       </span>
@@ -85,6 +86,7 @@ export const EventInfoAndMap = ({
     tags,
     // tickets,
     entryType,
+    website,
   } = eventDetails;
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
@@ -167,10 +169,16 @@ export const EventInfoAndMap = ({
                   {capitalize(entryType ?? "")}
                 </span>
               ) : (
-                <span className="text-[#666666] text-sm flex items-center gap-2">
-                  <CircleSlash width={15} height={15} />
-                  No data available
-                </span>
+                website ? (
+                  <Link href={website} target="_blank" className="text-[var(--primary-color)] cursor-pointer font-medium">
+                    Check website
+                  </Link>
+                ) : (
+                  <span className="text-[#666666] text-sm flex items-center gap-2">
+                    <CircleSlash width={15} height={15} />
+                    No data available
+                  </span>
+                )
               )}
               {/* {entryType && tickets && tickets.length > 0 && (
                 <DetailDialog

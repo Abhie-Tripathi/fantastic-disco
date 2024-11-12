@@ -33,6 +33,7 @@ interface StickyProps {
   demoEventName: string;
   demoDescription: string;
   demoLocation: string;
+  demoDate: string;
 }
 
 const StickyPreview = ({
@@ -51,6 +52,7 @@ const StickyPreview = ({
   selectedBtn,
   smallCard,
   buttonSettings,
+  demoDate,
 }: StickyProps) => {
   const [promotedEvents, setPromotedEvents] = useState<
     PrefilledAddedEventsType[]
@@ -58,8 +60,6 @@ const StickyPreview = ({
   const [normalEvents, setNormalEvents] = useState<PrefilledAddedEventsType[]>(
     []
   );
-
-  // Filter events based on 'promoted' field and update state
   useEffect(() => {
     if (fetchedAddedOtherData && Array.isArray(fetchedAddedOtherData)) {
       const promoted = fetchedAddedOtherData.filter(
@@ -74,83 +74,20 @@ const StickyPreview = ({
     }
   }, [fetchedAddedOtherData]);
 
-  console.log("events_in_sticky_view__ceds", fetchedAddedOtherData);
   const router = useRouter();
   // const handleCardClick = (eventId: string, widgetId: string) => {
   //     // const hash = createHash(widgetId, eventId);
   //     // router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`)
   //     router.push(`/detailpage/${eventId}`);
   // }
-  return (
-    // <div className={styles.preview}>
-    //     <div className={type === "top" ? styles.stickyTop : styles.stickyFooter}>Your Event Name</div>
-    //     {/* <iframe src="https://10times.com/" className={styles.website}></iframe> */}
-    //     <div className={styles.website}>Your Website</div>
-    // </div>
-
-    <div className={styles.preview}>
-      {fetchedAddedOtherData &&
-      fetchedAddedOtherData.length > 0 &&
-      fetchedAddedOtherData[0].eventType === "MAIN" ? (
-        fetchedAddedOtherData.map((event, key) => (
-          <div
-            className={type === "top" ? styles.stickyTop : styles.stickyFooter}
-            key={key}
-            // onClick={() => handleCardClick(event.id, widgetId)} key={key}
-          >
-            <StickyCard
-              fetchedEvent={event}
-              cardBgColor={cardBgColor}
-              cardBorderRadius={cardBorderRadius}
-              fontSettings={fontSettings}
-              selectedBtn={selectedBtn}
-              smallCard={smallCard}
-              buttonSettings={buttonSettings}
-              demoBanner={""}
-              demoEventName={""}
-              demoDescription={""}
-              demoLocation={""}
-            />
-          </div>
-        ))
-      ) : fetchedAddedOtherData &&
-        fetchedAddedOtherData.length > 0 &&
-        fetchedAddedOtherData[0].eventType === "SUB" ? (
-        // <div
-        //   className={type === "top" ? styles.stickyTop : styles.stickyFooter}
-        // >
-        //   <StickyCard
-        //     cardBgColor={cardBgColor}
-        //     cardBorderRadius={cardBorderRadius}
-        //     fontSettings={fontSettings}
-        //     selectedBtn={selectedBtn}
-        //     smallCard={smallCard}
-        //     buttonSettings={buttonSettings}
-        //     demoBanner={demoBanner}
-        //     demoEventName={demoEventName}
-        //     demoDescription={demoDescription}
-        //     demoLocation={demoLocation}
-        //   />
-        // </div>
-        <SubEventCard
-          fetchedAddedOtherData={fetchedAddedOtherData}
-          fetchedEvent={event}
-          cardBgColor={cardBgColor}
-          cardBorderRadius={cardBorderRadius}
-          fontSettings={fontSettings}
-          selectedBtn={selectedBtn}
-          smallCard={smallCard}
-          buttonSettings={buttonSettings}
-          demoBanner={""}
-          demoEventName={""}
-          demoDescription={""}
-          demoLocation={""}
-        />
-      ) : (
+  if (!fetchedAddedOtherData || fetchedAddedOtherData.length === 0) {
+    return (
+      <div className={styles.preview}>
         <div
           className={type === "top" ? styles.stickyTop : styles.stickyFooter}
         >
           <StickyCard
+            fetchedEvent={fetchedAddedOtherData}
             cardBgColor={cardBgColor}
             cardBorderRadius={cardBorderRadius}
             fontSettings={fontSettings}
@@ -161,10 +98,56 @@ const StickyPreview = ({
             demoEventName={demoEventName}
             demoDescription={demoDescription}
             demoLocation={demoLocation}
+            demoDate={demoDate}
           />
         </div>
-      )}
-    </div>
+      </div>
+    );
+  }
+
+  const eventType = fetchedAddedOtherData[0]?.eventType;
+  return (
+    <>
+      {eventType === "MAIN" ? (
+        <div className={styles.preview}>
+          <div
+            className={type === "top" ? styles.stickyTop : styles.stickyFooter}
+          >
+            <StickyCard
+              cardBgColor={cardBgColor}
+              cardBorderRadius={cardBorderRadius}
+              fontSettings={fontSettings}
+              selectedBtn={selectedBtn}
+              smallCard={smallCard}
+              buttonSettings={buttonSettings}
+              fetchedEvent={fetchedAddedOtherData}
+              demoBanner={demoBanner}
+              demoEventName={demoEventName}
+              demoDescription={demoDescription}
+              demoLocation={demoLocation}
+              demoDate={demoDate}
+            />
+          </div>
+        </div>
+      ) : eventType === "SUB" ? (
+        <div className={styles.preview}>
+          <div
+            className={type === "top" ? styles.stickyTop : styles.stickyFooter}
+          >
+            <SubEventCard
+              fetchedAddedOtherData={fetchedAddedOtherData}
+              fetchedEvent={fetchedAddedOtherData[0]}
+              cardBgColor={cardBgColor}
+              cardBorderRadius={cardBorderRadius}
+              fontSettings={fontSettings}
+              selectedBtn={selectedBtn}
+              smallCard={smallCard}
+              buttonSettings={buttonSettings}
+            />
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 };
 

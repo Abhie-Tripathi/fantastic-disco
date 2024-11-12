@@ -72,7 +72,7 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
     <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
       <div className={smallCard ? styles.smallBannerContainer : styles.bannerContainer}>
         <Image width={smallCard ? 280 : 380} height={smallCard ? 285 : 385} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' className={smallCard ? styles.smallerBanner : styles.banner} />
-        <div className={styles.event_type}>{fetchedAddedEvents![0]?.eventType==="MAIN"? "Main Even" : fetchedAddedEvents![0]?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
+        <div className={styles.event_type}>{fetchedAddedEvents![0]?.eventType==="MAIN"? "Main Event" : fetchedAddedEvents![0]?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
         <div className={styles.type}>Workshop</div>
       </div>
       <div className={styles.eventDetails}>
@@ -81,7 +81,7 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
           <div className={styles.location_dateContainer}>
             <div className={styles.locationContainer}>
             <LocationIcon color={fontSettings.subheading.fontColor} />
-              <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : demoLocation}</div>
+              <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].eventFormat==="Virtual"?"Virtual": fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : demoLocation}</div>
             </div>
             <div className={styles.dateContainer}>
             <DateIcon color={fontSettings.subheading.fontColor} />

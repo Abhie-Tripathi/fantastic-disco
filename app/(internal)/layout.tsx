@@ -26,8 +26,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Whr.ai",
-  description:
-    "All-in-one solution to maximize ROI from your event GTM strategy.",
+  description: "All-in-one solution to maximize ROI from your event GTM strategy.",
 };
 
 export default function RootLayout({

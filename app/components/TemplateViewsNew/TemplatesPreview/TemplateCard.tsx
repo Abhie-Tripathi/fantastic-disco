@@ -29,7 +29,7 @@ const TemplateCard = ({widgetStyle, tag, desc, image1, image2,setSelectedTemplat
     return (
         <div className={`${styles.body} ${selectedTemplate === templateKey ? styles.activeBody : ""}`} onClick={handleClick}>
             <div className={`${styles.imageContainer} ${theme === "dark" ? styles.darkImageContainer:""}`}>
-                <Image src={theme === "dark" ? image2 : image1} alt='banner' className={styles.image}></Image>
+                <Image style={{height : 165}} src={theme === "dark" ? image2 : image1} alt='banner' className={styles.image}></Image>
             </div>
             <div className={styles.headerContainer}>
                 <div className={styles.header}>{widgetStyle}</div>

@@ -199,11 +199,9 @@ export const AudienceIntel = ({
               {designation && designation.length > 0 ? (
                 designation.map((item, index) => (
                   <li key={`designation-${item}-${index}`}>
-                    <p className="flex justify-between">
                       <Text fontWeight="medium" color="secondary">
                         {item}
                       </Text>
-                    </p>
                     <Progress value={100 - (index + 1) * 5} className="h-2" />
                   </li>
                 ))

@@ -110,7 +110,7 @@ const Page = () => {
           endTime: subEvent.data.end_time,
           description: subEvent.data.description,
           format: subEvent.data.format,
-          isLinkedToWidget: false,
+          isLinkedToWidget: subEvent.isWidgetLinked,
           gmtZone: subEvent.data.gmt_time,
           latitude: subEvent.data.latitude,
           eventType: subEvent.type,
@@ -180,6 +180,10 @@ const Page = () => {
     // fetchAddedEvents();
   }, [])
 
+  useEffect(()=>{
+    console.log("All events",fetchedAllEvents)
+  },[fetchedAllEvents])
+
   const handleUpdateCustomization = async () => {
     const customizeData = new FormData();
     const customizationData = {
@@ -222,12 +226,10 @@ const Page = () => {
       {!isFullScreen && <div className={styles.editContainer}>
         <EditScreen
           selectedTemplate={selectedTemplate}
-
           isCustomisationWindowDisable={isCustomisationWindowDisable}
           setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}
           isCodeWindowDisable={isCodeWindowDisable} 
           setIsCodeWindowDisable={setIsCodeWindowDisable}
-         
           handleUpdateCustomization={handleUpdateCustomization}
           selectedBtn={selectedBtn}
           setSelectedBtn={setSelectedBtn}

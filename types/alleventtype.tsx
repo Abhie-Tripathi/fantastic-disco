@@ -1,15 +1,18 @@
 export interface AllEventsType {
+  eventFormat: string;
   mainEvent : EventsType;
   subEvents : EventsType[]
   promoted : string;
   selectedOption: string
 }
 export interface EventsType{
+  eventFormat: string;
   eventId: string;
   name: string;
   latitude: number;
   longitude: number;
   cityName: string;
+  // virtualLink : string;
   countryName: string;
   startDate: string;
   endDate: string;
@@ -27,9 +30,11 @@ export interface EventsType{
   eventType : string;
   parentData : string;
   capacity : number,
-  registration : boolean,
-  approval : boolean,
-  waitlisting : boolean
+  registration : boolean;
+  approval : boolean;
+  waitlisting : boolean;
+  event_type:string;
+  virtualLink:string
 }
 interface CustomizationData {
   pageBgColor: string;
