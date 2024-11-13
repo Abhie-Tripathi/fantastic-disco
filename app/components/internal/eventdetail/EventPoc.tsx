@@ -4,15 +4,12 @@ import styles from "./eventdesc.style.module.css";
 import tooltip from '@/app/components/trackers/sideNav/sideNav.style.module.css'
 import Image from "next/image";
 import PeopleIcon from "/public/user.svg";
-// import Placehodler from "/public/placeholder.png";
 import PlaceHolder from "/public/speaker1.jpeg";
 import downArrowIcon from '/public/arrow_down.svg'
 import { useTheme } from "@/context";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl } from "@/constants";
 import { Envelope, Phone } from "geist-icons";
-// import { showToast } from "@/utils/showToast";
-import { formatEventDates } from "@/utils/dateFormat";
+import { useCoordinateService } from "@/services/coordinateService";
+import { pocDetail } from "@/types/coordinateEventType";
 
 interface Props {
   open: boolean;
@@ -32,20 +29,14 @@ const EventPoc = ({ open, eventId }: Props) => {
   const [accordianToggle, setAccordianToggle] = useState(open);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
-  const [pocData, setPocData] = useState([]);
+  const [pocData, setPocData] = useState<pocDetail[]>([]);
+  const coordinateService = useCoordinateService();
 
   useEffect(() => {
     const fetchData = async () => {
-      const {data, error} = await myFetch(
-        `${baseUrl}/event-poc/${eventId}`
-      );
-
+      const data = await coordinateService.getEventPOC(eventId);
       if (data) {
         setPocData(data.eventPoc);
-      }
-
-      if (error) {
-        console.error(error);
       }
     };
     fetchData();
@@ -71,7 +62,7 @@ const EventPoc = ({ open, eventId }: Props) => {
         <div className={styles.accordian}>
           <div className={styles.allFollowerContainer}>
             {pocData?.length > 0 ? (
-              pocData.map((poc: POCtypes) => (
+              pocData.map((poc) => (
                 <>
                 {poc!==null &&
                 <div className={styles.followerContainer} key={poc?.id}>

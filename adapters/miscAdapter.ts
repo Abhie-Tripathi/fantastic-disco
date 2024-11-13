@@ -46,4 +46,40 @@ export const MiscAdapter = {
       ],
     };
   },
+
+  adaptCoordinateRequestParam: (params: URLSearchParams): Record<string, string> => {
+    const adaptedParams: Record<string, string> = {
+      source: "internal",
+      limit: "10",
+    };
+
+    const activeGte = params.get("active_gte");
+    const activeLte = params.get("active_lte");
+    if (activeGte && activeLte) {
+      const startDate = new Date(activeGte).toISOString().split("T")[0];
+      const endDate = new Date(activeLte).toISOString().split("T")[0];
+      adaptedParams.duration = `${startDate},${endDate}`;
+    }
+
+    if (params.get("eventId")) {
+      adaptedParams.eventId = params.get("eventId")!;
+    }
+
+    if (params.get("interest")) {
+      adaptedParams.interest = params.get("interest")!;
+    }
+
+    if (params.get("liked")) {
+      adaptedParams.liked = params.get("liked")!;
+    }
+
+    if(params.get('status')) {
+      adaptedParams.status = params.get("status")!;
+    }
+    else {
+      adaptedParams.status = 'IN_DISCUSSION,SHORTLISTED,REJECTED';
+    }
+
+    return adaptedParams;
+  },
 };

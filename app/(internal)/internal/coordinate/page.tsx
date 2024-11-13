@@ -1,21 +1,17 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./page.style.module.css";
 import Internal from "@/app/components/internal/Internal";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
 import ShortlistModal from "@/app/components/internal/eventdetail/shortlistModal";
 import TypeOfEventsCount from "@/public/data/TypeOfEventsCount.json";
-import { useTheme } from "@/context";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl, headers } from "@/constants";
+import { useCoordinateService } from "@/services/coordinateService";
 
 const Page = () => {
+  const coordinateService = useCoordinateService();
   const [modalOpen, setModalOpen] = useState(false);
   const [shortlistModalOpen, setShortlistModalOpen] = useState(false);
   const [shortlistModalData, setShortlistModalData] = useState({});
-  const { theme } = useTheme();
   const [singleEventId, setSingleEventId] = useState<string>("");
   const [enquiryId, setEnquiryId] = useState<string>("");
   const [selectedId,setSelectedId]=useState("");
@@ -36,16 +32,11 @@ const Page = () => {
 
   const fetchInterestData = async (eventId: string, enquiryId: string) => {
     try {
-      const apiUrl = baseUrl + "/userInterest/" + eventId;
-      const apiData = await myFetch(apiUrl, {
-        method: "GET",
-        headers: headers,
-      });
-      console.log("FetchUserInterest",apiData)
-      if (apiData.data) {
-        apiData.data.eventId = eventId;
-        apiData.data.enquiryId = enquiryId;
-        setShortlistModalData(apiData.data);
+      const apiData: any = await coordinateService.getInterestedUsers(eventId);
+      if (apiData) {
+        apiData.eventId = eventId;
+        apiData.enquiryId = enquiryId;
+        setShortlistModalData(apiData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
