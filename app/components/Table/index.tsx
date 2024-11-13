@@ -604,11 +604,14 @@ const Table = ({
   // const fetchAllSavedEvent=aync()=>{
 
   // }
-  // useEffect(() => {
-  //   setAppliedKeywords(showInsights.keywords);
-  // }, [showInsights.keywords]);
+  useEffect(() => {    
+    if(showInsights?.includeKeywords || showInsights?.excludeKeywords) {
+      const includeKeywords: [] = showInsights?.includeKeywords ? showInsights?.includeKeywords?.split(',') : [];
+      const excludeKeywords: [] = showInsights?.excludeKeywords ? showInsights?.excludeKeywords?.split(',') : [];
 
-  console.log("applied Keywords", appliedKeywords);
+      setAppliedKeywords([...includeKeywords, ...excludeKeywords]);
+    }
+  }, [showInsights.includeKeywords, showInsights.excludeKeywords]);
 
   const fetchEventsData = async () => {
     if (path[path.length - 1] === "trackedEvents") {
@@ -629,14 +632,6 @@ const Table = ({
         try {
           setIsLoaded(false);
           setInitialRender(false);
-          const params = new URLSearchParams(queryString);
-          const obj: any = {};
-          params.forEach((value, key) => {
-            obj[key] = decodeURIComponent(value);
-          });
-          if (obj["includeKeywords"] || obj["excludeKeywords"]) {
-            setAppliedKeywords([...obj["includeKeywords"]?.split(","), ...obj["excludeKeywords"]?.split(",")]);
-          } else setAppliedKeywords([]);
 
           const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${
             (currPage - 1) * itemsPerPage
@@ -920,8 +915,8 @@ const Table = ({
               {showInsights.forecasted && <th>Forecasted</th>}
               {/* {showInsights.eventSize && <th>Event Size</th>} */}
               {/* {showInsights.global && <th>International</th>} */}
-              {type === null && appliedKeywords?.length > 0 && <th>Matched</th>}
-              {type === null && appliedKeywords?.length >= 5 && <th>Score</th>}
+              {(type === null || type === 'CUSTOM') && appliedKeywords?.length > 0 && <th>Matched</th>}
+              {(type === null || type === 'CUSTOM') && appliedKeywords?.length >= 5 && <th>Score</th>}
 
               {(type === "T_SPEAKING_OPPORTUNITY" || type === "T_COMPETITOR") &&
                 path[path.length - 1] !== "savedEvents" && (
@@ -1459,7 +1454,7 @@ const Table = ({
                     )}
                   </td>
                 )} */}
-                {type === null && appliedKeywords?.length > 0 && (
+                {(type === null || type === 'CUSTOM') && appliedKeywords?.length > 0 && (
                   <>
                     <td>
                       {event.matchedKeywords.length == 0 ? (
@@ -1488,7 +1483,7 @@ const Table = ({
                         </>
                       )}
                     </td>
-                    {type === null && appliedKeywords?.length >= 5 && (
+                    {(type === null || type === 'CUSTOM') && appliedKeywords?.length >= 5 && (
                       <td>
                         {event.keywordsMatchedScore > 20 ? (
                           <span className={styles.badge_success}>High</span>
