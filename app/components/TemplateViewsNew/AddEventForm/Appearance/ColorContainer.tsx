@@ -4,7 +4,7 @@ import { SketchPicker } from 'react-color';
 import { baseUrl, useTheme } from '@/context';
 import useOutsideClick from '@/hooks/useOutsideClick';
 import { myFetch } from '@/utils/myFetch';
-
+import { useBrandKitServices } from '@/services/geniservices/brandkitService';
 interface Props {
     setUploadedPhoto : (value : File | undefined) => void
     setSnowTheme: (value: boolean) => void
@@ -19,7 +19,7 @@ interface Props {
 
 const ColorContainer = ({ setUploadedPhoto,setSnowTheme, setLeavesTheme, confettiType, setPageBgColor, pageBgColor, setPageGradient, setConfettiType, setFormTheme }: Props) => {
     const { theme } = useTheme()
-
+    const {getBrandkit, error} = useBrandKitServices()
     const [selectedTheme, setSelectedTheme] = useState<string>("")
     const [displayColorPicker, setDisplayColorPicker] = useState<boolean>(false)
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
@@ -95,7 +95,8 @@ const ColorContainer = ({ setUploadedPhoto,setSnowTheme, setLeavesTheme, confett
     };
 
     const fetchBrandkit = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/kit`)
+        // const { data, error } = await myFetch(`${baseUrl}/kit`)
+        const data:any =  await getBrandkit();
         if (error) {
             console.error('Error fetching brand kit:', error);
             return;

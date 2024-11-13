@@ -3,7 +3,7 @@ import styles from './capacitymodal.style.module.css'
 import { showToast } from '@/utils/showToast';
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
-
+import { useEventServices } from '@/services/geniservices/eventService'
 interface Props {
     eventId: string;
     setCapacityModal: (value: boolean) => void
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const CapacityModal = ({eventId, setCapacityModal, setCapacityValue, capacityValue, setWaitlistValue, waitlistValue,fetchEventData} : Props) => {
-
+    const {updateEvent, error} = useEventServices()
     useEffect(()=>{
         if(capacityValue === -1){
             setCapacityValue(50)
@@ -27,10 +27,11 @@ const CapacityModal = ({eventId, setCapacityModal, setCapacityValue, capacityVal
         formData.append("id", eventId);
         formData.append("maxCapacity", capacityValue + "")
         formData.append("waitlisting", waitlistValue + "")
-        const { data, error } = await myFetch(`${baseUrl}/event`, {
-            method: 'PATCH',
-            body: formData
-        })
+        // const { data, error } = await myFetch(`${baseUrl}/event`, {
+        //     method: 'PATCH',
+        //     body: formData
+        // })
+        const data = await updateEvent(formData)
         if(data){
             showToast("success", "Capacity and Waitlist updated")
             setCapacityModal(false)
@@ -45,10 +46,11 @@ const CapacityModal = ({eventId, setCapacityModal, setCapacityValue, capacityVal
         formData.append("id", eventId);
         formData.append("maxCapacity", -1 + "")
         formData.append("waitlisting", false + "")
-        const { data, error } = await myFetch(`${baseUrl}/event`, {
-            method: 'PATCH',
-            body: formData
-        })
+        // const { data, error } = await myFetch(`${baseUrl}/event`, {
+        //     method: 'PATCH',
+        //     body: formData
+        // })
+        const data = await updateEvent(formData)
         if(data){
             showToast("success", "Removed Capacity Limit")
             setCapacityModal(false)

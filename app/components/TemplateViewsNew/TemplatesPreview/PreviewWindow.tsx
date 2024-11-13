@@ -18,8 +18,9 @@ import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 import { AddedEventsType } from '@/types/addedeventtype'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes';
 import Demobanner from '/public/demobanner.png'
-
-
+import { useEventServices } from '@/services/geniservices/eventService';
+import { useWidgetServices } from '@/services/geniservices/widgetService';
+import { useBrandKitServices } from '@/services/geniservices/brandkitService';
 interface FontSettings {
     fontFamily: string;
     fontSize: number;
@@ -92,10 +93,13 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
     const getAsciiString = (str: string): string => {
         return str.split('').map(char => char.charCodeAt(0).toString()).join('');
     };
-
+    const {getEventById, error} = useEventServices();
+    const {updateWidgetData} = useWidgetServices();
+    const {getBrandkit} = useBrandKitServices();
     useEffect(() => {
         const fetchDomain = async () => {
-            const { data, error } = await myFetch(`${baseUrl}/kit`)
+            // const { data, error } = await myFetch(`${baseUrl}/kit`)
+            const data:any = await getBrandkit();
             setStoredDomain(data.domain.domain)
         }
         fetchDomain()
@@ -109,7 +113,8 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
             try {
                 const newFetchedAddedOtherData = await Promise.all(
                     fetchedAddedEvents.map(async (event) => {
-                        const { data, error } = await myFetch(`${baseUrl}/event/${event.id}?source=eventgtm`);
+                        // const { data, error } = await myFetch(`${baseUrl}/event/${event.id}?source=eventgtm`);
+                        const data:any = await getEventById(event.id)
                         if (error) {
                             console.error(`Error fetching event data for event ID ${event.id}:`, error);
                             return null;
@@ -191,13 +196,14 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
             // closeButtonSetting,
         };
         customizeData.append('customizationData', JSON.stringify(customizationData));
-        const { data, error } = await myFetch(
-            `${baseUrl}/widget`,
-            {
-                method: 'POST',
-                body: customizeData,
-            }
-        );
+        // const { data, error } = await myFetch(
+        //     `${baseUrl}/widget`,
+        //     {
+        //         method: 'POST',
+        //         body: customizeData,
+        //     }
+        // );
+        const data:any = await updateWidgetData(customizeData);
         if (data) {
             console.log(data);
             if (fetchDraftWidgets && setIsDraftSaved) {

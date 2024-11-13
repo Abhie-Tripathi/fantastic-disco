@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import Loading from '../../UI/Loading'
-
+import { useBrandKitServices } from '@/services/geniservices/brandkitService'
 interface Props {
     setBrandkitLoadingState: (value: boolean) => void;
     brandkitLoadingState: boolean;
@@ -26,14 +26,21 @@ const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setP
     const [fetchedColors, setFetchedColors] = useState<string[]>([])
     const [fetchedFonts, setFetchedFonts] = useState<string[]>([])
     const [fetchedLogos, setFetchedLogos] = useState<string[]>([])
+    const {getBrandkit} = useBrandKitServices()
 
 
     const fetchBrandkit = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/kit`)
-        if (error) {
-            console.error('Error fetching brand kit:', error);
-            return;
-        }
+        // const { data, error } = await myFetch(`${baseUrl}/kit`)
+        // if (error) {
+        //     console.error('Error fetching brand kit:', error);
+        //     return;
+        // }
+        // const cleanedFonts: string[] = Array.from(new Set(data.fontFamily.map((font: string) => font.trim().replace(/['"]+/g, ''))));
+        // setFetchedColors(data.color)
+        // setFetchedFonts(cleanedFonts)
+        // setFetchedLogos(data.logo)
+        // setFetchedDomain(data.domain.domain)
+        const data:any = await getBrandkit();
         const cleanedFonts: string[] = Array.from(new Set(data.fontFamily.map((font: string) => font.trim().replace(/['"]+/g, ''))));
         setFetchedColors(data.color)
         setFetchedFonts(cleanedFonts)
