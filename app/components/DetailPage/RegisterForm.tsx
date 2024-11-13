@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { showToast } from "@/utils/showToast";
 import { useSearchParams } from "next/navigation";
 import * as crypto from "crypto";
+import { useIntendServices } from "@/services/geniservices/intendService";
 
 interface Props {
   registerMessage: string;
@@ -52,6 +53,7 @@ const RegisterForm = ({
   const [prefilledEmail, setPrefilledEmail] = useState("");
   const [event_Id, setEventId] = useState("");
   const [status, setStatus] = useState("");
+  const {updateStatus, addIntend,error} = useIntendServices();
   console.log("value_s", start_time, end_time, start_date);
   // Function to convert hex to RGB
   const hexToRgb = (hex: string) => {
@@ -107,9 +109,7 @@ const RegisterForm = ({
     return decrypted;
   };
 
-  // const originalKey: string = process.env.DECRYPTKEY;
-  // console.log("asdasd",originalKey)
-  const originalKey = "@k#e&y(t0)0Pen!@nd^encr!pt*";
+  const originalKey: string = process.env.NEXT_PUBLIC_DECRYPTKEY || "";
   const encrypt_key = crypto
     .createHash("sha256")
     .update(originalKey)
@@ -119,7 +119,7 @@ const RegisterForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (status !== "") {
+    if (status === "yes"||status === "no" ) {
       const nameParts = formData.firstname.trim().split(" ");
       const firstName = nameParts[0]; // First word becomes the first name
       const lastName = nameParts.slice(1).join(" "); // Remaining words become the last name
@@ -131,23 +131,30 @@ const RegisterForm = ({
         redirectUrl: `${console_url}/detailpage/${eventId}`,
       };
       try {
-        const response = await fetch(`${baseUrl}/intend`, {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
+        // const response = await fetch(`${baseUrl}/intend`, {
+        //   method: "PATCH",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(payload),
+        // });
+        const data = await updateStatus(payload)
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Success:", data);
-          setRegisterSuccess(true);
-          // toast.success("successfully registred for the event !");
-        } else {
-          console.error("Error:", response.statusText);
+        // if (response.ok) {
+          // const data = await response.json();
+          if(status === "yes"){
+            setRegisterSuccess(true);
+          }
+          if(status === "no"){
+            setRegisterSuccess(false);
+            toast.error("successfully cancelled for the event!");
+          }
+         
+          // toast.success("successfully registred for the event!");
+        // } else {
+          // console.error("Error:", response.statusText);
           // toast.error("Error in registration");
-        }
+        // }
       } catch (error) {
         console.error("Error:", error);
       }
@@ -167,23 +174,22 @@ const RegisterForm = ({
         // sourceId: widgetId,
       };
       try {
-        const response = await fetch(`${baseUrl}/intend`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Success:", data);
+        // const response = await fetch(`${baseUrl}/intend`, {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(payload),
+        // });
+        const data = await addIntend(payload);
+        // if (response.ok) {
+          // const data = await response.json();
           setRegisterSuccess(true);
-          // toast.success("successfully registred for the event !");
-        } else {
-          console.error("Error:", response.statusText);
+          // toast.success("successfully registred for the event!");
+        // } else {
+          // console.error("Error:", response.statusText);
           // toast.error("Error in registration");
-        }
+        // }
       } catch (error) {
         console.error("Error:", error);
       }

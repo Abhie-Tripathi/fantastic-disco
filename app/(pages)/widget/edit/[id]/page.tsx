@@ -16,7 +16,10 @@ import { AddedEventsType } from '@/types/addedeventtype'
 // import AddNormalEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddNormalEvent'
 // import { GolbalEventType } from '@/types/globaleventtype'
 import Errorpage from '@/app/components/TemplateViewsNew/Errorpage'
-
+import { useWidgetServices } from '@/services/geniservices/widgetService'
+import { useEventServices } from '@/services/geniservices/eventService'
+import {Event, TransformedEvent} from '@/types/geniTypes/events'
+// import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
 const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [cardBgColor, setCardBgColor] = useState<string>("#d4d4d4");
@@ -49,7 +52,8 @@ const Page = () => {
   const pathName = usePathname();
   const trackerParams = pathName.split("/");
   const widgetId = trackerParams[3]
-
+  const {getWidgetById,addCustomizedData, error} = useWidgetServices()
+  const {getEventsByWidgetId} = useEventServices()
   const asciiToString = (ascii: number): string => {
     let convertedValue = ascii.toString();
     let str = '';
@@ -63,7 +67,9 @@ const Page = () => {
 
   // This function is fetching all the events regardless added in the widget or not
   const fetchEvents = async (page: number, type?: string) => {
-    const { data, error } = await myFetch(`${baseUrl}/event?widgetId=${widgetId}&offset=${page}&limit=8`)
+    // const { data, error } = await myFetch(`${baseUrl}/event?widgetId=${widgetId}&offset=${page}&limit=8`)
+    try {
+      const data:any = await getEventsByWidgetId(widgetId, page);
     if (data) {
       const transformedEvents = data.data.map((event: any) => ({
         mainEvent: {
@@ -140,11 +146,17 @@ const Page = () => {
     } if (error) {
       console.log(error)
     }
+      
+    } catch (error) {
+      console.log(error)
+    }
+    
   }
 
   // Function for fetching the added events in widget
   const fetchAddedEvents = async () => {
-    const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`)
+    // const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`)
+    const data:any = await getWidgetById(widgetId);
     if (data) {
       const events = data.otherdata?.event;
       setfetchedAddedEvents(events);
@@ -156,7 +168,8 @@ const Page = () => {
 
   useEffect(() => {
     const fetchWidgetData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`);
+      // const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`);
+      const data:any = await getWidgetById(widgetId);
       if (!data) {
         console.log("data not found")
         setIsValid(false);
@@ -196,13 +209,14 @@ const Page = () => {
     };
     customizeData.append("widgetId", widgetId)
     customizeData.append('customizationData', JSON.stringify(customizationData));
-    const { data, error } = await myFetch(
-      `${baseUrl}/widget`,
-      {
-        method: 'POST',
-        body: customizeData,
-      }
-    );
+    // const { data, error } = await myFetch(
+    //   `${baseUrl}/widget`,
+    //   {
+    //     method: 'POST',
+    //     body: customizeData,
+    //   }
+    // );
+    const data = await addCustomizedData(customizeData)
     if (data) {
       console.log(data);
       toast.success("Widget updated successfully!");

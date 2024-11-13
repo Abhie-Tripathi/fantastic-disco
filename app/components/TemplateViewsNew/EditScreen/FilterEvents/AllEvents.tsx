@@ -11,7 +11,8 @@ import { showToast } from "@/utils/showToast";
 import { AddedEventsType } from "@/types/addedeventtype";
 import { PrefilledAddedEventsType } from "@/types/prefilledaddedeventtype";
 import { useRouter } from "next/navigation";
-
+import { useWidgetServices } from "@/services/geniservices/widgetService";
+import { useEventServices } from "@/services/geniservices/eventService";
 interface Props {
   fetchedAllEvents: AllEventsType[];
   fetchedAddedEvents: AddedEventsType[];
@@ -52,6 +53,8 @@ const AllEvents = ({
   normalEvents,
   setNormalEvents,
 }: Props) => {
+  const {updateWidgetData, error} = useWidgetServices();
+  const {getEventById} = useEventServices();
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true); // To heck if there are more events
@@ -75,9 +78,10 @@ const AllEvents = ({
         const newNormalEvents: string[] = [];
         const newFetchedAddedOtherData = await Promise.all(
           fetchedAddedEvents.map(async (event) => {
-            const { data, error } = await myFetch(
-              `${baseUrl}/event/${event.id}?source=eventgtm`
-            );
+            // const { data, error } = await myFetch(
+            //   `${baseUrl}/event/${event.id}?source=eventgtm`
+            // );
+            const data:any =  await getEventById(event.id)
             if (error) {
               console.error(
                 `Error fetching event data for event ID ${event.id}:`,
@@ -280,10 +284,11 @@ const AllEvents = ({
     const formData = new FormData();
     formData.append("widgetId", widgetId);
     formData.append("status", "draft");
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: formData,
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: formData,
+    // });
+    const data:any = await updateWidgetData(formData)
     if (data) {
       console.log("widget moved to draft widgets");
     }
@@ -737,11 +742,12 @@ const AllEvents = ({
     customizedFormData.append("otherdata", JSON.stringify(otherData));
     customizedFormData.append("status", "active");
 
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: customizedFormData,
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: customizedFormData,
+    // });
 
+    const data:any = await updateWidgetData(customizedFormData)
     if (data) {
       showToast("success", "Event successfully added to the widget");
       if (typeof fetchEvents === "function") {
@@ -768,10 +774,11 @@ const AllEvents = ({
     customizedFormData.append("widgetId", widgetId);
     customizedFormData.append("otherdata", JSON.stringify(otherData));
 
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: customizedFormData,
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: customizedFormData,
+    // });
+    const data:any = await updateWidgetData(customizedFormData)
     if (data) {
       handleEventIdDelete(eventId);
     }
@@ -784,10 +791,11 @@ const AllEvents = ({
     customizedFormData.append("widgetId", widgetId);
     customizedFormData.append("eventId", eventId);
     customizedFormData.append("published", "false");
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: customizedFormData,
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: customizedFormData,
+    // });
+    const data:any = await updateWidgetData(customizedFormData)
     if (data) {
       console.log(data);
       fetchAddedEvents();

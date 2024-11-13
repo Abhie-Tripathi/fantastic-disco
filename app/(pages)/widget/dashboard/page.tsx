@@ -7,6 +7,7 @@ import DashboardWidgets from '@/app/components/TemplateViewsNew/WidgetDashboard/
 import DashboardEvents from '@/app/components/TemplateViewsNew/WidgetDashboard/DashboardEvents'
 import { myFetch } from '@/utils/myFetch'
 import { baseUrl } from '@/constants'
+import { useBrandKitServices } from '@/services/geniservices/brandkitService'
 
 const Page = () => {
 
@@ -17,19 +18,30 @@ const Page = () => {
   const [brandkitFetched, setBrandkitFetched] = useState<boolean>(true)
 
   const [removeCalled, setRemoveCalled] = useState<boolean>(false) // This is a variable so that when ever a widget is deleted we can call the function in input container to make the button disbaled 
-  
+  const {getBrandkit} = useBrandKitServices()
   // This is to see if the brandkit was used atleast once by user
-  const checkBrandkit = async()=>{
-    const {data,error} = await myFetch(`${baseUrl}/kit`)
-
-    if(error){
-      console.log(error);
-      return;
+  // const checkBrandkit = async()=>{
+  //   const {data,error} = await myFetch(`${baseUrl}/kit`)
+  //   if(error){
+  //     console.log(error);
+  //     return;
+  //   }
+  //   if(data.domain.domain){
+  //     setFetchedBoolean(true)
+  //   }
+  // }
+  const checkBrandkit = async() =>{
+    try {
+        const res:any = await getBrandkit();
+        console.log("domain",res.domain.domain)
+        if (res.domain.domain) {
+          setFetchedBoolean(true)
+        }
+    } catch (error) {
+        console.log(error);
+        return;
     }
-    if(data.domain.domain){
-      setFetchedBoolean(true)
-    }
-  }
+}
   useEffect(()=>{
     checkBrandkit()
   },[])

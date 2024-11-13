@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import styles from './colorcontainer.style.module.css'
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
-
+import { useBrandKitServices } from '@/services/geniservices/brandkitService';
 interface Props {
     setPreview: (value: string) => void
     setColorCode: (value: string) => void
@@ -14,7 +14,7 @@ interface Props {
 }
 const ColorContainer = ({ setPreview, setColorCode,fetchedColors,handleColorModal ,setFetchedColors}: Props) => {
     const colors = ['#eb6809', '#f7f6f4', '#d29168', '#fcb676', '#d4ac94']
-
+    const {updateBrandkit,error} = useBrandKitServices();
     const [copiedColor, setCopiedColor] = useState<string | null>(null);
 
     const handleCopyClick = (e: React.MouseEvent<HTMLDivElement>, color: string) => {
@@ -62,13 +62,14 @@ const ColorContainer = ({ setPreview, setColorCode,fetchedColors,handleColorModa
         const updatedColorArray = fetchedColors.filter((_, index) => index !== indexToRemove);
         console.log("updated colors : ", updatedColorArray)
         setFetchedColors(updatedColorArray)
-        const {data,error} = await myFetch(`${baseUrl}/kit`,{
-            method : "PATCH",
-            body: JSON.stringify({color : updatedColorArray.join()}),
-            headers: {
-                'Content-Type': 'application/json'
-            }       
-        })
+        // const {data,error} = await myFetch(`${baseUrl}/kit`,{
+        //     method : "PATCH",
+        //     body: JSON.stringify({color : updatedColorArray.join()}),
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }       
+        // })
+        const data:any = await updateBrandkit({color : updatedColorArray.join()})
         if(error){
             console.log(error)
             return

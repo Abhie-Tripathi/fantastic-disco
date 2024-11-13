@@ -1,0 +1,83 @@
+import { useApi } from "@/hooks/useApi";
+import { endpoints } from "@/config/endpoints";
+export const useEventServices = () => {
+  const api = useApi();
+  const getEvents = async () => {
+    return api.request(`${endpoints.events.getEvents}`);
+  };
+  const getEventsByWidgetId = async (widgetId: string, page: number) => {
+    return api.request(
+      `${endpoints.events.getEventsByWidgetId}?widgetId=${widgetId}&offset=${page}&limit=8`
+    );
+  };
+
+  const getSortedEvents = async (page: number) => {
+    return api.request(
+      `${endpoints.events.getSortedEvents}?sortBy=start_date&sortType=asc&offset=${page}&limit=8`
+    );
+  };
+
+  const getEventById = async (eventId: string) => {
+    return api.request(
+      `${endpoints.events.getEventById}/${eventId}?source=eventgtm`
+    );
+  };
+
+  const getEventByPublicAPI = async (eventId: string) => {
+    return api.request(
+      `${endpoints.events.getEventByPublicAPI}/${eventId}/event`
+    );
+  };
+
+  const deleteEvent = async (customizeData: any) => {
+    return api.request(`${endpoints.events.deleteEvent}`, {
+      method: "PATCH",
+      data: customizeData,
+    });
+  };
+
+  const addEvent = async (eventData: any) => {
+    return api.request(`${endpoints.events.addEvent}`, {
+      method: "POST",
+      data: eventData,
+    });
+  };
+
+  const  addSpeakersData = async (speakerData: any) => {
+    return api.request(`${endpoints.events.addSpeakers}`, {
+      method: "POST",
+      data: speakerData,
+    });
+  };
+
+  const  addExhibitorsDataData = async (exhibitorsData: any) => {
+    return api.request(`${endpoints.events.addExhibitors}`, {
+      method: "POST",
+      data: exhibitorsData,
+    });
+  };
+  
+  const  updateEvent = async (eventData: any) => {
+    return api.request(`${endpoints.events.updateEvent}`, {
+      method: "PATCH",
+      data: eventData,
+    });
+  };
+  
+ 
+
+  return {
+    getEvents,
+    getEventsByWidgetId,
+    getSortedEvents,
+    getEventById,
+    getEventByPublicAPI,
+    deleteEvent,
+    addEvent,
+    addSpeakersData,
+    addExhibitorsDataData,
+    updateEvent,
+    isLoading: api.isLoading,
+    error: api.error,
+  };
+};

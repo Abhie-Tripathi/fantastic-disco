@@ -16,7 +16,7 @@ import SnowfallTheme from '../../UI/SnowfallTheme'
 import RandomTheme from '../../UI/RandomTheme'
 import SubEventCard from '../WidgetDashboard/SubEventCard'
 import TimelineItem from '../../employee/listView/TimelineItem'
-
+import { useEventServices } from '@/services/geniservices/eventService'
 interface Props {
     uploadedPhoto: File | undefined
     snowTheme: boolean;
@@ -56,7 +56,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
     const [collapseMainEventForm, setCollapseMainEventForm] = useState<boolean>(false)
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
-
+    const {addEvent, addSpeakersData,addExhibitorsDataData, updateEvent,error} = useEventServices();
     // const [mainEventName, setMainEventName] = useState<string>("");
     const { theme } = useTheme()
     let prevDate: any = null;
@@ -245,10 +245,12 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
 
             formData.append("sourceId", widgetId)
 
-            const { data, error } = await myFetch(`${baseUrl}/event`, {
-                method: 'POST',
-                body: formData
-            })
+            // remove
+            // const { data, error } = await myFetch(`${baseUrl}/event`, {
+            //     method: 'POST',
+            //     body: formData
+            // })
+            const data:any = await addEvent(formData)
             if (data) {
                 console.log("event added :", data)
                 if (!subEventState.isEventNameEmpty && !subEventState.isEventFormatEmpty && !subEventState.isEventDescriptionEmpty && !subEventState.isEventTypeEmpty  && (subEventState.banner.placeHolder !== Placeholder || subEventState.banner.file)) {
@@ -300,10 +302,11 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
         formData.append("eventId", eventId)
         formData.append("data", JSON.stringify(speakerObject))
         formData.append("file", speaker.imageUrl || "")
-        const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
-            method: 'POST',
-            body: formData
-        })
+        // const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
+        //     method: 'POST',
+        //     body: formData
+        // })
+        const data:any = await addSpeakersData(formData);
         if (error) {
             console.log("error : ", error)
         }
@@ -321,10 +324,11 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
         formData.append("data", JSON.stringify(exhibitorObject))
         formData.append("file", exhibitor.imageUrl || "")
         formData.append("isExhibitor", 'true')
-        const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
-            method: 'POST',
-            body: formData
-        })
+        // const { data, error } = await myFetch(`${baseUrl}/event/speaker`, {
+        //     method: 'POST',
+        //     body: formData
+        // })
+        const data:any = await addExhibitorsDataData(formData); 
         if (error) {
             console.log("error : ", error)
         }
@@ -448,10 +452,12 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
         // formData.append("source", "eventgeni/widget/event")
         formData.append("sourceId", widgetId)
 
-        const { data, error } = await myFetch(`${baseUrl}/event`, {
-            method: 'POST',
-            body: formData
-        })
+        // const { data, error } = await myFetch(`${baseUrl}/event`, {
+        //     method: 'POST',
+        //     body: formData
+        // })
+
+        const data:any = await addEvent(formData)
         if (data) {
             console.log("subevent added :", data)
             setIsAddEventModalOpen(false)
@@ -592,11 +598,12 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
         }
 
         // Make the PATCH request
-        const { data, error } = await myFetch(`${baseUrl}/event`, {
-            method: 'PATCH',
-            body: formData,
-        });
+        // const { data, error } = await myFetch(`${baseUrl}/event`, {
+        //     method: 'PATCH',
+        //     body: formData,
+        // });
 
+        const data = await updateEvent(formData)
         // Handle the response
         if (data) {
             setIsAddEventModalOpen(false);

@@ -9,7 +9,7 @@ import { baseUrl } from "@/constants";
 import { myFetch } from "@/utils/myFetch";
 import Errorpage from "@/app/components/TemplateViewsNew/Errorpage";
 import TypographyModal from "@/app/components/TemplateViews/brandkit/typography/TypographyModal";
-
+import { useBrandKitServices } from "@/services/geniservices/brandkitService";
 const Page = () => {
   const [preview, setPreview] = useState<string>("");
   const [colorCode, setColorCode] = useState<string>("");
@@ -22,9 +22,10 @@ const Page = () => {
   const [colorModalIndex, setColorModalIndex] = useState<number>(0);
   const [typographyPreview, setTypogtaphyPreview] = useState<string>("");
   const [typography, setTypography] = useState<string>("");
-
+  const {getBrandkit, error} = useBrandKitServices()
   const fetchBrandkit = async () => {
-    const { data, error } = await myFetch(`${baseUrl}/kit`);
+    // const { data, error } = await myFetch(`${baseUrl}/kit`);
+    const data:any = await getBrandkit()
     if (error) {
       console.error("Error fetching brand kit:", error);
       return;
