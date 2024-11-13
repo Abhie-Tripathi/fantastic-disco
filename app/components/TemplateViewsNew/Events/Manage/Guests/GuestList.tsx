@@ -18,7 +18,7 @@ interface Props {
   setFilterStatus:(value: string) => void
   setInputName :(value: string) => void
   guests : any[];
-  fetchGuests: () => Promise<void>;
+  fetchGuests: () => Promise<void>; 
 }
 
 const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterStatus, setInputName, guests,fetchGuests }: Props) => {

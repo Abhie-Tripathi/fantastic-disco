@@ -51,7 +51,7 @@ const Page = () => {
     }, []);
     useEffect(() => {
         fetchEvents(page * 8);
-    }, [page])
+    }, [page])                              
 
     useEffect(() => {
         console.log("this scroll function called")

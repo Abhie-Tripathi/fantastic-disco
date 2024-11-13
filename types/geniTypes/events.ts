@@ -85,9 +85,9 @@ interface CustomizationData {
     logoUrl: string;
     endDate: string;
     startTime: string;
-    endTime: string;
-    description: string;
-    format: string;
+    endTime: string;                          
+    description: string;                 
+    format: string;                      
     isLinkedToWidget: boolean;
     gmtZone: string;
     latitude: number;
