@@ -3,7 +3,7 @@ import styles from './registermodal.style.module.css'
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { showToast } from '@/utils/showToast';
-
+import { useEventServices } from '@/services/geniservices/eventService';
 interface Props {
     eventId: string;
     setRegisterModal : (value : boolean) => void
@@ -13,15 +13,16 @@ interface Props {
 }
 
 const RegisterModal = ({fetchEventData,setRegisterModal, eventId,setRegisterValue,registerValue }: Props) => {
-
+    const {updateEvent,error} = useEventServices()
     const handleChange = async () => {
         const formData = new FormData()
         formData.append("id", eventId);
         formData.append("registration", registerValue + "")
-        const { data, error } = await myFetch(`${baseUrl}/event`, {
-            method: 'PATCH',
-            body: formData
-        })
+        // const { data, error } = await myFetch(`${baseUrl}/event`, {
+        //     method: 'PATCH',
+        //     body: formData
+        // })
+        const data:any = updateEvent(formData);
         if(data){
             showToast("success", "Registration changes updated")
             setRegisterModal(false)

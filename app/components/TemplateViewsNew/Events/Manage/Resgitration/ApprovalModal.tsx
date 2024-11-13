@@ -3,7 +3,7 @@ import styles from './approvalmodal.style.module.css'
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
 import { showToast } from '@/utils/showToast';
-
+import { useEventServices } from '@/services/geniservices/eventService';
 interface Props {
     eventId: string;
     setApprovalValue: (value: boolean) => void
@@ -13,15 +13,16 @@ interface Props {
 }
 
 const ApprovalModal = ({ setApprovalValue, approvalValue, setApprovalModal, eventId,fetchEventData }: Props) => {
-
+    const {updateEvent, error} = useEventServices()
     const handleChange = async () => {
         const formData = new FormData()
         formData.append("id", eventId);
         formData.append("approval", approvalValue + "")
-        const { data, error } = await myFetch(`${baseUrl}/event`, {
-            method: 'PATCH',
-            body: formData
-        })
+        // const { data, error } = await myFetch(`${baseUrl}/event`, {
+        //     method: 'PATCH',
+        //     body: formData
+        // })
+        const data:any =  await updateEvent(formData);
         if (data) {
             showToast("success", "Approval changes updated")
             setApprovalModal(false)

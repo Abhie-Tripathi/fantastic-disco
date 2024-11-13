@@ -15,7 +15,7 @@ import GlobalSearch from '@/app/components/TemplateViewsNew/EditScreen/FilterEve
 import { GolbalEventType } from '@/types/globaleventtype'
 import ChoiceModal from '@/app/components/TemplateViewsNew/Events/ChoiceModal'
 import SubEventCard from '@/app/components/TemplateViewsNew/WidgetDashboard/SubEventCard'
-
+import { useEventServices } from '@/services/geniservices/eventService'
 const Page = () => {
     const [fetchedEvents, setFetchedEvents] = useState<AllEventsType[]>([]);
     const [isEventFormModal, setIsEventFormModal] = useState<boolean>(false)
@@ -35,7 +35,7 @@ const Page = () => {
     const [eventFlow, setEventFlow] = useState<string>("")
     const [selectedEventType, setSelectedEventType] = useState<string>("") // This will be used to Delete an event
     const [todaysDate, setTodaysDate] = useState("");
-
+    const {getSortedEvents,error} = useEventServices()
     let prevDate: any = null;
 
     useEffect(() => {
@@ -51,7 +51,7 @@ const Page = () => {
     }, []);
     useEffect(() => {
         fetchEvents(page * 8);
-    }, [page])
+    }, [page])                              
 
     useEffect(() => {
         console.log("this scroll function called")
@@ -83,7 +83,9 @@ const Page = () => {
     }
 
     const fetchEvents = async (page: number, type?: string) => {
-        const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&offset=${page}&limit=8`)
+        // const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&offset=${page}&limit=8`)
+       try {
+        const data:any = await getSortedEvents(page);
         if (data) {
             const transformedEvents = data.data.map((event: any) => ({
                 mainEvent: {
@@ -161,6 +163,11 @@ const Page = () => {
         } else {
             console.error('Error fetching events:', error);
         }
+        
+       } catch (error) {
+        console.error(error);
+       }
+       
     }
     useEffect(() => {
         if (eventFlow) {

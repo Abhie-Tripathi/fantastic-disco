@@ -47,8 +47,8 @@
     gap: 10px;
 }
 .eventName{
-    min-height: 52px;
-    max-height: 52px;
+    min-height: 40px;
+    max-height: 40px;
     overflow: hidden;
 }
 

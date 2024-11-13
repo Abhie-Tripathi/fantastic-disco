@@ -4,7 +4,7 @@ import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { showToast } from '@/utils/showToast';
 import useOutsideClick from '@/hooks/useOutsideClick';
-
+import { useIntendServices } from '@/services/geniservices/intendService';
 interface Props {
     setStatusModal : (value : boolean) => void
     fetchGuests: () => Promise<void>;
@@ -19,7 +19,7 @@ interface Props {
 const StatusModal = ({setStatusModal, fetchGuests, statusValue, setStatusValue, mail, name, interestId, eventId }: Props) => {
     const [statusDropdown, setStatusDropdown] = useState<boolean>(false)
     const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
-
+    const {updateStatus, error} = useIntendServices();
     const statusModalRef = useOutsideClick(() => setStatusDropdown(false))
 
     const handleStatusValue = (status : string)=>{
@@ -33,13 +33,15 @@ const StatusModal = ({setStatusModal, fetchGuests, statusValue, setStatusValue, 
             status: statusValue,
             redirectUrl: `${console_url}detailpage/${eventId}`
         }
-        const { data, error } = await myFetch(`${baseUrl}/intend`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newObj)
-        })
+        // remove
+        // const { data, error } = await myFetch(`${baseUrl}/intend`, {
+        //     method: 'PATCH',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(newObj)
+        // })
+        const data = await updateStatus(newObj)
         if (data) {
             showToast("success", "Status of the user updated")
             fetchGuests()

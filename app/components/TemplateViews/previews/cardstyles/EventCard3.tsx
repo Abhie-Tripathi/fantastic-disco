@@ -21,11 +21,11 @@ interface CardProps {
         body: FontSettings;
     };
     fetchedEvent?: PrefilledAddedEventsType
-    demoBanner:string;
-    demoEventName:string,
-    demoDescription:string,
-    demoLocation:string
-    demoDate:string
+    demoBanner: string;
+    demoEventName: string,
+    demoDescription: string,
+    demoLocation: string
+    demoDate: string
 }
 
 const EventCard3 = ({
@@ -58,12 +58,12 @@ const EventCard3 = ({
 
         return `${getDayWithSuffix(day)} ${month} ${year}`;
     };
-    console.log("fetched_data",fetchedEvent)
-    const formatLocation = (event : any) => {
+    console.log("fetched_data", fetchedEvent)
+    const formatLocation = (event: any) => {
         if (event?.eventFormat === "Virtual") {
             return "Virtual";
         }
-    
+
         const location = `${event?.cityName}, ${event?.countryName}`;
         return location.length > 30 ? `${location.slice(0, 25)}...` : location;
     };
@@ -71,10 +71,16 @@ const EventCard3 = ({
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <div className={styles.bannerContainer}>
                 <Image width={280} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.banner} />
-                <div className={styles.event_type}>{fetchedEvent?.eventType==="MAIN"? "Main Event" : fetchedEvent?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
+                <div className={styles.event_type}>{fetchedEvent?.eventType === "MAIN" ? "Main Event" : fetchedEvent?.eventType === "SUB" ? "Side Event" : "Main Event"}</div>
                 <div className={styles.type}>{fetchedEvent ? fetchedEvent?.event_type : "Tradeshow"}</div>
             </div>
-            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
+            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>
+                {fetchedEvent
+                    ? fetchedEvent.name.length > 30
+                        ? `${fetchedEvent.name.substring(0, 30)}...`
+                        : fetchedEvent.name
+                    : demoEventName}
+            </div>
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <LocationIcon color={fontSettings.subheading.fontColor} />
