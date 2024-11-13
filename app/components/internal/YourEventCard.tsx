@@ -1,29 +1,21 @@
 import React, { useEffect, useState } from "react";
 import styles from "./yourEventCard.style.module.css";
-import UserIcon from "/public/user.svg";
-import calendarIcon from "/public/calendar.svg";
-import festIcon from "/public/festivalIcon.svg";
-import person1 from "@/public/person1.svg";
-import place from "@/public/internal/place.svg";
-import person2 from "@/public/person2.svg";
 import Image from "next/image";
 import upArrowLight from '/public/internal/up_arrow_light.svg'
 import { formatEventDates } from "@/utils/dateFormat";
-import Link from "next/link";
 import ClockIcon from "/public/clock.svg";
 import StatusChangeDropdown from "@/app/components/internal/eventdetail/statusDropdown";
 import upArrow from "/public/internal/up_arrow.svg";
 import { useTheme } from "@/context";
 import UpVoteTag from "@/app/components/internal/coordinate/upVoteTag";
 import { Calendar, Location } from "geist-icons";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl, headers } from "@/constants";
 import { AllEventsType } from "@/types/alleventtype";
+import { useCoordinateService } from "@/services/coordinateService";
 
 interface YourEventCardProps {
-  eventId?: string;
+  eventId: string;
   isDateSame?: boolean;
-  enquiryId?: string;
+  enquiryId: string;
   eventName?: string;
   eventCtas?: string[];
   eventCountry?: string;
@@ -34,7 +26,7 @@ interface YourEventCardProps {
   eventCompany?: string;
   eventDuration?: string;
   userCount?: number;
-  currentEnquiryStatus?: string;
+  currentEnquiryStatus: string;
   upvote?: any;
   enquiryActivity?: any;
   handleModal?: (id: string, enquiryId: string) => void;
@@ -92,7 +84,6 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   }
   // const [value,setValue]=useState("");
   const { theme } = useTheme();
-  const iconClass = theme === "light" ? "icons_light" : "icon";
   const [votesCount, setVotesCount] = useState(0);
   const [voteStatus, setVoteStatus] = useState<VoteStatus>({
     Attending: false,
@@ -107,24 +98,22 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     sponsors: [],
     exhibitors: [],
   });
+
+  const coordinateService = useCoordinateService();
+
   const handleVoteClick = async (item: keyof typeof voteStatus) => {
     let payloadData = {
-      source: "GTM",
+      enquiryId: enquiryId,
       like: !voteStatus[item] ? 1 : 0,
-      for: item?.toUpperCase(),
+      type: item?.toUpperCase(),
     };
     try {
-      const apiUrl = baseUrl + "/userInterest/" + enquiryId + "/activity";
-      const apiData = await myFetch(apiUrl, {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(payloadData),
-      });
+      const apiData: any = await coordinateService.upVote(payloadData);
       setVoteStatus((prevState) => ({
         ...prevState,
         [item]: !prevState[item],
       }));
-      setVotesCount(apiData?.data?.upvote?.like);
+      setVotesCount(apiData?.upvote?.like);
 
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -173,17 +162,13 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   
   const fetchInterestedUsers = async () => {
     try {
-      const apiUrl = `${baseUrl}/userInterest/${eventId}`;
-      const apiData = await myFetch(apiUrl, {
-        method: "GET",
-        headers: headers,
-      });
-      if (apiData.data) {
+      const apiData = await coordinateService.getInterestedUsers(eventId);
+      if (apiData) {
         setInterestedUsers({
-          attendee: apiData.data.participent.attendee,
-          speakers: apiData.data.participent.speakers,
-          sponsors: apiData.data.participent.sponsors,
-          exhibitors: apiData.data.participent.exhibitors,
+          attendee: apiData.participent.attendee,
+          speakers: apiData.participent.speakers,
+          sponsors: apiData.participent.sponsors,
+          exhibitors: apiData.participent.exhibitors,
         });
       }
     } catch (error) {

@@ -17,6 +17,7 @@ export const endpoints = {
     eventPOCDetailById: `${BASE_URL}/event-poc`,
     savedEvents: `${BASE_URL}/me/saved-events`,
     recentSearches: `${BASE_URL}/me/recent-searches`,
+    poc: `${BASE_URL}/event-poc`
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
@@ -50,40 +51,46 @@ export const endpoints = {
     getNotes: `${BASE_URL}/comment?stage=INTERNAL&entityType=TRACKER`,
     saveNotes: `${BASE_URL}/comment`,
   },
-
+  coordinate: {
+    enquiry: `${BASE_URL}/userInterest/enquiry`,
+    participent: `${BASE_URL}/userInterest/totalParticipent`,
+    iterestedUsers: `${BASE_URL}/userInterest`,
+    enquiryDetail: `${BASE_URL}/enquiry`,
+  },
   // ---------------------------GENI ENDPOINTS--------------------
-  brandkit:{
-    getKit:`${BASE_URL}/kit`,
-    create:`${BASE_URL}/kit`,
+  brandkit: {
+    getKit: `${BASE_URL}/kit`,
+    create: `${BASE_URL}/kit`,
   },
-  widget:{
-    draftWidget:`${BASE_URL}/widget`,
-    activeWidget:`${BASE_URL}/widget?status=active`,
-    deActiveWidget:`${BASE_URL}/widget?`,
-    onlyDraftWidget:`${BASE_URL}/widget?status=draft`,
-    widgetById:`${BASE_URL}/widget`,
-    widget:`${BASE_URL}/widget`
+  widget: {
+    draftWidget: `${BASE_URL}/widget`,
+    activeWidget: `${BASE_URL}/widget?status=active`,
+    deActiveWidget: `${BASE_URL}/widget?`,
+    onlyDraftWidget: `${BASE_URL}/widget?status=draft`,
+    widgetById: `${BASE_URL}/widget`,
+    widget: `${BASE_URL}/widget`
   },
-  events:{
-    getEvents:`${BASE_URL}/event?sortBy=start_date&sortType=asc&limit=2`,
-    getEventsByWidgetId:`${BASE_URL}/event`,
-    getSortedEvents:`${BASE_URL}/event`,
-    getEventById:`${BASE_URL}/event`,
-    getEventByPublicAPI:`${BASE_URL}/public/widget`,
-    deleteEvent:`${BASE_URL}/event`,
-    addEvent:`${BASE_URL}/event`,
-    addSpeakers:`${BASE_URL}/event/speaker`,
-    addExhibitors:`${BASE_URL}/event/speaker`,
-    updateEvent:`${BASE_URL}/event`
+  events: {
+    getEvents: `${BASE_URL}/event?sortBy=start_date&sortType=asc&limit=2`,
+    getEventsByWidgetId: `${BASE_URL}/event`,
+    getSortedEvents: `${BASE_URL}/event`,
+    getEventById: `${BASE_URL}/event`,
+    getEventByPublicAPI: `${BASE_URL}/public/widget`,
+    deleteEvent: `${BASE_URL}/event`,
+    addEvent: `${BASE_URL}/event`,
+    addSpeakers: `${BASE_URL}/event/speaker`,
+    addExhibitors: `${BASE_URL}/event/speaker`,
+    updateEvent: `${BASE_URL}/event`
   },
-  intend:{
-    getGuest:`${BASE_URL}/intend/users`,
-    updateStatus:`${BASE_URL}/intend`,
-    addIntend:`${BASE_URL}/intend`,
+  intend: {
+    getGuest: `${BASE_URL}/intend/users`,
+    updateStatus: `${BASE_URL}/intend`,
+    addIntend: `${BASE_URL}/intend`,
   },
-  invite:{
-    getInviteCount:`${BASE_URL}/invite?invites=true`,
-    getSuggestions:`${BASE_URL}/invite`,
-    sendInvite:`${BASE_URL}/invite/send`,
+  invite: {
+    getInviteCount: `${BASE_URL}/invite?invites=true`,
+    getSuggestions: `${BASE_URL}/invite`,
+    sendInvite: `${BASE_URL}/invite/send`,
   }
+
 };

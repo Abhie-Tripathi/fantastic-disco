@@ -9,18 +9,12 @@ import EventPoc from "./EventPoc";
 import Follower from "./Follower";
 import StatusBar from "./StatusBar";
 import OwnerList from "./ownerList";
-import StatusChangeDropdown from "./statusChangeDropdown";
 import { usePathname } from "next/navigation";
-import closeIcon from "/public/close.svg";
 import backIcon from "/public/back.svg"
 import Image from "next/image";
 import EventRequest from "./EventRequest";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl, headers } from "@/constants";
-import { number } from "zod";
-import { toast } from "react-toastify";
 import { showToast } from "@/utils/showToast";
-// import "react-toastify/dist/ReactToastify.css";
+import { useCoordinateService } from "@/services/coordinateService";
 
 interface EventData {
   id: string;
@@ -70,6 +64,8 @@ const EventDetail = ({
     sponsors: [],
     exhibitors: [],
   });
+
+  const coordinateService = useCoordinateService();
 
   useEffect(() => {
     if (urlPath === "outreach") setStage("OUTREACH");
@@ -128,9 +124,7 @@ const EventDetail = ({
     }
     const fetchEventData = async () => {
       try {
-        const { data, error } = await myFetch(
-          `${baseUrl}/event/${eventId}`
-        );
+        const data: any = await coordinateService.getEventDetailById(eventId);
         if (data) {
           const eventsData = data.event;
           
@@ -152,10 +146,7 @@ const EventDetail = ({
 
   useEffect(() => {
     const fetchInterestData = async () => {
-      const { data, error } = await myFetch(
-        `${baseUrl}/userInterest/${eventId}`
-      );
-
+      const data = await coordinateService.getInterestedUsers(eventId);
       if (data) {
         setParticipentData({
           attendee: data.participent.attendee,
@@ -163,10 +154,6 @@ const EventDetail = ({
           sponsors: data.participent.sponsors,
           exhibitors: data.participent.exhibitors,
         });
-      }
-      if (error) {
-        showToast("error", error.message);
-        return;
       }
     };
     fetchInterestData();

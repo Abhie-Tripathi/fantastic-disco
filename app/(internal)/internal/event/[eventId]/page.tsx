@@ -162,7 +162,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
           <div className="ml-auto flex gap-4 items-center">
             {website && (
-              <Link href={website}>
+              <Link href={website} target="_blank">
                 <Globe width="16px" height="16px" color="#666666" />
               </Link>
             )}
