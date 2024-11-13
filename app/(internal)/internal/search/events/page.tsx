@@ -161,6 +161,8 @@ const Search = () => {
     audienceZone: adaptedParams.shows?.includes("audienceZone"),
     audienceSpread: adaptedParams.audienceSpread ? true : false,
     eventFrequency: adaptedParams.shows?.includes("eventFrequency"),
+    includeKeywords: adaptedParams.includeKeywords ? adaptedParams.includeKeywords : '',
+    excludeKeywords: adaptedParams.excludeKeywords ? adaptedParams.excludeKeywords : '',
   };
 
   // console.log(adaptedQueryString);
