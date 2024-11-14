@@ -36,6 +36,7 @@ export const CustomEvent = ({ event }: { event: Event }) => {
       style={{
         backgroundColor: eventTypeColors[event?.eventType] || "#F0F0F0",
       }}
+      target="_blank"
     >
       <div
         className="absolute left-0 top-0 bottom-0 w-2 rounded-tl-md rounded-bl-md"
