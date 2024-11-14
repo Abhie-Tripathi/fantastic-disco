@@ -918,7 +918,7 @@ const Table = ({
               {(type === null || type === 'CUSTOM') && appliedKeywords?.length > 0 && <th>Matched</th>}
               {(type === null || type === 'CUSTOM') && appliedKeywords?.length >= 5 && <th>Score</th>}
 
-              {(type === "T_SPEAKING_OPPORTUNITY" || type === "T_COMPETITOR") &&
+              {(type === "T_SPEAKING_OPPORTUNITY" || type === "T_COMPETITOR" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP" || type === "T_RECRUITMENT") &&
                 path[path.length - 1] !== "savedEvents" && (
                   <>
                     <th
@@ -1501,7 +1501,7 @@ const Table = ({
                   </>
                 )}
 
-                {type === "T_COMPETITOR" &&
+                {(type==="T_COMPETITOR" || type === "T_CUSTOMER_ICP") &&
                   path[path.length - 1] !== "savedEvents" && (
                     <>
                       <td
