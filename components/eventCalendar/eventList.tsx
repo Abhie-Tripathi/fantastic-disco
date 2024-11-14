@@ -22,18 +22,25 @@ import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import { useTrackerServices } from "@/services/trackerServices";
 
 export default function EventList({
   eventDate,
   onClose,
+  source,
+  trackerId,
+  type,
 }: {
   eventDate: Date;
   onClose: () => void;
+  source: string;
+  trackerId?:string;
+  type?:string;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const searchParams = useSearchParams();
   const eventService = useEventsService();
-
+  const {getCalendarViewEvents}=useTrackerServices();
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.delete("view");
   filteredParams.set("skip", String((currentPage - 1) * 10));
@@ -41,8 +48,8 @@ export default function EventList({
   filteredParams.set("active_gte", eventDate.toISOString());
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString()],
-    queryFn: () =>
-      eventService.getEventsWithSearchParams(filteredParams.toString()),
+    queryFn: () => 
+      source==="tracker"?getCalendarViewEvents(trackerId, `type=${type}&startDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&endDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}`, true ):eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
 
   const handlePageChange = (page: number) => {
@@ -82,7 +89,8 @@ export default function EventList({
         : `${formattedStartDate} - ${formattedEndDate} (${days} ${
             days === 1 ? "day" : "days"
           })`;
-
+          console.log(eventDate.toISOString().split('T')[0]);
+          
     return (
       <Link href={`/internal/event/${event.id}`}>
         <Card key={event.id} className="mb-4 relative">

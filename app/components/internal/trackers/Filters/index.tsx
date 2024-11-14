@@ -957,7 +957,7 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type === "CUSTOM" && (trackerName.length === 0 || (selectedLocationsData && selectedLocationsData.length === 0))) {
+      else if (type === "CUSTOM" && (selectedLocationsData &&selectedLocationsData.length === 0 || trackerName.length === 0)){
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
@@ -1558,6 +1558,7 @@ console.log(includeKeywords, excludeKeywords);
 //       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
 // },[includeKeywords, excludeKeywords])
 console.log(includeKeywords, excludeKeywords);
+console.log(selectedLocationsData);
 
 
 return (

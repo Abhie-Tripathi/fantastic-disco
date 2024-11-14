@@ -38,6 +38,40 @@ interface OriginalResponse {
         events: eventData || [],
       };
     },
+    adaptParams(params){
+        console.log(params.get("view"), params.get("calendar_type"));
+        
+        if (params.get("view") == "calendar" && params.get("calendar_type") != "week") {
+            const currentYear = new Date().getFullYear();
+            const startDate = new Date(currentYear, 0, 1).toISOString().split("T")[0];
+            const endDate = new Date(currentYear, 11, 31).toISOString().split("T")[0];
+            return `${startDate},${endDate}`;
+          }
+        if (
+            params.get("view") == "calendar" &&
+            params.get("calendar_type") == "week"
+          ) {
+            console.log(params.get("view"));
+            
+            const today = new Date();
+            const firstDayOfMonth = new Date(
+              today.getFullYear(),
+              today.getMonth(),
+              1
+            );
+            const lastDayOfMonth = new Date(
+              today.getFullYear(),
+              today.getMonth() + 1,
+              0
+            );
+            const startDate = firstDayOfMonth.toISOString().split("T")[0];
+            const endDate = lastDayOfMonth.toISOString().split("T")[0];
+            console.log(`${startDate},${endDate}`);
+            
+            return `${startDate},${endDate}`;
+          }
+    }
+   
   };
   
   // Helper function to determine the event type

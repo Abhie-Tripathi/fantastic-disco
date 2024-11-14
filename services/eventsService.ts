@@ -98,12 +98,17 @@ export const useEventsService = () => {
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {
     const params = new URLSearchParams(searchParamsString);
+    console.log(params.toString());
     const adaptedParams = EventsAdapter.adaptRequestParams(params);
+    
+    
     const response = await api.request(`${endpoints.event.events}`, {
       method: "GET",
       params: adaptedParams,
     });
     console.log(response);
+    
+    console.log(params.toString());
     console.log(EventsAdapter.adaptResponse(response, params));
     return EventsAdapter.adaptResponse(response, params);
   };

@@ -29,6 +29,8 @@ const eventTypeIcons: Record<string, JSX.Element> = {
 };
 
 export const CustomEvent = ({ event }: { event: Event }) => {
+  console.log(event);
+  
   return (
     <Link
       href={`/search/${event.id}`}

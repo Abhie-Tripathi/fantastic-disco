@@ -149,7 +149,7 @@ export const useTrackerServices = () => {
           }
         )
     }
-    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type=string)=>{
+    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:string)=>{
         const response = await api.request<EventCount[]>(
           `${endpoints.tracker.commonUrl}/${trackerId}/events?limit=20&offset=0&${type}&groupBy=${currentZoomGroup}`,
           {
@@ -168,6 +168,27 @@ export const useTrackerServices = () => {
     console.log(TrackersAdapter.adaptTrackerMapEventData(response));
     return  TrackersAdapter.adaptTrackerMapEventData(response)
     };
+    const getCalendarViewEvents = async (trackerId:string, searchParams:string, isListing:boolean, viewType?:string)=>{
+      // console.log(type);
+      
+      // console.log(`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${type}&groupBy=${searchParams}`);
+      const response = await api.request(`${endpoints.tracker.commonUrl}/${trackerId}/events?${searchParams}`, {
+        method: "GET",
+      });
+      console.log(EventsAdapter.adaptResponse(response, new URLSearchParams("view=calendar")));
+      console.log(response);
+      
+      // console.log(TrackersAdapter.adaptTrackerMapEventData(response));
+      if(isListing){
+        const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
+        console.log(updatedResponse);
+        
+        console.log(EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams(`view=calendar&calendar_type=month`)));
+        
+        return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams(""));
+      }else 
+      return EventsAdapter.adaptResponse(response, new URLSearchParams(`view=calendar&calendar_type=${viewType}`));
+    }
     // const getEventsCount = async (searchParams: string) => {
     //   const params = new URLSearchParams(searchParams);
     //   const adaptedParams = EventsAdapter.adaptEventCountRequestParam(params);
@@ -187,6 +208,7 @@ export const useTrackerServices = () => {
       editTracker,
       getTrackerMapEvents,
       getShareAccess,
+      getCalendarViewEvents,
       editAccess,
       shareTrackerInvite,
       createNewAccess,

@@ -117,12 +117,12 @@ const Index = () => {
               </div>
               </div> */}
               </div>
-              <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
-              {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>setView("calendar")}>Calendar</div> */}
-              <div className={styles.viewsTab}>
+              <div className="cursor-pointer">
+              <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>handleClick("calendar")}>Calendar</div>
+              {/* <div className={styles.viewsTab}>
               Calendar
               <span className={`${styles.tooltipText}`} style={{marginLeft:"-30%"}}>Coming Soon</span>
-              </div>
+              </div> */}
               </div>
             </div>
             {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}

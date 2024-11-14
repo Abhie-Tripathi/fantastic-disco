@@ -42,6 +42,7 @@ import Vector1 from "/public/vectorTemplate.svg";
 import MyTracker from "@/app/components/internal/trackers/MyTrackers";
 import Loading from "@/app/components/UI/Loading";
 import { Button } from "@/components/ui/button";
+const Map = lazy(() => import("@/components/map"));
 function AllTrackers({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -545,6 +546,16 @@ const Trackers = ({ searchParams }: Search) => {
       alt="trackerLocation"  
     />
   </div> */}
+   <div>
+              <Suspense fallback={<Loading />}>
+                <Map source="tracker" 
+                searchParams={`type=active`}
+                trackerId={singleTrackerData?.id}
+                locations={["123"]}
+                 />
+                {/* <Map/> */}
+              </Suspense>
+  </div>
   <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
     <SavedEventWidget savedEvents={savedEvents} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=savedEvent`}/>

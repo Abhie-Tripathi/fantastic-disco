@@ -113,9 +113,9 @@ const Search = () => {
     staleTime: 0,
   });
 
-  // console.log(Array.from(searchParams.values()));
-
   const displayData = eventData;
+  console.log(eventData);
+  
   const events = displayData?.events || [];
   const count = displayData?.count || 0;
 
@@ -180,7 +180,7 @@ const Search = () => {
     }
   };
 console.log(searchParams.toString());
-
+console.log(events);
   return (
     <div className="space-y-6 p-6">
       <SearchBar />

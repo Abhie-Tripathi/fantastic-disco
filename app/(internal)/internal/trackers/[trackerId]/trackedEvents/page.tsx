@@ -7,6 +7,18 @@ import Image from "next/image";
 import ExportModal from "@/app/components/Search/ExportModal";
 import styles from "./trackedEvents.style.module.css";
 import "chart.js/auto";
+import { useQuery } from "@tanstack/react-query";
+import ZeroState from "@/app/components/zerostate";
+import EventCalendar from "@/components/eventCalendar";
+import {
+  CalendarEvent,
+  CalendarMonthEvent,
+  CalendarMonthEventsResponse,
+  CalendarWeekEventsResponse,
+  Event,
+  EventsResponse,
+  MapEventsResponse,
+} from "@/types/events";
 const Trackers = React.lazy(
   () => import("@/app/components/internal/trackers/CommonTrackerCard")
 );
@@ -23,6 +35,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 import {Toggle} from "@/types/trackers"
 import SideNav from "@/app/components/trackers/sideNav";
 import { useTrackerContext } from "@/context/tracker";
+import { TrackersAdapter}  from "@/adapters/trackerAdapter";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
@@ -46,11 +59,14 @@ const Map = lazy(() => import("@/components/map"));
 // }
 interface LocationObject  { [id: string]: string };
 const Page = ({ params }: { params: any }) => {
+  const { trackerId } = params;
+  
   const {data}=useTrackerContext();
+  const {getCalendarViewEvents} = useTrackerServices();
   
   
   const pathname = usePathname();
-  const {getTrackerDetail, error}=useTrackerServices();
+  // const {getTrackerDetail, error}=useTrackerServices();
   const [type, setType] = useState<string | undefined>();
   const [activeValue, setActiveValue] = useState();
   const [loading, setLoading] = useState(false);
@@ -59,13 +75,14 @@ const Page = ({ params }: { params: any }) => {
   const router = useRouter();
   const token = searchParams.get("token");
   const [savedEventCount,setSavedEventCount]=useState<number>(0);
-  const { trackerId } = params;
+  const {adaptParams}=TrackersAdapter;
   const viewType=searchParams.get("view");
   const typeOfEvent=searchParams.get("eventType");
   const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
   // const id = pathName[pathName.length - 2];
   // console.log(active);
   // const [data, setData] = useState<any>();
+  console.log(pathname);
   const [open, setOpen] = useState(false);
   const [eventType, setEventType] = useState("active");
   const [view, setView] = useState<string|null>(viewType==="list"? "list": viewType==="map"?"map":viewType==="calendar"?"calendar":"list");
@@ -113,7 +130,50 @@ const Page = ({ params }: { params: any }) => {
       },
     ],
   };
-  
+  const {
+    data: eventData,
+    error,
+    isLoading,
+    refetch,
+  } = useQuery<
+    | CalendarMonthEventsResponse
+    | CalendarWeekEventsResponse
+    | EventsResponse
+    | MapEventsResponse
+    | undefined
+  >({
+    queryKey: ["events", params, searchParams.toString()], 
+    queryFn: () => {
+      if (viewType === "calendar") {
+        return getCalendarViewEvents(
+          trackerId,
+          `type=${
+            active === "Active Events"
+              ? "active"
+              : active === "Expired Events"
+              ? "expired"
+              : active === "New Events"
+              ? ""
+              : "active"
+          }&groupBy=${
+            data.tracker.filterValue.startDate
+              ? data.tracker.filterValue.startDate
+              : adaptParams(searchParams)
+          }`,
+          false,
+          Array.from(searchParams.values())[3]
+        );
+      }
+      return Promise.resolve();
+    },
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+    enabled: Boolean(params) && view === "calendar", 
+  });
+  const displayData = eventData;
+  console.log(eventData);
+  console.log(Array.from(searchParams.values()));
+  const events = displayData?.events || [];
   // useEffect(() => {
   //   const fetchTrackerDetail = async () => {
       
@@ -328,6 +388,8 @@ const stateIds = trackerDetail?.filterValue?.locationIds?.state?.length > 0
   : [];
 
 const locationIds:string[] = [...cityIds, ...countryIds, ...stateIds];
+console.log(events);
+
   return (
     <div className="flex w-[calc(100vw-134px)]">
       {/* <SideNav/> */}
@@ -513,7 +575,20 @@ const locationIds:string[] = [...cityIds, ...countryIds, ...stateIds];
           {view === "calendar" && (
             <div>
               <Suspense fallback={<Loading />}>
-                <CalendarContainer queryString={urlQueryString} />
+              {isLoading ? (
+            <Loading />
+          ) : eventData?.count == 0 ? (
+            <ZeroState text="No events were found in the selected area." />
+          ) : error ? (
+            <ZeroState text={(error as ApiError).message} />
+          ) : (
+            <EventCalendar
+              type={`${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":"active"}`}
+              source="tracker"
+              trackerId={params.trackerId}
+              events={events as CalendarEvent[] | CalendarMonthEvent[]}
+            />
+          )}
               </Suspense>
             </div>
           )}
