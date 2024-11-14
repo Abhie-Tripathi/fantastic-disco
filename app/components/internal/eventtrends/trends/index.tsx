@@ -52,6 +52,7 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
   const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
+  const [selectedState, setSelectedState] = useState<SelectedLocation>({});
   const [selectedDateRange, setSelectedDateRange] = useState<string[]>([]);
 
   const [selectedEventRank, setSelectedEventRank] = useState<number[]>([
@@ -121,21 +122,31 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
     }
     if (
       Object.entries(selectedCity).length > 0 ||
-      Object.entries(selectedCountry).length > 0
+      Object.entries(selectedCountry).length > 0 ||
+      Object.entries(selectedState).length > 0
     ) {
       let cities = Object.keys(selectedCity).join(",");
       let countries = Object.keys(selectedCountry).join(",");
-
-      query += "&city=";
-      if (cities && countries) {
-        query += cities + "," + countries;
-        params.set("city", cities + "," + countries);
-      } else if (cities) {
-        query += cities;
-        params.set("city", cities);
-      } else if (countries) {
-        query += countries;
-        params.set("city", countries);
+      let states=  Object.keys(selectedState).join(",");
+      // query += "&city=";
+      // if (cities && countries) {
+      //   query += cities + "," + countries;
+      //   params.set("city", cities + "," + countries);
+      // } else if (cities) {
+      //   query += cities;
+      //   params.set("city", cities);
+      // } else if (countries) {
+      //   query += countries;
+      //   params.set("city", countries);
+      // }
+      const locations = [
+        cities && cities,
+        states && states,
+        countries && countries,
+      ].filter(Boolean).join(",");
+      if (locations) {
+        query += `&city=${locations}`;
+        params.set("city", locations);
       }
     }
 
@@ -304,6 +315,8 @@ const EventTrends = ({ activeChip }: EventTrendsProps) => {
                     state={selectedLocations}
                     setState={setSelectedLocations}
                     onClose={close}
+                    selectedZone={selectedState}
+                    setSelectedZone={setSelectedState}
                     selectedCity={selectedCity}
                     setSelectedCity={setSelectedCity}
                     selectedCountry={selectedCountry}

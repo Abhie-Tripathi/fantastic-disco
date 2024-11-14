@@ -15,7 +15,6 @@ interface Props{
     addedEventIds : string[]
     allEventsCount : number;
     selectedTemplate : string;
-
     isCustomisationWindowDisable:boolean
     setIsCustomisationWindowDisable:(value: boolean) => void;
     isCodeWindowDisable:boolean

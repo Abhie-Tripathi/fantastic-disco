@@ -13,6 +13,12 @@ export interface EventPOCDetailResponse {
   eventPoc: GTMEventPOCDetails[];
 }
 
+export interface EventBookmarkResponse {
+    savedEvent: {
+      bookmark: boolean;
+    };
+}
+
 export interface EventCoOrganizerDetailResponse {
   coorganizers: CoOrganizer[];
 }
@@ -71,6 +77,7 @@ export interface Event {
     categoryId: string | null;
     countryId: string | null;
   } | null;
+  "10TimesUrl": string | null;
 }
 
 export interface Tickets {

@@ -5,13 +5,6 @@
 @import "@/styles/map.css";
 @import "react-big-calendar/lib/css/react-big-calendar.css";
 @import "@/styles/eventCalendar.css";
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@import "mapbox-gl/dist/mapbox-gl.css";
-@import "@/styles/map.css";
-@import "react-big-calendar/lib/css/react-big-calendar.css";
-@import "@/styles/eventCalendar.css";
 
 .container {
   max-width: 100%;

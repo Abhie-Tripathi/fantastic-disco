@@ -19,6 +19,8 @@ import dotMenuIcon from "/public/internal/dotMenus.svg";
 import promoteIcon from "/public/internal/promote.svg";
 import prospectIcon from "/public/internal/prospect.svg";
 import { useRouter } from "next/navigation";
+import ArrowDownIcon from "/public/DownArrow.svg";
+import ArrowUpIcon from "/public/UpArrow.svg";
 interface UserDetail {
   firstname: string;
   email: string;
@@ -343,7 +345,7 @@ const Navbar = () => {
         {pathName !== "internal" && (
           <>
             <div
-              className={`${styles.circle} `}
+              className={`${styles.square} `}
               style={{ marginRight: "10px" }}
               onClick={themeSwitchHandler}
               data-name="Switch Theme"
@@ -351,7 +353,7 @@ const Navbar = () => {
               <Image src={lightModeIcon} alt="theme" className={iconClass} />
             </div>
             <Link
-              className={`${styles.circle}`}
+              className={`${styles.square}`}
               style={{ marginRight: "10px" }}
               href={"/internal"}
               data-name="Internal"
@@ -393,6 +395,7 @@ const Navbar = () => {
                 display: "flex",
                 gap: "8px",
                 cursor: "pointer",
+                alignItems: "center",
                 position: "relative",
               }}
               ref={profilectas.dropdownRef}
@@ -416,9 +419,23 @@ const Navbar = () => {
                 </div>
               )}
 
+              <div
+                className={`${styles.iconContainer} ${
+                  profilectas.isOpen
+                    ? styles.iconRotateUp
+                    : styles.iconRotateDown
+                }`}
+              >
+                {profilectas.isOpen ? (
+                  <Image src={ArrowDownIcon} alt="" className={iconClass} />
+                ) : (
+                  <Image src={ArrowUpIcon} alt="" className={iconClass} />
+                )}
+              </div>
+
               {profilectas.isOpen && (
                 <div
-                  className={`${styles.userDropdown} card`}
+                  className={`${styles.userDropdown}  ${styles.dropdownAnimation} card`}
                   style={{
                     padding: "8px",
                     borderRadius: "var(--border-radius-sm)",

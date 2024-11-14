@@ -165,11 +165,11 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
             {activeFilterBtn}</button>
           {filterDropdown && <div className={styles.dropdown} ref={filterDropdownRef}>
             <li onClick={() => handleFilterBy("All Guests")}>{activeFilterBtn === "All Guests" && <TickIcon />}All Guests</li>
-            <li onClick={() => handleFilterBy("Going")}>{activeFilterBtn === "Going" && <TickIcon />}Going<span>2</span></li>
-            <li onClick={() => handleFilterBy("Invited")}>{activeFilterBtn === "Invited" && <TickIcon />}Invited <span>0</span></li>
-            <li onClick={() => handleFilterBy("Pending")}>{activeFilterBtn === "Pending" && <TickIcon />}Pending <span>0</span></li>
-            <li onClick={() => handleFilterBy("Waitlist")}>{activeFilterBtn === "Waitlist" && <TickIcon />}Waitlist <span>1</span></li>
-            <li onClick={() => handleFilterBy("Not going")}>{activeFilterBtn === "Not going" && <TickIcon />}Not going <span>0</span></li>
+            <li onClick={() => handleFilterBy("Going")}>{activeFilterBtn === "Going" && <TickIcon />}Going</li>
+            <li onClick={() => handleFilterBy("Invited")}>{activeFilterBtn === "Invited" && <TickIcon />}Invited </li>
+            <li onClick={() => handleFilterBy("Pending")}>{activeFilterBtn === "Pending" && <TickIcon />}Pending </li>
+            <li onClick={() => handleFilterBy("Waitlist")}>{activeFilterBtn === "Waitlist" && <TickIcon />}Waitlist</li>
+            <li onClick={() => handleFilterBy("Not going")}>{activeFilterBtn === "Not going" && <TickIcon />}Not going</li>
           </div>}
         </div>
         <div className={styles.sortBtnContainer}>

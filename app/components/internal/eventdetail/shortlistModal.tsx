@@ -10,10 +10,7 @@ import speakerIcon from "/public/internal/speaker.svg";
 import sponsorIcon from "/public/internal/sponsor.svg";
 import { useAuthContext, useTheme } from "@/context";
 import { useState } from "react";
-import person1 from "@/public/person1.svg";
-import person2 from "@/public/person2.svg";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl, headers } from "@/constants";
+import { useCoordinateService } from "@/services/coordinateService";
 interface Props {
   handleShortlistModal: (eventId: string) => void;
   shortlistModalData: any;
@@ -23,6 +20,7 @@ interface Props {
 
 const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefresh, setStatusChanged }: Props) => {
   const { user } = useAuthContext();
+  const coordinateService = useCoordinateService();
 
   const closeModal = () => {
     handleShortlistModal('');
@@ -58,17 +56,14 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
         enquiryStatus:"SHORTLISTED",
       };
       try {
-        const apiUrl = baseUrl + "/userInterest";
-        const apiData = await myFetch(apiUrl, {
-          method: "PATCH",
-          headers: headers,
-          body: JSON.stringify(payloadData),
-        });
+        const apiData = await coordinateService.shortlistUsers(payloadData);
         // handleRefresh();
+        
+      } catch (error) {
+        console.error('Error fetching data1:', error);
+      } finally {
         setStatusChanged(true);
         closeModal();
-      } catch (error) {
-        console.error('Error fetching data:', error);
       }
       }else{
         let payloadData = {
@@ -76,12 +71,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
           enquiryStatus:"SHORTLISTED"
         };
         try {
-          const apiUrl = baseUrl + "/userInterest/enquiry";
-          const apiData = await myFetch(apiUrl, {
-            method: "PATCH",
-            headers: headers,
-            body: JSON.stringify(payloadData),
-          });
+          const apiData = await coordinateService.setEnquiryStatus(payloadData);
           // handleRefresh();
           setStatusChanged(true);
           closeModal();

@@ -67,7 +67,7 @@ const ListCard = ({ participant }: { participant: any }) => {
             alt="Logo"
             className="aspect-square"
           />
-          <p className="flex flex-col justify-between">
+          <div className="flex flex-col justify-between">
             <Text color="primary">{participant.name}</Text>
             {participant.boothNo && (
               <Text variant="noMargin" color="secondary">
@@ -79,7 +79,7 @@ const ListCard = ({ participant }: { participant: any }) => {
                 {participant.designation}
               </Text>
             )}
-          </p>
+          </div>
         </div>
         <Badge
           variant={"outline"}
@@ -101,14 +101,15 @@ const BadgeCount = ({ value }: { value: number | string }) => {
 };
 
 const NullState = ({ nullState }: { nullState: any }) => {
-  const { logo, text, linkText } = nullState;
+  const { logo, text, linkText, redirectLink } = nullState;
   return (
     <div className="flex flex-col items-center gap-4 justify-between">
       <Image src={logo} width={60} height={60} alt={"Participant Logo"} />
       <p className="text-center text-[#8F8F8F] font-medium">{text}</p>
       <Link
-        href={""}
-        className="text-[#6750A4] underline font-medium cursor-not-allowed"
+        href={redirectLink}
+        className="text-[#6750A4] underline font-medium cursor-pointer"
+        target="_blank"
       >
         {linkText}
       </Link>
@@ -168,7 +169,7 @@ export const EventParticipants = ({
 }: {
   eventDetails: GTMEventDetail;
 }) => {
-  const { exhibitorsCount, speakersCount, sponsorsCount } = eventDetails;
+  const { exhibitorsCount, speakersCount, sponsorsCount, "10TimesUrl": websiteUrl } = eventDetails;
   const participantData = [
     {
       heading: "Exhibitors",
@@ -176,8 +177,9 @@ export const EventParticipants = ({
       data: exhibitorsData,
       nullState: {
         logo: "/exhibitorsIcon.svg",
-        text: "No Exhibitor mapped to this event. Want to Exhibit?",
-        linkText: "Book a Booth",
+        text: "No Exhibitor mapped to this event. Are you interested to Exhibit ?",
+        linkText: "Exhibit Request",
+        redirectLink: `https://10times.com/${websiteUrl}`
       },
     },
     {
@@ -188,6 +190,7 @@ export const EventParticipants = ({
         logo: "/speakersIcon.svg",
         text: "No Speakers mapped to this event. Are you interested to attend as a speaker?",
         linkText: "Speaker Request",
+        redirectLink: `https://10times.com/${websiteUrl}`
       },
     },
     {
@@ -198,6 +201,7 @@ export const EventParticipants = ({
         logo: "/sponsorsIcon.svg",
         text: "No Sponsors mapped to this event. Interested in sponsoring this event?",
         linkText: "Sponsor Request",
+        redirectLink: `https://10times.com/${websiteUrl}`
       },
     },
   ];

@@ -32,9 +32,13 @@ const MapComponent: React.FC<MapProps> = ({
   // activeDate,
   zoom = 0,
 }) => {
-  const { id, startDateTime, endDateTime, primaryEventType, venueLocation } =
-    event;
-  const eventId = id;
+  const {
+    id: eventId,
+    startDateTime,
+    endDateTime,
+    primaryEventType,
+    venueLocation,
+  } = event;
   const [selectedPlace, setSelectedPlace] = useState<any | null>();
   const [eventDateRange, setEventDateRange] = useState<{
     startDate: string;
@@ -155,7 +159,7 @@ const MapComponent: React.FC<MapProps> = ({
                 );
               })}
           <Marker
-            key={id}
+            key={eventId}
             // onClick={() => handleMarkerClick(event)}
             longitude={parseFloat(longitude || "")}
             latitude={parseFloat(latitude || "")}
@@ -166,7 +170,7 @@ const MapComponent: React.FC<MapProps> = ({
                 <img
                   src={iconUrls[primaryEventType]}
                   alt={primaryEventType}
-                  className={`${eventId === id ? "w-10 h-10" : "w-6 h-6"}`}
+                  className="w-10 h-10"
                 />
               )}
             </div>

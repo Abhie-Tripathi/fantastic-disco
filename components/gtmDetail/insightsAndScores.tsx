@@ -31,7 +31,7 @@ export const InsightsAndScores = ({
     below5CategoryEvent,
     above5CountryEvent,
     below5CountryEvent,
-    "trustScore%": trustScore,
+    repeatSentiment: trustScore,
   } = eventDetails;
   const rankings: RankingDetail = {
     above5CategoryEvent: above5CategoryEvent,

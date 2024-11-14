@@ -31,7 +31,7 @@
     position: absolute;
     padding: 4px 8px;
     border-radius: 6px;
-    font-size: 15px;
+    font-size: var(--font-size-small);
     color: #6750A4;
     background-color: #F7EFFF;
     bottom: 5px;
@@ -42,7 +42,7 @@
     position: absolute;
     padding: 4px 8px;
     border-radius: 6px;
-    font-size: 15px;
+    font-size: var(--font-size-small);
     color: #6750A4;
     background-color: #F7EFFF;
     bottom: 5px;

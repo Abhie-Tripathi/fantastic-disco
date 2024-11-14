@@ -124,6 +124,10 @@ const top10Speakers = [
   ["abc.com", "xyz.com"],
   ["Mark Zuckerberg", "Facebook"],
 ]
+const keyData1 = [
+  ['Mental health', 'Psychologist', 'Therapist', 'wellness coaches'],
+  [],
+];
 
 const presetTemplateData = [
   {
@@ -192,6 +196,16 @@ const presetTemplateData = [
     content: "This list of Biotechnology Innovations speakers, pioneering innovation and attracting attention with compelling talks.",
     data: top10Speakers,
     enabled: false,
+    presetType: 'All',
+  },
+  {
+    id: 7,
+    img: Keywords,
+    url: "T_PRODUCT_KEYWORDS",
+    trackerName: "Mindful Matters",
+    content: "Focuses on mental health awareness and practices.",
+    data: keyData1,
+    enabled: true,
     presetType: 'All',
   }
 ];
@@ -665,6 +679,9 @@ const Pages = () => {
       setCustomData(presetData);
       setTrackerName(trackerName);
     } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
+      setTrackerName(trackerName);
+      setIncludeKeywords(filteredPresetData?.[0]?.data?.[0]);
+      setExcludeKeywords(filteredPresetData?.[0]?.data?.[1]);
     }
 
     window.scrollTo({
@@ -758,10 +775,12 @@ const Pages = () => {
         //   eventKeywords: selectedEventKeywords.join("+"),
         // }),
         ...(includeKeywords && includeKeywords.length>0 &&{
-          includeKeywords: includeKeywords.join(','),
+          // includeKeywords: includeKeywords.join(','),
+          includeKeywords :includeKeywords.map((kw: string) => kw.replace(/ /g, "_")).join(','),
         }),
         ...(excludeKeywords && excludeKeywords.length>0 &&{
-          excludeKeywords: excludeKeywords.join(','),
+          // excludeKeywords: excludeKeywords.join(','),
+          excludeKeywords :excludeKeywords.map((kw: string) => kw.replace(/ /g, "_")).join(','),
         }),
         ...(selectedCategories?.length > 0 && {
           eventCategory: categoryIds.join(","),
@@ -1347,12 +1366,12 @@ const Pages = () => {
       setIncludeKeywords(
         editData.tracker.filterValue?.includeKeywords &&
         editData.tracker.filterValue?.includeKeywords.split(",").length > 0
-            ? editData.tracker.filterValue.includeKeywords.split(",").filter(Boolean)
+            ? editData.tracker.filterValue.includeKeywords.split(",").filter(Boolean).map((kw: string) => kw.replace(/_/g, " "))
             : []
     );    
       setExcludeKeywords(editData.tracker.filterValue?.excludeKeywords &&
         editData.tracker.filterValue?.excludeKeywords.split(",").length > 0
-            ? editData.tracker.filterValue.excludeKeywords.split(",").filter(Boolean)
+            ? editData.tracker.filterValue.excludeKeywords.split(",").filter(Boolean).map((kw: string) => kw.replace(/_/g, " "))
             : []),
       setSelectedEventAttendanceRange((prevArray) => {
         const gte =
@@ -2104,7 +2123,7 @@ return (
           <div className={styles.presetTitle} >Get Started with Pre-sets</div>
           <div className={styles.presetContainer} >
             {presetTemplateData.filter(item => item.url === template?.name).map((item, ind) => (
-              <div key={ind} className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]" onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
+              <div key={ind} className="w-1/4 p-2 gap-2 flex items-center flex-col h-[300px] text-sm border border-[var(--border-color)] rounded-[12px]" onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
                 <div
                   className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]"
                 >

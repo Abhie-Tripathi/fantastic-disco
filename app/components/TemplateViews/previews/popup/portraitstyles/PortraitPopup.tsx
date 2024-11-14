@@ -47,7 +47,7 @@ const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettin
             EventCard = Popup3; // Or some default component or message
     }
     return (
-        <EventCard smallCard={smallCard} fetchedAddedEvents={fetchedAddedOtherData} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} closeButtonSetting={closeButtonSetting} selectedBtn={selectedBtn}  demoEventName={demoEventName} demoBanner={demoBanner} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>
+        <EventCard smallCard={smallCard} fetchedAddedEvents={fetchedAddedOtherData} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} closeButtonSetting={closeButtonSetting} selectedBtn={selectedBtn} demoEventName={demoEventName} demoBanner={demoBanner} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>
     )
 }
 

@@ -3,6 +3,7 @@ import { endpoints } from "@/config/endpoints";
 import {
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
+  EventBookmarkResponse,
   EventCoOrganizerDetailResponse,
   EventCount,
   EventDetailResponse,
@@ -154,16 +155,17 @@ export const useEventsService = () => {
     return response;
   };
 
-  const getIsEventBookMarked = async (id: string) => {
-    const response = await api.request(
+  const getIsEventBookMarked = async (id: string): Promise<boolean> => {
+    const response = await api.request<EventBookmarkResponse>(
       `${endpoints.tracker.saveEvent}?eventId=${id}`,
       {
         method: "GET",
       }
     );
+    return response?.savedEvent.bookmark ?? false;
   };
 
-  const UnBookmarkThisEvent = async (id: string) => {
+  const unBookmarkThisEvent = async (id: string) => {
     const response = await api.request(`${endpoints.tracker.saveEvent}`, {
       method: "DELETE",
       data: {
@@ -180,7 +182,7 @@ export const useEventsService = () => {
     getEventsCount,
     getRecentSearches,
     bookmarkThisEvent,
-    UnBookmarkThisEvent,
+    unBookmarkThisEvent,
     getIsEventBookMarked,
     getEventDetailById,
     getEventPOCDetails,

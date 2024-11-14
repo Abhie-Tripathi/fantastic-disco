@@ -119,5 +119,5 @@
     font-weight: var(--font-weight-semibold);
 }
 .infoContainer .info{
-    font-size: var(--font-size-small);
+    font-size: var(--font-size-default);
 }
