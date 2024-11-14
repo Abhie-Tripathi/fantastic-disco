@@ -10,7 +10,7 @@ import { Sora } from "next/font/google";
 import Sidebar from "../components/sidebar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleTagManager } from "@next/third-parties/google";
 import Joyride from "react-joyride";
 import { Metadata } from "next";
 import { FilterProvider } from "@/context/filterContext";
@@ -48,7 +48,8 @@ export default function RootLayout({
               </div>
               <Navbar />
               <div className="body_layout">{children}</div>
-              <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />
+              {/* <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} /> */}
+              <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
             </ThemeProvider>
           </FilterProvider>
         </AuthContextProvider>
