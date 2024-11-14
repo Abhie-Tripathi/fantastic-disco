@@ -6,8 +6,6 @@ import RegisterModal from '@/app/components/TemplateViewsNew/Events/Manage/Guest
 import useOutsideClick from '@/hooks/useOutsideClick'
 import InviteGuest from '@/app/components/TemplateViewsNew/Events/Manage/Guests/InviteGuest'
 import { useEventContext } from '@/context/eventcontext'
-import { baseUrl } from "@/constants";
-import { myFetch } from "@/utils/myFetch";
 import GuestBar from '@/app/components/TemplateViewsNew/Events/Manage/Guests/GuestBar'
 import RegisterIcon from '/public/widgetimages/manage_registerIcon.svg'
 import InviteIcon from '/public/widgetimages/manage_inviteIcon.svg'
@@ -191,7 +189,7 @@ const Page = () => {
         <div className={styles.heading}>At a Glance</div>
         <GuestBar setFilterStatus={setFilterStatus} goingGuests={goingGuests} notgoingGuests={notgoingGuests} waitlistGuest={waitlistGuests} invitedGuests={invitedGuests} pendingGuests={pendingGuests} followingGuests={followingGuests} capacity={fetchedEvent?.capacity} />
       </div>
-      <GuestList fetchGuests={fetchGuests} guests={guests} setSortBy={setSortBy} setFilterStatus={setFilterStatus} setInputName={setInputName} eventId={eventId} statusModal={statusModal} setStatusModal={setStatusModal} />
+      <GuestList fetchGuests={fetchGuests} filterStatus={filterStatus} guests={guests} setSortBy={setSortBy} setFilterStatus={setFilterStatus} setInputName={setInputName} eventId={eventId} statusModal={statusModal} setStatusModal={setStatusModal} />
 
       {registerModal && <div className={styles.modal} ref={registerModalRef}>
         <RegisterModal fetchEventData={fetchEventData} setRegisterValue={setRegisterValue} registerValue={registerValue} setRegisterModal={setRegisterModal} eventId={eventId} />

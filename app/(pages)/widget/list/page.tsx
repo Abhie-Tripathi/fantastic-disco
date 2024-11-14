@@ -234,11 +234,7 @@ const Widget = () => {
       ) : (
         <>
           <div className={styles.widgetsAndPreview}>
-            <div
-              className={`${styles.widgetsList} ${
-                isFullScreen ? styles.hideWidgetList : ""
-              }`}
-            >
+            <div className={`${styles.widgetsList} ${isFullScreen ? styles.hideWidgetList : ""}`}>
               {allWidgets.map((card, key) => (
                 <div
                   className={styles.widgetCard}
@@ -262,9 +258,7 @@ const Widget = () => {
               ))}
             </div>
             <div
-              className={`${styles.preview} ${
-                isFullScreen ? styles.fullPreview : ""
-              }`}
+              className={`${styles.preview} ${isFullScreen ? styles.fullPreview : ""}`}
             >
               <PreviewWindow
                 fontSettings={fontSettings}

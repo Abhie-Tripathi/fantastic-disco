@@ -25,6 +25,7 @@
     word-wrap: break-word;
     min-height: 60px;
     max-height: 60px;
+    line-height: 26px;
     overflow: hidden;
 }
 .smallName{

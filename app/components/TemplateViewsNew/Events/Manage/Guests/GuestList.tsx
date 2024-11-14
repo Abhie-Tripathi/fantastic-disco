@@ -14,14 +14,15 @@ interface Props {
   eventId: string;
   statusModal: boolean;
   setStatusModal: (value: boolean) => void
-  setSortBy:(value: string) => void
-  setFilterStatus:(value: string) => void
-  setInputName :(value: string) => void
-  guests : any[];
-  fetchGuests: () => Promise<void>; 
+  setSortBy: (value: string) => void
+  setFilterStatus: (value: string) => void
+  filterStatus: string
+  setInputName: (value: string) => void
+  guests: any[];
+  fetchGuests: () => Promise<void>;
 }
 
-const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterStatus, setInputName, guests,fetchGuests }: Props) => {
+const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterStatus, filterStatus, setInputName, guests, fetchGuests }: Props) => {
 
   const [activeFilterBtn, setActiveFilterBtn] = useState<string>("All Guests")
   const [activeSortBtn, setActiveSortBtn] = useState<string>("Register Time")
@@ -59,10 +60,32 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
       setFilterStatus("WAITLISTING")
     } else if (filter === "Pending") {
       setFilterStatus("PENDING")
-    } else if(filter === "Invited"){
+    } else if (filter === "Invited") {
       setFilterStatus("INVITATION")
+    } else if (filter === "Following"){
+      setFilterStatus("FOLLOWING")
     }
   }
+  useEffect(() => {
+    if(filterStatus === "CONFIRMED"){
+      setActiveFilterBtn("Going")
+    }
+    else if(filterStatus === "REJECTED"){
+      setActiveFilterBtn("Not Going")
+    }
+    else if(filterStatus === "WAITLISTING"){
+      setActiveFilterBtn("Waitlist")
+    }
+    else if(filterStatus === "PENDING"){
+      setActiveFilterBtn("Pending")
+    }
+    else if(filterStatus === "INVITATION"){
+      setActiveFilterBtn("Invited")
+    }
+    else if(filterStatus === "FOLLOWING"){
+      setActiveFilterBtn("Following")
+    }
+  }, [filterStatus])
 
   const handleStatusClick = (
     interestId: string,
@@ -135,9 +158,9 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
           ? "Waitlist"
           : status === "FOLLOWING"
             ? "Following"
-            :status==="CANCELLED"||status==="REJECTED"
-            ?"Not Going"
-            : "Not Going";
+            : status === "CANCELLED" || status === "REJECTED"
+              ? "Not Going"
+              : "Not Going";
   };
 
   return (
@@ -172,6 +195,7 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
             <li onClick={() => handleFilterBy("Pending")}>{activeFilterBtn === "Pending" && <TickIcon />}Pending </li>
             <li onClick={() => handleFilterBy("Waitlist")}>{activeFilterBtn === "Waitlist" && <TickIcon />}Waitlist</li>
             <li onClick={() => handleFilterBy("Not Going")}>{activeFilterBtn === "Not Going" && <TickIcon />}Not Going</li>
+            <li onClick={() => handleFilterBy("Following")}>{activeFilterBtn === "Following" && <TickIcon />}Following</li>
           </div>}
         </div>
         <div className={styles.sortBtnContainer}>
@@ -195,11 +219,11 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
             ${guest.status === "PENDING" ? styles.pending :
                   guest.status === "CONFIRMED" ? styles.going :
                     guest.status === "WAITLISTING" ? styles.waitlist :
-                      guest.status === "FOLLOWING" ? styles.following : 
-                      guest.status === "REJECTED" ||guest.status === "CANCELLED"? styles.notgoing : styles.invited
+                      guest.status === "FOLLOWING" ? styles.following :
+                        guest.status === "REJECTED" || guest.status === "CANCELLED" ? styles.notgoing : styles.invited
                 }
             `}>
-                {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" :guest.status === "REJECTED" || guest.status === "CANCELLED" ? "Not Going" : "Invited"}
+                {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" : guest.status === "REJECTED" || guest.status === "CANCELLED" ? "Not Going" : "Invited"}
               </div>
               <div className={styles.date}>{guest.date}</div>
             </div>

@@ -60,6 +60,7 @@
     max-height: 55px;
     word-wrap: break-word;
     overflow: hidden;
+    line-height: 26px;
 }
 .location_dateContainer{
     margin-top: 10px;

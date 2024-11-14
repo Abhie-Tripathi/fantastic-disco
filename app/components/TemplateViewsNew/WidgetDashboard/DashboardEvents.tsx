@@ -165,7 +165,9 @@ const DashboardEvents = () => {
                     <span className={`${styles.count} ${selectedBtn === "Added" ? styles.selectedCount : ""}`}>{addedEventsLength}</span>
                 </button>
             </div>
-            <div className={styles.addEvent}><span>Last Fetched on : 27 Jul 2024</span><Link href={"/widget/events"}>Fetch Now</Link></div>
+            <div className={styles.addEvent}><span>Last Fetched on : 27 Jul 2024</span>
+            {/* <Link href={"/widget/events"}>Fetch Now</Link> */}
+            </div>
             {selectedBtn === "Fetched" ? <div className={styles.fetchedEventsContainer}>
                 {siteFetchedEvents.length > 0 ?
                     <div className={styles.eventsList}>
