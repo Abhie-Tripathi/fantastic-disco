@@ -31,7 +31,7 @@ const eventTypeIcons: Record<string, JSX.Element> = {
 export const CustomEvent = ({ event }: { event: Event }) => {
   return (
     <Link
-      href={`/search/${event.id}`}
+      href={`/internal/event/${event.id}`}
       className="mt-3 flex items-center p-2 pl-6 gap-2 h-16 rounded-md text-sm text-[#171717] relative overflow-hidden"
       style={{
         backgroundColor: eventTypeColors[event?.eventType] || "#F0F0F0",
