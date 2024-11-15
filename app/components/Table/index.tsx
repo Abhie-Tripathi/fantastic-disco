@@ -35,6 +35,8 @@ import { useTrackerServices } from "@/services/trackerServices";
 // import { AllEventsType } from '@/types/ListViewTable';
 import ZeroState from "../zerostate";
 import { useTrackerContext } from "@/context/tracker";
+import NullState from "../trackers/nullState";
+import TrackerNullState from '@/public/trackerNullState.svg'
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -551,7 +553,8 @@ const Table = ({
   
         setEventPerPage(result.result);
         setTotalEvents(result.count);
-  
+        console.log(path);
+        
         if (result.count === 0) {
           setZeroStateHeading(`No ${eventType} Found`);
           setZeroStateText("Try using alternative or related industry/keywords to create a tracker.");
@@ -701,10 +704,11 @@ const Table = ({
       if (currPage === 1) {
         setTotalPages(Math.ceil(result.totalEvents / itemsPerPage));
       }
-  
+      console.log(path);
+      
       if (result.totalEvents === 0) {
-        setZeroStateHeading(`No ${eventType} Found`);
-        setZeroStateText("Try using alternative or related industry/keywords to create a tracker.");
+        setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
+        setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
       }
   
       if (result.events.length > 0) {
@@ -856,7 +860,9 @@ const Table = ({
   } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
+        {path[2]==="trackers"? <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText="Manage Congfigurations" buttonUrl="/"/>:
         <ZeroState title={zeroStateHeading} text={zeroStateText} />
+        }
       </div>
     );
   }

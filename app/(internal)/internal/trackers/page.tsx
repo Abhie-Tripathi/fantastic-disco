@@ -130,7 +130,7 @@ interface Search {
 }
 const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
-  const {  setIsNewCall, setTrackerId } = useTrackerContext();
+  const {  setIsNewCall, setTrackerId, isLoading:load } = useTrackerContext();
   const router=useRouter();
   const [type, setType] = useState("");
   useEffect(()=>{
@@ -391,7 +391,6 @@ const Trackers = ({ searchParams }: Search) => {
   //     setRun(true);
   //   }
   // }, [updateSteps]);
-  console.log(currentUrl);
   
   const [note,setNote]=useState<any>(null);
   const [savedEvents, setSavedEvents] = useState<{ result: EventTableType[]; count: number } | undefined>(undefined);
@@ -525,7 +524,7 @@ const Trackers = ({ searchParams }: Search) => {
         href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=activeEvent`}
         onClick={()=>setContextData(singleTrackerData?.id)}
       >
-        <Button className="text-white">View Events</Button>
+        <Button className="text-white">View Detail</Button>
           </Link>
         </div>
         <div className="flex h-[calc(100vh-180px)] overflow-y-auto flex-col px-8 gap-4">
@@ -547,14 +546,18 @@ const Trackers = ({ searchParams }: Search) => {
     />
   </div> */}
    <div>
-              <Suspense fallback={<Loading />}>
-                <Map source="tracker" 
-                searchParams={`type=active`}
-                trackerId={singleTrackerData?.id}
-                locations={["123"]}
-                 />
-                {/* <Map/> */}
-              </Suspense>
+   {/* {load ? (
+      <Loading />
+    ) : ( */}
+      <Suspense fallback={<Loading />}>
+        <Map 
+          source="tracker" 
+          searchParams={`type=active`}
+          trackerId={singleTrackerData?.id}
+        />
+      </Suspense>
+    {/* )} */}
+
   </div>
   <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>

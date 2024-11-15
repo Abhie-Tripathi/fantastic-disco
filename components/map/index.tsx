@@ -34,7 +34,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import ZeroState from "@/app/components/zerostate";
 import { useTheme } from "@/context";
 import { useTrackerServices } from "@/services/trackerServices";
-
+import { useRouter } from "next/navigation";
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
@@ -71,11 +71,13 @@ interface MapProps {
 
 type ZoomGroup = "country" | "state" | "city" | "event";
 
-export default function MapComponent({ source, searchParams, locations, trackerId }: {source: string;
+export default function MapComponent({ source, searchParams, trackerId }: {source: string;
   searchParams?: string;
-  locations?: string[];
   trackerId?: string;}) {
+    console.log(`/internal/trackers/${trackerId}/trackedEvents?type=CUSTOM&view=map&eventType=activeEvent`);
+    
   const {theme} = useTheme();
+  const router = useRouter();
   const mapRef = useRef<MapRef>(null);
   const {getMapViewData, getEventsLatLongData}=useTrackerServices();
   const { getFilterValue } = useFilterState();
@@ -103,10 +105,9 @@ export default function MapComponent({ source, searchParams, locations, trackerI
     getEventsWithSearchParams,
     []
   );
-  
   const location = useMemo(() => {
     const geoCoordinates = getFilterValue("geoCoordinates");
-    const locationIds = source!=="tracker"?getFilterValue("locationIds"):locations;
+    const locationIds = source==="search" ? getFilterValue("locationIds"):"some random location from tracker";
     
     if (geoCoordinates) {
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
@@ -204,8 +205,18 @@ export default function MapComponent({ source, searchParams, locations, trackerI
     if (newZoomGroup !== currentZoomGroup) {
       setCurrentZoomGroup(newZoomGroup);
     }
-  }, [viewport.zoom, currentZoomGroup, determineZoomGroup]);
-
+    
+  }, [viewport.zoom, currentZoomGroup, determineZoomGroup, trackerId]);
+  useEffect(() => {
+    setViewport({
+      latitude: 20.5937,
+      longitude: 78.9629,
+      zoom: ZOOM_LEVELS.INITIAL,
+      bearing: 0,
+      pitch: 0,
+      padding: { top: 0, bottom: 0, left: 0, right: 0 },
+    });
+  }, [trackerId]);
   // const eventCountsQuery = useQuery<EventCount[], Error>({
   //   queryKey: ["eventCounts", currentZoomGroup, searchParams],
   //   queryFn: async () => {
@@ -220,9 +231,9 @@ export default function MapComponent({ source, searchParams, locations, trackerI
   //   enabled: currentZoomGroup !== "event" && location !== null,
   // });
   const eventCountsQuery = useQuery<EventCount[], Error>({
-    queryKey: source === "tracker" ? ["eventCounts", trackerId, currentZoomGroup,searchParams] : ["eventCounts", currentZoomGroup, searchParams],
+    queryKey: source === "tracker" ? ["eventCounts", trackerId, currentZoomGroup,searchParams] : source === "tracker_global" ? [ trackerId] : ["eventCounts", currentZoomGroup, searchParams],
     queryFn: async () => {
-      if (source === "tracker") {
+      if (source === "tracker" ||  source==="tracker_global") {
         const response = await getMapViewData(trackerId, currentZoomGroup, searchParams);
         return response || [];
       } else {
@@ -249,7 +260,7 @@ export default function MapComponent({ source, searchParams, locations, trackerI
       queryClient.prefetchQuery({
         queryKey: ["eventCounts", nextZoomGroup, searchParams],
         queryFn: async () => {
-          const response = await memoizedGetEventsCount(
+          const response = source === "tracker"?await getMapViewData(trackerId, currentZoomGroup, searchParams) :await memoizedGetEventsCount(
             `${searchParams}&groupBy=${nextZoomGroup}`
           );
           return response || [];
@@ -314,6 +325,7 @@ export default function MapComponent({ source, searchParams, locations, trackerI
     searchParams,
     memoizedGetEventsWithSearchParams,
     location,
+    trackerId
   ]);
   
   // Handle map movement
@@ -447,11 +459,12 @@ export default function MapComponent({ source, searchParams, locations, trackerI
     return null;
   }, [location]);
 
+  console.log(viewport);
   
   console.log(theme,"ohh yeah")
   return (
     <div className="relative">
-      {!location ? (
+      {(!location && !trackerId)? (
         <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
       ) : (
         <ReactMapGL

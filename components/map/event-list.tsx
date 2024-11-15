@@ -41,11 +41,12 @@ export default function EventList({
   const searchParams = source!=="tracker"?useSearchParams():searchParam;
   const eventService = useEventsService();
   const filteredParams = new URLSearchParams(searchParams?.toString());
+  
   filteredParams.delete("view");
   filteredParams.set("skip", String((currentPage - 1) * 10));
   const {getTrackerMapEvents}=useTrackerServices(); 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString()],
+    queryKey: ["events", filteredParams.toString(), trackerId],
     queryFn: () => source === 'tracker' 
       ? getTrackerMapEvents(trackerId,`limit=10&offset=${(currentPage - 1) * 10 + 1}`, searchParam.toString())
       : eventService.getEventsWithSearchParams(filteredParams.toString()),

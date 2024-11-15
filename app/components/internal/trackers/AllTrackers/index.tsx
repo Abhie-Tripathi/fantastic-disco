@@ -97,29 +97,36 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
     >
      
         <div className="flex justify-between">
-          <div className="flex gap-2 flex-col justify-between">
-            <div className="font-semibold">
-              {item?.name?.length>16? `${item.name.substring(0,16)}...`:item.name}
+          <div className="flex gap-2 flex-col justify-between w-[40%]">
+            <div>
+            <div className="font-semibold break-words leading-none">
+              {item?.name?.length>45? `${item.name.substring(0,45)}...`:item.name}
               </div>
-            <div className="flex items-center gap-1 mt-[-30px]">
+            <div className="flex gap-1 w-[100%]">
         {locations?.length>0 && 
-        <>
+        <div className="flex gap-1">
+        <div className="pt-[3px]">
         <Location style={{color:"var(--tertiary-text-color)"}} height="12px" width="12px"/>
-        <div className="flex items-center gap-[5px] text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)]" style={{fontSize:"12px"}}>
-          {locations?.length > 0 && locations[0].length<15 &&locations[0]}
-          {locations?.length > 0 && locations[0].length>15 &&`${locations[0].substring(0,15)}...`}
+        </div>
+        <div className="flex text-small font-[var(--font-weight-medium)] text-[var(--tertiary-text-color)] w-[95%]" style={{fontSize:"12px"}}>
+          {/* {locations?.length > 0 && locations[0].length<15 &&locations[0]}
+          {locations?.length > 0 && locations[0].length>15 &&`${locations[0].substring(0,15)}...`} */}
+          <div  className={`${
+            locations?.length > 1 ? 'w-[75%]' : 'w-full'
+            } text-[var(--tertiary-text-color)]`}>{locations && locations[0]}</div>
           {locations?.length > 1 &&  (
-            <span className="border w-[28px] h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)]">+{locations.length - 1}</span>
+            <div className="border w-[28px] h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)]">+{locations.length - 1}</div>
           )}
         </div>
-        </>
+        </div>
 }
-      </div> 
-      <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>{formatType(item.type)}</div>
-          </div>
-          <div className="flex gap-2">
-          <div className="flex w-full h-[100px]">
-          <div className="flex gap-2 w-[100%] text-xs">
+            </div> 
+            </div>
+            <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{fontSize:"var(--font-size-xs)"}}>{formatType(item.type)}</div>
+            </div>
+            <div className="flex gap-2">
+            <div className="flex w-full h-[100px]">
+            <div className="flex gap-2 w-[100%] text-xs">
             <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
                 <Image src={Vectore6} alt="newVector" width={12} height={12}/>
@@ -143,7 +150,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
                 <Image src={Vectore8} alt="expired" width={12} height={12}/>
-                Expired
+                Past
               </div>
               <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
                 {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired.toLocaleString('en-US')}

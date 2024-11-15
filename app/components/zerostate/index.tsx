@@ -7,6 +7,7 @@ const ZeroState = ({ title, text }: { title?: string, text?:string }) => {
   return (
     <div className={styles.zeroState_container}>
       <Image src={ZeroStateIcon} alt="zerostate" width={200} height={160}/>
+      
       <div style={{width:"400px"}}>{title}</div>
       <div className={styles.text}>{text}</div>
     </div>
