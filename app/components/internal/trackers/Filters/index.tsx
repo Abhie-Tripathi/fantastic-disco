@@ -928,7 +928,7 @@ const Pages = () => {
         // }
       },
     };
-    if (last === "editTracker") {
+   
 
       const secondLast = pathName[pathName.length - 2];
      
@@ -942,12 +942,17 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type === "CUSTOM" && (selectedLocationsData &&selectedLocationsData.length === 0 || trackerName.length === 0)) {
+      else if (type === "CUSTOM" && ( 
+        !selectedLocationsData || 
+        selectedLocationsData.length === 0 || 
+        trackerName.trim().length === 0 
+      )) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
+      if (last === "editTracker") {
       try{
         const data = await editTracker(secondLast, formData);
         if (data) {
@@ -963,25 +968,6 @@ const Pages = () => {
       }
       console.log(selectedCountry);
     } else {
-      console.log(formData);
-      
-      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(includeKeywords?.length==0 && excludeKeywords?.length===0))){
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
-      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
-        console.log("Please, Fill all the details");
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
-      else if (type === "CUSTOM" && (trackerName.length === 0 || (selectedLocationsData && selectedLocationsData.length === 0))) {
-        console.log("Please, Fill all the details");
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
       try{
         const data= await createTracker(formData)
         if (error) {
@@ -1578,6 +1564,7 @@ console.log(includeKeywords, excludeKeywords);
 // },[includeKeywords, excludeKeywords])
 console.log(includeKeywords, excludeKeywords);
 
+console.log(selectedLocationsData?.length);
 
 return (
   <>
@@ -2068,7 +2055,8 @@ return (
         {/* INSIGHTS AND SCORES */}
         {showAdvanceFilter && selectedAdvFilter === "IS" && (
           <div className={styles.inputdropdowns_container}>
-              <EstimatedVisitorsSelector source="tracker" selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}/>
+              <EstimatedVisitorsSelector source="tracker" selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}
+              />
               <EstimatedExhibitorsSelector selectedRanges={selectedExhibitScore}
               setSelectedRanges={setSelectedExhibitScore}
               isEnabled={isExhibitOpen}
