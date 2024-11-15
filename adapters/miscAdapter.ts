@@ -74,10 +74,13 @@ export const MiscAdapter = {
     }
 
     if(params.get('status')) {
-      adaptedParams.status = params.get("status")!;
+      if(params.get('status') === 'IN_PROGRESS')
+        adaptedParams.status = 'IN_DISCUSSION,IN_NEGO';
+      else
+        adaptedParams.status = params.get("status")!;
     }
     else {
-      adaptedParams.status = 'IN_DISCUSSION,SHORTLISTED,REJECTED';
+      adaptedParams.status = 'PENDING,SHORTLISTED,IN_NEGO,IN_DISCUSSION,CONFIRMED,REJECTED';
     }
 
     return adaptedParams;

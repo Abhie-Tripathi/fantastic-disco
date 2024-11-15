@@ -18,6 +18,13 @@ interface PropType {
   // value:any;
   // setValue:any;
 }
+
+const formatText = (val: string) => {
+  if(val) {
+    return val?.charAt(0).toUpperCase() + val?.substring(1).toLowerCase();
+  }
+}
+
 const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
   
   const [isOpen, setIsOpen] = useState(false);
@@ -27,11 +34,18 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
   const coordinateService = useCoordinateService();
 
   const openDropDownHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    setIsOpen((prev) => !prev);
+    if(props?.currentEnquiryStatus == 'IN_NEGO' || props?.currentEnquiryStatus == 'IN_DISCUSSION' || props?.currentEnquiryStatus == 'CONFIRMED')
+      return
+    else
+      setIsOpen((prev) => !prev);
   };
 useEffect(()=>{
  setValue((props.currentEnquiryStatus == 'REJECTED') ? 'Rejected' : 
  (props.currentEnquiryStatus == 'IN_DISCUSSION') ?'Pending' : 'Shortlisted')
+
+ setIsOpen(false);
+ if(props?.currentEnquiryStatus)
+   setValue((props.currentEnquiryStatus == 'IN_DISCUSSION' || props.currentEnquiryStatus == 'IN_NEGO') ? 'In Progress' : props.currentEnquiryStatus)
 }, [props.currentEnquiryStatus])
   const handleMenuItemClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLDivElement;
@@ -95,7 +109,7 @@ useEffect(()=>{
         >
           <div className={styles.dropdown_value}>
             <Image src={theme==="light"?ClockIconLight:ClockIcon} alt="clock" width={16} height={16} className="icons"/>
-            {value}
+            {formatText(value)}
             <Image
                     src={theme==="light"?upArrowLight:upArrow}
                     alt="up"
