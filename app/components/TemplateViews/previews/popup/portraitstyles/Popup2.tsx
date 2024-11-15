@@ -117,6 +117,7 @@ const Popup2: React.FC<Props> = ({
       className={smallCard ? styles.smallCard : styles.card}
       style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}
     >
+      <div className={styles.event_name_cont}>
       <div
         className={smallCard ? styles.smallName : styles.eventName}
         style={{
@@ -125,12 +126,15 @@ const Popup2: React.FC<Props> = ({
           fontFamily: fontSettings.heading.fontFamily,
           fontWeight: fontSettings.heading.fontWeight,
         }}
+        data-name={fetchedAddedEvents![0]? fetchedAddedEvents![0].name :demoEventName}
       >
         {fetchedAddedEvents && fetchedAddedEvents.length > 0
           ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""
           }`
           : demoEventName}
       </div>
+      </div>
+    
       <div className={styles.location_dateContainer}>
         <div className={styles.locationContainer}>
           <LocationIcon color={fontSettings?.subheading.fontColor || "black"} />

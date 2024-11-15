@@ -71,7 +71,40 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
     };
     const handleCustomizationWindowClick=() => {
         if (isCustomisationWindowDisable) {
-            if(selectedTemplate ==="CVL"){
+            if(selectedTemplate ==="LS"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the customization screen!"
+                );
+            } else if(selectedTemplate ==="ST"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the customization screen!"
+                );
+            }else if(selectedTemplate ==="PUVP"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the customization screen!"
+                );
+            }else if(selectedTemplate ==="PUVL"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the customization screen!"
+                );
+            }
+            else if(selectedTemplate ==="LSR"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the customization screen!"
+                );
+            }
+            else if(selectedTemplate ==="GS"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the customization screen!"
+                );
+            }
+            else if(selectedTemplate ==="CVL"){
                 showToast( 
                     "error",
                     "Select at least 1 event for the list and promote 3 for the carousel view!"
@@ -100,7 +133,41 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
 
     const handleCodeWindowClick=() => {
         if (isCustomisationWindowDisable) {
-            if(selectedTemplate ==="CVL"){
+            if(selectedTemplate ==="LS"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the code screen!"
+                );
+            }else if(selectedTemplate ==="PUVP"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the code screen!"
+                );
+            }else if(selectedTemplate ==="PUVL"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the code screen!"
+                );
+            }
+            else if(selectedTemplate ==="ST"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the code screen!"
+                );
+            }
+            else if(selectedTemplate ==="LSR"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the code screen!"
+                );
+            }
+            else if(selectedTemplate ==="GS"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the code screen!"
+                );
+            }
+            else if(selectedTemplate ==="CVL"){
                 showToast( 
                     "error",
                     "Select at least 1 event for the list and promote 3 for the carousel view!"

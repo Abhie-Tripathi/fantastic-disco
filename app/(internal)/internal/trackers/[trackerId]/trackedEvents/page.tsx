@@ -84,7 +84,8 @@ const Page = ({ params }: { params: any }) => {
     trackerKeywords: true,
     eventRating:false, 
     eventFrequency:false,
-    keywords:[]
+    includeKeywords: '',
+    excludeKeywords: '',
   });
   const lineData = {
     labels: [
@@ -288,9 +289,11 @@ const Page = ({ params }: { params: any }) => {
     if(toggleOpend?.rating===true){
       setShowInsights(prev=>({...prev, eventRating:true}));
     }
-    if(trackerDetail?.filterValue?.eventKeywords?.length>0){
-      const keywords=trackerDetail?.filterValue?.eventKeywords?.split('+');
-      setShowInsights(prev=>({...prev, keywords:keywords}));
+    if(trackerDetail?.filterValue?.includeKeywords) {
+      setShowInsights(prev=>({...prev, includeKeywords: trackerDetail?.filterValue?.includeKeywords}));
+    }
+    if(trackerDetail?.filterValue?.excludeKeywords) {
+      setShowInsights(prev=>({...prev, excludeKeywords: trackerDetail?.filterValue?.excludeKeywords}));
     }
     if(trackerDetail?.filterValue) {
       const toggleObj = {

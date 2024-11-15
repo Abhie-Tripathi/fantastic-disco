@@ -62,27 +62,27 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
       setFilterStatus("PENDING")
     } else if (filter === "Invited") {
       setFilterStatus("INVITATION")
-    } else if (filter === "Following"){
+    } else if (filter === "Following") {
       setFilterStatus("FOLLOWING")
     }
   }
   useEffect(() => {
-    if(filterStatus === "CONFIRMED"){
+    if (filterStatus === "CONFIRMED") {
       setActiveFilterBtn("Going")
     }
-    else if(filterStatus === "REJECTED"){
+    else if (filterStatus === "REJECTED") {
       setActiveFilterBtn("Not Going")
     }
-    else if(filterStatus === "WAITLISTING"){
+    else if (filterStatus === "WAITLISTING") {
       setActiveFilterBtn("Waitlist")
     }
-    else if(filterStatus === "PENDING"){
+    else if (filterStatus === "PENDING") {
       setActiveFilterBtn("Pending")
     }
-    else if(filterStatus === "INVITATION"){
+    else if (filterStatus === "INVITATION") {
       setActiveFilterBtn("Invited")
     }
-    else if(filterStatus === "FOLLOWING"){
+    else if (filterStatus === "FOLLOWING") {
       setActiveFilterBtn("Following")
     }
   }, [filterStatus])
@@ -160,7 +160,7 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
             ? "Following"
             : status === "CANCELLED" || status === "REJECTED"
               ? "Not Going"
-              : "Not Going";
+              : status === "INVITATION" ? "Invited" : "";
   };
 
   return (

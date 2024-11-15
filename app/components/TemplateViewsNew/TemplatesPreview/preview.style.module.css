@@ -89,6 +89,7 @@
     cursor: pointer;
 } */
 
+
 .viewBtnContainer {
     position: fixed;
     top: 0;
@@ -110,3 +111,19 @@
     align-items: center;
     justify-content: center;
 }
+
+/* .viewBtnContainer {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 6px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease; 
+  }
+  
+  .viewBtnContainer:hover {
+    background-color: rgba(0, 0, 0, 0.7); 
+  }
+   */
