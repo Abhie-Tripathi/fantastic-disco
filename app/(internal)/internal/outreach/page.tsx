@@ -263,7 +263,7 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
 const fetchInProgressData=async()=>{
   const negoApiData = await coordinateService.getOutreachEventList({
     offset: (inProgressPage-1) * 10,
-    status: 'IN_NEGO',
+    status: 'IN_NEGO,IN_DISCUSSION',
   });
 
   if (negoApiData) {
