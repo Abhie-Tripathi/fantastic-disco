@@ -179,7 +179,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
                 !mainEventState.participationMessage ||
                 // Check location fields only for "In-person" or "Hybrid" events
                 ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid" || mainEventState.eventFormat === "OFFLINE") &&
-                    (!mainEventState.cityName || !mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude))
+                    (!mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude))
             ) {
                 showToast("error", "Please fill in all the required fields");
                 return; // Exit the function if any field is missing
@@ -378,7 +378,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
             // !eventState.participationMessage ||
             // Check location fields only for "In-person" or "Hybrid" events
             ((subEventState.eventFormat === "In-person" || subEventState.eventFormat === "Hybrid" || subEventState.eventFormat === "OFFLINE") &&
-                (!subEventState.cityName || !subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude))
+                (!subEventState.countryName || !subEventState.timeZone || !subEventState.latitude || !subEventState.longitude))
         ) {
             showToast("error", "Please fill in all the required fields");
             return; // Exit the function if any field is missing
@@ -524,7 +524,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
             // !eventState.participationMessage ||
             // Check location fields only for "In-person" or "Hybrid" events
             ((eventState.eventFormat === "In-person" || eventState.eventFormat === "Hybrid" || eventState.eventFormat === "OFFLINE") &&
-                (!eventState.cityName || !eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude))
+                (!eventState.countryName || !eventState.timeZone || !eventState.latitude || !eventState.longitude))
         ) {
             showToast("error", "Please fill in all the required fields");
             return; // Exit the function if any field is missing
@@ -654,7 +654,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
 
     const handleCollapseForm = (type: string) => {
         if (type === "side") { // This is when we click on sideevent button or Yes button
-            if (mainEventState.eventName && mainEventState.description && mainEventState.participationType && mainEventState.participationMessage && (mainEventState.cityName || mainEventState.virtualLink) && (mainEventState.banner.placeHolder !== Placeholder || mainEventState.banner.file)) {
+            if (mainEventState.eventName && mainEventState.description && mainEventState.participationType && mainEventState.participationMessage && (mainEventState.countryName || mainEventState.virtualLink) && (mainEventState.banner.placeHolder !== Placeholder || mainEventState.banner.file)) {
                 setCollapseMainEventForm(true)
                 setActiveBtn("side")
             }

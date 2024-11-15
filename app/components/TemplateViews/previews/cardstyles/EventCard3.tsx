@@ -74,13 +74,16 @@ const EventCard3 = ({
                 <div className={styles.event_type}>{fetchedEvent?.eventType === "MAIN" ? "Main Event" : fetchedEvent?.eventType === "SUB" ? "Side Event" : "Main Event"}</div>
                 <div className={styles.type}>{fetchedEvent ? fetchedEvent?.event_type : "Tradeshow"}</div>
             </div>
-            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>
+            <div className={styles.evet_name_cont}>
+            <div className={styles.eventName} data-name={fetchedEvent && fetchedEvent.name}  style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>
                 {fetchedEvent
                     ? fetchedEvent.name.length > 30
                         ? `${fetchedEvent.name.substring(0, 30)}...`
                         : fetchedEvent.name
                     : demoEventName}
             </div>
+            </div>
+           
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <LocationIcon color={fontSettings.subheading.fontColor} />

@@ -71,11 +71,14 @@ const EventCard2 = ({
     };
     return (
         <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}> {fetchedEvent
+            <div className={styles.event_name_container}>
+            <div className={styles.eventName} data-name={fetchedEvent && fetchedEvent.name}  style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}> {fetchedEvent
                 ? fetchedEvent.name.length > 30
                     ? `${fetchedEvent.name.substring(0, 30)}...`
                     : fetchedEvent.name
                 : demoEventName}</div>
+            </div>
+            
             <div className={styles.location_dateContainer}>
                 <div className={styles.locationContainer}>
                     <LocationIcon color={fontSettings.subheading.fontColor} />

@@ -120,11 +120,19 @@ const StickyCard = ({
             fontFamily: fontSettings.heading.fontFamily,
             fontWeight: fontSettings.heading.fontWeight,
           }}
+          data-name={fetchedEvent![0]? fetchedEvent![0].name :demoEventName}
         >
-          {fetchedEvent && fetchedEvent.length > 0
+          {/* {fetchedEvent && fetchedEvent.length > 0
             ? fetchedEvent[0]?.name.substring(0, 40)
-            : demoEventName}
+            : demoEventName} */}
+             {fetchedEvent && fetchedEvent.length > 0
+          ? `${fetchedEvent[0].name.substring(0, 30)} ${fetchedEvent[0].name.length > 30 ? "..." : ""
+          }`
+          : demoEventName}
         </div>
+
+
+        
 
         {/* Location */}
         <div className={styles.locationContainer}>

@@ -6,6 +6,7 @@
     border-left: 1px dashed var(--disabled-background-color);
     display: flex;
     justify-content: flex-end;
+    
 }
 .bigCard{
     background-color: var(--primary-foreground);
