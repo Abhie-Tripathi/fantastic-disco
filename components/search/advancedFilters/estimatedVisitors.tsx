@@ -77,19 +77,12 @@ export default function EstimatedVisitorsSelector({
 
   const handleRangeToggle = (rangeId: string) => {
     console.log(selectedRanges);
-    if(source==="tracker"){
-    setSelectedRanges?.((prev) =>
-      prev.includes(rangeId)
-        ? prev.filter((id) => id !== rangeId)
-        : [...prev, rangeId]
-    );
-    }else{
+    
       setSelectedRanges?.((prev) =>
         prev.includes(rangeId)
           ? prev.filter((id) => id !== rangeId)
           : [...prev, rangeId]
       );
-    }
   };
 
   const handleApply = () => {
@@ -100,14 +93,12 @@ export default function EstimatedVisitorsSelector({
       const rangeStrings = selectedRangesData.map((range) =>
         range.max === Infinity ? `${range.min}` : `${range.min}-${range.max}`
       );
-      console.log(rangeStrings);
       setLocalFilter("estimatedVisitors", rangeStrings.join(","));
     } else {
       setLocalFilter("estimatedVisitors", "");
     }
     setIsOpen(false);
   };
-console.log(selectedRanges);
 
   return (
     <Popover
