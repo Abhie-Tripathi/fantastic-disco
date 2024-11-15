@@ -99,7 +99,8 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
                         <div className={styles.eventDataField} style={{ marginTop: 10 }}>
                             <Image src={PlaceIcon} alt="locationIcon" width={14} height={14} className="icons" />
                             {
-                                event?.mainEvent.format === "Virtual"?<>Virtual</>: <div>{event.mainEvent.cityName}, {event.mainEvent.countryName}</div>
+                                event?.mainEvent.format === "Virtual"?<>Virtual</>: 
+                                <div>{event.mainEvent.cityName && `${event.mainEvent.cityName},`} {event.mainEvent.countryName}</div>
                             }
                             {/* <div>{event.mainEvent.cityName}, {event.mainEvent.countryName}</div> */}
                         </div>

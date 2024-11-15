@@ -41,7 +41,7 @@ const LocationDropdown = ({ theme, formState, handleChange
     const [isDropdownVisible, setIsDropdownVisible] = useState<boolean>(false);
 
     const handleSuggestionClick = async (suggestion: LocationSuggestion) => {
-        handleChange('cityName',suggestion.name)
+        handleChange('cityName',suggestion.state ? suggestion.state : "")
         // handleChange('cityName',suggestion.name)
         // setCityName(suggestion.name);
         handleChange('countryName',suggestion.countryName)
@@ -116,7 +116,6 @@ const LocationDropdown = ({ theme, formState, handleChange
         // setIsEventFormatEmpty(false)
     }
     const handleVirtualInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log("ssdfsdf",e.target.value)
         handleChange("virtualLink",e.target.value)
         handleChange('isEventFormatEmpty',false)
         // setQuery(e.target.value);
@@ -171,9 +170,9 @@ const LocationDropdown = ({ theme, formState, handleChange
                                 onClick={() => handleSuggestionClick(suggestion)}
                             >
                                 <LocationIcon />
-                                <span>{suggestion.name}</span>
-                                {suggestion.state && <span>, {suggestion.state}</span>}
-                                <span>, {suggestion.countryName}</span>
+                                {/* <span>{suggestion.name}</span> */}
+                                {suggestion.state && <span>{suggestion.state},</span>}
+                                <span>{suggestion.countryName}</span>
                             </div>
                         ))}
                     </div>
