@@ -1,27 +1,18 @@
-.bodyContainer {
-  /* height: calc(100vh - 80px); */
-  /* background-color: #ffffff; */
-  /* min-width: 600px; */
-}
-.bodyContainer_light {
-  background-color: var(--primary-bg-light);
-  color: var(--primary-color-light);
-}
-
 .taskBody {
-  padding-top: 40px;
+  /* padding-top: 40px;
   padding-bottom: 20px;
   padding-left: 10px;
-  padding-right: 10px;
+  padding-right: 10px; */
+  padding: 24px;
   border-radius: var(--border-radius-lg);
   display: flex;
   justify-content: space-evenly;
   position: relative;
-  gap: 10px;
+  gap: 24px;
 }
 
 .outerCard {
-  width: 32%;
+  width: 31%;
   color: #ffffff;
 }
 
@@ -45,20 +36,15 @@
   padding: 5px;
 }
 .cardsContainer {
-  padding-top: 24px;
-  padding-bottom: 24px;
-  height: calc(100vh - 220px);
-  /* background-color: #f6edff; */
-  border-radius: var(--border-radius-lg);
-  margin-top: 24px;
+  height: calc(100vh - 170px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 12px;
   overflow: auto;
   background-color: var(--tabs-background-color);
 }
-.cardsContainer::-webkit-scrollbar {
+/* .cardsContainer::-webkit-scrollbar {
   width: 2px;
   margin-top: 10px;
 }
@@ -66,13 +52,13 @@
 .cardsContainer::-webkit-scrollbar-thumb {
   background: grey;
   border-radius: var(--border-radius-lg);
-}
+} */
 
 
 
-.cards {
+/* .cards {
   width: 90%;
-}
+} */
 .modal {
   height: fit-content;
   background-color: #131313;

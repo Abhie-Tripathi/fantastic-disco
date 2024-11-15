@@ -91,7 +91,7 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
     <Image
         src={ProfileIcon}
         alt="user"
-        className={`${styles["owner_img"]} h-[25px] w-[25px]`}
+        className={`${styles["owner_img"]} h-[48px] w-[48px]`}
         width={48}
         height={48}
         referrerPolicy="no-referrer"
