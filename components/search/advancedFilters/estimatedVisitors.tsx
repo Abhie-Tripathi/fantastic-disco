@@ -76,9 +76,8 @@ export default function EstimatedVisitorsSelector({
   }, [getLocalFilterValue]);
 
   const handleRangeToggle = (rangeId: string) => {
-    console.log(selectedRanges);
-    
-      setSelectedRanges?.((prev) =>
+   
+       setSelectedRanges?.((prev) =>
         prev.includes(rangeId)
           ? prev.filter((id) => id !== rangeId)
           : [...prev, rangeId]
