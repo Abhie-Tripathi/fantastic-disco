@@ -134,8 +134,18 @@ export default function EstimatedVisitorsSelector({
             <div key={range.id} className="flex items-center space-x-2">
               <Checkbox
                 id={range.id}
-                checked={selectedRanges.includes(source==="tracker"? `${range.min}-${range.max}`: range.id)}
-                onCheckedChange={() => handleRangeToggle(source==="tracker"? `${range.min}-${range.max}`: range.id)}
+                checked={selectedRanges.includes(
+                  source === "tracker"
+                    ? `${range.min}${range.max !== Infinity ? `-${range.max}` : ''}`
+                    : `${range.id}`
+                )}
+                onCheckedChange={() =>
+                  handleRangeToggle(
+                    source === "tracker"
+                      ? `${range.min}${range.max !== Infinity ? `-${range.max}` : ''}`
+                      : `${range.id}`
+                  )
+                }
               />
               <Label htmlFor={range.id}>{range.label}</Label>
             </div>
