@@ -203,7 +203,8 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                         <textarea className={styles.eventName} disabled placeholder='Event Name' value={name} style={{ fontFamily: eventFont }} />
                         <span className={`${styles.pill} ${styles.type1}`} style={{ position: "absolute", top: "20px", right: "200px" }}>{type === "SUB" ? participationType : event_type}</span>
                     </div> */}
-                    <div style={{ display: "inline-flex", alignItems: "center" }}>
+
+                    {/* <div style={{ display: "inline-flex", alignItems: "center" }}>
                         <textarea
                             className={styles.eventName}
                             disabled
@@ -213,11 +214,33 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                         />
                         <span
                             className={`${styles.pill} ${styles.type1}`}
-                            style={{ marginLeft: "10px" }} // Adjust spacing as needed
+                            style={{ marginLeft: "10px" }} 
                         >
                             {event_type}
                         </span>
-                    </div>
+                    </div> */}
+
+                  
+
+            <div style={{ display: "inline-flex", alignItems: "center" }}>
+                <div className={styles.tooltipContainer} data-name={name}>
+                    <textarea
+                        className={styles.eventName}
+                        disabled
+                        placeholder="Event Name"
+                        value={name.length > 20 ? `${name.substring(0, 20)}...` : name}
+                        style={{
+                        fontFamily: eventFont,
+                        resize: "none",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        }}
+                    />
+                </div>
+                <span className={`${styles.pill} ${styles.type1}`} style={{ marginLeft: "10px" }}>
+                    {event_type}
+                </span>
+            </div>
 
 
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>

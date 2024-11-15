@@ -123,7 +123,7 @@ const EventsAdded = ({
               promoted: event.promoted,
               eventType: data.type,
             } as PrefilledAddedEventsType;
-            if (event.promoted === "true") {
+            if (event.promoted === "true"|| Boolean(event.promoted) === true) {
               newPromotedEvents.push(event.promoted);
             } else if (event.promoted === "false") {
               newNormalEvents.push(event.promoted);
@@ -150,6 +150,84 @@ const EventsAdded = ({
     let normalEventCount = normalEvents.length;
     console.log(fetchedAddedOtherData, promotedCount, normalEventCount);
     // Check which template is selected
+    if (selectedTemplate === "LS") {
+      if (promotedCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+    if (selectedTemplate === "PUVP") {
+      if (promotedCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+    if (selectedTemplate === "PUVL") {
+      if (promotedCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+    if (selectedTemplate === "ST") {
+      if (promotedCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+     if (selectedTemplate === "GS") {
+      if (normalEventCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+    if (selectedTemplate === "LSR") {
+      if (normalEventCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
     if (selectedTemplate === "CVG") {
       if (promotedCount >= 3 && normalEventCount >= 2) {
         setIsCodeWindowDisable(false);
@@ -180,7 +258,7 @@ const EventsAdded = ({
 
     if (selectedTemplate === "CV") {
       // Check if there are 3 normal events
-      if (normalEventCount >= 3) {
+      if (promotedCount >= 3) {
         setIsCodeWindowDisable(false);
         setIsCustomisationWindowDisable(false);
       } else {
@@ -191,7 +269,7 @@ const EventsAdded = ({
       setMinNumberOfEvents("Select atleast 3 events for this widget style");
     }
     if (selectedTemplate === "HS") {
-      if (normalEventCount >= 3) {
+      if (promotedCount >= 3) {
         setIsCodeWindowDisable(false);
         setIsCustomisationWindowDisable(false);
       } else {

@@ -77,7 +77,7 @@ const Popup3: React.FC<Props> = ({ cardBgColor = "#ffffff",
       </div>
       <div className={styles.eventDetails}>
         <div className={styles.values}>
-          <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 40)} ${fetchedAddedEvents[0].name.length > 40 ? "..." : ""}` : demoEventName}</div>
+          <div className={styles.eventName} data-name={fetchedAddedEvents![0]? fetchedAddedEvents![0].name :demoEventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 40)} ${fetchedAddedEvents[0].name.length > 40 ? "..." : ""}` : demoEventName}</div>
           <div className={styles.location_dateContainer}>
             <div className={styles.locationContainer}>
             <LocationIcon color={fontSettings.subheading.fontColor} />

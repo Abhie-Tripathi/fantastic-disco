@@ -93,8 +93,12 @@ const EventCard1 = ({
                         <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>
                         {fetchedEvent ? formatLocation(fetchedEvent) : demoLocation}</div>
                     </div>
-                    <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>
-                        {fetchedEvent ? fetchedEvent.name.substring(0, 15) : demoEventName}</div>
+                    <div className={styles.eventName}  data-name={fetchedEvent && fetchedEvent.name} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>
+                        {/* {fetchedEvent ? fetchedEvent.name.substring(0, 15) : demoEventName} */}
+                        {fetchedEvent
+              ? `${fetchedEvent.name.substring(0, 15)}${fetchedEvent.name.length > 15 ? "..." : ""}`
+              : demoEventName}
+                        </div>
                 </div>
             </div>
             <div className={styles.dividerLine}></div>

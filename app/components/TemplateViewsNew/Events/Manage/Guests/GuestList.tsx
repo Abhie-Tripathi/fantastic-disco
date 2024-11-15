@@ -127,6 +127,7 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
   };
 
   const getStatusLabel = (status: string) => {
+    console.log("fsdfsdfsdf_____________",status)
     return status === "PENDING"
       ? "Pending"
       : status === "CONFIRMED"
@@ -137,7 +138,7 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
             ? "Following"
             :status==="CANCELLED"||status==="REJECTED"
             ?"Not Going"
-            : "Not Going";
+            :status==="INVITATION"?"Invited":"";
   };
 
   return (

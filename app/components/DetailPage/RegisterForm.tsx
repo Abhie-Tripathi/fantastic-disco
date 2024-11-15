@@ -9,6 +9,7 @@ import { useSearchParams } from "next/navigation";
 import * as crypto from "crypto";
 import { useIntendServices } from "@/services/geniservices/intendService";
 
+const algorithm = 'aes-256-cbc'; // Ensure this is the correct algorithm
 interface Props {
   registerMessage: string;
   registerBtnText: string;
@@ -96,7 +97,10 @@ const RegisterForm = ({
   const iv = crypto.randomBytes(16);
 
   const decrypt = (encryptedText: string, key: string): string => {
-    const parts = encryptedText.split(":");
+    if(status===""){
+      return ""
+    }else{
+      const parts = encryptedText.split(":");
     const iv = Buffer.from(parts.shift()!, "hex");
     const encrypted = parts.join(":");
     const decipher = crypto.createDecipheriv(
@@ -107,6 +111,7 @@ const RegisterForm = ({
     let decrypted = decipher.update(encrypted, "hex", "utf8");
     decrypted += decipher.final("utf8");
     return decrypted;
+    } 
   };
 
   const originalKey: string = process.env.NEXT_PUBLIC_DECRYPTKEY || "";
@@ -147,7 +152,7 @@ const RegisterForm = ({
           }
           if(status === "no"){
             setRegisterSuccess(false);
-            toast.error("successfully cancelled for the event!");
+            toast.success("successfully cancelled for the event!");
           }
          
           // toast.success("successfully registred for the event!");
@@ -566,7 +571,7 @@ const RegisterForm = ({
             registration &&
             !approval &&
             !waitlisting && (
-              <span>{status === "no" ? "Cancel" : registerBtnText}</span>
+              <span>{status === "no" ? "Decline" : registerBtnText}</span>
             )}
           {!isEventEnded &&
             capacity &&
