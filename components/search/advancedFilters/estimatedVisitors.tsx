@@ -76,6 +76,8 @@ export default function EstimatedVisitorsSelector({
   }, [getLocalFilterValue]);
 
   const handleRangeToggle = (rangeId: string) => {
+    console.log(selectedRanges);
+    
     setSelectedRanges?.((prev) =>
       prev.includes(rangeId)
         ? prev.filter((id) => id !== rangeId)
@@ -91,12 +93,14 @@ export default function EstimatedVisitorsSelector({
       const rangeStrings = selectedRangesData.map((range) =>
         range.max === Infinity ? `${range.min}` : `${range.min}-${range.max}`
       );
+      console.log(rangeStrings);
       setLocalFilter("estimatedVisitors", rangeStrings.join(","));
     } else {
       setLocalFilter("estimatedVisitors", "");
     }
     setIsOpen(false);
   };
+console.log(selectedRanges);
 
   return (
     <Popover
@@ -133,8 +137,8 @@ export default function EstimatedVisitorsSelector({
             <div key={range.id} className="flex items-center space-x-2">
               <Checkbox
                 id={range.id}
-                checked={selectedRanges.includes(range.id)}
-                onCheckedChange={() => handleRangeToggle(range.id)}
+                checked={selectedRanges.includes(source!=="tracker"? range.id :`${range.min}-${range.max}`)}
+                onCheckedChange={() => handleRangeToggle(`${range.min}-${range.max}`)}
               />
               <Label htmlFor={range.id}>{range.label}</Label>
             </div>
