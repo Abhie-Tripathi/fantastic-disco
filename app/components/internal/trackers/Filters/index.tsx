@@ -966,7 +966,6 @@ const Pages = () => {
         console.log(error);
         setIsCreating(false);
       }
-      console.log(selectedCountry);
     } else {
       try{
         const data= await createTracker(formData)
@@ -1556,15 +1555,11 @@ const commonCss={
 useEffect(() => {
   console.log('Selected Aviation Rank:', selectedInternationalScore);
 }, [selectedInternationalScore]);
-console.log(includeKeywords, excludeKeywords);
 // useEffect(()=>{
 //   const updatedIncludeKeywords = includeKeywords.map((keyword) => `${keyword.split(" ").join("_")}`);
 //   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
 //       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
 // },[includeKeywords, excludeKeywords])
-console.log(includeKeywords, excludeKeywords);
-
-console.log(selectedLocationsData?.length);
 
 return (
   <>
