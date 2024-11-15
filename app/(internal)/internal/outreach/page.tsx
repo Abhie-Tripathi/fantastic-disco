@@ -263,7 +263,7 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
 const fetchInProgressData=async()=>{
   const negoApiData = await coordinateService.getOutreachEventList({
     offset: (inProgressPage-1) * 10,
-    status: 'IN_NEGO',
+    status: 'IN_NEGO,IN_DISCUSSION',
   });
 
   if (negoApiData) {
@@ -319,12 +319,8 @@ const handleDropdownSelect = (target: string, source: string) => {
     if(Math.ceil(inProgressCount/10)===inProgressPage) setNoMoreProgressData(true);
   },[outreachTasks])
   return (
-    <div
-      className={`${styles.bodyContainer} ${
-        theme === "dark" ? "dark" : "light"
-      } ${modalOpen && styles.bodyContainer_openModal}`}
-    >
-      <div>
+    <>
+      <div style={{width: 'calc(100vw - 70px)'}}>
         <div className="mobile_view">
           <div className={styles.mobileTab}>
             <div
@@ -360,19 +356,15 @@ const handleDropdownSelect = (target: string, source: string) => {
           {(tabsVisible == "shortlist" || tabsVisible == "all") && (
             <div className={`${styles.outerCard}`}>
               <div className="desktop_view tablet_view">
-                <div
-                  className={`${styles.heading}`}
-                >
+                <div className="text-white font-medium text-base p-3 bg-[var(--primary-color-active)] rounded-t" >
                   Shortlisted{" "}
-                  <span className={styles.eventSize}>
-                    {shortlistedCount}
-                  </span>
+                  <span className="bg-white/10 px-3 py-1 text-sm rounded font-semibold border border-white/10 ml-2">{shortlistedCount}</span>
                 </div>
               </div>
               <div
                 className={`${styles.card_shortlisted} ${
                   styles.cardsContainer
-                }`}
+                }  rounded-b p-3`}
                 onDragOver={(event) => handleDragOver(event)}
                 onDragStart={(event) =>
                   handleDragContainerStart(event, "shortlisted")
@@ -381,7 +373,6 @@ const handleDropdownSelect = (target: string, source: string) => {
                 ref={shortlistRef}
               >
                 {shortlistedTasks.map((task, index) => (
-                  <div className={styles.cards} key={index}>
                     <CardTask
                       key={index}
                       task={task}
@@ -399,11 +390,10 @@ const handleDropdownSelect = (target: string, source: string) => {
                       handleModal={handleModal}
                       onClick={openAddModalHandler}
                     />
-                  </div>
                 ))}
                 {(noMoreShortlistData)  ? 
-        <></> : <Loading />
-    }
+                  <></> : <Loading />
+                }
                 {/* <div
                   className={`${styles.addEvent_btn} ${
                     theme === "light" ? styles.addEvent_btn_light : ""
@@ -418,19 +408,15 @@ const handleDropdownSelect = (target: string, source: string) => {
           {(tabsVisible == "outreach" || tabsVisible == "all") && (
             <div className={`${styles.outerCard} `}>
               <div className="desktop_view tablet_view">
-                <div
-                  className={`${styles.heading}`}
-                >
+                <div className="text-white font-medium text-base p-3 bg-[var(--primary-color-active)] rounded-t" >
                   In Progress{" "}
-                  <span className={styles.eventSize}>
-                    {inProgressCount}
-                  </span>
+                  <span className="bg-white/10 px-3 py-1 text-sm rounded font-semibold border border-white/10 ml-2">{inProgressCount}</span>
                 </div>
               </div>
               <div
                 className={`${styles.card_shortlisted} ${
                   styles.cardsContainer
-                }`}
+                } rounded-b p-3`}
                 onDragOver={(event) => handleDragOver(event)}
                 onDragStart={(event) =>
                   handleDragContainerStart(event, "outreach")
@@ -439,7 +425,6 @@ const handleDropdownSelect = (target: string, source: string) => {
                 ref={inProgressRef}
               >
                 {outreachTasks.map((task, index) => (
-                  <div className={styles.cards} key={index}>
                     <CardTask
                       key={index}
                       name={task.eventName}
@@ -457,11 +442,10 @@ const handleDropdownSelect = (target: string, source: string) => {
                       handleModal={handleModal}
                       onClick={openAddModalHandler}
                     />
-                  </div>
                 ))}
                 {(noMoreProgressData) ? 
-        <></> : <Loading />
-    }
+                  <></> : <Loading />
+                }
                 {/* <div
                   className={`${styles.addEvent_btn} ${
                     theme === "light" ? styles.addEvent_btn_light : ""
@@ -475,7 +459,7 @@ const handleDropdownSelect = (target: string, source: string) => {
           )}
           {(tabsVisible == "preFinal" || tabsVisible == "all") && (
             <div className={`${styles.outerCard}`}>
-              <div className="desktop_view tablet_view">
+              {/* <div className="desktop_view tablet_view">
                 <div
                   className={`${styles.heading}`}
                 >
@@ -484,11 +468,17 @@ const handleDropdownSelect = (target: string, source: string) => {
                     {confirmedCount}
                   </span>
                 </div>
+              </div> */}
+              <div className="desktop_view tablet_view">
+                <div className="text-white font-medium text-base p-3 bg-[var(--primary-color-active)] rounded-t" >
+                  Confirmed{" "}
+                  <span className="bg-white/10 px-3 py-1 text-sm rounded font-semibold border border-white/10 ml-2">{confirmedCount}</span>
+                </div>
               </div>
               <div
                 className={`${styles.card_shortlisted} ${
                   styles.cardsContainer
-                }`}
+                } rounded-b p-3`}
                 onDragOver={(event) => handleDragOver(event)}
                 onDragStart={(event) =>
                   handleDragContainerStart(event, "prefinalised")
@@ -497,7 +487,6 @@ const handleDropdownSelect = (target: string, source: string) => {
                 ref={confirmedRef}
               >
                 {preFinalisedTasks.map((task, index) => (
-                  <div className={styles.cards} key={index}>
                     <CardTask
                       key={index}
                       task={task}
@@ -515,11 +504,10 @@ const handleDropdownSelect = (target: string, source: string) => {
                       handleModal={handleModal}
                       onClick={openAddModalHandler}
                     />
-                  </div>
                 ))}
                 {(noMoreConfirmData) ? 
-        <></> : <Loading />
-    }
+                  <></> : <Loading />
+                }
                 {/* <div
                   className={`${styles.addEvent_btn} ${
                     theme === "light" ? styles.addEvent_btn_light : ""
@@ -574,7 +562,7 @@ const handleDropdownSelect = (target: string, source: string) => {
           {/* <AddEventForm /> */}
         </div>
       )}
-    </div>
+    </>
   );
 };
 
