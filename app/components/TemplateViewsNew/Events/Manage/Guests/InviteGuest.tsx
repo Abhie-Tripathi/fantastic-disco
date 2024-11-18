@@ -9,15 +9,16 @@ import { showToast } from '@/utils/showToast';
 interface Props {
   eventId: string;
   setInviteGuestModal : (value : boolean)=> void
+  fetchGuests: () => Promise<void>;
 }
 
-const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
+const InviteGuest = ({ eventId, setInviteGuestModal,fetchGuests }: Props) => {
 
-  const maxCount = 15;
   const [count, setCount] = useState(4); // Default starting count
   const [screen, setScreen] = useState<string>("first");
   const [selectedMails, setSelectedMails] = useState<string[]>([])
-  const [suggestedMails, setSuggestedMails] = useState<string[]>([])
+  const [suggestedMails, setSuggestedMails] = useState<string[]>([]) // This is array for showing the suggested mails
+  const maxCount = 15
 
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
 
@@ -40,18 +41,33 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
     setSuggestedMails(emailArray)
   }
 
+  const fetchInviteCount = async()=>{
+    const {data, error} = await myFetch(`${baseUrl}/invite?invites=true`)
+    if(data){
+      setCount(data.inviteCount)
+    }else{
+      console.log("error is", error)
+    }
+  }
   useEffect(()=>{
     fetchSuggestions()
-    console.log("called")
+    fetchInviteCount()
   },[suggestedMailQuery])
 
   const handleSubmit = async () => {
+    if(count === 0){
+      showToast("error","You have reached the limit for inviting the guests")
+      return
+    }
+    if(selectedMails.length === 0){
+      showToast("warning","Select or Enter atleast one email to send invite")
+      return;
+    }
     const newObj = {
       emails: selectedMails.join(),
       eventId,
       redirectUrl: `${console_url}/detailpage/${eventId}`
     }
-    console.log(newObj)
     const { data, error } = await myFetch(`${baseUrl}/invite/send`, {
       method: 'POST',
       headers: {
@@ -63,12 +79,13 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
     if (data) {
       showToast('success', "Invitation sent")
       setInviteGuestModal(false)
+      fetchGuests()
     } else {
       showToast('error', "Error sending invitation")
     }
   }
 
-  const percentageFilled = (count / maxCount) * 100;
+  const percentageFilled = ((maxCount-count) / maxCount) * 100;
   return (
     <div className={styles.body}>
       <div className={styles.header}>
@@ -80,7 +97,7 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
               background: `conic-gradient(#4caf50 ${percentageFilled}%, #e0e0e0 0)`,
             }}
           ></div>
-          <div>{15 - count} left</div>
+          <div>{count < 0 ? "0" : count} left</div>
         </div>
       </div>
       <div className={styles.line}></div>
@@ -88,12 +105,17 @@ const InviteGuest = ({ eventId, setInviteGuestModal }: Props) => {
         <InviteGuestsSecScreen selectedMails={selectedMails} />}
       <div className={styles.line}></div>
       <div className={styles.selectedBtnContainer}>
-        <div>0 Selected</div>
-        {screen === "first" ? <button onClick={() => setScreen("second")} className={styles.nextBtn}>Next</button> :
+        <div>{selectedMails.length} Selected</div>
+        {/* {screen === "first" ? <button onClick={() => setScreen("second")} className={styles.nextBtn}>Next</button> :
           <div className={styles.btnContainer}>
             <button onClick={() => setScreen("first")} className={styles.nextBtn}>Back</button>
             <button className={styles.nextBtn} onClick={handleSubmit}>Send Invites</button>
-          </div>}
+          </div>} */}
+          
+          <div className={styles.btnContainer}>
+            {/* <button onClick={() => setScreen("first")} className={styles.nextBtn}>Back</button> */}
+            <button className={styles.nextBtn} onClick={handleSubmit}>Send Invites</button>
+          </div>
       </div>
 
     </div>

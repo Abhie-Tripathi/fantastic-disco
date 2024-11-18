@@ -5,12 +5,10 @@ import CardTask from "@/app/components/outreach/CardTask";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
 import { useTheme } from "@/context";
 import { enquiryType } from "@/types/outreachEnquiryTypes";
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl, headers } from "@/constants";
-import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
 import Loading from "@/app/components/UI/Loading";
+import { useCoordinateService } from "@/services/coordinateService";
 const Page: React.FC = () => {
   const [shortlistedTasks, setShortlistedTasks] = useState<enquiryType[]>([]);
   const [outreachTasks, setOutreachTasks] = useState<enquiryType[]>([]);
@@ -38,6 +36,9 @@ const Page: React.FC = () => {
   const confirmedRef: RefObject<HTMLDivElement> = useRef(null);
   const [confirmedPage,setConfirmedPage]=useState(1);
   const [noMoreConfirmData,setNoMoreConfirmData]=useState(false);
+
+  const coordinateService = useCoordinateService();
+
   const handleScrollEnd = () => {
     setTimeout(() => {
         if(!noMoreShortlistData) setShortlistPage(prevPage => prevPage + 1);
@@ -162,15 +163,14 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
   };
   const singleCall=async(source:string)=>{
     if(source==="SHORTLISTED" && !noMoreShortlistData && shortlistedCount>10 || source==="IN_NEGO" && !noMoreProgressData && inProgressCount>10 || source==="CONFIRMED" && !noMoreConfirmData && confirmedCount>10){
-    const apiData = await myFetch(
-      `${baseUrl}/userInterest/enquiry?status=${source}&limit=1&offset=${source==="SHORTLISTED"?(shortlistPage-1)*10+9:source==="IN_NEGO"?(inProgressPage - 1) * 10 + 9:(confirmedPage-1)*10+9}`,
-      {
-        method: "GET",
-        headers: headers,
-      }
-    );
-    if (apiData?.data) {
-      source==="SHORTLISTED"?setShortlistedTasks(prev => [...prev, ...apiData.data.enquiryData]):source==="IN_NEGO"?setOutreachTasks(prev => [...prev, ...apiData.data.enquiryData]): setPreFinalisedTasks(prev => [...prev, ...apiData.data.enquiryData])
+
+      const apiData = await coordinateService.getOutreachSingleEvent({
+        offset: source === "SHORTLISTED" ? (shortlistPage-1)*10+9 : source==="IN_NEGO" ? (inProgressPage - 1) * 10 + 9 : (confirmedPage-1)*10+9,
+        status: source,
+      });
+
+    if (apiData) {
+      source==="SHORTLISTED"?setShortlistedTasks(prev => [...prev, ...apiData.enquiryData]):source==="IN_NEGO"?setOutreachTasks(prev => [...prev, ...apiData.enquiryData]): setPreFinalisedTasks(prev => [...prev, ...apiData.enquiryData])
     }
   }
   }
@@ -204,13 +204,9 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
         enquiryStatus: changeStatusTo,
       };
       try {
-        const apiUrl = baseUrl + "/userInterest/enquiry";
-        const apiData = await myFetch(apiUrl, {
-          method: "PATCH",
-          headers: headers,
-          body: JSON.stringify(payloadData),
-        });
-        if (apiData.data.message === "Data updated") {
+        const apiData: any = await coordinateService.setEnquiryStatus(payloadData);
+
+        if (apiData?.message === "Data updated") {
             singleCall(source);
           // toast.success("Enquiry status updated!", {
           //   position: "bottom-right",
@@ -250,51 +246,48 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
     // fetchData();
   }, [statusChanged]);
   const fetchShortlistData=async()=>{
-    const shortlistApiData = await myFetch(
-      `${baseUrl}/userInterest/enquiry?status=SHORTLISTED&limit=10&offset=${(shortlistPage-1)*10}`,
-      {
-        method: "GET",
-        headers: headers,
+    const shortlistApiData = await coordinateService.getOutreachEventList({
+      offset: (shortlistPage-1) * 10,
+      status: 'SHORTLISTED',
+    });
+
+    if (shortlistApiData) {
+      setShortlistedTasks(prev => [...prev, ...shortlistApiData.enquiryData]);
+      setShortlistedCount(shortlistApiData.totalCount);
+    
+      if(shortlistApiData.enquiryData.length < 10 ) {
+        setNoMoreShortlistData(true);
       }
-    );
-    if (shortlistApiData?.data) {
-      setShortlistedTasks(prev => [...prev, ...shortlistApiData.data.enquiryData]);
-      setShortlistedCount(shortlistApiData.data.totalCount);
-    }
-    if(shortlistApiData.data.enquiryData.length < 10 ) {
-      setNoMoreShortlistData(true);
     }
   }
 const fetchInProgressData=async()=>{
-  const negoApiData = await myFetch(
-    `${baseUrl}/userInterest/enquiry?status=IN_NEGO&limit=10&offset=${(inProgressPage-1)*10}`,
-    {
-      method: "GET",
-      headers: headers,
+  const negoApiData = await coordinateService.getOutreachEventList({
+    offset: (inProgressPage-1) * 10,
+    status: 'IN_NEGO,IN_DISCUSSION',
+  });
+
+  if (negoApiData) {
+    setOutreachTasks(prev => [...prev, ...negoApiData.enquiryData]);
+    setInProgressCount(negoApiData.totalCount);
+  
+    if(negoApiData.enquiryData.length<10){
+    setNoMoreProgressData(true);
     }
-  );
-  if (negoApiData.data) {
-    setOutreachTasks(prev => [...prev, ...negoApiData.data.enquiryData]);
-    setInProgressCount(negoApiData.data.totalCount);
-  }
-  if(negoApiData.data.enquiryData.length<10){
-   setNoMoreProgressData(true);
   }
 }
 const fetchConfirmedData=async()=>{
-    const confirmApiData = await myFetch(
-      `${baseUrl}/userInterest/enquiry?status=CONFIRMED&limit=10&offset=${(confirmedPage-1)*10}`,
-      {
-        method: "GET",
-        headers: headers,
+    const confirmApiData = await coordinateService.getOutreachEventList({
+      offset: (confirmedPage-1) * 10,
+      status: 'CONFIRMED',
+    });
+
+    if (confirmApiData) {
+      setPreFinalisedTasks(prev => [...prev, ...confirmApiData.enquiryData]);
+      setConfirmedCount(confirmApiData.totalCount);
+
+      if(confirmApiData.enquiryData.length < 10 || confirmedCount===10) {
+        setNoMoreConfirmData(true);
       }
-    );
-    if (confirmApiData?.data) {
-      setPreFinalisedTasks(prev => [...prev, ...confirmApiData.data.enquiryData]);
-      setConfirmedCount(confirmApiData.data.totalCount);
-    }
-    if(confirmApiData.data.enquiryData.length < 10 || confirmedCount===10) {
-      setNoMoreConfirmData(true);
     }
     
 }
@@ -326,12 +319,8 @@ const handleDropdownSelect = (target: string, source: string) => {
     if(Math.ceil(inProgressCount/10)===inProgressPage) setNoMoreProgressData(true);
   },[outreachTasks])
   return (
-    <div
-      className={`${styles.bodyContainer} ${
-        theme === "dark" ? "dark" : "light"
-      } ${modalOpen && styles.bodyContainer_openModal}`}
-    >
-      <div>
+    <>
+      <div style={{width: 'calc(100vw - 70px)'}}>
         <div className="mobile_view">
           <div className={styles.mobileTab}>
             <div
@@ -367,19 +356,15 @@ const handleDropdownSelect = (target: string, source: string) => {
           {(tabsVisible == "shortlist" || tabsVisible == "all") && (
             <div className={`${styles.outerCard}`}>
               <div className="desktop_view tablet_view">
-                <div
-                  className={`${styles.heading}`}
-                >
+                <div className="text-white font-medium text-base p-3 bg-[var(--primary-color-active)] rounded-t" >
                   Shortlisted{" "}
-                  <span className={styles.eventSize}>
-                    {shortlistedCount}
-                  </span>
+                  <span className="bg-white/10 px-3 py-1 text-sm rounded font-semibold border border-white/10 ml-2">{shortlistedCount}</span>
                 </div>
               </div>
               <div
                 className={`${styles.card_shortlisted} ${
                   styles.cardsContainer
-                }`}
+                }  rounded-b p-3`}
                 onDragOver={(event) => handleDragOver(event)}
                 onDragStart={(event) =>
                   handleDragContainerStart(event, "shortlisted")
@@ -388,7 +373,6 @@ const handleDropdownSelect = (target: string, source: string) => {
                 ref={shortlistRef}
               >
                 {shortlistedTasks.map((task, index) => (
-                  <div className={styles.cards} key={index}>
                     <CardTask
                       key={index}
                       task={task}
@@ -406,11 +390,10 @@ const handleDropdownSelect = (target: string, source: string) => {
                       handleModal={handleModal}
                       onClick={openAddModalHandler}
                     />
-                  </div>
                 ))}
                 {(noMoreShortlistData)  ? 
-        <></> : <Loading />
-    }
+                  <></> : <Loading />
+                }
                 {/* <div
                   className={`${styles.addEvent_btn} ${
                     theme === "light" ? styles.addEvent_btn_light : ""
@@ -425,19 +408,15 @@ const handleDropdownSelect = (target: string, source: string) => {
           {(tabsVisible == "outreach" || tabsVisible == "all") && (
             <div className={`${styles.outerCard} `}>
               <div className="desktop_view tablet_view">
-                <div
-                  className={`${styles.heading}`}
-                >
+                <div className="text-white font-medium text-base p-3 bg-[var(--primary-color-active)] rounded-t" >
                   In Progress{" "}
-                  <span className={styles.eventSize}>
-                    {inProgressCount}
-                  </span>
+                  <span className="bg-white/10 px-3 py-1 text-sm rounded font-semibold border border-white/10 ml-2">{inProgressCount}</span>
                 </div>
               </div>
               <div
                 className={`${styles.card_shortlisted} ${
                   styles.cardsContainer
-                }`}
+                } rounded-b p-3`}
                 onDragOver={(event) => handleDragOver(event)}
                 onDragStart={(event) =>
                   handleDragContainerStart(event, "outreach")
@@ -446,7 +425,6 @@ const handleDropdownSelect = (target: string, source: string) => {
                 ref={inProgressRef}
               >
                 {outreachTasks.map((task, index) => (
-                  <div className={styles.cards} key={index}>
                     <CardTask
                       key={index}
                       name={task.eventName}
@@ -464,11 +442,10 @@ const handleDropdownSelect = (target: string, source: string) => {
                       handleModal={handleModal}
                       onClick={openAddModalHandler}
                     />
-                  </div>
                 ))}
                 {(noMoreProgressData) ? 
-        <></> : <Loading />
-    }
+                  <></> : <Loading />
+                }
                 {/* <div
                   className={`${styles.addEvent_btn} ${
                     theme === "light" ? styles.addEvent_btn_light : ""
@@ -482,7 +459,7 @@ const handleDropdownSelect = (target: string, source: string) => {
           )}
           {(tabsVisible == "preFinal" || tabsVisible == "all") && (
             <div className={`${styles.outerCard}`}>
-              <div className="desktop_view tablet_view">
+              {/* <div className="desktop_view tablet_view">
                 <div
                   className={`${styles.heading}`}
                 >
@@ -491,11 +468,17 @@ const handleDropdownSelect = (target: string, source: string) => {
                     {confirmedCount}
                   </span>
                 </div>
+              </div> */}
+              <div className="desktop_view tablet_view">
+                <div className="text-white font-medium text-base p-3 bg-[var(--primary-color-active)] rounded-t" >
+                  Confirmed{" "}
+                  <span className="bg-white/10 px-3 py-1 text-sm rounded font-semibold border border-white/10 ml-2">{confirmedCount}</span>
+                </div>
               </div>
               <div
                 className={`${styles.card_shortlisted} ${
                   styles.cardsContainer
-                }`}
+                } rounded-b p-3`}
                 onDragOver={(event) => handleDragOver(event)}
                 onDragStart={(event) =>
                   handleDragContainerStart(event, "prefinalised")
@@ -504,7 +487,6 @@ const handleDropdownSelect = (target: string, source: string) => {
                 ref={confirmedRef}
               >
                 {preFinalisedTasks.map((task, index) => (
-                  <div className={styles.cards} key={index}>
                     <CardTask
                       key={index}
                       task={task}
@@ -522,11 +504,10 @@ const handleDropdownSelect = (target: string, source: string) => {
                       handleModal={handleModal}
                       onClick={openAddModalHandler}
                     />
-                  </div>
                 ))}
                 {(noMoreConfirmData) ? 
-        <></> : <Loading />
-    }
+                  <></> : <Loading />
+                }
                 {/* <div
                   className={`${styles.addEvent_btn} ${
                     theme === "light" ? styles.addEvent_btn_light : ""
@@ -581,7 +562,7 @@ const handleDropdownSelect = (target: string, source: string) => {
           {/* <AddEventForm /> */}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

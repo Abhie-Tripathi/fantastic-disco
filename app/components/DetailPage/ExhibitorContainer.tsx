@@ -8,7 +8,6 @@ interface Props {
 }
 
 const ExhibitorContainer = ({exhibitorsData} : Props) => {
-    console.log("exhibitorsData____________________________________________212",exhibitorsData)
     return (
         <div className={styles.body}>
             <div className={styles.header}>
@@ -19,7 +18,7 @@ const ExhibitorContainer = ({exhibitorsData} : Props) => {
             <div className={styles.speakerProfiles}>
                 {exhibitorsData.map((profile, key) => (
                     <div key={key}>
-                        <ExhibitorCard  profileImage={profile.imageUrl}  companyName={profile.data.name} boothNumber={profile.data.boothNumber} key={key} />
+                        <ExhibitorCard  profileImage={profile.imageUrl}  companyName={profile.data.companyName} boothNumber={profile.data.boothNumber} key={key} />
                     </div>
                 ))}
             </div>

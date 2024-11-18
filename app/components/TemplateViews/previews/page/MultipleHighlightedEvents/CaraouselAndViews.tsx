@@ -29,11 +29,11 @@ interface Props {
   demoBanner: string;
   demoEventName: string;
   demoDescription: string
-  demoLocation:string
-  demoDate:string
+  demoLocation: string
+  demoDate: string
 }
 
-const CaraouselAndViews = ({ type, selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData ,widgetId, demoBanner, demoEventName, demoDescription, demoLocation, demoDate}: Props) => {
+const CaraouselAndViews = ({ type, selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoDescription, demoLocation, demoDate }: Props) => {
 
   const [promotedEvents, setPromotedEvents] = useState<PrefilledAddedEventsType[]>([])
   const [normalEvents, setNormalEvents] = useState<PrefilledAddedEventsType[]>([])
@@ -53,16 +53,20 @@ const CaraouselAndViews = ({ type, selectedCard, isFullScreen, cardBgColor, card
     <div className={styles.body}>
       {fetchedAddedOtherData && fetchedAddedOtherData.length > 0 ? (
         <>
-          <CaraouselView widgetId={widgetId} fetchedAddedOtherData={promotedEvents} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>
-          {type === "list" ? <ListView widgetId={widgetId} fetchedAddedOtherData={normalEvents} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/> :
-            type === "grid" ? <GridView widgetId={widgetId} fetchedAddedOtherData={normalEvents} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName}demoLocation={demoLocation} demoDate={demoDate}/> : <ListAndGridView  demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/> }
+          <div className={styles.carousel}>
+            <CaraouselView widgetId={widgetId} fetchedAddedOtherData={promotedEvents} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} />
+          </div>
+          {type === "list" ? <ListView widgetId={widgetId} fetchedAddedOtherData={normalEvents} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} /> :
+            type === "grid" ? <GridView widgetId={widgetId} fetchedAddedOtherData={normalEvents} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} demoDate={demoDate} /> : <ListAndGridView demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} />}
         </>
       )
         :
         (<>
-          <CaraouselView selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>
-          {type === "list" ? <ListView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/> :
-            type === "grid" ? <GridView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} demoDate={demoDate}/> : <ListAndGridView  demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>}
+          <div className={styles.carousel}>
+            <CaraouselView selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} />
+          </div>
+          {type === "list" ? <ListView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} /> :
+            type === "grid" ? <GridView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} demoDate={demoDate} /> : <ListAndGridView demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} />}
         </>
         )}
     </div>

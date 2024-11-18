@@ -5,32 +5,47 @@ import styles from './statusDropdown.style.module.css';
 import { useEffect, useState } from "react";
 import { useTheme } from '@/context';
 import { toast } from 'react-toastify';
-import { myFetch } from "@/utils/myFetch";
-import { baseUrl, headers } from "@/constants";
 import upArrowLight from '/public/internal/up_arrow_light.svg'
 import upArrow from '/public/internal/up_arrow.svg'
+import { useCoordinateService } from '@/services/coordinateService';
 interface PropType {
   label: string;
   eventId?: string;
-  enquiryId?: string;
-  currentEnquiryStatus?: string;
+  enquiryId: string;
+  currentEnquiryStatus: string;
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
   setSelectedId:any;
   // value:any;
   // setValue:any;
 }
+
+const formatText = (val: string) => {
+  if(val) {
+    return val?.charAt(0).toUpperCase() + val?.substring(1).toLowerCase();
+  }
+}
+
 const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
   
   const [isOpen, setIsOpen] = useState(false);
   const [value, setValue] = useState("");
   const {theme} = useTheme();
-  const iconClass = theme === 'light' ? 'icons_light' : 'icon'
+
+  const coordinateService = useCoordinateService();
+
   const openDropDownHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    setIsOpen((prev) => !prev);
+    if(props?.currentEnquiryStatus == 'IN_NEGO' || props?.currentEnquiryStatus == 'IN_DISCUSSION' || props?.currentEnquiryStatus == 'CONFIRMED')
+      return
+    else
+      setIsOpen((prev) => !prev);
   };
 useEffect(()=>{
  setValue((props.currentEnquiryStatus == 'REJECTED') ? 'Rejected' : 
  (props.currentEnquiryStatus == 'IN_DISCUSSION') ?'Pending' : 'Shortlisted')
+
+ setIsOpen(false);
+ if(props?.currentEnquiryStatus)
+   setValue((props.currentEnquiryStatus == 'IN_DISCUSSION' || props.currentEnquiryStatus == 'IN_NEGO') ? 'In Progress' : props.currentEnquiryStatus)
 }, [props.currentEnquiryStatus])
   const handleMenuItemClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLDivElement;
@@ -49,12 +64,7 @@ useEffect(()=>{
       enquiryStatus:"REJECTED"
     };
     try {
-      const apiUrl = baseUrl + "/userInterest/enquiry";
-      const apiData = await myFetch(apiUrl, {
-        method: "PATCH",
-        headers: headers,
-        body: JSON.stringify(payloadData),
-      });
+      const apiData = await coordinateService.setEnquiryStatus(payloadData);
       if(apiData){
         toast.error(
           <div>Status updated! <span className={styles['reject-undo-btn']} onClick={() => handleUndoClick()}>UNDO</span></div>, {
@@ -77,12 +87,7 @@ useEffect(()=>{
       enquiryStatus: props.currentEnquiryStatus,
     };
     try {
-      const apiUrl = baseUrl + "/userInterest/enquiry";
-      const apiData = await myFetch(apiUrl, {
-        method: "PATCH",
-        headers: headers,
-        body: JSON.stringify(payloadData),
-      });
+      const apiData = await coordinateService.setEnquiryStatus(payloadData);
       setValue((props.currentEnquiryStatus == 'REJECTED') ? 'Rejected' : 
       (props.currentEnquiryStatus == 'IN_DISCUSSION') ?'Pending' : 'Shortlisted');
     } catch (error) {
@@ -104,7 +109,7 @@ useEffect(()=>{
         >
           <div className={styles.dropdown_value}>
             <Image src={theme==="light"?ClockIconLight:ClockIcon} alt="clock" width={16} height={16} className="icons"/>
-            {value}
+            {formatText(value)}
             <Image
                     src={theme==="light"?upArrowLight:upArrow}
                     alt="up"

@@ -23,7 +23,7 @@
     position: absolute;
     padding: 4px 8px;
     border-radius: 6px;
-    font-size: 15px;
+    font-size: var(--font-size-small);
     color: #6750A4;
     background-color: #F7EFFF;
     bottom: 10px;
@@ -34,14 +34,14 @@
     position: absolute;
     padding: 4px 8px;
     border-radius: 6px;
-    font-size: 15px;
+    font-size: var(--font-size-small);
     color: #6750A4;
     background-color: #F7EFFF;
     bottom: 10px;
     left: 10px;
 }
 .banner{
-    min-height: 220px;
+    /* min-height: 220px; */
     max-height: 220px;
     width: 100%;
     border-radius: 8px;
@@ -78,6 +78,14 @@
     display: flex;
     align-items: center;
     gap: 8px;
+}
+.smallDesc{
+    word-wrap:break-word ;
+    width: 100%;
+    overflow: hidden;
+    max-height: 35px;
+    min-height: 35px;
+    margin-top: 10px;
 }
 .desc{
     word-wrap:break-word ;

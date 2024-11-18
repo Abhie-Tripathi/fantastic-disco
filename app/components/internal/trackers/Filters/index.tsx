@@ -55,7 +55,6 @@ import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
 import SearchBar from "../../searchBar/SearchBar";
 import CsvUploader from "./csvUploader";
-import { Button as Button10x } from "10xui";
 import FrequencySelector from "@/components/search/advancedFilters/frequency";
 import ForecastedStatusSelector from "@/components/search/advancedFilters/forecastedStatus";
 import EventAnalyticsSelector from "@/components/advancedFilters/eventAnalytics";
@@ -100,6 +99,7 @@ interface Template {
   templateName?: string;
   description?: string | undefined;
   inputAreas?: InputArea[] | undefined;
+  isUploadEnable?: boolean;
 }
 interface CategoryData {
   attendedCategories?: string[];
@@ -124,6 +124,10 @@ const top10Speakers = [
   ["abc.com", "xyz.com"],
   ["Mark Zuckerberg", "Facebook"],
 ]
+const keyData1 = [
+  ['Mental health', 'Psychologist', 'Therapist', 'wellness coaches'],
+  [],
+];
 
 const presetTemplateData = [
   {
@@ -193,6 +197,16 @@ const presetTemplateData = [
     data: top10Speakers,
     enabled: false,
     presetType: 'All',
+  },
+  {
+    id: 7,
+    img: Keywords,
+    url: "T_PRODUCT_KEYWORDS",
+    trackerName: "Mindful Matters",
+    content: "Focuses on mental health awareness and practices.",
+    data: keyData1,
+    enabled: true,
+    presetType: 'All',
   }
 ];
 
@@ -211,7 +225,8 @@ const templates = [
         type: "text",
         placeholder: "Department"
       }
-    ]
+    ],
+    isUploadEnable: false,
   },
   {
     name: "T_COMPETITOR",
@@ -226,7 +241,8 @@ const templates = [
         required:true,
         example: "facebook.com",
       }
-    ]
+    ],
+    isUploadEnable: true,
   },
   {
     name: "T_AUDIENCE_DEPT_PROFILE",
@@ -242,30 +258,33 @@ const templates = [
       //   type: "text",
       //   placeholder: "Profile",
       // }
-    ]
-
+    ],
+    isUploadEnable: false,
   },
   {
     name: "T_CUSTOMER_ICP",
     templateName: "Customer ICP",
-    type: "disabled",
+    type: "enabled",
     description: "Input ideal customer profile details like company, location or websites to track their interests",
     inputAreas: [
       {
-        img: Company,
-        type: "text",
-        placeholder: "Company Name",
-      },
-      {
         img: Url,
         type: "text",
-        placeholder: "Url",
+        placeholder: "Company Name or Website",
+        required:true,
+        example: "facebook.com",
       },
-      {
-        type: "text",
-        placeholder: "Location",
-      }
-    ]
+      // {
+      //   img: Url,
+      //   type: "text",
+      //   placeholder: "Url",
+      // },
+      // {
+      //   type: "text",
+      //   placeholder: "Location",
+      // }
+    ],
+    isUploadEnable: true,
   },
   {
     name: "T_BRAND_BUILDING",
@@ -281,25 +300,31 @@ const templates = [
       //   type: "text",
       //   placeholder: "Job Description",
       // }
-    ]
+    ],
+    isUploadEnable: false,
   },
   {
     name: "T_PEOPLE_FINDER",
     templateName: "People Finder",
-    type: "disabled",
+    type: "enabled",
     description: "Track experts, influencers and where they might be participating in various events",
     inputAreas: [
       {
         img: Name,
         type: "text",
         placeholder: "Name",
+        required:true,
+        example: "Mark Zuckerberg",
       },
       {
         img: Company,
         type: "text",
         placeholder: "Company Name",
+        required:true,
+        example: "Facebook",
       }
-    ]
+    ],
+    isUploadEnable: true,
   },
   {
     name: "T_SPEAKING_OPPORTUNITY",
@@ -321,7 +346,8 @@ const templates = [
         required:true,
         example: "Facebook",
       }
-    ]
+    ],
+    isUploadEnable: true,
   },
   {
     name: "T_SOCIAL_CAUSE",
@@ -599,6 +625,10 @@ const Pages = () => {
   const [org,setOrg]=useState("");
   const [speakerName, setSpeakerName] = useState("");
   const [speakerCompany, setSpeakerCompany] = useState("");
+
+  const [userName, setUserName] = useState("");
+  const [userCompany, setUserCompany] = useState("");
+
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
@@ -618,7 +648,7 @@ const Pages = () => {
       }
     }  
 
-    if (type === "T_COMPETITOR") {
+    if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if(customData.length > 0 && Object.values(customData[0])[0]) {
         fetchAISuggestion(Object.values(customData[0])[0]);
       }
@@ -641,8 +671,12 @@ const Pages = () => {
       const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
       setSpeakerName(speakerName);
       setSpeakerCompany(speakerCompany);
-      console.log(speakerName, speakerCompany);
+      // console.log(speakerName, speakerCompany);
 
+    }
+    else if (type === "T_PEOPLE_FINDER") {
+      setUserName(customData.map((item: {}) => Object.values(item)[0]).join(','))
+      setUserCompany(customData.map((item: {}) => Object.values(item)[1]).join(','))
     } else if (type === "T_BRAND_BUILDING") {
       const designation = customData.map((item: {}) => Object.values(item)[0]).join(',');
       setDesignations(designation);
@@ -665,6 +699,9 @@ const Pages = () => {
       setCustomData(presetData);
       setTrackerName(trackerName);
     } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
+      setTrackerName(trackerName);
+      setIncludeKeywords(filteredPresetData?.[0]?.data?.[0]);
+      setExcludeKeywords(filteredPresetData?.[0]?.data?.[1]);
     }
 
     window.scrollTo({
@@ -746,6 +783,12 @@ const Pages = () => {
         ...(selectedEventType?.business?.length > 0 && {
           eventType: selectedEventType?.business?.join(",")
         }),
+        ...(userName.length > 0 && {
+          userName: userName,
+        }),
+        ...(userCompany.length > 0 && {
+          speakerOrg: userCompany,
+        }),
         ...(selectedEventEdition > 0 && {
           editionRange: selectedEventEdition.toString(),
         }),
@@ -758,10 +801,12 @@ const Pages = () => {
         //   eventKeywords: selectedEventKeywords.join("+"),
         // }),
         ...(includeKeywords && includeKeywords.length>0 &&{
-          includeKeywords: includeKeywords.join(','),
+          // includeKeywords: includeKeywords.join(','),
+          includeKeywords :includeKeywords.map((kw: string) => kw.replace(/ /g, "_")).join(','),
         }),
         ...(excludeKeywords && excludeKeywords.length>0 &&{
-          excludeKeywords: excludeKeywords.join(','),
+          // excludeKeywords: excludeKeywords.join(','),
+          excludeKeywords :excludeKeywords.map((kw: string) => kw.replace(/ /g, "_")).join(','),
         }),
         ...(selectedCategories?.length > 0 && {
           eventCategory: categoryIds.join(","),
@@ -909,7 +954,7 @@ const Pages = () => {
         // }
       },
     };
-    if (last === "editTracker") {
+   
 
       const secondLast = pathName[pathName.length - 2];
      
@@ -923,12 +968,17 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type === "CUSTOM" && (selectedLocationsData &&selectedLocationsData.length === 0 || trackerName.length === 0)) {
+      else if (type === "CUSTOM" && ( 
+        !selectedLocationsData || 
+        selectedLocationsData.length === 0 || 
+        trackerName.trim().length === 0 
+      )) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
+      if (last === "editTracker") {
       try{
         const data = await editTracker(secondLast, formData);
         if (data) {
@@ -942,27 +992,7 @@ const Pages = () => {
         console.log(error);
         setIsCreating(false);
       }
-      console.log(selectedCountry);
     } else {
-      console.log(formData);
-      
-      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(includeKeywords?.length==0 && excludeKeywords?.length===0))){
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
-      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
-        console.log("Please, Fill all the details");
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
-      else if (type === "CUSTOM" && (trackerName.length === 0 || (selectedLocationsData && selectedLocationsData.length === 0))) {
-        console.log("Please, Fill all the details");
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-      }
       try{
         const data= await createTracker(formData)
         if (error) {
@@ -970,9 +1000,7 @@ const Pages = () => {
           setIsCreating(false);
           return;
         }
-        if (data) {
-          console.log(data);
-  
+        if (data) {  
           router.replace("/internal/trackers");
         }
       }catch(error){
@@ -1007,7 +1035,7 @@ const Pages = () => {
       // if (editData.tracker.filterValue?.maturity == "low") {
       //   setSelectedMaturity(25);
       // }
-      if (type === "T_COMPETITOR") {
+      if (type === "T_COMPETITOR" || type == "T_CUSTOMER_ICP") {
         const orgNames = editData?.tracker?.filterValue?.orgName?.
           split(',');
         const orgWebsites = editData?.tracker?.filterValue?.orgWebsite?.
@@ -1045,6 +1073,17 @@ const Pages = () => {
         //     { companyUrl: item.trim() }
         //   ))
         // ]);
+      }
+      if (type === "T_PEOPLE_FINDER") {
+        const speakerOrgs = editData?.tracker?.filterValue?.speakerOrg?.
+          split(',');
+        const speakerNames = editData?.tracker?.filterValue?.userName?.
+          split(',');
+        const presentCustomData = speakerNames.map((speakerName: string, index: number) => ({
+          "Name": speakerName.trim(),
+          "Company Name": speakerOrgs[index]?.trim()
+        }));
+        setCustomData(presentCustomData);
       }
       if (editData.tracker.filterValue?.localRank?.length > 0 || editData.tracker.filterValue?.eventRank?.length > 0) {
         const newToggles = { ...rankToggles };
@@ -1347,12 +1386,12 @@ const Pages = () => {
       setIncludeKeywords(
         editData.tracker.filterValue?.includeKeywords &&
         editData.tracker.filterValue?.includeKeywords.split(",").length > 0
-            ? editData.tracker.filterValue.includeKeywords.split(",").filter(Boolean)
+            ? editData.tracker.filterValue.includeKeywords.split(",").filter(Boolean).map((kw: string) => kw.replace(/_/g, " "))
             : []
     );    
       setExcludeKeywords(editData.tracker.filterValue?.excludeKeywords &&
         editData.tracker.filterValue?.excludeKeywords.split(",").length > 0
-            ? editData.tracker.filterValue.excludeKeywords.split(",").filter(Boolean)
+            ? editData.tracker.filterValue.excludeKeywords.split(",").filter(Boolean).map((kw: string) => kw.replace(/_/g, " "))
             : []),
       setSelectedEventAttendanceRange((prevArray) => {
         const gte =
@@ -1372,7 +1411,7 @@ const Pages = () => {
     }
   }, [editData]);
 
-  console.log(selectedLabels);
+  // console.log(selectedLabels);
   const [popoverState, setPopoverState] = useState<boolean>(false);
   const setMenuOpen = () => {
     setPopoverState(!popoverState);
@@ -1392,8 +1431,8 @@ const Pages = () => {
       document.body.removeAttribute("your-attribute");
     };
   }, [popoverState]);
-  console.log(selectedEventRank);
-  console.log(type);
+  // console.log(selectedEventRank);
+  // console.log(type);
   const [companyUrl, setCompanyUrl] = useState('');
   const [name, setName] = useState('');
   const [companyName, setCompanyName] = useState('');
@@ -1402,7 +1441,7 @@ const Pages = () => {
       addNew();
     }
   }
-  console.log(customData);
+  // console.log(customData);
   const [isLoading,setIsLoading]=useState(true);
   const [template, setTemplate] = useState<Template | null | undefined>(null);
   const [inputValues, setInputValues] = useState<{ [key: number]: string }>({});
@@ -1414,7 +1453,7 @@ const Pages = () => {
     setIsLoading(false);
   },[template])
   const handleInput = (index: number, value: string) => {
-    console.log(value);
+    // console.log(value);
     setInputValues(prevValues => ({
       ...prevValues,
       [index]: value
@@ -1469,16 +1508,16 @@ const Pages = () => {
     }else setValid(false);
   }
   }
-  console.log(valid);
+  // console.log(valid);
   const truncate = (val: string) => {
     if (val.length > 24) return val.substring(0, 25) + "...";
     else return val;
   }
   const deleteEntry = (entryKey: string, itemIndex: number) => {
-    console.log(itemIndex);
+    // console.log(itemIndex);
     const filteredData = customData.filter((item, index) => index !== itemIndex);
     setCustomData(filteredData);
-    console.log(filteredData);
+    // console.log(filteredData);
 
     // setCustomData((prevData) => 
     //   prevData.map((item, index) => {
@@ -1551,14 +1590,11 @@ const commonCss={
 useEffect(() => {
   console.log('Selected Aviation Rank:', selectedInternationalScore);
 }, [selectedInternationalScore]);
-console.log(includeKeywords, excludeKeywords);
 // useEffect(()=>{
 //   const updatedIncludeKeywords = includeKeywords.map((keyword) => `${keyword.split(" ").join("_")}`);
 //   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
 //       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
 // },[includeKeywords, excludeKeywords])
-console.log(includeKeywords, excludeKeywords);
-
 
 return (
   <>
@@ -1710,7 +1746,7 @@ return (
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
           {" "} Please upload or manually enter the information
         </div>
-        {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") ?
+        {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP") ?
           (uploadEnabled && 
             <CsvUploader
               templateData={template}
@@ -1756,17 +1792,17 @@ return (
                               />
                             </div>
                           } */}
-        {type === "T_COMPETITOR" && inputValues[0]?.length > 0  &&
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") && inputValues[0]?.length > 0  &&
          <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={'company/suggestion'} type={type}/>
         }
                         </div>
 
                       </>
                     ))}
-                    <div onClick={() => template.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px]"
+                    <div onClick={() => template.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
                       style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
-                    >
-                      <Image src={Add} alt="add_Icon" />
+                    >+
+                      {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
                     </div>
 
                   </div>
@@ -1837,9 +1873,8 @@ return (
                 {customData.length > 5 &&
                   <div className={styles.expandTableBtn} onClick={()=>setExpandTable(prev=>!prev)} >{expandTable ? 'Read Less' : 'Read More'}</div>
                 }
-              </div>
-            } */}
-            {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") &&
+
+              {/* {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") && */}
               <div style={{textAlign: 'center'}}>
                 <div style={{position: 'relative', color: 'var(--secondary-text-color)'}}>
                   <div style={{borderBottom: '1px solid var(--border-color)', margin: '36px 0'}}></div>
@@ -1850,13 +1885,14 @@ return (
                     className="text-white gap-1"
                     size="sm"
                     onClick={handleUploadEnable}
+                      disabled={!template?.isUploadEnable}
                   >
                     <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
                     {" "}Upload
                   </Button>
                 </div>
               </div>
-            }
+              {/* } */}
           </div>
         }
       </div>
@@ -2049,7 +2085,8 @@ return (
         {/* INSIGHTS AND SCORES */}
         {showAdvanceFilter && selectedAdvFilter === "IS" && (
           <div className={styles.inputdropdowns_container}>
-              <EstimatedVisitorsSelector source="tracker" selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}/>
+              <EstimatedVisitorsSelector source="tracker" selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}
+              />
               <EstimatedExhibitorsSelector selectedRanges={selectedExhibitScore}
               setSelectedRanges={setSelectedExhibitScore}
               isEnabled={isExhibitOpen}
@@ -2103,7 +2140,7 @@ return (
           <div className={styles.presetTitle} >Get Started with Pre-sets</div>
           <div className={styles.presetContainer} >
             {presetTemplateData.filter(item => item.url === template?.name).map((item, ind) => (
-              <div key={ind} className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]" onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
+              <div key={ind} className="w-1/4 p-2 gap-2 flex items-center flex-col h-[300px] text-sm border border-[var(--border-color)] rounded-[12px]" onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
                 <div
                   className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]"
                 >

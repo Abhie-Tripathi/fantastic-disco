@@ -3,6 +3,21 @@
     flex-direction: column;
     gap: 20px;
 }
+.pastEventHeader{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    color: var(--primary-text-color);
+}
+.pastEventHeader .heading{
+    color: var(--primary-text-color);
+    font-size: var(--font-size-h5);
+    font-weight: var(--font-weight-semibold);
+}
+.pastEventHeader .subheading{
+    color: var(--secondary-text-color);
+    font-size: var(--font-size-large);
+}
 .deleteContainer .heading{
     font-size: var(--font-size-h5);
     font-weight: var(--font-weight-semibold);

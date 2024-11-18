@@ -1,6 +1,5 @@
 import dropdownIcon from "/public/internal/drop_down_angle.svg";
 import Image from "next/image";
-import userImg from "/public/person1.svg";
 import styles from "./eventdesc.style.module.css";
 import { useEffect, useState } from "react";
 import ProfileIcon from "/public/profile_Image.jpg";
@@ -9,6 +8,7 @@ import { baseUrl } from "@/constants";
 import { showToast } from "@/utils/showToast";
 import { useTheme } from "@/context";
 import UserProfile from "../../userProfile/UserProfile";
+import { useCoordinateService } from "@/services/coordinateService";
 
 interface PropType {
   label: string;
@@ -28,6 +28,8 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
   const { theme } = useTheme();
 
   const iconClass = theme === "light" ? "icons_light" : "icon";
+
+  const coordinateService = useCoordinateService();
 
   const openDropDownHandler = () => {
     setIsOpen((prev) => !prev);
@@ -57,42 +59,22 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
       enquiryId: enquiryId,
       userId: userId,
     };
-    const { data, error } = await myFetch(`${baseUrl}/enquiry/owner`, {
-      method: "POST",
-      body: JSON.stringify(dataToSend),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (error) {
-      console.log(error);
-      showToast("error", error.message);
-      return;
-    }
+    const data: any = await coordinateService.setEnquiryOwner(dataToSend);
     if (data) {
       getOwnerDetails();
     }
   };
 
   const getOwnerDetails = async () => {
-    const { data, error } = await myFetch(
-      `${baseUrl}/enquiry/${enquiryId}/owner`
-    );
+    const data: any = await coordinateService.getEnquiryOwner(enquiryId);
     if (data) {
-      console.log(data);
       setOwner(data.user);
-    }
-    if (error) {
-      showToast("error", error.message);
-      return;
     }
   };
 
   useEffect(() => {
     getOwnerDetails();
   }, [enquiryId]);
-console.log(owner);
 
   return (
     <div className={styles.filter_container}>
@@ -109,7 +91,7 @@ console.log(owner);
     <Image
         src={ProfileIcon}
         alt="user"
-        className={styles["owner_img"]}
+        className={`${styles["owner_img"]} h-[48px] w-[48px]`}
         width={48}
         height={48}
         referrerPolicy="no-referrer"
@@ -127,7 +109,7 @@ console.log(owner);
         alt="banner"
         width={48}
         height={48}
-        className={styles.followerProfilePhoto}
+        className={`${styles.followerProfilePhoto} h-[48px] w-[48px]`}
     />
 )}
             
@@ -171,7 +153,7 @@ console.log(owner);
                    user.profilePicture
                   }
                   alt="user"
-                  className={styles["owner_img"]}
+                  className={`${styles["owner_img"]} h-[48px] w-[48px]`}
                   width={48}
                   height={48}
                   referrerPolicy="no-referrer"

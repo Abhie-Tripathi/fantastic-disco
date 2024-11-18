@@ -17,7 +17,7 @@
     object-fit:cover;
 }
 .date_location_nameContainer{
-    padding: 20px 14px 0px 14px;
+    padding: 10px 14px 0px 14px;
     width: 100%;
     display: flex;
     align-items: center;
