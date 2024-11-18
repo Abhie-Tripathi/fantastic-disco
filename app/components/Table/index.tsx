@@ -20,6 +20,8 @@ import { EventTableType } from "@/types/ListViewTable";
 import { usePathname } from "next/navigation";
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
+import NullState from "../trackers/nullState";
+import TrackerNullState from '@/public/trackerNullState.svg'
 import {
   TooltipTrigger,
   Button,
@@ -856,7 +858,9 @@ const Table = ({
   } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
+        {path[2]==="trackers"? <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText="Manage Congfigurations" buttonUrl=""/>:
         <ZeroState title={zeroStateHeading} text={zeroStateText} />
+        }
       </div>
     );
   }
