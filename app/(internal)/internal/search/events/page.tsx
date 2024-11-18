@@ -310,6 +310,7 @@ console.log(events);
             <ZeroState text={(error as ApiError).message} />
           ) : (
             <EventCalendar
+            source="search"
               events={events as CalendarEvent[] | CalendarMonthEvent[]}
             />
           )}

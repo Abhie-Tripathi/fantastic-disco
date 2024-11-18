@@ -11,14 +11,15 @@ interface OriginalResponse {
   }
   
   export const TrackersAdapter = {
-    adaptTrackerEventData(data: OriginalResponse): AdaptedResponse {
+    adaptTrackerEventData(data: OriginalResponse | undefined): AdaptedResponse {
       return {
-        events: data.events,
+        events: data?.events || [],
         stats: {
-          totalEvents: data.totalEvents,
+          totalEvents: data?.totalEvents || 0,
         },
       };
     },
+  
   
     adaptTrackerMapEventData(data: any) {
   
@@ -38,7 +39,7 @@ interface OriginalResponse {
         events: eventData || [],
       };
     },
-    adaptParams(params){
+    adaptParams(params:any){
         console.log(params.get("view"), params.get("calendar_type"));
         
         if (params.get("view") == "calendar" && params.get("calendar_type") != "week") {

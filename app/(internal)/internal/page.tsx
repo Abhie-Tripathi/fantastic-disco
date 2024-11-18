@@ -194,6 +194,14 @@ const Dashboard = () => {
     else if(tag==="Speakers") return "Speak";
     else if(tag==="Sponsors")return "Sponsor";
   }
+  const formatCount = (count: number ) => {
+    if (count >= 1000) {
+      const value = count / 1000;
+      const decimalPart = value - Math.floor(value);
+        return `${Math.floor(value)}k`;
+    }
+    return count;
+  };
   return (
     <>
       <div className={styles.container}>
@@ -395,8 +403,8 @@ const Dashboard = () => {
                         </div>
                         <div className={styles.eventCard_stats}>
                           <div className={styles.eventCard_stats_no}>
-                            {tracker?.groupedEventsCountByStatus
-                              ?.groupedEventsByStatus?.new || 0}
+                            {formatCount(tracker?.groupedEventsCountByStatus
+                              ?.groupedEventsByStatus?.new || 0)}
                           </div>
                           <div className={styles.eventCard_description}>
                             Events
@@ -411,8 +419,8 @@ const Dashboard = () => {
                         </div>
                         <div className={styles.eventCard_stats}>
                           <div className={styles.eventCard_stats_no}>
-                            {tracker?.groupedEventsCountByStatus
-                              ?.groupedEventsByStatus?.active || 0}
+                            {formatCount(tracker?.groupedEventsCountByStatus
+                              ?.groupedEventsByStatus?.active || 0)}
                           </div>
                           <div className={styles.eventCard_description}>
                             Events
@@ -423,12 +431,12 @@ const Dashboard = () => {
                       <div className={`${styles.eventCard} card`}>
                         <div className={styles.eventCard_title}>
                           <Image src={CircleCross} alt="expired" />
-                          <span>Expired</span>
+                          <span>Past</span>
                         </div>
                         <div className={styles.eventCard_stats}>
                           <div className={styles.eventCard_stats_no}>
-                            {tracker?.groupedEventsCountByStatus
-                              ?.groupedEventsByStatus?.expired || 0}
+                            {formatCount(tracker?.groupedEventsCountByStatus
+                              ?.groupedEventsByStatus?.expired || 0)}
                           </div>
                           <div className={styles.eventCard_description}>
                             Events

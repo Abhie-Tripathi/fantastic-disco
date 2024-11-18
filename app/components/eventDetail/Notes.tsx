@@ -709,7 +709,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   console.log(notes);
   return (
     <div className="flex flex-col items-start w-full h-full border rounded-[12px]" style={{border:"1px solid var(--border-color)"}}>
-      
+      <div className="text-[var(--primary-color)] font-bold px-5 py-2">Notes & Discusssion</div>
       {notes ? (
         <div
           className="h-[85%] w-full overflow-y-scroll relative"

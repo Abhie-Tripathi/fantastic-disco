@@ -78,7 +78,14 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
     ],
   };
   const [locations, setLocations] = useState<any>();
-
+  const formatCount = (count: number ) => {
+    if (count >= 1000) {
+      const value = count / 1000;
+      const decimalPart = value - Math.floor(value);
+        return `${Math.floor(value)}k`;
+    }
+    return count;
+  };
   useEffect(() => {
     
     const eventCountry = item?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
@@ -133,7 +140,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
                 New
               </div>
               <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
-                {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.new.toLocaleString('en-US')}
+                {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.new)}
               </div>
               <div className={styles.events}>Events</div>
             </div>
@@ -143,7 +150,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
                 Active
               </div>
               <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
-                {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.active.toLocaleString('en-US')}
+              {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.active)}
               </div>
               <div className={styles.events}>Events</div>
             </div>
@@ -153,7 +160,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
                 Past
               </div>
               <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
-                {item?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired.toLocaleString('en-US')}
+                {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired)}
               </div>
               <div className={styles.events}>Events</div>
             </div>

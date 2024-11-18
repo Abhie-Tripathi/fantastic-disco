@@ -556,8 +556,8 @@ const Table = ({
         console.log(path);
         
         if (result.count === 0) {
-          setZeroStateHeading(`No ${eventType} Found`);
-          setZeroStateText("Try using alternative or related industry/keywords to create a tracker.");
+          setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
+        setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
         }
   
         if (currPage === 1) {
@@ -860,7 +860,7 @@ const Table = ({
   } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
-        {path[2]==="trackers"? <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText="Manage Congfigurations" buttonUrl="/"/>:
+        {path[2]==="trackers"? <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText="Manage Congfigurations" buttonUrl=""/>:
         <ZeroState title={zeroStateHeading} text={zeroStateText} />
         }
       </div>

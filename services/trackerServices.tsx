@@ -5,6 +5,10 @@ import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
 import {EventCount} from "@/types/events";
 import { EventTableType } from '@/types/ListViewTable';
+interface OriginalResponse {
+  totalEvents: number;
+  events: any[];
+}
 export const useTrackerServices = () => {
     const api = useApi();
     const createTracker = (formData: Tracker) => {
@@ -116,9 +120,8 @@ export const useTrackerServices = () => {
       trackerId:string, params:string, eventType:string,
       abortSignal?: AbortSignal
     ) => {
-      console.log(params);
       
-      const response= await api.request(
+      const response:any= await api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&${eventType}` : ''}`,
         {
           method: "GET",
@@ -126,7 +129,6 @@ export const useTrackerServices = () => {
         }
       );
       const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
-      console.log(updatedResponse);
       
       return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=Map"));
     };
@@ -172,7 +174,7 @@ export const useTrackerServices = () => {
       // console.log(type);
       
       // console.log(`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${type}&groupBy=${searchParams}`);
-      const response = await api.request(`${endpoints.tracker.commonUrl}/${trackerId}/events?${searchParams}`, {
+      const response: OriginalResponse | undefined = await api.request(`${endpoints.tracker.commonUrl}/${trackerId}/events?${searchParams}`, {
         method: "GET",
       });
       console.log(EventsAdapter.adaptResponse(response, new URLSearchParams("view=calendar")));
@@ -180,7 +182,7 @@ export const useTrackerServices = () => {
       
       // console.log(TrackersAdapter.adaptTrackerMapEventData(response));
       if(isListing){
-        const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
+        const updatedResponse  = TrackersAdapter.adaptTrackerEventData(response);
         console.log(updatedResponse);
         
         console.log(EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams(`view=calendar&calendar_type=month`)));

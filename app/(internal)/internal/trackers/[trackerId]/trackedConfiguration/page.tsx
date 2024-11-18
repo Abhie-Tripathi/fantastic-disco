@@ -206,6 +206,9 @@ const userRating=
     data:`text-xs text-[var(--secondary-text-color)] p-1`,
     allValues: `flex gap-3`
   }
+  const editScreen=()=>{
+    router.push(`/internal/trackers/${last}/editTracker?type=${typeVal}`)
+  }
   
   return (
     <>
@@ -250,7 +253,7 @@ const userRating=
 
       </div>
     </div>
-    <div className="flex flex-col mt-[140px] gap-6">
+    <div className="flex flex-col mt-[140px] gap-6 cursor-pointer" onClick={()=>editScreen()}>
       <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{zIndex:"3"}}></div>
     <div className="px-[27px] py-[4px] border-[0.5px] border-[var(--border-color)] rounded-lg h-[55px] flex items-center font-medium">{data?.tracker?.name}</div>
     {data?.tracker && data.tracker.type === "T_PRODUCT_KEYWORDS" &&

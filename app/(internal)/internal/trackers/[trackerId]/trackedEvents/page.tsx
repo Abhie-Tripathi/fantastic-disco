@@ -10,6 +10,9 @@ import "chart.js/auto";
 import { useQuery } from "@tanstack/react-query";
 import ZeroState from "@/app/components/zerostate";
 import EventCalendar from "@/components/eventCalendar";
+import NullState from "@/app/components/trackers/nullState";
+import TrackerNullState from '@/public/trackerNullState.svg';
+import { ApiError } from "@/types/api";
 import {
   CalendarEvent,
   CalendarMonthEvent,
@@ -143,8 +146,8 @@ const Page = ({ params }: { params: any }) => {
     | MapEventsResponse
     | undefined
   >({
-    queryKey: ["events", params, searchParams.toString()], 
-    queryFn: () => {
+    queryKey: ["events", params, searchParams.toString()],
+    queryFn: async () => {
       if (viewType === "calendar") {
         return getCalendarViewEvents(
           trackerId,
@@ -165,12 +168,13 @@ const Page = ({ params }: { params: any }) => {
           Array.from(searchParams.values())[3]
         );
       }
-      return Promise.resolve();
+      return Promise.resolve(undefined); 
     },
     refetchOnWindowFocus: false,
     staleTime: 0,
-    enabled: Boolean(params) && view === "calendar", 
+    enabled: Boolean(params) && view === "calendar",
   });
+  
   const displayData = eventData;
   console.log(eventData);
   console.log(Array.from(searchParams.values()));
@@ -568,7 +572,6 @@ console.log(events);
                 <Map source="tracker" 
                 searchParams={`type=${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":"active"}`}
                 trackerId={params.trackerId}
-                locations={locationIds}
                  />
                 {/* <Map/> */}
               </Suspense>
@@ -581,7 +584,7 @@ console.log(events);
               {isLoading ? (
             <Loading />
           ) : eventData?.count == 0 ? (
-            <ZeroState text="No events were found in the selected area." />
+            <NullState image={TrackerNullState} title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Congfigurations" buttonUrl={`/internal/trackers/${params.trackerId}/trackedConfiguration?type=${trackerDetail?.type}`}/>
           ) : error ? (
             <ZeroState text={(error as ApiError).message} />
           ) : (
