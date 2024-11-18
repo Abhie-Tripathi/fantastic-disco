@@ -103,7 +103,6 @@ export const EventsAdapter = {
         ?.split(",") 
         ?.map((item) => item!.charAt(0).toUpperCase() + item!.slice(1))
         .join(",");
-      console.log(res);
       adaptedParams.eventFrequency = res || "";
     }
 
