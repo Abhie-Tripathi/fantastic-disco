@@ -16,6 +16,8 @@ import AudienceDesAndDep from "./advancedFilters/audienceDes&Dep";
 import AudienceSpread from "./advancedFilters/audienceSpread";
 import KeywordFilter from "./advancedFilters/product&Topics";
 import AudienceZoneSatusSelector from "./advancedFilters/audienceZone";
+import { isEventeli } from "@/config";
+import { cn } from "@/lib/utils";
 
 const AdvancedFilters = () => {
   const [selectedView, setSelectedView] = useState("advancedDetails");
@@ -47,29 +49,37 @@ const AdvancedFilters = () => {
       </div>
       <TabsContent value="advancedDetails">
         <div className="grid grid-cols-5 gap-3 pb-6 border-b">
-          <EditionSelector source="search"/>
-          <GlobalAndTouringSelector source="search"/>
-          <ForecastedStatusSelector source="search"/>
-          <FrequencySelector source="search"/>
-          <KeywordFilter source="search"/>
+          <EditionSelector source="search" />
+          <GlobalAndTouringSelector source="search" />
+          <ForecastedStatusSelector source="search" />
+          <FrequencySelector source="search" />
+          <KeywordFilter source="search" />
         </div>
       </TabsContent>
       <TabsContent value="insightsAndScores">
-        <div className="grid grid-cols-5 gap-3 pb-6 border-b">
-          <EstimatedVisitorsSelector source="search"/>
-          <EstimatedExhibitorsSelector source="search"/>
-          <EventAnalyticsSelector source="search"/>
+        <div
+          className={cn("grid grid-cols-5 gap-3 pb-6 border-b", {
+            "grid-cols-4": isEventeli,
+          })}
+        >
+          <EstimatedVisitorsSelector source="search" />
+          {!isEventeli && <EstimatedExhibitorsSelector source="search" />}
+          <EventAnalyticsSelector source="search" />
           <EstimatedEconomicImpactSelector />
-          <EventRankingSelector source="search"/>
+          <EventRankingSelector source="search" />
         </div>
       </TabsContent>
       <TabsContent value="audienceIntel">
-        <div className="grid grid-cols-5 gap-3 pb-6 border-b">
+        <div
+          className={cn("grid grid-cols-5 gap-3 pb-6 border-b", {
+            "grid-cols-4": isEventeli,
+          })}
+        >
           <AudienceQualitySelector />
           <ExhibitorQualitySelector />
-          <AudienceZoneSatusSelector source="search"/>
-          <AudienceDesAndDep source="search"/>
-          <AudienceSpread source="search"/>
+          {!isEventeli && <AudienceZoneSatusSelector source="search" />}
+          <AudienceDesAndDep source="search" />
+          <AudienceSpread source="search" />
         </div>
       </TabsContent>
       <TabsContent value="trackers">
