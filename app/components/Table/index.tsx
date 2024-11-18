@@ -555,8 +555,8 @@ const Table = ({
         setTotalEvents(result.count);
   
         if (result.count === 0) {
-          setZeroStateHeading(`No ${eventType} Found`);
-          setZeroStateText("Try using alternative or related industry/keywords to create a tracker.");
+          setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
+        setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
         }
   
         if (currPage === 1) {
@@ -705,8 +705,8 @@ const Table = ({
       }
   
       if (result.totalEvents === 0) {
-        setZeroStateHeading(`No ${eventType} Found`);
-        setZeroStateText("Try using alternative or related industry/keywords to create a tracker.");
+        setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
+        setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
       }
   
       if (result.events.length > 0) {

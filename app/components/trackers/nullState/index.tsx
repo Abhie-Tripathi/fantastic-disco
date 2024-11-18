@@ -7,7 +7,7 @@ const NullState = ({ image, title, text, buttonText, buttonUrl }: { image:string
   
   return (
     <div className="flex flex-col h-[100%] items-center justify-center gap-2">
-      <Image src={image} alt="zerostate" width={200} height={160}/>
+      <Image src={image} alt="zerostate" />
       
       <div className="font-semibold text-center text-sm text-[var(--secondary-text-color)]">{title}</div>
       <div className="text-xs text-center text-[var(--tertiary-text-color)]">{text}</div>
