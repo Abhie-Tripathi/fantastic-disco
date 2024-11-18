@@ -781,7 +781,9 @@ const Pages = () => {
           speakerOrg: speakerCompany,
         }),
         ...(selectedEventType?.business?.length > 0 && {
-          eventType: selectedEventType?.business?.join(",")
+          eventTypes: selectedEventType.business
+            .map(eventType => eventType.charAt(0).toUpperCase() + eventType.slice(1))
+            .join(","),
         }),
         ...(userName.length > 0 && {
           userName: userName,
@@ -836,7 +838,7 @@ const Pages = () => {
         }),
         // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
         ...(selectedEventStatus?.length > 0 && {
-          eventStatus: selectedEventStatus.join(","),
+          eventStatus: selectedEventStatus.map((item) => item.toUpperCase()).join(","),
         }),
         ...(selectedEntry?.length > 0 && {
           eventEntry: selectedEntry.join(","),
@@ -1609,9 +1611,9 @@ return (
         <Image src={userOne} alt="userOne" />
       </div>
       <div>
-        <div className="text-[var(--primary-color)] font-bold text-lg">Create {template && <span>{template.templateName}</span>} Tracker</div>
+        <div className="text-[var(--primary-color)] font-bold text-lg">{last==="editTracker"?"Edit":"Create"} {template && <span>{template.templateName}</span>} Tracker</div>
         <div className="text-sm text-[var(--secondary-text-color)]">
-          Select from the available data filters to create a tracker
+          Select from the available data filters to {last==="editTracker"?"edit":"create"} a tracker
         </div>
       </div>
     </div>
