@@ -124,8 +124,8 @@ export default function FrequencySelector({
             <div key={frequency.id} className="flex items-center space-x-2">
               <Checkbox
                 id={frequency.id}
-                checked={source==="tracker"?selectedFrequencies.includes(frequency.label):selectedFrequencies.includes(frequency.id)}
-                onCheckedChange={() => handleFrequencyToggle(source==="tracker"?frequency.label:frequency.id)}
+                checked={selectedFrequencies.includes(frequency.id)}
+                onCheckedChange={() => handleFrequencyToggle(frequency.id)}
               />
               <Label htmlFor={frequency.id}>{frequency.label}</Label>
             </div>

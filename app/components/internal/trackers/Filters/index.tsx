@@ -847,7 +847,7 @@ const Pages = () => {
           trustScore: selectedTrustScore[0].toString(),
         }),
         ...(selectedEventFrequency?.length > 0 && {
-          eventFrequency: selectedEventFrequency.join(","),
+          eventFrequency: selectedEventFrequency.map((item)=>item[0].toUpperCase()+item.slice(1)).join(","),
         }),
         ...(selectedReptScore > 0 && {
           reputationScore: selectedReptScore.toString(),
@@ -1262,7 +1262,7 @@ const Pages = () => {
       setSelectedEventFrequency(
         editData?.tracker?.filterValue?.eventFrequency && 
         editData?.tracker?.filterValue?.eventFrequency?.length > 0
-          ? editData?.tracker?.filterValue?.eventFrequency?.split(",")
+          ? editData?.tracker?.filterValue?.eventFrequency?.split(",").map((item:string)=>item[0].toLowerCase()+item.slice(1))
           : []
       );
       setSelectedEntry(

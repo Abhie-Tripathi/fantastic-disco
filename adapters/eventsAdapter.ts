@@ -98,9 +98,13 @@ export const EventsAdapter = {
       adaptedParams.maturity = params.get("maturity")!;
     }
     if (params.get("frequencies")) {
-      adaptedParams.eventFrequency =
-        params.get("frequencies")!.charAt(0).toUpperCase() +
-        params.get("frequencies")!.slice(1);
+      const frequencies = params.get("frequencies");
+      const res = frequencies
+        ?.split(",") 
+        ?.map((item) => item!.charAt(0).toUpperCase() + item!.slice(1))
+        .join(",");
+      console.log(res);
+      adaptedParams.eventFrequency = res || "";
     }
 
     if (params.get("includeKeywords") || params.get("excludeKeywords")) {
