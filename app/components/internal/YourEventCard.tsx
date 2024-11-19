@@ -226,7 +226,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
 
             <div className="flex justify-between gap-2 flex-wrap">
                 <div>
-                  <span className="text-[var(--primary-color)] bg-[var(--primary-light-color)] h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] rounded-sm w-fit cursor-pointer">CONFERENCE</span> 
+                  {/* <span className="text-[var(--primary-color)] bg-[var(--primary-light-color)] h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] rounded-sm w-fit cursor-pointer">CONFERENCE</span>  */}
                 </div>
                 
                 <div className="flex gap-3">
