@@ -139,25 +139,16 @@ export default function LocationSelector({
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
       <Button
-        variant="outline"
-        className={`w-full justify-between px-3 py-5 text-base font-normal ${
-        !(source === "tracker" && (selectedLocation === undefined || (Array.isArray(selectedLocation) &&selectedLocation?.length === 0)) && isMandatory)
-        ? isOpen
-        ? "border-primary"
-        : "border-input"
-        : ""
-        }`}
-        onClick={() => setIsOpen(!isOpen)}
-        aria-expanded={isOpen}
-        aria-haspopup="true"
-        style={{
-        border:
-        source === "tracker" &&
-        (selectedLocation === undefined || (Array.isArray(selectedLocation) &&selectedLocation?.length === 0)) &&
-        isMandatory
-        ? "1px solid red"
-        : undefined,
-        }}
+          variant="outline"
+          className={`w-full justify-between px-3 py-5 text-base font-normal ${
+            ((selectedLocation === undefined || (Array.isArray(selectedLocation) &&selectedLocation?.length === 0)) && isMandatory)
+            ?"border-destructive": isOpen
+            ? "border-primary"
+            : "border-input"
+            }`}
+          onClick={() => setIsOpen(!isOpen)}
+          aria-expanded={isOpen}
+          aria-haspopup="true"
         >
           <div className="flex items-center truncate">
             <span className="mr-2">Location</span>
