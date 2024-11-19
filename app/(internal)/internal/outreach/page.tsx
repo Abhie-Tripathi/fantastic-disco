@@ -165,7 +165,7 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
         changeEnquiryStatus("CONFIRMED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
         setCurrentEnquiryStatus("CONFIRMED")
       }else if(target==="canceled"){
-        changeEnquiryStatus("CANCELED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
+        changeEnquiryStatus("CANCELLED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
         setCurrentEnquiryStatus("CANCELED")
       }
     }
