@@ -122,7 +122,7 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
                             }
                         />
                         <span className={styles.imgContainer}>
-                        {user.profilePicture? <Image src={user.profilePicture} alt="userProfile" width={45} height={45} style={{borderRadius:"50%"}}/>:
+                        {user.profilePicture? <Image src={user.profilePicture} alt="userProfile" width={45} height={45} style={{borderRadius:"50%"}} className='w-[45px] h-[45px]'/>:
                          <UserProfile name={user.name} width={45} height={45} borderRadius="50%"/>
                         }
                        
