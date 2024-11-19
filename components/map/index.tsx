@@ -8,6 +8,7 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
+import Loading from "@/app/components/UI/Loading";
 import ReactMapGL, {
   MapRef,
   Marker,
@@ -206,16 +207,18 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
       setCurrentZoomGroup(newZoomGroup);
     }
     
-  }, [viewport.zoom, currentZoomGroup, determineZoomGroup, trackerId]);
+  }, [viewport.zoom, currentZoomGroup, determineZoomGroup]);
   useEffect(() => {
     setViewport({
-      latitude: 20.5937,
-      longitude: 78.9629,
-      zoom: ZOOM_LEVELS.INITIAL,
+      latitude: 0,
+      longitude: 0,
+      zoom: 1,
       bearing: 0,
       pitch: 0,
       padding: { top: 0, bottom: 0, left: 0, right: 0 },
     });
+    
+    // setCurrentZoomGroup(country)
   }, [trackerId]);
   // const eventCountsQuery = useQuery<EventCount[], Error>({
   //   queryKey: ["eventCounts", currentZoomGroup, searchParams],
@@ -260,7 +263,7 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
       queryClient.prefetchQuery({
         queryKey: ["eventCounts", nextZoomGroup, searchParams],
         queryFn: async () => {
-          const response = source === "tracker"?await getMapViewData(trackerId, currentZoomGroup, searchParams) :await memoizedGetEventsCount(
+          const response = source === "tracker"?await getMapViewData(trackerId, nextZoomGroup, searchParams) :await memoizedGetEventsCount(
             `${searchParams}&groupBy=${nextZoomGroup}`
           );
           return response || [];
@@ -460,10 +463,17 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
   }, [location]);
 
   console.log(viewport);
+  console.log(eventCountsQuery.isLoading);
   
   console.log(theme,"ohh yeah")
   return (
     <div className="relative">
+      {(eventCountsQuery.isLoading && currentZoomGroup==="country" )?
+      <div className="flex justify-center items-center w-[100%]">
+      <Loading className="w-[200px] h-[100px]"/>
+      </div>
+      :
+      <>
       {(!location && !trackerId)? (
         <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
       ) : (
@@ -567,6 +577,8 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
           )}
         </ReactMapGL>
       )}
+      </>
+      }
     </div>
   );
 }

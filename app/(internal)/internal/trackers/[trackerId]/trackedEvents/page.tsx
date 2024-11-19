@@ -293,11 +293,11 @@ const Page = ({ params }: { params: any }) => {
       // setIsSaving(false);
     }
   };
-  useEffect(() => {
-    if (active === "Active Events") setType("ACTIVE");
-    if (active === "New Events") setType("NEW");
-    if (active === "Expired Events") setType("EXPIRED");
-  }, [active]);
+  // useEffect(() => {
+  //   if (active === "Active Events") setType("ACTIVE");
+  //   if (active === "New Events") setType("NEW");
+  //   if (active === "Expired Events") setType("EXPIRED");
+  // }, [active]);
   const formatCount = (count: number ) => {
     if (count >= 1000) {
       const value = count / 1000;
@@ -396,7 +396,19 @@ const stateIds = trackerDetail?.filterValue?.locationIds?.state?.length > 0
 
 const locationIds:string[] = [...cityIds, ...countryIds, ...stateIds];
 console.log(events);
-
+const activeVal =
+ active ===
+  "Active Events"
+    ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
+    : active ===
+      "New Events"
+    ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.new
+    : active ===
+      "Expired Events"
+    ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
+    : 0;
+    console.log(activeVal);
+    
   return (
     <div className="flex w-[calc(100vw-134px)]">
       {/* <SideNav/> */}
@@ -569,10 +581,16 @@ console.log(events);
           {(view === "map" && active !== "Saved Events") && (
             <div>
               <Suspense fallback={<Loading />}>
+              {Number(activeVal)===0 ?
+              <div className="p-5">
+              <NullState image={TrackerNullState} title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Congfigurations" buttonUrl={`/internal/trackers/${params.trackerId}/trackedConfiguration?type=${trackerDetail?.type}`}/>
+              </div>
+               : 
                 <Map source="tracker" 
                 searchParams={`type=${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":"active"}`}
                 trackerId={params.trackerId}
                  />
+                } 
                 {/* <Map/> */}
               </Suspense>
             </div>
