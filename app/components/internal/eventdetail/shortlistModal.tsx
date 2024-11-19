@@ -11,6 +11,7 @@ import sponsorIcon from "/public/internal/sponsor.svg";
 import { useAuthContext, useTheme } from "@/context";
 import { useState } from "react";
 import { useCoordinateService } from "@/services/coordinateService";
+import { Button } from "@/components/ui/button";
 interface Props {
   handleShortlistModal: (eventId: string) => void;
   shortlistModalData: any;
@@ -101,7 +102,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
           style={{ padding: "0 1.8rem" }}
         >
           <div className={styles["tag_container"]}>
-          <span className={styles["tag_item"]}>
+          <span className={`${styles["tag_item"]} ${shortlistModalData.participent.exhibitors?.length > 0 ? styles.activeTab : ''}`} >
               <Image
                 src={exhibitorIcon}
                 alt=""
@@ -111,11 +112,11 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
               />
               Exhibit
               {shortlistModalData.participent.exhibitors?.length > 0 &&
-                <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
+                <Image src={tickIcon} alt="" width={13} height={13} />
               }
             </span>
             
-            <span className={styles["tag_item"]}>
+            <span className={`${styles["tag_item"]} ${shortlistModalData.participent.sponsors?.length > 0 ? styles.activeTab : ''}`} >
               <Image
                 src={sponsorIcon}
                 alt=""
@@ -125,33 +126,33 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
               />
               Sponsor
               {shortlistModalData.participent.sponsors?.length > 0 &&
-                <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
+                <Image src={tickIcon} alt="" width={13} height={13} />
               }
             </span> 
-            <span className={styles["tag_item"]}>
+            <span className={`${styles["tag_item"]} ${shortlistModalData.participent.speakers?.length > 0 ? styles.activeTab : ''}`} >
               <Image
                 src={speakerIcon}
                 alt=""
-                width={15}
-                height={15}
+                width={10}
+                height={10}
                 className={iconClass}
               />
               Speak
               {shortlistModalData.participent.speakers?.length > 0 &&
-                <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
+                <Image src={tickIcon} alt="" width={13} height={13} />
               }
             </span>
-            <span className={styles["tag_item"]}>
+            <span className={`${styles["tag_item"]} ${shortlistModalData.participent.attendee?.length > 0 ? styles.activeTab : ''}`} >
               <Image
                 src={attendeeIcon}
                 alt=""
-                width={15}
-                height={15}
+                width={8}
+                height={8}
                 className={iconClass}
               />
               Attend
               {shortlistModalData.participent.attendee?.length > 0 &&
-                <Image src={tickIcon} alt="" width={13} height={13} className={iconClass} />
+                <Image src={tickIcon} alt="" width={13} height={13} />
               }
             </span>
            
@@ -195,7 +196,9 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
             <div className={styles.moddleText}>
               {shortlistModalData.stats.uniqueUser} People have shown interest
             </div>
-            <div className={styles.markListBtn} onClick={handleSubmit}>Mark as Shortlisted</div>
+            <Button onClick={handleSubmit} >
+              Mark as Shortlisted
+            </Button>
           </div>
           <div className={styles.main_section}>
           {shortlistModalData.participent.exhibitors?.length > 0 &&

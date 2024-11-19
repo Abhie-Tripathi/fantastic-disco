@@ -32,7 +32,7 @@ const Page = () => {
 
   const fetchInterestData = async (eventId: string, enquiryId: string) => {
     try {
-      const apiData: any = await coordinateService.getInterestedUsers(eventId);
+      const apiData: any = await coordinateService.getInterestedUsers(eventId, enquiryId);
       if (apiData) {
         apiData.eventId = eventId;
         apiData.enquiryId = enquiryId;

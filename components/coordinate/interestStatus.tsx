@@ -11,8 +11,10 @@ import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 
 const eventStatuses = [
-  { id: "IN_DISCUSSION", label: "Pending" },
+  { id: "PENDING", label: "Pending" },
   { id: "SHORTLISTED", label: "Shortlisted" },
+  { id: "IN_PROGRESS", label: "In Progress" },
+  { id: "CONFIRMED", label: "Confirmed" },
   { id: "REJECTED", label: "Rejected" },
 ];
 

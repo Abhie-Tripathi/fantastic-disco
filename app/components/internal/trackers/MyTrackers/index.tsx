@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./myTrackers.style.module.css";
 import Trackers from ".././AllTrackers";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
@@ -245,17 +246,13 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             trackerType === "Custom Trackers") &&
           !loading && page<(totalPage-1) &&(
             <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                paddingTop: "20px",
-              }}
+              className="flex item-center justify-center pt-5"
             >
               {/* <div className={styles.btn} onClick={handlePrevPage}>
                 Prev
               </div> */}
-              <div className={styles.btn} onClick={handleNextPage}>
-                Next
+              <div onClick={handleNextPage}>
+              <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">Next</Button>
               </div>
             </div>
           )}
