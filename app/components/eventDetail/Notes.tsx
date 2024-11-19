@@ -718,7 +718,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         >
           {zeroState && 
           <div className="w-[100%] h-[100%] flex items-center justify-center">
-          <div className="w-[400px]">
+          <div className="w-[500px]">
           <NullState image={NotesNullState} title="Start jotting down your thoughts or key takeaways here!" text="Whether it's planning, capturing important points, or kicking off a team discussion, this space is yours to keep everyone aligned and engaged"/>
           </div>
           </div>
