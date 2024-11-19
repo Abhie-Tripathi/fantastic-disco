@@ -21,7 +21,7 @@ const SavedEventWidget= ({savedEvents, redirectUrl}:SavedEventWidgetProps)=>{
                 <>
                <div className='flex items-center gap-2' style={{color:"var(--primary-color)"}}>
                 {savedEvents && savedEvents.count>0 && <div className="flex items-center justify-center w-7 h-5 rounded-full font-medium text-sm" style={{backgroundColor:"var(--primary-light-color)"}}>{savedEvents?.count}</div>}
-                <div className='font-semibold'>Saved Events</div>
+                <div className='font-semibold'>Bookmarked Events</div>
                </div>
                {savedEvents && savedEvents.count>0  ? (
   savedEvents?.result?.map((item: any) => (

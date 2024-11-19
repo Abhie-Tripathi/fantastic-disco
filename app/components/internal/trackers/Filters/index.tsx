@@ -1613,9 +1613,9 @@ return (
         <Image src={userOne} alt="userOne" />
       </div>
       <div>
-        <div className="text-[var(--primary-color)] font-bold text-lg">Create {template && <span>{template.templateName}</span>} Tracker</div>
+        <div className="text-[var(--primary-color)] font-bold text-lg">{last==="editTracker"?"Edit":"Create"} {template && <span>{template.templateName}</span>} Tracker</div>
         <div className="text-sm text-[var(--secondary-text-color)]">
-          Select from the available data filters to create a tracker
+          Select from the available data filters to {last==="editTracker"?"edit":"create"} a tracker
         </div>
       </div>
     </div>

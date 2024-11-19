@@ -20,6 +20,8 @@ import { EventTableType } from "@/types/ListViewTable";
 import { usePathname } from "next/navigation";
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
+import NullState from "../trackers/nullState";
+import TrackerNullState from '@/public/trackerNullState.svg'
 import {
   TooltipTrigger,
   Button,
@@ -553,8 +555,8 @@ const Table = ({
         setTotalEvents(result.count);
   
         if (result.count === 0) {
-          setZeroStateHeading(`No ${eventType} Found`);
-          setZeroStateText("Try using alternative or related industry/keywords to create a tracker.");
+          setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
+        setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
         }
   
         if (currPage === 1) {
@@ -703,8 +705,8 @@ const Table = ({
       }
   
       if (result.totalEvents === 0) {
-        setZeroStateHeading(`No ${eventType} Found`);
-        setZeroStateText("Try using alternative or related industry/keywords to create a tracker.");
+        setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
+        setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
       }
   
       if (result.events.length > 0) {
@@ -856,7 +858,13 @@ const Table = ({
   } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
+        {path[2]==="trackers"? 
+        <div className="px-10 py-5">
+        <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText="Manage Congfigurations" buttonUrl={`/internal/trackers/${path[path.length - 2]}/trackedConfiguration?type=${type}`}/>
+        </div>
+        :
         <ZeroState title={zeroStateHeading} text={zeroStateText} />
+        }
       </div>
     );
   }
