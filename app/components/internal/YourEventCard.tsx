@@ -163,7 +163,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   
   const fetchInterestedUsers = async () => {
     try {
-      const apiData = await coordinateService.getInterestedUsers(eventId);
+      const apiData = await coordinateService.getInterestedUsers(eventId, enquiryId);
       if (apiData) {
         setInterestedUsers({
           attendee: apiData.participent.attendee,
@@ -232,6 +232,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 <div className="flex gap-3">
                   <UpvoteDropdown
                     eventId={eventId}
+                    enquiryId={enquiryId}
                     upvoteData={upvote}
                     userCountPerInterest={userCountPerInterest}
                     voteStatus={voteStatus}

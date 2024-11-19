@@ -11,9 +11,11 @@ import Image from "next/image";
 import upArrowLight from "/public/internal/up_arrow_light.svg";
 import upArrow from "/public/internal/up_arrow.svg";
 import { useTheme } from "@/context";
+import { useCoordinateService } from "@/services/coordinateService";
 
 interface Prop {
   eventId: string;
+  enquiryId: string;
   upvoteData: any;
   userCountPerInterest: any;
   voteStatus: any;
@@ -21,6 +23,7 @@ interface Prop {
 
 export default function UpvoteDropdown({
   eventId,
+  enquiryId,
   upvoteData,
   userCountPerInterest,
   voteStatus,
@@ -67,8 +70,20 @@ export default function UpvoteDropdown({
     e.stopPropagation();
   };
 
-  const handleMenuItemClick = (id: string) => {
-    setEventStatuses((prevEventStatuses: any) =>
+  const coordinateService = useCoordinateService();
+
+  const handleMenuItemClick = async (id: string) => {
+
+    const filteredItem = eventStatuses.filter((status: any) => status.id === id);
+
+    let payloadData = {
+      enquiryId: enquiryId,
+      like: !filteredItem[0].voted ? 1 : 0,
+      type: filteredItem[0].voteFor?.toUpperCase(),
+    };
+    try {      
+      const apiData: any = await coordinateService.upVote(payloadData);
+      setEventStatuses((prevEventStatuses: any) =>
       prevEventStatuses.map((event: any) =>
         event.id === id
           ? {
@@ -79,11 +94,18 @@ export default function UpvoteDropdown({
           : event
       )
     );
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const onOpenChange = (open: boolean) => {
+    setIsOpen(open);
   };
 
   return (
     <div onClick={handleClickEvent}>
-      <Popover open={isOpen}>
+      <Popover open={isOpen} onOpenChange={onOpenChange}>
         <PopoverTrigger asChild>
           <div
             className="text-[var(--primary-color)] bg-[var(--primary-light-color)] h-fit font-semibold text-sm py-1 px-4 border border-[var(--border-color)] rounded-sm w-fit cursor-pointer"

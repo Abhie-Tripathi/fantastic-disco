@@ -182,7 +182,14 @@ const shareFunction = () => {
   }
 };
 console.log(item);
-
+const formatCount = (count: number ) => {
+  if (count >= 1000) {
+    const value = count / 1000;
+    const decimalPart = value - Math.floor(value);
+      return `${Math.floor(value)}k`;
+  }
+  return count;
+};
   return (
     <div className="flex flex-col w-full gap-6">
     {/* {
@@ -222,7 +229,7 @@ console.log(item);
                 New
               </div> */}
                   <div>
-                    {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.new.toLocaleString('en-US')}
+                    {formatCount(item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.new)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px" }}>
                     <Image src={Vectore6} alt="newVector" width={10} height={10}/>
@@ -235,7 +242,7 @@ console.log(item);
                 Active
               </div> */}
                   <div>
-                    {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.active.toLocaleString('en-US')}
+                    {formatCount(item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.active)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px" }}>
                     <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
@@ -245,19 +252,19 @@ console.log(item);
               <div className="flex gap-5">
                 <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
-                    {item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired.toLocaleString('en-US')}
+                    {formatCount(item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                     <Image src={Vectore8} alt="expired" width={12} height={12} />
-                    Expired</div>
+                    Past</div>
                 </div>
                 <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
-                    {item?.tracker?.savedEventTotalCount}
+                    {formatCount(item?.tracker?.savedEventTotalCount)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                   <Bookmark style={{color:"var(--primary-color)"}} width="12px" height="12px"/>
-                    Saved</div>
+                    Bookmarked</div>
                 </div>
               </div>
             </div>

@@ -9,6 +9,9 @@ import "react-toastify/dist/ReactToastify.css";
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
 import Loading from "@/app/components/UI/Loading";
 import { useCoordinateService } from "@/services/coordinateService";
+import NullState from "@/app/components/trackers/nullState";
+import coordinateNullState from "/public/coordinateNullState.svg"
+
 const Page: React.FC = () => {
   const [shortlistedTasks, setShortlistedTasks] = useState<enquiryType[]>([]);
   const [outreachTasks, setOutreachTasks] = useState<enquiryType[]>([]);
@@ -36,6 +39,12 @@ const Page: React.FC = () => {
   const confirmedRef: RefObject<HTMLDivElement> = useRef(null);
   const [confirmedPage,setConfirmedPage]=useState(1);
   const [noMoreConfirmData,setNoMoreConfirmData]=useState(false);
+
+  const [dataLoaded, setDataLoaded] = useState<any>({
+    shortlisted: false,
+    outreach: false,
+    preFinalised: false,
+  });
 
   const coordinateService = useCoordinateService();
 
@@ -252,6 +261,10 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
     });
 
     if (shortlistApiData) {
+      setDataLoaded((prevState: any) => ({
+        ...prevState,
+        shortlisted: true,
+      }));
       setShortlistedTasks(prev => [...prev, ...shortlistApiData.enquiryData]);
       setShortlistedCount(shortlistApiData.totalCount);
     
@@ -267,6 +280,10 @@ const fetchInProgressData=async()=>{
   });
 
   if (negoApiData) {
+    setDataLoaded((prevState: any) => ({
+      ...prevState,
+      outreach: true,
+    }));
     setOutreachTasks(prev => [...prev, ...negoApiData.enquiryData]);
     setInProgressCount(negoApiData.totalCount);
   
@@ -282,6 +299,10 @@ const fetchConfirmedData=async()=>{
     });
 
     if (confirmApiData) {
+      setDataLoaded((prevState: any) => ({
+        ...prevState,
+        preFinalised: true,
+      }));
       setPreFinalisedTasks(prev => [...prev, ...confirmApiData.enquiryData]);
       setConfirmedCount(confirmApiData.totalCount);
 
@@ -318,6 +339,21 @@ const handleDropdownSelect = (target: string, source: string) => {
   useEffect(()=>{
     if(Math.ceil(inProgressCount/10)===inProgressPage) setNoMoreProgressData(true);
   },[outreachTasks])
+
+  if(!Object.values(dataLoaded).every(value => value === true)) {
+    return (
+      <div style={{ padding: "50px" }}>
+        <Loading />
+      </div>
+    );
+  }
+  else if(shortlistedTasks.length == 0 &&  outreachTasks.length == 0 &&  preFinalisedTasks.length == 0) {
+    return (
+      <div className="p-20" >
+        <NullState image={coordinateNullState}  title="You haven't shortlisted any events yet." text="Browse through our upcoming events and shortlist here for easy access and internal coordination later." buttonText="Search Events" buttonUrl={`/internal/search/events`} />
+      </div>
+    )
+  }
   return (
     <>
       <div style={{width: 'calc(100vw - 70px)'}}>
