@@ -858,7 +858,11 @@ const Table = ({
   } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
-        {path[2]==="trackers"? <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText="Manage Congfigurations" buttonUrl={`/internal/trackers/${path[path.length - 2]}/trackedConfiguration?type=${type}`}/>:
+        {path[2]==="trackers"? 
+        <div className="px-10 py-5">
+        <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText="Manage Congfigurations" buttonUrl={`/internal/trackers/${path[path.length - 2]}/trackedConfiguration?type=${type}`}/>
+        </div>
+        :
         <ZeroState title={zeroStateHeading} text={zeroStateText} />
         }
       </div>

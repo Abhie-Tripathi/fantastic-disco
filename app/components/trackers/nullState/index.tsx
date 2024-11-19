@@ -5,7 +5,7 @@ import Link from "next/link";
 const NullState = ({ image, title, text, buttonText, buttonUrl }: { image:string, title?: string, text?:string, buttonText?:string, buttonUrl?:string }) => {
   
   return (
-    <div className="flex flex-col h-[100%] items-center justify-center gap-2">
+    <div className="flex flex-col h-[100%] items-center justify-center gap-3">
       <Image src={image} alt="zerostate" />
       
       <div className="font-semibold text-center text-base text-[var(--secondary-text-color)]">{title}</div>
