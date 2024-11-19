@@ -288,6 +288,7 @@ const Internal = ({
                       currentEnquiryStatus={item.enquiryStatus}
                       upvote={item.upvote}
                       enquiryActivity={item.enquiryActivity}
+                      userCountPerInterest={item.userCountPerInterest}
                       handleModal={handleModal}
                       handleShortlistModal={handleShortlistModal}
                     />

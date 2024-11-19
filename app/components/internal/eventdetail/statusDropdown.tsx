@@ -1,13 +1,10 @@
-import ClockIcon from '/public/clock.svg'
-import ClockIconLight from '/public/clock_light.svg'
-import Image from "next/image";
 import styles from './statusDropdown.style.module.css';
 import { useEffect, useState } from "react";
 import { useTheme } from '@/context';
 import { toast } from 'react-toastify';
-import upArrowLight from '/public/internal/up_arrow_light.svg'
-import upArrow from '/public/internal/up_arrow.svg'
 import { useCoordinateService } from '@/services/coordinateService';
+import { Clock } from 'geist-icons';
+import { ChevronDown } from 'lucide-react';
 interface PropType {
   label: string;
   eventId?: string;
@@ -104,20 +101,17 @@ useEffect(()=>{
     <div className={styles.filter_container} onClick={handleClickEvent}>
       <div className={styles.filter}>
         <div
-          className={styles.dropdown_container3}
+          className='text-[var(--info-text-color)] bg-[var(--info-background-color)] h-fit font-semibold text-sm py-1 px-2 border-[var(--border-color)] border rounded-md w-fit'
           onClick={openDropDownHandler}
         >
           <div className={styles.dropdown_value}>
-            <Image src={theme==="light"?ClockIconLight:ClockIcon} alt="clock" width={16} height={16} className="icons"/>
+            <Clock height={'14px'} width={'14px'} color="var(--info-text-color)" style={{display:"flex"}} />
             {formatText(value)}
-            <Image
-                    src={theme==="light"?upArrowLight:upArrow}
-                    alt="up"
-                    width={16}
-                    height={16}
-                    className="icons"
-                    style={{transform:"rotate(180deg)"}}
-                  />
+            <ChevronDown
+              className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
+                isOpen ? "rotate-180 transform" : ""
+              }`}
+            />
           </div>
         </div>
         {isOpen && (
