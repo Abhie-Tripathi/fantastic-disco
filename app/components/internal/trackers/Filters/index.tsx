@@ -781,9 +781,7 @@ const Pages = () => {
           speakerOrg: speakerCompany,
         }),
         ...(selectedEventType?.business?.length > 0 && {
-          eventTypes: selectedEventType.business
-            .map(eventType => eventType.charAt(0).toUpperCase() + eventType.slice(1))
-            .join(","),
+          eventType: selectedEventType?.business?.join(",")
         }),
         ...(userName.length > 0 && {
           userName: userName,
@@ -838,7 +836,7 @@ const Pages = () => {
         }),
         // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
         ...(selectedEventStatus?.length > 0 && {
-          eventStatus: selectedEventStatus.map((item) => item.toUpperCase()).join(","),
+          eventStatus: selectedEventStatus.join(","),
         }),
         ...(selectedEntry?.length > 0 && {
           eventEntry: selectedEntry.join(","),
