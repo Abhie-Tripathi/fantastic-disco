@@ -781,7 +781,9 @@ const Pages = () => {
           speakerOrg: speakerCompany,
         }),
         ...(selectedEventType?.business?.length > 0 && {
-          eventType: selectedEventType?.business?.join(",")
+          eventType: selectedEventType.business
+            .map(eventType => eventType.charAt(0).toUpperCase() + eventType.slice(1).replace(/s$/, ""))
+            .join(","),
         }),
         ...(userName.length > 0 && {
           userName: userName,
@@ -836,7 +838,7 @@ const Pages = () => {
         }),
         // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
         ...(selectedEventStatus?.length > 0 && {
-          eventStatus: selectedEventStatus.join(","),
+          eventStatus: selectedEventStatus.map((item) => item.toUpperCase()).join(","),
         }),
         ...(selectedEntry?.length > 0 && {
           eventEntry: selectedEntry.join(","),
@@ -845,7 +847,7 @@ const Pages = () => {
           trustScore: selectedTrustScore[0].toString(),
         }),
         ...(selectedEventFrequency?.length > 0 && {
-          eventFrequency: selectedEventFrequency.join(","),
+          eventFrequency: selectedEventFrequency.map((item)=>item[0].toUpperCase()+item.slice(1)).join(","),
         }),
         ...(selectedReptScore > 0 && {
           reputationScore: selectedReptScore.toString(),
@@ -899,7 +901,7 @@ const Pages = () => {
         }),
         ...((selectedMaturity !== '' && selectedMaturity !== 'none') && { maturity: selectedMaturity }),
         ...(analyticsToggles.globalToggle && {
-          eventImpactSocre: selectedImpactScore.join("-")
+          eventImpactScore: selectedImpactScore.join("-")
          }),
         ...(analyticsToggles.globalToggle && {
           inboundScore: selectedInboundScore.join("-")
@@ -1123,9 +1125,9 @@ const Pages = () => {
 
       if(editData?.tracker?.filterValue?.inboundScore && editData?.tracker?.filterValue?.inboundScore !== "")
         setSelectedInboundScore(editData?.tracker?.filterValue?.inboundScore?.split("-"));
-
-      if(editData?.tracker?.filterValue?.eventImpactSocre && editData?.tracker?.filterValue?.eventImpactSocre !== "")
-        setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactSocre?.split("-"));
+      
+      if(editData?.tracker?.filterValue?.eventImpactScore && editData?.tracker?.filterValue?.eventImpactScore !== "")
+        setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactScore?.split("-"));
 
       if(editData?.tracker?.filterValue?.internationalScore && editData?.tracker?.filterValue?.internationalScore !== "")
         setSelectedInternationalScore(editData?.tracker?.filterValue?.internationalScore?.split("-"));
@@ -1192,7 +1194,7 @@ const Pages = () => {
       setSelectedEventStatus(
         editData?.tracker?.filterValue?.eventStatus &&
           editData?.tracker?.filterValue?.eventStatus?.length !== 0
-          ? editData?.tracker?.filterValue?.eventStatus?.split(",")
+          ? editData?.tracker?.filterValue?.eventStatus?.split(",").map((item:string) => item.toLowerCase())
           : []
       );
       setDateRange({
@@ -1260,7 +1262,7 @@ const Pages = () => {
       setSelectedEventFrequency(
         editData?.tracker?.filterValue?.eventFrequency && 
         editData?.tracker?.filterValue?.eventFrequency?.length > 0
-          ? editData?.tracker?.filterValue?.eventFrequency?.split(",")
+          ? editData?.tracker?.filterValue?.eventFrequency?.split(",").map((item:string)=>item[0].toLowerCase()+item.slice(1))
           : []
       );
       setSelectedEntry(
@@ -1325,7 +1327,9 @@ const Pages = () => {
       //     : 0
       // );
       if (editData?.tracker?.filterValue?.eventType !== undefined) {
-        const eventTypes = editData.tracker.filterValue.eventType;
+        const eventTypes = editData.tracker.filterValue.eventType.map((type:string) => {
+          return type.charAt(0).toLowerCase() + type.slice(1) + 's';
+        });
     
         if (Array.isArray(eventTypes) && eventTypes.length > 0) {
           setSelectedEventType((prev) => ({
