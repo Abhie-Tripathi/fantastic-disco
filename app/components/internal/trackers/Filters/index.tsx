@@ -1944,9 +1944,7 @@ return (
           <CategorySelector  source="tracker"  selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}/>
           <EventFormatSelector source="tracker" selectedStatuses={selectedEventFormat}
                   setSelectedStatuses={setSelectedEventFormat}/>
-          {/* <div className="bg-red"> */}
           <LocationSelector source="tracker" selectedLocation={selectedLocationsData} setSelectedLocation={setSelectedLocationsData} isMandatory={isMandatory}/>
-          {/* </div> */}
           {/* <LocationSelector/> */}
           <DateRangeSelector source="tracker" dateRange={dateRange} setDateRange={setDateRange}/>
           <EventStatusSelector source="tracker" setSelectedStatuses={setSelectedEventStatus} selectedStatuses={selectedEventStatus}/>
