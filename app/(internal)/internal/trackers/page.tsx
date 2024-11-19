@@ -549,12 +549,15 @@ const Trackers = ({ searchParams }: Search) => {
    {/* {load ? (
       <Loading />
     ) : ( */}
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<div className="h-[300px] w-[100%] items-center justify-center"><Loading /></div>}>
+        <div className="h-[300px]">
         <Map 
+          isGlobal={true}
           source="tracker" 
           searchParams={`type=active`}
           trackerId={singleTrackerData?.id}
         />
+        </div>
       </Suspense>
     {/* )} */}
 
@@ -599,7 +602,7 @@ const Trackers = ({ searchParams }: Search) => {
   </div>
 </div>}
 {(!hideTemplate || !isData)&& (
-          <div className="absolute left-[70px] top-[70px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-70px)]">
+          <div className="absolute left-[70px] top-[70px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-70px)]" style={{zIndex:"11"}}>
             <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
           {!isData && <div className="flex items-center pb-6 !pl-14 text-lg">Track key events in real-time to make informed decisions and seize opportunities as they arise.</div>}
         {isData && 

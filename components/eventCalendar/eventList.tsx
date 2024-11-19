@@ -49,7 +49,7 @@ export default function EventList({
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString()],
     queryFn: () => 
-      source==="tracker"?getCalendarViewEvents(trackerId, `type=${type}&startDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&endDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}`, true ):eventService.getEventsWithSearchParams(filteredParams.toString()),
+      source==="tracker"?getCalendarViewEvents(trackerId || "", `type=${type}&startDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&endDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&limit=10&offset=${(currentPage - 1) * 10 }`, true ):eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
 
   const handlePageChange = (page: number) => {

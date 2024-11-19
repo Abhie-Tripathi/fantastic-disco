@@ -596,7 +596,7 @@ const activeVal =
             </div>
           )}
 
-          {view === "calendar" && (
+          {(view === "calendar" && active !== "Saved Events" ) && (
             <div>
               <Suspense fallback={<Loading />}>
               {isLoading ? (

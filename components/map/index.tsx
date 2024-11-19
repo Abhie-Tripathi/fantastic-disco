@@ -72,9 +72,11 @@ interface MapProps {
 
 type ZoomGroup = "country" | "state" | "city" | "event";
 
-export default function MapComponent({ source, searchParams, trackerId }: {source: string;
+export default function MapComponent({ source, searchParams, trackerId, isGlobal }: {source: string;
   searchParams?: string;
-  trackerId?: string;}) {
+  trackerId?: string;
+  isGlobal?: boolean;
+}) {
     console.log(`/internal/trackers/${trackerId}/trackedEvents?type=CUSTOM&view=map&eventType=activeEvent`);
     
   const {theme} = useTheme();
@@ -468,17 +470,16 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
   console.log(theme,"ohh yeah")
   return (
     <div className="relative">
-      {(eventCountsQuery.isLoading && currentZoomGroup==="country" )?
-      <div className="flex justify-center items-center w-[100%]">
-      <Loading className="w-[200px] h-[100px]"/>
-      </div>
-      :
+      {(eventCountsQuery.isLoading && currentZoomGroup==="country" )? <Loading/>:
       <>
       {(!location && !trackerId)? (
         <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
       ) : (
         <ReactMapGL
-          style={{ width: "100%", height: "78vh" }}
+          style={{
+          width: "100%", 
+          height: !isGlobal ? "78vh" : "300px" 
+          }}
           onMove={onMove}
           onClick={handleMapClick}
           projection={{ name: "mercator" }}
@@ -578,7 +579,7 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
         </ReactMapGL>
       )}
       </>
-      }
+    }
     </div>
   );
 }
