@@ -94,7 +94,7 @@ const ListCard = ({ participant }: { participant: any }) => {
 
 const BadgeCount = ({ value }: { value: number | string }) => {
   return (
-    <span className="bg-[var(--primary-color)] text-white text-sm font-semibold py-1 px-3 rounded-full">
+    <span className="bg-[var(--primary-color)] text-[#131313] text-sm font-semibold py-1 px-3 rounded-full">
       {value}
     </span>
   );

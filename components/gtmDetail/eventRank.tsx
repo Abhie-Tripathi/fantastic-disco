@@ -62,7 +62,7 @@ export const EventRank = ({
                 color="secondary"
                 variant="noMargin"
                 fontWeight="medium"
-                className="bg-[#F2F2F2] dark:bg-[var(--primary-foreground)] dark:border-t dark:border-t-2-[var(--border-color)] w-full p-2 text-center"
+                className="bg-[#F2F2F2] dark:bg-[#1A1A1A] dark:border-t dark:border-t-2-[var(--border-color)] w-full p-2 text-center"
               >
                 Country Rank
               </Text>
@@ -77,7 +77,7 @@ export const EventRank = ({
             </div>
             <div className="flex flex-col">
               <button
-                className={`flex items-center bg-[#FAFAFA] dark:bg-[var(--primary-foreground)] dark:border dark:border-[var(--border-color)]  gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-country-${countryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:border dark:border-[var(--border-color)] dark:bg-[#292929] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-country-${countryRank}`}
                 disabled={countryActiveIndex === 1}
               >
                 <Text color="secondary" variant="noMargin" className="w-full">
@@ -225,7 +225,7 @@ export const EventRank = ({
                 </>
               </Swiper>
               <button
-                className={`flex items-center bg-[#FAFAFA] dark:bg-[var(--primary-foreground)] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-country-${countryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:border dark:border-[var(--border-color)] dark:bg-[#292929] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-country-${countryRank}`}
                 disabled={countryActiveIndex === countryTotalSlides - 2}
               >
                 <Text color="secondary" variant="noMargin">
@@ -248,7 +248,7 @@ export const EventRank = ({
                 color="secondary"
                 variant="noMargin"
                 fontWeight="medium"
-                className="bg-[#F2F2F2] dark:bg-[var(--primary-foreground)] dark:border-t dark:border-t-2-[var(--border-color)] w-full p-2 text-center"
+                className="bg-[#F2F2F2] dark:bg-[#1A1A1A] dark:border-t dark:border-t-2-[var(--border-color)] w-full p-2 text-center"
               >
                 Category Rank
               </Text>
@@ -263,7 +263,7 @@ export const EventRank = ({
             </div>
             <div className="flex flex-col">
               <button
-                className={`flex items-center bg-[#FAFAFA] dark:bg-[var(--primary-foreground)] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-category-${categoryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:bg-[#292929] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-category-${categoryRank}`}
                 disabled={categoryActiveIndex === 1}
               >
                 <Text color="secondary" variant="noMargin" className="w-full">
@@ -420,7 +420,7 @@ export const EventRank = ({
                 </>
               </Swiper>
               <button
-                className={`flex items-center bg-[#FAFAFA] dark:bg-[var(--primary-foreground)] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-category-${categoryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:bg-[#292929] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-category-${categoryRank}`}
                 disabled={categoryActiveIndex === categoryTotalSlides - 2}
               >
                 <Text color="secondary" variant="noMargin">

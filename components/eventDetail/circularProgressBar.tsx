@@ -13,7 +13,7 @@ export const CircularProgressBar: React.FC<CircularProgressProps> = ({
   const displayValue = value !== null ? value : 0;
 
   const getColorByValue = (score: number): string => {
-    if (score <= 0) return "text-gray-200";
+    if (score <= 0) return "text-transparent";
     if (score <= 25) return "text-[#398e4a]";
     if (score <= 50) return "text-[#FFD70A]";
     if (score <= 75) return "text-[#FF990A]";
@@ -33,7 +33,7 @@ export const CircularProgressBar: React.FC<CircularProgressProps> = ({
           aria-hidden="true"
         >
           <circle
-            className="text-gray-200"
+            className="text-gray-200 dark:text-[#292929]"
             strokeWidth="6"
             stroke="currentColor"
             fill="transparent"

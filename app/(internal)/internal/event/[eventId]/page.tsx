@@ -54,15 +54,27 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const { data: event } = useQuery<any>({
     queryKey: ["eventDetails"],
     queryFn: async () => {
-      const [eventData, eventPOCData, eventEditionData] = await Promise.all([
-        getEventDetailById(params.eventId),
-        getEventPOCDetails(params.eventId),
-        getEventEditionDetails(params.eventId, 10, 0),
-        // getEventCoOrganizerDetails(params.eventId),
-      ]);
-      if (!eventData) {
-        throw new Error("Failed to fetch event details");
-      }
+      const [eventDataResult, eventPOCDataResult, eventEditionDataResult] =
+        await Promise.allSettled([
+          getEventDetailById(params.eventId),
+          getEventPOCDetails(params.eventId),
+          getEventEditionDetails(params.eventId, 10, 0),
+          // getEventCoOrganizerDetails(params.eventId),
+        ]);
+      const eventData =
+        eventDataResult.status === "fulfilled" ? eventDataResult.value : null;
+      const eventPOCData =
+        eventPOCDataResult.status === "fulfilled"
+          ? eventPOCDataResult.value
+          : null;
+      // const eventCoOrganizerData =
+      //   eventCoOrganizerDataResult.status === "fulfilled"
+      //     ? eventCoOrganizerDataResult.value
+      //     : null;
+      const eventEditionData =
+        eventEditionDataResult.status === "fulfilled"
+          ? eventEditionDataResult.value
+          : null;
       return {
         eventData: eventData,
         eventPOCData: eventPOCData,
@@ -73,8 +85,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
   if (!event) return null;
   const { eventData, eventPOCData, eventEditionData } = event;
-  const eventDetails: GTMEventDetail = { ...eventData.event };
-  const eventPOCDetails: GTMEventPOCDetails[] = eventPOCData.eventPoc;
+  const eventDetails: GTMEventDetail = eventData.event || {};
+  const eventPOCDetails: GTMEventPOCDetails[] = eventPOCData.eventPoc || [];
 
   if (!eventDetails) return null;
   const {
@@ -179,7 +191,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               <ul className="flex flex-row flex-wrap gap-3">
                 {eventDetails.eventTypes.map((type: any) => (
                   <li
-                    className="text-[12px] font-semibold py-1 px-3 border-[#CCE6FF] border rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF]"
+                    className="text-[12px] font-semibold py-1 px-3 border-[#CCE6FF] border rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D] dark:border-[#0D3868]"
                     key={type.id}
                   >
                     {type.name}
@@ -213,15 +225,15 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               </span>
             </div>
           )}
-            <Text
-              fontWeight="semibold"
-              variant="noMargin"
-              className={`${isCancelled || isPostponed ? "line-through" : ""}`}
-            >
-              {eventStartDate &&
-                eventEndDate &&
-                renderFormattedDates(eventStartDate, eventEndDate)}
-            </Text>
+          <Text
+            fontWeight="semibold"
+            variant="noMargin"
+            className={`${isCancelled || isPostponed ? "line-through" : ""}`}
+          >
+            {eventStartDate &&
+              eventEndDate &&
+              renderFormattedDates(eventStartDate, eventEndDate)}
+          </Text>
           {/* {eventStartTime && eventEndTime && (
               <Text variant="noMargin" color="secondary">
                 {`${eventStartTime} - ${eventEndTime} GMT+5:30`}
@@ -280,7 +292,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               <p className="flex gap-3 items-center">
                 Organizer
                 {organizer && Object.keys(organizer).length > 0 && (
-                  <span className="text-[12px] bg-[var(--primary-color)] text-[#ffffff] py-[1px] px-2 rounded-full">
+                  <span className="text-[12px] bg-[var(--primary-color)] text-[#131313] py-[1px] px-2 rounded-full">
                     {"01"}
                   </span>
                 )}
@@ -384,7 +396,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               <p className="flex gap-3 items-center">
                 Event POC
                 {eventPOCDetails.length > 0 && (
-                  <span className="text-[12px] bg-[var(--primary-color)] text-[#ffffff] py-[1px] px-2 rounded-full">
+                  <span className="text-[12px] bg-[var(--primary-color)] text-[#131313] py-[1px] px-2 rounded-full">
                     {eventPOCDetails.filter((poc) => poc !== null).length > 0 &&
                     eventPOCDetails.filter((poc) => poc !== null).length < 9
                       ? `0${

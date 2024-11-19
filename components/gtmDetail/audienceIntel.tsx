@@ -103,7 +103,7 @@ export const AudienceIntel = ({
                     <li
                       className={`flex items-center justify-between p-3 ${
                         (index + 1) % 2 !== 0
-                          ? "bg-[#FAFAFA] border border-[#F2F2F2]"
+                          ? "bg-[#FAFAFA] dark:bg-[#171717] border border-[#F2F2F2] dark:border-[#1A1A1A]"
                           : ""
                       }`}
                       key={key}
@@ -119,7 +119,7 @@ export const AudienceIntel = ({
                         <span className="text-[var(--primary-color)]">
                           {value.count}
                         </span>
-                        <span className="bg-[#FEECF2] border border-[#F9D7E2] text-sm font-medium text-[#df2670] py-1 px-3 rounded-full">
+                        <span className="bg-[#FEECF2] dark:bg-[#3A1726] border border-[#F9D7E2] dark:border-[#551B33] text-sm font-medium text-[#df2670] py-1 px-3 rounded-full">
                           {value.percentage}%
                         </span>
                       </div>
