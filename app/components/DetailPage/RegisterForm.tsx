@@ -97,10 +97,10 @@ const RegisterForm = ({
   const iv = crypto.randomBytes(16);
 
   const decrypt = (encryptedText: string, key: string): string => {
-    if(status===""){
+    if(encryptedText==="widgetId" || encryptedText === "eventId"){
       return ""
     }else{
-      const parts = encryptedText.split(":");
+    const parts = encryptedText.split(":");
     const iv = Buffer.from(parts.shift()!, "hex");
     const encrypted = parts.join(":");
     const decipher = crypto.createDecipheriv(
