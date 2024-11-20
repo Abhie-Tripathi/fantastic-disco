@@ -82,7 +82,24 @@ const EventListCard2 = ({
         <div className={styles.location_dateContainer}>
           <div className={styles.locationContainer}>
             <LocationIcon color={fontSettings.subheading.fontColor}/>
-            <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent?.eventFormat==="Virtual"?"Virtual": fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName :  demoLocation}</div>
+            {/* <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent?.eventFormat==="Virtual"?"Virtual": fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName :  demoLocation}</div> */}
+            <div
+          className={styles.location}
+            style={{
+            fontSize: fontSettings.subheading.fontSize,
+            color: fontSettings.subheading.fontColor,
+            fontFamily: fontSettings.subheading.fontFamily,
+            fontWeight: fontSettings.subheading.fontWeight,
+            }}
+          >
+        {fetchedEvent?.eventFormat === "Virtual"
+        ? "Virtual"
+        : fetchedEvent
+        ? (fetchedEvent.cityName + ", " + fetchedEvent.countryName).length > 15
+        ? (fetchedEvent.cityName + ", " + fetchedEvent.countryName).substring(0, 15) + "..."
+        : fetchedEvent.cityName + ", " + fetchedEvent.countryName
+        : demoLocation}
+        </div>
           </div>
           <div className={styles.dateContainer}>
             <DateIcon color={fontSettings.subheading.fontColor}/>
