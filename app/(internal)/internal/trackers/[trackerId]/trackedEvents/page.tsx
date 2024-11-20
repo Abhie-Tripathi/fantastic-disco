@@ -526,7 +526,7 @@ console.log(searchParams.get("view"));
                   addQueryString("savedEvent");
                 }}
               >
-                Saved Events
+                Bookmarked Events
                 {
                   <div className={styles.circle} style={{background: active==="Saved Events"?"white":"", color: active==="Saved Events"?"var(--primary-color)":""}}>
                     {loading ? (
