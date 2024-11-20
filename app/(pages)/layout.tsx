@@ -4,7 +4,7 @@ import "./../globals.css";
 import { AuthContextProvider, ThemeProvider } from "@/context";
 import Navbar from "../components/Navbar";
 import { Sora } from "next/font/google";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { GoogleTagManager } from "@next/third-parties/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GeistSans } from 'geist/font/sans';
@@ -39,7 +39,8 @@ export default function RootLayout({
             </div>
             <Navbar />
             <div className={styles.container}>{children}</div>
-            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} />
+            {/* <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} /> */}
+            <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
           </ThemeProvider>
         </AuthContextProvider>
       </body>

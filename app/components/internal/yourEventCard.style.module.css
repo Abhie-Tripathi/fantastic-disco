@@ -10,7 +10,8 @@
     background: var(--card-background);
     justify-content: space-between;
     margin-bottom: 25px;
-    /* padding: 25px; */
+    padding: 20px;
+    border-radius: var(--border-radius-sm);
 }
 .outerDiv{
     border-left: 1px dashed var(--primary-color);
@@ -27,7 +28,7 @@
     height: 100%;
     border-left: 1px dashed #6750A4;
 } */
-.topContainer:not(:only-child) {
+.topContainer {
     gap:30px;
   }
 .eventNameComp {
@@ -55,7 +56,8 @@
     width: 100%;
     position: relative;
     display: flex;
-    gap: var(--spacing-xxs);
+    /* gap: var(--spacing-xxs); */
+    gap: 20px;
     flex-direction: column;
     /* justify-content: space-between; */
     /* color: white; */
@@ -86,7 +88,7 @@
     display: flex;
     align-items: center;
     gap:var(--spacing-xxs);
-    font-size: var(--font-size-small);
+    font-size: var(--font-size-default);
 }
 
 .eventLocation img {
@@ -150,7 +152,7 @@
     font-weight: var(--font-weight-semibold);
 }
 .cardImg {
-    border-radius: var(--border-radius-sm);
+    border-radius: var(--border-radius-md);
 }
 
 .circles {
@@ -229,10 +231,10 @@
 
 @media screen and (max-width:992px) {
     .topContainer {
-        border-bottom: 0.5px solid #3A3152;
+        /* border-bottom: 0.5px solid #3A3152; */
         padding: 12px 0;
     }
-    .topContainer:not(:only-child) {
+    .topContainer {
         gap:10px;
       }
     .cardImg{
@@ -277,7 +279,7 @@
       padding: 15px;
     }
     .cardDetails {
-      gap: 5px;
+      gap: 12px;
       padding-left: 10px;
       margin-left: 0;
     }

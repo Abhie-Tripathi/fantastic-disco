@@ -720,7 +720,7 @@ const userRating=
               data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]
             }
             eventSize={eventSize}
-            eventImpactScore={data?.tracker?.filterValue?.eventImpactSocre}
+            eventImpactScore={data?.tracker?.filterValue?.eventImpactScore}
             eventRankToggle={data?.tracker?.filterValue?.eventRanking}
         />
       </div>

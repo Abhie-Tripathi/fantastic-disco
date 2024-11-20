@@ -455,6 +455,15 @@
   gap:var(--spacing-xs);
 }
 
+.wonBtn:hover {
+  cursor: pointer;
+  color: var(--success-text-color);
+}
+.lostBtn:hover {
+  cursor: pointer;
+  color: var(--danger-text-color);
+}
+
 @media screen and (max-width: 576px) {
   .container {
     padding: 17px 26px;

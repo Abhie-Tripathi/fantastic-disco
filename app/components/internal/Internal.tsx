@@ -17,6 +17,8 @@ import { useCoordinateService } from "@/services/coordinateService";
 import { useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { number } from "zod";
+import NullState from "../trackers/nullState";
+import coordinateNullState from "/public/coordinateNullState.svg"
 
 interface Props {
   handleModal: (id: string, enquiryId: string) => void;
@@ -156,10 +158,8 @@ const Internal = ({
     );
   } else if (isLoaded && coordinateCount[0]?.totalEvent === 0) {
     return (
-      <div className={styles.noData}>
-        An effective event communication and relationship management dashboard
-        that keeps your team on the same page and makes coordination both
-        internally and with events team easy and manageable.
+      <div className="p-20">
+        <NullState image={coordinateNullState}  title="You haven't shortlisted any events yet." text="Browse through our upcoming events and shortlist here for easy access and internal coordination later." buttonText="Search Events" buttonUrl={`/internal/search/events`} />
       </div>
     );
   }
@@ -288,6 +288,7 @@ const Internal = ({
                       currentEnquiryStatus={item.enquiryStatus}
                       upvote={item.upvote}
                       enquiryActivity={item.enquiryActivity}
+                      userCountPerInterest={item.userCountPerInterest}
                       handleModal={handleModal}
                       handleShortlistModal={handleShortlistModal}
                     />

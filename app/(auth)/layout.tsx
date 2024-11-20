@@ -6,6 +6,7 @@ const inter = Inter({ subsets: ["latin"] });
 import { Sora } from "next/font/google";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { GoogleTagManager } from "@next/third-parties/google";
 
 const sora = Sora({
   subsets: ['latin'],
@@ -31,6 +32,7 @@ export const metadata: Metadata = {
         <div>
           {children}
           </div>
+          <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
         </AuthContextProvider>
           </body>
       </html>
