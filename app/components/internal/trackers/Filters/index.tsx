@@ -925,7 +925,7 @@ const Pages = () => {
          ...(selectedAudProfile.length > 0 && {
           designation: selectedAudProfile.join(","),
         }),
-        ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency'].join()}
+        ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'inboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency'].join()}
         // info: {
         //   name: trackerName,
         //   location:selectedLocations,
@@ -1944,7 +1944,7 @@ return (
           <CategorySelector  source="tracker"  selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}/>
           <EventFormatSelector source="tracker" selectedStatuses={selectedEventFormat}
                   setSelectedStatuses={setSelectedEventFormat}/>
-          <LocationSelector source="tracker" selectedLocation={selectedLocationsData} setSelectedLocation={setSelectedLocationsData}/>
+          <LocationSelector source="tracker" selectedLocation={selectedLocationsData} setSelectedLocation={setSelectedLocationsData} isMandatory={isMandatory}/>
           {/* <LocationSelector/> */}
           <DateRangeSelector source="tracker" dateRange={dateRange} setDateRange={setDateRange}/>
           <EventStatusSelector source="tracker" setSelectedStatuses={setSelectedEventStatus} selectedStatuses={selectedEventStatus}/>
