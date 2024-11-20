@@ -465,7 +465,7 @@ export default function MapComponent({ source, searchParams, trackerId, isGlobal
   }, [location]);
 
   console.log(viewport);
-  console.log(eventCountsQuery.isLoading);
+  console.log(isGlobal);
   
   console.log(theme,"ohh yeah")
   return (
@@ -490,6 +490,7 @@ export default function MapComponent({ source, searchParams, trackerId, isGlobal
           ref={mapRef}
           {...viewport}
         >
+          {!isGlobal &&
           <Button
             variant="default"
             className="absolute top-4 right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
@@ -498,7 +499,7 @@ export default function MapComponent({ source, searchParams, trackerId, isGlobal
             <AlignLeft className="w-5 h-5" />
             <span>Event List</span>
           </Button>
-
+          }
           <EventList
             source={source}
             trackerId={trackerId}
