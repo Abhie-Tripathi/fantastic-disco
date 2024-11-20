@@ -64,7 +64,7 @@ const EventCard3 = ({
             return "Virtual";
         }
 
-        const location = `${event?.cityName}, ${event?.countryName}`;
+        const location = `${event?.cityName} ${event?.cityName && ","} ${event?.countryName}`;
         return location.length > 30 ? `${location.slice(0, 25)}...` : location;
     };
     return (

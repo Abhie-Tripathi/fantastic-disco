@@ -29,12 +29,8 @@ const LocationContainer = ({
         <div className={styles.locationContainer}>
           <LocationIcon />
           <div className={styles.eventLocation}>
-            <div
-              className={`${styles.eventLocationOne} ${
-                cityName ? styles.activeLocation : ""
-              }`}
-            >
-              {cityName ? cityName : "Add Event Location"}
+            <div className={`${styles.eventLocationOne} ${cityName ? styles.activeLocation : ""}`}>
+              {(!cityName && !countryName) ? "Add Event Location" : cityName ? cityName : countryName }
             </div>
             <div className={styles.eventLocationTwo}>
               {countryName ? countryName : "Offline location or Virtual Link"}

@@ -265,7 +265,7 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                     {format !== "Virtual" && <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Mapview latitude={latitude}
-                                venue={location_city}
+                                venue={location_city ? location_city : location_country}
                                 longitude={longitude}
                                 zoom={6} />
                         </Suspense>
