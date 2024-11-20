@@ -30,9 +30,10 @@ interface EditProps {
     demoDescription: string
     demoLocation: string
     demoDate:string
+    isFullScreen:boolean
 
 }
-const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoDescription, demoLocation, demoDate }: EditProps) => {
+const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoDescription, demoLocation, demoDate,isFullScreen }: EditProps) => {
 
     console.log("normal events in list view :", fetchedAddedOtherData)
     let EventListCard: ElementType;
@@ -118,3 +119,134 @@ const ListView = ({ cardBgColor, cardBorderRadius, fontSettings, selectedCard, f
 }
 
 export default ListView
+
+
+// import React, { ElementType } from "react";
+// import styles from "./listview.style.module.css";
+// import EventListCard1 from "../../listcardsstyles/EventListCard1";
+// import EventListCard2 from "../../listcardsstyles/EventListCard2";
+// import EventListCard3 from "../../listcardsstyles/EventListCard3";
+// import { PrefilledAddedEventsType } from "@/types/prefilledaddedeventtype";
+// import { useRouter } from "next/navigation";
+// import MonthCalendar from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/MonthsCalendar";
+// import { Map, Marker } from "react-map-gl";
+// interface FontSettings {
+//   fontFamily: string;
+//   fontSize: number;
+//   fontColor: string;
+//   fontWeight: string;
+// }
+
+// interface EditProps {
+//   cardBorderRadius?: number;
+//   cardBgColor?: string;
+//   selectedCard?: string;
+//   fontSettings?: {
+//     heading: FontSettings;
+//     subheading: FontSettings;
+//     body: FontSettings;
+//   };
+//   fetchedAddedOtherData?: PrefilledAddedEventsType[];
+//   widgetId?: string;
+//   demoBanner: string;
+//   demoEventName: string;
+//   demoDescription: string;
+//   demoLocation: string;
+//   demoDate: string;
+//   isFullScreen: boolean;
+// }
+
+// const ListView = ({
+//   cardBgColor,
+//   cardBorderRadius,
+//   fontSettings,
+//   selectedCard,
+//   fetchedAddedOtherData,
+//   widgetId,
+//   demoBanner,
+//   demoEventName,
+//   demoDescription,
+//   demoLocation,
+//   demoDate,
+//   isFullScreen,
+// }: EditProps) => {
+//   const router = useRouter();
+
+//   let EventListCard: ElementType;
+//   switch (selectedCard) {
+//     case "style1":
+//       EventListCard = EventListCard1;
+//       break;
+//     case "style2":
+//       EventListCard = EventListCard2;
+//       break;
+//     default:
+//       EventListCard = EventListCard3;
+//   }
+
+//   const handleCardClick = (eventId: string, widgetId: string) => {
+//     router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`);
+//   };
+ 
+//   return (
+//     <div
+//       className={`${styles.listView} ${isFullScreen ? styles.fullScreen : ""}`}
+//     >
+//       <div className={styles.cardsContainer}>
+//         {fetchedAddedOtherData && widgetId && fetchedAddedOtherData.length > 0
+//           ? fetchedAddedOtherData.map((event, key) => (
+//               <div
+//                 onClick={() => handleCardClick(event.id, widgetId)}
+//                 key={key}
+//                 className={styles.listcard}
+//               >
+//                 <EventListCard
+//                   fetchedAddedEvents={fetchedAddedOtherData}
+//                   cardBgColor={cardBgColor}
+//                   cardBorderRadius={cardBorderRadius}
+//                   fontSettings={fontSettings}
+//                   fetchedEvent={event}
+//                 />
+//               </div>
+//             ))
+//           : Array.from({ length: 3 }).map((_, index) => (
+//               <EventListCard
+//                 key={index}
+//                 cardBgColor={cardBgColor}
+//                 cardBorderRadius={cardBorderRadius}
+//                 fontSettings={fontSettings}
+//                 demoBanner={demoBanner}
+//                 demoEventName={demoEventName}
+//                 demoDescription={demoDescription}
+//                 demoLocation={demoLocation}
+//                 demoDate={demoDate}
+//               />
+//             ))}
+//       </div>
+//       {isFullScreen && (
+//         <div className={styles.calendarMapContainer}>
+//           <div className={styles.calendarContainer}>
+//             <MonthCalendar
+//               cardBgColor={cardBgColor}
+//               currentYear={2024}
+//             />
+//           </div>
+//           <div className={styles.mapContainer}>
+//             <Map
+//               initialViewState={{
+//                 longitude: -100,
+//                 latitude: 40,
+//                 zoom: 3.5,
+//               }}
+//               style={{ width: "100%", height: "100%" }}
+//               mapStyle="mapbox://styles/mapbox/streets-v12"
+//               mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
+//             />
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default ListView;

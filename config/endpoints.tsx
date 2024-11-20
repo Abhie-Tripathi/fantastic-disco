@@ -91,6 +91,9 @@ export const endpoints = {
     getInviteCount: `${BASE_URL}/invite?invites=true`,
     getSuggestions: `${BASE_URL}/invite`,
     sendInvite: `${BASE_URL}/invite/send`,
+  },
+  calendar:{
+    getyearlyEvents:`${BASE_URL}/event?`,
   }
 
 };
