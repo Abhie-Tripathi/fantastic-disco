@@ -95,9 +95,9 @@ const EventListCard2 = ({
         {fetchedEvent?.eventFormat === "Virtual"
         ? "Virtual"
         : fetchedEvent
-        ? (fetchedEvent.cityName + ", " + fetchedEvent.countryName).length > 15
-        ? (fetchedEvent.cityName + ", " + fetchedEvent.countryName).substring(0, 15) + "..."
-        : fetchedEvent.cityName + ", " + fetchedEvent.countryName
+        ? (fetchedEvent.cityName + `${fetchedEvent.cityName ? ",":""}` + fetchedEvent.countryName).length > 15
+        ? (fetchedEvent.cityName + `${fetchedEvent.cityName ? ",":""}` + fetchedEvent.countryName).substring(0, 15) + "..."
+        : fetchedEvent.cityName + `${fetchedEvent.cityName ? ",":""}` + fetchedEvent.countryName
         : demoLocation}
         </div>
           </div>
