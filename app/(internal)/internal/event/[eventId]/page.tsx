@@ -49,18 +49,30 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     { tabName: "Insights", path: "insights" },
     { tabName: "Audience", path: "audience" },
   ];
-  const { getEventDetailById, getEventPOCDetails, getEventEditionDetails } =
-    useEventsService();
+  const {
+    getEventDetailById,
+    getEventPOCDetails,
+    getEventEditionDetails,
+    getEventExhibitorDetails,
+    getEventSpeakerDetails,
+  } = useEventsService();
   const { data: event } = useQuery<any>({
     queryKey: ["eventDetails"],
     queryFn: async () => {
-      const [eventDataResult, eventPOCDataResult, eventEditionDataResult] =
-        await Promise.allSettled([
-          getEventDetailById(params.eventId),
-          getEventPOCDetails(params.eventId),
-          getEventEditionDetails(params.eventId, 10, 0),
-          // getEventCoOrganizerDetails(params.eventId),
-        ]);
+      const [
+        eventDataResult,
+        eventPOCDataResult,
+        eventEditionDataResult,
+        eventExhibitorDataResult,
+        eventSpeakerDataResult,
+      ] = await Promise.allSettled([
+        getEventDetailById(params.eventId),
+        getEventPOCDetails(params.eventId),
+        getEventEditionDetails(params.eventId, 10, 0),
+        getEventExhibitorDetails(params.eventId, 3, 0),
+        getEventSpeakerDetails(params.eventId, 3, 0),
+        // getEventCoOrganizerDetails(params.eventId),
+      ]);
       const eventData =
         eventDataResult.status === "fulfilled" ? eventDataResult.value : null;
       const eventPOCData =
@@ -75,16 +87,32 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventEditionDataResult.status === "fulfilled"
           ? eventEditionDataResult.value
           : null;
+      const eventExhibitorData =
+        eventExhibitorDataResult.status === "fulfilled"
+          ? eventExhibitorDataResult.value
+          : null;
+      const eventSpeakerData =
+        eventSpeakerDataResult.status === "fulfilled"
+          ? eventSpeakerDataResult.value
+          : null;
       return {
         eventData: eventData,
         eventPOCData: eventPOCData,
         eventEditionData: eventEditionData,
+        eventExhibitorData: eventExhibitorData,
+        eventSpeakerData: eventSpeakerData,
       };
     },
   });
 
   if (!event) return null;
-  const { eventData, eventPOCData, eventEditionData } = event;
+  const {
+    eventData,
+    eventPOCData,
+    eventEditionData,
+    eventExhibitorData,
+    eventSpeakerData,
+  } = event;
   const eventDetails: GTMEventDetail = eventData.event || {};
   const eventPOCDetails: GTMEventPOCDetails[] = eventPOCData.eventPoc || [];
 
@@ -292,8 +320,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               <p className="flex gap-3 items-center">
                 Organizer
                 {organizer && Object.keys(organizer).length > 0 && (
-                  <span className="text-[12px] bg-[var(--primary-color)] text-[#131313] py-[1px] px-2 rounded-full">
-                    {"01"}
+                  <span className="text-[12px] bg-[var(--primary-color)] text-white dark:text-[#131313] py-[1px] px-2 rounded-full">
+                    {Object.keys.length.toString().padStart(2,"0")}
                   </span>
                 )}
               </p>
@@ -396,7 +424,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               <p className="flex gap-3 items-center">
                 Event POC
                 {eventPOCDetails.length > 0 && (
-                  <span className="text-[12px] bg-[var(--primary-color)] text-[#131313] py-[1px] px-2 rounded-full">
+                  <span className="text-[12px] bg-[var(--primary-color)] text-white dark:text-[#131313] py-[1px] px-2 rounded-full">
                     {eventPOCDetails.filter((poc) => poc !== null).length > 0 &&
                     eventPOCDetails.filter((poc) => poc !== null).length < 9
                       ? `0${
@@ -556,6 +584,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           />
           <AudienceIntel
             eventDetails={eventDetails}
+            eventExhibitorData={eventExhibitorData}
+            eventSpeakerData={eventSpeakerData}
             scrollSection={tabs[2].path}
             setActiveTab={setActiveTab}
           />

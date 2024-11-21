@@ -14,9 +14,9 @@ export interface EventPOCDetailResponse {
 }
 
 export interface EventBookmarkResponse {
-    savedEvent: {
-      bookmark: boolean;
-    };
+  savedEvent: {
+    bookmark: boolean;
+  };
 }
 
 export interface EventCoOrganizerDetailResponse {
@@ -282,6 +282,8 @@ export interface GTMEventDetail extends Omit<Event, "organizer"> {
   below5GlobalEvent: globalRank[] | [];
   above5CategoryEvent: categoryRank[] | [];
   below5CategoryEvent: categoryRank[] | [];
+  above5CountryCategoryRankEvent: countryCategoryRank[] | [];
+  below5CountryCategoryEvent: countryCategoryRank[] | [];
   organizer: GTMOrganizer | null;
   "trustScore%": number | null;
   rankData: {
@@ -289,13 +291,21 @@ export interface GTMEventDetail extends Omit<Event, "organizer"> {
     country: {
       name: string;
       rank: number;
+      maxRank: number;
     };
     category: {
       name: string;
       rank: number;
+      maxRank: number;
+    }[];
+    countryCategoryRank: {
+      name: string;
+      rank: number;
+      maxRank: number;
     }[];
   };
   designation: string[];
+  designationSpread: DesignationSpread[];
   stats: {
     score: number;
     eventFollower: number;
@@ -307,6 +317,23 @@ export interface GTMEventDetail extends Omit<Event, "organizer"> {
   futureExpectedEndDate: string;
 }
 
+export interface EventExhibitorDetails {
+  id: number;
+  name: string;
+  location: {
+    cityName: string;
+    countryName: string;
+  };
+  logo: any;
+  interestCapturedOn: string;
+}
+
+export interface DesignationSpread {
+  count: number;
+  percentage: number;
+  designation: string;
+}
+
 export interface rankingEvent {
   id: string;
   eventname: string;
@@ -314,6 +341,7 @@ export interface rankingEvent {
   enddate: string;
   description: string;
   logoUrl: string;
+  location: string;
 }
 
 export interface countryRank extends rankingEvent {
@@ -327,6 +355,11 @@ export interface categoryRank extends rankingEvent {
 }
 export interface globalRank extends rankingEvent {
   globalrank: number;
+}
+
+export interface countryCategoryRank extends rankingEvent {
+  countrycategoryrank: number;
+  categoryname: string;
 }
 
 export type TTabs = "overview" | "insights" | "audience";

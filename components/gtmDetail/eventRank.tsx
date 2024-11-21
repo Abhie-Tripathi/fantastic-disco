@@ -28,13 +28,22 @@ export const EventRank = ({
   rankings: RankingDetail;
   eventDetails: GTMEventDetail;
 }) => {
-  const { categories, venueLocation, rankData } = eventDetails;
+  const {
+    categories,
+    venueLocation,
+    rankData,
+    name,
+    startDateTime,
+    id: eventId,
+  } = eventDetails;
   const swiperRef = useRef(null);
   const {
     above5CategoryEvent,
     below5CategoryEvent,
     above5CountryEvent,
     below5CountryEvent,
+    above5CountryCategoryRankEvent,
+    below5CountryCategoryEvent,
   } = rankings;
   const countryRank = rankData.country.rank;
   const [countryActiveIndex, setCountryIndex] = useState<number>(0);
@@ -48,7 +57,15 @@ export const EventRank = ({
   const categoryName =
     rankData.category.find((category) => category.rank === categoryRank)
       ?.name ?? "";
-  const { name, startDateTime, id: eventId } = eventDetails;
+  const countryCategoryRank = Math.min(
+    ...rankData.countryCategoryRank.map(
+      (countryCategoryRank) => countryCategoryRank.rank
+    )
+  );
+  const [countryCategoryActiveIndex, setCountryCategoryActiveIndex] =
+    useState<number>(0);
+  const [countryCategoryTotalSlides, setCountryCategoryTotalSlides] =
+    useState<number>(0);
   return (
     <>
       <div className="flex flex-row justify-center border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] p-3 rounded-sm gap-12 w-fill h-auto">
@@ -121,7 +138,7 @@ export const EventRank = ({
               >
                 <>
                   {below5CountryEvent.map((belowCountryEvent) => {
-                    const { countryrank, startdate, eventname, id } =
+                    const { countryrank, startdate, eventname, id, location } =
                       belowCountryEvent;
                     return (
                       <SwiperSlide
@@ -145,9 +162,9 @@ export const EventRank = ({
                               {eventname}
                             </Text>
                             <div className="flex justify-between gap-4">
-                              {/* <Text color="secondary" variant="noMargin">
-                              Philadelphia, USA
-                            </Text> */}
+                              <Text color="secondary" variant="noMargin">
+                                {location}
+                              </Text>
                               <Text color="secondary" variant="noMargin">
                                 {formatDate(startdate, "MMM dd")}
                               </Text>
@@ -175,9 +192,9 @@ export const EventRank = ({
                           {name}
                         </Text>
                         <div className="flex justify-between gap-4">
-                          {/* <Text color="secondary" variant="noMargin">
-                            Philadelphia, USA
-                          </Text> */}
+                          <Text color="secondary" variant="noMargin">
+                            {`${venueLocation?.state.name} ${venueLocation?.country.name}`}
+                          </Text>
                           <Text color="secondary" variant="noMargin">
                             {formatDate(startDateTime, "MMM dd")}
                           </Text>
@@ -186,7 +203,7 @@ export const EventRank = ({
                     </Link>
                   </SwiperSlide>
                   {above5CountryEvent.map((aboveCountryEvent) => {
-                    const { countryrank, startdate, enddate, eventname, id } =
+                    const { countryrank, startdate, eventname, id, location } =
                       aboveCountryEvent;
                     return (
                       <SwiperSlide
@@ -210,9 +227,9 @@ export const EventRank = ({
                               {eventname}
                             </Text>
                             <div className="flex justify-between gap-4">
-                              {/* <Text color="secondary" variant="noMargin">
-                                Philadelphia, USA
-                              </Text> */}
+                              <Text color="secondary" variant="noMargin">
+                                {location}
+                              </Text>
                               <Text color="secondary" variant="noMargin">
                                 {formatDate(startdate, "MMM dd")}
                               </Text>
@@ -309,15 +326,8 @@ export const EventRank = ({
               >
                 <>
                   {below5CategoryEvent.map((belowCategoryEvent) => {
-                    const {
-                      categoryname,
-                      categoryrank,
-                      description,
-                      startdate,
-                      enddate,
-                      eventname,
-                      id,
-                    } = belowCategoryEvent;
+                    const { categoryrank, startdate, eventname, location, id } =
+                      belowCategoryEvent;
                     return (
                       <SwiperSlide
                         className="h-fit w-fit bg-white dark:bg-[var(--primary-foreground)] z-40"
@@ -340,9 +350,9 @@ export const EventRank = ({
                               {eventname}
                             </Text>
                             <div className="flex justify-between gap-4">
-                              {/* <Text color="secondary" variant="noMargin">
-                              Philadelphia, USA
-                            </Text> */}
+                              <Text color="secondary" variant="noMargin">
+                                {location}
+                              </Text>
                               <Text color="secondary" variant="noMargin">
                                 {formatDate(startdate, "MMM dd")}
                               </Text>
@@ -370,9 +380,9 @@ export const EventRank = ({
                           {name}
                         </Text>
                         <div className="flex justify-between gap-4">
-                          {/* <Text color="secondary" variant="noMargin">
-                            Philadelphia, USA
-                          </Text> */}
+                          <Text color="secondary" variant="noMargin">
+                            {`${venueLocation?.state.name} ${venueLocation?.country.name}`}
+                          </Text>
                           <Text color="secondary" variant="noMargin">
                             {formatDate(startDateTime, "MMM dd")}
                           </Text>
@@ -381,7 +391,7 @@ export const EventRank = ({
                     </Link>
                   </SwiperSlide>
                   {above5CategoryEvent.map((aboveCategoryEvent) => {
-                    const { categoryrank, startdate, enddate, eventname, id } =
+                    const { categoryrank, startdate, eventname, id, location } =
                       aboveCategoryEvent;
                     return (
                       <SwiperSlide
@@ -405,9 +415,9 @@ export const EventRank = ({
                               {eventname}
                             </Text>
                             <div className="flex justify-between gap-4">
-                              {/* <Text color="secondary" variant="noMargin">
-                                Philadelphia, USA
-                              </Text> */}
+                              <Text color="secondary" variant="noMargin">
+                                {location}
+                              </Text>
                               <Text color="secondary" variant="noMargin">
                                 {formatDate(startdate, "MMM dd")}
                               </Text>
@@ -427,6 +437,212 @@ export const EventRank = ({
                   see{" "}
                   {above5CategoryEvent.length > 0
                     ? above5CategoryEvent.length - 1
+                    : ""}{" "}
+                  more events
+                </Text>
+                <ArrowDown width={15} height={15} color="#E5484D" />
+              </button>
+            </div>
+          </div>
+        )}
+        {countryCategoryRank && (
+          <div className="flex flex-col p-3 rounded-sm gap-6 w-auto h-auto items-center">
+            <div className="flex flex-col items-center border border-[var(--neutral-light-color)] dark:bg-[var(--primary-foreground)] dark:border-[var(--border-color)] w-48 rounded-sm">
+              <p className="text-3xl font-semibold p-2">
+                {countryCategoryRank}
+              </p>
+              <Text
+                color="secondary"
+                variant="noMargin"
+                fontWeight="medium"
+                className="bg-[#F2F2F2] dark:bg-[#1A1A1A] dark:border-t dark:border-t-2-[var(--border-color)] w-full p-2 text-center"
+              >
+                Country + Category Rank
+              </Text>
+            </div>
+            <div>
+              {/* <Text color="secondary" className="text-center">
+                #{rank} of 1000 in
+              </Text> */}
+              <p className="text-[#6750A4] text-center font-medium">
+                {`${countryName} ${categoryName}`}
+              </p>
+            </div>
+            <div className="flex flex-col">
+              <button
+                className={`flex items-center bg-[#FAFAFA] dark:bg-[#292929] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-country-category-${countryCategoryRank}`}
+                disabled={countryCategoryActiveIndex === 1}
+              >
+                <Text color="secondary" variant="noMargin" className="w-full">
+                  see{" "}
+                  {below5CountryCategoryEvent.length > 0
+                    ? below5CountryCategoryEvent.length - 1
+                    : ""}{" "}
+                  more events
+                </Text>
+                <ArrowUp width={15} height={15} color="#45A557" />
+              </button>
+              <Swiper
+                effect={"coverflow"}
+                grabCursor={true}
+                direction="vertical"
+                centeredSlides={true}
+                slidesPerView={3}
+                initialSlide={
+                  below5CountryCategoryEvent.length > 0
+                    ? below5CountryCategoryEvent.length
+                    : 1
+                }
+                coverflowEffect={{
+                  rotate: 0,
+                  stretch: -1,
+                  depth: 100,
+                  modifier: 1,
+                  slideShadows: false,
+                }}
+                navigation={{
+                  nextEl: `.swiper-button-next-country-category-${countryCategoryRank}`,
+                  prevEl: `.swiper-button-prev-country-category-${countryCategoryRank}`,
+                }}
+                modules={[EffectCoverflow, Navigation]}
+                className="h-60 w-56"
+                ref={swiperRef}
+                onSwiper={(swiper) =>
+                  setCountryCategoryTotalSlides(swiper.slides.length)
+                }
+                onSlideChange={(swiper) => {
+                  setCountryCategoryActiveIndex(swiper.activeIndex);
+                }}
+              >
+                <>
+                  {below5CountryCategoryEvent &&
+                    below5CountryCategoryEvent.length > 0 &&
+                    below5CountryCategoryEvent.map((belowCategoryEvent) => {
+                      const {
+                        countrycategoryrank,
+                        startdate,
+                        eventname,
+                        id,
+                        location,
+                      } = belowCategoryEvent;
+                      return (
+                        <SwiperSlide
+                          className="h-fit w-fit bg-white dark:bg-[var(--primary-foreground)] z-40"
+                          key={id}
+                        >
+                          <Link
+                            href={`/internal/event/${id}`}
+                            className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
+                          >
+                            <p className="text-xl font-semibold p-2">
+                              #{countrycategoryrank ?? "--"}
+                            </p>
+                            <div className="flex flex-col justify-between">
+                              <Text
+                                color="primary"
+                                variant="noMargin"
+                                fontWeight="medium"
+                                className="w-32 line-clamp-1"
+                              >
+                                {eventname}
+                              </Text>
+                              <div className="flex justify-between gap-4">
+                                <Text color="secondary" variant="noMargin">
+                                  {location}
+                                </Text>
+                                <Text color="secondary" variant="noMargin">
+                                  {formatDate(startdate, "MMM dd")}
+                                </Text>
+                              </div>
+                            </div>
+                          </Link>
+                        </SwiperSlide>
+                      );
+                    })}
+                  <SwiperSlide className="h-fit w-fit bg-white dark:bg-[var(--primary-foreground)] z-40">
+                    <Link
+                      href={`/internal/event/${eventId}`}
+                      className="flex flex-row justify-between bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
+                    >
+                      <p className="text-xl font-semibold p-2">
+                        #{countryCategoryRank ?? "--"}
+                      </p>
+                      <div className="flex flex-col justify-between">
+                        <Text
+                          color="primary"
+                          variant="noMargin"
+                          fontWeight="medium"
+                          className="w-32 line-clamp-1"
+                        >
+                          {name}
+                        </Text>
+                        <div className="flex justify-between gap-4">
+                          <Text color="secondary" variant="noMargin">
+                            {`${venueLocation?.state.name} ${venueLocation?.country.name}`}
+                          </Text>
+                          <Text color="secondary" variant="noMargin">
+                            {formatDate(startDateTime, "MMM dd")}
+                          </Text>
+                        </div>
+                      </div>
+                    </Link>
+                  </SwiperSlide>
+                  {above5CountryCategoryRankEvent &&
+                    above5CountryCategoryRankEvent.length > 0 &&
+                    above5CountryCategoryRankEvent.map((aboveCategoryEvent) => {
+                      const {
+                        countrycategoryrank,
+                        startdate,
+                        eventname,
+                        location,
+                        id,
+                      } = aboveCategoryEvent;
+                      return (
+                        <SwiperSlide
+                          className="h-fit w-fit bg-white dark:bg-[var(--primary-foreground)] z-40"
+                          key={id}
+                        >
+                          <Link
+                            href={`/internal/event/${id}`}
+                            className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
+                          >
+                            <p className="text-xl font-semibold p-2">
+                              #{countrycategoryrank ?? "--"}
+                            </p>
+                            <div className="flex flex-col justify-between">
+                              <Text
+                                color="primary"
+                                variant="noMargin"
+                                fontWeight="medium"
+                                className="w-32 line-clamp-1"
+                              >
+                                {eventname}
+                              </Text>
+                              <div className="flex justify-between gap-4">
+                                <Text color="secondary" variant="noMargin">
+                                  {location}
+                                </Text>
+                                <Text color="secondary" variant="noMargin">
+                                  {formatDate(startdate, "MMM dd")}
+                                </Text>
+                              </div>
+                            </div>
+                          </Link>
+                        </SwiperSlide>
+                      );
+                    })}
+                </>
+              </Swiper>
+              <button
+                className={`flex items-center bg-[#FAFAFA] dark:bg-[#292929] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-country-category-${countryCategoryRank}`}
+                disabled={
+                  countryCategoryActiveIndex === countryCategoryTotalSlides - 2
+                }
+              >
+                <Text color="secondary" variant="noMargin">
+                  see{" "}
+                  {above5CountryCategoryRankEvent.length > 0
+                    ? above5CountryCategoryRankEvent.length - 1
                     : ""}{" "}
                   more events
                 </Text>

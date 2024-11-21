@@ -8,7 +8,12 @@ import Text from "../new-ui/Text";
 import * as Flags from "country-flag-icons/react/3x2";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { Event, TTabs } from "@/types/events";
+import {
+  DesignationSpread,
+  Event,
+  EventExhibitorDetails,
+  TTabs,
+} from "@/types/events";
 import { CircularProgressBar } from "../eventDetail/circularProgressBar";
 import { useInView } from "react-intersection-observer";
 import { Heading } from "../eventDetail/heading";
@@ -23,16 +28,21 @@ import { Badge } from "../ui/badge";
 // type TTabs = "Department Type" | "Designation Type";
 interface Props {
   eventDetails: GTMEventDetail;
+  eventExhibitorData: EventExhibitorDetails[];
+  eventSpeakerData: any[];
   scrollSection: string;
   setActiveTab: Dispatch<SetStateAction<TTabs>>;
 }
 
 export const AudienceIntel = ({
   eventDetails,
+  eventExhibitorData,
+  eventSpeakerData,
   scrollSection,
   setActiveTab,
 }: Props) => {
-  const { audienceSpread, stats, designation } = eventDetails;
+  const { audienceSpread, stats, designation, designationSpread } =
+    eventDetails;
   const tabs = [
     { tabName: "Department Type", path: "department" },
     { tabName: "Designation Type", path: "designation" },
@@ -47,6 +57,16 @@ export const AudienceIntel = ({
       setActiveTab(scrollSection as TTabs);
     }
   }, [inView]);
+  const getMaxCountObject = (designationSpread: DesignationSpread[]) => {
+    if (!designationSpread || designationSpread.length === 0) return null;
+
+    return designationSpread.reduce((maxObj, currentObj) => {
+      return Number(currentObj.count) > Number(maxObj.count)
+        ? currentObj
+        : maxObj;
+    }, designationSpread[0]);
+  };
+  const maxCountObject = getMaxCountObject(designationSpread);
   // const [activeTab, setActiveTab] = useState<TTabs>("Department Type");
   return (
     <div className={`flex flex-col gap-6`} ref={ref}>
@@ -74,8 +94,8 @@ export const AudienceIntel = ({
             </p>
           </div>
         </div>
-        <div className="flex gap-6 h-full max-xl:flex-col max-xl:h-full">
-          <div className="flex flex-col gap-6 border border-[#EBEBEB] dark:bg-transparent dark:border-[var(--border-color)] rounded-md p-4 h-80 overflow-y-auto scrollbar w-full">
+        <div className="flex gap-6 max-xl:flex-col max-h-full">
+          <div className="flex flex-1 flex-col gap-6 border border-[#EBEBEB] dark:bg-transparent dark:border-[var(--border-color)] rounded-md p-4 h-auto overflow-y-auto scrollbar w-full">
             <div className="flex justify-between">
               <Text
                 color="primary"
@@ -95,7 +115,7 @@ export const AudienceIntel = ({
               )}
             </div>
 
-            <ul className="h-full">
+            <ul className="h-80">
               {audienceSpread && Object.keys(audienceSpread).length > 0 ? (
                 Object.entries(audienceSpread).map(([key, value], index) => {
                   const Flag = Flags[value.iso as keyof typeof Flags]; // Ensure that value.iso exists and is a valid key in Flags
@@ -135,7 +155,7 @@ export const AudienceIntel = ({
             </ul>
           </div>
 
-          <div className="flex flex-col gap-6 border border-[#EBEBEB] dark:bg-transparent dark:border-[var(--border-color)] rounded-md p-4 h-80 w-full">
+          <div className="flex flex-1 flex-col gap-6 border border-[#EBEBEB] dark:bg-transparent dark:border-[var(--border-color)] rounded-md p-4 h-auto w-full">
             <div className="flex justify-between">
               <Text
                 color="primary"
@@ -155,54 +175,64 @@ export const AudienceIntel = ({
                 </Badge>
               )}
             </div>
-
-            {/* <div className="flex flex-col gap-4 bg-[#FAFAFA] border border-[#EBEBEB] p-6">
-              <Text
-                color="primary"
-                fontWeight="medium"
-                variant="noMargin"
-                size="large"
-              >
-                Most interested Dept
-              </Text>
-              <div>
-                <p className="flex justify-between">
-                  <Text
-                    fontWeight="medium"
-                    color="secondary"
-                    className="flex items-center gap-2"
-                  >
-                    <Image
-                      src={Indicator}
-                      width={10}
-                      height={10}
-                      alt="Indicator"
-                    />
-                    Marketing
-                  </Text>
-                  <span className="text-[var(--primary-color)] font-medium">
-                    125
-                  </span>
-                </p>
-                <Progress value={70} className="h-2" />
+            {designationSpread && designationSpread.length > 0 && (
+              <div className="flex flex-col gap-4 bg-[#FAFAFA] dark:bg-[#171717] border border-[#EBEBEB] dark:border-[#2E2E2E] rounded-md p-3">
+                <Text
+                  color="primary"
+                  fontWeight="medium"
+                  variant="noMargin"
+                  size="large"
+                >
+                  Most interested designation
+                </Text>
+                <div>
+                  <p className="flex justify-between">
+                    <Text
+                      fontWeight="medium"
+                      color="secondary"
+                      className="flex items-center gap-2"
+                    >
+                      <Image
+                        src={Indicator}
+                        width={10}
+                        height={10}
+                        alt="Indicator"
+                      />
+                      {/* {Math.max(...designationSpread.map())} */}
+                      {maxCountObject?.designation}
+                    </Text>
+                    <span className="text-[var(--primary-color)] font-medium">
+                      {maxCountObject?.count}
+                    </span>
+                  </p>
+                  <Progress
+                    value={maxCountObject?.percentage}
+                    className="h-2"
+                  />
+                </div>
               </div>
-            </div> */}
-            {/* <Text
+            )}
+            <Text
               color="primary"
               fontWeight="medium"
               variant="noMargin"
               size="large"
             >
-              Other departments
-            </Text> */}
-            <ul className="flex flex-col gap-4 max-h-80 overflow-y-auto pr-2">
-              {designation && designation.length > 0 ? (
-                designation.map((item, index) => (
-                  <li key={`designation-${item}-${index}`}>
+              Other designations
+            </Text>
+            <ul className="flex flex-col gap-4 h-64 overflow-y-auto pr-2">
+              {designationSpread && designationSpread.length > 0 ? (
+                designationSpread.map((designation, index) => (
+                  <li key={`designation-${designation.designation}-${index}`}>
+                    <p className="flex justify-between">
                       <Text fontWeight="medium" color="secondary">
-                        {item}
+                        {designation.designation}
                       </Text>
-                    <Progress value={100 - (index + 1) * 5} className="h-2" />
+                      <span className="text-[var(--primary-color)] font-medium">
+                        {designation.count}
+                      </span>
+                    </p>
+                    <Progress value={designation.percentage} className="h-2" />
                   </li>
                 ))
               ) : (
@@ -214,7 +244,7 @@ export const AudienceIntel = ({
             </ul>
           </div>
         </div>
-        <EventParticipants eventDetails={eventDetails} />
+        <EventParticipants eventDetails={eventDetails} eventExhibitorData={eventExhibitorData} eventSpeakerData={eventSpeakerData}/>
       </div>
     </div>
   );
