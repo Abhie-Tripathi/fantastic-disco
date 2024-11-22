@@ -168,17 +168,19 @@ export const EventInfoAndMap = ({
                 <span className="text-[var(--primary-text-color)] font-semibold">
                   {capitalize(entryType ?? "")}
                 </span>
+              ) : website ? (
+                <Link
+                  href={website}
+                  target="_blank"
+                  className="text-[var(--primary-color)] cursor-pointer font-medium"
+                >
+                  Check website
+                </Link>
               ) : (
-                website ? (
-                  <Link href={website} target="_blank" className="text-[var(--primary-color)] cursor-pointer font-medium">
-                    Check website
-                  </Link>
-                ) : (
-                  <span className="text-[#666666] text-sm flex items-center gap-2">
-                    <CircleSlash width={15} height={15} />
-                    No data available
-                  </span>
-                )
+                <span className="text-[#666666] text-sm flex items-center gap-2">
+                  <CircleSlash width={15} height={15} />
+                  No data available
+                </span>
               )}
               {/* {entryType && tickets && tickets.length > 0 && (
                 <DetailDialog
@@ -319,6 +321,14 @@ export const EventInfoAndMap = ({
             startDateTime={startDateTime}
             endDateTime={endDateTime}
           />
+          <div className="flex items-center justify-between bg-[#F6F6FF] dark:bg-[#2E2E2E] border border-[#E6E6F9] dark:border-[#2E2E2E] px-4 py-2 rounded-sm">
+            <Text variant="noMargin" color="primary">
+              Start searching similar events
+            </Text>
+            <Button className="cursor-not-allowed max-[1600px]:w-full">
+              Search Events
+            </Button>
+          </div>
           {/* <div className="flex gap-6">
             <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
               <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
