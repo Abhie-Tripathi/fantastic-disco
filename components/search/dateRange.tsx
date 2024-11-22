@@ -17,6 +17,7 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Badge } from "../ui/badge";
 import {
   Popover,
   PopoverContent,
@@ -28,14 +29,13 @@ import { usePathname } from "next/navigation";
 import { useFilterContext } from "@/context/filterContext";
 
 const presets = [
-  { label: "Any", value: "any" },
-  // { label: "Custom", value: "custom" },
   { label: "This week", value: "this-week" },
   { label: "This month", value: "this-month" },
   { label: "3 months", value: "3-months" },
   { label: "6 months", value: "6-months" },
   { label: "9 Months", value: "9-months" },
   { label: "12 months", value: "12-months" },
+  { label: "Custom", value: "custom" },
 ];
 
 const comparisonOptions = [
@@ -95,14 +95,12 @@ export default function DateRangeSelector({
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("this-month");
   const [compareEnabled, setCompareEnabled] = React.useState(false);
-  const { getLocalFilterValue, setMultipleLocalFilters, deleteMultipleLocalFilters, searchParams, applyFilters } =
-    useFilterContext();
+  const { setMultipleLocalFilters, searchParams } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const [selectedComparison, setSelectedComparison] = React.useState(
     comparisonOptions[0]
   );
   const enableCompareOptions = pathName === "/trends";
-  console.log(dateRange);
 
   React.useEffect(() => {
     if (source !== "tracker") {
@@ -152,10 +150,14 @@ export default function DateRangeSelector({
 
   const handlePresetChange = (preset: string) => {
     setSelectedPreset(preset);
+    if (preset === "any") {
+      setDateRange({ from: undefined, to: undefined });
+      return;
+    }
     const currentDate = new Date();
     let from: Date | undefined, to: Date | undefined;
     switch (preset) {
-      case "any":
+      case "custom":
         from = undefined;
         to = undefined;
         break;
@@ -191,19 +193,35 @@ export default function DateRangeSelector({
   };
 
   const handleDateSelect = (selectedDate: Date | undefined) => {
-    if (selectedDate) {
-      setSelectedPreset("custom");
-      if (!dateRange.from || (dateRange.from && dateRange.to)) {
-        setDateRange({ from: selectedDate, to: undefined });
-      } else if (
-        dateRange.from &&
-        !dateRange.to &&
-        isBefore(selectedDate, dateRange.from)
-      ) {
+    if (!selectedDate) return;
+    setSelectedPreset("custom");
+    if (!dateRange.from && !dateRange.to) {
+      setDateRange({ from: selectedDate, to: selectedDate });
+      return;
+    }
+    if (
+      dateRange.from &&
+      dateRange.to &&
+      dateRange.from.getTime() === dateRange.to.getTime()
+    ) {
+      if (selectedDate < dateRange.from) {
         setDateRange({ from: selectedDate, to: dateRange.from });
       } else {
-        setDateRange((prev) => ({ ...prev, to: selectedDate }));
+        setDateRange({ from: dateRange.from, to: selectedDate });
       }
+      return;
+    }
+    if (dateRange.from && dateRange.to) {
+      setDateRange({ from: selectedDate, to: selectedDate });
+      return;
+    }
+    if (dateRange.from && !dateRange.to) {
+      if (selectedDate < dateRange.from) {
+        setDateRange({ from: selectedDate, to: dateRange.from });
+      } else {
+        setDateRange({ from: dateRange.from, to: selectedDate });
+      }
+      return;
     }
   };
 
@@ -223,14 +241,12 @@ export default function DateRangeSelector({
         filters.active_lte = toDate.toISOString();
       }
 
-    if(filters.active_gte && filters.active_lte)
-      setMultipleLocalFilters(filters);
-    else
-      deleteMultipleLocalFilters(['active_gte', 'active_lte']);
+      if (dateRange.from == undefined && dateRange.to == undefined) {
+        filters.active_gte = "";
+        filters.active_lte = "";
+      }
 
-    if (source === 'coordinate') {
-      applyFilters();
-    }
+      setMultipleLocalFilters(filters);
     }
     setIsOpen(false);
   };
@@ -270,7 +286,7 @@ export default function DateRangeSelector({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-col">
           {/* <div className="flex justify-between items-center">
             <h2 className="font-semibold">Date Range</h2>
             <Button
@@ -312,13 +328,17 @@ export default function DateRangeSelector({
             </div>
           </div>
           {enableCompareOptions && (
-            <div className="space-y-2">
+            <div className="space-y-4 p-4 py-2 pt-0">
               <div className="flex items-center space-x-2">
                 <h3 className="text-sm font-medium">Compare with Past data</h3>
                 <Switch
+                  disabled
                   checked={compareEnabled}
                   onCheckedChange={setCompareEnabled}
                 />
+                <span className="ml-2 bg-[#EBF5FF] text-[#0062D1] font-medium rounded text-[10px] whitespace-nowrap p-1">
+                  Coming Soon
+                </span>
               </div>
               {compareEnabled && (
                 <div className="space-y-2 flex flex-col">

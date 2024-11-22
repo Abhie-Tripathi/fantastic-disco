@@ -86,7 +86,7 @@ const Sidebar = () => {
         <ul className="p-2 space-y-1">
           {links.map((link) => {
             const Icon = link.icon;
-            const isActive = pathname === link.href;
+            const isActive = pathname === link.href || (link.name === "Tracker" && pathname.startsWith("/internal/trackers"));
             return (
               <li key={link.name}>
                 <Link href={link.href} passHref legacyBehavior>
