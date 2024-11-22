@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Views } from "./constants";
+import { isEventeli } from "@/config";
 
 interface CustomToolbarProps {
   date: Date;
@@ -71,20 +72,24 @@ const CustomToolbar = ({
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
-      {/* <Select
-        value={filter}
-        onValueChange={onFilterChange}
-        disabled={view === Views.WEEK}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Events</SelectItem>
-          <SelectItem value="social">Social Events</SelectItem>
-          <SelectItem value="business">Business Events</SelectItem>
-        </SelectContent>
-      </Select> */}
+      {isEventeli && (
+        <div className="place-self-end">
+          <Select
+            value={filter}
+            onValueChange={onFilterChange}
+            disabled={view === Views.WEEK}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Events</SelectItem>
+              <SelectItem value="social">Social Events</SelectItem>
+              <SelectItem value="business">Business Events</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      )}
     </div>
   );
 };
