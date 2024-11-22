@@ -1,4 +1,4 @@
-/* .calendar {
+.calendar {
   width : 300px;
   border-radius : 5px;
   padding : 10px;
@@ -57,7 +57,7 @@
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-.body {
+.year_calendar {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(4, 1fr); 
@@ -74,7 +74,7 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 .month:hover {
@@ -98,15 +98,7 @@
   text-align: center;
 }
 
-.backButton {
-  margin-bottom: 5px;
-  padding: 4px 8px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  display: flex;
-  align-items: flex-start;
-}
+
 
 .daysGrid {
   display: grid;
@@ -132,14 +124,90 @@
   font-size: 14px;
 }
 
+.dayCell {
+  position: relative;
+  padding: 6px;
+  text-align: center;
+  border-radius: 50%;
+}
+
+.dayCell.eventHover:hover {
+  background-color: #f0f0f0;
+  cursor: pointer;
+  color: black !important;
+
+}
+
+.dayNumber {
+  font-size: 14px;
+}
 
 .eventDot {
   width: 6px;
   height: 6px;
-  background-color: red;
   border-radius: 50%;
-  margin-top: 4px;
+  position: absolute;
+  bottom: 0px;
+  left: 55%;
+  transform: translateX(-50%);
 }
-.emptyDay {
-  visibility: hidden;
-} */
+
+.nonCurrentMonthDay {
+  color: #0c020230;
+}
+.isCurrentMonth{
+  color:#29020290
+}
+
+.selectedDateContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.selectedDate {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  padding-left: 20px;
+  padding-right:20px;
+  border-radius: 5px;
+}
+
+.clearButton {
+  color: rgb(36, 26, 26);
+  border: none;
+  border-radius: 50%;
+  padding:   3px;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: #b4a3a3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.selectedMonthContainer{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.selectedMonth{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  border-radius: 5px;
+}
+
+.navButtons{
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
