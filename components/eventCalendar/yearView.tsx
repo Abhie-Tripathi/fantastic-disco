@@ -119,7 +119,11 @@ const YearView = ({
 
                           {isCurrentMonth && dayTotalEvents > 0 && (
                             <>
-                              <p className="font-semibold text-sm text-center mb-1">
+                              <p
+                                className={`font-semibold text-sm text-center mb-1 ${
+                                  theme == "light" ? "text-primary" : ""
+                                }`}
+                              >
                                 {dayTotalEvents}
                               </p>
                               <div className="flex items-center justify-center gap-[2px]">

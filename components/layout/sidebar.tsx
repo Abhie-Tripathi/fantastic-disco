@@ -101,7 +101,7 @@ const Sidebar = () => {
                   >
                     <a>
                       <Icon
-                        color={theme == "dark" ? "#fff" : "#000"}
+                        color={theme == "dark" ? "#fff" : ""}
                         className="flex-shrink-0"
                       />
                       {isHovered && <span className="ml-2">{link.name}</span>}
