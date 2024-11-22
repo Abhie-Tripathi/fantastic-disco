@@ -119,9 +119,9 @@ const YearView = ({
 
                           {isCurrentMonth && dayTotalEvents > 0 && (
                             <>
-                              <div className="text-primary font-semibold text-sm text-center mb-1">
+                              <p className="font-semibold text-sm text-center mb-1">
                                 {dayTotalEvents}
-                              </div>
+                              </p>
                               <div className="flex items-center justify-center gap-[2px]">
                                 {dayBusinessEvents > 0 && (
                                   <span className="w-[10px] h-[10px] bg-[#9D50A3] rounded-full"></span>
