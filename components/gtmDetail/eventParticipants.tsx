@@ -1,7 +1,11 @@
 import Text from "../new-ui/Text";
 import Image from "next/image";
 import Link from "next/link";
-import { EventExhibitorDetails, GTMEventDetail } from "@/types/events";
+import {
+  EventExhibitorDetails,
+  EventParticipantsDetails,
+  GTMEventDetail,
+} from "@/types/events";
 import { Badge } from "@/components/ui/badge";
 
 const exhibitorsData = [
@@ -55,35 +59,31 @@ const sponsorsData = [
   },
 ];
 
-const ListCard = ({ participant }: { participant: EventExhibitorDetails }) => {
+const ListCard = ({
+  participant,
+}: {
+  participant: EventParticipantsDetails;
+}) => {
+  console.log(participant);
   return (
     <li className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-3 rounded-sm gap-3 w-fill h-auto">
       <div className="flex flex-row justify-between">
         <div className="flex gap-4">
-          <Image
+          <img
             src={
               participant.logo ||
               `https://img.10times.com/userimages/${participant.name
                 .charAt(0)
                 .toLowerCase()}.jpg`
             }
-            width={50}
-            height={50}
             alt="Logo"
-            className="aspect-square rounded-sm"
+            className="aspect-square rounded-sm w-12 h-12"
           />
           <div className="flex flex-col justify-between">
             <Text color="primary">{participant.name || ""}</Text>
-            {/* {participant.boothNo && (
-              <Text variant="noMargin" color="secondary">
-                {participant.boothNo}
-              </Text>
-            )}
-            {participant.designation && (
-              <Text variant="noMargin" color="secondary">
-                {participant.designation}
-              </Text>
-            )} */}
+            <Text variant="noMargin" color="secondary">
+              {participant.details}
+            </Text>
           </div>
         </div>
       </div>
@@ -141,11 +141,8 @@ const ParticipantContainer = ({
         {count !== null && count > 0 ? (
           participantData
             .slice(0, count)
-            .map((participant: EventExhibitorDetails, index: number) => (
-              <ListCard
-                participant={participant}
-                key={`paricipant-${participant.name}-${index}`}
-              />
+            .map((participant: EventParticipantsDetails, index: number) => (
+              <ListCard participant={participant} key={participant.id} />
             ))
         ) : (
           <NullState nullState={nullState} />
@@ -169,8 +166,8 @@ export const EventParticipants = ({
   eventSpeakerData,
 }: {
   eventDetails: GTMEventDetail;
-  eventExhibitorData: EventExhibitorDetails[];
-  eventSpeakerData: any[];
+  eventExhibitorData: EventParticipantsDetails[];
+  eventSpeakerData: EventParticipantsDetails[];
 }) => {
   const {
     exhibitorsCount,

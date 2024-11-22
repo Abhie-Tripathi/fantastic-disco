@@ -14,6 +14,7 @@ import { useInView } from "react-intersection-observer";
 import CircularProgress from "../gtmDetailRelevanceScore/circularProgress";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
+import _ from "lodash";
 interface Props {
   eventDetails: GTMEventDetail;
   scrollSection: string;
@@ -165,8 +166,8 @@ export const EventInfoAndMap = ({
               </h1>
 
               {entryType ? (
-                <span className="text-[var(--primary-text-color)] font-semibold">
-                  {capitalize(entryType ?? "")}
+                <span className="text-[var(--primary-color)] font-semibold">
+                  {_.startCase(_.toLower(_.replace(entryType, /_/g, " ")))}
                 </span>
               ) : website ? (
                 <Link

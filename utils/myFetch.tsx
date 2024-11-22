@@ -9,11 +9,9 @@ export const myFetch = async (
     mode: "cors",
   });
   const result = await response.json();
-  console.log(response)
   // console.log(JSON.stringify(response.headers));
   // const route=useRouter();
   const { error, data } = result;
-  console.log(result);
   if(result.message==="Incorrect or Expired Cookies") redirectToSignin();
   if (
     error &&
