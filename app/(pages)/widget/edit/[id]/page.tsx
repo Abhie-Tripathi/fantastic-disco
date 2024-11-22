@@ -186,6 +186,7 @@ const Page = () => {
       }
       else {
         setCardBgColor(data.customizationData.cardBgColor);
+        setPreviewWindowBgColor(data.customizationData.previewWindowBgColor);
         setCardBorderRadius(data.customizationData.cardBorderRadius);
         setFontSettings(data.customizationData.fontSettings);
         setButtonSettings(data.customizationData.buttonSettings);
@@ -216,6 +217,7 @@ const Page = () => {
       cardBorderRadius,
       selectedBtn,
       selectedCard: cardStyle,
+      previewWindowBgColor
     };
     customizeData.append("widgetId", widgetId)
     customizeData.append('customizationData', JSON.stringify(customizationData));

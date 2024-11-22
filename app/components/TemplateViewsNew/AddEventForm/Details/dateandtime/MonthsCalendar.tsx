@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
 import styles from "./month.style.module.css";
 import { useCalendarServices } from "@/services/geniservices/calendarServices";
+interface CalendarProps {
+  cardBgColor?: string; // Background color for cards
+  widgetId?: string; // Unique identifier for the widget
+  onDateSelect?: (selectedDate: string) => void; // Callback when a date is selected
+  handleResetEvents?: () => void; // Function to reset events
+  onMonthSelect?: (selectedMonth: string) => void; // Callback when a month is selected
+}
+
 const Calendar = ({
   cardBgColor,
   widgetId,
   onDateSelect,
   handleResetEvents,
   onMonthSelect,
-}: any) => {
+}: CalendarProps) => {
   const { getYearlyEvents, getMonthlyEvents } = useCalendarServices();
   const [year, setYear] = useState(new Date().getFullYear());
   const [months, setMonths] = useState<any>([]);
@@ -44,13 +52,15 @@ const Calendar = ({
     setViewMode("year");
   };
 
-  const hexToRgba = (hex: string, alpha: number) => {
-    const hexWithoutHash = hex.replace("#", "");
-    const bigint = parseInt(hexWithoutHash, 16);
-    const r = (bigint >> 16) & 255;
-    const g = (bigint >> 8) & 255;
-    const b = bigint & 255;
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  const hexToRgba = (hex?: string, alpha?: number) => {
+    const hexWithoutHash = hex?.replace("#", "");
+    if (hexWithoutHash) {
+      const bigint = parseInt(hexWithoutHash, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
   };
 
   const rgbaBgColor = hexToRgba(cardBgColor, 0.4);
@@ -151,12 +161,18 @@ const Calendar = ({
       return eventDate === selectedFullDate;
     });
     setFilteredEvents(eventsForSelectedDate);
-    onDateSelect(selectedFullDate);
+    if (onDateSelect) {
+      onDateSelect(selectedFullDate);
+    }
+
     setSelectedDate(selectedFullDate);
   };
 
   const clearSelectedDate = () => {
-    handleResetEvents();
+    if (handleResetEvents) {
+      handleResetEvents();
+    }
+
     setSelectedDate(null);
     setSelectedMonth(null);
   };
