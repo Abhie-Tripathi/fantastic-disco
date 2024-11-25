@@ -16,6 +16,9 @@ import { GolbalEventType } from '@/types/globaleventtype'
 import ChoiceModal from '@/app/components/TemplateViewsNew/Events/ChoiceModal'
 import SubEventCard from '@/app/components/TemplateViewsNew/WidgetDashboard/SubEventCard'
 import { useEventServices } from '@/services/geniservices/eventService'
+import { Map } from "react-map-gl";
+import MonthCalendar from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/MonthsCalendar";
+
 const Page = () => {
     const [fetchedEvents, setFetchedEvents] = useState<AllEventsType[]>([]);
     const [isEventFormModal, setIsEventFormModal] = useState<boolean>(false)
@@ -35,7 +38,7 @@ const Page = () => {
     const [eventFlow, setEventFlow] = useState<string>("")
     const [selectedEventType, setSelectedEventType] = useState<string>("") // This will be used to Delete an event
     const [todaysDate, setTodaysDate] = useState("");
-    const {getSortedEvents,error} = useEventServices()
+    const { getSortedEvents, error } = useEventServices()
     let prevDate: any = null;
 
     useEffect(() => {
@@ -51,7 +54,7 @@ const Page = () => {
     }, []);
     useEffect(() => {
         fetchEvents(page * 8);
-    }, [page])                              
+    }, [page])
 
     useEffect(() => {
         console.log("this scroll function called")
@@ -84,90 +87,90 @@ const Page = () => {
 
     const fetchEvents = async (page: number, type?: string) => {
         // const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&offset=${page}&limit=8`)
-       try {
-        const data:any = await getSortedEvents(page);
-        if (data) {
-            const transformedEvents = data.data.map((event: any) => ({
-                mainEvent: {
-                    eventId: event.id,
-                    name: event.name,
-                    cityName: event.data.location_city,
-                    countryName: event.data.location_country,
-                    startDate: event.data.start_date,
-                    logoUrl: event.data.logoUrl,
-                    endDate: event.data.end_date,
-                    startTime: event.data.start_time,
-                    endTime: event.data.end_time,
-                    description: event.data.description,
-                    format: event.data.format,
-                    isLinkedToWidget: false,
-                    gmtZone: event.data.gmt_time,
-                    latitude: event.data.latitude,
-                    eventType: event.type,
-                    longitude: event.data.longitude,
-                    participationType: event.data.participationType,
-                    parentData: event.data.parentData,
-                    widgetTags: event.widgetData.map((item: { type: any }) => item.type).join(', '),
-                    customizationData: {
-                        pageBgColor: event.data.customizationData.pageBgColor,
-                        eventFont: event.data.customizationData.eventFont,
-                        registerBtnColor: event.data.customizationData.registerBtnColor,
-                        registerBtnText: event.data.customizationData.registerBtnText,
-                        registerMessage: event.data.customizationData.registerMessage,
-                        speakerProfilesData: event.data.customizationData.speakerProfilesData,
-                        participationMessage: event.data.customizationData.participationMessage,
-                        venue: event.data.customizationData.venue,
-                        hashtags: event.data.customizationData.hashtags,
-                        boothNumber: event.data.customizationData.boothNumber
-                    }
-                },
-                subEvents: event.children.map((subEvent: any) => ({
-                    eventId: subEvent.id,
-                    name: subEvent.name,
-                    cityName: subEvent.data.location_city,
-                    countryName: subEvent.data.location_country,
-                    startDate: subEvent.data.start_date,
-                    logoUrl: subEvent.data.logoUrl,
-                    endDate: subEvent.data.end_date,
-                    startTime: subEvent.data.start_time,
-                    endTime: subEvent.data.end_time,
-                    description: subEvent.data.description,
-                    format: subEvent.data.format,
-                    isLinkedToWidget: false,
-                    gmtZone: subEvent.data.gmt_time,
-                    latitude: subEvent.data.latitude,
-                    eventType: subEvent.type,
-                    longitude: subEvent.data.longitude,
-                    participationType: subEvent.data.participationType,
-                    // widgetTags: subEvent.widgetData.map((item: { type: any }) => item.type).join(', '),
-                    customizationData: {
-                        pageBgColor: subEvent.data.customizationData.pageBgColor,
-                        eventFont: subEvent.data.customizationData.eventFont,
-                        registerBtnColor: subEvent.data.customizationData.registerBtnColor,
-                        registerBtnText: subEvent.data.customizationData.registerBtnText,
-                        registerMessage: subEvent.data.customizationData.registerMessage,
-                        speakerProfilesData: subEvent.data.customizationData.speakerProfilesData,
-                        participationMessage: subEvent.data.customizationData.participationMessage,
-                        venue: subEvent.data.customizationData.venue,
-                        hashtags: subEvent.data.customizationData.hashtags,
-                        boothNumber: subEvent.data.customizationData.boothNumber
-                    }
-                }))
-            }));
+        try {
+            const data: any = await getSortedEvents(page);
+            if (data) {
+                const transformedEvents = data.data.map((event: any) => ({
+                    mainEvent: {
+                        eventId: event.id,
+                        name: event.name,
+                        cityName: event.data.location_city,
+                        countryName: event.data.location_country,
+                        startDate: event.data.start_date,
+                        logoUrl: event.data.logoUrl,
+                        endDate: event.data.end_date,
+                        startTime: event.data.start_time,
+                        endTime: event.data.end_time,
+                        description: event.data.description,
+                        format: event.data.format,
+                        isLinkedToWidget: false,
+                        gmtZone: event.data.gmt_time,
+                        latitude: event.data.latitude,
+                        eventType: event.type,
+                        longitude: event.data.longitude,
+                        participationType: event.data.participationType,
+                        parentData: event.data.parentData,
+                        widgetTags: event.widgetData.map((item: { type: any }) => item.type).join(', '),
+                        customizationData: {
+                            pageBgColor: event.data.customizationData.pageBgColor,
+                            eventFont: event.data.customizationData.eventFont,
+                            registerBtnColor: event.data.customizationData.registerBtnColor,
+                            registerBtnText: event.data.customizationData.registerBtnText,
+                            registerMessage: event.data.customizationData.registerMessage,
+                            speakerProfilesData: event.data.customizationData.speakerProfilesData,
+                            participationMessage: event.data.customizationData.participationMessage,
+                            venue: event.data.customizationData.venue,
+                            hashtags: event.data.customizationData.hashtags,
+                            boothNumber: event.data.customizationData.boothNumber
+                        }
+                    },
+                    subEvents: event.children.map((subEvent: any) => ({
+                        eventId: subEvent.id,
+                        name: subEvent.name,
+                        cityName: subEvent.data.location_city,
+                        countryName: subEvent.data.location_country,
+                        startDate: subEvent.data.start_date,
+                        logoUrl: subEvent.data.logoUrl,
+                        endDate: subEvent.data.end_date,
+                        startTime: subEvent.data.start_time,
+                        endTime: subEvent.data.end_time,
+                        description: subEvent.data.description,
+                        format: subEvent.data.format,
+                        isLinkedToWidget: false,
+                        gmtZone: subEvent.data.gmt_time,
+                        latitude: subEvent.data.latitude,
+                        eventType: subEvent.type,
+                        longitude: subEvent.data.longitude,
+                        participationType: subEvent.data.participationType,
+                        // widgetTags: subEvent.widgetData.map((item: { type: any }) => item.type).join(', '),
+                        customizationData: {
+                            pageBgColor: subEvent.data.customizationData.pageBgColor,
+                            eventFont: subEvent.data.customizationData.eventFont,
+                            registerBtnColor: subEvent.data.customizationData.registerBtnColor,
+                            registerBtnText: subEvent.data.customizationData.registerBtnText,
+                            registerMessage: subEvent.data.customizationData.registerMessage,
+                            speakerProfilesData: subEvent.data.customizationData.speakerProfilesData,
+                            participationMessage: subEvent.data.customizationData.participationMessage,
+                            venue: subEvent.data.customizationData.venue,
+                            hashtags: subEvent.data.customizationData.hashtags,
+                            boothNumber: subEvent.data.customizationData.boothNumber
+                        }
+                    }))
+                }));
 
-            if (type === "update") { // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events
-                setFetchedEvents(transformedEvents)
+                if (type === "update") { // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events
+                    setFetchedEvents(transformedEvents)
+                } else {
+                    setFetchedEvents(prevEvents => [...prevEvents, ...transformedEvents]);
+                }
             } else {
-                setFetchedEvents(prevEvents => [...prevEvents, ...transformedEvents]);
+                console.error('Error fetching events:', error);
             }
-        } else {
-            console.error('Error fetching events:', error);
+
+        } catch (error) {
+            console.error(error);
         }
-        
-       } catch (error) {
-        console.error(error);
-       }
-       
+
     }
     useEffect(() => {
         if (eventFlow) {
@@ -208,41 +211,30 @@ const Page = () => {
             <div className={styles.globalSearch}>
                 <GlobalSearch widgetId='123' handlePrefillGlobalEvent={handlePrefillGlobalEvent} />
             </div>
-            {fetchedEvents.length > 0 ? fetchedEvents.map((event, index) => {
-                const showDate = event.mainEvent.startDate !== prevDate;
-                prevDate = event.mainEvent.startDate;
-                return (
-                    <div key={index} className={styles.container}>
-                        <TimelineItem eventDate={showDate ? event.mainEvent.startDate : null} />
-                        {event.mainEvent.eventType === "MAIN" ? <DashboardEventCard setSelectedEventType={setSelectedEventType} handlePrefillSubEvent={handlePrefillSubEvent} width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} event={event} /> : <SubEventCard setSelectedEventType={setSelectedEventType} width='small' handlePrefillEvent={handlePrefillEvent} normalEvent={event} />}
+            {fetchedEvents.length > 0 ?
+                fetchedEvents.map((event, index) => {
+                    const showDate = event.mainEvent.startDate !== prevDate;
+                    prevDate = event.mainEvent.startDate;
+                    return (
+                        <div key={index} className={styles.container}>
+                            <TimelineItem eventDate={showDate ? event.mainEvent.startDate : null} />
+                            {event.mainEvent.eventType === "MAIN" ? <DashboardEventCard setSelectedEventType={setSelectedEventType} handlePrefillSubEvent={handlePrefillSubEvent} width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} event={event} /> : <SubEventCard setSelectedEventType={setSelectedEventType} width='small' handlePrefillEvent={handlePrefillEvent} normalEvent={event} />}
+                        </div>
+                    );
+                })
+                : (
+                    <div className={styles.emptyScreen}>
+                        <Image src={EmptyImage} alt='empty' />
+                        <div>Search or Add your Events</div>
+                        <span>Start by searching for existing events to add to your widgets</span>
+                        <span>or feel free to create your own event from scratch</span>
                     </div>
-                );
-            }) :
-                <div className={styles.emptyScreen}>
-                    <Image src={EmptyImage} alt='empty' />
-                    <div>Search or Add your Events</div>
-                    <span>Start by searching for existing events to add to your widgets</span>
-                    <span>or feel free to create your own event from scratch</span>
-                </div>}
+                )}
+
             {(isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
                 <AddEvent isApproved={isApproved} setIsApproved={setIsApproved} prefilledSubEvent={prefilledSubEvent} setPrefilledSubEvent={setPrefilledSubEvent} setPrefilledEvent={setPrefilledEvent} setPrefilledGlobalEvent={setPrefilledGlobalEvent} setEventFlow={setEventFlow} eventFlow={eventFlow} widgetId='22323' prefilledEvent={prefilledEvent} fetchEvents={fetchEvents} setIsAddEventModalOpen={setIsEventFormModal} prefilledGlobalEvent={prefilledGlobalEvent} addedEventIds={[""]} setChoiceFormModal={setChoiceFormModal} />
             </div>}
-            {/* {deleteModal && <div className={styles.deleteModal}>
-                <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>
-                <span>{selectedEventName}</span>
-                <div className={styles.btns}>
-                    <button className={styles.cancelBtn} onClick={() => setDeleteModal(false)}>Cancel</button>
-                    <button className={styles.deleteBtn} onClick={handleDelete}>Delete</button>
-                </div>
-            </div>}
-            {deleteModalTwo && <div className={styles.deleteModal}>
-                <div className={styles.deleteHeading}>This event is Present in one of your widgets.</div>
-                <span>Remove the event from widget to delete this event</span>
-                <div className={styles.btns}>
-                    <button className={styles.cancelBtn} onClick={() => setDeleteModalTwo(false)}>Cancel</button>
-                </div>
-            </div>} */}
             {choiceFormModal &&
                 <div className={styles.choiceModal}>
                     <ChoiceModal setChoiceFormModal={setChoiceFormModal} setEventFlow={setEventFlow} />

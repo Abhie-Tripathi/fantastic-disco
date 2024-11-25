@@ -7,6 +7,7 @@ interface LocationSuggestion {
     id: string;
     name: string;
     state: string;
+    city : string;
     countryName: string;
     lat: string;
     long: string;
@@ -41,9 +42,8 @@ const LocationDropdown = ({ theme, formState, handleChange
     const [isDropdownVisible, setIsDropdownVisible] = useState<boolean>(false);
 
     const handleSuggestionClick = async (suggestion: LocationSuggestion) => {
-        handleChange('cityName',suggestion.state ? suggestion.state : "")
-        // handleChange('cityName',suggestion.name)
-        // setCityName(suggestion.name);
+        const locationParts = [suggestion.name, suggestion.city, suggestion.state].filter(Boolean); // Remove falsy values
+        handleChange('cityName',locationParts.join(', '))
         handleChange('countryName',suggestion.countryName)
         handleChange('latitude',Number(suggestion.lat))
         handleChange('longitude',Number(suggestion.long))
@@ -67,7 +67,7 @@ const LocationDropdown = ({ theme, formState, handleChange
             const data = await response.json();
             const newSuggestions = data.map((location: any): LocationSuggestion => {
                 const { place_id: id, display_name: name, lat, lon: long } = location;
-                const { country: countryName, state } = location.address || {};
+                const { city, country: countryName, state } = location.address || {};
 
                 const shortName = shortenName(name)
                 return {
@@ -75,6 +75,7 @@ const LocationDropdown = ({ theme, formState, handleChange
                     name: shortName,
                     state,
                     countryName,
+                    city,
                     lat,
                     long,
                 };
@@ -164,15 +165,12 @@ const LocationDropdown = ({ theme, formState, handleChange
                 {isDropdownVisible && (
                     <div className={styles.locationDropdown}>
                         {suggestions.map(suggestion => (
-                            <div
-                                key={suggestion.id}
-                                className={styles.suggestion}
-                                onClick={() => handleSuggestionClick(suggestion)}
-                            >
+                            <div key={suggestion.id} className={styles.suggestion} onClick={() => handleSuggestionClick(suggestion)}>
                                 <LocationIcon />
-                                {/* <span>{suggestion.name}</span> */}
-                                {suggestion.state && <span>{suggestion.state},</span>}
-                                <span>{suggestion.countryName}</span>
+                                {(suggestion.name !== suggestion.city) && (suggestion.name !== suggestion.state) && (suggestion.name !== suggestion.countryName) && <span>{suggestion.name}</span>}
+                                {suggestion.city && <span>{suggestion.city} ,</span>}
+                                {suggestion.state && <span>{suggestion.state} ,</span>}
+                                <span>{suggestion.countryName} </span>
                             </div>
                         ))}
                     </div>
