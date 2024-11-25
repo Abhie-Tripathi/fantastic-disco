@@ -1,6 +1,10 @@
 "use client";
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import Heading from "@/components/new-ui/Heading";
+import Text from "@/components/new-ui/Text";
+import streetAddressRadius from "/public/streetAddressRadius.svg";
+import cityStateCountry from "/public/entireCityCountry.svg";
 import { useSearchParams, useRouter } from "next/navigation";
 import EventTypeSelector from "@/components/search/eventType";
 import CategorySelector from "@/components/search/categorySelector";
@@ -209,8 +213,37 @@ const presetTemplateData = [
     presetType: 'All',
   }
 ];
-
-const templates = [
+const productType = process.env.NEXT_PUBLIC_PRODUCT_TYPE;
+const templates = productType==="eventeli"?[
+    {
+      name: "T_LOCATION",
+      templateName: "Location",
+      // type: "template",
+      domain: "Market Research",
+      img: Competitor,
+      url: "T_LOCATION",
+      content:
+        "Track your competitor experts, influencers and where they might be participating in events",
+    },
+    {
+      name: "T_VENUE",
+      templateName: "Venue",
+      // domain: "Market Research",
+      img: Keywords,
+      url:"T_VENUE",
+      content:
+        "List all the events which belongs to given industry or associated with keywords.",
+    },
+    {
+      name: "T_LOCATION_DATE",
+      templateName: "Location and Date",
+      img: Speaking,
+      url: "T_LOCATION_DATE",
+      content:
+        "Input team members and their details to keep track of the events with speaking opportunities.",
+    }
+  
+]:[
   {
     name: "T_RECRUITMENT",
     templateName: "Recruitment",
@@ -370,6 +403,7 @@ const formatText = (val: string) => {
 
 const Pages = () => {
   const searchParams = useSearchParams();
+ 
   const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
   interface SelectedLocation {
     [id: string]: string;
@@ -1636,6 +1670,41 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
+    {
+      (type==="T_LOCATION" || type==="T_VENUE" || type==="T_LOCATION_DATE")&& 
+      <div className="flex justify-between">
+      <LocationSelector type={type} source="tracker" selectedLocation={selectedLocationsData} setSelectedLocation={setSelectedLocationsData}/>
+      <div>
+      <div>
+        <section className="flex items-center justify-between gap-4">
+          {type==="T_LOCATION" &&
+          <span
+            className="border-2 border-[#ebebeb] rounded-2xl p-3 flex gap-2 flex-col"
+          >
+            <Image src={cityStateCountry} alt="GEO_JSON" />
+            <div className="text-[var(--primary-color)] h-5 font-bold">Entire City, State, Country etc.</div>
+            <Text size="small" color="secondary">
+              Eg: Bangalore, Karnataka or India
+            </Text>
+          </span>
+          }
+          {(type==="T_VENUE" || type==="T_LOCATION_DATE") &&
+          <span
+          className="border-2 border-[#ebebeb] rounded-2xl p-3 flex gap-2 flex-col"
+            
+          >
+            <Image src={streetAddressRadius} alt="LOCATION_ID" />
+            <div className="text-[var(--primary-color)] h-5 font-bold">Street Address & Radius</div>
+            <Text size="small" color="secondary">
+              Eg: Stores, Hotels, Restaurants or Office
+            </Text>
+          </span>
+          }
+        </section>
+      </div>
+    </div>
+    </div>
+    }
     {type==="T_PRODUCT_KEYWORDS" &&
     <div className={`card flex flex-col gap-6`} style={{gap:"var(--spacing-lg)", borderRadius:"var(--border-radius-sm)", boxShadow:"none"}}>
       <div>
@@ -1958,6 +2027,7 @@ return (
               >
                 Insights &#x26; Score
               </button>
+              {productType==="eventgtm" && 
               <button
                 onClick={() => setSelectedAdvFilter("AI")}
                 className={`${styles.listBtn} ${selectedAdvFilter === "AI" ? styles.active : ""
@@ -1965,6 +2035,7 @@ return (
               >
                 Audience Intel
               </button>
+              }
             </div>
           </div>
         </div>
@@ -2067,7 +2138,7 @@ return (
         )}
 
         {/* INSIGHTS AND SCORES */}
-        {showAdvanceFilter && selectedAdvFilter === "IS" && (
+        {(showAdvanceFilter && selectedAdvFilter === "IS") && (
           <div className={styles.inputdropdowns_container}>
               <EstimatedVisitorsSelector source="tracker" selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}/>
               <EstimatedExhibitorsSelector selectedRanges={selectedExhibitScore}

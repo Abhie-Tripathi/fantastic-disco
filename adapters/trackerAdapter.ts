@@ -1,7 +1,9 @@
 interface OriginalResponse {
-    totalEvents: number;
-    events: any[];
-  }
+  totalEvents?: number;
+  count?: number;
+  events?: any[];
+  result?: any[];
+}
   
   interface AdaptedResponse {
     events: any[];
@@ -13,17 +15,18 @@ interface OriginalResponse {
   export const TrackersAdapter = {
     adaptTrackerEventData(data: OriginalResponse | undefined): AdaptedResponse {
       return {
-        events: data?.events || [],
+        events: data?.events || data?.result || [],
         stats: {
-          totalEvents: data?.totalEvents || 0,
+          totalEvents: data?.totalEvents || data?.count || 0,
         },
       };
     },
   
   
     adaptTrackerMapEventData(data: any) {
-  
-      const eventData = data.events.map((item: any) => ({
+      const eventKey = data.events ? "events" : "result";
+
+      const eventData = data[eventKey].map((item: any) => ({
         id: item.id,
         eventImpactScore: null,
         latitude:

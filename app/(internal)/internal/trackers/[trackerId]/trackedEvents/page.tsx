@@ -70,6 +70,7 @@ const Page = ({ params }: { params: any }) => {
   
   const pathname = usePathname();
   // const {getTrackerDetail, error}=useTrackerServices();
+  const productType = process.env.NEXT_PUBLIC_PRODUCT_TYPE;
   const [type, setType] = useState<string | undefined>();
   const [activeValue, setActiveValue] = useState();
   const [loading, setLoading] = useState(false);
@@ -157,8 +158,8 @@ const Page = ({ params }: { params: any }) => {
               : active === "Expired Events"
               ? "expired"
               : active === "New Events"
-              ? ""
-              : "active"
+              ? "" : active === "Saved Events"?"saved":
+               "active"
           }&groupBy=${
             data.tracker.filterValue.startDate
               ? data.tracker.filterValue.startDate
@@ -406,7 +407,7 @@ const activeVal =
     : active ===
       "Expired Events"
     ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
-    : 0;
+    : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
     console.log(activeVal);
     
   return (
@@ -432,7 +433,7 @@ const activeVal =
                   addQueryString("activeEvent");
                 }}
               >
-                Active Events
+                {productType==="eventeli"?"Business Events":"Active Events"}
                 {
                   <div className={styles.circle} style={{background: active==="Active Events"?"white":"", color: active==="Active Events"?"var(--primary-color)":""}}>
                     {loading ? (
@@ -455,7 +456,7 @@ const activeVal =
                   addQueryString("newEvent");
                 }}
               >
-                New Events
+                {productType==="eventeli"?"Social Events":"New Events"}
                 {
                   <div className={styles.circle}>
                     {loading ? (
@@ -483,7 +484,7 @@ const activeVal =
                   addQueryString("expiredEvent");
                 }}
               >
-                Past Events
+                {productType==="eventeli"?"Unattended Events":"Expired Events"}
                 {
                   <div className={styles.circle}>
                     {loading ? (
@@ -564,7 +565,7 @@ const activeVal =
             </Link>
           </div>
 
-          {(view === "list" || active === "Saved Events") && (
+          {(view === "list") && (
             <div>
               <Suspense fallback={<Loading />}>
             <Table
@@ -578,7 +579,7 @@ const activeVal =
             </div>
           )}
 
-          {(view === "map" && active !== "Saved Events") && (
+          {(view === "map") && (
             <div>
               <Suspense fallback={<Loading />}>
               {Number(activeVal)===0 ?
@@ -587,7 +588,7 @@ const activeVal =
               </div>
                : 
                 <Map source="tracker" 
-                searchParams={`type=${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":"active"}`}
+                searchParams={`${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":active==="Saved Events"?"saved":"active"}`}
                 trackerId={params.trackerId}
                  />
                 } 
@@ -596,7 +597,7 @@ const activeVal =
             </div>
           )}
 
-          {(view === "calendar" && active !== "Saved Events" ) && (
+          {(view === "calendar" ) && (
             <div>
               <Suspense fallback={<Loading />}>
               {isLoading ? (
@@ -607,7 +608,7 @@ const activeVal =
             <ZeroState text={(error as ApiError).message} />
           ) : (
             <EventCalendar
-              type={`${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":"active"}`}
+              type={`${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":active==="Saved Events"?"saved":"active"}`}
               source="tracker"
               trackerId={params.trackerId}
               events={events as CalendarEvent[] | CalendarMonthEvent[]}
