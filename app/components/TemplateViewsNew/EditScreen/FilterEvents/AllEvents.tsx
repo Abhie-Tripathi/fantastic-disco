@@ -1067,7 +1067,7 @@ const AllEvents = ({
                     <div>
                       {event.mainEvent.format === "Virtual"
                         ? "Virtual"
-                        : event.mainEvent.cityName}
+                        : event.mainEvent.cityName ? `${event.mainEvent.cityName}, ${event.mainEvent.countryName}` :event.mainEvent.countryName} 
                     </div>
                   </div>
                   <div className={styles.eventDateContainer}>
