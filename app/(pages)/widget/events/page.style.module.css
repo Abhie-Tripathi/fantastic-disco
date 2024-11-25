@@ -32,12 +32,33 @@
     margin-bottom: 20px;
 }
 
-.container {
+.events_cal_map{
+    display: flex;
+}
+.eventContainer{
+    width: 70%;
+}
+.events_cal_map .container {
+    width: 100%;
     display: flex;
     align-items: center;
     flex-direction: column;
 }
-
+.cal_map{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 30%;
+}
+.calendarContainer{
+    width: 100%;
+}
+.mapContainer{
+    width: 300px;
+    height: 200px;
+    border-radius: 10px;
+    overflow: hidden;
+}
 /* .blackScreen {
     position: absolute;
     top: 50%;

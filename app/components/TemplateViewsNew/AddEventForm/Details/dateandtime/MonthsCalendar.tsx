@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./month.style.module.css";
 import { useCalendarServices } from "@/services/geniservices/calendarServices";
+
 const Calendar = ({
   cardBgColor,
   widgetId,
@@ -280,8 +281,8 @@ const Calendar = ({
                 isCurrentMonth
                   ? currentMonth
                   : day <= 15
-                  ? currentMonth + 1
-                  : currentMonth - 1,
+                    ? currentMonth + 1
+                    : currentMonth - 1,
                 day
               );
               const formattedDate = currentCellDate.toLocaleDateString("en-CA");
@@ -296,23 +297,21 @@ const Calendar = ({
               return (
                 <div
                   key={index}
-                  className={`${styles.dayCell} ${
-                    isCurrentMonth
+                  className={`${styles.dayCell} ${isCurrentMonth
                       ? styles.isCurrentMonth
                       : styles.nonCurrentMonthDay
-                  } ${
-                    eventData && eventData.totalEvents > 0
+                    } ${eventData && eventData.totalEvents > 0
                       ? styles.eventHover
                       : ""
-                  }`}
+                    }`}
                   style={
                     day === today.getDate() &&
-                    currentMonth === today.getMonth() &&
-                    year === today.getFullYear()
+                      currentMonth === today.getMonth() &&
+                      year === today.getFullYear()
                       ? { color: cardBgColor || "#ffeb3b" }
                       : eventData && eventData.totalEvents > 0
-                      ? { color: "#ffffff" }
-                      : undefined
+                        ? { color: "#ffffff" }
+                        : undefined
                   }
                   onClick={() => handleDayClick(day, isCurrentMonth)}
                 >
