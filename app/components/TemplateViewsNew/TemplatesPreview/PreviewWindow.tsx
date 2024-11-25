@@ -39,6 +39,8 @@ interface PreviewProps {
     selectedImage?: StaticImageData
     cardBgColor?: string;
     previewWindowBgColor?:string;
+    isDark?:boolean;
+    setIsDark?:(value: boolean) => void;
     cardBorderRadius?: number;
     fontSettings?: {
         heading: FontSettings;
@@ -73,6 +75,8 @@ const demoDate = "29 Jan - 5 Feb"
 const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, draftWidget, fetchDraftWidgets,
     cardBgColor = "#ffffff", cardBorderRadius = 20,
     previewWindowBgColor = "#ffffff",
+    isDark,
+    setIsDark,
     fontSettings = {
         heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bold" },
         subheading: { fontFamily: "arial", fontSize: 14, fontColor: "#000000", fontWeight: "normal" },
@@ -195,7 +199,8 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
             cardBorderRadius,
             selectedBtn,
             selectedCard,
-            previewWindowBgColor
+            previewWindowBgColor,
+            isDark
             // closeButtonSetting,
         };
         customizeData.append('customizationData', JSON.stringify(customizationData));
@@ -265,7 +270,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                         selectedTemplate === "SB" ? <StickyPreview type="down" demoDate={demoDate} fetchedAddedOtherData={fetchedAddedOtherData} smallCard={smallCard} selectedBtn={selectedBtn} buttonSettings={buttonSettings} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                             selectedTemplate === "HB" ? <HeroBanner fetchedAddedOtherData={fetchedAddedOtherData} selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                 selectedTemplate === "GS" ? <GridView demoDate={demoDate} widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} /> :
-                                    selectedTemplate === "LS" ? <ListView isFullScreen={isFullScreen}  demoDate={demoDate} widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                    selectedTemplate === "LS" ? <ListView previewWindowBgColor={previewWindowBgColor} isDark={isDark} setIsDark={setIsDark} isFullScreen={isFullScreen}  demoDate={demoDate} widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                         selectedTemplate === "HBL" ? <HeroBannerAndViews isFullScreen={isFullScreen} demoDate={demoDate} type='list' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                             selectedTemplate === "HBG" ? <HeroBannerAndViews  isFullScreen={isFullScreen} demoDate={demoDate} type='grid' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                                 selectedTemplate === "CVL" ? <CaraouselAndViews demoDate={demoDate} type='list'

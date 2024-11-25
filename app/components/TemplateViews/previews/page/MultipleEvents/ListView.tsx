@@ -153,6 +153,9 @@ interface EditProps {
   demoLocation: string;
   demoDate: string;
   isFullScreen: boolean;
+  previewWindowBgColor?:string;
+  isDark?:boolean
+  setIsDark?:(value: boolean) => void
 }
 
 const ListView = ({
@@ -168,6 +171,9 @@ const ListView = ({
   demoLocation,
   demoDate,
   isFullScreen,
+  previewWindowBgColor,
+  setIsDark,
+  isDark
 }: EditProps) => {
   const router = useRouter();
 
@@ -267,6 +273,9 @@ const ListView = ({
               onDateSelect={handleFilteredEvents}
               handleResetEvents={handleResetEvents}
               onMonthSelect={handleFilteredEventsByMonth}
+              previewWindowBgColor={previewWindowBgColor}
+              isDark={isDark}
+              setIsDark={setIsDark}
             />
           </div>
           <div className={styles.mapContainer}>
