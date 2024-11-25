@@ -211,64 +211,25 @@ const Page = () => {
             <div className={styles.globalSearch}>
                 <GlobalSearch widgetId='123' handlePrefillGlobalEvent={handlePrefillGlobalEvent} />
             </div>
-            {fetchedEvents.length > 0 ? (
-                <div className={styles.events_cal_map}>
-                    <div className={styles.eventContainer}>
-                        {fetchedEvents.map((event, index) => {
-                            const showDate = event.mainEvent.startDate !== prevDate;
-                            prevDate = event.mainEvent.startDate;
-                            return (
-                                <div key={index} className={styles.container}>
-                                    <TimelineItem eventDate={showDate ? event.mainEvent.startDate : null} />
-                                    {event.mainEvent.eventType === "MAIN" ? (
-                                        <DashboardEventCard
-                                            setSelectedEventType={setSelectedEventType}
-                                            handlePrefillSubEvent={handlePrefillSubEvent}
-                                            width='small'
-                                            handlePrefillEvent={handlePrefillEvent}
-                                            handleDeleteModal={handleDeleteModal}
-                                            event={event}
-                                        />
-                                    ) : (
-                                        <SubEventCard
-                                            setSelectedEventType={setSelectedEventType}
-                                            width='small'
-                                            handlePrefillEvent={handlePrefillEvent}
-                                            normalEvent={event}
-                                        />
-                                    )}
-                                </div>
-                            );
-                        })}
+            {fetchedEvents.length > 0 ?
+                fetchedEvents.map((event, index) => {
+                    const showDate = event.mainEvent.startDate !== prevDate;
+                    prevDate = event.mainEvent.startDate;
+                    return (
+                        <div key={index} className={styles.container}>
+                            <TimelineItem eventDate={showDate ? event.mainEvent.startDate : null} />
+                            {event.mainEvent.eventType === "MAIN" ? <DashboardEventCard setSelectedEventType={setSelectedEventType} handlePrefillSubEvent={handlePrefillSubEvent} width='small' handlePrefillEvent={handlePrefillEvent} handleDeleteModal={handleDeleteModal} event={event} /> : <SubEventCard setSelectedEventType={setSelectedEventType} width='small' handlePrefillEvent={handlePrefillEvent} normalEvent={event} />}
+                        </div>
+                    );
+                })
+                : (
+                    <div className={styles.emptyScreen}>
+                        <Image src={EmptyImage} alt='empty' />
+                        <div>Search or Add your Events</div>
+                        <span>Start by searching for existing events to add to your widgets</span>
+                        <span>or feel free to create your own event from scratch</span>
                     </div>
-                    {/* <div className={styles.cal_map}>
-                        <div className={styles.calendarContainer}>
-                            <MonthCalendar
-                                cardBgColor="1a1a1a"
-                            />
-                        </div>
-                        <div className={styles.mapContainer}>
-                            <Map
-                                initialViewState={{
-                                    longitude: -100,
-                                    latitude: 40,
-                                    zoom: 3.5,
-                                }}
-                                style={{ width: "100%", height: "100%" }}
-                                mapStyle="mapbox://styles/mapbox/streets-v12"
-                                mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
-                            />
-                        </div>
-                    </div> */}
-                </div>
-            ) : (
-                <div className={styles.emptyScreen}>
-                    <Image src={EmptyImage} alt='empty' />
-                    <div>Search or Add your Events</div>
-                    <span>Start by searching for existing events to add to your widgets</span>
-                    <span>or feel free to create your own event from scratch</span>
-                </div>
-            )}
+                )}
 
             {(isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal) && <div className={styles.blackScreen}></div>}
             {isEventFormModal && <div className={styles.addEventModal}>
