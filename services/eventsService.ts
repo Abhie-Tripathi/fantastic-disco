@@ -8,6 +8,7 @@ import {
   EventCount,
   EventDetailResponse,
   EventEditionDetailResponse,
+  EventExhibitorDetails,
   EventPOCDetailResponse,
   EventsResponse,
   MapEventsResponse,
@@ -97,6 +98,24 @@ export const useEventsService = () => {
     );
   };
 
+  const getEventExhibitorDetails = (id: string, take: number, skip: number) => {
+    return api.request<EventExhibitorDetails[]>(
+      `${endpoints.event.eventDetailById}/exhibitor?id=${id}&take=${take}&skip=${skip}`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
+  const getEventSpeakerDetails = (id: string, take: number, skip: number) => {
+    return api.request(
+      `${endpoints.event.eventDetailById}/speaker?id=${id}&take=${take}&skip=${skip}`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
   const getEventsWithSearchParams = async (searchParamsString: string) => {
     const params = new URLSearchParams(searchParamsString);
     console.log(params.toString());
@@ -107,10 +126,6 @@ export const useEventsService = () => {
       method: "GET",
       params: adaptedParams,
     });
-    console.log(response);
-    
-    console.log(params.toString());
-    console.log(EventsAdapter.adaptResponse(response, params));
     return EventsAdapter.adaptResponse(response, params);
   };
 
@@ -187,6 +202,8 @@ export const useEventsService = () => {
     getEventDetailById,
     getEventPOCDetails,
     getEventEditionDetails,
+    getEventExhibitorDetails,
+    getEventSpeakerDetails,
     getEventsWithSearchParams,
     getEventCoOrganizerDetails,
     isLoading: api.isLoading,

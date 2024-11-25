@@ -5,6 +5,11 @@ import { baseUrl } from "@/constants";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { showToast } from "@/utils/showToast";
+import { useSearchParams } from "next/navigation";
+import * as crypto from "crypto";
+import { useIntendServices } from "@/services/geniservices/intendService";
+
+const algorithm = 'aes-256-cbc'; // Ensure this is the correct algorithm
 interface Props {
   registerMessage: string;
   registerBtnText: string;
@@ -45,6 +50,11 @@ const RegisterForm = ({
 
   const [isEventEnded, setIsEventEnded] = useState(false);
   const [timeSinceEnd, setTimeSinceEnd] = useState("");
+  const searchParams = useSearchParams();
+  const [prefilledEmail, setPrefilledEmail] = useState("");
+  const [event_Id, setEventId] = useState("");
+  const [status, setStatus] = useState("");
+  const {updateStatus, addIntend,error} = useIntendServices();
   console.log("value_s", start_time, end_time, start_date);
   // Function to convert hex to RGB
   const hexToRgb = (hex: string) => {
@@ -83,42 +93,111 @@ const RegisterForm = ({
   };
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN;
 
+  const algorithm = "aes-256-cbc";
+  const iv = crypto.randomBytes(16);
+
+  const decrypt = (encryptedText: string, key: string): string => {
+    if(encryptedText==="widgetId" || encryptedText === "eventId"){
+      return ""
+    }else{
+    const parts = encryptedText.split(":");
+    const iv = Buffer.from(parts.shift()!, "hex");
+    const encrypted = parts.join(":");
+    const decipher = crypto.createDecipheriv(
+      algorithm,
+      Buffer.from(key, "utf-8"),
+      iv
+    );
+    let decrypted = decipher.update(encrypted, "hex", "utf8");
+    decrypted += decipher.final("utf8");
+    return decrypted;
+    } 
+  };
+
+  const originalKey: string = process.env.NEXT_PUBLIC_DECRYPTKEY || "";
+  const encrypt_key = crypto
+    .createHash("sha256")
+    .update(originalKey)
+    .digest("base64")
+    .slice(0, 32);
+  const textToEncrypt = "Hello, this is a secret message";
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const nameParts = formData.firstname.trim().split(" ");
-    const firstName = nameParts[0]; // First word becomes the first name
-    const lastName = nameParts.slice(1).join(" "); // Remaining words become the last name
-    const payload = {
-      email: formData.email,
-      firstname: firstName,
-      lastname: lastName,
-      eventId: eventId,
-      interest: "ATTENDEE",
-      note: "intend",
-      source: "eventgeni",
-      redirectUrl: `${console_url}/detailpage/${eventId}`,
-      // sourceId: widgetId,
-    };
-    try {
-      const response = await fetch(`${baseUrl}/intend`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+    if (status === "yes"||status === "no" ) {
+      const nameParts = formData.firstname.trim().split(" ");
+      const firstName = nameParts[0]; // First word becomes the first name
+      const lastName = nameParts.slice(1).join(" "); // Remaining words become the last name
+      const payload = {
+        firstname: firstName,
+        lastname: lastName,
+        id: event_Id,
+        status: status === "yes" ? "CONFIRMED" : "CANCELLED",
+        redirectUrl: `${console_url}/detailpage/${eventId}`,
+      };
+      try {
+        // const response = await fetch(`${baseUrl}/intend`, {
+        //   method: "PATCH",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(payload),
+        // });
+        const data = await updateStatus(payload)
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Success:", data);
-        setRegisterSuccess(true);
-        // toast.success("successfully registred for the event !");
-      } else {
-        console.error("Error:", response.statusText);
-        // toast.error("Error in registration");
+        // if (response.ok) {
+          // const data = await response.json();
+          if(status === "yes"){
+            setRegisterSuccess(true);
+          }
+          if(status === "no"){
+            setRegisterSuccess(false);
+            toast.success("successfully cancelled for the event!");
+          }
+         
+          // toast.success("successfully registred for the event!");
+        // } else {
+          // console.error("Error:", response.statusText);
+          // toast.error("Error in registration");
+        // }
+      } catch (error) {
+        console.error("Error:", error);
       }
-    } catch (error) {
-      console.error("Error:", error);
+    } else {
+      const nameParts = formData.firstname.trim().split(" ");
+      const firstName = nameParts[0]; // First word becomes the first name
+      const lastName = nameParts.slice(1).join(" "); // Remaining words become the last name
+      const payload = {
+        email: formData.email,
+        firstname: firstName,
+        lastname: lastName,
+        eventId: eventId,
+        interest: "ATTENDEE",
+        note: "intend",
+        source: "eventgeni",
+        redirectUrl: `${console_url}/detailpage/${eventId}`,
+        // sourceId: widgetId,
+      };
+      try {
+        // const response = await fetch(`${baseUrl}/intend`, {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(payload),
+        // });
+        const data = await addIntend(payload);
+        // if (response.ok) {
+          // const data = await response.json();
+          setRegisterSuccess(true);
+          // toast.success("successfully registred for the event!");
+        // } else {
+          // console.error("Error:", response.statusText);
+          // toast.error("Error in registration");
+        // }
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
 
@@ -127,27 +206,52 @@ const RegisterForm = ({
   };
 
   useEffect(() => {
+    searchParams.forEach((value, key) => {
+      if (key) {
+        const decrypted = decrypt(key, encrypt_key);
+        const pairs = decrypted.split("&");
+        pairs.forEach((pair) => {
+          const [key, value] = pair.split("=");
+          if (key === "email") {
+            setPrefilledEmail(value);
+          }
+          if (key === "onClicked") {
+            setStatus(value);
+          }
+          if (key === "id") {
+            setEventId(value);
+          }
+        });
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     const calculateIsPastEvent = () => {
       function convertTo24Hour(time: string) {
         // Use a regex to parse the hour, minute, and AM/PM part
-        const [timeString, modifier] = time.split(' ');
-        let [hours, minutes] = timeString.split(':');
+        const [timeString, modifier] = time.split(" ");
+        let [hours, minutes] = timeString.split(":");
 
         // Convert hours based on AM/PM
-        if (modifier === 'P.M' && hours !== '12') {
+        if (modifier === "P.M" && hours !== "12") {
           hours = `${parseInt(hours, 10) + 12}`;
-        } else if (modifier === 'A.M' && hours === '12') {
-          hours = '00';
+        } else if (modifier === "A.M" && hours === "12") {
+          hours = "00";
         }
         return `${hours}:${minutes}`;
       }
       function getCurrentTime24Hour() {
         const now = new Date();
-        return now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+        return now.toLocaleTimeString("en-US", {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+        });
       }
       function getCurrentDateFormatted() {
         const now = new Date();
-        return now.toISOString().split('T')[0]; // returns "YYYY-MM-DD"
+        return now.toISOString().split("T")[0]; // returns "YYYY-MM-DD"
       }
       function calculateTimeDifference(eventDate: string, eventTime: string) {
         const now = new Date();
@@ -161,32 +265,37 @@ const RegisterForm = ({
         const diffDays = Math.floor(timeDiffMs / (1000 * 60 * 60 * 24));
 
         if (diffDays > 0) {
-          return `Event has ended ${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+          return `Event has ended ${diffDays} day${
+            diffDays > 1 ? "s" : ""
+          } ago`;
         } else if (diffHours > 0) {
-          return `Event has ended ${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+          return `Event has ended ${diffHours} hour${
+            diffHours > 1 ? "s" : ""
+          } ago`;
         } else {
-          return `Event has ended ${diffMinutes} minute${diffMinutes > 1 ? 's' : ''} ago`;
+          return `Event has ended ${diffMinutes} minute${
+            diffMinutes > 1 ? "s" : ""
+          } ago`;
         }
       }
 
-      const eventTime = convertTo24Hour(end_time || "12:00 AM")
-      const currentTime = getCurrentTime24Hour()
-      const currentDate = getCurrentDateFormatted()
+      const eventTime = convertTo24Hour(end_time || "12:00 AM");
+      const currentTime = getCurrentTime24Hour();
+      const currentDate = getCurrentDateFormatted();
       if (currentDate > (end_date || "1")) {
-        setIsEventEnded(true)
+        setIsEventEnded(true);
         setTimeSinceEnd(calculateTimeDifference(end_date, eventTime));
-
       } else if (currentDate === end_date) {
         if (currentTime > eventTime) {
-          setIsEventEnded(true)
+          setIsEventEnded(true);
           setTimeSinceEnd(calculateTimeDifference(end_date, eventTime));
-        } else setIsEventEnded(false)
-      } else setIsEventEnded(false)
+        } else setIsEventEnded(false);
+      } else setIsEventEnded(false);
     };
 
     // Call the function to set the state
     calculateIsPastEvent();
-  }, [])
+  }, []);
 
   return (
     <div className={styles.registerContainer}>
@@ -404,7 +513,7 @@ const RegisterForm = ({
           type="email"
           name="email"
           placeholder="Email"
-          value={formData.email}
+          value={prefilledEmail ? prefilledEmail : formData.email}
           onChange={handleChange}
           required
         />
@@ -412,7 +521,7 @@ const RegisterForm = ({
           type="submit"
           style={{ backgroundColor: registerBtnColor, color: fontColor }}
           className={styles.submitBtn}
-        // onClick={handleClick}
+          // onClick={handleClick}
         >
           {/* Past event */}
           {isEventEnded && <span>Follow</span>}
@@ -461,7 +570,9 @@ const RegisterForm = ({
             capacity &&
             registration &&
             !approval &&
-            !waitlisting && <span>{registerBtnText}</span>}
+            !waitlisting && (
+              <span>{status === "no" ? "Decline" : registerBtnText}</span>
+            )}
           {!isEventEnded &&
             capacity &&
             registration &&

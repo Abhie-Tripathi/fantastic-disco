@@ -59,7 +59,6 @@ import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
 import SearchBar from "../../searchBar/SearchBar";
 import CsvUploader from "./csvUploader";
-import { Button as Button10x } from "10xui";
 import FrequencySelector from "@/components/search/advancedFilters/frequency";
 import ForecastedStatusSelector from "@/components/search/advancedFilters/forecastedStatus";
 import EventAnalyticsSelector from "@/components/advancedFilters/eventAnalytics";
@@ -104,6 +103,7 @@ interface Template {
   templateName?: string;
   description?: string | undefined;
   inputAreas?: InputArea[] | undefined;
+  isUploadEnable?: boolean;
 }
 interface CategoryData {
   attendedCategories?: string[];
@@ -258,7 +258,8 @@ const templates = productType==="eventeli"?[
         type: "text",
         placeholder: "Department"
       }
-    ]
+    ],
+    isUploadEnable: false,
   },
   {
     name: "T_COMPETITOR",
@@ -273,7 +274,8 @@ const templates = productType==="eventeli"?[
         required:true,
         example: "facebook.com",
       }
-    ]
+    ],
+    isUploadEnable: true,
   },
   {
     name: "T_AUDIENCE_DEPT_PROFILE",
@@ -289,30 +291,33 @@ const templates = productType==="eventeli"?[
       //   type: "text",
       //   placeholder: "Profile",
       // }
-    ]
-
+    ],
+    isUploadEnable: false,
   },
   {
     name: "T_CUSTOMER_ICP",
     templateName: "Customer ICP",
-    type: "disabled",
+    type: "enabled",
     description: "Input ideal customer profile details like company, location or websites to track their interests",
     inputAreas: [
       {
-        img: Company,
-        type: "text",
-        placeholder: "Company Name",
-      },
-      {
         img: Url,
         type: "text",
-        placeholder: "Url",
+        placeholder: "Company Name or Website",
+        required:true,
+        example: "facebook.com",
       },
-      {
-        type: "text",
-        placeholder: "Location",
-      }
-    ]
+      // {
+      //   img: Url,
+      //   type: "text",
+      //   placeholder: "Url",
+      // },
+      // {
+      //   type: "text",
+      //   placeholder: "Location",
+      // }
+    ],
+    isUploadEnable: true,
   },
   {
     name: "T_BRAND_BUILDING",
@@ -328,25 +333,31 @@ const templates = productType==="eventeli"?[
       //   type: "text",
       //   placeholder: "Job Description",
       // }
-    ]
+    ],
+    isUploadEnable: false,
   },
   {
     name: "T_PEOPLE_FINDER",
     templateName: "People Finder",
-    type: "disabled",
+    type: "enabled",
     description: "Track experts, influencers and where they might be participating in various events",
     inputAreas: [
       {
         img: Name,
         type: "text",
         placeholder: "Name",
+        required:true,
+        example: "Mark Zuckerberg",
       },
       {
         img: Company,
         type: "text",
         placeholder: "Company Name",
+        required:true,
+        example: "Facebook",
       }
-    ]
+    ],
+    isUploadEnable: true,
   },
   {
     name: "T_SPEAKING_OPPORTUNITY",
@@ -368,7 +379,8 @@ const templates = productType==="eventeli"?[
         required:true,
         example: "Facebook",
       }
-    ]
+    ],
+    isUploadEnable: true,
   },
   {
     name: "T_SOCIAL_CAUSE",
@@ -647,6 +659,10 @@ const Pages = () => {
   const [org,setOrg]=useState("");
   const [speakerName, setSpeakerName] = useState("");
   const [speakerCompany, setSpeakerCompany] = useState("");
+
+  const [userName, setUserName] = useState("");
+  const [userCompany, setUserCompany] = useState("");
+
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
@@ -666,7 +682,7 @@ const Pages = () => {
       }
     }  
 
-    if (type === "T_COMPETITOR") {
+    if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if(customData.length > 0 && Object.values(customData[0])[0]) {
         fetchAISuggestion(Object.values(customData[0])[0]);
       }
@@ -689,8 +705,12 @@ const Pages = () => {
       const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
       setSpeakerName(speakerName);
       setSpeakerCompany(speakerCompany);
-      console.log(speakerName, speakerCompany);
+      // console.log(speakerName, speakerCompany);
 
+    }
+    else if (type === "T_PEOPLE_FINDER") {
+      setUserName(customData.map((item: {}) => Object.values(item)[0]).join(','))
+      setUserCompany(customData.map((item: {}) => Object.values(item)[1]).join(','))
     } else if (type === "T_BRAND_BUILDING") {
       const designation = customData.map((item: {}) => Object.values(item)[0]).join(',');
       setDesignations(designation);
@@ -795,7 +815,15 @@ const Pages = () => {
           speakerOrg: speakerCompany,
         }),
         ...(selectedEventType?.business?.length > 0 && {
-          eventType: selectedEventType?.business?.join(",")
+          eventType: selectedEventType.business
+            .map(eventType => eventType.charAt(0).toUpperCase() + eventType.slice(1).replace(/s$/, ""))
+            .join(","),
+        }),
+        ...(userName.length > 0 && {
+          userName: userName,
+        }),
+        ...(userCompany.length > 0 && {
+          speakerOrg: userCompany,
         }),
         ...(selectedEventEdition > 0 && {
           editionRange: selectedEventEdition.toString(),
@@ -844,7 +872,7 @@ const Pages = () => {
         }),
         // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
         ...(selectedEventStatus?.length > 0 && {
-          eventStatus: selectedEventStatus.join(","),
+          eventStatus: selectedEventStatus.map((item) => item.toUpperCase()).join(","),
         }),
         ...(selectedEntry?.length > 0 && {
           eventEntry: selectedEntry.join(","),
@@ -853,7 +881,7 @@ const Pages = () => {
           trustScore: selectedTrustScore[0].toString(),
         }),
         ...(selectedEventFrequency?.length > 0 && {
-          eventFrequency: selectedEventFrequency.join(","),
+          eventFrequency: selectedEventFrequency.map((item)=>item[0].toUpperCase()+item.slice(1)).join(","),
         }),
         ...(selectedReptScore > 0 && {
           reputationScore: selectedReptScore.toString(),
@@ -907,7 +935,7 @@ const Pages = () => {
         }),
         ...((selectedMaturity !== '' && selectedMaturity !== 'none') && { maturity: selectedMaturity }),
         ...(analyticsToggles.globalToggle && {
-          eventImpactSocre: selectedImpactScore.join("-")
+          eventImpactScore: selectedImpactScore.join("-")
          }),
         ...(analyticsToggles.globalToggle && {
           inboundScore: selectedInboundScore.join("-")
@@ -931,7 +959,7 @@ const Pages = () => {
          ...(selectedAudProfile.length > 0 && {
           designation: selectedAudProfile.join(","),
         }),
-        ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'eventInboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency'].join()}
+        ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'inboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency'].join()}
         // info: {
         //   name: trackerName,
         //   location:selectedLocations,
@@ -962,7 +990,7 @@ const Pages = () => {
         // }
       },
     };
-    if (last === "editTracker") {
+   
 
       const secondLast = pathName[pathName.length - 2];
      
@@ -976,12 +1004,17 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type === "CUSTOM" && (selectedLocationsData &&selectedLocationsData.length === 0 || trackerName.length === 0)) {
+      else if (type === "CUSTOM" && ( 
+        !selectedLocationsData || 
+        selectedLocationsData.length === 0 || 
+        trackerName.trim().length === 0 
+      )) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
+      if (last === "editTracker") {
       try{
         const data = await editTracker(secondLast, formData);
         if (data) {
@@ -995,7 +1028,6 @@ const Pages = () => {
         console.log(error);
         setIsCreating(false);
       }
-      console.log(selectedCountry);
     } else {
       console.log(formData);
       
@@ -1023,9 +1055,7 @@ const Pages = () => {
           setIsCreating(false);
           return;
         }
-        if (data) {
-          console.log(data);
-  
+        if (data) {  
           router.replace("/internal/trackers");
         }
       }catch(error){
@@ -1060,7 +1090,7 @@ const Pages = () => {
       // if (editData.tracker.filterValue?.maturity == "low") {
       //   setSelectedMaturity(25);
       // }
-      if (type === "T_COMPETITOR") {
+      if (type === "T_COMPETITOR" || type == "T_CUSTOMER_ICP") {
         const orgNames = editData?.tracker?.filterValue?.orgName?.
           split(',');
         const orgWebsites = editData?.tracker?.filterValue?.orgWebsite?.
@@ -1098,6 +1128,17 @@ const Pages = () => {
         //     { companyUrl: item.trim() }
         //   ))
         // ]);
+      }
+      if (type === "T_PEOPLE_FINDER") {
+        const speakerOrgs = editData?.tracker?.filterValue?.speakerOrg?.
+          split(',');
+        const speakerNames = editData?.tracker?.filterValue?.userName?.
+          split(',');
+        const presentCustomData = speakerNames.map((speakerName: string, index: number) => ({
+          "Name": speakerName.trim(),
+          "Company Name": speakerOrgs[index]?.trim()
+        }));
+        setCustomData(presentCustomData);
       }
       if (editData.tracker.filterValue?.localRank?.length > 0 || editData.tracker.filterValue?.eventRank?.length > 0) {
         const newToggles = { ...rankToggles };
@@ -1137,9 +1178,9 @@ const Pages = () => {
 
       if(editData?.tracker?.filterValue?.inboundScore && editData?.tracker?.filterValue?.inboundScore !== "")
         setSelectedInboundScore(editData?.tracker?.filterValue?.inboundScore?.split("-"));
-
-      if(editData?.tracker?.filterValue?.eventImpactSocre && editData?.tracker?.filterValue?.eventImpactSocre !== "")
-        setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactSocre?.split("-"));
+      
+      if(editData?.tracker?.filterValue?.eventImpactScore && editData?.tracker?.filterValue?.eventImpactScore !== "")
+        setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactScore?.split("-"));
 
       if(editData?.tracker?.filterValue?.internationalScore && editData?.tracker?.filterValue?.internationalScore !== "")
         setSelectedInternationalScore(editData?.tracker?.filterValue?.internationalScore?.split("-"));
@@ -1206,7 +1247,7 @@ const Pages = () => {
       setSelectedEventStatus(
         editData?.tracker?.filterValue?.eventStatus &&
           editData?.tracker?.filterValue?.eventStatus?.length !== 0
-          ? editData?.tracker?.filterValue?.eventStatus?.split(",")
+          ? editData?.tracker?.filterValue?.eventStatus?.split(",").map((item:string) => item.toLowerCase())
           : []
       );
       setDateRange({
@@ -1274,7 +1315,7 @@ const Pages = () => {
       setSelectedEventFrequency(
         editData?.tracker?.filterValue?.eventFrequency && 
         editData?.tracker?.filterValue?.eventFrequency?.length > 0
-          ? editData?.tracker?.filterValue?.eventFrequency?.split(",")
+          ? editData?.tracker?.filterValue?.eventFrequency?.split(",").map((item:string)=>item[0].toLowerCase()+item.slice(1))
           : []
       );
       setSelectedEntry(
@@ -1339,7 +1380,9 @@ const Pages = () => {
       //     : 0
       // );
       if (editData?.tracker?.filterValue?.eventType !== undefined) {
-        const eventTypes = editData.tracker.filterValue.eventType;
+        const eventTypes = editData.tracker.filterValue.eventType.map((type:string) => {
+          return type.charAt(0).toLowerCase() + type.slice(1) + 's';
+        });
     
         if (Array.isArray(eventTypes) && eventTypes.length > 0) {
           setSelectedEventType((prev) => ({
@@ -1425,7 +1468,7 @@ const Pages = () => {
     }
   }, [editData]);
 
-  console.log(selectedLabels);
+  // console.log(selectedLabels);
   const [popoverState, setPopoverState] = useState<boolean>(false);
   const setMenuOpen = () => {
     setPopoverState(!popoverState);
@@ -1445,8 +1488,8 @@ const Pages = () => {
       document.body.removeAttribute("your-attribute");
     };
   }, [popoverState]);
-  console.log(selectedEventRank);
-  console.log(type);
+  // console.log(selectedEventRank);
+  // console.log(type);
   const [companyUrl, setCompanyUrl] = useState('');
   const [name, setName] = useState('');
   const [companyName, setCompanyName] = useState('');
@@ -1455,7 +1498,7 @@ const Pages = () => {
       addNew();
     }
   }
-  console.log(customData);
+  // console.log(customData);
   const [isLoading,setIsLoading]=useState(true);
   const [template, setTemplate] = useState<Template | null | undefined>(null);
   const [inputValues, setInputValues] = useState<{ [key: number]: string }>({});
@@ -1467,7 +1510,7 @@ const Pages = () => {
     setIsLoading(false);
   },[template])
   const handleInput = (index: number, value: string) => {
-    console.log(value);
+    // console.log(value);
     setInputValues(prevValues => ({
       ...prevValues,
       [index]: value
@@ -1522,16 +1565,16 @@ const Pages = () => {
     }else setValid(false);
   }
   }
-  console.log(valid);
+  // console.log(valid);
   const truncate = (val: string) => {
     if (val.length > 24) return val.substring(0, 25) + "...";
     else return val;
   }
   const deleteEntry = (entryKey: string, itemIndex: number) => {
-    console.log(itemIndex);
+    // console.log(itemIndex);
     const filteredData = customData.filter((item, index) => index !== itemIndex);
     setCustomData(filteredData);
-    console.log(filteredData);
+    // console.log(filteredData);
 
     // setCustomData((prevData) => 
     //   prevData.map((item, index) => {
@@ -1604,15 +1647,11 @@ const commonCss={
 useEffect(() => {
   console.log('Selected Aviation Rank:', selectedInternationalScore);
 }, [selectedInternationalScore]);
-console.log(includeKeywords, excludeKeywords);
 // useEffect(()=>{
 //   const updatedIncludeKeywords = includeKeywords.map((keyword) => `${keyword.split(" ").join("_")}`);
 //   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
 //       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
 // },[includeKeywords, excludeKeywords])
-console.log(includeKeywords, excludeKeywords);
-console.log(selectedLocationsData);
-
 
 return (
   <>
@@ -1799,7 +1838,7 @@ return (
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
           {" "} Please upload or manually enter the information
         </div>
-        {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") ?
+        {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP") ?
           (uploadEnabled && 
             <CsvUploader
               templateData={template}
@@ -1845,17 +1884,17 @@ return (
                               />
                             </div>
                           } */}
-        {type === "T_COMPETITOR" && inputValues[0]?.length > 0  &&
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") && inputValues[0]?.length > 0  &&
          <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={'company/suggestion'} type={type}/>
         }
                         </div>
 
                       </>
                     ))}
-                    <div onClick={() => template.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px]"
+                    <div onClick={() => template.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
                       style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
-                    >
-                      <Image src={Add} alt="add_Icon" />
+                    >+
+                      {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
                     </div>
 
                   </div>
@@ -1926,9 +1965,8 @@ return (
                 {customData.length > 5 &&
                   <div className={styles.expandTableBtn} onClick={()=>setExpandTable(prev=>!prev)} >{expandTable ? 'Read Less' : 'Read More'}</div>
                 }
-              </div>
-            } */}
-            {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") &&
+
+              {/* {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY") && */}
               <div style={{textAlign: 'center'}}>
                 <div style={{position: 'relative', color: 'var(--secondary-text-color)'}}>
                   <div style={{borderBottom: '1px solid var(--border-color)', margin: '36px 0'}}></div>
@@ -1939,13 +1977,14 @@ return (
                     className="text-white gap-1"
                     size="sm"
                     onClick={handleUploadEnable}
+                      disabled={!template?.isUploadEnable}
                   >
                     <Share style={{marginBottom: "3px", color: "white"}} height="15px" width="15px" />
                     {" "}Upload
                   </Button>
                 </div>
               </div>
-            }
+              {/* } */}
           </div>
         }
       </div>
@@ -1993,7 +2032,7 @@ return (
           <CategorySelector  source="tracker"  selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}/>
           <EventFormatSelector source="tracker" selectedStatuses={selectedEventFormat}
                   setSelectedStatuses={setSelectedEventFormat}/>
-          <LocationSelector source="tracker" selectedLocation={selectedLocationsData} setSelectedLocation={setSelectedLocationsData}/>
+          <LocationSelector source="tracker" selectedLocation={selectedLocationsData} setSelectedLocation={setSelectedLocationsData} isMandatory={isMandatory}/>
           {/* <LocationSelector/> */}
           <DateRangeSelector source="tracker" dateRange={dateRange} setDateRange={setDateRange}/>
           <EventStatusSelector source="tracker" setSelectedStatuses={setSelectedEventStatus} selectedStatuses={selectedEventStatus}/>
@@ -2140,7 +2179,8 @@ return (
         {/* INSIGHTS AND SCORES */}
         {(showAdvanceFilter && selectedAdvFilter === "IS") && (
           <div className={styles.inputdropdowns_container}>
-              <EstimatedVisitorsSelector source="tracker" selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}/>
+              <EstimatedVisitorsSelector source="tracker" selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}
+              />
               <EstimatedExhibitorsSelector selectedRanges={selectedExhibitScore}
               setSelectedRanges={setSelectedExhibitScore}
               isEnabled={isExhibitOpen}

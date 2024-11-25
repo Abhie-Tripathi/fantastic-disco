@@ -18,6 +18,11 @@
     /* bottom: -80px; */
     width: 100%;
 }
+.leftSection{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 .rightSection{
     display: flex;
     flex-direction: column;

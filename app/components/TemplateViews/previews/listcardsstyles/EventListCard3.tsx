@@ -64,14 +64,45 @@ const EventListCard3 = ({
       <div className={styles.bannerContainer}>
       <Image width={271} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.banner} />
         <div className={styles.event_type}>{fetchedEvent?.eventType==="MAIN"? "Main Event" : fetchedEvent?.eventType ==="SUB" ? "Side Event":"Main Event"}</div>
-        <div className={styles.type}>{fetchedEvent?.event_type}</div></div>
+        <div className={styles.type}>{fetchedEvent ? fetchedEvent?.event_type : "Tradeshow"}</div></div>
       
       <div className={styles.eventDetails}>
-        <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div>
+        {/* <div className={styles.eventName} style={{fontSize : fontSettings.heading.fontSize , color : fontSettings.heading.fontColor, fontFamily : fontSettings.heading.fontFamily, fontWeight : fontSettings.heading.fontWeight}}>{fetchedEvent ? fetchedEvent.name.substring(0,30) : demoEventName}</div> */}
+        <div
+              className={styles.eventName}
+              style={{
+              fontSize: fontSettings.heading.fontSize,
+              color: fontSettings.heading.fontColor,
+              fontFamily: fontSettings.heading.fontFamily,
+              fontWeight: fontSettings.heading.fontWeight
+              }}
+              data-name={fetchedEvent && fetchedEvent.name}
+            >
+              {fetchedEvent
+              ? `${fetchedEvent.name.substring(0, 15)}${fetchedEvent.name.length > 15 ? "..." : ""}`
+              : demoEventName}
+          </div>
         <div className={styles.location_dateContainer}>
           <div className={styles.locationContainer}>
             <LocationIcon color={fontSettings.subheading.fontColor}/>
-            <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent?.eventFormat==="Virtual"?"Virtual": fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName :  demoLocation}</div>
+            {/* <div className={styles.location} style={{fontSize : fontSettings.subheading.fontSize , color : fontSettings.subheading.fontColor, fontFamily : fontSettings.subheading.fontFamily, fontWeight : fontSettings.subheading.fontWeight}}>{fetchedEvent?.eventFormat==="Virtual"?"Virtual": fetchedEvent ? fetchedEvent.cityName + ", " + fetchedEvent.countryName :  demoLocation}</div> */}
+            <div
+          className={styles.location}
+            style={{
+            fontSize: fontSettings.subheading.fontSize,
+            color: fontSettings.subheading.fontColor,
+            fontFamily: fontSettings.subheading.fontFamily,
+            fontWeight: fontSettings.subheading.fontWeight,
+            }}
+          >
+        {fetchedEvent?.eventFormat === "Virtual"
+        ? "Virtual"
+        : fetchedEvent
+        ? (fetchedEvent.cityName + `${fetchedEvent.cityName ? ",":""}` + fetchedEvent.countryName).length > 15
+        ? (fetchedEvent.cityName + `${fetchedEvent.cityName ? ",":""}` + fetchedEvent.countryName).substring(0, 15) + "..."
+        : fetchedEvent.cityName + `${fetchedEvent.cityName ? ",":""}` + fetchedEvent.countryName
+        : demoLocation}
+        </div>
           </div>
           <div className={styles.dateContainer}>
             <DateIcon color={fontSettings.subheading.fontColor}/>

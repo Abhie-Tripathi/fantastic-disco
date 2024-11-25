@@ -38,7 +38,8 @@ export default function EventList({
   trackerId:string;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const searchParams = source!=="tracker"?useSearchParams():searchParam;
+  const defaultSearchParams = useSearchParams();
+  const searchParams = source !== "tracker" ? defaultSearchParams : searchParam;
   const eventService = useEventsService();
   const filteredParams = new URLSearchParams(searchParams?.toString());
   
@@ -90,9 +91,10 @@ export default function EventList({
             days === 1 ? "day" : "days"
           })`;
           
+
           
     return (
-      <Link href={`/search/${event.id}`}>
+      <Link href={`/internal/event/${event.id}`} target="_blank">
         <Card key={event.id} className="mb-4 relative">
           <div className="absolute left-0 top-0 bottom-0 w-1 rounded-md bg-[#5055A3]" />
           <CardContent className="p-4">

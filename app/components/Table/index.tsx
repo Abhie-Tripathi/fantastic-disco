@@ -20,6 +20,8 @@ import { EventTableType } from "@/types/ListViewTable";
 import { usePathname } from "next/navigation";
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
+import NullState from "../trackers/nullState";
+import TrackerNullState from '@/public/trackerNullState.svg'
 import {
   TooltipTrigger,
   Button,
@@ -35,8 +37,6 @@ import { useTrackerServices } from "@/services/trackerServices";
 // import { AllEventsType } from '@/types/ListViewTable';
 import ZeroState from "../zerostate";
 import { useTrackerContext } from "@/context/tracker";
-import NullState from "../trackers/nullState";
-import TrackerNullState from '@/public/trackerNullState.svg'
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -558,6 +558,8 @@ const Table = ({
         if (result.count === 0) {
           setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
         setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
+          setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
+        setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
         }
   
         if (currPage === 1) {
@@ -924,7 +926,7 @@ const Table = ({
               {(type === null || type === 'CUSTOM') && appliedKeywords?.length > 0 && <th>Matched</th>}
               {(type === null || type === 'CUSTOM') && appliedKeywords?.length >= 5 && <th>Score</th>}
 
-              {(type === "T_SPEAKING_OPPORTUNITY" || type === "T_COMPETITOR") &&
+              {(type === "T_SPEAKING_OPPORTUNITY" || type === "T_COMPETITOR" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP" || type === "T_RECRUITMENT") &&
                 path[path.length - 1] !== "savedEvents" && (
                   <>
                     <th
@@ -1507,7 +1509,7 @@ const Table = ({
                   </>
                 )}
 
-                {type === "T_COMPETITOR" &&
+                {(type==="T_COMPETITOR" || type === "T_CUSTOMER_ICP") &&
                   path[path.length - 1] !== "savedEvents" && (
                     <>
                       <td

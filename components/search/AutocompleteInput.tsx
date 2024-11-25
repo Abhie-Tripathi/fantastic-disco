@@ -47,17 +47,11 @@ export default function AutocompleteInput({
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [selectedLocations, setSelectedLocations] = useState<Location[]>([]);
-  // const savedLocationsResult = useSavedLocationAutocomplete(inputValue);
   const databaseLocationResult = useDatabaseLocationcomplete(inputValue);
   const nominatimResult = useNominatimAutocomplete(inputValue);
-  const savedLocationsResult = {predictions: [], isLoading: false, isError: false}
 
   const { predictions, isLoading, isError } =
-    type === "SavedLocations"
-      ? savedLocationsResult
-      : type === "LocationId"
-      ? databaseLocationResult
-      : nominatimResult;
+    type === "LocationId" ? databaseLocationResult : nominatimResult;
 
   useEffect(() => {
     if (value) {
@@ -144,7 +138,7 @@ export default function AutocompleteInput({
             ) : selectedLocations.length === 1 ? (
               <span>{selectedLocations[0].description}</span>
             ) : (
-              <span>{placeholder}</span>
+              <span className="text-[#7d7d7d]">{placeholder}</span>
             )}
           </div>
           <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />

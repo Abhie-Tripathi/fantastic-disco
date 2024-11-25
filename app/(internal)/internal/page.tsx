@@ -480,7 +480,7 @@ const Dashboard = () => {
                   //   router.push("internal/trackers?tab=savedEvents");
                   // }}
                 >
-                  Saved Events
+                  Bookmarked Events
                 </div>
                 </div>
                 <div style={{fontSize:"var(--font-size-small)"}}>

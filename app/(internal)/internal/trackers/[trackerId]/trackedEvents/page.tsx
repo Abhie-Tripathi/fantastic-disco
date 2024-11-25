@@ -383,20 +383,17 @@ const Page = ({ params }: { params: any }) => {
   const newUrl = `${pathname}?${params.toString()}`;
   router.replace(newUrl);
 };
-const cityIds = trackerDetail?.filterValue?.locationIds?.city?.length > 0 
-  ? trackerDetail.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0]) 
-  : [];
+// const cityIds = trackerDetail?.filterValue?.locationIds?.city?.length > 0 
+//   ? trackerDetail.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0]) 
+//   : [];
 
-const countryIds = trackerDetail?.filterValue?.locationIds?.country?.length > 0 
-  ? trackerDetail.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0]) 
-  : [];
+// const countryIds = trackerDetail?.filterValue?.locationIds?.country?.length > 0 
+//   ? trackerDetail.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0]) 
+//   : [];
 
-const stateIds = trackerDetail?.filterValue?.locationIds?.state?.length > 0 
-  ? trackerDetail.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0]) 
-  : [];
-
-const locationIds:string[] = [...cityIds, ...countryIds, ...stateIds];
-console.log(events);
+// const stateIds = trackerDetail?.filterValue?.locationIds?.state?.length > 0 
+//   ? trackerDetail.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0]) 
+//   : [];
 const activeVal =
  active ===
   "Active Events"
@@ -512,7 +509,7 @@ const activeVal =
                   addQueryString("savedEvent");
                 }}
               >
-                Saved Events
+                Bookmarked Events
                 {
                   <div className={styles.circle} style={{background: active==="Saved Events"?"white":"", color: active==="Saved Events"?"var(--primary-color)":""}}>
                     {loading ? (

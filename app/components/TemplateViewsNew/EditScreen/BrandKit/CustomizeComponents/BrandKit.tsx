@@ -9,6 +9,7 @@ import { myFetch } from '@/utils/myFetch'
 import Loading from '@/app/components/UI/Loading';
 import { AllEventsType, EventsType } from '@/types/alleventtype';
 import Link from 'next/link';
+import { useBrandKitServices } from '@/services/geniservices/brandkitService';
 
 interface Props {
     extractedColors: string[];
@@ -46,9 +47,10 @@ const BrandKit = ({ extractedColors, setExtractedColors, flex, setPageBgColor, p
     const [fetchedLogos, setFetchedLogos] = useState<string[]>([])
     const [loadingState, setLoadingState] = useState<boolean>(true)
     const [polling, setPolling] = useState<boolean>(true);
-
+    const {getBrandkit, error} = useBrandKitServices()
     const fetchBrandkit = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/kit`)
+        // const { data, error } = await myFetch(`${baseUrl}/kit`)
+        const data:any = await getBrandkit();
         if (error) {
             console.error('Error fetching brand kit:', error);
             return;

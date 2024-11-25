@@ -64,7 +64,6 @@ const EventListCard1 = ({
   const description = fetchedEvent ? truncateText(fetchedEvent.description, 130) : demoDescription;
   const truncatedDescription = description.substring(0, 130) + (description.length > 130 ? "..." : "");
   const { day, month } = fetchedEvent ? formatStartDate(fetchedEvent.startDate) : { day: 1, month: "Jan" };
-  console.log("asdasd",fetchedEvent)
   return (
     <div className={styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
       <Image width={260} height={200} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='banner' className={styles.banner} style={{objectFit : "cover"}}/>
@@ -86,9 +85,42 @@ const EventListCard1 = ({
           <div className={styles.name_locationContainer}>
             <div className={styles.locationContainer}>
               <LocationIcon color={fontSettings.subheading.fontColor}/>
-              <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent?.eventFormat==="Virtual"?"Virtual":fetchedEvent ? (fetchedEvent.cityName + ", " + fetchedEvent.countryName).substring(0,20) : demoLocation}</div>
+              {/* <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedEvent?.eventFormat==="Virtual"?"Virtual":fetchedEvent ? (fetchedEvent.cityName + ", " + fetchedEvent.countryName).substring(0,20) : demoLocation}</div> */}
+              <div
+          className={styles.location}
+            style={{
+            fontSize: fontSettings.subheading.fontSize,
+            color: fontSettings.subheading.fontColor,
+            fontFamily: fontSettings.subheading.fontFamily,
+            fontWeight: fontSettings.subheading.fontWeight,
+            }}
+          >
+        {fetchedEvent?.eventFormat === "Virtual"
+        ? "Virtual"
+        : fetchedEvent
+        ? (fetchedEvent.cityName + `${fetchedEvent.cityName ? ",":""}` + fetchedEvent.countryName).length > 15
+        ? (fetchedEvent.cityName + `${fetchedEvent.cityName ? ",":""}` + fetchedEvent.countryName).substring(0, 15) + "..."
+        : fetchedEvent.cityName + `${fetchedEvent.cityName ? ",":""}` + fetchedEvent.countryName
+        : demoLocation}
+        </div>
             </div>
-            <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? `${fetchedEvent.name.substring(0,30)} ${fetchedEvent.name.length > 30 ?"...":""}` : demoEventName}</div>
+            {/* <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? `${fetchedEvent.name.substring(0,30)} ${fetchedEvent.name.length > 30 ?"...":""}` : demoEventName}</div> */}
+         
+          <div
+              className={styles.eventName}
+              style={{
+              fontSize: fontSettings.heading.fontSize,
+              color: fontSettings.heading.fontColor,
+              fontFamily: fontSettings.heading.fontFamily,
+              fontWeight: fontSettings.heading.fontWeight
+              }}
+              data-name={fetchedEvent && fetchedEvent.name}
+            >
+              {fetchedEvent
+              ? `${fetchedEvent.name.substring(0, 15)}${fetchedEvent.name.length > 15 ? "..." : ""}`
+              : demoEventName}
+          </div>
+
           </div>
         </div>
         <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: truncatedDescription }}></div>

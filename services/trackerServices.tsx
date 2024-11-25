@@ -120,7 +120,6 @@ export const useTrackerServices = () => {
       trackerId:string, params:string, eventType:string,
       abortSignal?: AbortSignal
     ) => {
-      console.log(eventType);
       
       const response:any= await api.request(
         eventType==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?${params}`:`${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&type=${eventType}` : ''}`,
@@ -132,7 +131,6 @@ export const useTrackerServices = () => {
       console.log(response);
       
       const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
-      console.log(updatedResponse);
       
       return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=Map"));
     };
@@ -175,9 +173,6 @@ export const useTrackerServices = () => {
       method: "GET",
       params: adaptedParams,
     });
-    console.log(response);
-    
-    console.log(TrackersAdapter.adaptTrackerMapEventData(response));
     return  TrackersAdapter.adaptTrackerMapEventData(response)
     };
     const getCalendarViewEvents = async (trackerId:string, searchParams:string, isListing:boolean, viewType?:string)=>{

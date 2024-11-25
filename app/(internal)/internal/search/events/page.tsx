@@ -181,8 +181,7 @@ const Search = () => {
       setTrackerModalOpen(true);
     }
   };
-console.log(searchParams.toString());
-console.log(events);
+
   return (
     <div className="space-y-6 p-6">
       <SearchBar />

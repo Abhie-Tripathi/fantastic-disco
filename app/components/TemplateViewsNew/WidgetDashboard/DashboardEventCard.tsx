@@ -92,14 +92,15 @@ const DashboardEventCard = ({ event, fetchEvents, handleDeleteModal, handlePrefi
             <div className={width === "small" ? styles.cardSubeventContainer : ""}>
                 <div className={width === "small" ? styles.smallCard : styles.bigCard} onClick={handleCardClick}>
                     {width === "small" && <div className={styles.imageContainer}>
-                        <Image src={event.mainEvent.logoUrl} alt='Banner' height={130} width={130} />
+                        <Image src={event.mainEvent.logoUrl} alt='Banner' height={130} width={130} className='h-[130px] w-[130px]'/>
                     </div>}
                     <div className={styles.details}>
                         <div className={width === "small" ? styles.bigName : styles.smallName}>{event.mainEvent.name}</div>
                         <div className={styles.eventDataField} style={{ marginTop: 10 }}>
                             <Image src={PlaceIcon} alt="locationIcon" width={14} height={14} className="icons" />
                             {
-                                event?.mainEvent.format === "Virtual"?<>Virtual</>: <div>{event.mainEvent.cityName}, {event.mainEvent.countryName}</div>
+                                event?.mainEvent.format === "Virtual"?<>Virtual</>: 
+                                <div>{event.mainEvent.cityName && `${event.mainEvent.cityName},`} {event.mainEvent.countryName}</div>
                             }
                             {/* <div>{event.mainEvent.cityName}, {event.mainEvent.countryName}</div> */}
                         </div>

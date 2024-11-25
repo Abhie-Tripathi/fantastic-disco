@@ -20,6 +20,7 @@ import {
 import { useFilterContext } from "@/context/filterContext";
 import AutocompleteInput from "./AutocompleteInput";
 import { useLocationService } from "@/services/locationService";
+import { isEventeli } from "@/config";
 import LocationPopOver from "./locationPopOver";
 // import { getLocationByGeoCoordinates } from "@/services/searchService";
 
@@ -43,23 +44,26 @@ export interface LocationProps {
   setSelectedLocation?: React.Dispatch<
     React.SetStateAction<GeoLocation | LocationItem[] | null>
   >;
+  isMandatory?:boolean;
 }
 export default function LocationSelector({
   type,
   source,
   selectedLocation: parentSelectedLocation,
   setSelectedLocation: parentSetSelectedLocation,
+  isMandatory
 }: LocationProps) {
   const { getLocationName, getLocationDetails } = useLocationService();
   const productType = process.env.NEXT_PUBLIC_PRODUCT_TYPE;
   const [activeTab, setActiveTab] = useState(type==="T_VENUE"?"center":"city");
   const [isOpen, setIsOpen] = useState(false);
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
-  const [localSelectedLocation, setLocalSelectedLocation] = useState<Location | null>(
-    null
-  );
-  const selectedLocation = source==="tracker" ? parentSelectedLocation : localSelectedLocation;
-  const setSelectedLocation = parentSetSelectedLocation || setLocalSelectedLocation;
+  const [localSelectedLocation, setLocalSelectedLocation] =
+    useState<Location | null>(null);
+  const selectedLocation =
+    source === "tracker" ? parentSelectedLocation : localSelectedLocation;
+  const setSelectedLocation =
+    parentSetSelectedLocation || setLocalSelectedLocation;
   const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
     useFilterContext();
 
@@ -97,8 +101,7 @@ export default function LocationSelector({
   };
 
   useEffect(() => {
-    if(source!=="tracker")
-    fetchUrlLocation();
+    if (source !== "tracker") fetchUrlLocation();
   }, [searchParams]);
 
   const applyHandler = () => {
@@ -146,11 +149,14 @@ export default function LocationSelector({
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       {(!type) &&
       <PopoverTrigger asChild>
-        <Button
+      <Button
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            isOpen ? "border-primary" : "border-input"
-          }`}
+            ((selectedLocation === undefined || (Array.isArray(selectedLocation) &&selectedLocation?.length === 0)) && isMandatory)
+            ?"border-destructive": isOpen
+            ? "border-primary"
+            : "border-input"
+            }`}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-haspopup="true"

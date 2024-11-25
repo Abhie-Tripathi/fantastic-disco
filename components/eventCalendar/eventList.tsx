@@ -92,7 +92,7 @@ export default function EventList({
           console.log(eventDate.toISOString().split('T')[0]);
           
     return (
-      <Link href={`/internal/event/${event.id}`}>
+      <Link href={`/internal/event/${event.id}`} target="_blank">
         <Card key={event.id} className="mb-4 relative">
           <div className="absolute left-0 top-0 bottom-0 w-1 rounded-md bg-[#5055A3]" />
           <CardContent className="p-4">

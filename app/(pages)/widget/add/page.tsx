@@ -12,7 +12,10 @@ import useOutsideClick from '@/hooks/useOutsideClick'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation'
-
+import { useBrandKitServices } from '@/services/geniservices/brandkitService'
+import { useWidgetServices } from '@/services/geniservices/widgetService'
+import {GetDraftWidgetResponse} from '@/types/geniTypes/widgetTypes'
+import {Brandkit} from '@/types/geniTypes/brandkitTypes'
 interface DraftWidgetsType {
     widgetType: string;
     templateId: string;
@@ -32,6 +35,8 @@ const Page = () => {
     const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
     const [isDraftSaved, setIsDraftSaved] = useState<boolean>(false)
     const router = useRouter();
+    const {getBrandkit, error} = useBrandKitServices()
+    const {getDraftWidget} = useWidgetServices()
 
     const handleExplore = () => {
         if (widgetSelected) {
@@ -54,7 +59,8 @@ const Page = () => {
         return str;
     };
     const fetchDraftWidgets = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/widget`);
+        // const { data, error } = await myFetch(`${baseUrl}/widget`);
+        const data:GetDraftWidgetResponse = await getDraftWidget();
         if (data) {
             console.log(data);
             const filteredWidgets = data.data.filter((widget: any) => widget.status === "draft")
@@ -72,6 +78,17 @@ const Page = () => {
             console.log(error);
         }
     };
+    const checkBrandkit = async() =>{
+        try {
+            const res = await getBrandkit();
+            if (!res.domain.domain) {
+             router.push('/widget/dashboard')
+            }
+        } catch (error) {
+            console.log(error);
+            return;
+        }
+    }
     useEffect(() => {
         checkBrandkit()
         fetchDraftWidgets()
@@ -84,17 +101,17 @@ const Page = () => {
         setIsDraftSaved(false)
     }, [isDraftSaved])
 
-    const checkBrandkit = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/kit`)
-
-        if (error) {
-            console.log(error);
-            return;
-        }
-        if (!data.domain.domain) {
-            router.push('/widget/dashboard')
-        }
-    }
+    // const checkBrandkit = async () => {
+    //     const { data, error } = await myFetch(`${baseUrl}/kit`)
+    //     console.log("data______________________________checkbrandkit", data.domain)
+    //     if (error) {
+    //         console.log(error);
+    //         return;
+    //     }
+    //     if (!data.domain.domain) {
+    //         router.push('/widget/dashboard')
+    //     }
+    // }
 
     return (
         <div className={`${styles.body}`}>

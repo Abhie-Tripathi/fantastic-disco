@@ -11,6 +11,7 @@ import { ButtonSettingsState } from "@/types/buttoncustomizetypes";
 import PreviewWindow from "@/app/components/TemplateViewsNew/TemplatesPreview/PreviewWindow";
 import { AddedEventsType } from "@/types/addedeventtype";
 import Errorpage from "@/app/components/TemplateViewsNew/Errorpage";
+import { useWidgetServices } from "@/services/geniservices/widgetService";
 
 type TemplateId =
   | "ST"
@@ -93,6 +94,7 @@ const Widget = () => {
   const [isValid, setIsValid] = useState(true); // Track if the data is valid
   const [loading, setLoading] = useState(true); // Track loading state
   const [selectedKey, setSelectedKey] = useState<number>(0);
+  const {getActiveWidget, getDraftWidget, getOnlyDraftWidget, getDeActiveWidget, getWidgetById, error} = useWidgetServices()
 
   const asciiToString = (ascii: number): string => {
     let convertedValue = ascii.toString();
@@ -105,10 +107,12 @@ const Widget = () => {
   };
 
   const fetchDraftWidgets = async () => {
-    const { data, error } = await myFetch(`${baseUrl}/widget?status=draft`);
+    // const { data, error } = await myFetch(`${baseUrl}/widget?status=draft`);
+    
+    const data:any = await getOnlyDraftWidget();
     if (data) {
       console.log(data);
-      const filteredWidgets = data.data.map((widget: any) => ({
+      const filteredWidgets = data?.data?.map((widget: any) => ({
         ...widget,
         templateId: asciiToString(widget.templatePublicId),
         widgetType: widget.type,
@@ -125,12 +129,14 @@ const Widget = () => {
 
   // This function will fetch the widgets with status, ACTIVE and INACTIVE
   const fetchAllWidgets = async () => {
-    const { data: activeData, error: activeError } = await myFetch(
-      `${baseUrl}/widget?status=active`
-    );
-    const { data: deactivateData, error: deactivateError } = await myFetch(
-      `${baseUrl}/widget?status=deactivate`
-    );
+    // const { data: activeData, error: activeError } = await myFetch(
+    //   `${baseUrl}/widget?status=active`
+    // );
+    // const { data: deactivateData, error: deactivateError } = await myFetch(
+    //   `${baseUrl}/widget?status=deactivate`
+    // );
+    const activeData:any = await getActiveWidget();
+    const deactivateData:any = await getDeActiveWidget();
     const activeWidgets = activeData
       ? activeData.data.map((widget: any) => ({
           ...widget,
@@ -177,8 +183,7 @@ const Widget = () => {
   };
 
   const handleWidgetClick = async (widgetId: string) => {
-    const { data, error } = await myFetch(`${baseUrl}/widget/${widgetId}`);
-    // setWidgetId(widgetId)
+    const data:any = await getWidgetById(widgetId)
     if (!data) {
       console.log("data not found");
     } else {
@@ -229,11 +234,7 @@ const Widget = () => {
       ) : (
         <>
           <div className={styles.widgetsAndPreview}>
-            <div
-              className={`${styles.widgetsList} ${
-                isFullScreen ? styles.hideWidgetList : ""
-              }`}
-            >
+            <div className={`${styles.widgetsList} ${isFullScreen ? styles.hideWidgetList : ""}`}>
               {allWidgets.map((card, key) => (
                 <div
                   className={styles.widgetCard}
@@ -257,9 +258,7 @@ const Widget = () => {
               ))}
             </div>
             <div
-              className={`${styles.preview} ${
-                isFullScreen ? styles.fullPreview : ""
-              }`}
+              className={`${styles.preview} ${isFullScreen ? styles.fullPreview : ""}`}
             >
               <PreviewWindow
                 fontSettings={fontSettings}
@@ -271,7 +270,7 @@ const Widget = () => {
                 selectedTemplate={selectedTemplate}
                 isFullScreen={isFullScreen}
                 setIsFullScreen={setIsFullScreen}
-                smallCard={true}
+                smallCard={isFullScreen ? false : true}
                 fetchedAddedEvents={fetchedAddedEvents}
                 widgetId={selectedWidgetId}
               />

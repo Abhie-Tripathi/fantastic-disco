@@ -23,7 +23,6 @@ const Index = () => {
   const typeOfEvent = searchParams.get('eventType')
   const [view,setView]=useState(typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"list");
   const secondLast = pathName[pathName.length - 2];
-  console.log(secondLast);
   const router = useRouter()
   const {data}= useTrackerContext();
   const {getTrackerDetail, error}=useTrackerServices();

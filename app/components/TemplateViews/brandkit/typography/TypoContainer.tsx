@@ -3,7 +3,7 @@ import React from 'react'
 import styles from './typocontainer.style.module.css'
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
-
+import { useBrandKitServices } from '@/services/geniservices/brandkitService';
 interface Props {
     setPreview: (value: string) => void
     fetchedFonts : string[];
@@ -15,18 +15,20 @@ interface Props {
 const TypoContainer = ({ setPreview, setTypography, fetchedFonts ,setFetchedFonts, handleColorModal}: Props) => {
     console.log("fetched_fonts", fetchedFonts)
     const fonts = ["-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", "Arial", "sans-serif", "Times New Roman"]
-
+    const {updateBrandkit,error} = useBrandKitServices()
     const handleDelete = async(e: React.MouseEvent<HTMLDivElement>,indexToRemove : number)=>{
         e.stopPropagation();
         const updatedFontsArray = fetchedFonts.filter((_, index) => index !== indexToRemove);
         setFetchedFonts(updatedFontsArray)
-        const {data,error} = await myFetch(`${baseUrl}/kit`,{
-            method : "PATCH",
-            body: JSON.stringify({fontFamily : updatedFontsArray.join()}),
-            headers: {
-                'Content-Type': 'application/json'
-            }       
-        })
+        // const {data,error} = await myFetch(`${baseUrl}/kit`,{
+        //     method : "PATCH",
+        //     body: JSON.stringify({fontFamily : updatedFontsArray.join()}),
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     }       
+        // })
+        const data:any = await updateBrandkit({fontFamily : updatedFontsArray.join()})
+     
         if(error){
             console.log(error)
             return

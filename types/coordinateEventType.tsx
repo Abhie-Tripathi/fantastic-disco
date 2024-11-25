@@ -23,6 +23,13 @@ export interface eventDataType {
         SPEAKER: number,
         ATTENDING: number,
     };
+    owner: {
+        id: string,
+        firstName: string,
+        lastname: string | null,
+        designation: string | null,
+        profilPicture: string | null,
+    };
 }
 
 export interface CoordinateListResponse {

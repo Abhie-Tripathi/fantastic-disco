@@ -5,6 +5,8 @@ import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
 import Image from 'next/image'
 import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
+import { useWidgetServices } from '@/services/geniservices/widgetService'
+import { useBrandKitServices } from '@/services/geniservices/brandkitService'
 
 interface Props {
     fetched: boolean;
@@ -18,7 +20,8 @@ interface Props {
 }
 
 const InputComponent = ({removeCalled, fetched, setFetchedBoolean, setBrandkitLoadingState, setPolling, setFetchedDomain, fetchedDomain, setBrandkitFetched }: Props) => {
-
+    const {getActiveWidget, getDeActiveWidget, getDraftWidget} = useWidgetServices()
+    const {addBrandkit, error} = useBrandKitServices()
     const [domain, setDomain] = useState<string>("");
     const [disableBtn, setDisableBtn] = useState<boolean>(false)
 
@@ -36,9 +39,18 @@ const InputComponent = ({removeCalled, fetched, setFetchedBoolean, setBrandkitLo
         setDomain(fetchedDomain.substring(8))
     }, [fetchedDomain])
     const fetchWidget = async () => {
-        const { data: draftData, error: draftError } = await myFetch(`${baseUrl}/widget`)
-        const { data: activeData, error: activeError } = await myFetch(`${baseUrl}/widget?status=active`);
-        const { data: deactivateData, error: deactivateError } = await myFetch(`${baseUrl}/widget?`)
+        // const { data: draftData, error: draftError } = await myFetch(`${baseUrl}/widget`)
+        // const { data: activeData, error: activeError } = await myFetch(`${baseUrl}/widget?status=active`);
+        // const { data: deactivateData, error: deactivateError } = await myFetch(`${baseUrl}/widget?`)
+        // console.log("widget_data", "draft__",draftData);
+        // if (draftData.data.length > 0 || activeData.data.length > 0 || deactivateData.data.length > 0) {
+        //     setDisableBtn(true)
+        // }else{
+        //     setDisableBtn(false)
+        // }
+        const draftData:any = await getDraftWidget()
+        const activeData:any = await getActiveWidget()
+        const deactivateData:any = await getDeActiveWidget()
         if (draftData.data.length > 0 || activeData.data.length > 0 || deactivateData.data.length > 0) {
             setDisableBtn(true)
         }else{
@@ -126,6 +138,28 @@ const InputComponent = ({removeCalled, fetched, setFetchedBoolean, setBrandkitLo
         setBrandkitLoadingState(true)
         setPolling(true)
         setBrandkitFetched(true)
+
+
+
+
+
+
+    // try {
+    //     const res = await addBrandkit(postDomain);
+    //     console.log("brandkit", res);
+    // if (error) {
+    //     console.log(error)
+    //     return;
+    // }
+    //     setFetchedBoolean(true)
+    //     setBrandkitLoadingState(true)
+    //     setPolling(true)
+    //     setBrandkitFetched(true)
+
+    // } catch (error) {
+    //     console.log("Caught error:", error);
+    // }
+
     }
 
     return (

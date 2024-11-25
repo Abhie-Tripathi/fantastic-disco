@@ -10,7 +10,7 @@ import WaitlistIcon from '/public/widgetimages/manage_waitlistIcon.svg'
 import ApprovalIcon from '/public/widgetimages/manage_approvalIcon.svg'
 import CapacityIcon from '/public/widgetimages/manage_capacityIcon.svg'
 import Image from 'next/image';
-
+import { useIntendServices } from '@/services/geniservices/intendService';
 interface Props {
   format?: string;
   registration?: boolean;
@@ -47,7 +47,7 @@ interface Props {
 
 const Overview = ({virtualLink, format, leavesTheme, snowTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCity, locationCountry, setAddEventModal, participationType, setDeleteModal, setDeleteModalTwo, isPresentinWidget, registration, waitlist, capacity, approval, isPastEvent,eventMainSubType, eventType }: Props) => {
   const console_url = process.env.NEXT_PUBLIC_CONSOLE_PAGE_DOMAIN
-
+  const {getGuestCount, error} = useIntendServices()
   const [guestCount, setGuestCount] = useState<number>(0)
 
   const [goingGuests, setGoingGuests] = useState<number>(0)
@@ -63,7 +63,9 @@ const Overview = ({virtualLink, format, leavesTheme, snowTheme, eventId, imageUr
   };
 
   const fetchGuests = async () => {
-    const { data, error } = await myFetch(`${baseUrl}/intend/users?eventId=${eventId}`)
+    // const { data, error } = await myFetch(`${baseUrl}/intend/users?eventId=${eventId}`)
+    const data:any = await getGuestCount(eventId)
+    console.log("sadasdasdasd___3232",data)
     if (error) {
       console.log("error is : ", error)
     } else {
@@ -75,8 +77,9 @@ const Overview = ({virtualLink, format, leavesTheme, snowTheme, eventId, imageUr
     fetchCounts()
   }, [])
   const fetchCounts = async () => {
-    let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}`;
-    const { data, error } = await myFetch(`${fetchUrl}`)
+    // let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}`;
+    const data:any = await getGuestCount(eventId);
+    // const { data, error } = await myFetch(`${fetchUrl}`)
     if (error) {
       console.log("error is : ", error);
     } else {
