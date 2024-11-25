@@ -1,5 +1,11 @@
 "use client";
-import { categoryRank, countryRank, Event, TTabs } from "@/types/events";
+import {
+  categoryRank,
+  countryCategoryRank,
+  countryRank,
+  Event,
+  TTabs,
+} from "@/types/events";
 import { EventRank } from "./eventRank";
 import { InformationFill } from "geist-icons";
 import Text from "../new-ui/Text";
@@ -18,6 +24,8 @@ export interface RankingDetail {
   below5CountryEvent: countryRank[] | [];
   above5CategoryEvent: categoryRank[] | [];
   below5CategoryEvent: categoryRank[] | [];
+  above5CountryCategoryRankEvent: countryCategoryRank[] | [];
+  below5CountryCategoryEvent: countryCategoryRank[] | [];
 }
 export const InsightsAndScores = ({
   eventDetails,
@@ -31,6 +39,8 @@ export const InsightsAndScores = ({
     below5CategoryEvent,
     above5CountryEvent,
     below5CountryEvent,
+    above5CountryCategoryRankEvent,
+    below5CountryCategoryEvent,
     repeatSentiment: trustScore,
   } = eventDetails;
   const rankings: RankingDetail = {
@@ -38,6 +48,8 @@ export const InsightsAndScores = ({
     below5CategoryEvent: below5CategoryEvent,
     above5CountryEvent: above5CountryEvent,
     below5CountryEvent: below5CountryEvent,
+    above5CountryCategoryRankEvent: above5CountryCategoryRankEvent,
+    below5CountryCategoryEvent: below5CountryCategoryEvent,
   };
   const [ref, inView, entry, rootMargin] = useInView({
     threshold: 0.5,

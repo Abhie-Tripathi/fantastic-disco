@@ -2,6 +2,7 @@ import React from "react";
 import moment from "moment";
 import { heatmapColors } from "./constants"; // Import heatmapColors from parent component
 import { CalendarMonthEventWithHeatmap } from ".";
+import { useTheme } from "@/context/theme";
 
 const YearView = ({
   date,
@@ -11,6 +12,7 @@ const YearView = ({
   events: CalendarMonthEventWithHeatmap[];
 }) => {
   const months = moment.months();
+  const { theme } = useTheme();
 
   const getMonthEvents = (month: string) => {
     const monthIndex = months.indexOf(month);
@@ -19,7 +21,9 @@ const YearView = ({
 
   const getHeatmapColor = (category: string) => {
     const colorObj = heatmapColors.find((color) => color.name === category);
-    return colorObj ? colorObj.color : "white";
+    return colorObj
+      ? colorObj[theme === "light" ? "color" : "darkModeColor"]
+      : "white";
   };
 
   return (
@@ -54,7 +58,7 @@ const YearView = ({
                     (day) => (
                       <th
                         key={day}
-                        className="border font-medium text-[#666666] h-12 w-[calc(100%/7)] text-xs bg-[#FAFAFA]"
+                        className="border font-medium text-[#666666] h-12 w-[calc(100%/7)] text-xs bg-[var(--heading-background-color)]"
                       >
                         {day}
                       </th>
@@ -101,7 +105,7 @@ const YearView = ({
                       const backgroundColor =
                         dayTotalEvents > 0
                           ? getHeatmapColor(heatmapCategory)
-                          : "white";
+                          : "var(--primary-foreground)";
 
                       return (
                         <td
@@ -115,9 +119,13 @@ const YearView = ({
 
                           {isCurrentMonth && dayTotalEvents > 0 && (
                             <>
-                              <div className="text-primary font-semibold text-sm text-center mb-1">
+                              <p
+                                className={`font-semibold text-sm text-center mb-1 ${
+                                  theme == "light" ? "text-primary" : ""
+                                }`}
+                              >
                                 {dayTotalEvents}
-                              </div>
+                              </p>
                               <div className="flex items-center justify-center gap-[2px]">
                                 {dayBusinessEvents > 0 && (
                                   <span className="w-[10px] h-[10px] bg-[#9D50A3] rounded-full"></span>

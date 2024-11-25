@@ -15,7 +15,6 @@ import { CustomView, Views } from "./constants";
 import { useFilterState } from "@/hooks/useFilterState";
 import { CalendarEvent, CalendarMonthEvent } from "@/types/events";
 import EventList from "./eventList";
-import { useFilterContext } from "@/context/filterContext";
 import ZeroState from "@/app/components/zerostate";
 import { useSearchParams } from "next/navigation";
 
