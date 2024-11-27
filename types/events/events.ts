@@ -27,6 +27,47 @@ export interface EventEditionDetailResponse {
   editions: Editions[];
 }
 
+export interface EventExhibitorDetailsResponse {
+  data: EventExhibitorDetails[];
+}
+
+export interface EventSpeakerDetailsResponse {
+  data: EventSpeakerDetails[];
+}
+
+export interface EventExhibitorDetails {
+  id: number;
+  name: string;
+  location: {
+    cityName: string;
+    countryName: string;
+  };
+  logo: any;
+  interestCapturedOn: string;
+}
+
+export interface EventSpeakerDetails {
+  id: number;
+  name: string;
+  designation: string;
+  company: string;
+  title: string;
+  location: {
+    cityName: string;
+    countryName: string;
+  };
+  profilePicture: string;
+  interestCapturedOn: string;
+}
+
+export interface EventParticipantsDetails {
+  id: string;
+  name: string;
+  logo: string;
+  details: string;
+  type: "exhibitor" | "speaker" | "sponsor";
+}
+
 export interface Event {
   id: string;
   name: string;

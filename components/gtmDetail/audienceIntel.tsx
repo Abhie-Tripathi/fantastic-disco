@@ -12,6 +12,7 @@ import {
   DesignationSpread,
   Event,
   EventExhibitorDetails,
+  EventParticipantsDetails,
   TTabs,
 } from "@/types/events";
 import { CircularProgressBar } from "../eventDetail/circularProgressBar";
@@ -28,8 +29,8 @@ import { Badge } from "../ui/badge";
 // type TTabs = "Department Type" | "Designation Type";
 interface Props {
   eventDetails: GTMEventDetail;
-  eventExhibitorData: EventExhibitorDetails[];
-  eventSpeakerData: any[];
+  eventExhibitorData: EventParticipantsDetails[];
+  eventSpeakerData: EventParticipantsDetails[];
   scrollSection: string;
   setActiveTab: Dispatch<SetStateAction<TTabs>>;
 }
