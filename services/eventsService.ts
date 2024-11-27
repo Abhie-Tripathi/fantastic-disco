@@ -66,7 +66,7 @@ export const useEventsService = () => {
 
   const getEventDetailById = async (id: string) => {
     const response = await api.request<EventDetailResponse>(
-      `${endpoints.event.eventDetailById}/${id}?shows=eventBrand%2CeventSeries%2Cmaturity%2CeventImpactScore%2CeventInboundScore%2CinternationalScore%2Cisforecasted%2CtrustScore%2CeventRating%2CestimatedExhibitScore%2CaudienceSpread`,
+      `${endpoints.event.eventDetailById}/${id}`,
       {
         method: "GET",
       }

@@ -1,48 +1,7 @@
 import Text from "../new-ui/Text";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  EventExhibitorDetails,
-  EventParticipantsDetails,
-  GTMEventDetail,
-} from "@/types/events";
-import { Badge } from "@/components/ui/badge";
-
-const exhibitorsData = [
-  {
-    name: "Hotbox",
-    logo: "/gtmDetailIcons/hotbox.png",
-    boothNo: "Stand - 4/C54",
-  },
-  {
-    name: "Future Software",
-    logo: "/gtmDetailIcons/future.png",
-    boothNo: "Stand - 4/C2",
-  },
-  {
-    name: "P & I Generators limited",
-    logo: "/gtmDetailIcons/p&i.png",
-    boothNo: "Stand - 4/A12",
-  },
-];
-
-const speakersData = [
-  {
-    name: "Daniel Azar",
-    logo: "/gtmDetailIcons/daniel.png",
-    designation: "Chief Design officer at Zillow",
-  },
-  {
-    name: "Jenny Arden",
-    logo: "/gtmDetailIcons/jenny.png",
-    designation: "Chief Design officer at Zillow",
-  },
-  {
-    name: "John Smith",
-    logo: "/gtmDetailIcons/john.png",
-    designation: "Chief Design officer at Zillow",
-  },
-];
+import { EventParticipantsDetails, GTMEventDetail } from "@/types/events";
 
 const sponsorsData = [
   {
@@ -64,7 +23,6 @@ const ListCard = ({
 }: {
   participant: EventParticipantsDetails;
 }) => {
-  console.log(participant);
   return (
     <li className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-3 rounded-sm gap-3 w-fill h-auto">
       <div className="flex flex-row justify-between">
@@ -133,9 +91,7 @@ const ParticipantContainer = ({
         <Text variant="noMargin" fontWeight="medium">
           {heading}
         </Text>
-        {count !== null && count !== 0 && (
-          <BadgeCount value={count >= 3 ? 3 : count} />
-        )}
+        {count !== null && count !== 0 && <BadgeCount value={count} />}
       </div>
       <ul className="flex flex-col gap-2">
         {count !== null && count > 0 ? (
