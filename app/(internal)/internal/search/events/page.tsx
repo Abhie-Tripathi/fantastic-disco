@@ -31,7 +31,7 @@ import {
   MapEventsResponse,
 } from "@/types/events";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Loader2, Filter, Cross } from "lucide-react";
+import { ArrowUpRight, Loader2, Filter, Cross, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, lazy, use, useCallback, useEffect, useState } from "react";
 import Table from "@/app/components/Table";
@@ -76,7 +76,7 @@ const Search = () => {
     useFilterState();
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
-  const { applyFilters, setMultipleLocalFilters } = useFilterContext();
+  const { applyFilters, localFilters, clearLocalFilters } = useFilterContext();
   const searchParams = useSearchParams();
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
@@ -161,8 +161,12 @@ const Search = () => {
     audienceZone: adaptedParams.shows?.includes("audienceZone"),
     audienceSpread: adaptedParams.audienceSpread ? true : false,
     eventFrequency: adaptedParams.shows?.includes("eventFrequency"),
-    includeKeywords: adaptedParams.includeKeywords ? adaptedParams.includeKeywords : '',
-    excludeKeywords: adaptedParams.excludeKeywords ? adaptedParams.excludeKeywords : '',
+    includeKeywords: adaptedParams.includeKeywords
+      ? adaptedParams.includeKeywords
+      : "",
+    excludeKeywords: adaptedParams.excludeKeywords
+      ? adaptedParams.excludeKeywords
+      : "",
   };
 
   // console.log(adaptedQueryString);
@@ -187,39 +191,47 @@ const Search = () => {
       <SearchBar />
       <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
         <div className="col-span-8 grid grid-cols-4 gap-3">
-          <EventTypeSelector source="search"/>
-          <CategorySelector source="search"/>
-          <EventFormatSelector source="search"/>
-          <LocationSelector source="search"/>
-          <DateRangeSelector source="search"/>
-          <StatusSelector source="search"/>
-          <EventEntrySelector source="search"/>
-          <UserRatingSelector source="search"/>
+          <EventTypeSelector source="search" />
+          <CategorySelector source="search" />
+          <EventFormatSelector source="search" />
+          <LocationSelector source="search" />
+          <DateRangeSelector source="search" />
+          <StatusSelector source="search" />
+          <EventEntrySelector source="search" />
+          <UserRatingSelector source="search" />
         </div>
-        <div className="col-span-2 flex flex-col gap-4">
-          <Button
-            size="lg"
-            onClick={searchHandler}
-            disabled={isLoading}
-            className="text-white"
-          >
-            {isLoading || !tableLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Searching...
-              </>
-            ) : (
-              "Search"
-            )}
-          </Button>
-          <div className="flex items-center justify-evenly">
-            <Button
-              variant="link"
-              className="p-0 block text-wrap"
-              onClick={createTrackerHandler}
-            >
+        <div className="col-span-2 grid grid-cols-2 gap-2">
+          <div className="row-span-2 flex flex-col gap-3">
+            <Button onClick={searchHandler} disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Searching...
+                </>
+              ) : (
+                "Search"
+              )}
+            </Button>
+            <Button variant="link" onClick={() => createTrackerHandler}>
+              <Plus
+                width="15"
+                height="15"
+                className="w-4 h-w-4"
+                color="#6750a4"
+              />
               Save as Tracker
             </Button>
+          </div>
+          <div className="row-span-2 flex flex-col gap-3">
+            <Button
+              disabled={Object.keys(localFilters).length == 0}
+              variant="link"
+              className="text-primary"
+              onClick={() => clearLocalFilters()}
+            >
+              Reset Filters
+            </Button>
+
             <Button
               variant="link"
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
