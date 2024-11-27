@@ -2,25 +2,27 @@ import React, { useState, useEffect } from "react";
 import styles from "./month.style.module.css";
 import { useCalendarServices } from "@/services/geniservices/calendarServices";
 interface CalendarProps {
-  cardBgColor?: string;
-  widgetId?: string;
-  onDateSelect?: (selectedDate: string) => void;
+  widgetId?: string | null;
+  onDaySelect?: (selectedDate: string) => void;
   handleResetEvents?: () => void;
   onMonthSelect?: (selectedMonth: string) => void;
   previewWindowBgColor?: string;
-  isDark?:boolean;
-  setIsDark?:(value: boolean) => void
+  isDark?: boolean;
+  setIsDark?: (value: boolean) => void;
+  theme?: string | null;
+  tab?: string;
 }
 
 const Calendar = ({
-  cardBgColor,
   widgetId,
-  onDateSelect,
+  onDaySelect,
   handleResetEvents,
   onMonthSelect,
   previewWindowBgColor,
   isDark,
-  setIsDark
+  setIsDark,
+  theme,
+  tab,
 }: CalendarProps) => {
   const { getYearlyEvents, getMonthlyEvents } = useCalendarServices();
   const [year, setYear] = useState(new Date().getFullYear());
@@ -131,7 +133,7 @@ const Calendar = ({
 
   // Function to fetch and sort data
   const getYearlyCalendarData = async () => {
-    const data = await getYearlyEvents(widgetId, year);
+    const data = await getYearlyEvents(widgetId, year, tab);
     const sortedMonths = data.sort(
       (a: any, b: any) =>
         monthOrder.indexOf(a.date) - monthOrder.indexOf(b.date)
@@ -142,18 +144,37 @@ const Calendar = ({
 
   useEffect(() => {
     getYearlyCalendarData();
-  }, [year]);
+  }, [year, tab]);
 
   const getMonthlyCalendarData = async () => {
-    const res = await getMonthlyEvents(widgetId);
+    const res = await getMonthlyEvents(widgetId, tab);
     setMonthlyEvent(res);
   };
   useEffect(() => {
     getMonthlyCalendarData();
-  }, []);
+  }, [tab]);
 
   const today = new Date();
 
+  // const handleDayClick = (day: number, isCurrentMonth: boolean) => {
+  //   if (!isCurrentMonth) return;
+
+  //   const selectedFullDate = new Date(
+  //     year,
+  //     currentMonth,
+  //     day
+  //   ).toLocaleDateString("en-CA");
+  //   const eventsForSelectedDate = monthlyEvents.filter((event: any) => {
+  //     const eventDate = new Date(event.date).toLocaleDateString("en-CA");
+  //     return eventDate === selectedFullDate;
+  //   });
+  //   setFilteredEvents(eventsForSelectedDate);
+  //   if (onDateSelect) {
+  //     onDateSelect(selectedFullDate);
+  //   }
+
+  //   setSelectedDate(selectedFullDate);
+  // };
   const handleDayClick = (day: number, isCurrentMonth: boolean) => {
     if (!isCurrentMonth) return;
 
@@ -162,16 +183,26 @@ const Calendar = ({
       currentMonth,
       day
     ).toLocaleDateString("en-CA");
-    const eventsForSelectedDate = monthlyEvents.filter((event: any) => {
-      const eventDate = new Date(event.date).toLocaleDateString("en-CA");
-      return eventDate === selectedFullDate;
-    });
-    setFilteredEvents(eventsForSelectedDate);
-    if (onDateSelect) {
-      onDateSelect(selectedFullDate);
-    }
 
-    setSelectedDate(selectedFullDate);
+    if (selectedDate === selectedFullDate) {
+      setSelectedDate(null);
+      setFilteredEvents([]);
+      if (handleResetEvents) {
+        handleResetEvents();
+      }
+    } else {
+      // Select the new date
+      const eventsForSelectedDate = monthlyEvents.filter((event: any) => {
+        const eventDate = new Date(event.date).toLocaleDateString("en-CA");
+        return eventDate === selectedFullDate;
+      });
+
+      setSelectedDate(selectedFullDate);
+      setFilteredEvents(eventsForSelectedDate);
+      if (onDaySelect) {
+        onDaySelect(selectedFullDate);
+      }
+    }
   };
 
   const clearSelectedDate = () => {
@@ -198,16 +229,22 @@ const Calendar = ({
       const luminance =
         0.2126 * (r / 255) + 0.7152 * (g / 255) + 0.0722 * (b / 255);
       return luminance < 0.5;
-    }else{
-      return false
+    } else {
+      return false;
     }
   };
-  isDark = isColorDark(previewWindowBgColor);
-  if(setIsDark){
-    setIsDark(isDark)
+
+  isDark = previewWindowBgColor
+    ? isColorDark(previewWindowBgColor)
+    : theme === "light"
+    ? false
+    : theme === undefined
+    ? false
+    : true;
+
+  if (setIsDark) {
+    setIsDark(isDark);
   }
-  
-  console.log("3231", isDark, previewWindowBgColor);
   return (
     <div
       className={`${styles.calendar}`}
@@ -284,13 +321,26 @@ const Calendar = ({
                   className={styles.month}
                   style={{
                     cursor: month.totalEvents > 0 ? "pointer" : "default",
-                    border: isSelected ? "1px solid #CCE6FF" : "#fff",
+                    border: isSelected ? "1px solid #6750a4" : "#fff",
                     backgroundColor: isDark ? "#131313" : "#ffffff",
                   }}
+                  // onClick={() => {
+                  //   if (month.totalEvents > 0) {
+                  //     setSelectedMonth(month.date);
+                  //     handleMonthClick(month.date);
+                  //   }
+                  // }}
                   onClick={() => {
                     if (month.totalEvents > 0) {
-                      setSelectedMonth(month.date);
-                      handleMonthClick(month.date);
+                      if (selectedMonth === month.date) {
+                        setSelectedMonth(null);
+                        if (handleResetEvents) {
+                          handleResetEvents();
+                        }
+                      } else {
+                        setSelectedMonth(month.date);
+                        handleMonthClick(month.date);
+                      }
                     }
                   }}
                 >
@@ -406,7 +456,7 @@ const Calendar = ({
                   }}
                   onClick={() => {
                     if (eventData && eventData.totalEvents > 0) {
-                      setSelectedDate(formattedDate);
+                      // setSelectedDate(formattedDate);
                       handleDayClick(day, isCurrentMonth);
                     }
                   }}
@@ -415,7 +465,9 @@ const Calendar = ({
                   {eventData && eventData.totalEvents > 0 && (
                     <span
                       className={styles.eventDot}
-                      style={{ backgroundColor: cardBgColor }}
+                      style={{
+                        backgroundColor: isSelected ? "#ffffff" : "#8f8f8f",
+                      }}
                     ></span>
                   )}
                 </div>

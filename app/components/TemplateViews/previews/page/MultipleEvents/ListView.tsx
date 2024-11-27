@@ -268,9 +268,8 @@ const ListView = ({
       >
           <div className={styles.calendarContainer}>
             <MonthCalendar
-              cardBgColor={cardBgColor}
               widgetId={widgetId}
-              onDateSelect={handleFilteredEvents}
+              onDaySelect={handleFilteredEvents}
               handleResetEvents={handleResetEvents}
               onMonthSelect={handleFilteredEventsByMonth}
               previewWindowBgColor={previewWindowBgColor}
