@@ -40,13 +40,13 @@ export interface LocationProps {
   setSelectedLocation?: React.Dispatch<
     React.SetStateAction<GeoLocation | LocationItem[] | null>
   >;
-  isMandatory?:boolean;
+  isMandatory?: boolean;
 }
 export default function LocationSelector({
   source,
   selectedLocation: parentSelectedLocation,
   setSelectedLocation: parentSetSelectedLocation,
-  isMandatory
+  isMandatory,
 }: LocationProps) {
   const { getLocationName, getLocationDetails } = useLocationService();
   const [activeTab, setActiveTab] = useState("city");
@@ -133,18 +133,22 @@ export default function LocationSelector({
       applyHandler();
     }
     setIsOpen(open);
-  }; 
+  };
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
-      <Button
+        <Button
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            ((selectedLocation === undefined || (Array.isArray(selectedLocation) &&selectedLocation?.length === 0)) && isMandatory)
-            ?"border-destructive": isOpen
-            ? "border-primary"
-            : "border-input"
-            }`}
+            (selectedLocation === undefined ||
+              (Array.isArray(selectedLocation) &&
+                selectedLocation?.length === 0)) &&
+            isMandatory
+              ? "border-destructive"
+              : isOpen
+              ? "border-primary"
+              : "border-input"
+          }`}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-haspopup="true"
@@ -314,6 +318,7 @@ export default function LocationSelector({
           </Tabs>
         ) : (
           <AutocompleteInput
+            defaultOpen
             multiple
             type="LocationId"
             placeholder="E.g. Bangalore, Karnataka"

@@ -26,7 +26,7 @@ const Sidebar = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   const links = [
-    { name: "Dashboard", href: "/", icon: GridMasonry },
+    { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
       name: "Search Events",
       href: "/internal/search/events",
@@ -62,7 +62,7 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`fixed z-20 top-0 left-0 h-full bg-background transition-all duration-300 ease-in-out flex flex-col border-r ${
+      className={`fixed z-50 top-0 left-0 h-full bg-background transition-all duration-300 ease-in-out flex flex-col border-r ${
         isHovered ? "w-56" : "w-16"
       }`}
       onMouseEnter={handleMouseEnter}
