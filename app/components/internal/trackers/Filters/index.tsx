@@ -130,6 +130,7 @@ interface PresetJsonData {
   data: any;
   enabled: boolean;
   presetType: string;
+  eventCount?: string;
 }
 
 const top10Data = [['BMC Training'], ['Lorman Education Services'], ['http://www.iu.edu/']];
@@ -184,7 +185,7 @@ const staticPresetData = [
   //   presetType: 'All',
   // },
   {
-    id: 5,
+    id: 112,
     img: Speaking,
     url: "T_SPEAKING_OPPORTUNITY",
     trackerName: "Artificial Intelligence Speakers",
@@ -194,7 +195,7 @@ const staticPresetData = [
     presetType: 'All',
   },
   {
-    id: 6,
+    id: 113,
     img: Speaking,
     url: "T_SPEAKING_OPPORTUNITY",
     trackerName: "Biotechnology Innovations Speakers",
@@ -384,6 +385,15 @@ const formatText = (val: string) => {
     return val?.charAt(0).toUpperCase() + val?.substring(1).toLowerCase();
   }
 }
+
+const formatCount = (count: number ) => {
+  if (count >= 1000) {
+    const value = count / 1000;
+    const decimalPart = value - Math.floor(value);
+      return `${Math.floor(value)}k`;
+  }
+  return count;
+};
 
 const Pages = () => {
   const searchParams = useSearchParams();
@@ -2157,9 +2167,9 @@ return (
           </div>
           <div className={styles.presetContainer} >
             {presetTemplateData.filter(item => item.url === template?.name).map((item, ind) => (
-              <div key={ind} className="w-full p-2 gap-2 flex items-center flex-col h-[300px] text-sm border border-[var(--border-color)] rounded-[12px]" onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
+              <div key={ind} className="w-full p-2 gap-3 flex items-center flex-col h-[280px] text-sm border border-[var(--border-color)] rounded-[12px] overflow-y-auto" onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
                 <div
-                  className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]"
+                  className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)] relative"
                 >
                   <div className={styles.account}>
                     <Image src={
@@ -2171,9 +2181,12 @@ return (
                   <div>
                     <Image src={Template} alt="template" />
                   </div>
+                  { (item?.eventCount && parseInt(item.eventCount) > 0) &&
+                    <div className="p-1 px-2 bg-[var(--primary-light-color)] font-medium text-xs absolute bottom-0 right-0 rounded-br-md rounded-tl-md" >{formatCount(parseInt(item.eventCount))} events</div>
+                  }
                 </div>
-                <div className="w-full h-[60%] flex flex-col gap-2">
-                  <div className="flex justify-between items-center">
+                <div className="w-full h-[60%] flex flex-col gap-3">
+                  {/* <div className="flex justify-between items-center">
                     <div className="flex h-full items-center gap-1">
                       <Image
                         src={Vector1}
@@ -2196,7 +2209,7 @@ return (
                         Coming Soon
                       </div>
                     }
-                  </div>
+                  </div> */}
                   <div className={styles.bottomViewTwo}>
                     {item?.trackerName}
                   </div>
