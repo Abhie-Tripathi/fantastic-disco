@@ -186,6 +186,18 @@ const Search = () => {
     }
   };
 
+  const filtersCount = (function () {
+    let count = 0;
+    if (localFilters.onlyBranded || localFilters.onlySeries) count++;
+    if (localFilters.frequencies) count++;
+    if (localFilters.includeKeywords || localFilters.excludeKeywords) count++;
+    if (localFilters.maturity) count++;
+    if (localFilters.estimatedVisitors) count++;
+    if (localFilters.impact_score_gte) count++;
+    if (localFilters.top) count++;
+    return count;
+  })();
+
   return (
     <div className="space-y-6 p-6">
       <SearchBar />
@@ -239,6 +251,7 @@ const Search = () => {
             >
               <Filter className="mr-2 h-4 w-4" />
               {showAdvancedFilters ? "Hide" : "Advanced"}
+              {filtersCount ? `(${filtersCount})` : ""}
             </Button>
           </div>
         </div>
