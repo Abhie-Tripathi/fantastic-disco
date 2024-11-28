@@ -581,6 +581,7 @@ const Pages = () => {
     router.push(`/search/events?${params.toString()}`);
   };
   const [trackerName, setTrackerName] = useState("");
+  const [selectedPresetName, setSelectedPresetName] = useState<string>('');
   // const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [categorySlug, setCategorySlug] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
@@ -724,6 +725,7 @@ const Pages = () => {
       setExcludeKeywords(filteredPresetData?.[0]?.data?.[1]);
     }
 
+    setSelectedPresetName(trackerName);
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
@@ -1926,7 +1928,7 @@ return (
           {" "} You can edit or remove unwanted entries from here.
         </div>
         {(customData && customData.length >0) ?
-          <TemplateTable customData={customData} handleCustomData={handleCustomData} /> :
+          <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> :
           <div className={styles.emptyTableData}>
             <Image
               src={trackerEmptyTable}
