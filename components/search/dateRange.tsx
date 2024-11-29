@@ -27,8 +27,11 @@ import { Switch } from "@/components/ui/switch";
 import { useFilterState } from "@/hooks/useFilterState";
 import { usePathname } from "next/navigation";
 import { useFilterContext } from "@/context/filterContext";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const presets = [
+  { label: "Past", value: "past" },
+  { label: "Upcoming", value: "upcoming" },
   { label: "This week", value: "this-week" },
   { label: "This month", value: "this-month" },
   { label: "3 months", value: "3-months" },
@@ -45,20 +48,25 @@ const comparisonOptions = [
   "Same Period Last year",
 ];
 
-const formatDateRange = (from: Date, to: Date) => {
-  if (from.getTime() === to.getTime()) {
-    return format(from, "d MMM, yyyy");
-  }
-
-  if (from.getFullYear() === to.getFullYear()) {
-    if (from.getMonth() === to.getMonth()) {
-      return `${format(from, "d")} - ${format(to, "d MMM, yyyy")}`;
+const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
+  if (!from && !to) return "";
+  if (from && !to) return "Upcoming";
+  if (!from && to) return "Past";
+  if (from && to) {
+    if (from.getTime() === to.getTime()) {
+      return format(from, "d MMM, yyyy");
     }
-    return `${format(from, "d MMM")} - ${format(to, "d MMM, yyyy")}`;
+    if (from.getFullYear() === to.getFullYear()) {
+      if (from.getMonth() === to.getMonth()) {
+        return `${format(from, "d")} - ${format(to, "d MMM, yyyy")}`;
+      }
+      return `${format(from, "d MMM")} - ${format(to, "d MMM, yyyy")}`;
+    }
+    return `${format(from, "d MMM, yyyy")} - ${format(to, "d MMM, yyyy")}`;
   }
-
-  return `${format(from, "d MMM, yyyy")} - ${format(to, "d MMM, yyyy")}`;
+  return "";
 };
+
 interface DateRangeProps {
   source: string;
   dateRange?: {
@@ -72,6 +80,7 @@ interface DateRangeProps {
     }>
   >;
 }
+
 export default function DateRangeSelector({
   source,
   dateRange: parentDateRange,
@@ -93,10 +102,10 @@ export default function DateRangeSelector({
       ? setParentDateRange
       : setLocalDateRange;
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
-  const [selectedPreset, setSelectedPreset] = React.useState("this-month");
+  const [selectedPreset, setSelectedPreset] = React.useState("");
   const [compareEnabled, setCompareEnabled] = React.useState(false);
   const { setMultipleLocalFilters, searchParams } = useFilterContext();
-  const { getFilterValue } = useFilterState();
+  const { localFilters } = useFilterContext();
   const [selectedComparison, setSelectedComparison] = React.useState(
     comparisonOptions[0]
   );
@@ -104,8 +113,8 @@ export default function DateRangeSelector({
 
   React.useEffect(() => {
     if (source !== "tracker") {
-      const active_gte = getFilterValue("active_gte");
-      const active_lte = getFilterValue("active_lte");
+      const active_gte = localFilters.active_gte;
+      const active_lte = localFilters.active_lte;
       if (active_gte && active_lte) {
         const fromDate = parseISO(active_gte);
         const toDate = parseISO(active_lte);
@@ -143,10 +152,10 @@ export default function DateRangeSelector({
         }
       } else {
         setDateRange({ from: undefined, to: undefined });
-        setSelectedPreset("this-month");
+        setSelectedPreset("custom");
       }
     }
-  }, [searchParams]);
+  }, [localFilters]);
 
   const handlePresetChange = (preset: string) => {
     setSelectedPreset(preset);
@@ -157,6 +166,14 @@ export default function DateRangeSelector({
     const currentDate = new Date();
     let from: Date | undefined, to: Date | undefined;
     switch (preset) {
+      case "upcoming":
+        from = currentDate;
+        to = undefined;
+        break;
+      case "past":
+        from = undefined;
+        to = currentDate;
+        break;
       case "custom":
         from = undefined;
         to = undefined;
@@ -272,7 +289,7 @@ export default function DateRangeSelector({
         >
           <div className="flex items-center">
             <span className="mr-2">Dates</span>
-            {dateRange.from && dateRange.to && (
+            {(dateRange.from || dateRange.to) && (
               <span className="text-xs text-primary truncate">
                 {formatDateRange(dateRange.from, dateRange.to)}
               </span>
@@ -287,32 +304,24 @@ export default function DateRangeSelector({
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <div className="flex flex-col">
-          {/* <div className="flex justify-between items-center">
-            <h2 className="font-semibold">Date Range</h2>
-            <Button
-              variant="link"
-              className="text-primary pr-0"
-              onClick={applyHandler}
-            >
-              APPLY
-            </Button>
-          </div> */}
           <div className="flex space-x-4 rounded-md p-4">
-            <div className="space-y-2 flex flex-col justify-between min-w-36">
-              {presets.map((preset) => (
-                <Button
-                  key={preset.value}
-                  onClick={() => handlePresetChange(preset.value)}
-                  variant="outline"
-                  className={cn(
-                    "w-full font-normal",
-                    selectedPreset === preset.value && "bg-[#F2F2F2]"
-                  )}
-                >
-                  {preset.label}
-                </Button>
-              ))}
-            </div>
+            <ScrollArea className="h-[300px] w-[150px]">
+              <div className="space-y-2 flex flex-col justify-between pr-4">
+                {presets.map((preset) => (
+                  <Button
+                    key={preset.value}
+                    onClick={() => handlePresetChange(preset.value)}
+                    variant="outline"
+                    className={cn(
+                      "w-full font-normal",
+                      selectedPreset === preset.value && "bg-[#F2F2F2]"
+                    )}
+                  >
+                    {preset.label}
+                  </Button>
+                ))}
+              </div>
+            </ScrollArea>
             <div className="border-l" />
             <div>
               <Calendar
