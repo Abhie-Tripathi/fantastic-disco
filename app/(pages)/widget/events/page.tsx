@@ -275,8 +275,8 @@ import { useEventServices } from "@/services/geniservices/eventService";
 import MonthsCalendar from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/MonthsCalendar";
 import { useTheme } from "@/context";
 const Page = () => {
-  const [fetchedEvents, setFetchedEvents] = useState<AllEventsType[]>([]);
-  const [PassedFetchedEvents, setPastFetchedEvents] = useState<AllEventsType[]>(
+  const [upcominFetchedEvents, setUpcominFetchedEvents] = useState<AllEventsType[]>([]);
+  const [pastFetchedEvents, setPastFetchedEvents] = useState<AllEventsType[]>(
     []
   );
   const [isEventFormModal, setIsEventFormModal] = useState<boolean>(false);
@@ -303,27 +303,38 @@ const Page = () => {
   let prevDate: any = null;
   const [activeTab, setActiveTab] = useState("upcoming");
   const { theme } = useTheme();
-  const [filteredEvents, setFilteredEvents] = React.useState<AllEventsType[]>(
-    []
-  );
-
+  const [filteredUpcomingEvents, setFilteredUpcomingEvents] = React.useState<
+    AllEventsType[]
+  >([]);
+  const [filteredPastEvents, setFilteredPastEvents] = React.useState<
+    AllEventsType[]
+  >([]);
   const handleFilteredEvents = (selectedDate: string) => {
-    const filtered = fetchedEvents!.filter(
-      (event: any) => event.mainEvent.startDate === selectedDate
-    );
-    console.log("sdfsdfsdfsdf", selectedDate, filtered);
-    setFilteredEvents(filtered);
+    if (activeTab === "past") {
+      const filtered = pastFetchedEvents.filter(
+        (event: any) => event.mainEvent.startDate === selectedDate
+      );
+      setFilteredPastEvents(filtered);
+    }
+    if (activeTab === "upcoming") {
+      const filtered = upcominFetchedEvents!.filter(
+        (event: any) => event.mainEvent.startDate === selectedDate
+      );
+      setFilteredUpcomingEvents(filtered);
+    }
   };
   const handleFilteredEventsByMonth = (selectedMonth: string) => {
-    console.log("33000",selectedMonth,fetchedEvents)
-    const filtered = fetchedEvents.filter((event: any) => {
-      const eventMonth = new Date(event.mainEvent.startDate).toLocaleString("default", {
-        month: "long",
-      });
+    const filtered = upcominFetchedEvents.filter((event: any) => {
+      const eventMonth = new Date(event.mainEvent.startDate).toLocaleString(
+        "default",
+        {
+          month: "long",
+        }
+      );
       return eventMonth === selectedMonth;
     });
     // console.log("33000",selectedMonth,filtered)
-    setFilteredEvents(filtered);
+    setFilteredUpcomingEvents(filtered);
   };
   useEffect(() => {
     const getCurrentDate = (): string => {
@@ -357,30 +368,33 @@ const Page = () => {
   }, [page]);
 
   React.useEffect(() => {
-    if (fetchedEvents && fetchedEvents.length > 0) {
-      setFilteredEvents(fetchedEvents);
+    if (upcominFetchedEvents && upcominFetchedEvents.length > 0) {
+      setFilteredUpcomingEvents(upcominFetchedEvents);
     }
-  }, [fetchedEvents]);
+    if (pastFetchedEvents && pastFetchedEvents.length > 0) {
+      setFilteredPastEvents(pastFetchedEvents);
+    }
+  }, [upcominFetchedEvents, pastFetchedEvents]);
 
-  useEffect(() => {
-    console.log("this scroll function called");
-    console.log("fetched events :", fetchedEvents);
-    const handleScroll = () => {
-      const isAtBottom =
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 50; // Adjusted offset
-      if (isAtBottom && fetchedEvents.length > 0) {
-        setPage((prevPage) => prevPage + 1); // Increment page to load more events
-      }
-    };
+  // useEffect(() => {
+  //   console.log("this scroll function called");
+  //   console.log("fetched_events_____________", fetchedEvents);
+  //   const handleScroll = () => {
+  //     const isAtBottom =
+  //       window.innerHeight + window.scrollY >= document.body.offsetHeight - 50; // Adjusted offset
+  //     if (isAtBottom && fetchedEvents.length > 0) {
+  //       setPage((prevPage) => prevPage + 1); // Increment page to load more events
+  //     }
+  //   };
 
-    const debounceScroll = () => {
-      clearTimeout(window.scrollTimeout); // Clear any existing timeout
-      window.scrollTimeout = setTimeout(handleScroll, 100); // Set a debounce of 100ms
-    };
+  //   const debounceScroll = () => {
+  //     clearTimeout(window.scrollTimeout); // Clear any existing timeout
+  //     window.scrollTimeout = setTimeout(handleScroll, 100); // Set a debounce of 100ms
+  //   };
 
-    window.addEventListener("scroll", debounceScroll);
-    return () => window.removeEventListener("scroll", debounceScroll);
-  }, [fetchedEvents]);
+  //   window.addEventListener("scroll", debounceScroll);
+  //   return () => window.removeEventListener("scroll", debounceScroll);
+  // }, [fetchedEvents]);
 
   const [isFixed, setIsFixed] = useState(false);
 
@@ -496,13 +510,13 @@ const Page = () => {
 
         if (type === "update") {
           // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events
-          setFetchedEvents(transformedEvents);
+          setUpcominFetchedEvents(transformedEvents);
         } else {
           // setFetchedEvents((prevEvents) => [
           //   ...prevEvents,
           //   ...transformedEvents,
           // ]);
-          setFetchedEvents(transformedEvents);
+          setUpcominFetchedEvents(transformedEvents);
         }
       } else {
         console.error("Error fetching events:", error);
@@ -625,7 +639,13 @@ const Page = () => {
   };
 
   const handleResetEvents = () => {
-    setFilteredEvents(fetchedEvents || []);
+    if(activeTab==="upcoming"){
+      setFilteredUpcomingEvents(upcominFetchedEvents || []);
+    }
+    if(activeTab==="past"){
+      setFilteredPastEvents(pastFetchedEvents || []);
+    }
+    
   };
 
   return (
@@ -661,15 +681,17 @@ const Page = () => {
       </div>
       <div className={styles.mainContainer}>
         <div className={styles.eventsContainer}>
-          {activeTab === "upcoming" && filteredEvents.length > 0 ? (
-            filteredEvents.map((event, index) => {
+          {activeTab === "upcoming" && filteredUpcomingEvents.length > 0 ? (
+            filteredUpcomingEvents.map((event, index) => {
               const showDate = event.mainEvent.startDate !== prevDate;
               prevDate = event.mainEvent.startDate;
 
               return (
                 <>
                   {showDate && (
-                    <TimelineItem eventDate={showDate ? event.mainEvent.startDate : null} />
+                    <TimelineItem
+                      eventDate={showDate ? event.mainEvent.startDate : null}
+                    />
                   )}
                   {event.mainEvent.eventType === "MAIN" ? (
                     <DashboardEventCard
@@ -691,15 +713,17 @@ const Page = () => {
                 </>
               );
             })
-          ) : activeTab === "past" && PassedFetchedEvents.length > 0 ? (
-            PassedFetchedEvents.map((event, index) => {
+          ) : activeTab === "past" && filteredPastEvents.length > 0 ? (
+            filteredPastEvents.map((event, index) => {
               const showDate = event.mainEvent.startDate !== prevDate;
               prevDate = event.mainEvent.startDate;
 
               return (
                 <>
                   {showDate && (
-                   <TimelineItem eventDate={showDate ? event.mainEvent.startDate : null} />
+                    <TimelineItem
+                      eventDate={showDate ? event.mainEvent.startDate : null}
+                    />
                   )}
                   {event.mainEvent.eventType === "MAIN" ? (
                     <DashboardEventCard
