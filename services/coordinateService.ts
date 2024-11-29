@@ -59,8 +59,8 @@ export const useCoordinateService = () => {
     });
   };
 
-  const getInterestedUsers = (eventId: string) => {
-    return api.request<UserInterestResponse>(`${endpoints.coordinate.iterestedUsers}/${eventId}`, {
+  const getInterestedUsers = (eventId: string, enquiryId: string) => {
+    return api.request<UserInterestResponse>(`${endpoints.coordinate.iterestedUsers}/${eventId}?enquiryId=${enquiryId}`, {
       method: "GET",
     });
   };
@@ -159,6 +159,12 @@ export const useCoordinateService = () => {
     });
   }
 
+  const getInterestConfig = () => {
+    return api.request<CoordinateListResponse>(`${endpoints.configuration}?source=interest`, {
+      method: "GET",
+    });
+  }
+
   return {
     getEventsWithSearchParams,
     getParticipentCount,
@@ -172,6 +178,7 @@ export const useCoordinateService = () => {
     shortlistUsers,
     getOutreachEventList,
     getOutreachSingleEvent,
+    getInterestConfig,
     isLoading: api.isLoading,
     error: api.error as ApiError,
   };

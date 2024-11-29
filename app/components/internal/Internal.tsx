@@ -17,6 +17,8 @@ import { useCoordinateService } from "@/services/coordinateService";
 import { useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { number } from "zod";
+import NullState from "../trackers/nullState";
+import coordinateNullState from "/public/coordinateNullState.svg"
 
 interface Props {
   handleModal: (id: string, enquiryId: string) => void;
@@ -69,6 +71,17 @@ const Internal = ({
     setSearchInput(event.target.value);
   };
 
+  const [coordinateActions, setCoordinateActions] = useState<any>([]);
+
+  const getInterestConfig = async () => {
+    try {
+      const apiData: any = await coordinateService.getInterestConfig();
+      setCoordinateActions(apiData.slice(1));
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
   useEffect(() => {
     const getCordinateList = async () => {
       try {
@@ -81,6 +94,7 @@ const Internal = ({
       }
     };
     getCordinateList();
+    getInterestConfig();
   }, []);
 
   const fetchData = async () => {
@@ -156,10 +170,8 @@ const Internal = ({
     );
   } else if (isLoaded && coordinateCount[0]?.totalEvent === 0) {
     return (
-      <div className={styles.noData}>
-        An effective event communication and relationship management dashboard
-        that keeps your team on the same page and makes coordination both
-        internally and with events team easy and manageable.
+      <div className="p-20">
+        <NullState image={coordinateNullState}  title="You haven't shortlisted any events yet." text="Browse through our upcoming events and shortlist here for easy access and internal coordination later." buttonText="Search Events" buttonUrl={`/internal/search/events`} />
       </div>
     );
   }
@@ -177,7 +189,15 @@ const Internal = ({
         {/* <div className={styles.scrollContainer} ref={divRef} style={{height:popoverState?"auto":"calc(100vh - 80px)"}}> */}
         <div className={styles.container}>
           <div className={styles.countsContainer}>
-            <div className={styles.exhibitorCount}>
+            {coordinateCount && coordinateCount.slice(1).map((item: any) => (
+              <div className={styles.exhibitorCount}>
+                <div className={styles.count}>
+                  {item?.count}
+                </div>
+                <div className={styles.countTitle}>{item.name}</div>
+              </div>
+            ))}
+            {/* <div className={styles.exhibitorCount}>
               <div className={styles.count}>
                 {coordinateCount && coordinateCount[1]?.count}
               </div>
@@ -200,7 +220,7 @@ const Internal = ({
                 {coordinateCount && coordinateCount[4]?.count}
               </div>
               <div className={styles.countTitle}>Attend</div>
-            </div>
+            </div> */}
           </div>
           <div className={styles.filters}>
             <div className={styles.searchContainer}>
@@ -242,7 +262,7 @@ const Internal = ({
             </div>
 
             <div style={{ width: "15%" }} className={styles.outerDiv}>
-              <InterestTypeSelector />
+              <InterestTypeSelector coordinateActions={coordinateActions} />
             </div>
 
             <div style={{ width: "15%" }} className={styles.outerDiv}>
@@ -288,6 +308,7 @@ const Internal = ({
                       currentEnquiryStatus={item.enquiryStatus}
                       upvote={item.upvote}
                       enquiryActivity={item.enquiryActivity}
+                      coordinateActions={coordinateActions}
                       handleModal={handleModal}
                       handleShortlistModal={handleShortlistModal}
                     />

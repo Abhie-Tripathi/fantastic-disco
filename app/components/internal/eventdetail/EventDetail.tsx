@@ -146,7 +146,7 @@ const EventDetail = ({
 
   useEffect(() => {
     const fetchInterestData = async () => {
-      const data = await coordinateService.getInterestedUsers(eventId);
+      const data = await coordinateService.getInterestedUsers(eventId, enquiryId);
       if (data) {
         setParticipentData({
           attendee: data.participent.attendee,

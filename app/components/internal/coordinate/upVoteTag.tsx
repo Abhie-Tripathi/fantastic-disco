@@ -8,10 +8,10 @@ import upArrowLight from '/public/internal/up_arrow_light.svg'
 import { useTheme } from '@/context';
 
 interface voteProps {
-  type: "Sponsoring" | "Speaking" | "Exhibiting" | "Attending",
+  type: string,
   status?: string,
   userList: [{name: string}]
-  handleVoteClick: (item:"Sponsoring" | "Speaking" | "Exhibiting" | "Attending")=> void,
+  handleVoteClick: (item: string)=> void,
 }
 
 function getInitials(name: string) {
@@ -37,6 +37,8 @@ const UpVoteTag: React.FC<voteProps> = ({type, status, userList, handleVoteClick
     else if(tag==="Speaking") return "Speak";
     else if(tag==="Sponsoring") return "Sponsor";
   }
+  console.log('userList', userList);
+  
   return(
     <div className={styles.main} >
       <div className='desktop_view'>
@@ -61,7 +63,7 @@ const UpVoteTag: React.FC<voteProps> = ({type, status, userList, handleVoteClick
         <Image src={upArrow} alt="up" width={16} height={16} className='icons_light'/>
         }
         
-        {formatTag(type)}
+        {type}
       </div>
     </div>
   )

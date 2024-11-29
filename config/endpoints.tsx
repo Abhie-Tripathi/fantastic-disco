@@ -56,5 +56,6 @@ export const endpoints = {
     participent: `${BASE_URL}/userInterest/totalParticipent`,
     iterestedUsers: `${BASE_URL}/userInterest`,
     enquiryDetail: `${BASE_URL}/enquiry`,
-  }
+  },
+  configuration: `${BASE_URL}/configuration`,
 };
