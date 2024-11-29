@@ -44,11 +44,13 @@ export interface LocationProps {
   setSelectedLocation?: React.Dispatch<
     React.SetStateAction<GeoLocation | LocationItem[] | null>
   >;
+  isMandatory?: boolean;
 }
 export default function LocationSelector({
   source,
   selectedLocation: parentSelectedLocation,
   setSelectedLocation: parentSetSelectedLocation,
+  isMandatory,
 }: LocationProps) {
   const pathName = usePathname();
   const { localFilters } = useFilterContext();
@@ -150,7 +152,14 @@ export default function LocationSelector({
         <Button
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            isOpen ? "border-primary" : "border-input"
+            (selectedLocation === undefined ||
+              (Array.isArray(selectedLocation) &&
+                selectedLocation?.length === 0)) &&
+            isMandatory
+              ? "border-destructive"
+              : isOpen
+              ? "border-primary"
+              : "border-input"
           }`}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
