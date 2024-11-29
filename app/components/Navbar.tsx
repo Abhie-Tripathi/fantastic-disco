@@ -142,6 +142,9 @@ const Navbar = () => {
     if (currPath.startsWith("/widget/events/manage")) {
       setTitle("Manage");
     }
+    if (currPath.startsWith("/widget/profile")) {
+      setTitle("Profile");
+    }
   }, [currPath]);
   console.log(userDetail);
 
