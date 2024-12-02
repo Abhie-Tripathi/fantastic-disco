@@ -37,6 +37,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 // import { AllEventsType } from '@/types/ListViewTable';
 import ZeroState from "../zerostate";
 import { useTrackerContext } from "@/context/tracker";
+import { useCoordinateService } from "@/services/coordinateService";
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -343,6 +344,11 @@ const Table = ({
     markedInterest: null,
     // eventGroupId: "",
   });
+
+  const coordinateService = useCoordinateService();
+  
+  const [coordinateActions, setCoordinateActions] = useState<any>([]);
+
   const handleChangeIntent = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -457,6 +463,16 @@ const Table = ({
       }
     }
   };
+
+  const getInterestConfig = async () => {
+    try {
+      const apiData: any = await coordinateService.getInterestConfig();
+      setCoordinateActions(apiData.slice(1));      
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
   const [val, setVal] = useState(1);
   useEffect(() => {
     // setCurrPage(val);
@@ -499,6 +515,7 @@ const Table = ({
     if (path[2] !== "trackers") {
       fetchBookmarkData();
     }
+    getInterestConfig();
   }, []);
 
   const handleModalOpen = (eventId: string, bookmarkedStatus: boolean) => {
@@ -2104,54 +2121,19 @@ const Table = ({
                                       </>
                                     )}
                                   </div>
-                                  <div className={styles["form-check"]}>
-                                    <input
-                                      className={styles["form-check-input"]}
-                                      type="radio"
-                                      defaultValue="ATTENDEE"
-                                      name={"interest"}
-                                      id="customradio2"
-                                      onChange={handleChangeIntent}
-                                    />
-                                    <label htmlFor="customradio2">Attend</label>
-                                  </div>
-                                  <div className={styles["form-check"]}>
-                                    <input
-                                      className={styles["form-check-input"]}
-                                      type="radio"
-                                      defaultValue="SPEAKER"
-                                      name={"interest"}
-                                      id="customradio3"
-                                      onChange={handleChangeIntent}
-                                    />
-                                    <label htmlFor="customradio3">Speak</label>
-                                  </div>
-                                  <div className={styles["form-check"]}>
-                                    <input
-                                      className={styles["form-check-input"]}
-                                      type="radio"
-                                      defaultValue="EXHIBITOR"
-                                      name={"interest"}
-                                      id="customradio4"
-                                      onChange={handleChangeIntent}
-                                    />
-                                    <label htmlFor="customradio4">
-                                      Exhibit
-                                    </label>
-                                  </div>
-                                  <div className={styles["form-check"]}>
-                                    <input
-                                      className={styles["form-check-input"]}
-                                      type="radio"
-                                      defaultValue="SPONSOR"
-                                      name={"interest"}
-                                      id="customradio5"
-                                      onChange={handleChangeIntent}
-                                    />
-                                    <label htmlFor="customradio5">
-                                      Sponsor
-                                    </label>
-                                  </div>
+                                  {coordinateActions.map((item: any, index: number) => (
+                                    <div className={styles["form-check"]} key={index} >
+                                      <input
+                                        className={styles["form-check-input"]}
+                                        type="radio"
+                                        defaultValue={item.status}
+                                        name={"interest"}
+                                        id={`radio-${item.status}`}
+                                        onChange={handleChangeIntent}
+                                      />
+                                      <label htmlFor={`radio-${item.status}`} >{item.label}</label>
+                                    </div>
+                                  ))}
                                 </div>
                                 <button className={styles["submitBtn"]}>
                                   Submit
