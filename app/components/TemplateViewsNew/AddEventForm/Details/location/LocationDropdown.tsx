@@ -7,6 +7,7 @@ interface LocationSuggestion {
     id: string;
     name: string;
     state: string;
+    city: string;
     countryName: string;
     lat: string;
     long: string;
@@ -30,7 +31,7 @@ interface Props {
 
 const LocationDropdown = ({ theme, formState, handleChange
     //  setCountryName, setEventFormat, eventFormat, setLongitude, setLatitude, theme, query, setQuery,setIsEventFormatEmpty 
-    }: Props) => {
+}: Props) => {
     // const { isLoaded } = useLoadScript({
     //     googleMapsApiKey: "AIzaSyA95UNMdJgIwc6swo_eM5YNE-uifyAn2a8",
     //     libraries,
@@ -41,12 +42,29 @@ const LocationDropdown = ({ theme, formState, handleChange
     const [isDropdownVisible, setIsDropdownVisible] = useState<boolean>(false);
 
     const handleSuggestionClick = async (suggestion: LocationSuggestion) => {
-        handleChange('cityName',suggestion.state ? suggestion.state : "")
-        // handleChange('cityName',suggestion.name)
-        // setCityName(suggestion.name);
-        handleChange('countryName',suggestion.countryName)
-        handleChange('latitude',Number(suggestion.lat))
-        handleChange('longitude',Number(suggestion.long))
+        const locationParts = [];
+        // Add 'name' only if it is different from 'city', 'state', and 'country'
+        if (
+            suggestion.name &&
+            suggestion.name !== suggestion.city &&
+            suggestion.name !== suggestion.state &&
+            suggestion.name !== suggestion.countryName
+        ) {
+            locationParts.push(suggestion.name);
+        }
+
+        // Always add 'city' and 'state' if they are present
+        if (suggestion.city) {
+            locationParts.push(suggestion.city);
+        }
+        if (suggestion.state) {
+            locationParts.push(suggestion.state);
+        }
+        handleChange('cityName', locationParts.join(', '));
+
+        handleChange('countryName', suggestion.countryName)
+        handleChange('latitude', Number(suggestion.lat))
+        handleChange('longitude', Number(suggestion.long))
         // setCountryName(suggestion.countryName)
         // setLatitude(Number(suggestion.lat));
         // setLongitude(Number(suggestion.long));
@@ -66,8 +84,8 @@ const LocationDropdown = ({ theme, formState, handleChange
             );
             const data = await response.json();
             const newSuggestions = data.map((location: any): LocationSuggestion => {
-                const { place_id: id, display_name: name, lat, lon: long } = location;
-                const { country: countryName, state } = location.address || {};
+                const { place_id: id, name: name, lat, lon: long } = location;
+                const { city, country: countryName, state } = location.address || {};
 
                 const shortName = shortenName(name)
                 return {
@@ -75,6 +93,7 @@ const LocationDropdown = ({ theme, formState, handleChange
                     name: shortName,
                     state,
                     countryName,
+                    city,
                     lat,
                     long,
                 };
@@ -109,15 +128,15 @@ const LocationDropdown = ({ theme, formState, handleChange
     }, [formState.query, debouncedFetchSuggestions]);
     // if (!isLoaded) return <div>Loading...</div>;
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleChange('query',e.target.value)
+        handleChange('query', e.target.value)
         // handleChange("virtualLink",e.target.value)
-        handleChange('isEventFormatEmpty',false)
+        handleChange('isEventFormatEmpty', false)
         // setQuery(e.target.value);
         // setIsEventFormatEmpty(false)
     }
     const handleVirtualInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        handleChange("virtualLink",e.target.value)
-        handleChange('isEventFormatEmpty',false)
+        handleChange("virtualLink", e.target.value)
+        handleChange('isEventFormatEmpty', false)
         // setQuery(e.target.value);
         // setIsEventFormatEmpty(false)
     }
@@ -129,7 +148,7 @@ const LocationDropdown = ({ theme, formState, handleChange
                         type="checkbox"
                         className={styles.checkbox}
                         checked={formState.eventFormat === "In-person" || formState.eventFormat === "OFFLINE"}
-                        onChange={() => handleChange("eventFormat","In-person")}
+                        onChange={() => handleChange("eventFormat", "In-person")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>In-person</span>
@@ -139,7 +158,7 @@ const LocationDropdown = ({ theme, formState, handleChange
                         type="checkbox"
                         className={styles.checkbox}
                         checked={formState.eventFormat === "Virtual" || formState.eventFormat === "ONLINE"}
-                        onChange={() => handleChange("eventFormat","Virtual")}
+                        onChange={() => handleChange("eventFormat", "Virtual")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>Virtual</span>
@@ -149,13 +168,13 @@ const LocationDropdown = ({ theme, formState, handleChange
                         type="checkbox"
                         className={styles.checkbox}
                         checked={formState.eventFormat === "Hybrid"}
-                        onChange={() => handleChange("eventFormat","Hybrid")}
+                        onChange={() => handleChange("eventFormat", "Hybrid")}
                     />
                     <span className={styles.customCheckbox}></span>
                     <span className={styles.checkboxLabel}>Hybrid</span>
                 </label>
             </div>
-            {(formState.eventFormat === "In-person" || formState.eventFormat === "Hybrid" ||formState. eventFormat === "OFFLINE") && <div className={styles.locationInputContainer}>
+            {(formState.eventFormat === "In-person" || formState.eventFormat === "Hybrid" || formState.eventFormat === "OFFLINE") && <div className={styles.locationInputContainer}>
                 <input type="text" placeholder='Enter Location' onChange={(e) => handleInputChange(e)} />
                 {/* <div className={styles.recentHeading}>Recent Locations</div>
                 <div className={styles.recentLocation}>
@@ -164,13 +183,13 @@ const LocationDropdown = ({ theme, formState, handleChange
                 {isDropdownVisible && (
                     <div className={styles.locationDropdown}>
                         {suggestions.map(suggestion => (
-                            <div
-                                key={suggestion.id}
-                                className={styles.suggestion}
-                                onClick={() => handleSuggestionClick(suggestion)}
-                            >
+                            <div key={suggestion.id} className={styles.suggestion} onClick={() => handleSuggestionClick(suggestion)}>
                                 <LocationIcon />
-                                {/* <span>{suggestion.name}</span> */}
+                                {(suggestion.name !== suggestion.city) &&
+                                    (suggestion.name !== suggestion.state) &&
+                                    (suggestion.name !== suggestion.countryName) && <span>
+                                        {suggestion.name},</span>}
+                                {suggestion.city && <span>{suggestion.city},</span>}
                                 {suggestion.state && <span>{suggestion.state},</span>}
                                 <span>{suggestion.countryName}</span>
                             </div>
@@ -179,10 +198,10 @@ const LocationDropdown = ({ theme, formState, handleChange
                 )}
 
             </div>}
-            
+
             {(formState.eventFormat === "Virtual" || formState.eventFormat === "Hybrid" || formState.eventFormat === "ONLINE") &&
                 <div className={styles.inputLinkContainer}>
-                    <input type="text" placeholder='Enter Virtual Link' onChange={(e) => handleVirtualInputChange(e)}/>
+                    <input type="text" placeholder='Enter Virtual Link' onChange={(e) => handleVirtualInputChange(e)} />
                     <div><span className={styles.infoBtn}>i</span><span className={styles.info}>If you have a virtual event link, you can enter or paste it above</span></div>
                 </div>}
         </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import { formatEventDates } from "@/utils/dateFormat";
 import { Calendar } from "geist-icons";
+import { Badge } from "@/components/ui/badge";
 
 interface CardTaskProps {
   task: any;
@@ -32,6 +33,15 @@ interface CardTaskProps {
   };
 }
 
+const getInetial = (name: string) => {
+  const splitedName = name.split(" "); 
+  if (splitedName.length === 1) {
+     return splitedName[0].charAt(0).toUpperCase(); 
+  } else {
+      return splitedName[0].charAt(0).toUpperCase() + splitedName[1].charAt(0).toUpperCase(); 
+  }
+};
+
 const CardTask: React.FC<CardTaskProps> = ({
   name,
   draggable,
@@ -51,7 +61,7 @@ const CardTask: React.FC<CardTaskProps> = ({
   return (
     <>
       <div
-        className={`w-full flex flex-col justify-evenly cursor-pointer text-[var(--primary-text-color)] bg-[var(--primary-foreground)] card`}
+        className={`w-full flex flex-col justify-evenly cursor-pointer text-[var(--primary-text-color)] bg-[var(--primary-foreground)] p-3 rounded shadow-sm border relative`}
         draggable={draggable}
         onDragStart={(event) => onDragStart(event, name)}
         onClick={() => handleModal(eventId, enquiryId, enquiryStatus, task)}
@@ -69,20 +79,32 @@ const CardTask: React.FC<CardTaskProps> = ({
             {formatEventDates(eventStartDate, eventEndDate)}
           </div>
         </div>
-        <div className={`flex gap-2 pt-[5px]`}>
+        <div className={`flex flex-wrap gap-2 py-[5px]`} style={{width: 'calc(100% - 40px)'}}>
           {interests && interests.EXHIBITOR > 0 && (
-            <div className={`bg-[var(--primary-color)] py-1 px-2 text-white font-medium text-xs rounded`}>Exhibit</div>
+            <div className={`text-[#A099E0] bg-white/10 font-medium text-xs py-1 px-3 border rounded`}>Exhibit</div>
           )}
           {interests && interests.SPONSOR > 0 && (
-            <div className={`bg-[var(--primary-color)] py-1 px-2 text-white font-medium text-xs rounded`}>Sponsor</div>
+            <div className={`text-[#A099E0] bg-white/10 font-medium text-xs py-1 px-3 border rounded`}>Sponsor</div>
           )}
           {interests && interests.SPEAKER > 0 && (
-            <div className={`bg-[var(--primary-color)] py-1 px-2 text-white font-medium text-xs rounded`}>Speak</div>
+            <div className={`text-[#A099E0] bg-white/10 font-medium text-xs py-1 px-3 border rounded`}>Speak</div>
           )}
           {interests && interests.ATTENDING > 0 && (
-            <div className={`bg-[var(--primary-color)] py-1 px-2 text-white font-medium text-xs rounded`}>Attend</div>
+            <div className={`text-[#A099E0] bg-white/10 font-medium text-xs py-1 px-3 border rounded`}>Attend</div>
           )}
         </div>
+        { (task?.owner && task?.owner?.firstName) &&
+          <Badge className="bg-[var(--primary-color)] w-fit p-[6px] rounded-full self-end absolute bottom-[15px]" >
+            {(task?.owner?.firstName && task?.owner?.lastname) ?
+              (<span title={"Onwer: " + task?.owner?.firstName + " " + task?.owner?.lastname} >
+                {getInetial(task?.owner?.firstName + " " + task?.owner?.lastname)}
+              </span>) :
+              (<span title={task?.owner?.firstName}>
+                {getInetial(task?.owner?.firstName)}
+              </span>)
+            }
+          </Badge>
+        }
       </div>
     </>
   );

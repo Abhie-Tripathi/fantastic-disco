@@ -22,7 +22,8 @@ import { createNoteFB, onNoteAdded } from "@/utils/notesAction";
 import { Trash } from "geist-icons";
 import UserProfile from "../userProfile/UserProfile";
 import { useNotesServices } from "@/services/notesServices";
-
+import NullState from "../trackers/nullState";
+import NotesNullState from '@/public/notesNullState.svg'
 interface UserDetail {
   firstname: string;
   email: string;
@@ -120,7 +121,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
               setZeroState(false);
               setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
             }
-            if(data.comments.length===0){
+            if(data.comments.length===0&& page===0){
               setZeroState(true);
             }
           }
@@ -142,7 +143,7 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
         setZeroState(false);
         setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
         }
-        if(data.comments.length===0){
+        if(data.comments.length===0 && page===0){
           setZeroState(true);
         }
     // else setNotes(CommentsData );
@@ -708,14 +709,20 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
   console.log(notes);
   return (
     <div className="flex flex-col items-start w-full h-full border rounded-[12px]" style={{border:"1px solid var(--border-color)"}}>
-      
+      <div className="text-[var(--primary-color)] font-bold px-5 py-2">Notes & Discusssion</div>
       {notes ? (
         <div
           className="h-[85%] w-full overflow-y-scroll relative"
           ref={containerRef}
           // style={{ position: "relative" }}
         >
-          {zeroState && <div className="h-[100%] flex items-center justify-center">Be the first to drop your notes and ignite the team discussion.</div>}
+          {zeroState && 
+          <div className="w-[100%] h-[100%] flex items-center justify-center">
+          <div className="w-[500px]">
+          <NullState image={NotesNullState} title="Start jotting down your thoughts or key takeaways here!" text="Whether it's planning, capturing important points, or kicking off a team discussion, this space is yours to keep everyone aligned and engaged"/>
+          </div>
+          </div>
+          }
           <div
            className="min-h-full absolute w-full top-0 left-0 flex justify-center items-center overflow-y-scroll bg-[var(--primary-foreground)]"
            style={{

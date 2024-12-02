@@ -73,6 +73,7 @@ const Page = () => {
             </div>
             <div className={styles.rightSection}>
               <BrandKit
+                fetchBrandkit = {fetchBrandkit}
                 setFetchedFonts={setFetchedFonts}
                 setFetchedColors={setFetchedColors}
                 handleColorModal={handleColorModal}

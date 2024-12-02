@@ -98,9 +98,12 @@ export const EventsAdapter = {
       adaptedParams.maturity = params.get("maturity")!;
     }
     if (params.get("frequencies")) {
-      adaptedParams.eventFrequency =
-        params.get("frequencies")!.charAt(0).toUpperCase() +
-        params.get("frequencies")!.slice(1);
+      const frequencies = params.get("frequencies");
+      const res = frequencies
+        ?.split(",")
+        ?.map((item) => item!.charAt(0).toUpperCase() + item!.slice(1))
+        .join(",");
+      adaptedParams.eventFrequency = res || "";
     }
 
     if (params.get("includeKeywords") || params.get("excludeKeywords")) {
@@ -119,10 +122,8 @@ export const EventsAdapter = {
             .join(",")
         : "";
 
-        if (includeKeywords)
-          adaptedParams.includeKeywords = includeKeywords;
-        if (excludeKeywords)
-          adaptedParams.excludeKeywords = excludeKeywords;
+      if (includeKeywords) adaptedParams.includeKeywords = includeKeywords;
+      if (excludeKeywords) adaptedParams.excludeKeywords = excludeKeywords;
       // adaptedParams.eventKeywords = includeKeywords + "+" + excludeKeywords;
     }
 
@@ -745,8 +746,9 @@ export const EventsAdapter = {
         logoUrl: response.event.logoUrl,
         bannerUrl: null,
         editions: 1,
-        sponsorsCount: 0,
-        speakersCount: 0,
+        exhibitorsCount: response.event.confirmedExhibitor,
+        sponsorsCount: response.event.confirmedSponsor,
+        speakersCount: response.event.confirmedSpeaker,
         frequency: response.event.frequency || null,
         co_organizers: [],
         rankings: {
@@ -757,7 +759,6 @@ export const EventsAdapter = {
           countryId: null,
         },
         // exhibitorsCount: parseInt(response.event.stats.estimatedExhibitor) || null,
-        exhibitorsCount: 0,
         timings: {
           [response.event.startDate.split("T")[0]]: {
             endTime: response.event.endDate.split("T")[1].slice(0, 5),
@@ -774,6 +775,7 @@ export const EventsAdapter = {
           name: "USD",
           symbol: "$",
         },
+        designationSpread: response.event.designationSpread,
         designation: response.event.designation,
         predictedEventSpendBreakUp: [],
         primaryEventType: (() => {
@@ -872,13 +874,19 @@ export const EventsAdapter = {
         below5GlobalEvent: response.event.below5GlobalEvent || [],
         above5CategoryEvent: response.event.above5CategoryEvent || [],
         below5CategoryEvent: response.event.below5CategoryEvent || [],
+        above5CountryCategoryRankEvent:
+          response.event.above5CountryCategoryRankEvent || [],
+        below5CountryCategoryEvent:
+          response.event.below5CountryCategoryEvent || [],
         rankData: {
           global: response.event.rankData.global,
           country: {
             name: response.event.rankData.country.name,
             rank: response.event.rankData.country.rank,
+            maxRank: response.event.rankData.country.maxRank,
           },
           category: response.event.rankData.category,
+          countryCategoryRank: response.event.rankData.countryCategoryRank,
         },
         stats: {
           score: response.event.stats.score,

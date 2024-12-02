@@ -76,11 +76,12 @@ export default function EstimatedVisitorsSelector({
   }, [getLocalFilterValue]);
 
   const handleRangeToggle = (rangeId: string) => {
-    setSelectedRanges?.((prev) =>
-      prev.includes(rangeId)
-        ? prev.filter((id) => id !== rangeId)
-        : [...prev, rangeId]
-    );
+   
+       setSelectedRanges?.((prev) =>
+        prev.includes(rangeId)
+          ? prev.filter((id) => id !== rangeId)
+          : [...prev, rangeId]
+      );
   };
 
   const handleApply = () => {
@@ -133,8 +134,18 @@ export default function EstimatedVisitorsSelector({
             <div key={range.id} className="flex items-center space-x-2">
               <Checkbox
                 id={range.id}
-                checked={selectedRanges.includes(range.id)}
-                onCheckedChange={() => handleRangeToggle(range.id)}
+                checked={selectedRanges.includes(
+                  source === "tracker"
+                    ? `${range.min}${range.max !== Infinity ? `-${range.max}` : ''}`
+                    : `${range.id}`
+                )}
+                onCheckedChange={() =>
+                  handleRangeToggle(
+                    source === "tracker"
+                      ? `${range.min}${range.max !== Infinity ? `-${range.max}` : ''}`
+                      : `${range.id}`
+                  )
+                }
               />
               <Label htmlFor={range.id}>{range.label}</Label>
             </div>

@@ -405,8 +405,8 @@ const Calendar = ({
                 isCurrentMonth
                   ? currentMonth
                   : day <= 15
-                  ? currentMonth + 1
-                  : currentMonth - 1,
+                    ? currentMonth + 1
+                    : currentMonth - 1,
                 day
               );
               const formattedDate = currentCellDate.toLocaleDateString("en-CA");

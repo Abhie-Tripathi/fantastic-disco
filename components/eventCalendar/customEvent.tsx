@@ -1,7 +1,12 @@
 import React from "react";
 import { Users, Building2, Laptop } from "lucide-react";
-import { eventTypeColors, groupedEventTypes } from "./constants";
+import {
+  eventTypeColors,
+  darkEventTypeColors,
+  groupedEventTypes,
+} from "./constants";
 import { Event } from "./types";
+import { useTheme } from "@/context";
 import concert from "/public/eventType/concert.svg";
 import protest from "/public/eventType/protest.svg";
 import sports from "/public/eventType/sport.svg";
@@ -29,13 +34,18 @@ const eventTypeIcons: Record<string, JSX.Element> = {
 };
 
 export const CustomEvent = ({ event }: { event: Event }) => {
+  const { theme } = useTheme();
   return (
     <Link
-      href={`/search/${event.id}`}
+      href={`/internal/event/${event.id}`}
       className="mt-3 flex items-center p-2 pl-6 gap-2 h-16 rounded-md text-sm text-[#171717] relative overflow-hidden"
       style={{
-        backgroundColor: eventTypeColors[event?.eventType] || "#F0F0F0",
+        backgroundColor:
+          theme === "dark"
+            ? darkEventTypeColors[event?.eventType] || "#F0F0F0"
+            : eventTypeColors[event?.eventType] || "#F0F0F0",
       }}
+      target="_blank"
     >
       <div
         className="absolute left-0 top-0 bottom-0 w-2 rounded-tl-md rounded-bl-md"

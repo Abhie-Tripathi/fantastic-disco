@@ -2,6 +2,8 @@ import React from "react";
 import moment from "moment";
 import NestedCircularProgress from "./circularProgress";
 import { heatmapColors } from "./constants";
+import { useTheme } from "@/context";
+import { cn } from "@/lib/utils";
 
 interface CustomDayHeaderProps {
   date: Date;
@@ -43,15 +45,16 @@ interface CustomDateEventProps {
     count: number;
     heatmapCategory: string;
   }>;
-  onDateClick: (date: Date) => void; // Add this prop
+  onDateClick: (date: Date) => void;
 }
 
 export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
   date,
   label,
   monthEvents,
-  onDateClick, // Add this prop
+  onDateClick,
 }) => {
+  const { theme } = useTheme();
   const currentDate = moment(date);
   const formattedDate = currentDate.format("YYYY-MM-DD");
 
@@ -75,14 +78,19 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
   // Get the heatmap category for the day
   const heatmapCategory = hasEvents ? eventsForDay[0]?.heatmapCategory : null;
   const backgroundColor = hasEvents
-    ? heatmapColors.find((color) => color.name === heatmapCategory)?.color
-    : "white";
+    ? heatmapColors.find((color) => color.name === heatmapCategory)?.[theme === "light" ? "color" : "darkModeColor"]
+    : "var(--primary-foreground)";
 
   return (
     <div
-      className={`p-2 h-[147px] flex flex-col justify-between cursor-pointer text-black`} // Add cursor-pointer
+      className={cn(
+        "p-2 h-[147px] flex flex-col justify-between cursor-pointer border",
+        {
+          "text-black": theme === "light",
+        }
+      )}
       style={{ backgroundColor }}
-      onClick={() => onDateClick(date)} // Add onClick handler
+      onClick={() => onDateClick(date)}
     >
       <div className="text-lg font-semibold text-end mr-2">
         {currentDate.date()}

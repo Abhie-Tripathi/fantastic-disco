@@ -59,8 +59,8 @@ export const useCoordinateService = () => {
     });
   };
 
-  const getInterestedUsers = (eventId: string) => {
-    return api.request<UserInterestResponse>(`${endpoints.coordinate.iterestedUsers}/${eventId}`, {
+  const getInterestedUsers = (eventId: string, enquiryId: string) => {
+    return api.request<UserInterestResponse>(`${endpoints.coordinate.iterestedUsers}/${eventId}?enquiryId=${enquiryId}`, {
       method: "GET",
     });
   };
