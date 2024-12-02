@@ -2,12 +2,7 @@ export interface enquiryType {
     enquiryId: string;
     eventId: string;
     eventName: string;
-    userCountPerInterest: {
-        EXHIBITOR: number,
-        SPONSOR: number,
-        SPEAKER: number,
-        ATTENDING: number,
-    };
+    userCountPerInterest: { [name: string]: number; }
     eventCountry: string;
     startDate: string;
     endDate: string;
