@@ -64,11 +64,11 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
 
         if(shortlistedUsers && setShortlistedUsers){
             const selectedUserIds = userData.filter(user => (user.status=='SHORTLISTED')).map(user => user.id);
-            setShortlistedUsers(selectedUserIds);
+            setShortlistedUsers(prev=>[...prev, ...selectedUserIds]);
         }
     };
 
-    useEffect(() => {
+    useEffect(() => {        
         updateSelectedUserCount();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userData]);
@@ -122,7 +122,7 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
                             }
                         />
                         <span className={styles.imgContainer}>
-                        {user.profilePicture? <Image src={user.profilePicture} alt="userProfile" width={45} height={45} style={{borderRadius:"50%"}} className='w-[45px] h-[45px]'/>:
+                        {user.profilePicture? <Image src={user.profilePicture} alt="userProfile" width={45} height={45} style={{borderRadius:"50%"}} className='w-[45px] h-[45px]' />:
                          <UserProfile name={user.name} width={45} height={45} borderRadius="50%"/>
                         }
                        

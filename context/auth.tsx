@@ -18,7 +18,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 
 type authContextType = {
   user: UserResponse | null;
-  isVerifiedToken:boolean;
+  isVerifiedToken: boolean;
   signup: (user: SignUpDTO) => Promise<any>;
   signin: (user: TSignInFormSchema) => Promise<any>;
   signOut: () => void;
@@ -39,14 +39,14 @@ interface newUserResponse {
 }
 const authContextDefaultValues: authContextType = {
   user: null,
-  isVerifiedToken:false,
+  isVerifiedToken: false,
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
-  signOut: () => { },
+  signOut: () => {},
   verifyOtp: () => Promise.resolve(null),
   verifyLoginOTP: () => Promise.resolve(null),
-  setIsProfileUpdated: () => { },
-  setProfilePic: () => { },
+  setIsProfileUpdated: () => {},
+  setProfilePic: () => {},
 };
 
 export const AuthContext = createContext<authContextType>(
@@ -66,7 +66,7 @@ export const AuthContextProvider = ({ children }: any) => {
     error?: any;
   }
   const searchParams = useSearchParams();
-  
+
   const token = searchParams.get("token");
   const signup = async (userDto: SignUpDTO) => {
     console.log(userDto);
@@ -154,7 +154,7 @@ export const AuthContextProvider = ({ children }: any) => {
         }
       };
       verifyToken();
-    }else setIsVerifiedToken(true);
+    } else setIsVerifiedToken(true);
   }, []);
 
   const signin = async (userDto: TSignInFormSchema) => {
@@ -278,7 +278,6 @@ export const AuthContextProvider = ({ children }: any) => {
 
   useEffect(() => {
     const user = window.localStorage.getItem("user");
-    console.log(user);
     if (user) {
       setUser(JSON.parse(user).user);
     }
@@ -286,7 +285,6 @@ export const AuthContextProvider = ({ children }: any) => {
 
   useLayoutEffect(() => {
     const user = window.localStorage.getItem("user");
-    console.log(user);
 
     if (user) {
       setUser(JSON.parse(user).user);

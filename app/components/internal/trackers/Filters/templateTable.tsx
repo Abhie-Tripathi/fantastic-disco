@@ -5,9 +5,10 @@ import { useState } from "react";
 interface Props {
   customData: any[];
   handleCustomData: (data: any) => void;
+  presetName?: string;
 }
 
-const TemplateTable = ({ customData, handleCustomData }: Props) => {
+const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
   const [expandTable, setExpandTable] = useState<boolean>(false);
   const [selectedIdArray, setSelectedIdArray] = useState<number[]>([]);
 
@@ -38,7 +39,12 @@ const TemplateTable = ({ customData, handleCustomData }: Props) => {
     <div className="flex flex-col gap-[var(--spacing-xs)] relative">
       
       <div style={{display: 'flex', justifyContent: 'space-between'}}>
-        <div className="text-sm text-[var(--secondary-text-color)] font-medium" >Total {customData.length} records</div>
+        <div className="text-sm text-[var(--secondary-text-color)] font-medium" >
+          {presetName &&
+            <span title={presetName} className="mr-3 p-1 px-2 bg-[var(--primary-light-color)] font-medium text-xs rounded-md text-[var(--primary-color)]" >Preset Selected</span>
+          }
+          Total {customData.length} records
+        </div>
         {selectedIdArray.length > 0 && (
           <div className="cursor-pointer text-xs text-[var(--danger-text-color)] font-medium" onClick={removeCustomData}>
             Remove Selected
@@ -112,7 +118,7 @@ const TemplateTable = ({ customData, handleCustomData }: Props) => {
           className="text-sm text-[var(--secondary-text-color)] font-medium cursor-pointer"
           onClick={() => setExpandTable((prev) => !prev)}
         >
-          {expandTable ? "Read Less" : "Read More"}
+          {expandTable ? "Show Less" : "Show All"}
         </div>
       )}
     </div>

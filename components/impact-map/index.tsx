@@ -94,7 +94,6 @@ const MapComponent: React.FC<MapProps> = ({
   });
 
   useEffect(() => {
-    console.log(eventsData);
     if (eventsData) {
       setEvents((eventsData?.events as MapEvents[]) || []);
     }

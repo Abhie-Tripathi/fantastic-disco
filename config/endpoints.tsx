@@ -95,6 +95,7 @@ export const endpoints = {
   },
   calendar:{
     getyearlyEvents:`${BASE_URL}/event?`,
-  }
+  },
+  configuration: `${BASE_URL}/configuration`,
 
 };

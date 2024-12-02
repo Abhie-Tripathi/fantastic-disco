@@ -64,8 +64,6 @@ const Navbar = () => {
     if (user) setUserDetail(user);
   }, [user]);
 
-  console.log("Navbar", user, userDetail);
-
   const toggleDropdown = () => {
     profilectas.setIsOpen(!profilectas.isOpen);
   };
@@ -79,7 +77,6 @@ const Navbar = () => {
   const themeSwitchHandler = () => {
     toggleTheme();
   };
-  console.log(user);
 
   const handelSideShow = () => {
     setShowSidebar(true);
@@ -146,7 +143,6 @@ const Navbar = () => {
       setTitle("Profile");
     }
   }, [currPath]);
-  console.log(userDetail);
 
   useEffect(() => {
     const referrer = document.referrer;

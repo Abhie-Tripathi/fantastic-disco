@@ -103,7 +103,7 @@ const CarouselComponent = ({
                   // </span>
                   <DetailDialog
                     titleColor="text-[var(--primary-text-color)]"
-                    title={"No of Editions"}
+                    title={"No. of Editions"}
                     triggerText={`${count} Edition${count > 1 ? "s" : ""}`}
                     className="text-[#6750A4] bg-[#E6E6F9] dark:bg-[#2D2541] dark:border-[#8F80D4] h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit cursor-pointer"
                   >

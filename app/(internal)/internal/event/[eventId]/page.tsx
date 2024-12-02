@@ -292,21 +292,23 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               <MapPin width={20} height={20} />
             </span>
             <div>
-              {venueLocation.venue && (
-                <>
-                  {venueLocation.venue.name && (
-                    <Text fontWeight="semibold" variant="noMargin">
-                      {venueLocation.venue.name}
-                    </Text>
-                  )}
-                  {venueLocation.venue.address && (
-                    <Text variant="noMargin" color="secondary">
-                      {venueLocation.venue.address !== "null" &&
-                        venueLocation.venue.address}
-                    </Text>
-                  )}
-                </>
-              )}
+              {venueLocation &&
+                (() => {
+                  const { venue, city, state, country } = venueLocation;
+                  return (
+                    <>
+                      <Text fontWeight="semibold" variant="noMargin">
+                        {venue.name ||
+                          [city?.name, state?.name, country?.name]
+                            .filter(Boolean)
+                            .join(", ")}
+                      </Text>
+                      <Text variant="noMargin" color="secondary">
+                        {venue.address}
+                      </Text>
+                    </>
+                  );
+                })()}
             </div>
           </div>
         )}
@@ -321,7 +323,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 Organizer
                 {organizer && Object.keys(organizer).length > 0 && (
                   <span className="text-[12px] bg-[var(--primary-color)] text-white dark:text-[#131313] py-[1px] px-2 rounded-full">
-                    {Object.keys.length.toString().padStart(2,"0")}
+                    {Object.keys.length.toString().padStart(2, "0")}
                   </span>
                 )}
               </p>
@@ -479,8 +481,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                         )}
                         {email && (
                           <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-                            <MailIcon width="12px" height="12px" />
-                            <span className="break-normal">{email}</span>
+                            <MailIcon width="12px" height="12px" className="self-start mt-1"/>
+                            <span className="break-all">{email}</span>
                           </p>
                         )}
                         {phoneNumber && (
