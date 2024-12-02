@@ -58,12 +58,7 @@ const EventDetail = ({
   const [stage, setStage] = useState<string>("");
   const [singleEventData, setSingleEventData] = useState<EventData | any>();
   const urlPath = usePathname().split("/")[2];
-  const [participentData, setParticipentData] = useState({
-    attendee: [],
-    speakers: [],
-    sponsors: [],
-    exhibitors: [],
-  });
+  const [participentData, setParticipentData] = useState<any>({});
 
   const coordinateService = useCoordinateService();
 
@@ -148,12 +143,13 @@ const EventDetail = ({
     const fetchInterestData = async () => {
       const data = await coordinateService.getInterestedUsers(eventId, enquiryId);
       if (data) {
-        setParticipentData({
-          attendee: data.participent.attendee,
-          speakers: data.participent.speakers,
-          sponsors: data.participent.sponsors,
-          exhibitors: data.participent.exhibitors,
-        });
+        setParticipentData(data.participent);
+        // setParticipentData({
+        //   attendee: data.participent.attendee,
+        //   speakers: data.participent.speakers,
+        //   sponsors: data.participent.sponsors,
+        //   exhibitors: data.participent.exhibitors,
+        // });
       }
     };
     fetchInterestData();

@@ -36,9 +36,7 @@ const UpVoteTag: React.FC<voteProps> = ({type, status, userList, handleVoteClick
     else if(tag==="Attending") return "Attend";
     else if(tag==="Speaking") return "Speak";
     else if(tag==="Sponsoring") return "Sponsor";
-  }
-  console.log('userList', userList);
-  
+  }  
   return(
     <div className={styles.main} >
       <div className='desktop_view'>

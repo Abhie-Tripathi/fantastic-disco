@@ -189,8 +189,8 @@ const Internal = ({
         {/* <div className={styles.scrollContainer} ref={divRef} style={{height:popoverState?"auto":"calc(100vh - 80px)"}}> */}
         <div className={styles.container}>
           <div className={styles.countsContainer}>
-            {coordinateCount && coordinateCount.slice(1).map((item: any) => (
-              <div className={styles.exhibitorCount}>
+            {coordinateCount && coordinateCount.slice(1).map((item: any, index: number) => (
+              <div className={styles.exhibitorCount} key={index}>
                 <div className={styles.count}>
                   {item?.count}
                 </div>

@@ -65,7 +65,6 @@ const AttendeeCard = ({cardType, userList, shortlistedUsers, setShortlistedUsers
         if(shortlistedUsers && setShortlistedUsers){
             const selectedUserIds = userData.filter(user => (user.status=='SHORTLISTED')).map(user => user.id);
             setShortlistedUsers(prev=>[...prev, ...selectedUserIds]);
-            console.log('selectedUserIds', selectedUserIds);
         }
     };
 

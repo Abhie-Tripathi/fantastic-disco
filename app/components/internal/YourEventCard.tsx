@@ -93,13 +93,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   const [votesCount, setVotesCount] = useState(0);
   const [voteStatus, setVoteStatus] = useState<VoteStatus>({});
   
-  const [interestedUsers, setInterestedUsers] = useState<any>({
-    attendee: [],
-    speakers: [],
-    sponsors: [],
-    exhibitors: [],
-  });
-  const [interestedUsers1, setInterestedUsers1] = useState<any>({})
+  const [interestedUsers, setInterestedUsers] = useState<any>({})
 
   const coordinateService = useCoordinateService();
 
@@ -174,13 +168,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
     try {
       const apiData = await coordinateService.getInterestedUsers(eventId, enquiryId);
       if (apiData) {
-        setInterestedUsers1(apiData.participent);
-        setInterestedUsers({
-          attendee: apiData.participent.attendee,
-          speakers: apiData.participent.speakers,
-          sponsors: apiData.participent.sponsors,
-          exhibitors: apiData.participent.exhibitors,
-        });
+        setInterestedUsers(apiData.participent);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -331,12 +319,13 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                       &nbsp;Upvotes
                     </div>
                   </div>
-                  {Object.entries(upvote[1]).map(([key, value]) => (
+                  {Object.entries(upvote[1]).map(([key, value], index: number) => (
                     <UpVoteTag
+                      key={index}
                       type={key}
                       status={voteStatus[key] ? "voted" : ""}
                       handleVoteClick={handleVoteClick}
-                      userList={interestedUsers1[key]}
+                      userList={interestedUsers[key]}
                     />
                   ))}
                   {/* <UpVoteTag
@@ -399,12 +388,13 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               style={{ display: "flex", gap: "6px", paddingTop: "20px", justifyContent: "center" }}
               onClick={handleClickEvent}
             >
-              {Object.entries(upvote[1]).map(([key, value]) => (
+              {Object.entries(upvote[1]).map(([key, value], index: number) => (
                 <UpVoteTag
+                  key={index}
                   type={key}
                   status={voteStatus[key] ? "voted" : ""}
                   handleVoteClick={handleVoteClick}
-                  userList={interestedUsers1[key]}
+                  userList={interestedUsers[key]}
                 />
               ))}
               {/* <UpVoteTag

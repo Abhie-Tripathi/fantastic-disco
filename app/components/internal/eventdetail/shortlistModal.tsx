@@ -104,8 +104,8 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
           style={{ padding: "0 1.8rem" }}
         >
           <div className={styles["tag_container"]}>
-            {Object.entries(shortlistModalData.participent).map(([key, value]) => (
-              <span className={`${styles["tag_item"]} ${shortlistModalData.participent.sponsors?.length > 0 ? styles.activeTab : ''}`} >
+            {Object.entries(shortlistModalData.participent).map(([key, value], index: number) => (
+              <span key={index} className={`${styles["tag_item"]} ${shortlistModalData.participent.sponsors?.length > 0 ? styles.activeTab : ''}`} >
                 {/* <Image
                   src={sponsorIcon}
                   alt=""
@@ -164,9 +164,9 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
             </Button>
           </div>
           <div className={styles.main_section}>
-            {Object.entries(shortlistModalData.participent).map(([key, value]) => (
+            {Object.entries(shortlistModalData.participent).map(([key, value], index: number) => (
               (shortlistModalData.participent[key].length > 0) ? (
-                <AttendeeCard cardType={key} userList={shortlistModalData.participent[key]} shortlistedUsers={shortlistedUsers} setShortlistedUsers={setShortlistedUsers} /> )
+                <AttendeeCard key={index} cardType={key} userList={shortlistModalData.participent[key]} shortlistedUsers={shortlistedUsers} setShortlistedUsers={setShortlistedUsers} /> )
                 : <></>
             ))}
             
