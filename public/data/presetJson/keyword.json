@@ -22,7 +22,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "39414"
     },
     {
       "id": 2,
@@ -47,7 +48,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "60829"
     },
     {
       "id": 3,
@@ -72,7 +74,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "44413"
     },
     {
       "id": 4,
@@ -92,7 +95,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "18394"
     },
     {
       "id": 5,
@@ -113,7 +117,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "19371"
     },
     {
       "id": 6,
@@ -135,7 +140,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "109405"
     },
     {
       "id": 7,
@@ -155,7 +161,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "36661"
     },
     {
       "id": 8,
@@ -177,7 +184,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "20056"
     },
     {
       "id": 9,
@@ -202,7 +210,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "17495"
     },
     {
       "id": 10,
@@ -223,7 +232,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "1055"
     },
     {
       "id": 11,
@@ -249,7 +259,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "31583"
     },
     {
       "id": 12,
@@ -273,7 +284,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "12892"
     },
     {
       "id": 13,
@@ -298,7 +310,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "23050"
     },
     {
       "id": 14,
@@ -321,7 +334,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "14285"
     },
     {
       "id": 15,
@@ -347,7 +361,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "21874"
     },
     {
       "id": 16,
@@ -369,7 +384,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "35404"
     },
     {
       "id": 17,
@@ -390,7 +406,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "5126"
     },
     {
       "id": 18,
@@ -413,7 +430,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "17657"
     },
     {
       "id": 19,
@@ -434,7 +452,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "513"
     },
     {
       "id": 20,
@@ -455,7 +474,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "677"
     },
     {
       "id": 21,
@@ -477,7 +497,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "7168"
     },
     {
       "id": 22,
@@ -499,7 +520,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "3887"
     },
     {
       "id": 23,
@@ -520,7 +542,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "7495"
     },
     {
       "id": 24,
@@ -540,7 +563,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "568"
     },
     {
       "id": 25,
@@ -561,7 +585,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "6925"
     },
     {
       "id": 26,
@@ -582,7 +607,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "239"
     },
     {
       "id": 27,
@@ -602,7 +628,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "739"
     },
     {
       "id": 28,
@@ -624,7 +651,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "14508"
     },
     {
       "id": 29,
@@ -641,7 +669,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "5276"
     },
     {
       "id": 30,
@@ -660,7 +689,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "468"
     },
     {
       "id": 31,
@@ -677,23 +707,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 32,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Urban Regeneration Projects",
-      "content": "Revitalize cities through innovative development & community-focused urban planning",
-      "data": [
-        [
-          "urban renewal",
-          "city planning",
-          "infrastructure redevelopment",
-          "neighborhood revitalization"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "907"
     },
     {
       "id": 33,
@@ -712,75 +727,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 34,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Tech Inclusion",
-      "content": "Build inclusive digital solutions & bridge technology gaps for universal access",
-      "data": [
-        [
-          "tech accessibility",
-          "digital equality",
-          "inclusion in tech",
-          "underserved digital",
-          "bridging digital"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 35,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Open Source Movement",
-      "content": "Drive collaborative innovation through open-source development & community engagement",
-      "data": [
-        [
-          "collaborative software",
-          "open development",
-          "community innovation",
-          "free software",
-          "tech transparency"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 36,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Next Billion",
-      "content": "Scale high-potential startups & unicorns through strategic funding & growth initiatives",
-      "data": [
-        [
-          "growth startups",
-          "high potential companies",
-          "unicorns",
-          "funding leaders",
-          "VC backed",
-          "investment round"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 37,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Franchise Powerhouses",
-      "content": "Expand franchise networks & build successful brand systems for sustainable growth",
-      "data": [
-        [
-          "franchise growth",
-          "brand expansion",
-          "franchisee support",
-          "retail franchise"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "604"
     },
     {
       "id": 38,
@@ -796,25 +744,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 39,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Digital Nomad Network",
-      "content": "Enable remote work culture & location-independent business operations globally",
-      "data": [
-        [
-          "remote work",
-          "freelancing",
-          "digital lifestyle",
-          "location independence",
-          "wfh",
-          "work from home"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "688"
     },
     {
       "id": 40,
@@ -831,7 +762,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "131"
     },
     {
       "id": 41,
@@ -850,7 +782,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "758"
     },
     {
       "id": 42,
@@ -871,7 +804,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "6123"
     },
     {
       "id": 43,
@@ -892,7 +826,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "3354"
     },
     {
       "id": 44,
@@ -912,24 +847,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 45,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Intrapreneurs Insight",
-      "content": "Foster internal innovation & employee-led initiatives for organizational growth",
-      "data": [
-        [
-          "internal entrepreneurs",
-          "corporate innovation",
-          "employee led projects",
-          "intrapreneurship",
-          "internal startup"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "3505"
     },
     {
       "id": 46,
@@ -949,7 +868,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "134"
     },
     {
       "id": 47,
@@ -969,7 +889,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "775"
     },
     {
       "id": 48,
@@ -986,24 +907,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 49,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Freelancer Focus",
-      "content": "Empower independent professionals & gig economy workers for sustainable success",
-      "data": [
-        [
-          "gig economy",
-          "freelance business",
-          "solopreneurs",
-          "remote work",
-          "self employed"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "2127"
     },
     {
       "id": 50,
@@ -1020,7 +925,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "2360"
     },
     {
       "id": 51,
@@ -1037,7 +943,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "1846"
     },
     {
       "id": 52,
@@ -1054,7 +961,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "1817"
     },
     {
       "id": 53,
@@ -1070,24 +978,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 54,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Retention Roundtable",
-      "content": "Build customer loyalty & engagement through innovative retention strategies",
-      "data": [
-        [
-          "client retention",
-          "customer loyalty",
-          "after sales",
-          "membership programs",
-          "engagement follow up"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "213"
     },
     {
       "id": 55,
@@ -1107,58 +999,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 56,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Grassroots Growth",
-      "content": "Build community-driven business expansion & organic growth strategies",
-      "data": [
-        [
-          "organic growth",
-          "grassroots expansion",
-          "community outreach",
-          "non scaled growth",
-          "local efforts"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 57,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Interactive Insights",
-      "content": "Generate actionable insights through engaging sessions & collaborative learning",
-      "data": [
-        [
-          "interactive session",
-          "deep dive",
-          "polling",
-          "participatory insights",
-          "active engagement"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 58,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Pivot Points",
-      "content": "Navigate business transitions & market shifts through adaptive strategies",
-      "data": [
-        [
-          "business pivot",
-          "major transition",
-          "adaptive strategy",
-          "market shift",
-          "repositioning"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "1055"
     },
     {
       "id": 59,
@@ -1175,7 +1017,8 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "424"
     },
     {
       "id": 60,
@@ -1192,24 +1035,7 @@
         ]
       ],
       "enabled": true,
-      "presetType": "ALL"
-    },
-    {
-      "id": 61,
-      "url": "T_PRODUCT_KEYWORDS",
-      "trackerName": "Founders Fireside",
-      "content": "Share entrepreneurial experiences & insights through founder-led discussions",
-      "data": [
-        [
-          "founders meeting",
-          "startup discussions",
-          "entrepreneurial experience",
-          "founder insights",
-          "founder journeys",
-          "founder fireside"
-        ]
-      ],
-      "enabled": false,
-      "presetType": "ALL"
+      "presetType": "ALL",
+      "eventCount": "1114"
     }
 ]

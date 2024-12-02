@@ -535,12 +535,12 @@ width: calc(100vw - 134px);
   overflow-y: auto;
   width: 100%;
   display: grid;
-  /* justify-content: center; */
+  justify-content: center;
   grid-template-columns: repeat(auto-fill, 280px);
   /* display: flex; */
   /* overflow-x: auto; */
   transition: max-height 0.5s ease, opacity 0.5s ease;
-  gap: 12px;
+  gap: 15px;
 }
 
 .presetTitle {
