@@ -356,7 +356,7 @@ const handleDropdownSelect = (target: string, source: string) => {
           {(tabsVisible == "shortlist" || tabsVisible == "all") && (
             <div className={`${styles.outerCard}`}>
               <div className="desktop_view tablet_view">
-                <div className="text-white font-medium text-base p-3 bg-[var(--primary-color-active)] rounded-t" >
+                <div className="text-white font-medium text-base p-3 bg-[var(--primary-color)] rounded-t" >
                   Shortlisted{" "}
                   <span className="bg-white/10 px-3 py-1 text-sm rounded font-semibold border border-white/10 ml-2">{shortlistedCount}</span>
                 </div>
@@ -408,7 +408,7 @@ const handleDropdownSelect = (target: string, source: string) => {
           {(tabsVisible == "outreach" || tabsVisible == "all") && (
             <div className={`${styles.outerCard} `}>
               <div className="desktop_view tablet_view">
-                <div className="text-white font-medium text-base p-3 bg-[var(--primary-color-active)] rounded-t" >
+                <div className="text-white font-medium text-base p-3 bg-[var(--primary-color)] rounded-t" >
                   In Progress{" "}
                   <span className="bg-white/10 px-3 py-1 text-sm rounded font-semibold border border-white/10 ml-2">{inProgressCount}</span>
                 </div>
@@ -470,7 +470,7 @@ const handleDropdownSelect = (target: string, source: string) => {
                 </div>
               </div> */}
               <div className="desktop_view tablet_view">
-                <div className="text-white font-medium text-base p-3 bg-[var(--primary-color-active)] rounded-t" >
+                <div className="text-white font-medium text-base p-3 bg-[var(--primary-color)] rounded-t" >
                   Confirmed{" "}
                   <span className="bg-white/10 px-3 py-1 text-sm rounded font-semibold border border-white/10 ml-2">{confirmedCount}</span>
                 </div>
