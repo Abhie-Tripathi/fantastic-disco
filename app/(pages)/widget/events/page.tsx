@@ -275,7 +275,9 @@ import { useEventServices } from "@/services/geniservices/eventService";
 import MonthsCalendar from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/MonthsCalendar";
 import { useTheme } from "@/context";
 const Page = () => {
-  const [upcominFetchedEvents, setUpcominFetchedEvents] = useState<AllEventsType[]>([]);
+  const [upcominFetchedEvents, setUpcominFetchedEvents] = useState<
+    AllEventsType[]
+  >([]);
   const [pastFetchedEvents, setPastFetchedEvents] = useState<AllEventsType[]>(
     []
   );
@@ -323,19 +325,34 @@ const Page = () => {
       setFilteredUpcomingEvents(filtered);
     }
   };
+  console.log("kjkjk", filteredPastEvents);
   const handleFilteredEventsByMonth = (selectedMonth: string) => {
-    const filtered = upcominFetchedEvents.filter((event: any) => {
-      const eventMonth = new Date(event.mainEvent.startDate).toLocaleString(
-        "default",
-        {
-          month: "long",
-        }
-      );
-      return eventMonth === selectedMonth;
-    });
-    // console.log("33000",selectedMonth,filtered)
-    setFilteredUpcomingEvents(filtered);
+    if (activeTab === "past") {
+      const filtered = pastFetchedEvents.filter((event: any) => {
+        const eventMonth = new Date(event.mainEvent.startDate).toLocaleString(
+          "default",
+          {
+            month: "long",
+          }
+        );
+        return eventMonth === selectedMonth;
+      });
+      setFilteredPastEvents(filtered);
+    }
+    if (activeTab === "upcoming") {
+      const filtered = upcominFetchedEvents.filter((event: any) => {
+        const eventMonth = new Date(event.mainEvent.startDate).toLocaleString(
+          "default",
+          {
+            month: "long",
+          }
+        );
+        return eventMonth === selectedMonth;
+      });
+      setFilteredUpcomingEvents(filtered);
+    }
   };
+
   useEffect(() => {
     const getCurrentDate = (): string => {
       const today = new Date();
@@ -639,13 +656,12 @@ const Page = () => {
   };
 
   const handleResetEvents = () => {
-    if(activeTab==="upcoming"){
+    if (activeTab === "upcoming") {
       setFilteredUpcomingEvents(upcominFetchedEvents || []);
     }
-    if(activeTab==="past"){
+    if (activeTab === "past") {
       setFilteredPastEvents(pastFetchedEvents || []);
     }
-    
   };
 
   return (
@@ -762,16 +778,19 @@ const Page = () => {
             isFixed ? styles.fixed : ""
           }`}
         >
-          <MonthsCalendar
-            theme={theme}
-            widgetId={null}
-            onMonthSelect={handleFilteredEventsByMonth}
-            onDaySelect={handleFilteredEvents}
-            tab={activeTab}
-            handleResetEvents={handleResetEvents}
-          />
+          <div className={styles.calendar_div}>
+            <MonthsCalendar
+              theme={theme}
+              widgetId={null}
+              onMonthSelect={handleFilteredEventsByMonth}
+              onDaySelect={handleFilteredEvents}
+              tab={activeTab}
+              handleResetEvents={handleResetEvents}
+            />
+          </div>
         </div>
       </div>
+
       {(isEventFormModal ||
         deleteModal ||
         deleteModalTwo ||
