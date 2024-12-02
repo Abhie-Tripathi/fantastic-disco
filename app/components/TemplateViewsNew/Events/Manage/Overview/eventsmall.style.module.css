@@ -215,7 +215,7 @@
 @media screen and (max-width: 980px) {
     .body {
         width: 100%;
-        justify-content: center;
+        justify-content: space-evenly;
     }
 
     .hideOnSmallScreen {
