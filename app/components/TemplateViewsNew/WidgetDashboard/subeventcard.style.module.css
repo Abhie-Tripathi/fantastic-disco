@@ -64,8 +64,8 @@
 .imageContainer {
     border-radius: 6px;
     position: relative;
-    height: 130px;
-    width: 130px;
+    min-height: 130px;
+    min-width: 130px;
 }
 
 .imageContainer img {
