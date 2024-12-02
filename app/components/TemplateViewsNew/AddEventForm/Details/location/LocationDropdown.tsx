@@ -42,8 +42,24 @@ const LocationDropdown = ({ theme, formState, handleChange
     const [isDropdownVisible, setIsDropdownVisible] = useState<boolean>(false);
 
     const handleSuggestionClick = async (suggestion: LocationSuggestion) => {
-        const locationParts = [suggestion.name, suggestion.city, suggestion.state]
-            .filter((part) => part && part !== suggestion.countryName); // Exclude falsy values and name matching country
+        const locationParts = [];
+        // Add 'name' only if it is different from 'city', 'state', and 'country'
+        if (
+            suggestion.name &&
+            suggestion.name !== suggestion.city &&
+            suggestion.name !== suggestion.state &&
+            suggestion.name !== suggestion.countryName
+        ) {
+            locationParts.push(suggestion.name);
+        }
+
+        // Always add 'city' and 'state' if they are present
+        if (suggestion.city) {
+            locationParts.push(suggestion.city);
+        }
+        if (suggestion.state) {
+            locationParts.push(suggestion.state);
+        }
         handleChange('cityName', locationParts.join(', '));
 
         handleChange('countryName', suggestion.countryName)
@@ -68,7 +84,7 @@ const LocationDropdown = ({ theme, formState, handleChange
             );
             const data = await response.json();
             const newSuggestions = data.map((location: any): LocationSuggestion => {
-                const { place_id: id, display_name: name, lat, lon: long } = location;
+                const { place_id: id, name: name, lat, lon: long } = location;
                 const { city, country: countryName, state } = location.address || {};
 
                 const shortName = shortenName(name)
@@ -169,10 +185,13 @@ const LocationDropdown = ({ theme, formState, handleChange
                         {suggestions.map(suggestion => (
                             <div key={suggestion.id} className={styles.suggestion} onClick={() => handleSuggestionClick(suggestion)}>
                                 <LocationIcon />
-                                {(suggestion.name !== suggestion.city) && (suggestion.name !== suggestion.state) && (suggestion.name !== suggestion.countryName) && <span>{suggestion.name}</span>}
-                                {suggestion.city && <span>{suggestion.city} ,</span>}
-                                {suggestion.state && <span>{suggestion.state} ,</span>}
-                                <span>{suggestion.countryName} </span>
+                                {(suggestion.name !== suggestion.city) &&
+                                    (suggestion.name !== suggestion.state) &&
+                                    (suggestion.name !== suggestion.countryName) && <span>
+                                        {suggestion.name},</span>}
+                                {suggestion.city && <span>{suggestion.city},</span>}
+                                {suggestion.state && <span>{suggestion.state},</span>}
+                                <span>{suggestion.countryName}</span>
                             </div>
                         ))}
                     </div>

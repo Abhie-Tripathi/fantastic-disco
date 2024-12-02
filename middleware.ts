@@ -5,8 +5,10 @@ export function middleware(request: NextRequest) {
   const key = (process.env.NEXT_COOKIE_PREFIX ? `${process.env.NEXT_COOKIE_PREFIX}-` : '') + 'token';
   const cookie = request.cookies.get(key)?.value;
   if (!cookie) {
+    console.log("directing to signin")
     return NextResponse.redirect(new URL("/signin", request.url));
   }else{
+    console.log("directing to signin")
     if(request.nextUrl.pathname == '/'){
       return NextResponse.redirect(new URL("/internal", request.url));
     }
