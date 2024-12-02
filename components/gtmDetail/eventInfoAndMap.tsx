@@ -122,7 +122,7 @@ export const EventInfoAndMap = ({
                   : `${
                       description === null || undefined
                         ? "Sourced from 10times"
-                        : description?.slice(0, 800)
+                        : description?.slice(0, 200)
                     }`}
                 <span
                   className="font-semibold underline cursor-pointer ml-2"
@@ -130,7 +130,7 @@ export const EventInfoAndMap = ({
                 >
                   {description !== null &&
                   description !== undefined &&
-                  description.length > 600
+                  description.length > 200
                     ? isExpandDescription
                       ? "Show Less"
                       : "Read More"

@@ -45,27 +45,35 @@ export const EventRank = ({
     above5CountryCategoryRankEvent,
     below5CountryCategoryEvent,
   } = rankings;
+
   const countryRank = rankData.country.rank;
   const [countryActiveIndex, setCountryIndex] = useState<number>(0);
   const [countryTotalSlides, setCountryTotalSlides] = useState<number>(0);
   const countryName = rankData.country.name;
-  const categoryRank = Math.min(
-    ...rankData.category.map((category) => category.rank)
-  );
+
+  const categoryRank =
+    rankData.category &&
+    rankData.category.length > 0 &&
+    Math.min(...rankData.category.map((category) => category.rank));
   const [categoryActiveIndex, setCategoryActiveIndex] = useState<number>(0);
   const [categoryTotalSlides, setCategoryTotalSlides] = useState<number>(0);
   const categoryName =
     rankData.category.find((category) => category.rank === categoryRank)
       ?.name ?? "";
-  const countryCategoryRank = Math.min(
-    ...rankData.countryCategoryRank.map(
-      (countryCategoryRank) => countryCategoryRank.rank
-    )
-  );
+
+  const countryCategoryRank =
+    rankData.countryCategoryRank &&
+    rankData.countryCategoryRank.length > 0 &&
+    Math.min(
+      ...rankData.countryCategoryRank.map(
+        (countryCategoryRank) => countryCategoryRank.rank
+      )
+    );
   const [countryCategoryActiveIndex, setCountryCategoryActiveIndex] =
     useState<number>(0);
   const [countryCategoryTotalSlides, setCountryCategoryTotalSlides] =
     useState<number>(0);
+  console.log(countryRank, categoryRank, countryCategoryRank);
   return (
     <>
       <div className="flex flex-row justify-center border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] p-3 rounded-sm gap-12 w-fill h-auto">
@@ -94,15 +102,15 @@ export const EventRank = ({
             </div>
             <div className="flex flex-col">
               <button
-                className={`flex items-center bg-[#FAFAFA] dark:border dark:border-[var(--border-color)] dark:bg-[#292929] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-country-${countryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:border dark:border-[var(--border-color)] dark:bg-[#292929] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] ${
+                  countryActiveIndex === 1
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer"
+                } swiper-button-prev-country-${countryRank}`}
                 disabled={countryActiveIndex === 1}
               >
                 <Text color="secondary" variant="noMargin" className="w-full">
-                  see{" "}
-                  {below5CategoryEvent.length > 0
-                    ? below5CountryEvent.length - 1
-                    : ""}{" "}
-                  more events
+                  see more events
                 </Text>
                 <ArrowUp width={15} height={15} color="#45A557" />
               </button>
@@ -242,15 +250,15 @@ export const EventRank = ({
                 </>
               </Swiper>
               <button
-                className={`flex items-center bg-[#FAFAFA] dark:border dark:border-[var(--border-color)] dark:bg-[#292929] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-country-${countryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:border dark:border-[var(--border-color)] dark:bg-[#292929] gap-2 p-3 w-44 self-center rounded-sm shadow-md ${
+                  countryActiveIndex === countryTotalSlides - 2
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer"
+                } swiper-button-next-country-${countryRank}`}
                 disabled={countryActiveIndex === countryTotalSlides - 2}
               >
-                <Text color="secondary" variant="noMargin">
-                  see{" "}
-                  {above5CountryEvent.length > 0
-                    ? above5CountryEvent.length - 1
-                    : ""}{" "}
-                  more events
+                <Text color="secondary" variant="noMargin" className="w-full">
+                  see more events
                 </Text>
                 <ArrowDown width={15} height={15} color="#E5484D" />
               </button>
@@ -280,15 +288,15 @@ export const EventRank = ({
             </div>
             <div className="flex flex-col">
               <button
-                className={`flex items-center bg-[#FAFAFA] dark:bg-[#292929] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-category-${categoryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:bg-[#292929] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] ${
+                  categoryActiveIndex === 1
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer"
+                } swiper-button-prev-category-${categoryRank}`}
                 disabled={categoryActiveIndex === 1}
               >
                 <Text color="secondary" variant="noMargin" className="w-full">
-                  see{" "}
-                  {below5CategoryEvent.length > 0
-                    ? below5CategoryEvent.length - 1
-                    : ""}{" "}
-                  more events
+                  see more events
                 </Text>
                 <ArrowUp width={15} height={15} color="#45A557" />
               </button>
@@ -430,15 +438,15 @@ export const EventRank = ({
                 </>
               </Swiper>
               <button
-                className={`flex items-center bg-[#FAFAFA] dark:bg-[#292929] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-category-${categoryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:bg-[#292929] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-md ${
+                  categoryActiveIndex === categoryTotalSlides - 2
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer"
+                } swiper-button-next-category-${categoryRank}`}
                 disabled={categoryActiveIndex === categoryTotalSlides - 2}
               >
-                <Text color="secondary" variant="noMargin">
-                  see{" "}
-                  {above5CategoryEvent.length > 0
-                    ? above5CategoryEvent.length - 1
-                    : ""}{" "}
-                  more events
+                <Text color="secondary" variant="noMargin" className="w-full">
+                  see more events
                 </Text>
                 <ArrowDown width={15} height={15} color="#E5484D" />
               </button>
@@ -470,15 +478,15 @@ export const EventRank = ({
             </div>
             <div className="flex flex-col">
               <button
-                className={`flex items-center bg-[#FAFAFA] dark:bg-[#292929] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] cursor-pointer swiper-button-prev-country-category-${countryCategoryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:bg-[#292929] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-[0px_-4px_6px_-1px_rgba(0,0,0,0.1)] ${
+                  countryCategoryActiveIndex === 1
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer"
+                } swiper-button-prev-country-category-${countryCategoryRank}`}
                 disabled={countryCategoryActiveIndex === 1}
               >
                 <Text color="secondary" variant="noMargin" className="w-full">
-                  see{" "}
-                  {below5CountryCategoryEvent.length > 0
-                    ? below5CountryCategoryEvent.length - 1
-                    : ""}{" "}
-                  more events
+                  see more events
                 </Text>
                 <ArrowUp width={15} height={15} color="#45A557" />
               </button>
@@ -634,17 +642,17 @@ export const EventRank = ({
                 </>
               </Swiper>
               <button
-                className={`flex items-center bg-[#FAFAFA] dark:bg-[#292929] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-md cursor-pointer swiper-button-next-country-category-${countryCategoryRank}`}
+                className={`flex items-center bg-[#FAFAFA] dark:bg-[#292929] dark:border dark:border-[var(--border-color)] gap-2 p-3 w-44 self-center rounded-sm shadow-md ${
+                  countryCategoryActiveIndex === countryCategoryTotalSlides - 2
+                    ? "cursor-not-allowed"
+                    : "cursor-pointer"
+                } swiper-button-next-country-category-${countryCategoryRank}`}
                 disabled={
                   countryCategoryActiveIndex === countryCategoryTotalSlides - 2
                 }
               >
-                <Text color="secondary" variant="noMargin">
-                  see{" "}
-                  {above5CountryCategoryRankEvent.length > 0
-                    ? above5CountryCategoryRankEvent.length - 1
-                    : ""}{" "}
-                  more events
+                <Text color="secondary" variant="noMargin" className="w-full">
+                  see more events
                 </Text>
                 <ArrowDown width={15} height={15} color="#E5484D" />
               </button>
