@@ -325,7 +325,6 @@ const Page = () => {
       setFilteredUpcomingEvents(filtered);
     }
   };
-  console.log("kjkjk", filteredPastEvents);
   const handleFilteredEventsByMonth = (selectedMonth: string) => {
     if (activeTab === "past") {
       const filtered = pastFetchedEvents.filter((event: any) => {
@@ -365,11 +364,22 @@ const Page = () => {
     setTodaysDate(getCurrentDate());
   }, []);
 
+  // useEffect(() => {
+  //   setPage(0);
+  //   if (activeTab === "upcoming") {
+  //     fetchUpcomingEvents(0);
+  //   } else {
+  //     fetchPastEvents(0);
+  //   }
+  // }, [activeTab]);
+
   useEffect(() => {
     setPage(0);
     if (activeTab === "upcoming") {
+      setUpcominFetchedEvents([]);
       fetchUpcomingEvents(0);
     } else {
+      setPastFetchedEvents([]);
       fetchPastEvents(0);
     }
   }, [activeTab]);
@@ -393,25 +403,49 @@ const Page = () => {
     }
   }, [upcominFetchedEvents, pastFetchedEvents]);
 
-  // useEffect(() => {
-  //   console.log("this scroll function called");
-  //   console.log("fetched_events_____________", fetchedEvents);
-  //   const handleScroll = () => {
-  //     const isAtBottom =
-  //       window.innerHeight + window.scrollY >= document.body.offsetHeight - 50; // Adjusted offset
-  //     if (isAtBottom && fetchedEvents.length > 0) {
-  //       setPage((prevPage) => prevPage + 1); // Increment page to load more events
-  //     }
-  //   };
+  useEffect(() => {
+    if (activeTab === "upcoming") {
+      console.log("this scroll function called");
+      console.log("fetched_events_____________", upcominFetchedEvents);
+      const handleScroll = () => {
+        const isAtBottom =
+          window.innerHeight + window.scrollY >=
+          document.body.offsetHeight - 50; // Adjusted offset
+        if (isAtBottom && upcominFetchedEvents.length > 0) {
+          setPage((prevPage) => prevPage + 1); // Increment page to load more events
+        }
+      };
 
-  //   const debounceScroll = () => {
-  //     clearTimeout(window.scrollTimeout); // Clear any existing timeout
-  //     window.scrollTimeout = setTimeout(handleScroll, 100); // Set a debounce of 100ms
-  //   };
+      const debounceScroll = () => {
+        clearTimeout(window.scrollTimeout); // Clear any existing timeout
+        window.scrollTimeout = setTimeout(handleScroll, 100); // Set a debounce of 100ms
+      };
 
-  //   window.addEventListener("scroll", debounceScroll);
-  //   return () => window.removeEventListener("scroll", debounceScroll);
-  // }, [fetchedEvents]);
+      window.addEventListener("scroll", debounceScroll);
+      return () => window.removeEventListener("scroll", debounceScroll);
+    }
+
+    if (activeTab === "past") {
+      console.log("this scroll function called");
+      console.log("fetched_events_____________", upcominFetchedEvents);
+      const handleScroll = () => {
+        const isAtBottom =
+          window.innerHeight + window.scrollY >=
+          document.body.offsetHeight - 50; // Adjusted offset
+        if (isAtBottom && upcominFetchedEvents.length > 0) {
+          setPage((prevPage) => prevPage + 1); // Increment page to load more events
+        }
+      };
+
+      const debounceScroll = () => {
+        clearTimeout(window.scrollTimeout); // Clear any existing timeout
+        window.scrollTimeout = setTimeout(handleScroll, 100); // Set a debounce of 100ms
+      };
+
+      window.addEventListener("scroll", debounceScroll);
+      return () => window.removeEventListener("scroll", debounceScroll);
+    }
+  }, [upcominFetchedEvents, pastFetchedEvents]);
 
   const [isFixed, setIsFixed] = useState(false);
 
@@ -529,11 +563,11 @@ const Page = () => {
           // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events
           setUpcominFetchedEvents(transformedEvents);
         } else {
-          // setFetchedEvents((prevEvents) => [
-          //   ...prevEvents,
-          //   ...transformedEvents,
-          // ]);
-          setUpcominFetchedEvents(transformedEvents);
+          setUpcominFetchedEvents((prevEvents) => [
+            ...prevEvents,
+            ...transformedEvents,
+          ]);
+          // setUpcominFetchedEvents(transformedEvents);
         }
       } else {
         console.error("Error fetching events:", error);
@@ -620,7 +654,17 @@ const Page = () => {
             },
           })),
         }));
-        setPastFetchedEvents(transformedEvents);
+
+        if (type === "update") {
+          // So basically this fetchEvents() function is called in many pages, we want to make sure if we are calling this function when some task if performed like, deleting an event or updating an event or adding an event, we only need to add the updated events and not the prev events + new events
+          setPastFetchedEvents(transformedEvents);
+        } else {
+          setPastFetchedEvents((prevEvents) => [
+            ...prevEvents,
+            ...transformedEvents,
+          ]);
+          // setUpcominFetchedEvents(transformedEvents);
+        }
       } else {
         console.error("Error fetching events:", error);
       }
@@ -696,83 +740,85 @@ const Page = () => {
         />
       </div>
       <div className={styles.mainContainer}>
-        <div className={styles.eventsContainer}>
-          {activeTab === "upcoming" && filteredUpcomingEvents.length > 0 ? (
-            filteredUpcomingEvents.map((event, index) => {
-              const showDate = event.mainEvent.startDate !== prevDate;
-              prevDate = event.mainEvent.startDate;
+        {/* <div className={styles.eventsContainer}> */}
 
-              return (
-                <>
-                  {showDate && (
-                    <TimelineItem
-                      eventDate={showDate ? event.mainEvent.startDate : null}
-                    />
-                  )}
-                  {event.mainEvent.eventType === "MAIN" ? (
-                    <DashboardEventCard
-                      setSelectedEventType={setSelectedEventType}
-                      handlePrefillSubEvent={handlePrefillSubEvent}
-                      width="small"
-                      handlePrefillEvent={handlePrefillEvent}
-                      handleDeleteModal={handleDeleteModal}
-                      event={event}
-                    />
-                  ) : (
-                    <SubEventCard
-                      setSelectedEventType={setSelectedEventType}
-                      width="small"
-                      handlePrefillEvent={handlePrefillEvent}
-                      normalEvent={event}
-                    />
-                  )}
-                </>
-              );
-            })
-          ) : activeTab === "past" && filteredPastEvents.length > 0 ? (
-            filteredPastEvents.map((event, index) => {
-              const showDate = event.mainEvent.startDate !== prevDate;
-              prevDate = event.mainEvent.startDate;
+        {activeTab === "upcoming" && filteredUpcomingEvents.length > 0 ? (
+          filteredUpcomingEvents.map((event, index) => {
+            const showDate = event.mainEvent.startDate !== prevDate;
+            prevDate = event.mainEvent.startDate;
 
-              return (
-                <>
-                  {showDate && (
-                    <TimelineItem
-                      eventDate={showDate ? event.mainEvent.startDate : null}
-                    />
-                  )}
-                  {event.mainEvent.eventType === "MAIN" ? (
-                    <DashboardEventCard
-                      setSelectedEventType={setSelectedEventType}
-                      handlePrefillSubEvent={handlePrefillSubEvent}
-                      width="small"
-                      handlePrefillEvent={handlePrefillEvent}
-                      handleDeleteModal={handleDeleteModal}
-                      event={event}
-                    />
-                  ) : (
-                    <SubEventCard
-                      setSelectedEventType={setSelectedEventType}
-                      width="small"
-                      handlePrefillEvent={handlePrefillEvent}
-                      normalEvent={event}
-                    />
-                  )}
-                </>
-              );
-            })
-          ) : (
-            <div className={styles.emptyScreen}>
-              <Image src={EmptyImage} alt="empty" />
-              <div>Search or Add your Events</div>
-              <span>
-                Start by searching for existing events to add to your widgets
-              </span>
-              <span>or feel free to create your own event from scratch</span>
-            </div>
-          )}
-        </div>
-        <div
+            return (
+              <>
+                {showDate && (
+                  <TimelineItem
+                    eventDate={showDate ? event.mainEvent.startDate : null}
+                  />
+                )}
+                {event.mainEvent.eventType === "MAIN" ? (
+                  <DashboardEventCard
+                    setSelectedEventType={setSelectedEventType}
+                    handlePrefillSubEvent={handlePrefillSubEvent}
+                    width="small"
+                    handlePrefillEvent={handlePrefillEvent}
+                    handleDeleteModal={handleDeleteModal}
+                    event={event}
+                  />
+                ) : (
+                  <SubEventCard
+                    setSelectedEventType={setSelectedEventType}
+                    width="small"
+                    handlePrefillEvent={handlePrefillEvent}
+                    normalEvent={event}
+                  />
+                )}
+              </>
+            );
+          })
+        ) : activeTab === "past" && filteredPastEvents.length > 0 ? (
+          filteredPastEvents.map((event, index) => {
+            const showDate = event.mainEvent.startDate !== prevDate;
+            prevDate = event.mainEvent.startDate;
+
+            return (
+              <>
+                {showDate && (
+                  <TimelineItem
+                    eventDate={showDate ? event.mainEvent.startDate : null}
+                  />
+                )}
+                {event.mainEvent.eventType === "MAIN" ? (
+                  <DashboardEventCard
+                    setSelectedEventType={setSelectedEventType}
+                    handlePrefillSubEvent={handlePrefillSubEvent}
+                    width="small"
+                    handlePrefillEvent={handlePrefillEvent}
+                    handleDeleteModal={handleDeleteModal}
+                    event={event}
+                  />
+                ) : (
+                  <SubEventCard
+                    setSelectedEventType={setSelectedEventType}
+                    width="small"
+                    handlePrefillEvent={handlePrefillEvent}
+                    normalEvent={event}
+                  />
+                )}
+              </>
+            );
+          })
+        ) : (
+          <div className={styles.emptyScreen}>
+            <Image src={EmptyImage} alt="empty" />
+            <div>Search or Add your Events</div>
+            <span>
+              Start by searching for existing events to add to your widgets
+            </span>
+            <span>or feel free to create your own event from scratch</span>
+          </div>
+        )}
+
+        {/* </div> */}
+        {/* <div
           id="calendar"
           className={`${styles.calendarContainer} ${
             isFixed ? styles.fixed : ""
@@ -788,7 +834,7 @@ const Page = () => {
               handleResetEvents={handleResetEvents}
             />
           </div>
-        </div>
+        </div> */}
       </div>
 
       {(isEventFormModal ||

@@ -509,6 +509,20 @@ const AllEvents = ({
     return closestEvent;
   };
 
+
+  useEffect(() => {
+    const savedOptions = localStorage.getItem("selectedOptions");
+    if (savedOptions) {
+      setSelectedOptions(JSON.parse(savedOptions));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("selectedOptions", JSON.stringify(selectedOptions));
+  }, [selectedOptions]);
+
+
+
   const handleAddToWidget = async (event: AllEventsType, isLinked: boolean) => {
     if (
       selectedTemplate === "ST" ||
@@ -555,10 +569,16 @@ const AllEvents = ({
       event.mainEvent.isLinkedToWidget = !isLinked;
 
       if (!isLinked) {
-        setSelectedOptions((prev: any) => ({
-          ...prev,
-          [event.mainEvent.eventId]: "carousel",
-        }));
+        // setSelectedOptions((prev: any) => ({
+        //   ...prev,
+        //   [event.mainEvent.eventId]: "carousel",
+        // }));
+
+        setSelectedOptions((prev: any) => {
+          const updatedOptions = { ...prev, [event.mainEvent.eventId]: "carousel" };
+          localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+          return updatedOptions;
+        });
       }
 
       const eventIndex = existingEvents.findIndex(
@@ -635,10 +655,16 @@ const AllEvents = ({
       event.isLinkedToWidget = !isLinked;
 
       if (!isLinked) {
-        setSelectedOptions((prev: any) => ({
-          ...prev,
-          [event.eventId]: "carousel",
-        }));
+        // setSelectedOptions((prev: any) => ({
+        //   ...prev,
+        //   [event.eventId]: "carousel",
+        // }));
+
+        setSelectedOptions((prev: any) => {
+          const updatedOptions = { ...prev, [event.eventId]: "carousel" };
+          localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+          return updatedOptions;
+        });
       }
 
       const eventIndex = existingEvents.findIndex(
@@ -692,10 +718,16 @@ const AllEvents = ({
     option: string
   ) => {
     if (check && option === "list") {
-      setSelectedOptions((prev: any) => ({
-        ...prev,
-        [event.mainEvent.eventId]: "list",
-      }));
+      // setSelectedOptions((prev: any) => ({
+      //   ...prev,
+      //   [event.mainEvent.eventId]: "list",
+      // }));
+
+      setSelectedOptions((prev: any) => {
+        const updatedOptions = { ...prev, [event.mainEvent.eventId]: "list" };
+        localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+        return updatedOptions;
+      });
 
       const existingEvents = fetchedAddedEvents || [];
       const eventIndex = existingEvents.findIndex(
@@ -755,10 +787,16 @@ const AllEvents = ({
     option: string
   ) => {
     if (check && option === "list") {
-      setSelectedOptions((prev: any) => ({
-        ...prev,
-        [event.eventId]: "list",
-      }));
+      // setSelectedOptions((prev: any) => ({
+      //   ...prev,
+      //   [event.eventId]: "list",
+      // }));
+
+      setSelectedOptions((prev: any) => {
+        const updatedOptions = { ...prev, [event.eventId]: "list" };
+        localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+        return updatedOptions;
+      });
 
       const existingEvents = fetchedAddedEvents || [];
       const eventIndex = existingEvents.findIndex(
