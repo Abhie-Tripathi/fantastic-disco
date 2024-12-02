@@ -1,14 +1,35 @@
-.card{
+.card {
     width: 629px;
     min-height: 211px;
-    max-height: 211px ;
+    max-height: 211px;
     display: flex;
     gap: 15px;
     align-items: center;
     padding: 0px 12px 12px 15px;
     overflow: hidden;
 }
-.banner{
+
+.smallCard {
+    width: 450px;
+    min-height: 180px;
+    max-height: 180px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding: 0px 8px 8px 10px;
+    overflow: hidden;
+}
+
+.smallBanner {
+    min-width: 160px;
+    max-width: 160px;
+    height: 170px;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    filter: drop-shadow(0px 3px 2px rgb(116, 116, 116));
+}
+
+.banner {
     min-width: 260px;
     max-width: 260px;
     height: 200px;
@@ -16,7 +37,8 @@
     border-bottom-right-radius: 50px;
     filter: drop-shadow(0px 3px 2px rgb(116, 116, 116));
 }
-.detailsContainer{
+
+.detailsContainer {
     display: flex;
     flex-direction: column;
     gap: 14px;
@@ -24,7 +46,13 @@
     width: 53%;
     word-wrap: break-word;
 }
-.date_location_nameContainer{
+
+.smallDetailContainer {
+    gap: 8px;
+    width: 60%;
+}
+
+.date_location_nameContainer {
     min-height: 80px;
     max-height: 80px;
     overflow: hidden;
@@ -33,11 +61,18 @@
     align-items: center;
     justify-content: space-between;
 }
-.description{
+
+.smalldate_location_nameContainer {
+    min-height: 60px;
+    max-height: 60px;
+}
+
+.description {
     height: 50px;
     overflow: hidden;
 }
-.dateContainer{
+
+.dateContainer {
     background-color: #F6F6F6;
     border-radius: 9px;
     width: 50px;
@@ -47,96 +82,109 @@
     align-items: center;
     justify-content: center;
 }
-.date{
+
+.smalldateContainer {
+    width: 40px;
+    height: 50px;
+}
+
+.date {
     color: black;
     font-size: 15px;
     font-weight: 600;
 }
-.month{
+
+.month {
     color: black;
     font-size: 10px;
     font-weight: 400;
 }
-.line{
+
+.line {
     height: 60px;
     border-left: 1px solid #F6F6F6;
 }
-.name_locationContainer{
+
+.name_locationContainer {
     display: flex;
     flex-direction: column;
     gap: 5px;
     width: 70%;
     position: relative;
 }
-.locationContainer{
+
+.locationContainer {
     min-height: 10px;
     display: flex;
     align-items: center;
     gap: 8px;
 }
-/* .eventName{
-    width: 100%;
-    min-height: 40px;
-    max-height: 40px;
-    overflow: hidden;
-} */
-.dateRange_typeContainer{
+
+.dateRange_typeContainer {
     display: flex;
     align-items: center;
     width: 100%;
     gap: 7px;
 }
-.pill{
+
+.pill {
     border-radius: 6px;
     padding: 4px 8px;
-    font-size: 12px;
+    font-size: var(--font-size-small);
     font-weight: 500;
 }
-.dateRange{
+
+.smallPill {
+    padding: 2px 5px;
+    font-size: 10px;
+}
+
+.dateRange {
     background-color: #F5F5F5;
     color: #6A77A6;
 }
-.type1{
+
+.type1 {
     background-color: #FFF8E6;
     color: #CE9921;
 }
-.type2{
+
+.type2 {
     background-color: #F7E5EE;
     color: #6750A4;
 }
 
-   .eventName {
+.eventName {
     display: inline-block;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  
-  .eventName[data-name]:hover::after {
-    content: attr(data-name); 
+}
+
+.eventName[data-name]:hover::after {
+    content: attr(data-name);
     position: absolute;
-    top: 0; 
-    left: 20%; 
+    top: 0;
+    left: 20%;
     right: 20px;
-    transform: translateX(-50%); 
+    transform: translateX(-50%);
     background-color: rgba(0, 0, 0, 0.85);
     color: #fff;
     padding: 8px;
     border-radius: 4px;
     font-size: 12px;
-    max-width: 250px; 
-    width: max-content; 
+    max-width: 250px;
+    width: max-content;
     text-align: center;
     white-space: normal;
     opacity: 1;
     visibility: visible;
-    z-index: 9999; 
+    z-index: 9999;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
     transition: opacity 0.2s ease-in-out;
-  }
-  
-  .eventName[data-name]::after {
+}
+
+.eventName[data-name]::after {
     visibility: hidden;
     opacity: 0;
-  }
-  
+}

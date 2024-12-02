@@ -6,22 +6,49 @@
     align-items: center;
     padding: 12px;
 }
+.smallCard{
+    width: 440px;
+    height: 190px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 12px;
+}
 .bannerContainer{
     height: 100%;
     width: 271px;
     position: relative;
 }
-.type{
-    position: absolute;
-    padding: 4px 8px;
+.smallBannerContainer{
+    height: 100%;
+    width: 170px;
+    position: relative;
+}
+.pill {
     border-radius: 6px;
-    font-size: 12px;
+    padding: 4px 8px;
+    font-weight: 500;
+    position: absolute;
+}
+.smallPill {
+    padding: 2px 5px;
+}
+
+.type1 {
+    position: absolute;
+    background-color: #F7EFFF;
+    color: #6750A4;
+    bottom: 5px;
+    left: 9px;
+}
+.type2{
+    position: absolute;
     color: #6750A4;
     background-color: #F7EFFF;
     bottom: 5px;
     right: 9px;
 }
-.event_type{
+/* .event_type{
     position: absolute;
     padding: 4px 8px;
     border-radius: 6px;
@@ -30,10 +57,16 @@
     background-color: #F7EFFF;
     bottom: 5px;
     left: 10px;
-}
+} */
 .banner{
     height: 100%;
     width: 271px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+.smallBanner{
+    height: 100%;
+    width: 170px;
     border-radius: 8px;
     object-fit: cover;
 }
