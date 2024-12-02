@@ -1,10 +1,11 @@
-.outerbody{
+.outerbody {
     background-color: #fafafa;
     border: 1px solid var(--border-color);
     border-radius: 10px;
     /* overflow: hidden; */
 }
-.body{
+
+.body {
     width: 440px;
     border-radius: 10px;
     padding: 20px;
@@ -12,22 +13,26 @@
     gap: 10px;
     position: relative;
 }
+
 .confettiCanvas {
     position: absolute;
     left: 0;
     /* bottom: -80px; */
     width: 100%;
 }
-.leftSection{
+
+.leftSection {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-.rightSection{
+
+.rightSection {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
+
 .eventName {
     background: none;
     border: none;
@@ -38,7 +43,8 @@
     color: #1a1a1a;
     font-weight: bolder;
 }
-.hashtagsContainer{
+
+.hashtagsContainer {
     width: 100%;
     margin-top: 16px;
     background-color: #ffffff55;
@@ -48,16 +54,18 @@
     flex-wrap: wrap;
     gap: 9px;
 }
-.hashtag{
+
+.hashtag {
     border: 1px solid #b6b6b6;
     background-color: #EBEBEB;
     color: #666666;
     font-size: var(--font-size-xs);
-    font-weight: 500;    
+    font-weight: 500;
     line-height: 12px;
     padding: 3px 12px;
     border-radius: 40px;
 }
+
 .watermelon {
     background: linear-gradient(90deg, rgba(228, 202, 246, 1) 0%, rgba(246, 223, 255, 1) 0%, rgba(246, 177, 177, 1) 49%, rgba(193, 249, 227, 1) 100%);
     background-size: 200% 200%;
@@ -120,14 +128,16 @@
     animation: gradientMove 5s ease infinite;
     transition: all .3s ease-in-out;
 }
+
 .darkwatermelon {
-    background: linear-gradient(90deg, rgba(228,202,246,1) 0%, rgba(194,150,212,1) 0%, rgba(200,117,117,1) 49%, rgba(130,199,172,1) 100%);
+    background: linear-gradient(90deg, rgba(228, 202, 246, 1) 0%, rgba(194, 150, 212, 1) 0%, rgba(200, 117, 117, 1) 49%, rgba(130, 199, 172, 1) 100%);
     background-size: 200% 200%;
     animation: gradientMove 5s ease infinite;
     transition: all .3s ease-in-out;
 }
+
 .darkmix {
-    background:  radial-gradient(circle, rgba(228,202,246,1) 0%, rgba(62,54,65,1) 0%, rgba(56,45,54,1) 27%, rgba(73,69,69,1) 67%, rgba(24,45,37,1) 100%);
+    background: radial-gradient(circle, rgba(228, 202, 246, 1) 0%, rgba(62, 54, 65, 1) 0%, rgba(56, 45, 54, 1) 27%, rgba(73, 69, 69, 1) 67%, rgba(24, 45, 37, 1) 100%);
     background-size: 200% 200%;
     animation: gradientMove 5s ease infinite;
     transition: all .3s ease-in-out;
@@ -146,6 +156,7 @@
         background-position: 0% 50%;
     }
 }
+
 .leafContainer {
     position: absolute;
     top: 0;
@@ -153,28 +164,72 @@
     width: 100%;
     height: 100%;
     overflow: hidden;
-    pointer-events: none; /* Prevents interaction with the leaves */
+    pointer-events: none;
+    /* Prevents interaction with the leaves */
 }
+
 .leafContainer .leaf {
     position: absolute;
     animation: floatAndSpin 10s linear infinite;
     opacity: 0.8;
 }
 
+.hideOnSmallScreen {
+    display: block;
+}
+
+/* Show only on small screens */
+.showOnSmallScreen {
+    display: none;
+}
+
+.poster {
+    width: 146px;
+    height: 160px;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
 @keyframes floatAndSpin {
     0% {
         transform: translate3d(0, 0, 0) rotate(0deg);
     }
+
     25% {
         transform: translate3d(50px, -100px, 0) rotate(90deg);
     }
+
     50% {
         transform: translate3d(-100px, -200px, 0) rotate(180deg);
     }
+
     75% {
         transform: translate3d(75px, -100px, 0) rotate(270deg);
     }
+
     100% {
         transform: translate3d(0, 0, 0) rotate(360deg);
+    }
+}
+
+@media screen and (max-width: 980px) {
+    .body {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .hideOnSmallScreen {
+        display: none;
+    }
+
+    .showOnSmallScreen {
+        display: block;
+    }
+
+    .poster {
+        width: 300px;
+        /* New width */
+        height: 250px;
+        /* New height */
     }
 }

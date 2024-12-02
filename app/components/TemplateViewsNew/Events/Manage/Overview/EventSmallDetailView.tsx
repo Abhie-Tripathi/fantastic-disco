@@ -23,7 +23,7 @@ interface Props {
     timeZone?: string;
     pageBgColor?: string;
     pageGradient?: string;
-    snowTheme? : boolean;
+    snowTheme?: boolean;
     confettiType?: string;
     leavesTheme?: boolean;
     eventFont?: string;
@@ -31,12 +31,12 @@ interface Props {
     locationCountry?: string;
     participationType?: string;
     format?: string;
-    virtualLink?:string;
-    eventMainSubType? : string;
-    eventType? : string
+    virtualLink?: string;
+    eventMainSubType?: string;
+    eventType?: string
 }
 
-const EventSmallDetailView = ({snowTheme, leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCountry, locationCity, participationType, format, virtualLink, eventMainSubType, eventType}: Props) => {
+const EventSmallDetailView = ({ snowTheme, leavesTheme, eventId, imageUrl, eventName, startDate, endDate, startTime, endTime, hashtags, timeZone, pageBgColor, pageGradient, confettiType, eventFont, locationCountry, locationCity, participationType, format, virtualLink, eventMainSubType, eventType }: Props) => {
 
     const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const fireConfetti = () => {
@@ -65,18 +65,19 @@ const EventSmallDetailView = ({snowTheme, leavesTheme, eventId, imageUrl, eventN
             <div className={`${styles.body} ${pageGradient ? styles[pageGradient] : ""}`} style={{ backgroundColor: pageBgColor }}>
                 <canvas ref={confettiCanvasRef} className={styles.confettiCanvas}></canvas>
                 {leavesTheme && <div className={styles.leafContainer}>
-                    <LeafTheme leafCount={50}/>
+                    <LeafTheme leafCount={50} />
                 </div>}
                 {snowTheme && <div className={styles.leafContainer}>
-                    <SnowfallTheme/>
+                    <SnowfallTheme />
                 </div>}
                 <div className={styles.leftSection}>
                     <div className={styles.posterContainer}>
-                        <Image className={`${styles.poster} h-[146px] w-[160px]`} src={imageUrl || Placeholder} alt='Poster'
-                            width={146} height={160}
-                            style={{ borderRadius: 20, objectFit: "cover" }} />
+                        <Image className={`${styles.poster}`} src={imageUrl || Placeholder} alt='Poster'
+                            width={146} height={160} style={{ borderRadius: 20, objectFit: "cover" }} />
                     </div>
-                    <ParticipationContainer participationType={eventMainSubType === "SUB" ? eventType : participationType} />
+                    <div className={`${styles.participationContainer} ${styles.hideOnSmallScreen}`}>
+                        <ParticipationContainer participationType={eventMainSubType === "SUB" ? eventType : participationType} />
+                    </div>
                 </div>
                 <div className={styles.rightSection}>
                     <textarea className={styles.eventName} disabled placeholder='Event Name' value={eventName} style={{ fontFamily: eventFont }} />
@@ -84,7 +85,11 @@ const EventSmallDetailView = ({snowTheme, leavesTheme, eventId, imageUrl, eventN
                         <DateTimeContainer endDate={endDate || ""} startDate={startDate || ""} endTime={endTime || ""} startTime={startTime || ""} timeZone={timeZone || ""} />
                     </div>
 
-                    <div className={styles.locationContainer}><LocationContainer eventFormat={format} cityName={locationCity || ""} countryName={locationCountry || ""} virtualLink={virtualLink||""} /></div>
+                    <div className={styles.locationContainer}><LocationContainer eventFormat={format} cityName={locationCity || ""} countryName={locationCountry || ""} virtualLink={virtualLink || ""} /></div>
+                    {/* Show on smaller screens */}
+                    <div className={`${styles.participationContainer} ${styles.showOnSmallScreen}`}>
+                        <ParticipationContainer participationType={eventMainSubType === "SUB" ? eventType : participationType} />
+                    </div>
                 </div>
             </div>
         </div>
