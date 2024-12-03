@@ -104,7 +104,7 @@ export default function DateRangeSelector({
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("");
   const [compareEnabled, setCompareEnabled] = React.useState(false);
-  const { setMultipleLocalFilters, searchParams } = useFilterContext();
+  const { setMultipleLocalFilters, applyFilters, deleteMultipleLocalFilters } = useFilterContext();
   const { localFilters } = useFilterContext();
   const [selectedComparison, setSelectedComparison] = React.useState(
     comparisonOptions[0]
@@ -243,27 +243,29 @@ export default function DateRangeSelector({
   };
 
   const applyHandler = () => {
-    if (source !== "tracker") {
-      const filters: { active_gte?: string; active_lte?: string } = {};
+    if(source!=="tracker"){
+    const filters: { active_gte?: string; active_lte?: string } = {};
 
-      if (dateRange.from) {
-        const fromDate = new Date(dateRange.from);
-        fromDate.setHours(5, 30, 0, 0);
-        filters.active_gte = fromDate.toISOString();
-      }
+    if (dateRange.from) {
+      const fromDate = new Date(dateRange.from);
+      fromDate.setHours(5, 30, 0, 0);
+      filters.active_gte = fromDate.toISOString();
+    }
 
-      if (dateRange.to) {
-        const toDate = new Date(dateRange.to);
-        toDate.setHours(5, 30, 0, 0);
-        filters.active_lte = toDate.toISOString();
-      }
+    if (dateRange.to) {
+      const toDate = new Date(dateRange.to);
+      toDate.setHours(5, 30, 0, 0);
+      filters.active_lte = toDate.toISOString();
+    }
 
-      if (dateRange.from == undefined && dateRange.to == undefined) {
-        filters.active_gte = "";
-        filters.active_lte = "";
-      }
-
+    if(filters.active_gte && filters.active_lte)
       setMultipleLocalFilters(filters);
+    else
+      deleteMultipleLocalFilters(['active_gte', 'active_lte']);
+
+    if (source === 'coordinate') {
+      applyFilters();
+    }
     }
     setIsOpen(false);
   };
