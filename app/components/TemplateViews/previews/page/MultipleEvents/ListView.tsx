@@ -76,11 +76,11 @@ const ListView = ({
     PrefilledAddedEventsType[]
   >([]);
   const [isFixed, setIsFixed] = useState(true);
-  React.useEffect(() => {
-    if (fetchedAddedOtherData && fetchedAddedOtherData.length > 0) {
-      setFilteredEvents(fetchedAddedOtherData);
-    }
-  }, [fetchedAddedOtherData]);
+  // React.useEffect(() => {
+  //   if (fetchedAddedOtherData && fetchedAddedOtherData.length > 0) {
+  //     setFilteredEvents(fetchedAddedOtherData);
+  //   }
+  // }, [fetchedAddedOtherData]);
 
   const handleFilteredEvents = (selectedDate: string) => {
     const filtered = fetchedAddedOtherData!.filter(
@@ -109,8 +109,8 @@ const ListView = ({
       className={`${styles.listView} ${isFullScreen ? styles.fullScreen : ""}`}
     >
       <div className={styles.cardsContainer}>
-      {filteredEvents && widgetId && filteredEvents.length > 0
-          ? filteredEvents.map((event, key) => (
+      {fetchedAddedOtherData && widgetId && fetchedAddedOtherData.length > 0
+          ? fetchedAddedOtherData.map((event, key) => (
               <div
                 onClick={() => handleCardClick(event.id, widgetId)}
                 key={key}
@@ -118,7 +118,7 @@ const ListView = ({
               >
                 <EventListCard
                   smallCard={smallCard}
-                  fetchedAddedEvents={filteredEvents}
+                  fetchedAddedEvents={fetchedAddedOtherData}
                   cardBgColor={cardBgColor}
                   cardBorderRadius={cardBorderRadius}
                   fontSettings={fontSettings}

@@ -122,10 +122,23 @@ const AllEvents = ({
               hashtags: eventData.customizationData.hashtags,
               promoted: event.promoted,
             } as PrefilledAddedEventsType;
-            if (event.promoted === "true" || Boolean(event.promoted) === true) {
-              newPromotedEvents.push(event.promoted);
-            } else if (event.promoted === "false") {
-              newNormalEvents.push(event.promoted);
+            // if (event.promoted === "true" || Boolean(event.promoted) === true) {
+            //   newPromotedEvents.push(event.promoted);
+            // } else if (event.promoted === "false") {
+            //   newNormalEvents.push(event.promoted);
+            // }
+            if (typeof event.promoted === "string") {
+              if (event.promoted === "true") {
+                newPromotedEvents.push(event.promoted);
+              } else if (event.promoted === "false") {
+                newNormalEvents.push(event.promoted);
+              }
+            } else if (typeof event.promoted === "boolean") {
+              if (event.promoted) {
+                newPromotedEvents.push(event.promoted);
+              } else {
+                newNormalEvents.push(event.promoted);
+              }
             }
             return eventObject;
           })
@@ -148,10 +161,10 @@ const AllEvents = ({
   useEffect(() => {
     let promotedCount = promotedEvents.length;
     let normalEventCount = normalEvents.length;
-    // console.log("fetchedAddedOtherData", promotedCount, normalEventCount, selectedTemplate);
+    // console.log("promotedCount", promotedCount, normalEventCount, selectedTemplate);
     // Check which template is selected
     if (selectedTemplate === "LS") {
-      if (promotedCount >= 1) {
+      if (normalEventCount >= 1) {
         setIsCodeWindowDisable(false);
         setIsCustomisationWindowDisable(false);
       } else {
@@ -203,7 +216,7 @@ const AllEvents = ({
       );
     }
      if (selectedTemplate === "GS") {
-      if (normalEventCount >= 1) {
+      if (promotedCount >= 1) {
         setIsCodeWindowDisable(false);
         setIsCustomisationWindowDisable(false);
       } else {
@@ -258,7 +271,7 @@ const AllEvents = ({
     }
 
     if (selectedTemplate === "CV") {
-      if (promotedCount >= 3) {
+      if (normalEventCount >= 3) {
         setIsCodeWindowDisable(false);
         setIsCustomisationWindowDisable(false);
       } else {
@@ -270,7 +283,7 @@ const AllEvents = ({
     }
 
     if (selectedTemplate === "HS") {
-      if (promotedCount >= 3) {
+      if (normalEventCount >= 3) {
         setIsCodeWindowDisable(false);
         setIsCustomisationWindowDisable(false);
       } else {
@@ -696,6 +709,7 @@ const AllEvents = ({
   };
 
   const handleRemoveEventFromWidget = async (eventId: string) => {
+    console.log("ca444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444")
     const updatedEvents = fetchedAddedEvents?.filter(
       (event) => event.id !== eventId
     );
@@ -718,16 +732,16 @@ const AllEvents = ({
     option: string
   ) => {
     if (check && option === "list") {
-      // setSelectedOptions((prev: any) => ({
-      //   ...prev,
-      //   [event.mainEvent.eventId]: "list",
-      // }));
+      setSelectedOptions((prev: any) => ({
+        ...prev,
+        [event.mainEvent.eventId]: "list",
+      }));
 
-      setSelectedOptions((prev: any) => {
-        const updatedOptions = { ...prev, [event.mainEvent.eventId]: "list" };
-        localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
-        return updatedOptions;
-      });
+      // setSelectedOptions((prev: any) => {
+      //   const updatedOptions = { ...prev, [event.mainEvent.eventId]: "list" };
+      //   localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+      //   return updatedOptions;
+      // });
 
       const existingEvents = fetchedAddedEvents || [];
       const eventIndex = existingEvents.findIndex(
@@ -755,10 +769,15 @@ const AllEvents = ({
         await updateWidgetAgain(mergedEvents);
       }
     } else if (check && option === "carousel") {
-      setSelectedOptions((prev: any) => ({
-        ...prev,
-        [event.mainEvent.eventId]: "carousel",
-      }));
+      // setSelectedOptions((prev: any) => ({
+      //   ...prev,
+      //   [event.mainEvent.eventId]: "carousel",
+      // }));
+      setSelectedOptions((prev: any) => {
+        const updatedOptions = { ...prev, [event.mainEvent.eventId]: "carousel" };
+        localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+        return updatedOptions;
+      });
 
       const existingEvents = fetchedAddedEvents || [];
       const eventIndex = existingEvents.findIndex(
@@ -824,10 +843,15 @@ const AllEvents = ({
         await updateWidgetAgain(mergedEvents);
       }
     } else if (check && option === "carousel") {
-      setSelectedOptions((prev: any) => ({
-        ...prev,
-        [event.eventId]: "carousel",
-      }));
+      // setSelectedOptions((prev: any) => ({
+      //   ...prev,
+      //   [event.eventId]: "carousel",
+      // }));
+      setSelectedOptions((prev: any) => {
+        const updatedOptions = { ...prev, [event.eventId]: "carousel" };
+        localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+        return updatedOptions;
+      });
 
       const existingEvents = fetchedAddedEvents || [];
       const eventIndex = existingEvents.findIndex(
@@ -869,7 +893,7 @@ const AllEvents = ({
       showToast("success", "Event successfully added to the widget");
       if (typeof fetchEvents === "function") {
         fetchEvents(0, "update").then(() => {
-          window.location.reload();
+          // window.location.reload();
         });
       }
       // fetchEvents(0, "update");

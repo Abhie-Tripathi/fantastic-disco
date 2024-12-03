@@ -102,7 +102,7 @@ const TypographyModal = ({
       </div>
 
       <div className={styles.rightPanel}>
-        <h4>Select a Typography</h4>
+        <span className={styles.select_typo_text}>Select a Typography</span>
         <div className={styles.fonts_container}>
           {importSource === "Google" && (
             <>

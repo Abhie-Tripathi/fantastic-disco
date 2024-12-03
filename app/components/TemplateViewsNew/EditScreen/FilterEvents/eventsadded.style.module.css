@@ -176,7 +176,7 @@
     align-items: center;
     gap: 7px;
     padding: 20px;
-    background-color: #FAFAFA;
+    /* background-color: #FAFAFA; */
 }
 
 .info_heading{

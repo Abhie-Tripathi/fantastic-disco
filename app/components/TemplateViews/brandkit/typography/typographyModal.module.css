@@ -8,9 +8,12 @@
   flex: 1;
   padding: 20px;
   border-right: 1px solid #ddd;
+  /* border-right: 1px solid var(--border-color); */
   color: var(--primary-text-color);
   font-size: var(--font-size-default);
   font-weight: var(--font-weight-medium);
+  background-color: var(--background-secondary-color);
+  border-radius: 5px;
 }
 
 .rightPanel {
@@ -19,6 +22,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  background-color: var(--background-secondary-color);
+  border-radius: 5px;
 }
 
 .importOptions {
@@ -30,10 +35,12 @@
   padding: 10px;
   cursor: pointer;
 }
-
+.select_typo_text{
+  color: var(--primary-text-color);
+}
 .selectedOption {
   background-color: var(--primary-color);
-  color: white;
+  color: var(--primary-foreground);
 }
 
 .fontList {
@@ -70,6 +77,7 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+  background-color: var(--background-secondary-color);
 }
 
 .preview_screen {
@@ -77,7 +85,8 @@
   margin-top: 16px;
   justify-content: center;
   align-items: center;
-  background-color: #F2F2F2;
+  /* background-color: #F2F2F2; */
+  background-color: var(--background-secondary-color);
   padding: 20px;
   height: 90%;
 }
@@ -100,12 +109,14 @@
 }
 
 .fontItem:hover {
-  background-color:#F2F2F2;
+  /* background-color:#F2F2F2; */
+  background-color: var(--disabled-background-color);
 }
 
 .selected {
-  background-color: #F2F2F2;
-  color: black;
+  /* background-color: #F2F2F2; */
+  background-color: var(--background-secondary-color);
+  color: var(--primary-text-color);
 }
 
 .tickIcon {

@@ -123,10 +123,23 @@ const EventsAdded = ({
               promoted: event.promoted,
               eventType: data.type,
             } as PrefilledAddedEventsType;
-            if (event.promoted === "true"|| Boolean(event.promoted) === true) {
-              newPromotedEvents.push(event.promoted);
-            } else if (event.promoted === "false") {
-              newNormalEvents.push(event.promoted);
+            // if (event.promoted === "true"|| Boolean(event.promoted) === true) {
+            //   newPromotedEvents.push(event.promoted);
+            // } else if (event.promoted === "false" || Boolean(event.promoted) ===false) {
+            //   newNormalEvents.push(event.promoted);
+            // }
+            if (typeof event.promoted === "string") {
+              if (event.promoted === "true") {
+                newPromotedEvents.push(event.promoted);
+              } else if (event.promoted === "false") {
+                newNormalEvents.push(event.promoted);
+              }
+            } else if (typeof event.promoted === "boolean") {
+              if (event.promoted) {
+                newPromotedEvents.push(event.promoted);
+              } else {
+                newNormalEvents.push(event.promoted);
+              }
             }
             return eventObject;
           })
@@ -148,10 +161,10 @@ const EventsAdded = ({
   useEffect(() => {
     let promotedCount = promotedEvents.length;
     let normalEventCount = normalEvents.length;
-    console.log(fetchedAddedOtherData, promotedCount, normalEventCount);
+    // console.log("promotedCount", promotedCount, normalEventCount);
     // Check which template is selected
     if (selectedTemplate === "LS") {
-      if (promotedCount >= 1) {
+      if (normalEventCount >= 1) {
         setIsCodeWindowDisable(false);
         setIsCustomisationWindowDisable(false);
       } else {
@@ -203,7 +216,7 @@ const EventsAdded = ({
       );
     }
      if (selectedTemplate === "GS") {
-      if (normalEventCount >= 1) {
+      if (promotedCount >= 1) {
         setIsCodeWindowDisable(false);
         setIsCustomisationWindowDisable(false);
       } else {
@@ -258,7 +271,7 @@ const EventsAdded = ({
 
     if (selectedTemplate === "CV") {
       // Check if there are 3 normal events
-      if (promotedCount >= 3) {
+      if (normalEventCount >= 3) {
         setIsCodeWindowDisable(false);
         setIsCustomisationWindowDisable(false);
       } else {
@@ -269,7 +282,7 @@ const EventsAdded = ({
       setMinNumberOfEvents("Select atleast 3 events for this widget style");
     }
     if (selectedTemplate === "HS") {
-      if (promotedCount >= 3) {
+      if (normalEventCount >= 3) {
         setIsCodeWindowDisable(false);
         setIsCustomisationWindowDisable(false);
       } else {
