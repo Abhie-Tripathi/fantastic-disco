@@ -39,7 +39,7 @@ export default function FrequencySelector({
   setIsEnabled: parentSetIsEnabled,
 }: FrequencySelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, searchParams } =
+  const { setLocalFilter, getLocalFilterValue, searchParams, localFilters } =
     useFilterContext();
   const [selectedFrequenciesLocal, setSelectedFrequenciesLocal] = React.useState<string[]>([]);
   const [localIsEnabled, setLocalIsEnabled] = useState(false);
@@ -58,7 +58,7 @@ export default function FrequencySelector({
     );
     setShowInFilter?.(getLocalFilterValue("show").includes("frequency"));
     }
-  }, [searchParams]);
+  }, [searchParams, localFilters]);
 
   const handleFrequencyToggle = (frequencyId: string) => {
     setSelectedFrequencies?.((prev) =>

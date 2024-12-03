@@ -16,7 +16,7 @@ import Image from "next/image";
 import { useMiscService } from "@/services/miscService";
 import { Country } from "@/types/events/events";
 import { useFilterContext } from "@/context/filterContext";
-interface AudienceSpreadProps{
+interface AudienceSpreadProps {
   source: string;
   selectedCountries?: string[];
   setSelectedCountries?: React.Dispatch<React.SetStateAction<string[]>>;
@@ -27,22 +27,28 @@ export default function Component({
   setSelectedCountries: setSelectedParentCountries,
 }: AudienceSpreadProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLocalCountries, setSelectedLocalCountries] = useState<string[]>([]);
+  const [selectedLocalCountries, setSelectedLocalCountries] = useState<
+    string[]
+  >([]);
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [countries, setCountries] = useState<Country[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
-  const { setMultipleLocalFilters, getLocalFilterValue } = useFilterContext();
+  const { setMultipleLocalFilters, getLocalFilterValue, localFilters } =
+    useFilterContext();
   const { getCountries, getRegions, isLoading, error } = useMiscService();
-  const selectedCountries = source==="tracker"? selectedParentCountries: selectedLocalCountries;
-  const setSelectedCountries = source==="tracker"?
-  setSelectedParentCountries: setSelectedLocalCountries;
+  const selectedCountries =
+    source === "tracker" ? selectedParentCountries : selectedLocalCountries;
+  const setSelectedCountries =
+    source === "tracker"
+      ? setSelectedParentCountries
+      : setSelectedLocalCountries;
   useEffect(() => {
     const fetchData = async () => {
       try {
         const countriesResponse = await getCountries();
         console.log(countriesResponse);
-        
+
         setCountries(countriesResponse?.formattedLocations || []);
 
         const regionsResponse = getRegions();
@@ -56,19 +62,15 @@ export default function Component({
   }, []);
 
   useEffect(() => {
-    if(source!=="tracker"){
-    const audienceSpread = getLocalFilterValue("audienceSpread");
-    const audienceSpreadRegions = getLocalFilterValue("audienceSpreadRegions");
+    if (source !== "tracker") {
+      const audienceSpread = localFilters.audienceSpread;
+      const audienceSpreadRegions = localFilters.audienceSpreadRegions;
 
-    if (audienceSpread) {
-      setSelectedCountries?.(audienceSpread.split(","));
-    }
+      setSelectedCountries?.(audienceSpread?.split(",") || []);
 
-    if (audienceSpreadRegions) {
-      setSelectedRegions(audienceSpreadRegions.split(","));
+      setSelectedRegions(audienceSpreadRegions?.split(",") || []);
     }
-  }
-  }, [getLocalFilterValue]);
+  }, [getLocalFilterValue, localFilters]);
 
   const filteredCountries = countries.filter((country) =>
     country.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -110,8 +112,7 @@ export default function Component({
     }
     setIsOpen(open);
   };
-  console.log(selectedCountries);
-  
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>

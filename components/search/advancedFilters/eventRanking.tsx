@@ -27,28 +27,41 @@ const ranks = [
   { id: "500", label: "Top 500" },
   { id: "1000", label: "Top 1000" },
 ];
-interface EvenetRankingProps{
-  source:string;
-  selectedTrustScore?:any;
-  setSelectedTrustScore?:any;
-  rankToggles?:any;
-  setRankToggles?:any;
-  selectedRank?:string;
-  setSelectedRank?:React.Dispatch<React.SetStateAction<string>>;
+interface EvenetRankingProps {
+  source: string;
+  selectedTrustScore?: any;
+  setSelectedTrustScore?: any;
+  rankToggles?: any;
+  setRankToggles?: any;
+  selectedRank?: string;
+  setSelectedRank?: React.Dispatch<React.SetStateAction<string>>;
 }
-export default function EventRankingSelector({source, selectedTrustScore, setSelectedTrustScore, rankToggles, setRankToggles, selectedRank, setSelectedRank}: EvenetRankingProps) {
+export default function EventRankingSelector({
+  source,
+  selectedTrustScore,
+  setSelectedTrustScore,
+  rankToggles,
+  setRankToggles,
+  selectedRank,
+  setSelectedRank,
+}: EvenetRankingProps) {
   const [open, setOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState<string>(selectedRank && selectedRank.length>0?selectedRank.substring(2):"");
+  const [selectedStatus, setSelectedStatus] = useState<string>(
+    selectedRank && selectedRank.length > 0 ? selectedRank.substring(2) : ""
+  );
   const [categories, setCategories] = useState<RankCategory[]>([
-    { 
-      name: "Trust Score", 
+    {
+      name: "Trust Score",
       enabled: rankToggles?.isTrustScore ? rankToggles.isTrustScore : false,
-      range: Array.isArray(selectedTrustScore) && selectedTrustScore.length === 2 
-        ? selectedTrustScore as [number, number]
-        : [0, 100]
+      range:
+        Array.isArray(selectedTrustScore) && selectedTrustScore.length === 2
+          ? (selectedTrustScore as [number, number])
+          : [0, 100],
     },
   ]);
-  const [showRank, setShowRank] = useState(rankToggles?.isEventRank?true:false);
+  const [showRank, setShowRank] = useState(
+    rankToggles?.isEventRank ? true : false
+  );
 
   const {
     setLocalFilter,
@@ -58,39 +71,41 @@ export default function EventRankingSelector({source, selectedTrustScore, setSel
   } = useFilterContext();
 
   useEffect(() => {
-    if(source!=="tracker"){
-    const showParam = localFilters.show;
-    if (showParam && showParam.includes("rankings")) {
-      setShowRank(true);
-    }
+    if (source !== "tracker") {
+      const showParam = localFilters.show;
+      if (showParam && showParam.includes("rankings")) {
+        setShowRank(true);
+      } else {
+        setShowRank(false);
+      }
 
-    const topParam = localFilters.top;
-    if (topParam) {
+      const topParam = localFilters.top;
       const matchingRank = ranks.find(
-        (rank) => rank.id === topParam.toLowerCase()
+        (rank) => rank.id === topParam?.toLowerCase()
       );
       if (matchingRank) {
         setSelectedStatus(matchingRank.id);
+      }else{
+        setSelectedStatus("")
+      }
+
+      const trustScoreLte = localFilters.trust_score_lte;
+      const trustScoreGte = localFilters.trust_score_gte;
+      if (trustScoreLte && trustScoreGte) {
+        setCategories((prev) =>
+          prev.map((cat) =>
+            cat.name === "Trust Score"
+              ? {
+                  ...cat,
+                  enabled: true,
+                  range: [parseInt(trustScoreGte), parseInt(trustScoreLte)],
+                }
+              : cat
+          )
+        );
       }
     }
-
-    const trustScoreLte = getLocalFilterValue("trust_score_lte");
-    const trustScoreGte = getLocalFilterValue("trust_score_gte");
-    if (trustScoreLte && trustScoreGte) {
-      setCategories((prev) =>
-        prev.map((cat) =>
-          cat.name === "Trust Score"
-            ? {
-                ...cat,
-                enabled: true,
-                range: [parseInt(trustScoreGte), parseInt(trustScoreLte)],
-              }
-            : cat
-        )
-      );
-    }
-  }
-  }, []);
+  }, [localFilters]);
 
   const handleToggle = (index: number) => {
     setCategories((prev) =>
@@ -98,7 +113,7 @@ export default function EventRankingSelector({source, selectedTrustScore, setSel
         i === index ? { ...category, enabled: !category.enabled } : category
       )
     );
-    setRankToggles?.((prev:any) => ({
+    setRankToggles?.((prev: any) => ({
       ...prev,
       isTrustScore: !prev.isTrustScore,
     }));
@@ -115,10 +130,9 @@ export default function EventRankingSelector({source, selectedTrustScore, setSel
 
   const handleStatusChange = (value: string) => {
     console.log(value);
-    const prevStatus=selectedStatus;
+    const prevStatus = selectedStatus;
     setSelectedStatus((prevStatus) => (prevStatus === value ? "" : value));
-    if(prevStatus!==value)
-    setSelectedRank?.(`0-${value}`);
+    if (prevStatus !== value) setSelectedRank?.(`0-${value}`);
     else setSelectedRank?.("");
   };
 
@@ -185,14 +199,14 @@ export default function EventRankingSelector({source, selectedTrustScore, setSel
   };
 
   const handleShowRankToggle = (checked: boolean) => {
-    setRankToggles?.({...rankToggles, isEventRank: checked})
+    setRankToggles?.({ ...rankToggles, isEventRank: checked });
     setShowRank(checked);
     if (!checked) {
       setSelectedStatus("");
     }
   };
   console.log(rankToggles);
-  
+
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>

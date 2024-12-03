@@ -36,16 +36,20 @@ const useDesignationsAutocomplete = (input: string) => {
     isError: !!error,
   };
 };
-interface DesAndDepProps{
-  source: string,
-  designationData?:string[],
-  setDesignationData?:React.Dispatch<React.SetStateAction<string[]>>,
+interface DesAndDepProps {
+  source: string;
+  designationData?: string[];
+  setDesignationData?: React.Dispatch<React.SetStateAction<string[]>>;
 }
-export default function AudienceDesAndDepSelector({source, designationData, setDesignationData}: DesAndDepProps) {
+export default function AudienceDesAndDepSelector({
+  source,
+  designationData,
+  setDesignationData,
+}: DesAndDepProps) {
   const [open, setOpen] = useState(false);
   const [selectedLabels, setSelectedLabels] = useState<Designations[]>([]);
   const [search, setSearch] = useState("");
-  const { setLocalFilter } = useFilterContext();
+  const { setLocalFilter, localFilters } = useFilterContext();
   const { designations } = useDesignationsAutocomplete(search);
 
   const handleSelect = (label: Designations) => {
@@ -60,11 +64,11 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
   };
 
   const handleApply = () => {
-    if(source!=="tracker")
-    setLocalFilter(
-      "designations",
-      selectedLabels.map((l) => l.slug).join(",")
-    );
+    if (source !== "tracker")
+      setLocalFilter(
+        "designations",
+        selectedLabels.map((l) => l.slug).join(",")
+      );
     setDesignationData?.(selectedLabels?.map((l) => l.id));
     setOpen(false);
   };
@@ -80,14 +84,22 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
     setOpen(open);
   };
   useEffect(() => {
-    if(source==="tracker"){
-    setSelectedLabels(
-      designations.filter((item:Designations) =>
-        designationData?.some((data) => data=== item.id)
-      )
-    );
+    if (source === "tracker") {
+      setSelectedLabels(
+        designations.filter((item: Designations) =>
+          designationData?.some((data) => data === item.id)
+        )
+      );
+    } else {
+      const designationSlugs =
+        localFilters.designations?.split(",").filter(Boolean) || [];
+      setSelectedLabels(
+        designations.filter((item: Designations) =>
+          designationSlugs.includes(item.slug)
+        )
+      );
     }
-  }, [designations]);
+  }, [designations, localFilters.designations, source, designationData]);
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -133,7 +145,7 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
           />
           <CommandEmpty>No label found.</CommandEmpty>
           <CommandGroup>
-            <CommandList className="max-h-48" >
+            <CommandList className="max-h-48">
               {designations?.map((label: Designations) => (
                 <CommandItem
                   key={label.id}

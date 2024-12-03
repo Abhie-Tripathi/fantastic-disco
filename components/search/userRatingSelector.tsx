@@ -23,43 +23,44 @@ const userRatings = [
   { id: "3-4", label: "3-4" },
   { id: "4-5", label: "4-5" },
 ];
-interface UserRatingsProps{
-  source: string,
-  selectedRatings?: string[],
-  setSeectedRatings?: React.Dispatch<React.SetStateAction<string[]>>,
+interface UserRatingsProps {
+  source: string;
+  selectedRatings?: string[];
+  setSeectedRatings?: React.Dispatch<React.SetStateAction<string[]>>;
   isEnabled?: boolean;
   setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export default function UserRatingSelector({
   source,
-  selectedRatings: parentSelectedRatings=[],
+  selectedRatings: parentSelectedRatings = [],
   setSeectedRatings: parentSetSelectedRatings,
   isEnabled: parentIsEnabled = false,
   setIsEnabled: parentSetIsEnabled,
-}:UserRatingsProps) {
+}: UserRatingsProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, searchParams } =
+  const { setLocalFilter, getLocalFilterValue, searchParams, localFilters } =
     useFilterContext();
- const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<string[]>(
-    []
-  );
+  const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<
+    string[]
+  >([]);
   const [localIsEnabled, setLocalIsEnabled] = useState(false);
   // const [showRatings, setShowRatings] = useState(false);
   const showRatings = source === "tracker" ? parentIsEnabled : localIsEnabled;
-const setShowRatings = source === "tracker" ? parentSetIsEnabled : setLocalIsEnabled;
+  const setShowRatings =
+    source === "tracker" ? parentSetIsEnabled : setLocalIsEnabled;
   const [isMounted, setIsMounted] = useState(false);
-   const selectedRatings=
-  source === "tracker" ? parentSelectedRatings : selectedFormatsLocal;
-const setSelectedRatings=
-  source === "tracker" ? parentSetSelectedRatings : setSelectedFormatsLocal;
+  const selectedRatings =
+    source === "tracker" ? parentSelectedRatings : selectedFormatsLocal;
+  const setSelectedRatings =
+    source === "tracker" ? parentSetSelectedRatings : setSelectedFormatsLocal;
   useEffect(() => {
     setIsMounted(true);
-    if(source!=="tracker" && setSelectedRatings){
-    const ratings = getLocalFilterValue("ratings").split(",").filter(Boolean);
-    setSelectedRatings(ratings);
-    setShowRatings?.(getLocalFilterValue("show").includes("rating"));
+    if (source !== "tracker" && setSelectedRatings) {
+      const ratings = getLocalFilterValue("ratings").split(",").filter(Boolean);
+      setSelectedRatings(ratings);
+      setShowRatings?.(getLocalFilterValue("show").includes("rating"));
     }
-  }, [searchParams]);
+  }, [searchParams, localFilters]);
 
   const handleRatingToggle = (ratingId: string) => {
     setSelectedRatings?.((prev) =>
@@ -105,7 +106,7 @@ const setSelectedRatings=
           </span>
           {isMounted && (
             <DynamicSwitch
-              checked={showRatings} 
+              checked={showRatings}
               onCheckedChange={handleShowRatingsToggle}
               aria-label="Show ratings"
               onClick={(e: React.MouseEvent<HTMLButtonElement>) =>

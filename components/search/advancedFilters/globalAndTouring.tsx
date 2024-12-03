@@ -16,36 +16,46 @@ const globalAndTourings = [
   { id: "BRANDED", label: "Branded" },
   { id: "SERIES", label: "Series" },
 ];
-interface BrandedProps{
-  source:string;
-  selectedBrandedEvent?:boolean;
-  setSelectedBrandedEvent?:React.Dispatch<React.SetStateAction<boolean>>;
-  selectedEventSeries?:boolean;
-  setSelectedEventSeries?:React.Dispatch<React.SetStateAction<boolean>>;
+interface BrandedProps {
+  source: string;
+  selectedBrandedEvent?: boolean;
+  setSelectedBrandedEvent?: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedEventSeries?: boolean;
+  setSelectedEventSeries?: React.Dispatch<React.SetStateAction<boolean>>;
   isEnabled?: boolean;
   setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export default function GlobalAndTouringSelector({source, selectedBrandedEvent, setSelectedBrandedEvent, selectedEventSeries, setSelectedEventSeries,
+export default function GlobalAndTouringSelector({
+  source,
+  selectedBrandedEvent,
+  setSelectedBrandedEvent,
+  selectedEventSeries,
+  setSelectedEventSeries,
   isEnabled: parentIsEnabled = false,
   setIsEnabled: parentSetIsEnabled,
-}:BrandedProps) {
+}: BrandedProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { setMultipleLocalFilters, setLocalFilter, getLocalFilterValue } =
-    useFilterContext();
+  const {
+    setMultipleLocalFilters,
+    setLocalFilter,
+    getLocalFilterValue,
+    localFilters,
+  } = useFilterContext();
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [localIsEnabled, setLocalIsEnabled] = useState(false);
   const showInFilter = source === "tracker" ? parentIsEnabled : localIsEnabled;
-  const setShowInFilter = source === "tracker" ? parentSetIsEnabled : setLocalIsEnabled;
+  const setShowInFilter =
+    source === "tracker" ? parentSetIsEnabled : setLocalIsEnabled;
   useEffect(() => {
     const initialStatuses: string[] = [];
-  
+
     if (selectedBrandedEvent) {
       initialStatuses.push("BRANDED");
     }
     if (selectedEventSeries) {
       initialStatuses.push("SERIES");
     }
-    
+
     setSelectedStatuses(initialStatuses);
   }, [selectedBrandedEvent, selectedEventSeries]);
   // const [showInFilter, setShowInFilter] = useState(false);
@@ -54,35 +64,33 @@ export default function GlobalAndTouringSelector({source, selectedBrandedEvent, 
     const onlyBranded = getLocalFilterValue("onlyBranded") === "true";
     const onlySeries = getLocalFilterValue("onlySeries") === "true";
     const showFilter = getLocalFilterValue("show");
-    if(source!=="tracker"){
-    setSelectedStatuses([
-      ...(onlyBranded ? ["BRANDED"] : []),
-      ...(onlySeries ? ["SERIES"] : []),
-    ]);
+    if (source !== "tracker") {
+      setSelectedStatuses([
+        ...(onlyBranded ? ["BRANDED"] : []),
+        ...(onlySeries ? ["SERIES"] : []),
+      ]);
 
-    setShowInFilter?.(
-      showFilter.includes("branded") && showFilter.includes("series")
-    );
-  }
+      setShowInFilter?.(
+        showFilter.includes("branded") && showFilter.includes("series")
+      );
+    }
   }, [getLocalFilterValue]);
 
   const handleStatusToggle = (statusId: string) => {
     const newStatuses = selectedStatuses.includes(statusId)
-  ? selectedStatuses.filter((id) => id !== statusId)
-  : [...selectedStatuses, statusId];
+      ? selectedStatuses.filter((id) => id !== statusId)
+      : [...selectedStatuses, statusId];
     setSelectedStatuses(newStatuses);
-    
-    if(statusId==="BRANDED") {
-      if(newStatuses.includes("BRANDED")){
-      setSelectedBrandedEvent?.(true);
-      }
-      else setSelectedBrandedEvent?.(false);
+
+    if (statusId === "BRANDED") {
+      if (newStatuses.includes("BRANDED")) {
+        setSelectedBrandedEvent?.(true);
+      } else setSelectedBrandedEvent?.(false);
     }
-    if(statusId==="SERIES") {
-      if(newStatuses.includes("SERIES"))
-        setSelectedEventSeries?.(true);
-      else  setSelectedEventSeries?.(false);
-      }
+    if (statusId === "SERIES") {
+      if (newStatuses.includes("SERIES")) setSelectedEventSeries?.(true);
+      else setSelectedEventSeries?.(false);
+    }
   };
 
   const handleApply = () => {

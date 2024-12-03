@@ -33,7 +33,7 @@ export default function EditionSelector({
   setIsEnabled: parentSetIsEnabled,
 }: EditionProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, searchParams } =
+  const { setLocalFilter, getLocalFilterValue, searchParams, localFilters } =
     useFilterContext();
   const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<string>("");
   const [localIsEnabled, setLocalIsEnabled] = useState(false);
@@ -50,7 +50,7 @@ export default function EditionSelector({
     setSelectedStatus?.(getLocalFilterValue("maturity"));
     setShowInFilter?.(getLocalFilterValue("show").includes("maturity"));
     }
-  }, [searchParams]);
+  }, [searchParams, localFilters]);
 
   const handleStatusChange = (value: string) => {
     if (value === selectedStatus) {
