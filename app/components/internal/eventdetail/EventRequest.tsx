@@ -8,12 +8,7 @@ import AttendeeCard from "./AttendeeCard";
 import downArrowIcon from "/public/arrow_down.svg";
 interface DetailsProps {
   open: boolean;
-  participentData: {
-    attendee: string[];
-    speakers: string[];
-    sponsors: string[];
-    exhibitors: string[];
-  };
+  participentData: any;
 }
 
 const EventRequest = ({ open, participentData }: DetailsProps) => {
@@ -38,10 +33,11 @@ const EventRequest = ({ open, participentData }: DetailsProps) => {
       {accordianToggle && (
         <div className={styles.accordian}>
           <div className={styles.main_section}>
-            {participentData.attendee.length>0 && <AttendeeCard cardType={"Attend"} userList={participentData.attendee} />}
-            {participentData.speakers.length>0 && <AttendeeCard cardType={"Speak"} userList={participentData.speakers} />}
-            {participentData.sponsors.length>0 && <AttendeeCard cardType={"Sponsor"} userList={participentData.sponsors} />}
-            {participentData.exhibitors.length>0 && <AttendeeCard cardType={"Exhibit"} userList={participentData.exhibitors} />}
+            {Object.entries(participentData).map(([key, value], index: number) => (
+              (participentData[key].length > 0) ? (
+                <AttendeeCard key={index} cardType={key} userList={participentData[key]} /> )
+                : <></>
+            ))}
           </div>
         </div>
       )}

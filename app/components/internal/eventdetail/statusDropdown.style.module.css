@@ -194,18 +194,25 @@
 }
 
 .tag_item {
-    background-color: inherit;
-    border: 1px solid #6750A4;
-    border-radius: 40px;
-    padding: 6px 20px;
+    background-color: var(--neutral-light-color);
+    /* border: 1px solid #6750A4; */
+    border-radius: 4px;
+    padding: 6px 24px;
     font-size: 12px;
     display: flex;
     align-items: center;
     gap: 5px;
+    color: var(--secondary-text-color);
+    font-weight: var(--font-weight-medium);
+}
+
+.activeTab {
+    background: var(--primary-color)!important;
+    color: white!important;
 }
 
 .total_attendee {
-    border-bottom: 0.7px solid #3A3152;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 6px;
     font-size: 14px;
     font-weight: 300;
@@ -263,6 +270,7 @@
 
 .moddleText{
     margin-right: auto;
+    color: var(--secondary-text-color);
 }
 
 .circles {
