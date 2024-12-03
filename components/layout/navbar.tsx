@@ -31,9 +31,9 @@ import { useTheme } from "@/context/theme";
 
 const routes: Record<string, string> = {
   internal: "Dashboard",
-  coordinate: "Coordinate",
-  events: "Research",
-  trackers: "Trackers",
+  "coordinate": "Coordinate",
+  "events": "Research",
+  "trackers": "Trackers",
   outreach: "Outreach",
   trends: "Event Trends",
 };
@@ -44,12 +44,14 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
+
+  console.log(routes[pathname.split("/").slice(-1)[0]])
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center">
           <div className="text-lg font-semibold">
-            {routes[pathname.split("/")[1]]}
+            {routes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
         <div className="flex items-center space-x-4">

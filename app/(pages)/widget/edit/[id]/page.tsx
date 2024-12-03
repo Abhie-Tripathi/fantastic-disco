@@ -24,6 +24,7 @@ const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [cardBgColor, setCardBgColor] = useState<string>("#d4d4d4");
   const [previewWindowBgColor, setPreviewWindowBgColor] = useState<string>('');
+  const [isDark,setIsDark] = useState<boolean>(false);
   const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
   const [fontSettings, setFontSettings] = useState({
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bold" },
@@ -186,6 +187,7 @@ const Page = () => {
       }
       else {
         setCardBgColor(data.customizationData.cardBgColor);
+        setPreviewWindowBgColor(data.customizationData.previewWindowBgColor);
         setCardBorderRadius(data.customizationData.cardBorderRadius);
         setFontSettings(data.customizationData.fontSettings);
         setButtonSettings(data.customizationData.buttonSettings);
@@ -216,6 +218,9 @@ const Page = () => {
       cardBorderRadius,
       selectedBtn,
       selectedCard: cardStyle,
+      previewWindowBgColor,
+      isDark
+
     };
     customizeData.append("widgetId", widgetId)
     customizeData.append('customizationData', JSON.stringify(customizationData));
@@ -268,6 +273,8 @@ const Page = () => {
           cardBgColor={cardBgColor}
           previewWindowBgColor={previewWindowBgColor}
           setPreviewWindowBgColor={setPreviewWindowBgColor}
+          isDark={isDark}
+          setIsDark={setIsDark}
           cardBorderRadius={cardBorderRadius}
           fetchedAllEvents={fetchedAllEvents}
           fetchEvents={fetchEvents}
@@ -291,6 +298,8 @@ const Page = () => {
           setIsFullScreen={setIsFullScreen}
           cardBgColor={cardBgColor}
           previewWindowBgColor={previewWindowBgColor}
+          isDark={isDark}
+          setIsDark={setIsDark}
           cardBorderRadius={cardBorderRadius}
           fontSettings={fontSettings}
           buttonSettings={buttonSettings}

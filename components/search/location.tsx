@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { PlusCircle, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -21,7 +21,10 @@ import { useFilterContext } from "@/context/filterContext";
 import AutocompleteInput from "./AutocompleteInput";
 import { useLocationService } from "@/services/locationService";
 import { isEventeli } from "@/config";
+import { usePathname } from "next/navigation";
+import { sessionService } from "@/services/sessionService";
 export interface GeoLocation {
+  locationType: "GeoJSON";
   lat: number;
   lng: number;
   radius: number;
@@ -29,6 +32,7 @@ export interface GeoLocation {
 }
 
 export interface LocationItem {
+  locationType: "LocationId";
   id: string;
   description: string | undefined;
 }
@@ -40,14 +44,18 @@ export interface LocationProps {
   setSelectedLocation?: React.Dispatch<
     React.SetStateAction<GeoLocation | LocationItem[] | null>
   >;
-  isMandatory?:boolean;
+  isMandatory?: boolean;
 }
 export default function LocationSelector({
   source,
   selectedLocation: parentSelectedLocation,
   setSelectedLocation: parentSetSelectedLocation,
-  isMandatory
+  isMandatory,
 }: LocationProps) {
+  const pathName = usePathname();
+  const { localFilters } = useFilterContext();
+  const { saveLastSearchedLocation, clearLastSearchedLocation } =
+    sessionService();
   const { getLocationName, getLocationDetails } = useLocationService();
   const [activeTab, setActiveTab] = useState("city");
   const [isOpen, setIsOpen] = useState(false);
@@ -62,10 +70,8 @@ export default function LocationSelector({
     useFilterContext();
 
   const fetchUrlLocation = async () => {
-    const geoCoordinate = JSON.parse(
-      searchParams.get("geoCoordinates") || "null"
-    );
-    const locationIds = searchParams.get("locationIds")?.split(",");
+    const geoCoordinate = JSON.parse(localFilters.geoCoordinates || "null");
+    const locationIds = localFilters.locationIds?.split(",");
 
     if (geoCoordinate) {
       const locationName = await getLocationName(
@@ -73,6 +79,7 @@ export default function LocationSelector({
         geoCoordinate.longitude
       );
       setSelectedLocation?.({
+        locationType: "GeoJSON",
         lat: geoCoordinate.latitude,
         lng: geoCoordinate.longitude,
         radius: geoCoordinate.radius,
@@ -83,12 +90,13 @@ export default function LocationSelector({
         locationIds.map(async (id) => {
           const location = await getLocationDetails(id);
           return {
+            locationType: "LocationID",
             id,
             description: location?.formattedLocations[0].displayName,
           };
         })
       );
-      setSelectedLocation?.(locations);
+      setSelectedLocation?.(locations as LocationItem[]);
     } else {
       setSelectedLocation?.(null);
     }
@@ -96,7 +104,7 @@ export default function LocationSelector({
 
   useEffect(() => {
     if (source !== "tracker") fetchUrlLocation();
-  }, [searchParams]);
+  }, [searchParams, localFilters]);
 
   const applyHandler = () => {
     if (selectedLocation && !Array.isArray(selectedLocation)) {
@@ -112,6 +120,7 @@ export default function LocationSelector({
           radius: radiusInKm,
         })
       );
+      saveLastSearchedLocation(geoLocation);
     } else if (
       selectedLocation &&
       Array.isArray(selectedLocation) &&
@@ -122,8 +131,10 @@ export default function LocationSelector({
         "locationIds",
         (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
       );
+      saveLastSearchedLocation(selectedLocation);
     } else {
       deleteMultipleLocalFilters(["locationIds", "geoCoordinates"]);
+      clearLastSearchedLocation();
     }
     setIsOpen(false);
   };
@@ -133,18 +144,23 @@ export default function LocationSelector({
       applyHandler();
     }
     setIsOpen(open);
-  }; 
+  };
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
-      <Button
+        <Button
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            ((selectedLocation === undefined || (Array.isArray(selectedLocation) &&selectedLocation?.length === 0)) && isMandatory)
-            ?"border-destructive": isOpen
-            ? "border-primary"
-            : "border-input"
-            }`}
+            (selectedLocation === undefined ||
+              (Array.isArray(selectedLocation) &&
+                selectedLocation?.length === 0)) &&
+            isMandatory
+              ? "border-destructive"
+              : isOpen
+              ? "border-primary"
+              : "border-input"
+          }`}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-haspopup="true"
@@ -314,6 +330,7 @@ export default function LocationSelector({
           </Tabs>
         ) : (
           <AutocompleteInput
+            defaultOpen
             multiple
             type="LocationId"
             placeholder="E.g. Bangalore, Karnataka"

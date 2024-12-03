@@ -31,6 +31,9 @@ interface EditProps {
   demoLocation: string;
   demoDate: string;
   isFullScreen: boolean;
+  previewWindowBgColor?:string;
+  isDark?:boolean
+  setIsDark?:(value: boolean) => void
   smallCard : boolean;
 }
 
@@ -47,6 +50,9 @@ const ListView = ({
   demoLocation,
   demoDate,
   isFullScreen,
+  previewWindowBgColor,
+  setIsDark,
+  isDark,
   smallCard
 }: EditProps) => {
   const router = useRouter();
@@ -70,11 +76,11 @@ const ListView = ({
     PrefilledAddedEventsType[]
   >([]);
   const [isFixed, setIsFixed] = useState(true);
-  React.useEffect(() => {
-    if (fetchedAddedOtherData && fetchedAddedOtherData.length > 0) {
-      setFilteredEvents(fetchedAddedOtherData);
-    }
-  }, [fetchedAddedOtherData]);
+  // React.useEffect(() => {
+  //   if (fetchedAddedOtherData && fetchedAddedOtherData.length > 0) {
+  //     setFilteredEvents(fetchedAddedOtherData);
+  //   }
+  // }, [fetchedAddedOtherData]);
 
   const handleFilteredEvents = (selectedDate: string) => {
     const filtered = fetchedAddedOtherData!.filter(
@@ -103,8 +109,8 @@ const ListView = ({
       className={`${styles.listView} ${isFullScreen ? styles.fullScreen : ""}`}
     >
       <div className={styles.cardsContainer}>
-      {filteredEvents && widgetId && filteredEvents.length > 0
-          ? filteredEvents.map((event, key) => (
+      {fetchedAddedOtherData && widgetId && fetchedAddedOtherData.length > 0
+          ? fetchedAddedOtherData.map((event, key) => (
               <div
                 onClick={() => handleCardClick(event.id, widgetId)}
                 key={key}
@@ -112,7 +118,7 @@ const ListView = ({
               >
                 <EventListCard
                   smallCard={smallCard}
-                  fetchedAddedEvents={filteredEvents}
+                  fetchedAddedEvents={fetchedAddedOtherData}
                   cardBgColor={cardBgColor}
                   cardBorderRadius={cardBorderRadius}
                   fontSettings={fontSettings}
@@ -144,11 +150,13 @@ const ListView = ({
       >
           <div className={styles.calendarContainer}>
             <MonthCalendar
-              cardBgColor={cardBgColor}
               widgetId={widgetId}
-              onDateSelect={handleFilteredEvents}
+              onDaySelect={handleFilteredEvents}
               handleResetEvents={handleResetEvents}
               onMonthSelect={handleFilteredEventsByMonth}
+              previewWindowBgColor={previewWindowBgColor}
+              isDark={isDark}
+              setIsDark={setIsDark}
             />
           </div>
           <div className={styles.mapContainer}>

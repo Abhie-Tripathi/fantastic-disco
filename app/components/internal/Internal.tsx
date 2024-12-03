@@ -71,6 +71,17 @@ const Internal = ({
     setSearchInput(event.target.value);
   };
 
+  const [coordinateActions, setCoordinateActions] = useState<any>([]);
+
+  const getInterestConfig = async () => {
+    try {
+      const apiData: any = await coordinateService.getInterestConfig();
+      setCoordinateActions(apiData.slice(1));
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
   useEffect(() => {
     const getCordinateList = async () => {
       try {
@@ -83,6 +94,7 @@ const Internal = ({
       }
     };
     getCordinateList();
+    getInterestConfig();
   }, []);
 
   const fetchData = async () => {
@@ -177,7 +189,15 @@ const Internal = ({
         {/* <div className={styles.scrollContainer} ref={divRef} style={{height:popoverState?"auto":"calc(100vh - 80px)"}}> */}
         <div className={styles.container}>
           <div className={styles.countsContainer}>
-            <div className={styles.exhibitorCount}>
+            {coordinateCount && coordinateCount.slice(1).map((item: any, index: number) => (
+              <div className={styles.exhibitorCount} key={index}>
+                <div className={styles.count}>
+                  {item?.count}
+                </div>
+                <div className={styles.countTitle}>{item.name}</div>
+              </div>
+            ))}
+            {/* <div className={styles.exhibitorCount}>
               <div className={styles.count}>
                 {coordinateCount && coordinateCount[1]?.count}
               </div>
@@ -200,7 +220,7 @@ const Internal = ({
                 {coordinateCount && coordinateCount[4]?.count}
               </div>
               <div className={styles.countTitle}>Attend</div>
-            </div>
+            </div> */}
           </div>
           <div className={styles.filters}>
             <div className={styles.searchContainer}>
@@ -242,7 +262,7 @@ const Internal = ({
             </div>
 
             <div style={{ width: "15%" }} className={styles.outerDiv}>
-              <InterestTypeSelector />
+              <InterestTypeSelector coordinateActions={coordinateActions} />
             </div>
 
             <div style={{ width: "15%" }} className={styles.outerDiv}>
@@ -288,7 +308,7 @@ const Internal = ({
                       currentEnquiryStatus={item.enquiryStatus}
                       upvote={item.upvote}
                       enquiryActivity={item.enquiryActivity}
-                      userCountPerInterest={item.userCountPerInterest}
+                      coordinateActions={coordinateActions}
                       handleModal={handleModal}
                       handleShortlistModal={handleShortlistModal}
                     />

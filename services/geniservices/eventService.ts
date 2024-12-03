@@ -11,11 +11,19 @@ export const useEventServices = () => {
     );
   };
 
-  const getSortedEvents = async (page: number) => {
+  const getUpcomingEvents = async (page: number) => {
+    const today = new Date().toISOString().split('T')[0];
     return api.request(
-      `${endpoints.events.getSortedEvents}?sortBy=start_date&sortType=asc&offset=${page}&limit=8`
+      `${endpoints.events.getSortedEvents}?sortBy=start_date&sortType=asc&offset=${page}&limit=8&upcoming=${encodeURIComponent(today)}`
     );
   };
+  const getPastEvents = async (page: number) => {
+    const today = new Date().toISOString().split('T')[0];
+    return api.request(
+      `${endpoints.events.getSortedEvents}?sortBy=start_date&sortType=asc&offset=${page}&limit=8&expired=${encodeURIComponent(today)}`
+    );
+  };
+  
 
   const getEventById = async (eventId: string) => {
     return api.request(
@@ -69,7 +77,8 @@ export const useEventServices = () => {
   return {
     getEvents,
     getEventsByWidgetId,
-    getSortedEvents,
+    getUpcomingEvents,
+    getPastEvents,
     getEventById,
     getEventByPublicAPI,
     deleteEvent,

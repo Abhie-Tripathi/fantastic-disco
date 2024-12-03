@@ -8,12 +8,13 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 
 type FilterContextType = {
   localFilters: Record<string, string>;
   setLocalFilter: (key: string, value: string) => void;
+  clearLocalFilters: () => void;
   applyFilters: () => void;
   getLocalFilterValue: (key: string) => string;
   searchParams: URLSearchParams;
@@ -35,9 +36,17 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const { searchParams } = useFilterState();
   const [localFilters, setLocalFilters] = useState<Record<string, string>>({});
 
+  const filterEmptyValues = useCallback((filters: Record<string, string>) => {
+    return Object.fromEntries(
+      Object.entries(filters).filter(([_, value]) => value !== "")
+    );
+  }, []);
+
   useEffect(() => {
-    setLocalFilters(Object.fromEntries(searchParams.entries()));
-  }, [searchParams]);
+    setLocalFilters(
+      filterEmptyValues(Object.fromEntries(searchParams.entries()))
+    );
+  }, [searchParams, filterEmptyValues]);
 
   const setLocalFilter = useCallback((key: string, value: string) => {
     setLocalFilters((prev) => {
@@ -51,56 +60,69 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }, []);
 
+  const clearLocalFilters = useCallback(() => {
+    setLocalFilters({});
+  }, []);
+
   const applyFilters = () => {
     setLocalFilters((currentFilters) => {
+      const filteredFilters = filterEmptyValues(currentFilters);
       const params = new URLSearchParams();
-      Object.entries(currentFilters).forEach(([key, value]) => {
-        if (value && key !== "skip") {
+      Object.entries(filteredFilters).forEach(([key, value]) => {
+        if (key !== "skip") {
           params.set(key, value);
         }
       });
       const currentPathname = window.location.pathname;
       router.push(`${currentPathname}?${params.toString()}`, { scroll: false });
-      return currentFilters;
+      return filteredFilters;
     });
   };
 
   const setMultipleLocalFilters = useCallback(
     (filters: Record<string, string>) => {
-      setLocalFilters((prev) => ({
-        ...prev,
-        ...filters,
-      }));
+      setLocalFilters((prev) =>
+        filterEmptyValues({
+          ...prev,
+          ...filters,
+        })
+      );
     },
-    []
+    [filterEmptyValues]
   );
 
-  const deleteMultipleLocalFilters = useCallback((keys: string[]) => {
-    setLocalFilters((prev) => {
-      const newFilters = { ...prev };
-      keys.forEach((key) => {
-        delete newFilters[key];
+  const deleteMultipleLocalFilters = useCallback(
+    (keys: string[]) => {
+      setLocalFilters((prev) => {
+        const newFilters = { ...prev };
+        keys.forEach((key) => {
+          delete newFilters[key];
+        });
+        return filterEmptyValues(newFilters);
       });
-      return newFilters;
-    });
-  }, []);
+    },
+    [filterEmptyValues]
+  );
 
   const replaceLocalFilter = useCallback(
     (oldKey: string, newKey: string, newValue: string) => {
       setLocalFilters((prev) => {
         const newFilters = { ...prev };
         delete newFilters[oldKey];
-        newFilters[newKey] = newValue;
-        return newFilters;
+        if (newValue !== "") {
+          newFilters[newKey] = newValue;
+        }
+        return filterEmptyValues(newFilters);
       });
     },
-    []
+    [filterEmptyValues]
   );
 
   const contextValue = useMemo(
     () => ({
       localFilters,
       setLocalFilter,
+      clearLocalFilters,
       applyFilters,
       getLocalFilterValue: (key: string) => localFilters[key] || "",
       searchParams,
@@ -111,6 +133,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     [
       localFilters,
       setLocalFilter,
+      clearLocalFilters,
       setMultipleLocalFilters,
       deleteMultipleLocalFilters,
       replaceLocalFilter,

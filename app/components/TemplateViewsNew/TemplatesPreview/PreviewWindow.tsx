@@ -39,6 +39,8 @@ interface PreviewProps {
     selectedImage?: StaticImageData
     cardBgColor?: string;
     previewWindowBgColor?:string;
+    isDark?:boolean;
+    setIsDark?:(value: boolean) => void;
     cardBorderRadius?: number;
     fontSettings?: {
         heading: FontSettings;
@@ -73,6 +75,8 @@ const demoDate = "29 Jan - 5 Feb"
 const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFullScreen, setSelectedCard, widgetSelected, draftWidget, fetchDraftWidgets,
     cardBgColor = "#ffffff", cardBorderRadius = 20,
     previewWindowBgColor = "#ffffff",
+    isDark,
+    setIsDark,
     fontSettings = {
         heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bold" },
         subheading: { fontFamily: "arial", fontSize: 14, fontColor: "#000000", fontWeight: "normal" },
@@ -195,7 +199,8 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
             cardBorderRadius,
             selectedBtn,
             selectedCard,
-            previewWindowBgColor
+            previewWindowBgColor,
+            isDark
             // closeButtonSetting,
         };
         customizeData.append('customizationData', JSON.stringify(customizationData));
