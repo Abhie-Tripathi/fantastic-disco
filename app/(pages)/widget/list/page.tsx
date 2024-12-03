@@ -204,6 +204,7 @@ const Widget = () => {
   // if (!isValid) {
   //   return <div className={styles.errorPage}><Errorpage type='list' /></div>; // Render the 404 component if the data is invalid
   // }
+  const isMultipleCards = allWidgets.length > 1;
   return (
     <div className={styles.body}>
       <div className={styles.nav}>
@@ -234,7 +235,7 @@ const Widget = () => {
       ) : (
         <>
           <div className={styles.widgetsAndPreview}>
-            <div className={`${styles.widgetsList} ${isFullScreen ? styles.hideWidgetList : ""}`}>
+            <div className={`${styles.widgetsList} ${isFullScreen ? styles.hideWidgetList : ""} ${isMultipleCards ? styles.multiCardHeight : styles.singleCardHeight}`}>
               {allWidgets.map((card, key) => (
                 <div
                   className={styles.widgetCard}

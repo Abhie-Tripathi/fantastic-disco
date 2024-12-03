@@ -24,7 +24,7 @@ const Page = () => {
   //   const {data,error} = await myFetch(`${baseUrl}/kit`)
   //   if(error){
   //     console.log(error);
-  //     return;
+  //     return
   //   }
   //   if(data.domain.domain){
   //     setFetchedBoolean(true)

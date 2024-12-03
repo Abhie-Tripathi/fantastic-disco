@@ -77,7 +77,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
       width={smallCard ? 280 : 380}
       height={smallCard ? 285 : 385}
       className={`w-full ${smallCard ? styles.smallBanner : styles.banner} ${smallCard ? 'h-[285px]' : 'h-[385px]'} rounded-b-[50px] shadow-md`}
-      // style={{width :smallCard ? 280 : 380, height :smallCard ? 285 : 385}} 
+      style={{width :smallCard ? 280 : 380, height :smallCard ? 285 : 385}} 
       src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner'/>
       <div className={styles.detailsContainer}>
         <div className={styles.valuesContainer}>
