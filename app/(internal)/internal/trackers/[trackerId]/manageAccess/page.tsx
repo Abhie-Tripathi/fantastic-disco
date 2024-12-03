@@ -172,7 +172,7 @@ const Page = () => {
                 </div>
             </div>
             <div className='flex gap-2 w-[calc(100vw-134px)] mt-[140px]'>
-            <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px] z-3'></div>
+            {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px] z-3'></div> */}
                 <div className="flex w-[40%] h-fit">
                     {/* <TrackerOwner adminData={userAccessData?.access?.admin}/> */}
                     <TrackerUser userData={userAccessData?.access?.admin} type="admins" heading="Tracker Owners"/>
