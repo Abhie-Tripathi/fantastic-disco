@@ -30,8 +30,8 @@ import { useFilterContext } from "@/context/filterContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const presets = [
-  { label: "Past", value: "past" },
-  { label: "Upcoming", value: "upcoming" },
+  // { label: "Past", value: "past" },
+  // { label: "Upcoming", value: "upcoming" },
   { label: "This week", value: "this-week" },
   { label: "This month", value: "this-month" },
   { label: "3 months", value: "3-months" },
