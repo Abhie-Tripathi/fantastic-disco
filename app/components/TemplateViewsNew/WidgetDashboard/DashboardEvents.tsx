@@ -7,6 +7,7 @@ import { myFetch } from '@/utils/myFetch';
 import { AllEventsType } from '@/types/alleventtype';
 import { baseUrl } from '@/constants';
 import DashboardEventCard from './DashboardEventCard';
+import { useEventServices } from '@/services/geniservices/eventService'; 
 
 const DashboardEvents = () => {
     const [selectedBtn, setSelectedBtn] = useState<string>("Added")
@@ -17,9 +18,10 @@ const DashboardEvents = () => {
     const [deleteModalTwo, setDeleteModalTwo] = useState<boolean>(false) // This one is for if the event is present in some widget
     const [selectedEventId, setSelectedEventId] = useState<string>("")
     const [selectedEventName, setSelectedEventName] = useState<string>("")
-
+    const {getEvents, deleteEvent, error} = useEventServices();
     const fetchEvents = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&limit=2`)
+        // const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&limit=2`)
+            const data:any = await getEvents()
         if (data) {
             const events = data.data.map((event: any) => ({
                 mainEvent: {
@@ -135,13 +137,14 @@ const DashboardEvents = () => {
         const customizeData = new FormData();
         customizeData.append("id", selectedEventId)
         customizeData.append('published', "false");
-        const { data, error } = await myFetch(
-            `${baseUrl}/event`,
-            {
-                method: 'PATCH',
-                body: customizeData,
-            }
-        );
+        // const { data, error } = await myFetch(
+        //     `${baseUrl}/event`,
+        //     {
+        //         method: 'PATCH',
+        //         body: customizeData,
+        //     }
+        // );
+        const data = await deleteEvent(customizeData)
         if (data) {
             setDeleteModal(false)
         }
@@ -149,6 +152,7 @@ const DashboardEvents = () => {
             console.log(error);
         }
     }
+    
     return (
         <div className={styles.body}>
             <div className={styles.btnContainer}>
@@ -161,7 +165,9 @@ const DashboardEvents = () => {
                     <span className={`${styles.count} ${selectedBtn === "Added" ? styles.selectedCount : ""}`}>{addedEventsLength}</span>
                 </button>
             </div>
-            <div className={styles.addEvent}><span>Last Fetched on : 27 Jul 2024</span><Link href={"/widget/events"}>Fetch Now</Link></div>
+            <div className={styles.addEvent}><span>Last Fetched on : 27 Jul 2024</span>
+            {/* <Link href={"/widget/events"}>Fetch Now</Link> */}
+            </div>
             {selectedBtn === "Fetched" ? <div className={styles.fetchedEventsContainer}>
                 {siteFetchedEvents.length > 0 ?
                     <div className={styles.eventsList}>

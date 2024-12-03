@@ -22,28 +22,36 @@ import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import Link from "next/link";
-
+import { myFetch } from "@/utils/myFetch";
+import { useTrackerServices } from "@/services/trackerServices";
 export default function EventList({
   isVisible,
   onClose,
+  source,
+  searchParam,
+  trackerId
 }: {
   isVisible: boolean;
   onClose: () => void;
+  source:any;
+  searchParam:any;
+  trackerId:string;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const searchParams = useSearchParams();
+  const defaultSearchParams = useSearchParams();
+  const searchParams = source !== "tracker" ? defaultSearchParams : searchParam;
   const eventService = useEventsService();
-
-  const filteredParams = new URLSearchParams(searchParams.toString());
+  const filteredParams = new URLSearchParams(searchParams?.toString());
   filteredParams.delete("view");
   filteredParams.set("skip", String((currentPage - 1) * 10));
-
+  const {getTrackerMapEvents}=useTrackerServices(); 
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString()],
-    queryFn: () =>
-      eventService.getEventsWithSearchParams(filteredParams.toString()),
+    queryFn: () => source === 'tracker' 
+      ? getTrackerMapEvents(trackerId,`limit=10&offset=${(currentPage - 1) * 10 + 1}`, searchParam.toString())
+      : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
-
+  
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -81,7 +89,9 @@ export default function EventList({
         : `${formattedStartDate} - ${formattedEndDate} (${days} ${
             days === 1 ? "day" : "days"
           })`;
+          
 
+          
     return (
       <Link href={`/internal/event/${event.id}`} target="_blank">
         <Card key={event.id} className="mb-4 relative">

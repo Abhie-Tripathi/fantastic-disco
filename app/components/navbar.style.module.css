@@ -162,6 +162,9 @@
   align-items: center;
   color: var(--primary-text-color);
 }
+.detailPageTitle{
+  margin-left: 0px;
+}
 .page_title .backBtn{
   cursor: pointer;
   font-size: var(--font-size-h6);

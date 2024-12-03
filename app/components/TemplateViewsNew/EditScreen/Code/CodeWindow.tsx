@@ -6,14 +6,14 @@ import TickIcon from '/public/tick.svg'
 import { useTheme } from '@/context'
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch'
-
+import { useWidgetServices } from '@/services/geniservices/widgetService'
 interface Props {
     widgetType: string;
     widgetId: string;
 }
 
 const CodeWindow = ({ widgetType, widgetId }: Props) => {
-
+    const {getWidgetById, updateWidgetData,error} = useWidgetServices();
     const [copyClick, setCopyClick] = useState(false) //To change the icon if the copy button is clicked
     const [addClicked, setAddClicked] = useState(false) //To change the icon if the copy button is clicked
     const [domains, setDomains] = useState<string[]>([]);
@@ -23,7 +23,8 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
         fetchDomain()
     }, [])
     const fetchDomain = async () => {
-        const { data: allDomains, error: allDomainError } = await myFetch(`${baseUrl}/widget/${widgetId}`)
+        // const { data: allDomains, error: allDomainError } = await myFetch(`${baseUrl}/widget/${widgetId}`)
+        const allDomains: any = await getWidgetById(widgetId)
         if (allDomains ) {
             // Split the domains and set inputDomain.domain.domain as the first element
             const domainArray = allDomains.domain.split(",");
@@ -80,10 +81,11 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
         const formData = new FormData()
         formData.append("widgetId", widgetId)
         formData.append("domain", updatedDomains.join())
-        const { data, error } = await myFetch(`${baseUrl}/widget`, {
-            method: "POST",
-            body: formData,
-        })
+        // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+        //     method: "POST",
+        //     body: formData,
+        // })
+        const data:any = await updateWidgetData(formData);
         if (data) {
             console.log(data)
             setDomains(updatedDomains)
@@ -99,10 +101,11 @@ const CodeWindow = ({ widgetType, widgetId }: Props) => {
         const formData = new FormData();
         formData.append("widgetId", widgetId);
         formData.append("domain", updatedDomains.join());
-        const { data, error } = await myFetch(`${baseUrl}/widget`, {
-            method: "POST",
-            body: formData,
-        });
+        // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+        //     method: "POST",
+        //     body: formData,
+        // });
+        const data:any = await updateWidgetData(formData);
         if (data) {
             setDomains(updatedDomains);
         }

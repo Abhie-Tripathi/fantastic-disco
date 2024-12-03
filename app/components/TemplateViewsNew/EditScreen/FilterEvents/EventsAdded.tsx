@@ -9,7 +9,8 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import EmptyImage from "/public/widgetimages/emptyimages/addedeventempty.svg";
 import { useRouter } from "next/navigation";
-
+import { useWidgetServices } from "@/services/geniservices/widgetService";
+import { useEventServices } from "@/services/geniservices/eventService";
 interface Props {
   fetchedAddedEvents: AddedEventsType[];
   widgetId: string;
@@ -49,6 +50,8 @@ const EventsAdded = ({
   const [minNumberOfEvents, setMinNumberOfEvents] = useState("");
   // const [nearestEvent, setNearestEvent] = useState<any[]>([]);
   const [locationEnabled, setLocationEnabled] = useState(false);
+  const {updateWidgetData, error} = useWidgetServices();
+  const {getEventById} = useEventServices()
   let closestEvent: any = null;
   const showPromote =
     selectedTemplate === "HBL" ||
@@ -75,9 +78,10 @@ const EventsAdded = ({
         const newNormalEvents: string[] = [];
         const newFetchedAddedOtherData = await Promise.all(
           fetchedAddedEvents.map(async (event) => {
-            const { data, error } = await myFetch(
-              `${baseUrl}/event/${event.id}?source=eventgtm`
-            );
+            // const { data, error } = await myFetch(
+            //   `${baseUrl}/event/${event.id}?source=eventgtm`
+            // );
+            const data:any = await getEventById(event.id)
             if (error) {
               console.error(
                 `Error fetching event data for event ID ${event.id}:`,
@@ -119,10 +123,23 @@ const EventsAdded = ({
               promoted: event.promoted,
               eventType: data.type,
             } as PrefilledAddedEventsType;
-            if (event.promoted === "true") {
-              newPromotedEvents.push(event.promoted);
-            } else if (event.promoted === "false") {
-              newNormalEvents.push(event.promoted);
+            // if (event.promoted === "true"|| Boolean(event.promoted) === true) {
+            //   newPromotedEvents.push(event.promoted);
+            // } else if (event.promoted === "false" || Boolean(event.promoted) ===false) {
+            //   newNormalEvents.push(event.promoted);
+            // }
+            if (typeof event.promoted === "string") {
+              if (event.promoted === "true") {
+                newPromotedEvents.push(event.promoted);
+              } else if (event.promoted === "false") {
+                newNormalEvents.push(event.promoted);
+              }
+            } else if (typeof event.promoted === "boolean") {
+              if (event.promoted) {
+                newPromotedEvents.push(event.promoted);
+              } else {
+                newNormalEvents.push(event.promoted);
+              }
             }
             return eventObject;
           })
@@ -144,8 +161,86 @@ const EventsAdded = ({
   useEffect(() => {
     let promotedCount = promotedEvents.length;
     let normalEventCount = normalEvents.length;
-    console.log(fetchedAddedOtherData, promotedCount, normalEventCount);
+    // console.log("promotedCount", promotedCount, normalEventCount);
     // Check which template is selected
+    if (selectedTemplate === "LS") {
+      if (normalEventCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+    if (selectedTemplate === "PUVP") {
+      if (promotedCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+    if (selectedTemplate === "PUVL") {
+      if (promotedCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+    if (selectedTemplate === "ST") {
+      if (promotedCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+     if (selectedTemplate === "GS") {
+      if (promotedCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+    if (selectedTemplate === "LSR") {
+      if (normalEventCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
     if (selectedTemplate === "CVG") {
       if (promotedCount >= 3 && normalEventCount >= 2) {
         setIsCodeWindowDisable(false);
@@ -275,11 +370,12 @@ const EventsAdded = ({
     customizedFormData.append("otherdata", JSON.stringify(otherData));
     customizedFormData.append("eventId", eventIds);
 
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: customizedFormData,
-    });
-
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: customizedFormData,
+    // });
+    
+  const data:any = await updateWidgetData(customizedFormData) 
     if (data) {
       console.log("widget event promote data", data);
       fetchAddedEvents(); // Refresh the list after promoting
@@ -312,10 +408,11 @@ const EventsAdded = ({
     const formData = new FormData();
     formData.append("widgetId", widgetId);
     formData.append("status", "draft");
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: formData,
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: formData,
+    // });
+    const data:any = await updateWidgetData(formData)
     if (data) {
       console.log("widget moved to draft widgets");
     }
@@ -334,10 +431,11 @@ const EventsAdded = ({
     customizedFormData.append("widgetId", widgetId);
     customizedFormData.append("otherdata", JSON.stringify(otherData));
 
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: customizedFormData,
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: customizedFormData,
+    // });
+    const data:any = await updateWidgetData(customizedFormData)
     if (data) {
       handleEventIdDelete(eventId);
       fetchEvents(0, "update");
@@ -352,10 +450,11 @@ const EventsAdded = ({
     customizedFormData.append("widgetId", widgetId);
     customizedFormData.append("eventId", eventId);
     customizedFormData.append("published", "false");
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: customizedFormData,
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: customizedFormData,
+    // });
+    const data:any = await updateWidgetData(customizedFormData)
     if (data) {
       fetchAddedEvents();
       console.log(data);
@@ -456,10 +555,11 @@ const EventsAdded = ({
     customizedFormData.append("otherdata", JSON.stringify(otherData));
     customizedFormData.append("status", "active");
 
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: customizedFormData,
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: customizedFormData,
+    // });
+    const data:any = await updateWidgetData(customizedFormData)
 
     if (data) {
       if (typeof fetchEvents === "function") {

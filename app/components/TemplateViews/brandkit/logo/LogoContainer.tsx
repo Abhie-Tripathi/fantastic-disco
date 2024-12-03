@@ -1,28 +1,57 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styles from './logocontainer.style.module.css'
-import Logo from '/public/10timeslogotwo.png'
 import Image from 'next/image'
+import { myFetch } from '@/utils/myFetch'
+import { baseUrl } from '@/constants'
 
 interface Props {
   setPreview: (value: string) => void
-  fetchedLogos : string[]
+  fetchedLogos: string[]
+  fetchBrandkit: () => Promise<void>;
 }
 
-const LogoContainer = ({ setPreview,fetchedLogos }: Props) => {
+const LogoContainer = ({ setPreview, fetchedLogos,fetchBrandkit }: Props) => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files ? event.target.files[0] : null;
+
+    if (file) {
+      // Check if the file is either .jpg or .png
+      const validTypes = ['image/jpeg', 'image/png'];
+      if (!validTypes.includes(file.type)) {
+        setError('Only JPG or PNG files are allowed.');
+        return;
+      }
+
+      setSelectedFile(file);
+      setError(null);  // Clear any previous errors
+
+      // Prepare the form data
+      const formData = new FormData();
+      formData.append('file', file);
+      const { data, error } = await myFetch(`${baseUrl}/kit`, {
+        method: 'PATCH',
+        body: formData,
+      });
+      if(data){
+        fetchBrandkit()
+      }
+
+    }
+  };
+
   return (
     <div className={styles.body} >
       <div className={styles.heading}>Brand Logo</div>
       <div className={styles.container}>
         <div className={styles.logoContainer}>
           <Image src={fetchedLogos[0]} alt='logo' height={40} width={40} />
-          {/* <div className={styles.uploadBtn}>
-            <input type="file" id='upload' />
+          <div className={styles.uploadBtn}>
+            <input type="file" id="upload" accept=".jpg, .jpeg, .png" onChange={handleFileChange} />
             <label htmlFor="upload"><UploadIcon /></label>
-          </div> */}
+          </div>
         </div>
-        {/* <div className={styles.addLogo}>
-          <AddIcon />
-        </div> */}
       </div>
     </div>
   )

@@ -9,13 +9,21 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
+import { isEventeli } from "@/config";
 
-const eventStatuses = [
-  { id: "active", label: "Active" },
-  { id: "cancelled", label: "Cancelled" },
-  { id: "postponed", label: "Postponed" },
-];
-interface StatusSelectorProps{
+const eventStatuses = isEventeli
+  ? [
+      { id: "active", label: "Active" },
+      { id: "cancelled", label: "Cancelled" },
+      { id: "postponed", label: "Postponed" },
+      { id: "predicted", label: "Predicted" },
+    ]
+  : [
+      { id: "active", label: "Active" },
+      { id: "cancelled", label: "Cancelled" },
+      { id: "postponed", label: "Postponed" },
+    ];
+interface StatusSelectorProps {
   source: string;
   selectedStatuses?: string[];
   setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
@@ -28,20 +36,19 @@ export default function StatusSelector({
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, searchParams } =
     useFilterContext();
-    const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<string[]>(
-      []
-    );
-  
-    const selectedStatuses =
-      source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
-    const setSelectedStatuses =
-      source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
-  
+  const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<
+    string[]
+  >([]);
+
+  const selectedStatuses =
+    source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
+  const setSelectedStatuses =
+    source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
 
   useEffect(() => {
-    if(source!=="tracker" && setSelectedStatuses){
-    const currentFilter = getLocalFilterValue("status");
-    setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
+    if (source !== "tracker" && setSelectedStatuses) {
+      const currentFilter = getLocalFilterValue("status");
+      setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
     }
   }, [searchParams, getLocalFilterValue]);
 

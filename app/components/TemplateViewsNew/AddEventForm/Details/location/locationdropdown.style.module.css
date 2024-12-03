@@ -82,10 +82,12 @@
     padding: 5px 8px;
     cursor: pointer;
     color: black;
+    gap: 5px;
 }
 .locationDropdown div:hover{
     background-color: #F2F2F2;
 }
+
 .locationInputContainer input {
     width: 100%;
     border: 1px solid #EBEBEB;

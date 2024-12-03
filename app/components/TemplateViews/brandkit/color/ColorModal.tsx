@@ -3,7 +3,7 @@ import styles from './colormodal.style.module.css'
 import { ChromePicker } from 'react-color';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
-
+import { useBrandKitServices } from '@/services/geniservices/brandkitService';
 
 interface Props {
     colorCode: string
@@ -16,7 +16,7 @@ interface Props {
 }
 
 const ColorModal = ({ colorCode, setColorCode,fetchedColors,colorModalType,setFetchedColors,setPreview,colorModalIndex }: Props) => {
-
+    const {updateBrandkit,error} = useBrandKitServices();
     const handleColorChange = (color: any) => {
         setColorCode(color.hex);
     };
@@ -25,13 +25,14 @@ const ColorModal = ({ colorCode, setColorCode,fetchedColors,colorModalType,setFe
         if(colorModalType === "add"){
             setFetchedColors([...fetchedColors,colorCode])
             const newColors = [...fetchedColors,colorCode]
-            const {data,error} = await myFetch(`${baseUrl}/kit`,{
-                method : "PATCH",
-                body: JSON.stringify({color : newColors.join()}),
-                headers: {
-                    'Content-Type': 'application/json'
-                }       
-            })
+            // const {data,error} = await myFetch(`${baseUrl}/kit`,{
+            //     method : "PATCH",
+            //     body: JSON.stringify({color : newColors.join()}),
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     }       
+            // })
+            const data:any = await updateBrandkit({color : newColors.join()})
             if(error){
                 console.log(error)
                 return
@@ -41,13 +42,14 @@ const ColorModal = ({ colorCode, setColorCode,fetchedColors,colorModalType,setFe
             const updatedColorArray = [...fetchedColors]
             updatedColorArray[colorModalIndex] = colorCode; 
             setFetchedColors(updatedColorArray)
-            const {data,error} = await myFetch(`${baseUrl}/kit`,{
-                method : "PATCH",
-                body: JSON.stringify({color : updatedColorArray.join()}),
-                headers: {
-                    'Content-Type': 'application/json'
-                }       
-            })
+            // const {data,error} = await myFetch(`${baseUrl}/kit`,{
+            //     method : "PATCH",
+            //     body: JSON.stringify({color : updatedColorArray.join()}),
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     }       
+            // })
+            const data:any = await updateBrandkit({color : updatedColorArray.join()})
             if(error){
                 console.log(error)
                 return

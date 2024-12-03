@@ -120,11 +120,19 @@ const StickyCard = ({
             fontFamily: fontSettings.heading.fontFamily,
             fontWeight: fontSettings.heading.fontWeight,
           }}
+          data-name={fetchedEvent![0]? fetchedEvent![0].name :demoEventName}
         >
-          {fetchedEvent && fetchedEvent.length > 0
+          {/* {fetchedEvent && fetchedEvent.length > 0
             ? fetchedEvent[0]?.name.substring(0, 40)
-            : demoEventName}
+            : demoEventName} */}
+             {fetchedEvent && fetchedEvent.length > 0
+          ? `${fetchedEvent[0].name.substring(0, 30)} ${fetchedEvent[0].name.length > 30 ? "..." : ""
+          }`
+          : demoEventName}
         </div>
+
+
+        
 
         {/* Location */}
         <div className={styles.locationContainer}>
@@ -190,7 +198,7 @@ const StickyCard = ({
             {fetchedEvent![0]?.eventType === "MAIN"
               ? fetchedEvent![0].event_type
               : fetchedEvent![0]?.eventType === "SUB"
-              ? fetchedEvent![0].participationType
+              ? fetchedEvent![0].event_type
               : "Tradeshow"}
           </div>
           <div
@@ -201,7 +209,7 @@ const StickyCard = ({
               ? fetchedEvent![0].eventFormat
               : fetchedEvent![0]?.eventType === "SUB"
               ? fetchedEvent![0].eventFormat
-              : "Attending"}
+              : "In-Person"}
           </div>
         </div>
       </div>
@@ -234,7 +242,7 @@ const StickyCard = ({
             : buttonSettings?.secondary.buttonText}
         </button> */}
 
-        {/* <button
+        <button
           className={smallCard ? styles.smallBtn : styles.btn}
           style={{
             fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
@@ -259,8 +267,8 @@ const StickyCard = ({
           }}
         >
           {selectedBtn === "primary" ? buttonSettings?.primary.buttonText : buttonSettings?.secondary.buttonText}
-        </button> */}
-        <div
+        </button>
+        {/* <div
               className={styles.detail_button}
               style={{
                 fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
@@ -285,7 +293,7 @@ const StickyCard = ({
               }}
             >
               VIEW DETAILS
-            </div>
+            </div> */}
       </div>
     </div>
   );

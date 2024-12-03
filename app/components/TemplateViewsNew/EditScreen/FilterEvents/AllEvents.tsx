@@ -11,7 +11,8 @@ import { showToast } from "@/utils/showToast";
 import { AddedEventsType } from "@/types/addedeventtype";
 import { PrefilledAddedEventsType } from "@/types/prefilledaddedeventtype";
 import { useRouter } from "next/navigation";
-
+import { useWidgetServices } from "@/services/geniservices/widgetService";
+import { useEventServices } from "@/services/geniservices/eventService";
 interface Props {
   fetchedAllEvents: AllEventsType[];
   fetchedAddedEvents: AddedEventsType[];
@@ -52,6 +53,8 @@ const AllEvents = ({
   normalEvents,
   setNormalEvents,
 }: Props) => {
+  const {updateWidgetData, error} = useWidgetServices();
+  const {getEventById} = useEventServices();
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true); // To heck if there are more events
@@ -75,9 +78,10 @@ const AllEvents = ({
         const newNormalEvents: string[] = [];
         const newFetchedAddedOtherData = await Promise.all(
           fetchedAddedEvents.map(async (event) => {
-            const { data, error } = await myFetch(
-              `${baseUrl}/event/${event.id}?source=eventgtm`
-            );
+            // const { data, error } = await myFetch(
+            //   `${baseUrl}/event/${event.id}?source=eventgtm`
+            // );
+            const data:any =  await getEventById(event.id)
             if (error) {
               console.error(
                 `Error fetching event data for event ID ${event.id}:`,
@@ -118,10 +122,23 @@ const AllEvents = ({
               hashtags: eventData.customizationData.hashtags,
               promoted: event.promoted,
             } as PrefilledAddedEventsType;
-            if (event.promoted === "true") {
-              newPromotedEvents.push(event.promoted);
-            } else if (event.promoted === "false") {
-              newNormalEvents.push(event.promoted);
+            // if (event.promoted === "true" || Boolean(event.promoted) === true) {
+            //   newPromotedEvents.push(event.promoted);
+            // } else if (event.promoted === "false") {
+            //   newNormalEvents.push(event.promoted);
+            // }
+            if (typeof event.promoted === "string") {
+              if (event.promoted === "true") {
+                newPromotedEvents.push(event.promoted);
+              } else if (event.promoted === "false") {
+                newNormalEvents.push(event.promoted);
+              }
+            } else if (typeof event.promoted === "boolean") {
+              if (event.promoted) {
+                newPromotedEvents.push(event.promoted);
+              } else {
+                newNormalEvents.push(event.promoted);
+              }
             }
             return eventObject;
           })
@@ -144,8 +161,87 @@ const AllEvents = ({
   useEffect(() => {
     let promotedCount = promotedEvents.length;
     let normalEventCount = normalEvents.length;
-    // console.log(fetchedAddedOtherData, promotedCount, normalEventCount);
+    // console.log("promotedCount", promotedCount, normalEventCount, selectedTemplate);
     // Check which template is selected
+    if (selectedTemplate === "LS") {
+      if (normalEventCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+    if (selectedTemplate === "PUVP") {
+      if (promotedCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+    if (selectedTemplate === "PUVL") {
+      if (promotedCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+    if (selectedTemplate === "ST") {
+      if (promotedCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+     if (selectedTemplate === "GS") {
+      if (promotedCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+    if (selectedTemplate === "LSR") {
+      if (normalEventCount >= 1) {
+        setIsCodeWindowDisable(false);
+        setIsCustomisationWindowDisable(false);
+      } else {
+        setIsCodeWindowDisable(true);
+        setIsCustomisationWindowDisable(true);
+      }
+      setShowMsg(true);
+      setMinNumberOfEvents(
+        "Please select at least one event to continue with customizations"
+      );
+    }
+
     if (selectedTemplate === "CVG") {
       if (promotedCount >= 3 && normalEventCount >= 2) {
         setIsCodeWindowDisable(false);
@@ -280,10 +376,11 @@ const AllEvents = ({
     const formData = new FormData();
     formData.append("widgetId", widgetId);
     formData.append("status", "draft");
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: formData,
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: formData,
+    // });
+    const data:any = await updateWidgetData(formData)
     if (data) {
       console.log("widget moved to draft widgets");
     }
@@ -425,6 +522,20 @@ const AllEvents = ({
     return closestEvent;
   };
 
+
+  useEffect(() => {
+    const savedOptions = localStorage.getItem("selectedOptions");
+    if (savedOptions) {
+      setSelectedOptions(JSON.parse(savedOptions));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("selectedOptions", JSON.stringify(selectedOptions));
+  }, [selectedOptions]);
+
+
+
   const handleAddToWidget = async (event: AllEventsType, isLinked: boolean) => {
     if (
       selectedTemplate === "ST" ||
@@ -471,10 +582,16 @@ const AllEvents = ({
       event.mainEvent.isLinkedToWidget = !isLinked;
 
       if (!isLinked) {
-        setSelectedOptions((prev: any) => ({
-          ...prev,
-          [event.mainEvent.eventId]: "carousel",
-        }));
+        // setSelectedOptions((prev: any) => ({
+        //   ...prev,
+        //   [event.mainEvent.eventId]: "carousel",
+        // }));
+
+        setSelectedOptions((prev: any) => {
+          const updatedOptions = { ...prev, [event.mainEvent.eventId]: "carousel" };
+          localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+          return updatedOptions;
+        });
       }
 
       const eventIndex = existingEvents.findIndex(
@@ -551,10 +668,16 @@ const AllEvents = ({
       event.isLinkedToWidget = !isLinked;
 
       if (!isLinked) {
-        setSelectedOptions((prev: any) => ({
-          ...prev,
-          [event.eventId]: "carousel",
-        }));
+        // setSelectedOptions((prev: any) => ({
+        //   ...prev,
+        //   [event.eventId]: "carousel",
+        // }));
+
+        setSelectedOptions((prev: any) => {
+          const updatedOptions = { ...prev, [event.eventId]: "carousel" };
+          localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+          return updatedOptions;
+        });
       }
 
       const eventIndex = existingEvents.findIndex(
@@ -586,6 +709,7 @@ const AllEvents = ({
   };
 
   const handleRemoveEventFromWidget = async (eventId: string) => {
+    console.log("ca444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444")
     const updatedEvents = fetchedAddedEvents?.filter(
       (event) => event.id !== eventId
     );
@@ -613,6 +737,12 @@ const AllEvents = ({
         [event.mainEvent.eventId]: "list",
       }));
 
+      // setSelectedOptions((prev: any) => {
+      //   const updatedOptions = { ...prev, [event.mainEvent.eventId]: "list" };
+      //   localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+      //   return updatedOptions;
+      // });
+
       const existingEvents = fetchedAddedEvents || [];
       const eventIndex = existingEvents.findIndex(
         (existingEvent) => existingEvent.id === event.mainEvent.eventId
@@ -639,10 +769,15 @@ const AllEvents = ({
         await updateWidgetAgain(mergedEvents);
       }
     } else if (check && option === "carousel") {
-      setSelectedOptions((prev: any) => ({
-        ...prev,
-        [event.mainEvent.eventId]: "carousel",
-      }));
+      // setSelectedOptions((prev: any) => ({
+      //   ...prev,
+      //   [event.mainEvent.eventId]: "carousel",
+      // }));
+      setSelectedOptions((prev: any) => {
+        const updatedOptions = { ...prev, [event.mainEvent.eventId]: "carousel" };
+        localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+        return updatedOptions;
+      });
 
       const existingEvents = fetchedAddedEvents || [];
       const eventIndex = existingEvents.findIndex(
@@ -671,10 +806,16 @@ const AllEvents = ({
     option: string
   ) => {
     if (check && option === "list") {
-      setSelectedOptions((prev: any) => ({
-        ...prev,
-        [event.eventId]: "list",
-      }));
+      // setSelectedOptions((prev: any) => ({
+      //   ...prev,
+      //   [event.eventId]: "list",
+      // }));
+
+      setSelectedOptions((prev: any) => {
+        const updatedOptions = { ...prev, [event.eventId]: "list" };
+        localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+        return updatedOptions;
+      });
 
       const existingEvents = fetchedAddedEvents || [];
       const eventIndex = existingEvents.findIndex(
@@ -702,10 +843,15 @@ const AllEvents = ({
         await updateWidgetAgain(mergedEvents);
       }
     } else if (check && option === "carousel") {
-      setSelectedOptions((prev: any) => ({
-        ...prev,
-        [event.eventId]: "carousel",
-      }));
+      // setSelectedOptions((prev: any) => ({
+      //   ...prev,
+      //   [event.eventId]: "carousel",
+      // }));
+      setSelectedOptions((prev: any) => {
+        const updatedOptions = { ...prev, [event.eventId]: "carousel" };
+        localStorage.setItem("selectedOptions", JSON.stringify(updatedOptions));
+        return updatedOptions;
+      });
 
       const existingEvents = fetchedAddedEvents || [];
       const eventIndex = existingEvents.findIndex(
@@ -737,16 +883,17 @@ const AllEvents = ({
     customizedFormData.append("otherdata", JSON.stringify(otherData));
     customizedFormData.append("status", "active");
 
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: customizedFormData,
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: customizedFormData,
+    // });
 
+    const data:any = await updateWidgetData(customizedFormData)
     if (data) {
       showToast("success", "Event successfully added to the widget");
       if (typeof fetchEvents === "function") {
         fetchEvents(0, "update").then(() => {
-          window.location.reload();
+          // window.location.reload();
         });
       }
       // fetchEvents(0, "update");
@@ -768,10 +915,11 @@ const AllEvents = ({
     customizedFormData.append("widgetId", widgetId);
     customizedFormData.append("otherdata", JSON.stringify(otherData));
 
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: customizedFormData,
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: customizedFormData,
+    // });
+    const data:any = await updateWidgetData(customizedFormData)
     if (data) {
       handleEventIdDelete(eventId);
     }
@@ -784,10 +932,11 @@ const AllEvents = ({
     customizedFormData.append("widgetId", widgetId);
     customizedFormData.append("eventId", eventId);
     customizedFormData.append("published", "false");
-    const { data, error } = await myFetch(`${baseUrl}/widget`, {
-      method: "POST",
-      body: customizedFormData,
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/widget`, {
+    //   method: "POST",
+    //   body: customizedFormData,
+    // });
+    const data:any = await updateWidgetData(customizedFormData)
     if (data) {
       console.log(data);
       fetchAddedEvents();
@@ -980,7 +1129,7 @@ const AllEvents = ({
                     <div>
                       {event.mainEvent.format === "Virtual"
                         ? "Virtual"
-                        : event.mainEvent.cityName}
+                        : event.mainEvent.cityName ? `${event.mainEvent.cityName}, ${event.mainEvent.countryName}` :event.mainEvent.countryName} 
                     </div>
                   </div>
                   <div className={styles.eventDateContainer}>
@@ -1256,9 +1405,9 @@ function DateIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      height="10"
+      height="11"
       viewBox="0 -960 960 960"
-      width="10"
+      width="11"
     >
       <path
         d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0 17-11.5 28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0 17-11.5 28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z"
@@ -1271,9 +1420,9 @@ function LocationIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      height="10"
+      height="12"
       viewBox="0 -960 960 960"
-      width="10"
+      width="12"
     >
       <path
         d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z"

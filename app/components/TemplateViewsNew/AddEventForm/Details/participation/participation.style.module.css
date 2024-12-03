@@ -30,8 +30,6 @@
     scroll-behavior: smooth;
 }
 .options .option{
-    min-width: 200px;
-    max-width: 200px;
     padding: 6px 9px;
     border-radius: 6px;
     display: flex;
@@ -67,6 +65,13 @@
     align-items: center;
     gap: 9px;
     cursor: pointer;
+}
+.options .option img{
+    object-fit: cover;
+    max-height: 50px;
+    min-height: 50px;
+    min-width: 50px;
+    max-width: 50px;
 }
 /* .selectedOption .option span{
     font-size: var(--font-size-small);

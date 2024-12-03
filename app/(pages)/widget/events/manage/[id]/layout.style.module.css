@@ -8,6 +8,7 @@
     flex-direction: column;
     position: relative;
     min-height: 89vh;
+    padding-bottom: 30px;
 }
 .details{
     width: 900px;

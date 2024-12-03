@@ -75,7 +75,7 @@ const SideEventCard = ({ event }: Props) => {
         <div className={styles.card}>
             <Image src={PopperImage} alt='Popper' className={styles.popperImg} />
             <div className={styles.imageContainer}>
-                <Image src={event.logoUrl} alt='Banner' height={130} width={130} />
+                <Image src={event.logoUrl} alt='Banner' height={130} width={130} className='h-[130px] w-[130px]'/>
                 <div className={styles.squareOne}></div>
                 <div className={styles.squareTwo}></div>
             </div>

@@ -172,26 +172,27 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                     <div className={styles.linkline}></div>
                     <div className={styles.maineventName} onClick={handleMainEventClick} style={{ cursor: parentId ? "pointer" : "default" }}>{parentName.toUpperCase()}</div>
                 </div>}
-
-            {type !== "SUB" && <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType={participationType ? participationType : "Speaker"} /></div>}
             {childrenData.length > 0 && <div className={styles.carousel}><SideEventCarousel childrenData={childrenData} /></div>}
 
             <div className={styles.detailsContainer}>
                 <div className={styles.leftSection}>
                     <div className={styles.posterContainer}>
-                        <Image className={styles.poster} src={logoUrl} alt='Poster'
+                        <Image className={`${styles.poster} h-[290px] w-[296px]`} src={logoUrl} alt='Poster'
                             width={296} height={290}
-                            style={{ borderRadius: 20, objectFit: "cover" }} />
+                            style={{ borderRadius: 20, objectFit: "cover" }} unoptimized />
+                        <span className={`${styles.pill} ${styles.type1}`}>
+                            {event_type}
+                        </span>
+                    </div>
+                    <div className={styles.shareContainer}>
+                        <div className={styles.heading}>Share</div>
+                        <ShareButtons title={name} formTheme='light' copyIcon disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
                     </div>
                     {hashtags && <div className={styles.hashtagsContainer}>
                         {hashtags?.split(",").map((tag, key) => (
                             <div className={styles.hashtag} key={key}>{tag}</div>
                         ))}
                     </div>}
-                    <div className={styles.shareContainer}>
-                        <div className={styles.heading}>Share</div>
-                        <ShareButtons title={name} formTheme='light' copyIcon disabled={false} shareUrl={`${console_url}/detailpage/${eventId}`} />
-                    </div>
                 </div>
                 <div className={styles.rightSection}>
                     {isMobile &&
@@ -199,27 +200,25 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                             {(participationType !== "HappyHours" && participationType !== "CocktailHours" && participationType !== "FoundersParty") && <div className={styles.mobile_participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType={participationType ? participationType : "Speaker"} /></div>}
                         </div>
                     }
-                    {/* <div style={{ position: "relative" }}>
-                        <textarea className={styles.eventName} disabled placeholder='Event Name' value={name} style={{ fontFamily: eventFont }} />
-                        <span className={`${styles.pill} ${styles.type1}`} style={{ position: "absolute", top: "20px", right: "200px" }}>{type === "SUB" ? participationType : event_type}</span>
-                    </div> */}
-                    <div style={{ display: "inline-flex", alignItems: "center" }}>
-                        <textarea
-                            className={styles.eventName}
-                            disabled
-                            placeholder="Event Name"
-                            value={name}
-                            style={{ fontFamily: eventFont }}
-                        />
-                        <span
-                            className={`${styles.pill} ${styles.type1}`}
-                            style={{ marginLeft: "10px" }} // Adjust spacing as needed
-                        >
-                            {event_type}
-                        </span>
+
+                    <div>
+                        <div className={styles.tooltipContainer} data-name={name}>
+                            <textarea
+                                className={styles.eventName}
+                                disabled
+                                placeholder="Event Name"
+                                value={name.length > 50 ? `${name.substring(0, 50)}...` : name}
+                                style={{
+                                    fontFamily: eventFont,
+                                    resize: "none",
+                                    // overflow: "hidden",
+                                    // whiteSpace: "nowrap",
+                                }}
+                            />
+                        </div>
                     </div>
 
-
+                    {type !== "SUB" && <div className={styles.participationContainer}><ParticipationContainer participationMessage={participationMessage} participationType={participationType ? participationType : "Speaker"} /></div>}
                     <div className={styles.dateTimeContainer}><DateTimeContainer endDate={end_date} startDate={start_date} endTime={end_time} startTime={start_time} timeZone={gmt_time} /></div>
 
                     <div className={styles.locationContainer}><LocationContainer eventFormat={format} cityName={location_city} countryName={location_country} virtualLink={virtualLink} /></div>
@@ -242,7 +241,7 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                     {format !== "Virtual" && <div className={styles.map}>
                         <Suspense fallback={<div>Loading...</div>}>
                             <Mapview latitude={latitude}
-                                venue={location_city}
+                                venue={location_city ? location_city : location_country}
                                 longitude={longitude}
                                 zoom={6} />
                         </Suspense>

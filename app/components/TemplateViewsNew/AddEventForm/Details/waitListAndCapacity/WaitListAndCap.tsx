@@ -91,14 +91,16 @@ const WaitListAndCap = ({
           </div>
         </div>
         <div className={styles.waitlistNumber}>
-          {capacity === -1 ? "Unlimited" : capacity}
-        </div>
-        <Image
+          <div>{capacity === -1 ? "Unlimited" : capacity}</div>
+          
+          <Image
           className={styles.editBtn}
           src={EditIcon}
           alt="edit"
           onClick={openCapacityModal}
         />
+        </div>
+       
       </div>
     </div>
   );

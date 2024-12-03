@@ -28,11 +28,11 @@ interface Props {
     demoBanner: string;
     demoEventName: string;
     demoDescription: string
-    demoLocation:string
-    demoDate:string
+    demoLocation: string
+    demoDate: string
 }
 
-const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoDescription, demoLocation, demoDate}: Props) => {
+const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData, widgetId, demoBanner, demoEventName, demoDescription, demoLocation, demoDate }: Props) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     let EventCard: ElementType;
@@ -49,13 +49,13 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
     }
 
     const demoBanners = [
-        <EventCard key="1" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
-        <EventCard key="2" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
-        <EventCard key="3" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
-        <EventCard key="4" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
-        <EventCard key="5" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
-        <EventCard key="6" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
-        <EventCard key="7" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>,
+        <EventCard key="1" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} />,
+        <EventCard key="2" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} />,
+        <EventCard key="3" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} />,
+        <EventCard key="4" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} />,
+        <EventCard key="5" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} />,
+        <EventCard key="6" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} />,
+        <EventCard key="7" cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} />,
     ];
 
     const banners = fetchedAddedOtherData && widgetId && fetchedAddedOtherData.length > 0
@@ -94,7 +94,7 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
     return (
         <div className={styles.sliderContainer}>
             <button className={styles.navButton} onClick={handlePrev} disabled={currentIndex === 0}>
-                <LeftArrowIcon />
+                <div className={styles.leftArrow}><ArrowIcon /></div>
             </button>
             <div className={styles.cards}>
                 {banners.map((banner, index) => {
@@ -112,22 +112,20 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
                 })}
             </div>
             <button className={styles.navButton} onClick={handleNext} disabled={currentIndex === banners.length - 1}>
-                <RightArrowIcon />
+            <div className={styles.rightArrow}><ArrowIcon /></div>
             </button>
         </div>
     );
 };
 
-function LeftArrowIcon() {
+function ArrowIcon() {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="black"><path d="M400-80 0-480l400-400 71 71-329 329 329 329-71 71Z" /></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 20V4M12 4L18 10M12 4L6 10" stroke="#666666" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+
     )
 }
 
-function RightArrowIcon() {
-    return (
-        <svg xmlns="http://www.w3.org/2000/svg" height="22px" viewBox="0 -960 960 960" width="22px" fill="black"><path d="m321-80-71-71 329-329-329-329 71-71 400 400L321-80Z" /></svg>
-    )
-}
 
 export default CarouselView;

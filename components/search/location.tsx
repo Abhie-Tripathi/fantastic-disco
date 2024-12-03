@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { PlusCircle, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -20,9 +20,11 @@ import {
 import { useFilterContext } from "@/context/filterContext";
 import AutocompleteInput from "./AutocompleteInput";
 import { useLocationService } from "@/services/locationService";
-// import { getLocationByGeoCoordinates } from "@/services/searchService";
-
+import { isEventeli } from "@/config";
+import { usePathname } from "next/navigation";
+import { sessionService } from "@/services/sessionService";
 export interface GeoLocation {
+  locationType: "GeoJSON";
   lat: number;
   lng: number;
   radius: number;
@@ -30,6 +32,7 @@ export interface GeoLocation {
 }
 
 export interface LocationItem {
+  locationType: "LocationId";
   id: string;
   description: string | undefined;
 }
@@ -41,31 +44,34 @@ export interface LocationProps {
   setSelectedLocation?: React.Dispatch<
     React.SetStateAction<GeoLocation | LocationItem[] | null>
   >;
-  isMandatory?:boolean;
+  isMandatory?: boolean;
 }
 export default function LocationSelector({
   source,
   selectedLocation: parentSelectedLocation,
   setSelectedLocation: parentSetSelectedLocation,
-  isMandatory
+  isMandatory,
 }: LocationProps) {
+  const pathName = usePathname();
+  const { localFilters } = useFilterContext();
+  const { saveLastSearchedLocation, clearLastSearchedLocation } =
+    sessionService();
   const { getLocationName, getLocationDetails } = useLocationService();
   const [activeTab, setActiveTab] = useState("city");
   const [isOpen, setIsOpen] = useState(false);
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
-  const [localSelectedLocation, setLocalSelectedLocation] = useState<Location | null>(
-    null
-  );
-  const selectedLocation = source==="tracker" ? parentSelectedLocation : localSelectedLocation;
-  const setSelectedLocation = parentSetSelectedLocation || setLocalSelectedLocation;
+  const [localSelectedLocation, setLocalSelectedLocation] =
+    useState<Location | null>(null);
+  const selectedLocation =
+    source === "tracker" ? parentSelectedLocation : localSelectedLocation;
+  const setSelectedLocation =
+    parentSetSelectedLocation || setLocalSelectedLocation;
   const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
     useFilterContext();
 
   const fetchUrlLocation = async () => {
-    const geoCoordinate = JSON.parse(
-      searchParams.get("geoCoordinates") || "null"
-    );
-    const locationIds = searchParams.get("locationIds")?.split(",");
+    const geoCoordinate = JSON.parse(localFilters.geoCoordinates || "null");
+    const locationIds = localFilters.locationIds?.split(",");
 
     if (geoCoordinate) {
       const locationName = await getLocationName(
@@ -73,6 +79,7 @@ export default function LocationSelector({
         geoCoordinate.longitude
       );
       setSelectedLocation?.({
+        locationType: "GeoJSON",
         lat: geoCoordinate.latitude,
         lng: geoCoordinate.longitude,
         radius: geoCoordinate.radius,
@@ -83,21 +90,21 @@ export default function LocationSelector({
         locationIds.map(async (id) => {
           const location = await getLocationDetails(id);
           return {
+            locationType: "LocationID",
             id,
             description: location?.formattedLocations[0].displayName,
           };
         })
       );
-      setSelectedLocation?.(locations);
+      setSelectedLocation?.(locations as LocationItem[]);
     } else {
       setSelectedLocation?.(null);
     }
   };
 
   useEffect(() => {
-    if(source!=="tracker")
-    fetchUrlLocation();
-  }, [searchParams]);
+    if (source !== "tracker") fetchUrlLocation();
+  }, [searchParams, localFilters]);
 
   const applyHandler = () => {
     if (selectedLocation && !Array.isArray(selectedLocation)) {
@@ -113,6 +120,7 @@ export default function LocationSelector({
           radius: radiusInKm,
         })
       );
+      saveLastSearchedLocation(geoLocation);
     } else if (
       selectedLocation &&
       Array.isArray(selectedLocation) &&
@@ -123,8 +131,10 @@ export default function LocationSelector({
         "locationIds",
         (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
       );
+      saveLastSearchedLocation(selectedLocation);
     } else {
       deleteMultipleLocalFilters(["locationIds", "geoCoordinates"]);
+      clearLastSearchedLocation();
     }
     setIsOpen(false);
   };
@@ -134,18 +144,23 @@ export default function LocationSelector({
       applyHandler();
     }
     setIsOpen(open);
-  }; 
+  };
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
-      <Button
+        <Button
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            ((selectedLocation === undefined || (Array.isArray(selectedLocation) &&selectedLocation?.length === 0)) && isMandatory)
-            ?"border-destructive": isOpen
-            ? "border-primary"
-            : "border-input"
-            }`}
+            (selectedLocation === undefined ||
+              (Array.isArray(selectedLocation) &&
+                selectedLocation?.length === 0)) &&
+            isMandatory
+              ? "border-destructive"
+              : isOpen
+              ? "border-primary"
+              : "border-input"
+          }`}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-haspopup="true"
@@ -186,142 +201,150 @@ export default function LocationSelector({
             Apply
           </Button>
         </div>
-        {/* <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="city">City, State, Country</TabsTrigger>
-            <TabsTrigger value="center">Center Point & Radius</TabsTrigger>
-          </TabsList>
-          <TabsContent value="city" className="p-4">
-            <AutocompleteInput
-              multiple
-              type="LocationId"
-              placeholder="E.g. Bangalore, Karnataka"
-              onSelect={setSelectedLocation}
-              value={
-                selectedLocation && Array.isArray(selectedLocation)
-                  ? selectedLocation.map((loc) => ({
-                      id: loc.id,
-                      description: loc.description || "",
-                    }))
-                  : null
-              }
-            />
-          </TabsContent>
-          <TabsContent value="center" className="p-4 space-y-4">
-            <AutocompleteInput
-              type="GeoCoordinate"
-              placeholder="E.g. Novotel, Hyderabad"
-              onSelect={setSelectedLocation}
-              value={
-                selectedLocation && !Array.isArray(selectedLocation)
-                  ? {
-                      id: Math.random().toString(),
-                      description: (selectedLocation as GeoLocation)
-                        .description,
-                    }
-                  : null
-              }
-            />
-            <div className="grid grid-cols-10 gap-2">
-              <div className="col-span-2">
-                <label htmlFor="radius" className="text-sm font-medium">
-                  Radius
-                </label>
-                <Input
-                  id="radius"
-                  type="number"
-                  className="mt-1"
-                  value={(selectedLocation as GeoLocation)?.radius}
-                  onChange={(e) =>
-                    setSelectedLocation?.((prev) =>
-                      prev
-                        ? {
-                            ...prev,
-                            radius: Number(e.target.value),
-                          }
-                        : null
-                    )
-                  }
-                />
-              </div>
-              <div className="col-span-2">
-                <label htmlFor="unit" className="text-sm font-medium">
-                  Unit
-                </label>
-                <Select
-                  defaultValue="km"
-                  onValueChange={(value) => setRadiusUnit(value)}
-                  value={radiusUnit}
-                >
-                  <SelectTrigger id="unit" className="mt-1">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="km">Km</SelectItem>
-                    <SelectItem value="mi">Mi</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="col-span-3">
-                <label htmlFor="latitude" className="text-sm font-medium">
-                  Latitude
-                </label>
-                <Input
-                  id="latitude"
-                  type="number"
-                  className="mt-1"
-                  value={(selectedLocation as GeoLocation)?.lat}
-                  onChange={(e) =>
-                    setSelectedLocation?.((prev) =>
-                      prev
-                        ? {
-                            ...prev,
-                            lat: Number(e.target.value),
-                          }
-                        : null
-                    )
-                  }
-                />
-              </div>
-              <div className="col-span-3">
-                <label htmlFor="longitude" className="text-sm font-medium">
-                  Longitude
-                </label>
-                <Input
-                  id="longitude"
-                  type="number"
-                  className="mt-1"
-                  value={(selectedLocation as GeoLocation)?.lng}
-                  onChange={(e) =>
-                    setSelectedLocation?.((prev) =>
-                      prev
-                        ? {
-                            ...prev,
-                            lng: Number(e.target.value),
-                          }
-                        : null
-                    )
-                  }
-                />
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs> */}
 
-        <AutocompleteInput
-          multiple
-          type="LocationId"
-          placeholder="E.g. Bangalore, Karnataka"
-          onSelect={setSelectedLocation}
-          value={
-            selectedLocation && Array.isArray(selectedLocation)
-              ? selectedLocation.map((loc) => ({
-                  id: loc.id,
-                  description: loc.description || "",
-                }))
-              : null
-          }
-        />
+        {isEventeli ? (
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="city">City, State, Country</TabsTrigger>
+              <TabsTrigger value="center">Center Point & Radius</TabsTrigger>
+            </TabsList>
+            <TabsContent value="city" className="p-4">
+              <AutocompleteInput
+                multiple
+                type="LocationId"
+                placeholder="E.g. Bangalore, Karnataka"
+                onSelect={setSelectedLocation}
+                value={
+                  selectedLocation && Array.isArray(selectedLocation)
+                    ? selectedLocation.map((loc) => ({
+                        id: loc.id,
+                        description: loc.description || "",
+                      }))
+                    : null
+                }
+              />
+            </TabsContent>
+            <TabsContent value="center" className="p-4 space-y-4">
+              <AutocompleteInput
+                type="GeoCoordinate"
+                placeholder="E.g. Novotel, Hyderabad"
+                onSelect={setSelectedLocation}
+                value={
+                  selectedLocation && !Array.isArray(selectedLocation)
+                    ? {
+                        id: Math.random().toString(),
+                        description: (selectedLocation as GeoLocation)
+                          .description,
+                      }
+                    : null
+                }
+              />
+              <div className="grid grid-cols-10 gap-2">
+                <div className="col-span-2">
+                  <label htmlFor="radius" className="text-sm font-medium">
+                    Radius
+                  </label>
+                  <Input
+                    id="radius"
+                    type="number"
+                    className="mt-1"
+                    value={(selectedLocation as GeoLocation)?.radius}
+                    onChange={(e) =>
+                      setSelectedLocation?.((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              radius: Number(e.target.value),
+                            }
+                          : null
+                      )
+                    }
+                  />
+                </div>
+                <div className="col-span-2">
+                  <label htmlFor="unit" className="text-sm font-medium">
+                    Unit
+                  </label>
+                  <Select
+                    defaultValue="km"
+                    onValueChange={(value) => setRadiusUnit(value)}
+                    value={radiusUnit}
+                  >
+                    <SelectTrigger id="unit" className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="km">Km</SelectItem>
+                      <SelectItem value="mi">Mi</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="col-span-3">
+                  <label htmlFor="latitude" className="text-sm font-medium">
+                    Latitude
+                  </label>
+                  <Input
+                    id="latitude"
+                    type="number"
+                    className="mt-1"
+                    value={(selectedLocation as GeoLocation)?.lat}
+                    onChange={(e) =>
+                      setSelectedLocation?.((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              lat: Number(e.target.value),
+                            }
+                          : null
+                      )
+                    }
+                  />
+                </div>
+                <div className="col-span-3">
+                  <label htmlFor="longitude" className="text-sm font-medium">
+                    Longitude
+                  </label>
+                  <Input
+                    id="longitude"
+                    type="number"
+                    className="mt-1"
+                    value={(selectedLocation as GeoLocation)?.lng}
+                    onChange={(e) =>
+                      setSelectedLocation?.((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              lng: Number(e.target.value),
+                            }
+                          : null
+                      )
+                    }
+                  />
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <AutocompleteInput
+            defaultOpen
+            multiple
+            type="LocationId"
+            placeholder="E.g. Bangalore, Karnataka"
+            onSelect={setSelectedLocation}
+            value={
+              selectedLocation && Array.isArray(selectedLocation)
+                ? selectedLocation.map((loc) => ({
+                    id: loc.id,
+                    description: loc.description || "",
+                  }))
+                : null
+            }
+          />
+        )}
       </PopoverContent>
     </Popover>
   );

@@ -6,6 +6,7 @@
     border-left: 1px dashed var(--disabled-background-color);
     display: flex;
     justify-content: flex-end;
+    
 }
 .bigCard{
     background-color: var(--primary-foreground);
@@ -38,6 +39,9 @@
     overflow: hidden;
     min-height: 130px;
     min-width: 130px;
+}
+.imageContainer img{
+    object-fit: cover;
 }
 .details{
     width: 90%;

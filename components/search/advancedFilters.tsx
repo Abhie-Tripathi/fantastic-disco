@@ -16,13 +16,44 @@ import AudienceDesAndDep from "./advancedFilters/audienceDes&Dep";
 import AudienceSpread from "./advancedFilters/audienceSpread";
 import KeywordFilter from "./advancedFilters/product&Topics";
 import AudienceZoneSatusSelector from "./advancedFilters/audienceZone";
+import { useFilterContext } from "@/context/filterContext";
+import { isEventeli } from "@/config";
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
 
 const AdvancedFilters = () => {
   const [selectedView, setSelectedView] = useState("advancedDetails");
+  const { localFilters } = useFilterContext();
 
   const handleTabChange = (value: string) => {
     setSelectedView(value);
   };
+
+  console.log(localFilters);
+
+  const advancedDetailsFiltersCount = (function () {
+    let count = 0;
+    if (localFilters.onlyBranded || localFilters.onlySeries) count++;
+    if (localFilters.frequencies) count++;
+    if (localFilters.includeKeywords || localFilters.excludeKeywords) count++;
+    if (localFilters.maturity) count++;
+    return count;
+  })();
+
+  const insightsAndScoresFiltersCount = (function () {
+    let count = 0;
+    if (localFilters.estimatedVisitors) count++;
+    if (localFilters.impact_score_gte) count++;
+    if (localFilters.top) count++;
+    return count;
+  })();
+
+  const audienceInterFiltersCount = (function () {
+    let count = 0;
+    if (localFilters.designations) count++;
+    if (localFilters.audienceSpread) count++;
+    return count;
+  })();
 
   return (
     <Tabs
@@ -35,41 +66,66 @@ const AdvancedFilters = () => {
           <TabsList className="w-[570px] grid grid-cols-3 h-auto">
             <TabsTrigger value="advancedDetails" className="text-base">
               Advanced Details
+              {advancedDetailsFiltersCount ? (
+                <Badge className="ml-2">{advancedDetailsFiltersCount}</Badge>
+              ) : (
+                ""
+              )}
             </TabsTrigger>
             <TabsTrigger value="insightsAndScores" className=" text-base">
               Insights and Scores
+              {insightsAndScoresFiltersCount ? (
+                <Badge className="ml-2">{insightsAndScoresFiltersCount}</Badge>
+              ) : (
+                ""
+              )}
             </TabsTrigger>
-            <TabsTrigger value="audienceIntel" className=" text-base">
-              Audience Intel
-            </TabsTrigger>
+            {!isEventeli && (
+              <TabsTrigger value="audienceIntel" className=" text-base">
+                Audience Intel
+                {audienceInterFiltersCount ? (
+                  <Badge className="ml-2">{audienceInterFiltersCount}</Badge>
+                ) : (
+                  ""
+                )}
+              </TabsTrigger>
+            )}
           </TabsList>
         </div>
       </div>
       <TabsContent value="advancedDetails">
         <div className="grid grid-cols-5 gap-3 pb-6 border-b">
-          <EditionSelector source="search"/>
-          <GlobalAndTouringSelector source="search"/>
-          <ForecastedStatusSelector source="search"/>
-          <FrequencySelector source="search"/>
-          <KeywordFilter source="search"/>
+          <EditionSelector source="search" />
+          <GlobalAndTouringSelector source="search" />
+          <ForecastedStatusSelector source="search" />
+          <FrequencySelector source="search" />
+          <KeywordFilter source="search" />
         </div>
       </TabsContent>
       <TabsContent value="insightsAndScores">
-        <div className="grid grid-cols-5 gap-3 pb-6 border-b">
-          <EstimatedVisitorsSelector source="search"/>
-          <EstimatedExhibitorsSelector source="search"/>
-          <EventAnalyticsSelector source="search"/>
+        <div
+          className={cn("grid grid-cols-5 gap-3 pb-6 border-b", {
+            "grid-cols-4": isEventeli,
+          })}
+        >
+          <EstimatedVisitorsSelector source="search" />
+          {!isEventeli && <EstimatedExhibitorsSelector source="search" />}
+          <EventAnalyticsSelector source="search" />
           <EstimatedEconomicImpactSelector />
-          <EventRankingSelector source="search"/>
+          <EventRankingSelector source="search" />
         </div>
       </TabsContent>
       <TabsContent value="audienceIntel">
-        <div className="grid grid-cols-5 gap-3 pb-6 border-b">
+        <div
+          className={cn("grid grid-cols-5 gap-3 pb-6 border-b", {
+            "grid-cols-4": isEventeli,
+          })}
+        >
           <AudienceQualitySelector />
           <ExhibitorQualitySelector />
-          <AudienceZoneSatusSelector source="search"/>
-          <AudienceDesAndDep source="search"/>
-          <AudienceSpread source="search"/>
+          {!isEventeli && <AudienceZoneSatusSelector source="search" />}
+          <AudienceDesAndDep source="search" />
+          <AudienceSpread source="search" />
         </div>
       </TabsContent>
       <TabsContent value="trackers">
