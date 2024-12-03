@@ -297,20 +297,20 @@ const Navbar = () => {
                   className={`${styles.userDropdown} card ${styles.dotmenu_dropdown} `}
                   style={{ width: "fit-content", padding: "8px" }}
                 >
-                  {/* <Link href="/internal" className=""> */}
-                  <div
-                    className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
-                  >
-                    <Image
-                      src={promoteIcon}
-                      alt="promote"
-                      width={28}
-                      height={28}
-                      className={iconClass}
-                    />
-                    Promote
-                  </div>
-                  {/* </Link> */}
+                  <Link href="/widget/dashboard" className="">
+                    <div
+                      className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
+                    >
+                      <Image
+                        src={promoteIcon}
+                        alt="promote"
+                        width={28}
+                        height={28}
+                        className={iconClass}
+                      />
+                      Promote
+                    </div>
+                  </Link>
                   <div
                     className={`${styles.btns_menu} ${styles.dotMenu_icons}`}
                   >
@@ -385,9 +385,8 @@ const Navbar = () => {
         )} */}
         {userDetail && (
           <div
-            className={`${
-              pathName === "internal" && "desktop_view tablet_view"
-            }`}
+            className={`${pathName === "internal" && "desktop_view tablet_view"
+              }`}
           >
             <div
               style={{
@@ -419,11 +418,10 @@ const Navbar = () => {
               )}
 
               <div
-                className={`${styles.iconContainer} ${
-                  profilectas.isOpen
+                className={`${styles.iconContainer} ${profilectas.isOpen
                     ? styles.iconRotateUp
                     : styles.iconRotateDown
-                }`}
+                  }`}
               >
                 {profilectas.isOpen ? (
                   <Image src={ArrowDownIcon} alt="" className={iconClass} />
