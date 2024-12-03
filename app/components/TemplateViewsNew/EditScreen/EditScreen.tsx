@@ -34,6 +34,8 @@ interface EditScreenProps {
     cardBgColor: string
     previewWindowBgColor:string;
     setPreviewWindowBgColor:React.Dispatch<React.SetStateAction<string>>;
+    isDark?:boolean;
+    setIsDark?:(value: boolean) => void
     cardBorderRadius: number;
     cardStyle: string;
     setCardStyle: React.Dispatch<React.SetStateAction<string>>;

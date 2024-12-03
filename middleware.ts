@@ -6,8 +6,8 @@ export function middleware(request: NextRequest) {
   const cookie = request.cookies.get(key)?.value;
   if (!cookie) {
     return NextResponse.redirect(new URL("/signin", request.url));
-  }else{
-    if(request.nextUrl.pathname == '/'){
+  } else {
+    if (request.nextUrl.pathname == '/') {
       return NextResponse.redirect(new URL("/internal", request.url));
     }
   }

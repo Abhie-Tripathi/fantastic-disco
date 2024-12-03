@@ -142,7 +142,6 @@ const Overview = ({virtualLink, format, leavesTheme, snowTheme, eventId, imageUr
               <div><span className={styles.icon}><Image src={CapacityIcon} alt='capacity' /></span>Capacity : <span>{capacity === -1 ? "Unlimited" : capacity}</span></div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

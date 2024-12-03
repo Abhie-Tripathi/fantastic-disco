@@ -6,6 +6,14 @@
     align-items: center;
     padding: 12px;
 }
+.smallCard{
+    width: 440px;
+    height: 190px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 12px;
+}
 .details{
     display: flex;
     flex-direction: column;
@@ -24,6 +32,14 @@
 .banner{
     min-width: 260px;
     max-width: 260px;
+    height: 100%;
+    border-radius: 8px;
+    filter: drop-shadow(1px 1px 4px rgb(109, 109, 109));
+    object-fit: cover;
+}
+.smallBanner{
+    min-width: 175px;
+    max-width: 175px;
     height: 100%;
     border-radius: 8px;
     filter: drop-shadow(1px 1px 4px rgb(109, 109, 109));
@@ -67,8 +83,10 @@
 .pill {
     border-radius: 6px;
     padding: 4px 8px;
-    font-size: 12px;
     font-weight: 500;
+}
+.smallPill {
+    padding: 2px 5px;
 }
 
 .type1 {
