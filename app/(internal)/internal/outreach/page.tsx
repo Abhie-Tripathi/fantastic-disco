@@ -9,9 +9,6 @@ import "react-toastify/dist/ReactToastify.css";
 import useInfiniteScroll from '@/utils/useInfiniteScroll'
 import Loading from "@/app/components/UI/Loading";
 import { useCoordinateService } from "@/services/coordinateService";
-import NullState from "@/app/components/trackers/nullState";
-import coordinateNullState from "/public/coordinateNullState.svg"
-
 const Page: React.FC = () => {
   const [shortlistedTasks, setShortlistedTasks] = useState<enquiryType[]>([]);
   const [outreachTasks, setOutreachTasks] = useState<enquiryType[]>([]);
@@ -39,12 +36,6 @@ const Page: React.FC = () => {
   const confirmedRef: RefObject<HTMLDivElement> = useRef(null);
   const [confirmedPage,setConfirmedPage]=useState(1);
   const [noMoreConfirmData,setNoMoreConfirmData]=useState(false);
-
-  const [dataLoaded, setDataLoaded] = useState<any>({
-    shortlisted: false,
-    outreach: false,
-    preFinalised: false,
-  });
 
   const coordinateService = useCoordinateService();
 
@@ -108,15 +99,7 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
 
     // To prevent adding the task into the same container
     if (target !== source) {
-      
-      if (target === 'shortlisted')
-        taskName.enquiryStatus = 'SHORTLISTED'
-      else if (target === 'outreach')
-        taskName.enquiryStatus = 'IN_DISCUSSION'
-      else if (target === 'nego')
-        taskName.enquiryStatus = 'IN_NEGO'
-      else if (target === 'prefinalised')
-        taskName.enquiryStatus = 'CONFIRMED'
+      console.log(source);
       
       if (source === "shortlisted") {
         
@@ -150,29 +133,19 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
             setShortlistedTasks([taskName,...shortlistedTasks.slice(0,-1)]);
         }
         setShortlistedCount(prev=>prev+1);
-        changeEnquiryStatus("SHORTLISTED", taskName.enquiryId,source==="outreach"?"IN_NEGO,IN_DISCUSSION":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
+        changeEnquiryStatus("SHORTLISTED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
         setCurrentEnquiryStatus("SHORTLISTED");
         // setShortlistPage(1);
         // setShortlistedTasks([]);
         // fetchShortlistData();
-      } else if (target === "outreach" || target === "nego") {
+      } else if (target === "outreach") {
         if(noMoreProgressData){
           setOutreachTasks([taskName,...outreachTasks]);
         }else{
           setOutreachTasks([taskName,...outreachTasks.slice(0,-1)])
         }
         setInProgressCount(prev=>prev+1);
-        changeEnquiryStatus(
-          target === "outreach" ? "IN_DISCUSSION" : "IN_NEGO",
-          taskName.enquiryId,
-          source === "outreach"
-            ? "IN_NEGO,IN_DISCUSSION"
-            : source === "prefinalised"
-            ? "CONFIRMED"
-            : source === "canceled"
-            ? "CANCELED"
-            : "SHORTLISTED"
-        );
+        changeEnquiryStatus("IN_NEGO", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
         setCurrentEnquiryStatus("IN_NEGO")
       } else if (target === "prefinalised") {
         if(noMoreConfirmData){
@@ -180,24 +153,24 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
         }else
         setPreFinalisedTasks([taskName,...preFinalisedTasks.slice(0,-1)]);
         setConfirmedCount(prev=>prev+1)
-        changeEnquiryStatus("CONFIRMED", taskName.enquiryId,source==="outreach"?"IN_NEGO,IN_DISCUSSION":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
+        changeEnquiryStatus("CONFIRMED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
         setCurrentEnquiryStatus("CONFIRMED")
       }else if(target==="canceled"){
-        changeEnquiryStatus("CANCELLED", taskName.enquiryId,source==="outreach"?"IN_NEGO,IN_DISCUSSION":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
-        setCurrentEnquiryStatus("CANCELLED")
+        changeEnquiryStatus("CANCELED", taskName.enquiryId,source==="outreach"?"IN_NEGO":source==="prefinalised"?"CONFIRMED":source==="canceled"?"CANCELED":"SHORTLISTED");
+        setCurrentEnquiryStatus("CANCELED")
       }
     }
   };
   const singleCall=async(source:string)=>{
-    if(source==="SHORTLISTED" && !noMoreShortlistData && shortlistedCount>10 || source==="IN_NEGO,IN_DISCUSSION" && !noMoreProgressData && inProgressCount>10 || source==="CONFIRMED" && !noMoreConfirmData && confirmedCount>10){
+    if(source==="SHORTLISTED" && !noMoreShortlistData && shortlistedCount>10 || source==="IN_NEGO" && !noMoreProgressData && inProgressCount>10 || source==="CONFIRMED" && !noMoreConfirmData && confirmedCount>10){
 
       const apiData = await coordinateService.getOutreachSingleEvent({
-        offset: source === "SHORTLISTED" ? (shortlistPage-1)*10+9 : source==="IN_NEGO,IN_DISCUSSION" ? (inProgressPage - 1) * 10 + 9 : (confirmedPage-1)*10+9,
+        offset: source === "SHORTLISTED" ? (shortlistPage-1)*10+9 : source==="IN_NEGO" ? (inProgressPage - 1) * 10 + 9 : (confirmedPage-1)*10+9,
         status: source,
       });
 
     if (apiData) {
-      source==="SHORTLISTED"?setShortlistedTasks(prev => [...prev, ...apiData.enquiryData]):source==="IN_NEGO,IN_DISCUSSION"?setOutreachTasks(prev => [...prev, ...apiData.enquiryData]): setPreFinalisedTasks(prev => [...prev, ...apiData.enquiryData])
+      source==="SHORTLISTED"?setShortlistedTasks(prev => [...prev, ...apiData.enquiryData]):source==="IN_NEGO"?setOutreachTasks(prev => [...prev, ...apiData.enquiryData]): setPreFinalisedTasks(prev => [...prev, ...apiData.enquiryData])
     }
   }
   }
@@ -234,16 +207,7 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
         const apiData: any = await coordinateService.setEnquiryStatus(payloadData);
 
         if (apiData?.message === "Data updated") {
-
-          singleCall(
-            source === "outreach"
-              ? "IN_NEGO,IN_DISCUSSION"
-              : source === "prefinalised"
-              ? "CONFIRMED"
-              : source === "canceled"
-              ? "CANCELED"
-              : "SHORTLISTED"
-          );
+            singleCall(source);
           // toast.success("Enquiry status updated!", {
           //   position: "bottom-right",
           //   autoClose: 2000,
@@ -288,10 +252,6 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
     });
 
     if (shortlistApiData) {
-      setDataLoaded((prevState: any) => ({
-        ...prevState,
-        shortlisted: true,
-      }));
       setShortlistedTasks(prev => [...prev, ...shortlistApiData.enquiryData]);
       setShortlistedCount(shortlistApiData.totalCount);
     
@@ -300,64 +260,57 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
       }
     }
   }
-  const fetchInProgressData=async()=>{
-    const negoApiData = await coordinateService.getOutreachEventList({
-      offset: (inProgressPage-1) * 10,
-      status: 'IN_NEGO,IN_DISCUSSION',
-    });
+const fetchInProgressData=async()=>{
+  const negoApiData = await coordinateService.getOutreachEventList({
+    offset: (inProgressPage-1) * 10,
+    status: 'IN_NEGO,IN_DISCUSSION',
+  });
 
-    if (negoApiData) {
-      setDataLoaded((prevState: any) => ({
-        ...prevState,
-        outreach: true,
-      }));
-      setOutreachTasks(prev => [...prev, ...negoApiData.enquiryData]);
-      setInProgressCount(negoApiData.totalCount);
-    
-      if(negoApiData.enquiryData.length<10){
-      setNoMoreProgressData(true);
-      }
+  if (negoApiData) {
+    setOutreachTasks(prev => [...prev, ...negoApiData.enquiryData]);
+    setInProgressCount(negoApiData.totalCount);
+  
+    if(negoApiData.enquiryData.length<10){
+    setNoMoreProgressData(true);
     }
   }
-  const fetchConfirmedData=async()=>{
-      const confirmApiData = await coordinateService.getOutreachEventList({
-        offset: (confirmedPage-1) * 10,
-        status: 'CONFIRMED',
-      });
+}
+const fetchConfirmedData=async()=>{
+    const confirmApiData = await coordinateService.getOutreachEventList({
+      offset: (confirmedPage-1) * 10,
+      status: 'CONFIRMED',
+    });
 
-      if (confirmApiData) {
-        setDataLoaded((prevState: any) => ({
-          ...prevState,
-          preFinalised: true,
-        }));
-        setPreFinalisedTasks(prev => [...prev, ...confirmApiData.enquiryData]);
-        setConfirmedCount(confirmApiData.totalCount);
+    if (confirmApiData) {
+      setPreFinalisedTasks(prev => [...prev, ...confirmApiData.enquiryData]);
+      setConfirmedCount(confirmApiData.totalCount);
 
-        if(confirmApiData.enquiryData.length < 10 || confirmedCount===10) {
-          setNoMoreConfirmData(true);
-        }
+      if(confirmApiData.enquiryData.length < 10 || confirmedCount===10) {
+        setNoMoreConfirmData(true);
       }
-      
-  }
-  const handleDropdownSelect = (target: string, source: string) => {
-    const mockEvent = {
-      preventDefault: () => {},
-      stopPropagation: () => {},
-      dataTransfer: {
-        getData: (key: string) => {
-          if (key === "taskName") return JSON.stringify(data);
-          if (key === "source_container") return source;
-          return "";
-        },
-        setData: () => {}
+    }
+    
+}
+const handleDropdownSelect = (target: string, source: string) => {
+  // console.log("Handle drop select");
+  const mockEvent = {
+    preventDefault: () => {},
+    stopPropagation: () => {},
+    dataTransfer: {
+      getData: (key: string) => {
+        if (key === "taskName") return JSON.stringify(data);
+        if (key === "source_container") return source;
+        return "";
       },
-      nativeEvent: new Event("drop"),
-      isDefaultPrevented: () => false,
-      isPropagationStopped: () => false,
-      persist: () => {}
-    } as any;
-    handleDrop(mockEvent, target);
-  };
+      setData: () => {}
+    },
+    nativeEvent: new Event("drop"),
+    isDefaultPrevented: () => false,
+    isPropagationStopped: () => false,
+    persist: () => {}
+  } as any;
+  handleDrop(mockEvent, target);
+};
 
   useEffect(()=>{
     if(Math.ceil(shortlistedCount/10)===shortlistPage) setNoMoreShortlistData(true);
@@ -365,21 +318,6 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
   useEffect(()=>{
     if(Math.ceil(inProgressCount/10)===inProgressPage) setNoMoreProgressData(true);
   },[outreachTasks])
-
-  if(!Object.values(dataLoaded).every(value => value === true)) {
-    return (
-      <div style={{ padding: "50px" }}>
-        <Loading />
-      </div>
-    );
-  }
-  else if(shortlistedTasks.length == 0 &&  outreachTasks.length == 0 &&  preFinalisedTasks.length == 0) {
-    return (
-      <div className="p-20" >
-        <NullState image={coordinateNullState}  title="You haven't shortlisted any events yet." text="Browse through our upcoming events and shortlist here for easy access and internal coordination later." buttonText="Search Events" buttonUrl={`/internal/search/events`} />
-      </div>
-    )
-  }
   return (
     <>
       <div style={{width: 'calc(100vw - 70px)'}}>
@@ -447,7 +385,7 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
                       eventEndDate={task.endDate}
                       eventId={task.eventId}
                       enquiryId={task.enquiryId}
-                      enquiryStatus={task.enquiryStatus}
+                      enquiryStatus="SHORTLISTED"
                       onDragStart={(event) => handleDragStart(event, task)}
                       handleModal={handleModal}
                       onClick={openAddModalHandler}
@@ -499,7 +437,7 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
                       eventEndDate={task.endDate}
                       eventId={task.eventId}
                       enquiryId={task.enquiryId}
-                      enquiryStatus={task.enquiryStatus}
+                      enquiryStatus="IN_NEGO"
                       onDragStart={(event) => handleDragStart(event, task)}
                       handleModal={handleModal}
                       onClick={openAddModalHandler}
@@ -561,7 +499,7 @@ useInfiniteScroll(inProgressRef, handleScrollProgressEnd);
                       eventEndDate={task.endDate}
                       eventId={task.eventId}
                       enquiryId={task.enquiryId}
-                      enquiryStatus={task.enquiryStatus}
+                      enquiryStatus="CONFIRMED"
                       onDragStart={(event) => handleDragStart(event, task)}
                       handleModal={handleModal}
                       onClick={openAddModalHandler}

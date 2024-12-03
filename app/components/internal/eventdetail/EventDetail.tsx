@@ -68,14 +68,12 @@ const EventDetail = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const [status, setStatus] = useState<number>(currentEnquiryStatus==="IN_DISCUSSION" ? 2 : currentEnquiryStatus==="IN_NEGO" ? 10 : currentEnquiryStatus==="CONFIRMED" ? 12 : currentEnquiryStatus==="CANCELLED" ? 15 : 1);
-
+  const [status, setStatus] = useState<number>(currentEnquiryStatus==="IN_NEGO"?2:currentEnquiryStatus==="CONFIRMED"?10:currentEnquiryStatus==="CANCELED"?12:1);
   const statusValues: { [key: string]: string } = {
     "1": "SHORTLISTED",
-    "2": "IN_DISCUSSION",
-    "10": "IN_NEGO",
-    "12": "CONFIRMED",
-    "15": "CANCELLED"
+    "2": "IN_NEGO",
+    "10": "CONFIRMED",
+    "12": "CANCELED",
   };
   const handleStatusChange = async (changeStatusTo: number) => {
     setStatus(changeStatusTo);
@@ -110,24 +108,7 @@ const EventDetail = ({
     //   }
     // }
     if (handleDropdownSelect) 
-      handleDropdownSelect(
-        statusValues[changeStatusTo] === "SHORTLISTED"
-          ? "shortlisted"
-          : (statusValues[changeStatusTo] === "IN_DISCUSSION")
-          ? "outreach"
-          : (statusValues[changeStatusTo] === "IN_NEGO")
-          ? "nego"
-          : statusValues[changeStatusTo] === "CANCELLED"
-          ? "canceled"
-          : "prefinalised",
-        currentEnquiryStatus === "SHORTLISTED"
-          ? "shortlisted"
-          : (currentEnquiryStatus === "IN_NEGO" || currentEnquiryStatus === "IN_DISCUSSION")
-          ? "outreach"
-          : currentEnquiryStatus === "CANCELLED"
-          ? "canceled"
-          : "prefinalised"
-      );
+    handleDropdownSelect(statusValues[changeStatusTo]==="SHORTLISTED"?"shortlisted":statusValues[changeStatusTo]==="IN_NEGO"?"outreach":statusValues[changeStatusTo]==="CANCELED"?"canceled":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":currentEnquiryStatus==="CANCELED"?"canceled":"prefinalised" );
     showToast("success","Enquiry status updated!")
   };
 
