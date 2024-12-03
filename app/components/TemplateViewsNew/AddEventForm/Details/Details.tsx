@@ -135,7 +135,7 @@ console.log("prefilled",prefilledEvent)
   const handleGeneratePoster = () => {
     if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
       if (formState.eventName && formState.participationMessage) {
-        generatePrompt(formState.participationMessage, formState.description, formState.eventName, 1024, 1024)
+        generatePrompt(formState.participationMessage, formState.eventName, 1024, 1024)
       } else {
         showToast("error", "Please provide Event name, Description, and participationMessage to generate the Banner");
       }

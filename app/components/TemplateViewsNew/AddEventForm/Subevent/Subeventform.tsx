@@ -108,10 +108,10 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
     };
     const handleGeneratePoster = () => {
         if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
-            if (formState.eventName && formState.participationMessage) {
-                generatePrompt(formState.participationMessage, formState.description, formState.eventName, 1024, 1024)
+            if (formState.eventName) {
+                generatePrompt("", formState.eventName, 1024, 1024)
             } else {
-                showToast("error", "Please provide Event name, Description, and participationMessage to generate the Banner");
+                showToast("error", "Please provide Event name to the Banner");
             }
         } else {
             showToast("error", "Please wait for the banner to generate first before generating again");
@@ -195,7 +195,7 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
                         {isLoading ?
                             <div className={styles.loader}>
                                 <div className={styles.spinner}></div>
-                            </div> :  <Image src={formState.banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover", width : "296px", height:"290px" }} unoptimized />}
+                            </div> : <Image src={formState.banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover", width: "296px", height: "290px" }} unoptimized />}
                         <div className={styles.posterIcons}>
                             <div onClick={handleGeneratePoster} data-name={formState.eventName && formState.participationMessage ? "Generate your Banner" : "Add Event name and participationMessage to generate a banner"}>
                                 <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
