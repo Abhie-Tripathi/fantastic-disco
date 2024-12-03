@@ -30,6 +30,7 @@ interface Props {
     demoDescription:string
     demoLocation:string
     demoDate:string
+    widgetId?: string;
 }
 
 const PortraitPopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings, selectedBtn,fetchedAddedOtherData,smallCard,  demoBanner,

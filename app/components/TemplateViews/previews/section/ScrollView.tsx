@@ -4,6 +4,7 @@ import EventCard1 from '../cardstyles/EventCard1';
 import EventCard2 from '../cardstyles/EventCard2';
 import EventCard3 from '../cardstyles/EventCard3';
 import { PrefilledAddedEventsType } from '@/types/prefilledaddedeventtype'
+import { useRouter } from 'next/navigation';
 
 interface FontSettings {
     fontFamily: string;
@@ -24,14 +25,15 @@ interface Props {
     };
     fetchedAddedOtherData?: PrefilledAddedEventsType[]
     fetchedEvent?: PrefilledAddedEventsType
-    demoEventName:string;
-    demoBanner:string
-    demoDescription:string
-    demoLocation:string
-    demoDate:string
+    demoEventName: string;
+    demoBanner: string
+    demoDescription: string
+    demoLocation: string
+    demoDate: string
+    widgetId?: string;
 
 }
-const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData, demoEventName, demoBanner, demoDescription, demoLocation, demoDate }: Props) => {
+const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSettings, fetchedAddedOtherData, demoEventName, demoBanner, demoDescription, demoLocation, demoDate, widgetId }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -43,6 +45,11 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
             break;
         default:
             EventCard = EventCard3; // Or some default component or message
+    }
+    const router = useRouter();
+    const handleCardClick = (eventId: string, widgetId: string) => {
+        router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`)
+        // router.push(`/detailpage/${eventId}`)
     }
     return (
         <div className={styles.body}>
@@ -60,13 +67,15 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                         className={type === "top" ? styles.horizontalScroll : styles.verticalScroll}
                     >
                         {fetchedAddedOtherData.map((event, key) => (
-                            <EventCard
-                                key={key}
-                                fetchedEvent={event}
-                                cardBgColor={cardBgColor}
-                                cardBorderRadius={cardBorderRadius}
-                                fontSettings={fontSettings}
-                            />
+                            <div style={{cursor : "pointer"}} onClick={() => handleCardClick(event.id, widgetId ? widgetId : "")}>
+                                <EventCard
+                                    key={key}
+                                    fetchedEvent={event}
+                                    cardBgColor={cardBgColor}
+                                    cardBorderRadius={cardBorderRadius}
+                                    fontSettings={fontSettings}
+                                />
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -88,7 +97,7 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                             cardBorderRadius={cardBorderRadius}
                             fontSettings={fontSettings}
                             demoEventName={demoEventName}
-                            demoBanner={demoBanner} 
+                            demoBanner={demoBanner}
                             demoDescription={demoDescription}
                             demoLocation={demoLocation}
                             demoDate={demoDate}
@@ -98,7 +107,7 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                             cardBorderRadius={cardBorderRadius}
                             fontSettings={fontSettings}
                             demoEventName={demoEventName}
-                            demoBanner={demoBanner} 
+                            demoBanner={demoBanner}
                             demoDescription={demoDescription}
                             demoLocation={demoLocation}
                             demoDate={demoDate}
@@ -108,7 +117,7 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                             cardBorderRadius={cardBorderRadius}
                             fontSettings={fontSettings}
                             demoEventName={demoEventName}
-                            demoBanner={demoBanner} 
+                            demoBanner={demoBanner}
                             demoDescription={demoDescription}
                             demoLocation={demoLocation}
                             demoDate={demoDate}
@@ -118,7 +127,7 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                             cardBorderRadius={cardBorderRadius}
                             fontSettings={fontSettings}
                             demoEventName={demoEventName}
-                            demoBanner={demoBanner} 
+                            demoBanner={demoBanner}
                             demoDescription={demoDescription}
                             demoLocation={demoLocation}
                             demoDate={demoDate}
@@ -128,7 +137,7 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                             cardBorderRadius={cardBorderRadius}
                             fontSettings={fontSettings}
                             demoEventName={demoEventName}
-                            demoBanner={demoBanner} 
+                            demoBanner={demoBanner}
                             demoDescription={demoDescription}
                             demoLocation={demoLocation}
                             demoDate={demoDate}

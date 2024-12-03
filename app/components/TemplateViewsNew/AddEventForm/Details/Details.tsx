@@ -137,7 +137,7 @@ console.log("prefilled",prefilledEvent)
       if (formState.eventName && formState.participationMessage) {
         generatePrompt(formState.participationMessage, formState.eventName, 1024, 1024)
       } else {
-        showToast("error", "Please provide Event name, Description, and participationMessage to generate the Banner");
+        showToast("error", "Please provide Event name and participationMessage to generate the Banner");
       }
     } else {
       showToast("error", "Please wait for the banner to generate first before generating again");
