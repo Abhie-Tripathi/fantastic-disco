@@ -67,9 +67,8 @@ const ScrollView = ({ type, selectedCard, cardBgColor, cardBorderRadius, fontSet
                         className={type === "top" ? styles.horizontalScroll : styles.verticalScroll}
                     >
                         {fetchedAddedOtherData.map((event, key) => (
-                            <div style={{cursor : "pointer"}} onClick={() => handleCardClick(event.id, widgetId ? widgetId : "")}>
+                            <div key={key} style={{cursor : "pointer"}} onClick={() => handleCardClick(event.id, widgetId ? widgetId : "")}>
                                 <EventCard
-                                    key={key}
                                     fetchedEvent={event}
                                     cardBgColor={cardBgColor}
                                     cardBorderRadius={cardBorderRadius}

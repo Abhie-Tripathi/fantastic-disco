@@ -21,6 +21,31 @@ import prospectIcon from "/public/internal/prospect.svg";
 import { useRouter } from "next/navigation";
 import ArrowDownIcon from "/public/DownArrow.svg";
 import ArrowUpIcon from "/public/UpArrow.svg";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Grip,
+  LogOut,
+  Megaphone,
+  Moon,
+  Settings,
+  Sun,
+  UserSearch,
+  Search
+} from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { RefreshClockwise } from "geist-icons";
+import { isEventeli } from "@/config";
 interface UserDetail {
   firstname: string;
   email: string;
@@ -58,6 +83,7 @@ const Navbar = () => {
     user ? user : null
   );
 
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -162,6 +188,14 @@ const Navbar = () => {
       setShouldShowBackButton(true);
     }
   }, [pathname]);
+  const handleRoute = (route: string) => {
+    if (route === "research") {
+      router.push("/internal")
+    } else if (route === "promote") {
+      router.push("/widget/dashboard")
+    }
+
+  }
 
   return (
     <div className={`${styles.navbar} ${theme === "dark" && styles.dark}`}>
@@ -269,7 +303,7 @@ const Navbar = () => {
         )} */}
 
         {/* DotMenus */}
-        {pathName === "internal" && (
+        {/* {pathName === "internal" && (
           <div className="desktop_view tablet_view">
             <div
               style={{
@@ -327,7 +361,7 @@ const Navbar = () => {
               )}
             </div>
           </div>
-        )}
+        )} */}
 
         {/* Settings */}
         {/* {pathName === "internal" && (
@@ -341,7 +375,7 @@ const Navbar = () => {
           </Link>
         )} */}
 
-        {pathName !== "internal" && (
+        {/* {pathName !== "internal" && (
           <>
             <div
               className={`${styles.square} `}
@@ -360,8 +394,81 @@ const Navbar = () => {
               <Image src={DoorIcon} alt="internal" className={iconClass} />
             </Link>
           </>
-        )}
+        )} */}
+        <div className="flex items-center space-x-4">
+          {!isEventeli && (
+            <Button variant="ghost" size="icon" onClick={() => toggleTheme()}>
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5 transition-all" />
+              ) : (
+                <Moon className="h-5 w-5  transition-all" />
+              )}
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+          )}
 
+          {!isEventeli && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Grip className="h-5 w-5" />
+                  <span className="sr-only">Menu</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-52 p-0" align="end">
+                <div className="grid grid-cols-2 gap-2">
+                  {pathname.split("/")[1] === "internal" ?
+                    <Button onClick={() => handleRoute("promote")}
+                      variant="ghost"
+                      className="flex flex-col items-center justify-center gap-2 h-auto p-4"
+                    >
+                      <Megaphone className="h-6 w-6" />
+                      <span className="text-xs">Promote</span>
+                    </Button> : <Button onClick={() => handleRoute("research")}
+                      variant="ghost"
+                      className="flex flex-col items-center justify-center gap-2 h-auto p-4"
+                    >
+                      <Search className="h-6 w-6" />
+                      <span className="text-xs">Research</span>
+                    </Button>}
+
+                  <Button
+                    variant="ghost"
+                    className="flex flex-col items-center justify-center gap-2 h-auto p-4"
+                  >
+                    <UserSearch className="h-6 w-6" />
+                    <span className="text-xs">Prospect</span>
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}
+
+          <DropdownMenu open={isProfileOpen} onOpenChange={setIsProfileOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="secondary"
+                className="flex items-center bg-transparent p-1"
+              >
+                <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
+                  {user
+                    ? `${user?.firstname[0]?.toUpperCase() ?? ""}${user?.lastname?.[0]?.toUpperCase() ?? ""
+                    }`
+                    : ""}
+                </div>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => signOut()}
+                className="flex items-center"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="ml-2">Logout</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
         {/* {pathName !== "internal" && (
           <>
             <Link
@@ -383,7 +490,7 @@ const Navbar = () => {
             </Link>
           </>
         )} */}
-        {userDetail && (
+        {/* {userDetail && (
           <div
             className={`${pathName === "internal" && "desktop_view tablet_view"
               }`}
@@ -419,8 +526,8 @@ const Navbar = () => {
 
               <div
                 className={`${styles.iconContainer} ${profilectas.isOpen
-                    ? styles.iconRotateUp
-                    : styles.iconRotateDown
+                  ? styles.iconRotateUp
+                  : styles.iconRotateDown
                   }`}
               >
                 {profilectas.isOpen ? (
@@ -452,7 +559,7 @@ const Navbar = () => {
               )}
             </div>
           </div>
-        )}
+        )} */}
       </div>
       {showSidebar && (
         <div className={styles.mobile_sideBar_container}>

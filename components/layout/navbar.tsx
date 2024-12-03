@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -18,6 +18,7 @@ import {
   Settings,
   Sun,
   UserSearch,
+  Search
 } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import {
@@ -36,7 +37,7 @@ const routes: Record<string, string> = {
   "events": "Research",
   "trackers": "Trackers",
   outreach: "Outreach",
-  trends: "Event Trends",
+  trends: "Event Trends"
 };
 
 export default function Navbar() {
@@ -47,12 +48,32 @@ export default function Navbar() {
 
 
   console.log(routes[pathname.split("/").slice(-1)[0]])
+
+  const router = useRouter()
+  const handleRoute = (route : string) => {
+    if(route === "research"){
+      router.push("/internal")
+    }else if(route === "promote"){
+      router.push("/widget/dashboard")
+    }
+    
+  }
+
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center">
           <div className="text-lg font-semibold">
             {routes[pathname.split("/").slice(-1)[0]]}
+            {/* {pathname.startsWith("/widget/list") ? "Widgets" : 
+             pathname.startsWith("/widget/edit") ? "Edit Widget" : 
+             pathname.startsWith("/widget/add") ? "Add Widget" : 
+             pathname.startsWith("/widget/brandkit") ? "Brandkit" : 
+             pathname.startsWith("/widget/event") ? "Events" : 
+             pathname.startsWith("/widget/dashboard") ? "Dashboard" : 
+             pathname.startsWith("/widget/events/manage") ? "" : 
+             pathname.startsWith("/widget/profile") ? "Widget List" : 
+             }  */}
           </div>
         </div>
         <div className="flex items-center space-x-4">
@@ -77,6 +98,21 @@ export default function Navbar() {
               </PopoverTrigger>
               <PopoverContent className="w-52 p-0" align="end">
                 <div className="grid grid-cols-2 gap-2">
+                  {pathname.split("/")[1] === "internal" ?
+                    <Button onClick={()=>handleRoute("promote")}
+                      variant="ghost"
+                      className="flex flex-col items-center justify-center gap-2 h-auto p-4"
+                    >
+                      <Megaphone className="h-6 w-6" />
+                      <span className="text-xs">Promote</span>
+                    </Button> : <Button onClick={()=>handleRoute("research")}
+                      variant="ghost"
+                      className="flex flex-col items-center justify-center gap-2 h-auto p-4"
+                    >
+                      <Search className="h-6 w-6" />
+                      <span className="text-xs">Research</span>
+                    </Button>}
+
                   <Button
                     variant="ghost"
                     className="flex flex-col items-center justify-center gap-2 h-auto p-4"
@@ -84,15 +120,6 @@ export default function Navbar() {
                     <UserSearch className="h-6 w-6" />
                     <span className="text-xs">Prospect</span>
                   </Button>
-                  <Link href={"/widget/dashboard"}>
-                    <Button
-                      variant="ghost"
-                      className="flex flex-col items-center justify-center gap-2 h-auto p-4"
-                    >
-                      <Megaphone className="h-6 w-6" />
-                      <span className="text-xs">Promote</span>
-                    </Button>
-                  </Link>
                 </div>
               </PopoverContent>
             </Popover>
