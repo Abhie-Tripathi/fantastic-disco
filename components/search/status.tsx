@@ -5,6 +5,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import enabledFilters from "@/public/data/enabledFilters";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
@@ -23,13 +24,19 @@ const eventStatuses = isEventeli
       { id: "cancelled", label: "Cancelled" },
       { id: "postponed", label: "Postponed" },
     ];
+interface statusInterface{
+  enabledValue:string[];
+  selectedValue:string[];
+}
 interface StatusSelectorProps {
+  enabledStatuses:statusInterface;
   source: string;
   selectedStatuses?: string[];
   setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 export default function StatusSelector({
   source,
+  enabledStatuses,
   selectedStatuses: parentSelectedFormats = [],
   setSelectedStatuses: parentSetSelectedFormats,
 }: StatusSelectorProps) {
@@ -70,7 +77,9 @@ export default function StatusSelector({
 
   const isAllSelected = selectedStatuses.length === eventStatuses.length;
 
-  const handleApply = () => {
+  const handleApply = () => {  
+    console.log("status", selectedStatuses.join(","));
+    
     setLocalFilter("status", selectedStatuses.join(","));
     setIsOpen(false);
   };
@@ -81,7 +90,7 @@ export default function StatusSelector({
     }
     setIsOpen(open);
   };
-
+  console.log(selectedStatuses);
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -144,6 +153,7 @@ export default function StatusSelector({
               <Checkbox
                 id={status.id}
                 className="rounded-none"
+                disabled={enabledStatuses && !enabledStatuses?.enabledValue.includes(status.id)}
                 checked={selectedStatuses.includes(status.id)}
                 onCheckedChange={() => handleStatusToggle(status.id)}
               />

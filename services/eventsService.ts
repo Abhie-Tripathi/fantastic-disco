@@ -189,7 +189,12 @@ export const useEventsService = () => {
     });
     return response;
   };
-
+  const fetchEnabledFilters =async (source:String) =>{
+    const response = await api.request(`${endpoints.event.enabledFilters}?source=${source}`, {
+      method: "GET"
+    });
+    return response;
+  }
   return {
     getEvents,
     saveEvent,
@@ -206,6 +211,7 @@ export const useEventsService = () => {
     getEventSpeakerDetails,
     getEventsWithSearchParams,
     getEventCoOrganizerDetails,
+    fetchEnabledFilters,
     isLoading: api.isLoading,
     error: api.error as ApiError,
   };

@@ -215,7 +215,8 @@ const userRating=
     {isLoading ? <Loading/> :
     <div className='flex w-[calc(100vw-134px)] flex-col gap-6 text-sm' >
       {/* <SideNav/> */}
-    <div className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[54px] items-center justify-between bg-[var(--heading-background-color)] p-3">
+    <div className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[36px] pt-4 bg-[var(--primary-foreground)]">
+      <div className="flex first-line items-center justify-between w-[100%] bg-[var(--heading-background-color)] p-3">
       <div className="flex items-center gap-2">
         <div>
           <CustomeTracker fillColor="#6750a4" />
@@ -252,9 +253,10 @@ const userRating=
         
 
       </div>
+      </div>
     </div>
     <div className="flex flex-col mt-[140px] gap-6 cursor-pointer" onClick={()=>editScreen()}>
-      <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{zIndex:"3"}}></div>
+      {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{zIndex:"3"}}></div> */}
     <div className="px-[27px] py-[4px] border-[0.5px] border-[var(--border-color)] rounded-lg h-[55px] flex items-center font-medium">{data?.tracker?.name}</div>
     {data?.tracker && data.tracker.type === "T_PRODUCT_KEYWORDS" &&
       <>

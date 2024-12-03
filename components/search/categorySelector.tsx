@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
+import enabledFilters from "@/public/data/enabledFilters"
 import {
   Popover,
   PopoverContent,
@@ -10,27 +11,34 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { newCategories as categories } from "@/data/categories";
 import { useFilterContext } from "@/context/filterContext";
+interface categoryInterface{
+  selectedValue: string[];
+  enabledValue: string[]
+}
 interface categoryProps {
   source: string;
   selectedCategories?: string[];
   setSelectedCategories?: React.Dispatch<React.SetStateAction<string[]>>; 
+  enabledCategories:categoryInterface;
 }
 export default function CategorySelector({
   source,
+  enabledCategories,
   selectedCategories: parentSelectedCategories = [],
   setSelectedCategories: parentSetSelectedCategories,
 }: categoryProps) {
   const { getLocalFilterValue, setLocalFilter } = useFilterContext();
+  
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategoriesLocal, setSelectedCategoriesLocal] = useState<string[]>([]);
 const selectedCategories = source === 'tracker' ? parentSelectedCategories : selectedCategoriesLocal;
 const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories : setSelectedCategoriesLocal;
-
   useEffect(() => {
     if(source !== 'tracker') {
       const eventTypes = getLocalFilterValue("categories")
         .split(",")
         .filter(Boolean);
+        
       setSelectedCategories?.(eventTypes);
     }
   }, [getLocalFilterValue]);
@@ -64,7 +72,8 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
       ...categories,
     ];
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);
-
+    console.log(selectedCategories);
+    
     return (
       <div className="grid grid-cols-3 gap-x-4">
         {Array.from({ length: columnCount }).map((_, columnIndex) => (
@@ -79,6 +88,7 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
                   <Checkbox
                     className="rounded-none"
                     id={category.slug}
+                    disabled={enabledCategories && !enabledCategories?.enabledValue?.some(item => item.id === category.id)}
                     checked={
                       category.slug === "all"
                         ? isAllSelected

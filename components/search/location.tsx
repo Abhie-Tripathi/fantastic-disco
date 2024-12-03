@@ -54,6 +54,7 @@ export default function LocationSelector({
   isMandatory
 }: LocationProps) {
   const { getLocationName, getLocationDetails } = useLocationService();
+  const {getLocalFilterValue, localFilters} =useFilterContext();
   const productType = process.env.NEXT_PUBLIC_PRODUCT_TYPE;
   const [activeTab, setActiveTab] = useState(type==="T_VENUE"?"center":"city");
   const [isOpen, setIsOpen] = useState(false);
@@ -71,7 +72,12 @@ export default function LocationSelector({
     const geoCoordinate = JSON.parse(
       searchParams.get("geoCoordinates") || "null"
     );
-    const locationIds = searchParams.get("locationIds")?.split(",");
+    const loc = getLocalFilterValue("locationIds")
+    console.log(loc);
+    
+    // const locationIds = ["226e11ef-32fc-5484-9843-7087fdfb413d"]
+    const locationIds = loc.split(',').filter(Boolean);
+    // const locationIds = searchParams.get("locationIds")?.split(",");
 
     if (geoCoordinate) {
       const locationName = await getLocationName(
@@ -99,10 +105,12 @@ export default function LocationSelector({
       setSelectedLocation?.(null);
     }
   };
-
+  // useEffect(()=>{
+  //   console.log();
+  // },[getLocalFilterValue])
   useEffect(() => {
     if (source !== "tracker") fetchUrlLocation();
-  }, [searchParams]);
+  }, [searchParams, getLocalFilterValue("locationIds")]);
 
   const applyHandler = () => {
     if (selectedLocation && !Array.isArray(selectedLocation)) {
@@ -145,6 +153,8 @@ export default function LocationSelector({
       onOpenChange(true);
     }
   }, [type, isOpen]);
+  console.log(selectedLocation);
+  
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       {(!type) &&

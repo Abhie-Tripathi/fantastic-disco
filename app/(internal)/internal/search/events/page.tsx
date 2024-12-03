@@ -1,6 +1,7 @@
 "use client";
 
 import AdvancedFilters from "@/components/search/advancedFilters";
+import enabledValues from "@/public/data/enabledFilters"
 import UserRatingSelector from "@/components/search/userRatingSelector";
 import CategorySelector from "@/components/search/categorySelector";
 import DateRangeSelector from "@/components/search/dateRange";
@@ -76,7 +77,7 @@ const Search = () => {
     useFilterState();
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
-  const { applyFilters, setMultipleLocalFilters } = useFilterContext();
+  const { applyFilters, setMultipleLocalFilters, setLocalFilter, enabledFilters } = useFilterContext();
   const searchParams = useSearchParams();
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
@@ -181,20 +182,41 @@ const Search = () => {
       setTrackerModalOpen(true);
     }
   };
+  // const [enabledFilters, setEnabledFilters]=useState();
+  // useEffect(() => {
+  //   const getEnabledFilters = async () => {
+  //     try {
+  //       const data = await eventService.fetchEnabledFilters("research");
+  //       console.log(data);
+  //       if(data){
+  //       setEnabledFilters(data);
+  //       }else{
+  //         setEnabledFilters(enabledValues);
+  //       }
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
+  
+  //   getEnabledFilters();
+  // }, []);
+  
+  
+console.log(enabledFilters);
 
   return (
     <div className="space-y-6 p-6">
       <SearchBar />
       <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
         <div className="col-span-8 grid grid-cols-4 gap-3">
-          <EventTypeSelector source="search"/>
-          <CategorySelector source="search"/>
-          <EventFormatSelector source="search"/>
+          <EventTypeSelector source="search" enabledTypeData={enabledFilters?.eventType}/>
+          <CategorySelector source="search" enabledCategories={enabledFilters?.eventCategory}/>
+          <EventFormatSelector source="search" enabledFormat={enabledFilters?.eventFormat}/>
           <LocationSelector source="search"/>
           <DateRangeSelector source="search"/>
-          <StatusSelector source="search"/>
-          <EventEntrySelector source="search"/>
-          <UserRatingSelector source="search"/>
+          <StatusSelector source="search" enabledStatuses={enabledFilters?.eventStatus}/>
+          <EventEntrySelector source="search" enabledEntries={enabledFilters?.eventEntry}/>
+          <UserRatingSelector source="search" enabledRatingData={enabledFilters?.eventRating}/>
         </div>
         <div className="col-span-2 flex flex-col gap-4">
           <Button
@@ -231,7 +253,7 @@ const Search = () => {
           </div>
         </div>
       </div>
-      {showAdvancedFilters && <AdvancedFilters />}
+      {showAdvancedFilters && <AdvancedFilters enabledFilters={enabledFilters}/>}
 
       <Tabs
         defaultValue="list"

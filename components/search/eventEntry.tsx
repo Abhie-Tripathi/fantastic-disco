@@ -15,12 +15,17 @@ const EventEntries = [
   { id: "free", label: "Free" },
   { id: "paid", label: "Paid" },
 ];
+interface entryInterface{
+  enabledValue:string[];
+}
 interface EventEntryProps{
+  enabledEntries:entryInterface;
   source: string;
   selectedStatuses?: string[];
   setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 export default function EventEntrySelector({
+  enabledEntries,
   source,
   selectedStatuses: parentSelectedFormats = [],
   setSelectedStatuses: parentSetSelectedFormats,
@@ -73,7 +78,6 @@ export default function EventEntrySelector({
     }
     setIsOpen(open);
   };
-
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -136,6 +140,7 @@ export default function EventEntrySelector({
               <Checkbox
                 id={eventEntry.id}
                 className="rounded-none"
+                disabled={enabledEntries && !enabledEntries?.enabledValue.includes(eventEntry.id)}
                 checked={selectedStatuses.includes(eventEntry.id)}
                 onCheckedChange={() => handleStatusToggle(eventEntry.id)}
               />

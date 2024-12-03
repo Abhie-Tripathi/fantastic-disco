@@ -15,7 +15,12 @@ const eventFormats = [
   { id: "offline", label: "Offline" },
   { id: "hybrid", label: "Hybrid" },
 ];
+interface formatInterface{
+  enabledValue:string[];
+  selectedValue:string[];
+}
 interface EventFormatSelectorProps {
+  enabledFormat:formatInterface;
   source: string;
   selectedStatuses?: string[];
   setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
@@ -23,6 +28,7 @@ interface EventFormatSelectorProps {
  
 export default function EventFormatSelector({
   source,
+  enabledFormat,
   selectedStatuses: parentSelectedFormats = [],
   setSelectedStatuses: parentSetSelectedFormats,
 }: EventFormatSelectorProps) {
@@ -138,6 +144,7 @@ console.log(selectedStatuses);
               <Checkbox
                 id={eventFormat.id}
                 className="rounded-none"
+                disabled={enabledFormat && !enabledFormat?.enabledValue?.includes(eventFormat.id)}
                 checked={selectedStatuses.includes(eventFormat.id)}
                 onCheckedChange={() => handleStatusToggle(eventFormat.id)}
               />

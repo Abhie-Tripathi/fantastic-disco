@@ -8,6 +8,7 @@ import {
     SelectValue,
   } from "@/components/ui/select";
 import AutocompleteInput from "./AutocompleteInput";
+import { isEventeli } from "@/config";
 import { Input } from "@/components/ui/input";
 export interface GeoLocation {
     lat: number;

@@ -3,12 +3,18 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useFilterContext } from "@/context/filterContext";
 import { Switch } from "@/components/ui/switch";
+interface forecastInterface{
+  isForecastedEnabled:boolean,
+  toggleOpend:boolean,
+}
 interface ForecastedProps{
+  enabledForecastData:forecastInterface;
   source:string;
   isEnabled?: boolean;
   setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export default function ForecastedStatusSelector({
+  enabledForecastData,
   source,
   isEnabled: parentIsEnabled = false,
   setIsEnabled: parentSetIsEnabled,
@@ -47,6 +53,7 @@ export default function ForecastedStatusSelector({
   return (
     <Button
       variant="outline"
+      disabled={enabledForecastData && !enabledForecastData?.isForecastedEnabled}
       className="w-full justify-between px-3 py-5 text-base font-normal"
     >
       <div className="flex items-center">

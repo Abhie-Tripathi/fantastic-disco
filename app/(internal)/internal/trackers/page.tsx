@@ -142,7 +142,7 @@ const Trackers = ({ searchParams }: Search) => {
   },[tab])
   const [locations, setLocations] = useState<any>();
   const [trackers, setTrackers] = useState<any[]>([]);
- 
+  const [searchValue,setSearchValue]=useState("");
   const [offset, setOffset] = useState(0);
   // const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -383,6 +383,8 @@ const Trackers = ({ searchParams }: Search) => {
     setIsNewCall(true); 
     setTrackerId(id);
   }
+  // console.log(searchValue);
+  
   return (
     // <div className={styles.body}>
     //   <div className={styles.trackers_card_container}>
@@ -406,9 +408,9 @@ const Trackers = ({ searchParams }: Search) => {
       <div>
     {isData &&
       <div className="flex flex-row">
-  <div className="w-1/2 p-8 h-[calc(100vh-70px)] overflow-y-auto">
-    <div className="flex flex-col gap-4">
-      <div className="text-sm text-[var(--secondary-text-color)]">
+  <div className="w-1/2 h-[calc(100vh-70px)]">
+    <div className="flex flex-col gap-4 px-8 py-0">
+      <div className="text-sm text-[var(--secondary-text-color)] pt-8">
         Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
       </div>
       <div>
@@ -420,20 +422,22 @@ const Trackers = ({ searchParams }: Search) => {
       >
         Create Tracker
       </button> */}
-      <hr style={{borderBottom:"1px solid var(--border-color)"}}/>
-      {/* <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
+      <hr/>
+      <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
               className="outline-none w-full bg-[var(--primary-foreground)]"
-              placeholder="Search by name, address or tag"
+              placeholder="Search by name"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
-          </div> */}
-          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>
+          </div>
     </div>
+    <div >
+          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue}/>
+      </div>
   </div>
-  <div className="w-1/2 p-8 h-[calc(100vh-70px)] bg-[var(--background-secondary-color)]" style={{padding:"32px 0px"}}>
+  <div className="w-1/2 p-8 h-[calc(100vh-61px)] bg-[var(--background-secondary-color)]" style={{padding:"32px 0px"}}>
     <div className="flex flex-col gap-4">
   <div className="flex items-center justify-between border border-[var(--border-color)] p-3" style={{margin:"0px 32px"}}>
           <span className="flex items-center gap-2 text-[#696B83]">
@@ -446,7 +450,7 @@ const Trackers = ({ searchParams }: Search) => {
         <Button className="text-white">View Detail</Button>
           </Link>
         </div>
-        <div className="flex h-[calc(100vh-180px)] overflow-y-auto flex-col px-8 gap-4">
+        <div className="flex h-[calc(100vh-171px)] overflow-y-auto flex-col px-8 gap-4">
   {/* <div className="flex w-[45%] items-stretch">
     <div className="flex flex-col w-[100%] gap-3">
     <div className="w-[100%]">
@@ -521,7 +525,7 @@ const Trackers = ({ searchParams }: Search) => {
   </div>
 </div>}
 {(!hideTemplate || !isData)&& (
-          <div className="absolute left-[70px] top-[70px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-70px)]" style={{zIndex:"11"}}>
+          <div className="absolute left-[63px] top-[61px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-61px)]" style={{zIndex:"11"}}>
             <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
           {!isData && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>}
         {isData && 

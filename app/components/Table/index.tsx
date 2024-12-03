@@ -553,13 +553,10 @@ const Table = ({
   
         setEventPerPage(result.result);
         setTotalEvents(result.count);
-        console.log(path);
-        
+  
         if (result.count === 0) {
-          setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
-        setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
-          setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
-        setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
+          setZeroStateHeading(`No events saved yet! Start saving events to easily track and revisit them here.`);
+          setZeroStateText("");
         }
   
         if (currPage === 1) {
@@ -706,8 +703,7 @@ const Table = ({
       if (currPage === 1) {
         setTotalPages(Math.ceil(result.totalEvents / itemsPerPage));
       }
-      console.log(path);
-      
+  
       if (result.totalEvents === 0) {
         setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
         setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
@@ -862,7 +858,11 @@ const Table = ({
   } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
-        {path[2]==="trackers"? <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText="Manage Congfigurations" buttonUrl=""/>:
+        {(path[2]==="trackers")? 
+        <div className="px-10 py-5">
+        <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText={path[path.length - 1] === "savedEvents" ? "Manage Configurations":""} buttonUrl={`/internal/trackers/${path[path.length - 2]}/trackedConfiguration?type=${type}`}/>
+        </div>
+        :
         <ZeroState title={zeroStateHeading} text={zeroStateText} />
         }
       </div>
