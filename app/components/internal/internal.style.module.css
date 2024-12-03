@@ -47,7 +47,7 @@
     justify-content: center;
     flex-direction: column;
     padding: 10px 25px;
-    width: 150px;
+    width: 20%;
     border-radius:calc(4 * var(--border-radius-sm));
     color: var(--coordinate-primary-color);
 }
@@ -57,7 +57,7 @@
 }
 .countTitle{
     font-weight: var(--font-weight-regular);
-    font-size: var(--font-size-h4);
+    font-size: var(--font-size-h5);
 }
 .searchBar{
     border: 1px solid var(--disabled-background-color);

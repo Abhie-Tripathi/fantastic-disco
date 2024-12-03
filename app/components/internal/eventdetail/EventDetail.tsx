@@ -132,10 +132,10 @@ const EventDetail = ({
   };
 
   useEffect(() => {
-    if (leftContainerRef.current && rightContainerRef.current) {
-      const leftContainerHeight = leftContainerRef.current.clientHeight;
-      rightContainerRef.current.style.height = leftContainerHeight + "px";
-    }
+    // if (leftContainerRef.current && rightContainerRef.current) {
+    //   const leftContainerHeight = leftContainerRef.current.clientHeight;
+    //   rightContainerRef.current.style.height = leftContainerHeight + "px";
+    // }
     const fetchEventData = async () => {
       try {
         const data: any = await coordinateService.getEventDetailById(eventId);
@@ -184,9 +184,9 @@ const EventDetail = ({
         <Image src={backIcon} alt="close" height={22} width={22} />
         Back
       </div>
+      {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange}/>}
 
       <div className={styles.modalContainer}>
-        {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange}/>}
         <div className={styles.innerContainer}>
           <div className={styles.containerLeft} ref={leftContainerRef}>
             <div className={styles.containerLeftTop}>
