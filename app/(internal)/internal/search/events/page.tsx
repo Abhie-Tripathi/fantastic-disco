@@ -210,7 +210,7 @@ const Search = () => {
             </Button>
             <Button
               variant="link"
-              onClick={() => createTrackerHandler}
+              onClick={() => createTrackerHandler()}
               disabled={Object.keys(localFilters).length === 0}
             >
               <Plus
