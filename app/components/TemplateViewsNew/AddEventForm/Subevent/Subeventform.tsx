@@ -254,7 +254,7 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
                     {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speaker}
                         // setSpeakerModal={setSpeakerModal} 
                         handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
-                            <ExhibitorContainer handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
+                            <ExhibitorContainer formTheme={formTheme} handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
 
                     {(formState.cityName && formState.eventFormat !== "Virtual") &&
                         <MapView latitude={formState.latitude}

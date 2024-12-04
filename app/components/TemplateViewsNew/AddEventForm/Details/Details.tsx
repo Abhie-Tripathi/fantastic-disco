@@ -302,7 +302,7 @@ console.log("prefilled",prefilledEvent)
             {formState.participationType === "Speaker" || formState.participationType === "Organiser"? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speaker}
               // setSpeakerModal={setSpeakerModal} 
               handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
-                <ExhibitorContainer handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
+                <ExhibitorContainer formTheme={formTheme} handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
 
             {(formState.cityName && formState.eventFormat !== "Virtual") &&
               // <div className={styles.map} ref={mapDivRef}>
