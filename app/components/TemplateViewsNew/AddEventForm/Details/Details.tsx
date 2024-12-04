@@ -225,7 +225,7 @@ console.log("prefilled",prefilledEvent)
           formState.event_type && (<div className={`${styles.participationContainer}`}><ParticipationContainer formTheme={formTheme} handleChange={handleChange} formState={formState} heading='Choose Your Mode of Participation' type='main' size="large" />
           </div>)
          }
-         {formState.event_type&& formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please select any mode of participation</p>}
+         {formState.event_type && formState.isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation</p>}
         </div>
           
       
