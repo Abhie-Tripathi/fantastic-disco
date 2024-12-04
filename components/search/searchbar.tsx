@@ -25,7 +25,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function MultiSelectSearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
+  const { getLocalFilterValue, localFilters } = useFilterContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<Event[]>([]);
@@ -53,14 +53,14 @@ export default function MultiSelectSearchBar() {
       const eventIds = eventIdsString.split(",");
       fetchEventDetails(eventIds);
     }
-  }, []);
+  }, [localFilters]);
 
   const debouncedSearch = useCallback(
     debounce(async (value: string) => {
       if (value) {
         try {
           const response = await getEventsWithSearchParams(
-            `eventName=${encodeURIComponent(value)}`
+            `query=${encodeURIComponent(value)}`
           );
           const filteredResults =
             (response?.events as Event[])?.filter(
@@ -125,13 +125,11 @@ export default function MultiSelectSearchBar() {
         );
         const eventIds = newSelectedItems.map((event) => event.id).join(",");
 
-        // Create a new URLSearchParams object
         const newParams = new URLSearchParams();
         if (newSelectedItems.length > 0) {
           newParams.set("eventIds", eventIds);
         }
 
-        // Update the URL with the new search params
         router.push(`?${newParams.toString()}`);
 
         return newSelectedItems;
@@ -151,7 +149,7 @@ export default function MultiSelectSearchBar() {
       <div ref={searchBarRef} className="relative">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <div className="flex items-center flex-wrap bg-background rounded-md shadow-sm border p-2">
+            <div className="flex items-center flex-wrap bg-white rounded-md shadow-sm border border-[#EBEBEB] p-2">
               <Search className="ml-2 text-gray-400" />
               {selectedItems.map((item) => (
                 <div
@@ -177,7 +175,7 @@ export default function MultiSelectSearchBar() {
                   placeholder={selectedItems.length ? "" : "Search Events"}
                   value={searchTerm}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  className="pl-2 pr-4 w-full border-none focus:ring-0 text-base shadow-none"
+                  className="pl-2 pr-4 w-full border-none focus:ring-0 text-base"
                 />
               </div>
             </div>

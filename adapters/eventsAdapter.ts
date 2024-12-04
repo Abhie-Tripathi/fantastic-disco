@@ -71,11 +71,20 @@ export const EventsAdapter = {
 
     const activeGte = params.get("active_gte");
     const activeLte = params.get("active_lte");
+    
     if (activeGte && activeLte) {
       const startDate = new Date(activeGte).toISOString().split("T")[0];
       const endDate = new Date(activeLte).toISOString().split("T")[0];
       adaptedParams.startDate = `${startDate},${endDate}`;
       adaptedParams.endDate = `${startDate},${endDate}`;
+    }
+    if (activeGte) {
+      const startDate = new Date(activeGte).toISOString().split("T")[0];
+      adaptedParams.startDate = `${startDate},${startDate}`;
+    }
+    if (activeLte) {
+      const endDate = new Date(activeLte).toISOString().split("T")[0];
+      adaptedParams.endDate = `${endDate},${endDate}`;
     }
 
     if (params.get("locationIds")) {

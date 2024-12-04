@@ -7,17 +7,14 @@ import {
   endOfMonth,
   startOfWeek,
   endOfWeek,
-  isBefore,
   addMonths,
   parseISO,
-  formatISO,
 } from "date-fns";
 import { ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Badge } from "../ui/badge";
 import {
   Popover,
   PopoverContent,
@@ -30,8 +27,8 @@ import { useFilterContext } from "@/context/filterContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const presets = [
-  // { label: "Past", value: "past" },
-  // { label: "Upcoming", value: "upcoming" },
+  { label: "Past", value: "past" },
+  { label: "Upcoming", value: "upcoming" },
   { label: "This week", value: "this-week" },
   { label: "This month", value: "this-month" },
   { label: "3 months", value: "3-months" },
@@ -104,8 +101,8 @@ export default function DateRangeSelector({
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("");
   const [compareEnabled, setCompareEnabled] = React.useState(false);
-  const { setMultipleLocalFilters, applyFilters, deleteMultipleLocalFilters } = useFilterContext();
-  const { localFilters } = useFilterContext();
+  const { setMultipleLocalFilters, searchParams, localFilters, applyFilters } =
+    useFilterContext();
   const [selectedComparison, setSelectedComparison] = React.useState(
     comparisonOptions[0]
   );
@@ -115,6 +112,21 @@ export default function DateRangeSelector({
     if (source !== "tracker") {
       const active_gte = localFilters.active_gte;
       const active_lte = localFilters.active_lte;
+
+      if (active_gte && !active_lte) {
+        const fromDate = parseISO(active_gte);
+        setDateRange({ from: fromDate, to: undefined });
+        setSelectedPreset("upcoming");
+        return;
+      }
+
+      if (!active_gte && active_lte) {
+        const toDate = parseISO(active_lte);
+        setDateRange({ from: undefined, to: toDate });
+        setSelectedPreset("past");
+        return;
+      }
+
       if (active_gte && active_lte) {
         const fromDate = parseISO(active_gte);
         const toDate = parseISO(active_lte);
@@ -155,7 +167,7 @@ export default function DateRangeSelector({
         setSelectedPreset("custom");
       }
     }
-  }, [localFilters]);
+  }, [searchParams, localFilters]);
 
   const handlePresetChange = (preset: string) => {
     setSelectedPreset(preset);
@@ -216,6 +228,7 @@ export default function DateRangeSelector({
       setDateRange({ from: selectedDate, to: selectedDate });
       return;
     }
+
     if (
       dateRange.from &&
       dateRange.to &&
@@ -243,29 +256,32 @@ export default function DateRangeSelector({
   };
 
   const applyHandler = () => {
-    if(source!=="tracker"){
-    const filters: { active_gte?: string; active_lte?: string } = {};
+    if (source !== "tracker") {
+      const filters: { active_gte?: string; active_lte?: string } = {};
 
-    if (dateRange.from) {
-      const fromDate = new Date(dateRange.from);
-      fromDate.setHours(5, 30, 0, 0);
-      filters.active_gte = fromDate.toISOString();
-    }
+      if (dateRange.from) {
+        const fromDate = new Date(dateRange.from);
+        fromDate.setHours(5, 30, 0, 0);
+        filters.active_gte = fromDate.toISOString();
+      }
 
-    if (dateRange.to) {
-      const toDate = new Date(dateRange.to);
-      toDate.setHours(5, 30, 0, 0);
-      filters.active_lte = toDate.toISOString();
-    }
+      if (dateRange.to) {
+        const toDate = new Date(dateRange.to);
+        toDate.setHours(5, 30, 0, 0);
+        filters.active_lte = toDate.toISOString();
+      }
 
-    if(filters.active_gte && filters.active_lte)
+      if (dateRange.from == undefined) {
+        filters.active_gte = "";
+      }
+      if (dateRange.to == undefined) {
+        filters.active_lte = "";
+      }
       setMultipleLocalFilters(filters);
-    else
-      deleteMultipleLocalFilters(['active_gte', 'active_lte']);
 
-    if (source === 'coordinate') {
-      applyFilters();
-    }
+      if (source === "coordinate") {
+        applyFilters();
+      }
     }
     setIsOpen(false);
   };
