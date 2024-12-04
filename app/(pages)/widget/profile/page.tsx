@@ -324,6 +324,7 @@ const Profile = () => {
 
       <div className={styles.content}>
         {activeTab === "profile" && (
+
           <div className={styles.profileSection}>
             {profileData && (
               <div>
@@ -762,7 +763,7 @@ const Profile = () => {
                     <div className={styles.user_container}>
                       <div className={styles.profile_header_user}>Users(3)</div>
 
-                      <div className={styles.search_container}>
+                      <div className={styles.userSearch_container}>
                         <div className={styles.search_box}>
                           <div className={styles.search_icon}>
                             <SearchIcon />
@@ -808,6 +809,8 @@ const Profile = () => {
               </div>
             )}
           </div>
+
+          
         )}
 
         {activeTab === "settings" && (

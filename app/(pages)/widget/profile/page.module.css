@@ -186,6 +186,14 @@
   align-items: center;
   justify-content: space-between;
   gap: 4px;
+  width: 100%;
+}
+.userSearch_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  width: 100%;
 }
 .search_box {
   display: flex;
@@ -194,6 +202,7 @@
   flex: 1;
   border-radius: var(--border-radius-sm);
   background-color: var(--primary-foreground);
+  width: 100%;
 }
 .search_icon {
   font-size: 16px;
@@ -389,6 +398,25 @@
   padding: 20px;
 }
 
-.profileSection{
+.profileSection {
   margin-top: 20px;
+}
+
+@media (max-width: 993px) {
+  .account {
+    flex-direction: column;
+  }
+  .account_below_section {
+    flex-direction: column;
+  }
+
+  .stickyHeader {
+    width: 100%;
+  }
+  .dropdown {
+    width: auto;
+  }
+  .search_container {
+    flex-direction: column;
+  }
 }

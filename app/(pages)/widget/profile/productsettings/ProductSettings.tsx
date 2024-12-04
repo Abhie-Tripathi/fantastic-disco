@@ -48,7 +48,6 @@ const ProductSettings = () => {
     setCards((prevBoxes) => prevBoxes.filter((box) => box.id !== id));
   };
 
-  // Function to handle input change
   const handleChangeResearchScreenBoxes = (id: number, value: string) => {
     setResearchTempValue(value);
   };
@@ -56,7 +55,6 @@ const ProductSettings = () => {
     setOutreachTempValue(value);
   };
 
-  // Function to start editing a box
   const handleResearchScreenEdit = (id: number, currentValue: string) => {
     setResearchScreenEditingBoxId(id);
     setResearchTempValue(currentValue);
@@ -67,7 +65,6 @@ const ProductSettings = () => {
     setOutreachTempValue(currentValue);
   };
 
-  // Function to save the input
   const handleResearchScreenSave = (id: number) => {
     setResearchScreenBoxes((prevBoxes) =>
       prevBoxes.map((box) =>
@@ -76,11 +73,6 @@ const ProductSettings = () => {
     );
     setResearchScreenEditingBoxId(null);
     setResearchTempValue("");
-    // setCards((prevBoxes) =>
-    //   prevBoxes.map((box) =>
-    //     box.id === id ? { ...box, value: researchTempValue } : box
-    //   )
-    // );
   };
 
   const handleOutreachScreenSave = (id: number) => {
@@ -97,7 +89,6 @@ const ProductSettings = () => {
       )
     );
   };
-  // Function to cancel editing
   const handleResearchScreenCancel = () => {
     setResearchScreenEditingBoxId(null);
     setResearchTempValue("");
@@ -108,16 +99,12 @@ const ProductSettings = () => {
     setOutreachTempValue("");
   };
 
-  // Function to add a new box
   const addResearchScreenBox = () => {
     setResearchScreenBoxes((prevBoxes) => [
       ...prevBoxes,
       { id: prevBoxes.length + 1, value: "" },
     ]);
-    // setCards((prevBoxes) => [
-    //   ...prevBoxes,
-    //   { id: prevBoxes.length + 1, value: "" },
-    // ]);
+
     setResearchScreenEditingBoxId(null);
     setResearchTempValue("");
   };
@@ -148,13 +135,13 @@ const ProductSettings = () => {
     e: React.DragEvent<HTMLDivElement>,
     targetId: any
   ) => {
-    e.preventDefault(); // Allow drop
+    e.preventDefault();
 
     const draggingElement = document.querySelector(".dragging") as HTMLElement;
     const targetElement = e.currentTarget as HTMLElement;
 
     if (draggingElement && targetElement) {
-      const draggingId = draggingElement.dataset.id; // Safe to access `dataset`
+      const draggingId = draggingElement.dataset.id;
       const targetIndex = researchScreenboxes.findIndex(
         (box: any) => box.id === targetId
       );
@@ -175,7 +162,6 @@ const ProductSettings = () => {
     e.preventDefault();
   };
 
-  // outreach screen
   const handleDragStartOutreachScreen = (e: any, id: any) => {
     e.dataTransfer.setData("text/plain", id);
     e.currentTarget.classList.add("dragging");
@@ -189,13 +175,13 @@ const ProductSettings = () => {
     e: React.DragEvent<HTMLDivElement>,
     targetId: any
   ) => {
-    e.preventDefault(); // Allow drop
+    e.preventDefault();
 
     const draggingElement = document.querySelector(".dragging") as HTMLElement;
     const targetElement = e.currentTarget as HTMLElement;
 
     if (draggingElement && targetElement) {
-      const draggingId = draggingElement.dataset.id; // Safe to access `dataset`
+      const draggingId = draggingElement.dataset.id;
       const targetIndex = outreachScreenboxes.findIndex(
         (box: any) => box.id === targetId
       );
@@ -216,19 +202,6 @@ const ProductSettings = () => {
     e.preventDefault();
   };
 
-  //   const addCard = () => {
-  //     const newCard = { id: Date.now().toString(), header: "", isEditing: true };
-  //     setCards([...cards, newCard]);
-  //   };
-
-  //   const handleCardSave = (id) => {
-  //     setCards((prevCards) => {
-  //       prevCards.map((card) =>
-  //         card.id === id ? { ...card, header: tempValue, isEditing: false } : card
-  //       );
-  //     });
-  //     setCardTempValue("");
-  //   };
   return (
     <div className={styles.settingsSection}>
       <div className={styles.settings_container}>
@@ -301,25 +274,19 @@ const ProductSettings = () => {
                       {editingResearchScreenBoxId === box.id && (
                         <div className={styles.iconContainer}>
                           <button
-                            className={`${styles.iconButton} ${styles.tickButton}`}
+                            className={`${styles.iconButton} `}
                             onClick={() => handleResearchScreenSave(box.id)}
                           >
                             <CheckIcon />
                           </button>
                           <button
-                            className={`${styles.iconButton} ${styles.crossButton}`}
-                            onClick={handleResearchScreenCancel}
+                            className={`${styles.iconButton} `}
+                            onClick={() => removeResearchScreenBox(box.id)}
                           >
                             <CrossIcon />
                           </button>
                         </div>
                       )}
-                      <button
-                        className={`${styles.iconButton} ${styles.minusButton}`}
-                        onClick={() => removeResearchScreenBox(box.id)}
-                      >
-                        -
-                      </button>
                     </div>
                   ))}
                   <div className={styles.plus_iconContainer}>
@@ -336,7 +303,7 @@ const ProductSettings = () => {
           </div>
         </div>
 
-        <div className={styles.second_div}>
+        {/* <div className={styles.second_div}>
           <div className={styles.second_div_header}>
             <div className={styles.second_div_text_outer}>
               <div className={styles.second_div_outreach_text}>Outreach</div>
@@ -396,25 +363,19 @@ const ProductSettings = () => {
                       {editingOutreachScreenBoxId === box.id && (
                         <div className={styles.iconContainer}>
                           <button
-                            className={`${styles.iconButton} ${styles.tickButton}`}
+                            className={`${styles.iconButton} `}
                             onClick={() => handleOutreachScreenSave(box.id)}
                           >
                             <CheckIcon />
                           </button>
                           <button
-                            className={`${styles.iconButton} ${styles.crossButton}`}
-                            onClick={handleOutreachScreenCancel}
+                            className={`${styles.iconButton} `}
+                            onClick={() => removeOutreachScreenBox(box.id)}
                           >
                             <CrossIcon />
                           </button>
                         </div>
                       )}
-                      <button
-                        className={`${styles.iconButton} ${styles.minusButton}`}
-                        onClick={() => removeOutreachScreenBox(box.id)}
-                      >
-                        -
-                      </button>
                     </div>
                   ))}
                   <div className={styles.plus_iconContainer}>
@@ -439,8 +400,12 @@ const ProductSettings = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
+
+
+
+      
     </div>
   );
 };
