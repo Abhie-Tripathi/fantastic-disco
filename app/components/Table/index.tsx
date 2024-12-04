@@ -2064,8 +2064,7 @@ const Table = ({
                           <div style={{ maxWidth: "500px" }}>
                             <header className={styles["modal_header"]}>
                               <div className={styles["modal_header-title"]}>
-                                Do you want to participate in &quot;{event.name}
-                                &quot;?
+                                Choose an Action to Proceed {" "}
                               </div>
                               <button
                                 className={styles["close"]}
@@ -2082,7 +2081,7 @@ const Table = ({
                             <main className={styles["modal_content"]}>
                               <form onSubmit={(e) => handleSubmit(e, close)}>
                                 <div id="field-1">
-                                  <div className={styles["form-check"]}>
+                                  {/* <div className={styles["form-check"]}>
                                     {path[path.length - 1] === "savedEvents" ||
                                     path[path.length - 1] === "trackers" ||
                                     event?.isSaved ||
@@ -2120,7 +2119,7 @@ const Table = ({
                                         </label>
                                       </>
                                     )}
-                                  </div>
+                                  </div> */}
                                   {coordinateActions.map((item: any, index: number) => (
                                     <div className={styles["form-check"]} key={index} >
                                       <input

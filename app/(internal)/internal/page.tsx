@@ -471,7 +471,7 @@ const Dashboard = () => {
 
           <span className={styles.body_divider}></span>
           <div className={styles.savedEvent_coordinateContainer}>
-            <div className={styles.savedEventsContainer}>
+            {/* <div className={styles.savedEventsContainer}>
               <div className={`${styles.tracker_container_header}`} style={{justifyContent:"space-between"}}>
                 <div className={styles.tracker_container_header_innerContainer}>
                 <Image src={Bookmark} alt="save"/>
@@ -538,7 +538,7 @@ const Dashboard = () => {
                   )}
                 </div>
               )}
-            </div>
+            </div> */}
             <div
               className={`${styles.linkCard_container} ${styles.coordinateCard}`}
             >

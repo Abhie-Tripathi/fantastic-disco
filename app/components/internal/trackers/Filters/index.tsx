@@ -704,6 +704,8 @@ const Pages = () => {
     }
   }, [type, customData])
 
+  const scrollableDivRef = useRef<HTMLDivElement>(null);
+
   const handlePresetClick = (id: number, trackerType: string, trackerName: string) => {
 
     const filteredPresetData = presetTemplateData.filter(item => item.id === id);
@@ -726,10 +728,9 @@ const Pages = () => {
     }
 
     setSelectedPresetName(trackerName);
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    if (scrollableDivRef.current) {
+      scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   const saveTrackerHandler = async () => {
@@ -1627,9 +1628,10 @@ return (
   <div>{isLoading?<Loading/>:
   <>
   <div
-    className="flex fixed w-[calc(100vw-134px)] mt-[54px] items-center justify-between bg-[var(--heading-background-color)] p-3"
-    style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "54px", zIndex:'5' }}
+    className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[36px] pt-4 bg-[var(--primary-foreground)]"
+    style={{ marginTop: pathName[pathName.length - 1] === "create" ? "0px" : "36px", zIndex:'5' }}
   >
+    <div className="flex first-line items-center justify-between w-[100%] bg-[var(--heading-background-color)] p-3">
     <div className="flex items-center gap-2">
       <div>
         <Image src={userOne} alt="userOne" />
@@ -1660,9 +1662,10 @@ return (
       </button> */}
       <Button className="text-white" onClick={saveTrackerHandler}>Save Tracker</Button>
     </div>
+    </div>
   </div>
-  <div className="flex flex-col gap-6 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "94px" : "140px" }}>
-    <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div>
+  <div ref={scrollableDivRef} className="flex flex-col gap-6 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "104px" : "140px" }}>
+    {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
     <div
       className="px-6 py-1 w-full border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)]"
       style={{
