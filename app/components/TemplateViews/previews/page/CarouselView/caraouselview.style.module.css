@@ -57,9 +57,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: white;
+  background-color: rgb(231, 228, 228);
   border-radius: 50px;
-  filter: drop-shadow(1px 1px 2px rgb(23, 23, 23));
+  /* filter: drop-shadow(1px 1px 2px rgb(23, 23, 23)); */
 }
 .navButton:first-of-type {
   left: 1px;
@@ -67,6 +67,12 @@
 
 .navButton:last-of-type {
   right: 1px;
+}
+.leftArrow{
+  transform: rotateZ(-90deg);
+}
+.rightArrow{
+  transform: rotateZ(90deg);
 }
 /* .dotsContainer {
   display: flex;

@@ -5,6 +5,7 @@ import WidgetCard from '@/app/components/TemplateViews/draftwidgets/WidgetCard'
 import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
 import Link from 'next/link';
+import { useWidgetServices } from '@/services/geniservices/widgetService';
 
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 interface DraftWidgetsType {
@@ -24,11 +25,27 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
   const [selectedBtn, setSelectedBtn] = useState<string>("Widgets")
   const [allWidgets, setAllWidgets] = useState<DraftWidgetsType[]>([])
   const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([])
-
+  const {getDraftWidget, getOnlyDraftWidget, getActiveWidget, getDeActiveWidget, error} = useWidgetServices();
   const fetchDraftWidgets = async () => {
-    const { data, error } = await myFetch(`${baseUrl}/widget?status=draft`);
+    // const { data, error } = await myFetch(`${baseUrl}/widget?status=draft`);
+    // if (data) {
+    //   const filteredWidgets = data.data
+    //     .map((widget: any) => ({
+    //       ...widget,
+    //       templateId: asciiToString(widget.templatePublicId),
+    //       widgetType: widget.type,
+    //       widgetId: widget.id,
+    //       eventSize: widget.otherdata.event.length,
+    //       widgetStatus: "Draft"
+    //     }));
+    //   setDraftWidgets(filteredWidgets);
+    // }
+    // if (error) {
+    //   console.log(error);
+    // }
+    
+    const data:any = await getDraftWidget()
     if (data) {
-      console.log(data);
       const filteredWidgets = data.data
         .map((widget: any) => ({
           ...widget,
@@ -43,6 +60,7 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
     if (error) {
       console.log(error);
     }
+          
   };
   const asciiToString = (ascii: number): string => {
     let convertedValue = ascii.toString();
@@ -54,8 +72,30 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
     return str;
   };
   const fetchAllWidgets = async () => {
-    const { data: activeData, error: activeError } = await myFetch(`${baseUrl}/widget?status=active`);
-    const { data: deactivateData, error: deactivateError } = await myFetch(`${baseUrl}/widget?status=deactivate`);
+    // const { data: activeData, error: activeError } = await myFetch(`${baseUrl}/widget?status=active`);
+    // const { data: deactivateData, error: deactivateError } = await myFetch(`${baseUrl}/widget?status=deactivate`);
+    // console.log("deactivateData",deactivateData)
+    // const activeWidgets = activeData ? activeData.data.map((widget: any) => ({
+    //   ...widget,
+    //   templateId: asciiToString(widget.templatePublicId),
+    //   widgetType: widget.type,
+    //   widgetId: widget.id,
+    //   eventSize: widget.otherdata.event.length,
+    //   widgetStatus: "Active"
+    // })) : [];
+    // const deactivateWidgets = deactivateData.data.length > 0 ? deactivateData.data.map((widget: any) => ({
+    //   ...widget,
+    //   templateId: asciiToString(widget.templatePublicId),
+    //   widgetType: widget.type,
+    //   widgetId: widget.id,
+    //   eventSize: widget.otherdata.event.length,
+    //   widgetStatus: "Inactive"
+    // })) : [];
+    // const combinedWidgets = [...activeWidgets, ...deactivateWidgets]
+    // setAllWidgets(combinedWidgets);
+
+    const activeData:any = await getActiveWidget();
+    const deactivateData:any = await getDeActiveWidget();
     const activeWidgets = activeData ? activeData.data.map((widget: any) => ({
       ...widget,
       templateId: asciiToString(widget.templatePublicId),

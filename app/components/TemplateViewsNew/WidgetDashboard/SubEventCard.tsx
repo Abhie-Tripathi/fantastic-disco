@@ -99,7 +99,7 @@ const SubEventCard = ({ normalEvent, subEvent, fetchEvents, handlePrefillEvent,h
             <div className={width === "small"  ? styles.smallCard :  styles.bigCard} onClick={handleCardClick}>
                 <Image src={PopperImage} alt='Popper' className={styles.popperImg} />
                 {width === "small" && <div className={styles.imageContainer}>
-                    <Image src={normalEvent?.mainEvent.logoUrl || subEvent?.logoUrl || PlaceIcon} alt='Banner' height={130} width={130} />
+                    <Image src={normalEvent?.mainEvent.logoUrl || subEvent?.logoUrl || PlaceIcon} alt='Banner' height={130} width={130} className='h-[130px] w-[130px]'/>
                     <div className={styles.squareOne}></div>
                     <div className={styles.squareTwo}></div>
                 </div>}

@@ -19,9 +19,10 @@ const Index = () => {
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
   const type  = searchParams.get('type');
-  const [view,setView]=useState("list");
+  const typeOfView  = searchParams.get('view');
+  const typeOfEvent = searchParams.get('eventType')
+  const [view,setView]=useState(typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"list");
   const secondLast = pathName[pathName.length - 2];
-  console.log(secondLast);
   const router = useRouter()
   const {data}= useTrackerContext();
   const {getTrackerDetail, error}=useTrackerServices();
@@ -80,7 +81,7 @@ const Index = () => {
   
   return (
     <>
-      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[70px] w-[calc(100vw-70px)] bg-[var(--primary-foreground)] z-20 text-h6 left-[70px]">
+      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[61px] w-[calc(100vw-63px)] bg-[var(--primary-foreground)] z-10 text-h6 left-[63px]">
         <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link className={styles.bottom} href={
              last === "editTracker"
@@ -105,8 +106,9 @@ const Index = () => {
             <div onClick={()=>handleClick("list")}>
               <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("list")}>List</div></div>
               {/* </Link> */}
-              <div className="cursor-not-allowed disabled">
-              {/* <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>setView("map")}>Map</div> */}
+              <div className="cursor-pointer">
+              {/* <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>handleClick("map")}>Map</div> */}
+              
               <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
               <div className={styles.viewsTab}>
                 Map

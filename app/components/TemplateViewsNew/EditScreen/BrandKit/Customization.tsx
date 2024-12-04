@@ -6,7 +6,7 @@ import TypographyCustomization from './CustomizeComponents/TypographyCustomizati
 import CardStyles from './CustomizeComponents/CardStyles'
 import BrandKit from './CustomizeComponents/BrandKit'
 import { ButtonSettingsState } from '@/types/buttoncustomizetypes'
-
+import PreviewScreenbackgroundColor from './CustomizeComponents/PreviewScreenbackgroundColor'
 interface EditScreenProps {
   extractedColors: string[]
   setExtractedColors: (value: string[]) => void
@@ -16,6 +16,8 @@ interface EditScreenProps {
   setButtonSettings: React.Dispatch<React.SetStateAction<ButtonSettingsState>>;
   buttonSettings: ButtonSettingsState
   cardBgColor: string
+  previewWindowBgColor: string;
+  setPreviewWindowBgColor: React.Dispatch<React.SetStateAction<string>>;
   fontSettings: FontSettingsState
   cardBorderRadius: number;
   cardStyle: string;
@@ -23,7 +25,7 @@ interface EditScreenProps {
   setSelectedBtn: (value: "primary" | "secondary") => void
   selectedBtn: "primary" | "secondary"
   handleUpdateCustomization: () => Promise<void>;
-  selectedTemplate:string
+  selectedTemplate: string
 }
 
 interface FontSettings {
@@ -40,12 +42,12 @@ interface FontSettingsState {
 }
 
 
-const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius, fontSettings, setFontSettings, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization,selectedTemplate }: EditScreenProps) => {
+const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, setCardBorderRadius, fontSettings, setFontSettings, setButtonSettings, cardBorderRadius, cardBgColor, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization, selectedTemplate, previewWindowBgColor, setPreviewWindowBgColor }: EditScreenProps) => {
 
   const handleUpdate = async () => {
     handleUpdateCustomization()
   }
-  console.log("selectedTemplate",selectedTemplate)
+  console.log("selectedTemplate", selectedTemplate)
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
@@ -56,11 +58,16 @@ const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, se
         <BrandKit setFontSettings={setFontSettings} setCardBgColor={setCardBgColor} extractedColors={extractedColors} setExtractedColors={setExtractedColors} flex />
       </div>
       {
-        selectedTemplate ==="ST" ? <></>: <div className={styles.cardStylesContainer}>
-        <CardStyles cardStyle={cardStyle} setCardStyle={setCardStyle} />
-      </div>
+        selectedTemplate === "ST" ? <></> : <div className={styles.cardStylesContainer}>
+          <CardStyles cardStyle={cardStyle} setCardStyle={setCardStyle} />
+        </div>
       }
-     
+      {/* <div className={styles.line}></div>
+      {
+        selectedTemplate === "LS" ? <div className={styles.cardCustomizationContainer}>
+          <PreviewScreenbackgroundColor previewWindowBgColor={previewWindowBgColor} setPreviewWindowBgColor={setPreviewWindowBgColor} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setCardBgColor={setCardBgColor} setCardBorderRadius={setCardBorderRadius} extractedColors={extractedColors} />
+        </div> : ""
+      } */}
       <div className={styles.line}></div>
       <div className={styles.cardCustomizationContainer}>
         <CardCustomization cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setCardBgColor={setCardBgColor} setCardBorderRadius={setCardBorderRadius} extractedColors={extractedColors} />

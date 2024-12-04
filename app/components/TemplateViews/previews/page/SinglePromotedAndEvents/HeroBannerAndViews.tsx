@@ -39,13 +39,15 @@ interface EditProps {
     demoDescription: string
     demoLocation: string
     demoDate:string
+    isFullScreen:boolean
+    smallCard : boolean;
 }
-const HeroBannerAndViews = ({ type, cardBgColor, cardBorderRadius, fontSettings, buttonSettings, selectedCard, demoBanner, demoEventName, demoDescription, demoLocation, demoDate}: EditProps) => {
+const HeroBannerAndViews = ({ type, cardBgColor, cardBorderRadius, fontSettings, buttonSettings, selectedCard, demoBanner, demoEventName, demoDescription, demoLocation, demoDate, isFullScreen,smallCard}: EditProps) => {
     return (
         <div className={styles.body}>
             <HeroBanner selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation}/>
             <div className={styles.bottomView}>
-                {type === "list" ? <ListView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/> :
+                {type === "list" ? <ListView smallCard={smallCard} isFullScreen={isFullScreen}selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/> :
                     type === "grid" ? <GridView selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} demoDate={demoDate}/> :
                         <ListAndGridView demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>}</div>
         </div>

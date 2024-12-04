@@ -67,7 +67,7 @@ const EventCard1 = ({
             return "Virtual";
         }
     
-        const location = `${event?.cityName}, ${event?.countryName}`;
+        const location = `${event?.cityName} ${event?.cityName && ","} ${event?.countryName}`;
         return location.length > 20 ? `${location.slice(0, 17)}...` : location;
     };
 
@@ -93,14 +93,19 @@ const EventCard1 = ({
                         <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>
                         {fetchedEvent ? formatLocation(fetchedEvent) : demoLocation}</div>
                     </div>
-                    <div className={styles.eventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedEvent ? fetchedEvent.name.substring(0, 15) : demoEventName}</div>
+                    <div className={styles.eventName}  data-name={fetchedEvent && fetchedEvent.name} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>
+                        {/* {fetchedEvent ? fetchedEvent.name.substring(0, 15) : demoEventName} */}
+                        {fetchedEvent
+              ? `${fetchedEvent.name.substring(0, 15)}${fetchedEvent.name.length > 15 ? "..." : ""}`
+              : demoEventName}
+                        </div>
                 </div>
             </div>
             <div className={styles.dividerLine}></div>
             <div className={styles.dateRange_typeContainer}>
                 <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
-                <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.event_type}</div>
-                <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent?.eventFormat}</div>
+                <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? fetchedEvent?.event_type : "Tradeshow"}</div>
+                <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedEvent ? fetchedEvent?.eventFormat : "In-Person"}</div>
             </div>
         </div>
     )

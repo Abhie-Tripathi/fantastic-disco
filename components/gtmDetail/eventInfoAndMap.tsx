@@ -14,6 +14,7 @@ import { useInView } from "react-intersection-observer";
 import CircularProgress from "../gtmDetailRelevanceScore/circularProgress";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
+import _ from "lodash";
 interface Props {
   eventDetails: GTMEventDetail;
   scrollSection: string;
@@ -121,7 +122,7 @@ export const EventInfoAndMap = ({
                   : `${
                       description === null || undefined
                         ? "Sourced from 10times"
-                        : description?.slice(0, 800)
+                        : description?.slice(0, 200)
                     }`}
                 <span
                   className="font-semibold underline cursor-pointer ml-2"
@@ -129,7 +130,7 @@ export const EventInfoAndMap = ({
                 >
                   {description !== null &&
                   description !== undefined &&
-                  description.length > 600
+                  description.length > 200
                     ? isExpandDescription
                       ? "Show Less"
                       : "Read More"
@@ -165,20 +166,22 @@ export const EventInfoAndMap = ({
               </h1>
 
               {entryType ? (
-                <span className="text-[var(--primary-text-color)] font-semibold">
-                  {capitalize(entryType ?? "")}
+                <span className="text-[var(--primary-color)] font-semibold">
+                  {_.startCase(_.toLower(_.replace(entryType, /_/g, " ")))}
                 </span>
+              ) : website ? (
+                <Link
+                  href={website}
+                  target="_blank"
+                  className="text-[var(--primary-color)] cursor-pointer font-medium"
+                >
+                  Check website
+                </Link>
               ) : (
-                website ? (
-                  <Link href={website} target="_blank" className="text-[var(--primary-color)] cursor-pointer font-medium">
-                    Check website
-                  </Link>
-                ) : (
-                  <span className="text-[#666666] text-sm flex items-center gap-2">
-                    <CircleSlash width={15} height={15} />
-                    No data available
-                  </span>
-                )
+                <span className="text-[#666666] text-sm flex items-center gap-2">
+                  <CircleSlash width={15} height={15} />
+                  No data available
+                </span>
               )}
               {/* {entryType && tickets && tickets.length > 0 && (
                 <DetailDialog
@@ -319,6 +322,14 @@ export const EventInfoAndMap = ({
             startDateTime={startDateTime}
             endDateTime={endDateTime}
           />
+          <div className="flex items-center justify-between bg-[#F6F6FF] dark:bg-[#2E2E2E] border border-[#E6E6F9] dark:border-[#2E2E2E] px-4 py-2 rounded-sm">
+            <Text variant="noMargin" color="primary">
+              Start searching similar events
+            </Text>
+            <Button className="cursor-not-allowed max-[1600px]:w-full">
+              Search Events
+            </Button>
+          </div>
           {/* <div className="flex gap-6">
             <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
               <h1 className="text-[1rem] font-medium border-b pb-2 w-full">

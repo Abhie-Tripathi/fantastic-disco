@@ -18,10 +18,7 @@ export interface eventDataType {
     upvote: any;
     enquiryActivity: any;
     userCountPerInterest: {
-        EXHIBITOR: number,
-        SPONSOR: number,
-        SPEAKER: number,
-        ATTENDING: number,
+        [name: string]: number,
     };
     owner: {
         id: string,

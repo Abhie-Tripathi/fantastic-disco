@@ -28,6 +28,7 @@ import {
 import { RefreshClockwise } from "geist-icons";
 import { isEventeli } from "@/config";
 import { useTheme } from "@/context/theme";
+import Link from "next/link";
 
 const routes: Record<string, string> = {
   internal: "Dashboard",
@@ -83,13 +84,15 @@ export default function Navbar() {
                     <UserSearch className="h-6 w-6" />
                     <span className="text-xs">Prospect</span>
                   </Button>
-                  <Button
-                    variant="ghost"
-                    className="flex flex-col items-center justify-center gap-2 h-auto p-4"
-                  >
-                    <Megaphone className="h-6 w-6" />
-                    <span className="text-xs">Promote</span>
-                  </Button>
+                  <Link href={"/widget/dashboard"}>
+                    <Button
+                      variant="ghost"
+                      className="flex flex-col items-center justify-center gap-2 h-auto p-4"
+                    >
+                      <Megaphone className="h-6 w-6" />
+                      <span className="text-xs">Promote</span>
+                    </Button>
+                  </Link>
                 </div>
               </PopoverContent>
             </Popover>
@@ -103,9 +106,8 @@ export default function Navbar() {
               >
                 <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
                   {user
-                    ? `${user?.firstname[0]?.toUpperCase() ?? ""}${
-                        user?.lastname?.[0]?.toUpperCase() ?? ""
-                      }`
+                    ? `${user?.firstname[0]?.toUpperCase() ?? ""}${user?.lastname?.[0]?.toUpperCase() ?? ""
+                    }`
                     : ""}
                 </div>
               </Button>

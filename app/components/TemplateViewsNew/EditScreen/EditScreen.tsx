@@ -32,6 +32,10 @@ interface EditScreenProps {
     buttonSettings: ButtonSettingsState
     fontSettings: FontSettingsState
     cardBgColor: string
+    previewWindowBgColor:string;
+    setPreviewWindowBgColor:React.Dispatch<React.SetStateAction<string>>;
+    isDark?:boolean;
+    setIsDark?:(value: boolean) => void
     cardBorderRadius: number;
     cardStyle: string;
     setCardStyle: React.Dispatch<React.SetStateAction<string>>;
@@ -57,7 +61,7 @@ interface EditScreenProps {
 
 const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization, fetchedAllEvents, fetchEvents, widgetId, widgetType, fetchedAddedEvents, fetchAddedEvents, addedEventIds,
     // handlePrefillEvent,
-    allEventsCount, selectedTemplate, isCustomisationWindowDisable,setIsCustomisationWindowDisable,isCodeWindowDisable,setIsCodeWindowDisable }: EditScreenProps) => {
+    allEventsCount, selectedTemplate, isCustomisationWindowDisable,setIsCustomisationWindowDisable,isCodeWindowDisable,setIsCodeWindowDisable,previewWindowBgColor,setPreviewWindowBgColor }: EditScreenProps) => {
     const [selectedNavItem, setSelectedNavItem] = useState<string>("events")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const { theme } = useTheme()
@@ -71,7 +75,40 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
     };
     const handleCustomizationWindowClick=() => {
         if (isCustomisationWindowDisable) {
-            if(selectedTemplate ==="CVL"){
+            if(selectedTemplate ==="LS"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the customization screen!"
+                );
+            } else if(selectedTemplate ==="ST"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the customization screen!"
+                );
+            }else if(selectedTemplate ==="PUVP"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the customization screen!"
+                );
+            }else if(selectedTemplate ==="PUVL"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the customization screen!"
+                );
+            }
+            else if(selectedTemplate ==="LSR"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the customization screen!"
+                );
+            }
+            else if(selectedTemplate ==="GS"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the customization screen!"
+                );
+            }
+            else if(selectedTemplate ==="CVL"){
                 showToast( 
                     "error",
                     "Select at least 1 event for the list and promote 3 for the carousel view!"
@@ -100,7 +137,41 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
 
     const handleCodeWindowClick=() => {
         if (isCustomisationWindowDisable) {
-            if(selectedTemplate ==="CVL"){
+            if(selectedTemplate ==="LS"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the code screen!"
+                );
+            }else if(selectedTemplate ==="PUVP"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the code screen!"
+                );
+            }else if(selectedTemplate ==="PUVL"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the code screen!"
+                );
+            }
+            else if(selectedTemplate ==="ST"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the code screen!"
+                );
+            }
+            else if(selectedTemplate ==="LSR"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the code screen!"
+                );
+            }
+            else if(selectedTemplate ==="GS"){
+                showToast( 
+                    "error",
+                    "Please add at least one event to the widget to continue to the code screen!"
+                );
+            }
+            else if(selectedTemplate ==="CVL"){
                 showToast( 
                     "error",
                     "Select at least 1 event for the list and promote 3 for the carousel view!"
@@ -147,7 +218,7 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
                     <CodeIcon color={getIconColor("code")} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
-                {selectedNavItem === "customize" ? <Customization handleUpdateCustomization={handleUpdateCustomization} selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} cardStyle={cardStyle} setCardStyle={setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors} selectedTemplate={selectedTemplate} /> : selectedNavItem === "events" ? <FilterEvents selectedTemplate={selectedTemplate} allEventsCount={allEventsCount} isCustomisationWindowDisable={isCustomisationWindowDisable}setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}isCodeWindowDisable={isCodeWindowDisable}setIsCodeWindowDisable={setIsCodeWindowDisable}
+                {selectedNavItem === "customize" ? <Customization previewWindowBgColor={previewWindowBgColor}setPreviewWindowBgColor={setPreviewWindowBgColor} handleUpdateCustomization={handleUpdateCustomization} selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} cardStyle={cardStyle} setCardStyle={setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors} selectedTemplate={selectedTemplate} /> : selectedNavItem === "events" ? <FilterEvents selectedTemplate={selectedTemplate} allEventsCount={allEventsCount} isCustomisationWindowDisable={isCustomisationWindowDisable}setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}isCodeWindowDisable={isCodeWindowDisable}setIsCodeWindowDisable={setIsCodeWindowDisable}
                 // handlePrefillEvent={handlePrefillEvent}
                  addedEventIds={addedEventIds} widgetId={widgetId} fetchAddedEvents={fetchAddedEvents} fetchedAddedEvents={fetchedAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} /> : <CodeWindow widgetType={widgetType} widgetId={widgetId} />}
             </div>

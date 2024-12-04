@@ -659,7 +659,7 @@ export const AddComment = ({
         
         { last!=="notesDiscussion" && commentType === 'mainComment' ? 
         <div className={styles.recommendBtn}>
-          <button
+          {/* <button
             onClick={handleSelectAttend}
             className={`${styles.btn1} ${
               theme === "light" && styles.btn1_light
@@ -675,7 +675,7 @@ export const AddComment = ({
             }`}
           >
             I want to Speak
-          </button>
+          </button> */}
           {/* <button
             onClick={handleRecommend}
             className={`${styles.btn1} ${

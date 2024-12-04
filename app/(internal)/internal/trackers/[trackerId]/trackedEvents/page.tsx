@@ -44,8 +44,8 @@ const Map = lazy(() => import("@/components/map"));
 //   globalToggle?:boolean;
 //   brandSeries?:boolean;
 // }
+interface LocationObject  { [id: string]: string };
 const Page = ({ params }: { params: any }) => {
-  console.log(params);
   const {data}=useTrackerContext();
   
   
@@ -60,7 +60,7 @@ const Page = ({ params }: { params: any }) => {
   const token = searchParams.get("token");
   const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
-console.log(searchParams.get("view"));
+  const viewType=searchParams.get("view");
   const typeOfEvent=searchParams.get("eventType");
   const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
   // const id = pathName[pathName.length - 2];
@@ -68,7 +68,7 @@ console.log(searchParams.get("view"));
   // const [data, setData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [eventType, setEventType] = useState("active");
-  const [view, setView] = useState<string|null>("list");
+  const [view, setView] = useState<string|null>(viewType==="list"? "list": viewType==="map"?"map":viewType==="calendar"?"calendar":"list");
   const [urlQueryString, setUrlQueryString] = useState<string>("");
 
   const [showInsights,setShowInsights] = useState({
@@ -234,16 +234,12 @@ console.log(searchParams.get("view"));
     if (active === "New Events") setType("NEW");
     if (active === "Expired Events") setType("EXPIRED");
   }, [active]);
-  useEffect(() => {
-    console.log(activeValue);
-  }, [active]);
   const formatCount = (count: number ) => {
     if (count >= 1000) {
       const value = count / 1000;
       const decimalPart = value - Math.floor(value);
         return `${Math.floor(value)}k`;
     }
-    console.log(count);
     return count;
   };
   const saveTracker = async () => {
@@ -273,105 +269,6 @@ console.log(searchParams.get("view"));
 
       router.replace("/internal/trackers");
     }
-  };
-
-  const createQueryString = () => {
-    const filters = trackerDetail.filterValue;
-    const queries: { [key: string]: any } = {};
-
-    if (filters?.eventCategory) {
-      queries.eventCategory = filters.eventCategory?.map(
-        (item: any) => item.id
-      );
-    }
-
-    if (filters?.eventCountry) {
-      queries.eventCountry = filters.eventCountry.map(
-        (item: any) => Object.keys(item)[0]
-      );
-    }
-
-    if (filters?.eventCity) {
-      queries.eventCity = filters.eventCity.map(
-        (item: any) => Object.keys(item)[0]
-      );
-    }
-
-    if(filters?.eventRegion){
-      queries.eventRegion = filters.eventRegion;
-    }
-
-    if (filters?.startDate) {
-      queries.startDate = filters.startDate;
-    }
-
-    if (filters?.endDate) {
-      queries.endDate = filters.endDate;
-    }
-
-    if (filters?.eventStatus) {
-      queries.eventStatus = filters.eventStatus;
-    }
-
-    if (filters?.eventFormat) {
-      queries.eventFormat = filters.eventFormat;
-    }
-
-    if (filters?.eventFrequency) {
-      queries.eventFrequency = filters.eventFrequency;
-    }
-
-    if (filters?.editionRange) {
-      queries.editionRange = filters.editionRange;
-    }
-
-    if(filters?.eventKeywords){
-      queries.eventKeywords = filters.eventKeywords;
-    }
-
-    if (filters?.eventRank) {
-      queries.eventRank = filters.eventRank;
-    }
-
-    if (filters?.localRank) {
-      queries.localRank = filters.localRank;
-    }
-
-    if (filters?.trustScore) {
-      queries.trustScore = filters.trustScore;
-    }
-
-    if (filters?.eventSeries) {
-      queries.eventSeries = filters.eventSeries;
-    }
-
-    if (filters?.reputationScore) {
-      queries.reputationScore = filters.reputationScore;
-    }
-
-    if (filters?.maturity) {
-      queries.maturity = filters.maturity;
-    }
-
-    if (filters?.internationalScore) {
-      queries.internationalScore = filters.internationalScore;
-    }
-
-    if (filters?.inboundScore) {
-      queries.inboundScore = filters.inboundScore;
-    }
-
-    if (filters?.eventRating) {
-      queries.eventRating = filters.eventRating;
-    }
-
-    if (filters?.eventSize) {
-      queries.eventSize = filters.eventSize;
-    }
-
-    let query = new URLSearchParams(queries);
-    const finalQueryString = query.toString();
-    setUrlQueryString(finalQueryString);
   };
  useEffect(()=>{
   let toggleOpend:Toggle ={};
@@ -415,15 +312,25 @@ console.log(searchParams.get("view"));
       setShowInsights(prev=>({...prev, ...toggleObj}));
     }
  },[trackerDetail])
- console.log(data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
- );
  const addQueryString = (value:string) => {
   const params = new URLSearchParams(searchParams);
   params.set('eventType', value); 
   const newUrl = `${pathname}?${params.toString()}`;
   router.replace(newUrl);
 };
- 
+// const cityIds = trackerDetail?.filterValue?.locationIds?.city?.length > 0 
+//   ? trackerDetail.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0]) 
+//   : [];
+
+// const countryIds = trackerDetail?.filterValue?.locationIds?.country?.length > 0 
+//   ? trackerDetail.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0]) 
+//   : [];
+
+// const stateIds = trackerDetail?.filterValue?.locationIds?.state?.length > 0 
+//   ? trackerDetail.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0]) 
+//   : [];
+
+// const locationIds:string[] = [...cityIds, ...countryIds, ...stateIds];
   return (
     <div className="flex w-[calc(100vw-134px)]">
       {/* <SideNav/> */}
@@ -579,8 +486,9 @@ console.log(searchParams.get("view"));
             </Link>
           </div>
 
-          {view === "list" && (
+          {(view === "list" || active === "Saved Events") && (
             <div>
+              <Suspense fallback={<Loading />}>
             <Table
               savedEventCount={savedEventCount}
               setSavedEventCount={setSavedEventCount}
@@ -588,13 +496,17 @@ console.log(searchParams.get("view"));
               eventType={active}
               setActiveValue={setActiveValue}
             />
+            </Suspense>
             </div>
           )}
 
-          {view === "map" && (
+          {(view === "map" && active !== "Saved Events") && (
             <div>
               <Suspense fallback={<Loading />}>
-                {/* <Map queryString={urlQueryString} /> */}
+                <Map source="tracker" 
+                searchParams={`type=${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":"active"}`}
+                trackerId={params.trackerId}
+                 />
                 {/* <Map/> */}
               </Suspense>
             </div>

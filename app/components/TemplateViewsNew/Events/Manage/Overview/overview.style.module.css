@@ -1,4 +1,4 @@
-.eventDetailView{
+.eventDetailView {
     border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 15px;
@@ -6,22 +6,25 @@
     display: flex;
     gap: 20px;
 }
-.viewContainer{
+
+.viewContainer {
     cursor: pointer;
 }
-.eventDetailContainer{
+
+.eventDetailContainer {
     display: flex;
     flex-direction: column;
     gap: 10px;
     width: 60%;
 }
-.share_leadsContainer{
+
+.share_leadsContainer {
     display: flex;
     gap: 5px;
     width: 100%;
 }
 
-.valuesContainer{
+.valuesContainer {
     background-color: var(--primary-foreground);
     border-radius: 10px;
     padding: 20px;
@@ -30,19 +33,21 @@
     justify-content: space-between;
     /* gap: 60px; */
 }
-.valueContainer{
+
+.valueContainer {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.valueContainer div{
+.valueContainer div {
     font-size: var(--font-size-default);
     color: var(--primary-text-color);
     display: flex;
     align-items: center;
 }
-.icon{
+
+.icon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -51,51 +56,61 @@
     margin-right: 10px;
     border-radius: 4px;
 }
-.icon1{
+
+.icon1 {
     background-color: rgba(0, 0, 255, 0.282);
     color: var(--info-text-color);
 }
-.icon2{
+
+.icon2 {
     background-color: #45a55749;
     color: var(--success-text-color);
 }
- .icon3{
+
+.icon3 {
     background-color: #cd88f763;
     color: #cc88f7;
 }
-.icon4{
-    background-color:#ff990a63;
+
+.icon4 {
+    background-color: #ff990a63;
     color: var(--warning-text-color);
 }
-.valueContainer span{
+
+.valueContainer span {
     font-size: var(--font-size-default);
     color: var(--secondary-text-color);
     font-weight: var(--font-weight-semibold);
 }
-.pastLeadsContainer{
+
+.pastLeadsContainer {
     background-color: var(--primary-foreground);
     border-radius: 10px;
     padding: 20px;
     border: 1px solid var(--border-color);
     display: flex;
     gap: 100px;
-    width:100%; 
+    width: 100%;
     height: 50%;
 }
-.countContainerTwo{
+
+.countContainerTwo {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
-.countContainerTwo span{
+
+.countContainerTwo span {
     display: flex;
     align-items: center;
 }
-.pastLeadsContainer .countContainer span{
+
+.pastLeadsContainer .countContainer span {
     font-size: var(--font-size-large);
     font-weight: var(--font-weight-semibold);
 }
-.leadsContainer{
+
+.leadsContainer {
     background-color: var(--primary-foreground);
     border-radius: 10px;
     padding: 10px;
@@ -103,14 +118,16 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 10px; 
-    width: 60%; 
+    gap: 10px;
+    width: 60%;
 }
-.leadsContainer span{
+
+.leadsContainer span {
     font-size: var(--font-size-large);
     font-weight: var(--font-weight-semibold);
 }
-.shareContainer{
+
+.shareContainer {
     background-color: var(--primary-foreground);
     border-radius: 10px;
     padding: 10px;
@@ -119,12 +136,14 @@
     flex-direction: column;
     gap: 10px;
 }
-.shareContainer .shareHeading{
+
+.shareContainer .shareHeading {
     font-size: var(--font-size-default);
     color: var(--primary-color);
     font-weight: var(--font-weight-semibold);
 }
-.shareContainer .inputContainer{
+
+.shareContainer .inputContainer {
     border-radius: 7px;
     font-size: var(--font-size-default);
     padding: 5px;
@@ -133,14 +152,17 @@
     align-items: center;
     gap: 6px;
 }
-.shareContainer .inputContainer input{
+
+.shareContainer .inputContainer input {
     background: none;
     border: none;
 }
-.shareContainer .inputContainer input:focus{
+
+.shareContainer .inputContainer input:focus {
     outline: none;
 }
-.shareContainer .inputContainer button{
+
+.shareContainer .inputContainer button {
     font-size: var(--font-size-small);
     background-color: var(--primary-color);
     border: none;
@@ -148,11 +170,48 @@
     border-radius: 4px;
     color: white;
 }
-.shareContainer .inputContainer button:hover{
+
+.shareContainer .inputContainer button:hover {
     background-color: var(--primary-color-hover);
 }
-.progressContainer{
+
+.progressContainer {
     border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 10px;
+}
+
+@media screen and (max-width: 980px) {
+    .eventDetailView {
+        flex-direction: column;
+    }
+
+    .eventDetailContainer {
+        flex-direction: row;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .share_leadsContainer {
+        gap: 10px;
+        width: 45%;
+    }
+
+    .pastLeadsContainer {
+        width: 45%;
+    }
+
+    .valuesContainer {
+        width: 55%;
+    }
+}
+
+@media screen and (max-width: 960px) {
+    .eventDetailContainer {
+        padding-bottom: 5px;
+        overflow-x: scroll;
+    }
+    .share_leadsContainer, .pastLeadsContainer, .valuesContainer {
+        min-width: 400px;
+    }
 }

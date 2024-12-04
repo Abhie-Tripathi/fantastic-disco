@@ -8,8 +8,10 @@ import { myFetch } from '@/utils/myFetch';
 import AddEvent from '@/app/components/TemplateViewsNew/AddEventForm/AddEvent'
 import Link from 'next/link'
 import { EventContext } from '@/context/eventcontext'
+import { useEventServices } from '@/services/geniservices/eventService'
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
+    const {getEventById, getEventByPublicAPI, deleteEvent, error} = useEventServices()
     const pathName = usePathname();
     const trackerParams = pathName.split("/");
     const eventId = trackerParams[4]
@@ -63,126 +65,135 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }, [fetchedEvent])
 
     const fetchEventData = async () => {
-        const { data, error } = await myFetch(`${baseUrl}/event/${eventId}?source=eventgtm`);
-        if (error) {
-            console.error(`Error fetching event data for event ID ${eventId}:`, error);
-            return null;
+        // const { data, error } = await myFetch(`${baseUrl}/event/${eventId}?source=eventgtm`);
+        try {
+            const data:any = await getEventById(eventId)
+            if (error) {
+                console.error(`Error fetching event data for event ID ${eventId}:`, error);
+                return null;
+            }
+            const eventData = data?.data;
+            // if (!eventData) return null;
+            console.log("fetchedd", eventData)
+            const eventObject: EventsType = {
+                eventId: eventId, // Use eventId from the URL param
+                name: data?.name || "",
+                latitude: eventData.latitude || 0,
+                longitude: eventData.longitude || 0,
+                cityName: eventData.location_city || "",
+                virtualLink: eventData.virtualLink || "",
+                countryName: eventData.location_country || "",
+                startDate: eventData.start_date || "",
+                endDate: eventData.end_date || "",
+                startTime: eventData.start_time || "",
+                endTime: eventData.end_time || "",
+                participationType: eventData.participationType || "",
+                description: eventData.description || "",
+                format: eventData.format || "",
+                isLinkedToWidget: false, // Assuming this is not available in API, set a default value
+                gmtZone: eventData.gmt_time || "", // Assuming this is `gmt_time` from the API
+                interest: "", // Assuming this is missing from API, set default or handle later
+                logoUrl: eventData.logoUrl || "",
+                widgetTags: data?.widgetData,
+                eventType: data?.type,
+                event_type: eventData?.event_type,
+                parentData: "",
+                capacity: eventData.maxCapacity || 0,
+                registration: data?.registration === true ? true : false,
+                approval: data?.approval === true ? true : false,
+                waitlisting: data?.waitlisting === true ? true : false,
+                eventFormat: eventData.format || "",
+                customizationData: {
+                    pageBgColor: eventData.customizationData?.pageBgColor || "",
+                    pageGradient: eventData.customizationData?.pageGradient || "",
+                    confettiType: eventData.customizationData?.confettiType || "",
+                    leavesTheme: eventData.customizationData?.leavesTheme || false,
+                    snowTheme: eventData.customizationData?.snowTheme || false,
+                    eventFont: eventData.customizationData?.eventFont || "",
+                    registerBtnColor: eventData.customizationData?.registerBtnColor || "",
+                    registerBtnText: eventData.customizationData?.registerBtnText || "",
+                    registerMessage: eventData.customizationData?.registerMessage || "",
+                    speaker: eventData.customizationData?.speaker || [],
+                    participationMessage: eventData.customizationData?.participationMessage || "",
+                    venue: eventData.customizationData?.venue || "",
+                    hashtags: eventData.customizationData?.hashtags || "",
+                    boothNumber: eventData.customizationData?.boothNumber || "",
+                    eventFormat: eventData.customizationData?.eventFormat || "",
+                    exhibitor: eventData.customizationData?.exhibitor || [],
+                }
+            };
+            // const { data: subEventData, error: subEventError } = await myFetch(`${baseUrl}/public/widget/${eventId}/event`);
+            const subEventData:any = await getEventByPublicAPI(eventId)
+            const childrenData = subEventData.event.data.children
+            const subEvents : EventsType[] = childrenData.map((subevent : any)=>({
+                eventId: subevent.id, // Use eventId from the URL param
+                name: subevent.name || "",
+                latitude: subevent.data.latitude || 0,
+                longitude: subevent.data.longitude || 0,
+                cityName: subevent.data.location_city || "",
+                virtualLink : subevent.data.virtualLink || "",
+                countryName: subevent.data.location_country || "",
+                startDate: subevent.data.start_date || "",
+                endDate: subevent.data.end_date || "",
+                startTime: subevent.data.start_time || "",
+                endTime: subevent.data.end_time || "",
+                participationType: subevent.data.participationType || "",
+                description: subevent.data.description || "",
+                format: subevent.data.format || "",
+                isLinkedToWidget: false, // Assuming this is not available in API, set a default value
+                gmtZone: subevent.data.gmt_time || "", // Assuming this is `gmt_time` from the API
+                interest: "", // Assuming this is missing from API, set default or handle later
+                logoUrl: subevent.data.logoUrl || "",
+                widgetTags: subevent?.widgetData,
+                eventType: subevent?.type,
+                event_type: subevent.data?.event_type,
+                parentData: "",
+                capacity: subevent.data.maxCapacity || 0,
+                registration: subevent?.registration === true ? true : false,
+                approval: subevent?.approval === true ? true : false,
+                waitlisting: subevent?.waitlisting === true ? true : false,
+                eventFormat:subevent.data.format || "",
+                customizationData: {
+                    pageBgColor: subevent.data.customizationData?.pageBgColor || "",
+                    pageGradient: subevent.data.customizationData?.pageGradient || "",
+                    confettiType: subevent.data.customizationData?.confettiType || "",
+                    leavesTheme: subevent.data.customizationData?.leavesTheme || false,
+                    snowTheme: subevent.data.customizationData?.snowTheme || false,
+                    eventFont: subevent.data.customizationData?.eventFont || "",
+                    registerBtnColor: subevent.data.customizationData?.registerBtnColor || "",
+                    registerBtnText: subevent.data.customizationData?.registerBtnText || "",
+                    registerMessage: subevent.data.customizationData?.registerMessage || "",
+                    speaker: subevent.data.customizationData?.speaker || [],
+                    participationMessage: subevent.data.customizationData?.participationMessage || "",
+                    venue: subevent.data.customizationData?.venue || "",
+                    hashtags: subevent.data.customizationData?.hashtags || "",
+                    boothNumber: subevent.data.customizationData?.boothNumber || "",
+                    eventFormat: subevent.data.customizationData?.eventFormat || "",
+                    exhibitor: subevent.data.customizationData?.exhibitor || [],
+                }
+            }))
+            setFetchedSubEvents(subEvents)
+            setFetchedEvent(eventObject)
+            
+        } catch (error) {
+            console.log(error);
         }
-        const eventData = data?.data;
-        // if (!eventData) return null;
-        console.log("fetchedd", eventData)
-        const eventObject: EventsType = {
-            eventId: eventId, // Use eventId from the URL param
-            name: data?.name || "",
-            latitude: eventData.latitude || 0,
-            longitude: eventData.longitude || 0,
-            cityName: eventData.location_city || "",
-            virtualLink: eventData.virtualLink || "",
-            countryName: eventData.location_country || "",
-            startDate: eventData.start_date || "",
-            endDate: eventData.end_date || "",
-            startTime: eventData.start_time || "",
-            endTime: eventData.end_time || "",
-            participationType: eventData.participationType || "",
-            description: eventData.description || "",
-            format: eventData.format || "",
-            isLinkedToWidget: false, // Assuming this is not available in API, set a default value
-            gmtZone: eventData.gmt_time || "", // Assuming this is `gmt_time` from the API
-            interest: "", // Assuming this is missing from API, set default or handle later
-            logoUrl: eventData.logoUrl || "",
-            widgetTags: data?.widgetData,
-            eventType: data?.type,
-            event_type: eventData?.event_type,
-            parentData: "",
-            capacity: eventData.maxCapacity || 0,
-            registration: data?.registration === true ? true : false,
-            approval: data?.approval === true ? true : false,
-            waitlisting: data?.waitlisting === true ? true : false,
-            eventFormat: eventData.format || "",
-            customizationData: {
-                pageBgColor: eventData.customizationData?.pageBgColor || "",
-                pageGradient: eventData.customizationData?.pageGradient || "",
-                confettiType: eventData.customizationData?.confettiType || "",
-                leavesTheme: eventData.customizationData?.leavesTheme || false,
-                snowTheme: eventData.customizationData?.snowTheme || false,
-                eventFont: eventData.customizationData?.eventFont || "",
-                registerBtnColor: eventData.customizationData?.registerBtnColor || "",
-                registerBtnText: eventData.customizationData?.registerBtnText || "",
-                registerMessage: eventData.customizationData?.registerMessage || "",
-                speaker: eventData.customizationData?.speaker || [],
-                participationMessage: eventData.customizationData?.participationMessage || "",
-                venue: eventData.customizationData?.venue || "",
-                hashtags: eventData.customizationData?.hashtags || "",
-                boothNumber: eventData.customizationData?.boothNumber || "",
-                eventFormat: eventData.customizationData?.eventFormat || "",
-                exhibitor: eventData.customizationData?.exhibitor || [],
-            }
-        };
-        const { data: subEventData, error: subEventError } = await myFetch(`${baseUrl}/public/widget/${eventId}/event`);
-        const childrenData = subEventData.event.data.children
-        const subEvents : EventsType[] = childrenData.map((subevent : any)=>({
-            eventId: subevent.id, // Use eventId from the URL param
-            name: subevent.name || "",
-            latitude: subevent.data.latitude || 0,
-            longitude: subevent.data.longitude || 0,
-            cityName: subevent.data.location_city || "",
-            virtualLink : subevent.data.virtualLink || "",
-            countryName: subevent.data.location_country || "",
-            startDate: subevent.data.start_date || "",
-            endDate: subevent.data.end_date || "",
-            startTime: subevent.data.start_time || "",
-            endTime: subevent.data.end_time || "",
-            participationType: subevent.data.participationType || "",
-            description: subevent.data.description || "",
-            format: subevent.data.format || "",
-            isLinkedToWidget: false, // Assuming this is not available in API, set a default value
-            gmtZone: subevent.data.gmt_time || "", // Assuming this is `gmt_time` from the API
-            interest: "", // Assuming this is missing from API, set default or handle later
-            logoUrl: subevent.data.logoUrl || "",
-            widgetTags: subevent?.widgetData,
-            eventType: subevent?.type,
-            event_type: subevent.data?.event_type,
-            parentData: "",
-            capacity: subevent.data.maxCapacity || 0,
-            registration: subevent?.registration === true ? true : false,
-            approval: subevent?.approval === true ? true : false,
-            waitlisting: subevent?.waitlisting === true ? true : false,
-            eventFormat:subevent.data.format || "",
-            customizationData: {
-                pageBgColor: subevent.data.customizationData?.pageBgColor || "",
-                pageGradient: subevent.data.customizationData?.pageGradient || "",
-                confettiType: subevent.data.customizationData?.confettiType || "",
-                leavesTheme: subevent.data.customizationData?.leavesTheme || false,
-                snowTheme: subevent.data.customizationData?.snowTheme || false,
-                eventFont: subevent.data.customizationData?.eventFont || "",
-                registerBtnColor: subevent.data.customizationData?.registerBtnColor || "",
-                registerBtnText: subevent.data.customizationData?.registerBtnText || "",
-                registerMessage: subevent.data.customizationData?.registerMessage || "",
-                speaker: subevent.data.customizationData?.speaker || [],
-                participationMessage: subevent.data.customizationData?.participationMessage || "",
-                venue: subevent.data.customizationData?.venue || "",
-                hashtags: subevent.data.customizationData?.hashtags || "",
-                boothNumber: subevent.data.customizationData?.boothNumber || "",
-                eventFormat: subevent.data.customizationData?.eventFormat || "",
-                exhibitor: subevent.data.customizationData?.exhibitor || [],
-            }
-        }))
-        setFetchedSubEvents(subEvents)
-        setFetchedEvent(eventObject)
+       
     }
     const router = useRouter()
     const handleDelete = async () => {
         const customizeData = new FormData();
         customizeData.append("id", eventId)
         customizeData.append('published', "false");
-        const { data, error } = await myFetch(
-            `${baseUrl}/event`,
-            {
-                method: 'PATCH',
+        // const { data, error } = await myFetch(
+        //     `${baseUrl}/event`,
+        //     {
+        //         method: 'PATCH',
 
-                body: customizeData,
-            }
-        );
+        //         body: customizeData,
+        //     }
+        // );
+        const data = await deleteEvent(customizeData)
         if (data) {
             router.push("/widget/events")
         }

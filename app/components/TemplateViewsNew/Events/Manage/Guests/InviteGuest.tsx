@@ -5,7 +5,7 @@ import InviteGuestsSecScreen from './InviteGuestsSecScreen';
 import { baseUrl } from '@/constants';
 import { myFetch } from '@/utils/myFetch';
 import { showToast } from '@/utils/showToast';
-
+import { useInviteServices } from '@/services/geniservices/inviteService';
 interface Props {
   eventId: string;
   setInviteGuestModal : (value : boolean)=> void
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const InviteGuest = ({ eventId, setInviteGuestModal,fetchGuests }: Props) => {
-
+  const {getInviteCount, getSuggestions, sendInvite, error} = useInviteServices();
   const [count, setCount] = useState(4); // Default starting count
   const [screen, setScreen] = useState<string>("first");
   const [selectedMails, setSelectedMails] = useState<string[]>([])
@@ -29,7 +29,9 @@ const InviteGuest = ({ eventId, setInviteGuestModal,fetchGuests }: Props) => {
     if(suggestedMailQuery.length > 0){
       url+=`?q=${suggestedMailQuery}`
     }
-    const {data, error} = await myFetch(`${url}`)
+    // const {data, error} = await myFetch(`${url}`)
+    try {
+    const data = await getSuggestions(suggestedMailQuery);
     let emailArray : string[] = []
     if(error){
       console.log("error occured", error)
@@ -39,10 +41,15 @@ const InviteGuest = ({ eventId, setInviteGuestModal,fetchGuests }: Props) => {
       })
     }
     setSuggestedMails(emailArray)
+    } catch (error) {
+      console.log(error)
+    }
+    
   }
 
   const fetchInviteCount = async()=>{
-    const {data, error} = await myFetch(`${baseUrl}/invite?invites=true`)
+    // const {data, error} = await myFetch(`${baseUrl}/invite?invites=true`)
+    const data:any = await getInviteCount()
     if(data){
       setCount(data.inviteCount)
     }else{
@@ -68,14 +75,16 @@ const InviteGuest = ({ eventId, setInviteGuestModal,fetchGuests }: Props) => {
       eventId,
       redirectUrl: `${console_url}/detailpage/${eventId}`
     }
-    const { data, error } = await myFetch(`${baseUrl}/invite/send`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(newObj),
+    // remove
+    // const { data, error } = await myFetch(`${baseUrl}/invite/send`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify(newObj),
 
-    })
+    // })
+    const data = await sendInvite(newObj)
     if (data) {
       showToast('success', "Invitation sent")
       setInviteGuestModal(false)

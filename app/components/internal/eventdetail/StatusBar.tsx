@@ -65,7 +65,4 @@ const StatusBar = ({status, handleStatusChange}:Props) => {
     )
 }
 
-export default StatusBar
-
-// color: var(--secondary-text-color);
-// font-weight: var(--font-weight-medium);
+export default StatusBar;

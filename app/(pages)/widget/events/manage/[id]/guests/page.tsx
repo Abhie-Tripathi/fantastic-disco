@@ -6,13 +6,12 @@ import RegisterModal from '@/app/components/TemplateViewsNew/Events/Manage/Guest
 import useOutsideClick from '@/hooks/useOutsideClick'
 import InviteGuest from '@/app/components/TemplateViewsNew/Events/Manage/Guests/InviteGuest'
 import { useEventContext } from '@/context/eventcontext'
-import { baseUrl } from "@/constants";
-import { myFetch } from "@/utils/myFetch";
 import GuestBar from '@/app/components/TemplateViewsNew/Events/Manage/Guests/GuestBar'
 import RegisterIcon from '/public/widgetimages/manage_registerIcon.svg'
 import InviteIcon from '/public/widgetimages/manage_inviteIcon.svg'
 import GrpRegisterIcon from '/public/widgetimages/manage_grpRegisterIcon.svg'
 import Image from 'next/image'
+import { useIntendServices } from '@/services/geniservices/intendService'
 
 const Page = () => {
   const { fetchEventData, eventId, fetchedEvent } = useEventContext();
@@ -24,7 +23,7 @@ const Page = () => {
   const [statusModal, setStatusModal] = useState<boolean>(false)
   const registerModalRef = useOutsideClick(() => setRegisterModal(false))
   const inviteModalRef = useOutsideClick(() => setInviteGuestModal(false))
-
+  const {getAllGuest, getGuestCount,error} = useIntendServices()
   const [goingGuests, setGoingGuests] = useState<number>(0)
   const [notgoingGuests, setNotgoingGuests] = useState<number>(0)
   const [pendingGuests, setPendingGuests] = useState<number>(0)
@@ -76,31 +75,43 @@ const Page = () => {
   }, [inputName]);
 
   const fetchGuests = async () => {
-    let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}&sortType=asc`;
+    // let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}&sortType=asc`;
+    // if (sortBy.length > 0) {
+    //   fetchUrl += `&sortBy=${sortBy}`;
+    // }
 
-    if (sortBy.length > 0) {
-      fetchUrl += `&sortBy=${sortBy}`;
-    }
-
-    if (filterStatus.length > 0) {
-      fetchUrl += `&status=${filterStatus}`;
-    }
-    if (debouncedInputName) {
-      fetchUrl += `&name=${debouncedInputName}`;
-    }
-    const { data, error } = await myFetch(`${fetchUrl}`)
-
-    if (error) {
-      console.log("error is : ", error);
-    } else {
-      const fetchedGuests = data.users.map((user: any) => ({
-        name: `${user.firstname} ${user.lastname}`,
-        email: user.email,
-        status: user.status,
-        interestId: user.interestId,
-        date: formatDate(user.created)
-      }));
-      setGuests(fetchedGuests);
+    // if (filterStatus.length > 0) {
+    //   fetchUrl += `&status=${filterStatus}`;
+    // }
+    // if (debouncedInputName) {
+    //   fetchUrl += `&name=${debouncedInputName}`;
+    // }
+    // const { data, error } = await myFetch(`${fetchUrl}`)
+    try {
+      const queryParams = new URLSearchParams({
+        eventId: eventId,
+        sortType: "asc",
+        ...(sortBy.length > 0 && { sortBy }),
+        ...(filterStatus.length > 0 && { status: filterStatus }),
+        ...(debouncedInputName && { name: debouncedInputName })
+      }).toString();
+    
+        const data:any = await getAllGuest(queryParams)
+        if (error) {
+          console.log("error is : ", error);
+        } else {
+          const fetchedGuests = data.users.map((user: any) => ({
+            name: `${user.firstname} ${user.lastname}`,
+            email: user.email,
+            status: user.status,
+            interestId: user.interestId,
+            date: formatDate(user.created)
+          }));
+          setGuests(fetchedGuests);
+        }
+      
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -115,35 +126,40 @@ const Page = () => {
   }, [registerModal, statusModal, inviteGuestModal])
 
   const fetchCounts = async () => {
-    let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}`;
-    const { data, error } = await myFetch(`${fetchUrl}`)
-    if (error) {
-      console.log("error is : ", error);
-    } else {
-      data.stats.map((stat: any) => {
-        switch (stat.status) {
-          case "CONFIRMED":
-            setGoingGuests(stat.count);
-            break;
-          case "REJECTED":
-            setNotgoingGuests(stat.count);
-            break;
-          case "PENDING":
-            setPendingGuests(stat.count);
-            break;
-          case "FOLLOWING":
-            setFollowingGuests(stat.count);
-            break;
-          case "WAITLISTING":
-            setWaitlistGuests(stat.count);
-            break;
-          case "INVITATION":
-            setInvitedGuests(stat.count);
-            break;
-          default:
-            break; // Handle any unexpected statuses
-        }
-      });
+    // let fetchUrl = `${baseUrl}/intend/users?eventId=${eventId}`;
+    // const { data, error } = await myFetch(`${fetchUrl}`)
+    try {
+      const data:any = await getGuestCount(eventId)
+      if (error) {
+        console.log("error is : ", error);
+      } else {
+        data.stats.map((stat: any) => {
+          switch (stat.status) {
+            case "CONFIRMED":
+              setGoingGuests(stat.count);
+              break;
+            case "REJECTED":
+              setNotgoingGuests(stat.count);
+              break;
+            case "PENDING":
+              setPendingGuests(stat.count);
+              break;
+            case "FOLLOWING":
+              setFollowingGuests(stat.count);
+              break;
+            case "WAITLISTING":
+              setWaitlistGuests(stat.count);
+              break;
+            case "INVITATION":
+              setInvitedGuests(stat.count);
+              break;
+            default:
+              break; // Handle any unexpected statuses
+          }
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -173,7 +189,7 @@ const Page = () => {
         <div className={styles.heading}>At a Glance</div>
         <GuestBar setFilterStatus={setFilterStatus} goingGuests={goingGuests} notgoingGuests={notgoingGuests} waitlistGuest={waitlistGuests} invitedGuests={invitedGuests} pendingGuests={pendingGuests} followingGuests={followingGuests} capacity={fetchedEvent?.capacity} />
       </div>
-      <GuestList fetchGuests={fetchGuests} guests={guests} setSortBy={setSortBy} setFilterStatus={setFilterStatus} setInputName={setInputName} eventId={eventId} statusModal={statusModal} setStatusModal={setStatusModal} />
+      <GuestList fetchGuests={fetchGuests} filterStatus={filterStatus} guests={guests} setSortBy={setSortBy} setFilterStatus={setFilterStatus} setInputName={setInputName} eventId={eventId} statusModal={statusModal} setStatusModal={setStatusModal} />
 
       {registerModal && <div className={styles.modal} ref={registerModalRef}>
         <RegisterModal fetchEventData={fetchEventData} setRegisterValue={setRegisterValue} registerValue={registerValue} setRegisterModal={setRegisterModal} eventId={eventId} />

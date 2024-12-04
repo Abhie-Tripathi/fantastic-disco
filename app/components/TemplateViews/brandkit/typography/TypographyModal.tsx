@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./typographyModal.module.css";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
-
+import { useBrandKitServices } from '@/services/geniservices/brandkitService';
 const API_KEY: string | undefined = process.env.NEXT_PUBLIC_GOOGLE_FONTS_API;
 interface Font {
   family: string;
@@ -17,7 +17,7 @@ const TypographyModal = ({
   const [importSource, setImportSource] = useState("Google");
   const [googleFonts, setGoogleFonts] = useState<Font[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const {updateBrandkit,error} = useBrandKitServices()
   useEffect(() => {
     if (importSource === "Google") {
       const fetchFonts = async () => {
@@ -48,13 +48,14 @@ const TypographyModal = ({
     const updatedFonts = [...fetchedFonts, selectedFont];
     const newFonts = [...fetchedFonts, selectedFont];
     setFetchedFonts(updatedFonts);
-    const { data, error } = await myFetch(`${baseUrl}/kit`, {
-      method: "PATCH",
-      body: JSON.stringify({ fontFamily: newFonts.join() }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    // const { data, error } = await myFetch(`${baseUrl}/kit`, {
+    //   method: "PATCH",
+    //   body: JSON.stringify({ fontFamily: newFonts.join() }),
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // });
+    const data:any = await updateBrandkit({ fontFamily: newFonts.join() })
     if (error) {
       console.log(error);
       return;
@@ -101,7 +102,7 @@ const TypographyModal = ({
       </div>
 
       <div className={styles.rightPanel}>
-        <h4>Select a Typography</h4>
+        <span className={styles.select_typo_text}>Select a Typography</span>
         <div className={styles.fonts_container}>
           {importSource === "Google" && (
             <>
