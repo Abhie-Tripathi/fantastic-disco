@@ -8,7 +8,7 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GeistSans } from 'geist/font/sans';
-import Sidebar from "../components/sidebar";
+import Sidebar from "@/components/layout/sidebar";
 import styles from './layout.style.module.css'
 
 const sora = Sora({
