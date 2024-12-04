@@ -679,6 +679,13 @@ const Table = ({
                 "You have reached the maximum limit to view data. Please get in touch with us."
               );
             }
+            if (error.status === 406) {
+              setRequestExhausted(true);
+              setZeroStateHeading("You are not authorized to view the data as per you plan.");
+              setZeroStateText(
+                ""
+              );
+            }
           }
         } catch (error) {
           console.error("Error fetching data:", error);

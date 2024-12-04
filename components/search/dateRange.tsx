@@ -69,6 +69,7 @@ const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
 
 interface DateRangeProps {
   source: string;
+  enabledDateRange?:any;
   dateRange?: {
     from: Date | undefined;
     to: Date | undefined;
@@ -83,6 +84,7 @@ interface DateRangeProps {
 
 export default function DateRangeSelector({
   source,
+  enabledDateRange,
   dateRange: parentDateRange,
   setDateRange: setParentDateRange,
 }: DateRangeProps) {
@@ -313,6 +315,7 @@ export default function DateRangeSelector({
                   <Button
                     key={preset.value}
                     onClick={() => handlePresetChange(preset.value)}
+                    disabled={!(enabledDateRange?.startDate && enabledDateRange?.endDate)}
                     variant="outline"
                     className={cn(
                       "w-full font-normal",
@@ -328,6 +331,7 @@ export default function DateRangeSelector({
             <div>
               <Calendar
                 mode="range"
+                disabled={!(enabledDateRange?.startDate && enabledDateRange?.endDate)}
                 selected={dateRange}
                 onSelect={(range, selectedDay) => {
                   handleDateSelect(selectedDay);

@@ -16,13 +16,19 @@ const groupedEventTypes: Record<EventGroupType, string[]> = {
   social: ["festival", "concert", "sport", "performing-arts", "community"],
   business: ["tradeshows", "conferences", "workshops"],
 };
+interface typeInterface{
+  enabledValue?: string[];
+  selectedValue?: string[]; 
+}
 interface EventTypeProps{
   source: string;
+  enabledTypeData?:typeInterface;
   selectedCategories?: Record<EventGroupType, string[]>;
   setSelectedCategories?: React.Dispatch<React.SetStateAction<Record<EventGroupType, string[]>>>;
 }
 export default function EventTypeSelector({
   source,
+  enabledTypeData,
   selectedCategories: parentSelectedCategories = { social: [], business: [] },
   setSelectedCategories: parentSetSelectedCategories,
 }:EventTypeProps) {
@@ -126,6 +132,8 @@ export default function EventTypeSelector({
               <Checkbox
                 className="rounded-[2.5px]"
                 id={category}
+                disabled={enabledTypeData &&
+                  enabledTypeData.enabledValue && !enabledTypeData?.enabledValue?.includes(category.charAt(0).toUpperCase() + category.slice(1).replace(/s$/, ''))}
                 checked={selectedCategories[type].includes(category)}
                 onCheckedChange={() => handleCategoryToggle(type, category)}
               />

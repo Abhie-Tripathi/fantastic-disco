@@ -24,7 +24,15 @@ const frequencies = [
   { id: "quinquennial", label: "Quinquennial" },
   { id: "one-time", label: "One-Time" },
 ];
+interface freqInterface{
+  isFreqEnabled:boolean,
+  selectedValue:string[],
+  enabledValue:string[],
+  toggleOpend:boolean,
+  popUpOpend:boolean,
+}
 interface FrequencySelectorProps {
+  enabledFreqData?:freqInterface;
   source: string;
   selectedFrequencies?: string[];
   setSelectedFrequencies?: React.Dispatch<React.SetStateAction<string[]>>;
@@ -33,6 +41,7 @@ interface FrequencySelectorProps {
 }
 export default function FrequencySelector({
   source,
+  enabledFreqData,
   selectedFrequencies: parentSelectedFrequencies = [],
   setSelectedFrequencies: parentSetSelectedFrequencies,
   isEnabled: parentIsEnabled = false,
@@ -95,6 +104,7 @@ export default function FrequencySelector({
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
+          disabled={enabledFreqData && !enabledFreqData?.isFreqEnabled}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
           <span className="flex items-center gap-2">
@@ -125,6 +135,7 @@ export default function FrequencySelector({
               <Checkbox
                 id={frequency.id}
                 checked={selectedFrequencies.includes(frequency.id)}
+                disabled={enabledFreqData && !enabledFreqData?.enabledValue.includes(frequency.id)}
                 onCheckedChange={() => handleFrequencyToggle(frequency.id)}
               />
               <Label htmlFor={frequency.id}>{frequency.label}</Label>

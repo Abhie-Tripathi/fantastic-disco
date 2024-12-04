@@ -18,7 +18,8 @@ export const endpoints = {
     eventPOCDetailById: `${BASE_URL}/event-poc`,
     savedEvents: `${BASE_URL}/me/saved-events`,
     recentSearches: `${BASE_URL}/me/recent-searches`,
-    poc: `${BASE_URL}/event-poc`
+    poc: `${BASE_URL}/event-poc`,
+    enabledFilters: `${BASE_URL}/configuration`
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,

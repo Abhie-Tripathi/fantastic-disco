@@ -12,15 +12,22 @@ import { useFilterContext } from "@/context/filterContext";
 import KeywordTabs from "./keywordTabs";
 interface KeywordSelectorProps{
   source:string;
+  enabledProductData?:keywordInterface,
   type?:string;
   includeKeywords?:string[];
   setIncludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
   excludeKeywords?:string[];
   setExcludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
 }
+interface keywordInterface{
+  isKeywordEnabled:boolean;
+  positiveKeywords: string[];
+  negativeKeywords: string[];
+}
 export default function KeywordFilter({
   type,
-  source, 
+  enabledProductData,
+  source,
   includeKeywords : parentIncludeKeyword = [], 
   setIncludeKeywords : setParentIncludeKeywords, 
   excludeKeywords : parentExcludeKeyword = [], 
@@ -109,6 +116,7 @@ export default function KeywordFilter({
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
+          disabled={enabledProductData && !enabledProductData?.isKeywordEnabled}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
           <span className="flex items-center gap-2">

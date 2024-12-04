@@ -36,12 +36,16 @@ const useDesignationsAutocomplete = (input: string) => {
     isError: !!error,
   };
 };
+interface desInterface{
+  isProfileEnabed?:boolean
+}
 interface DesAndDepProps{
   source: string,
+  enabledProfileData?:desInterface,
   designationData?:string[],
   setDesignationData?:React.Dispatch<React.SetStateAction<string[]>>,
 }
-export default function AudienceDesAndDepSelector({source, designationData, setDesignationData}: DesAndDepProps) {
+export default function AudienceDesAndDepSelector({source, designationData, setDesignationData, enabledProfileData}: DesAndDepProps) {
   const [open, setOpen] = useState(false);
   const [selectedLabels, setSelectedLabels] = useState<Designations[]>([]);
   const [search, setSearch] = useState("");
@@ -88,6 +92,7 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
     );
     }
   }, [designations]);
+  
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -96,6 +101,7 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             open ? "border-primary" : "border-input"
           }`}
+          disabled={enabledProfileData ? !enabledProfileData.isProfileEnabed : false}
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-haspopup="true"

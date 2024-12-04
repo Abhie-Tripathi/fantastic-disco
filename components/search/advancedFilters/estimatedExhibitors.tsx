@@ -18,8 +18,13 @@ const exhibitorRanges = [
   { id: "500-1000", label: "500-1000", min: 500, max: 1000 },
   { id: "1000+", label: "1000+", min: 1000, max: Infinity },
 ];
+interface exhibitorInterface{
+  isExhibitorsEnabled:boolean;
+  enabledValue:string[];
+}
 interface EstimatedExhibitorProps {
   source: string;
+  enabledExhibitorData?:exhibitorInterface;
   selectedRanges?: string[];
   setSelectedRanges?: React.Dispatch<React.SetStateAction<string[]>>; 
   isEnabled?: boolean;
@@ -28,6 +33,7 @@ interface EstimatedExhibitorProps {
 
 export default function EstimatedExhibitorsSelector({
   source,
+  enabledExhibitorData,
   selectedRanges: parentSelectedRanges = [],
   setSelectedRanges: parentSetSelectedRanges,
   isEnabled: parentIsEnabled = false,
@@ -110,6 +116,7 @@ export default function EstimatedExhibitorsSelector({
         <Button
           variant="outline"
           role="combobox"
+          disabled={enabledExhibitorData && !enabledExhibitorData?.isExhibitorsEnabled}
           aria-expanded={isOpen}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
@@ -140,6 +147,7 @@ export default function EstimatedExhibitorsSelector({
             <div key={range.id} className="flex items-center space-x-2">
               <Checkbox
                 id={range.id}
+                disabled={enabledExhibitorData && !enabledExhibitorData?.enabledValue.includes(range.id)}
                 checked={selectedRanges.includes(range.id)}
                 onCheckedChange={() => handleRangeToggle(range.id)}
               />

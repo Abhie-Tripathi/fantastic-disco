@@ -40,6 +40,7 @@ export interface LocationItem {
 export type Location = GeoLocation | LocationItem[];
 export interface LocationProps {
   source: string;
+  type?:string;
   selectedLocation?: Location | null;
   setSelectedLocation?: React.Dispatch<
     React.SetStateAction<GeoLocation | LocationItem[] | null>
@@ -92,7 +93,7 @@ export default function LocationSelector({
           return {
             locationType: "LocationID",
             id,
-            description: location?.formattedLocations[0].displayName,
+            description: location?.formattedLocations[0]?.displayName,
           };
         })
       );

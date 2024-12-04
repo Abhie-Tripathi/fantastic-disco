@@ -26,12 +26,21 @@ const userRatings = [
 interface UserRatingsProps{
   source: string,
   selectedRatings?: string[],
+  enabledRatingData?: ratingsInterface,
   setSeectedRatings?: React.Dispatch<React.SetStateAction<string[]>>,
   isEnabled?: boolean;
   setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
+interface ratingsInterface{
+  isRatingEnabled?:boolean | undefined,
+  selectedValue?:string[] | undefined,
+  enabledValue?:string[] | undefined,
+  toggleOpend?:boolean,
+  popUpOpend?:boolean,
+}
 export default function UserRatingSelector({
   source,
+  enabledRatingData,
   selectedRatings: parentSelectedRatings=[],
   setSeectedRatings: parentSetSelectedRatings,
   isEnabled: parentIsEnabled = false,
@@ -59,7 +68,7 @@ const setSelectedRatings=
     setSelectedRatings(ratings);
     setShowRatings?.(getLocalFilterValue("show").includes("rating"));
     }
-  }, [searchParams]);
+  }, [searchParams, getLocalFilterValue]);
 
   const handleRatingToggle = (ratingId: string) => {
     setSelectedRatings?.((prev) =>
@@ -84,6 +93,7 @@ const setSelectedRatings=
     }
     setIsOpen(open);
   };
+console.log(enabledRatingData);
 
   console.log("hii", showRatings);
   return (
@@ -93,6 +103,7 @@ const setSelectedRatings=
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
+          disabled={enabledRatingData && !enabledRatingData?.isRatingEnabled}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
           <span className="flex items-center gap-2">
@@ -107,6 +118,7 @@ const setSelectedRatings=
             <DynamicSwitch
               checked={showRatings} 
               onCheckedChange={handleShowRatingsToggle}
+              disabled={!enabledRatingData?.isRatingEnabled}
               aria-label="Show ratings"
               onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                 e.stopPropagation()
@@ -114,7 +126,7 @@ const setSelectedRatings=
             />
           )}
         </Button>
-      </PopoverTrigger>
+      </PopoverTrigger> 
       <PopoverContent
         className="w-[var(--radix-popover-trigger-width)] p-0"
         align="start"
@@ -125,6 +137,7 @@ const setSelectedRatings=
               <div key={rating.id} className="flex items-center space-x-2">
                 <Checkbox
                   id={rating.id}
+                  disabled={enabledRatingData && !enabledRatingData?.enabledValue?.includes(rating.id)}
                   checked={selectedRatings.includes(rating.id)}
                   onCheckedChange={() => handleRatingToggle(rating.id)}
                 />

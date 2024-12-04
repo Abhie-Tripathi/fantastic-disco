@@ -1,42 +1,58 @@
 "use client";
 
-import { EventsAdapter } from "@/adapters/eventsAdapter";
-import Table from "@/app/components/Table";
-import ZeroState from "@/app/components/zerostate";
-import EventCalendar from "@/components/eventCalendar";
 import AdvancedFilters from "@/components/search/advancedFilters";
+import UserRatingSelector from "@/components/search/userRatingSelector";
 import CategorySelector from "@/components/search/categorySelector";
-import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 import DateRangeSelector from "@/components/search/dateRange";
+import EventCalendar from "@/components/eventCalendar";
 import EventEntrySelector from "@/components/search/eventEntry";
 import EventFormatSelector from "@/components/search/eventFormat";
 import EventTypeSelector from "@/components/search/eventType";
+import List from "@/components/search/list";
 import LocationSelector from "@/components/search/location";
 import SearchBar from "@/components/search/searchbar";
 import StatusSelector from "@/components/search/status";
-import UserRatingSelector from "@/components/search/userRatingSelector";
 import Loading from "@/components/ui/Loading";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFilterContext } from "@/context/filterContext";
+import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
-import { ApiError } from "@/types/api";
 import {
   CalendarEvent,
   CalendarMonthEvent,
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
+  Event,
   EventsResponse,
   MapEventsResponse,
 } from "@/types/events";
-import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Filter, Loader2, Plus } from "lucide-react";
+import { ArrowUpRight, Loader2, Filter, Cross } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { lazy, useCallback, useState } from "react";
+import { Suspense, lazy, use, useCallback, useEffect, useState } from "react";
+import Table from "@/app/components/Table";
+import { EventsAdapter } from "@/adapters/eventsAdapter";
+import { showToast } from "@/utils/showToast";
+import moment from "moment";
+import {
+  Button as Button10x,
+  Dialog as Dialog10x,
+  DialogContent as DialogContent10x,
+  DialogTitle as DialogTitle10x,
+  Input as Input10x,
+} from "10xui";
+import { GAEvent } from "@/utils/GAEvent";
+import { BaseURL } from "@/config";
+import { myFetch } from "@/utils/myFetch";
 import { toast } from "react-toastify";
+import styles from "./search.module.css";
+import ZeroState from "@/app/components/zerostate";
+import { ApiError } from "@/types/api";
+import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 
 const Map = lazy(() => import("@/components/map"));
 
@@ -60,7 +76,7 @@ const Search = () => {
     useFilterState();
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
-  const { applyFilters, localFilters, clearLocalFilters } = useFilterContext();
+  const { applyFilters, setMultipleLocalFilters, setLocalFilter, enabledFilters } = useFilterContext();
   const searchParams = useSearchParams();
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
@@ -97,9 +113,9 @@ const Search = () => {
     staleTime: 0,
   });
 
-  // console.log(Array.from(searchParams.values()));
-
   const displayData = eventData;
+  console.log(eventData);
+  
   const events = displayData?.events || [];
   const count = displayData?.count || 0;
 
@@ -145,12 +161,8 @@ const Search = () => {
     audienceZone: adaptedParams.shows?.includes("audienceZone"),
     audienceSpread: adaptedParams.audienceSpread ? true : false,
     eventFrequency: adaptedParams.shows?.includes("eventFrequency"),
-    includeKeywords: adaptedParams.includeKeywords
-      ? adaptedParams.includeKeywords
-      : "",
-    excludeKeywords: adaptedParams.excludeKeywords
-      ? adaptedParams.excludeKeywords
-      : "",
+    includeKeywords: adaptedParams.includeKeywords ? adaptedParams.includeKeywords : '',
+    excludeKeywords: adaptedParams.excludeKeywords ? adaptedParams.excludeKeywords : '',
   };
 
   // console.log(adaptedQueryString);
@@ -169,69 +181,66 @@ const Search = () => {
       setTrackerModalOpen(true);
     }
   };
-
-  const filtersCount = (function () {
-    let count = 0;
-    if (localFilters.onlyBranded || localFilters.onlySeries) count++;
-    if (localFilters.frequencies) count++;
-    if (localFilters.includeKeywords || localFilters.excludeKeywords) count++;
-    if (localFilters.maturity) count++;
-    if (localFilters.estimatedVisitors) count++;
-    if (localFilters.impact_score_gte) count++;
-    if (localFilters.top) count++;
-    return count;
-  })();
+  // const [enabledFilters, setEnabledFilters]=useState();
+  // useEffect(() => {
+  //   const getEnabledFilters = async () => {
+  //     try {
+  //       const data = await eventService.fetchEnabledFilters("research");
+  //       console.log(data);
+  //       if(data){
+  //       setEnabledFilters(data);
+  //       }else{
+  //         setEnabledFilters(enabledValues);
+  //       }
+  //     } catch (e) {
+  //       console.log(e);
+  //     }
+  //   };
+  
+  //   getEnabledFilters();
+  // }, []);
+  
+  
+console.log(enabledFilters);
 
   return (
     <div className="space-y-6 p-6">
       <SearchBar />
       <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
         <div className="col-span-8 grid grid-cols-4 gap-3">
-          <EventTypeSelector source="search" />
-          <CategorySelector source="search" />
-          <EventFormatSelector source="search" />
-          <LocationSelector source="search" />
-          <DateRangeSelector source="search" />
-          <StatusSelector source="search" />
-          <EventEntrySelector source="search" />
-          <UserRatingSelector source="search" />
+          <EventTypeSelector source="search" enabledTypeData={ enabledFilters?.eventType}/>
+          <CategorySelector source="search" enabledCategories={enabledFilters?.eventCategory}/>
+          <EventFormatSelector source="search" enabledFormat={enabledFilters?.eventFormat}/>
+          <LocationSelector source="search"/>
+          <DateRangeSelector source="search" enabledDateRange={enabledFilters?.locationIds}/>
+          <StatusSelector source="search" enabledStatuses={enabledFilters?.eventStatus}/>
+          <EventEntrySelector source="search" enabledEntries={enabledFilters?.eventEntry}/>
+          <UserRatingSelector source="search" enabledRatingData={enabledFilters?.eventRating}/>
         </div>
-        <div className="col-span-2 grid grid-cols-2 gap-2">
-          <div className="row-span-2 flex flex-col gap-3">
-            <Button onClick={searchHandler} disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Searching...
-                </>
-              ) : (
-                "Search"
-              )}
-            </Button>
+        <div className="col-span-2 flex flex-col gap-4">
+          <Button
+            size="lg"
+            onClick={searchHandler}
+            disabled={isLoading}
+            className="text-white"
+          >
+            {isLoading || !tableLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Searching...
+              </>
+            ) : (
+              "Search"
+            )}
+          </Button>
+          <div className="flex items-center justify-evenly">
             <Button
               variant="link"
-              onClick={() => createTrackerHandler()}
-              disabled={Object.keys(localFilters).length === 0}
+              className="p-0 block text-wrap"
+              onClick={createTrackerHandler}
             >
-              <Plus
-                width="15"
-                height="15"
-                className="w-4 h-w-4"
-                color="#6750a4"
-              />
               Save as Tracker
             </Button>
-          </div>
-          <div className="row-span-2 flex flex-col gap-3">
-            <Button
-              disabled={Object.keys(localFilters).length == 0}
-              variant="link"
-              className="text-primary"
-              onClick={() => clearLocalFilters()}
-            >
-              Reset Filters
-            </Button>
-
             <Button
               variant="link"
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
@@ -239,12 +248,11 @@ const Search = () => {
             >
               <Filter className="mr-2 h-4 w-4" />
               {showAdvancedFilters ? "Hide" : "Advanced"}
-              {filtersCount ? `(${filtersCount})` : ""}
             </Button>
           </div>
         </div>
       </div>
-      {showAdvancedFilters && <AdvancedFilters />}
+      {showAdvancedFilters && <AdvancedFilters enabledFilters={enabledFilters}/>}
 
       <Tabs
         defaultValue="list"
@@ -324,6 +332,38 @@ const Search = () => {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* <Dialog10x open={trackerModalOpen}>
+        <DialogContent10x>
+          <DialogTitle10x style={{ width: "35vw" }}>
+            <span>Create Tracker</span>
+            <Cross
+              onClick={() => setTrackerModalOpen(false)}
+              style={{ float: "right", cursor: "pointer" }}
+              color={"primary"}
+              height={"15px"}
+              width={"15px"}
+            />
+          </DialogTitle10x>
+          <div>
+            <Input10x
+              placeholder="Enter Tracker Name"
+              onChange={(e) => setCustomTrackerName(e.target.value)}
+              value={customTrackerName}
+            />
+          </div>
+          <div>
+            <Button10x
+              onClick={saveTrackerHandler}
+              style={{ float: "right", border: "unset" }}
+              color={"primary"}
+              variant={"secondary"}
+            >
+              Save
+            </Button10x>
+          </div>
+        </DialogContent10x>
+      </Dialog10x> */}
 
       <CreateTrackerDialog
         open={trackerModalOpen}

@@ -18,11 +18,16 @@ import { Country } from "@/types/events/events";
 import { useFilterContext } from "@/context/filterContext";
 interface AudienceSpreadProps{
   source: string;
+  enabledSpreadData?:spreadInterface;
   selectedCountries?: string[];
   setSelectedCountries?: React.Dispatch<React.SetStateAction<string[]>>;
 }
+interface spreadInterface{
+  isAudienceEnabled:boolean;
+}
 export default function Component({
   source,
+  enabledSpreadData,
   selectedCountries: selectedParentCountries = [],
   setSelectedCountries: setSelectedParentCountries,
 }: AudienceSpreadProps) {
@@ -117,6 +122,7 @@ export default function Component({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
+          disabled={enabledSpreadData && !enabledSpreadData?.isAudienceEnabled}
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             isOpen ? "border-primary" : "border-input"
           }`}
