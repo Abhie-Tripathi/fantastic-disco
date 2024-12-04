@@ -14,9 +14,10 @@ interface Props {
     virutalLinkMain : string;
     virtualLinkSub : string;
     countryNameMain : string;
+    eventFlow : string;
 }
 
-const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participationTypeMain, descriptionMain, eventNameSub, eventTypeSub, descriptionSub, cityNameSub, virutalLinkMain, virtualLinkSub, countryNameMain }: Props) => {
+const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participationTypeMain, descriptionMain, eventNameSub, eventTypeSub, descriptionSub, cityNameSub, virutalLinkMain, virtualLinkSub,countryNameMain }: Props) => {
 
     const [activeBars, setActiveBars] = useState<string[]>([])
 
