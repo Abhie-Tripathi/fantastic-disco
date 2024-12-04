@@ -1,0 +1,1292 @@
+[
+    {
+      "id": 112,
+      "url": "T_SPEAKING_OPPORTUNITY",
+      "trackerName": "Top Voice in Education",
+      "content": "Empowering transformative learning strategies for the future of education.",
+      "data": [
+        [
+          "Sal Khan",
+          "Khan Academy"
+        ],
+        [
+          "Andreas Schleicher",
+          "OECD"
+        ],
+        [
+          "Linda Darling-Hammond",
+          "Learning Policy Institute"
+        ],
+        [
+          "Daphne Koller",
+          "insitro"
+        ],
+        [
+          "Anant Agarwal",
+          "edX"
+        ],
+        [
+          "Carol Dweck",
+          "Stanford University"
+        ],
+        [
+          "Sugata Mitra",
+          "Newcastle University"
+        ],
+        [
+          "Angela Duckworth",
+          "University of Pennsylvania"
+        ],
+        [
+          "Pasi Sahlberg",
+          "University of New South Wales"
+        ],
+        [
+          "Hadi Partovi",
+          "Code.org"
+        ],
+        [
+          "Wendy Kopp",
+          "Teach For All"
+        ],
+        [
+          "Diane Ravitch",
+          "New York University"
+        ],
+        [
+          "Michael Fullan",
+          "University of Toronto"
+        ],
+        [
+          "Esther Wojcicki",
+          "Palo Alto High School"
+        ],
+        [
+          "Tony Wagner",
+          "Learning Policy Institute"
+        ],
+        [
+          "Jo Boaler",
+          "Stanford University"
+        ],
+        [
+          "Geoffrey Canada",
+          "Harlem Children's Zone"
+        ],
+        [
+          "Eric Mazur",
+          "Harvard University"
+        ],
+        [
+          "John Hattie",
+          "University of Melbourne"
+        ],
+        [
+          "Arne Duncan",
+          "Emerson Collective"
+        ],
+        [
+          "Peter Senge",
+          "MIT Sloan School of Management"
+        ],
+        [
+          "Mitchel Resnick",
+          "MIT Media Lab"
+        ],
+        [
+          "Sir Anthony Seldon",
+          "University of Buckingham"
+        ],
+        [
+          "Ellen Moir",
+          "New Teacher Center"
+        ],
+        [
+          "Hirokazu Yoshikawa",
+          "New York University"
+        ],
+        [
+          "Kathy Hirsh-Pasek",
+          "Temple University"
+        ],
+        [
+          "Stephen Heppell",
+          "Heppell.net"
+        ],
+        [
+          "Randi Weingarten",
+          "American Federation of Teachers"
+        ],
+        [
+          "Sir Michael Barber",
+          "Delivery Associates"
+        ],
+        [
+          "Kiran Bir Sethi",
+          "Design for Change"
+        ],
+        [
+          "Ken Robinson",
+          "Independent"
+        ],
+        [
+          "Emily Pilloton",
+          "Girls Garage"
+        ],
+        [
+          "David Coleman",
+          "College Board"
+        ],
+        [
+          "Freeman Hrabowski III",
+          "University of Maryland Baltimore County"
+        ],
+        [
+          "LeVar Burton",
+          "Reading Rainbow"
+        ],
+        [
+          "Jal Mehta",
+          "Harvard Graduate School of Education"
+        ],
+        [
+          "Kaya Henderson",
+          "Reconstruction US"
+        ],
+        [
+          "Michael Horn",
+          "Clayton Christensen Institute"
+        ],
+        [
+          "Deborah Loewenberg Ball",
+          "University of Michigan"
+        ],
+        [
+          "Richard Culatta",
+          "ISTE (International Society for Technology in Education)"
+        ],
+        [
+          "Barbara Oakley",
+          "Oakland University"
+        ],
+        [
+          "Fernando Reimers",
+          "Harvard Graduate School of Education"
+        ],
+        [
+          "Vicky Colbert",
+          "Fundaci\u00f3n Escuela Nueva"
+        ],
+        [
+          "Charles Fadel",
+          "Center for Curriculum Redesign"
+        ],
+        [
+          "Reshma Saujani",
+          "Girls Who Code"
+        ],
+        [
+          "Alec Couros",
+          "University of Regina"
+        ],
+        [
+          "Katie Martin",
+          "Altitude Learning"
+        ],
+        [
+          "George Couros",
+          "Independent"
+        ],
+        [
+          "Neil Selwyn",
+          "Monash University"
+        ],
+        [
+          "Jay McTighe",
+          "Independent"
+        ],
+        [
+          "Heidi Hayes Jacobs",
+          "Curriculum Designers"
+        ]
+      ],
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "74"
+    },
+    {
+      "id": 113,
+      "url": "T_SPEAKING_OPPORTUNITY",
+      "trackerName": "Top Voice in IT & Technology",
+      "content": "Driving innovation through cutting-edge tech solutions and digital advancements.",
+      "data": [
+        [
+          "Satya Nadella",
+          "Microsoft"
+        ],
+        [
+          "Tim Cook",
+          "Apple Inc."
+        ],
+        [
+          "Sundar Pichai",
+          "Alphabet Inc. (Google)"
+        ],
+        [
+          "Elon Musk",
+          "Tesla SpaceX Neuralink X Corp"
+        ],
+        [
+          "Mark Zuckerberg",
+          "Meta Platforms (Facebook)"
+        ],
+        [
+          "Jeff Bezos",
+          "Amazon"
+        ],
+        [
+          "Lisa Su",
+          "AMD (Advanced Micro Devices)"
+        ],
+        [
+          "Jensen Huang",
+          "NVIDIA Corporation"
+        ],
+        [
+          "Ginni Rometty",
+          "IBM"
+        ],
+        [
+          "Arvind Krishna",
+          "IBM"
+        ],
+        [
+          "Reed Hastings",
+          "Netflix"
+        ],
+        [
+          "Sheryl Sandberg",
+          "Meta Platforms (Facebook)"
+        ],
+        [
+          "Jack Dorsey",
+          "Block Inc. (formerly Square)"
+        ],
+        [
+          "Susan Wojcicki",
+          "YouTube"
+        ],
+        [
+          "Marc Benioff",
+          "Salesforce"
+        ],
+        [
+          "Daniel Ek",
+          "Spotify"
+        ],
+        [
+          "Safra Catz",
+          "Oracle Corporation"
+        ],
+        [
+          "Michael Dell",
+          "Dell Technologies"
+        ],
+        [
+          "Diane Greene",
+          "Google Cloud"
+        ],
+        [
+          "Andrew Ng",
+          "Landing AI"
+        ],
+        [
+          "Fei-Fei Li",
+          "Stanford University"
+        ],
+        [
+          "Kai-Fu Lee",
+          "Sinovation Ventures"
+        ],
+        [
+          "Bill Gates",
+          "Microsoft; Bill & Melinda Gates Foundation"
+        ],
+        [
+          "Linus Torvalds",
+          "Linux Kernel; Git"
+        ],
+        [
+          "Demis Hassabis",
+          "DeepMind (Alphabet Inc.)"
+        ],
+        [
+          "Gwynne Shotwell",
+          "SpaceX"
+        ],
+        [
+          "Werner Vogels",
+          "Amazon Web Services"
+        ],
+        [
+          "Jeff Dean",
+          "Google"
+        ],
+        [
+          "Vint Cerf",
+          "Google"
+        ],
+        [
+          "Tim Berners-Lee",
+          "World Wide Web Consortium (W3C)"
+        ],
+        [
+          "Susan Fowler",
+          "Editor-in-Chief at The New York Times Opinion"
+        ],
+        [
+          "Shantanu Narayen",
+          "Adobe Inc."
+        ],
+        [
+          "Drew Houston",
+          "Dropbox"
+        ],
+        [
+          "Brian Chesky",
+          "Airbnb"
+        ],
+        [
+          "Jayshree Ullal",
+          "Arista Networks"
+        ],
+        [
+          "Alexandra \"Sandy\" Carter",
+          "Amazon Web Services"
+        ],
+        [
+          "Reshma Saujani",
+          "Girls Who Code"
+        ],
+        [
+          "Steve Wozniak",
+          "Apple Inc."
+        ],
+        [
+          "Garry Kasparov",
+          "Avast"
+        ],
+        [
+          "Anne Wojcicki",
+          "23andMe"
+        ],
+        [
+          "Reid Hoffman",
+          "LinkedIn; Greylock Partners"
+        ],
+        [
+          "Jimmy Wales",
+          "Wikipedia"
+        ],
+        [
+          "Hadi Partovi",
+          "Code.org"
+        ],
+        [
+          "Melanie Perkins",
+          "Canva"
+        ],
+        [
+          "Vitalik Buterin",
+          "Ethereum"
+        ],
+        [
+          "Eric Yuan",
+          "Zoom Video Communications"
+        ],
+        [
+          "Brad Smith",
+          "Microsoft"
+        ],
+        [
+          "Martine Rothblatt",
+          "United Therapeutics"
+        ],
+        [
+          "Guido van Rossum",
+          "Microsoft"
+        ],
+        [
+          "Stewart Butterfield",
+          "Slack Technologies"
+        ],
+        [
+          "Jason Fried",
+          "Basecamp"
+        ]
+      ],
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "46"
+    },
+    {
+      "id": 114,
+      "url": "T_SPEAKING_OPPORTUNITY",
+      "trackerName": "Top Voice in Electric & Electronics",
+      "content": "Revolutionizing industries with smart, efficient, and connected electronic solutions.",
+      "data": [
+        [
+          "Lisa Su",
+          "AMD (Advanced Micro Devices)"
+        ],
+        [
+          "Jensen Huang",
+          "NVIDIA Corporation"
+        ],
+        [
+          "Pat Gelsinger",
+          "Intel Corporation"
+        ],
+        [
+          "Satya Nadella",
+          "Microsoft"
+        ],
+        [
+          "Elon Musk",
+          "Tesla SpaceX Neuralink X Corp"
+        ],
+        [
+          "Tim Cook",
+          "Apple Inc."
+        ],
+        [
+          "Shantanu Narayen",
+          "Adobe Inc."
+        ],
+        [
+          "Ginni Rometty",
+          "IBM"
+        ],
+        [
+          "Reed Hastings",
+          "Netflix"
+        ],
+        [
+          "Lisa Jackson",
+          "Apple Inc."
+        ],
+        [
+          "Daniel Ek",
+          "Spotify"
+        ],
+        [
+          "Diane Bryant",
+          "NovaSignal"
+        ],
+        [
+          "Mary Barra",
+          "General Motors"
+        ],
+        [
+          "Sundar Pichai",
+          "Alphabet Inc. (Google)"
+        ],
+        [
+          "Andrew Ng",
+          "Landing AI"
+        ],
+        [
+          "Fei-Fei Li",
+          "Stanford University"
+        ],
+        [
+          "Jack Dorsey",
+          "Block Inc. (formerly Square)"
+        ],
+        [
+          "Guido van Rossum",
+          "Microsoft"
+        ],
+        [
+          "Ellen Kullman",
+          "Carbon"
+        ],
+        [
+          "Reshma Saujani",
+          "Girls Who Code"
+        ],
+        [
+          "Vint Cerf",
+          "Google"
+        ],
+        [
+          "Marc Benioff",
+          "Salesforce"
+        ],
+        [
+          "Padmasree Warrior",
+          "Fable"
+        ],
+        [
+          "Werner Vogels",
+          "Amazon Web Services"
+        ],
+        [
+          "Sebastian Thrun",
+          "Kitty Hawk Corporation"
+        ],
+        [
+          "Jeff Dean",
+          "Google"
+        ],
+        [
+          "Diane Greene",
+          "Google Cloud"
+        ],
+        [
+          "Demis Hassabis",
+          "DeepMind (Alphabet Inc.)"
+        ],
+        [
+          "Susan Wojcicki",
+          "YouTube"
+        ],
+        [
+          "Alex Kipman",
+          "Microsoft"
+        ],
+        [
+          "Gwynne Shotwell",
+          "SpaceX"
+        ],
+        [
+          "Brian Krzanich",
+          "CDK Global"
+        ],
+        [
+          "Steve Mollenkopf",
+          "Qualcomm"
+        ],
+        [
+          "Rajeev Suri",
+          "Inmarsat"
+        ],
+        [
+          "Hans Vestberg",
+          "Verizon Communications"
+        ],
+        [
+          "Cathy Hackl",
+          "Futures Intelligence Group"
+        ],
+        [
+          "Scott Guthrie",
+          "Microsoft"
+        ],
+        [
+          "Ajay Bhatt",
+          "Intel Corporation"
+        ],
+        [
+          "Jim Anderson",
+          "Lattice Semiconductor"
+        ],
+        [
+          "Eugenia Kuyda",
+          "Replika"
+        ],
+        [
+          "Anne Richards",
+          "Fidelity International"
+        ],
+        [
+          "Dr. Tom Leighton",
+          "Akamai Technologies"
+        ],
+        [
+          "Parisa Tabriz",
+          "Google Chrome"
+        ],
+        [
+          "Gaurav Sharma",
+          "Energy Nest"
+        ],
+        [
+          "Herman Eul",
+          "Various Tech Companies"
+        ],
+        [
+          "Sarah Friar",
+          "Nextdoor"
+        ],
+        [
+          "Alexandra \"Sandy\" Carter",
+          "Amazon Web Services"
+        ],
+        [
+          "Mustafa Suleyman",
+          "DeepMind; Inflection AI"
+        ],
+        [
+          "Bob Swan",
+          "Intel Corporation"
+        ],
+        [
+          "Aicha Evans",
+          "Zoox (an Amazon subsidiary)"
+        ],
+        [
+          "James Dyson",
+          "Dyson Ltd"
+        ]
+      ],
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "25"
+    },
+    {
+      "id": 115,
+      "url": "T_SPEAKING_OPPORTUNITY",
+      "trackerName": "Top Voice in Pharma",
+      "content": "Innovating healthcare with breakthrough solutions for better wellness and care.",
+      "data": [
+        [
+          "Albert Bourla",
+          "Pfizer"
+        ],
+        [
+          "St\u00e9phane Bancel",
+          "Moderna"
+        ],
+        [
+          "Emma Walmsley",
+          "GlaxoSmithKline (GSK)"
+        ],
+        [
+          "Pascal Soriot",
+          "AstraZeneca"
+        ],
+        [
+          "Vas Narasimhan",
+          "Novartis"
+        ],
+        [
+          "Severin Schwan",
+          "Roche"
+        ],
+        [
+          "Robert M. Davis",
+          "Merck & Co."
+        ],
+        [
+          "Kenneth C. Frazier",
+          "Merck & Co."
+        ],
+        [
+          "Joaquin Duato",
+          "Johnson & Johnson"
+        ],
+        [
+          "Giovanni Caforio",
+          "Bristol Myers Squibb"
+        ],
+        [
+          "Paul Hudson",
+          "Sanofi"
+        ],
+        [
+          "Michel Vounatsos",
+          "Biogen"
+        ],
+        [
+          "Alex Gorsky",
+          "Johnson & Johnson"
+        ],
+        [
+          "Richard A. Gonzalez",
+          "AbbVie"
+        ],
+        [
+          "Deborah Dunsire",
+          "Lundbeck"
+        ],
+        [
+          "Leonard Schleifer",
+          "Regeneron Pharmaceuticals"
+        ],
+        [
+          "Albert Baehny",
+          "Lonza Group"
+        ],
+        [
+          "Paul Perreault",
+          "CSL Limited"
+        ],
+        [
+          "Brent Saunders",
+          "Vesper Healthcare"
+        ],
+        [
+          "K\u00e5re Schultz",
+          "Teva Pharmaceutical"
+        ],
+        [
+          "John C. Lechleiter",
+          "Eli Lilly and Company"
+        ],
+        [
+          "Michel Pairet",
+          "Boehringer Ingelheim"
+        ],
+        [
+          "Hal Barron",
+          "GSK"
+        ],
+        [
+          "Frans van Houten",
+          "Royal Philips"
+        ],
+        [
+          "Stefan Oschmann",
+          "Merck KGaA"
+        ],
+        [
+          "Daniel O\u2019Day",
+          "Gilead Sciences"
+        ],
+        [
+          "David Ricks",
+          "Eli Lilly and Company"
+        ],
+        [
+          "Werner Baumann",
+          "Bayer AG"
+        ],
+        [
+          "Mene Pangalos",
+          "AstraZeneca"
+        ],
+        [
+          "Roger Perlmutter",
+          "Merck Research Laboratories"
+        ],
+        [
+          "Thomas B. Cueni",
+          "IFPMA"
+        ],
+        [
+          "Christophe Weber",
+          "Takeda Pharmaceutical"
+        ],
+        [
+          "Paul Stoffels",
+          "Galapagos NV"
+        ],
+        [
+          "John Reed",
+          "Sanofi"
+        ],
+        [
+          "Leif Johansson",
+          "AstraZeneca"
+        ],
+        [
+          "Christi Shaw",
+          "Kite Pharma (Gilead Company)"
+        ],
+        [
+          "Peter Piot",
+          "London School of Hygiene & Tropical Medicine"
+        ],
+        [
+          "Dame Sally Davies",
+          "UK Government"
+        ],
+        [
+          "Jeremy Farrar",
+          "Wellcome Trust"
+        ],
+        [
+          "Peter Slavin",
+          "Massachusetts General Hospital"
+        ],
+        [
+          "Franz Humer",
+          "Roche"
+        ],
+        [
+          "Stephen Ubl",
+          "PhRMA"
+        ],
+        [
+          "Ian Read",
+          "Pfizer"
+        ],
+        [
+          "David Epstein",
+          "Novartis"
+        ],
+        [
+          "George Yancopoulos",
+          "Regeneron Pharmaceuticals"
+        ],
+        [
+          "Rachel King",
+          "GlycoMimetics"
+        ],
+        [
+          "John Maraganore",
+          "Alnylam Pharmaceuticals"
+        ],
+        [
+          "Ted Love",
+          "Global Blood Therapeutics"
+        ],
+        [
+          "Bahija Jallal",
+          "Immunocore"
+        ],
+        [
+          "Jennifer Doudna",
+          "UC Berkeley"
+        ],
+        [
+          "Emmanuel Hanon",
+          "GSK"
+        ]
+      ],
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "14"
+    },
+    {
+      "id": 116,
+      "url": "T_SPEAKING_OPPORTUNITY",
+      "trackerName": "Top Voice in Banking & Finance",
+      "content": "Mastering modern finance through banking, investments, and wealth strategies.",
+      "data": [
+        [
+          "Jamie Dimon",
+          "JPMorgan Chase"
+        ],
+        [
+          "Christine Lagarde",
+          "European Central Bank"
+        ],
+        [
+          "Warren Buffett",
+          "Berkshire Hathaway"
+        ],
+        [
+          "Larry Fink",
+          "BlackRock"
+        ],
+        [
+          "Jerome Powell",
+          "U.S. Federal Reserve"
+        ],
+        [
+          "Kristalina Georgieva",
+          "International Monetary Fund (IMF)"
+        ],
+        [
+          "David Solomon",
+          "Goldman Sachs"
+        ],
+        [
+          "Brian Moynihan",
+          "Bank of America"
+        ],
+        [
+          "James Gorman",
+          "Morgan Stanley"
+        ],
+        [
+          "Janet Yellen",
+          "U.S. Department of the Treasury"
+        ],
+        [
+          "Axel Weber",
+          "UBS Group AG"
+        ],
+        [
+          "Ana Bot\u00edn",
+          "Santander Group"
+        ],
+        [
+          "Mark Carney",
+          "United Nations"
+        ],
+        [
+          "Ray Dalio",
+          "Bridgewater Associates"
+        ],
+        [
+          "Mohamed El-Erian",
+          "Queens' College Cambridge"
+        ],
+        [
+          "Ralph Hamers",
+          "UBS Group AG"
+        ],
+        [
+          "Jane Fraser",
+          "Citigroup"
+        ],
+        [
+          "Tidjane Thiam",
+          "Freedom Acquisition I Corp."
+        ],
+        [
+          "Urs Rohner",
+          "Credit Suisse Group AG"
+        ],
+        [
+          "Noel Quinn",
+          "HSBC Holdings plc"
+        ],
+        [
+          "Stuart Gulliver",
+          "HSBC Holdings plc"
+        ],
+        [
+          "Ginni Rometty",
+          "IBM Corporation"
+        ],
+        [
+          "Sergio Ermotti",
+          "Swiss Re"
+        ],
+        [
+          "Sheryl Sandberg",
+          "Facebook (Meta Platforms Inc.)"
+        ],
+        [
+          "Bill Gates",
+          "Bill & Melinda Gates Foundation"
+        ],
+        [
+          "Jack Ma",
+          "Alibaba Group"
+        ],
+        [
+          "Carmen Reinhart",
+          "World Bank Group"
+        ],
+        [
+          "Mary Callahan Erdoes",
+          "JPMorgan Chase"
+        ],
+        [
+          "Steven Mnuchin",
+          "U.S. Department of the Treasury"
+        ],
+        [
+          "Douglas Peterson",
+          "S&P Global"
+        ],
+        [
+          "Abigail Johnson",
+          "Fidelity Investments"
+        ],
+        [
+          "Robert Kaplan",
+          "Federal Reserve Bank of Dallas"
+        ],
+        [
+          "Gary Cohn",
+          "IBM Corporation"
+        ],
+        [
+          "Peter Thiel",
+          "Founders Fund"
+        ],
+        [
+          "Henry Kravis",
+          "KKR & Co. Inc."
+        ],
+        [
+          "Stephen Schwarzman",
+          "The Blackstone Group"
+        ],
+        [
+          "Cathy Bessant",
+          "Bank of America"
+        ],
+        [
+          "Lloyd Blankfein",
+          "Goldman Sachs"
+        ],
+        [
+          "Robert Smith",
+          "Vista Equity Partners"
+        ],
+        [
+          "Janet Cowell",
+          "Girls Who Invest"
+        ],
+        [
+          "Dr. Nouriel Roubini",
+          "Roubini Macro Associates"
+        ],
+        [
+          "Thomas Gottstein",
+          "Credit Suisse Group AG"
+        ],
+        [
+          "Sallie Krawcheck",
+          "Ellevest"
+        ],
+        [
+          "Jamie Forese",
+          "Citigroup"
+        ],
+        [
+          "Gary Gensler",
+          "U.S. Securities and Exchange Commission"
+        ],
+        [
+          "Jes Staley",
+          "Barclays plc"
+        ],
+        [
+          "Shuhei Abe",
+          "SPARX Group Co. Ltd."
+        ],
+        [
+          "David McCormick",
+          "Bridgewater Associates"
+        ],
+        [
+          "David Rubenstein",
+          "The Carlyle Group"
+        ],
+        [
+          "Sheila Bair",
+          "Federal Deposit Insurance Corporation"
+        ],
+        [
+          "Oliver B\u00e4te",
+          "Allianz SE"
+        ]
+      ],
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "10"
+    },
+    {
+      "id": 117,
+      "url": "T_SPEAKING_OPPORTUNITY",
+      "trackerName": "Top Voice in Auto & Automotive",
+      "content": "Shaping the future of mobility with electric, autonomous, and connected vehicles.",
+      "data": [
+        [
+          "Elon Musk",
+          "Tesla Inc."
+        ],
+        [
+          "Mary Barra",
+          "General Motors"
+        ],
+        [
+          "Akio Toyoda",
+          "Toyota Motor Corporation"
+        ],
+        [
+          "Herbert Diess",
+          "Volkswagen Group"
+        ],
+        [
+          "Jim Farley",
+          "Ford Motor Company"
+        ],
+        [
+          "Carlos Tavares",
+          "Stellantis N.V."
+        ],
+        [
+          "Li Shufu",
+          "Zhejiang Geely Holding Group"
+        ],
+        [
+          "Ola K\u00e4llenius",
+          "Daimler AG & Mercedes-Benz AG"
+        ],
+        [
+          "Oliver Zipse",
+          "BMW AG"
+        ],
+        [
+          "Peter Rawlinson",
+          "Lucid Motors"
+        ],
+        [
+          "Li Bin (William Li)",
+          "NIO Inc."
+        ],
+        [
+          "R.J. Scaringe",
+          "Rivian"
+        ],
+        [
+          "Luca de Meo",
+          "Renault Group"
+        ],
+        [
+          "Henrik Fisker",
+          "Fisker Inc."
+        ],
+        [
+          "Takahiro Hachigo",
+          "Honda Motor Co. Ltd."
+        ],
+        [
+          "Gill Pratt",
+          "Toyota Research Institute"
+        ],
+        [
+          "John Krafcik",
+          "Waymo (Alphabet Inc.)"
+        ],
+        [
+          "Doug Field",
+          "Apple Inc."
+        ],
+        [
+          "H\u00e5kan Samuelsson",
+          "Volvo Cars"
+        ],
+        [
+          "Jim Hackett",
+          "Ford Motor Company"
+        ],
+        [
+          "Michael Manley",
+          "Stellantis N.V."
+        ],
+        [
+          "Takao Kato",
+          "Mitsubishi Motors Corporation"
+        ],
+        [
+          "Simon Sproule",
+          "Aston Martin Lagonda"
+        ],
+        [
+          "Akira Marumoto",
+          "Mazda Motor Corporation"
+        ],
+        [
+          "Mark Fields",
+          "Ford Motor Company"
+        ],
+        [
+          "Carlos Ghosn",
+          "Renault-Nissan-Mitsubishi Alliance"
+        ],
+        [
+          "Dieter Zetsche",
+          "Daimler AG"
+        ],
+        [
+          "Thierry Bollor\u00e9",
+          "Jaguar Land Rover"
+        ],
+        [
+          "Shiro Nakamura",
+          "Shiro Nakamura Design Associates"
+        ],
+        [
+          "Franz von Holzhausen",
+          "Tesla Inc."
+        ],
+        [
+          "Chris Urmson",
+          "Aurora Innovation"
+        ],
+        [
+          "Simon Humphries",
+          "Toyota Motor Corporation"
+        ],
+        [
+          "Guenter Butschek",
+          "Tata Motors"
+        ],
+        [
+          "Albert Biermann",
+          "Hyundai Motor Group"
+        ],
+        [
+          "Anand Mahindra",
+          "Mahindra Group"
+        ],
+        [
+          "Andy Palmer",
+          "Switch Mobility Ltd."
+        ],
+        [
+          "Robert Bosch Jr.",
+          "Bosch Group"
+        ],
+        [
+          "Guido Dumarey",
+          "Punch Powertrain"
+        ],
+        [
+          "Kristin Siemen",
+          "General Motors"
+        ],
+        [
+          "Steve Center",
+          "American Honda Motor Co."
+        ],
+        [
+          "Sandy Munro",
+          "Munro & Associates"
+        ],
+        [
+          "Karl-Thomas Neumann",
+          "Former CEO of Opel"
+        ],
+        [
+          "Jim Lentz",
+          "Toyota Motor North America"
+        ],
+        [
+          "Denise Gray",
+          "LG Energy Solution Michigan"
+        ],
+        [
+          "Brian Gu",
+          "Xpeng Motors"
+        ],
+        [
+          "Elmar Degenhart",
+          "Continental AG"
+        ],
+        [
+          "Linda Zhang",
+          "Ford Motor Company"
+        ],
+        [
+          "Amnon Shashua",
+          "Mobileye (Intel Corporation)"
+        ],
+        [
+          "Jensen Huang",
+          "NVIDIA Corporation"
+        ],
+        [
+          "Mary Nichols",
+          "California Air Resources Board"
+        ],
+        [
+          "Gillian Davis",
+          "Shell New Energies"
+        ]
+      ],
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "9"
+    }
+]
