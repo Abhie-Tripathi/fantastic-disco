@@ -13,9 +13,10 @@ interface Props {
     descriptionSub: string;
     virutalLinkMain : string;
     virtualLinkSub : string;
+    countryNameMain : string;
 }
 
-const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participationTypeMain, descriptionMain, eventNameSub, eventTypeSub, descriptionSub, cityNameSub, virutalLinkMain, virtualLinkSub }: Props) => {
+const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participationTypeMain, descriptionMain, eventNameSub, eventTypeSub, descriptionSub, cityNameSub, virutalLinkMain, virtualLinkSub, countryNameMain }: Props) => {
 
     const [activeBars, setActiveBars] = useState<string[]>([])
 
@@ -45,8 +46,8 @@ const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participation
         updateActiveBars('eventName', eventNameMain);
         if(virutalLinkMain){
             updateActiveBars('cityName', virutalLinkMain);
-        }else if(cityNameMain){
-            updateActiveBars('cityName', cityNameMain);
+        }else if(cityNameMain || countryNameMain){
+            updateActiveBars('cityName', cityNameMain || countryNameMain);
         }
         updateActiveBars('description', descriptionMain);
         updateActiveBars('eventType', eventTypeMain);
@@ -57,7 +58,7 @@ const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participation
             updateActiveBars('subEvent', ''); // Remove if not all sub-fields are filled
         }
 
-    }, [participationTypeMain, eventNameMain, cityNameMain, descriptionMain, eventNameSub, cityNameSub, eventTypeSub, descriptionSub, eventTypeMain, virutalLinkMain]);
+    }, [participationTypeMain, eventNameMain, cityNameMain, descriptionMain, eventNameSub, cityNameSub, eventTypeSub, descriptionSub, eventTypeMain, virutalLinkMain, countryNameMain]);
     const totalSteps = 6;
     return (
         <div className={styles.body}>
@@ -77,7 +78,7 @@ const ProgressBar = ({ eventTypeMain, eventNameMain, cityNameMain, participation
                 <li className={eventTypeMain ? styles.activeItem : ""}>{eventTypeMain && <TickIcon />}<span>Event Type</span></li>
                 <li className={participationTypeMain ? styles.activeItem : ""}>{participationTypeMain && <TickIcon />}<span>Mode Of Participation</span></li>
                 <li className={eventNameMain ? styles.activeItem : ""}>{eventNameMain && <TickIcon />}<span>Event Name</span></li>
-                <li className={(cityNameMain || virutalLinkMain) ? styles.activeItem : ""}>{(cityNameMain || virutalLinkMain) && <TickIcon />}<span>Location</span></li>
+                <li className={(cityNameMain || virutalLinkMain || countryNameMain) ? styles.activeItem : ""}>{(cityNameMain || virutalLinkMain || countryNameMain) && <TickIcon />}<span>Location</span></li>
                 <li className={descriptionMain ? styles.activeItem : ""}>{descriptionMain && <TickIcon />}<span>Description</span></li>
                 <li className={(eventNameSub && (cityNameSub || virtualLinkSub) && eventTypeSub && descriptionSub) ? styles.activeItem : ""}>
                     {(eventNameSub && (cityNameSub || virtualLinkSub) && eventTypeSub && descriptionSub) && <TickIcon />}<span>Side-Event</span>
