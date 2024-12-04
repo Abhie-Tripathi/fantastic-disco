@@ -45,6 +45,11 @@ const CapacityModal = ({
       console.log("Updating maxCapacity");
     }
   };
+  
+  const removeLimit = ()=>{
+    handleChange("capacity", -1);
+    handleChange("capacityModal", false);
+  }
 
   return (
     <div className={styles.body} ref={capacityModalRef}>
@@ -78,7 +83,7 @@ const CapacityModal = ({
         <button className={styles.setBtn} onClick={handleChangecapacity}>
           Set Limit
         </button>
-        <button className={styles.removeBtn}>Remove Limit</button>
+        <button className={styles.removeBtn} onClick={removeLimit}>Remove Limit</button>
       </div>
     </div>
   );
