@@ -439,6 +439,7 @@ const Navbar = () => {
                     <UserSearch className="h-6 w-6" />
                     <span className="text-xs">Prospect</span>
                   </Button>
+                  <div className={styles.tag}>Coming soon</div>
                 </div>
               </PopoverContent>
             </Popover>

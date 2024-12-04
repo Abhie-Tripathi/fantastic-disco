@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import styles from './navbar.style.module.css'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,13 +51,13 @@ export default function Navbar() {
   console.log(routes[pathname.split("/").slice(-1)[0]])
 
   const router = useRouter()
-  const handleRoute = (route : string) => {
-    if(route === "research"){
+  const handleRoute = (route: string) => {
+    if (route === "research") {
       router.push("/internal")
-    }else if(route === "promote"){
+    } else if (route === "promote") {
       router.push("/widget/dashboard")
     }
-    
+
   }
 
   return (
@@ -99,13 +100,13 @@ export default function Navbar() {
               <PopoverContent className="w-52 p-0" align="end">
                 <div className="grid grid-cols-2 gap-2">
                   {pathname.split("/")[1] === "internal" ?
-                    <Button onClick={()=>handleRoute("promote")}
+                    <Button onClick={() => handleRoute("promote")}
                       variant="ghost"
                       className="flex flex-col items-center justify-center gap-2 h-auto p-4"
                     >
                       <Megaphone className="h-6 w-6" />
                       <span className="text-xs">Promote</span>
-                    </Button> : <Button onClick={()=>handleRoute("research")}
+                    </Button> : <Button onClick={() => handleRoute("research")}
                       variant="ghost"
                       className="flex flex-col items-center justify-center gap-2 h-auto p-4"
                     >
@@ -120,6 +121,7 @@ export default function Navbar() {
                     <UserSearch className="h-6 w-6" />
                     <span className="text-xs">Prospect</span>
                   </Button>
+                  <div className={styles.tag}>Coming soon</div>
                 </div>
               </PopoverContent>
             </Popover>
