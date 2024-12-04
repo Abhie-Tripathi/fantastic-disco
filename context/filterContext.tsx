@@ -36,6 +36,7 @@ interface EventFilterData {
 }
 type FilterContextType = {
   localFilters: Record<string, string>;
+  clearLocalFilters: () => void;
   setLocalFilter: (key: string, value: string) => void;
   applyFilters: () => void;
   getLocalFilterValue: (key: string) => string;
@@ -83,8 +84,9 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   
   useEffect(() => {
     const temp: Record<string, string> = Object.fromEntries(searchParams.entries());
-  
-    if (enabledFilters && Object.keys(localFilters).length === 0) {
+    console.log(temp);
+    
+    if (enabledFilters && Object.keys(temp).length === 0) {
       temp.eventFormats = enabledFilters.eventFormat?.enabledValue?.join(',') ?? '';
       temp.status = enabledFilters.eventStatus?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
       temp.categories = enabledFilters.eventCategory?.enabledValue
@@ -137,7 +139,9 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       return newFilters;
     });
   }, []);
-
+  const clearLocalFilters = useCallback(() => {
+    setLocalFilters({});
+  }, []);
   const applyFilters = () => {
     setLocalFilters((currentFilters) => {
       const params = new URLSearchParams();
@@ -188,6 +192,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     () => ({
       localFilters,
       enabledFilters,
+      clearLocalFilters,
       setLocalFilter,
       applyFilters,
       getLocalFilterValue: (key: string) => localFilters[key] || "",
@@ -199,6 +204,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     [
       localFilters,
       enabledFilters,
+      clearLocalFilters,
       setLocalFilter,
       setMultipleLocalFilters,
       deleteMultipleLocalFilters,
