@@ -62,6 +62,14 @@
   width: 50%;
 }
 
+.field_value_text_top {
+  display: none;
+}
+
+.second_div_field_value_text_top {
+  display: none;
+}
+
 .first_div_body {
   padding: 10px;
 }
@@ -312,6 +320,23 @@
     width: 100%;
   }
 
+  .field_value_text {
+    display: none;
+  }
 
+  .second_div_field_value_text {
+    display: none;
+  }
 
+  .field_value_text_top {
+    display: block;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: 10px;
+  }
+
+  .second_div_field_value_text_top {
+    display: block;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: 10px;
+  }
 }

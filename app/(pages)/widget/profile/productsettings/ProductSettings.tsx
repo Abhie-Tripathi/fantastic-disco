@@ -232,6 +232,11 @@ const ProductSettings = () => {
                 Update them any time to match your needs or goals for the event.
               </div>
               <div className={styles.body_right_section}>
+                <div
+                  className={`${styles.field_value_text_top} ${styles.hidden_for_large}`}
+                >
+                  Field Values
+                </div>
                 <div className={styles.boxContainer}>
                   {researchScreenboxes.map((box) => (
                     <div
@@ -303,7 +308,7 @@ const ProductSettings = () => {
           </div>
         </div>
 
-        {/* <div className={styles.second_div}>
+        <div className={styles.second_div}>
           <div className={styles.second_div_header}>
             <div className={styles.second_div_text_outer}>
               <div className={styles.second_div_outreach_text}>Outreach</div>
@@ -321,6 +326,11 @@ const ProductSettings = () => {
                 preferences.
               </div>
               <div className={styles.second_div_body_right_section}>
+              <div
+                  className={`${styles.second_div_field_value_text_top} ${styles.hidden_for_large}`}
+                >
+                 Kanban board
+                </div>
                 <div className={styles.boxContainer}>
                   {outreachScreenboxes.map((box) => (
                     <div
@@ -400,12 +410,8 @@ const ProductSettings = () => {
               </div>
             ))}
           </div>
-        </div> */}
+        </div>
       </div>
-
-
-
-      
     </div>
   );
 };
