@@ -38,6 +38,7 @@ const WaitListAndCap = ({
   return (
     <div className={`${styles.cardContainer}`}>
       <div className={styles.cardItem}>
+        {/* <div className={}></div> */}
         <div className={styles.icon}>
           <Ticket />
         </div>
@@ -92,15 +93,15 @@ const WaitListAndCap = ({
         </div>
         <div className={styles.waitlistNumber}>
           <div>{capacity === -1 ? "Unlimited" : capacity}</div>
-          
+
           <Image
-          className={styles.editBtn}
-          src={EditIcon}
-          alt="edit"
-          onClick={openCapacityModal}
-        />
+            className={styles.editBtn}
+            src={EditIcon}
+            alt="edit"
+            onClick={openCapacityModal}
+          />
         </div>
-       
+
       </div>
     </div>
   );
