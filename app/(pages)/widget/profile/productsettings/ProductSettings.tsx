@@ -402,7 +402,7 @@ const ProductSettings = () => {
           </div>
           <div className={styles.line_divider_outreachScreen}></div>
           <div className={styles.cardContainer}>
-            {cards.map((box) => (
+            {outreachScreenboxes.map((box) => (
               <div key={box.id} className={styles.card}>
                 <div className={styles.cardHeader}>
                   {box.value && box.value}
@@ -411,6 +411,7 @@ const ProductSettings = () => {
             ))}
           </div>
         </div>
+        
       </div>
     </div>
   );
