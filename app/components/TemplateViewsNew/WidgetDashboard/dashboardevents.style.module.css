@@ -71,6 +71,19 @@
     font-weight: var(--font-weight-medium);
 
 }
+.emptyScreen button{
+    background-color: var(--primary-color);
+    border-radius: 4px;
+    color: white;
+    /* font-size: var(--font-size-small); */
+    font-size: var(--font-size-default);
+    font-weight: var(--font-weight-semibold);
+    padding: 9px 20px;
+}
+.emptyScreen button:hover{
+    transform: scale(1.02);
+    background-color: #8166cb;
+}
 .addEvent{
     margin-top: 25px;
     justify-content: center;
