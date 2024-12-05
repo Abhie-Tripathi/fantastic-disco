@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./../globals.css";
 import { AuthContextProvider, ThemeProvider } from "@/context";
-import Navbar from "../components/Navbar";
+// import Navbar from "../components/Navbar";
+import Navbar from "@/components/layout/navbar";
 import { Sora } from "next/font/google";
 import { GoogleTagManager } from "@next/third-parties/google";
 import { ToastContainer } from "react-toastify";
@@ -34,12 +35,15 @@ export default function RootLayout({
         <ToastContainer />
         <AuthContextProvider>
           <ThemeProvider>
-            <div className="desktop_view tablet_view">
+            <div className="flex h-screen bg-gray-100">
               <Sidebar />
+              <div className="flex-1 flex flex-col overflow-hidden ml-16">
+                <Navbar />
+                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background">
+                  {children}
+                </main>
+              </div>
             </div>
-            <Navbar />
-            <div className={styles.container}>{children}</div>
-            {/* <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} /> */}
             <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
           </ThemeProvider>
         </AuthContextProvider>

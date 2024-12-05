@@ -1,7 +1,7 @@
 .body {
     overflow-y: hidden;
     position: relative;
-    padding: 50px;
+    padding:25px 50px 25px 50px;
     min-height: 88vh;
 }
 .nav{

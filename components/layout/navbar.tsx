@@ -32,13 +32,24 @@ import { isEventeli } from "@/config";
 import { useTheme } from "@/context/theme";
 import Link from "next/link";
 
-const routes: Record<string, string> = {
+const gtmroutes: Record<string, string> = {
   internal: "Dashboard",
   "coordinate": "Coordinate",
   "events": "Research",
   "trackers": "Trackers",
   outreach: "Outreach",
   trends: "Event Trends"
+};
+const geniroutes: Record<string, string> = {
+  "list": "Widgets",
+  "edit": "Edit Widget",
+  "add": "Add Widget",
+  "brandkit": "Brandkit",
+  "events": "Events",
+  "dashboard": "Dashboard",
+  "overview": "Manage",
+  "settings": "Manage",
+  "guests" : "Manage"
 };
 
 export default function Navbar() {
@@ -47,8 +58,7 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
-
-  console.log(routes[pathname.split("/").slice(-1)[0]])
+  console.log("route", gtmroutes[pathname.split("/").slice(-1)[0]])
 
   const router = useRouter()
   const handleRoute = (route: string) => {
@@ -65,16 +75,8 @@ export default function Navbar() {
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center">
           <div className="text-lg font-semibold">
-            {routes[pathname.split("/").slice(-1)[0]]}
-            {/* {pathname.startsWith("/widget/list") ? "Widgets" : 
-             pathname.startsWith("/widget/edit") ? "Edit Widget" : 
-             pathname.startsWith("/widget/add") ? "Add Widget" : 
-             pathname.startsWith("/widget/brandkit") ? "Brandkit" : 
-             pathname.startsWith("/widget/event") ? "Events" : 
-             pathname.startsWith("/widget/dashboard") ? "Dashboard" : 
-             pathname.startsWith("/widget/events/manage") ? "" : 
-             pathname.startsWith("/widget/profile") ? "Widget List" : 
-             }  */}
+            {pathname.split("/")[1] === "internal" ? gtmroutes[pathname.split("/").slice(-1)[0]]
+              : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
         <div className="flex items-center space-x-4">
