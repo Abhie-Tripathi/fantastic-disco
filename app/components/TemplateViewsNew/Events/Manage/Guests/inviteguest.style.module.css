@@ -69,3 +69,13 @@
     align-items: center;
     gap: 9px;
 }
+@media screen and (max-width: 888px) {
+    .body {
+      width: 600px;
+    }
+}
+@media screen and (max-width: 680px) {
+    .body {
+      width: 400px;
+    }
+}

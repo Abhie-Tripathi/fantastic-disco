@@ -38,3 +38,17 @@
     padding: 15px;
     width: 70%;
 }
+
+@media screen and (max-width: 680px) {
+    .sections {
+        flex-direction: column;
+    }
+    .leftSection{
+        width: 100%;
+        padding-bottom: 0px;
+    }
+    .rightSection{
+        width: 100%;
+        padding-bottom: 0px;
+    }
+}

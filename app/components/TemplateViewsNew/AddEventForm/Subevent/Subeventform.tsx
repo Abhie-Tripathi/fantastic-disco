@@ -174,12 +174,12 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
     };
 
     return (
-        <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal ? styles.modalBody : ""}`}>
+        <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal || formState.capacityModal  ? styles.modalBody : ""}`}>
             {eventFlow === "side" && <div className={styles.globalSearch}>
                 <GlobalSearch widgetId='123' handleChange={handleChange} />
             </div>}
 
-            <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalOpen : ""}`} >
+            <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal  ? styles.modalOpen : ""}`} >
                 <div>
                     <div className={`${styles.participationContainer}`}>
                         <ParticipationContainer formTheme={formTheme}
@@ -254,7 +254,7 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
                     {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speaker}
                         // setSpeakerModal={setSpeakerModal} 
                         handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
-                            <ExhibitorContainer handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
+                            <ExhibitorContainer formTheme={formTheme} handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
 
                     {(formState.cityName && formState.eventFormat !== "Virtual") &&
                         <MapView latitude={formState.latitude}

@@ -76,7 +76,7 @@
     padding-right: 3px;
     overflow-y: auto;
     margin: 0;
-    height: 520px;
+    height: 100%;
     align-content: start;
     /* Align items at the start to avoid stretching */
 }

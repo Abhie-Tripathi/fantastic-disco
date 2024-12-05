@@ -17,10 +17,9 @@
     flex-direction: column;
     gap: 16px;
 }
-.boothContainer div{
-    color: black;
-    font-size: var(--font-weight-medium);
-    font-weight: var(--font-weight-semibold);
+
+.boothContainer .heading{
+    font-size: var(--font-size-default);
 }
 .header{
     display: flex;
@@ -29,7 +28,7 @@
 }
 .header span{
     color: #7D7D7D;
-    font-size: var(--font-size-small);
+    font-size: var(--font-size-default);
     font-weight: var(--font-weight-medium);
 }
 .body img{
