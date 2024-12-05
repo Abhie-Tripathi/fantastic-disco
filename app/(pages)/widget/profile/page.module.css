@@ -1,4 +1,4 @@
-.container {
+/* .container {
   padding: 20px;
   margin-top: 30px;
 }
@@ -301,7 +301,6 @@
 
 .dropdown {
   position: relative;
-  /* width: 200px; */
   width: 100%;
 }
 
@@ -419,4 +418,4 @@
   .search_container {
     flex-direction: column;
   }
-}
+} */
