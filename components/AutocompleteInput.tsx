@@ -19,7 +19,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import {
   useNominatimAutocomplete,
-  useDatabaseLocationcomplete,
+  useDatabaseLocationAutocomplete,
 } from "@/hooks/useLocationAutocomplete";
 import { useLocationService } from "@/services/locationService";
 
@@ -47,10 +47,17 @@ export default function AutocompleteInput({
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [selectedLocations, setSelectedLocations] = useState<Location[]>([]);
-  // const savedLocationsResult = useSavedLocationAutocomplete(inputValue);
-  const databaseLocationResult = useDatabaseLocationcomplete(inputValue);
-  const nominatimResult = useNominatimAutocomplete(inputValue);
-  const savedLocationsResult = {predictions: [], isLoading: false, isError: false}
+  const databaseLocationResult = useDatabaseLocationAutocomplete(
+    type == "LocationId" ? inputValue : ""
+  );
+  const nominatimResult = useNominatimAutocomplete(
+    type == "GeoCoordinate" ? inputValue : ""
+  );
+  const savedLocationsResult = {
+    predictions: [],
+    isLoading: false,
+    isError: false,
+  };
 
   const { predictions, isLoading, isError } =
     type === "SavedLocations"
