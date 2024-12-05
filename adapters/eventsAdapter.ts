@@ -71,7 +71,7 @@ export const EventsAdapter = {
 
     const activeGte = params.get("active_gte");
     const activeLte = params.get("active_lte");
-    
+
     if (activeGte && activeLte) {
       const startDate = new Date(activeGte).toISOString().split("T")[0];
       const endDate = new Date(activeLte).toISOString().split("T")[0];
@@ -219,11 +219,40 @@ export const EventsAdapter = {
       adaptedParams.latitude = geoCoordinates.latitude;
       adaptedParams.longitude = geoCoordinates.longitude;
     }
-    if (!params.get("active_gte") && params.get("view") == "calendar") {
+    if (
+      !(params.get("active_gte") && params.get("active_lte")) &&
+      params.get("view") == "calendar"
+    ) {
       const currentYear = new Date().getFullYear();
       const startDate = new Date(currentYear, 0, 1).toISOString().split("T")[0];
       const endDate = new Date(currentYear, 11, 31).toISOString().split("T")[0];
       adaptedParams.groupBy = `${startDate},${endDate}`;
+    }
+
+    if (
+      params.get("active_gte") &&
+      !params.get("active_lte") &&
+      params.get("view") == "calendar"
+    ) {
+      const startDate = new Date(params.get("active_gte")!);
+      const endDate = new Date(startDate);
+      endDate.setFullYear(startDate.getFullYear() + 1);
+      adaptedParams.groupBy = `${startDate.toISOString().split("T")[0]},${
+        endDate.toISOString().split("T")[0]
+      }`;
+    }
+
+    if (
+      !params.get("active_gte") &&
+      params.get("active_lte") &&
+      params.get("view") == "calendar"
+    ) {
+      const endDate = new Date(params.get("active_lte")!);
+      const startDate = new Date(endDate);
+      startDate.setFullYear(endDate.getFullYear() - 1);
+      adaptedParams.groupBy = `${startDate.toISOString().split("T")[0]},${
+        endDate.toISOString().split("T")[0]
+      }`;
     }
 
     if (

@@ -22,24 +22,54 @@ interface RankCategory {
   name: string;
   range: [number, number];
 }
-interface EventAnalyticsProps{
-  source:string;
+interface EventAnalyticsProps {
+  source: string;
   selectedEventRank?: [number, number];
   setSelectedEventRank?: React.Dispatch<React.SetStateAction<[number, number]>>;
   selectedLocalRank?: [number, number];
   setSelectedLocalRank?: React.Dispatch<React.SetStateAction<[number, number]>>;
-  selectedAviationRank?:[number, number];
-  setSelectedAviationRank?: React.Dispatch<React.SetStateAction<[number, number]>>;
-  rankToggles?:any;
-  setRankToggles?:any;
+  selectedAviationRank?: [number, number];
+  setSelectedAviationRank?: React.Dispatch<
+    React.SetStateAction<[number, number]>
+  >;
+  rankToggles?: any;
+  setRankToggles?: any;
 }
-export default function EventAnalyticsSelector({source, selectedEventRank,setSelectedEventRank, selectedLocalRank,setSelectedLocalRank, selectedAviationRank, setSelectedAviationRank, rankToggles, setRankToggles}:EventAnalyticsProps) {
+export default function EventAnalyticsSelector({
+  source,
+  selectedEventRank,
+  setSelectedEventRank,
+  selectedLocalRank,
+  setSelectedLocalRank,
+  selectedAviationRank,
+  setSelectedAviationRank,
+  rankToggles,
+  setRankToggles,
+}: EventAnalyticsProps) {
   const [open, setOpen] = useState(false);
   const [showScores, setShowScores] = useState(false);
   const [categories, setCategories] = useState<RankCategory[]>([
-    { name: "Impact Score", range: selectedEventRank && Array.isArray(selectedEventRank) ? selectedEventRank : [0, 100]},
-    { name: "Inbound Score", range: selectedLocalRank && Array.isArray(selectedLocalRank) ? selectedLocalRank : [0, 100] },
-    { name: "International Score", range: selectedAviationRank && Array.isArray(selectedAviationRank) ? selectedAviationRank : [0, 100] },
+    {
+      name: "Impact Score",
+      range:
+        selectedEventRank && Array.isArray(selectedEventRank)
+          ? selectedEventRank
+          : [0, 100],
+    },
+    {
+      name: "Inbound Score",
+      range:
+        selectedLocalRank && Array.isArray(selectedLocalRank)
+          ? selectedLocalRank
+          : [0, 100],
+    },
+    {
+      name: "International Score",
+      range:
+        selectedAviationRank && Array.isArray(selectedAviationRank)
+          ? selectedAviationRank
+          : [0, 100],
+    },
   ]);
 
   const {
@@ -47,20 +77,43 @@ export default function EventAnalyticsSelector({source, selectedEventRank,setSel
     getLocalFilterValue,
     setMultipleLocalFilters,
     deleteMultipleLocalFilters,
-    searchParams,
+    localFilters,
   } = useFilterContext();
   const router = useRouter();
   const pathname = usePathname();
   useEffect(() => {
     if (rankToggles && typeof rankToggles.globalToggle !== "undefined") {
-      
       setShowScores(rankToggles.globalToggle);
     }
   }, [rankToggles?.globalToggle]);
   useEffect(() => {
     const show = getLocalFilterValue("show").split(",").filter(Boolean);
     setShowScores(show.includes("scores"));
-  }, [getLocalFilterValue]);
+
+    setCategories((prev) => [
+      {
+        name: "Impact Score",
+        range: [
+          parseInt(getLocalFilterValue("impact_score_gte")) || 0,
+          parseInt(getLocalFilterValue("impact_score_lte")) || 100,
+        ],
+      },
+      {
+        name: "Inbound Score",
+        range: [
+          parseInt(getLocalFilterValue("inbound_score_gte")) || 0,
+          parseInt(getLocalFilterValue("inbound_score_lte")) || 100,
+        ],
+      },
+      {
+        name: "International Score",
+        range: [
+          parseInt(getLocalFilterValue("international_score_gte")) || 0,
+          parseInt(getLocalFilterValue("international_score_lte")) || 100,
+        ],
+      },
+    ]);
+  }, [localFilters]);
 
   const handleRangeChange = (index: number, newRange: [number, number]) => {
     setCategories((prev) =>
@@ -68,11 +121,11 @@ export default function EventAnalyticsSelector({source, selectedEventRank,setSel
         i === index ? { ...category, range: newRange } : category
       )
     );
-    if(index===0){
+    if (index === 0) {
       setSelectedEventRank?.(newRange);
-    }else if(index===1){
+    } else if (index === 1) {
       setSelectedLocalRank?.(newRange);
-    }else if(index===2){
+    } else if (index === 2) {
       setSelectedAviationRank?.(newRange);
     }
   };
