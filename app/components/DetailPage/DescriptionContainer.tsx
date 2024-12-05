@@ -1,7 +1,5 @@
 import React,{useState} from 'react'
 import styles from './description.style.module.css'
-import EditIcon from '/public/EditIcon.svg'
-import Image from 'next/image'
 
 interface Props{
     description : string;
