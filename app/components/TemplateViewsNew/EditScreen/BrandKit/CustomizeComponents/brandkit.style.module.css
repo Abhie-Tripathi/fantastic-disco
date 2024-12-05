@@ -73,6 +73,7 @@
 }
 .brandColorContainer{
     margin-bottom: 9px;
+    overflow-x: auto;
 }
 .btnContainer{
     width: 100%;

@@ -1,6 +1,7 @@
 .body{
     height: 100%;
     padding: 16px;
+    width: 100%;
     background-color: var(--background-secondary-color);
     border: 1px solid var(--neutral-light-color);
     border-radius: 4px;
@@ -90,8 +91,9 @@
     border: 1px solid var(--neutral-light-color);
     border-radius: 4px;
     background-color: var(--primary-foreground);
+    overflow-x: auto;
 }
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1280px) {
     .brandKitContainer {
         flex-direction: row;
         /* gap: 24px; */

@@ -54,7 +54,7 @@ interface Props {
 const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, eventFont, setLoadingState, fileInputRef, eventFlow, prefilledSubEvent, isApproved, setIsApproved }: Props) => {
     // const [isApproved, setIsApproved] = useState(false)
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
-    const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
+    const { isLoading, imageUrl, generatePromptSubevent } = usePosterGenerator();
     const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
     const [speakerIndex, setSpeakerIndex] = useState<number>(0)
 
@@ -108,10 +108,10 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
     };
     const handleGeneratePoster = () => {
         if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
-            if (formState.eventName && formState.participationMessage) {
-                generatePrompt(formState.participationMessage, formState.description, formState.eventName, 1024, 1024)
+            if (formState.eventName && formState.event_type) {
+                generatePromptSubevent(formState.eventName,formState.event_type, 1024, 1024)
             } else {
-                showToast("error", "Please provide Event name, Description, and participationMessage to generate the Banner");
+                showToast("error", "Please provide Event name and select Event type to generate the Banner");
             }
         } else {
             showToast("error", "Please wait for the banner to generate first before generating again");
@@ -174,19 +174,19 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
     };
 
     return (
-        <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal ? styles.modalBody : ""}`}>
+        <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal || formState.capacityModal  ? styles.modalBody : ""}`}>
             {eventFlow === "side" && <div className={styles.globalSearch}>
                 <GlobalSearch widgetId='123' handleChange={handleChange} />
             </div>}
 
-            <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal ? styles.modalOpen : ""}`} >
+            <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal  ? styles.modalOpen : ""}`} >
                 <div>
                     <div className={`${styles.participationContainer}`}>
                         <ParticipationContainer formTheme={formTheme}
                             handleChange={handleChange} formState={formState}
                             heading='Choose Your sub event type' type='side' size="large" />
                     </div>
-                    {formState.isEventTypeEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
+                    {formState.isEventTypeEmpty && <p className={styles.errorMessage}>Please select any event type.</p>}
                 </div>
             </div>
             <div className={styles.sections}>
@@ -195,9 +195,9 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
                         {isLoading ?
                             <div className={styles.loader}>
                                 <div className={styles.spinner}></div>
-                            </div> :  <Image src={formState.banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover", width : "296px", height:"290px" }} unoptimized />}
+                            </div> : <Image src={formState.banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover", width: "296px", height: "290px" }} unoptimized />}
                         <div className={styles.posterIcons}>
-                            <div onClick={handleGeneratePoster} data-name={formState.eventName && formState.participationMessage ? "Generate your Banner" : "Add Event name and participationMessage to generate a banner"}>
+                            <div onClick={handleGeneratePoster} data-name={formState.eventName && formState.participationMessage ? "Generate your Banner" : "Add Event name and Event type to generate a banner"}>
                                 <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
                             </div>
                             <div data-name="Upload Your Banner" onClick={() => fileInputRef.current?.click()}>
@@ -254,7 +254,7 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
                     {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speaker}
                         // setSpeakerModal={setSpeakerModal} 
                         handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
-                            <ExhibitorContainer handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
+                            <ExhibitorContainer formTheme={formTheme} handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
 
                     {(formState.cityName && formState.eventFormat !== "Virtual") &&
                         <MapView latitude={formState.latitude}
