@@ -704,6 +704,8 @@ const Pages = () => {
     }
   }, [type, customData])
 
+  const scrollableDivRef = useRef<HTMLDivElement>(null);
+
   const handlePresetClick = (id: number, trackerType: string, trackerName: string) => {
 
     const filteredPresetData = presetTemplateData.filter(item => item.id === id);
@@ -726,10 +728,9 @@ const Pages = () => {
     }
 
     setSelectedPresetName(trackerName);
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    if (scrollableDivRef.current) {
+      scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   const saveTrackerHandler = async () => {
@@ -1663,7 +1664,7 @@ return (
     </div>
     </div>
   </div>
-  <div className="flex flex-col gap-6 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "104px" : "140px" }}>
+  <div ref={scrollableDivRef} className="flex flex-col gap-6 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "104px" : "140px" }}>
     {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
     <div
       className="px-6 py-1 w-full border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)]"
