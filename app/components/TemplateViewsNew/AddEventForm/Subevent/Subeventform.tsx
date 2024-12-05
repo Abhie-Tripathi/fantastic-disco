@@ -186,7 +186,7 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
                             handleChange={handleChange} formState={formState}
                             heading='Choose Your sub event type' type='side' size="large" />
                     </div>
-                    {formState.isEventTypeEmpty && <p className={styles.errorMessage}>Please select any mode of participation.</p>}
+                    {formState.isEventTypeEmpty && <p className={styles.errorMessage}>Please select any event type.</p>}
                 </div>
             </div>
             <div className={styles.sections}>
