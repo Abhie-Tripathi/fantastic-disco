@@ -6,7 +6,9 @@
 }
 .appearance{
     min-width: 230px;
+    max-width: 260px;
     height: 100%;
+    /* overflow-x: hidden; */
 }
 .details{
     width: 80%;
