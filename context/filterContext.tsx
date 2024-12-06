@@ -20,10 +20,16 @@ interface EventFilterData {
   durations?: { startDate?: string; endDate?: string };
   eventEntry?: { enabledValue?: string[] };
   eventRating?: { enabledValue?: string[]; isRatingEnabled?: boolean };
+  eventRanking?:{
+    isRanking?:boolean;
+  };
   maturity?: { enabledValue?: string[]; isMaturityEnabled?: boolean };
   branded?: {
     enabledValue?: { eventBrand?: boolean; eventSeries?: boolean };
     isBrandedEnabled?: boolean;
+  };
+  isForecasted?:{
+    isForecastedEnabled?: boolean;
   };
   eventFrequency?: { enabledValue?: string[]; isFreqEnabled?: boolean };
   keywords?: {
@@ -33,6 +39,15 @@ interface EventFilterData {
   eventSize?: { enabledValue?: string[] };
   estimatedExhibitScore?: { enabledValue?: string[]; isExhibitorsEnabled?: boolean };
   analytics?: { isAnalyticsEnabled?: boolean };
+  audienceZone?:{
+    isZoneEnabled?:boolean;
+  };
+  designation?:{
+    isProfileEnabled?:boolean;
+  };
+  audienceSpread?:{
+    isAudienceEnabled?:boolean;
+  }
 }
 type FilterContextType = {
   localFilters: Record<string, string>;
@@ -84,7 +99,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   
   useEffect(() => {
     const temp: Record<string, string> = Object.fromEntries(searchParams.entries());
-    console.log(temp);
     
     if (enabledFilters && Object.keys(temp).length === 0) {
       temp.eventFormats = enabledFilters.eventFormat?.enabledValue?.join(',') ?? '';
@@ -144,6 +158,10 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
   const applyFilters = () => {
     setLocalFilters((currentFilters) => {
+      if(!currentFilters.categories){
+        console.log(1111111);
+        
+      }
       const params = new URLSearchParams();
       Object.entries(currentFilters).forEach(([key, value]) => {
         if (value && key !== "skip") {

@@ -103,7 +103,7 @@ const Search = () => {
   const events = displayData?.events || [];
   const count = displayData?.count || 0;
 
-  // console.log(events);
+  console.log(localFilters);
 
   const searchHandler = useCallback(() => {
     applyFilters();
@@ -191,7 +191,7 @@ const Search = () => {
           <CategorySelector source="search" enabledCategories={enabledFilters?.eventCategory}/>
           <EventFormatSelector source="search" enabledFormat={enabledFilters?.eventFormat}/>
           <LocationSelector source="search"/>
-          <DateRangeSelector source="search" enabledDateRange={enabledFilters?.locationIds}/>
+          <DateRangeSelector source="search" enabledDateRange={enabledFilters?.durations}/>
           <StatusSelector source="search" enabledStatuses={enabledFilters?.eventStatus}/>
           <EventEntrySelector source="search" enabledEntries={enabledFilters?.eventEntry}/>
           <UserRatingSelector source="search" enabledRatingData={enabledFilters?.eventRating}/>

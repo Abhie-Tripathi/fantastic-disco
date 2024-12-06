@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { useFilterState } from "@/hooks/useFilterState";
 import dynamic from "next/dynamic";
 import { useFilterContext } from "@/context/filterContext";
-
+import {toast} from 'react-toastify'
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
 
 const userRatings = [
@@ -71,11 +71,19 @@ const setSelectedRatings=
   }, [searchParams, getLocalFilterValue]);
 
   const handleRatingToggle = (ratingId: string) => {
-    setSelectedRatings?.((prev) =>
-      prev.includes(ratingId)
+    setSelectedRatings?.((prev) => {
+      if(enabledRatingData?.enabledValue && prev.length===1 && prev.includes(ratingId)){
+        toast.error("At least one filter must be selected", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+        return prev;
+      }
+      return prev.includes(ratingId)
         ? prev.filter((id) => id !== ratingId)
         : [...prev, ratingId]
-    );
+  });
   };
 
   const handleShowRatingsToggle = (checked: boolean) => {

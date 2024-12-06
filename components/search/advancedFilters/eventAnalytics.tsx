@@ -15,7 +15,7 @@ import { useFilterContext } from "@/context/filterContext";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-
+import { LockClosedSmall } from "geist-icons";
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
 
 interface RankCategory {
@@ -23,12 +23,11 @@ interface RankCategory {
   range: [number, number];
 }
 interface analyticsInterface{
-  isAnalyticsEnabled:boolean;
-  toggleOpend:boolean;
+  isAnalyticsEnabled?:boolean
 }
 interface EventAnalyticsProps{
   source:string;
-  enabledAnalyticsData:analyticsInterface;
+  enabledAnalyticsData?:analyticsInterface;
   selectedEventRank?: [number, number];
   setSelectedEventRank?: React.Dispatch<React.SetStateAction<[number, number]>>;
   selectedLocalRank?: [number, number];
@@ -183,7 +182,12 @@ export default function EventAnalyticsSelector({source, selectedEventRank,enable
           disabled={enabledAnalyticsData && !enabledAnalyticsData?.isAnalyticsEnabled}
           aria-haspopup="true"
         >
+          <div className="flex items-center">
+          {enabledAnalyticsData && !enabledAnalyticsData.isAnalyticsEnabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
           <span className="mr-2">Event Analytics</span>
+          </div>
           {(showScores || rankToggles?.globalToggle) && getAppliedFiltersCount() > 0 && (
             <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
               {getAppliedFiltersCount()}

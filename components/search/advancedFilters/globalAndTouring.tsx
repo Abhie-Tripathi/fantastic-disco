@@ -11,17 +11,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
-
+import { LockClosedSmall } from "geist-icons";
 const globalAndTourings = [
   { id: "BRANDED", label: "Branded" },
   { id: "SERIES", label: "Series" },
 ];
 interface brandInterface{
-  isBrandedEnabled:boolean,
-  selectedValue:boolean[],
-  enabledValue:{
-    eventSeries:boolean;
-    eventBrand:boolean;
+  isBrandedEnabled?:boolean,
+  selectedValue?:boolean[] | undefined,
+  enabledValue?:{
+    eventSeries?:boolean;
+    eventBrand?:boolean;
   },
 }
 interface BrandedProps{
@@ -34,7 +34,7 @@ interface BrandedProps{
   isEnabled?: boolean;
   setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export default function GlobalAndTouringSelector({source,         selectedBrandedEvent, setSelectedBrandedEvent, 
+export default function GlobalAndTouringSelector({source,        selectedBrandedEvent, setSelectedBrandedEvent, 
   enabledBrandData,
   selectedEventSeries, setSelectedEventSeries,
   isEnabled: parentIsEnabled = false,
@@ -123,7 +123,7 @@ export default function GlobalAndTouringSelector({source,         selectedBrande
     }
     setIsOpen(open);
   };
-  console.log(enabledBrandData);
+  console.log(selectedEventSeries);
   
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -135,6 +135,10 @@ export default function GlobalAndTouringSelector({source,         selectedBrande
           disabled={enabledBrandData && !enabledBrandData?.isBrandedEnabled}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
+          <div className="flex items-center">
+          {enabledBrandData && !enabledBrandData.isBrandedEnabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
           <span className="flex items-center gap-2">
             Brand
             {selectedStatuses.length > 0 && (
@@ -143,6 +147,7 @@ export default function GlobalAndTouringSelector({source,         selectedBrande
               </span>
             )}
           </span>
+          </div>
           <Switch
             checked={showInFilter}
             disabled={enabledBrandData &&!enabledBrandData?.isBrandedEnabled}

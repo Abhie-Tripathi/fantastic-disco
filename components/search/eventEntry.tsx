@@ -10,7 +10,7 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useFilterContext } from "@/context/filterContext";
-
+import {toast} from "react-toastify"
 const EventEntries = [
   { id: "free", label: "Free" },
   { id: "paid", label: "Paid" },
@@ -52,11 +52,20 @@ export default function EventEntrySelector({
   const selectedStatus = selectedStatuses.length;
 
   const handleStatusToggle = (statusId: string) => {
-    setSelectedStatuses?.((prev) =>
-      prev.includes(statusId)
-        ? prev.filter((id) => id !== statusId)
-        : [...prev, statusId]
-    );
+    setSelectedStatuses?.((prev) => {
+      if (enabledEntries?.enabledValue && prev.length === 1 && prev.includes(statusId)) {
+        toast.error("At least one filter must be selected", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+        return prev;
+      }
+      return prev.includes(statusId)
+        ? prev.filter((id) => id !== statusId) 
+        : [...prev, statusId]; 
+    });
+    
   };
 
   const handleSelectAll = (checked: boolean) => {

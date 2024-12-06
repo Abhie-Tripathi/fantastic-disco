@@ -11,7 +11,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
-
+import {toast} from 'react-toastify';
+import { LockClosedSmall } from "geist-icons";
 const frequencies = [
   { id: "weekly", label: "Weekly" },
   { id: "monthly", label: "Monthly" },
@@ -25,11 +26,11 @@ const frequencies = [
   { id: "one-time", label: "One-Time" },
 ];
 interface freqInterface{
-  isFreqEnabled:boolean,
-  selectedValue:string[],
-  enabledValue:string[],
-  toggleOpend:boolean,
-  popUpOpend:boolean,
+  isFreqEnabled?:boolean,
+  selectedValue?:string[] | undefined,
+  enabledValue?:string[] | undefined,
+  toggleOpend?:boolean,
+  popUpOpend?:boolean,
 }
 interface FrequencySelectorProps {
   enabledFreqData?:freqInterface;
@@ -70,10 +71,19 @@ export default function FrequencySelector({
   }, [searchParams]);
 
   const handleFrequencyToggle = (frequencyId: string) => {
-    setSelectedFrequencies?.((prev) =>
-      prev.includes(frequencyId)
+    setSelectedFrequencies?.((prev) =>{
+      if(enabledFreqData?.enabledValue && prev.length ===1 && prev.includes(frequencyId)){
+        toast.error("At least one filter must be selected", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+        return prev;
+      }
+      return prev.includes(frequencyId)
         ? prev.filter((id) => id !== frequencyId)
         : [...prev, frequencyId]
+    }
     );
   };
 
@@ -90,6 +100,7 @@ export default function FrequencySelector({
       : currentShow.filter((item) => item !== "frequency");
     setLocalFilter("show", newShow.join(","));
   };
+console.log(selectedFrequencies);
 
   return (
     <Popover
@@ -107,6 +118,10 @@ export default function FrequencySelector({
           disabled={enabledFreqData && !enabledFreqData?.isFreqEnabled}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
+          <div className="flex items-center">
+          {enabledFreqData && !enabledFreqData.isFreqEnabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
           <span className="flex items-center gap-2">
             Frequency
             {selectedFrequencies.length > 0 && (
@@ -115,6 +130,7 @@ export default function FrequencySelector({
               </span>
             )}
           </span>
+          </div>
           <Switch
             checked={showInFilter}
             onCheckedChange={handleShowToggle}
@@ -135,7 +151,12 @@ export default function FrequencySelector({
               <Checkbox
                 id={frequency.id}
                 checked={selectedFrequencies.includes(frequency.id)}
-                disabled={enabledFreqData && !enabledFreqData?.enabledValue.includes(frequency.id)}
+                disabled={
+                  (enabledFreqData &&
+                  !enabledFreqData?.enabledValue?.includes(
+                    frequency.id.charAt(0).toUpperCase() + frequency.id.slice(1)
+                  ))
+                }
                 onCheckedChange={() => handleFrequencyToggle(frequency.id)}
               />
               <Label htmlFor={frequency.id}>{frequency.label}</Label>

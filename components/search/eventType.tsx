@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
-
+import {toast} from 'react-toastify'
 type EventGroupType = "social" | "business";
 
 const groupedEventTypes: Record<EventGroupType, string[]> = {
@@ -66,14 +66,30 @@ export default function EventTypeSelector({
 
   const handleCategoryToggle = useCallback(
     (eventGroupType: EventGroupType, categoryId: string) => {
-      setSelectedCategories?.((prev) => ({
-        ...prev,
-        [eventGroupType]: prev[eventGroupType].includes(categoryId)
-          ? prev[eventGroupType].filter((slug) => slug !== categoryId)
-          : [...prev[eventGroupType], categoryId],
-      }));
+      setSelectedCategories?.((prev) => {
+        if (
+          enabledTypeData?.enabledValue &&
+          prev[eventGroupType].length === 1 &&
+          prev[eventGroupType].includes(categoryId)
+        ) {
+          toast.error("At least one filter must be selected", {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+          });
+          return prev; 
+        }
+      
+        return {
+          ...prev,
+          [eventGroupType]: prev[eventGroupType].includes(categoryId)
+            ? prev[eventGroupType].filter((slug) => slug !== categoryId)
+            : [...prev[eventGroupType], categoryId],
+        };
+      });
+      
     },
-    []
+    [enabledTypeData]
   );
 
   const handleSelectAll = useCallback(
@@ -114,6 +130,10 @@ export default function EventTypeSelector({
           <div className="flex items-center space-x-2">
             <Checkbox
               className="rounded-[2.5px]"
+              disabled={
+                !(enabledTypeData?.enabledValue?.length ===
+                (groupedEventTypes?.business?.length || 0))
+              }
               id={`select-all-${type}`}
               checked={isAllSelected(type)}
               onCheckedChange={(checked) =>

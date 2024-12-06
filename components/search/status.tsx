@@ -10,7 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 import { isEventeli } from "@/config";
-
+import {toast} from 'react-toastify';
 const eventStatuses = isEventeli
   ? [
       { id: "active", label: "Active" },
@@ -61,11 +61,19 @@ export default function StatusSelector({
   const selectedStatus = selectedStatuses.length;
 
   const handleStatusToggle = (statusId: string) => {
-    setSelectedStatuses?.((prev) =>
-      prev.includes(statusId)
+    setSelectedStatuses?.((prev) =>{
+    if(enabledStatuses?.enabledValue && prev.length==1 && prev.includes(statusId)){
+      toast.error("At least one filter must be selected", {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+      });
+      return prev;
+    }
+     return prev.includes(statusId)
         ? prev.filter((id) => id !== statusId)
         : [...prev, statusId]
-    );
+  });
   };
 
   const handleSelectAll = (checked: boolean) => {

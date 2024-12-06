@@ -278,6 +278,7 @@ export default function DateRangeSelector({
     }
     setIsOpen(open);
   };
+console.log(enabledDateRange);
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
@@ -315,7 +316,6 @@ export default function DateRangeSelector({
                   <Button
                     key={preset.value}
                     onClick={() => handlePresetChange(preset.value)}
-                    disabled={enabledDateRange && !(enabledDateRange?.startDate && enabledDateRange?.endDate)}
                     variant="outline"
                     className={cn(
                       "w-full font-normal",
@@ -331,7 +331,6 @@ export default function DateRangeSelector({
             <div>
               <Calendar
                 mode="range"
-                disabled={enabledDateRange && !(enabledDateRange?.startDate && enabledDateRange?.endDate)}
                 selected={dateRange}
                 onSelect={(range, selectedDay) => {
                   handleDateSelect(selectedDay);

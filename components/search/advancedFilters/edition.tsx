@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
-
+import { LockClosedSmall } from "geist-icons";
 const maturityLevels = [
   { id: "new", label: "New" },
   { id: "growing", label: "Growing" },
@@ -19,12 +19,12 @@ const maturityLevels = [
   { id: "flagship", label: "Flagship" },
 ];
 interface enabledData{
-      isMaturityEnabled:boolean,
-      enabledValue: string[],
+      isMaturityEnabled?:boolean,
+      enabledValue?: string[],
 }
 interface EditionProps{
   source:string,
-  enabledMaturityData?:enabledData,
+  enabledMaturityData:enabledData,
   selectedStatus?: string;
   setSelectedStatus?: React.Dispatch<React.SetStateAction<string>>;
   isEnabled?: boolean;
@@ -96,7 +96,12 @@ export default function EditionSelector({
           aria-haspopup="true"
         >
           <div className="flex items-center">
-            <span className="mr-2">Maturity</span>
+          {enabledMaturityData && !enabledMaturityData.isMaturityEnabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
+            <span className="mr-2">
+              Maturity
+              </span>
             {selectedStatus && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 1
@@ -105,7 +110,7 @@ export default function EditionSelector({
           </div>
           <Switch
             checked={showInFilter}
-            disabled={enabledMaturityData &&  !enabledMaturityData?.isMaturityEnabled}
+            disabled={enabledMaturityData && !enabledMaturityData?.isMaturityEnabled}
             onCheckedChange={handleShowToggle}
             aria-label="Show Maturity in filter"
             onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
@@ -128,7 +133,7 @@ export default function EditionSelector({
               <RadioGroupItem
                 value={maturityLevel.id}
                 id={maturityLevel.id}
-                disabled={enabledMaturityData &&  !enabledMaturityData?.enabledValue.includes(maturityLevel.id)}
+                disabled={enabledMaturityData && !enabledMaturityData?.enabledValue?.includes(maturityLevel.id)}
                 onClick={(e) => {
                   if (selectedStatus === maturityLevel.id) {
                     e.preventDefault();

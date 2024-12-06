@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { newCategories as categories } from "@/data/categories";
 import { useFilterContext } from "@/context/filterContext";
+import {toast} from 'react-toastify';
 interface categoryInterface{
   selectedValue?: string[] | undefined;
   enabledValue?: any;
@@ -43,12 +44,23 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
   }, [getLocalFilterValue]);
 
   const handleCategoryToggle = useCallback((categorySlug: string) => {
-    setSelectedCategories?.((prev) =>
-      prev.includes(categorySlug)
-        ? prev.filter((slug) => slug !== categorySlug)
-        : [...prev, categorySlug]
-    );
-  }, []);
+
+    setSelectedCategories?.((prev) => {
+      if(enabledCategories?.enabledValue && prev.length === 1 && prev.includes(categorySlug)) {
+        toast.error("At least one filter must be selected", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+        return prev;
+      }
+      return prev.includes(categorySlug)
+        ? prev.filter((slug) => slug !== categorySlug) 
+        : [...prev, categorySlug];
+    });
+    
+    
+  }, [enabledCategories]);
 
   const handleSelectAll = useCallback((isSelected: boolean) => {
     setSelectedCategories?.(isSelected ? categories.map((cat) => cat.slug) : []);

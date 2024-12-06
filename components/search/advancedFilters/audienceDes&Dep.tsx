@@ -22,6 +22,7 @@ import { useMiscService } from "@/services/miscService";
 import { useQuery } from "@tanstack/react-query";
 import { useFilterContext } from "@/context/filterContext";
 import { Designations } from "@/types/misc";
+import { LockClosedSmall } from "geist-icons";
 
 const useDesignationsAutocomplete = (input: string) => {
   const miscService = useMiscService();
@@ -36,8 +37,8 @@ const useDesignationsAutocomplete = (input: string) => {
     isError: !!error,
   };
 };
-interface desInterface{
-  isProfileEnabed?:boolean
+interface desInterface {
+  isProfileEnabled?: boolean;
 }
 interface DesAndDepProps{
   source: string,
@@ -101,12 +102,16 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             open ? "border-primary" : "border-input"
           }`}
-          disabled={enabledProfileData ? !enabledProfileData.isProfileEnabed : false}
+          disabled={enabledProfileData ? !enabledProfileData.isProfileEnabled: false}
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-haspopup="true"
         >
           <div className="flex items-center">
+            {enabledProfileData && !enabledProfileData.isProfileEnabled && 
+            <LockClosedSmall color="var(--secondary-text-color)" />
+          
+            }
             <span className="mr-2">Audience Profile</span>
             {selectedLabels.length > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
