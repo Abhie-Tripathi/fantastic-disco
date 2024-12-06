@@ -98,9 +98,13 @@
     border-top: 1px solid var(--border-color);
 }
 .colorsContainer{
-    display: flex;
+    /* display: flex;
     align-items: center;
+    justify-content: space-between; */
+    display: flex;
+    align-items: flex-start;
     justify-content: space-between;
+    /* flex-wrap: wrap; */
 }
 .btnAndBorderColorContainer{
     display: flex;
@@ -108,6 +112,10 @@
     align-items: flex-start;
     width: 50%;
     gap: 10px;
+    /* display: flex;
+    flex-direction: column;
+    width: 50%;
+    gap: 10px; */
 }
 .btnColorContainer{
     position: relative;
@@ -131,11 +139,13 @@
 .inputContainer{
     background-color:var(--accent-color);
     border-radius: 5px;
-    width: 70px;
+    /* width: 70px; */
+    width: 50px;
     line-height: 14px;
     display: flex;
     align-items: center;
-    padding: 5px 10px 5px 25px;
+    /* padding: 5px 10px 5px 25px; */
+    padding: 5px 10px 5px 5px;
     font-size: 10px;
 }
 .inputContainer input{
@@ -158,9 +168,14 @@
 .btnTextContainer{
     display: flex;
     width: 100%;
-    gap: 15px;
+    gap: 8px;
     align-items: center;
     margin-top: 12px;
+}
+.btnText_icon_Container{
+    display: flex;
+    gap: 6px;
+    align-items: center;
 }
 .btnTextContainer .heading{
     font-size: 11px;

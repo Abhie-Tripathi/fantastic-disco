@@ -77,10 +77,11 @@ const Customization = ({ extractedColors, setExtractedColors, setCardBgColor, se
         <TypographyCustomization fontSettings={fontSettings} setFontSettings={setFontSettings} extractedColors={extractedColors} />
       </div>
       <div className={styles.line}></div>
-      <div className={styles.buttonCustomizationContainer}>
+      {
+        selectedTemplate==="ST" || selectedTemplate ==="PUVP" ||selectedTemplate=== "PUVL"?<div className={styles.buttonCustomizationContainer}>
         <ButtonCustomization selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} buttonSettings={buttonSettings} setButtonSettings={setButtonSettings} extractedColors={extractedColors} />
-      </div>
-
+      </div>:""
+      }
     </div>
   )
 }

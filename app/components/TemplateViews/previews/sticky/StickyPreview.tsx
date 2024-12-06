@@ -130,7 +130,7 @@ const StickyPreview = ({
           </div>
         </div>
       ) : eventType === "SUB" ? (
-        <div className={styles.preview}>
+        // <div className={styles.preview}>
           <div
             className={type === "top" ? styles.stickyTop : styles.stickyFooter}
           >
@@ -145,7 +145,7 @@ const StickyPreview = ({
               buttonSettings={buttonSettings}
             />
           </div>
-        </div>
+        // </div>
       ) : null}
     </>
   );

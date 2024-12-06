@@ -8,7 +8,7 @@ import { AllEventsType } from '@/types/alleventtype';
 import { baseUrl } from '@/constants';
 import DashboardEventCard from './DashboardEventCard';
 import { useEventServices } from '@/services/geniservices/eventService'; 
-
+import { useRouter } from 'next/navigation';
 const DashboardEvents = () => {
     const [selectedBtn, setSelectedBtn] = useState<string>("Added")
     const [fetchedAddedEvents, setFetchedAddedEvents] = useState<AllEventsType[]>([])
@@ -19,9 +19,20 @@ const DashboardEvents = () => {
     const [selectedEventId, setSelectedEventId] = useState<string>("")
     const [selectedEventName, setSelectedEventName] = useState<string>("")
     const {getEvents, deleteEvent, error} = useEventServices();
+    const [createdDate,setCreatedDate]=useState("")
+    const router = useRouter()
     const fetchEvents = async () => {
         // const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&limit=2`)
             const data:any = await getEvents()
+            if (data.data[0]?.createdAt) {
+                const date = new Date(data.data[0]?.createdAt);
+                const formattedDate = new Intl.DateTimeFormat("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                }).format(date);
+                setCreatedDate(formattedDate)
+            }
         if (data) {
             const events = data.data.map((event: any) => ({
                 mainEvent: {
@@ -152,6 +163,10 @@ const DashboardEvents = () => {
             console.log(error);
         }
     }
+    const handleRoute = (e: any,eventId:string ) => {
+        e.stopPropagation()
+        router.push(`/widget/events/manage/${eventId}`);
+    }
     
     return (
         <div className={styles.body}>
@@ -165,7 +180,7 @@ const DashboardEvents = () => {
                     <span className={`${styles.count} ${selectedBtn === "Added" ? styles.selectedCount : ""}`}>{addedEventsLength}</span>
                 </button>
             </div>
-            <div className={styles.addEvent}><span>Last Fetched on : 27 Jul 2024</span>
+            <div className={styles.addEvent}><span>Last added at: {createdDate}</span>
             {/* <Link href={"/widget/events"}>Fetch Now</Link> */}
             </div>
             {selectedBtn === "Fetched" ? <div className={styles.fetchedEventsContainer}>
@@ -184,7 +199,7 @@ const DashboardEvents = () => {
                     {fetchedAddedEvents.length > 0 ?
                         <div className={styles.eventsList}>
                             {fetchedAddedEvents.map((event, key) => (
-                                <div className={styles.eventCard} key={key}><DashboardEventCard handleDeleteModal={handleDeleteModal} width='large' fetchEvents={fetchEvents} event={event} /></div>
+                                <div style={{cursor:"pointer"}} className={styles.eventCard} key={key} onClick={(e) => handleRoute(e,event.mainEvent.eventId)}><DashboardEventCard handleDeleteModal={handleDeleteModal} width='large' fetchEvents={fetchEvents} event={event} /></div>
                             ))}
                         </div>
 

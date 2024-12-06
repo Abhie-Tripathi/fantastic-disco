@@ -16,6 +16,8 @@
 .locationContainer{
     display: flex;
     gap: 6px;
+    width: 100%;
+    cursor: pointer;
 }
 .eventLocation{
     display: flex;
@@ -71,6 +73,8 @@
     display: flex;
     gap: 6px;
     align-items: center;
+    width: 100%;
+    cursor: pointer;
 
 }
 
