@@ -90,7 +90,6 @@ const NullState = ({ nullState }: { nullState: any }) => {
         href={redirectLink}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-[#6750A4] underline font-medium"
       >
         {linkText}
       </Link>
