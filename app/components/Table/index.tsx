@@ -685,6 +685,7 @@ const Table = ({
               setZeroStateText(
                 ""
               );
+              setEventPerPage([]);
             }
           }
         } catch (error) {
@@ -879,7 +880,7 @@ const Table = ({
         <Loading className="w-[200px] h-[100px]" />
       </div>
     );
-  } else if (isLoaded && eventPerPage.length == 0) {
+  } else if (isLoaded && eventPerPage.length == 0 ) {
     return (
       <div className={styles.noData}>
         {path[2]==="trackers"? 
