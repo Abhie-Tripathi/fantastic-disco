@@ -103,8 +103,6 @@ const Search = () => {
   const events = displayData?.events || [];
   const count = displayData?.count || 0;
 
-  console.log(localFilters);
-
   const searchHandler = useCallback(() => {
     applyFilters();
   }, []);

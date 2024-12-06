@@ -518,7 +518,6 @@ const Pages = () => {
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(true);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
   const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(enabledFilters?.branded?.enabledValue?.eventBrand||false);
-  console.log(enabledFilters?.branded?.enabledValue?.eventSeries);
   
   const [selectedEventSeries, setSelectedEventSeries] = useState(enabledFilters?.branded?.enabledValue?.eventSeries || false);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
@@ -1089,7 +1088,6 @@ const Pages = () => {
         })
       : [];
   };
-  console.log(categoryData);
 
   useEffect(() => {
     if (editData && editData?.tracker && last === "editTracker") {
@@ -1311,7 +1309,7 @@ const Pages = () => {
         : [];
     setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedState]);
 
-      console.log(selectedLocations);
+      // console.log(selectedLocations);
       
       const eventCountry =
         editData?.tracker?.filterValue?.eventCountry?.map(
@@ -1655,17 +1653,12 @@ const commonCss={
   input_container:`w-full border-[var(--input-border-color)] border rounded-[var(--border-radius-sm)] whitespace-nowrap p-2 px-4 text-inherit bg-inherit`,
   input:'flex justify-between items-center'
 }
-useEffect(() => {
-  console.log('Selected Aviation Rank:', selectedInternationalScore);
-}, [selectedInternationalScore]);
 // useEffect(()=>{
 //   const updatedIncludeKeywords = includeKeywords.map((keyword) => `${keyword.split(" ").join("_")}`);
 //   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
 //       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
 // },[includeKeywords, excludeKeywords])
 // console.log(enabledFilters.userRating.isRatingEnabled);
-console.log(dateRange);
-console.log(enabledFilters);
 useEffect(()=>{
   if(last!=="editTracker"){
   setRatingOpen(enabledFilters?.eventRating?.isRatingEnabled|| false);

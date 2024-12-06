@@ -83,7 +83,6 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
       ...categories,
     ];
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);
-    console.log(selectedCategories);
     
     return (
       <div className="grid grid-cols-3 gap-x-4">

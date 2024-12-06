@@ -278,7 +278,6 @@ export default function DateRangeSelector({
     }
     setIsOpen(open);
   };
-console.log(enabledDateRange);
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>

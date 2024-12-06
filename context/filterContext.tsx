@@ -81,7 +81,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       
       try {
         const data = await eventService.fetchEnabledFilters("research");
-        console.log(data);
         if(data){
         setEnabledFilters(data);
         }else{
@@ -95,7 +94,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     getEnabledFilters();
   }, []);
   const [localFilters, setLocalFilters] = useState<Record<string, string>>({});
-  console.log(localFilters);
   
   useEffect(() => {
     const temp: Record<string, string> = Object.fromEntries(searchParams.entries());
@@ -158,10 +156,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
   const applyFilters = () => {
     setLocalFilters((currentFilters) => {
-      if(!currentFilters.categories){
-        console.log(1111111);
-        
-      }
       const params = new URLSearchParams();
       Object.entries(currentFilters).forEach(([key, value]) => {
         if (value && key !== "skip") {
