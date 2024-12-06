@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, useEffect, useState } from "react";
 import Image from "next/image";
-import styles from "./page.module.css";
+import styles from "@/app/(auth)/verification/page.module.css";
 import OtpInput from "react-otp-input";
 import Carousel from "@/app/components/carousel";
 import VerificationVisuals from "/public/verificationVisuals.svg";

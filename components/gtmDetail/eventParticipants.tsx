@@ -40,9 +40,10 @@ const ListCard = ({
           <img
             src={
               participant.logo ||
-              `https://img.10times.com/userimages/${participant.name
-                .charAt(0)
-                .toLowerCase()}.jpg`
+              `https://img.10times.com/userimages/${
+                participant.name.match(/[a-zA-Z]/)?.[0]?.toLowerCase() ||
+                "default"
+              }.jpg`
             }
             alt="Logo"
             className="aspect-square rounded-sm w-12 h-12"
@@ -85,6 +86,7 @@ const NullState = ({ nullState }: { nullState: any }) => {
         href={redirectLink}
         className="text-[#6750A4] underline font-medium cursor-pointer"
         target="_blank"
+        rel="noopener noreferrer"
       >
         {linkText}
       </Link>
@@ -125,6 +127,8 @@ const ParticipantContainer = ({
         )}
         {count !== null && count > 3 && (
           <Link
+            target="_blank"
+            rel="noopener noreferrer"
             href={eventPageUrl ? `https://10times.com/${eventPageUrl}` : ""}
             className="border border-[var(--neutral-light-color)] text-[var(--primary-color)] dark:bg-transparent dark:border-[var(--border-color)] py-2 px-3 rounded-sm font-medium text-center"
           >
