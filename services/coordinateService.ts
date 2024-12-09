@@ -165,6 +165,12 @@ export const useCoordinateService = () => {
     });
   }
 
+  const getPipelineConfig = () => {
+    return api.request<CoordinateListResponse>(`${endpoints.configuration}?source=outreach`, {
+      method: "GET",
+    });
+  }
+
   return {
     getEventsWithSearchParams,
     getParticipentCount,
@@ -179,6 +185,7 @@ export const useCoordinateService = () => {
     getOutreachEventList,
     getOutreachSingleEvent,
     getInterestConfig,
+    getPipelineConfig,
     isLoading: api.isLoading,
     error: api.error as ApiError,
   };

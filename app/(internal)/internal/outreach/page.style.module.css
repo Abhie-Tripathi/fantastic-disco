@@ -4,7 +4,7 @@
   padding-left: 10px;
   padding-right: 10px; */
   padding: 24px;
-  border-radius: var(--border-radius-lg);
+  /* border-radius: var(--border-radius-lg); */
   display: flex;
   justify-content: space-evenly;
   position: relative;
@@ -12,7 +12,7 @@
 }
 
 .outerCard {
-  width: 31%;
+  min-width: 32%;
   color: #ffffff;
 }
 
