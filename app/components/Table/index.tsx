@@ -681,7 +681,7 @@ const Table = ({
             }
             if (error.status === 406) {
               setRequestExhausted(true);
-              setZeroStateHeading("You are not authorized to view the data as per you plan.");
+              setZeroStateHeading(error?.message);
               setZeroStateText(
                 ""
               );
