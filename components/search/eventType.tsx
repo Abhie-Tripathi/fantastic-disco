@@ -131,7 +131,7 @@ export default function EventTypeSelector({
             <Checkbox
               className="rounded-[2.5px]"
               disabled={
-                !(enabledTypeData?.enabledValue?.length ===
+                enabledTypeData && !(enabledTypeData?.enabledValue?.length ===
                 (groupedEventTypes?.business?.length || 0))
               }
               id={`select-all-${type}`}
