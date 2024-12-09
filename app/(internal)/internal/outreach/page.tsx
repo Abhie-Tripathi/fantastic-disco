@@ -21,34 +21,15 @@ interface taskDetailType {
 }
 
 const Page: React.FC = () => {
-  const [shortlistedTasks, setShortlistedTasks] = useState<enquiryType[]>([]);
-  const [outreachTasks, setOutreachTasks] = useState<enquiryType[]>([]);
-  const [preFinalisedTasks, setPreFinalisedTasks] = useState<enquiryType[]>([]);
   const [data, setData] = useState([]);
-  const [shortlistedCount, setShortlistedCount] = useState(0);
-  const [inProgressCount, setInProgressCount] = useState(0);
-  const [confirmedCount, setConfirmedCount] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [addEventModal, setAddEventModal] = useState(false);
   const { theme } = useTheme();
-  // const [selectedConfirmed,setSelectedConfirmed]=useState([]);
   const [tabsVisible, setTabsVisible] = useState<string>("shortlist");
   const [enquiryId, setEnquiryId] = useState<string>("");
   const [singleEventId, setSingleEventId] = useState<string>("");
   const [currentEnquiryStatus, setCurrentEnquiryStatus] = useState<string>("");
   const [statusChanged, setStatusChanged] = useState<boolean>(false);
-  const [shortlistPage, setShortlistPage] = useState(1);
-  const [noMoreShortlistData, setNoMoreShortlistData] = useState(false);
-  const [inProgressPage, setInProgressPage] = useState(1);
-  const [noMoreProgressData, setNoMoreProgressData] = useState(false);
-  const [confirmedPage, setConfirmedPage] = useState(1);
-  const [noMoreConfirmData, setNoMoreConfirmData] = useState(false);
-
-  const [dataLoaded, setDataLoaded] = useState<any>({
-    shortlisted: false,
-    outreach: false,
-    preFinalised: false,
-  });
 
   const coordinateService = useCoordinateService();
 
@@ -183,17 +164,7 @@ const Page: React.FC = () => {
       }
     }
   };
-  useEffect(() => {
-    fetchShortlistData();
-  }, [shortlistPage]);
-  useEffect(() => {
-    fetchInProgressData();
-  }, [inProgressPage]);
-  useEffect(() => {
-    fetchConfirmedData();
-  }, [confirmedPage]);
 
-  // new code
   const [taskDetail, setTaskDetail] = useState<taskDetailType>({});
 
   const fetchPipelineData = async (status: string, label: string, page: number) => {
@@ -221,13 +192,10 @@ const Page: React.FC = () => {
     return [];
   };
 
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const [configData, setConfigData] = useState<any>();
 
   const getOutreachConfig = async () => {
     try {
-      // setIsLoading(true);
       const apiData: any = await coordinateService.getPipelineConfig();
       setConfigData(apiData.outreach_stage.slice(1, apiData.outreach_stage.length - 1));  
       let outreachPipeLine1 = apiData.outreach_stage.slice(1, apiData.outreach_stage.length - 1);
@@ -252,71 +220,13 @@ const Page: React.FC = () => {
     getOutreachConfig();
   }, []);
 
-  // new code
-
   useEffect(() => {
     if (window.innerWidth > 576) {
       setTabsVisible("all");
     }
     // fetchData();
   }, [statusChanged]);
-  const fetchShortlistData = async () => {
-    const shortlistApiData = await coordinateService.getOutreachEventList({
-      offset: (shortlistPage - 1) * 10,
-      status: "SHORTLISTED",
-    });
 
-    if (shortlistApiData) {
-      setDataLoaded((prevState: any) => ({
-        ...prevState,
-        shortlisted: true,
-      }));
-      setShortlistedTasks((prev) => [...prev, ...shortlistApiData.enquiryData]);
-      setShortlistedCount(shortlistApiData.totalCount);
-
-      if (shortlistApiData.enquiryData.length < 10) {
-        setNoMoreShortlistData(true);
-      }
-    }
-  };
-  const fetchInProgressData = async () => {
-    const negoApiData = await coordinateService.getOutreachEventList({
-      offset: (inProgressPage - 1) * 10,
-      status: "IN_NEGO,IN_DISCUSSION",
-    });
-
-    if (negoApiData) {
-      setDataLoaded((prevState: any) => ({
-        ...prevState,
-        outreach: true,
-      }));
-      setOutreachTasks((prev) => [...prev, ...negoApiData.enquiryData]);
-      setInProgressCount(negoApiData.totalCount);
-
-      if (negoApiData.enquiryData.length < 10) {
-        setNoMoreProgressData(true);
-      }
-    }
-  };
-  const fetchConfirmedData = async () => {
-    const confirmApiData = await coordinateService.getOutreachEventList({
-      offset: (confirmedPage - 1) * 10,
-      status: "CONFIRMED",
-    });
-
-    if (confirmApiData) {
-      setDataLoaded((prevState: any) => ({
-        ...prevState,
-        preFinalised: true,
-      }));
-      setPreFinalisedTasks((prev) => [...prev, ...confirmApiData.enquiryData]);
-      setConfirmedCount(confirmApiData.totalCount);
-
-      if (confirmApiData.enquiryData.length < 10 || confirmedCount === 10) {
-        setNoMoreConfirmData(true);
-      }
-    }
-  };
   const handleDropdownSelect = (target: string, source: string) => {
     const mockEvent = {
       preventDefault: () => {},
@@ -352,7 +262,7 @@ const Page: React.FC = () => {
   }
   return (
     <>
-      <div style={{ width: "calc(100vw - 70px)" }}>
+      <div>
         {/* <div className="mobile_view">
           <div className={styles.mobileTab}>
             <div

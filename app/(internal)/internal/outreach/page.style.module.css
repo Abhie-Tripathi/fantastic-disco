@@ -140,9 +140,9 @@
     margin-right: 5px;
     margin-left: 5px;
   }
-  .taskBody {
+  /* .taskBody {
     padding-top: 0;
-  }
+  } */
   .mobileTab {
     display: flex;
     justify-content: space-between;
