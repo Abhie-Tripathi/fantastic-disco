@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, FormEvent } from "react";
+import React, { useState, FormEvent, useEffect } from "react";
 import styles from "@/app/(auth)/signup/page.module.css";
 import Image from "next/image";
 import Carousel from "@/app/components/carousel";
@@ -24,9 +24,14 @@ import { BaseURL } from "@/config";
 import CategorySelector from "../categorySelector";
 import IndustryDropdown from "./IndustryDropdown";
 import { industryData } from "@/data/onboarding";
+import { useFilterContext } from "@/context/filterContext";
+import { useFilterState } from "@/hooks/useFilterState";
+import { newCategories } from "@/data/categories";
+import LocationForm from "@/app/(auth)/location/page";
 const NewSignUpForm = () => {
   const [showVerification, setShowVerification] = useState(false);
   const { signup } = useAuthContext();
+  const { getFilterValue, setFilter } = useFilterState();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -42,14 +47,22 @@ const NewSignUpForm = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
 
+  useEffect(() => {
+    const eventTypes = getFilterValue("categories").split(",").filter(Boolean);
+    const selectedCategories = newCategories
+      .filter((category) => eventTypes.includes(category.id))
+      .map((category) => category.slug);
+    setCategories(selectedCategories);
+  }, [getFilterValue]);
+
   const handleSignUp = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData: any = {
-      email,
-      industry,
-      categories,
-    };
-    console.log(formData);
+    setShowVerification(true);
+    // const formData: any = {
+    //   email,
+    //   industry,
+    //   categories,
+    // };
     // if (mobileNo.length > 0) {
     //   formData.mobileNo = mobileNo;
     // }
@@ -138,6 +151,8 @@ const NewSignUpForm = () => {
 
   const obj = {
     email: email,
+    industry: industry,
+    categories: categories,
     path: "signup",
   };
 
@@ -186,10 +201,7 @@ const NewSignUpForm = () => {
                 ?.subCategory && (
                 <div className={styles.input_container}>
                   <div className={styles.input_title}>Category</div>
-                  <CategorySelector
-                    setSelectedCategories={setCategories}
-                    source="tracker"
-                  />
+                  <CategorySelector source="search" />
                   {errors.email && (
                     <div className={styles.error}>{errors.email}</div>
                   )}

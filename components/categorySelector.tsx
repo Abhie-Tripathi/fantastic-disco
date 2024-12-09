@@ -15,7 +15,7 @@ interface categoryProps {
   selectedCategories?: string[];
   setSelectedCategories?: React.Dispatch<React.SetStateAction<string[]>>; 
 }
-export default function   CategorySelector({
+export default function CategorySelector({
   source,
   selectedCategories: parentSelectedCategories = [],
   setSelectedCategories: parentSetSelectedCategories,

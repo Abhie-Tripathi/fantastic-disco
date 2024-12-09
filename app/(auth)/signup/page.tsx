@@ -5,7 +5,7 @@ import { BaseURL } from "@/config";
 export default function SignUpPage() {
   const checkDev = BaseURL?.includes("dev");
   if (checkDev) {
-    return <NewSignUpForm />;
+    return <SignUpForm />;
   } else {
     return <SignUpForm />;
   }
