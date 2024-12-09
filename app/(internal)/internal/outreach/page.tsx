@@ -1,11 +1,9 @@
 "use client";
-import React, { useState, useEffect, useRef, RefObject } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./page.style.module.css";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
 import { useTheme } from "@/context";
 import { enquiryType } from "@/types/outreachEnquiryTypes";
-import useInfiniteScroll from "@/utils/useInfiniteScroll";
-import Loading from "@/app/components/UI/Loading";
 import { useCoordinateService } from "@/services/coordinateService";
 import NullState from "@/app/components/trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg";
@@ -18,6 +16,7 @@ interface taskDetailType {
     count: number;
     dataLoaded?: boolean;
     noMoreData?: boolean;
+    page: number;
   };
 }
 
@@ -101,6 +100,7 @@ const Page: React.FC = () => {
           ...prevState[source],
           data: prevState[source].data?.filter((task) => task.eventId !== taskName.eventId),
           count: prevState[source].count - 1,
+          noMoreData: prevState[source].count - 1 <= 10 ? true : false,
         },
       }));
 
@@ -117,15 +117,10 @@ const Page: React.FC = () => {
     }
   };
 
-  const singleCall2 = async (source: string) => {
+  const singleCall = async (source: string) => {
     if( taskDetail[source].count > 10 && !taskDetail[source].noMoreData ) {
       const apiData = await coordinateService.getOutreachSingleEvent({
-        offset:
-          source === "SHORTLISTED"
-            ? (shortlistPage - 1) * 10 + 9
-            : source === "IN_NEGO,IN_DISCUSSION"
-            ? (inProgressPage - 1) * 10 + 9
-            : (confirmedPage - 1) * 10 + 9,
+        offset: (taskDetail[source].page - 1) * 10 + 9,
         status: source,
       });
       if (apiData) {
@@ -140,35 +135,6 @@ const Page: React.FC = () => {
     }
   }
 
-  const singleCall = async (source: string) => {
-    if (
-      (source === "SHORTLISTED" &&
-        !noMoreShortlistData &&
-        shortlistedCount > 10) ||
-      (source === "IN_NEGO,IN_DISCUSSION" &&
-        !noMoreProgressData &&
-        inProgressCount > 10) ||
-      (source === "CONFIRMED" && !noMoreConfirmData && confirmedCount > 10)
-    ) {
-      const apiData = await coordinateService.getOutreachSingleEvent({
-        offset:
-          source === "SHORTLISTED"
-            ? (shortlistPage - 1) * 10 + 9
-            : source === "IN_NEGO,IN_DISCUSSION"
-            ? (inProgressPage - 1) * 10 + 9
-            : (confirmedPage - 1) * 10 + 9,
-        status: source,
-      });
-
-      if (apiData) {
-        source === "SHORTLISTED"
-          ? setShortlistedTasks((prev) => [...prev, ...apiData.enquiryData])
-          : source === "IN_NEGO,IN_DISCUSSION"
-          ? setOutreachTasks((prev) => [...prev, ...apiData.enquiryData])
-          : setPreFinalisedTasks((prev) => [...prev, ...apiData.enquiryData]);
-      }
-    }
-  };
   const handleModal = (
     eventId: string,
     enquiryId: string | null = null,
@@ -246,6 +212,7 @@ const Page: React.FC = () => {
           count: shortlistApiData.totalCount,
           dataLoaded: true,
           noMoreData: (shortlistApiData.enquiryData.length < 10 ) ? true : false,
+          page: page,
         },
       }));
 
@@ -272,6 +239,7 @@ const Page: React.FC = () => {
           count: 0,
           dataLoaded: false,
           noMoreData: false,
+          page: 0,
         }
       });
       setTaskDetail(temp);
@@ -369,17 +337,7 @@ const Page: React.FC = () => {
     handleDrop2(mockEvent, target);
   };
 
-  if (!Object.values(dataLoaded).every((value) => value === true)) {
-    return (
-      <div style={{ padding: "50px" }}>
-        <Loading />
-      </div>
-    );
-  } else if (
-    shortlistedTasks.length == 0 &&
-    outreachTasks.length == 0 &&
-    preFinalisedTasks.length == 0
-  ) {
+  if (Object.values(taskDetail).length > 0 && Object.values(taskDetail).every((value) => (value.dataLoaded === true && value.count === 0)) ) {
     return (
       <div className="p-20">
         <NullState
@@ -432,7 +390,7 @@ const Page: React.FC = () => {
         </div> */}
         <div className={`${styles.taskBody}  w-full scroll overflow-x-auto`}>
           { Object.keys(taskDetail).map((status, index) => (
-              <PipelineCol handleDragContainerStart={handleDragContainerStart} handleDragOver={handleDragOver} handleDragStart={handleDragStart} handleDrop2={handleDrop2} handleModal={handleModal} openAddModalHandler={openAddModalHandler} status={status} taskDetail={taskDetail} fetchPipelineData={fetchPipelineData} />
+              <PipelineCol key={index} handleDragContainerStart={handleDragContainerStart} handleDragOver={handleDragOver} handleDragStart={handleDragStart} handleDrop2={handleDrop2} handleModal={handleModal} openAddModalHandler={openAddModalHandler} status={status} taskDetail={taskDetail} fetchPipelineData={fetchPipelineData} />
             ))
           }
         </div>

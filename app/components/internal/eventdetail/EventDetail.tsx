@@ -7,7 +7,7 @@ import EventDescription from "./EventDescription";
 import Organiser from "./Organiser";
 import EventPoc from "./EventPoc";
 import Follower from "./Follower";
-import StatusBar from "./statusBar";
+import StatusBar from "./StatusBar";
 import OwnerList from "./ownerList";
 import { usePathname } from "next/navigation";
 import backIcon from "/public/back.svg"
