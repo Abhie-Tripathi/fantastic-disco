@@ -170,7 +170,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   };
 
   return (
-    <div className="pt-0 p-6">
+    <div className="pt-0">
       <aside className="fixed h-screen w-[25%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[4px_0_10px_rgba(0,0,0,0.1)] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
         <Button
           variant="link"

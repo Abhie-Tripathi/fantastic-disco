@@ -17,6 +17,7 @@ import StatusSelector from "@/components/search/status";
 import UserRatingSelector from "@/components/search/userRatingSelector";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
+import List from "@/components/search/list";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFilterContext } from "@/context/filterContext";
@@ -28,12 +29,13 @@ import {
   CalendarMonthEvent,
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
+  Event,
   EventsResponse,
   MapEventsResponse,
 } from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Filter, Loader2, Plus } from "lucide-react";
+import { ArrowUpRight, Filter, FilterX, Loader2, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { lazy, useCallback, useState } from "react";
 import { toast } from "react-toastify";
@@ -59,7 +61,7 @@ const Search = () => {
   const { navigateWithParams, getFilterValue, setFilter, setMultipleFilters } =
     useFilterState();
   const eventService = useEventsService();
-  const selectedView = getFilterValue("view") || "list";
+  const selectedView = getFilterValue("view") || "table";
   const { applyFilters, localFilters, clearLocalFilters } = useFilterContext();
   const searchParams = useSearchParams();
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -84,7 +86,7 @@ const Search = () => {
       eventService.getEventsWithSearchParams(searchParams.toString()),
     enabled:
       !!searchParams.toString() &&
-      !(selectedView == "list" || selectedView == "") &&
+      !(selectedView == "table" || selectedView == "") &&
       !(
         Array.from(searchParams.values()).length == 0 ||
         (Array.from(searchParams.values()).length == 1 &&
@@ -182,11 +184,13 @@ const Search = () => {
     return count;
   })();
 
+  console.log(events);
+
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       <SearchBar />
-      <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
-        <div className="col-span-8 grid grid-cols-4 gap-3">
+      <div className="w-full grid grid-cols-10 gap-4 border-b pb-6 mt-6">
+        <div className="col-span-8 grid lg:grid-cols-4 grid-cols-3 gap-3">
           <EventTypeSelector source="search" />
           <CategorySelector source="search" />
           <EventFormatSelector source="search" />
@@ -219,7 +223,7 @@ const Search = () => {
                 className="w-4 h-w-4"
                 color="#6750a4"
               />
-              Save as Tracker
+              Save {<span className="hidden lg:!block">as Tracker</span>}
             </Button>
           </div>
           <div className="row-span-2 flex flex-col gap-3">
@@ -229,7 +233,8 @@ const Search = () => {
               className="text-primary"
               onClick={() => clearLocalFilters()}
             >
-              Reset Filters
+              <FilterX className="w-4 h-4 hidden lg:block" />
+              <span className="ml-1">Reset</span>
             </Button>
 
             <Button
@@ -237,8 +242,10 @@ const Search = () => {
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
               className="text-destructive p-0 flex items-center"
             >
-              <Filter className="mr-2 h-4 w-4" />
-              {showAdvancedFilters ? "Hide" : "Advanced"}
+              <Filter className="h-4 w-4" />
+              <span className="hidden lg:!block">
+                {showAdvancedFilters ? "Hide" : "Advanced"}{" "}
+              </span>
               {filtersCount ? `(${filtersCount})` : ""}
             </Button>
           </div>
@@ -251,18 +258,21 @@ const Search = () => {
         value={selectedView}
         onValueChange={onTabsChange}
       >
-        <div className="grid grid-cols-3 items-center mb-6">
+        <div className="flex items-center justify-between mb-6">
           {/* <div className="flex items-center gap-2">
             <Badge className="bg-primary text-white">{count}</Badge>
             <p className="text-primary font-semibold">Events Found</p>
           </div> */}
-          <div></div>
+          <div className="w-[108px]"></div>
           <div className="flex justify-center">
-            <TabsList className="grid w-[450px] grid-cols-3 h-auto">
+            <TabsList className="grid w-[450px] grid-cols-4 h-auto">
+              <TabsTrigger value="table" className="text-base">
+                Table
+              </TabsTrigger>
               <TabsTrigger value="list" className="text-base">
                 List
               </TabsTrigger>
-              <TabsTrigger value="map" className=" text-base">
+              <TabsTrigger value="map" className="text-base">
                 Map
               </TabsTrigger>
               <TabsTrigger value="calendar" className=" text-base">
@@ -282,12 +292,27 @@ const Search = () => {
                   <ArrowUpRight className="ml-2 h-4 w-4" />
                 </Button>
               </DialogTrigger>
-              <DialogContent>{/* <ExportModal /> */}</DialogContent>
+              <DialogContent> </DialogContent>
             </Dialog>
           </div>
         </div>
 
-        <TabsContent value="list" className="flex-grow overflow-hidden">
+        <TabsContent value="list" className="flex-grow overflow-hidden mt-0">
+          {isLoading ? (
+            <Loading />
+          ) : error ? (
+            <ZeroState text={(error as ApiError).message} />
+          ) : count == 0 ? (
+            <ZeroState text="No events were found in the selected area." />
+          ) : (
+            <>
+              {/* <Alerts /> */}
+              <List events={events as Event[]} count={count} />
+            </>
+          )}
+        </TabsContent>
+
+        <TabsContent value="table" className="flex-grow overflow-hidden">
           {isLoading ? (
             <Loading />
           ) : (

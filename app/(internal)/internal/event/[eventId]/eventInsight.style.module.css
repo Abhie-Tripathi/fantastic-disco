@@ -1,7 +1,7 @@
 .container {
     display: flex;
     gap: 48px;
-    padding: 20px;
+    /* padding: 20px; */
 }
 
 .containerLeft {

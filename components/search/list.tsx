@@ -34,6 +34,7 @@ import { useToast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
 import { cn } from "@/lib/utils";
 import { eventTypeColors } from "@/constants/eventTypes";
+import { isEventeli } from "@/config";
 
 interface CircularProgressProps {
   value: number;
@@ -89,7 +90,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
           {value ? value : "-"}
         </span>
       </div>
-      <p className="text-xs border-[#EBEBEB] border bg-white rounded p-1">
+      <p className="text-xs border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded p-1">
         {label}
       </p>
     </div>
@@ -211,7 +212,7 @@ export default function EventAccordion({
         </ul>
       </div>
       {totalPages > 1 && (
-        <div className="mt-4 sticky bottom-0 bg-white py-4 border-t">
+        <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
           <Pagination>
             <PaginationContent className="flex-wrap justify-center">
               <PaginationItem>
@@ -341,13 +342,13 @@ const EventListItem = ({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-[#EBEBEB] shadow-sm relative">
+    <div className="bg-background rounded-lg border shadow-sm relative">
       <Link href={`/internal/event/${event.id}`} className="block">
         <div className="absolute w-[6px] h-full left-0 top-0 rounded-lg bg-[#5055A3]"></div>
         <div className="p-6">
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-7 flex flex-col justify-between gap-3">
-              <h2 className="text-2xl font-semibold text-gray-900 ">
+              <h2 className="text-2xl font-semibold ">
                 {event.name}
               </h2>
 
@@ -494,12 +495,21 @@ const EventListItem = ({
                       Top {event.rankings.rankRange}
                     </Badge>
                   )}
+
+                  {event.audienceZone && (
+                    <Badge
+                      variant="outline"
+                      className="text-gray-600 capitalize"
+                    >
+                      {event.audienceZone} Audience
+                    </Badge>
+                  )}
                 </div>
               </div>
             </div>
 
             <div className="col-span-5 flex flex-col justify-between">
-              <div className="flex items-center justify-end">
+              {isEventeli && <div className="flex items-center justify-end">
                 <Button
                   variant="ghost"
                   disabled={isSaved}
@@ -514,7 +524,7 @@ const EventListItem = ({
                     <Bookmark className="w-5 h-5 text-primary" />
                   )}
                 </Button>
-              </div>
+              </div>}
               <div className="flex items-center justify-end">
                 {event.scores ? (
                   <div className="flex items-center justify-between w-full">
@@ -553,7 +563,7 @@ const EventListItem = ({
 
                     <div className="space-y-4">
                       {event.scores && (
-                        <div className="grid grid-cols-3 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                        <div className="grid grid-cols-3 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] dark:bg-[#171717] p-2 rounded">
                           <CircularProgress
                             value={event.scores.impactScore}
                             label="EIS"
