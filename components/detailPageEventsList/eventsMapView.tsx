@@ -22,13 +22,6 @@ interface MapProps {
   event: GTMEventDetail;
   zoom?: number;
 }
-interface updatedEvent {
-  coordinates: {
-    latitude: string; 
-    longitude: string;
-  };
-  events: Event[];
-}
 
 const EventsMapView: React.FC<MapProps> = ({
   startDate,
