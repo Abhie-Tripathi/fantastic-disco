@@ -21,15 +21,13 @@ interface MapProps {
   style: React.CSSProperties;
   event: GTMEventDetail;
   zoom?: number;
-  // activeDate: string;
 }
 
-const MapComponent: React.FC<MapProps> = ({
+const EventsMapView: React.FC<MapProps> = ({
   startDate,
   endDate,
   style,
   event,
-  // activeDate,
   zoom = 0,
 }) => {
   const {
@@ -183,4 +181,4 @@ const MapComponent: React.FC<MapProps> = ({
   );
 };
 
-export default MapComponent;
+export default EventsMapView;

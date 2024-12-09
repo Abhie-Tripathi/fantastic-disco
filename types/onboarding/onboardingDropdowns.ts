@@ -11,4 +11,13 @@ export interface OnboardingSelection {
   subIndustry?: SubIndustry;
 }
 
+export interface VerificationProps {
+  params: {
+    email: string;
+    industry?: string;
+    categories?: string[];
+    path: string;
+  };
+}
+
 export interface SubIndustry extends Omit<Industry, "subIndustries"> {}
