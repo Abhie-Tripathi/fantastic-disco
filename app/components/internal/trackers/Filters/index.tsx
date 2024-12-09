@@ -71,6 +71,9 @@ import { useTrackerContext } from "@/context/tracker";
 import { Designations } from "@/types/misc";
 import { useFilterContext } from "@/context/filterContext";
 import { categories, newCategories } from "@/data/categories";
+import kewwordPresetJson from "@/public/data/presetJson/keyword.json"
+import competitorPresetJson from "@/public/data/presetJson/competitor.json"
+import speakerPresetJson from "@/public/data/presetJson/speaker.json"
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -121,7 +124,17 @@ interface Cat {
 interface EditData {
   tracker: Tracker;
 }
-
+interface PresetJsonData {
+  id: number;
+  img?: any;
+  url: string;
+  trackerName: string;
+  content: string;
+  data: any;
+  enabled: boolean;
+  presetType: string;
+  eventCount?: string;
+}
 const top10Data = [['BMC Training'], ['Lorman Education Services'], ['http://www.iu.edu/']];
 const top10Speakers = [
   ["abc.com", "xyz.com"],
@@ -131,57 +144,49 @@ const keyData1 = [
   ['Mental health', 'Psychologist', 'Therapist', 'wellness coaches'],
   [],
 ];
-const presetTemplateData = [
+const staticPresetData = [
+  // {
+  //   id: 1,
+  //   img: Competitor,
+  //   url: "T_COMPETITOR",
+  //   trackerName: "Top 100 Companies",
+  //   content: "This list highlights 100 global events organizers connecting industries, fostering business growth, and innovation.",
+  //   data: top10Data,
+  //   enabled: false,
+  //   presetType: 'ALL',
+  // },
+  // {
+  //   id: 2,
+  //   img: Keywords,
+  //   url:"T_COMPETITOR",
+  //   trackerName: "Top 25 Trending",
+  //   content: "This list highlights 25 influential organizers worldwide, gaining traction with new, high-impact events.",
+  //   data: top10Data,
+  //   enabled: false,
+  //   presetType: 'All',
+  // },
+  // {
+  //   id: 3,
+  //   img: Competitor,
+  //   url: "T_COMPETITOR",
+  //   trackerName: "India Top 30",
+  //   content: "Discover leading companies in India hosting business expos, conferences, and events.",
+  //   data: top10Data,
+  //   enabled: false,
+  //   presetType: 'All',
+  // },
+  // {
+  //   id: 4,
+  //   img: Competitor,
+  //   url: "T_COMPETITOR",
+  //   trackerName: "Education & Training companies in India",
+  //   content: "Discover leading Education & Training companies in India hosting business expos, conferences, and events.",
+  //   data: top10Data,
+  //   enabled: false,
+  //   presetType: 'All',
+  // },
   {
-    id: 1,
-    // type: "template",
-    // domain: "Human Resource",
-    img: Competitor,
-    url: "T_COMPETITOR",
-    trackerName: "Top 100 Companies",
-    content: "This list highlights 100 global events organizers connecting industries, fostering business growth, and innovation.",
-    data: top10Data,
-    enabled: false,
-    presetType: 'ALL',
-  },
-  {
-    id: 2,
-    // type: "template",
-    // domain: "Sales",
-    img: Keywords,
-    url:"T_COMPETITOR",
-    trackerName: "Top 25 Trending",
-    content: "This list highlights 25 influential organizers worldwide, gaining traction with new, high-impact events.",
-    data: top10Data,
-    enabled: false,
-    presetType: 'All',
-  },
-  {
-    id: 3,
-    // type: "template",
-    // domain: "Human Resource",
-    img: Competitor,
-    url: "T_COMPETITOR",
-    trackerName: "India Top 30",
-    content: "Discover leading companies in India hosting business expos, conferences, and events.",
-    data: top10Data,
-    enabled: false,
-    presetType: 'All',
-  },
-  {
-    id: 4,
-    // type: "template",
-    // domain: "Human Resource",
-    img: Competitor,
-    url: "T_COMPETITOR",
-    trackerName: "Education & Training companies in India",
-    content: "Discover leading Education & Training companies in India hosting business expos, conferences, and events.",
-    data: top10Data,
-    enabled: false,
-    presetType: 'All',
-  },
-  {
-    id: 5,
+    id: 112,
     img: Speaking,
     url: "T_SPEAKING_OPPORTUNITY",
     trackerName: "Artificial Intelligence Speakers",
@@ -191,7 +196,7 @@ const presetTemplateData = [
     presetType: 'All',
   },
   {
-    id: 6,
+    id: 113,
     img: Speaking,
     url: "T_SPEAKING_OPPORTUNITY",
     trackerName: "Biotechnology Innovations Speakers",
@@ -200,48 +205,19 @@ const presetTemplateData = [
     enabled: false,
     presetType: 'All',
   },
-  {
-    id: 7,
-    img: Keywords,
-    url: "T_PRODUCT_KEYWORDS",
-    trackerName: "Mindful Matters",
-    content: "Focuses on mental health awareness and practices.",
-    data: keyData1,
-    enabled: true,
-    presetType: 'All',
-  }
+  // {
+  //   id: 7,
+  //   img: Keywords,
+  //   url: "T_PRODUCT_KEYWORDS",
+  //   trackerName: "Mindful Matters",
+  //   content: "Focuses on mental health awareness and practices.",
+  //   data: keyData1,
+  //   enabled: true,
+  //   presetType: 'All',
+  // }
 ];
-const productType = process.env.NEXT_PUBLIC_PRODUCT_TYPE;
-const templates = productType==="eventeli"?[
-    {
-      name: "T_LOCATION",
-      templateName: "Location",
-      // type: "template",
-      domain: "Market Research",
-      img: Competitor,
-      url: "T_LOCATION",
-      content:
-        "Track your competitor experts, influencers and where they might be participating in events",
-    },
-    {
-      name: "T_VENUE",
-      templateName: "Venue",
-      // domain: "Market Research",
-      img: Keywords,
-      url:"T_VENUE",
-      content:
-        "List all the events which belongs to given industry or associated with keywords.",
-    },
-    {
-      name: "T_LOCATION_DATE",
-      templateName: "Location and Date",
-      img: Speaking,
-      url: "T_LOCATION_DATE",
-      content:
-        "Input team members and their details to keep track of the events with speaking opportunities.",
-    }
-  
-]:[
+
+const templates = [
   {
     name: "T_RECRUITMENT",
     templateName: "Recruitment",
@@ -411,6 +387,15 @@ const formatText = (val: string) => {
   }
 }
 
+const formatCount = (count: number ) => {
+  if (count >= 1000) {
+    const value = count / 1000;
+    const decimalPart = value - Math.floor(value);
+      return `${Math.floor(value)}k`;
+  }
+  return count;
+};
+
 const Pages = () => {
   const searchParams = useSearchParams();
   
@@ -419,6 +404,7 @@ const Pages = () => {
   interface SelectedLocation {
     [id: string]: string;
   }
+  const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const {getTrackerDetail,createTracker,editTracker, error}=useTrackerServices();
   const [isRatingOpen, setRatingOpen] = useState<boolean>(enabledFilters?.eventRating?.isRatingEnabled || false);
   const [isExhibitOpen, setExhibitOpen] = useState<boolean>(enabledFilters?.estimatedExhibitScore?.isExhibitorsEnabled||false);
@@ -603,11 +589,16 @@ const Pages = () => {
     router.push(`/search/events?${params.toString()}`);
   };
   const [trackerName, setTrackerName] = useState("");
+  const [selectedPresetName, setSelectedPresetName] = useState<string>('');
   // const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const [categorySlug, setCategorySlug] = useState<string[]>(
     searchParams.get("categories")?.split(",") || []
   );
   // const [editData, setEditData] = useState<EditData | null>(null);
+  useEffect(() => {
+    setPresetTemplateData([...kewwordPresetJson, ...competitorPresetJson, ...speakerPresetJson])
+  }, []);
+
   useEffect(() => {
     if (last === "editTracker") {
       const secondLast = pathName[pathName.length - 2];
@@ -721,6 +712,8 @@ const Pages = () => {
     }
   }, [type, customData])
 
+  const scrollableDivRef = useRef<HTMLDivElement>(null);
+
   const handlePresetClick = (id: number, trackerType: string, trackerName: string) => {
 
     const filteredPresetData = presetTemplateData.filter(item => item.id === id);
@@ -742,10 +735,10 @@ const Pages = () => {
       setExcludeKeywords(filteredPresetData?.[0]?.data?.[1]);
     }
 
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    setSelectedPresetName(trackerName);
+    if (scrollableDivRef.current) {
+      scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   const saveTrackerHandler = async () => {
@@ -1653,6 +1646,9 @@ const commonCss={
   input_container:`w-full border-[var(--input-border-color)] border rounded-[var(--border-radius-sm)] whitespace-nowrap p-2 px-4 text-inherit bg-inherit`,
   input:'flex justify-between items-center'
 }
+useEffect(() => {
+  console.log('Selected Aviation Rank:', selectedInternationalScore);
+}, [selectedInternationalScore]);
 // useEffect(()=>{
 //   const updatedIncludeKeywords = includeKeywords.map((keyword) => `${keyword.split(" ").join("_")}`);
 //   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
@@ -1738,7 +1734,7 @@ return (
     </div>
     </div>
   </div>
-  <div className="flex flex-col gap-6 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "104px" : "140px" }}>
+  <div ref={scrollableDivRef} className="flex flex-col gap-6 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "104px" : "140px" }}>
     {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
     <div
       className="px-6 py-1 w-full border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)]"
@@ -2005,7 +2001,7 @@ return (
           {" "} You can edit or remove unwanted entries from here.
         </div>
         {(customData && customData.length >0) ?
-          <TemplateTable customData={customData} handleCustomData={handleCustomData} /> :
+          <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> :          
           <div className={styles.emptyTableData}>
             <Image
               src={trackerEmptyTable}
@@ -2089,7 +2085,6 @@ return (
               >
                 Insights &#x26; Score
               </button>
-              {productType==="eventgtm" && 
               <button
                 onClick={() => setSelectedAdvFilter("AI")}
                 className={`${styles.listBtn} ${selectedAdvFilter === "AI" ? styles.active : ""
@@ -2097,7 +2092,6 @@ return (
               >
                 Audience Intel
               </button>
-              }
             </div>
           </div>
         </div>
@@ -2270,24 +2264,34 @@ return (
    
   </div>
     }
-    {(type !== "CUSTOM" && presetTemplateData.filter(item => item.url === template?.name).length > 0) &&
+      {(type !== "CUSTOM" && presetTemplateData.filter(item => item.url === template?.name).length > 0) &&
       <div>
-          <div className={styles.presetTitle} >Get Started with Pre-sets</div>
+          <div className="flex justify-center	gap-2 items-center font-semibold" >
+            <span className="text-lg">Get Started with Pre-sets </span>{" "}
+            <span className="text-xs bg-[var(--primary-color)] text-white py-[3px] px-2 rounded-full">{presetTemplateData.filter(item => item.url === template?.name).length}</span>
+          </div>
           <div className={styles.presetContainer} >
             {presetTemplateData.filter(item => item.url === template?.name).map((item, ind) => (
-              <div key={ind} className="w-1/4 p-2 gap-2 flex items-center flex-col h-[300px] text-sm border border-[var(--border-color)] rounded-[12px]" onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
+              <div key={ind} className="w-full p-2 gap-3 flex items-center flex-col h-[280px] text-sm border border-[var(--border-color)] rounded-[12px] overflow-y-auto" onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
                 <div
-                  className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]"
+                  className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)] relative"
                 >
                   <div className={styles.account}>
-                    <Image src={item.img} alt="people" />
+                    <Image src={
+                      item.url === 'T_COMPETITOR' ? Competitor :
+                      item.url === 'T_PRODUCT_KEYWORDS' ? Keywords :
+                      item.url === 'T_SPEAKING_OPPORTUNITY' ? Speaking :
+                      Keywords} alt="people" />
                   </div>
                   <div>
                     <Image src={Template} alt="template" />
                   </div>
+                  { (item?.eventCount && parseInt(item.eventCount) > 0) &&
+                    <div className="p-1 px-2 bg-[var(--primary-light-color)] font-medium text-xs absolute bottom-0 right-0 rounded-br-md rounded-tl-md" >{formatCount(parseInt(item.eventCount))} events</div>
+                  }
                 </div>
-                <div className="w-full h-[60%] flex flex-col gap-2">
-                  <div className="flex justify-between items-center">
+                <div className="w-full h-[60%] flex flex-col gap-3">
+                  {/* <div className="flex justify-between items-center">
                     <div className="flex h-full items-center gap-1">
                       <Image
                         src={Vector1}
@@ -2310,7 +2314,7 @@ return (
                         Coming Soon
                       </div>
                     }
-                  </div>
+                  </div> */}
                   <div className={styles.bottomViewTwo}>
                     {item?.trackerName}
                   </div>
