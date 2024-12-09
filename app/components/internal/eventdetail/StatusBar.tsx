@@ -21,6 +21,7 @@ const StatusBar = ({
     <div className={styles.outreachStatusContainer}>
       {configData.map((item: any, index: number) => (
         <div
+          key={index}
           className={styles.statusCard}
           onClick={() => handleStatusChange(item.status)}
         >
