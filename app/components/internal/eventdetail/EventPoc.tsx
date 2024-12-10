@@ -131,9 +131,9 @@ const EventPoc = ({ open, eventId }: Props) => {
 
                           { poc?.emailActive &&
                             ((lastActiveDays(poc?.emailActive) > 0 && lastActiveDays(poc?.emailActive) <= 180) ?
-                              <div className="h-[10px] w-[10px] bg-[var(--success-text-color)] rounded-full cursor-pointer" title="Active within last 6 months"></div> : 
+                              <div className="h-[8px] w-[8px] bg-[var(--success-text-color)] rounded-full cursor-pointer" title="Active within last 6 months"></div> : 
                               (lastActiveDays(poc?.emailActive) > 0 && lastActiveDays(poc?.emailActive) <= 270) ?
-                              <div className="h-[10px] w-[10px] bg-[var(--warning-text-color)] rounded-full cursor-pointer" title="Active within last 6 months"></div> : <></> )
+                              <div className="h-[8px] w-[8px] bg-[var(--warning-text-color)] rounded-full cursor-pointer" title="Active within last 9 months"></div> : <></> )
                           }
                         </p>
                       )}
