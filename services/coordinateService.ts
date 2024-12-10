@@ -165,6 +165,26 @@ export const useCoordinateService = () => {
     });
   }
 
+  const unblockPocDetail = (pocId: number, eventId: string) => {
+    // return api.request<pocDetail>(`https://api.whr.ai/event-poc/unmask?pocId=14046510&eventId=512bb2b6-d9c4-5dae-bc68-99d0e9510448&unlockValue=email,phone`, {
+    //   method: "GET",
+    // });
+    return {
+        "id": 28532,
+        "name": "HKTDC Exhibition",
+        "designation": "Manager",
+        "email": "test@hktdc.org",
+        "phoneNumber": "+850000000456",
+        "location": {
+            "cityName": null,
+            "countryName": null
+        },
+        "profilePicture": "https://c1.10times.com/userimages/h.jpg",
+        "level": "Manager",
+        "emailActive": "2024-11-11 19:18:44"
+    };
+  }
+
   return {
     getEventsWithSearchParams,
     getParticipentCount,
@@ -179,6 +199,7 @@ export const useCoordinateService = () => {
     getOutreachEventList,
     getOutreachSingleEvent,
     getInterestConfig,
+    unblockPocDetail,
     isLoading: api.isLoading,
     error: api.error as ApiError,
   };
