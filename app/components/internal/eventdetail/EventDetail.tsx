@@ -53,7 +53,7 @@ const EventDetail = ({
   handleRefresh,
   handleDropdownSelect
 }: Props) => {
-  const [pipelineIndex, setPipelineIndex] = useState<number>(configData.findIndex((item: any) => item.status === currentEnquiryStatus));
+  const [pipelineIndex, setPipelineIndex] = useState<number>(configData?.findIndex((item: any) => item.status === currentEnquiryStatus));
   const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
   const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
   const pathName = usePathname().split("/")[2];

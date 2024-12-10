@@ -73,10 +73,15 @@ const Internal = ({
 
   const [coordinateActions, setCoordinateActions] = useState<any>([]);
 
+  const [pipelineConfig, setPipelineConfig] = useState<any>([]);
+
   const getInterestConfig = async () => {
     try {
       const apiData: any = await coordinateService.getInterestConfig();
       setCoordinateActions(apiData.slice(1));
+
+      const pipelineData: any = await coordinateService.getPipelineConfig();
+      setPipelineConfig(pipelineData.outreach_stage);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -266,7 +271,7 @@ const Internal = ({
             </div>
 
             <div style={{ width: "15%" }} className={styles.outerDiv}>
-              <InterestStatusSelector />
+              <InterestStatusSelector pipelineConfig={pipelineConfig} />
             </div>
 
             <div style={{ width: "25%" }} className={styles.outerDiv}>
@@ -309,6 +314,7 @@ const Internal = ({
                       upvote={item.upvote}
                       enquiryActivity={item.enquiryActivity}
                       coordinateActions={coordinateActions}
+                      pipelineConfig={pipelineConfig}
                       handleModal={handleModal}
                       handleShortlistModal={handleShortlistModal}
                     />

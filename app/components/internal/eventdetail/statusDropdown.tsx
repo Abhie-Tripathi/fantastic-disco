@@ -40,12 +40,10 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
       setIsOpen((prev) => !prev);
   };
 useEffect(()=>{
- setValue((props.currentEnquiryStatus == 'REJECTED') ? 'Rejected' : 
- (props.currentEnquiryStatus == 'IN_DISCUSSION') ?'Pending' : 'Shortlisted')
 
  setIsOpen(false);
  if(props?.currentEnquiryStatus)
-   setValue((props.currentEnquiryStatus == 'IN_DISCUSSION' || props.currentEnquiryStatus == 'IN_NEGO') ? 'In Progress' : props.currentEnquiryStatus)
+    setValue(props.label);
 }, [props.currentEnquiryStatus])
   const handleMenuItemClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLDivElement;
@@ -88,8 +86,7 @@ useEffect(()=>{
     };
     try {
       const apiData = await coordinateService.setEnquiryStatus(payloadData);
-      setValue((props.currentEnquiryStatus == 'REJECTED') ? 'Rejected' : 
-      (props.currentEnquiryStatus == 'IN_DISCUSSION') ?'Pending' : 'Shortlisted');
+      setValue(props.label);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
