@@ -34,10 +34,10 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
   const coordinateService = useCoordinateService();
 
   const openDropDownHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    if(props?.currentEnquiryStatus == 'IN_NEGO' || props?.currentEnquiryStatus == 'IN_DISCUSSION' || props?.currentEnquiryStatus == 'CONFIRMED')
-      return
-    else
+    if( ["PENDING", "SHORTLISTED", "REJECTED"].includes(props?.currentEnquiryStatus) )
       setIsOpen((prev) => !prev);
+    else 
+      return;
   };
 useEffect(()=>{
 

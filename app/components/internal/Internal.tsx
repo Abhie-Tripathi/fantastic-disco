@@ -145,7 +145,7 @@ const Internal = ({
     if (statusChanged === true) {
       const updatedData = eventData1.map((item) => {
         return item.eventId === selectedId
-          ? { ...item, enquiryStatus: "Shortlisted" }
+          ? { ...item, enquiryStatus: "SHORTLISTED" }
           : item;
       });
 
