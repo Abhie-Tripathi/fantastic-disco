@@ -62,6 +62,15 @@ export const MiscAdapter = {
       adaptedParams.endDate = `${startDate},${endDate}`;
     }
 
+    if (activeGte) {
+      const startDate = new Date(activeGte).toISOString().split("T")[0];
+      adaptedParams.startDate = `${startDate},${startDate}`;
+    }
+    if (activeLte) {
+      const endDate = new Date(activeLte).toISOString().split("T")[0];
+      adaptedParams.endDate = `${endDate},${endDate}`;
+    }
+
     if (params.get("eventId")) {
       adaptedParams.eventId = params.get("eventId")!;
     }
