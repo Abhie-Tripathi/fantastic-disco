@@ -43,12 +43,13 @@ const Profile = () => {
   const [isIndustryOpen, setIsIndustryOpen] = useState(false);
   const [isUseCaseOpen, setIsUseCaseOpen] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
-  const [hasDeptChanges, setHasDeptChanges] = useState(false);
-  const [selectedDepartment, setSelectedDepartment] =
-    useState("Select department");
-  const [selectedRole, setSelectedRole] = useState("Select Role");
-  const [selectedIndustry, setSelectedIndustry] = useState("Select industry");
-  const [selectedUseCase, setSelectedUseCase] = useState("Select usecase");
+  const [hasOtherInfoChanges, setHasOtherInfoChanges] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(
+    null
+  );
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
+  const [selectedIndustries, setSelectedIndustries] = useState<any>([]);
+  const [selectedUseCase, setSelectedUseCase] = useState<string | null>(null);
 
   const handleUploadClick = () => {
     const fileRef = fileInputRef.current as HTMLDivElement;
@@ -264,10 +265,19 @@ const Profile = () => {
   const toggleIndustriesDropdown = () => setIsIndustryOpen(!isIndustryOpen);
   const toggleUsesCasesDropdown = () => setIsUseCaseOpen(!isUseCaseOpen);
 
-  const handleSelectedDepartment = (value: any) => {
-    setSelectedDepartment(value);
+  const handleSelectedDepartment = (department: any) => {
+    setSelectedDepartment(department);
     setIsDepartmentOpen(false);
   };
+  const handleSelectedIndustries = (industry: any) => {
+    setSelectedIndustries((prevSelected: any) =>
+      prevSelected.includes(industry)
+        ? prevSelected.filter((item: any) => item !== industry)
+        : [...prevSelected, industry]
+    );
+    setIsIndustryOpen(false);
+  };
+
   const handleSelectedRole = (value: any) => {
     setSelectedRole(value);
     setIsRoleOpen(false);
@@ -277,22 +287,22 @@ const Profile = () => {
     setSelectedUseCase(value);
     setIsUseCaseOpen(false);
   };
-  const handleSelectedIndustries = (value: any) => {
-    setSelectedIndustry(value);
-    setIsIndustryOpen(false);
-  };
 
-  const handleInputChange = (setter: any, value: any, originalValue: any) => {
-    setter(value);
-    setHasChanges(value !== originalValue);
-  };
-  const handleDeptInputChange = (
+  const handleProfileInputChange = (
     setter: any,
     value: any,
     originalValue: any
   ) => {
     setter(value);
-    setHasDeptChanges(value !== originalValue);
+    setHasChanges(value !== originalValue);
+  };
+  const handleAdditionalInfoInputChange = (
+    setter: any,
+    value: any,
+    originalValue: any
+  ) => {
+    setter(value);
+    setHasOtherInfoChanges(value !== originalValue);
   };
 
   const [activeTab, setActiveTab] = useState("profile");
@@ -324,7 +334,6 @@ const Profile = () => {
 
       <div className={styles.content}>
         {activeTab === "profile" && (
-
           <div className={styles.profileSection}>
             {profileData && (
               <div>
@@ -355,10 +364,6 @@ const Profile = () => {
                         )}
                       </div>
                       <div className={styles.account_basicInfo_picInfo}>
-                        <span>
-                          {profileData.firstname} {profileData.lastname}
-                        </span>
-
                         <div className={styles.upload_container}>
                           <div
                             className={styles.action_upload}
@@ -399,9 +404,8 @@ const Profile = () => {
                           className={`${styles.input} ${
                             errors.name && styles.error_boundary
                           }`}
-                          // onChange={(e) => setName(e.target.value)}
                           onChange={(e) =>
-                            handleInputChange(
+                            handleProfileInputChange(
                               setName,
                               e.target.value,
                               profileData?.firstname
@@ -435,7 +439,13 @@ const Profile = () => {
                             className={`${styles.input} ${
                               errors.mobileNo && styles.error_boundary
                             }`}
-                            onChange={(e) => setMobileNo(e.target.value)}
+                            onChange={(e) =>
+                              handleProfileInputChange(
+                                setMobileNo,
+                                e.target.value,
+                                profileData?.phoneNumber
+                              )
+                            }
                             value={mobileNo}
                           />
                           {errors.mobileNo && (
@@ -450,39 +460,45 @@ const Profile = () => {
                         <span className={styles.input_container}>
                           <div className={styles.input_title}>Department</div>
                           <div className={styles.dropdown}>
-                            <button
+                            <div
                               className={styles.dropdown_trigger}
                               onClick={toggleDepartmentDropdown}
                               aria-expanded={isDepartmentOpen}
                             >
-                              {selectedDepartment}
+                              <div className={styles.selected_items_container}>
+                                {selectedDepartment && (
+                                  <div>{selectedDepartment}</div>
+                                )}
+                              </div>
                               <span className={styles.dropdown_icon}>
                                 <DownIcon />
                               </span>
-                            </button>
+                            </div>
+
                             {isDepartmentOpen && (
                               <ul className={styles.dropdown_content}>
-                                <li
-                                  onClick={() =>
-                                    handleSelectedDepartment("Marketing")
-                                  }
-                                >
-                                  Marketing
-                                </li>
-                                <li
-                                  onClick={() =>
-                                    handleSelectedDepartment("Sales")
-                                  }
-                                >
-                                  Sales
-                                </li>
-                                <li
-                                  onClick={() =>
-                                    handleSelectedDepartment("Engineering")
-                                  }
-                                >
-                                  Engineering
-                                </li>
+                                {["Marketing", "Sales", "Engineering"].map(
+                                  (department) => (
+                                    <li
+                                      key={department}
+                                      onClick={() =>
+                                        handleSelectedDepartment(department)
+                                      }
+                                      className={styles.dropdown_item}
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        id="checkbox1"
+                                        className={styles.custom_checkbox}
+                                        checked={
+                                          selectedDepartment === department
+                                        }
+                                        readOnly
+                                      />
+                                      <label>{department}</label>
+                                    </li>
+                                  )
+                                )}
                               </ul>
                             )}
                           </div>
@@ -494,35 +510,39 @@ const Profile = () => {
                         <span className={styles.input_container}>
                           <div className={styles.input_title}>Role</div>
                           <div className={styles.dropdown}>
-                            <button
+                            <div
                               className={styles.dropdown_trigger}
                               onClick={toggleRoleDropdown}
                               aria-expanded={isRoleOpen}
                             >
-                              {selectedRole}
+                              <div className={styles.selected_items_container}>
+                                {selectedRole && <div>{selectedRole}</div>}
+                              </div>
                               <span className={styles.dropdown_icon}>
                                 <DownIcon />
                               </span>
-                            </button>
+                            </div>
+
                             {isRoleOpen && (
                               <ul className={styles.dropdown_content}>
-                                <li
-                                  onClick={() =>
-                                    handleSelectedRole("Marketing")
-                                  }
-                                >
-                                  Marketing
-                                </li>
-                                <li onClick={() => handleSelectedRole("Sales")}>
-                                  Sales
-                                </li>
-                                <li
-                                  onClick={() =>
-                                    handleSelectedRole("Engineering")
-                                  }
-                                >
-                                  Engineering
-                                </li>
+                                {["Marketing", "Sales", "Engineering"].map(
+                                  (role) => (
+                                    <li
+                                      key={role}
+                                      onClick={() => handleSelectedRole(role)}
+                                      className={styles.dropdown_item}
+                                    >
+                                      <input
+                                        type="checkbox"
+                                        id="checkbox1"
+                                        className={styles.custom_checkbox}
+                                        checked={selectedRole === role}
+                                        readOnly
+                                      />
+                                      <label>{role}</label>
+                                    </li>
+                                  )
+                                )}
                               </ul>
                             )}
                           </div>
@@ -533,7 +553,6 @@ const Profile = () => {
                       </div>
 
                       <div
-                        // className={styles.action_button}
                         className={`${styles.action_button} ${
                           !hasChanges && styles.disabled
                         }`}
@@ -577,9 +596,12 @@ const Profile = () => {
                           className={`${styles.input} ${
                             errors.dept && styles.error_boundary
                           }`}
-                          // onChange={(e) => setDept(e.target.value)}
                           onChange={(e) =>
-                            handleDeptInputChange(setDept, e.target.value, dept)
+                            handleAdditionalInfoInputChange(
+                              setDept,
+                              e.target.value,
+                              profileData?.department
+                            )
                           }
                           value={dept}
                         />
@@ -590,86 +612,100 @@ const Profile = () => {
 
                       <div className={styles.input_container_below_section}>
                         {/* 
-                  {errors.dept && (
-                    <div className={styles.error}>{errors.dept}</div>
-                  )} */}
+                          {errors.dept && (
+                            <div className={styles.error}>{errors.dept}</div>
+                        )} */}
                         <div className={styles.input_title}>Industry</div>
                         <div className={styles.dropdown}>
-                          <button
+                          <div
                             className={styles.dropdown_trigger}
                             onClick={toggleIndustriesDropdown}
                             aria-expanded={isIndustryOpen}
                           >
-                            {selectedIndustry}
+                            <div className={styles.selected_items_container}>
+                              {selectedIndustries.length > 0 &&
+                                selectedIndustries.map(
+                                  (industry: any, index: any) => (
+                                    <div key={index} className={styles.pill}>
+                                      {industry}
+                                    </div>
+                                  )
+                                )}
+                            </div>
                             <span className={styles.dropdown_icon}>
                               <DownIcon />
                             </span>
-                          </button>
+                          </div>
                           {isIndustryOpen && (
                             <ul className={styles.dropdown_content}>
-                              <li
-                                onClick={() =>
-                                  handleSelectedIndustries("Marketing")
-                                }
-                              >
-                                Marketing
-                              </li>
-                              <li
-                                onClick={() =>
-                                  handleSelectedIndustries("Sales")
-                                }
-                              >
-                                Sales
-                              </li>
-                              <li
-                                onClick={() =>
-                                  handleSelectedIndustries("Engineering")
-                                }
-                              >
-                                Engineering
-                              </li>
+                              {["Marketing", "Sales", "Engineering"].map(
+                                (industry) => (
+                                  <li
+                                    key={industry}
+                                    onClick={() =>
+                                      handleSelectedIndustries(industry)
+                                    }
+                                    className={styles.dropdown_item}
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      id="checkbox1" 
+                                      className={styles.custom_checkbox}
+                                      checked={selectedIndustries.includes(
+                                        industry
+                                      )}
+                                      readOnly
+                                    />
+                                    <label>{industry}</label>
+                                  </li>
+                                )
+                              )}
                             </ul>
                           )}
                         </div>
                       </div>
                       <div className={styles.input_container_below_section}>
                         {/* 
-                  {errors.dept && (
-                    <div className={styles.error}>{errors.dept}</div>
-                  )} */}
+                        {errors.dept && (
+                        <div className={styles.error}>{errors.dept}</div>
+                        )} */}
                         <div className={styles.input_title}>Use case</div>
                         <div className={styles.dropdown}>
-                          <button
+                          <div
                             className={styles.dropdown_trigger}
                             onClick={toggleUsesCasesDropdown}
                             aria-expanded={isUseCaseOpen}
                           >
-                            {selectedUseCase}
+                            <div className={styles.selected_items_container}>
+                              {selectedUseCase && <div>{selectedUseCase}</div>}
+                            </div>
                             <span className={styles.dropdown_icon}>
                               <DownIcon />
                             </span>
-                          </button>
+                          </div>
+
                           {isUseCaseOpen && (
                             <ul className={styles.dropdown_content}>
-                              <li
-                                onClick={() =>
-                                  handleSelectedUsecase("Marketing")
-                                }
-                              >
-                                Marketing
-                              </li>
-                              <li
-                                onClick={() => handleSelectedUsecase("Sales")}
-                              >
-                                Sales
-                              </li>
-                              <li
-                                onClick={() =>
-                                  handleSelectedUsecase("Engineering")
-                                }
-                              >
-                                Engineering
-                              </li>
+                              {["Marketing", "Sales", "Engineering"].map(
+                                (usecase) => (
+                                  <li
+                                    key={usecase}
+                                    onClick={() =>
+                                      handleSelectedUsecase(usecase)
+                                    }
+                                    className={styles.dropdown_item}
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      id="checkbox1"
+                                      className={styles.custom_checkbox}
+                                      checked={selectedUseCase === usecase}
+                                      readOnly
+                                    />
+                                    <label>{usecase}</label>
+                                  </li>
+                                )
+                              )}
                             </ul>
                           )}
                         </div>
@@ -682,7 +718,13 @@ const Profile = () => {
                           className={`${styles.input} ${
                             errors.dept && styles.error_boundary
                           }`}
-                          onChange={(e) => setDept(e.target.value)}
+                          onChange={(e) =>
+                            handleAdditionalInfoInputChange(
+                              setLocation,
+                              e.target.value,
+                              profileData?.department
+                            )
+                          }
                           value={location}
                         />
                         {errors.dept && (
@@ -690,14 +732,14 @@ const Profile = () => {
                         )}
                       </div>
                       <div
-                        // className={styles.action_button}
-                        // onClick={isSaving ? undefined : saveDataHandler}
                         className={`${styles.action_button} ${
-                          !hasDeptChanges && styles.disabled
+                          !hasOtherInfoChanges && styles.disabled
                         }`}
                         onClick={isSaving ? undefined : saveDataHandler}
                         style={{
-                          cursor: hasDeptChanges ? "pointer" : "not-allowed",
+                          cursor: hasOtherInfoChanges
+                            ? "pointer"
+                            : "not-allowed",
                         }}
                       >
                         <span className={styles.savechanges_text}>
@@ -809,8 +851,6 @@ const Profile = () => {
               </div>
             )}
           </div>
-
-          
         )}
 
         {activeTab === "settings" && (

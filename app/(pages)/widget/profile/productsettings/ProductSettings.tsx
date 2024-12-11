@@ -22,18 +22,18 @@ const ProductSettings = () => {
   const [cardTempValue, setCardTempValue] = useState("");
 
   const [researchScreenboxes, setResearchScreenBoxes] = useState([
-    { id: 1, value: "" },
-    { id: 2, value: "" },
-    { id: 3, value: "" },
-    { id: 4, value: "" },
+    { id: 1, value: "Bookmark" },
+    { id: 2, value: "Speaking" },
+    { id: 3, value: "Sponsoring" },
+    { id: 4, value: "Attending" },
   ]);
   const [outreachScreenboxes, setOutreachScreenBoxes] = useState([
-    { id: 1, value: "" },
-    { id: 2, value: "" },
-    { id: 3, value: "" },
-    { id: 4, value: "" },
+    { id: 1, value: "Shortlisted" },
+    { id: 2, value: "In progess" },
+    { id: 3, value: "Confirmed" },
+    // { id: 4, value: "" },
   ]);
-
+  const MAX_BOXES = 4;
   const removeResearchScreenBox = (id: any) => {
     setResearchScreenBoxes((prevBoxes) =>
       prevBoxes.filter((box) => box.id !== id)
@@ -99,14 +99,25 @@ const ProductSettings = () => {
     setOutreachTempValue("");
   };
 
+  // const addResearchScreenBox = () => {
+  //   setResearchScreenBoxes((prevBoxes) => [
+  //     ...prevBoxes,
+  //     { id: prevBoxes.length + 1, value: "" },
+  //   ]);
+
+  //   setResearchScreenEditingBoxId(null);
+  //   setResearchTempValue("");
+  // };
   const addResearchScreenBox = () => {
+    if (researchScreenboxes.length >= MAX_BOXES) {
+      alert("Cannot create more than 4 boxes");
+      return;
+    }
+
     setResearchScreenBoxes((prevBoxes) => [
       ...prevBoxes,
       { id: prevBoxes.length + 1, value: "" },
     ]);
-
-    setResearchScreenEditingBoxId(null);
-    setResearchTempValue("");
   };
 
   const addOutreachScreenBox = () => {
@@ -298,6 +309,7 @@ const ProductSettings = () => {
                     <button
                       className={`${styles.iconButton} ${styles.addButton}`}
                       onClick={addResearchScreenBox}
+                      disabled={researchScreenboxes.length >= MAX_BOXES}
                     >
                       <PlusIcon />
                     </button>
@@ -326,10 +338,10 @@ const ProductSettings = () => {
                 preferences.
               </div>
               <div className={styles.second_div_body_right_section}>
-              <div
+                <div
                   className={`${styles.second_div_field_value_text_top} ${styles.hidden_for_large}`}
                 >
-                 Kanban board
+                  Kanban board
                 </div>
                 <div className={styles.boxContainer}>
                   {outreachScreenboxes.map((box) => (
@@ -411,7 +423,6 @@ const ProductSettings = () => {
             ))}
           </div>
         </div>
-        
       </div>
     </div>
   );

@@ -56,11 +56,13 @@
   flex-direction: column;
   gap: 10px;
 }
+
 .upload_container {
   display: flex;
   gap: 5px;
   align-items: center;
 }
+
 .action_upload {
   display: flex;
   gap: 3px;
@@ -79,16 +81,19 @@
   border: 1px solid var(--border-color);
   border-radius: 4px;
 }
+
 .profile_hintText {
   font-size: var(--font-size-small);
   color: var(--secondary-text-color);
 }
+
 .account_details {
   margin-top: 30px;
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
+
 .input_container {
   flex: 1;
 }
@@ -97,6 +102,7 @@
   display: flex;
   gap: 20px;
 }
+
 .input {
   font-size: inherit;
   font-family: inherit;
@@ -108,9 +114,11 @@
   color: var(--primary-text-color);
   background-color: var(--primary-foreground);
 }
+
 .input:focus {
   border-color: var(--focus-border-color);
 }
+
 .error_boundary {
   border-color: var(--danger-text-color) !important;
 }
@@ -138,7 +146,7 @@
 }
 
 .line_divider {
-  border: 1px solid var(--border-color);
+  border: 0.75px solid var(--border-color);
   width: 100%;
   margin-top: 10px;
 }
@@ -146,8 +154,11 @@
 .account_below_section {
   display: flex;
   gap: 50px;
-  margin-top: 10px;
+  /* margin-top: 16px; */
+  padding-top: 2rem;
+  padding-bottom: 2rem;
 }
+
 .profile_header {
   font-weight: var(--font-weight-semibold);
   margin-bottom: 20px;
@@ -156,9 +167,11 @@
 .profile_header_admin {
   font-weight: var(--font-weight-semibold);
 }
+
 .profile_header_user {
   font-weight: var(--font-weight-semibold);
 }
+
 .account_details_below_sec {
   display: flex;
   flex-direction: column;
@@ -168,19 +181,21 @@
 .input_container_below_section {
   flex: 1;
 }
+
 .user_container {
   width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .admin_container {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
+
 .search_container {
   display: flex;
   align-items: center;
@@ -188,6 +203,7 @@
   gap: 4px;
   width: 100%;
 }
+
 .userSearch_container {
   display: flex;
   align-items: center;
@@ -195,6 +211,7 @@
   gap: 4px;
   width: 100%;
 }
+
 .search_box {
   display: flex;
   align-items: center;
@@ -204,6 +221,7 @@
   background-color: var(--primary-foreground);
   width: 100%;
 }
+
 .search_icon {
   font-size: 16px;
   color: var(--secondary-text-color);
@@ -265,9 +283,9 @@
 .user_list_container {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
-  border-radius: 4px;
-  border: 1px solid var(--border-color);
+  /* padding: 10px; */
+  /* border-radius: 4px; */
+  /* border: 1px solid var(--border-color); */
 }
 
 .userPrifile_container {
@@ -281,11 +299,13 @@
   justify-content: center;
   align-items: center;
 }
+
 .UserNameAndDesignation_container {
   margin-right: auto;
   margin-left: 6px;
   font-size: var(--font-size-default);
 }
+
 .userName {
   color: var(--primary-text-color);
   font-size: var(--font-size-default);
@@ -303,10 +323,12 @@
   position: relative;
   /* width: 200px; */
   width: 100%;
+
 }
 
 .dropdown_trigger {
   width: 100%;
+  height: 40px;
   padding: 8px;
   text-align: left;
   cursor: pointer;
@@ -330,6 +352,8 @@
 .dropdown_icon {
   font-size: 12px;
   opacity: 0.6;
+  position: absolute;
+  right: 10px;
 }
 
 .dropdown_content {
@@ -354,8 +378,58 @@
 }
 
 .dropdown_content li:hover {
-  background: #f0f0f0;
+  background-color: var(--background-color-hover);
 }
+.dropdown_item{
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.selected_items_container {
+  display: flex;
+  gap: 6px;
+}
+
+.pill {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: var(--neutral-light-color);
+  color: var(--primary-text-color);
+  border-radius: 50px;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+
+}
+
+
+.custom_checkbox {
+  appearance: none; 
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  /* border: 2px solid #ccc; */
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.custom_checkbox:checked {
+  background-color: transparent;  
+  border-color: transparent;      
+}
+
+.custom_checkbox:checked::before {
+  content: '\2713';  
+  color: #6750a4;  
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  font-size: 14px;
+}
+
 
 .dropdown_content li:active {
   background: #e0e0e0;
@@ -370,11 +444,11 @@
 .stickyHeader {
   background-color: var(--primary-foreground);
   color: var(--primary-text-color);
-  padding: 12px 16px;
+  /* padding: 10px 16px; */
   display: flex;
   align-items: center;
   position: fixed;
-  width: 93%;
+  width: 90%;
   z-index: 20;
   top: 70px;
   border-bottom: 1px solid var(--border-color);
@@ -391,7 +465,7 @@
 
 .tab.active {
   color: var(--primary-color);
-  border-bottom: 4px solid var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
 }
 
 .content {
@@ -406,6 +480,7 @@
   .account {
     flex-direction: column;
   }
+
   .account_below_section {
     flex-direction: column;
   }
@@ -413,9 +488,11 @@
   .stickyHeader {
     width: 100%;
   }
+
   .dropdown {
     width: auto;
   }
+
   .search_container {
     flex-direction: column;
   }

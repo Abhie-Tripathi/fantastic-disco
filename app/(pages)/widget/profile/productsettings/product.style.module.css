@@ -170,6 +170,12 @@
 .iconButton:hover {
   background-color: var(--primary-foreground);
 }
+.iconButton:disabled {
+  cursor: not-allowed; 
+  opacity: 0.6;       
+  pointer-events: none; 
+}
+
 
 
 .plus_iconContainer {
@@ -279,7 +285,7 @@
 }
 
 .line_divider_outreachScreen {
-  border: 0.1px solid var(--border-color);
+  border: 0.75px solid var(--border-color);
   width: 100%;
   margin-top: 10px;
 }
