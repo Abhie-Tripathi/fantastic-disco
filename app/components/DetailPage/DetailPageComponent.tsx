@@ -172,7 +172,7 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                     <div className={styles.linkline}></div>
                     <div className={styles.maineventName} onClick={handleMainEventClick} style={{ cursor: parentId ? "pointer" : "default" }}>{parentName.toUpperCase()}</div>
                 </div>}
-            {childrenData.length > 0 && <div className={styles.carousel}><SideEventCarousel childrenData={childrenData} /></div>}
+            {/* {childrenData.length > 0 && <div className={styles.carousel}><SideEventCarousel childrenData={childrenData} /></div>} */}
 
             <div className={styles.detailsContainer}>
                 <div className={styles.leftSection}>
