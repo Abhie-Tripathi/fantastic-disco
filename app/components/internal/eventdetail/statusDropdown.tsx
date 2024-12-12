@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import upArrowLight from '/public/internal/up_arrow_light.svg'
 import upArrow from '/public/internal/up_arrow.svg'
 import { useCoordinateService } from '@/services/coordinateService';
+import { showToast } from '@/utils/showToast';
 interface PropType {
   label: string;
   eventId?: string;
@@ -15,6 +16,7 @@ interface PropType {
   currentEnquiryStatus: string;
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
   setSelectedId:any;
+  pipelineConfig: any;
   // value:any;
   // setValue:any;
 }
@@ -37,6 +39,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
     if( ["PENDING", "SHORTLISTED", "REJECTED"].includes(props?.currentEnquiryStatus) )
       setIsOpen((prev) => !prev);
     else 
+      showToast('error',"Status already updated")
       return;
   };
 useEffect(()=>{
@@ -123,7 +126,7 @@ useEffect(()=>{
               className={styles.dropdown_menu_items}
             >
               <div onClick={handleMenuItemClick} className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`} >
-                Shortlist
+                {props?.pipelineConfig?.[1]?.label ? props?.pipelineConfig?.[1]?.label : 'Shortlist'}
               </div>
               <div onClick={handleRejectClick} className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`} >
                 Reject

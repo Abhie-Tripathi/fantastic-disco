@@ -196,6 +196,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                   enquiryId={enquiryId}
                   currentEnquiryStatus={currentEnquiryStatus}
                   handleShortlistModal={handleShortlistModal}
+                  pipelineConfig={pipelineConfig}
                 />
               </div>
 
@@ -225,6 +226,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                   enquiryId={enquiryId}
                   currentEnquiryStatus={currentEnquiryStatus}
                   handleShortlistModal={handleShortlistModal}
+                  pipelineConfig={pipelineConfig}
                 />
               </div>}
             </div>

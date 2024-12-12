@@ -29,6 +29,8 @@ interface Props {
   statusChanged?: boolean;
   selectedId?: string;
   setSelectedId: any;
+  coordinateActions: any;
+  pipelineConfig: any;
 }
 const Internal = ({
   handleModal,
@@ -39,6 +41,8 @@ const Internal = ({
   setStatusChanged,
   statusChanged,
   selectedId,
+  coordinateActions,
+  pipelineConfig,
 }: Props) => {
   const searchParams = useSearchParams();
   const coordinateService = useCoordinateService();
@@ -71,22 +75,6 @@ const Internal = ({
     setSearchInput(event.target.value);
   };
 
-  const [coordinateActions, setCoordinateActions] = useState<any>([]);
-
-  const [pipelineConfig, setPipelineConfig] = useState<any>([]);
-
-  const getInterestConfig = async () => {
-    try {
-      const apiData: any = await coordinateService.getInterestConfig();
-      setCoordinateActions(apiData.slice(1));
-
-      const pipelineData: any = await coordinateService.getPipelineConfig();
-      setPipelineConfig(pipelineData.outreach_stage);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
-
   useEffect(() => {
     const getCordinateList = async () => {
       try {
@@ -99,7 +87,6 @@ const Internal = ({
       }
     };
     getCordinateList();
-    getInterestConfig();
   }, []);
 
   const fetchData = async () => {
