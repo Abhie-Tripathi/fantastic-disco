@@ -51,10 +51,10 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
-    if (fetchedLogos.length > 0) {
+    if (!fetchedDomain) {
       setLoadingState(false);
     }
-  }, [fetchedLogos]);
+  }, [fetchedDomain]);
 
   return (
     <div className={`${styles.body} ${preview ? styles.fixBody : ""}`}>
@@ -98,7 +98,6 @@ const Page = () => {
           </div>
         )}
         <div className={styles.modal}>
-          {/* {preview === "logo" ? <LogoModal /> : preview === "color" ? <ColorModal setPreview={setPreview} setFetchedColors={setFetchedColors} fetchedColors={fetchedColors} setColorCode={setColorCode} colorCode={colorCode} colorModalType = {colorModalType} colorModalIndex={colorModalIndex}/> : <></>} */}
           <div className={styles.modal}>
             {preview === "logo" ? (
               <LogoModal />

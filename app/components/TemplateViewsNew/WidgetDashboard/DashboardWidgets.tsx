@@ -6,6 +6,7 @@ import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
 import Link from 'next/link';
 import { useWidgetServices } from '@/services/geniservices/widgetService';
+import { useRouter } from 'next/navigation';
 
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 interface DraftWidgetsType {
@@ -25,7 +26,7 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
   const [selectedBtn, setSelectedBtn] = useState<string>("Widgets")
   const [allWidgets, setAllWidgets] = useState<DraftWidgetsType[]>([])
   const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([])
-  const {getDraftWidget, getOnlyDraftWidget, getActiveWidget, getDeActiveWidget, error} = useWidgetServices();
+  const { getDraftWidget, getOnlyDraftWidget, getActiveWidget, getDeActiveWidget, error } = useWidgetServices();
   const fetchDraftWidgets = async () => {
     // const { data, error } = await myFetch(`${baseUrl}/widget?status=draft`);
     // if (data) {
@@ -43,8 +44,8 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
     // if (error) {
     //   console.log(error);
     // }
-    
-    const data:any = await getDraftWidget()
+
+    const data: any = await getDraftWidget()
     if (data) {
       const filteredWidgets = data.data
         .map((widget: any) => ({
@@ -60,7 +61,7 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
     if (error) {
       console.log(error);
     }
-          
+
   };
   const asciiToString = (ascii: number): string => {
     let convertedValue = ascii.toString();
@@ -94,8 +95,8 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
     // const combinedWidgets = [...activeWidgets, ...deactivateWidgets]
     // setAllWidgets(combinedWidgets);
 
-    const activeData:any = await getActiveWidget();
-    const deactivateData:any = await getDeActiveWidget();
+    const activeData: any = await getActiveWidget();
+    const deactivateData: any = await getDeActiveWidget();
     const activeWidgets = activeData ? activeData.data.map((widget: any) => ({
       ...widget,
       templateId: asciiToString(widget.templatePublicId),
@@ -120,6 +121,15 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
     fetchDraftWidgets()
     fetchAllWidgets()
   }, [])
+
+  const router = useRouter()
+  
+  const handleNavigate = (type: string) => {
+    if (type === "draft") {
+      router.push('/widget/list?fromDashboard=true'); // Pass query parameter
+    } else router.push('/widget/list'); // Pass query parameter
+
+  };
   return (
     <div className={styles.body}>
       <div className={styles.btnContainer}>
@@ -176,7 +186,7 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
               ))}
             </div> : <Errorpage size='short' type='list' />}
         </div>}
-      <Link href={"/widget/list"} className={styles.allWidgetBtn}>Show all widgets</Link>
+      {((selectedBtn === "Widgets" && allWidgets.length > 0) || (selectedBtn === "Drafts" && draftWidgets.length > 0)) && <button className={styles.allWidgetBtn} onClick={() => handleNavigate(selectedBtn === "Drafts" ? "draft" : "main")}>Show all widgets</button>}
     </div>
   )
 }

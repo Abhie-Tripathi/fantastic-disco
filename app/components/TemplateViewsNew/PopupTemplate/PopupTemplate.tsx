@@ -16,8 +16,8 @@ interface Props {
 
 const PopupTemplate = ({ setSelectedTemplate, selectedTemplate, setTempelateName, setSelectedImage }: Props) => {
     const PopupTemplates =
-        [{ key: "PUVP", name: "Pop-up Portrait", desc: "Use a Pop-Up Widget to capture attention and deliver important messages effectively.", tag: "Single Event", image1: PopupViewImage1, image2: PopupViewImage1Dark  },
-        { key: "PUVL", name: "Pop-up Landscape", desc: "Use a Pop-Up Widget to capture attention and deliver important messages effectively.", tag: "Single Event", image1: PopupViewImage2, image2: PopupViewImage2Dark },
+        [{ key: "PUVP", name: "Pop-up Portrait", desc: "Use a Pop-Up Widget to capture attention and deliver important messages effectively.", tag: "Multiple Events", image1: PopupViewImage1, image2: PopupViewImage1Dark  },
+        { key: "PUVL", name: "Pop-up Landscape", desc: "Use a Pop-Up Widget to capture attention and deliver important messages effectively.", tag: "Multiple Events", image1: PopupViewImage2, image2: PopupViewImage2Dark },
         ]
     return (
         <div className={`${styles.body}`}>

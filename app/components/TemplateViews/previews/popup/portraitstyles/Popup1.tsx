@@ -11,6 +11,7 @@ import POP from '/public/partyPopIcon.svg'
 import WorkShopIcon from '/public/workshop.svg'
 import ConferenceIcon from '/public/conference.svg'
 import DefaultIcon from '/public/widgetDefaultIcon.svg'
+import { useRouter } from 'next/navigation'
 
 interface FontSettings {
     fontFamily: string;
@@ -37,12 +38,13 @@ interface Props {
     demoDescription:string
     demoLocation:string
     demoDate:string
+    widgetId?: string;
 }
 
 const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
     cardBorderRadius,
     fontSettings,
-    buttonSettings, selectedBtn, fetchedAddedEvents, smallCard,demoEventName, demoBanner, demoDescription, demoLocation,closeButtonSetting,demoDate }: Props) => {
+    buttonSettings, selectedBtn, fetchedAddedEvents, smallCard,demoEventName, demoBanner, demoDescription, demoLocation,closeButtonSetting,demoDate, widgetId }: Props) => {
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
         return new Date(date).toLocaleDateString('en-US', options);
@@ -64,6 +66,13 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
     const description = fetchedAddedEvents && fetchedAddedEvents.length ? truncateText(fetchedAddedEvents[0].description, 150) : demoDescription;
     const { day, month } = fetchedAddedEvents && fetchedAddedEvents.length ? formatStartDate(fetchedAddedEvents[0].startDate) : { day: 1, month: "Jan" };
     const truncatedDescription = description.substring(0, 150) + (description.length > 150 ? "..." : "");
+    
+    const router = useRouter();
+    const handleCardClick = (eventId: string, widgetId: string) => {
+      router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`);
+    };
+  
+
     return (
         <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
             <Image src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' 
@@ -112,6 +121,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
             />
             <div className={styles.btnContainer}>
                 <button
+                onClick={() => handleCardClick(fetchedAddedEvents ? fetchedAddedEvents[0].id : "", widgetId ? widgetId : "")}
                     className={smallCard ? styles.smallBtn : styles.btn}
                     style={{
                         fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,

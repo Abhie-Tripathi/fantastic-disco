@@ -722,4 +722,16 @@ button {
   font-weight: var(--font-weight-medium);
   font-size: var(--font-size-default);
 }
+.ql-size-huge {
+  font-size: 32px;
+}
+.ql-size-large {
+  font-size: 20px;
+}
 
+.ql-size-normal {
+  font-size: 14px;
+}
+.ql-size-small {
+  font-size: 12px;
+}

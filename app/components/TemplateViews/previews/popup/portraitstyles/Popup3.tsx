@@ -5,6 +5,7 @@ import locationIcon from "/public/location_on.svg";
 import styles from "./popup3.style.module.css";
 import { PrefilledAddedEventsType } from "@/types/prefilledaddedeventtype";
 import { ButtonSettingsState } from "@/types/buttoncustomizetypes";
+import { useRouter } from "next/navigation";
 
 interface FontSettings {
   fontFamily: string;
@@ -31,6 +32,7 @@ interface Props {
   demoDescription: string;
   demoLocation: string;
   demoDate: string
+  widgetId?: string;
 }
 
 const Popup3: React.FC<Props> = ({
@@ -79,7 +81,7 @@ const Popup3: React.FC<Props> = ({
   demoDescription,
   demoLocation,
   closeButtonSetting,
-  demoDate
+  demoDate,widgetId
 }: Props) => {
   const formatDate = (date: string) => {
     const dateObj = new Date(date);
@@ -111,6 +113,11 @@ const Popup3: React.FC<Props> = ({
       : demoDescription;
   const truncatedDescription =
     description.substring(0, 100) + (description.length > 100 ? "..." : "");
+  const router = useRouter();
+  const handleCardClick = (eventId: string, widgetId: string) => {
+    router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`);
+  };
+
   return (
     <div
       className={smallCard ? styles.smallCard : styles.card}
@@ -135,23 +142,23 @@ const Popup3: React.FC<Props> = ({
       </div>
 
 
-     <div className={styles.event_name_cont}>
-     <div
-        className={smallCard ? styles.smallName : styles.eventName}
-        style={{
-          fontSize: fontSettings.heading.fontSize,
-          color: fontSettings.heading.fontColor,
-          fontFamily: fontSettings.heading.fontFamily,
-          fontWeight: fontSettings.heading.fontWeight,
-        }}
-        data-name={fetchedAddedEvents![0]? fetchedAddedEvents![0].name :demoEventName}
-      >
-        {fetchedAddedEvents && fetchedAddedEvents.length > 0
-          ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""
-          }`
-          : demoEventName}
+      <div className={styles.event_name_cont}>
+        <div
+          className={smallCard ? styles.smallName : styles.eventName}
+          style={{
+            fontSize: fontSettings.heading.fontSize,
+            color: fontSettings.heading.fontColor,
+            fontFamily: fontSettings.heading.fontFamily,
+            fontWeight: fontSettings.heading.fontWeight,
+          }}
+          data-name={fetchedAddedEvents![0] ? fetchedAddedEvents![0].name : demoEventName}
+        >
+          {fetchedAddedEvents && fetchedAddedEvents.length > 0
+            ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""
+            }`
+            : demoEventName}
+        </div>
       </div>
-     </div>
       <div className={styles.location_dateContainer}>
         <div className={styles.locationContainer}>
           <LocationIcon color={fontSettings?.subheading.fontColor || "black"} />
@@ -205,6 +212,7 @@ const Popup3: React.FC<Props> = ({
 
       <div className={styles.btnContainer}>
         <button
+          onClick={() => handleCardClick(fetchedAddedEvents ? fetchedAddedEvents[0].id : "", widgetId ? widgetId : "")}
           className={smallCard ? styles.smallBtn : styles.btn}
           style={{
             fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,

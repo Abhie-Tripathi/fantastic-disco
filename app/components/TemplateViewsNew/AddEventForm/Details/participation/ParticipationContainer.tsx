@@ -62,7 +62,7 @@ const ParticipationContainer = ({ size, theme, type, handleChange, formState, fo
     { type: "MiniGolf", icon: MiniGolf, label: "Mini-Golf" },
     { type: "Openmic", icon: OpenMic, label: "Open mic" },
     { type: "Retro", icon: Retro, label: "Retro" },
-    { type: "Marathon", icon: Marathon, label: "Retro" }
+    { type: "Marathon", icon: Marathon, label: "Marathon" }
     // { type: "Others", icon: CocktailHoursIcon, label: "Others" },
   ];
   // const sideOptions = [

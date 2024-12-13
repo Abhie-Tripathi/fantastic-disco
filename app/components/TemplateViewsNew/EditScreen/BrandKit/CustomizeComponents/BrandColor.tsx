@@ -21,7 +21,6 @@ const BrandColor = ({ extractedColors, setExtractedColors, setValueUpdated, flex
     const [selectedColorIndex, setSelectedColorIndex] = useState(0);
     const pathname = usePathname();
     const pathName = pathname.split("/")[2];
-console.log("pathname",pathName)
     const handleSelectColor = (index: number, color: any) => {
         setSelectedColorIndex(index)
         const rgbaColor = hexToRgba(color, 0.1);

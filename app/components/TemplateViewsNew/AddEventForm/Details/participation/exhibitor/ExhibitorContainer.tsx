@@ -10,9 +10,10 @@ interface Props {
   // setBoothNumber: (value: string) => void;
   handleChange: (field: keyof FormState, value: any) => void;
   boothNumber: string;
+  formTheme: string;
 }
 
-const ExhibitorContainer = ({ handleChange, boothNumber }: Props) => {
+const ExhibitorContainer = ({ handleChange, boothNumber, formTheme }: Props) => {
   const dropdownRef = useOutsideClick(() => setDropdown(false));
   const [dropdown, setDropdown] = useState<boolean>(false);
   // const dropdownRef = useRef<HTMLDivElement>(null);
@@ -23,11 +24,11 @@ const ExhibitorContainer = ({ handleChange, boothNumber }: Props) => {
         {!boothNumber ? (
           <div className={styles.header}>
             <Image src={ExhibitorIcon} alt="icon" />
-            <span>Add Booth / Stall details</span>
+            <span style={{color : formTheme === "dark" ? "white" : "#7d7d7d"}}>Add Booth / Stall details</span>
           </div>
         ) : (
           <div className={styles.boothContainer}>
-            <div>Booth Number</div>
+            <div className={styles.heading} style={{color : formTheme === "dark" ? "white" : "#7d7d7d"}}>Booth Number</div>
             <div>{boothNumber}</div>
           </div>
         )}

@@ -135,9 +135,9 @@ console.log("prefilled",prefilledEvent)
   const handleGeneratePoster = () => {
     if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
       if (formState.eventName && formState.participationMessage) {
-        generatePrompt(formState.participationMessage, formState.description, formState.eventName, 1024, 1024)
+        generatePrompt(formState.participationMessage, formState.eventName, 1024, 1024)
       } else {
-        showToast("error", "Please provide Event name, Description, and participationMessage to generate the Banner");
+        showToast("error", "Please provide Event name and participationMessage to generate the Banner");
       }
     } else {
       showToast("error", "Please wait for the banner to generate first before generating again");
@@ -225,7 +225,7 @@ console.log("prefilled",prefilledEvent)
           formState.event_type && (<div className={`${styles.participationContainer}`}><ParticipationContainer formTheme={formTheme} handleChange={handleChange} formState={formState} heading='Choose Your Mode of Participation' type='main' size="large" />
           </div>)
          }
-         {formState.event_type&& formState.isParticipationMessageEmpty && <p className={styles.errorMessage}>Please select any mode of participation</p>}
+         {formState.event_type && formState.isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation</p>}
         </div>
           
       
@@ -302,7 +302,7 @@ console.log("prefilled",prefilledEvent)
             {formState.participationType === "Speaker" || formState.participationType === "Organiser"? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speaker}
               // setSpeakerModal={setSpeakerModal} 
               handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
-                <ExhibitorContainer handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
+                <ExhibitorContainer formTheme={formTheme} handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
 
             {(formState.cityName && formState.eventFormat !== "Virtual") &&
               // <div className={styles.map} ref={mapDivRef}>

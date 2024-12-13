@@ -7,7 +7,8 @@ import { myFetch } from '@/utils/myFetch';
 import { AllEventsType } from '@/types/alleventtype';
 import { baseUrl } from '@/constants';
 import DashboardEventCard from './DashboardEventCard';
-import { useEventServices } from '@/services/geniservices/eventService'; 
+import { useEventServices } from '@/services/geniservices/eventService';
+import { useRouter } from 'next/navigation';
 
 const DashboardEvents = () => {
     const [selectedBtn, setSelectedBtn] = useState<string>("Added")
@@ -18,10 +19,10 @@ const DashboardEvents = () => {
     const [deleteModalTwo, setDeleteModalTwo] = useState<boolean>(false) // This one is for if the event is present in some widget
     const [selectedEventId, setSelectedEventId] = useState<string>("")
     const [selectedEventName, setSelectedEventName] = useState<string>("")
-    const {getEvents, deleteEvent, error} = useEventServices();
+    const { getEvents, deleteEvent, error } = useEventServices();
     const fetchEvents = async () => {
         // const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&limit=2`)
-            const data:any = await getEvents()
+        const data: any = await getEvents()
         if (data) {
             const events = data.data.map((event: any) => ({
                 mainEvent: {
@@ -56,8 +57,8 @@ const DashboardEvents = () => {
                         boothNumber: event.data.customizationData.boothNumber
                     }
                 },
-                subEvents : event.children.map((subEvent : any)=>({
-                    eventId : subEvent.id,
+                subEvents: event.children.map((subEvent: any) => ({
+                    eventId: subEvent.id,
                     name: subEvent.name,
                     cityName: subEvent.data.location_city,
                     countryName: subEvent.data.location_country,
@@ -87,7 +88,7 @@ const DashboardEvents = () => {
                         hashtags: subEvent.data.customizationData.hashtags,
                         boothNumber: subEvent.data.customizationData.boothNumber
                     }
-                })) 
+                }))
             }));
 
             setLength(data.totalCount)
@@ -152,7 +153,11 @@ const DashboardEvents = () => {
             console.log(error);
         }
     }
-    
+    const router = useRouter()
+    const handleNavigate = () => {
+        router.push('/widget/events?fromDashboard=true'); // Pass query parameter
+    };
+
     return (
         <div className={styles.body}>
             <div className={styles.btnContainer}>
@@ -166,7 +171,7 @@ const DashboardEvents = () => {
                 </button>
             </div>
             <div className={styles.addEvent}><span>Last Fetched on : 27 Jul 2024</span>
-            {/* <Link href={"/widget/events"}>Fetch Now</Link> */}
+                {/* <Link href={"/widget/events"}>Fetch Now</Link> */}
             </div>
             {selectedBtn === "Fetched" ? <div className={styles.fetchedEventsContainer}>
                 {siteFetchedEvents.length > 0 ?
@@ -178,6 +183,7 @@ const DashboardEvents = () => {
                         <div>Search or Add your Events</div>
                         <span>Start by searching for existing events to add to your widgets</span>
                         <span>or feel free to create your own event from scratch</span>
+                        {/* <button onClick={handleNavigate}>Add Event</button> */}
                     </div>}
             </div> :
                 <div className={styles.addedEventsContainer}>
@@ -193,9 +199,10 @@ const DashboardEvents = () => {
                             <div>Search or Add your Events</div>
                             <span>Start by searching for existing events to add to your widgets</span>
                             <span>or feel free to create your own event from scratch</span>
+                            <button>Add Event</button>
                         </div>}
                 </div>}
-            <Link href={"/widget/events"} className={styles.allEventBtn}>Show all events</Link>
+            {(selectedBtn === "Added" && fetchedAddedEvents.length > 0) && <Link href={"/widget/events"} className={styles.allEventBtn}>Show all events</Link>}
             {(deleteModal || deleteModalTwo) && <div className={styles.blackScreen}></div>}
             {deleteModal && <div className={styles.deleteModal}>
                 <div className={styles.deleteHeading}>Are you sure you want to delete this event?</div>
