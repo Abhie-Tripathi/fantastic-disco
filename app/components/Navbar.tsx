@@ -142,6 +142,9 @@ const Navbar = () => {
     if (currPath.startsWith("/widget/profile")) {
       setTitle("Profile");
     }
+    if (currPath.startsWith("/widget/settings")) {
+      setTitle("Settings");
+    }
   }, [currPath]);
 
   useEffect(() => {
