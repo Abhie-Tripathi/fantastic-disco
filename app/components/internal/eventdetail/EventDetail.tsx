@@ -15,6 +15,10 @@ import Image from "next/image";
 import EventRequest from "./EventRequest";
 import { showToast } from "@/utils/showToast";
 import { useCoordinateService } from "@/services/coordinateService";
+import PocExpanded from "./PocExpanded";
+import Loading from "../../UI/Loading";
+import EventNotes from "./EventNotes";
+import { pocDetail } from "@/types/coordinateEventType";
 
 interface EventData {
   id: string;
@@ -59,6 +63,8 @@ const EventDetail = ({
   const [singleEventData, setSingleEventData] = useState<EventData | any>();
   const urlPath = usePathname().split("/")[2];
   const [participentData, setParticipentData] = useState<any>({});
+
+  const [expandedTab, setExpandedTab] = useState<string>('notes');
 
   const coordinateService = useCoordinateService();
 
@@ -139,6 +145,25 @@ const EventDetail = ({
     }
   };
 
+  const [pocData, setPocData] = useState<pocDetail[]>([]);
+
+  const unlockPoc = async(pocId: number) => {
+    try {
+      const data: any = await coordinateService.unblockPocDetail(pocId, eventId);
+      if (data) {
+        setPocData(prevPocData => 
+          prevPocData.map(poc => 
+            poc.id === pocId
+              ? { ...poc, email: data.email, phoneNumber: data.phoneNumber }
+              : poc
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
   useEffect(() => {
     const fetchInterestData = async () => {
       const data = await coordinateService.getInterestedUsers(eventId, enquiryId);
@@ -152,6 +177,13 @@ const EventDetail = ({
         // });
       }
     };
+    const fetchPocData = async () => {
+      const data = await coordinateService.getEventPOC(eventId);
+      if (data) {
+        setPocData(data.eventPoc);
+      }
+    };
+    fetchPocData();
     fetchInterestData();
   }, [eventId]);
 
@@ -195,22 +227,26 @@ const EventDetail = ({
                 />
               </>
             )}
+            <EventNotes setExpandedTab={setExpandedTab} />
             <EventRequest open={openEventRequest} participentData={participentData} />
             <Organiser
               open={openOrganiserDetails}
               organizerData={singleEventData?.organizer}
             />
-            <EventPoc open={openPocDetails} eventId={eventId} />
+            <EventPoc open={openPocDetails} eventId={eventId} setExpandedTab={setExpandedTab} pocData={pocData} unlockPoc={unlockPoc} />
             <Follower eventId={eventId} enquiryId={enquiryId} />
           </div>
           <div className={styles.containerRight} ref={rightContainerRef}>
-            {singleEventData && (
-              <Notes
-                eventId={singleEventData.id}
-                eventGroupId={singleEventData.eventGroupId}
-                stage={stage}
-              />
-            )}
+            {singleEventData && 
+              expandedTab === 'notes' ? (
+                <Notes
+                  eventId={singleEventData.id}
+                  eventGroupId={singleEventData.eventGroupId}
+                  stage={stage}
+                />
+              ) : expandedTab === 'poc' ?
+              <PocExpanded eventId={eventId} pocData={pocData} unlockPoc={unlockPoc} /> : <Loading />
+            }
           </div>
         </div>
       </div>

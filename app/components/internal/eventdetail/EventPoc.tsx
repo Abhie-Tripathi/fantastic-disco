@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./eventdesc.style.module.css";
 // import tooltip from '@/app/components/trackers/sideNav/sideNav.style.module.css'
 import Image from "next/image";
@@ -8,7 +8,6 @@ import PeopleIcon from "/public/user.svg";
 import downArrowIcon from '/public/arrow_down.svg'
 import { useTheme } from "@/context";
 // import { Envelope, Phone } from "geist-icons";
-import { useCoordinateService } from "@/services/coordinateService";
 import { pocDetail } from "@/types/coordinateEventType";
 import Text from "@/components/new-ui/Text";
 import { CircleSlash, MailIcon, PhoneIcon } from "lucide-react";
@@ -17,6 +16,9 @@ import { Button } from "@/components/ui/button";
 interface Props {
   open: boolean;
   eventId: string;
+  setExpandedTab: any;
+  pocData: pocDetail[];
+  unlockPoc: any;
 }
 
 interface POCtypes {
@@ -44,39 +46,10 @@ function lastActiveDays(givenDateStr: string): number {
   return daysDifference;
 }
 
-const EventPoc = ({ open, eventId }: Props) => {
+const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) => {
   const [accordianToggle, setAccordianToggle] = useState(open);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
-  const [pocData, setPocData] = useState<pocDetail[]>([]);
-  const coordinateService = useCoordinateService();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await coordinateService.getEventPOC(eventId);
-      if (data) {
-        setPocData(data.eventPoc);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const unlockPoc = async(pocId: number) => {
-    try {
-      const data: any = await coordinateService.unblockPocDetail(pocId, eventId);
-      if (data) {
-        setPocData(prevPocData => 
-          prevPocData.map(poc => 
-            poc.id === pocId
-              ? { ...poc, email: data.email, phoneNumber: data.phoneNumber }
-              : poc
-          )
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
 
   return (
     <div
@@ -98,7 +71,7 @@ const EventPoc = ({ open, eventId }: Props) => {
         <div className={styles.accordian}>
           <div className={styles.allFollowerContainer}>
             {pocData?.length > 0 ? (
-              pocData.map((poc) => (
+              pocData.slice(0, 5).map((poc) => (
                 <>
                 {poc!==null &&
                   <div key={poc.id} className="flex flex-row gap-3 p-2">
@@ -159,6 +132,12 @@ const EventPoc = ({ open, eventId }: Props) => {
                 No POC found
               </p>
             )}
+            {pocData?.length > 5 &&
+              <Button
+                variant="link"
+                onClick={() => setExpandedTab('poc')}
+              >View All</Button>
+            }
           </div>
         </div>
       )}
