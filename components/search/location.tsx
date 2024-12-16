@@ -105,7 +105,7 @@ export default function LocationSelector({
 
   useEffect(() => {
     if (source !== "tracker") fetchUrlLocation();
-  }, [searchParams, localFilters]);
+  }, [localFilters.locationIds]);
 
   const applyHandler = () => {
     if (selectedLocation && !Array.isArray(selectedLocation)) {

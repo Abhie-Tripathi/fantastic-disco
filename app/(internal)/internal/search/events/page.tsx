@@ -35,7 +35,7 @@ import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, Filter, Loader2, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { lazy, useCallback, useState } from "react";
+import { lazy, useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 const Map = lazy(() => import("@/components/map"));
@@ -62,6 +62,7 @@ const Search = () => {
   const selectedView = getFilterValue("view") || "list";
   const { applyFilters, localFilters, clearLocalFilters, enabledFilters } = useFilterContext();
   const searchParams = useSearchParams();
+  const [view, setView]=useState<string>(searchParams.get("view") || "");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
   const [validationError, setValidationError] = useState("");
@@ -84,7 +85,7 @@ const Search = () => {
       eventService.getEventsWithSearchParams(searchParams.toString()),
     enabled:
       !!searchParams.toString() &&
-      !(selectedView == "list" || selectedView == "") &&
+      !(selectedView == "table" || selectedView == "") &&
       !(
         Array.from(searchParams.values()).length == 0 ||
         (Array.from(searchParams.values()).length == 1 &&
@@ -179,6 +180,10 @@ const Search = () => {
     if (localFilters.top) count++;
     return count;
   })();
+  useEffect(()=>{
+    setView(searchParams.get("view") || "")
+  },[searchParams])
+
 
   return (
     <div className="space-y-6 p-6">
@@ -225,7 +230,7 @@ const Search = () => {
               disabled={Object.keys(localFilters).length == 0}
               variant="link"
               className="text-primary"
-              onClick={() => clearLocalFilters()}
+              onClick={() => clearLocalFilters(view)}
             >
               Reset Filters
             </Button>

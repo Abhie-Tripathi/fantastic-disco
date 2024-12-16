@@ -8,7 +8,7 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
 interface EventFilterData {
@@ -51,7 +51,7 @@ interface EventFilterData {
 }
 type FilterContextType = {
   localFilters: Record<string, string>;
-  clearLocalFilters: () => void;
+  clearLocalFilters: (value:string) => void;
   setLocalFilter: (key: string, value: string) => void;
   applyFilters: () => void;
   getLocalFilterValue: (key: string) => string;
@@ -73,8 +73,9 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const router = useRouter();
   const { searchParams } = useFilterState();
-  const eventService = useEventsService();
+  const eventService = useEventsService(); 
   const [enabledFilters,setEnabledFilters]=useState<any>(null);
+  const pathname = usePathname()
   
   useEffect(() => {
     const getEnabledFilters = async () => {
@@ -96,9 +97,26 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const [localFilters, setLocalFilters] = useState<Record<string, string>>({});
   
   useEffect(() => {
+   setInitialFilters();
+  }, [searchParams, enabledFilters]);
+  
+
+  const setLocalFilter = useCallback((key: string, value: string) => {
+    setLocalFilters((prev) => {
+      const newFilters = { ...prev };
+      if (value === "") {
+        delete newFilters[key];
+      } else {
+        newFilters[key] = value;
+      }
+      return newFilters;
+    });
+  }, []);
+  const setInitialFilters=()=>{
     const temp: Record<string, string> = Object.fromEntries(searchParams.entries());
     
-    if (enabledFilters && Object.keys(temp).length === 0) {
+    if (enabledFilters && Object.keys(temp).includes("view") && Object.keys(temp).length===1 &&  pathname.split('/')[2]==="search"  ) {
+      
       temp.eventFormats = enabledFilters.eventFormat?.enabledValue?.join(',') ?? '';
       temp.status = enabledFilters.eventStatus?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
       temp.categories = enabledFilters.eventCategory?.enabledValue
@@ -137,22 +155,9 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   
     setLocalFilters(temp);
-  }, [searchParams, enabledFilters]);
-  
-
-  const setLocalFilter = useCallback((key: string, value: string) => {
-    setLocalFilters((prev) => {
-      const newFilters = { ...prev };
-      if (value === "") {
-        delete newFilters[key];
-      } else {
-        newFilters[key] = value;
-      }
-      return newFilters;
-    });
-  }, []);
-  const clearLocalFilters = useCallback(() => {
-    setLocalFilters({});
+  }
+  const clearLocalFilters = useCallback((view:string) => {
+    router.push(`/internal/search/events?view=${view}`);
   }, []);
   const applyFilters = () => {
     setLocalFilters((currentFilters) => {
