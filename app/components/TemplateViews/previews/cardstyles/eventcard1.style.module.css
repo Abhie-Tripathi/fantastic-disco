@@ -15,7 +15,7 @@
     border-bottom-right-radius: 50px;
     filter: drop-shadow(1px 1px 4px rgb(111, 111, 111));
     object-fit:cover;
-    border: 1px solid var(--border-color);
+    /* border: 1px solid var(--border-color); */
 }
 .date_location_nameContainer{
     padding: 10px 14px 0px 14px;
