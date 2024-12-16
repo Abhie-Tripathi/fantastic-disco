@@ -40,7 +40,7 @@ const SignIn = () => {
 
   const id = searchParams.get("id");
   const { signin } = useAuthContext();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); 
 
   const signinHandler = async (event: any) => {
     event?.preventDefault();
@@ -164,7 +164,7 @@ const SignIn = () => {
                 )}
               </div>
 
-              <div className={styles.input_container}>
+              {/* <div className={styles.input_container}>
                 <div className={styles.input_title}>Password</div>
                 <input
                   className={`${styles.input} ${
@@ -183,9 +183,9 @@ const SignIn = () => {
                 {errors.password && (
                   <div className={styles.error}>{errors.password}</div>
                 )}
-              </div>
+              </div> */}  
 
-              <div className={styles.checkbox_container}>
+              {/* <div className={styles.checkbox_container}>
                 <input
                   type="checkbox"
                   id="remember"
@@ -196,19 +196,19 @@ const SignIn = () => {
                 <label htmlFor="remember" className={styles.checkbox_title}>
                   Remember me
                 </label>
-              </div>
+              </div> */}
 
               <div className={styles.actions_container}>
-                <button
+                {/* <button
                   className={styles.button}
                   type="submit"
                   onClick={signinHandler}
                 >
                   {isLoading ? "Logging..." : "Login"}
-                </button>
+                </button> */}
 
                 <button className={styles.button} onClick={handleOTPLogin}>
-                  Login with OTP
+                  Login
                 </button>
                 <div className={styles.new_account}>
                   Do not have an account?

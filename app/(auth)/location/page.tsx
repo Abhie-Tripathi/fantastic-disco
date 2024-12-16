@@ -42,7 +42,8 @@ import LocationSelector, {
 } from "@/components/search/location";
 import { VerificationProps } from "@/types/onboarding";
 import { URLSearchParams } from "url";
-import { categories } from "@/data/categories";
+import { categories, newCategories } from "@/data/categories";
+import { useAuthContext } from "@/context";
 
 type GeoLocationType = "city" | "center" | "";
 interface PinPointLocation {
@@ -72,6 +73,7 @@ const LocationForm = ({ params }: VerificationProps) => {
   const [locationType, setLocationType] = React.useState<GeoLocationType>("");
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
+  const { setUser } = useAuthContext();
   const [location, setLocation] = useState<PinPointLocation | undefined>();
   const [radius, setRadius] = React.useState<number>(2);
   const [radiusUnit, setRadiusUnit] = React.useState<Key>("miles");
@@ -81,6 +83,7 @@ const LocationForm = ({ params }: VerificationProps) => {
     LocationItem[] | null
   >([]);
   const { getEventsCount } = useEventsService();
+  const user = localStorage.getItem("user");
 
   const [searchParams, setSearchParams] = useState<string>();
   const urlParams = useMemo(() => {
@@ -91,7 +94,15 @@ const LocationForm = ({ params }: VerificationProps) => {
     const endDate = new Date(
       endOfMonth(currentDate).setHours(5, 30, 0, 0)
     ).toISOString();
-    const queryParams = `status=active,cancelled,postponed&categories=${params.categories?.toString()}&active_gte=${startDate}&active_lte=${endDate}&locationIds=${
+    const selectedCategories = params && params.categories;
+    const categories =
+      selectedCategories &&
+      newCategories
+        .filter((category) => selectedCategories.includes(category.id))
+        .map((category) => category.slug);
+    const queryParams = `status=active,cancelled,postponed&view=map&groupBy=state&categories=${categories?.join(
+      ","
+    )}&active_gte=${startDate}&active_lte=${endDate}&locationIds=${
       selectedLocation && selectedLocation.length > 0
         ? selectedLocation.map((location) => location.id).join(",")
         : "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef"
@@ -117,8 +128,10 @@ const LocationForm = ({ params }: VerificationProps) => {
         },
       ]);
     }
+    user && setUser(JSON.parse(user).user);
     router.push(`/internal/search/events?${urlParams.toString()}`);
   };
+  console.log(user);
 
   useEffect(() => {
     toast({
@@ -236,6 +249,7 @@ const LocationForm = ({ params }: VerificationProps) => {
               description: "New York, United States",
             },
           ]);
+          user && setUser(JSON.parse(user).user);
           router.push(`/internal/search/events?${urlParams.toString()}`);
         }}
       >

@@ -11,7 +11,7 @@ const Verification: React.FC<VerificationProps> = ({ params }) => {
   const checkDev = BaseURL?.includes("dev");
 
   if (checkDev) {
-    return <VerificationForm params={params} />;
+    return <NewVerification params={params} />;
   } else {
     return <VerificationForm params={params} />;
   }

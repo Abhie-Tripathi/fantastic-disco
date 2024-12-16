@@ -6,7 +6,7 @@ import OtpInput from "react-otp-input";
 import Carousel from "@/app/components/carousel";
 import VerificationVisuals from "/public/verificationVisuals.svg";
 import ArchiveIcon from "/public/archive.svg";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { baseUrl } from "@/constants";
 import { myFetch } from "@/utils/myFetch";
 import { useAuthContext } from "@/context";
@@ -17,6 +17,7 @@ import { VerificationProps } from "@/types/onboarding";
 
 const NewVerificationForm: React.FC<VerificationProps> = ({ params }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const [time, setTime] = useState(30);
   const [code, setCode] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -26,9 +27,7 @@ const NewVerificationForm: React.FC<VerificationProps> = ({ params }) => {
   const { verifyOtp, verifyLoginOTP } = useAuthContext();
 
   const confirmHandler = () => {
-    setShowLocation(true);
-    // router.push(`/location?industry=${params.industry}`);
-    // otpVerificationHandler();
+    otpVerificationHandler();
   };
 
   const otpVerificationHandler = async () => {
@@ -50,12 +49,14 @@ const NewVerificationForm: React.FC<VerificationProps> = ({ params }) => {
     } else if (params.path === "signup") {
       response = await verifyOtp(dataToSend);
     }
-
-    console.log("Res", response);
     setIsLoading(false);
 
     if (response?.isVerified) {
-      router.push("/internal");
+      if (pathname === "/signup") {
+        setShowLocation(true);
+      } else {
+        router.push("/internal");
+      }
     } else {
       setErrors({ otpError: "Invalid Code. Please retry" });
       return;

@@ -51,83 +51,57 @@ const NewSignUpForm = () => {
     const eventTypes = getFilterValue("categories").split(",").filter(Boolean);
     const selectedCategories = newCategories
       .filter((category) => eventTypes.includes(category.id))
-      .map((category) => category.slug);
+      .map((category) => category.id);
     setCategories(selectedCategories);
   }, [getFilterValue]);
 
   const handleSignUp = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setShowVerification(true);
-    // const formData: any = {
-    //   email,
-    //   industry,
-    //   categories,
-    // };
+    const formData: any = {
+      email,
+      industry,
+      categories,
+    };
+
     // if (mobileNo.length > 0) {
     //   formData.mobileNo = mobileNo;
     // }
 
-    // try {
-    //   SignUpFormSchema.parse(formData);
-    //   setErrors({});
-    //   if (password.includes(" ")) {
-    //     setErrors({ password: "Password must not contains spaces" });
-    //     return;
-    //   }
-    //   if (password.trim().length < 8) {
-    //     setErrors({ password: "Passoword should be atleast 8 characters" });
-    //     return;
-    //   }
-    //   if (password !== confirmPassword) {
-    //     setErrors({ confirmPassword: "Passwords do not match. Try again" });
-    //     return;
-    //   }
-    //   if (name.split(" ")[1] === undefined || name.split(" ")[1].length === 0) {
-    //     setErrors({ name: "Please Enter Full Name" });
-    //     return;
-    //   }
-    //   if (mobileNo.length > 10 || mobileNo.startsWith("+")) {
-    //     setErrors({ mobileNo: "Enter 10 digit mobile number only" });
-    //     return;
-    //   }
+    try {
+      SignUpFormSchema.parse(formData);
+      setErrors({});
 
-    //   setIsLoading(true);
+      setIsLoading(true);
 
-    //   const response = await signup({
-    //     firstname: name.split(" ")[0],
-    //     lastname: name.split(" ")[1] === undefined ? " " : name.split(" ")[1],
-    //     email,
-    //     password,
-    //     ...(mobileNo.length > 0 ? { phoneNumber: mobileNo } : {}),
-    //   });
-    //   setIsLoading(false);
-    //   console.log("Response", response);
+      const response = await signup({
+        ...formData,
+        categories: categories.join(","),
+      });
+      setIsLoading(false);
 
-    //   if (!response[0]?.error) {
-    //     generateOtp();
-    //     setShowVerification(true);
-    //   } else {
-    //     if (response[0].error.message === "Email already exists")
-    //       setErrors({ email: response[0].error.message });
-    //     else if (response[0].error.message === "Phone number already exist")
-    //       setErrors({ mobileNo: response[0].error.message });
-    //     else if (response[0].error.message === "email not accepted")
-    //       setErrors({ email: response[0].error.message });
-    //     else setErrors({ otherError: response[0].error.message });
-    //   }
-    // } catch (error) {
-    //   if (error instanceof ZodError) {
-    //     const validationErrors: Record<string, string> = {};
-    //     error.errors.forEach((err) => {
-    //       if (err.path) {
-    //         validationErrors[err.path.join(".")] = err.message;
-    //       }
-    //     });
-    //     setErrors(validationErrors);
-    //   } else {
-    //     console.error("An unexpected error occurred:", error);
-    //   }
-    // }
+      if (!response[0]?.error) {
+        generateOtp();
+        setShowVerification(true);
+      } else {
+        if (response[0].error.message === "Email already exists")
+          setErrors({ email: response[0].error.message });
+        else if (response[0].error.message === "email not accepted")
+          setErrors({ email: response[0].error.message });
+        else setErrors({ otherError: response[0].error.message });
+      }
+    } catch (error) {
+      if (error instanceof ZodError) {
+        const validationErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path) {
+            validationErrors[err.path.join(".")] = err.message;
+          }
+        });
+        setErrors(validationErrors);
+      } else {
+        console.error("An unexpected error occurred:", error);
+      }
+    }
   };
 
   const generateOtp = async () => {
@@ -142,7 +116,6 @@ const NewSignUpForm = () => {
       },
       body: JSON.stringify(dataToSend),
     });
-    if (data) console.log(data);
     if (error) {
       console.log(error);
       return;
@@ -192,9 +165,6 @@ const NewSignUpForm = () => {
                   selected={industry}
                   setSelected={setIndustry}
                 />
-                {errors.email && (
-                  <div className={styles.error}>{errors.email}</div>
-                )}
               </div>
 
               {industryData.find((indust) => indust.slug === industry)
@@ -202,9 +172,6 @@ const NewSignUpForm = () => {
                 <div className={styles.input_container}>
                   <div className={styles.input_title}>Category</div>
                   <CategorySelector source="search" />
-                  {errors.email && (
-                    <div className={styles.error}>{errors.email}</div>
-                  )}
                 </div>
               )}
 

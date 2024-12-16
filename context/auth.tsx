@@ -21,6 +21,7 @@ type authContextType = {
   isVerifiedToken: boolean;
   signup: (user: SignUpDTO) => Promise<any>;
   signin: (user: TSignInFormSchema) => Promise<any>;
+  setUser: Dispatch<SetStateAction<UserResponse | null>>;
   signOut: () => void;
   verifyOtp: (user: any) => Promise<any>;
   verifyLoginOTP: (user: any) => Promise<any>;
@@ -42,6 +43,7 @@ const authContextDefaultValues: authContextType = {
   isVerifiedToken: false,
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
+  setUser: () => {},
   signOut: () => {},
   verifyOtp: () => Promise.resolve(null),
   verifyLoginOTP: () => Promise.resolve(null),
@@ -69,15 +71,12 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const token = searchParams.get("token");
   const signup = async (userDto: SignUpDTO) => {
-    console.log(userDto);
     const url = baseUrl + authEndpoints.signup;
     const { error, data }: SignUp = await myFetch(url, {
       method: "POST",
       headers: headers,
       body: JSON.stringify(userDto),
     });
-    console.log("Data", data);
-
     console.log("Error", error);
     if (data && !error) {
       // setLocalStorage(data);
@@ -223,15 +222,12 @@ export const AuthContextProvider = ({ children }: any) => {
       },
     });
 
-    console.log(data, error);
-
     if (data) {
-      console.log(data);
       if (!data.user.isVerified) {
         return;
       }
       if (data.user.isVerified) {
-        setUser(data);
+        // setUser(data);
         setLocalStorage(data);
       }
     }
@@ -301,14 +297,14 @@ export const AuthContextProvider = ({ children }: any) => {
       }
     }
   }, [pathName, router, isProfileUpdated]);
-  useLayoutEffect(() => {
-    if (user) {
-      const restrictedPaths = ["/signin", "/signup"];
-      if (restrictedPaths.includes(pathName)) {
-        router.replace("/internal");
-      }
-    }
-  }, [user, pathName, router]);
+  // useLayoutEffect(() => {
+  //   if (user) {
+  //     const restrictedPaths = ["/signin", "/signup"];
+  //     if (restrictedPaths.includes(pathName)) {
+  //       router.replace("/internal");
+  //     }
+  //   }
+  // }, [user, pathName, router]);
 
   const value = {
     user,
@@ -316,6 +312,7 @@ export const AuthContextProvider = ({ children }: any) => {
     isVerifiedToken,
     signin,
     signOut,
+    setUser,
     verifyOtp,
     verifyLoginOTP,
     isProfileUpdated,

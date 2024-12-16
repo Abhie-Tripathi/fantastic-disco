@@ -9,6 +9,7 @@ import { ToastContainer } from "react-toastify";
 import { GoogleTagManager } from "@next/third-parties/google";
 import ReactQueryProvider from "@/components/provider/reactQueryProvider";
 import { Toaster } from "@/components/ui/toaster";
+import Carousel from "../components/carousel";
 
 const sora = Sora({
   subsets: ["latin"],
