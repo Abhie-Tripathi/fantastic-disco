@@ -16,10 +16,10 @@ const Page = ({ params }: any) => {
         </>
       ) : (
         <>
-          <GeniProductPage />
-          {/* {
+          {/* <GeniProductPage /> */}
+          {
             router.push(`profile`)
-          } */}
+          }
         </>
       )}
     </>

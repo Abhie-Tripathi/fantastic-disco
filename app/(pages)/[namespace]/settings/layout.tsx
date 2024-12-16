@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../../../../components/ui/tabs";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -13,6 +13,12 @@ export default function SettingsLayout({
   const { namespace } = params;
   const pathname = usePathname();
   const urlName = pathname.split("/").slice(-1)[0];
+  // const [urlEndName, setUrlEndName] =useState("")
+  // useEffect(() => {
+  //   const urlName = pathname.split("/").slice(-1)[0];
+  //   setUrlEndName(urlName)
+  // },[pathname])
+
   return (
     <div className="w-full p-3">
       <Tabs defaultValue={urlName} className="w-full border-b">
@@ -38,7 +44,7 @@ export default function SettingsLayout({
           >
             <Link href="/widget/settings/users">Manage Users</Link>
           </TabsTrigger> */}
-          {/* {namespace === "internal" ? (
+          {namespace === "internal" ? (
             <TabsTrigger
               value="product"
               className="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2  text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
@@ -51,8 +57,8 @@ export default function SettingsLayout({
             </TabsTrigger>
           ) : (
             ""
-          )} */}
-          <TabsTrigger
+          )}
+          {/* <TabsTrigger
             value="product"
             className="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2  text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
             asChild
@@ -60,7 +66,7 @@ export default function SettingsLayout({
             <Link href={`/${namespace}/settings/product`}>
               Product settings
             </Link>
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
       </Tabs>
       <div className="mt-6">{children}</div>
