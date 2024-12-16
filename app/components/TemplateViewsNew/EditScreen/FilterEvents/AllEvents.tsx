@@ -709,7 +709,6 @@ const AllEvents = ({
   };
 
   const handleRemoveEventFromWidget = async (eventId: string) => {
-    console.log("ca444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444")
     const updatedEvents = fetchedAddedEvents?.filter(
       (event) => event.id !== eventId
     );

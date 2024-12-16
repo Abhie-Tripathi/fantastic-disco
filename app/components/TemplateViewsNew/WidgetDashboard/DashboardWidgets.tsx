@@ -7,7 +7,6 @@ import { baseUrl } from '@/constants';
 import Link from 'next/link';
 import { useWidgetServices } from '@/services/geniservices/widgetService';
 import { useRouter } from 'next/navigation';
-
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 interface DraftWidgetsType {
   widgetType: string;
@@ -26,7 +25,12 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
   const [selectedBtn, setSelectedBtn] = useState<string>("Widgets")
   const [allWidgets, setAllWidgets] = useState<DraftWidgetsType[]>([])
   const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([])
-  const { getDraftWidget, getOnlyDraftWidget, getActiveWidget, getDeActiveWidget, error } = useWidgetServices();
+  const {getDraftWidget, getOnlyDraftWidget, getActiveWidget, getDeActiveWidget, error} = useWidgetServices();
+  // const router = useRouter()
+  const handleRoute = (e: any,widgetId:string ) => {
+    e.stopPropagation()
+    router.push(`/widget/edit/${widgetId}`);
+}
   const fetchDraftWidgets = async () => {
     // const { data, error } = await myFetch(`${baseUrl}/widget?status=draft`);
     // if (data) {
@@ -130,6 +134,7 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
     } else router.push('/widget/list'); // Pass query parameter
 
   };
+ 
   return (
     <div className={styles.body}>
       <div className={styles.btnContainer}>
@@ -147,7 +152,7 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
         {allWidgets.length > 0 ?
           <div className={styles.widgetList}>
             {allWidgets.slice(0, 2).map((card, key) => (
-              <div className={styles.widgetCard} key={key}>
+              <div className={styles.widgetCard} key={key} onClick={(e) => handleRoute(e,card.widgetId)}>
                 <WidgetCard
                   removeCalled={removeCalled}
                   setRemoveCalled={setRemoveCalled}

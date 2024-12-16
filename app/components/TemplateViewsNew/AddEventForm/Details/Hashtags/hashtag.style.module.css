@@ -103,6 +103,33 @@
 .addBtnDisable:hover::before{
     opacity: 1;
 }
+
+
+
+
+
+.regeneratehashTagBtn{
+    position: relative;
+}
+.regeneratehashTagBtn::before{
+    content: attr(data-name);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 10px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+.regeneratehashTagBtn:hover::before{
+    opacity: 1;
+}
 .inputContainer{
     display: flex;
     align-items: center;

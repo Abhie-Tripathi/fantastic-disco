@@ -77,37 +77,59 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
     };
 
     const handleIncreaseFontSize = () => {
+        // setFontSettings((prevSettings) => {
+        //     const newFontSize = prevSettings[selectedType].fontSize + 1;
+        //     let maxFontSize;
+        //     if (selectedType === "heading") {
+        //         maxFontSize = 24;
+        //     } else if(selectedType === "subheading") {
+        //         maxFontSize = 14;
+        //     }else{
+        //         maxFontSize = 12;
+        //     }
+        //     return {
+        //         ...prevSettings,
+        //         [selectedType]: {
+        //             ...prevSettings[selectedType],
+        //             fontSize: newFontSize > maxFontSize ? maxFontSize : newFontSize,
+        //         }
+        //     };
+        // });
+
         setFontSettings((prevSettings) => {
             const newFontSize = prevSettings[selectedType].fontSize + 1;
-            let maxFontSize;
-            if (selectedType === "heading") {
-                maxFontSize = 24;
-            } else if(selectedType === "subheading") {
-                maxFontSize = 14;
-            }else{
-                maxFontSize = 12;
-            }
             return {
                 ...prevSettings,
                 [selectedType]: {
                     ...prevSettings[selectedType],
-                    fontSize: newFontSize > maxFontSize ? maxFontSize : newFontSize,
-                }
+                    fontSize: newFontSize,
+                },
             };
         });
     };
 
    
     const handleDecreaseFontSize = () => {
+        // setFontSettings((prevSettings) => {
+        //     const newFontSize = prevSettings[selectedType].fontSize - 1;
+        //     const minFontSize = selectedType === "heading" ? 20 : selectedType === "subheading"? 12 : 10;             
+        //     return {
+        //         ...prevSettings,
+        //         [selectedType]: {
+        //             ...prevSettings[selectedType],
+        //             fontSize: newFontSize < minFontSize ? minFontSize : newFontSize,
+        //         }
+        //     };
+        // });
+
         setFontSettings((prevSettings) => {
             const newFontSize = prevSettings[selectedType].fontSize - 1;
-            const minFontSize = selectedType === "heading" ? 20 : selectedType === "subheading"? 12 : 10;             
             return {
                 ...prevSettings,
                 [selectedType]: {
                     ...prevSettings[selectedType],
-                    fontSize: newFontSize < minFontSize ? minFontSize : newFontSize,
-                }
+                    fontSize: newFontSize < 0 ? 0 : newFontSize,
+                },
             };
         });
     }
@@ -206,8 +228,8 @@ const TypographyCustomization = ({ extractedColors, setFontSettings, fontSetting
                                 {/* <div className={styles.display}>{selectedType === "heading" ? `${fontSettings.heading.fontSize}px` : selectedType === "subheading" ? `${fontSettings.subheading.fontSize}px` : `${fontSettings.body.fontSize}px`}</div> */}
                             </div>
                             <div className={styles.arrows}>
-                                <div onClick={handleIncreaseFontSize}><UpArrow height='4' width='8'/></div>
-                                <div onClick={handleDecreaseFontSize}><DownArrow height='4' width='8'/></div>
+                                <div onClick={handleIncreaseFontSize}><UpArrow height='8' width='8'/></div>
+                                <div onClick={handleDecreaseFontSize}><DownArrow height='8' width='8'/></div>
                             </div>
                         </div>
                     </div>

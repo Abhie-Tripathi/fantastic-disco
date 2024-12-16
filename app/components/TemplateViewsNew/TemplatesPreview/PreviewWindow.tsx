@@ -229,6 +229,18 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         <div className={styles.body} 
         // style={{backgroundColor:previewWindowBgColor}}
         >
+            <div style={{
+            display: 'flex',
+            margin: 'auto'
+            }}>
+            <div className={styles.preview_screen_text}>
+               <span>Preview Screen</span>
+            </div>
+            <div onClick={() => setIsFullScreen(!isFullScreen)} style={{ cursor: 'pointer' }}>
+                {isFullScreen ? <CloseFullScreenIcon /> : <FullScreenIcon />}
+            </div>
+            </div>
+            
             <div className={styles.heading_btnContainer}>
                 {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG" || selectedTemplate === "HS" || selectedTemplate === "LSR" || selectedTemplate === "RSR" || selectedTemplate === "CV" || selectedTemplate === "HB" || selectedTemplate === "PUVP" || selectedTemplate === "PUVL") && setSelectedCard && (
                     <div className={styles.styleBtns}>
@@ -261,9 +273,9 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                  }}>
                     {/* <div><MobileIcon color={theme === "dark" ? "white" : "black"} /></div>
                     <div><DesktopIcon color={theme === "dark" ? "white" : "black"} /></div> */}
-                    <div onClick={() => setIsFullScreen(!isFullScreen)}>
+                    {/* <div onClick={() => setIsFullScreen(!isFullScreen)}>
                         {isFullScreen ? <CloseFullScreenIcon/> : <FullScreenIcon/>}
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className={`${styles.preview_btnContainer} ${(!draftWidget || isFullScreen) ? styles.bigpreview_btnContainer : ""}`}>
