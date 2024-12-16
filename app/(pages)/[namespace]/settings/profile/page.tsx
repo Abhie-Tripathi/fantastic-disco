@@ -385,10 +385,10 @@ const Profile = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="manager">
-                          Managing Director
+                          {user?.role}
                         </SelectItem>
-                        <SelectItem value="developer">Developer</SelectItem>
-                        <SelectItem value="designer">Designer</SelectItem>
+                        {/* <SelectItem value="developer">Developer</SelectItem> */}
+                        {/* <SelectItem value="designer">Designer</SelectItem> */}
                       </SelectContent>
                     </Select>
                   </div>

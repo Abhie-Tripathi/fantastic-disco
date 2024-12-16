@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from './navbar.style.module.css'
+import styles from "./navbar.style.module.css";
+import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +20,7 @@ import {
   Settings,
   Sun,
   UserSearch,
-  Search
+  Search,
 } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import {
@@ -34,25 +35,26 @@ import Link from "next/link";
 
 const gtmroutes: Record<string, string> = {
   internal: "Dashboard",
-  "coordinate": "Coordinate",
-  "events": "Research",
-  "trackers": "Trackers",
+  coordinate: "Coordinate",
+  events: "Research",
+  trackers: "Trackers",
   outreach: "Outreach",
   trends: "Event Trends",
-  "profile":"Settings"
+  profile: "Settings",
+  product: "Settings",
 };
 const geniroutes: Record<string, string> = {
-  "list": "Widgets",
-  "edit": "Edit Widget",
-  "add": "Add Widget",
-  "brandkit": "Brandkit",
-  "events": "Events",
-  "dashboard": "Dashboard",
-  "overview": "Manage",
-  "settings": "Manage",
-  "guests" : "Manage",
-  "profile":"Settings"
-
+  list: "Widgets",
+  edit: "Edit Widget",
+  add: "Add Widget",
+  brandkit: "Brandkit",
+  events: "Events",
+  dashboard: "Dashboard",
+  overview: "Manage",
+  settings: "Manage",
+  guests: "Manage",
+  profile: "Settings",
+  product: "Settings",
 };
 
 export default function Navbar() {
@@ -61,24 +63,35 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
-  console.log("route", gtmroutes[pathname.split("/").slice(-1)[0]])
+  console.log("route", gtmroutes[pathname.split("/").slice(-1)[0]]);
 
-  const router = useRouter()
+  const router = useRouter();
   const handleRoute = (route: string) => {
     if (route === "research") {
-      router.push("/internal")
+      router.push("/internal");
     } else if (route === "promote") {
-      router.push("/widget/dashboard")
+      router.push("/widget/dashboard");
+    }
+  };
+
+  const route = pathname.split("/")[1];
+  const handleClick = () => {
+    if (route === "internal") {
+      router.push("/internal/settings/profile");
     }
 
-  }
+    if (route === "widget") {
+      router.push("/widget/settings/profile");
+    }
+  };
 
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center">
           <div className="text-lg font-semibold">
-            {pathname.split("/")[1] === "internal" ? gtmroutes[pathname.split("/").slice(-1)[0]]
+            {pathname.split("/")[1] === "internal"
+              ? gtmroutes[pathname.split("/").slice(-1)[0]]
               : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
@@ -104,20 +117,25 @@ export default function Navbar() {
               </PopoverTrigger>
               <PopoverContent className="w-52 p-0" align="end">
                 <div className="grid grid-cols-2 gap-2">
-                  {pathname.split("/")[1] === "internal" ?
-                    <Button onClick={() => handleRoute("promote")}
+                  {pathname.split("/")[1] === "internal" ? (
+                    <Button
+                      onClick={() => handleRoute("promote")}
                       variant="ghost"
                       className="flex flex-col items-center justify-center gap-2 h-auto p-4"
                     >
                       <Megaphone className="h-6 w-6" />
                       <span className="text-xs">Promote</span>
-                    </Button> : <Button onClick={() => handleRoute("research")}
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => handleRoute("research")}
                       variant="ghost"
                       className="flex flex-col items-center justify-center gap-2 h-auto p-4"
                     >
                       <Search className="h-6 w-6" />
                       <span className="text-xs">Research</span>
-                    </Button>}
+                    </Button>
+                  )}
 
                   <Button
                     variant="ghost"
@@ -136,13 +154,28 @@ export default function Navbar() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="secondary"
-                className="flex items-center bg-transparent p-1"
+                className="flex items-center bg-transparent p-1 "
               >
                 <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
-                  {user
-                    ? `${user?.firstname[0]?.toUpperCase() ?? ""}${user?.lastname?.[0]?.toUpperCase() ?? ""
+                  {/* {user
+                    ? `${user?.firstname[0]?.toUpperCase() ?? ""}${
+                        user?.lastname?.[0]?.toUpperCase() ?? ""
+                      }`
+                    : ""} */}
+                  {!user?.profilePicture ? (
+                    `${user?.firstname?.[0]?.toUpperCase() ?? ""}${
+                      user?.lastname?.[0]?.toUpperCase() ?? ""
                     }`
-                    : ""}
+                  ) : (
+                    <Image
+                      src={user?.profilePicture}
+                      alt={`${user?.firstname ?? "User"}'s Profile Picture`}
+                      width={100}
+                      height={100}
+                      className="rounded-full"
+                      // Ensures the image respects the circular shape
+                    />
+                  )}
                 </div>
               </Button>
             </DropdownMenuTrigger>
@@ -153,6 +186,13 @@ export default function Navbar() {
               >
                 <LogOut className="h-4 w-4" />
                 <span className="ml-2">Logout</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleClick()}
+                className="flex items-center"
+              >
+                <UserSearch className="h-4 w-4" />
+                <span className="ml-2">Profile</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
