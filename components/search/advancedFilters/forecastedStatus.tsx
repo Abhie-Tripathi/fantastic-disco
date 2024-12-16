@@ -8,7 +8,7 @@ interface forecastInterface{
   toggleOpend:boolean,
 }
 interface ForecastedProps{
-  enabledForecastData:forecastInterface;
+  enabledForecastData?:forecastInterface;
   source:string;
   isEnabled?: boolean;
   setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;

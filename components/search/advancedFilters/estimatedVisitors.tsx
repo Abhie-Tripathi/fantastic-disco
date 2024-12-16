@@ -39,7 +39,7 @@ interface visitorInterface{
 }
 interface VisitorsProps{
   source: string,
-  enabledVisitorData: visitorInterface,
+  enabledVisitorData?: visitorInterface,
   selectedRanges?: string[],
   setSelectedRanges?: React.Dispatch<React.SetStateAction<string[]>>,
 }

@@ -70,7 +70,7 @@ interface MyTrackersProps {
 }
 const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData, searchValue}:MyTrackersProps) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
-  const [isInetialRender,setIsInetialRender]=useState(true);
+  const [isInetialRender,setIsInetialRender]=useState(false);
   const [allTracker, setAllTracker] = useState<AllTrackerTypes[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
@@ -82,36 +82,33 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   const [loadTwo,setLoadTwo]=useState(false);
   const {getTrackers, isLoading}=useTrackerServices();
   const endOfListRef = useRef(null);
-  useEffect(()=>{
-    setPage(0);
-    console.log(searchValue);
-    
-    if(searchValue.length>=3 || searchValue.length===0){
-      setAllTracker([]);
-      setIsInetialRender(true);
-      setLoadOne(true);
-      fetchData(true);
-    }
-    
-  },[searchValue])
   useEffect(() => {
     
     // const handler = setTimeout(() => {
     // if(searchValue.length>=3 || searchValue.length===0){
-      
-     fetchData(false);
+      if(isInetialRender && page!==0)
+        fetchData(false); 
     //  }
     // }, 700);
     // return () => {
     //   clearTimeout(handler);
     // };
-  }, [page, trackerPerPage]);
+  }, [page]);
+  useEffect(() => {
+    setPage(0);
+    if (searchValue.length >= 3 || searchValue.length === 0) {
+      setAllTracker([]);
+      setIsInetialRender(true); // Indicate it's the first render
+      fetchData(true); // Pass true for initial render
+    }
+  }, [searchValue]);
   // useEffect(()=>{
   //   if(searchValue.length===0)
   //   fetchData();
   // },[searchValue])
   const fetchData=async(isInetialRender:boolean)=>{
     setLoadOne(true);
+    const offset = isInetialRender ? 0 : page * trackerPerPage;
     const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${page * trackerPerPage}&limit=${trackerPerPage}`);
     // setAllTracker(result.trackerData);
     console.log(result);
@@ -134,11 +131,14 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
        }
     setTotalPage(Math.ceil(result.totalCount / trackerPerPage));
     setTotalCount(result.totalCount)
+    if(result.totalCount===0) setDataPresent(false);
     setLoading(false);
     setLoadOne(false);
             }
   }
   const handleNextPage = () => {
+    console.log(111111);
+    
     if (page < totalPage - 1) {
       setPage(page + 1);
       // setAllTracker([]);
@@ -207,7 +207,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           </div>
         <div className="h-[calc(100vh-320px)] overflow-auto pl-8 pr-7 grid gap-[var(--spacing-md)] grid-cols-[repeat(auto-fill,minmax(470px,1fr))]">
           {(allTracker.length===0 && !loadOne) &&
-            <div className="flex items-center justify-center text-[var(--secondary-text-color)] font-semibold">Tracker with the search result is not created yet.</div>
+            <div className="flex justify-center text-[var(--secondary-text-color)] font-semibold">Tracker with the search result is not created yet.</div>
           }
           {/* {error && <div>{error}</div>} */}
           {allTracker.length > 0 &&

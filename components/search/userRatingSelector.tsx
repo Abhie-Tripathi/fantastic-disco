@@ -26,7 +26,7 @@ const userRatings = [
 interface UserRatingsProps{
   source: string,
   selectedRatings?: string[],
-  enabledRatingData: ratingsInterface,
+  enabledRatingData?: ratingsInterface,
   setSeectedRatings?: React.Dispatch<React.SetStateAction<string[]>>,
   isEnabled?: boolean;
   setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;

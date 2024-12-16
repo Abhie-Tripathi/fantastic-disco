@@ -110,7 +110,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
       setTrackerId(item.id);
   }
   return (
-    <div className="card cursor-pointer" onClick={()=>setSingleTrackerData(item)}
+    <div className="card cursor-pointer h-[150px]" onClick={()=>setSingleTrackerData(item)}
     onDoubleClick={() => handleDoubleClick(item)} 
     style={{border: singleTrackerData?.id===item.id?"2px solid var(--primary-color)":"2px solid var(--border-color)" }}
     >

@@ -18,7 +18,7 @@ import { Country } from "@/types/events/events";
 import { useFilterContext } from "@/context/filterContext";
 interface AudienceSpreadProps{
   source: string;
-  enabledSpreadData:spreadInterface;
+  enabledSpreadData?:spreadInterface;
   selectedCountries?: string[];
   setSelectedCountries?: React.Dispatch<React.SetStateAction<string[]>>;
 }

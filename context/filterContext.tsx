@@ -8,13 +8,13 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
-import enabledValues from "@/public/data/enabledFilters";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
-import { useEventsService } from "@/services/eventsService";
+
 type FilterContextType = {
   localFilters: Record<string, string>;
   setLocalFilter: (key: string, value: string) => void;
+  clearLocalFilters: () => void;
   applyFilters: () => void;
   getLocalFilterValue: (key: string) => string;
   searchParams: URLSearchParams;
@@ -34,70 +34,19 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const router = useRouter();
   const { searchParams } = useFilterState();
-  const eventService = useEventsService();
-  const [enabledFilters,setEnabledFilters]=useState();
-  const [inetialRender,setInetialRender]=useState(true);
-  useEffect(() => {
-    const getEnabledFilters = async () => {
-      
-      try {
-        const data = await eventService.fetchEnabledFilters("research");
-        console.log(data);
-        if(data){
-        setEnabledFilters(data);
-        }else{
-          setEnabledFilters(null);
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    };
-  
-    getEnabledFilters();
-  }, []);
   const [localFilters, setLocalFilters] = useState<Record<string, string>>({});
-  console.log(localFilters);
-  
-  useEffect(() => {
-    const temp = Object.fromEntries(searchParams.entries());
-    console.log(enabledFilters);
-    if(enabledFilters && inetialRender){
 
-    temp.eventFormats = enabledFilters?.eventFormat?.enabledValue?.join(',');
-    temp.status = enabledFilters?.eventStatus?.enabledValue?.join(',');
-    temp.categories = enabledFilters?.eventCategory?.enabledValue?.map((item)=>item.slug).join(',');
-    temp.eventTypes = enabledFilters?.eventType?.enabledValue?.join(',');
-    temp.locationIds = enabledFilters?.locationIds?.enabledValue?.map((item)=>item.id).join(",");
-    temp.active_gte = new Date(enabledFilters?.durations?.startDate?.split(',')[0])?.toISOString();
-    temp.active_lte = new Date(enabledFilters.durations.startDate.split(',')[1])?.toISOString();
-    temp.entryType = enabledFilters?.eventEntry?.enabledValue?.join(',');
-    temp.ratings = enabledFilters?.eventRating?.enabledValue?.join(',');
-    temp.maturity = enabledFilters?.maturity?.enabledValue[0];
-    temp.onlyBranded = enabledFilters?.branded?.
-    enabledValue?.eventBrand?"true":"false";
-    temp.onlySeries = enabledFilters?.branded?.enabledValue?.eventSeries?"true":"false";
-    temp.frequencies = enabledFilters?.eventFrequency?.enabledValue?.join(",");
-    temp.includeKeywords = enabledFilters?.keywords?.positiveKeywords?.join(',');
-    temp.excludeKeywords = enabledFilters?.keywords?.negativeKeywords?.join(',');
-    temp.estimatedVisitors = enabledFilters?.eventSize?.enabledValue?.join(',');
-    temp.estimatedExhibitors = enabledFilters?.estimatedExhibitScore?.enabledValue?.join(',');
-    let dataToShow=[];
-    if(enabledFilters?.eventRating?.isRatingEnabled) dataToShow.push("rating");
-    if(enabledFilters?.maturity?.isMaturityEnabled) dataToShow.push("maturity");
-    if(enabledFilters?.branded?.isBrandedEnabled) dataToShow.push("branded,series");
-    if(enabledFilters?.eventFrequency?.isFreqEnabled) dataToShow.push("frequency");
-    if(enabledFilters?.estimatedExhibitScore?.isExhibitorsEnabled) dataToShow.push("estimatedExhibitors");
-    if(enabledFilters?.analytics?.isAnalyticsEnabled) dataToShow.push("scores");
-    temp.show=dataToShow.join(',');
-    
-    // if(enabledFilters?.isRatingEnabled)
-    // const show = "maturity"
-    // temp.show = show;
-    console.log(temp);
-    setInetialRender(false);
-    }
-    setLocalFilters(temp);
-  }, [searchParams, enabledFilters]);
+  const filterEmptyValues = useCallback((filters: Record<string, string>) => {
+    return Object.fromEntries(
+      Object.entries(filters).filter(([_, value]) => value !== "")
+    );
+  }, []);
+
+  useEffect(() => {
+    setLocalFilters(
+      filterEmptyValues(Object.fromEntries(searchParams.entries()))
+    );
+  }, [searchParams, filterEmptyValues]);
 
   const setLocalFilter = useCallback((key: string, value: string) => {
     setLocalFilters((prev) => {
@@ -111,57 +60,69 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   }, []);
 
+  const clearLocalFilters = useCallback(() => {
+    setLocalFilters({});
+  }, []);
+
   const applyFilters = () => {
     setLocalFilters((currentFilters) => {
+      const filteredFilters = filterEmptyValues(currentFilters);
       const params = new URLSearchParams();
-      Object.entries(currentFilters).forEach(([key, value]) => {
-        if (value && key !== "skip") {
+      Object.entries(filteredFilters).forEach(([key, value]) => {
+        if (key !== "skip") {
           params.set(key, value);
         }
       });
       const currentPathname = window.location.pathname;
       router.push(`${currentPathname}?${params.toString()}`, { scroll: false });
-      return currentFilters;
+      return filteredFilters;
     });
   };
 
   const setMultipleLocalFilters = useCallback(
     (filters: Record<string, string>) => {
-      setLocalFilters((prev) => ({
-        ...prev,
-        ...filters,
-      }));
+      setLocalFilters((prev) =>
+        filterEmptyValues({
+          ...prev,
+          ...filters,
+        })
+      );
     },
-    []
+    [filterEmptyValues]
   );
 
-  const deleteMultipleLocalFilters = useCallback((keys: string[]) => {
-    setLocalFilters((prev) => {
-      const newFilters = { ...prev };
-      keys.forEach((key) => {
-        delete newFilters[key];
+  const deleteMultipleLocalFilters = useCallback(
+    (keys: string[]) => {
+      setLocalFilters((prev) => {
+        const newFilters = { ...prev };
+        keys.forEach((key) => {
+          delete newFilters[key];
+        });
+        return filterEmptyValues(newFilters);
       });
-      return newFilters;
-    });
-  }, []);
+    },
+    [filterEmptyValues]
+  );
 
   const replaceLocalFilter = useCallback(
     (oldKey: string, newKey: string, newValue: string) => {
       setLocalFilters((prev) => {
         const newFilters = { ...prev };
         delete newFilters[oldKey];
-        newFilters[newKey] = newValue;
-        return newFilters;
+        if (newValue !== "") {
+          newFilters[newKey] = newValue;
+        }
+        return filterEmptyValues(newFilters);
       });
     },
-    []
+    [filterEmptyValues]
   );
 
   const contextValue = useMemo(
     () => ({
       localFilters,
-      enabledFilters,
       setLocalFilter,
+      clearLocalFilters,
       applyFilters,
       getLocalFilterValue: (key: string) => localFilters[key] || "",
       searchParams,
@@ -172,6 +133,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     [
       localFilters,
       setLocalFilter,
+      clearLocalFilters,
       setMultipleLocalFilters,
       deleteMultipleLocalFilters,
       replaceLocalFilter,

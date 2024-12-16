@@ -20,7 +20,7 @@ interface formatInterface{
   selectedValue:string[];
 }
 interface EventFormatSelectorProps {
-  enabledFormat:formatInterface;
+  enabledFormat?:formatInterface;
   source: string;
   selectedStatuses?: string[];
   setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;

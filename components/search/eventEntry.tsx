@@ -19,7 +19,7 @@ interface entryInterface{
   enabledValue:string[];
 }
 interface EventEntryProps{
-  enabledEntries:entryInterface;
+  enabledEntries?:entryInterface;
   source: string;
   selectedStatuses?: string[];
   setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;

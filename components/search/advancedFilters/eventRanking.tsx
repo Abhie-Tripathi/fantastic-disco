@@ -32,7 +32,7 @@ interface rankInterface{
 }
 interface EvenetRankingProps{
   source:string;
-  enabledRankingData:rankInterface;
+  enabledRankingData?:rankInterface;
   selectedTrustScore?:any;
   setSelectedTrustScore?:any;
   rankToggles?:any;

@@ -29,7 +29,7 @@ interface statusInterface{
   selectedValue:string[];
 }
 interface StatusSelectorProps {
-  enabledStatuses:statusInterface;
+  enabledStatuses?:statusInterface;
   source: string;
   selectedStatuses?: string[];
   setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;

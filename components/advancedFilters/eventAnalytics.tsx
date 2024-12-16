@@ -28,7 +28,7 @@ interface analyticsInterface{
 }
 interface EventAnalyticsProps{
   source:string;
-  enabledAnalyticsData:analyticsInterface;
+  enabledAnalyticsData?:analyticsInterface;
   selectedEventRank?: [number, number];
   setSelectedEventRank?: React.Dispatch<React.SetStateAction<[number, number]>>;
   selectedLocalRank?: [number, number];

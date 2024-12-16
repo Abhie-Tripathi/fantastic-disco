@@ -7,7 +7,7 @@ interface zoneInterface{
   isZoneEnabled:boolean,
 }
 interface AudienceZoneProps{
-  enabledZoneData:zoneInterface;
+  enabledZoneData?:zoneInterface;
   source:string;
   isEnabled?: boolean;
   setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;

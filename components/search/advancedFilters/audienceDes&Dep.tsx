@@ -41,7 +41,7 @@ interface desInterface{
 }
 interface DesAndDepProps{
   source: string,
-  enabledProfileData:desInterface,
+  enabledProfileData?:desInterface,
   designationData?:string[],
   setDesignationData?:React.Dispatch<React.SetStateAction<string[]>>,
 }

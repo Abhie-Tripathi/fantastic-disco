@@ -237,7 +237,7 @@ const Trackers = ({ searchParams }: Search) => {
   //   setHideTemplate(!hideTemplate);
   // };
   const [hideTemplate, setHideTemplate] = useState(true);
-  const [dataPresent, setDataPresent] = useState(false);
+  const [dataPresent, setDataPresent] = useState(true);
   // useEffect(() => {
   //   if (dataPresent) setHideTemplate(false);
   //   console.log(dataPresent);
@@ -443,12 +443,18 @@ const Trackers = ({ searchParams }: Search) => {
           <span className="flex items-center gap-2 text-[#696B83]">
            {singleTrackerData?.name}
           </span>
-          <Link
-        href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=activeEvent`}
-        onClick={()=>setContextData(singleTrackerData?.id)}
-      >
-        <Button className="text-white">View Detail</Button>
-          </Link>
+          {dataPresent ? (
+            <Link
+            href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=activeEvent`}
+            onClick={() => setContextData(singleTrackerData?.id)}
+            >
+            <Button className="text-white">View Detail</Button>
+            </Link>
+            ) : (
+            <Button disabled className="text-white">
+            View Detail
+            </Button>
+          )}
         </div>
         <div className="flex h-[calc(100vh-171px)] overflow-y-auto flex-col px-8 gap-4">
   {/* <div className="flex w-[45%] items-stretch">

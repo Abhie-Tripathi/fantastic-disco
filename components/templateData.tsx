@@ -15,7 +15,7 @@ const data = productType === "eventeli" ?
   [
     {
       type: "template",
-    //   domain: "Market Research",
+      domain: "Market Research",
       img: Location,
       url: "T_LOCATION",
       trackerName: "Location Tracker",
@@ -24,7 +24,7 @@ const data = productType === "eventeli" ?
     },
     {
       type: "template",
-    //   domain: "Market Research",
+      domain: "Market Research",
       img: Venue,
       url:"T_VENUE",
       trackerName: "Venue Tracker",
@@ -33,7 +33,7 @@ const data = productType === "eventeli" ?
     },
     {
       type: "template",
-    //   domain: "Networking & Outreach",
+      domain: "Networking & Outreach",
       img: LocationDate,
       url: "T_LOCATION_DATE",
       trackerName: "Location and Date Tracker",

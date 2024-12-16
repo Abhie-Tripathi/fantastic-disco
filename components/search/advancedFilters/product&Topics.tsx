@@ -12,7 +12,7 @@ import { useFilterContext } from "@/context/filterContext";
 import KeywordTabs from "./keywordTabs";
 interface KeywordSelectorProps{
   source:string;
-  enabledProductData:keywordInterface,
+  enabledProductData?:keywordInterface,
   type?:string;
   includeKeywords?:string[];
   setIncludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;

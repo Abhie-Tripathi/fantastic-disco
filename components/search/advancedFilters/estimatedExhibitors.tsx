@@ -24,7 +24,7 @@ interface exhibitorInterface{
 }
 interface EstimatedExhibitorProps {
   source: string;
-  enabledExhibitorData:exhibitorInterface;
+  enabledExhibitorData?:exhibitorInterface;
   selectedRanges?: string[];
   setSelectedRanges?: React.Dispatch<React.SetStateAction<string[]>>; 
   isEnabled?: boolean;

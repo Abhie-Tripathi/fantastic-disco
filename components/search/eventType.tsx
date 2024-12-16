@@ -22,7 +22,7 @@ interface typeInterface{
 }
 interface EventTypeProps{
   source: string;
-  enabledTypeData:typeInterface;
+  enabledTypeData?:typeInterface;
   selectedCategories?: Record<EventGroupType, string[]>;
   setSelectedCategories?: React.Dispatch<React.SetStateAction<Record<EventGroupType, string[]>>>;
 }

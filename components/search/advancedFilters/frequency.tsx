@@ -32,7 +32,7 @@ interface freqInterface{
   popUpOpend:boolean,
 }
 interface FrequencySelectorProps {
-  enabledFreqData:freqInterface;
+  enabledFreqData?:freqInterface;
   source: string;
   selectedFrequencies?: string[];
   setSelectedFrequencies?: React.Dispatch<React.SetStateAction<string[]>>;

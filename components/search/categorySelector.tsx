@@ -19,7 +19,7 @@ interface categoryProps {
   source: string;
   selectedCategories?: string[];
   setSelectedCategories?: React.Dispatch<React.SetStateAction<string[]>>; 
-  enabledCategories:categoryInterface;
+  enabledCategories?:categoryInterface;
 }
 export default function CategorySelector({
   source,
@@ -88,7 +88,6 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
                   <Checkbox
                     className="rounded-none"
                     id={category.slug}
-                    disabled={enabledCategories && !enabledCategories?.enabledValue?.some(item => item.id === category.id)}
                     checked={
                       category.slug === "all"
                         ? isAllSelected

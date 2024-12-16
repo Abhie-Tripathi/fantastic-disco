@@ -24,7 +24,7 @@ interface enabledData{
 }
 interface EditionProps{
   source:string,
-  enabledMaturityData:enabledData,
+  enabledMaturityData?:enabledData,
   selectedStatus?: string;
   setSelectedStatus?: React.Dispatch<React.SetStateAction<string>>;
   isEnabled?: boolean;

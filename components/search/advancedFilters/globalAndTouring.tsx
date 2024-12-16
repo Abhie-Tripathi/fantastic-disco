@@ -26,7 +26,7 @@ interface brandInterface{
 }
 interface BrandedProps{
   source:string;
-  enabledBrandData:brandInterface;
+  enabledBrandData?:brandInterface;
   selectedBrandedEvent?:boolean;
   setSelectedBrandedEvent?:React.Dispatch<React.SetStateAction<boolean>>;
   selectedEventSeries?:boolean;
@@ -163,13 +163,6 @@ export default function GlobalAndTouringSelector({source,         selectedBrande
             <div key={item.id} className="flex items-center space-x-2">
               <Checkbox
                 id={item.id}
-                disabled={ enabledBrandData &&
-                 ( item.id === "SERIES"
-                    ? !enabledBrandData?.enabledValue?.eventSeries 
-                    : item.id === "BRANDED"
-                    ? !enabledBrandData?.enabledValue?.eventBrand
-                    : false)
-                }
                 checked={selectedStatuses.includes(item.id)}
                 onCheckedChange={() => handleStatusToggle(item.id)}
               />
