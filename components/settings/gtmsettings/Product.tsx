@@ -60,7 +60,7 @@ export default function ProductsPage() {
     setResearchTempValue(value);
   };
   const handleChangeOutreachScreenBoxes = (id: string, value: string) => {
-    console.log("values", id, value);
+    // console.log("values", id, value);
     setOutreachTempValue(value);
   };
 
@@ -70,7 +70,7 @@ export default function ProductsPage() {
   };
 
   const handleOutreachchScreenEdit = (id: string, currentValue: string) => {
-    console.log("values_______", id, currentValue);
+    // console.log("values_______", id, currentValue);
     setOutreachScreenEditingBoxId(id);
     setOutreachTempValue(currentValue);
   };
@@ -79,7 +79,7 @@ export default function ProductsPage() {
     const updatedBox = researchScreenboxes.find(
       (box) => box.status === data.status
     );
-    console.log("dsdf2121", updatedBox, researchTempValue, data);
+    // console.log("2121__", updatedBox, researchTempValue, data);
     for (let i = 0; i < researchScreenboxes.length; i++) {
       if (data.status === researchScreenboxes[i].status) {
         researchScreenboxes[i] = {
@@ -107,10 +107,10 @@ export default function ProductsPage() {
   };
 
   const addResearchScreenBox = () => {
-    if (researchScreenboxes.length >= MAX_BOXES) {
-      showToast("error", "Cannot create more than 4 input");
-      return;
-    }
+    // if (researchScreenboxes.length >= MAX_BOXES) {
+    //   showToast("error", "Cannot create more than 4 input");
+    //   return;
+    // }
 
     setResearchScreenBoxes((prevBoxes: any) => [
       ...prevBoxes,
@@ -119,6 +119,10 @@ export default function ProductsPage() {
   };
 
   const addOutreachScreenBox = () => {
+    if (outreachScreenboxes.length >= MAX_BOXES) {
+      showToast("error", "Cannot create more than 4 input");
+      return;
+    }
     setOutreachScreenBoxes((prevBoxes) => [
       ...prevBoxes,
       { id: prevBoxes.length + 1, label: "" },
@@ -371,7 +375,7 @@ export default function ProductsPage() {
                 preferences.
               </div>
               <div className="flex flex-col gap-5">
-                {outreachScreenboxes.slice(1, 6).map((box: any) => (
+                {outreachScreenboxes.slice(1, 5).map((box: any) => (
                   <div
                     key={box.status}
                     className="flex items-center gap-2 relative"
@@ -438,7 +442,7 @@ export default function ProductsPage() {
             </div>
             <div className="grid place-items-center">
               <div className="flex flex-wrap gap-4 justify-center  w-full max-w-5xl">
-                {outreachScreenboxes.slice(1, 6).map((box: any) => (
+                {outreachScreenboxes.slice(1, 5).map((box: any) => (
                   <div
                     key={box.status}
                     className="relative flex flex-col justify-start items-center w-[150px] h-[160px]  rounded-t-md text-center box-border"
