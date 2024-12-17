@@ -174,7 +174,7 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
           {draftWidgets.length > 0 ?
             <div className={styles.widgetList}>
               {draftWidgets.slice(0, 2).map((card, key) => (
-                <div className={styles.widgetCard} key={key}>
+                <div className={styles.widgetCard} key={key} onClick={(e) => handleRoute(e,card.widgetId)}>
                   <WidgetCard
                     removeCalled={removeCalled}
                     setRemoveCalled={setRemoveCalled}
