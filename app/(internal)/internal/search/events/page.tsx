@@ -17,7 +17,6 @@ import StatusSelector from "@/components/search/status";
 import UserRatingSelector from "@/components/search/userRatingSelector";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
-import List from "@/components/search/list";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFilterContext } from "@/context/filterContext";
@@ -35,7 +34,7 @@ import {
 } from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Filter, FilterX, Loader2, Plus } from "lucide-react";
+import { ArrowUpRight, Filter, Loader2, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";

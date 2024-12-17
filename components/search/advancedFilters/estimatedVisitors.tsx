@@ -50,7 +50,6 @@ export default function EstimatedVisitorsSelector({
   selectedRanges: parentSelectedRanges=[],
   setSelectedRanges: parentSetSelectedRanges,
 }:VisitorsProps) {
-  console.log(enabledVisitorData);
   
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue } = useFilterContext();
@@ -116,7 +115,6 @@ export default function EstimatedVisitorsSelector({
     }
     setIsOpen(false);
   };
- console.log(selectedRanges);
  
   return (
     <Popover

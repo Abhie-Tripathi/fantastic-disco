@@ -100,7 +100,6 @@ export default function FrequencySelector({
       : currentShow.filter((item) => item !== "frequency");
     setLocalFilter("show", newShow.join(","));
   };
-console.log(selectedFrequencies);
 
   return (
     <Popover
