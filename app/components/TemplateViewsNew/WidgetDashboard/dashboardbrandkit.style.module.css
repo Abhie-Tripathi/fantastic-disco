@@ -91,7 +91,12 @@
     border: 1px solid var(--neutral-light-color);
     border-radius: 4px;
     background-color: var(--primary-foreground);
-    overflow-x: auto;
+}
+.colorContainer{
+    overflow-x: scroll;
+}
+.typoContainer{
+    overflow: visible;
 }
 @media screen and (max-width: 1280px) {
     .brandKitContainer {
