@@ -362,11 +362,11 @@ const Page = () => {
     setTodaysDate(getCurrentDate());
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (searchParams.get('fromDashboard') === 'true') {
       setChoiceFormModal(true);
     }
-  },[searchParams])
+  }, [searchParams])
 
   // useEffect(() => {
   //   setPage(0);
@@ -714,28 +714,27 @@ const Page = () => {
 
   return (
     <div
-      className={`${styles.body} ${
-        isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal
+      className={`${styles.body} ${isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal
           ? styles.modalOpen
           : ""
-      }`}
+        }`}
     >
       <nav className={styles.nav}>
         <div className={styles.tabs}>
-          <div
+          <button
             className={activeTab === "upcoming" ? styles.activeTab : ""}
             onClick={() => setActiveTab("upcoming")}
           >
             Upcoming Events
-          </div>
-          <div
+          </button>
+          <button
             className={activeTab === "past" ? styles.activeTab : ""}
             onClick={() => setActiveTab("past")}
           >
             Past Events
-          </div>
+          </button>
         </div>
-        <button onClick={() => setChoiceFormModal(true)}>+ Add Event</button>
+        <button className={styles.addBtn} onClick={() => setChoiceFormModal(true)}>+ Add Event</button>
       </nav>
       <div className={styles.globalSearch}>
         <GlobalSearch
