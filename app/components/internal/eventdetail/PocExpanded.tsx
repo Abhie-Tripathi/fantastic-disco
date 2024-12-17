@@ -107,6 +107,7 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
                 {(poc?.email || poc?.phoneNumber) && (
                   <div className="">
                     <Button
+                      disabled={(poc?.state && (poc.state === 1 || poc?.state === 2) ) ? true : false}
                       onClick={() => unlockPoc(poc.id)}
                       variant={"outline"}
                       size={"sm"}
