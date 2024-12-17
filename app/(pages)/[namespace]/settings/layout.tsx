@@ -13,15 +13,10 @@ export default function SettingsLayout({
   const { namespace } = params;
   const pathname = usePathname();
   const urlName = pathname.split("/").slice(-1)[0];
-  // const [urlEndName, setUrlEndName] =useState("")
-  // useEffect(() => {
-  //   const urlName = pathname.split("/").slice(-1)[0];
-  //   setUrlEndName(urlName)
-  // },[pathname])
 
   return (
     <div className="w-full p-3">
-      <Tabs defaultValue={urlName} className="w-full border-b">
+      <Tabs value={urlName} className="w-full border-b">
         <TabsList className="h-auto p-0 bg-transparent rounded-none">
           <TabsTrigger
             value="profile"
@@ -50,7 +45,6 @@ export default function SettingsLayout({
               className="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2  text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
               asChild
             >
-             
               <Link href={`/${namespace}/settings/product`}>
                 Product settings
               </Link>

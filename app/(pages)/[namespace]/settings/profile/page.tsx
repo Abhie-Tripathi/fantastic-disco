@@ -262,8 +262,8 @@ const Profile = () => {
       {profileData && (
         <>
           <section className="border-border">
-            <div className="flex justify-between pb-6">
-              <div className="w-[40%]">
+            <div className="flex flex-col lg:flex-row justify-between pb-6">
+              <div className="w-full lg:w-[40%] mb-6 lg:mb-0">
                 <h3 className="mb-2 text-lg font-semibold">Your Profile</h3>
                 <p className="text-sm text-muted-foreground">
                   Here you can view and update your personal details, and manage
@@ -272,10 +272,10 @@ const Profile = () => {
                 </p>
               </div>
               <form
-                className="flex w-[50%] flex-col gap-6"
+                className="flex w-full lg:w-[50%] flex-col gap-6"
                 onSubmit={handleFormSubmit}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex sm:flex-row items-center gap-4">
                   <Avatar className="h-20 w-20 text-3xl">
                     <AvatarFallback>
                       {profilePicture === null ? (
@@ -301,7 +301,7 @@ const Profile = () => {
                     />
                   </Avatar>
                   <div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <Button
                         variant="outline"
                         size="sm"
@@ -384,9 +384,7 @@ const Profile = () => {
                         <SelectValue placeholder="Select role" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="manager">
-                          {user?.role}
-                        </SelectItem>
+                        <SelectItem value="manager">{user?.role}</SelectItem>
                         {/* <SelectItem value="developer">Developer</SelectItem> */}
                         {/* <SelectItem value="designer">Designer</SelectItem> */}
                       </SelectContent>
@@ -418,8 +416,8 @@ const Profile = () => {
           </section>
 
           {/* <section className="border-b border-border py-8">
-            <div className="flex justify-between">
-              <div className="w-[40%]">
+            <div className="flex flex-col md:flex-row md:justify-between gap-8">
+              <div className="w-full md:w-[40%]">
                 <h3 className="mb-2 text-lg font-semibold">Organization</h3>
                 <p className="text-sm text-muted-foreground">
                   Here you can manage and update your organization&apos;s
@@ -427,7 +425,7 @@ const Profile = () => {
                   manage users.
                 </p>
               </div>
-              <form className="flex w-[50%] flex-col gap-6">
+              <form className="flex flex-col gap-6 w-full md:w-[50%]">
                 <div className="space-y-2">
                   <Label htmlFor="orgName">Organization Name</Label>
                   <Input
@@ -494,8 +492,8 @@ const Profile = () => {
           </section>
 
           <section className="py-8">
-            <div className="flex justify-between">
-              <div className="w-[40%] space-y-4">
+            <div className="flex flex-col md:flex-row md:justify-between gap-8">
+              <div className="w-full md:w-[40%] space-y-4">
                 <h3 className="text-lg font-semibold">Admin (1)</h3>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -520,7 +518,7 @@ const Profile = () => {
                 </div>
               </div>
 
-              <div className="w-[50%] space-y-4">
+              <div className="w-full md:w-[50%] space-y-4">
                 <h3 className="text-lg font-semibold">Users (1)</h3>
                 <div className="flex items-center gap-2">
                   <div className="relative flex-1">
