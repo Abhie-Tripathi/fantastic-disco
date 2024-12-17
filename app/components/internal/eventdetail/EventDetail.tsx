@@ -149,12 +149,19 @@ const EventDetail = ({
 
   const unlockPoc = async(pocId: number) => {
     try {
-      const data: any = await coordinateService.unblockPocDetail(pocId, eventId);
+      setPocData(prevPocData => 
+        prevPocData.map(poc => 
+          poc.id === pocId
+            ? { ...poc, state: 1 }
+            : poc
+        )
+      );
+      const data = await coordinateService.unlockPocDetail(pocId, eventId);
       if (data) {
         setPocData(prevPocData => 
           prevPocData.map(poc => 
             poc.id === pocId
-              ? { ...poc, email: data.email, phoneNumber: data.phoneNumber }
+              ? { ...poc, email: data.email, phoneNumber: data.phoneNumber, state: 2 }
               : poc
           )
         );

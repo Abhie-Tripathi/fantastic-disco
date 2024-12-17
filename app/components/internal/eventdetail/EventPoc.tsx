@@ -118,7 +118,12 @@ const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) 
                       )}
                       {(poc?.email || poc?.phoneNumber) && (
                         <div>
-                          <Button onClick={()=>unlockPoc(poc.id)} variant={'outline'}>Show details</Button>
+                          <Button
+                            disabled={(poc?.state && (poc.state === 1 || poc?.state === 2) ) ? true : false}
+                            onClick={()=>unlockPoc(poc.id)}
+                            variant={'outline'}
+                            size={"sm"}
+                          >Show details</Button>
                         </div>
                       )}
                     </div>
