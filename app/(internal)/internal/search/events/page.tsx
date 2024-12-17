@@ -28,7 +28,6 @@ import {
   CalendarMonthEvent,
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
-  Event,
   EventsResponse,
   MapEventsResponse,
 } from "@/types/events";
