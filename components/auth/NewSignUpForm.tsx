@@ -170,7 +170,7 @@ const NewSignUpForm = () => {
           render={({ field }) => (
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" {...field} placeholder="Email" />
+              <Input id="email" type="email" {...field} placeholder="Email" className="h-11"/>
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}

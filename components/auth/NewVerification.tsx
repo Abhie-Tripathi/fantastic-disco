@@ -53,7 +53,7 @@ export default function NewVerificationForm() {
   const subIndustry = searchParams.get("subIndustry");
   const flow = searchParams.get("flow");
   const redirectTo =
-    flow === "signup"
+    flow && flow === "signup"
       ? `/location?industry=${industry}${
           subIndustry ? `&subIndustry=${subIndustry}` : ""
         }`
@@ -70,9 +70,9 @@ export default function NewVerificationForm() {
 
   const onSubmit = async (data: OTPData) => {
     try {
-      flow === "/signup"
+      flow && flow === "signup"
         ? await verifyOtp({ email, otpCode: data.otpCode }, redirectTo)
-        : await verifyLoginOTP({ email, otpCode: data.otpCode });
+        : await verifyLoginOTP({ email, otpCode: data.otpCode }, redirectTo);
     } catch (error) {
       console.error("OTP verification error:", error);
     }

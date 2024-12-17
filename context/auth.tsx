@@ -36,7 +36,7 @@ type authContextType = {
   setUser: Dispatch<SetStateAction<UserResponse | null>>;
   signOut: () => void;
   verifyOtp: (user: any, redirectTo?: string) => Promise<any>;
-  verifyLoginOTP: (user: any) => Promise<any>;
+  verifyLoginOTP: (user: any, redirectTo?: string) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
   setProfilePic: any;
 };
@@ -70,8 +70,8 @@ export const AuthContext = createContext<authContextType>(
 );
 
 export const AuthContextProvider = ({ children }: any) => {
-  const pathName = usePathname();
   const router = useRouter();
+  const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loginError, setLoginError] = useState<string>("");
@@ -296,7 +296,6 @@ export const AuthContextProvider = ({ children }: any) => {
           data: verifyOtpDTO,
         });
         // await newcheckAuth();
-        console.log(redirectTo)
         router.push(redirectTo || "/");
       } catch (err) {
         console.error("OTP verification error:", err);
@@ -305,7 +304,7 @@ export const AuthContextProvider = ({ children }: any) => {
     [request, router]
   );
 
-  const verifyLoginOTP = async (dataToSend: VerifyOTP) => {
+  const verifyLoginOTP = async (dataToSend: VerifyOTP, redirectTo?: string) => {
     const url = baseUrl + "/auth/customer/verify-otp";
 
     const { data, error } = await myFetch(url, {
@@ -326,6 +325,7 @@ export const AuthContextProvider = ({ children }: any) => {
       if (data.user.isVerified) {
         setUser(data);
         setLocalStorage(data);
+        router.push(redirectTo || "/internal");
       }
     }
 
