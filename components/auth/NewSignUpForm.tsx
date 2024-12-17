@@ -3,7 +3,7 @@ import React, { useState, FormEvent, useEffect } from "react";
 import styles from "@/app/(auth)/signup/page.module.css";
 import Image from "next/image";
 import Carousel from "@/app/components/carousel";
-import Verification from "@/app/(auth)/verification/page";
+// import Verification from "@/app/(auth)/verification/page";
 import { useAuthContext } from "@/context/auth";
 import Link from "next/link";
 import { SignUpFormSchema } from "@/types/signup";
@@ -28,10 +28,41 @@ import { useFilterContext } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
 import { newCategories } from "@/data/categories";
 import LocationForm from "@/app/(auth)/location/page";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { usePathname, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { AlertTriangle, Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { cn } from "@/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
+import HeroLogoText from "/public/heroLogoText.svg";
+import { useDatabaseLocationAutocomplete } from "@/hooks/useLocationAutocomplete";
+import { SignUpDTO } from "@/types";
+
+type FormData = z.infer<typeof SignUpFormSchema>;
+
 const NewSignUpForm = () => {
   const [showVerification, setShowVerification] = useState(false);
-  const { signup } = useAuthContext();
-  const { getFilterValue, setFilter } = useFilterState();
+  const { signup, error } = useAuthContext();
+  const { getFilterValue, setFilter, deleteFilter } = useFilterState();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -44,8 +75,46 @@ const NewSignUpForm = () => {
   const [passwordVisibility, setPasswordVisibility] = useState(false);
   const [confirmPasswordVisibility, setConfirmPasswordVisibility] =
     useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  // const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<FormData>({
+    resolver: zodResolver(SignUpFormSchema),
+  });
+
+  useEffect(() => {
+    localStorage.removeItem("walkthroughCompleted");
+  }, []);
+
+  const onSubmit = async (data: FormData) => {
+    const signUpDTOData = {
+      ...data,
+      ...(categories && categories.length > 0
+        ? { categories: categories.join(",") }
+        : {}),
+    };
+    if (!categories || categories.length === 0) {
+      delete signUpDTOData.categories;
+    }
+    try {
+      await signup(signUpDTOData);
+    } catch (error) {
+      console.error("Signup error:", error);
+    }
+  };
+
+  useEffect(() => {
+    const isMappedCategory = industryData.find(
+      (indust) => indust.slug === industry
+    )?.subCategory;
+    if (!isMappedCategory) {
+      deleteFilter("categories");
+    }
+  }, [industry]);
 
   useEffect(() => {
     const eventTypes = getFilterValue("categories").split(",").filter(Boolean);
@@ -54,55 +123,6 @@ const NewSignUpForm = () => {
       .map((category) => category.id);
     setCategories(selectedCategories);
   }, [getFilterValue]);
-
-  const handleSignUp = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData: any = {
-      email,
-      industry,
-      categories,
-    };
-
-    // if (mobileNo.length > 0) {
-    //   formData.mobileNo = mobileNo;
-    // }
-
-    try {
-      SignUpFormSchema.parse(formData);
-      setErrors({});
-
-      setIsLoading(true);
-
-      const response = await signup({
-        ...formData,
-        categories: categories.join(","),
-      });
-      setIsLoading(false);
-
-      if (!response[0]?.error) {
-        generateOtp();
-        setShowVerification(true);
-      } else {
-        if (response[0].error.message === "Email already exists")
-          setErrors({ email: response[0].error.message });
-        else if (response[0].error.message === "email not accepted")
-          setErrors({ email: response[0].error.message });
-        else setErrors({ otherError: response[0].error.message });
-      }
-    } catch (error) {
-      if (error instanceof ZodError) {
-        const validationErrors: Record<string, string> = {};
-        error.errors.forEach((err) => {
-          if (err.path) {
-            validationErrors[err.path.join(".")] = err.message;
-          }
-        });
-        setErrors(validationErrors);
-      } else {
-        console.error("An unexpected error occurred:", error);
-      }
-    }
-  };
 
   const generateOtp = async () => {
     const dataToSend = {
@@ -130,92 +150,85 @@ const NewSignUpForm = () => {
   };
 
   return (
-    <div className={styles.container}>
-      {!showVerification && (
-        <div className={styles.sub_container}>
-          <div className={styles.sub_containerLeft}>
-            <Carousel />
-          </div>
-          <form onSubmit={handleSignUp} className={styles.formContainer}>
-            <div className={styles.form_container}>
-              <div className={styles.form_heading}>
-                <Image src={logo} alt="logo" width={45} height={55} />
-                <Image src={whr} alt="whr" />
-              </div>
-              <div className={styles.form_heading}>Create Your Account</div>
-
-              <div className={styles.input_container}>
-                <div className={styles.input_title}>Email</div>
-                <input
-                  className={`${styles.input} ${
-                    errors.email && styles.error_boundary
-                  }`}
-                  value={email}
-                  type="email"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                {errors.email && (
-                  <div className={styles.error}>{errors.email}</div>
-                )}
-              </div>
-
-              <div className={styles.input_container}>
-                <div className={styles.input_title}>Industry</div>
-                <IndustryDropdown
-                  selected={industry}
-                  setSelected={setIndustry}
-                />
-              </div>
-
-              {industryData.find((indust) => indust.slug === industry)
-                ?.subCategory && (
-                <div className={styles.input_container}>
-                  <div className={styles.input_title}>Category</div>
-                  <CategorySelector source="search" />
-                </div>
-              )}
-
-              <div className={styles.actions_container}>
-                {errors.otherError && (
-                  <div className={styles.otherError}>{errors.otherError}</div>
-                )}
-                <button
-                  className={`${styles.button} ${isLoading && styles.disable}`}
-                  type="submit"
-                >
-                  {`${isLoading ? "Loading..." : "Sign Up"} `}
-                </button>
-                <div className={styles.new_account}>
-                  Already have an account?
-                  <Link href="/signin" className={styles.createNew_link}>
-                    {" "}
-                    Log In
-                  </Link>
-                </div>
-              </div>
-
-              <div className={styles.privacyPolicy}>
-                By signing up, you agree to our
-                <Link
-                  href="https://10times.com/terms-of-service"
-                  className={styles.privacyPolicy_hightlighted}
-                >
-                  Terms&nbsp;
-                </Link>
-                and
-                <Link
-                  href="https://10times.com/privacy-policy"
-                  className={styles.privacyPolicy_hightlighted}
-                >
-                  Privacy Policy
-                </Link>
-              </div>
-            </div>
-          </form>
-        </div>
+    <div className="w-full max-w-md space-y-8 p-8">
+      <div className={styles.form_heading}>
+        <Image src={logo} alt="logo" width={45} height={55} />
+        <Image src={whr} alt="whr" />
+      </div>
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription className="capitalize flex items-center">
+            <AlertTriangle className="h-4 w-4 mr-2" />
+            {error.message}
+          </AlertDescription>
+        </Alert>
       )}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <Controller
+          name="email"
+          control={control}
+          render={({ field }) => (
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" type="email" {...field} placeholder="Email" />
+              {errors.email && (
+                <p className="text-red-500 text-sm">{errors.email.message}</p>
+              )}
+            </div>
+          )}
+        />
+        <Controller
+          name="industry"
+          control={control}
+          render={({ field }) => (
+            <div className="space-y-2">
+              <Label htmlFor="industry">Industry</Label>
+              <IndustryDropdown
+                selected={industry}
+                setSelected={setIndustry}
+                field={field}
+              />
+            </div>
+          )}
+        />
 
-      {showVerification && <Verification params={obj} />}
+        {industryData.find((indust) => indust.slug === industry)
+          ?.subCategory && (
+          <div className={styles.input_container}>
+            <div className={styles.input_title}>Category</div>
+            <CategorySelector source="search" />
+          </div>
+        )}
+
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Signing up...
+            </>
+          ) : (
+            "Sign Up"
+          )}
+        </Button>
+      </form>
+
+      <div className="text-center py-2 text-sm">
+        Already have an account?
+        <Link
+          href="/signin"
+          className="text-[#6750a4] cursor-pointer font-medium"
+        >
+          {" "}
+          Log In
+        </Link>
+      </div>
+
+      <div className="text-center text-[#808080] text-[12px]">
+        By signing up, you agree to our
+        <span className="text-[#6750a4] font-medium ml-1">Terms </span>
+        and
+        <span className="text-[#6750a4] font-medium ml-1">Privacy Policy</span>
+      </div>
     </div>
   );
 };

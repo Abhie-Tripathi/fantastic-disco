@@ -1,3 +1,4 @@
+import { categories } from "@/data/categories";
 import { z } from "zod";
 
 export interface SignUpResponse {
@@ -16,18 +17,29 @@ export interface SignUpResponse {
 //   confirmPassword: z.string().min(1, "Confirm password cannot be empty"),
 // });
 export const SignUpFormSchema = z.object({
-  email: z.string().email({ message: "Invalid email format" }),
+  email: z
+    .string({ message: "Email is required" })
+    .min(1, "Email is required")
+    .email("Invalid email address"),
+  industry: z.string().optional(),
+  categories: z.string().optional(),
 });
 
 // export type SignUpDTO = Omit<z.infer<typeof SignUpFormSchema>, 'confirmPassword'>;
 export type TSignUpFormSchema = z.infer<typeof SignUpFormSchema>;
 
 // Temp
+// export interface SignUpDTO {
+//   firstname: string;
+//   lastname: string;
+//   phoneNumber?: string;
+//   email: string;
+//   password: string;
+// }
+
 export interface SignUpDTO {
-  firstname: string;
-  lastname: string;
-  phoneNumber?: string;
   email: string;
-  password: string;
+  industry?: string | undefined;
+  categories?: string | undefined;
 }
 // Temp

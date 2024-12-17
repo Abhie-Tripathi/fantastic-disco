@@ -44,6 +44,8 @@ import { VerificationProps } from "@/types/onboarding";
 import { URLSearchParams } from "url";
 import { categories, newCategories } from "@/data/categories";
 import { useAuthContext } from "@/context";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg";
 
 type GeoLocationType = "city" | "center" | "";
 interface PinPointLocation {
@@ -66,8 +68,9 @@ export interface GeoLocation {
 
 export type Location = GeoLocation | LocationItem[];
 
-const LocationForm = ({ params }: VerificationProps) => {
+const LocationForm = () => {
   //   const { saveLocation } = useLocationService();
+  const searchParams = useSearchParams();
   const [useCurrentLocation, setUseCurrentLocation] = React.useState(false);
   const [currentCity, setCurrenCity] = React.useState<string>();
   const [locationType, setLocationType] = React.useState<GeoLocationType>("");
@@ -85,7 +88,6 @@ const LocationForm = ({ params }: VerificationProps) => {
   const { getEventsCount } = useEventsService();
   const user = localStorage.getItem("user");
 
-  const [searchParams, setSearchParams] = useState<string>();
   const urlParams = useMemo(() => {
     const currentDate = new Date();
     const startDate = new Date(
@@ -94,22 +96,25 @@ const LocationForm = ({ params }: VerificationProps) => {
     const endDate = new Date(
       endOfMonth(currentDate).setHours(5, 30, 0, 0)
     ).toISOString();
-    const selectedCategories = params && params.categories;
+    const selectedCategories =
+      searchParams && searchParams.get("categories")?.split(",");
     const categories =
       selectedCategories &&
       newCategories
         .filter((category) => selectedCategories.includes(category.id))
         .map((category) => category.slug);
-    const queryParams = `status=active,cancelled,postponed&view=map&groupBy=state&categories=${categories?.join(
-      ","
-    )}&active_gte=${startDate}&active_lte=${endDate}&locationIds=${
+    const queryParams = `status=active,cancelled,postponed&view=map&groupBy=state${
+      categories && categories.length > 0
+        ? `&categories=${categories.join(",")}`
+        : ""
+    }&active_gte=${startDate}&active_lte=${endDate}&locationIds=${
       selectedLocation && selectedLocation.length > 0
         ? selectedLocation.map((location) => location.id).join(",")
         : "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef"
     }`;
 
     return queryParams;
-  }, [params, selectedLocation]);
+  }, [selectedLocation]);
 
   const setDefaultParamsValue = (searchParams: string) => {
     let params = new URLSearchParams(searchParams);
@@ -129,6 +134,7 @@ const LocationForm = ({ params }: VerificationProps) => {
       ]);
     }
     user && setUser(JSON.parse(user).user);
+    console.log(urlParams.toString());
     router.push(`/internal/search/events?${urlParams.toString()}`);
   };
   console.log(user);
@@ -165,15 +171,20 @@ const LocationForm = ({ params }: VerificationProps) => {
   return (
     <>
       {/* <Image src={HeroLogoText} alt="herologotext" /> */}
-      <h3 className="text-center">Choose a location to get started !</h3>
-      <section className="w-96 self-center">
-        <div className="flex items-center gap-5 bg-[var(--tabs-background-color)] rounded-md py-3 px-6">
-          <button className="flex-1 bg-white rounded-sm whitespace-nowrap py-2 px-4 min-w-44 text-[#424242] cursor-auto shadow-[2px_2px_4px_2px_#0000000f]">
-            City, State, Country
-          </button>
+      <div className="w-full max-w-sm space-y-8 p-8">
+        <div className="text-[#242424] font-medium text-2xl flex items-center justify-center text-center">
+          <Image src={logo} alt="logo" width={45} height={55} />
+          <Image src={whr} alt="whr" />
         </div>
-        <div className="border-b border-[#e0e0e080] w-full my-5"></div>
-        {/* <AutocompleteInput
+        <h3 className="text-center">Choose a location to get started !</h3>
+        <section className="w-full self-center">
+          <div className="flex items-center gap-5 bg-[var(--tabs-background-color)] rounded-md py-3 px-6">
+            <button className="flex-1 bg-white rounded-sm whitespace-nowrap py-2 px-4 min-w-44 text-[#424242] cursor-auto shadow-[2px_2px_4px_2px_#0000000f]">
+              City, State, Country
+            </button>
+          </div>
+          <div className="border-b border-[#e0e0e080] w-full my-5"></div>
+          {/* <AutocompleteInput
           type={"LocationId"}
           multiple={true}
           placeholder="E.g. Bengaluru, Karnataka, India"
@@ -198,63 +209,64 @@ const LocationForm = ({ params }: VerificationProps) => {
               : null
           }
         /> */}
-        <AutocompleteInput
-          multiple
-          type="LocationId"
-          placeholder="E.g. Bangalore, Karnataka"
-          onSelect={setSelectedLocation}
-          value={
-            selectedLocation && Array.isArray(selectedLocation)
-              ? selectedLocation.map((loc) => ({
-                  id: loc.id,
-                  description: loc.description || "",
-                }))
-              : null
-          }
-        />
+          <AutocompleteInput
+            multiple
+            type="LocationId"
+            placeholder="E.g. Bangalore, Karnataka"
+            onSelect={setSelectedLocation}
+            value={
+              selectedLocation && Array.isArray(selectedLocation)
+                ? selectedLocation.map((loc) => ({
+                    id: loc.id,
+                    description: loc.description || "",
+                  }))
+                : null
+            }
+          />
 
-        {locationType === "city" && (
-          <p
-            className="mt-4 flex items-center gap-2 cursor-pointer text-[#6750a4]"
-            onClick={() => setIsOpen(true)}
-          >
-            <Plus className="w-4 h-4" /> Add Multiple Location
-          </p>
-        )}
+          {locationType === "city" && (
+            <p
+              className="mt-4 flex items-center gap-2 cursor-pointer text-[#6750a4]"
+              onClick={() => setIsOpen(true)}
+            >
+              <Plus className="w-4 h-4" /> Add Multiple Location
+            </p>
+          )}
 
-        {useCurrentLocation && (
-          <div className={styles.currentLocation}>
-            <h4>{currentCity}</h4>
-            <p>{`${currentCity}, ${currentCity} (2 mi Radius)`}</p>
-          </div>
-        )}
-      </section>
+          {useCurrentLocation && (
+            <div className={styles.currentLocation}>
+              <h4>{currentCity}</h4>
+              <p>{`${currentCity}, ${currentCity} (2 mi Radius)`}</p>
+            </div>
+          )}
+        </section>
 
-      <button
-        className="bg-[var(--primary-color)] border rounded-[var(--border-radius-sm)]
-        text-white text-center p-2 w-72 self-center"
-        // disabled={loading}
-        // loading={loading}
-        onClick={handleSubmit}
-      >
-        View Location Insights
-      </button>
+        <button
+          className="w-full bg-[var(--primary-color)] border rounded-[var(--border-radius-sm)]
+        text-white text-center p-2 self-center"
+          // disabled={loading}
+          // loading={loading}
+          onClick={handleSubmit}
+        >
+          View Location Insights
+        </button>
 
-      <Button
-        className="text-[var(--primary-color)]"
-        onPress={() => {
-          setSelectedLocation([
-            {
-              id: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
-              description: "New York, United States",
-            },
-          ]);
-          user && setUser(JSON.parse(user).user);
-          router.push(`/internal/search/events?${urlParams.toString()}`);
-        }}
-      >
-        Skip for now
-      </Button>
+        <Button
+          className="text-[var(--primary-color)] w-full"
+          onPress={() => {
+            setSelectedLocation([
+              {
+                id: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
+                description: "New York, United States",
+              },
+            ]);
+            user && setUser(JSON.parse(user).user);
+            router.push(`/internal/search/events?${urlParams.toString()}`);
+          }}
+        >
+          Skip for now
+        </Button>
+      </div>
     </>
   );
 };

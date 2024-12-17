@@ -14,186 +14,132 @@ import logo from "/public/croppedlogo.png";
 import whr from "/public/whrai.svg";
 import LocationForm from "@/app/(auth)/location/page";
 import { VerificationProps } from "@/types/onboarding";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2, TriangleAlert } from "lucide-react";
+import { useFilterState } from "@/hooks/useFilterState";
+import { useSearchParams } from "next/navigation";
 
-const NewVerificationForm: React.FC<VerificationProps> = ({ params }) => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const [time, setTime] = useState(30);
-  const [code, setCode] = useState("");
-  const [errors, setErrors] = useState<Record<string, string>>({});
+const otpSchema = z.object({
+  otpCode: z
+    .string({ message: "OTP is required" })
+    .length(4, "OTP must be 4 digits"),
+});
+
+type OTPData = z.infer<typeof otpSchema>;
+
+export default function NewVerificationForm() {
+  const { verifyOtp, verifyLoginOTP, error } = useAuthContext();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
-  const [resendLoading, setResendLoading] = useState(false);
-  const [showLocation, setShowLocation] = useState(false);
-  const { verifyOtp, verifyLoginOTP } = useAuthContext();
 
-  const confirmHandler = () => {
-    otpVerificationHandler();
-  };
+  const industry = searchParams.get("industry");
+  const subIndustry = searchParams.get("subIndustry");
+  const flow = searchParams.get("flow");
+  const redirectTo =
+    flow === "signup"
+      ? `/location?industry=${industry}${
+          subIndustry ? `&subIndustry=${subIndustry}` : ""
+        }`
+      : "/";
+  const { getFilterValue } = useFilterState();
+  const email = getFilterValue("email");
 
-  const otpVerificationHandler = async () => {
-    if (code.length < 4) {
-      setErrors({ otpError: "OTP must be of 4 digit" });
-      return;
-    }
+  const form = useForm<OTPData>({
+    resolver: zodResolver(otpSchema),
+    defaultValues: {
+      otpCode: "",
+    },
+  });
 
-    const dataToSend = {
-      email: params?.email,
-      otpCode: code,
-    };
-
-    setIsLoading(true);
-    let response;
-    setIsLoading(true);
-    if (params.path === "signin") {
-      response = await verifyLoginOTP(dataToSend);
-    } else if (params.path === "signup") {
-      response = await verifyOtp(dataToSend);
-    }
-    setIsLoading(false);
-
-    if (response?.isVerified) {
-      if (pathname === "/signup") {
-        setShowLocation(true);
-      } else {
-        router.push("/internal");
-      }
-    } else {
-      setErrors({ otpError: "Invalid Code. Please retry" });
-      return;
-    }
-  };
-
-  const generateOtp = async () => {
-    const dataToSend = {
-      email: params.email,
-    };
-    const url = `${baseUrl}/auth/customer/verify/generate`;
-    setResendLoading(true);
-    const { data, error } = await myFetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dataToSend),
-    });
-
-    setResendLoading(false);
-    if (data) console.log(data);
-    if (error) {
-      console.log(error);
-      return;
-    }
-  };
-  useEffect(() => {
-    let timer: any = null;
-    if (time >= 0) {
-      if (time > 0) {
-        timer = setTimeout(() => {
-          setTime((prev) => prev - 1);
-        }, 1000);
-      } else return () => clearTimeout(timer);
-    }
-  }, [time]);
-
-  const resend = () => {
-    setCode("");
-    setErrors({});
-    if (time === 0) {
-      setTime(30);
-    }
-    generateOtp();
-  };
-
-  const handleChange = (value: any) => {
-    setCode(value);
-    if (Object.keys(errors).length !== 0) {
-      setErrors({});
+  const onSubmit = async (data: OTPData) => {
+    try {
+      flow === "/signup"
+        ? await verifyOtp({ email, otpCode: data.otpCode }, redirectTo)
+        : await verifyLoginOTP({ email, otpCode: data.otpCode });
+    } catch (error) {
+      console.error("OTP verification error:", error);
     }
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.sub_container}>
-        <div className={styles.leftContainer}>
-          <Carousel />
-        </div>
-        <div className={styles.form_container}>
-          <div className={styles.heading}>
-            <Image src={logo} alt="logo" width={45} height={55} />
-            <Image src={whr} alt="whr" />
-          </div>
-
-          {!showLocation && (
-            <>
-              <div className={styles.message}>
-                <span className={styles.message_highlighted}>Check your </span>
-                <Image
-                  src={ArchiveIcon}
-                  alt="archive"
-                  className={styles.archive_icon}
-                />
-                <span className={styles.message_highlighted}> mailbox </span>
-                for a quick verification code.
-              </div>
-
-              <div className={styles.heading}>Enter 4 Digit OTP</div>
-
-              <OtpInput
-                containerStyle={styles.input_container}
-                value={code}
-                onChange={handleChange}
-                numInputs={4}
-                inputType="number"
-                renderSeparator={<span style={{ width: "20px" }}></span>}
-                renderInput={(props) => (
-                  <input {...props} className={styles.input} />
-                )}
-                shouldAutoFocus={true}
-                inputStyle={{
-                  width: "40px",
-                  height: "40px",
-                  fontFamily: "inherit",
-                  outline: "none",
-                  border: "1px solid #e6e6e6",
-                  borderRadius: "var(--border-radius-sm)",
-                  textAlign: "center",
-                  borderColor: errors.otpError && "var(--danger-text-color)",
-                }}
-              />
-              <div>
-                {errors.otpError && (
-                  <div className={styles.error}>{errors.otpError}</div>
-                )}
-              </div>
-              <div className={styles.actions_container}>
-                <div
-                  className={`${styles.button} ${isLoading && styles.disable}`}
-                  onClick={confirmHandler}
-                >
-                  {isLoading ? "Verifying..." : "Confirm"}
-                </div>
-              </div>
-              <div className={styles.resendButton_container}>
-                {time !== 0 && <span>00 : {time > 9 ? time : `0${time}`}</span>}
-                {time === 0 && (
-                  <span
-                    className={`${styles.resend_button} ${
-                      resendLoading && styles.disable_text
-                    }`}
-                    onClick={() => resend()}
-                    style={{ cursor: time === 0 ? "pointer" : "default" }}
-                  >
-                    Resend
-                  </span>
-                )}
-              </div>
-            </>
-          )}
-          {showLocation && <LocationForm params={params} />}
-        </div>
+    <div className="w-full max-w-sm space-y-8 p-8">
+      <div className="text-[#242424] font-medium text-2xl flex items-center justify-center text-center">
+        <Image src={logo} alt="logo" width={45} height={55} />
+        <Image src={whr} alt="whr" />
       </div>
+      {error && (
+        <Alert variant="destructive">
+          <AlertDescription className="captilize flex items-center">
+            <TriangleAlert color="#EF4444" className="w-4 h-4" />
+            <span className="ml-2">{error.message}</span>
+          </AlertDescription>
+        </Alert>
+      )}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <h1 className="text-center font-medium text-sm">Enter your OTP</h1>
+          <FormField
+            control={form.control}
+            name="otpCode"
+            render={({ field }) => (
+              <FormItem className="flex justify-center flex-col items-center">
+                <FormControl className="w-full flex justify-center">
+                  <InputOTP maxLength={4} {...field}>
+                    <div className="flex justify-between w-full gap-4">
+                      {Array.from({ length: 4 }).map((_, index) => (
+                        <InputOTPGroup key={index}>
+                          <InputOTPSlot
+                            key={index}
+                            index={index}
+                            className="w-10 h-10 text-xl"
+                          />
+                        </InputOTPGroup>
+                      ))}
+                    </div>
+                  </InputOTP>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Verifying...
+              </>
+            ) : (
+              "Verify OTP"
+            )}
+          </Button>
+        </form>
+      </Form>
+      <Button
+        variant="link"
+        className="w-full"
+        onClick={() => {
+          console.log("Resend OTP clicked");
+        }}
+      >
+        Resend OTP
+      </Button>
     </div>
   );
-};
-
-export default NewVerificationForm;
+}

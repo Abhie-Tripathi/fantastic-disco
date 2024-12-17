@@ -10,11 +10,20 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { industryData } from "@/data/onboarding";
+import { ControllerRenderProps } from "react-hook-form";
+
+type IndustryFormType = {
+  email: string;
+  industry?: string;
+  categories?: string;
+};
 
 const IndustryDropdown = ({
+  field,
   selected,
   setSelected,
 }: {
+  field: ControllerRenderProps<IndustryFormType, "industry">;
   selected: string;
   setSelected: Dispatch<SetStateAction<string>>;
 }) => {
@@ -24,6 +33,7 @@ const IndustryDropdown = ({
   };
   const handleChange = (slug: string) => {
     setSelected((prev) => (prev === slug ? "" : slug));
+    field.onChange(slug);
     setIsOpen(!isOpen);
   };
 

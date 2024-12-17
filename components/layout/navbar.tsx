@@ -70,26 +70,6 @@ export default function Navbar() {
 
   }
 
-  const generateProfileName = React.useMemo(() => {
-    if (user) {
-      const { firstname, lastname, email } = user;
-      if (firstname || lastname) {
-        return `${firstname?.[0] || "".toUpperCase()}${
-          lastname?.[0] || "".toUpperCase()
-        }`;
-      } else {
-        const [username] = email.split("@");
-        const parts = username.split(/[.\-_]/);
-        const abbreviation =
-          parts.length > 1
-            ? `${parts[0][0]}${parts[1][0]}`
-            : username.substring(0, 2);
-        return abbreviation.toUpperCase();
-      }
-    }
-    return "";
-  }, [user]);
-
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
@@ -161,7 +141,6 @@ export default function Navbar() {
                     ? `${user?.firstname[0]?.toUpperCase() ?? ""}${user?.lastname?.[0]?.toUpperCase() ?? ""
                     }`
                     : ""}
-                  {/* {generateProfileName} */}
                 </div>
               </Button>
             </DropdownMenuTrigger>

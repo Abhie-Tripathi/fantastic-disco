@@ -23,8 +23,12 @@ export function useApi<T>() {
     isLoading: false,
   });
 
+  const setError = (error: ApiResponse<T>["error"] | null) => {
+    setState((prev) => ({ ...prev, error }));
+  };
+
   const request = useCallback(
-    async <R = T,>(
+    async <R = T>(
       url: string,
       config?: AxiosRequestConfig
     ): Promise<R | undefined> => {
@@ -46,7 +50,7 @@ export function useApi<T>() {
           data: undefined,
           error: response.data.error,
           isLoading: false,
-        }); 
+        });
         throw response.data.error;
       } else {
         const unknownError = {
@@ -62,5 +66,5 @@ export function useApi<T>() {
     []
   );
 
-  return { ...state, request };
+  return { ...state, request, setError };
 }

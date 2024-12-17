@@ -31,7 +31,15 @@ export default function RootLayout({
         <ToastContainer />
         <ReactQueryProvider>
           <AuthContextProvider>
-            <div>{children}</div>
+            <div className="grid place-items-center min-h-screen">
+              <div className="flex min-h-[700px] w-3/4 shadow-custom-lg rounded-lg">
+                <Carousel />
+                {/* <CarouselNew /> */}
+                <main className="flex-1 flex items-center justify-center">
+                  {children}
+                </main>
+              </div>
+            </div>
             <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
           </AuthContextProvider>
         </ReactQueryProvider>
