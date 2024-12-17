@@ -87,6 +87,8 @@ export default function EventEntrySelector({
     }
     setIsOpen(open);
   };
+  console.log(selectedStatuses);
+  
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>

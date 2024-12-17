@@ -17,6 +17,7 @@ import StatusSelector from "@/components/search/status";
 import UserRatingSelector from "@/components/search/userRatingSelector";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
+import List from "@/components/search/list";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFilterContext } from "@/context/filterContext";
@@ -28,12 +29,13 @@ import {
   CalendarMonthEvent,
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
+  Event,
   EventsResponse,
   MapEventsResponse,
 } from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Filter, Loader2, Plus } from "lucide-react";
+import { ArrowUpRight, Filter, FilterX, Loader2, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { lazy, useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -85,7 +87,7 @@ const Search = () => {
       eventService.getEventsWithSearchParams(searchParams.toString()),
     enabled:
       !!searchParams.toString() &&
-      !(selectedView == "table" || selectedView == "") &&
+      !(selectedView == "list" || selectedView == "") &&
       !(
         Array.from(searchParams.values()).length == 0 ||
         (Array.from(searchParams.values()).length == 1 &&
@@ -184,13 +186,12 @@ const Search = () => {
     setView(searchParams.get("view") || "")
   },[searchParams])
 
-
   return (
     <div className="space-y-6 p-6">
       <SearchBar />
       <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
         <div className="col-span-8 grid grid-cols-4 gap-3">
-        <EventTypeSelector source="search" enabledTypeData={ enabledFilters?.eventType}/>
+          <EventTypeSelector source="search" enabledTypeData={ enabledFilters?.eventType}/>
           <CategorySelector source="search" enabledCategories={enabledFilters?.eventCategory}/>
           <EventFormatSelector source="search" enabledFormat={enabledFilters?.eventFormat}/>
           <LocationSelector source="search"/>
@@ -247,7 +248,7 @@ const Search = () => {
           </div>
         </div>
       </div>
-      {showAdvancedFilters &&<AdvancedFilters enabledFilters={enabledFilters}/>}
+      {showAdvancedFilters && <AdvancedFilters enabledFilters={enabledFilters}/>}
 
       <Tabs
         defaultValue="list"

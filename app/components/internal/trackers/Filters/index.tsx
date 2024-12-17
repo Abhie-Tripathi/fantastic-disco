@@ -436,7 +436,7 @@ const Pages = () => {
   Record<EventGroupType, string[]>
 >({
   social: [],
-  business: enabledFilters?.eventType?.enabledValue?.map((item)=> `${item.toLowerCase()}s`) || [],
+  business:[],
 });
   const [selectedEventTypeName, setSelectedEventTypeName] = useState<string>('');
   const [selectedZone, setSelectedZone] = useState<string[]>([]);
@@ -872,7 +872,7 @@ const Pages = () => {
           eventStatus: selectedEventStatus.map((item) => item.toUpperCase()).join(","),
         }),
         ...(selectedEntry?.length > 0 && {
-          eventEntry: selectedEntry.join(","),
+          eventEntry: selectedEntry.map((item)=>item.toLowerCase()).join(","),
         }),
         ...(selectedTrustScore[0] > 0 && {
           trustScore: selectedTrustScore[0].toString(),

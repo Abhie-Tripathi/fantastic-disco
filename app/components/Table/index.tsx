@@ -740,18 +740,27 @@ const Table = ({
         setTotalEvents(result.totalEvents);
       }
   
-      setIsLoaded(true);
+     
   
     } catch (error:any) {
       if (error.name === "AbortError") {
-        console.log("Request was aborted");
+        console.log("Saved events request was aborted");
+      } else if (error.status === 406) {
+              setZeroStateHeading(error?.message);
+              setZeroStateText(
+                ""
+              );
+              setEventPerPage([]);
+              
+              // return <NullState image={TrackerNullState}  title={error?.message} />
       } else {
-        console.error("Fetch error: ", error);
+        console.error("Fetch saved data error:", error);
       }
     } finally {
       // Reset the controller after the request completes or is aborted
       abortControllerRef.current = null;
     }
+    setIsLoaded(true);
   };
   
   // const [isSaving, setIsSaving] = useState(false);

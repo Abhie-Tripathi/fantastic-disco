@@ -125,7 +125,7 @@ const setSelectedRatings=
             <DynamicSwitch
               checked={showRatings} 
               onCheckedChange={handleShowRatingsToggle}
-              disabled={!enabledRatingData?.isRatingEnabled}
+              disabled={enabledRatingData && !enabledRatingData?.isRatingEnabled}
               aria-label="Show ratings"
               onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                 e.stopPropagation()
