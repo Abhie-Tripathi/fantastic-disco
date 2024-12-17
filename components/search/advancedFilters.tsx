@@ -29,7 +29,7 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
   };
   const advancedDetailsFiltersCount = (function () {
     let count = 0;
-    if (localFilters.onlyBranded || localFilters.onlySeries) count++;
+    if (localFilters.onlyBranded === "true" || localFilters.onlySeries === "true") count++;
     if (localFilters.frequencies) count++;
     if (localFilters.includeKeywords || localFilters.excludeKeywords) count++;
     if (localFilters.maturity) count++;
