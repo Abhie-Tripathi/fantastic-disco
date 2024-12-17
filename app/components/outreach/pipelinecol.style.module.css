@@ -1,0 +1,175 @@
+.taskBody {
+  /* padding-top: 40px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px; */
+  padding: 24px;
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  justify-content: space-evenly;
+  position: relative;
+  gap: 24px;
+}
+
+.outerCard {
+  min-width: 32%;
+  color: #ffffff;
+}
+
+.heading {
+  font-size: var(--font-size-h5);
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 24px;
+  border-radius: 100px;
+  border: 1px solid var(--border-color);
+  background-color: var(--primary-color-active);
+}
+
+.eventSize {
+  background-color: var(--primary-color);
+  font-size: var(--font-size-small);
+  border-radius: var(--border-radius-sm);
+  padding: 5px;
+}
+.cardsContainer {
+  height: calc(100vh - 170px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  overflow: auto;
+  background-color: var(--tabs-background-color);
+}
+/* .cardsContainer::-webkit-scrollbar {
+    width: 2px;
+    margin-top: 10px;
+  }
+  
+  .cardsContainer::-webkit-scrollbar-thumb {
+    background: grey;
+    border-radius: var(--border-radius-lg);
+  } */
+
+/* .cards {
+    width: 90%;
+  } */
+.modal {
+  height: fit-content;
+  background-color: #131313;
+  position: absolute;
+  top: 70px;
+  padding: 20px;
+  padding-top: 0;
+  z-index: 1;
+  color: #ffffff;
+  width: calc(100vw - 70px);
+}
+
+.modal::-webkit-scrollbar {
+  width: 2px;
+  margin-top: 10px;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: grey;
+  border-radius: var(--border-radius-lg);
+}
+
+.modal2 {
+  z-index: 1;
+  position: absolute;
+  margin: auto;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+  height: 100%;
+  top: 0;
+}
+
+.modal_light {
+  color: var(--primary-color-light);
+  background-color: var(--primary-bg-light);
+}
+
+.card_shortlisted:hover {
+  .addEvent_btn {
+    opacity: 1;
+  }
+}
+
+.addEvent_btn {
+  width: 90%;
+  padding: 10px;
+  text-align: center;
+  font-size: var(--font-size-h6);
+  cursor: pointer;
+  opacity: 0;
+  font-weight: 600;
+  transition: opacity 0.4s ease;
+}
+
+.addEvent_btn:hover {
+  background-color: #2d2c2c;
+}
+
+.addEvent_btn_light {
+  color: black;
+}
+
+.addEvent_btn_light:hover {
+  background-color: rgb(211, 211, 211);
+}
+
+.tabActive {
+  background-color: #2b233d !important;
+  color: #ffffff !important;
+}
+
+@media screen and (max-width: 576px) {
+  .seprator {
+    border-right: 0.33px solid #1f1f1f;
+    margin-right: 5px;
+    margin-left: 5px;
+  }
+  .taskBody {
+    padding-top: 0;
+  }
+  .mobileTab {
+    display: flex;
+    justify-content: space-between;
+    border: 0.33px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 10px 16px;
+    margin: 10px 20px;
+    color: #ffffff;
+  }
+
+  .heading {
+    font-size: 9px;
+    padding: 4px 8px;
+    gap: 5px;
+    background-color: inherit;
+    cursor: pointer;
+    color: var(--primary-text-color);
+  }
+
+  .eventSize {
+    font-size: 10px;
+    padding: 2px 4px;
+    color: #ffffff;
+  }
+
+  .outerCard {
+    min-width: 95%;
+    color: #ffffff;
+  }
+  .modal {
+    width: 100%;
+  }
+}
