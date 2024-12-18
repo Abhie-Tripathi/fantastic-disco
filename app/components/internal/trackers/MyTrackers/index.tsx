@@ -111,7 +111,6 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     const offset = isInetialRender ? 0 : page * trackerPerPage;
     const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${page * trackerPerPage}&limit=${trackerPerPage}`);
     // setAllTracker(result.trackerData);
-    console.log(result);
     
     if(result){
       if(page===0) setAllTracker(result?.trackerData )
@@ -121,10 +120,9 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
         }
               if(allTracker.length===0)
                 console.log(Math.ceil(result.totalCount / trackerPerPage));
-              console.log(isInetialRender);
+              
               
        if(isInetialRender){     
-        console.log(result?.trackerData[0]);
             
       setSingleTrackerData(result.trackerData[0]);
       // setIsInetialRender(false);
@@ -137,7 +135,6 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             }
   }
   const handleNextPage = () => {
-    console.log(111111);
     
     if (page < totalPage - 1) {
       setPage(page + 1);
@@ -157,8 +154,6 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     // setIsLoading(false);
   }
   },[totalPage])
-  console.log(page, totalPage);
-  console.log(loadOne);
   
   return (
     <div className={styles.container} ref={endOfListRef}>

@@ -58,7 +58,6 @@ export default function EventCalendar({
   } = useFilterState();
   const [showEventList, setShowEventList] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  console.log(events);
   
   const view = getFilterValue("calendar_type") || ("month" as CustomView);
   const setView = (newView: CustomView) => {

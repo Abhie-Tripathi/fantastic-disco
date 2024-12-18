@@ -99,7 +99,6 @@ const Search = () => {
   });
 
   const displayData = eventData;
-  console.log(eventData);
   
   const events = displayData?.events || [];
   const count = displayData?.count || 0;

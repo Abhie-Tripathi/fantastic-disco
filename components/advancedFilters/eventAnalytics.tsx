@@ -39,7 +39,6 @@ interface EventAnalyticsProps{
   setRankToggles?:any;
 }
 export default function EventAnalyticsSelector({source,enabledAnalyticsData, selectedEventRank,setSelectedEventRank, selectedLocalRank,setSelectedLocalRank, selectedAviationRank, setSelectedAviationRank, rankToggles, setRankToggles}:EventAnalyticsProps) {
-  console.log(rankToggles);
   
   const [open, setOpen] = useState(false);
   const [showScores, setShowScores] = useState(false);

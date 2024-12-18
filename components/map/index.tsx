@@ -77,7 +77,6 @@ export default function MapComponent({ source, searchParams, trackerId, isGlobal
   trackerId?: string;
   isGlobal?: boolean;
 }) {
-    console.log(`/internal/trackers/${trackerId}/trackedEvents?type=CUSTOM&view=map&eventType=activeEvent`);
     
   const {theme} = useTheme();
   const router = useRouter();
@@ -464,8 +463,6 @@ export default function MapComponent({ source, searchParams, trackerId, isGlobal
     return null;
   }, [location]);
 
-  console.log(viewport);
-  console.log(isGlobal);
   
   console.log(theme,"ohh yeah")
   return (

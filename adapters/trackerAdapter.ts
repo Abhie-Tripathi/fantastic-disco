@@ -43,7 +43,6 @@ interface OriginalResponse {
       };
     },
     adaptParams(params:any){
-        console.log(params.get("view"), params.get("calendar_type"));
         
         if (params.get("view") == "calendar" && params.get("calendar_type") != "week") {
             const currentYear = new Date().getFullYear();
@@ -55,7 +54,6 @@ interface OriginalResponse {
             params.get("view") == "calendar" &&
             params.get("calendar_type") == "week"
           ) {
-            console.log(params.get("view"));
             
             const today = new Date();
             const firstDayOfMonth = new Date(
@@ -70,7 +68,6 @@ interface OriginalResponse {
             );
             const startDate = firstDayOfMonth.toISOString().split("T")[0];
             const endDate = lastDayOfMonth.toISOString().split("T")[0];
-            console.log(`${startDate},${endDate}`);
             
             return `${startDate},${endDate}`;
           }

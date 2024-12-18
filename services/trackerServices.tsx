@@ -180,7 +180,8 @@ export const useTrackerServices = () => {
       const newParams=new URLSearchParams(searchParams);
       const type=newParams.get("type");
       newParams.delete("type");
-      const result = [...newParams.entries()]
+      const entries = Array.from(newParams.entries());
+      const result = entries
       .map(([key, value]) => `${key}=${value}`)
       .join("&");
       

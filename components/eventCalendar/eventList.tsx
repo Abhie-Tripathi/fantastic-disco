@@ -89,7 +89,6 @@ export default function EventList({
         : `${formattedStartDate} - ${formattedEndDate} (${days} ${
             days === 1 ? "day" : "days"
           })`;
-          console.log(eventDate.toISOString().split('T')[0]);
           
     return (
       <Link href={`/internal/event/${event.id}`} target="_blank">

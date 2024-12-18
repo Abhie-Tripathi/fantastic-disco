@@ -101,7 +101,6 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             open ? "border-primary" : "border-input"
           }`}
-          disabled={!enabledProfileData && enabledProfileData?.isProfileEnabed}
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-haspopup="true"

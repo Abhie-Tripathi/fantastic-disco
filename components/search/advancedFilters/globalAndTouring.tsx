@@ -123,7 +123,6 @@ export default function GlobalAndTouringSelector({source,         selectedBrande
     }
     setIsOpen(open);
   };
-  console.log(enabledBrandData);
   
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>

@@ -39,7 +39,6 @@ export interface LocationItem {
 
 export type Location = GeoLocation | LocationItem[];
 export interface LocationProps {
-  type?:string;
   source: string;
   selectedLocation?: Location | null;
   setSelectedLocation?: React.Dispatch<
@@ -48,20 +47,17 @@ export interface LocationProps {
   isMandatory?: boolean;
 }
 export default function LocationSelector({
-  type,
   source,
   selectedLocation: parentSelectedLocation,
   setSelectedLocation: parentSetSelectedLocation,
   isMandatory,
 }: LocationProps) {
   const pathName = usePathname();
-  // const { localFilters } = useFilterContext();
+  const { localFilters } = useFilterContext();
   const { saveLastSearchedLocation, clearLastSearchedLocation } =
     sessionService();
   const { getLocationName, getLocationDetails } = useLocationService();
-  const {getLocalFilterValue, localFilters} =useFilterContext();
-  const productType = process.env.NEXT_PUBLIC_PRODUCT_TYPE;
-  const [activeTab, setActiveTab] = useState(type==="T_VENUE"?"center":"city");
+  const [activeTab, setActiveTab] = useState("city");
   const [isOpen, setIsOpen] = useState(false);
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
   const [localSelectedLocation, setLocalSelectedLocation] =
@@ -105,9 +101,7 @@ export default function LocationSelector({
       setSelectedLocation?.(null);
     }
   };
-  // useEffect(()=>{
-  //   console.log();
-  // },[getLocalFilterValue])
+
   useEffect(() => {
     if (source !== "tracker") fetchUrlLocation();
   }, [searchParams, localFilters]);

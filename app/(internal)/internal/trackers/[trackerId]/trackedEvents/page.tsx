@@ -86,7 +86,6 @@ const Page = ({ params }: { params: any }) => {
   // const id = pathName[pathName.length - 2];
   // console.log(active);
   // const [data, setData] = useState<any>();
-  console.log(pathname);
   const [open, setOpen] = useState(false);
   const [eventType, setEventType] = useState("active");
   const [view, setView] = useState<string|null>(viewType==="list"? "list": viewType==="map"?"map":viewType==="calendar"?"calendar":"list");
@@ -177,7 +176,6 @@ const Page = ({ params }: { params: any }) => {
   });
   
   const displayData = eventData;
-  console.log(eventData);
   console.log(Array.from(searchParams.values()));
   const events = displayData?.events || [];
   // useEffect(() => {
@@ -405,7 +403,6 @@ const activeVal =
       "Expired Events"
     ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
     : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
-    console.log(activeVal);
     
   return (
     <div className="flex w-[calc(100vw-134px)]">
@@ -430,7 +427,7 @@ const activeVal =
                   addQueryString("activeEvent");
                 }}
               >
-                {productType==="eventeli"?"Business Events":"Active Events"}
+                Active Events
                 {
                   <div className={styles.circle} style={{background: active==="Active Events"?"white":"", color: active==="Active Events"?"var(--primary-color)":""}}>
                     {loading ? (
@@ -453,7 +450,7 @@ const activeVal =
                   addQueryString("newEvent");
                 }}
               >
-                {productType==="eventeli"?"Social Events":"New Events"}
+                New Events
                 {
                   <div className={styles.circle}>
                     {loading ? (
@@ -481,7 +478,7 @@ const activeVal =
                   addQueryString("expiredEvent");
                 }}
               >
-                {productType==="eventeli"?"Unattended Events":"Expired Events"}
+                Expired Events
                 {
                   <div className={styles.circle}>
                     {loading ? (
