@@ -165,6 +165,12 @@ export const useCoordinateService = () => {
     });
   }
 
+  const getPipelineConfig = () => {
+    return api.request<CoordinateListResponse>(`${endpoints.configuration}?source=outreach`, {
+      method: "GET",
+    });
+  }
+
   const unlockPocDetail = (pocId: number, eventId: string) => {
     return api.request<pocDetail>(`${endpoints.coordinate.pocUnmask}?pocId=${pocId}&eventId=${eventId}&unlockValue=email,phone`, {
       method: "GET",
@@ -185,6 +191,7 @@ export const useCoordinateService = () => {
     getOutreachEventList,
     getOutreachSingleEvent,
     getInterestConfig,
+    getPipelineConfig,
     unlockPocDetail,
     isLoading: api.isLoading,
     error: api.error as ApiError,
