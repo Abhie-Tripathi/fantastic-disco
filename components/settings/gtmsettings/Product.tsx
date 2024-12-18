@@ -40,23 +40,100 @@ export default function ProductsPage() {
 
   const [researchScreenboxes, setResearchScreenBoxes] = useState<any[]>([]);
   const [outreachScreenboxes, setOutreachScreenBoxes] = useState<any[]>([]);
-  console.log("get_data", outreachScreenboxes, researchScreenboxes);
+  const [filteredOutreachScreenboxes, setFilteredOutreachScreenboxes] =
+    useState<any[]>([]);
+  const [filteredResearchScreenboxes, setFilteredResearchScreenboxes] =
+    useState<any[]>([]);
+  const originalArr = (outreachScreenboxes as any).filter(
+    (value: any) => !["PENDING", "CANCELLED", "REJECTED"].includes(value.status)
+  );
+  const carbonArray = [
+    {
+      label: "Shortlisted",
+      source: "outreach",
+      status: "SHORTLISTED",
+      position: 0,
+    },
+
+    {
+      label: "In Discussion",
+      source: "outreach",
+      status: "IN_DISCUSSION",
+      position: 0,
+    },
+
+    { label: "In Nego", source: "outreach", status: "IN_NEGO", position: 0 },
+
+    {
+      label: "Confirmed",
+      source: "outreach",
+      status: "CONFIRMED",
+      position: 0,
+    },
+  ];
+
+  const researchCarbonArr = [
+    { label: "Bookmark", source: "research", status: "BOOKMARK", position: 0 },
+    { label: "Hot Lead", source: "research", status: "ATTENDEE", position: 0 },
+    { label: "Warm Lead", source: "research", status: "SPEAKER", position: 0 },
+    { label: "Cold Lead", source: "research", status: "SPONSOR", position: 0 },
+    { label: "Intent", source: "research", status: "EXHIBITOR", position: 0 },
+  ];
+
   const MAX_BOXES = 4;
-  const removeResearchScreenBox = (id: string) => {
-    setResearchScreenBoxes((prevBoxes) =>
-      prevBoxes.filter((box: any) => box?.status !== id)
-    );
+  const removeResearchScreenBox = async (data: any) => {
+    const updatedScreenboxes = [...filteredResearchScreenboxes];
+
+    for (let i = 0; i < updatedScreenboxes.length; i++) {
+      if (updatedScreenboxes[i].status === data.status) {
+        updatedScreenboxes.splice(i, 1);
+        break;
+      }
+    }
+    setFilteredResearchScreenboxes(updatedScreenboxes);
+    const formData = {
+      source: "interest",
+      data: updatedScreenboxes,
+    };
+
+    try {
+      await updateResearchData({ formData });
+      setResearchScreenEditingBoxId(null);
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
   };
 
-  const removeOutreachScreenBox = (id: any) => {
-    setOutreachScreenBoxes((prevBoxes) =>
-      prevBoxes.filter((box) => box.status !== id)
-    );
+  const removeOutreachScreenBox = async (data: any) => {
+    const updatedScreenboxes = [...filteredOutreachScreenboxes];
 
-    setCards((prevBoxes) => prevBoxes.filter((box: any) => box?.status !== id));
+    for (let i = 0; i < updatedScreenboxes.length; i++) {
+      if (updatedScreenboxes[i].status === data.status) {
+        updatedScreenboxes.splice(i, 1);
+        break;
+      }
+    }
+    setFilteredOutreachScreenboxes(updatedScreenboxes);
+    const formData = {
+      source: "outreach",
+      data: {
+        outreach_stage: updatedScreenboxes,
+      },
+    };
+
+    try {
+      await updateOutreachData({ formData });
+      setOutreachScreenEditingBoxId(null);
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
   };
 
   const handleChangeResearchScreenBoxes = (id: string, value: string) => {
+    if (value.length > 20) {
+      showToast("error", "Input cannot be more than 20 characters!");
+      return;
+    }
     setResearchTempValue(value);
   };
   const handleChangeOutreachScreenBoxes = (id: string, value: string) => {
@@ -70,16 +147,18 @@ export default function ProductsPage() {
   };
 
   const handleOutreachchScreenEdit = (id: string, currentValue: string) => {
-    // console.log("values_______", id, currentValue);
     setOutreachScreenEditingBoxId(id);
     setOutreachTempValue(currentValue);
   };
 
   const handleResearchScreenSave = async (data: any) => {
+    if (!researchTempValue.trim()) {
+      showToast("error", "Input cannot be empty!");
+      return;
+    }
     const updatedBox = researchScreenboxes.find(
       (box) => box.status === data.status
     );
-    // console.log("2121__", updatedBox, researchTempValue, data);
     for (let i = 0; i < researchScreenboxes.length; i++) {
       if (data.status === researchScreenboxes[i].status) {
         researchScreenboxes[i] = {
@@ -98,7 +177,12 @@ export default function ProductsPage() {
       };
 
       try {
-        await updateResearchData({ formData });
+        const data = await updateResearchData({ formData });
+        
+        if(data){
+          console.log("fr3333",data)
+          window.reload()
+        }
         setResearchScreenEditingBoxId(null);
       } catch (error) {
         console.error("Error updating data:", error);
@@ -106,33 +190,74 @@ export default function ProductsPage() {
     }
   };
 
-  const addResearchScreenBox = () => {
-    // if (researchScreenboxes.length >= MAX_BOXES) {
-    //   showToast("error", "Cannot create more than 4 input");
-    //   return;
-    // }
-
-    setResearchScreenBoxes((prevBoxes: any) => [
-      ...prevBoxes,
-      { id: prevBoxes.length + 1, value: "" },
-    ]);
-  };
-
-  const addOutreachScreenBox = () => {
-    if (outreachScreenboxes.length >= MAX_BOXES) {
+  const addResearchScreenBox = async () => {
+    if (filteredResearchScreenboxes.length >= MAX_BOXES) {
       showToast("error", "Cannot create more than 4 input");
       return;
     }
-    setOutreachScreenBoxes((prevBoxes) => [
-      ...prevBoxes,
-      { id: prevBoxes.length + 1, label: "" },
-    ]);
-    setCards((prevBoxes) => [
-      ...prevBoxes,
-      { id: prevBoxes.length + 1, value: "" },
-    ]);
-    setOutreachScreenEditingBoxId(null);
-    setOutreachTempValue("");
+
+    const availableBox = researchCarbonArr.find(
+      (box: any) =>
+        !filteredResearchScreenboxes.some(
+          (shownBox: any) => shownBox.status === box.status
+        )
+    );
+
+    availableBox!.position = filteredResearchScreenboxes.length;
+
+    if (!availableBox) {
+      showToast("info", "No more boxes to add");
+      return;
+    }
+
+    setFilteredResearchScreenboxes((prevBoxes) => [...prevBoxes, availableBox]);
+    const formData = {
+      source: "interest",
+      data: [...filteredResearchScreenboxes, availableBox],
+    };
+
+    try {
+      await updateResearchData({ formData });
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
+  };
+
+  const addOutreachScreenBox = async () => {
+    if (filteredOutreachScreenboxes.length >= MAX_BOXES) {
+      showToast("error", "Cannot create more than 4 input");
+      return;
+    }
+
+    const availableBox = carbonArray.find(
+      (box: any) =>
+        !filteredOutreachScreenboxes.some(
+          (shownBox: any) => shownBox.status === box.status
+        )
+    );
+
+    availableBox!.position = filteredOutreachScreenboxes.length;
+
+    if (!availableBox) {
+      showToast("info", "No more boxes to add");
+      return;
+    }
+
+    setFilteredOutreachScreenboxes((prevBoxes) => [...prevBoxes, availableBox]);
+    const formData = {
+      source: "outreach",
+      data: {
+        outreach_stage: [...filteredOutreachScreenboxes, availableBox],
+      },
+    };
+
+    try {
+      await updateOutreachData({ formData });
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
+    // setOutreachScreenEditingBoxId(null);
+    // setOutreachTempValue("");
   };
 
   const handleDragStartResearchScreen = (e: any, id: any) => {
@@ -216,13 +341,20 @@ export default function ProductsPage() {
   };
   const getResearchResponse = async () => {
     const data: any = await getResearchData();
-    console.log("research_______", data);
     setResearchScreenBoxes(data);
+    setFilteredResearchScreenboxes(
+      (data as any).filter((value: any) => !["BOOKMARK"].includes(value.status))
+    );
   };
   const getOutreachResponse = async () => {
     const data: any = await getOutreachData();
-    console.log("outreach32323", data);
     setOutreachScreenBoxes(data?.outreach_stage);
+    setFilteredOutreachScreenboxes(
+      (data?.outreach_stage as any).filter(
+        (value: any) =>
+          !["PENDING", "CANCELLED", "REJECTED"].includes(value.status)
+      )
+    );
   };
   useEffect(() => {
     getResearchResponse();
@@ -230,6 +362,10 @@ export default function ProductsPage() {
   }, []);
 
   const handleOutreachScreenSave = async (data: any) => {
+    if (!outreachTempValue.trim()) {
+      showToast("error", "Input cannot be empty!");
+      return;
+    }
     const updatedBox = outreachScreenboxes.find(
       (box) => box.status === data.status
     );
@@ -291,7 +427,7 @@ export default function ProductsPage() {
                 Update them any time to match your needs or goals for the event.
               </div>
               <div className="flex flex-col gap-5">
-                {researchScreenboxes.slice(1).map((box: any) => (
+                {filteredResearchScreenboxes.map((box: any) => (
                   <div
                     key={box.status}
                     className="flex items-center gap-2 relative"
@@ -344,7 +480,7 @@ export default function ProductsPage() {
                         </button>
                         <button
                           className="flex items-center justify-center border rounded w-10 h-10 text-base"
-                          onClick={() => removeResearchScreenBox(box.status)}
+                          onClick={() => removeResearchScreenBox(box)}
                         >
                           <CrossIcon />
                         </button>
@@ -355,7 +491,6 @@ export default function ProductsPage() {
                 <button
                   className="flex items-center justify-center border rounded-md w-10 h-10 text-base"
                   onClick={addResearchScreenBox}
-                  //   disabled={researchScreenboxes.length >= MAX_BOXES}
                 >
                   <PlusIcon />
                 </button>
@@ -375,7 +510,7 @@ export default function ProductsPage() {
                 preferences.
               </div>
               <div className="flex flex-col gap-5">
-                {outreachScreenboxes.slice(1, 5).map((box: any) => (
+                {filteredOutreachScreenboxes.map((box: any) => (
                   <div
                     key={box.status}
                     className="flex items-center gap-2 relative"
@@ -424,7 +559,7 @@ export default function ProductsPage() {
                         </button>
                         <button
                           className="flex items-center justify-center border rounded w-10 h-10 text-base"
-                          onClick={() => removeOutreachScreenBox(box.status)}
+                          onClick={() => removeOutreachScreenBox(box)}
                         >
                           <CrossIcon />
                         </button>
@@ -442,15 +577,13 @@ export default function ProductsPage() {
             </div>
             <div className="grid place-items-center">
               <div className="flex flex-wrap gap-4 justify-center  w-full max-w-5xl">
-                {outreachScreenboxes.slice(1, 5).map((box: any) => (
+                {filteredOutreachScreenboxes.map((box: any) => (
                   <div
                     key={box.status}
                     className="relative flex flex-col justify-start items-center w-[150px] h-[160px]  rounded-t-md text-center box-border"
                   >
                     <div className="flex items-center w-full min-h-[32px] bg-primary text-white text-sm font-normal px-2 rounded-t-md">
-                      <span className="truncate w-full" title={box.label}>
-                        {box.label}
-                      </span>
+                      <span className="truncate w-full">{box.label}</span>
                     </div>
                     <div className="absolute top-8 left-0 right-0 bottom-0 border-l border-r  border-t-transparent"></div>
                   </div>
