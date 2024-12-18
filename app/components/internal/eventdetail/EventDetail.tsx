@@ -175,8 +175,9 @@ const EventDetail = ({
         Back
       </div>
 
+      {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange} configData={configData} pipelineIndex={pipelineIndex} />}
+
       <div className={styles.modalContainer}>
-        {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange} configData={configData} pipelineIndex={pipelineIndex} />}
         <div className={styles.innerContainer}>
           <div className={styles.containerLeft} ref={leftContainerRef}>
             <div className={styles.containerLeftTop}>
