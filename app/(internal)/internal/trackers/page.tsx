@@ -543,11 +543,12 @@ const Trackers = ({ searchParams }: Search) => {
         }
           <div className={`${styles.container}`}>
               {data.map((item, ind) => (
-                <Link href={`/internal/trackers/create?type=${item?.url}`} key={ind}>
+                <Link
+                  href={`/internal/trackers/create?type=${item?.url}`}
+                  key={ind}
+                >
                   <div className="w-full p-2 gap-2 flex items-center flex-col h-[270px] text-sm border border-[var(--border-color)] rounded-[12px]">
-                    <div
-                      className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]"
-                    >
+                    <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)]">
                       <div className={styles.account}>
                         <Image src={item.img} alt="people" width={31} height={31} />
                       </div>
@@ -569,14 +570,14 @@ const Trackers = ({ searchParams }: Search) => {
                       <div className="text-[16px] font-bold text-[var(--primary-color)]">
                         {item?.trackerName}
                       </div>
-                      <div className="font-medium text-[var(--tertiary-text-color)]">{item?.content}</div>
+                      <div className="font-medium text-[var(--tertiary-text-color)]">
+                        {item?.content}
+                      </div>
                     </div>
                   </div>
                 </Link>
               ))}
-              <div className={styles.innerContainerOne}
-
-              >
+              <div className={styles.innerContainerOne}>
                 <Image src={Add} alt="add" />
                 <Link
                   href="/internal/trackers/create?type=CUSTOM"
@@ -585,17 +586,16 @@ const Trackers = ({ searchParams }: Search) => {
                   <Button
                     // onClick={() => modalOpen()}
                     className="text-white"
-                    
                   >
                     Create Custom
                   </Button>
                 </Link>
               </div>
-              </div>
             </div>
-            </div>
-          
-          )}
+          </div>
+        </div>
+      )
+    }
       </div>
     )}</>
 

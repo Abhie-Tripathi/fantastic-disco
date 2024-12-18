@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useEffect, useState,useRef } from 'react'
+import React, { useCallback, useEffect, useState, useRef } from 'react'
 import styles from './participation.style.module.css'
 import EditIcon from '/public/EditIcon.svg'
 import Image from 'next/image'
@@ -118,8 +118,8 @@ const ParticipationContainer = ({ size, theme, type, handleChange, formState, fo
       </div>
     );
   }, [formState.participationType, options, formState.participationMessage, formState.isParticipationMessageEmpty]);
- 
-  
+
+
 
   const scrollBy = 200; // Amount to scroll on each click
 
@@ -137,24 +137,22 @@ const ParticipationContainer = ({ size, theme, type, handleChange, formState, fo
     }
   };
 
-  
   return (
     <div className={`${styles.body} ${theme === "dark" ? styles.darkBody : ""}`}>
       {type === "side" ?
         <div className={styles.carouselContainer}>
-        <button onClick={handlePrev} className={styles.arrowButton}><LeftArrow/></button>
-        
-        <div ref={optionsRef} className={styles.options}>
-          {optionsData.map((option) => (
-            <div key={option.type} className={`${styles.option} ${formState.event_type === option.type ? styles.activeOption : ""}`} onClick={() => handleChange("event_type", option.type)}>
-              <Image src={option.icon} alt={`${option.label} icon`} height={54} width={54} style={{borderRadius:"4px"}}/>
-              <span className={formTheme === "dark" ? styles.darkLabel : styles.lightLabel}>{option.label}</span>
-            </div>
-          ))}
+          <button onClick={handlePrev} className={styles.arrowButton}><LeftArrow /></button>
+          <div ref={optionsRef} className={styles.options}>
+            {optionsData.map((option) => (
+              <div key={option.type} className={`${styles.option} ${formState.event_type === option.type ? styles.activeOption : ""}`} onClick={() => handleChange("event_type", option.type)}>
+                <Image src={option.icon} alt={`${option.label} icon`} height={50} width={50} style={{ borderRadius: "4px" }} />
+                <span className={formTheme === "dark" ? styles.darkLabel : styles.lightLabel}>{option.label}</span>
+              </div>
+            ))}
+          </div>
+
+          <button onClick={handleNext} className={styles.arrowButton}><RightArrow /></button>
         </div>
-        
-        <button onClick={handleNext} className={styles.arrowButton}><RightArrow/></button>
-      </div>
         :
         formState.event_type !== "" && !formState.participationType ? (
           <>
@@ -184,14 +182,14 @@ const ParticipationContainer = ({ size, theme, type, handleChange, formState, fo
 
 export default ParticipationContainer;
 
-function LeftArrow(){
+function LeftArrow() {
   return (
-    <svg width="10px" height="10px" viewBox="0 0 1024 1024" className="icon"  version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z" fill="#000000" /></svg>
+    <svg width="10px" height="10px" viewBox="0 0 1024 1024" className="icon" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M768 903.232l-50.432 56.768L256 512l461.568-448 50.432 56.768L364.928 512z" fill="#000000" /></svg>
   )
 }
 
-function RightArrow(){
+function RightArrow() {
   return (
-    <svg width="10px" height="10px" viewBox="0 0 1024 1024" className="icon"  version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M256 120.768L306.432 64 768 512l-461.568 448L256 903.232 659.072 512z" fill="#000000" /></svg>
+    <svg width="10px" height="10px" viewBox="0 0 1024 1024" className="icon" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M256 120.768L306.432 64 768 512l-461.568 448L256 903.232 659.072 512z" fill="#000000" /></svg>
   )
 }

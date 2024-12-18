@@ -1,6 +1,7 @@
 export default function CoordinateIcon() {
     return (
       <svg
+      className="w-5 h-5"
         width="24"
         height="24"
         viewBox="0 0 24 24"

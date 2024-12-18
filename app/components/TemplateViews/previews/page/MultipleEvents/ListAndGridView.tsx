@@ -11,12 +11,12 @@ interface CardProps {
 const ListAndGridView = ({ demoBanner, demoEventName, demoDescription, demoLocation, demoDate}:CardProps) => {
     return (
         <div className={styles.list_gridView}>
+            {/* <EventListCard  demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>
             <EventListCard  demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>
             <EventListCard  demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>
             <EventListCard  demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>
             <EventListCard  demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>
-            <EventListCard  demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>
-            <EventListCard  demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/>
+            <EventListCard  demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/> */}
         </div>
     )
 }

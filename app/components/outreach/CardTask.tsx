@@ -25,12 +25,7 @@ interface CardTaskProps {
     task: any
   ) => void;
   onClick: () => void;
-  interests?: {
-    EXHIBITOR: number;
-    SPONSOR: number;
-    SPEAKER: number;
-    ATTENDING: number;
-  };
+  interests?: { [name: string]: number; };
 }
 
 const getInetial = (name: string) => {

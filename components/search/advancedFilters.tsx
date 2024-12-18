@@ -16,16 +16,44 @@ import AudienceDesAndDep from "./advancedFilters/audienceDes&Dep";
 import AudienceSpread from "./advancedFilters/audienceSpread";
 import KeywordFilter from "./advancedFilters/product&Topics";
 import AudienceZoneSatusSelector from "./advancedFilters/audienceZone";
+import { useFilterContext } from "@/context/filterContext";
 import { isEventeli } from "@/config";
 import { cn } from "@/lib/utils";
-// import enabledFilters from "@/public/data/enabledFilters";
+import { Badge } from "@/components/ui/badge";
 
 const AdvancedFilters = () => {
   const [selectedView, setSelectedView] = useState("advancedDetails");
+  const { localFilters } = useFilterContext();
 
   const handleTabChange = (value: string) => {
     setSelectedView(value);
   };
+
+  console.log(localFilters);
+
+  const advancedDetailsFiltersCount = (function () {
+    let count = 0;
+    if (localFilters.onlyBranded || localFilters.onlySeries) count++;
+    if (localFilters.frequencies) count++;
+    if (localFilters.includeKeywords || localFilters.excludeKeywords) count++;
+    if (localFilters.maturity) count++;
+    return count;
+  })();
+
+  const insightsAndScoresFiltersCount = (function () {
+    let count = 0;
+    if (localFilters.estimatedVisitors) count++;
+    if (localFilters.impact_score_gte) count++;
+    if (localFilters.top) count++;
+    return count;
+  })();
+
+  const audienceInterFiltersCount = (function () {
+    let count = 0;
+    if (localFilters.designations) count++;
+    if (localFilters.audienceSpread) count++;
+    return count;
+  })();
 
   return (
     <Tabs
@@ -38,13 +66,30 @@ const AdvancedFilters = () => {
           <TabsList className="w-[570px] grid grid-cols-3 h-auto">
             <TabsTrigger value="advancedDetails" className="text-base">
               Advanced Details
+              {advancedDetailsFiltersCount ? (
+                <Badge className="ml-2">{advancedDetailsFiltersCount}</Badge>
+              ) : (
+                ""
+              )}
             </TabsTrigger>
             <TabsTrigger value="insightsAndScores" className=" text-base">
               Insights and Scores
+              {insightsAndScoresFiltersCount ? (
+                <Badge className="ml-2">{insightsAndScoresFiltersCount}</Badge>
+              ) : (
+                ""
+              )}
             </TabsTrigger>
-            <TabsTrigger value="audienceIntel" className=" text-base">
-              Audience Intel
-            </TabsTrigger>
+            {!isEventeli && (
+              <TabsTrigger value="audienceIntel" className=" text-base">
+                Audience Intel
+                {audienceInterFiltersCount ? (
+                  <Badge className="ml-2">{audienceInterFiltersCount}</Badge>
+                ) : (
+                  ""
+                )}
+              </TabsTrigger>
+            )}
           </TabsList>
         </div>
       </div>

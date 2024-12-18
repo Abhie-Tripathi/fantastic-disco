@@ -23,6 +23,8 @@ import {Event, TransformedEvent} from '@/types/geniTypes/events'
 const Page = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
   const [cardBgColor, setCardBgColor] = useState<string>("#d4d4d4");
+  const [previewWindowBgColor, setPreviewWindowBgColor] = useState<string>('');
+  const [isDark,setIsDark] = useState<boolean>(false);
   const [cardBorderRadius, setCardBorderRadius] = useState<number>(20);
   const [fontSettings, setFontSettings] = useState({
     heading: { fontFamily: "arial", fontSize: 24, fontColor: "#000000", fontWeight: "bold" },
@@ -64,6 +66,15 @@ const Page = () => {
     return str;
   };
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // This ensures the code only runs in the browser
+      const defaultBgColor = getComputedStyle(document.documentElement)
+        .getPropertyValue('--background-secondary-color')
+        .trim();
+      setPreviewWindowBgColor(defaultBgColor);
+    }
+  }, []);
 
   // This function is fetching all the events regardless added in the widget or not
   const fetchEvents = async (page: number, type?: string) => {
@@ -176,6 +187,7 @@ const Page = () => {
       }
       else {
         setCardBgColor(data.customizationData.cardBgColor);
+        setPreviewWindowBgColor(data.customizationData.previewWindowBgColor);
         setCardBorderRadius(data.customizationData.cardBorderRadius);
         setFontSettings(data.customizationData.fontSettings);
         setButtonSettings(data.customizationData.buttonSettings);
@@ -206,6 +218,9 @@ const Page = () => {
       cardBorderRadius,
       selectedBtn,
       selectedCard: cardStyle,
+      previewWindowBgColor,
+      isDark
+
     };
     customizeData.append("widgetId", widgetId)
     customizeData.append('customizationData', JSON.stringify(customizationData));
@@ -256,6 +271,10 @@ const Page = () => {
           setButtonSettings={setButtonSettings}
           buttonSettings={buttonSettings}
           cardBgColor={cardBgColor}
+          previewWindowBgColor={previewWindowBgColor}
+          setPreviewWindowBgColor={setPreviewWindowBgColor}
+          isDark={isDark}
+          setIsDark={setIsDark}
           cardBorderRadius={cardBorderRadius}
           fetchedAllEvents={fetchedAllEvents}
           fetchEvents={fetchEvents}
@@ -278,6 +297,9 @@ const Page = () => {
           isFullScreen={isFullScreen}
           setIsFullScreen={setIsFullScreen}
           cardBgColor={cardBgColor}
+          previewWindowBgColor={previewWindowBgColor}
+          isDark={isDark}
+          setIsDark={setIsDark}
           cardBorderRadius={cardBorderRadius}
           fontSettings={fontSettings}
           buttonSettings={buttonSettings}

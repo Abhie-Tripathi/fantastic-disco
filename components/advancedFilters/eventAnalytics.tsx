@@ -204,7 +204,6 @@ export default function EventAnalyticsSelector({source,enabledAnalyticsData, sel
             open ? "border-primary" : "border-input"
           }`}
           aria-expanded={open}
-          disabled={!enabledAnalyticsData.isAnalyticsEnabled}
           aria-haspopup="true"
         >
           <span className="mr-2">Event Analytics</span>

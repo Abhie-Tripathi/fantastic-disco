@@ -67,7 +67,7 @@ export const endpoints = {
   widget: {
     draftWidget: `${BASE_URL}/widget`,
     activeWidget: `${BASE_URL}/widget?status=active`,
-    deActiveWidget: `${BASE_URL}/widget?`,
+    deActiveWidget: `${BASE_URL}/widget?status=deactivate`,
     onlyDraftWidget: `${BASE_URL}/widget?status=draft`,
     widgetById: `${BASE_URL}/widget`,
     widget: `${BASE_URL}/widget`
@@ -96,6 +96,7 @@ export const endpoints = {
   },
   calendar:{
     getyearlyEvents:`${BASE_URL}/event?`,
-  }
+  },
+  configuration: `${BASE_URL}/configuration`,
 
 };

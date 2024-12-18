@@ -9,7 +9,9 @@ import {
   EventDetailResponse,
   EventEditionDetailResponse,
   EventExhibitorDetails,
+  EventExhibitorDetailsResponse,
   EventPOCDetailResponse,
+  EventSpeakerDetails,
   EventsResponse,
   MapEventsResponse,
   RecentSearchesResponse,
@@ -20,6 +22,7 @@ import { myFetch } from "@/utils/myFetch";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { BaseURL } from "@/config";
 import { ApiError } from "@/types/api";
+import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
 
 export const searchEvents = async (searchParams: ReadonlyURLSearchParams) => {
   return myFetch(
@@ -38,6 +41,8 @@ export const useEventsService = () => {
     | MapEventsResponse
     | EventsResponse
   >();
+
+  const { exhibitorAdapter, speakerAdapter } = EventParticpantAdapter();
 
   const getEvents = (params?: EventSearchParams) => {
     return api.request(endpoints.event.events, {
@@ -61,7 +66,7 @@ export const useEventsService = () => {
 
   const getEventDetailById = async (id: string) => {
     const response = await api.request<EventDetailResponse>(
-      `${endpoints.event.eventDetailById}/${id}?shows=eventBrand%2CeventSeries%2Cmaturity%2CeventImpactScore%2CeventInboundScore%2CinternationalScore%2Cisforecasted%2CtrustScore%2CeventRating%2CestimatedExhibitScore%2CaudienceSpread`,
+      `${endpoints.event.eventDetailById}/${id}`,
       {
         method: "GET",
       }
@@ -98,22 +103,49 @@ export const useEventsService = () => {
     );
   };
 
-  const getEventExhibitorDetails = (id: string, take: number, skip: number) => {
-    return api.request<EventExhibitorDetails[]>(
+  // const getEventExhibitorDetails = (id: string, take: number, skip: number) => {
+  //   return api.request<EventExhibitorDetailsResponse>(
+  //     `${endpoints.event.eventDetailById}/exhibitor?id=${id}&take=${take}&skip=${skip}`,
+  //     {
+  //       method: "GET",
+  //     }
+  //   );
+  // };
+
+  const getEventExhibitorDetails = async (
+    id: string,
+    take: number,
+    skip: number
+  ) => {
+    const response = await api.request<EventExhibitorDetails[]>(
       `${endpoints.event.eventDetailById}/exhibitor?id=${id}&take=${take}&skip=${skip}`,
       {
         method: "GET",
       }
     );
+    if (!response) {
+      throw new Error("Failed to fetch exhibitor details");
+    }
+    const adaptedExhibitorData = exhibitorAdapter(response);
+    return adaptedExhibitorData;
   };
 
-  const getEventSpeakerDetails = (id: string, take: number, skip: number) => {
-    return api.request(
+  const getEventSpeakerDetails = async (
+    id: string,
+    take: number,
+    skip: number
+  ) => {
+    const response = await api.request<EventSpeakerDetails[]>(
       `${endpoints.event.eventDetailById}/speaker?id=${id}&take=${take}&skip=${skip}`,
       {
         method: "GET",
       }
     );
+    if (!response) {
+      throw new Error("Failed to fetch exhibitor details");
+    }
+    const adaptedSpeakerData = speakerAdapter(response);
+    return adaptedSpeakerData;
   };
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {

@@ -143,9 +143,9 @@ const Dashboard = () => {
           myFetch(`${baseUrl}/userInterest/enquiry?status=IN_NEGO`),
           myFetch(`${baseUrl}/userInterest/enquiry?status=CONFIRMED`),
         ]);
-        setPendingEvents(response1?.data?.enquiryData.length);
-        setShortListed(response2?.data?.enquiryData?.length);
-        setPrefinal(response3?.data?.enquiryData?.length);
+        setPendingEvents(response1?.data?.totalCount);
+        setShortListed(response2?.data?.totalCount);
+        setPrefinal(response3?.data?.totalCount);
       } catch (error) {
         console.error("Error while fetching outreach list:", error);
       }
@@ -470,7 +470,7 @@ const Dashboard = () => {
 
           <span className={styles.body_divider}></span>
           <div className={styles.savedEvent_coordinateContainer}>
-            <div className={styles.savedEventsContainer}>
+            {/* <div className={styles.savedEventsContainer}>
               <div className={`${styles.tracker_container_header}`} style={{justifyContent:"space-between"}}>
                 <div className={styles.tracker_container_header_innerContainer}>
                 <Image src={Bookmark} alt="save"/>
@@ -537,7 +537,7 @@ const Dashboard = () => {
                   )}
                 </div>
               )}
-            </div>
+            </div> */}
             <div
               className={`${styles.linkCard_container} ${styles.coordinateCard}`}
             >
@@ -586,7 +586,7 @@ const Dashboard = () => {
                             key={key}
                           >
                             <div className={styles.linkCard_tagsName}>
-                              {formatTag(tag.name)}
+                              {tag.name}
                             </div>
                             <div className={styles.linkCard_tagsCount}>
                               {tag.count}

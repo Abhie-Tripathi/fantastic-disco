@@ -33,6 +33,7 @@
 }
 
 .heading_eventsContainer .templateHeading {
+    width: 50%;
     font-size: var(--font-size-small);
     font-weight: 600;
     color: var(--primary-text-color);

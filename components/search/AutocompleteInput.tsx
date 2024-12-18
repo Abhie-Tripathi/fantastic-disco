@@ -30,6 +30,7 @@ interface Location {
 
 interface AutocompleteInputProps {
   type: "SavedLocations" | "LocationId" | "GeoCoordinate";
+  defaultOpen?: boolean;
   placeholder: string;
   onSelect: (location: any) => void;
   multiple?: boolean;
@@ -38,6 +39,7 @@ interface AutocompleteInputProps {
 
 export default function AutocompleteInput({
   type,
+  defaultOpen,
   placeholder,
   onSelect,
   multiple = false,
@@ -105,7 +107,7 @@ export default function AutocompleteInput({
   );
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={defaultOpen || open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"

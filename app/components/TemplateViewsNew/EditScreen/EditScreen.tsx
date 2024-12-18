@@ -32,6 +32,10 @@ interface EditScreenProps {
     buttonSettings: ButtonSettingsState
     fontSettings: FontSettingsState
     cardBgColor: string
+    previewWindowBgColor:string;
+    setPreviewWindowBgColor:React.Dispatch<React.SetStateAction<string>>;
+    isDark?:boolean;
+    setIsDark?:(value: boolean) => void
     cardBorderRadius: number;
     cardStyle: string;
     setCardStyle: React.Dispatch<React.SetStateAction<string>>;
@@ -57,7 +61,7 @@ interface EditScreenProps {
 
 const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, fontSettings, setButtonSettings, cardBgColor, cardBorderRadius, buttonSettings, cardStyle, setCardStyle, setSelectedBtn, selectedBtn, handleUpdateCustomization, fetchedAllEvents, fetchEvents, widgetId, widgetType, fetchedAddedEvents, fetchAddedEvents, addedEventIds,
     // handlePrefillEvent,
-    allEventsCount, selectedTemplate, isCustomisationWindowDisable,setIsCustomisationWindowDisable,isCodeWindowDisable,setIsCodeWindowDisable }: EditScreenProps) => {
+    allEventsCount, selectedTemplate, isCustomisationWindowDisable,setIsCustomisationWindowDisable,isCodeWindowDisable,setIsCodeWindowDisable,previewWindowBgColor,setPreviewWindowBgColor }: EditScreenProps) => {
     const [selectedNavItem, setSelectedNavItem] = useState<string>("events")
     const [extractedColors, setExtractedColors] = useState<string[]>(["#843DF8", "#424FDF", "#1A56F3", "#3097F5", "#0785A2"])
     const { theme } = useTheme()
@@ -214,7 +218,7 @@ const EditScreen = ({ setCardBgColor, setCardBorderRadius, setFontSettings, font
                     <CodeIcon color={getIconColor("code")} /><span>Code</span></button>
             </div>
             <div className={styles.container}>
-                {selectedNavItem === "customize" ? <Customization handleUpdateCustomization={handleUpdateCustomization} selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} cardStyle={cardStyle} setCardStyle={setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors} selectedTemplate={selectedTemplate} /> : selectedNavItem === "events" ? <FilterEvents selectedTemplate={selectedTemplate} allEventsCount={allEventsCount} isCustomisationWindowDisable={isCustomisationWindowDisable}setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}isCodeWindowDisable={isCodeWindowDisable}setIsCodeWindowDisable={setIsCodeWindowDisable}
+                {selectedNavItem === "customize" ? <Customization previewWindowBgColor={previewWindowBgColor}setPreviewWindowBgColor={setPreviewWindowBgColor} handleUpdateCustomization={handleUpdateCustomization} selectedBtn={selectedBtn} setSelectedBtn={setSelectedBtn} cardStyle={cardStyle} setCardStyle={setCardStyle} fontSettings={fontSettings} buttonSettings={buttonSettings} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} setButtonSettings={setButtonSettings} setFontSettings={setFontSettings} setCardBorderRadius={setCardBorderRadius} setCardBgColor={setCardBgColor} setExtractedColors={setExtractedColors} extractedColors={extractedColors} selectedTemplate={selectedTemplate} /> : selectedNavItem === "events" ? <FilterEvents selectedTemplate={selectedTemplate} allEventsCount={allEventsCount} isCustomisationWindowDisable={isCustomisationWindowDisable}setIsCustomisationWindowDisable={setIsCustomisationWindowDisable}isCodeWindowDisable={isCodeWindowDisable}setIsCodeWindowDisable={setIsCodeWindowDisable}
                 // handlePrefillEvent={handlePrefillEvent}
                  addedEventIds={addedEventIds} widgetId={widgetId} fetchAddedEvents={fetchAddedEvents} fetchedAddedEvents={fetchedAddedEvents} fetchEvents={fetchEvents} fetchedAllEvents={fetchedAllEvents} /> : <CodeWindow widgetType={widgetType} widgetId={widgetId} />}
             </div>

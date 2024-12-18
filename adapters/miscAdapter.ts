@@ -58,7 +58,17 @@ export const MiscAdapter = {
     if (activeGte && activeLte) {
       const startDate = new Date(activeGte).toISOString().split("T")[0];
       const endDate = new Date(activeLte).toISOString().split("T")[0];
-      adaptedParams.duration = `${startDate},${endDate}`;
+      adaptedParams.startDate = `${startDate},${endDate}`;
+      adaptedParams.endDate = `${startDate},${endDate}`;
+    }
+
+    if (activeGte) {
+      const startDate = new Date(activeGte).toISOString().split("T")[0];
+      adaptedParams.startDate = `${startDate},${startDate}`;
+    }
+    if (activeLte) {
+      const endDate = new Date(activeLte).toISOString().split("T")[0];
+      adaptedParams.endDate = `${endDate},${endDate}`;
     }
 
     if (params.get("eventId")) {
@@ -74,12 +84,10 @@ export const MiscAdapter = {
     }
 
     if(params.get('status')) {
-      const updatedValue = params?.get('status')?.replace('IN_PROGRESS', 'IN_DISCUSSION,IN_NEGO');  
-      if(updatedValue)
-        adaptedParams.status = updatedValue;
+      adaptedParams.status = params.get("status")!;
     }
     else {
-      adaptedParams.status = 'PENDING,SHORTLISTED,IN_NEGO,IN_DISCUSSION,CONFIRMED,REJECTED';
+      adaptedParams.status = 'PENDING,SHORTLISTED,IN_NEGO,IN_DISCUSSION,CONFIRMED,REJECTED,CANCELLED';
     }
 
     return adaptedParams;

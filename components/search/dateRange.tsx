@@ -28,8 +28,11 @@ import { Switch } from "@/components/ui/switch";
 import { useFilterState } from "@/hooks/useFilterState";
 import { usePathname } from "next/navigation";
 import { useFilterContext } from "@/context/filterContext";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const presets = [
+  // { label: "Past", value: "past" },
+  // { label: "Upcoming", value: "upcoming" },
   { label: "This week", value: "this-week" },
   { label: "This month", value: "this-month" },
   { label: "3 months", value: "3-months" },
@@ -46,20 +49,25 @@ const comparisonOptions = [
   "Same Period Last year",
 ];
 
-const formatDateRange = (from: Date, to: Date) => {
-  if (from.getTime() === to.getTime()) {
-    return format(from, "d MMM, yyyy");
-  }
-
-  if (from.getFullYear() === to.getFullYear()) {
-    if (from.getMonth() === to.getMonth()) {
-      return `${format(from, "d")} - ${format(to, "d MMM, yyyy")}`;
+const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
+  if (!from && !to) return "";
+  if (from && !to) return "Upcoming";
+  if (!from && to) return "Past";
+  if (from && to) {
+    if (from.getTime() === to.getTime()) {
+      return format(from, "d MMM, yyyy");
     }
-    return `${format(from, "d MMM")} - ${format(to, "d MMM, yyyy")}`;
+    if (from.getFullYear() === to.getFullYear()) {
+      if (from.getMonth() === to.getMonth()) {
+        return `${format(from, "d")} - ${format(to, "d MMM, yyyy")}`;
+      }
+      return `${format(from, "d MMM")} - ${format(to, "d MMM, yyyy")}`;
+    }
+    return `${format(from, "d MMM, yyyy")} - ${format(to, "d MMM, yyyy")}`;
   }
-
-  return `${format(from, "d MMM, yyyy")} - ${format(to, "d MMM, yyyy")}`;
+  return "";
 };
+
 interface DateRangeProps {
   source: string;
   type?:string;
@@ -74,6 +82,7 @@ interface DateRangeProps {
     }>
   >;
 }
+
 export default function DateRangeSelector({
   type,
   source,
@@ -96,9 +105,9 @@ export default function DateRangeSelector({
       ? setParentDateRange
       : setLocalDateRange;
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
-  const [selectedPreset, setSelectedPreset] = React.useState("this-month");
+  const [selectedPreset, setSelectedPreset] = React.useState("");
   const [compareEnabled, setCompareEnabled] = React.useState(false);
-  const { setMultipleLocalFilters, searchParams, getLocalFilterValue } = useFilterContext();
+  const { setMultipleLocalFilters, searchParams, getLocalFilterValue, deleteMultipleLocalFilters, applyFilters } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const [selectedComparison, setSelectedComparison] = React.useState(
     comparisonOptions[0]
@@ -148,7 +157,7 @@ export default function DateRangeSelector({
         }
       } else {
         setDateRange({ from: undefined, to: undefined });
-        setSelectedPreset("this-month");
+        setSelectedPreset("custom");
       }
     }
   }, [searchParams, getLocalFilterValue]);
@@ -162,6 +171,14 @@ export default function DateRangeSelector({
     const currentDate = new Date();
     let from: Date | undefined, to: Date | undefined;
     switch (preset) {
+      case "upcoming":
+        from = currentDate;
+        to = undefined;
+        break;
+      case "past":
+        from = undefined;
+        to = currentDate;
+        break;
       case "custom":
         from = undefined;
         to = undefined;
@@ -231,27 +248,29 @@ export default function DateRangeSelector({
   };
 
   const applyHandler = () => {
-    if (source !== "tracker") {
-      const filters: { active_gte?: string; active_lte?: string } = {};
+    if(source!=="tracker"){
+    const filters: { active_gte?: string; active_lte?: string } = {};
 
-      if (dateRange.from) {
-        const fromDate = new Date(dateRange.from);
-        fromDate.setHours(5, 30, 0, 0);
-        filters.active_gte = fromDate.toISOString();
-      }
+    if (dateRange.from) {
+      const fromDate = new Date(dateRange.from);
+      fromDate.setHours(5, 30, 0, 0);
+      filters.active_gte = fromDate.toISOString();
+    }
 
-      if (dateRange.to) {
-        const toDate = new Date(dateRange.to);
-        toDate.setHours(5, 30, 0, 0);
-        filters.active_lte = toDate.toISOString();
-      }
+    if (dateRange.to) {
+      const toDate = new Date(dateRange.to);
+      toDate.setHours(5, 30, 0, 0);
+      filters.active_lte = toDate.toISOString();
+    }
 
-      if (dateRange.from == undefined && dateRange.to == undefined) {
-        filters.active_gte = "";
-        filters.active_lte = "";
-      }
-
+    if(filters.active_gte && filters.active_lte)
       setMultipleLocalFilters(filters);
+    else
+      deleteMultipleLocalFilters(['active_gte', 'active_lte']);
+
+    if (source === 'coordinate') {
+      applyFilters();
+    }
     }
     setIsOpen(false);
   };
@@ -282,7 +301,7 @@ export default function DateRangeSelector({
         >
           <div className="flex items-center">
             <span className="mr-2">Dates</span>
-            {dateRange.from && dateRange.to && (
+            {(dateRange.from || dateRange.to) && (
               <span className="text-xs text-primary truncate">
                 {formatDateRange(dateRange.from, dateRange.to)}
               </span>

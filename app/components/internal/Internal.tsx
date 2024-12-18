@@ -29,6 +29,8 @@ interface Props {
   statusChanged?: boolean;
   selectedId?: string;
   setSelectedId: any;
+  coordinateActions: any;
+  pipelineConfig: any;
 }
 const Internal = ({
   handleModal,
@@ -39,6 +41,8 @@ const Internal = ({
   setStatusChanged,
   statusChanged,
   selectedId,
+  coordinateActions,
+  pipelineConfig,
 }: Props) => {
   const searchParams = useSearchParams();
   const coordinateService = useCoordinateService();
@@ -128,7 +132,7 @@ const Internal = ({
     if (statusChanged === true) {
       const updatedData = eventData1.map((item) => {
         return item.eventId === selectedId
-          ? { ...item, enquiryStatus: "Shortlisted" }
+          ? { ...item, enquiryStatus: "SHORTLISTED" }
           : item;
       });
 
@@ -177,7 +181,15 @@ const Internal = ({
         {/* <div className={styles.scrollContainer} ref={divRef} style={{height:popoverState?"auto":"calc(100vh - 80px)"}}> */}
         <div className={styles.container}>
           <div className={styles.countsContainer}>
-            <div className={styles.exhibitorCount}>
+            {coordinateCount && coordinateCount.slice(1).map((item: any, index: number) => (
+              <div className={styles.exhibitorCount} key={index}>
+                <div className={styles.count}>
+                  {item?.count}
+                </div>
+                <div className={styles.countTitle}>{item.name}</div>
+              </div>
+            ))}
+            {/* <div className={styles.exhibitorCount}>
               <div className={styles.count}>
                 {coordinateCount && coordinateCount[1]?.count}
               </div>
@@ -200,7 +212,7 @@ const Internal = ({
                 {coordinateCount && coordinateCount[4]?.count}
               </div>
               <div className={styles.countTitle}>Attend</div>
-            </div>
+            </div> */}
           </div>
           <div className={styles.filters}>
             <div className={styles.searchContainer}>
@@ -242,11 +254,11 @@ const Internal = ({
             </div>
 
             <div style={{ width: "15%" }} className={styles.outerDiv}>
-              <InterestTypeSelector />
+              <InterestTypeSelector coordinateActions={coordinateActions} />
             </div>
 
             <div style={{ width: "15%" }} className={styles.outerDiv}>
-              <InterestStatusSelector />
+              <InterestStatusSelector pipelineConfig={pipelineConfig} />
             </div>
 
             <div style={{ width: "25%" }} className={styles.outerDiv}>
@@ -288,7 +300,8 @@ const Internal = ({
                       currentEnquiryStatus={item.enquiryStatus}
                       upvote={item.upvote}
                       enquiryActivity={item.enquiryActivity}
-                      userCountPerInterest={item.userCountPerInterest}
+                      coordinateActions={coordinateActions}
+                      pipelineConfig={pipelineConfig}
                       handleModal={handleModal}
                       handleShortlistModal={handleShortlistModal}
                     />
