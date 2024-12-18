@@ -20,7 +20,7 @@ import { isEventeli } from "@/config";
 import { cn } from "@/lib/utils";
 // import enabledFilters from "@/public/data/enabledFilters";
 
-const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
+const AdvancedFilters = () => {
   const [selectedView, setSelectedView] = useState("advancedDetails");
 
   const handleTabChange = (value: string) => {
@@ -52,23 +52,18 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
         <div className="grid grid-cols-5 gap-3 pb-6 border-b">
           <EditionSelector
             source="search"
-            enabledMaturityData={enabledFilters?.maturity}
           />
           <GlobalAndTouringSelector
             source="search"
-            enabledBrandData={enabledFilters?.branded}
           />
           <ForecastedStatusSelector
             source="search"
-            enabledForecastData={enabledFilters?.isForecasted}
           />
           <FrequencySelector
             source="search"
-            enabledFreqData={enabledFilters?.eventFrequency}
           />
           <KeywordFilter
             source="search"
-            enabledProductData={enabledFilters?.keywords}
           />
         </div>
       </TabsContent>
@@ -80,22 +75,18 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
         >
           <EstimatedVisitorsSelector
             source="search"
-            enabledVisitorData={enabledFilters?.eventSize}
           />
           {!isEventeli && (
             <EstimatedExhibitorsSelector
               source="search"
-              enabledExhibitorData={enabledFilters?.estimatedExhibitScore}
             />
           )}
           <EventAnalyticsSelector
             source="search"
-            enabledAnalyticsData={enabledFilters?.analytics}
           />
           <EstimatedEconomicImpactSelector />
           <EventRankingSelector
             source="search"
-            enabledRankingData={enabledFilters?.eventRanking}
           />
         </div>
       </TabsContent>
@@ -110,16 +101,13 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
           {!isEventeli && (
             <AudienceZoneSatusSelector
               source="search"
-              enabledZoneData={enabledFilters?.audienceZone}
             />
           )}
           <AudienceDesAndDep
             source="search"
-            enabledProfileData={enabledFilters?.designation}
           />
           <AudienceSpread
             source="search"
-            enabledSpreadData={enabledFilters?.audienceSpread}
           />
         </div>
       </TabsContent>

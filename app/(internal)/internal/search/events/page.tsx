@@ -77,7 +77,7 @@ const Search = () => {
     useFilterState();
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
-  const { applyFilters, setMultipleLocalFilters, setLocalFilter, enabledFilters } = useFilterContext();
+  const { applyFilters, setMultipleLocalFilters, setLocalFilter } = useFilterContext();
   const searchParams = useSearchParams();
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
@@ -202,21 +202,20 @@ const Search = () => {
   // }, []);
   
   
-console.log(enabledFilters);
 
   return (
     <div className="space-y-6 p-6">
       <SearchBar />
       <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
         <div className="col-span-8 grid grid-cols-4 gap-3">
-          <EventTypeSelector source="search" enabledTypeData={enabledFilters?.eventType}/>
-          <CategorySelector source="search" enabledCategories={enabledFilters?.eventCategory}/>
-          <EventFormatSelector source="search" enabledFormat={enabledFilters?.eventFormat}/>
+          <EventTypeSelector source="search" />
+          <CategorySelector source="search" />
+          <EventFormatSelector source="search" />
           <LocationSelector source="search"/>
           <DateRangeSelector source="search"/>
-          <StatusSelector source="search" enabledStatuses={enabledFilters?.eventStatus}/>
-          <EventEntrySelector source="search" enabledEntries={enabledFilters?.eventEntry}/>
-          <UserRatingSelector source="search" enabledRatingData={enabledFilters?.eventRating}/>
+          <StatusSelector source="search" />
+          <EventEntrySelector source="search" />
+          <UserRatingSelector source="search"/>
         </div>
         <div className="col-span-2 flex flex-col gap-4">
           <Button
@@ -253,7 +252,7 @@ console.log(enabledFilters);
           </div>
         </div>
       </div>
-      {showAdvancedFilters && <AdvancedFilters enabledFilters={enabledFilters}/>}
+      {showAdvancedFilters && <AdvancedFilters/>}
 
       <Tabs
         defaultValue="list"
