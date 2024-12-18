@@ -10,37 +10,7 @@ import Brand from "/public/brand.svg";
 import Location from "/public/locationTracker.svg"
 import Venue from '/public/venueTracker.svg';
 import LocationDate from '/public/locationTracker.svg'
-const productType = process.env.NEXT_PUBLIC_PRODUCT_TYPE;
-const data = productType === "eventeli" ?
-  [
-    {
-      type: "template",
-      domain: "Market Research",
-      img: Location,
-      url: "T_LOCATION",
-      trackerName: "Location Tracker",
-      content:
-        "Keep a close eye on event activity within a specific city, state, or country to identify trends in new or canceled events.",
-    },
-    {
-      type: "template",
-      domain: "Market Research",
-      img: Venue,
-      url:"T_VENUE",
-      trackerName: "Venue Tracker",
-      content:
-        "Define a specific venue's latitude and longitude, and track events within a set radius to capture nearby activity.",
-    },
-    {
-      type: "template",
-      domain: "Networking & Outreach",
-      img: LocationDate,
-      url: "T_LOCATION_DATE",
-      trackerName: "Location and Date Tracker",
-      content:
-        "Track events happening at a specific location over a defined date range to analyze both geographical and temporal trends.",
-    }
-  ]:
+const data = 
   [
     {
       type: "template",

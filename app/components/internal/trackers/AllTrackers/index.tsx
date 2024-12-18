@@ -14,7 +14,6 @@ import { useRouter } from "next/navigation";
 import { useTrackerContext } from "@/context/tracker";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
-  const productType = process.env.NEXT_PUBLIC_PRODUCT_TYPE;
   const router= useRouter();
   const {  setIsNewCall, setTrackerId, isLoading:load } = useTrackerContext();
   // const { theme } = useTheme();
@@ -148,8 +147,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             <div className="flex gap-2 w-[100%] text-sm font-medium">
             <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none"}}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
-                {productType!=="eventeli" && <Image src={Vectore6} alt="newVector" width={12} height={12}/>}
-                {productType==="eventeli"?"Business":"New"}
+                <Image src={Vectore6} alt="newVector" width={12} height={12}/>
+                New
                 
               </div>
               <div className={styles.numberOfEvents}>
@@ -165,10 +164,9 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             </div>
             <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none"}}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
-              {productType!=="eventeli" &&
                 <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
-              }
-                {productType==="eventeli"?"Social":"Active"}
+              
+                Active
               </div>
               <div className={styles.numberOfEvents}>
               {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.active)}
@@ -177,8 +175,8 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             </div>
             <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none"}}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
-                {productType!=="eventeli" && <Image src={Vectore8} alt="expired" width={12} height={12}/>}
-                {productType==="eventeli"?"Unattended":"Past"}
+               <Image src={Vectore8} alt="expired" width={12} height={12}/>
+                Past
               </div>
               <div className={styles.numberOfEvents}>
                 {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired)}

@@ -130,7 +130,6 @@ interface Search {
   }
 }
 const Trackers = ({ searchParams }: Search) => {
-  const productType = process.env.NEXT_PUBLIC_PRODUCT_TYPE;
   const {tab}=searchParams;
   const {  setIsNewCall, setTrackerId, isLoading:load } = useTrackerContext();
   const router=useRouter();

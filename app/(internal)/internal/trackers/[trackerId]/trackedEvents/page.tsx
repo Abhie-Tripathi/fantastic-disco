@@ -70,7 +70,6 @@ const Page = ({ params }: { params: any }) => {
   
   const pathname = usePathname();
   // const {getTrackerDetail, error}=useTrackerServices();
-  const productType = process.env.NEXT_PUBLIC_PRODUCT_TYPE;
   const [type, setType] = useState<string | undefined>();
   const [activeValue, setActiveValue] = useState();
   const [loading, setLoading] = useState(false);

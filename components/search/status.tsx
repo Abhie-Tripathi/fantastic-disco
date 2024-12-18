@@ -78,7 +78,6 @@ export default function StatusSelector({
   const isAllSelected = selectedStatuses.length === eventStatuses.length;
 
   const handleApply = () => {  
-    console.log("status", selectedStatuses.join(","));
     
     setLocalFilter("status", selectedStatuses.join(","));
     setIsOpen(false);
@@ -90,7 +89,6 @@ export default function StatusSelector({
     }
     setIsOpen(open);
   };
-  console.log(selectedStatuses);
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>

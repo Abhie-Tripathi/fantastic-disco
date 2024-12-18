@@ -93,7 +93,6 @@ const setSelectedRatings=
     }
     setIsOpen(open);
   };
-console.log(enabledRatingData);
 
   console.log("hii", showRatings);
   return (

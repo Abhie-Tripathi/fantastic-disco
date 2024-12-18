@@ -128,7 +128,6 @@ export const useTrackerServices = () => {
           signal: abortSignal,
         }
       );
-      console.log(response);
       
       const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
       
@@ -189,15 +188,11 @@ export const useTrackerServices = () => {
       const response: OriginalResponse | undefined = await api.request(type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?${result}`:`${endpoints.tracker.commonUrl}/${trackerId}/events?${searchParams}`, {
         method: "GET",
       });
-      console.log(EventsAdapter.adaptResponse(response, new URLSearchParams("view=calendar")));
-      console.log(response);
       
       // console.log(TrackersAdapter.adaptTrackerMapEventData(response));
       if(isListing){
         const updatedResponse  = TrackersAdapter.adaptTrackerEventData(response);
-        console.log(updatedResponse);
         
-        console.log(EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams(`view=calendar&calendar_type=month`)));
         
         return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams(""));
       }else 

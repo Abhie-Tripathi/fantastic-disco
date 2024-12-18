@@ -150,7 +150,6 @@ export const useEventsService = () => {
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {
     const params = new URLSearchParams(searchParamsString);
-    console.log(params.toString());
     const adaptedParams = EventsAdapter.adaptRequestParams(params);
     
     
