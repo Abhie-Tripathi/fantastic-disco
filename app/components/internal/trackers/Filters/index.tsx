@@ -1013,10 +1013,20 @@ const Pages = () => {
       }
       if (last === "editTracker") {
       try{
-        const data = await editTracker(secondLast, formData);
+        const data = await editTracker(secondLast, formData) as { error?: ApiError };
         if (data) {
           console.log(data);
+          if(data?.error){
+            toast.error((data.error as ApiError).message, {
+              position: "bottom-right",
+              autoClose: 2000,
+              hideProgressBar: true,
+            });
+            setIsCreating(false);
+            return;
+          }else{
           router.replace(`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`);
+          }
         } else {
           console.log(error);
           setIsCreating(false);
