@@ -39,6 +39,7 @@
     width: 100%;
     border-radius: 8px;
     object-fit:cover;
+    /* border: 1px solid var(--border-color); */
 }
 .eventName{
     min-height: 60px;

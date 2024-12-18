@@ -20,13 +20,7 @@ const TypoContainer = ({ setPreview, setTypography, fetchedFonts ,setFetchedFont
         e.stopPropagation();
         const updatedFontsArray = fetchedFonts.filter((_, index) => index !== indexToRemove);
         setFetchedFonts(updatedFontsArray)
-        // const {data,error} = await myFetch(`${baseUrl}/kit`,{
-        //     method : "PATCH",
-        //     body: JSON.stringify({fontFamily : updatedFontsArray.join()}),
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }       
-        // })
+        console.log("updates fonts :", updatedFontsArray)
         const data:any = await updateBrandkit({fontFamily : updatedFontsArray.join()})
      
         if(error){
