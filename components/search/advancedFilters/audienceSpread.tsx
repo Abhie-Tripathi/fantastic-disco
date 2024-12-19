@@ -17,6 +17,7 @@ import { useMiscService } from "@/services/miscService";
 import { Country } from "@/types/events/events";
 import { useFilterContext } from "@/context/filterContext";
 import { LockClosedSmall } from "geist-icons";
+import { log } from "util";
 interface AudienceSpreadProps{
   source: string;
   enabledSpreadData?:spreadInterface;
@@ -65,7 +66,6 @@ export default function Component({
     if(source!=="tracker"){
     const audienceSpread = getLocalFilterValue("audienceSpread");
     const audienceSpreadRegions = getLocalFilterValue("audienceSpreadRegions");
-
     if (audienceSpread) {
       setSelectedCountries?.(audienceSpread.split(","));
     }

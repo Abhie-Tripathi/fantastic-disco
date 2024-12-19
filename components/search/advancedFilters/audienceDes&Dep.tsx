@@ -50,9 +50,19 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
   const [open, setOpen] = useState(false);
   const [selectedLabels, setSelectedLabels] = useState<Designations[]>([]);
   const [search, setSearch] = useState("");
-  const { setLocalFilter } = useFilterContext();
   const { designations } = useDesignationsAutocomplete(search);
-
+  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
+  useEffect(() => {
+    if(source!=="tracker"){
+      const designation = getLocalFilterValue("designations");
+      if(designation){
+      const result = designations.filter((item:Designations) =>
+        designation.split(',')?.some((data) => data=== item.slug)
+      );   
+      setSelectedLabels?.(result);
+    }
+  }
+  }, [getLocalFilterValue]);
   const handleSelect = (label: Designations) => {
     setSelectedLabels((prev) => {
       const isSelected = prev.some((l) => l.id === label.id);
@@ -65,13 +75,15 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
   };
 
   const handleApply = () => {
-    if(source!=="tracker")
-    setLocalFilter(
-      "designations",
-      selectedLabels.map((l) => l.slug).join(",")
-    );
-    setDesignationData?.(selectedLabels?.map((l) => l.id));
-    setOpen(false);
+   
+    // setOpen(false)
+    if(source!=="tracker"){
+    const res=selectedLabels.map((labels)=>labels.slug)
+    setLocalFilter("designations", res.join(","))
+    }else {
+      setDesignationData?.(selectedLabels?.map((l) => l.id));
+      setOpen(false);
+    }
   };
 
   const handleRemoveLabel = (labelId: string) => {
