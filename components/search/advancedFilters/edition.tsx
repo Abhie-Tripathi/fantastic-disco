@@ -24,7 +24,7 @@ interface enabledData{
 }
 interface EditionProps{
   source:string,
-  enabledMaturityData:enabledData,
+  enabledMaturityData?:enabledData,
   selectedStatus?: string;
   setSelectedStatus?: React.Dispatch<React.SetStateAction<string>>;
   isEnabled?: boolean;
@@ -81,7 +81,8 @@ export default function EditionSelector({
   const onOpenChange = (open: boolean) => {
     setIsOpen(open);
   };
-
+  console.log(enabledMaturityData);
+  
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
