@@ -45,7 +45,7 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
-
+  
   console.log(routes[pathname.split("/").slice(-1)[0]])
   return (
     <header className="bg-background border-b">

@@ -11,6 +11,10 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/internal", request.url));
     }
   }
+  if (request.nextUrl.pathname === "/internal/search/events" && !request.nextUrl.searchParams.has("view")) {
+    request.nextUrl.searchParams.set("view", "list");
+    return NextResponse.redirect(request.nextUrl);
+  }
   return NextResponse.next();
 }
 

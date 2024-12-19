@@ -218,11 +218,17 @@ export const useEventsService = () => {
     });
     return response;
   };
-
+  const fetchEnabledFilters =async (source:String) =>{
+    const response = await api.request(`${endpoints.event.enabledFilters}?source=${source}`, {
+      method: "GET"
+    });
+    return response;
+  }
   return {
     getEvents,
     saveEvent,
     getEventById,
+    fetchEnabledFilters,
     getEventsCount,
     getRecentSearches,
     bookmarkThisEvent,

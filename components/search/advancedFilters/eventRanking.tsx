@@ -15,7 +15,7 @@ import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-
+import { LockClosedSmall } from "geist-icons";
 interface RankCategory {
   name: string;
   enabled: boolean;
@@ -27,8 +27,12 @@ const ranks = [
   { id: "500", label: "Top 500" },
   { id: "1000", label: "Top 1000" },
 ];
+interface rankInterface{
+  isRanking?:boolean;
+}
 interface EvenetRankingProps{
   source:string;
+  enabledRankingData?:rankInterface;
   selectedTrustScore?:any;
   setSelectedTrustScore?:any;
   rankToggles?:any;
@@ -36,7 +40,7 @@ interface EvenetRankingProps{
   selectedRank?:string;
   setSelectedRank?:React.Dispatch<React.SetStateAction<string>>;
 }
-export default function EventRankingSelector({source, selectedTrustScore, setSelectedTrustScore, rankToggles, setRankToggles, selectedRank, setSelectedRank}: EvenetRankingProps) {
+export default function EventRankingSelector({source, selectedTrustScore, setSelectedTrustScore, rankToggles, setRankToggles, selectedRank, setSelectedRank, enabledRankingData}: EvenetRankingProps) {
   const [open, setOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<string>(selectedRank && selectedRank.length>0?selectedRank.substring(2):"");
   const [categories, setCategories] = useState<RankCategory[]>([
@@ -201,11 +205,15 @@ export default function EventRankingSelector({source, selectedTrustScore, setSel
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             open ? "border-primary" : "border-input"
           }`}
+          disabled={enabledRankingData && !enabledRankingData?.isRanking}
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-haspopup="true"
         >
           <div className="flex items-center truncate">
+          {enabledRankingData && !enabledRankingData.isRanking && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
             <span className="mr-2">Event Ranking</span>
             {getAppliedFiltersCount() > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">

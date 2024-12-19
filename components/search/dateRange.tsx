@@ -69,6 +69,7 @@ const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
 
 interface DateRangeProps {
   source: string;
+  enabledDateRange?:any;
   dateRange?: {
     from: Date | undefined;
     to: Date | undefined;
@@ -83,6 +84,7 @@ interface DateRangeProps {
 
 export default function DateRangeSelector({
   source,
+  enabledDateRange,
   dateRange: parentDateRange,
   setDateRange: setParentDateRange,
 }: DateRangeProps) {

@@ -16,13 +16,19 @@ import Image from "next/image";
 import { useMiscService } from "@/services/miscService";
 import { Country } from "@/types/events/events";
 import { useFilterContext } from "@/context/filterContext";
+import { LockClosedSmall } from "geist-icons";
 interface AudienceSpreadProps{
   source: string;
+  enabledSpreadData?:spreadInterface;
   selectedCountries?: string[];
   setSelectedCountries?: React.Dispatch<React.SetStateAction<string[]>>;
 }
+interface spreadInterface{
+  isAudienceEnabled?:boolean;
+}
 export default function Component({
   source,
+  enabledSpreadData,
   selectedCountries: selectedParentCountries = [],
   setSelectedCountries: setSelectedParentCountries,
 }: AudienceSpreadProps) {
@@ -59,7 +65,6 @@ export default function Component({
     if(source!=="tracker"){
     const audienceSpread = getLocalFilterValue("audienceSpread");
     const audienceSpreadRegions = getLocalFilterValue("audienceSpreadRegions");
-
     if (audienceSpread) {
       setSelectedCountries?.(audienceSpread.split(","));
     }
@@ -117,6 +122,7 @@ export default function Component({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
+          disabled={enabledSpreadData && !enabledSpreadData?.isAudienceEnabled}
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             isOpen ? "border-primary" : "border-input"
           }`}
@@ -125,6 +131,9 @@ export default function Component({
           aria-haspopup="true"
         >
           <div className="flex items-center">
+          {enabledSpreadData && !enabledSpreadData.isAudienceEnabled && 
+            <LockClosedSmall color="var(--secondary-text-color)" />
+          }
             <span className="mr-2">Audience Spread</span>
             {(selectedCountries.length > 0 || selectedRegions.length > 0) && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
