@@ -36,8 +36,13 @@ export default function ProductsPage() {
     useState<any[]>([]);
   const [filteredResearchScreenboxes, setFilteredResearchScreenboxes] =
     useState<any[]>([]);
-  console.log("43434343434____", filteredResearchScreenboxes);
   const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>(null);
+  const staticData = {
+    label: "Bookmark",
+    source: "research",
+    status: "BOOKMARK",
+    position: 0,
+  };
   const carbonArray = [
     {
       label: "Shortlisted",
@@ -165,6 +170,7 @@ export default function ProductsPage() {
         break;
       }
     }
+    console.log("32323", filteredResearchScreenboxes);
     if (updatedBox) {
       const formData = {
         source: "interest",
@@ -251,85 +257,6 @@ export default function ProductsPage() {
     // setOutreachTempValue("");
   };
 
-  // const handleDragStartResearchScreen = (e: any, id: any) => {
-  //   e.dataTransfer.setData("text/plain", id);
-  //   e.currentTarget.classList.add("dragging");
-  // };
-
-  // const handleDragEndResearchScreen = (e: any) => {
-  //   e.currentTarget.classList.remove("dragging");
-  // };
-
-  // const handleDragOverResearchScreen = (
-  //   e: React.DragEvent<HTMLDivElement>,
-  //   targetId: any
-  // ) => {
-  //   e.preventDefault();
-
-  //   const draggingElement = document.querySelector(".dragging") as HTMLElement;
-  //   const targetElement = e.currentTarget as HTMLElement;
-
-  //   if (draggingElement && targetElement) {
-  //     const draggingId = draggingElement.dataset.id;
-  //     const targetIndex = researchScreenboxes.findIndex(
-  //       (box: any) => box.status === targetId
-  //     );
-  //     const draggingIndex = researchScreenboxes.findIndex(
-  //       (box: any) => box.status === draggingId
-  //     );
-
-  //     if (draggingIndex !== targetIndex) {
-  //       const updatedBoxes = [...researchScreenboxes];
-  //       const [draggedBox] = updatedBoxes.splice(draggingIndex, 1);
-  //       updatedBoxes.splice(targetIndex, 0, draggedBox);
-  //       setResearchScreenBoxes(updatedBoxes);
-  //     }
-  //   }
-  // };
-
-  // const handleDropResearchScreen = (e: any) => {
-  //   e.preventDefault();
-  // };
-
-  // const handleDragStartOutreachScreen = (e: any, id: any) => {
-  //   e.dataTransfer.setData("text/plain", id);
-  //   e.currentTarget.classList.add("dragging");
-  // };
-
-  // const handleDragEndOutreachScreen = (e: any) => {
-  //   e.currentTarget.classList.remove("dragging");
-  // };
-
-  // const handleDragOverOutreachScreen = (
-  //   e: React.DragEvent<HTMLDivElement>,
-  //   targetId: any
-  // ) => {
-  //   e.preventDefault();
-
-  //   const draggingElement = document.querySelector(".dragging") as HTMLElement;
-  //   const targetElement = e.currentTarget as HTMLElement;
-
-  //   if (draggingElement && targetElement) {
-  //     const draggingId = draggingElement.dataset.id;
-  //     const targetIndex = outreachScreenboxes.findIndex(
-  //       (box: any) => box.status === targetId
-  //     );
-  //     const draggingIndex = outreachScreenboxes.findIndex(
-  //       (box: any) => box.status === draggingId
-  //     );
-
-  //     if (draggingIndex !== targetIndex) {
-  //       const updatedBoxes = [...outreachScreenboxes];
-  //       const [draggedBox] = updatedBoxes.splice(draggingIndex, 1);
-  //       updatedBoxes.splice(targetIndex, 0, draggedBox);
-  //       setOutreachScreenBoxes(updatedBoxes);
-  //     }
-  //   }
-  // };
-
-  // const handleDropOutreachScreen = (e: any) => {
-  //   e.preventDefault();
-  // };
   const getResearchResponse = async () => {
     const data: any = await getResearchData();
     setResearchScreenBoxes(data);
@@ -514,18 +441,6 @@ export default function ProductsPage() {
               <div className="flex flex-col gap-5">
                 {filteredResearchScreenboxes.map((box: any, index: any) => (
                   <div
-                    // key={box.status}
-                    // className="flex items-center gap-2 relative"
-                    // draggable
-                    // data-id={box.status}
-                    // onDragStart={(e) =>
-                    //   handleDragStartResearchScreen(e, box.status)
-                    // }
-                    // onDragOver={(e) =>
-                    //   handleDragOverResearchScreen(e, box?.status)
-                    // }
-                    // onDrop={handleDropResearchScreen}
-                    // onDragEnd={handleDragEndResearchScreen}
                     key={box.status}
                     className="flex items-center gap-2 relative"
                     draggable
@@ -604,14 +519,6 @@ export default function ProductsPage() {
               <div className="flex flex-col gap-5">
                 {filteredOutreachScreenboxes.map((box: any, index: any) => (
                   <div
-                    // key={box.status}
-                    // className="flex items-center gap-2 relative"
-                    // draggable
-                    // data-id={box.status}
-                    // onDragStart={(e) => handleDragStartOutreachScreen(e, box)}
-                    // onDragOver={(e) => handleDragOverOutreachScreen(e, box)}
-                    // onDrop={handleDropOutreachScreen}
-                    // onDragEnd={handleDragEndOutreachScreen}
                     key={box.status}
                     className="flex items-center gap-2 relative"
                     draggable
