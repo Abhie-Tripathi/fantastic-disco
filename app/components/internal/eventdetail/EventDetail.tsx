@@ -36,6 +36,7 @@ interface Props {
   enquiryId: string;
   currentEnquiryStatus?: string;
   handleRefresh?: () => void;
+  configData?: any;
 }
 
 const EventDetail = ({
@@ -48,10 +49,11 @@ const EventDetail = ({
   eventId,
   enquiryId,
   currentEnquiryStatus,
+  configData,
   handleRefresh,
   handleDropdownSelect
 }: Props) => {
-  const [meet, setMeet] = useState(false);
+  const [pipelineIndex, setPipelineIndex] = useState<number>(configData?.findIndex((item: any) => item.status === currentEnquiryStatus));
   const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
   const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
   const pathName = usePathname().split("/")[2];
@@ -75,40 +77,10 @@ const EventDetail = ({
     "10": "CONFIRMED",
     "12": "CANCELED",
   };
-  const handleStatusChange = async (changeStatusTo: number) => {
-    setStatus(changeStatusTo);
+  const handleStatusChange = async (changeStatusTo: string) => {
+    setPipelineIndex(configData.findIndex((item: any) => item.status === changeStatusTo));
     
-    // if (enquiryId && enquiryId != "") {
-    //   let payloadData = {
-    //     enquiryId: enquiryId,
-    //     enquiryStatus: statusValues[changeStatusTo],
-    //   };
-    //   try {
-    //     const apiUrl = baseUrl + "/userInterest/enquiry";
-    //     const apiData = await myFetch(apiUrl, {
-    //       method: "PATCH",
-    //       headers: headers,
-    //       body: JSON.stringify(payloadData),
-    //     });
-    //     if (apiData.data.message === "Data updated") {
-    //       // if (handleRefresh) handleRefresh();
-    //       // toast.success("Enquiry status updated!", {
-    //       //   position: "bottom-right",
-    //       //   autoClose: 2000,
-    //       //   closeButton: false,
-    //       //   hideProgressBar: true,
-    //       // });
-          
-    //       console.log("curr",currentEnquiryStatus);
-          
-          
-    //     }
-    //   } catch (error) {
-    //     console.error("Error fetching data:", error);
-    //   }
-    // }
-    if (handleDropdownSelect) 
-    handleDropdownSelect(statusValues[changeStatusTo]==="SHORTLISTED"?"shortlisted":statusValues[changeStatusTo]==="IN_NEGO"?"outreach":statusValues[changeStatusTo]==="CANCELED"?"canceled":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":currentEnquiryStatus==="CANCELED"?"canceled":"prefinalised" );
+    if (handleDropdownSelect && currentEnquiryStatus) handleDropdownSelect(changeStatusTo, currentEnquiryStatus);
     showToast("success","Enquiry status updated!")
   };
 
@@ -157,17 +129,15 @@ const EventDetail = ({
 
   return (
     <div
-      className={
-        meet ? `${styles.container} ${styles.fullHeight}` : styles.container
-      }
+      className={styles.container}
     >
       <div className={styles.closeIcon} onClick={handleCloseModal}>
         <Image src={backIcon} alt="close" height={22} width={22} />
         Back
       </div>
-      {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange}/>}
 
       <div className={styles.modalContainer}>
+        {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange} configData={configData} pipelineIndex={pipelineIndex} />}
         <div className={styles.innerContainer}>
           <div className={styles.containerLeft} ref={leftContainerRef}>
             <div className={styles.containerLeftTop}>

@@ -70,6 +70,7 @@ import { Designations } from "@/types/misc";
 import { newCategories } from "@/data/categories";
 import kewwordPresetJson from "@/public/data/presetJson/keyword.json"
 import competitorPresetJson from "@/public/data/presetJson/competitor.json"
+import speakerPresetJson from "@/public/data/presetJson/speaker.json"
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -588,7 +589,7 @@ const Pages = () => {
   );
   // const [editData, setEditData] = useState<EditData | null>(null);
   useEffect(() => {
-    setPresetTemplateData([...staticPresetData, ...kewwordPresetJson, ...competitorPresetJson])
+    setPresetTemplateData([...kewwordPresetJson, ...competitorPresetJson, ...speakerPresetJson])
   }, []);
 
   useEffect(() => {

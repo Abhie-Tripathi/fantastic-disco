@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./page.style.module.css";
 import Internal from "@/app/components/internal/Internal";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
@@ -17,6 +17,11 @@ const Page = () => {
   const [selectedId,setSelectedId]=useState("");
   const [statusChanged,setStatusChanged]=useState<boolean>(false);
   const [cardUpdated, setCardUpdated] = useState<boolean>(false);
+
+  const [coordinateActions, setCoordinateActions] = useState<any>([]);
+
+  const [pipelineConfig, setPipelineConfig] = useState<any>([]);
+
   const handleRefresh = () => {
     setCardUpdated(!cardUpdated);
   };
@@ -29,6 +34,22 @@ const Page = () => {
     if (eventId && eventId != "") fetchInterestData(eventId, enquiryId);
     else setShortlistModalOpen(!shortlistModalOpen);
   };
+
+  const getInterestConfig = async () => {
+    try {
+      const apiData: any = await coordinateService.getInterestConfig();
+      setCoordinateActions(apiData.slice(1));
+
+      const pipelineData: any = await coordinateService.getPipelineConfig();
+      setPipelineConfig(pipelineData.outreach_stage);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
+  useEffect(() => {
+    getInterestConfig();
+  }, []);
 
   const fetchInterestData = async (eventId: string, enquiryId: string) => {
     try {
@@ -72,6 +93,8 @@ const Page = () => {
           handleModal={handleModal}
           handleShortlistModal={handleShortlistModal}
           cardUpdated={cardUpdated}
+          coordinateActions={coordinateActions}
+          pipelineConfig={pipelineConfig}
         />
       </div>
       {modalOpen && (
@@ -98,6 +121,7 @@ const Page = () => {
             handleShortlistModal={handleShortlistModal}
             shortlistModalData={shortlistModalData}
             handleRefresh={handleRefresh}
+            pipelineConfig={pipelineConfig}
           />
         </div>
       )}

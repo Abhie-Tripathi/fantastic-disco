@@ -29,6 +29,8 @@ interface Props {
   statusChanged?: boolean;
   selectedId?: string;
   setSelectedId: any;
+  coordinateActions: any;
+  pipelineConfig: any;
 }
 const Internal = ({
   handleModal,
@@ -39,6 +41,8 @@ const Internal = ({
   setStatusChanged,
   statusChanged,
   selectedId,
+  coordinateActions,
+  pipelineConfig,
 }: Props) => {
   const searchParams = useSearchParams();
   const coordinateService = useCoordinateService();
@@ -71,17 +75,6 @@ const Internal = ({
     setSearchInput(event.target.value);
   };
 
-  const [coordinateActions, setCoordinateActions] = useState<any>([]);
-
-  const getInterestConfig = async () => {
-    try {
-      const apiData: any = await coordinateService.getInterestConfig();
-      setCoordinateActions(apiData.slice(1));
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
-
   useEffect(() => {
     const getCordinateList = async () => {
       try {
@@ -94,7 +87,6 @@ const Internal = ({
       }
     };
     getCordinateList();
-    getInterestConfig();
   }, []);
 
   const fetchData = async () => {
@@ -140,7 +132,7 @@ const Internal = ({
     if (statusChanged === true) {
       const updatedData = eventData1.map((item) => {
         return item.eventId === selectedId
-          ? { ...item, enquiryStatus: "Shortlisted" }
+          ? { ...item, enquiryStatus: "SHORTLISTED" }
           : item;
       });
 
@@ -266,7 +258,7 @@ const Internal = ({
             </div>
 
             <div style={{ width: "15%" }} className={styles.outerDiv}>
-              <InterestStatusSelector />
+              <InterestStatusSelector pipelineConfig={pipelineConfig} />
             </div>
 
             <div style={{ width: "25%" }} className={styles.outerDiv}>
@@ -309,6 +301,7 @@ const Internal = ({
                       upvote={item.upvote}
                       enquiryActivity={item.enquiryActivity}
                       coordinateActions={coordinateActions}
+                      pipelineConfig={pipelineConfig}
                       handleModal={handleModal}
                       handleShortlistModal={handleShortlistModal}
                     />
