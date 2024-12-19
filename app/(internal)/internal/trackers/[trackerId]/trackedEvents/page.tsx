@@ -495,6 +495,7 @@ const Page = ({ params }: { params: any }) => {
               showInsights={showInsights}
               eventType={active}
               setActiveValue={setActiveValue}
+              source="trackers"
             />
             </Suspense>
             </div>

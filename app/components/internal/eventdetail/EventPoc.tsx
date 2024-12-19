@@ -141,7 +141,7 @@ const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) 
               <Button
                 variant="link"
                 onClick={() => setExpandedTab('poc')}
-              >View All</Button>
+              >View All ({pocData?.length})</Button>
             }
           </div>
         </div>

@@ -44,12 +44,12 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
       <div className="text-[var(--primary-color)] font-bold px-5 py-2">
         Poc Detail
       </div>
-      <div className="h-full overflow-y-auto w-full flex gap-4 flex-wrap px-5 justify-between">
+      <div className="h-full overflow-y-auto w-full grid justify-center grid-cols-[repeat(auto-fill,_220px)] gap-4" >
         {pocData?.length > 0 &&
           pocData.map((poc) => (
             <div
               key={poc.id}
-              className="card flex flex-col gap-3 max-h-[260px] w-[31%] overflow-y-auto"
+              className="card flex flex-col gap-3 h-[260px] w-full overflow-y-auto"
               style={{padding: '12px'}}
             >
               <div className="flex justify-center">
@@ -67,11 +67,11 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
               </div>
               <div className="h-full flex gap-2 flex-col items-start">
                 <div className="flex flex-col gap-2 flex-1 flex-wrap">
-                  <Text fontWeight="medium" variant="noMargin">
-                    {poc?.name ? poc?.name : "Unknown"}
+                  <Text className="min-h-5" fontWeight="medium" variant="noMargin">
+                    {poc?.name}
                   </Text>
                   <p className="text-[#666666] text-[12px] min-h-5">
-                    <span>{poc?.designation}</span>
+                    <span className="line-clamp-2 overflow-hidden" title={poc?.designation ? poc?.designation : ""} >{poc?.designation}</span>
                   </p>
                   {poc?.email && (
                     <p className="text-[#666666] flex items-center gap-2 text-[12px]">
