@@ -30,23 +30,14 @@ export default function ProductsPage() {
   const [researchTempValue, setResearchTempValue] = useState("");
   const [outreachTempValue, setOutreachTempValue] = useState("");
 
-  const [cards, setCards] = useState<any[]>([
-    // { id: 1, value: "" },
-    // { id: 2, value: "" },
-    // { id: 3, value: "" },
-    // { id: 4, value: "" },
-  ]);
-  const [cardTempValue, setCardTempValue] = useState("");
-
   const [researchScreenboxes, setResearchScreenBoxes] = useState<any[]>([]);
   const [outreachScreenboxes, setOutreachScreenBoxes] = useState<any[]>([]);
   const [filteredOutreachScreenboxes, setFilteredOutreachScreenboxes] =
     useState<any[]>([]);
   const [filteredResearchScreenboxes, setFilteredResearchScreenboxes] =
     useState<any[]>([]);
-  const originalArr = (outreachScreenboxes as any).filter(
-    (value: any) => !["PENDING", "CANCELLED", "REJECTED"].includes(value.status)
-  );
+  console.log("43434343434____", filteredResearchScreenboxes);
+  const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>(null);
   const carbonArray = [
     {
       label: "Shortlisted",
@@ -73,7 +64,6 @@ export default function ProductsPage() {
   ];
 
   const researchCarbonArr = [
-    { label: "Bookmark", source: "research", status: "BOOKMARK", position: 0 },
     { label: "Hot Lead", source: "research", status: "ATTENDEE", position: 0 },
     { label: "Warm Lead", source: "research", status: "SPEAKER", position: 0 },
     { label: "Cold Lead", source: "research", status: "SPONSOR", position: 0 },
@@ -130,6 +120,7 @@ export default function ProductsPage() {
   };
 
   const handleChangeResearchScreenBoxes = (id: string, value: string) => {
+    console.log("sdf43434", id, value);
     if (value.length > 20) {
       showToast("error", "Input cannot be more than 20 characters!");
       return;
@@ -138,6 +129,10 @@ export default function ProductsPage() {
   };
   const handleChangeOutreachScreenBoxes = (id: string, value: string) => {
     // console.log("values", id, value);
+    if (value.length > 20) {
+      showToast("error", "Input cannot be more than 20 characters!");
+      return;
+    }
     setOutreachTempValue(value);
   };
 
@@ -177,13 +172,9 @@ export default function ProductsPage() {
       };
 
       try {
-        const data = await updateResearchData({ formData });
-        
-        if(data){
-          console.log("fr3333",data)
-          window.reload()
-        }
+        await updateResearchData({ formData });
         setResearchScreenEditingBoxId(null);
+        getResearchResponse();
       } catch (error) {
         console.error("Error updating data:", error);
       }
@@ -260,85 +251,85 @@ export default function ProductsPage() {
     // setOutreachTempValue("");
   };
 
-  const handleDragStartResearchScreen = (e: any, id: any) => {
-    e.dataTransfer.setData("text/plain", id);
-    e.currentTarget.classList.add("dragging");
-  };
+  // const handleDragStartResearchScreen = (e: any, id: any) => {
+  //   e.dataTransfer.setData("text/plain", id);
+  //   e.currentTarget.classList.add("dragging");
+  // };
 
-  const handleDragEndResearchScreen = (e: any) => {
-    e.currentTarget.classList.remove("dragging");
-  };
+  // const handleDragEndResearchScreen = (e: any) => {
+  //   e.currentTarget.classList.remove("dragging");
+  // };
 
-  const handleDragOverResearchScreen = (
-    e: React.DragEvent<HTMLDivElement>,
-    targetId: any
-  ) => {
-    e.preventDefault();
+  // const handleDragOverResearchScreen = (
+  //   e: React.DragEvent<HTMLDivElement>,
+  //   targetId: any
+  // ) => {
+  //   e.preventDefault();
 
-    const draggingElement = document.querySelector(".dragging") as HTMLElement;
-    const targetElement = e.currentTarget as HTMLElement;
+  //   const draggingElement = document.querySelector(".dragging") as HTMLElement;
+  //   const targetElement = e.currentTarget as HTMLElement;
 
-    if (draggingElement && targetElement) {
-      const draggingId = draggingElement.dataset.id;
-      const targetIndex = researchScreenboxes.findIndex(
-        (box: any) => box.status === targetId
-      );
-      const draggingIndex = researchScreenboxes.findIndex(
-        (box: any) => box.status === draggingId
-      );
+  //   if (draggingElement && targetElement) {
+  //     const draggingId = draggingElement.dataset.id;
+  //     const targetIndex = researchScreenboxes.findIndex(
+  //       (box: any) => box.status === targetId
+  //     );
+  //     const draggingIndex = researchScreenboxes.findIndex(
+  //       (box: any) => box.status === draggingId
+  //     );
 
-      if (draggingIndex !== targetIndex) {
-        const updatedBoxes = [...researchScreenboxes];
-        const [draggedBox] = updatedBoxes.splice(draggingIndex, 1);
-        updatedBoxes.splice(targetIndex, 0, draggedBox);
-        setResearchScreenBoxes(updatedBoxes);
-      }
-    }
-  };
+  //     if (draggingIndex !== targetIndex) {
+  //       const updatedBoxes = [...researchScreenboxes];
+  //       const [draggedBox] = updatedBoxes.splice(draggingIndex, 1);
+  //       updatedBoxes.splice(targetIndex, 0, draggedBox);
+  //       setResearchScreenBoxes(updatedBoxes);
+  //     }
+  //   }
+  // };
 
-  const handleDropResearchScreen = (e: any) => {
-    e.preventDefault();
-  };
+  // const handleDropResearchScreen = (e: any) => {
+  //   e.preventDefault();
+  // };
 
-  const handleDragStartOutreachScreen = (e: any, id: any) => {
-    e.dataTransfer.setData("text/plain", id);
-    e.currentTarget.classList.add("dragging");
-  };
+  // const handleDragStartOutreachScreen = (e: any, id: any) => {
+  //   e.dataTransfer.setData("text/plain", id);
+  //   e.currentTarget.classList.add("dragging");
+  // };
 
-  const handleDragEndOutreachScreen = (e: any) => {
-    e.currentTarget.classList.remove("dragging");
-  };
+  // const handleDragEndOutreachScreen = (e: any) => {
+  //   e.currentTarget.classList.remove("dragging");
+  // };
 
-  const handleDragOverOutreachScreen = (
-    e: React.DragEvent<HTMLDivElement>,
-    targetId: any
-  ) => {
-    e.preventDefault();
+  // const handleDragOverOutreachScreen = (
+  //   e: React.DragEvent<HTMLDivElement>,
+  //   targetId: any
+  // ) => {
+  //   e.preventDefault();
 
-    const draggingElement = document.querySelector(".dragging") as HTMLElement;
-    const targetElement = e.currentTarget as HTMLElement;
+  //   const draggingElement = document.querySelector(".dragging") as HTMLElement;
+  //   const targetElement = e.currentTarget as HTMLElement;
 
-    if (draggingElement && targetElement) {
-      const draggingId = draggingElement.dataset.id;
-      const targetIndex = outreachScreenboxes.findIndex(
-        (box: any) => box.status === targetId
-      );
-      const draggingIndex = outreachScreenboxes.findIndex(
-        (box: any) => box.status === draggingId
-      );
+  //   if (draggingElement && targetElement) {
+  //     const draggingId = draggingElement.dataset.id;
+  //     const targetIndex = outreachScreenboxes.findIndex(
+  //       (box: any) => box.status === targetId
+  //     );
+  //     const draggingIndex = outreachScreenboxes.findIndex(
+  //       (box: any) => box.status === draggingId
+  //     );
 
-      if (draggingIndex !== targetIndex) {
-        const updatedBoxes = [...outreachScreenboxes];
-        const [draggedBox] = updatedBoxes.splice(draggingIndex, 1);
-        updatedBoxes.splice(targetIndex, 0, draggedBox);
-        setOutreachScreenBoxes(updatedBoxes);
-      }
-    }
-  };
+  //     if (draggingIndex !== targetIndex) {
+  //       const updatedBoxes = [...outreachScreenboxes];
+  //       const [draggedBox] = updatedBoxes.splice(draggingIndex, 1);
+  //       updatedBoxes.splice(targetIndex, 0, draggedBox);
+  //       setOutreachScreenBoxes(updatedBoxes);
+  //     }
+  //   }
+  // };
 
-  const handleDropOutreachScreen = (e: any) => {
-    e.preventDefault();
-  };
+  // const handleDropOutreachScreen = (e: any) => {
+  //   e.preventDefault();
+  // };
   const getResearchResponse = async () => {
     const data: any = await getResearchData();
     setResearchScreenBoxes(data);
@@ -391,11 +382,104 @@ export default function ProductsPage() {
       try {
         await updateOutreachData({ formData });
         setOutreachScreenEditingBoxId(null);
+        getOutreachResponse();
       } catch (error) {
         console.error("Error updating data:", error);
       }
     }
   };
+
+  const updatePositions = (boxes: typeof filteredResearchScreenboxes) => {
+    return boxes.map((box, index) => ({
+      ...box,
+      position: index + 1, // Position starts from 1
+    }));
+  };
+
+  const handleDragStartResearchScreen = (e: React.DragEvent, index: number) => {
+    setDraggedItemIndex(index);
+  };
+
+  const handleDragOverResearchScreen = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDropResearchScreen = async (
+    e: React.DragEvent,
+    dropIndex: number
+  ) => {
+    e.preventDefault();
+    if (draggedItemIndex === null) return;
+
+    const newOrder = [...filteredResearchScreenboxes];
+    const [movedItem] = newOrder.splice(draggedItemIndex, 1);
+    newOrder.splice(dropIndex, 0, movedItem);
+
+    // Update positions after reordering
+    const updatedBoxes = updatePositions(newOrder);
+    console.log("positions", updatedBoxes);
+    const formData = {
+      source: "interest",
+      data: updatedBoxes,
+    };
+
+    await updateResearchData({ formData });
+    setFilteredResearchScreenboxes(updatedBoxes);
+    setDraggedItemIndex(null); // Reset after drop
+  };
+
+  const handleDragEndResearchScreen = () => {
+    setDraggedItemIndex(null);
+  };
+
+  const updateOutreachPositions = (
+    boxes: typeof filteredOutreachScreenboxes
+  ) => {
+    return boxes.map((box, index) => ({
+      ...box,
+      position: index + 1, // Position starts from 1
+    }));
+  };
+
+  const handleDragStartOutreachScreen = (e: React.DragEvent, index: number) => {
+    setDraggedItemIndex(index);
+  };
+
+  const handleDragOverOutreachScreen = (e: React.DragEvent) => {
+    e.preventDefault();
+  };
+
+  const handleDropOutreachScreen = async (
+    e: React.DragEvent,
+    dropIndex: number
+  ) => {
+    e.preventDefault();
+    if (draggedItemIndex === null) return;
+
+    const newOrder = [...filteredOutreachScreenboxes];
+    const [movedItem] = newOrder.splice(draggedItemIndex, 1);
+    newOrder.splice(dropIndex, 0, movedItem);
+
+    // Update positions after reordering
+    const updatedBoxes = updateOutreachPositions(newOrder);
+    console.log("positions", updatedBoxes);
+
+    const formData = {
+      source: "outreach",
+      data: {
+        outreach_stage: updatedBoxes,
+      },
+    };
+
+    await updateOutreachData({ formData });
+    setFilteredOutreachScreenboxes(updatedBoxes);
+    setDraggedItemIndex(null); // Reset after drop
+  };
+
+  const handleDragEndOutreachScreen = () => {
+    setDraggedItemIndex(null);
+  };
+
   return (
     <div>
       <div className="grid place-items-center p-6 max-w-5xl ">
@@ -426,20 +510,28 @@ export default function ProductsPage() {
                 Customise your event experience by adjusting your interest!
                 Update them any time to match your needs or goals for the event.
               </div>
+
               <div className="flex flex-col gap-5">
-                {filteredResearchScreenboxes.map((box: any) => (
+                {filteredResearchScreenboxes.map((box: any, index: any) => (
                   <div
+                    // key={box.status}
+                    // className="flex items-center gap-2 relative"
+                    // draggable
+                    // data-id={box.status}
+                    // onDragStart={(e) =>
+                    //   handleDragStartResearchScreen(e, box.status)
+                    // }
+                    // onDragOver={(e) =>
+                    //   handleDragOverResearchScreen(e, box?.status)
+                    // }
+                    // onDrop={handleDropResearchScreen}
+                    // onDragEnd={handleDragEndResearchScreen}
                     key={box.status}
                     className="flex items-center gap-2 relative"
                     draggable
-                    data-id={box.status}
-                    onDragStart={(e) =>
-                      handleDragStartResearchScreen(e, box.status)
-                    }
-                    onDragOver={(e) =>
-                      handleDragOverResearchScreen(e, box?.status)
-                    }
-                    onDrop={handleDropResearchScreen}
+                    onDragStart={(e) => handleDragStartResearchScreen(e, index)}
+                    onDragOver={handleDragOverResearchScreen}
+                    onDrop={(e) => handleDropResearchScreen(e, index)}
                     onDragEnd={handleDragEndResearchScreen}
                   >
                     <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
@@ -510,15 +602,22 @@ export default function ProductsPage() {
                 preferences.
               </div>
               <div className="flex flex-col gap-5">
-                {filteredOutreachScreenboxes.map((box: any) => (
+                {filteredOutreachScreenboxes.map((box: any, index: any) => (
                   <div
+                    // key={box.status}
+                    // className="flex items-center gap-2 relative"
+                    // draggable
+                    // data-id={box.status}
+                    // onDragStart={(e) => handleDragStartOutreachScreen(e, box)}
+                    // onDragOver={(e) => handleDragOverOutreachScreen(e, box)}
+                    // onDrop={handleDropOutreachScreen}
+                    // onDragEnd={handleDragEndOutreachScreen}
                     key={box.status}
                     className="flex items-center gap-2 relative"
                     draggable
-                    data-id={box.status}
-                    onDragStart={(e) => handleDragStartOutreachScreen(e, box)}
-                    onDragOver={(e) => handleDragOverOutreachScreen(e, box)}
-                    onDrop={handleDropOutreachScreen}
+                    onDragStart={(e) => handleDragStartOutreachScreen(e, index)}
+                    onDragOver={handleDragOverOutreachScreen}
+                    onDrop={(e) => handleDropOutreachScreen(e, index)}
                     onDragEnd={handleDragEndOutreachScreen}
                   >
                     <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
