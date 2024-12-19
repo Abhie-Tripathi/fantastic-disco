@@ -49,20 +49,23 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
           pocData.map((poc) => (
             <div
               key={poc.id}
-              className="flex flex-col gap-3 p-3 border border-[var(--neutral-light-color)] rounded-md max-h-[260px] w-[31%] overflow-y-auto items-center"
+              className="card flex flex-col gap-3 max-h-[260px] w-[31%] overflow-y-auto"
+              style={{padding: '12px'}}
             >
-              <img
-                src={
-                  poc?.profilePicture
-                    ? poc?.profilePicture
-                    : `https://img.10times.com/userimages/${
-                        poc?.name && poc?.name.charAt(0).toLowerCase()
-                      }.jpg`
-                }
-                alt="POC Logo"
-                className="rounded-lg shadow-md h-16 w-16"
-              />
-              <div className="h-full flex gap-2 flex-col items-center">
+              <div className="flex justify-center">
+                <img
+                  src={
+                    poc?.profilePicture
+                      ? poc?.profilePicture
+                      : `https://img.10times.com/userimages/${
+                          poc?.name && poc?.name.charAt(0).toLowerCase()
+                        }.jpg`
+                  }
+                  alt="POC Logo"
+                  className="rounded-lg shadow-md h-16 w-16"
+                />
+              </div>
+              <div className="h-full flex gap-2 flex-col items-start">
                 <div className="flex flex-col gap-2 flex-1 flex-wrap">
                   <Text fontWeight="medium" variant="noMargin">
                     {poc?.name ? poc?.name : "Unknown"}
@@ -103,7 +106,7 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
                   </p>
                 </div>
                 {(poc?.email || poc?.phoneNumber) && (
-                  <div className="">
+                  <div className="flex justify-center w-full">
                     <Button
                       disabled={(poc?.state && (poc.state === 1 || poc?.state === 2) ) ? true : false}
                       onClick={() => unlockPoc(poc.id)}
