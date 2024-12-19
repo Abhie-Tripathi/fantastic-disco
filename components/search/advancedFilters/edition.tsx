@@ -81,7 +81,6 @@ export default function EditionSelector({
   const onOpenChange = (open: boolean) => {
     setIsOpen(open);
   };
-  console.log(enabledMaturityData);
   
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
