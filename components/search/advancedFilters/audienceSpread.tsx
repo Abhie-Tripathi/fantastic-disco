@@ -17,7 +17,6 @@ import { useMiscService } from "@/services/miscService";
 import { Country } from "@/types/events/events";
 import { useFilterContext } from "@/context/filterContext";
 import { LockClosedSmall } from "geist-icons";
-import { log } from "util";
 interface AudienceSpreadProps{
   source: string;
   enabledSpreadData?:spreadInterface;
