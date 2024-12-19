@@ -2113,7 +2113,7 @@ return (
               setSelectedStatus={setSelectedMaturity}
               isEnabled={isMaturity}
               setIsEnabled={setIsMaturity}
-              enabledMaturityData={enabledFilters?.maturity ?? { isMaturityEnabled: false, enabledValue: [] }} 
+              enabledMaturityData={enabledFilters?.maturity} 
               />
               <GlobalAndTouringSelector source="tracker" selectedBrandedEvent={selectedBrandedEvent}
               setSelectedBrandedEvent={setSelectedBrandedEvent}
