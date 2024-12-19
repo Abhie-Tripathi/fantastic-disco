@@ -681,6 +681,14 @@ const Table = ({
                 "You have reached the maximum limit to view data. Please get in touch with us."
               );
             }
+            if (error.status === 406) {
+              setRequestExhausted(true);
+              setZeroStateHeading(error?.message);
+              setZeroStateText(
+                ""
+              );
+              setEventPerPage([]);
+            }
           }
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -734,18 +742,27 @@ const Table = ({
         setTotalEvents(result.totalEvents);
       }
   
-      setIsLoaded(true);
+     
   
     } catch (error:any) {
       if (error.name === "AbortError") {
-        console.log("Request was aborted");
+        console.log("Saved events request was aborted");
+      } else if (error.status === 406) {
+              setZeroStateHeading(error?.message);
+              setZeroStateText(
+                ""
+              );
+              setEventPerPage([]);
+              
+              // return <NullState image={TrackerNullState}  title={error?.message} />
       } else {
-        console.error("Fetch error: ", error);
+        console.error("Fetch saved data error:", error);
       }
     } finally {
       // Reset the controller after the request completes or is aborted
       abortControllerRef.current = null;
     }
+    setIsLoaded(true);
   };
   
   // const [isSaving, setIsSaving] = useState(false);
@@ -874,7 +891,7 @@ const Table = ({
         <Loading className="w-[200px] h-[100px]" />
       </div>
     );
-  } else if (isLoaded && eventPerPage.length == 0) {
+  } else if (isLoaded && eventPerPage.length == 0 ) {
     return (
       <div className={styles.noData}>
         {path[2]==="trackers"? 
