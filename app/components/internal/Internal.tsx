@@ -25,7 +25,7 @@ interface Props {
   handleShortlistModal: (eventId: string, enquiryId: string) => void;
   cardUpdated: boolean;
   modalOpen: boolean;
-  setStatusChanged?: (status: boolean) => void;
+  setStatusChanged: (status: boolean) => void;
   statusChanged?: boolean;
   selectedId?: string;
   setSelectedId: any;
@@ -57,7 +57,6 @@ const Internal = ({
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [coordinateCount, setCoordinateCount] = useState<any>();
   const [searchInput, setSearchInput] = useState("");
-  const [eventId, setEventId] = useState("");
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
   const [filterChanged, setFilterChanged] = useState(false);
@@ -142,6 +141,15 @@ const Internal = ({
     }
   }, [statusChanged]);
 
+  const enquiryStatusUpdate = (eventId: string, status: string) => {    
+    const updatedData = eventData1.map((item) => {
+      return item.eventId === eventId
+        ? { ...item, enquiryStatus: status }
+        : item;
+    });
+    setEventData1(updatedData);
+  }
+
   useEffect(() => {
     setPage(1);
     setFiltersChanged((prev) => !prev);
@@ -153,7 +161,7 @@ const Internal = ({
       fetchData();
       setFilterChanged(true);
     }
-  }, [page, eventId, filtersChanged]);
+  }, [page, filtersChanged]);
   if (!isLoaded) {
     return (
       <div style={{ padding: "50px" }}>
@@ -169,11 +177,8 @@ const Internal = ({
   }
   const handleSelect = (id: number, name: string) => {
     setSearchInput(name);
-    setEventId(id.toString());
     setShowSuggestion(true);
-    setFilter("eventId", id.toString());
-    console.log(id, name, 'selected item');
-    
+    setFilter("eventId", id.toString());    
   };
   return (
     <>
@@ -234,7 +239,6 @@ const Internal = ({
                       style={{ cursor: "pointer" }}
                       onClick={() => {
                         setSearchInput("");
-                        setEventId("");
                         deleteFilter('eventId')
                       }}
                     />
@@ -304,6 +308,7 @@ const Internal = ({
                       pipelineConfig={pipelineConfig}
                       handleModal={handleModal}
                       handleShortlistModal={handleShortlistModal}
+                      enquiryStatusUpdate={enquiryStatusUpdate}
                     />
                   </div>
                 </>
