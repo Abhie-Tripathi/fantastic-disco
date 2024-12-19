@@ -299,6 +299,7 @@ const Table = ({
   handleButtonLoading,
   savedEventCount,
   setSavedEventCount,
+  source,
 }: {
   savedEventCount?:number;
   setSavedEventCount?:any;
@@ -308,6 +309,7 @@ const Table = ({
   eventType?: string;
   setActiveValue?: any;
   setRequestExhausted?: any;
+  source?: string;
   handleButtonLoading?: (val: boolean) => void;
 }) => {
   const searchParams = useSearchParams();
@@ -2081,7 +2083,8 @@ const Table = ({
                             <main className={styles["modal_content"]}>
                               <form onSubmit={(e) => handleSubmit(e, close)}>
                                 <div id="field-1">
-                                  {/* <div className={styles["form-check"]}>
+                                  { source === 'trackers' &&
+                                  <div className={styles["form-check"]}>
                                     {path[path.length - 1] === "savedEvents" ||
                                     path[path.length - 1] === "trackers" ||
                                     event?.isSaved ||
@@ -2119,7 +2122,8 @@ const Table = ({
                                         </label>
                                       </>
                                     )}
-                                  </div> */}
+                                  </div>
+                                  }
                                   {coordinateActions.map((item: any, index: number) => (
                                     <div className={styles["form-check"]} key={index} >
                                       <input
