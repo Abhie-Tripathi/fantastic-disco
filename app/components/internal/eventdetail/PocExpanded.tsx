@@ -44,7 +44,7 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
       <div className="text-[var(--primary-color)] font-bold px-5 py-2">
         Poc Detail
       </div>
-      <div className="h-full overflow-y-auto w-full flex gap-4 flex-wrap px-4">
+      <div className="h-full overflow-y-auto w-full flex gap-4 flex-wrap px-5 justify-between">
         {pocData?.length > 0 &&
           pocData.map((poc) => (
             <div
@@ -67,11 +67,9 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
                   <Text fontWeight="medium" variant="noMargin">
                     {poc?.name ? poc?.name : "Unknown"}
                   </Text>
-                  {poc?.designation !== null && (
-                    <p className="text-[#666666] text-[12px]">
-                      <span>{poc?.designation}</span>
-                    </p>
-                  )}
+                  <p className="text-[#666666] text-[12px] min-h-5">
+                    <span>{poc?.designation}</span>
+                  </p>
                   {poc?.email && (
                     <p className="text-[#666666] flex items-center gap-2 text-[12px]">
                       <MailIcon

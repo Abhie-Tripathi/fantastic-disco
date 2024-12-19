@@ -88,7 +88,7 @@ export const useCoordinateService = () => {
   };
 
   const getEventPOC = (eventId: string) => {
-    return api.request<eventPocResponse>(`${endpoints.event.poc}/${eventId}`, {
+    return api.request<eventPocResponse>(`${endpoints.event.poc}/${eventId}?sortBy=asc`, {
       method: "GET",
     });
   }
