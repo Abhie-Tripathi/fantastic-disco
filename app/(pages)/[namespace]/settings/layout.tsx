@@ -46,7 +46,7 @@ export default function SettingsLayout({
               asChild
             >
               <Link href={`/${namespace}/settings/product`}>
-                Product settings
+                Product Settings
               </Link>
             </TabsTrigger>
           ) : (

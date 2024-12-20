@@ -73,7 +73,7 @@ const Profile = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isProfileInfoChange, setIsProfileInfoChange] = useState(false);
   const [isOtherInfoChange, setIsOtherInfoChange] = useState(false);
-
+  const [selectedRole, setSelectedRole] = useState("");
   const fetchData = async () => {
     const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`);
 
@@ -206,8 +206,8 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       const sizeInMB = file.size / (1024 * 1024);
-      if (sizeInMB > 2) {
-        showToast("error", "Image size should be less than 2mb");
+      if (sizeInMB > 10) {
+        showToast("error", "Image size should be less than 10 MB");
         return;
       }
 
@@ -344,13 +344,18 @@ const Profile = () => {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" value={profileData.email} />
+                    <Input
+                      id="email"
+                      type="email"
+                      value={profileData.email}
+                      style={{ cursor: "not-allowed" }}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="mobile">Mobile Number</Label>
                     <Input
                       id="mobile"
-                      type="tel"
+                      type="number"
                       value={mobileNo}
                       onChange={(e) =>
                         handleProfileInputChange(
@@ -379,12 +384,17 @@ const Profile = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="role">Role</Label>
-                    <Select>
+                    <Select
+                      onValueChange={(value) => {
+                        setRole(value);
+                        setIsProfileInfoChange(true); 
+                      }}
+                    >
                       <SelectTrigger id="role">
                         <SelectValue placeholder="Select role" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="manager">{user?.role}</SelectItem>
+                        <SelectItem value={user?.role ?? "CUSTOMER"}>{user?.role}</SelectItem>
                         {/* <SelectItem value="developer">Developer</SelectItem> */}
                         {/* <SelectItem value="designer">Designer</SelectItem> */}
                       </SelectContent>
