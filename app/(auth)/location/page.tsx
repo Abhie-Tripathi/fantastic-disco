@@ -27,7 +27,6 @@ import SwitchButton from "@/components/ui/SwitchButton";
 import { myFetch } from "@/utils/myFetch";
 // import { EventCount, OnboardingSelection, SaveLocationDTO } from "@/types";
 import { Plus } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { endOfMonth, startOfMonth } from "date-fns";
@@ -46,6 +45,8 @@ import { categories, newCategories } from "@/data/categories";
 import { useAuthContext } from "@/context";
 import logo from "/public/croppedlogo.png";
 import whr from "/public/whrai.svg";
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 type GeoLocationType = "city" | "center" | "";
 interface PinPointLocation {
@@ -75,7 +76,6 @@ const LocationForm = () => {
   const [useCurrentLocation, setUseCurrentLocation] = React.useState(false);
   const [currentCity, setCurrenCity] = React.useState<string>();
   const [locationType, setLocationType] = React.useState<GeoLocationType>("");
-  const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [location, setLocation] = useState<PinPointLocation | undefined>();
   const [radius, setRadius] = React.useState<number>(2);
@@ -139,9 +139,12 @@ const LocationForm = () => {
   };
 
   useEffect(() => {
-    toast({
-      variant: "default",
-      title: "Please enter your location",
+    toast("Please select a location", {
+      theme: "light",
+      position: "bottom-right",
+      autoClose: 2000,
+      closeOnClick: true,
+      hideProgressBar: true,
     });
   }, []);
 

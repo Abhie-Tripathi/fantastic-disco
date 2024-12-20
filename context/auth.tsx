@@ -111,7 +111,7 @@ export const AuthContextProvider = ({ children }: any) => {
       ...(flow && { flow }),
     });
     try {
-      await request(url, {
+      const data = await request(url, {
         method: "POST",
         data: { ...dataToSend },
       });

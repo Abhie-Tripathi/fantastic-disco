@@ -223,7 +223,7 @@ const NewSignUpForm = () => {
         </Link>
       </div>
 
-      <div className="text-center text-[#808080] text-[12px]">
+      <div className="text-center text-[#808080] text-[12px] cursor-not-allowed">
         By signing up, you agree to our
         <span className="text-[#6750a4] font-medium ml-1">Terms </span>
         and
