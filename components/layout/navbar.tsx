@@ -63,8 +63,28 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
-  
-  console.log(routes[pathname.split("/").slice(-1)[0]])
+  console.log("route", gtmroutes[pathname.split("/").slice(-1)[0]]);
+
+  const router = useRouter();
+  const handleRoute = (route: string) => {
+    if (route === "research") {
+      router.push("/internal");
+    } else if (route === "promote") {
+      router.push("/widget/dashboard");
+    }
+  };
+
+  const route = pathname.split("/")[1];
+  const handleClick = () => {
+    if (route === "internal") {
+      router.push("/internal/settings/profile");
+    }
+
+    if (route === "widget") {
+      router.push("/widget/settings/profile");
+    }
+  };
+
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">

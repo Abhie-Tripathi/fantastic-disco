@@ -45,6 +45,12 @@ export default function ProductsPage() {
   };
   const carbonArray = [
     {
+      label: "Pending",
+      source: "coordinate",
+      status: "PENDING",
+      position: 0,
+    },
+    {
       label: "Shortlisted",
       source: "outreach",
       status: "SHORTLISTED",
@@ -66,16 +72,29 @@ export default function ProductsPage() {
       status: "CONFIRMED",
       position: 0,
     },
+    {
+      label: "Cancelled",
+      source: "coordinate",
+      status: "CANCELLED",
+      position: 0,
+    },
+    {
+      label: "Rejected",
+      source: "coordinate",
+      status: "REJECTED",
+      position: 0,
+    },
   ];
 
   const researchCarbonArr = [
+    { label: "Bookmark", source: "research", status: "BOOKMARK", position: 0 },
     { label: "Hot Lead", source: "research", status: "ATTENDEE", position: 0 },
     { label: "Warm Lead", source: "research", status: "SPEAKER", position: 0 },
     { label: "Cold Lead", source: "research", status: "SPONSOR", position: 0 },
     { label: "Intent", source: "research", status: "EXHIBITOR", position: 0 },
   ];
 
-  const MAX_BOXES = 4;
+  // const MAX_BOXES = 4;
   const removeResearchScreenBox = async (data: any) => {
     const updatedScreenboxes = [...filteredResearchScreenboxes];
 
@@ -188,6 +207,7 @@ export default function ProductsPage() {
   };
 
   const addResearchScreenBox = async () => {
+    const MAX_BOXES = 5;
     if (filteredResearchScreenboxes.length >= MAX_BOXES) {
       showToast("error", "Cannot create more than 4 input");
       return;
@@ -221,8 +241,9 @@ export default function ProductsPage() {
   };
 
   const addOutreachScreenBox = async () => {
+    const MAX_BOXES = 7;
     if (filteredOutreachScreenboxes.length >= MAX_BOXES) {
-      showToast("error", "Cannot create more than 4 input");
+      showToast("error", "Cannot create more than 5 input");
       return;
     }
 
@@ -261,17 +282,19 @@ export default function ProductsPage() {
     const data: any = await getResearchData();
     setResearchScreenBoxes(data);
     setFilteredResearchScreenboxes(
-      (data as any).filter((value: any) => !["BOOKMARK"].includes(value.status))
+      // (data as any).filter((value: any) => !["BOOKMARK"].includes(value.status))
+      data
     );
   };
   const getOutreachResponse = async () => {
     const data: any = await getOutreachData();
     setOutreachScreenBoxes(data?.outreach_stage);
     setFilteredOutreachScreenboxes(
-      (data?.outreach_stage as any).filter(
-        (value: any) =>
-          !["PENDING", "CANCELLED", "REJECTED"].includes(value.status)
-      )
+      // (data?.outreach_stage as any).filter(
+      //   (value: any) =>
+      //     !["PENDING", "CANCELLED", "REJECTED"].includes(value.status)
+      // )
+      data?.outreach_stage
     );
   };
   useEffect(() => {
@@ -439,62 +462,66 @@ export default function ProductsPage() {
               </div>
 
               <div className="flex flex-col gap-5">
-                {filteredResearchScreenboxes.map((box: any, index: any) => (
-                  <div
-                    key={box.status}
-                    className="flex items-center gap-2 relative"
-                    draggable
-                    onDragStart={(e) => handleDragStartResearchScreen(e, index)}
-                    onDragOver={handleDragOverResearchScreen}
-                    onDrop={(e) => handleDropResearchScreen(e, index)}
-                    onDragEnd={handleDragEndResearchScreen}
-                  >
-                    <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
-                      <DragIcon />
-                    </div>
-                    <div className="flex items-center max-w-full h-10 rounded border overflow-hidden">
-                      <input
-                        type="text"
-                        value={
-                          editingResearchScreenBoxId === box.status
-                            ? researchTempValue
-                            : box?.label
-                        }
-                        onChange={(e) =>
-                          handleChangeResearchScreenBoxes(
-                            box.status,
-                            e.target.value
-                          )
-                        }
-                        className="p-2 h-full w-full outline-none bg-muted focus:bg-background focus:border-blue-500 transition-all"
-                        onClick={() =>
-                          handleResearchScreenEdit(box.status, box.label)
-                        }
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleResearchScreenSave(box);
-                          }
-                        }}
-                      />
-                    </div>
-                    {editingResearchScreenBoxId === box.status && (
-                      <div className="flex items-center gap-2 ml-2">
-                        <button
-                          className="flex items-center justify-center border rounded w-10 h-10 text-base"
-                          onClick={() => handleResearchScreenSave(box)}
-                        >
-                          <CheckIcon />
-                        </button>
-                        <button
-                          className="flex items-center justify-center border rounded w-10 h-10 text-base"
-                          onClick={() => removeResearchScreenBox(box)}
-                        >
-                          <CrossIcon />
-                        </button>
+                {filteredResearchScreenboxes
+                  .slice(1)
+                  .map((box: any, index: any) => (
+                    <div
+                      key={box.status}
+                      className="flex items-center gap-2 relative"
+                      draggable
+                      onDragStart={(e) =>
+                        handleDragStartResearchScreen(e, index+1)
+                      }
+                      onDragOver={handleDragOverResearchScreen}
+                      onDrop={(e) => handleDropResearchScreen(e, index+1)}
+                      onDragEnd={handleDragEndResearchScreen}
+                    >
+                      <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
+                        <DragIcon />
                       </div>
-                    )}
-                  </div>
-                ))}
+                      <div className="flex items-center max-w-full h-10 rounded border overflow-hidden">
+                        <input
+                          type="text"
+                          value={
+                            editingResearchScreenBoxId === box.status
+                              ? researchTempValue
+                              : box?.label
+                          }
+                          onChange={(e) =>
+                            handleChangeResearchScreenBoxes(
+                              box.status,
+                              e.target.value
+                            )
+                          }
+                          className="p-2 h-full w-full outline-none bg-muted focus:bg-background focus:border-blue-500 transition-all"
+                          onClick={() =>
+                            handleResearchScreenEdit(box.status, box.label)
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleResearchScreenSave(box);
+                            }
+                          }}
+                        />
+                      </div>
+                      {editingResearchScreenBoxId === box.status && (
+                        <div className="flex items-center gap-2 ml-2">
+                          <button
+                            className="flex items-center justify-center border rounded w-10 h-10 text-base"
+                            onClick={() => handleResearchScreenSave(box)}
+                          >
+                            <CheckIcon />
+                          </button>
+                          <button
+                            className="flex items-center justify-center border rounded w-10 h-10 text-base"
+                            onClick={() => removeResearchScreenBox(box)}
+                          >
+                            <CrossIcon />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 <button
                   className="flex items-center justify-center border rounded-md w-10 h-10 text-base"
                   onClick={addResearchScreenBox}
@@ -517,62 +544,66 @@ export default function ProductsPage() {
                 preferences.
               </div>
               <div className="flex flex-col gap-5">
-                {filteredOutreachScreenboxes.map((box: any, index: any) => (
-                  <div
-                    key={box.status}
-                    className="flex items-center gap-2 relative"
-                    draggable
-                    onDragStart={(e) => handleDragStartOutreachScreen(e, index)}
-                    onDragOver={handleDragOverOutreachScreen}
-                    onDrop={(e) => handleDropOutreachScreen(e, index)}
-                    onDragEnd={handleDragEndOutreachScreen}
-                  >
-                    <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
-                      <DragIcon />
-                    </div>
-                    <div className="flex items-center max-w-full h-10 rounded border overflow-hidden">
-                      <input
-                        type="text"
-                        value={
-                          editingOutreachScreenBoxId === box.status
-                            ? outreachTempValue
-                            : box?.label
-                        }
-                        onChange={(e) =>
-                          handleChangeOutreachScreenBoxes(
-                            box.status,
-                            e.target.value
-                          )
-                        }
-                        className="p-2 h-full w-full outline-none bg-muted focus:bg-background focus:border-blue-500 transition-all"
-                        onClick={() =>
-                          handleOutreachchScreenEdit(box.status, box.label)
-                        }
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            handleOutreachScreenSave(box);
-                          }
-                        }}
-                      />
-                    </div>
-                    {editingOutreachScreenBoxId === box.status && (
-                      <div className="flex items-center gap-2 ml-2">
-                        <button
-                          className="flex items-center justify-center border rounded w-10 h-10 text-base"
-                          onClick={() => handleOutreachScreenSave(box)}
-                        >
-                          <CheckIcon />
-                        </button>
-                        <button
-                          className="flex items-center justify-center border rounded w-10 h-10 text-base"
-                          onClick={() => removeOutreachScreenBox(box)}
-                        >
-                          <CrossIcon />
-                        </button>
+                {filteredOutreachScreenboxes
+                  .slice(1, filteredOutreachScreenboxes.length - 1)
+                  .map((box: any, index: any) => (
+                    <div
+                      key={box.status}
+                      className="flex items-center gap-2 relative"
+                      draggable
+                      onDragStart={(e) =>
+                        handleDragStartOutreachScreen(e, index+1)
+                      }
+                      onDragOver={handleDragOverOutreachScreen}
+                      onDrop={(e) => handleDropOutreachScreen(e, index+1)}
+                      onDragEnd={handleDragEndOutreachScreen}
+                    >
+                      <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
+                        <DragIcon />
                       </div>
-                    )}
-                  </div>
-                ))}
+                      <div className="flex items-center max-w-full h-10 rounded border overflow-hidden">
+                        <input
+                          type="text"
+                          value={
+                            editingOutreachScreenBoxId === box.status
+                              ? outreachTempValue
+                              : box?.label
+                          }
+                          onChange={(e) =>
+                            handleChangeOutreachScreenBoxes(
+                              box.status,
+                              e.target.value
+                            )
+                          }
+                          className="p-2 h-full w-full outline-none bg-muted focus:bg-background focus:border-blue-500 transition-all"
+                          onClick={() =>
+                            handleOutreachchScreenEdit(box.status, box.label)
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              handleOutreachScreenSave(box);
+                            }
+                          }}
+                        />
+                      </div>
+                      {editingOutreachScreenBoxId === box.status && (
+                        <div className="flex items-center gap-2 ml-2">
+                          <button
+                            className="flex items-center justify-center border rounded w-10 h-10 text-base"
+                            onClick={() => handleOutreachScreenSave(box)}
+                          >
+                            <CheckIcon />
+                          </button>
+                          <button
+                            className="flex items-center justify-center border rounded w-10 h-10 text-base"
+                            onClick={() => removeOutreachScreenBox(box)}
+                          >
+                            <CrossIcon />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 <button
                   className="flex items-center justify-center border rounded-md w-10 h-10 text-base"
                   onClick={addOutreachScreenBox}
@@ -583,17 +614,19 @@ export default function ProductsPage() {
             </div>
             <div className="grid place-items-center">
               <div className="flex flex-wrap gap-4 justify-center  w-full max-w-5xl">
-                {filteredOutreachScreenboxes.map((box: any) => (
-                  <div
-                    key={box.status}
-                    className="relative flex flex-col justify-start items-center w-[150px] h-[160px]  rounded-t-md text-center box-border"
-                  >
-                    <div className="flex items-center w-full min-h-[32px] bg-primary text-white text-sm font-normal px-2 rounded-t-md">
-                      <span className="truncate w-full">{box.label}</span>
+                {filteredOutreachScreenboxes
+                  .slice(1, filteredOutreachScreenboxes.length - 1)
+                  .map((box: any) => (
+                    <div
+                      key={box.status}
+                      className="relative flex flex-col justify-start items-center w-[150px] h-[160px]  rounded-t-md text-center box-border"
+                    >
+                      <div className="flex items-center w-full min-h-[32px] bg-primary text-white text-sm font-normal px-2 rounded-t-md">
+                        <span className="truncate w-full">{box.label}</span>
+                      </div>
+                      <div className="absolute top-8 left-0 right-0 bottom-0 border-l border-r  border-t-transparent"></div>
                     </div>
-                    <div className="absolute top-8 left-0 right-0 bottom-0 border-l border-r  border-t-transparent"></div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           </div>
