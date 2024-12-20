@@ -6,7 +6,6 @@ import HeroLogoText from "/public/heroLogoText.svg";
 import SearchIcon from "/public/search.svg";
 import Image from "next/image";
 import {
-  Button,
   ComboBox,
   Input,
   Key,
@@ -18,6 +17,7 @@ import {
   Selection,
   Switch,
 } from "react-aria-components";
+import { Button } from "@/components/ui/button";
 // import SubmitButton from "@/components/onboarding/Button";
 import DropdownIcon from "/public/Dropdown_Arrow.svg";
 import RemoveIcon from "/public/remove.svg";
@@ -71,12 +71,12 @@ export type Location = GeoLocation | LocationItem[];
 const LocationForm = () => {
   //   const { saveLocation } = useLocationService();
   const searchParams = useSearchParams();
+  const [loading, setLoading] = useState(false);
   const [useCurrentLocation, setUseCurrentLocation] = React.useState(false);
   const [currentCity, setCurrenCity] = React.useState<string>();
   const [locationType, setLocationType] = React.useState<GeoLocationType>("");
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
-  const { setUser } = useAuthContext();
   const [location, setLocation] = useState<PinPointLocation | undefined>();
   const [radius, setRadius] = React.useState<number>(2);
   const [radiusUnit, setRadiusUnit] = React.useState<Key>("miles");
@@ -124,7 +124,8 @@ const LocationForm = () => {
     return updatedParams;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setLoading(true);
     if (selectedLocation && selectedLocation.length === 0) {
       setSelectedLocation([
         {
@@ -133,11 +134,9 @@ const LocationForm = () => {
         },
       ]);
     }
-    user && setUser(JSON.parse(user).user);
-    console.log(urlParams.toString());
-    router.push(`/internal/search/events?${urlParams.toString()}`);
+    router.push(`/internal/search/events?${urlParams}`);
+    setLoading(false);
   };
-  console.log(user);
 
   useEffect(() => {
     toast({
@@ -241,26 +240,25 @@ const LocationForm = () => {
           )}
         </section>
 
-        <button
+        <Button
           className="w-full bg-[var(--primary-color)] border rounded-[var(--border-radius-sm)]
         text-white text-center p-2 self-center"
-          // disabled={loading}
-          // loading={loading}
+          disabled={loading}
           onClick={handleSubmit}
         >
-          View Location Insights
-        </button>
+          {loading ? "Redirecting..." : "View Location Insights"}
+        </Button>
 
         <Button
+          variant={"link"}
           className="text-[var(--primary-color)] w-full"
-          onPress={() => {
+          onClick={() => {
             setSelectedLocation([
               {
                 id: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
                 description: "New York, United States",
               },
             ]);
-            user && setUser(JSON.parse(user).user);
             router.push(`/internal/search/events?${urlParams.toString()}`);
           }}
         >

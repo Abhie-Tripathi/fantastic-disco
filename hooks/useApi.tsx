@@ -1,6 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import axiosInstance from "@/lib/axios";
 import { AxiosRequestConfig } from "axios";
+import { usePathname } from "next/navigation";
 
 interface ApiResponse<T> {
   data?: T;
@@ -13,6 +14,7 @@ interface ApiResponse<T> {
 }
 
 export function useApi<T>() {
+  const pathname = usePathname();
   const [state, setState] = useState<{
     data: T | undefined;
     error: ApiResponse<T>["error"] | null;
@@ -22,6 +24,14 @@ export function useApi<T>() {
     error: null,
     isLoading: false,
   });
+
+  const setError = (error: ApiResponse<T>["error"] | null) => {
+    setState((prev) => ({ ...prev, error }));
+  };
+
+  useEffect(() => {
+    setError(null);
+  }, [pathname]);
 
   const request = useCallback(
     async <R = T,>(
@@ -62,6 +72,6 @@ export function useApi<T>() {
     },
     []
   );
-
-  return { ...state, request };
+  
+  return { ...state, request, setError };
 }

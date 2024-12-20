@@ -40,7 +40,6 @@ export default function SignInForm() {
   });
 
   const onSubmit = async (data: SignInData) => {
-    console.log(data)
     try {
       await signin(data);
     } catch (error) {
@@ -48,8 +47,12 @@ export default function SignInForm() {
     }
   };
 
+  useEffect(() => {
+    localStorage.setItem("walkthroughCompleted", JSON.stringify(["research"]));
+  }, []);
+
   return (
-    <div className="w-full max-w-sm space-y-8 p-8">
+    <div className="w-full max-w-md space-y-8 p-8">
       <div className={styles.form_heading}>
         <Image src={logo} alt="logo" width={45} height={55} />
         <Image src={whr} alt="whr" />
@@ -57,7 +60,7 @@ export default function SignInForm() {
       {error && (
         <Alert variant="destructive">
           <AlertDescription className="capitalize flex items-center">
-            <AlertTriangle className="h-4 w-4 mr-2" />
+            <AlertTriangle className="h-4 w-4 mr-2 self-start" />
             {error.message}
           </AlertDescription>
         </Alert>
@@ -74,6 +77,7 @@ export default function SignInForm() {
                 type="email"
                 {...field}
                 placeholder="Enter your email"
+                className="h-11"
               />
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email.message}</p>

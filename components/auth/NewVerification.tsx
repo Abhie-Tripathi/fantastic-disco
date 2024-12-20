@@ -45,17 +45,17 @@ const otpSchema = z.object({
 type OTPData = z.infer<typeof otpSchema>;
 
 export default function NewVerificationForm() {
-  const { verifyOtp, verifyLoginOTP, error } = useAuthContext();
+  const { verifyOtp, verifyLoginOTP, error, generateOTP } = useAuthContext();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
 
   const industry = searchParams.get("industry");
-  const subIndustry = searchParams.get("subIndustry");
+  const categories = searchParams.get("categories");
   const flow = searchParams.get("flow");
   const redirectTo =
     flow && flow === "signup"
       ? `/location?industry=${industry}${
-          subIndustry ? `&subIndustry=${subIndustry}` : ""
+          categories ? `&categories=${categories}` : ""
         }`
       : "/";
   const { getFilterValue } = useFilterState();
@@ -78,8 +78,12 @@ export default function NewVerificationForm() {
     }
   };
 
+  const resendOTP = async () => {
+    await generateOTP(email);
+  };
+
   return (
-    <div className="w-full max-w-sm space-y-8 p-8">
+    <div className="w-full max-w-md space-y-8 p-8">
       <div className="text-[#242424] font-medium text-2xl flex items-center justify-center text-center">
         <Image src={logo} alt="logo" width={45} height={55} />
         <Image src={whr} alt="whr" />
@@ -87,8 +91,11 @@ export default function NewVerificationForm() {
       {error && (
         <Alert variant="destructive">
           <AlertDescription className="captilize flex items-center">
-            <TriangleAlert color="#EF4444" className="w-4 h-4" />
-            <span className="ml-2">{error.message}</span>
+            <TriangleAlert
+              color="#EF4444"
+              className="h-4 w-4 mr-2 self-start"
+            />
+            <span className="">{error.message}</span>
           </AlertDescription>
         </Alert>
       )}
@@ -135,7 +142,7 @@ export default function NewVerificationForm() {
         variant="link"
         className="w-full"
         onClick={() => {
-          console.log("Resend OTP clicked");
+          resendOTP();
         }}
       >
         Resend OTP

@@ -35,6 +35,12 @@ type authContextType = {
   signin: (user: TSignInFormSchema) => Promise<any>;
   setUser: Dispatch<SetStateAction<UserResponse | null>>;
   signOut: () => void;
+  generateOTP: (
+    email: string,
+    industry?: string,
+    categories?: string,
+    flow?: string
+  ) => void;
   verifyOtp: (user: any, redirectTo?: string) => Promise<any>;
   verifyLoginOTP: (user: any, redirectTo?: string) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
@@ -59,6 +65,7 @@ const authContextDefaultValues: authContextType = {
   signin: () => Promise.resolve(null),
   setUser: () => {},
   signOut: () => {},
+  generateOTP: () => Promise.resolve(null),
   verifyOtp: () => Promise.resolve(null),
   verifyLoginOTP: () => Promise.resolve(null),
   setIsProfileUpdated: () => {},
@@ -71,11 +78,11 @@ export const AuthContext = createContext<authContextType>(
 
 export const AuthContextProvider = ({ children }: any) => {
   const router = useRouter();
-  const pathname = usePathname();
+  const pathName = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
   const [user, setUser] = useState<UserResponse | null>(null);
   const [loginError, setLoginError] = useState<string>("");
-  const { request, error, isLoading, data, setError } = useApi<UserResponse>();
+  const { request, error, isLoading, setError } = useApi<any>();
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
 
@@ -87,16 +94,28 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const token = searchParams.get("token");
 
-  const generateOTP = async (email: string) => {
+  const generateOTP = async (
+    email: string,
+    industry?: string,
+    categories?: string,
+    flow?: string
+  ) => {
     const url = `${baseUrl}/auth/customer/verify/generate`;
     const dataToSend = {
-      email: email,
+      email: email.trim(),
     };
+    const queryParams = new URLSearchParams({
+      email: email.trim(),
+      ...(industry && { industry }),
+      ...(categories && { categories }),
+      ...(flow && { flow }),
+    });
     try {
       await request(url, {
         method: "POST",
         data: { ...dataToSend },
       });
+      router.push(`/verify-otp?${queryParams.toString()}`);
     } catch (err) {
       console.error("Cannot generate otp:", err);
     }
@@ -110,11 +129,11 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: { ...userDto, role: "CUSTOMER" },
         });
-        await generateOTP(userDto.email);
-        router.push(
-          `/verify-otp?email=${userDto.email}&industry=${userDto.industry}${
-            userDto.categories ? `&categories=${userDto.categories}` : ""
-          }&flow=signup`
+        await generateOTP(
+          userDto.email,
+          userDto.industry,
+          userDto.categories,
+          "signup"
         );
       } catch (err) {
         console.error("Sign up error:", err);
@@ -122,6 +141,41 @@ export const AuthContextProvider = ({ children }: any) => {
     },
     [request, router]
   );
+
+  const newcheckAuth = useCallback(async () => {
+    if (!user) {
+      const userData = localStorage.getItem("user");
+      userData && setUser(JSON.parse(userData));
+      return;
+    }
+  }, [request]);
+
+  useEffect(() => {
+    const publicRoutes = ["/signin", "/signup", "/verify-otp", "/location"];
+    if (!publicRoutes.includes(pathName)) {
+      newcheckAuth();
+    }
+  }, [pathName, newcheckAuth]);
+
+  const signin = useCallback(
+    async (userDto: TSignInFormSchema) => {
+      try {
+        await generateOTP(userDto.email);
+      } catch (err) {
+        console.error("Sign in error:", err);
+      }
+    },
+    [request, router]
+  );
+
+  const signOut = () => {
+    setUser(null);
+    deleteLocalStorage();
+    myFetch(`${baseUrl}/auth/customer/logout`, { method: "POST" }).then(() =>
+      router.push("/signin")
+    );
+  };
+
   interface SignIn {
     data?: SignInResponse;
     error?: any;
@@ -220,31 +274,6 @@ export const AuthContextProvider = ({ children }: any) => {
   //   return [];
   // };
 
-  const signin = useCallback(
-    async (userDto: TSignInFormSchema) => {
-      try {
-        const url = baseUrl + authEndpoints.signin;
-        // await request(url, {
-        //   method: "POST",
-        //   data: { ...userDto },
-        // });
-        await generateOTP(userDto.email);
-        router.push("/verify-otp?email=" + userDto.email);
-      } catch (err) {
-        console.error("Sign in error:", err);
-      }
-    },
-    [request, router]
-  );
-
-  const signOut = () => {
-    setUser(null);
-    deleteLocalStorage();
-    myFetch(`${baseUrl}/auth/customer/logout`, { method: "POST" }).then(() =>
-      router.push("/signin")
-    );
-  };
-
   const setLocalStorage = (user?: UserResponse | newUserResponse) => {
     window.localStorage.setItem("user", JSON.stringify(user));
   };
@@ -258,7 +287,7 @@ export const AuthContextProvider = ({ children }: any) => {
     otpCode: string;
   }
 
-  // const verifyOtp = async (dataToSend: VerifyOTP) => {
+  // const verifyOtp = async (dataToSend: VerifyOTP, redirectTo?: string) => {
   //   const url = baseUrl + "/auth/customer/verify";
 
   //   const { data, error } = await myFetch(url, {
@@ -274,8 +303,9 @@ export const AuthContextProvider = ({ children }: any) => {
   //       return;
   //     }
   //     if (data.user.isVerified) {
-  //       // setUser(data);
+  //       setUser(data);
   //       setLocalStorage(data);
+  //       router.push(redirectTo || "/");
   //     }
   //   }
 
@@ -291,12 +321,26 @@ export const AuthContextProvider = ({ children }: any) => {
     async (verifyOtpDTO: VerifyOTP, redirectTo?: string) => {
       try {
         const url = baseUrl + "/auth/customer/verify";
-        await request(url, {
+        const result = await request<{ user: UserResponse }>(url, {
           method: "POST",
           data: verifyOtpDTO,
         });
-        // await newcheckAuth();
-        router.push(redirectTo || "/");
+        if (result) {
+          if (!result.user.isVerified) {
+            setError({
+              response: "Invalid Code",
+              status: 400,
+              message: "Invalid code entered",
+              name: "InvalidCodeError",
+            });
+            return;
+          }
+          if (result.user.isVerified) {
+            setUser(result.user);
+            setLocalStorage(result.user);
+            router.push(redirectTo || "/");
+          }
+        }
       } catch (err) {
         console.error("OTP verification error:", err);
       }
@@ -304,38 +348,77 @@ export const AuthContextProvider = ({ children }: any) => {
     [request, router]
   );
 
-  const verifyLoginOTP = async (dataToSend: VerifyOTP, redirectTo?: string) => {
-    const url = baseUrl + "/auth/customer/verify-otp";
-
-    const { data, error } = await myFetch(url, {
-      method: "POST",
-      body: JSON.stringify(dataToSend),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    console.log(data, error);
-
-    if (data) {
-      console.log(data);
-      if (!data.user.isVerified) {
-        return;
+  const verifyLoginOTP = useCallback(
+    async (dataToSend: VerifyOTP, redirectTo?: string) => {
+      try {
+        const url = baseUrl + "/auth/customer/verify-otp";
+        const result = await request<{ user: UserResponse }>(url, {
+          method: "POST",
+          data: dataToSend,
+        });
+        console.log(result);
+        if (result) {
+          if (!result.user.isVerified) {
+            setError({
+              response: "Invalid Code",
+              status: 400,
+              message: "Invalid code entered",
+              name: "InvalidCodeError",
+            });
+          }
+          if (result.user.isVerified) {
+            setUser(result.user);
+            setLocalStorage(result.user);
+            router.push(redirectTo || "/internal");
+            return result.user;
+          }
+        }
+      } catch (err) {
+        console.log("OTP verification error:", err);
       }
-      if (data.user.isVerified) {
-        setUser(data);
-        setLocalStorage(data);
-        router.push(redirectTo || "/internal");
-      }
-    }
+    },
+    [request, router]
+  );
 
-    if (error) {
-      console.log(error);
-      return;
+  useEffect(() => {
+    if (!user) {
+      const userData = window.localStorage.getItem("user");
+      userData && setUser(JSON.parse(userData));
     }
+  }, [user]);
 
-    return data.user;
-  };
+  // const verifyLoginOTP = async (dataToSend: VerifyOTP, redirectTo?: string) => {
+  //   const url = baseUrl + "/auth/customer/verify-otp";
+
+  //   const { data, error } = await myFetch(url, {
+  //     method: "POST",
+  //     body: JSON.stringify(dataToSend),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+
+  //   console.log(data, error);
+
+  //   if (data) {
+  //     console.log(data);
+  //     if (!data.user.isVerified) {
+  //       return;
+  //     }
+  //     if (data.user.isVerified) {
+  //       setUser(data);
+  //       setLocalStorage(data);
+  //       router.push(redirectTo || "/internal");
+  //     }
+  //   }
+
+  //   if (error) {
+  //     console.log(error);
+  //     return;
+  //   }
+
+  //   return data.user;
+  // };
 
   useEffect(() => {
     const user = window.localStorage.getItem("user");
@@ -380,6 +463,7 @@ export const AuthContextProvider = ({ children }: any) => {
     signOut,
     isLoading,
     setUser,
+    generateOTP,
     verifyOtp,
     verifyLoginOTP,
     isProfileUpdated,

@@ -158,7 +158,7 @@ const NewSignUpForm = () => {
       {error && (
         <Alert variant="destructive">
           <AlertDescription className="capitalize flex items-center">
-            <AlertTriangle className="h-4 w-4 mr-2" />
+            <AlertTriangle className="h-4 w-4 mr-2 self-start" />
             {error.message}
           </AlertDescription>
         </Alert>
