@@ -30,9 +30,11 @@
 
 .widgetContainer {
     min-width: 430px;
-
 }
 
+.brandKitContainer{
+    width: 260px;
+}
 .eventContainer {
     width: 60%;
 }
@@ -41,6 +43,9 @@
     .container {
         flex-direction: column;
         gap: 24px;
+    }
+    .brandKitContainer{
+        width: 100%;
     }
     .widgetEventsContainer {
         width: 100%;

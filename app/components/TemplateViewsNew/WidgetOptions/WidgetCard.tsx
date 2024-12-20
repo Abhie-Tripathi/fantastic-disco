@@ -30,25 +30,25 @@ const widgetConfig: Record<WidgetCardProps['widgetType'], WidgetConfig> = {
 
     Page: {
         name: "Page Widget",
-        length: 9,
+        length: 4,
         desc: "An intuitive, interactive widget that lets users effortlessly select options from a comprehensive list",
         color: "#FFEFEF"
     },
     Section: {
         name: "Section Widget",
-        length: 6,
+        length: 3,
         desc: "Widget allows users to seamlessly navigate and select options within a specific section of your website",
         color: "#FFF7E3"
     },
     Sticky: {
         name: "Sticky Widget",
-        length: 2,
+        length: 1,
         desc: "A user-friendly widget type that promotes events by enhancing navigation & accessibility on your website",
         color: "#E5FAEA"
     },
     Pop: {
         name: "Pop-up Widget",
-        length: 1,
+        length: 2,
         desc: "Interactive widget designed to capture attention and deliver important messages related to events on your website",
         color: "#E0ECFF"
     },

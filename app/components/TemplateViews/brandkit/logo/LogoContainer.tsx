@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styles from './logocontainer.style.module.css'
 import Image from 'next/image'
 import { myFetch } from '@/utils/myFetch'
+import Logo from '/public/placholderLogo.png'
 import { baseUrl } from '@/constants'
 
 interface Props {
@@ -46,7 +47,7 @@ const LogoContainer = ({ setPreview, fetchedLogos,fetchBrandkit }: Props) => {
       <div className={styles.heading}>Brand Logo</div>
       <div className={styles.container}>
         <div className={styles.logoContainer}>
-          <Image src={fetchedLogos[0]} alt='logo' height={40} width={40} />
+          <Image src={fetchedLogos?.length === 1 ?  fetchedLogos[0] : Logo} alt='logo' height={40} width={40} />
           <div className={styles.uploadBtn}>
             <input type="file" id="upload" accept=".jpg, .jpeg, .png" onChange={handleFileChange} />
             <label htmlFor="upload"><UploadIcon /></label>

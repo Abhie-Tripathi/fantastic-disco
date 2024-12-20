@@ -57,3 +57,8 @@
     color: var(--secondary-text-color);
     font-weight: var(--font-weight-semibold);
 }
+@media screen and (max-width: 680px) {
+    .usersList{
+        max-height: 100px;
+    }
+}

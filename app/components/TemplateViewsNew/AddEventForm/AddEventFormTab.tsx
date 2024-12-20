@@ -634,12 +634,12 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
         }
     }
     useEffect(() => {
-        if (mainEventState.speakerModal || mainEventState.exhibitorModal || mainEventState.descriptionModal || mainEventState.registerModal || subEventState.speakerModal || subEventState.descriptionModal || subEventState.registerModal) {
+        if (mainEventState.speakerModal || mainEventState.exhibitorModal || mainEventState.descriptionModal || mainEventState.registerModal || subEventState.speakerModal || subEventState.descriptionModal || subEventState.registerModal|| subEventState.capacityModal) {
             setIsModalOpen(true)
         } else {
             setIsModalOpen(false)
         }
-    }, [mainEventState.speakerModal, mainEventState.exhibitorModal, mainEventState.descriptionModal, mainEventState.registerModal, subEventState.speakerModal, subEventState.descriptionModal, subEventState.registerModal,])
+    }, [mainEventState.speakerModal, mainEventState.exhibitorModal, mainEventState.descriptionModal, mainEventState.registerModal, subEventState.speakerModal, subEventState.descriptionModal, subEventState.registerModal, subEventState.capacityModal ])
     const formContainerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
