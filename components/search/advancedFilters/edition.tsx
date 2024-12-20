@@ -12,6 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
 import { LockClosedSmall } from "geist-icons";
+import { toast } from "react-toastify";
 const maturityLevels = [
   { id: "new", label: "New" },
   { id: "growing", label: "Growing" },
@@ -60,8 +61,16 @@ export default function EditionSelector({
 
   const handleStatusChange = (value: string) => {
     if (value === selectedStatus) {
-      setSelectedStatus?.("");
-      setLocalFilter("maturity", "");
+      if(enabledMaturityData && enabledMaturityData.enabledValue)
+      toast.error("At least one filter must be selected", {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+      });
+      else{
+        setSelectedStatus?.("");
+        setLocalFilter("maturity", "");
+      }
     } else {
       setSelectedStatus?.(value);
       setLocalFilter("maturity", value);
@@ -133,7 +142,7 @@ export default function EditionSelector({
               <RadioGroupItem
                 value={maturityLevel.id}
                 id={maturityLevel.id}
-                disabled={enabledMaturityData && !enabledMaturityData?.enabledValue?.includes(maturityLevel.id)}
+                disabled={(enabledMaturityData && !enabledMaturityData?.enabledValue?.includes(maturityLevel.id))}
                 onClick={(e) => {
                   if (selectedStatus === maturityLevel.id) {
                     e.preventDefault();
