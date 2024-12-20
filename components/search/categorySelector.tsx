@@ -10,38 +10,57 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { newCategories as categories } from "@/data/categories";
 import { useFilterContext } from "@/context/filterContext";
+import {toast} from 'react-toastify';
+interface categoryInterface{
+  selectedValue?: string[] | undefined;
+  enabledValue?: any;
+}
 interface categoryProps {
   source: string;
   selectedCategories?: string[];
   setSelectedCategories?: React.Dispatch<React.SetStateAction<string[]>>; 
+  enabledCategories?:categoryInterface;
 }
 export default function CategorySelector({
   source,
+  enabledCategories,
   selectedCategories: parentSelectedCategories = [],
   setSelectedCategories: parentSetSelectedCategories,
 }: categoryProps) {
   const { getLocalFilterValue, setLocalFilter } = useFilterContext();
+  
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategoriesLocal, setSelectedCategoriesLocal] = useState<string[]>([]);
 const selectedCategories = source === 'tracker' ? parentSelectedCategories : selectedCategoriesLocal;
 const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories : setSelectedCategoriesLocal;
-
   useEffect(() => {
     if(source !== 'tracker') {
       const eventTypes = getLocalFilterValue("categories")
         .split(",")
         .filter(Boolean);
+        
       setSelectedCategories?.(eventTypes);
     }
   }, [getLocalFilterValue]);
 
   const handleCategoryToggle = useCallback((categorySlug: string) => {
-    setSelectedCategories?.((prev) =>
-      prev.includes(categorySlug)
-        ? prev.filter((slug) => slug !== categorySlug)
-        : [...prev, categorySlug]
-    );
-  }, []);
+
+    setSelectedCategories?.((prev) => {
+      if(enabledCategories?.enabledValue && prev.length === 1 && prev.includes(categorySlug)) {
+        toast.error("At least one filter must be selected", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+        return prev;
+      }
+      return prev.includes(categorySlug)
+        ? prev.filter((slug) => slug !== categorySlug) 
+        : [...prev, categorySlug];
+    });
+    
+    
+  }, [enabledCategories]);
 
   const handleSelectAll = useCallback((isSelected: boolean) => {
     setSelectedCategories?.(isSelected ? categories.map((cat) => cat.slug) : []);
@@ -64,7 +83,7 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
       ...categories,
     ];
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);
-
+    
     return (
       <div className="grid grid-cols-3 gap-x-4">
         {Array.from({ length: columnCount }).map((_, columnIndex) => (
@@ -79,6 +98,7 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
                   <Checkbox
                     className="rounded-none"
                     id={category.slug}
+                    disabled={enabledCategories && !enabledCategories?.enabledValue?.some((item:any) => item.id === category.id)}
                     checked={
                       category.slug === "all"
                         ? isAllSelected

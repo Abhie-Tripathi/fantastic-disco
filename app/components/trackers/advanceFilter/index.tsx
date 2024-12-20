@@ -81,7 +81,7 @@ const index = ({ freq, includeKeywords, excludeKeywords, isBranded, eventEdition
                     <div className={commonClasses.filterHeading}>Event Frequency</div>
                     <ToggleBtn isTrue={isFreqToggle}/>
                   </div>
-                    <div className="flex gap-3">
+                    <div className="gap-3 grid grid-cols-2">
                         {freq?.map((item: string, id: number) => (
                             <>
                                 <label style={{ display: "flex" }} >

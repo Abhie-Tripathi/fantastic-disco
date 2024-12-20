@@ -1,6 +1,6 @@
 import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
-import { CoordinateListResponse, UserInterestResponse, eventPocResponse } from "@/types/coordinateEventType";
+import { CoordinateListResponse, UserInterestResponse, eventPocResponse, pocDetail } from "@/types/coordinateEventType";
 import { ApiError } from "@/types/api";
 import { MiscAdapter } from "@/adapters/miscAdapter";
 
@@ -88,7 +88,7 @@ export const useCoordinateService = () => {
   };
 
   const getEventPOC = (eventId: string) => {
-    return api.request<eventPocResponse>(`${endpoints.event.poc}/${eventId}`, {
+    return api.request<eventPocResponse>(`${endpoints.event.poc}/${eventId}?sortBy=desc`, {
       method: "GET",
     });
   }
@@ -171,6 +171,12 @@ export const useCoordinateService = () => {
     });
   }
 
+  const unlockPocDetail = (pocId: number, eventId: string) => {
+    return api.request<pocDetail>(`${endpoints.coordinate.pocUnmask}?pocId=${pocId}&eventId=${eventId}&unlockValue=email,phone`, {
+      method: "GET",
+    });
+  }
+
   return {
     getEventsWithSearchParams,
     getParticipentCount,
@@ -186,6 +192,7 @@ export const useCoordinateService = () => {
     getOutreachSingleEvent,
     getInterestConfig,
     getPipelineConfig,
+    unlockPocDetail,
     isLoading: api.isLoading,
     error: api.error as ApiError,
   };

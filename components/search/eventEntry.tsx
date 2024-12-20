@@ -10,17 +10,22 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useFilterContext } from "@/context/filterContext";
-
+import {toast} from "react-toastify"
 const EventEntries = [
   { id: "free", label: "Free" },
   { id: "paid", label: "Paid" },
 ];
+interface entryInterface{
+  enabledValue?:string[] | undefined;
+}
 interface EventEntryProps{
+  enabledEntries?:entryInterface;
   source: string;
   selectedStatuses?: string[];
   setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 export default function EventEntrySelector({
+  enabledEntries,
   source,
   selectedStatuses: parentSelectedFormats = [],
   setSelectedStatuses: parentSetSelectedFormats,
@@ -47,11 +52,20 @@ export default function EventEntrySelector({
   const selectedStatus = selectedStatuses.length;
 
   const handleStatusToggle = (statusId: string) => {
-    setSelectedStatuses?.((prev) =>
-      prev.includes(statusId)
-        ? prev.filter((id) => id !== statusId)
-        : [...prev, statusId]
-    );
+    setSelectedStatuses?.((prev) => {
+      if (enabledEntries?.enabledValue && prev.length === 1 && prev.includes(statusId)) {
+        toast.error("At least one filter must be selected", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+        return prev;
+      }
+      return prev.includes(statusId)
+        ? prev.filter((id) => id !== statusId) 
+        : [...prev, statusId]; 
+    });
+    
   };
 
   const handleSelectAll = (checked: boolean) => {
@@ -73,7 +87,7 @@ export default function EventEntrySelector({
     }
     setIsOpen(open);
   };
-
+  
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -136,6 +150,7 @@ export default function EventEntrySelector({
               <Checkbox
                 id={eventEntry.id}
                 className="rounded-none"
+                disabled={enabledEntries && !enabledEntries?.enabledValue?.includes(eventEntry.id.toUpperCase())}
                 checked={selectedStatuses.includes(eventEntry.id)}
                 onCheckedChange={() => handleStatusToggle(eventEntry.id)}
               />
