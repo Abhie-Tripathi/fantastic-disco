@@ -25,10 +25,12 @@ interface Props {
   handleShortlistModal: (eventId: string, enquiryId: string) => void;
   cardUpdated: boolean;
   modalOpen: boolean;
-  setStatusChanged?: (status: boolean) => void;
+  setStatusChanged: (status: boolean) => void;
   statusChanged?: boolean;
   selectedId?: string;
   setSelectedId: any;
+  coordinateActions: any;
+  pipelineConfig: any;
 }
 const Internal = ({
   handleModal,
@@ -39,6 +41,8 @@ const Internal = ({
   setStatusChanged,
   statusChanged,
   selectedId,
+  coordinateActions,
+  pipelineConfig,
 }: Props) => {
   const searchParams = useSearchParams();
   const coordinateService = useCoordinateService();
@@ -53,7 +57,6 @@ const Internal = ({
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [coordinateCount, setCoordinateCount] = useState<any>();
   const [searchInput, setSearchInput] = useState("");
-  const [eventId, setEventId] = useState("");
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
   const [filterChanged, setFilterChanged] = useState(false);
@@ -71,17 +74,6 @@ const Internal = ({
     setSearchInput(event.target.value);
   };
 
-  const [coordinateActions, setCoordinateActions] = useState<any>([]);
-
-  const getInterestConfig = async () => {
-    try {
-      const apiData: any = await coordinateService.getInterestConfig();
-      setCoordinateActions(apiData.slice(1));
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  }
-
   useEffect(() => {
     const getCordinateList = async () => {
       try {
@@ -94,7 +86,6 @@ const Internal = ({
       }
     };
     getCordinateList();
-    getInterestConfig();
   }, []);
 
   const fetchData = async () => {
@@ -140,7 +131,7 @@ const Internal = ({
     if (statusChanged === true) {
       const updatedData = eventData1.map((item) => {
         return item.eventId === selectedId
-          ? { ...item, enquiryStatus: "Shortlisted" }
+          ? { ...item, enquiryStatus: "SHORTLISTED" }
           : item;
       });
 
@@ -149,6 +140,15 @@ const Internal = ({
       if (setStatusChanged) setStatusChanged(false);
     }
   }, [statusChanged]);
+
+  const enquiryStatusUpdate = (eventId: string, status: string) => {    
+    const updatedData = eventData1.map((item) => {
+      return item.eventId === eventId
+        ? { ...item, enquiryStatus: status }
+        : item;
+    });
+    setEventData1(updatedData);
+  }
 
   useEffect(() => {
     setPage(1);
@@ -161,7 +161,7 @@ const Internal = ({
       fetchData();
       setFilterChanged(true);
     }
-  }, [page, eventId, filtersChanged]);
+  }, [page, filtersChanged]);
   if (!isLoaded) {
     return (
       <div style={{ padding: "50px" }}>
@@ -177,11 +177,8 @@ const Internal = ({
   }
   const handleSelect = (id: number, name: string) => {
     setSearchInput(name);
-    setEventId(id.toString());
     setShowSuggestion(true);
-    setFilter("eventId", id.toString());
-    console.log(id, name, 'selected item');
-    
+    setFilter("eventId", id.toString());    
   };
   return (
     <>
@@ -242,7 +239,6 @@ const Internal = ({
                       style={{ cursor: "pointer" }}
                       onClick={() => {
                         setSearchInput("");
-                        setEventId("");
                         deleteFilter('eventId')
                       }}
                     />
@@ -266,7 +262,7 @@ const Internal = ({
             </div>
 
             <div style={{ width: "15%" }} className={styles.outerDiv}>
-              <InterestStatusSelector />
+              <InterestStatusSelector pipelineConfig={pipelineConfig} />
             </div>
 
             <div style={{ width: "25%" }} className={styles.outerDiv}>
@@ -309,8 +305,10 @@ const Internal = ({
                       upvote={item.upvote}
                       enquiryActivity={item.enquiryActivity}
                       coordinateActions={coordinateActions}
+                      pipelineConfig={pipelineConfig}
                       handleModal={handleModal}
                       handleShortlistModal={handleShortlistModal}
+                      enquiryStatusUpdate={enquiryStatusUpdate}
                     />
                   </div>
                 </>

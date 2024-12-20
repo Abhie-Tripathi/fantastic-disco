@@ -17,9 +17,10 @@ interface Props {
   shortlistModalData: any;
   handleRefresh: () => void;
   setStatusChanged: (status: boolean) => void;
+  pipelineConfig: any;
 }
 
-const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefresh, setStatusChanged }: Props) => {
+const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefresh, setStatusChanged, pipelineConfig }: Props) => {
   const { user } = useAuthContext();
   const coordinateService = useCoordinateService();
 
@@ -160,7 +161,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
               {shortlistModalData.stats.uniqueUser} People have shown interest
             </div>
             <Button onClick={handleSubmit} >
-              Mark as Shortlisted
+              Mark as {pipelineConfig?.[1]?.label ? pipelineConfig?.[1]?.label : 'Shortlist'}
             </Button>
           </div>
           <div className={styles.main_section}>

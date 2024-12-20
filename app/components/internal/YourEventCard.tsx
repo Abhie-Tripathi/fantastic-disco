@@ -30,13 +30,15 @@ interface YourEventCardProps {
   upvote?: any;
   enquiryActivity?: any;
   coordinateActions: { [status: string]: string}[];
+  pipelineConfig: any;
   handleModal?: (id: string, enquiryId: string) => void;
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
   setSelectedId?:(status:string)=>void;
   geniEvent?: AllEventsType;
   handlePrefillEvent?: (value: AllEventsType) => void
   handleDeleteModal?: (id: string, name: string) => void;
-  filterChanged?:boolean
+  filterChanged?:boolean;
+  enquiryStatusUpdate: (eventId: string, status: string) => void;
 }
 interface VoteStatus {
   [name: string]: boolean;
@@ -75,6 +77,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   upvote,
   enquiryActivity,
   coordinateActions,
+  pipelineConfig,
   handleModal,
   handleShortlistModal,
   geniEvent,
@@ -82,7 +85,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   isDateSame,
   handleDeleteModal,
   filterChanged,
-  setSelectedId
+  setSelectedId,
+  enquiryStatusUpdate,
   
 }) => {
   if (eventStartDate) {
@@ -96,6 +100,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   const [interestedUsers, setInterestedUsers] = useState<any>({})
 
   const coordinateService = useCoordinateService();
+
+  const statusLabel = pipelineConfig?.filter((item: any)=>(
+    item.status === currentEnquiryStatus
+  ))?.[0]?.label;  
 
   const handleVoteClick = async (item: string) => {
     let voteType = coordinateActions.find((obj: any) => obj.label === item);
@@ -185,11 +193,13 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               <div className="tablet_view mobile_view">
                 <StatusChangeDropdown
                  setSelectedId={setSelectedId}
-                  label=""
+                  label={statusLabel}
                   eventId={eventId}
                   enquiryId={enquiryId}
                   currentEnquiryStatus={currentEnquiryStatus}
                   handleShortlistModal={handleShortlistModal}
+                  pipelineConfig={pipelineConfig}
+                  enquiryStatusUpdate={enquiryStatusUpdate}
                 />
               </div>
 
@@ -214,11 +224,13 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               {!geniEvent && <div className="desktop_view">
                 <StatusChangeDropdown
                 setSelectedId={setSelectedId}
-                  label=""
+                  label={statusLabel}
                   eventId={eventId}
                   enquiryId={enquiryId}
                   currentEnquiryStatus={currentEnquiryStatus}
                   handleShortlistModal={handleShortlistModal}
+                  pipelineConfig={pipelineConfig}
+                  enquiryStatusUpdate={enquiryStatusUpdate}
                 />
               </div>}
             </div>

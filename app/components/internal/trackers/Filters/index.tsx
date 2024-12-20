@@ -1,6 +1,8 @@
 "use client";
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import { ApiError } from "@/types/api";
+import { toast } from "react-toastify";
 import { useSearchParams, useRouter } from "next/navigation";
 import EventTypeSelector from "@/components/search/eventType";
 import CategorySelector from "@/components/search/categorySelector";
@@ -57,7 +59,7 @@ import SearchBar from "../../searchBar/SearchBar";
 import CsvUploader from "./csvUploader";
 import FrequencySelector from "@/components/search/advancedFilters/frequency";
 import ForecastedStatusSelector from "@/components/search/advancedFilters/forecastedStatus";
-import EventAnalyticsSelector from "@/components/advancedFilters/eventAnalytics";
+import EventAnalyticsSelector from "@/components/search/advancedFilters/eventAnalytics";
 import EventRankingSelector from "@/components/search/advancedFilters/eventRanking";
 import AudienceZoneSelector from "@/components/search/advancedFilters/audienceZone";
 import AudienceQualitySelector from "@/components/advancedFilters/audienceQualityScore";
@@ -67,9 +69,11 @@ import {Tracker, Toggle} from '@/types/trackers'
 import ExhibitorQualitySelector from "@/components/advancedFilters/exhibitorQualityScore";
 import { useTrackerContext } from "@/context/tracker";
 import { Designations } from "@/types/misc";
-import { newCategories } from "@/data/categories";
+import { useFilterContext } from "@/context/filterContext";
+import { categories, newCategories } from "@/data/categories";
 import kewwordPresetJson from "@/public/data/presetJson/keyword.json"
 import competitorPresetJson from "@/public/data/presetJson/competitor.json"
+import speakerPresetJson from "@/public/data/presetJson/speaker.json"
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -120,7 +124,6 @@ interface Cat {
 interface EditData {
   tracker: Tracker;
 }
-
 interface PresetJsonData {
   id: number;
   img?: any;
@@ -132,7 +135,6 @@ interface PresetJsonData {
   presetType: string;
   eventCount?: string;
 }
-
 const top10Data = [['BMC Training'], ['Lorman Education Services'], ['http://www.iu.edu/']];
 const top10Speakers = [
   ["abc.com", "xyz.com"],
@@ -142,7 +144,6 @@ const keyData1 = [
   ['Mental health', 'Psychologist', 'Therapist', 'wellness coaches'],
   [],
 ];
-
 const staticPresetData = [
   // {
   //   id: 1,
@@ -397,18 +398,20 @@ const formatCount = (count: number ) => {
 
 const Pages = () => {
   const searchParams = useSearchParams();
+  
   const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
+  const {enabledFilters } = useFilterContext();
   interface SelectedLocation {
     [id: string]: string;
   }
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const {getTrackerDetail,createTracker,editTracker, error}=useTrackerServices();
-  const [isRatingOpen, setRatingOpen] = useState<boolean>(false);
-  const [isExhibitOpen, setExhibitOpen] = useState<boolean>(false);
+  const [isRatingOpen, setRatingOpen] = useState<boolean>(enabledFilters?.eventRating?.isRatingEnabled || false);
+  const [isExhibitOpen, setExhibitOpen] = useState<boolean>(enabledFilters?.estimatedExhibitScore?.isExhibitorsEnabled||false);
   const [isSpreadOpen, setSpreadOpen] = useState<boolean>(false);
   const { theme } = useTheme();
   const type = searchParams.get('type');
-  const [selectedLocationsData,setSelectedLocationsData]=useState<any>();
+  const [selectedLocationsData,setSelectedLocationsData]=useState<any>(enabledFilters?.locationIds?.enabledValue);
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
   const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
@@ -420,9 +423,9 @@ const Pages = () => {
   const [categoryData, setCatgeoryData] = useState<CategoryData>();
   const [designationData,setDesignationData]=useState([]);
   const [selectedRegularity, setSelectedRegularity] = useState([0, 100]);
-  const [includeKeywords, setIncludeKeywords] = useState<string[] | undefined>([]);
-  const [excludeKeywords, setExcludeKeywords] = useState<string[] | undefined>([]);
-  const [selectedVisitors, setSelectedVisitors] = useState<string[]>([]);
+  const [includeKeywords, setIncludeKeywords] = useState<string[] |undefined>(enabledFilters?.keywords?.positiveKeywords || []);
+  const [excludeKeywords, setExcludeKeywords] = useState<string[] | undefined>(enabledFilters?.keywords?.negativeKeywords || []);
+  const [selectedVisitors, setSelectedVisitors] = useState<string[]>(enabledFilters?.eventSize?.enabledValue || []);
   const [selectedReputationScore, setSelectedReputationScore] = useState([0, 100]);
   const [websiteSuggestion, setWebsiteSuggestion]=useState(null);
   // const [categorySlug, setCategorySlug] = useState([]);
@@ -433,12 +436,12 @@ const Pages = () => {
   Record<EventGroupType, string[]>
 >({
   social: [],
-  business: [],
+  business:[],
 });
   const [selectedEventTypeName, setSelectedEventTypeName] = useState<string>('');
   const [selectedZone, setSelectedZone] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    searchParams.get("categories")?.split(",") || []
+    enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
   );
   const [selectedLocations, setSelectedLocations] = useState<string[]>(
     searchParams.get("location")?.split(",") || []
@@ -456,32 +459,36 @@ const Pages = () => {
     from: Date | undefined;
     to: Date | undefined;
   }>({
-    from: undefined,
-    to: undefined,
+    from: enabledFilters?.durations?.startDate
+      ? new Date(enabledFilters.durations.startDate.split(",")[0])
+      : undefined,
+    to: enabledFilters?.durations?.startDate
+      ? new Date(enabledFilters.durations.startDate.split(",")[1])
+      : undefined,
   });
   const [selectedEventStatus, setSelectedEventStatus] = useState<string[]>(
-    searchParams.get("status")?.split(",") || []
+    enabledFilters?.eventStatus?.enabledValue?.map((item)=>item.toLowerCase()) || []
   );
   const [selectedEventAttendanceRange, setSelectedEventAttendanceRange] =
     useState<string[]>([]);
   const [selectedEventFrequency, setSelectedEventFrequency] = useState<
     string[]
-  >(searchParams.get("frequency")?.split(",") || []);
-  const [freqToggle,setFreqToggle]=useState<boolean>(false);
+  >(enabledFilters?.eventFrequency?.enabledValue?.map((item)=>item.toLowerCase())|| []);
+  const [freqToggle,setFreqToggle]=useState<boolean>(enabledFilters?.eventFrequency?.isFreqEnabled || false);
   const [selectedEntry, setSelectedEntry] = useState<string[]>(
-    searchParams.get("entry")?.split(",") || []
+    enabledFilters?.eventEntry?.enabledValue?.map((item)=>item.toLowerCase()) || []
   );
   const [selectedEventRanking, setSelectedEventRanking] = useState<string[]>(
     searchParams.get("rank")?.split(",") || []
   );
   const [selectedEventFormat, setSelectedEventFormat] = useState<string[]>(
-    searchParams.get("format")?.split(",") || []
+    enabledFilters?.eventFormat?.enabledValue || []
   );
   const [selectedExhibitScore, setSelectedExhibitScore] = useState<string[]>(
-    searchParams.get("exhibit")?.split(",") || []
+    enabledFilters?.estimatedExhibitScore?.enabledValue || []
   );
   const [selectedUserRatings, setSelectedUserRatings] = useState<string[]>(
-    searchParams.get("rating")?.split(",") || []
+    enabledFilters?.eventRating?.enabledValue || []
   );
   const [rankToggles, setRankToggles] = useState({
     isEventRank: false,
@@ -496,12 +503,13 @@ const Pages = () => {
 });
   const [showAdvanceFilter, setShowAdvanceFilter] = useState(true);
   const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
-  const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(false);
-  const [selectedEventSeries, setSelectedEventSeries] = useState(false);
+  const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(enabledFilters?.branded?.enabledValue?.eventBrand||false);
+  
+  const [selectedEventSeries, setSelectedEventSeries] = useState(enabledFilters?.branded?.enabledValue?.eventSeries || false);
   const [selectedReptScore, setSelectedReptScore] = useState(0);
-  const [selectedMaturity, setSelectedMaturity] = useState<string>('');
-  const [isMaturity,setIsMaturity]=useState<boolean>(false);
-  const [isBrand,setIsBrand]=useState<boolean>(false);
+  const [selectedMaturity, setSelectedMaturity] = useState<string>(enabledFilters?.maturity?.enabledValue?.[0] || "");
+  const [isMaturity,setIsMaturity]=useState<boolean>(enabledFilters?.maturity?.isMaturityEnabled||false);
+  const [isBrand,setIsBrand]=useState<boolean>(enabledFilters?.branded?.isBrandedEnabled|| false);
   const [maturity, setMaturity] = useState<string | null>();
   const [intScore, setIntScore] = useState<string | null>();
   // const [selectedInboundScore, setSelectedInboundScore] = useState(0);
@@ -512,20 +520,20 @@ const Pages = () => {
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
   const [add, setAdd] = useState(false);
-  const [forecastedStatus, setForecastedStatus] = useState(false);
+  const [forecastedStatus, setForecastedStatus] = useState(enabledFilters?.isForecasted?.isForecastedEnabled || false);
 
   const [analyticsToggles, setAnalyticsToggles] = useState({
     impactScore: false,
     inboundScore: false,
     internationalScore: false,
-    globalToggle: false,
+    globalToggle: enabledFilters?.analytics?.isAnalyticsEnabled,
   });
 
   const [selectedImpactScore, setSelectedImpactScore] = useState<[number,number]>([0, 100]);
   const [selectedInboundScore, setSelectedInboundScore] = useState<[number, number]>([0, 100]);
   const [selectedInternationalScore, setSelectedInternationalScore] = useState<[number,number]>([0, 100]);
 
-  const [audienceZone, setAudienceZone] = useState<boolean>(false);
+  const [audienceZone, setAudienceZone] = useState<boolean>(enabledFilters?.audienceZone?.isZoneEnabled || false);
   const [audienceSpread, setAudienceSpread] = useState<boolean>(false);
   const [selectedRank, setSelectedRank] = useState<string>('');
   const [selectedCountries, setSelectedCountries] = useState<any>([]);
@@ -588,7 +596,7 @@ const Pages = () => {
   );
   // const [editData, setEditData] = useState<EditData | null>(null);
   useEffect(() => {
-    setPresetTemplateData([...staticPresetData, ...kewwordPresetJson, ...competitorPresetJson])
+    setPresetTemplateData([...kewwordPresetJson, ...competitorPresetJson, ...speakerPresetJson])
   }, []);
 
   useEffect(() => {
@@ -864,7 +872,7 @@ const Pages = () => {
           eventStatus: selectedEventStatus.map((item) => item.toUpperCase()).join(","),
         }),
         ...(selectedEntry?.length > 0 && {
-          eventEntry: selectedEntry.join(","),
+          eventEntry: selectedEntry.map((item)=>item.toLowerCase()).join(","),
         }),
         ...(selectedTrustScore[0] > 0 && {
           trustScore: selectedTrustScore[0].toString(),
@@ -1005,10 +1013,20 @@ const Pages = () => {
       }
       if (last === "editTracker") {
       try{
-        const data = await editTracker(secondLast, formData);
+        const data = await editTracker(secondLast, formData) as { error?: ApiError };
         if (data) {
           console.log(data);
+          if(data?.error){
+            toast.error((data.error as ApiError).message, {
+              position: "bottom-right",
+              autoClose: 2000,
+              hideProgressBar: true,
+            });
+            setIsCreating(false);
+            return;
+          }else{
           router.replace(`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`);
+          }
         } else {
           console.log(error);
           setIsCreating(false);
@@ -1018,6 +1036,25 @@ const Pages = () => {
         setIsCreating(false);
       }
     } else {
+      console.log(formData);
+      
+      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(includeKeywords?.length==0 && excludeKeywords?.length===0))){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
+      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
+        console.log("Please, Fill all the details");
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
+      else if (type === "CUSTOM" && (selectedLocationsData &&selectedLocationsData.length === 0 || trackerName.length === 0)){
+        console.log("Please, Fill all the details");
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+      }
       try{
         const data= await createTracker(formData)
         if (error) {
@@ -1030,6 +1067,12 @@ const Pages = () => {
         }
       }catch(error){
         console.log(error);
+        toast.error((error as ApiError).message, {
+          position: "bottom-right",
+          autoClose: 2000,
+          // closeButton: false,
+          hideProgressBar: true,
+        });
         setIsCreating(false);
         return;
       }
@@ -1048,7 +1091,6 @@ const Pages = () => {
         })
       : [];
   };
-  console.log(categoryData);
 
   useEffect(() => {
     if (editData && editData?.tracker && last === "editTracker") {
@@ -1270,7 +1312,7 @@ const Pages = () => {
         : [];
     setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedState]);
 
-      console.log(selectedLocations);
+      // console.log(selectedLocations);
       
       const eventCountry =
         editData?.tracker?.filterValue?.eventCountry?.map(
@@ -1622,7 +1664,45 @@ useEffect(() => {
 //   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
 //       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
 // },[includeKeywords, excludeKeywords])
-
+// console.log(enabledFilters.userRating.isRatingEnabled);
+useEffect(()=>{
+  if(last!=="editTracker"){
+  setRatingOpen(enabledFilters?.eventRating?.isRatingEnabled|| false);
+  setExhibitOpen(enabledFilters?.estimatedExhibitScore?.isExhibitorsEnabled|| false);
+  setSelectedLocationsData(enabledFilters?.locationIds?.enabledValue);
+  setSelectedEventType({...selectedEventType,  business: enabledFilters?.eventType?.enabledValue?.map((item)=> `${item.toLowerCase()}s`) || []});
+  setIncludeKeywords(enabledFilters?.keywords?.positiveKeywords);
+  setExcludeKeywords(enabledFilters?.keywords?.negativeKeywords);
+  setSelectedVisitors(enabledFilters?.eventSize?.enabledValue || []);
+  setSelectedCategories( enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []);
+  setDateRange({
+    from: enabledFilters?.durations?.startDate
+      ? new Date(enabledFilters.durations.startDate.split(",")[0])
+      : undefined,
+    to: enabledFilters?.durations?.startDate
+      ? new Date(enabledFilters.durations.startDate.split(",")[1])
+      : undefined,
+  });
+  setIsMaturity(enabledFilters?.maturity?.isMaturityEnabled||false);
+  setSelectedEventStatus(enabledFilters?.eventStatus?.enabledValue?.map((item)=>item.toLowerCase()) || []);
+  setSelectedEventFrequency(enabledFilters?.eventFrequency?.enabledValue?.map((item)=>item.toLowerCase())|| []);
+  setFreqToggle(enabledFilters?.eventFrequency?.isFreqEnabled || false);
+  setSelectedEntry(enabledFilters?.eventEntry?.enabledValue?.map((item)=>item.toLowerCase()) || []);
+  setSelectedEventFormat(enabledFilters?.eventFormat?.enabledValue || []);
+  setSelectedExhibitScore(enabledFilters?.estimatedExhibitScore?.enabledValue || []);
+  setSelectedUserRatings(enabledFilters?.eventRating?.enabledValue || []);
+  setSelectedBrandedEvent(enabledFilters?.branded?.enabledValue?.eventBrand||false);
+  setSelectedEventSeries(enabledFilters?.branded?.enabledValue?.eventSeries || false);
+  setSelectedMaturity(enabledFilters?.maturity?.enabledValue?.[0] || "" || "");
+  setIsBrand(enabledFilters?.branded?.isBrandedEnabled|| false);
+  setForecastedStatus(enabledFilters?.isForecasted?.isForecastedEnabled || false);
+  setAnalyticsToggles({
+    ...analyticsToggles,
+    globalToggle: enabledFilters?.analytics?.isAnalyticsEnabled,
+  });
+  setAudienceZone(enabledFilters?.audienceZone?.isZoneEnabled || false);
+  }
+},[enabledFilters])
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -1931,7 +2011,7 @@ return (
           {" "} You can edit or remove unwanted entries from here.
         </div>
         {(customData && customData.length >0) ?
-          <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> :
+          <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> :          
           <div className={styles.emptyTableData}>
             <Image
               src={trackerEmptyTable}
@@ -1965,16 +2045,28 @@ return (
     <div className={styles.container}>
       <div className={styles.sub_container}>
         <div className="grid grid-cols-5 gap-3">
-          <EventTypeSelector source="tracker" setSelectedCategories={setSelectedEventType} selectedCategories={selectedEventType}/>
-          <CategorySelector  source="tracker"  selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}/>
+          <EventTypeSelector source="tracker" setSelectedCategories={setSelectedEventType} selectedCategories={selectedEventType}
+          enabledTypeData={enabledFilters?.eventType}
+          />
+          <CategorySelector  source="tracker"  selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}
+          enabledCategories={enabledFilters?.eventCategory}
+          />
           <EventFormatSelector source="tracker" selectedStatuses={selectedEventFormat}
-                  setSelectedStatuses={setSelectedEventFormat}/>
+                  setSelectedStatuses={setSelectedEventFormat}
+                  enabledFormat={enabledFilters?.eventFormat}
+                  />
           <LocationSelector source="tracker" selectedLocation={selectedLocationsData} setSelectedLocation={setSelectedLocationsData} isMandatory={isMandatory}/>
           {/* <LocationSelector/> */}
-          <DateRangeSelector source="tracker" dateRange={dateRange} setDateRange={setDateRange}/>
-          <EventStatusSelector source="tracker" setSelectedStatuses={setSelectedEventStatus} selectedStatuses={selectedEventStatus}/>
-          <EventEntrySelector source="tracker" selectedStatuses={selectedEntry} setSelectedStatuses={setSelectedEntry}/>
-          <UserRatingSelector source="tracker" selectedRatings={selectedUserRatings} setSeectedRatings={setSelectedUserRatings} isEnabled={isRatingOpen} setIsEnabled={setRatingOpen}/>
+          <DateRangeSelector source="tracker" dateRange={dateRange} setDateRange={setDateRange} enabledDateRange={enabledFilters?.durations} />
+          <EventStatusSelector source="tracker" setSelectedStatuses={setSelectedEventStatus} selectedStatuses={selectedEventStatus}
+          enabledStatuses={enabledFilters?.eventStatus}
+          />
+          <EventEntrySelector source="tracker" selectedStatuses={selectedEntry} setSelectedStatuses={setSelectedEntry}
+          enabledEntries={enabledFilters?.eventEntry}
+          />
+          <UserRatingSelector source="tracker" selectedRatings={selectedUserRatings} setSeectedRatings={setSelectedUserRatings} isEnabled={isRatingOpen} setIsEnabled={setRatingOpen}
+          enabledRatingData={enabledFilters?.eventRating}
+          />
         </div>
       </div>
       {showRecentSearches && (
@@ -2021,6 +2113,7 @@ return (
               setSelectedStatus={setSelectedMaturity}
               isEnabled={isMaturity}
               setIsEnabled={setIsMaturity}
+              enabledMaturityData={enabledFilters?.maturity} 
               />
               <GlobalAndTouringSelector source="tracker" selectedBrandedEvent={selectedBrandedEvent}
               setSelectedBrandedEvent={setSelectedBrandedEvent}
@@ -2028,12 +2121,19 @@ return (
               setSelectedEventSeries={setSelectedEventSeries}
               isEnabled={isBrand}
               setIsEnabled={setIsBrand}
+              enabledBrandData={enabledFilters?.branded}
               />
-              <ForecastedStatusSelector source="tracker" isEnabled={forecastedStatus} setIsEnabled={setForecastedStatus}/>
-              <FrequencySelector source="tracker" selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency} isEnabled={freqToggle} setIsEnabled={setFreqToggle}/>
+              <ForecastedStatusSelector source="tracker" isEnabled={forecastedStatus} setIsEnabled={setForecastedStatus}  
+              enabledForecastData={enabledFilters?.isForecasted}
+              />
+              <FrequencySelector source="tracker" selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency} isEnabled={freqToggle} setIsEnabled={setFreqToggle}
+              enabledFreqData={enabledFilters?.eventFrequency}
+              />
 
             {type!=="T_PRODUCT_KEYWORDS" &&
-            <ProductSelector source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords}/>
+            <ProductSelector source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords}
+            enabledProductData={enabledFilters?.keywords}
+            />
               }
 
 
@@ -2112,14 +2212,16 @@ return (
         )}
 
         {/* INSIGHTS AND SCORES */}
-        {showAdvanceFilter && selectedAdvFilter === "IS" && (
+        {(showAdvanceFilter && selectedAdvFilter === "IS") && (
           <div className={styles.inputdropdowns_container}>
               <EstimatedVisitorsSelector source="tracker" selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}
+              enabledVisitorData={enabledFilters?.eventSize}
               />
               <EstimatedExhibitorsSelector selectedRanges={selectedExhibitScore}
               setSelectedRanges={setSelectedExhibitScore}
               isEnabled={isExhibitOpen}
               setIsEnabled={setExhibitOpen}
+              enabledExhibitorData={enabledFilters?.estimatedExhibitScore}
               source="tracker"/>
               <EventAnalyticsSelector source="tracker" selectedEventRank={selectedImpactScore}
               setSelectedEventRank={setSelectedImpactScore}
@@ -2128,7 +2230,9 @@ return (
               selectedAviationRank={selectedInternationalScore}
               setSelectedAviationRank={setSelectedInternationalScore} 
               rankToggles={analyticsToggles}
-              setRankToggles={setAnalyticsToggles}/>
+              setRankToggles={setAnalyticsToggles}
+              enabledAnalyticsData={enabledFilters?.analytics}
+              />
               <EstimatedEconomicImpactSelector/>
               <EventRankingSelector 
               source="tracker"
@@ -2137,7 +2241,9 @@ return (
               rankToggles={rankToggles}
               setRankToggles={setRankToggles}
               selectedRank={selectedRank}
-              setSelectedRank={setSelectedRank}/>
+              setSelectedRank={setSelectedRank}
+              enabledRankingData={enabledFilters?.eventRanking}
+              />
           </div>
         )}
 
@@ -2147,12 +2253,16 @@ return (
 
           <AudienceQualitySelector/>
           <ExhibitorQualitySelector/>
-          <AudienceZoneSelector source="tracker" isEnabled={audienceZone} setIsEnabled={setAudienceZone}/>
+          <AudienceZoneSelector source="tracker" isEnabled={audienceZone} setIsEnabled={setAudienceZone} enabledZoneData={enabledFilters?.audienceZone}/>
           <AudienceProfileSelector source="tracker" 
           designationData={selectedAudProfile}
-          setDesignationData={setSelectedAudProfile}/>
+          setDesignationData={setSelectedAudProfile}
+          enabledProfileData={enabledFilters?.designation}
+          />
           <AudienceSpreadSelector source="tracker" selectedCountries={selectedCountries}
-          setSelectedCountries={setSelectedCountries}/>
+          setSelectedCountries={setSelectedCountries}
+          enabledSpreadData={enabledFilters?.audienceSpread}
+          />
 
          
           </div>
@@ -2164,7 +2274,7 @@ return (
    
   </div>
     }
-    {(type !== "CUSTOM" && presetTemplateData.filter(item => item.url === template?.name).length > 0) &&
+      {(type !== "CUSTOM" && presetTemplateData.filter(item => item.url === template?.name).length > 0) &&
       <div>
           <div className="flex justify-center	gap-2 items-center font-semibold" >
             <span className="text-lg">Get Started with Pre-sets </span>{" "}

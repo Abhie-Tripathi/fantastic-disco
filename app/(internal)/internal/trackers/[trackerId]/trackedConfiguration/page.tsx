@@ -631,7 +631,7 @@ const userRating=
                                         checked={true}
                                         disabled
                                     />
-                                    <span className={styles.item}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
+                                    <span className="text-xs text-[var(--secondary-text-color)] p-1">{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
                                 </label>
                             </>
                         ))}

@@ -8,6 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
+import {toast} from 'react-toastify'
 import { useFilterContext } from "@/context/filterContext";
 
 const eventFormats = [
@@ -15,7 +16,12 @@ const eventFormats = [
   { id: "offline", label: "Offline" },
   { id: "hybrid", label: "Hybrid" },
 ];
+interface formatInterface{
+  enabledValue?:string[] | undefined;
+  selectedValue?:string[] | undefined;
+}
 interface EventFormatSelectorProps {
+  enabledFormat?:formatInterface;
   source: string;
   selectedStatuses?: string[];
   setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
@@ -23,6 +29,7 @@ interface EventFormatSelectorProps {
  
 export default function EventFormatSelector({
   source,
+  enabledFormat,
   selectedStatuses: parentSelectedFormats = [],
   setSelectedStatuses: parentSetSelectedFormats,
 }: EventFormatSelectorProps) {
@@ -48,11 +55,20 @@ export default function EventFormatSelector({
   const selectedStatus = selectedStatuses.length;
 
   const handleStatusToggle = (statusId: string) => {
-    setSelectedStatuses?.((prev) =>
-      prev.includes(statusId)
+    setSelectedStatuses?.((prev) => {
+      if (enabledFormat?.enabledValue && prev.length === 1 && prev.includes(statusId)) {
+        toast.error("At least one filter must be selected", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+        return prev;
+      }
+      return prev.includes(statusId)
         ? prev.filter((id) => id !== statusId)
-        : [...prev, statusId]
-    );
+        : [...prev, statusId];
+    });
+    
   };
 
   const handleSelectAll = (checked: boolean) => {
@@ -138,6 +154,7 @@ console.log(selectedStatuses);
               <Checkbox
                 id={eventFormat.id}
                 className="rounded-none"
+                disabled={enabledFormat && !enabledFormat?.enabledValue?.includes(eventFormat.id)}
                 checked={selectedStatuses.includes(eventFormat.id)}
                 onCheckedChange={() => handleStatusToggle(eventFormat.id)}
               />
