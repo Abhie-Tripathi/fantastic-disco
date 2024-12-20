@@ -160,7 +160,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     router.push(`/internal/search/events?view=${view}`);
   }, []);
   const applyFilters = () => {
-    setLocalFilters((currentFilters) => {
+    setLocalFilters((currentFilters) => { 
       const params = new URLSearchParams();
       Object.entries(currentFilters).forEach(([key, value]) => {
         if (value && key !== "skip") {
