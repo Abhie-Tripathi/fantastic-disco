@@ -101,11 +101,12 @@ export default function CreateTrackerDialog({
             "eventSeries",
             "maturity",
             "eventImpactScore",
-            "eventInboundScore",
+            "inboundScore",
             "internationalScore",
             "isforecasted",
             "trustScore",
             "eventRating",
+            "eventRanking",
             "estimatedExhibitScore",
             "audienceSpread",
             "eventFrequency",
@@ -113,7 +114,8 @@ export default function CreateTrackerDialog({
         },
       },
     };
-
+    // console.log(formData);
+    
     try {
       const { data, error } = await myFetch(`${BaseURL}/tracker`, {
         method: "POST",

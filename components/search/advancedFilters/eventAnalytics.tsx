@@ -126,7 +126,7 @@ export default function EventAnalyticsSelector({source, selectedEventRank,enable
 
   const handleShowScoresToggle = (checked: boolean) => {
     setShowScores(checked);
-    setRankToggles({...rankToggles, globalToggle:checked});
+    setRankToggles?.({...rankToggles, globalToggle:checked});
     const currentShow = getLocalFilterValue("show").split(",").filter(Boolean);
     const newShow = checked
       ? [...currentShow, "scores"]

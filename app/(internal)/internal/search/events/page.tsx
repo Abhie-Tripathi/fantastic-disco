@@ -184,6 +184,7 @@ const Search = () => {
     setView(searchParams.get("view") || "")
   },[searchParams])
  
+ console.log(selectedInsights);
  
   
   return (
