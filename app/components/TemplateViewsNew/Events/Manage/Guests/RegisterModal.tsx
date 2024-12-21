@@ -24,6 +24,8 @@ const RegisterModal = ({fetchEventData,setRegisterModal, eventId,setRegisterValu
         // })
         const data:any = updateEvent(formData);
         if(data){
+            console.log("response data ,", data)
+            await new Promise((resolve) => setTimeout(resolve, 100));
             showToast("success", "Registration changes updated")
             setRegisterModal(false)
             fetchEventData()
