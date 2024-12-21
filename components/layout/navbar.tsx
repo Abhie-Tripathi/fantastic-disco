@@ -180,20 +180,21 @@ export default function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={() => signOut()}
-                className="flex items-center"
-              >
-                <LogOut className="h-4 w-4" />
-                <span className="ml-2">Logout</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem
+            <DropdownMenuItem
                 onClick={() => handleClick()}
-                className="flex items-center"
+                className="flex items-center cursor-pointer"
               >
                 <UserSearch className="h-4 w-4" />
                 <span className="ml-2">Profile</span>
               </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => signOut()}
+                className="flex items-center cursor-pointer"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="ml-2">Logout</span>
+              </DropdownMenuItem>
+            
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

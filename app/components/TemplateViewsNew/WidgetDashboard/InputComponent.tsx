@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useRef } from 'react'
 import styles from './inputcomp.style.module.css'
 import EmptyImage from '/public/widgetimages/emptyimages/addedeventempty.svg'
 import Image from 'next/image'
@@ -7,7 +7,9 @@ import { baseUrl } from '@/constants'
 import { myFetch } from '@/utils/myFetch'
 import { useWidgetServices } from '@/services/geniservices/widgetService'
 import { useBrandKitServices } from '@/services/geniservices/brandkitService'
-
+import  { Step } from "react-joyride";
+import dynamic from "next/dynamic";
+import Tooltip from '../../internal/walkthrough/Tooltip'
 interface Props {
     fetched: boolean;
     setFetchedBoolean: (value: boolean) => void
@@ -24,7 +26,12 @@ const InputComponent = ({removeCalled, fetched, setFetchedBoolean, setBrandkitLo
     const {addBrandkit, error} = useBrandKitServices()
     const [domain, setDomain] = useState<string>("");
     const [disableBtn, setDisableBtn] = useState<boolean>(false)
-
+    const [runJoyride, setRunJoyride] = useState<boolean>(false); // To control Joyride
+    const [steps, setSteps] = useState<Step[]>([]);
+    // This is a variable so that when ever a widget is deleted we can call the function in input container to make the button disbaled
+    const { getBrandkit } = useBrandKitServices();
+    const dashboardRef = useRef(null);
+    const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
     useEffect(() => {
         fetchWidget()
         console.log("this is called")
@@ -161,6 +168,62 @@ const InputComponent = ({removeCalled, fetched, setFetchedBoolean, setBrandkitLo
     // }
 
     }
+    // const checkBrandkit = async () => {
+    //     console.log("fetched______________________",fetched)
+    //     try {
+    //     //   const res: any = await getBrandkit();
+    //     //   console.log("domain____", res);
+    //     //   if (!res?.domain?.domain || !Object.keys(res?.otherData || {}).length) {
+    //     //     console.log("Brandkit data is missing or incomplete. Starting walkthrough...");
+    //     //     // Start the walkthrough if the brand kit is not fetched
+    //     //     setRunJoyride(true);
+            
+    //     //     if (dashboardRef.current) {
+    //     //       const newSteps: Step[] = [];
+    //     //       console.log("ref", dashboardRef);
+    //     //       newSteps.push({
+    //     //         target: dashboardRef.current,
+    //     //         title: "Brandkit",
+    //     //         content:
+    //     //          "You can add your brand kit here.",
+    //     //         disableBeacon: true,
+    //     //         placement: "auto",
+    //     //         spotlightPadding: 10,
+    //     //       });
+    //     //       setSteps(newSteps)
+    //     //     }
+    //     //   }
+
+    //     //   if (res.domain.domain) {
+    //     //     setFetchedBoolean(true);
+    //     //   }
+    //     if(!fetched){
+    //         setRunJoyride(true);
+            
+    //         if (dashboardRef.current) {
+    //           const newSteps: Step[] = [];
+    //           console.log("ref", dashboardRef);
+    //           newSteps.push({
+    //             target: dashboardRef.current,
+    //             title: "Brandkit",
+    //             content:
+    //              "You can add your brand kit here.",
+    //             disableBeacon: true,
+    //             placement: "auto",
+    //             spotlightPadding: 10,
+    //           });
+    //           setSteps(newSteps)
+    //         }
+          
+    //     }
+    //     } catch (error) {
+    //       console.log(error);
+    //       return;
+    //     }
+    //   };
+    //   useEffect(() => {
+    //     checkBrandkit();
+    //   }, []);
 
     return (
         <div className={`${styles.body} ${fetched ? styles.fetchedBody : ""}`}>
@@ -168,7 +231,32 @@ const InputComponent = ({removeCalled, fetched, setFetchedBoolean, setBrandkitLo
             {!fetched && <div className={styles.emptyHeading}>
                 Build Personalized Widgets</div>}
             {!fetched && <div className={styles.emptySubHeading}>Paste your Website URL below and let our inbuilt model fetch your events and brand kit</div>}
-            <form onSubmit={handleSubmit} className={`${styles.input_btnContainer} ${fetched ? styles.fetchedInputBtnContainer : ""}`}>
+            {/* <Joyride
+             tooltipComponent={(props) => (
+                <Tooltip {...props} totalSteps={steps.length} />
+              )}
+        steps={steps}
+        run={runJoyride}
+        continuous
+        showProgress
+        showSkipButton
+        styles={{
+          options: {
+            arrowColor: "#fff",
+            backgroundColor: "#ffffff",
+            overlayColor: "rgba(0, 0, 0, 0.5)",
+            primaryColor: "#000",
+            textColor: "#000",
+            zIndex: 2000,
+          },
+        }}
+        callback={(data) => {
+          if (data.status === "finished" || data.status === "skipped") {
+            setRunJoyride(false);
+          }
+        }}
+      /> */}
+            <form  onSubmit={handleSubmit} className={`${styles.input_btnContainer} ${fetched ? styles.fetchedInputBtnContainer : ""}`}>
                 <div className={styles.inputContainer}>
                     <span>https://</span>
                     <input placeholder='Enter your company domain' onChange={(e) => setDomain(e.target.value)} value={domain} disabled={disableBtn ? true : false} className={disableBtn ? styles.disableInput : ""}/>

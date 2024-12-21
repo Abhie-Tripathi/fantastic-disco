@@ -22,7 +22,7 @@ import { useAuthContext, useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { showToast } from "@/utils/showToast";
-
+import { useProfileServices } from "@/services/profileService";
 interface Profile {
   firstname: string;
   lastname: string;
@@ -74,12 +74,13 @@ const Profile = () => {
   const [isProfileInfoChange, setIsProfileInfoChange] = useState(false);
   const [isOtherInfoChange, setIsOtherInfoChange] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
+  const { getMyProfileData, updateMyProfileData, error } = useProfileServices();
   const fetchData = async () => {
-    const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`);
-
+    // const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`);
+    const data: any = await getMyProfileData();
     if (error) {
       console.log(error);
-      showToast("error", error);
+      showToast("error", error.message);
       return;
     }
 
@@ -163,10 +164,8 @@ const Profile = () => {
     }
 
     setIsSaving(true);
-    const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`, {
-      method: "PATCH",
-      body: formData,
-    });
+    const data: any = await updateMyProfileData({ formData });
+    setIsProfileInfoChange(false); 
 
     setIsSaving(false);
 
@@ -206,7 +205,8 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       const sizeInMB = file.size / (1024 * 1024);
-      if (sizeInMB > 10) {
+      // console.log("fileSize_____00000", sizeInMB,file.size);
+      if ((Math.floor(sizeInMB)) >= 10) {
         showToast("error", "Image size should be less than 10 MB");
         return;
       }
@@ -238,11 +238,7 @@ const Profile = () => {
     formData.append("designation", role);
     formData.append("department", dept);
     formData.append("removePicture", "true");
-    const { data, error } = await myFetch(`${baseUrl}/auth/customer/profile`, {
-      method: "PATCH",
-      body: formData,
-    });
-
+    const data: any = await updateMyProfileData({ formData });
     if (data) {
       console.log(data);
       setProfileData(data.user);
@@ -355,15 +351,19 @@ const Profile = () => {
                     <Label htmlFor="mobile">Mobile Number</Label>
                     <Input
                       id="mobile"
-                      type="number"
+                      type="text"
                       value={mobileNo}
-                      onChange={(e) =>
-                        handleProfileInputChange(
-                          setMobileNo,
-                          e.target.value,
-                          profileData?.phoneNumber
-                        )
-                      }
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        
+                        if (/^\d*$/.test(value)) {
+                          handleProfileInputChange(
+                            setMobileNo,
+                            value,
+                            profileData?.phoneNumber
+                          );
+                        }
+                      }}
                     />
                   </div>
                 </div>
@@ -387,14 +387,16 @@ const Profile = () => {
                     <Select
                       onValueChange={(value) => {
                         setRole(value);
-                        setIsProfileInfoChange(true); 
+                        setIsProfileInfoChange(true);
                       }}
                     >
                       <SelectTrigger id="role">
                         <SelectValue placeholder="Select role" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value={user?.role ?? "CUSTOMER"}>{user?.role}</SelectItem>
+                        <SelectItem value={user?.role ?? "CUSTOMER"}>
+                          {user?.role}
+                        </SelectItem>
                         {/* <SelectItem value="developer">Developer</SelectItem> */}
                         {/* <SelectItem value="designer">Designer</SelectItem> */}
                       </SelectContent>

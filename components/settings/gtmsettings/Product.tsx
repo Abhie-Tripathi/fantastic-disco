@@ -97,7 +97,11 @@ export default function ProductsPage() {
   // const MAX_BOXES = 4;
   const removeResearchScreenBox = async (data: any) => {
     const updatedScreenboxes = [...filteredResearchScreenboxes];
-
+    
+    if (updatedScreenboxes.length < 4) {
+      showToast("error", "Cannot remove all items. At least two must remain.");
+      return;
+    }
     for (let i = 0; i < updatedScreenboxes.length; i++) {
       if (updatedScreenboxes[i].status === data.status) {
         updatedScreenboxes.splice(i, 1);
@@ -120,7 +124,10 @@ export default function ProductsPage() {
 
   const removeOutreachScreenBox = async (data: any) => {
     const updatedScreenboxes = [...filteredOutreachScreenboxes];
-
+    if (updatedScreenboxes.length < 5) {
+      showToast("error", "Cannot remove all items. At least two must remain.");
+      return;
+    }
     for (let i = 0; i < updatedScreenboxes.length; i++) {
       if (updatedScreenboxes[i].status === data.status) {
         updatedScreenboxes.splice(i, 1);
@@ -470,10 +477,10 @@ export default function ProductsPage() {
                       className="flex items-center gap-2 relative"
                       draggable
                       onDragStart={(e) =>
-                        handleDragStartResearchScreen(e, index+1)
+                        handleDragStartResearchScreen(e, index + 1)
                       }
                       onDragOver={handleDragOverResearchScreen}
-                      onDrop={(e) => handleDropResearchScreen(e, index+1)}
+                      onDrop={(e) => handleDropResearchScreen(e, index + 1)}
                       onDragEnd={handleDragEndResearchScreen}
                     >
                       <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
@@ -552,10 +559,10 @@ export default function ProductsPage() {
                       className="flex items-center gap-2 relative"
                       draggable
                       onDragStart={(e) =>
-                        handleDragStartOutreachScreen(e, index+1)
+                        handleDragStartOutreachScreen(e, index + 1)
                       }
                       onDragOver={handleDragOverOutreachScreen}
-                      onDrop={(e) => handleDropOutreachScreen(e, index+1)}
+                      onDrop={(e) => handleDropOutreachScreen(e, index + 1)}
                       onDragEnd={handleDragEndOutreachScreen}
                     >
                       <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
