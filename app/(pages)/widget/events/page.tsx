@@ -362,11 +362,11 @@ const Page = () => {
     setTodaysDate(getCurrentDate());
   }, []);
 
-  useEffect(() => {
-    if (searchParams.get('fromDashboard') === 'true') {
-      setChoiceFormModal(true);
-    }
-  }, [searchParams])
+  // useEffect(() => {
+  //   if (searchParams.get('fromDashboard') === 'true') {
+  //     setChoiceFormModal(true);
+  //   }
+  // }, [searchParams])
 
   // useEffect(() => {
   //   setPage(0);
