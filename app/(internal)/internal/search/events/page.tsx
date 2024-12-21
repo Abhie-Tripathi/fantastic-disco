@@ -62,9 +62,10 @@ const Search = () => {
     useFilterState();
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
-  const { applyFilters, localFilters, clearLocalFilters, enabledFilters } = useFilterContext();
+  const { applyFilters, localFilters, clearLocalFilters, enabledFilters } =
+    useFilterContext();
   const searchParams = useSearchParams();
-  const [view, setView]=useState<string>(searchParams.get("view") || "");
+  const [view, setView] = useState<string>(searchParams.get("view") || "");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
   const [validationError, setValidationError] = useState("");
@@ -230,7 +231,11 @@ const Search = () => {
 
   const filtersCount = (function () {
     let count = 0;
-    if (localFilters.onlyBranded === "true" || localFilters.onlySeries === "true") count++;
+    if (
+      localFilters.onlyBranded === "true" ||
+      localFilters.onlySeries === "true"
+    )
+      count++;
     if (localFilters.frequencies) count++;
     if (localFilters.includeKeywords || localFilters.excludeKeywords) count++;
     if (localFilters.maturity) count++;
@@ -239,15 +244,13 @@ const Search = () => {
     if (localFilters.top) count++;
     return count;
   })();
-  useEffect(()=>{
-    setView(searchParams.get("view") || "")
-  },[searchParams])
- 
- 
-  
+  useEffect(() => {
+    setView(searchParams.get("view") || "");
+  }, [searchParams]);
+
   return (
     <div className="space-y-6 p-6">
-       {steps.length > 0 && (
+      {steps.length > 0 && (
         <Joyride
           tooltipComponent={(props) => (
             <Tooltip {...props} totalSteps={steps.length} />
@@ -266,14 +269,35 @@ const Search = () => {
       <SearchBar />
       <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
         <div className="col-span-8 grid grid-cols-4 gap-3">
-          <EventTypeSelector source="search" enabledTypeData={ enabledFilters?.eventType}/>
-          <CategorySelector source="search" enabledCategories={enabledFilters?.eventCategory}/>
-          <EventFormatSelector source="search" enabledFormat={enabledFilters?.eventFormat}/>
-          <LocationSelector source="search"/>
-          <DateRangeSelector source="search" enabledDateRange={enabledFilters?.durations}/>
-          <StatusSelector source="search" enabledStatuses={enabledFilters?.eventStatus}/>
-          <EventEntrySelector source="search" enabledEntries={enabledFilters?.eventEntry}/>
-          <UserRatingSelector source="search" enabledRatingData={enabledFilters?.eventRating}/>
+          <EventTypeSelector
+            source="search"
+            enabledTypeData={enabledFilters?.eventType}
+          />
+          <CategorySelector
+            source="search"
+            enabledCategories={enabledFilters?.eventCategory}
+          />
+          <EventFormatSelector
+            source="search"
+            enabledFormat={enabledFilters?.eventFormat}
+          />
+          <LocationSelector source="search" />
+          <DateRangeSelector
+            source="search"
+            enabledDateRange={enabledFilters?.durations}
+          />
+          <StatusSelector
+            source="search"
+            enabledStatuses={enabledFilters?.eventStatus}
+          />
+          <EventEntrySelector
+            source="search"
+            enabledEntries={enabledFilters?.eventEntry}
+          />
+          <UserRatingSelector
+            source="search"
+            enabledRatingData={enabledFilters?.eventRating}
+          />
         </div>
         <div className="col-span-2 grid grid-cols-2 gap-2">
           <div className="row-span-2 flex flex-col gap-3">
@@ -288,6 +312,7 @@ const Search = () => {
               )}
             </Button>
             <Button
+              ref={saveSearchRef}
               variant="link"
               onClick={() => createTrackerHandler()}
               disabled={Object.keys(localFilters).length === 0}
@@ -323,7 +348,9 @@ const Search = () => {
           </div>
         </div>
       </div>
-      {showAdvancedFilters && <AdvancedFilters enabledFilters={enabledFilters}/>}
+      {showAdvancedFilters && (
+        <AdvancedFilters enabledFilters={enabledFilters} />
+      )}
 
       <Tabs
         defaultValue="list"
