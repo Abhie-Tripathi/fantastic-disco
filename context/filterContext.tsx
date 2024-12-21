@@ -114,6 +114,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
   const setInitialFilters=()=>{
     const temp: Record<string, string> = Object.fromEntries(searchParams.entries());
+    console.log(enabledFilters);
     
     if (enabledFilters && Object.keys(temp).includes("view") && Object.keys(temp).length===1 &&  pathname.split('/')[2]==="search"  ) {
       
@@ -135,7 +136,10 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       temp.entryType = enabledFilters.eventEntry?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
       temp.ratings = enabledFilters.eventRating?.enabledValue?.join(',') ?? '';
       temp.maturity = enabledFilters.maturity?.enabledValue?.[0] ?? '';
-      temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand ? 'true' : 'false';
+      if (enabledFilters.branded?.isBrandedEnabled) 
+        temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand ? 'true' : 'false';
+     if(enabledFilters.branded?.enabledValue?.
+      isBrandedEnabled )
       temp.onlySeries = enabledFilters.branded?.enabledValue?.eventSeries ? 'true' : 'false';
       temp.frequencies = enabledFilters.eventFrequency?.enabledValue?.join(',') ?? '';
       temp.includeKeywords = enabledFilters.keywords?.positiveKeywords?.join(',') ?? '';

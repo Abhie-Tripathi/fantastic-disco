@@ -747,16 +747,12 @@ const Table = ({
     } catch (error:any) {
       if (error.name === "AbortError") {
         console.log("Saved events request was aborted");
-      } else if (error.status === 406) {
-              setZeroStateHeading(error?.message);
+      }else{
+        setZeroStateHeading(error?.message);
               setZeroStateText(
                 ""
               );
               setEventPerPage([]);
-              
-              // return <NullState image={TrackerNullState}  title={error?.message} />
-      } else {
-        console.error("Fetch saved data error:", error);
       }
     } finally {
       // Reset the controller after the request completes or is aborted

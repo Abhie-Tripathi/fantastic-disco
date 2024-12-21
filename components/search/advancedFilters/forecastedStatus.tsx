@@ -50,7 +50,8 @@ export default function ForecastedStatusSelector({
       );
     }
   };
-
+  console.log(enabledForecastData);
+  
   return (
     <Button
       variant="outline"

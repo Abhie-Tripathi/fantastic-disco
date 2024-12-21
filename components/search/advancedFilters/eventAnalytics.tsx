@@ -126,6 +126,7 @@ export default function EventAnalyticsSelector({source, selectedEventRank,enable
 
   const handleShowScoresToggle = (checked: boolean) => {
     setShowScores(checked);
+    setRankToggles({...rankToggles, globalToggle:checked});
     const currentShow = getLocalFilterValue("show").split(",").filter(Boolean);
     const newShow = checked
       ? [...currentShow, "scores"]
@@ -169,7 +170,8 @@ export default function EventAnalyticsSelector({source, selectedEventRank,enable
       (category) => category.range[0] > 0 || category.range[1] < 100
     ).length;
   };
-
+  console.log(rankToggles);
+  
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>

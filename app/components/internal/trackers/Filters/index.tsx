@@ -1,6 +1,9 @@
 "use client";
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
+import { isEventeli } from "@/config";
 import { ApiError } from "@/types/api";
 import { toast } from "react-toastify";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -526,7 +529,7 @@ const Pages = () => {
     impactScore: false,
     inboundScore: false,
     internationalScore: false,
-    globalToggle: enabledFilters?.analytics?.isAnalyticsEnabled,
+    globalToggle: false
   });
 
   const [selectedImpactScore, setSelectedImpactScore] = useState<[number,number]>([0, 100]);
@@ -538,7 +541,10 @@ const Pages = () => {
   const [selectedRank, setSelectedRank] = useState<string>('');
   const [selectedCountries, setSelectedCountries] = useState<any>([]);
   const [selectedAudProfile, setSelectedAudProfile] = useState<string[]>([]);
-
+  const [selectedAdvancedView, setSelectedAdvancedView] = useState("advancedDetails");
+  const handleTabChange = (value: string) => {
+    setSelectedAdvancedView(value);
+  };
   const createTrackerHandler = () => {
     const params = new URLSearchParams(searchParams);
     if (selectedCategories.length > 0) {
@@ -1698,11 +1704,15 @@ useEffect(()=>{
   setForecastedStatus(enabledFilters?.isForecasted?.isForecastedEnabled || false);
   setAnalyticsToggles({
     ...analyticsToggles,
-    globalToggle: enabledFilters?.analytics?.isAnalyticsEnabled,
+    globalToggle: enabledFilters?.analytics?.isAnalyticsEnabled?true:false,
   });
   setAudienceZone(enabledFilters?.audienceZone?.isZoneEnabled || false);
   }
+  console.log();
+  
 },[enabledFilters])
+console.log(analyticsToggles.globalToggle);
+
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -2075,199 +2085,125 @@ return (
 
       {/*   ADVANCE FILTER SECTION */}
 
-      <div>
-        <div
-          className="bg-[var(--tabs-background-color)] py-2.5 mx-0 my-6 rounded-[var(--border-radius-lg)] flex items-center justify-center relative"
-        >
-          <div className="flex items-center">
-            <div className={`flex items-center gap-2 ${styles.advanceFilterBtns}`}>
-              <button
-                onClick={() => setSelectedAdvFilter("AP")}
-                className={`${styles.listBtn} ${selectedAdvFilter === "AP" ? styles.active : ""
-                  }`}
-              >
-                Advance Intel
-              </button>
-              <button
-                onClick={() => setSelectedAdvFilter("IS")}
-                className={`${styles.listBtn} ${selectedAdvFilter === "IS" ? styles.active : ""
-                  }`}
-              >
-                Insights &#x26; Score
-              </button>
-              <button
-                onClick={() => setSelectedAdvFilter("AI")}
-                className={`${styles.listBtn} ${selectedAdvFilter === "AI" ? styles.active : ""
-                  }`}
-              >
-                Audience Intel
-              </button>
+          <Tabs
+           defaultValue="list"
+           value={selectedAdvancedView}
+           onValueChange={handleTabChange}
+          >
+            <div className="flex justify-center my-6">
+            <div className="flex justify-center">
+                <TabsList className="w-[570px] grid grid-cols-3 h-auto">
+                  <TabsTrigger value="advancedDetails" className="text-base">
+                              Advanced Details
+                              {/* {advancedDetailsFiltersCount ? (
+                <Badge className="ml-2">{advancedDetailsFiltersCount}</Badge>
+              ) : (
+                ""
+              )} */}
+                  </TabsTrigger>
+                  <TabsTrigger value="insightsAndScores" className=" text-base">
+                              Insights and Scores
+                              {/* {insightsAndScoresFiltersCount ? (
+                <Badge className="ml-2">{insightsAndScoresFiltersCount}</Badge>
+              ) : (
+                ""
+              )} */}
+                  </TabsTrigger>
+                  {!isEventeli && (
+                  <TabsTrigger value="audienceIntel" className=" text-base">
+                  Audience Intel
+                  {/* {audienceInterFiltersCount ? (
+                  <Badge className="ml-2">{audienceInterFiltersCount}</Badge>
+                   ) : (
+                  ""
+                   )} */}
+                  </TabsTrigger>
+                  )}
+                </TabsList>
             </div>
-          </div>
-        </div>
-        
-        {/* ADVANCE DETAILS SECTION */}
-        {showAdvanceFilter && selectedAdvFilter === "AP" && (
-          <div className={styles.inputdropdowns_container}>
-              <MaturitySelector source="tracker"      selectedStatus={selectedMaturity}
-              setSelectedStatus={setSelectedMaturity}
-              isEnabled={isMaturity}
-              setIsEnabled={setIsMaturity}
-              enabledMaturityData={enabledFilters?.maturity} 
-              />
-              <GlobalAndTouringSelector source="tracker" selectedBrandedEvent={selectedBrandedEvent}
-              setSelectedBrandedEvent={setSelectedBrandedEvent}
-              selectedEventSeries={selectedEventSeries}
-              setSelectedEventSeries={setSelectedEventSeries}
-              isEnabled={isBrand}
-              setIsEnabled={setIsBrand}
-              enabledBrandData={enabledFilters?.branded}
-              />
-              <ForecastedStatusSelector source="tracker" isEnabled={forecastedStatus} setIsEnabled={setForecastedStatus}  
-              enabledForecastData={enabledFilters?.isForecasted}
-              />
-              <FrequencySelector source="tracker" selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency} isEnabled={freqToggle} setIsEnabled={setFreqToggle}
-              enabledFreqData={enabledFilters?.eventFrequency}
-              />
-
-            {type!=="T_PRODUCT_KEYWORDS" &&
-            <ProductSelector source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords}
-            enabledProductData={enabledFilters?.keywords}
-            />
-              }
-
-
-
-            {/* <MenuTrigger onOpenChange={setMenuOpen}>
-            <Button className={styles.disabledBtn}>
-              <div className={styles.input_container}>
-                <div className={styles.input}>
-                  <div className={styles.input_title}>
-                    Maturity
-                    {selectedMaturity > 0 && (
-                      <span className={styles.input_selected_title}>
-                        {selectedMaturity}
-                      </span>
-                    )}
+            </div>
+                <TabsContent value="advancedDetails">
+                  <div className="grid grid-cols-5 gap-3 pb-6">
+                    <MaturitySelector source="tracker" selectedStatus={selectedMaturity}
+                            setSelectedStatus={setSelectedMaturity}
+                            isEnabled={isMaturity}
+                            setIsEnabled={setIsMaturity}
+                    enabledMaturityData={enabledFilters?.maturity}
+                    />
+                    <GlobalAndTouringSelector source="tracker" selectedBrandedEvent={selectedBrandedEvent}
+                    setSelectedBrandedEvent={setSelectedBrandedEvent}
+                    selectedEventSeries={selectedEventSeries}
+                    setSelectedEventSeries={setSelectedEventSeries}
+                    isEnabled={isBrand}
+                    setIsEnabled={setIsBrand}
+                    enabledBrandData={enabledFilters?.branded}
+                    />
+                    <ForecastedStatusSelector source="tracker" isEnabled={forecastedStatus} setIsEnabled={setForecastedStatus}
+                    enabledForecastData={enabledFilters?.isForecasted}
+                    />
+                    <FrequencySelector source="tracker" selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency} isEnabled={freqToggle} setIsEnabled={setFreqToggle}
+                    enabledFreqData={enabledFilters?.eventFrequency}
+                    />
+                    {type !== "T_PRODUCT_KEYWORDS" &&
+                    <ProductSelector source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords}
+                    enabledProductData={enabledFilters?.keywords}
+                    />
+                    }
                   </div>
-                  <div className={styles.toggle_container}>
-                    <span>
-                      <label className={styles.switch}>
-                        <input
-                          type="checkbox"
-                          onChange={() => { }}
-                          checked={(maturity ?? [])?.length > 0}
-                        />
-                        <span className={styles.slider}></span>
-                      </label>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Button>
-            <Popover className={styles.filterPopover}>
-              <MaturitySlider
-                state={selectedMaturity}
-                setState={setSelectedMaturity}
-              />
-            </Popover>
-          </MenuTrigger> */}
-
-            {/* <MenuTrigger onOpenChange={setMenuOpen}>
-            <Button>
-              <div className={styles.input_container}>
-                <div className={styles.input}>
-                  <div className={styles.input_title}>
-                    Event Rankings
-                    {selectedEventRanking?.length > 1 ? (
-                      <span className={styles.input_selected_no}>
-                        {selectedEventRanking.length}
-                      </span>
-                    ) : (
-                      <span className={styles.input_selected_title}>
-                        {selectedEventRanking[0]}
-                      </span>
-                    )}
-                  </div>
-                  <Image
-                    src={DropIcon}
-                    alt="dropicon"
-                    width={20}
-                    height={20}
+                </TabsContent>
+                <TabsContent value="insightsAndScores">
+                  <div className={cn("grid grid-cols-5 gap-3 pb-6", { "grid-cols-4": isEventeli,})}>
+                  <EstimatedVisitorsSelector source="tracker" selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}
+                  enabledVisitorData={enabledFilters?.eventSize}
                   />
-                </div>
-              </div>
-            </Button>
-            <Popover>
-              <Dialog className={styles.noBorder}>
-                <EventAdvFilter
-                  state={selectedEventRanking}
-                  setState={setSelectedEventRanking}
-                  data={eventRankData}
-                />
-              </Dialog>
-            </Popover>
-          </MenuTrigger> */}
-          </div>
-        )}
-
-        {/* INSIGHTS AND SCORES */}
-        {(showAdvanceFilter && selectedAdvFilter === "IS") && (
-          <div className={styles.inputdropdowns_container}>
-              <EstimatedVisitorsSelector source="tracker" selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}
-              enabledVisitorData={enabledFilters?.eventSize}
-              />
-              <EstimatedExhibitorsSelector selectedRanges={selectedExhibitScore}
-              setSelectedRanges={setSelectedExhibitScore}
-              isEnabled={isExhibitOpen}
-              setIsEnabled={setExhibitOpen}
-              enabledExhibitorData={enabledFilters?.estimatedExhibitScore}
-              source="tracker"/>
-              <EventAnalyticsSelector source="tracker" selectedEventRank={selectedImpactScore}
-              setSelectedEventRank={setSelectedImpactScore}
-              selectedLocalRank={selectedInboundScore}
-              setSelectedLocalRank={setSelectedInboundScore}
-              selectedAviationRank={selectedInternationalScore}
-              setSelectedAviationRank={setSelectedInternationalScore} 
-              rankToggles={analyticsToggles}
-              setRankToggles={setAnalyticsToggles}
-              enabledAnalyticsData={enabledFilters?.analytics}
-              />
-              <EstimatedEconomicImpactSelector/>
-              <EventRankingSelector 
-              source="tracker"
-              selectedTrustScore={selectedTrustScore}
-              setSelectedTrustScore={setSelectedTrustScore}
-              rankToggles={rankToggles}
-              setRankToggles={setRankToggles}
-              selectedRank={selectedRank}
-              setSelectedRank={setSelectedRank}
-              enabledRankingData={enabledFilters?.eventRanking}
-              />
-          </div>
-        )}
-
-        {/* AUDIENCE INTEL */}
-        {showAdvanceFilter && selectedAdvFilter === "AI" && (
-          <div className={styles.inputdropdowns_container_AI}>
-
-          <AudienceQualitySelector/>
-          <ExhibitorQualitySelector/>
-          <AudienceZoneSelector source="tracker" isEnabled={audienceZone} setIsEnabled={setAudienceZone} enabledZoneData={enabledFilters?.audienceZone}/>
-          <AudienceProfileSelector source="tracker" 
-          designationData={selectedAudProfile}
-          setDesignationData={setSelectedAudProfile}
-          enabledProfileData={enabledFilters?.designation}
-          />
-          <AudienceSpreadSelector source="tracker" selectedCountries={selectedCountries}
-          setSelectedCountries={setSelectedCountries}
-          enabledSpreadData={enabledFilters?.audienceSpread}
-          />
-
-         
-          </div>
-        )}
-      </div>
+                  {!isEventeli && (
+                  <EstimatedExhibitorsSelector selectedRanges={selectedExhibitScore}
+                  setSelectedRanges={setSelectedExhibitScore}
+                  isEnabled={isExhibitOpen}
+                  setIsEnabled={setExhibitOpen}
+                  enabledExhibitorData={enabledFilters?.estimatedExhibitScore}
+                  source="tracker" />
+                  )}
+                  <EventAnalyticsSelector source="tracker" selectedEventRank={selectedImpactScore}
+                  setSelectedEventRank={setSelectedImpactScore}
+                  selectedLocalRank={selectedInboundScore}
+                  setSelectedLocalRank={setSelectedInboundScore}
+                  selectedAviationRank={selectedInternationalScore}
+                  setSelectedAviationRank={setSelectedInternationalScore}
+                  rankToggles={analyticsToggles}
+                  setRankToggles={setAnalyticsToggles}
+                  enabledAnalyticsData={enabledFilters?.analytics}
+                  />
+                  <EstimatedEconomicImpactSelector />
+                  <EventRankingSelector
+                  source="tracker"
+                  selectedTrustScore={selectedTrustScore}
+                  setSelectedTrustScore={setSelectedTrustScore}
+                  rankToggles={rankToggles}
+                  setRankToggles={setRankToggles}
+                  selectedRank={selectedRank}
+                  setSelectedRank={setSelectedRank}
+                  enabledRankingData={enabledFilters?.eventRanking}
+                  />
+                  </div>
+                </TabsContent>
+                <TabsContent value="audienceIntel">
+                  <div className={cn("grid grid-cols-5 gap-3 pb-6", {"grid-cols-4": isEventeli,})}>
+                    <AudienceQualitySelector />
+                    <ExhibitorQualitySelector />
+                    <AudienceZoneSelector source="tracker" isEnabled={audienceZone} setIsEnabled={setAudienceZone} enabledZoneData={enabledFilters?.audienceZone} />
+                    <AudienceProfileSelector source="tracker"
+                    designationData={selectedAudProfile}
+                    setDesignationData={setSelectedAudProfile}
+                    enabledProfileData={enabledFilters?.designation}
+                    />
+                    <AudienceSpreadSelector source="tracker" selectedCountries={selectedCountries}
+                    setSelectedCountries={setSelectedCountries}
+                    enabledSpreadData={enabledFilters?.audienceSpread}
+                    />
+                    </div>
+                </TabsContent>
+          </Tabs>
     </div>
   </Suspense>
     }
