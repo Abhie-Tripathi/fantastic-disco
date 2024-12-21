@@ -743,7 +743,7 @@ const Page = () => {
         />
       </div>
       <div className={styles.mainContainer}>
-        <div className={styles.eventsContainer}>
+        {/* <div className={styles.eventsContainer}> */}
           {activeTab === "upcoming" && filteredUpcomingEvents.length > 0 ? (
             filteredUpcomingEvents.map((event, index) => {
               const showDate = event.mainEvent.startDate !== prevDate;
@@ -819,8 +819,8 @@ const Page = () => {
             </div>
           )}
 
-        </div>
-        <div id="calendar" className={`${styles.calendarContainer} ${isFixed ? styles.fixed : ""}`}>
+        {/* </div> */}
+        {/* <div id="calendar" className={`${styles.calendarContainer} ${isFixed ? styles.fixed : ""}`}>
           <div className={styles.calendar_div}>
             <MonthsCalendar
               theme={theme}
@@ -831,7 +831,7 @@ const Page = () => {
               handleResetEvents={handleResetEvents}
             />
           </div>
-        </div>
+        </div> */}
       </div>
 
       {(isEventFormModal ||

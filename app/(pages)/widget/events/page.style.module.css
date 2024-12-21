@@ -159,12 +159,12 @@
 
 .mainContainer {
     display: flex;
-    gap: 20px;
+    /* gap: 20px; */
     /* width: 70%; */
-    margin-right: 380px; 
+    /* margin-right: 380px;  */
     /* border: 1px solid red;    */
-    /* display: flex; */
-    /* align-items: center; */
+    display: flex;
+    align-items: center;
     flex-direction: column;
 }
 

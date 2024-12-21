@@ -3,8 +3,8 @@
 }
 
 .smallMainOuterDiv {
-    /* width: 85%; */
-    width: 100%;
+    width: 85%;
+    /* width: 100%; */
     border-left: 1px dashed var(--disabled-background-color);
     display: flex;
     justify-content: flex-end;
