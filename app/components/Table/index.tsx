@@ -574,8 +574,8 @@ const Table = ({
         setTotalEvents(result.count);
   
         if (result.count === 0) {
-          setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
-        setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
+          setZeroStateHeading(`No events saved yet! Start saving events to easily track and revisit them here.`);
+          setZeroStateText("");
         }
   
         if (currPage === 1) {
