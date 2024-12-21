@@ -54,7 +54,7 @@ import {
 import { cn } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import HeroLogoText from "/public/heroLogoText.svg";
-import { useDatabaseLocationAutocomplete } from "@/hooks/useLocationAutocomplete";
+import { useDatabaseLocationcomplete } from "@/hooks/useLocationAutocomplete";
 import { SignUpDTO } from "@/types";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
