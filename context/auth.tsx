@@ -338,6 +338,7 @@ export const AuthContextProvider = ({ children }: any) => {
           if (result.user.isVerified) {
             setUser(result.user);
             setLocalStorage(result.user);
+            localStorage.removeItem("walkthroughCompleted");
             router.push(redirectTo || "/");
           }
         }
@@ -369,6 +370,10 @@ export const AuthContextProvider = ({ children }: any) => {
           if (result.user.isVerified) {
             setUser(result.user);
             setLocalStorage(result.user);
+            localStorage.setItem(
+              "walkthroughCompleted",
+              JSON.stringify(["research"])
+            );
             router.push(redirectTo || "/internal");
             return result.user;
           }

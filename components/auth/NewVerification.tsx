@@ -84,7 +84,7 @@ export default function NewVerificationForm() {
   };
 
   return (
-    <div className="flex flex-col gap-8 h-full w-full max-w-md p-8">
+    <div className="flex flex-col gap-24 h-full w-full max-w-md p-8">
       <p
         className="flex items-center gap-1 text-primary cursor-pointer"
         onClick={() => router.back()}

@@ -1,16 +1,14 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Image from "next/image";
-import Visibility from "../../../public/visibility.svg";
 import IntelligentEventTracking from "/public/intelligent_Event_Tracking.png";
 import SmartEventDiscovery from "/public/smart_Event_Discovery.png";
 import IntelligentNotification from "/public/intelligent_Notification.png";
-import styles from "./carousel.style.module.css";
 import DynamicEventTrends from "/public/dynamic_Event_Trends.png";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import "@/styles/carausel.css";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Pagination, Autoplay } from "swiper/modules";
 const carousels = [
   {
     title: "Intelligent Event Tracking",
@@ -38,41 +36,53 @@ const carousels = [
   },
 ];
 
-export default function Carousel() {
-  const settings = {
-    dots: true,
-    arrows: false,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 5000,
-  };
+const SwiperCarousel = () => {
+  return (
+    <Swiper
+      className="w-full h-full"
+      modules={[Pagination, Autoplay]}
+      grabCursor={true}
+      autoplay={{ delay: 2500 }}
+      centeredSlides={true}
+      spaceBetween={5}
+      slidesPerView="auto"
+      pagination={{
+        clickable: true,
+        el: ".custom-pagination",
+      }}
+    >
+      {carousels.map((carousel) => (
+        <SwiperSlide key={carousel.title}>
+          <div className="">
+            <div className="flex flex-col items-center justify-center p-8">
+              <h2 className="text-2xl font-bold mb-4 text-[#6750a4]">
+                {carousel.title}
+              </h2>
+              <Image
+                src={carousel.image}
+                alt={carousel.title}
+                width={460}
+                height={380}
+                objectFit="cover"
+                className="mb-4"
+              />
+              <p className="w-4/5 text-center break-normal">
+                {carousel.description}
+              </p>
+            </div>
+          </div>
+        </SwiperSlide>
+      ))}
+      <div className="custom-pagination flex justify-center mt-4"></div>
+    </Swiper>
+  );
+};
 
+export default function Carousel() {
   return (
     <div className="hidden lg:flex w-1/2 bg-[#FAFAFF] items-center justify-center">
-      <div>
-        <Slider {...settings} className="h-full max-w-[500px] relative">
-          {carousels.map((carousel) => (
-            <div key={carousel.title} className="">
-              <div className="flex flex-col items-center justify-center p-8">
-                <h2 className="text-2xl font-bold mb-4 text-[#6750a4]">
-                  {carousel.title}
-                </h2>
-                <Image
-                  src={carousel.image}
-                  alt={carousel.title}
-                  width={460}
-                  height={380}
-                  objectFit="cover"
-                  className="mb-4"
-                />
-                <p className="text-center">{carousel.description}</p>
-              </div>
-            </div>
-          ))}
-        </Slider>
+      <div className="w-full">
+        <SwiperCarousel />
       </div>
     </div>
   );

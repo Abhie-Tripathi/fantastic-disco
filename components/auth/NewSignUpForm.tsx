@@ -86,10 +86,6 @@ const NewSignUpForm = () => {
     resolver: zodResolver(SignUpFormSchema),
   });
 
-  useEffect(() => {
-    localStorage.removeItem("walkthroughCompleted");
-  }, []);
-
   const onSubmit = async (data: FormData) => {
     const signUpDTOData = {
       ...data,

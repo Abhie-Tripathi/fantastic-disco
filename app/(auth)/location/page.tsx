@@ -139,7 +139,7 @@ const LocationForm = () => {
   };
 
   useEffect(() => {
-    toast("Please select a location", {
+    toast("Please enter your location", {
       theme: "light",
       position: "bottom-right",
       autoClose: 2000,
@@ -173,15 +173,15 @@ const LocationForm = () => {
   return (
     <>
       {/* <Image src={HeroLogoText} alt="herologotext" /> */}
-      <div className="w-full max-w-sm space-y-8 p-8">
+      <div className="flex flex-col gap-6 flex-1 w-auto max-w-sm">
         <div className="text-[#242424] font-medium text-2xl flex items-center justify-center text-center">
           <Image src={logo} alt="logo" width={45} height={55} />
           <Image src={whr} alt="whr" />
         </div>
         <h3 className="text-center">Choose a location to get started !</h3>
-        <section className="w-full self-center">
+        <section className="w-96 self-center border border-[var(--input-border-color)] px-4 py-6 rounded-sm">
           <div className="flex items-center gap-5 bg-[var(--tabs-background-color)] rounded-md py-3 px-6">
-            <button className="flex-1 bg-white rounded-sm whitespace-nowrap py-2 px-4 min-w-44 text-[#424242] cursor-auto shadow-[2px_2px_4px_2px_#0000000f]">
+            <button className="flex-1 bg-white border border-primary rounded-sm whitespace-nowrap py-2 px-4 min-w-44 text-[#424242] cursor-auto shadow-[2px_2px_4px_2px_#0000000f]">
               City, State, Country
             </button>
           </div>
@@ -214,8 +214,10 @@ const LocationForm = () => {
           <AutocompleteInput
             multiple
             type="LocationId"
-            placeholder="E.g. Bangalore, Karnataka"
+            placeholder="E.g. Bengaluru, Karnataka, India"
             onSelect={setSelectedLocation}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
             value={
               selectedLocation && Array.isArray(selectedLocation)
                 ? selectedLocation.map((loc) => ({
@@ -226,14 +228,12 @@ const LocationForm = () => {
             }
           />
 
-          {locationType === "city" && (
-            <p
-              className="mt-4 flex items-center gap-2 cursor-pointer text-[#6750a4]"
-              onClick={() => setIsOpen(true)}
-            >
-              <Plus className="w-4 h-4" /> Add Multiple Location
-            </p>
-          )}
+          <p
+            className="text-sm mt-4 flex items-center gap-2 cursor-pointer text-primary"
+            onClick={() => setIsOpen(true)}
+          >
+            <Plus className="w-4 h-4" /> Add Multiple Location
+          </p>
 
           {useCurrentLocation && (
             <div className={styles.currentLocation}>
@@ -244,7 +244,7 @@ const LocationForm = () => {
         </section>
 
         <Button
-          className="w-full bg-[var(--primary-color)] border rounded-[var(--border-radius-sm)]
+          className="w-3/4 bg-[var(--primary-color)] border rounded-[var(--border-radius-sm)]
         text-white text-center p-2 self-center"
           disabled={loading}
           onClick={handleSubmit}

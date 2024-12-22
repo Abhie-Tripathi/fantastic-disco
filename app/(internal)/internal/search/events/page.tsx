@@ -116,16 +116,6 @@ const Search = () => {
 
   const saveSearchRef = useRef(null);
 
-  const walkthroughCompleted = useMemo(() => {
-    if (typeof window !== "undefined") {
-      const walkThroughData = localStorage.getItem("walkthroughCompleted");
-      if (walkThroughData) {
-        return JSON.parse(walkThroughData) || [];
-      }
-    }
-    return [];
-  }, []);
-
   const joyrideCallback = (data: CallBackProps) => {
     const { status } = data;
     if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {

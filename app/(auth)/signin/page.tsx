@@ -47,10 +47,6 @@ export default function SignInForm() {
     }
   };
 
-  useEffect(() => {
-    localStorage.setItem("walkthroughCompleted", JSON.stringify(["research"]));
-  }, []);
-
   return (
     <div className="w-full max-w-md space-y-8 p-8">
       <div className={styles.form_heading}>
