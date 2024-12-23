@@ -1,6 +1,7 @@
 import CheckboxInput from "@/app/components/UI/CheckBoxInput";
 import styles from "./templatetable.style.module.css";
 import { useState } from "react";
+import { Trash } from "geist-icons";
 
 interface Props {
   customData: any[];
@@ -33,6 +34,11 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
   const selectAllData = () => {
     if (selectedIdArray.length == customData.length) setSelectedIdArray([]);
     else setSelectedIdArray(customData.map((_, index) => index));
+  };
+  const deleteSingleEntry = (index: number) => {
+    const filteredData = customData.filter((_, i) => i !== index);
+    handleCustomData(filteredData);
+    setSelectedIdArray([]);
   };
   
   return (
@@ -72,6 +78,7 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
                   {entryKey as string}
                 </th>
               ))}
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -91,6 +98,9 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
                         {value as string}
                       </td>
                     ))}
+                    <td className="w-[35px] cursor-pointer" onClick={() => deleteSingleEntry(index)}>
+                    <Trash />
+                    </td>
                   </tr>
                 ))
               : customData.slice(0, 5).map((item: any, index: number) => (
@@ -108,6 +118,9 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
                         {value as string}
                       </td>
                     ))}
+                    <td className="w-[35px] cursor-pointer" onClick={() => deleteSingleEntry(index)}>
+                    <Trash />
+                    </td>
                   </tr>
                 ))}
           </tbody>
