@@ -65,6 +65,7 @@ interface Toggle{
   inboundScore?: boolean;
   internationalScore?: boolean;
   eventRank?: boolean;
+  globalToggle?:boolean;
   audienceZone?: boolean;
   audienceSpread?: boolean;
   eventFrequency?:boolean;
