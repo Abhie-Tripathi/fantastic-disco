@@ -873,7 +873,7 @@ const Pages = () => {
         ...(selectedEventFormat?.length > 0 && {
           eventFormat: selectedEventFormat.join(","),
         }),
-        // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
+        ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
         ...(selectedEventStatus?.length > 0 && {
           eventStatus: selectedEventStatus.map((item) => item.toUpperCase()).join(","),
         }),
@@ -949,7 +949,7 @@ const Pages = () => {
         ...(forecastedStatus && {
           isforecasted: forecastedStatus.toString()
         }),
-        // ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
+        ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
         ...((selectedRank !== '' && selectedRank !== 'none') && {
           // globalRanking: selectedRank,
           // categoryRanking: selectedRank,
@@ -1350,7 +1350,7 @@ const Pages = () => {
       setSelectedEventRanking(
         editData.tracker.filterValue?.eventRanking?.split(",") || []
       );
-      setSelectedBrandedEvent(toggleOpend?.brandedEvent ? true : false);
+      setSelectedBrandedEvent(editData?.tracker?.filterValue?.eventBrand ? true : false);
       setIsBrand(toggleOpend?.brandSeries ? true : false);
       // setSelectedCountry(
       //   editData.tracker.filterValue?.eventCountry?.length > 0
@@ -1374,7 +1374,7 @@ const Pages = () => {
       //     : {}
       // );
       setSelectedEventSeries(
-        toggleOpend?.eventSeries ? true : false
+        editData?.tracker?.filterValue?.eventSeries ? true : false
       );
       setMaturity(
         editData.tracker.filterValue?.maturity?.length > 0

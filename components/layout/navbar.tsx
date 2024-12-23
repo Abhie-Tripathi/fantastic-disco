@@ -31,9 +31,9 @@ import { useTheme } from "@/context/theme";
 import Link from "next/link";
 
 const routes: Record<string, string> = {
-  internal: "Dashboard",
+  "": "Dashboard",
   "coordinate": "Coordinate",
-  "events": "Research",
+  "search": "Research",
   "trackers": "Trackers",
   outreach: "Outreach",
   trends: "Event Trends",
@@ -45,14 +45,18 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
-  
-  console.log(routes[pathname.split("/").slice(-1)[0]])
+  function getRoute(path: string | undefined): string {
+    return routes[path || ""];
+  }
+  console.log(routes[pathname.split("/")[2]])
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center">
           <div className="text-lg font-semibold">
-            {routes[pathname.split("/").slice(-1)[0]]}
+            {
+            getRoute(pathname.split("/")[2])
+            }
           </div>
         </div>
         <div className="flex items-center space-x-4">

@@ -21,10 +21,10 @@ export const EventsAdapter = {
     if (params.get("show") || params.get("trust_score_gte")) {
       const adaptedShowsParams = [];
       const showsParams = params.get("show");
-      // if (showsParams?.includes("branded"))
-      //   adaptedShowsParams.push("eventBrand");
-      // if (showsParams?.includes("series"))
-      //   adaptedShowsParams.push("eventSeries");
+      if (showsParams?.includes("branded"))
+        adaptedShowsParams.push("eventBrand");
+      if (showsParams?.includes("series"))
+        adaptedShowsParams.push("eventSeries");
       if (showsParams?.includes("rating"))
         adaptedShowsParams.push("eventRating");
       if (showsParams?.includes("frequency"))
@@ -57,7 +57,6 @@ export const EventsAdapter = {
       adaptedParams.eventName = params.get("eventName")!;
       return adaptedParams;
     }
-    // console.log(params.get("onlyBranded"));
     
     if(params.get("onlyBranded")!==null){
       adaptedParams.eventBrand = params.get("onlyBranded")??"";

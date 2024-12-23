@@ -57,17 +57,20 @@ export default function CreateTrackerDialog({
     }
 
     setIsLoading(true);
-
+    console.log(adaptedParams);
+    
     const userType = {
       ...(adaptedParams.shows?.includes("eventRating") && { rating: true }),
       ...(adaptedParams.shows?.includes("estimatedExhibitScore") && { exhibit: true }),
       ...(adaptedParams.shows?.includes("trustScore") && { trust: true }),
       ...(adaptedParams.shows?.includes("maturity") && { maturity: true }),
       ...(adaptedParams.shows?.includes("eventBrand") && adaptedParams.shows.includes("eventSeries") && {brandSeries: true}),
-      ...(adaptedParams.shows?.includes("eventBrand") && {
+      ...(adaptedParams.eventBrand=== "true" && {
         brandedEvent: true,
       }),
-      ...(adaptedParams.shows?.includes("eventSeries") && { eventSeries: true }),
+      ...(adaptedParams.eventSeries === "true" && {
+        seriesEvent: true,
+      }),
       ...(adaptedParams.shows?.includes("isforecasted") && {
         forecastedStatus: true,
       }),
