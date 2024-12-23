@@ -34,14 +34,6 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
     if (selectedIdArray.length == customData.length) setSelectedIdArray([]);
     else setSelectedIdArray(customData.map((_, index) => index));
   };
-  const deleteSingleEntry = (index: number) => {
-    const data = [...selectedIdArray, index];
-    const filteredData = customData.filter(
-      (_, i) => !data.includes(i)
-    );
-    handleCustomData(filteredData);
-    setSelectedIdArray([]);
-  };
   
   return (
     <div className="flex flex-col gap-[var(--spacing-xs)] relative">
@@ -116,7 +108,6 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
                         {value as string}
                       </td>
                     ))}
-                    <td onClick={() => deleteSingleEntry(index)}style={{borderLeft:"none"}}>Delete</td>
                   </tr>
                 ))}
           </tbody>
