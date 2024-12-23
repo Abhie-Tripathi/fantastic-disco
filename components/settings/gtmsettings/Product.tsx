@@ -151,7 +151,6 @@ export default function ProductsPage() {
   };
 
   const handleChangeResearchScreenBoxes = (id: string, value: string) => {
-    console.log("sdf43434", id, value);
     if (value.length > 20) {
       showToast("error", "Input cannot be more than 20 characters!");
       return;
@@ -159,7 +158,6 @@ export default function ProductsPage() {
     setResearchTempValue(value);
   };
   const handleChangeOutreachScreenBoxes = (id: string, value: string) => {
-    // console.log("values", id, value);
     if (value.length > 20) {
       showToast("error", "Input cannot be more than 20 characters!");
       return;
@@ -196,7 +194,6 @@ export default function ProductsPage() {
         break;
       }
     }
-    console.log("32323", filteredResearchScreenboxes);
     if (updatedBox) {
       const formData = {
         source: "interest",
@@ -374,7 +371,6 @@ export default function ProductsPage() {
 
     // Update positions after reordering
     const updatedBoxes = updatePositions(newOrder);
-    console.log("positions", updatedBoxes);
     const formData = {
       source: "interest",
       data: updatedBoxes,
@@ -419,7 +415,6 @@ export default function ProductsPage() {
 
     // Update positions after reordering
     const updatedBoxes = updateOutreachPositions(newOrder);
-    console.log("positions", updatedBoxes);
 
     const formData = {
       source: "outreach",
