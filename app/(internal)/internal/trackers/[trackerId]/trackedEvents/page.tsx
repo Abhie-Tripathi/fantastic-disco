@@ -405,7 +405,7 @@ const Page = ({ params }: { params: any }) => {
                   addQueryString("expiredEvent");
                 }}
               >
-                Expired Events
+                Past Events
                 {
                   <div className={styles.circle}>
                     {loading ? (
