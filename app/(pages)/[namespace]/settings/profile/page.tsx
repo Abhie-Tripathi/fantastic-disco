@@ -124,27 +124,39 @@ const Profile = () => {
     const newErrors: Record<string, string> = {};
 
     if (name.length === 0) {
-      newErrors.name = "Name cannot be empty";
+      // newErrors.name = "Name cannot be empty";
+      showToast("error", "Name cannot be empty");
+      return
     }
     const splitName = name.split(" ");
 
     if (!name.trim()) {
-      newErrors.name = "Name cannot be empty";
+      // newErrors.name = "Name cannot be empty";
+      showToast("error", "Name cannot be empty");
+      return
     }
     if (name.length !== 0 && !splitName[1]) {
-      newErrors.name = "Please Enter Full Name";
+      // newErrors.name = "Please Enter Full Name";
+      showToast("error", "Please Enter Full Name");
+      return
     }
     if (
       mobileNo.length !== 0 &&
       (mobileNo.length !== 10 || mobileNo.startsWith("+"))
     ) {
-      newErrors.mobileNo = "Enter 10 digit mobile number only";
+      // newErrors.mobileNo = "Enter 10 digit mobile number only";
+      showToast("error", "Enter 10 digit mobile number only");
+      return;
     }
     if (dept.length !== 0 && !dept) {
-      newErrors.dept = "Please Enter the Department";
+      // newErrors.dept = "Please Enter the Department";
+      showToast("error", "Please Enter the Department");
+      return
     }
     if (role.length !== 0 && !role) {
-      newErrors.role = "Please Enter Your Role";
+      // newErrors.role = "Please Enter Your Role";
+      showToast("error", "Please Enter Your Role");
+      return
     }
 
     if (Object.keys(newErrors).length > 0) {
