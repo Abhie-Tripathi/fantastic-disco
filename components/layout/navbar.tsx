@@ -156,7 +156,7 @@ export default function Navbar() {
                 variant="secondary"
                 className="flex items-center bg-transparent p-1 "
               >
-                <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
+                <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10 overflow-hidden">
                   {/* {user
                     ? `${user?.firstname[0]?.toUpperCase() ?? ""}${
                         user?.lastname?.[0]?.toUpperCase() ?? ""

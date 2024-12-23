@@ -97,7 +97,7 @@ export default function ProductsPage() {
   // const MAX_BOXES = 4;
   const removeResearchScreenBox = async (data: any) => {
     const updatedScreenboxes = [...filteredResearchScreenboxes];
-    
+
     if (updatedScreenboxes.length < 4) {
       showToast("error", "Cannot remove all items. At least two must remain.");
       return;
@@ -466,6 +466,11 @@ export default function ProductsPage() {
               <div className="text-base text-gray-500">
                 Customise your event experience by adjusting your interest!
                 Update them any time to match your needs or goals for the event.
+                <div className="mt-10">
+                  Please note: If this value is renamed, the changes will
+                  automatically be reflected in all previous entries where it
+                  has been used.
+                </div>
               </div>
 
               <div className="flex flex-col gap-5">
@@ -549,6 +554,11 @@ export default function ProductsPage() {
                 Personalise your workflow by renaming columns on your kanban
                 board! Update them any time to fit your project needs or
                 preferences.
+                <div className="mt-10">
+                  Please note: If this value is renamed, the changes will
+                  automatically be reflected in all previous entries where it
+                  has been used.
+                </div>
               </div>
               <div className="flex flex-col gap-5">
                 {filteredOutreachScreenboxes

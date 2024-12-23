@@ -205,9 +205,8 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       const sizeInMB = file.size / (1024 * 1024);
-      // console.log("fileSize_____00000", sizeInMB,file.size);
-      if ((Math.floor(sizeInMB)) >= 10) {
-        showToast("error", "Image size should be less than 10 MB");
+      if ((sizeInMB) > 1) {
+        showToast("error", "Image size should be less than 1 MB");
         return;
       }
 
@@ -317,7 +316,7 @@ const Profile = () => {
                       </Button>
                     </div>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      We support PNGs, JPEGs and GIFs under 10MB
+                      We support PNGs, JPEGs and GIFs under 1MB
                     </p>
                   </div>
                 </div>
