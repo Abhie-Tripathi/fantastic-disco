@@ -677,12 +677,45 @@ const Pages = () => {
         let temp = JSON.parse(aiResponse.choices[0].message.content);  
         if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
           setSuggestions(temp.data);
+        console.log(temp.data);
+        
       } catch (err) {
         console.error("Fetch failed:", err);
         setSuggestions([]);
       }
     }  
-
+    const [speakerSuggestion,setSpeakerSuggestion]=useState();
+    const fetchAISuggestion1 = async(val:any)=>{
+      console.log(val);
+      try{
+        const promptText = `List only top 5 name similar to ${val[0]} and company name similar to ${val[1]}. Response should be in plain JSON format without any additional formatting or text: {
+          "data": [
+            { "speakerName": "speaker name 1", "companyName": "company name 1" },
+            { "speakerName": "speaker name 2", "companyName": "company name 2" },
+            { "speakerName": "speaker name 3", "companyName": "company name 3" },
+            { "speakerName": "speaker name 4", "companyName": "company name 4" },
+            { "speakerName": "speaker name 5", "companyName": "company name 5" }
+          ]
+        }. Do not show example values. If no data found then return in below format: {\"data\": []}`;
+        let aiResponse: any = await suggestionGenerator(promptText);
+        console.log(aiResponse);
+        
+        let temp = JSON.parse(aiResponse.choices[0].message.content);  
+        console.log(temp);
+        if(temp && temp?.data){
+          setSpeakerSugge
+          setSuggestions(formatData(temp.data))
+        }
+        // if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
+        //   setSuggestions(temp.data);
+      } catch (err) {
+        console.error("Fetch failed:", err);
+        setSuggestions([]);
+      }
+    }
+    const formatData=(data:any)=>{
+        return data.map((item)=> `${item.speakerName} (${item.companyName})`)
+    }
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if(customData.length > 0 && Object.values(customData[0])[0]) {
         fetchAISuggestion(Object.values(customData[0])[0]);
@@ -706,6 +739,8 @@ const Pages = () => {
       const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
       setSpeakerName(speakerName);
       setSpeakerCompany(speakerCompany);
+      if(speakerName.length>0 && speakerCompany.length>0)
+      fetchAISuggestion1([speakerName,speakerCompany]);
       // console.log(speakerName, speakerCompany);
 
     }
