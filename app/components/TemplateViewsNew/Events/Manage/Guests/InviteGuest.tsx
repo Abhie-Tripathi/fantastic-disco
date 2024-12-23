@@ -8,12 +8,12 @@ import { showToast } from '@/utils/showToast';
 import { useInviteServices } from '@/services/geniservices/inviteService';
 interface Props {
   eventId: string;
-  setInviteGuestModal : (value : boolean)=> void
+  setInviteGuestModal: (value: boolean) => void
   fetchGuests: () => Promise<void>;
 }
 
-const InviteGuest = ({ eventId, setInviteGuestModal,fetchGuests }: Props) => {
-  const {getInviteCount, getSuggestions, sendInvite, error} = useInviteServices();
+const InviteGuest = ({ eventId, setInviteGuestModal, fetchGuests }: Props) => {
+  const { getInviteCount, getSuggestions, sendInvite, error } = useInviteServices();
   const [count, setCount] = useState(4); // Default starting count
   const [screen, setScreen] = useState<string>("first");
   const [selectedMails, setSelectedMails] = useState<string[]>([])
@@ -24,50 +24,50 @@ const InviteGuest = ({ eventId, setInviteGuestModal,fetchGuests }: Props) => {
 
   const [suggestedMailQuery, setSuggestedMailQuery] = useState<string>("")
 
-  const fetchSuggestions = async()=>{
+  const fetchSuggestions = async () => {
     let url = `${baseUrl}/invite`
-    if(suggestedMailQuery.length > 0){
-      url+=`?q=${suggestedMailQuery}`
+    if (suggestedMailQuery.length > 0) {
+      url += `?q=${suggestedMailQuery}`
     }
     // const {data, error} = await myFetch(`${url}`)
     try {
-    const data = await getSuggestions(suggestedMailQuery);
-    let emailArray : string[] = []
-    if(error){
-      console.log("error occured", error)
-    }else{
-      data.invite.map((email : any)=>{
-        emailArray.push(email.email)
-      })
-    }
-    setSuggestedMails(emailArray)
+      const data = await getSuggestions(suggestedMailQuery);
+      let emailArray: string[] = []
+      if (error) {
+        console.log("error occured", error)
+      } else {
+        data.invite.map((email: any) => {
+          emailArray.push(email.email)
+        })
+      }
+      setSuggestedMails(emailArray)
     } catch (error) {
       console.log(error)
     }
-    
+
   }
 
-  const fetchInviteCount = async()=>{
+  const fetchInviteCount = async () => {
     // const {data, error} = await myFetch(`${baseUrl}/invite?invites=true`)
-    const data:any = await getInviteCount()
-    if(data){
+    const data: any = await getInviteCount()
+    if (data) {
       setCount(data.inviteCount)
-    }else{
+    } else {
       console.log("error is", error)
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     fetchSuggestions()
     fetchInviteCount()
-  },[suggestedMailQuery])
+  }, [suggestedMailQuery])
 
   const handleSubmit = async () => {
-    if(count === 0){
-      showToast("error","You have reached the limit for inviting the guests")
+    if (count === 0) {
+      showToast("error", "You have reached the limit for inviting the guests")
       return
     }
-    if(selectedMails.length === 0){
-      showToast("warning","Select or Enter atleast one email to send invite")
+    if (selectedMails.length === 0) {
+      showToast("warning", "Select or Enter atleast one email to send invite")
       return;
     }
     const newObj = {
@@ -94,7 +94,7 @@ const InviteGuest = ({ eventId, setInviteGuestModal,fetchGuests }: Props) => {
     }
   }
 
-  const percentageFilled = ((maxCount-count) / maxCount) * 100;
+  const percentageFilled = ((maxCount - count) / maxCount) * 100;
   return (
     <div className={styles.body}>
       <div className={styles.header}>
@@ -110,21 +110,15 @@ const InviteGuest = ({ eventId, setInviteGuestModal,fetchGuests }: Props) => {
         </div>
       </div>
       <div className={styles.line}></div>
-      {screen === "first" ? <InviteGuestsFirstScreen setSuggestedMailQuery={setSuggestedMailQuery}  suggestedMails={suggestedMails} selectedMails={selectedMails} setSelectedMails={setSelectedMails} /> :
-        <InviteGuestsSecScreen selectedMails={selectedMails} />}
+      {/* {screen === "first" ?  */}
+      <InviteGuestsFirstScreen setSuggestedMailQuery={setSuggestedMailQuery} suggestedMails={suggestedMails} selectedMails={selectedMails} setSelectedMails={setSelectedMails} /> 
+      {/* :  <InviteGuestsSecScreen selectedMails={selectedMails} />} */}
       <div className={styles.line}></div>
       <div className={styles.selectedBtnContainer}>
         <div>{selectedMails.length} Selected</div>
-        {/* {screen === "first" ? <button onClick={() => setScreen("second")} className={styles.nextBtn}>Next</button> :
-          <div className={styles.btnContainer}>
-            <button onClick={() => setScreen("first")} className={styles.nextBtn}>Back</button>
-            <button className={styles.nextBtn} onClick={handleSubmit}>Send Invites</button>
-          </div>} */}
-          
-          <div className={styles.btnContainer}>
-            {/* <button onClick={() => setScreen("first")} className={styles.nextBtn}>Back</button> */}
-            <button className={styles.nextBtn} onClick={handleSubmit}>Send Invites</button>
-          </div>
+        <div className={styles.btnContainer}>
+          <button className={styles.nextBtn} onClick={handleSubmit}>Send Invites</button>
+        </div>
       </div>
 
     </div>

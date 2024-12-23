@@ -170,7 +170,6 @@ export default function EventAnalyticsSelector({source, selectedEventRank,enable
       (category) => category.range[0] > 0 || category.range[1] < 100
     ).length;
   };
-  console.log(rankToggles);
   
   return (
     <Popover open={open} onOpenChange={onOpenChange}>

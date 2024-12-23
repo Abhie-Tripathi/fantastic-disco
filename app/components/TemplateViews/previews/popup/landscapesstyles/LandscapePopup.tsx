@@ -30,9 +30,10 @@ interface Props {
     demoDescription:string
     demoLocation:string
     demoDate:string
+    widgetId?: string;
 }
 
-const LandscapePopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings,selectedBtn,fetchedAddedOtherData,smallCard, demoBanner,demoEventName, demoDescription,demoLocation, closeButtonSetting, demoDate }: Props) => {
+const LandscapePopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSettings, buttonSettings,selectedBtn,fetchedAddedOtherData,smallCard, demoBanner,demoEventName, demoDescription,demoLocation, closeButtonSetting, demoDate, widgetId }: Props) => {
     let EventCard: ElementType;
 
     switch (selectedCard) {
@@ -46,7 +47,7 @@ const LandscapePopup = ({ selectedCard, cardBgColor, cardBorderRadius, fontSetti
             EventCard = Popup3; // Or some default component or message
     }
   return (
-    <EventCard smallCard={smallCard} fetchedAddedEvents={fetchedAddedOtherData} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} demoBanner={demoBanner}demoEventName={demoEventName} demoDescription={demoDescription}demoLocation={demoLocation} closeButtonSetting={closeButtonSetting} demoDate={demoDate}/>
+    <EventCard widgetId={widgetId} smallCard={smallCard} fetchedAddedEvents={fetchedAddedOtherData} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} selectedBtn={selectedBtn} demoBanner={demoBanner}demoEventName={demoEventName} demoDescription={demoDescription}demoLocation={demoLocation} closeButtonSetting={closeButtonSetting} demoDate={demoDate}/>
   )
 }
 

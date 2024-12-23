@@ -1708,10 +1708,8 @@ useEffect(()=>{
   });
   setAudienceZone(enabledFilters?.audienceZone?.isZoneEnabled || false);
   }
-  console.log();
   
 },[enabledFilters])
-console.log(analyticsToggles.globalToggle);
 
 return (
   <>

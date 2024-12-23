@@ -207,7 +207,6 @@ const userRating=
     data:`text-xs text-[var(--secondary-text-color)] p-1`,
     allValues: `flex gap-3`
   }
-  console.log(data?.tracker?.filterValue?.eventSeries);
   
   return (
     <>
@@ -704,6 +703,7 @@ const userRating=
       </div>
       <div className={styles.innerContainerRight}>
         <Insights
+        globalToggle={toggleOpend?.globalToggle===true}
             exhibitScore={
               data?.tracker?.filterValue?.estimatedExhibitScore
                 ? data?.tracker?.filterValue?.estimatedExhibitScore?.split(",")

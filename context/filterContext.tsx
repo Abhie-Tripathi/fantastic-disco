@@ -114,7 +114,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
   const setInitialFilters=()=>{
     const temp: Record<string, string> = Object.fromEntries(searchParams.entries());
-    console.log(enabledFilters);
     
     if (enabledFilters && Object.keys(temp).includes("view") && Object.keys(temp).length===1 &&  pathname.split('/')[2]==="search"  ) {
       

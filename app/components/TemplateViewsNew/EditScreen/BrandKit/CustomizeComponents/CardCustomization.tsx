@@ -95,13 +95,13 @@ const CardCustomization = ({
             <div className={styles.arrows}>
               <div onClick={handleArrowUpClick}>
                 <UpArrow
-                  height="4"
+                  height="8"
                   width="8"
                 />
               </div>
               <div onClick={handleArrowDownClick}>
                 <DownArrow
-                  height="4"
+                  height="8"
                   width="8"
                 />
               </div>
