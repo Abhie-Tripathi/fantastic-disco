@@ -684,7 +684,7 @@ const Pages = () => {
         setSuggestions([]);
       }
     }  
-    const [speakerSuggestion,setSpeakerSuggestion]=useState();
+    // const [speakerSuggestion,setSpeakerSuggestion]=useState();
     const fetchAISuggestion1 = async(val:any)=>{
       console.log(val);
       try{
@@ -703,7 +703,7 @@ const Pages = () => {
         let temp = JSON.parse(aiResponse.choices[0].message.content);  
         console.log(temp);
         if(temp && temp?.data){
-          setSpeakerSugge
+          // setSpeakerSugge
           setSuggestions(formatData(temp.data))
         }
         // if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
