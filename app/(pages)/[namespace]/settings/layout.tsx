@@ -13,7 +13,12 @@ export default function SettingsLayout({
   const { namespace } = params;
   const pathname = usePathname();
   const urlName = pathname.split("/").slice(-1)[0];
-
+  const router = useRouter();
+  useEffect(() => {
+    if(urlName==="users" || urlName ==="notifications"){
+      router.push(`/${namespace}/settings/profile`);
+    }
+  }, [router]);
   return (
     <div className="w-full p-3">
       <Tabs value={urlName} className="w-full border-b">
