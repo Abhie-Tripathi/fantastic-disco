@@ -5,7 +5,7 @@ import { MoveRight } from 'lucide-react'
 import CoordinateScreen from '/public/internal/dashboard/CoordinateScreen.png'
 import Image from 'next/image'
 
-const CoordinateEmptyOne = () => {
+const CoordinateScreenOne = () => {
     return (
         <div className="p-4 flex items-center overflow-hidden">
             <div className="mr-8 min-w-[270px]">
@@ -20,7 +20,7 @@ const CoordinateEmptyOne = () => {
     )
 }
 
-export default CoordinateEmptyOne
+export default CoordinateScreenOne
 
 
 function Coordinate() {

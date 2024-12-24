@@ -2,18 +2,17 @@ import React from 'react'
 import styles from './style.module.css'
 import { Button } from '@/components/ui/button';
 import { MoveRight } from 'lucide-react';
-import CoordinateEmptyOne from './CoordinateEmptyOne';
-import CoordinateEmptyTwo from './CoordinateEmptyTwo';
+import CoordinateScreenOne from './CoordinateScreenOne';
+import CoordinateScreenTwo from './CoordinateScreenTwo';
 
 const CoordinateContainer = () => {
 
-    const container = "small";
+    let container = "big";
     const isEmpty = true;
 
     return (
         <div className="bg-[var(--background-secondary-color)] border border-[var(--border-color)] rounded-[12px] max-w-[471px]">
-            {/* <div className={styles.body}> */}
-            {container === "small" ? <CoordinateEmptyOne /> : <CoordinateEmptyTwo />}
+            {container === "small" ? <CoordinateScreenOne /> : <CoordinateScreenTwo/>}
         </div>
     )
 }
