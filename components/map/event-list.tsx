@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -16,42 +16,126 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Event, EventsResponse } from "@/types/events";
-import { differenceInDays, format } from "date-fns";
+import { Event, EventsResponse } from "@/types";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import Link from "next/link";
-import { myFetch } from "@/utils/myFetch";
-import { useTrackerServices } from "@/services/trackerServices";
-export default function EventList({
-  isVisible,
+import { formattedDateRange } from "@/utils/date";
+
+const EventCard = memo(({ event }: { event: Event }) => {
+  const address = event.venueLocation
+    ? event.venueLocation.city?.name === "Online"
+      ? "Online"
+      : [
+          event.venueLocation?.venue?.name,
+          event.venueLocation?.city?.name,
+          event.venueLocation?.state?.name,
+          event.venueLocation?.country?.name,
+        ]
+          .filter(Boolean)
+          .join(", ")
+    : "Venue to be announced";
+
+  return (
+    <Link href={`/search/${event.id}`}>
+      <Card className="mb-4 relative">
+        <div
+          className="absolute left-0 top-0 bottom-0 w-1 rounded-md"
+          style={{
+            backgroundColor: eventTypeColors[event.eventTypes[0].slug || ""],
+          }}
+        />
+        <CardContent className="p-4">
+          <div className="flex items-center mb-2 pb-2 border-b">
+            {eventTypeIcons[event.primaryEventType || "festivals"]}
+            <span className="text-xs font-semibold text-primary capitalize ml-2">
+              {event.primaryEventType}
+            </span>
+          </div>
+          <h3 className="font-semibold mb-2 text-sm">{event.name}</h3>
+          <div className="flex items-center text-xs mb-2">
+            <span>{address}</span>
+          </div>
+          <div className="flex items-start text-xs text-[#666666]">
+            {formattedDateRange(event.startDateTime, event.endDateTime)}
+          </div>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+});
+EventCard.displayName = 'EventCard';
+
+const UnplannedCard = memo(({ event }: { event: Event }) => {
+  function formatAddress(eventLocation: any): string {
+    const addressParts: string[] = [];
+    if (eventLocation.city) addressParts.push(eventLocation.city);
+    if (eventLocation.state && eventLocation.state.length > 0) {
+      const states = eventLocation.state.map((s: any) => s.name).join(", ");
+      addressParts.push(states);
+    }
+    if (eventLocation.country) addressParts.push(eventLocation.country.name);
+    return addressParts.join(", ");
+  }
+
+  return (
+    <div>
+      <Card className="mb-4 relative">
+        <div
+          className="absolute left-0 top-0 bottom-0 w-1 rounded-md"
+          style={{
+            backgroundColor: eventTypeColors.holiday,
+          }}
+        />
+        <CardContent className="p-4">
+          <div className="flex items-center mb-2 pb-2 border-b">
+            {eventTypeIcons[event.primaryEventType || "festivals"]}
+            <span
+              className="text-xs font-semibold text-primary capitalize ml-2"
+              style={{ color: eventTypeColors[event.primaryEventType || ""] }}
+            >
+              {event.primaryEventType}
+            </span>
+          </div>
+          <h3 className="font-semibold mb-2 text-sm">{event.name}</h3>
+          <div className="flex items-center text-xs mb-2">
+            <span>{formatAddress(event.eventLocation)}</span>
+          </div>
+          <div className="flex items-start text-xs text-[#666666]">
+            {formattedDateRange(event.startDateTime, event.endDateTime)}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+});
+UnplannedCard.displayName = 'UnplannedCard';
+
+function EventList({
+  showEventType,
   onClose,
-  source,
-  searchParam,
-  trackerId
 }: {
-  isVisible: boolean;
+  showEventType: string;
   onClose: () => void;
-  source:any;
-  searchParam:any;
-  trackerId:string;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const defaultSearchParams = useSearchParams();
-  const searchParams = source !== "tracker" ? defaultSearchParams : searchParam;
+  const searchParams = useSearchParams();
   const eventService = useEventsService();
-  const filteredParams = new URLSearchParams(searchParams?.toString());
-  filteredParams.delete("view");
-  filteredParams.set("skip", String((currentPage - 1) * 10));
-  const {getTrackerMapEvents}=useTrackerServices(); 
+
+  const filteredParams = useMemo(() => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("view");
+    params.set("skip", String((currentPage - 1) * 10));
+    if (showEventType == "unAttended") params.set("eventTypes", "holiday");
+    return params;
+  }, [searchParams, currentPage, showEventType]);
+
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString()],
-    queryFn: () => source === 'tracker' 
-      ? getTrackerMapEvents(trackerId,`limit=10&offset=${(currentPage - 1) * 10 + 1}`, searchParam.toString())
-      : eventService.getEventsWithSearchParams(filteredParams.toString()),
+    queryFn: () => eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
-  
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -63,58 +147,6 @@ export default function EventList({
   const events: Event[] = isEventResponse(data) ? data.events : [];
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 10) || 1;
-
-  const EventCard = ({ event }: { event: Event }) => {
-    const address = event.venueLocation
-      ? event.venueLocation.city?.name === "Online"
-        ? "Online"
-        : [
-            event.venueLocation?.venue?.name,
-            event.venueLocation?.city?.name,
-            event.venueLocation?.state?.name,
-            event.venueLocation?.country?.name,
-          ]
-            .filter(Boolean)
-            .join(", ")
-      : "Venue to be announced";
-
-    const formattedStartDate = format(event.startDateTime, "dd MMM yyyy");
-    const formattedEndDate = format(event.endDateTime, "dd MMM yyyy");
-
-    const days = differenceInDays(event.endDateTime, event.startDateTime) + 1;
-
-    const formattedRange =
-      formattedStartDate === formattedEndDate
-        ? formattedStartDate
-        : `${formattedStartDate} - ${formattedEndDate} (${days} ${
-            days === 1 ? "day" : "days"
-          })`;
-          
-
-          
-    return (
-      <Link href={`/internal/event/${event.id}`} target="_blank">
-        <Card key={event.id} className="mb-4 relative">
-          <div className="absolute left-0 top-0 bottom-0 w-1 rounded-md bg-[#5055A3]" />
-          <CardContent className="p-4">
-            <div className="flex items-center mb-2 pb-2 border-b">
-              {eventTypeIcons[event.primaryEventType || "festivals"]}
-              <span className="text-xs font-semibold text-primary capitalize ml-2">
-                {event.primaryEventType}
-              </span>
-            </div>
-            <h3 className="font-semibold mb-2 text-sm">{event.name}</h3>
-            <div className="flex items-center text-xs mb-2">
-              <span>{address}</span>
-            </div>
-            <div className="flex items-start text-xs text-[#666666]">
-              {formattedRange}
-            </div>
-          </CardContent>
-        </Card>
-      </Link>
-    );
-  };
 
   const renderPaginationItems = () => {
     const items = [];
@@ -223,14 +255,16 @@ export default function EventList({
     return (
       <>
         <div className="p-4 rounded-t-lg">
-          <div className="flex justify-between items-center border-b pb-2">
-            <div className="flex items-center gap-2">
-              <Badge variant="secondary" className="text-white bg-primary">
-                {count}
-              </Badge>
-              <span className="text-xs font-semibold text-primary">
-                Events Found
-              </span>
+          <div className="flex justify-between items-center border-b">
+            <div className="flex space-x-2 my-2">
+              <div className="flex items-center gap-2">
+                <Badge variant="secondary" className="text-white bg-primary">
+                  {count}
+                </Badge>
+                <span className="text-xs font-semibold text-primary">
+                  Events Found
+                </span>
+              </div>
             </div>
             <Button
               variant="ghost"
@@ -243,9 +277,11 @@ export default function EventList({
           </div>
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">
-          {events.map((event: Event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
+          {events.map((event: Event) => {
+            if (event.primaryEventType == "holiday")
+              return <UnplannedCard event={event} key={event.id} />;
+            return <EventCard key={event.id} event={event} />;
+          })}
           {events.length > 0 && (
             <Pagination>
               <PaginationContent className="flex-wrap">
@@ -284,11 +320,13 @@ export default function EventList({
 
   return (
     <div
-      className={`absolute z-10 top-0 right-0 h-full w-[345px] bg-[var(--primary-foreground)] rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform ${
-        isVisible ? "translate-x-0" : "translate-x-full"
+      className={`absolute z-10 top-0 right-0 h-full w-[345px] bg-white rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
+        showEventType ? "translate-x-0" : "translate-x-full"
       }`}
     >
       {renderContent()}
     </div>
   );
 }
+
+export default memo(EventList);

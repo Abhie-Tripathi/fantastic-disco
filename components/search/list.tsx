@@ -35,6 +35,13 @@ import { ToastAction } from "../ui/toast";
 import { cn } from "@/lib/utils";
 import { eventTypeColors } from "@/constants/eventTypes";
 import { isEventeli } from "@/config";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface CircularProgressProps {
   value: number;
@@ -106,7 +113,9 @@ export default function EventAccordion({
 }) {
   const [openItem, setOpenItem] = useState<string | undefined>();
   const { setFilter, getFilterValue } = useFilterState();
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState<number>(
+    Number(getFilterValue("take")) || 10
+  );
   const currentPage =
     Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(count / itemsPerPage);
@@ -118,6 +127,13 @@ export default function EventAccordion({
 
   const handlePageChange = (page: number) => {
     setFilter("skip", ((page - 1) * itemsPerPage).toString());
+  };
+
+  const handleItemsPerPageChange = (value: string) => {
+    const newItemsPerPage = parseInt(value);
+    setItemsPerPage(newItemsPerPage);
+
+    setFilter("take", newItemsPerPage.toString());
   };
 
   const renderPaginationItems = () => {
@@ -213,6 +229,33 @@ export default function EventAccordion({
       </div>
       {totalPages > 1 && (
         <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
+          <div className="flex justify-between items-center mb-2 px-2">
+            <div>
+              <span className="text-sm text-muted-foreground">
+                Showing {Math.min((currentPage - 1) * itemsPerPage + 1, count)}{" "}
+                to {Math.min(currentPage * itemsPerPage, count)} of {count}{" "}
+                results
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-muted-foreground">
+                Results per page:
+              </span>
+              <Select
+                value={itemsPerPage.toString()}
+                onValueChange={handleItemsPerPageChange}
+              >
+                <SelectTrigger className="w-[70px]">
+                  <SelectValue>{itemsPerPage}</SelectValue>
+                </SelectTrigger>
+                <SelectContent align="end">
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="20">20</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <Pagination>
             <PaginationContent className="flex-wrap justify-center">
               <PaginationItem>
@@ -348,9 +391,7 @@ const EventListItem = ({
         <div className="p-6">
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-7 flex flex-col justify-between gap-3">
-              <h2 className="text-2xl font-semibold ">
-                {event.name}
-              </h2>
+              <h2 className="text-2xl font-semibold ">{event.name}</h2>
 
               <div>
                 <p className="text-sm capitalize">{address}</p>
@@ -509,22 +550,24 @@ const EventListItem = ({
             </div>
 
             <div className="col-span-5 flex flex-col justify-between">
-              {isEventeli && <div className="flex items-center justify-end">
-                <Button
-                  variant="ghost"
-                  disabled={isSaved}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSaveEvent(event.id);
-                  }}
-                >
-                  {isSaved ? (
-                    <BookmarkCheck className="w-5 h-5 text-primary" />
-                  ) : (
-                    <Bookmark className="w-5 h-5 text-primary" />
-                  )}
-                </Button>
-              </div>}
+              {isEventeli && (
+                <div className="flex items-center justify-end">
+                  <Button
+                    variant="ghost"
+                    disabled={isSaved}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSaveEvent(event.id);
+                    }}
+                  >
+                    {isSaved ? (
+                      <BookmarkCheck className="w-5 h-5 text-primary" />
+                    ) : (
+                      <Bookmark className="w-5 h-5 text-primary" />
+                    )}
+                  </Button>
+                </div>
+              )}
               <div className="flex items-center justify-end">
                 {event.scores ? (
                   <div className="flex items-center justify-between w-full">
