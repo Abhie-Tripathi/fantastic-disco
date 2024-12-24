@@ -1,17 +1,39 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './style.module.css'
 import { Button } from '@/components/ui/button'
 import { MoveRight } from 'lucide-react'
 import CoordinateScreen from '/public/internal/dashboard/CoordinateScreen.png'
 import Image from 'next/image'
+import NumberPill from './NumberPill'
 
-const CoordinateScreenOne = () => {
+interface Props {
+    values: { heading: string, value: number }[]
+}
+const CoordinateScreenOne = ({ values }: Props) => {
+
+
+    const [isEmpty, setIsEmpty] = useState<boolean>(false)
+
+    useEffect(() => {
+        const hasNonZeroValue = values.some(item => item.value > 0);
+        setIsEmpty(!hasNonZeroValue);
+    }, [])
+
     return (
         <div className="p-4 flex items-center overflow-hidden">
             <div className="mr-8 min-w-[270px]">
                 <div className="flex items-center gap-2 text-xs font-[var(--font-weight-semibold)] text-[var(--primary-color)]"><Coordinate /> Coordinate</div>
-                <div className="leading-var(--line-height-small) text-[var(--bold-border-color)] text-xs mt-8">Explore events and express your interest in the ones that matter to you and start coordinating with your team.</div>
-                <Button className="mt-8" size="sm">Search Events <MoveRight width={12} /></Button>
+                <div
+                    className={`leading-var(--line-height-small) text-[var(--bold-border-color)] text-xs  ${isEmpty ? "mt-8" : "mt-2"}`}
+                >
+                    {!isEmpty ? "Only tool needed for end-to-end event communication management" : "Explore events and express your interest in the ones that matter to you and start coordinating with your team."}
+                </div>
+                {!isEmpty ?
+                    <div className="grid grid-cols-2 gap-2 mt-8">
+                        {values.map((item, index) => (
+                            <NumberPill heading={item.heading} value={item.value} key={index}/>
+                        ))}
+                    </div> : <Button className="mt-8" size="sm">Search Events <MoveRight width={12} /></Button>}
             </div>
             <div className="min-h-[177px] min-w-[177px] max-h-[177px] max-w-[177px]">
                 <Image className="w-full h-full object-cover" src={CoordinateScreen} alt="coordinate" />

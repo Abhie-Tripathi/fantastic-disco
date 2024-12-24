@@ -7,12 +7,17 @@ import CoordinateScreenTwo from './CoordinateScreenTwo';
 
 const CoordinateContainer = () => {
 
-    let container = "big";
-    const isEmpty = true;
+    const values = [{ heading: "Attending", value: 1 },
+    { heading: "Sponsors", value: 0 },
+    { heading: "Speakers", value: 0 },
+    { heading: "Exhibitor", value: 0 },
+    ]
+
+    let container = "small";
 
     return (
         <div className="bg-[var(--background-secondary-color)] border border-[var(--border-color)] rounded-[12px] max-w-[471px]">
-            {container === "small" ? <CoordinateScreenOne /> : <CoordinateScreenTwo/>}
+            {container === "small" ? <CoordinateScreenOne values={values}/> : <CoordinateScreenTwo values={values}/>}
         </div>
     )
 }

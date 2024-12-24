@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './style.module.css'
 import { Button } from '@/components/ui/button'
 import { MoveRight } from 'lucide-react'
@@ -7,13 +7,10 @@ import Image from 'next/image'
 import NumberPill from './NumberPill'
 
 
-const CoordinateScreenTwo = () => {
-
-  const values = [{ heading: "Attending", value: 1 },
-  { heading: "Sponsors", value: 0 },
-  { heading: "Speakers", value: 0 },
-  { heading: "Exhibitor", value: 0 },
-  ]
+interface Props {
+  values: { heading: string, value: number }[]
+}
+const CoordinateScreenTwo = ({ values }: Props) => {
 
   return (
     <div className="p-4 overflow-hidden">
@@ -24,9 +21,7 @@ const CoordinateScreenTwo = () => {
       <div className='flex flex-col items-center mt-8'>
         <div className="grid grid-cols-2 gap-6 mt-8">
           {values.map((item, index) => (
-            <div key={index} className="flex justify-center">
-              <NumberPill heading={item.heading} value={item.value} />
-            </div>
+            <NumberPill heading={item.heading} value={item.value} key={index}/>
           ))}
         </div>
         <Button className="mt-6" size="sm">Search Events <MoveRight width={12} /></Button>
