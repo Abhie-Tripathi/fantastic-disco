@@ -1,5 +1,4 @@
 import React from 'react'
-import styles from './manage.style.module.css'
 import { Button } from '@/components/ui/button'
 
 const ManageTeam = () => {
@@ -8,9 +7,10 @@ const ManageTeam = () => {
             <div className="text-[var(--primary-color)] font-[var(--font-weight-semibold)] text-xs">
                 Manage Team
             </div>
-            <div className="text-[var(--primary-text-color)]" style={{fontSize:10}}>Share or Invite your team members to keep track of events</div>
-            <div className={styles.inputContainer}>
-                <input type="text" placeholder='Email' />
+            <div className="text-[var(--primary-text-color)]" style={{ fontSize: 10 }}>Share or Invite your team members to keep track of events</div>
+            <div className="mt-[19px] w-full p-1 flex items-center justify-between bg-[var(--primary-light-color)] rounded-[8px]">
+                <input type="text" placeholder="Email" className="bg-transparent focus:outline-none" style={{ fontSize: 10 }}
+                />
                 <Button size="sm">Invite</Button>
             </div>
         </div>

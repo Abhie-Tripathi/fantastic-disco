@@ -1,4 +1,5 @@
 "use client";
+import CoordinateContainer from "@/app/components/internal/Dashboard/Coordinate/CoordinateContainer";
 import ManageTeam from "@/app/components/internal/Dashboard/ManageTeam";
 import ModuleSelection from "@/app/components/internal/Dashboard/ModuleSelection";
 import RecentActivity from "@/app/components/internal/Dashboard/Recentactivity/RecentActivity";
@@ -10,11 +11,12 @@ const Dashboard = () => {
     className="flex p-3 min-h-[91vh] max-h-[91vh]">
       <div className="flex-1">
         {/* <ModuleSelection /> */}
+        <CoordinateContainer/>
  
       </div>
       <div className="flex-none w-[20%]">
-      <RecentActivity/>
-      <ManageTeam/>
+      {/* <RecentActivity/>
+      <ManageTeam/> */}
       </div>
     </div>
   );
