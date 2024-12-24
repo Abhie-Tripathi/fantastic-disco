@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
@@ -13,115 +13,72 @@ import {
 } from "@/components/ui/popover";
 import { useFilterContext } from "@/context/filterContext";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
-import { usePathname } from "next/navigation";
-import { LockClosedSmall } from "geist-icons";
+
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
 
 interface RankCategory {
   name: string;
   range: [number, number];
 }
-interface analyticsInterface{
-  isAnalyticsEnabled?:boolean
-}
-interface EventAnalyticsProps{
-  source:string;
-  enabledAnalyticsData?:analyticsInterface;
-  selectedEventRank?: [number, number];
-  setSelectedEventRank?: React.Dispatch<React.SetStateAction<[number, number]>>;
-  selectedLocalRank?: [number, number];
-  setSelectedLocalRank?: React.Dispatch<React.SetStateAction<[number, number]>>;
-  selectedAviationRank?: [number, number];
-  setSelectedAviationRank?: React.Dispatch<
-    React.SetStateAction<[number, number]>
-  >;
-  rankToggles?: any;
-  setRankToggles?: any;
-}
-export default function EventAnalyticsSelector({source, selectedEventRank,enabledAnalyticsData,setSelectedEventRank, selectedLocalRank,setSelectedLocalRank, selectedAviationRank, setSelectedAviationRank, rankToggles, setRankToggles}:EventAnalyticsProps) {
+
+export default function EventAnalyticsSelector() {
   const [open, setOpen] = useState(false);
-  const [showScores, setShowScores] = useState(false);
-  const [categories, setCategories] = useState<RankCategory[]>([
-    {
-      name: "Impact Score",
-      range:
-        selectedEventRank && Array.isArray(selectedEventRank)
-          ? selectedEventRank
-          : [0, 100],
-    },
-    {
-      name: "Inbound Score",
-      range:
-        selectedLocalRank && Array.isArray(selectedLocalRank)
-          ? selectedLocalRank
-          : [0, 100],
-    },
-    {
-      name: "International Score",
-      range:
-        selectedAviationRank && Array.isArray(selectedAviationRank)
-          ? selectedAviationRank
-          : [0, 100],
-    },
-  ]);
+  const { localFilters, setMultipleLocalFilters, getLocalFilterValue } =
+    useFilterContext();
 
-  const {
-    setLocalFilter,
-    getLocalFilterValue,
-    setMultipleLocalFilters,
-    deleteMultipleLocalFilters,
-    localFilters,
-  } = useFilterContext();
-  const router = useRouter();
-  const pathname = usePathname();
-  useEffect(() => {
-    if (rankToggles && typeof rankToggles.globalToggle !== "undefined") {
-      setShowScores(rankToggles.globalToggle);
-    }
-  }, [rankToggles?.globalToggle]);
-  useEffect(() => {
-    const show = getLocalFilterValue("show").split(",").filter(Boolean);
-    setShowScores(show.includes("scores"));
+  // Derive show scores from show filter
+  const showScores = useMemo(() => {
+    const showFilters = getLocalFilterValue("show").split(",");
+    return showFilters.includes("scores");
+  }, [getLocalFilterValue]);
 
-    setCategories((prev) => [
+  // Derive categories from filters
+  const categories = useMemo(
+    () => [
       {
         name: "Impact Score",
         range: [
-          parseInt(getLocalFilterValue("impact_score_gte")) || 0,
-          parseInt(getLocalFilterValue("impact_score_lte")) || 100,
-        ],
+          Number(localFilters.impact_score_gte || 0),
+          Number(localFilters.impact_score_lte || 100),
+        ] as [number, number],
       },
       {
         name: "Inbound Score",
         range: [
-          parseInt(getLocalFilterValue("inbound_score_gte")) || 0,
-          parseInt(getLocalFilterValue("inbound_score_lte")) || 100,
-        ],
+          Number(localFilters.inbound_score_gte || 0),
+          Number(localFilters.inbound_score_lte || 100),
+        ] as [number, number],
       },
       {
         name: "International Score",
         range: [
-          parseInt(getLocalFilterValue("international_score_gte")) || 0,
-          parseInt(getLocalFilterValue("international_score_lte")) || 100,
-        ],
+          Number(localFilters.international_score_gte || 0),
+          Number(localFilters.international_score_lte || 100),
+        ] as [number, number],
       },
-    ]);
-  }, [localFilters]);
+    ],
+    [localFilters]
+  );
 
   const handleRangeChange = (index: number, newRange: [number, number]) => {
-    setCategories((prev) =>
-      prev.map((category, i) =>
-        i === index ? { ...category, range: newRange } : category
-      )
-    );
-    if (index === 0) {
-      setSelectedEventRank?.(newRange);
-    } else if (index === 1) {
-      setSelectedLocalRank?.(newRange);
-    } else if (index === 2) {
-      setSelectedAviationRank?.(newRange);
+    const filters: Record<string, string> = {};
+
+    switch (index) {
+      case 0:
+        filters.impact_score_gte = newRange[0].toString();
+        filters.impact_score_lte = newRange[1].toString();
+        break;
+      case 1:
+        filters.inbound_score_gte = newRange[0].toString();
+        filters.inbound_score_lte = newRange[1].toString();
+        break;
+      case 2:
+        filters.international_score_gte = newRange[0].toString();
+        filters.international_score_lte = newRange[1].toString();
+        break;
     }
+
+    setMultipleLocalFilters(filters);
   };
 
   const handleInputChange = (
@@ -132,79 +89,46 @@ export default function EventAnalyticsSelector({source, selectedEventRank,enable
     const numValue = Math.min(Math.max(parseInt(value, 10), 0), 100);
     if (isNaN(numValue)) return;
 
-    setCategories((prev) =>
-      prev.map((category, i) => {
-        if (i !== index) return category;
-        const newRange: [number, number] = [...category.range];
-        newRange[side === "min" ? 0 : 1] = numValue;
-        return { ...category, range: newRange };
-      })
-    );
-  };
-
-  const applyFilters = () => {
     const filters: Record<string, string> = {};
-    if (showScores) {
-      categories.forEach((category) => {
-        const [min, max] = category.range;
-
-        switch (category.name) {
-          case "Impact Score":
-            filters.impact_score_gte = min.toString();
-            filters.impact_score_lte = max.toString();
-            break;
-          case "Inbound Score":
-            filters.inbound_score_gte = min.toString();
-            filters.inbound_score_lte = max.toString();
-            break;
-          case "International Score":
-            filters.international_score_gte = min.toString();
-            filters.international_score_lte = max.toString();
-            break;
-        }
-      });
+    switch (index) {
+      case 0:
+        filters[`impact_score_${side === "min" ? "gte" : "lte"}`] =
+          numValue.toString();
+        break;
+      case 1:
+        filters[`inbound_score_${side === "min" ? "gte" : "lte"}`] =
+          numValue.toString();
+        break;
+      case 2:
+        filters[`international_score_${side === "min" ? "gte" : "lte"}`] =
+          numValue.toString();
+        break;
     }
-    return filters;
+
+    setMultipleLocalFilters(filters);
   };
 
   const handleShowScoresToggle = (checked: boolean) => {
-    setShowScores(checked);
     const currentShow = getLocalFilterValue("show").split(",").filter(Boolean);
     const newShow = checked
       ? [...currentShow, "scores"]
       : currentShow.filter((item) => item !== "scores");
 
-    // Update the 'show' parameter
-    if (newShow.length > 0) {
-      setLocalFilter("show", newShow.join(","));
-    } else {
-      deleteMultipleLocalFilters(["show"]);
-    }
-
-    // Remove score-related filters if unchecked, or apply them if checked
-    const scoreFilters = [
-      "impact_score_gte",
-      "impact_score_lte",
-      "inbound_score_gte",
-      "inbound_score_lte",
-      "international_score_gte",
-      "international_score_lte",
-    ];
+    const filters: Record<string, string> = {
+      show: newShow.join(","),
+    };
 
     if (!checked) {
-      deleteMultipleLocalFilters(scoreFilters);
-    } else {
-      const newFilters = applyFilters();
-      setMultipleLocalFilters(newFilters);
+      // Clear all score filters when toggling off
+      filters.impact_score_gte = "";
+      filters.impact_score_lte = "";
+      filters.inbound_score_gte = "";
+      filters.inbound_score_lte = "";
+      filters.international_score_gte = "";
+      filters.international_score_lte = "";
     }
-  };
 
-  const onOpenChange = (open: boolean) => {
-    if (!open) {
-      const newFilters = applyFilters();
-      setMultipleLocalFilters(newFilters);
-    }
-    setOpen(open);
+    setMultipleLocalFilters(filters);
   };
 
   const getAppliedFiltersCount = () => {
@@ -214,7 +138,7 @@ export default function EventAnalyticsSelector({source, selectedEventRank,enable
   };
 
   return (
-    <Popover open={open} onOpenChange={onOpenChange}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -222,22 +146,16 @@ export default function EventAnalyticsSelector({source, selectedEventRank,enable
             open ? "border-primary" : "border-input"
           }`}
           aria-expanded={open}
-          disabled={enabledAnalyticsData && !enabledAnalyticsData?.isAnalyticsEnabled}
           aria-haspopup="true"
         >
-          <div className="flex items-center">
-          {enabledAnalyticsData && !enabledAnalyticsData.isAnalyticsEnabled && 
-              <LockClosedSmall color="var(--secondary-text-color)" />
-            }
           <span className="mr-2">Event Analytics</span>
-          </div>
-          {(showScores || rankToggles?.globalToggle) && getAppliedFiltersCount() > 0 && (
+          {showScores && getAppliedFiltersCount() > 0 && (
             <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
               {getAppliedFiltersCount()}
             </span>
           )}
           <DynamicSwitch
-            checked={showScores || rankToggles?.globalToggle}
+            checked={showScores}
             onCheckedChange={handleShowScoresToggle}
             aria-label="Show scores"
             onClick={(e) => e.stopPropagation()}
@@ -257,7 +175,7 @@ export default function EventAnalyticsSelector({source, selectedEventRank,enable
                 handleRangeChange(index, newRange as [number, number])
               }
               className="mb-2"
-              disabled={!showScores && !rankToggles?.globalToggle}
+              disabled={!showScores}
             />
             <div className="flex justify-between">
               <Input
@@ -269,17 +187,7 @@ export default function EventAnalyticsSelector({source, selectedEventRank,enable
                   handleInputChange(index, "min", e.target.value)
                 }
                 className="w-16 text-center"
-                disabled={!showScores && !rankToggles?.globalToggle}
-                onBlur={(e) => {
-                  const value = Math.min(
-                    Math.max(parseInt(e.target.value, 10), 0),
-                    100
-                  );
-                  if (!isNaN(value)) {
-                    e.target.value = value.toString();
-                    handleInputChange(index, "min", value.toString());
-                  }
-                }}
+                disabled={!showScores}
               />
               <span className="mx-2 self-center">-</span>
               <Input
@@ -291,17 +199,7 @@ export default function EventAnalyticsSelector({source, selectedEventRank,enable
                   handleInputChange(index, "max", e.target.value)
                 }
                 className="w-16 text-center"
-                disabled={!showScores && !rankToggles?.globalToggle}
-                onBlur={(e) => {
-                  const value = Math.min(
-                    Math.max(parseInt(e.target.value, 10), 0),
-                    100
-                  );
-                  if (!isNaN(value)) {
-                    e.target.value = value.toString();
-                    handleInputChange(index, "max", value.toString());
-                  }
-                }}
+                disabled={!showScores}
               />
             </div>
           </div>

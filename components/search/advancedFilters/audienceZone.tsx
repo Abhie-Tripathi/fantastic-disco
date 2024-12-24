@@ -1,51 +1,26 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { useFilterContext } from "@/context/filterContext";
 import { Switch } from "@/components/ui/switch";
-import { LockClosedSmall } from "geist-icons";
-interface zoneInterface{
-  isZoneEnabled?:boolean,
-}
-interface AudienceZoneProps{
-  enabledZoneData?:zoneInterface;
-  source:string;
-  isEnabled?: boolean;
-  setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
-}
-export default function AudienceZoneSatusSelector({
-  source,
-  enabledZoneData,
-  isEnabled: parentIsEnabled = false,
-  setIsEnabled: parentSetIsEnabled,
-}: AudienceZoneProps) {
+
+export default function AudienceZoneSatusSelector() {
   const { setLocalFilter, getLocalFilterValue } = useFilterContext();
-  const [localIsEnabled, setLocalIsEnabled] = useState(false);
-  const isEnabled = source === "tracker" ? parentIsEnabled : localIsEnabled;
-  const setIsEnabled = source === "tracker" ? parentSetIsEnabled : setLocalIsEnabled;
-  useEffect(() => {
-    if(source!=="tracker"){
+
+  const isEnabled = useMemo(() => {
     const showFilters = getLocalFilterValue("show").split(",");
-    setIsEnabled?.(showFilters.includes("audienceZone"));
-    }
+    return showFilters.includes("audienceZone");
   }, [getLocalFilterValue]);
 
   const handleToggle = (checked: boolean) => {
-    setIsEnabled?.(checked);
-    const showFilters = getLocalFilterValue("show").split(",");
-    console.log(showFilters);
+    const showFilters = getLocalFilterValue("show").split(",").filter(Boolean);
+
     if (checked) {
-      setLocalFilter(
-        "show",
-        [...showFilters, "audienceZone"].join(",").replace(/^,|,$/g, "")
-      );
+      setLocalFilter("show", [...showFilters, "audienceZone"].join(","));
     } else {
       setLocalFilter(
         "show",
-        showFilters
-          .filter((filter) => filter !== "audienceZone")
-          .join(",")
-          .replace(/^,|,$/g, "")
+        showFilters.filter((filter) => filter !== "audienceZone").join(",")
       );
     }
   };
@@ -54,12 +29,8 @@ export default function AudienceZoneSatusSelector({
     <Button
       variant="outline"
       className="w-full justify-between px-3 py-5 text-base font-normal"
-      disabled={enabledZoneData && !enabledZoneData?.isZoneEnabled}
     >
       <div className="flex items-center">
-      {enabledZoneData && !enabledZoneData.isZoneEnabled && 
-            <LockClosedSmall color="var(--secondary-text-color)" />
-            }
         <span className="mr-2">Audience Zone</span>
       </div>
       <Switch

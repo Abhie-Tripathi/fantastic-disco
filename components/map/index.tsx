@@ -33,7 +33,7 @@ import ZeroState from "@/components/zerostate";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useLocationService } from "@/services/locationService";
-import { useFilterContext } from "@/contexts/filterContext";
+import { useFilterContext } from "@/context/filterContext";
 
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",

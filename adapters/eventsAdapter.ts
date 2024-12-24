@@ -57,11 +57,11 @@ export const EventsAdapter = {
       adaptedParams.eventName = params.get("eventName")!;
       return adaptedParams;
     }
-    if(params.get("onlyBranded")!==null){
-      adaptedParams.eventBrand = params.get("onlyBranded")??"";
+    if (params.get("onlyBranded") !== null) {
+      adaptedParams.eventBrand = params.get("onlyBranded") ?? "";
     }
-    if(params.get("onlySeries")!==null){
-      adaptedParams.eventSeries = params.get("onlySeries")??"";
+    if (params.get("onlySeries") !== null) {
+      adaptedParams.eventSeries = params.get("onlySeries") ?? "";
     }
     if (params.get("eventTypes")) {
       adaptedParams.eventType = params
@@ -280,6 +280,10 @@ export const EventsAdapter = {
       const startDate = firstDayOfMonth.toISOString().split("T")[0];
       const endDate = lastDayOfMonth.toISOString().split("T")[0];
       adaptedParams.groupBy = `${startDate},${endDate}`;
+    }
+
+    if (params.get("take")) {
+      adaptedParams.max = params.get("take")!;
     }
 
     return adaptedParams;

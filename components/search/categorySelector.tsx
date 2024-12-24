@@ -10,71 +10,43 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { newCategories as categories } from "@/data/categories";
 import { useFilterContext } from "@/context/filterContext";
-import {toast} from 'react-toastify';
-interface categoryInterface{
-  selectedValue?: string[] | undefined;
-  enabledValue?: any;
-}
-interface categoryProps {
-  source: string;
-  selectedCategories?: string[];
-  setSelectedCategories?: React.Dispatch<React.SetStateAction<string[]>>; 
-  enabledCategories?:categoryInterface;
-}
-export default function CategorySelector({
-  source,
-  enabledCategories,
-  selectedCategories: parentSelectedCategories = [],
-  setSelectedCategories: parentSetSelectedCategories,
-}: categoryProps) {
-  const { getLocalFilterValue, setLocalFilter } = useFilterContext();
-  
+
+export default function CategorySelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCategoriesLocal, setSelectedCategoriesLocal] = useState<string[]>([]);
-const selectedCategories = source === 'tracker' ? parentSelectedCategories : selectedCategoriesLocal;
-const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories : setSelectedCategoriesLocal;
-  useEffect(() => {
-    if(source !== 'tracker') {
-      const eventTypes = getLocalFilterValue("categories")
-        .split(",")
-        .filter(Boolean);
-        
-      setSelectedCategories?.(eventTypes);
-    }
-  }, [getLocalFilterValue]);
+  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
 
-  const handleCategoryToggle = useCallback((categorySlug: string) => {
+  const selectedCategories = getLocalFilterValue("categories")
+    .split(",")
+    .filter(Boolean);
 
-    setSelectedCategories?.((prev) => {
-      if(enabledCategories?.enabledValue && prev.length === 1 && prev.includes(categorySlug)) {
-        toast.error("At least one filter must be selected", {
-          position: "bottom-right",
-          autoClose: 2000,
-          hideProgressBar: true,
-        });
-        return prev;
-      }
-      return prev.includes(categorySlug)
-        ? prev.filter((slug) => slug !== categorySlug) 
-        : [...prev, categorySlug];
-    });
-    
-    
-  }, [enabledCategories]);
+  const handleCategoryToggle = useCallback(
+    (categorySlug: string) => {
+      const newCategories = selectedCategories.includes(categorySlug)
+        ? selectedCategories.filter((slug) => slug !== categorySlug)
+        : [...selectedCategories, categorySlug];
+      setLocalFilter("categories", newCategories.join(","));
+    },
+    [selectedCategories, setLocalFilter]
+  );
 
-  const handleSelectAll = useCallback((isSelected: boolean) => {
-    setSelectedCategories?.(isSelected ? categories.map((cat) => cat.slug) : []);
-  }, []);
+  const handleSelectAll = useCallback(
+    (isSelected: boolean) => {
+      setLocalFilter(
+        "categories",
+        isSelected ? categories.map((cat) => cat.slug).join(",") : ""
+      );
+    },
+    [setLocalFilter]
+  );
 
   const isAllSelected = useMemo(
     () => categories.every((cat) => selectedCategories.includes(cat.slug)),
     [selectedCategories]
   );
 
-  const handleApply = useCallback(() => {
-    setLocalFilter("categories", selectedCategories.join(","));
-    setIsOpen(false);
-  }, [selectedCategories, setLocalFilter]);
+  const onOpenChange = (open: boolean) => {
+    setIsOpen(open);
+  };
 
   const renderCategories = useCallback(() => {
     const columnCount = 3;
@@ -83,11 +55,11 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
       ...categories,
     ];
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);
-    
+
     return (
       <div className="grid grid-cols-3 gap-x-4">
         {Array.from({ length: columnCount }).map((_, columnIndex) => (
-          <div key={columnIndex} className="space-y-2">
+          <div key={columnIndex} className="space-y-4">
             {allCategories
               .slice(
                 columnIndex * itemsPerColumn,
@@ -98,7 +70,6 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
                   <Checkbox
                     className="rounded-none"
                     id={category.slug}
-                    disabled={enabledCategories && !enabledCategories?.enabledValue?.some((item:any) => item.id === category.id)}
                     checked={
                       category.slug === "all"
                         ? isAllSelected
@@ -128,13 +99,6 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
     isAllSelected,
     handleSelectAll,
   ]);
-
-  const onOpenChange = (open: boolean) => {
-    if (!open) {
-      handleApply();
-    }
-    setIsOpen(open);
-  };
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
