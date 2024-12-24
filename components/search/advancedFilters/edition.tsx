@@ -11,15 +11,21 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
-
+import { LockClosedSmall } from "geist-icons";
+import { toast } from "react-toastify";
 const maturityLevels = [
   { id: "new", label: "New" },
   { id: "growing", label: "Growing" },
   { id: "established", label: "Established" },
   { id: "flagship", label: "Flagship" },
 ];
+interface enabledData{
+      isMaturityEnabled?:boolean,
+      enabledValue?: string[],
+}
 interface EditionProps{
   source:string,
+  enabledMaturityData?:enabledData,
   selectedStatus?: string;
   setSelectedStatus?: React.Dispatch<React.SetStateAction<string>>;
   isEnabled?: boolean;
@@ -27,6 +33,7 @@ interface EditionProps{
 }
 export default function EditionSelector({
   source,
+  enabledMaturityData,
   selectedStatus: parentSelectedFormats = "",
   setSelectedStatus: parentSetSelectedFormats,
   isEnabled: parentIsEnabled = false,
@@ -54,8 +61,16 @@ export default function EditionSelector({
 
   const handleStatusChange = (value: string) => {
     if (value === selectedStatus) {
-      setSelectedStatus?.("");
-      setLocalFilter("maturity", "");
+      if(enabledMaturityData && enabledMaturityData.enabledValue)
+      toast.error("At least one filter must be selected", {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+      });
+      else{
+        setSelectedStatus?.("");
+        setLocalFilter("maturity", "");
+      }
     } else {
       setSelectedStatus?.(value);
       setLocalFilter("maturity", value);
@@ -75,7 +90,7 @@ export default function EditionSelector({
   const onOpenChange = (open: boolean) => {
     setIsOpen(open);
   };
-
+  
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -84,12 +99,18 @@ export default function EditionSelector({
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             isOpen ? "border-primary" : "border-input"
           }`}
+          disabled={enabledMaturityData && !enabledMaturityData?.isMaturityEnabled}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
           <div className="flex items-center">
-            <span className="mr-2">Maturity</span>
+          {enabledMaturityData && !enabledMaturityData.isMaturityEnabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
+            <span className="mr-2">
+              Maturity
+              </span>
             {selectedStatus && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 1
@@ -98,6 +119,7 @@ export default function EditionSelector({
           </div>
           <Switch
             checked={showInFilter}
+            disabled={enabledMaturityData && !enabledMaturityData?.isMaturityEnabled}
             onCheckedChange={handleShowToggle}
             aria-label="Show Maturity in filter"
             onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
@@ -120,6 +142,7 @@ export default function EditionSelector({
               <RadioGroupItem
                 value={maturityLevel.id}
                 id={maturityLevel.id}
+                disabled={(enabledMaturityData && !enabledMaturityData?.enabledValue?.includes(maturityLevel.id))}
                 onClick={(e) => {
                   if (selectedStatus === maturityLevel.id) {
                     e.preventDefault();
@@ -131,7 +154,7 @@ export default function EditionSelector({
             </div>
           ))}
         </RadioGroup>
-      </PopoverContent>
+      </PopoverContent> 
     </Popover>
   );
 }

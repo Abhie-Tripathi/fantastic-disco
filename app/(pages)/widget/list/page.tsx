@@ -6,7 +6,7 @@ import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidge
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import useOutsideClick from "@/hooks/useOutsideClick";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ButtonSettingsState } from "@/types/buttoncustomizetypes";
 import PreviewWindow from "@/app/components/TemplateViewsNew/TemplatesPreview/PreviewWindow";
 import { AddedEventsType } from "@/types/addedeventtype";
@@ -38,6 +38,7 @@ interface DraftWidgetsType {
   widgetStatus: string;
 }
 const Widget = () => {
+  const searchParams = useSearchParams();
   const [draftWidgetModal, setDraftWidgetModal] = useState<boolean>(false);
   const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([]);
   const [allWidgets, setAllWidgets] = useState<DraftWidgetsType[]>([]);
@@ -95,6 +96,11 @@ const Widget = () => {
   const [loading, setLoading] = useState(true); // Track loading state
   const [selectedKey, setSelectedKey] = useState<number>(0);
   const {getActiveWidget, getDraftWidget, getOnlyDraftWidget, getDeActiveWidget, getWidgetById, error} = useWidgetServices()
+  useEffect(()=>{
+    if (searchParams.get('fromDashboard') === 'true') {
+      setDraftWidgetModal(true);
+    }
+  },[searchParams])
 
   const asciiToString = (ascii: number): string => {
     let convertedValue = ascii.toString();

@@ -56,6 +56,7 @@ export interface pocDetail {
     phoneNumber: string | null,
     profilePicture: string | null,
     emailActive: string | null,
+    state?: number,
 }
 export interface eventPocResponse {
     eventPoc: pocDetail[]

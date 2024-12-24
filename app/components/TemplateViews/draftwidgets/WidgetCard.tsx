@@ -80,6 +80,7 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
     const router = useRouter()
 
     const handleRemove = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation()
         const editData = new FormData();
         editData.append('widgetId', widgetId)
         editData.append('published', 'false')

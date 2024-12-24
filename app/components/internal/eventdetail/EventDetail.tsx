@@ -15,6 +15,10 @@ import Image from "next/image";
 import EventRequest from "./EventRequest";
 import { showToast } from "@/utils/showToast";
 import { useCoordinateService } from "@/services/coordinateService";
+import PocExpanded from "./PocExpanded";
+import Loading from "../../UI/Loading";
+import EventNotes from "./EventNotes";
+import { pocDetail } from "@/types/coordinateEventType";
 
 interface EventData {
   id: string;
@@ -36,6 +40,7 @@ interface Props {
   enquiryId: string;
   currentEnquiryStatus?: string;
   handleRefresh?: () => void;
+  configData?: any;
 }
 
 const EventDetail = ({
@@ -48,10 +53,11 @@ const EventDetail = ({
   eventId,
   enquiryId,
   currentEnquiryStatus,
+  configData,
   handleRefresh,
   handleDropdownSelect
 }: Props) => {
-  const [meet, setMeet] = useState(false);
+  const [pipelineIndex, setPipelineIndex] = useState<number>(configData?.findIndex((item: any) => item.status === currentEnquiryStatus));
   const leftContainerRef = useRef<HTMLDivElement>(null); // Define leftContainerRef
   const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
   const pathName = usePathname().split("/")[2];
@@ -59,6 +65,8 @@ const EventDetail = ({
   const [singleEventData, setSingleEventData] = useState<EventData | any>();
   const urlPath = usePathname().split("/")[2];
   const [participentData, setParticipentData] = useState<any>({});
+
+  const [expandedTab, setExpandedTab] = useState<string>('notes');
 
   const coordinateService = useCoordinateService();
 
@@ -75,40 +83,10 @@ const EventDetail = ({
     "10": "CONFIRMED",
     "12": "CANCELED",
   };
-  const handleStatusChange = async (changeStatusTo: number) => {
-    setStatus(changeStatusTo);
+  const handleStatusChange = async (changeStatusTo: string) => {
+    setPipelineIndex(configData.findIndex((item: any) => item.status === changeStatusTo));
     
-    // if (enquiryId && enquiryId != "") {
-    //   let payloadData = {
-    //     enquiryId: enquiryId,
-    //     enquiryStatus: statusValues[changeStatusTo],
-    //   };
-    //   try {
-    //     const apiUrl = baseUrl + "/userInterest/enquiry";
-    //     const apiData = await myFetch(apiUrl, {
-    //       method: "PATCH",
-    //       headers: headers,
-    //       body: JSON.stringify(payloadData),
-    //     });
-    //     if (apiData.data.message === "Data updated") {
-    //       // if (handleRefresh) handleRefresh();
-    //       // toast.success("Enquiry status updated!", {
-    //       //   position: "bottom-right",
-    //       //   autoClose: 2000,
-    //       //   closeButton: false,
-    //       //   hideProgressBar: true,
-    //       // });
-          
-    //       console.log("curr",currentEnquiryStatus);
-          
-          
-    //     }
-    //   } catch (error) {
-    //     console.error("Error fetching data:", error);
-    //   }
-    // }
-    if (handleDropdownSelect) 
-    handleDropdownSelect(statusValues[changeStatusTo]==="SHORTLISTED"?"shortlisted":statusValues[changeStatusTo]==="IN_NEGO"?"outreach":statusValues[changeStatusTo]==="CANCELED"?"canceled":"prefinalised",currentEnquiryStatus==="SHORTLISTED"?"shortlisted":currentEnquiryStatus==="IN_NEGO"?"outreach":currentEnquiryStatus==="CANCELED"?"canceled":"prefinalised" );
+    if (handleDropdownSelect && currentEnquiryStatus) handleDropdownSelect(changeStatusTo, currentEnquiryStatus);
     showToast("success","Enquiry status updated!")
   };
 
@@ -139,6 +117,32 @@ const EventDetail = ({
     }
   };
 
+  const [pocData, setPocData] = useState<pocDetail[]>([]);
+
+  const unlockPoc = async(pocId: number) => {
+    try {
+      setPocData(prevPocData => 
+        prevPocData.map(poc => 
+          poc.id === pocId
+            ? { ...poc, state: 1 }
+            : poc
+        )
+      );
+      const data = await coordinateService.unlockPocDetail(pocId, eventId);
+      if (data) {
+        setPocData(prevPocData => 
+          prevPocData.map(poc => 
+            poc.id === pocId
+              ? { ...poc, email: data.email, phoneNumber: data.phoneNumber, state: 2 }
+              : poc
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
   useEffect(() => {
     const fetchInterestData = async () => {
       const data = await coordinateService.getInterestedUsers(eventId, enquiryId);
@@ -152,20 +156,26 @@ const EventDetail = ({
         // });
       }
     };
+    const fetchPocData = async () => {
+      const data = await coordinateService.getEventPOC(eventId);
+      if (data) {
+        setPocData(data.eventPoc);
+      }
+    };
+    fetchPocData();
     fetchInterestData();
   }, [eventId]);
 
   return (
     <div
-      className={
-        meet ? `${styles.container} ${styles.fullHeight}` : styles.container
-      }
+      className={styles.container}
     >
       <div className={styles.closeIcon} onClick={handleCloseModal}>
         <Image src={backIcon} alt="close" height={22} width={22} />
         Back
       </div>
-      {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange}/>}
+
+      {pathName && pathName === "outreach" && <StatusBar status={status} handleStatusChange={handleStatusChange} configData={configData} pipelineIndex={pipelineIndex} />}
 
       <div className={styles.modalContainer}>
         <div className={styles.innerContainer}>
@@ -195,22 +205,26 @@ const EventDetail = ({
                 />
               </>
             )}
+            <EventNotes setExpandedTab={setExpandedTab} />
             <EventRequest open={openEventRequest} participentData={participentData} />
             <Organiser
               open={openOrganiserDetails}
               organizerData={singleEventData?.organizer}
             />
-            <EventPoc open={openPocDetails} eventId={eventId} />
+            <EventPoc open={openPocDetails} eventId={eventId} setExpandedTab={setExpandedTab} pocData={pocData} unlockPoc={unlockPoc} />
             <Follower eventId={eventId} enquiryId={enquiryId} />
           </div>
           <div className={styles.containerRight} ref={rightContainerRef}>
-            {singleEventData && (
-              <Notes
-                eventId={singleEventData.id}
-                eventGroupId={singleEventData.eventGroupId}
-                stage={stage}
-              />
-            )}
+            {singleEventData && 
+              expandedTab === 'notes' ? (
+                <Notes
+                  eventId={singleEventData.id}
+                  eventGroupId={singleEventData.eventGroupId}
+                  stage={stage}
+                />
+              ) : expandedTab === 'poc' ?
+              <PocExpanded eventId={eventId} pocData={pocData} unlockPoc={unlockPoc} /> : <Loading />
+            }
           </div>
         </div>
       </div>

@@ -53,8 +53,8 @@ const AllEvents = ({
   normalEvents,
   setNormalEvents,
 }: Props) => {
-  const {updateWidgetData, error} = useWidgetServices();
-  const {getEventById} = useEventServices();
+  const { updateWidgetData, error } = useWidgetServices();
+  const { getEventById } = useEventServices();
   const [page, setPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true); // To heck if there are more events
@@ -81,7 +81,7 @@ const AllEvents = ({
             // const { data, error } = await myFetch(
             //   `${baseUrl}/event/${event.id}?source=eventgtm`
             // );
-            const data:any =  await getEventById(event.id)
+            const data: any = await getEventById(event.id)
             if (error) {
               console.error(
                 `Error fetching event data for event ID ${event.id}:`,
@@ -215,7 +215,7 @@ const AllEvents = ({
         "Please select at least one event to continue with customizations"
       );
     }
-     if (selectedTemplate === "GS") {
+    if (selectedTemplate === "GS") {
       if (promotedCount >= 1) {
         setIsCodeWindowDisable(false);
         setIsCustomisationWindowDisable(false);
@@ -380,7 +380,7 @@ const AllEvents = ({
     //   method: "POST",
     //   body: formData,
     // });
-    const data:any = await updateWidgetData(formData)
+    const data: any = await updateWidgetData(formData)
     if (data) {
       console.log("widget moved to draft widgets");
     }
@@ -485,9 +485,9 @@ const AllEvents = ({
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(toRad(lat1)) *
-        Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
 
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   };
@@ -709,7 +709,6 @@ const AllEvents = ({
   };
 
   const handleRemoveEventFromWidget = async (eventId: string) => {
-    console.log("ca444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444")
     const updatedEvents = fetchedAddedEvents?.filter(
       (event) => event.id !== eventId
     );
@@ -888,7 +887,7 @@ const AllEvents = ({
     //   body: customizedFormData,
     // });
 
-    const data:any = await updateWidgetData(customizedFormData)
+    const data: any = await updateWidgetData(customizedFormData)
     if (data) {
       showToast("success", "Event successfully added to the widget");
       if (typeof fetchEvents === "function") {
@@ -919,7 +918,7 @@ const AllEvents = ({
     //   method: "POST",
     //   body: customizedFormData,
     // });
-    const data:any = await updateWidgetData(customizedFormData)
+    const data: any = await updateWidgetData(customizedFormData)
     if (data) {
       handleEventIdDelete(eventId);
     }
@@ -936,7 +935,7 @@ const AllEvents = ({
     //   method: "POST",
     //   body: customizedFormData,
     // });
-    const data:any = await updateWidgetData(customizedFormData)
+    const data: any = await updateWidgetData(customizedFormData)
     if (data) {
       console.log(data);
       fetchAddedEvents();
@@ -1121,23 +1120,24 @@ const AllEvents = ({
                 <div className={styles.eventDetailsContainer}>
                   <div
                     className={styles.eventName}
-                  >{`${event.mainEvent.name.substring(0, 30)} ${
-                    event.mainEvent.name.length > 30 ? "..." : ""
-                  }`}</div>
+                  >{`${event.mainEvent.name.substring(0, 30)} ${event.mainEvent.name.length > 30 ? "..." : ""
+                    }`}</div>
                   <div className={styles.eventLocationContainer}>
                     <LocationIcon />
                     <div>
                       {event.mainEvent.format === "Virtual"
                         ? "Virtual"
-                        : event.mainEvent.cityName ? `${event.mainEvent.cityName}, ${event.mainEvent.countryName}` :event.mainEvent.countryName} 
+                        : event.mainEvent.cityName ? `${event.mainEvent.cityName}, ${event.mainEvent.countryName}` : event.mainEvent.countryName}
                     </div>
                   </div>
                   <div className={styles.eventDateContainer}>
                     <DateIcon />
                     <div>
-                      {formatDate(event.mainEvent.startDate)} -{" "}
-                      {formatDate(event.mainEvent.endDate)}
+                      {event.mainEvent.startDate === event.mainEvent.endDate
+                        ? formatDate(event.mainEvent.startDate)
+                        : `${formatDate(event.mainEvent.startDate)} - ${formatDate(event.mainEvent.endDate)}`}
                     </div>
+
                   </div>
                   <div className={styles.tags}>
                     {event.mainEvent.eventType === "MAIN" ? (
@@ -1155,12 +1155,11 @@ const AllEvents = ({
 
                 <div className={styles.btnContainer}>
                   <div
-                    className={`${
-                      event.mainEvent.isLinkedToWidget &&
+                    className={`${event.mainEvent.isLinkedToWidget &&
                       (selectedTemplate === "CVG" || selectedTemplate === "CVL")
-                        ? styles.rectangularBorder
-                        : ""
-                    }`}
+                      ? styles.rectangularBorder
+                      : ""
+                      }`}
                   >
                     <div>
                       <div className={styles.addButtonContainer}>
@@ -1193,12 +1192,11 @@ const AllEvents = ({
                         event.mainEvent.isLinkedToWidget && (
                           <div className={styles.addEventOptionsContainer}>
                             <span
-                              className={`${styles.addOption} ${
-                                selectedOptions[event.mainEvent.eventId] ===
+                              className={`${styles.addOption} ${selectedOptions[event.mainEvent.eventId] ===
                                 "list"
-                                  ? styles.selectedOption
-                                  : ""
-                              }`}
+                                ? styles.selectedOption
+                                : ""
+                                }`}
                               onClick={() =>
                                 handleAddToWidgetList(
                                   event,
@@ -1216,14 +1214,13 @@ const AllEvents = ({
                             </span>
 
                             <span
-                              className={`${styles.addOption} ${
-                                selectedOptions[event.mainEvent.eventId] ===
-                                  "carousel" ||
+                              className={`${styles.addOption} ${selectedOptions[event.mainEvent.eventId] ===
+                                "carousel" ||
                                 (!selectedOptions[event.mainEvent.eventId] &&
                                   event.mainEvent.isLinkedToWidget) // Default carousel if no option
-                                  ? styles.selectedOption
-                                  : ""
-                              }`}
+                                ? styles.selectedOption
+                                : ""
+                                }`}
                               onClick={() =>
                                 handleAddToWidgetList(
                                   event,
@@ -1236,8 +1233,8 @@ const AllEvents = ({
                                 "carousel" ||
                                 (!selectedOptions[event.mainEvent.eventId] &&
                                   event.mainEvent.isLinkedToWidget)) && (
-                                <TickIcon />
-                              )}
+                                  <TickIcon />
+                                )}
                               <AddeventToWidgetIcon />
                               <span>Add Event to Carousel</span>
                             </span>
@@ -1254,9 +1251,8 @@ const AllEvents = ({
                 <div className={styles.event} key={`${key}-${subKey}`}>
                   <div className={styles.eventDetailsContainer}>
                     <div className={styles.eventName}>
-                      {`${subEvent.name.substring(0, 30)}${
-                        subEvent.name.length > 30 ? "..." : ""
-                      }`}
+                      {`${subEvent.name.substring(0, 30)}${subEvent.name.length > 30 ? "..." : ""
+                        }`}
                     </div>
                     <div className={styles.eventLocationContainer}>
                       <LocationIcon />
@@ -1269,9 +1265,11 @@ const AllEvents = ({
                     <div className={styles.eventDateContainer}>
                       <DateIcon />
                       <div>
-                        {formatDate(subEvent.startDate)} -{" "}
-                        {formatDate(subEvent.endDate)}
+                        {event.mainEvent.startDate === event.mainEvent.endDate
+                          ? formatDate(event.mainEvent.startDate)
+                          : `${formatDate(event.mainEvent.startDate)} - ${formatDate(event.mainEvent.endDate)}`}
                       </div>
+
                     </div>
                     <div className={styles.tags}>
                       <span className={styles.subEventTag}>Side Event</span>
@@ -1280,13 +1278,12 @@ const AllEvents = ({
 
                   <div className={styles.btnContainer}>
                     <div
-                      className={`${
-                        subEvent.isLinkedToWidget &&
+                      className={`${subEvent.isLinkedToWidget &&
                         (selectedTemplate === "CVG" ||
                           selectedTemplate === "CVL")
-                          ? styles.rectangularBorder
-                          : ""
-                      }`}
+                        ? styles.rectangularBorder
+                        : ""
+                        }`}
                     >
                       <div>
                         <div className={styles.addButtonContainer}>
@@ -1319,11 +1316,10 @@ const AllEvents = ({
                           subEvent.isLinkedToWidget && (
                             <div className={styles.addEventOptionsContainer}>
                               <span
-                                className={`${styles.addOption} ${
-                                  selectedOptions[subEvent.eventId] === "list"
-                                    ? styles.selectedOption
-                                    : ""
-                                }`}
+                                className={`${styles.addOption} ${selectedOptions[subEvent.eventId] === "list"
+                                  ? styles.selectedOption
+                                  : ""
+                                  }`}
                                 onClick={() =>
                                   handleAddSideEventToWidgetList(
                                     subEvent,
@@ -1341,14 +1337,13 @@ const AllEvents = ({
                               </span>
 
                               <span
-                                className={`${styles.addOption} ${
-                                  selectedOptions[subEvent.eventId] ===
-                                    "carousel" ||
+                                className={`${styles.addOption} ${selectedOptions[subEvent.eventId] ===
+                                  "carousel" ||
                                   (!selectedOptions[subEvent.eventId] &&
                                     subEvent.isLinkedToWidget) // Default carousel if no option
-                                    ? styles.selectedOption
-                                    : ""
-                                }`}
+                                  ? styles.selectedOption
+                                  : ""
+                                  }`}
                                 onClick={() =>
                                   handleAddSideEventToWidgetList(
                                     subEvent,

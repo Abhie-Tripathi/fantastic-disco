@@ -11,26 +11,32 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
-
+import { LockClosedSmall } from "geist-icons";
 const globalAndTourings = [
   { id: "BRANDED", label: "Branded" },
   { id: "SERIES", label: "Series" },
 ];
-interface BrandedProps {
-  source: string;
-  selectedBrandedEvent?: boolean;
-  setSelectedBrandedEvent?: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedEventSeries?: boolean;
-  setSelectedEventSeries?: React.Dispatch<React.SetStateAction<boolean>>;
+interface brandInterface{
+  isBrandedEnabled?:boolean,
+  selectedValue?:boolean[] | undefined,
+  enabledValue?:{
+    eventSeries?:boolean;
+    eventBrand?:boolean;
+  },
+}
+interface BrandedProps{
+  source:string;
+  enabledBrandData?:brandInterface;
+  selectedBrandedEvent?:boolean;
+  setSelectedBrandedEvent?:React.Dispatch<React.SetStateAction<boolean>>;
+  selectedEventSeries?:boolean;
+  setSelectedEventSeries?:React.Dispatch<React.SetStateAction<boolean>>;
   isEnabled?: boolean;
   setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export default function GlobalAndTouringSelector({
-  source,
-  selectedBrandedEvent,
-  setSelectedBrandedEvent,
-  selectedEventSeries,
-  setSelectedEventSeries,
+export default function GlobalAndTouringSelector({source,        selectedBrandedEvent, setSelectedBrandedEvent, 
+  enabledBrandData,
+  selectedEventSeries, setSelectedEventSeries,
   isEnabled: parentIsEnabled = false,
   setIsEnabled: parentSetIsEnabled,
 }: BrandedProps) {
@@ -120,7 +126,7 @@ export default function GlobalAndTouringSelector({
     }
     setIsOpen(open);
   };
-
+  
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -128,8 +134,13 @@ export default function GlobalAndTouringSelector({
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
+          disabled={enabledBrandData && !enabledBrandData?.isBrandedEnabled}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
+          <div className="flex items-center">
+          {enabledBrandData && !enabledBrandData.isBrandedEnabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
           <span className="flex items-center gap-2">
             Brand
             {selectedStatuses.length > 0 && (
@@ -138,8 +149,10 @@ export default function GlobalAndTouringSelector({
               </span>
             )}
           </span>
+          </div>
           <Switch
             checked={showInFilter}
+            disabled={enabledBrandData &&!enabledBrandData?.isBrandedEnabled}
             onCheckedChange={handleShowToggle}
             aria-label="Show Global & Touring in filter"
             onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
@@ -153,10 +166,17 @@ export default function GlobalAndTouringSelector({
         align="start"
       >
         <div className="p-4 space-y-4">
-          {globalAndTourings.map((item) => (
+          {globalAndTourings.map((item,index) => (
             <div key={item.id} className="flex items-center space-x-2">
               <Checkbox
                 id={item.id}
+                disabled={ enabledBrandData &&
+                 ( item.id === "SERIES"
+                    ? !enabledBrandData?.enabledValue?.eventSeries 
+                    : item.id === "BRANDED"
+                    ? !enabledBrandData?.enabledValue?.eventBrand
+                    : false)
+                }
                 checked={selectedStatuses.includes(item.id)}
                 onCheckedChange={() => handleStatusToggle(item.id)}
               />

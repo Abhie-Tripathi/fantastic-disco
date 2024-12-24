@@ -8,13 +8,16 @@ import { toast } from 'react-toastify';
 import upArrowLight from '/public/internal/up_arrow_light.svg'
 import upArrow from '/public/internal/up_arrow.svg'
 import { useCoordinateService } from '@/services/coordinateService';
+import { showToast } from '@/utils/showToast';
 interface PropType {
   label: string;
-  eventId?: string;
+  eventId: string;
   enquiryId: string;
   currentEnquiryStatus: string;
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
   setSelectedId:any;
+  pipelineConfig: any;
+  enquiryStatusUpdate: (eventId: string, status: string) => void;
   // value:any;
   // setValue:any;
 }
@@ -33,19 +36,22 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
 
   const coordinateService = useCoordinateService();
 
+  const statusLabel = props.pipelineConfig?.filter((item: any)=>(
+    item.status === props.currentEnquiryStatus
+  ))?.[0]?.label;
+
   const openDropDownHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    if(props?.currentEnquiryStatus == 'IN_NEGO' || props?.currentEnquiryStatus == 'IN_DISCUSSION' || props?.currentEnquiryStatus == 'CONFIRMED')
-      return
-    else
+    if( ["PENDING", "SHORTLISTED", "REJECTED"].includes(props?.currentEnquiryStatus) )
       setIsOpen((prev) => !prev);
+    else 
+      showToast('error',"Status already updated")
+      return;
   };
 useEffect(()=>{
- setValue((props.currentEnquiryStatus == 'REJECTED') ? 'Rejected' : 
- (props.currentEnquiryStatus == 'IN_DISCUSSION') ?'Pending' : 'Shortlisted')
 
  setIsOpen(false);
  if(props?.currentEnquiryStatus)
-   setValue((props.currentEnquiryStatus == 'IN_DISCUSSION' || props.currentEnquiryStatus == 'IN_NEGO') ? 'In Progress' : props.currentEnquiryStatus)
+    setValue(statusLabel);
 }, [props.currentEnquiryStatus])
   const handleMenuItemClick = (event: React.MouseEvent<HTMLDivElement>) => {
     const target = event.target as HTMLDivElement;
@@ -73,7 +79,8 @@ useEffect(()=>{
           closeButton: false,
           hideProgressBar: true,
         });
-        setValue('Rejected');
+        props.enquiryStatusUpdate(props.eventId, 'REJECTED');
+        // setValue('Rejected');
         setIsOpen(false);
       }
     } catch (error) {
@@ -88,8 +95,7 @@ useEffect(()=>{
     };
     try {
       const apiData = await coordinateService.setEnquiryStatus(payloadData);
-      setValue((props.currentEnquiryStatus == 'REJECTED') ? 'Rejected' : 
-      (props.currentEnquiryStatus == 'IN_DISCUSSION') ?'Pending' : 'Shortlisted');
+      setValue(statusLabel);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -107,7 +113,7 @@ useEffect(()=>{
           className={styles.dropdown_container3}
           onClick={openDropDownHandler}
         >
-          <div className={styles.dropdown_value}>
+          {/* <div className={styles.dropdown_value}> */}
             <Image src={theme==="light"?ClockIconLight:ClockIcon} alt="clock" width={16} height={16} className="icons"/>
             {formatText(value)}
             <Image
@@ -118,7 +124,7 @@ useEffect(()=>{
                     className="icons"
                     style={{transform:"rotate(180deg)"}}
                   />
-          </div>
+          {/* </div> */}
         </div>
         {isOpen && (
           <div className={styles.dropdown_menu}>
@@ -126,7 +132,7 @@ useEffect(()=>{
               className={styles.dropdown_menu_items}
             >
               <div onClick={handleMenuItemClick} className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`} >
-                Shortlist
+                {props?.pipelineConfig?.[1]?.label ? props?.pipelineConfig?.[1]?.label : 'Shortlist'}
               </div>
               <div onClick={handleRejectClick} className={`${styles.dropdown_menu_item} ${styles.dropdown_menu_item}`} >
                 Reject

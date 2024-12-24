@@ -99,7 +99,7 @@ const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setP
                     <div className={styles.container}>
                         <LogoComponent flex={false} fetchedLogos={fetchedLogos} />
                     </div>
-                    <div className={styles.container}>
+                    <div className={`${styles.container} ${styles.colorContainer}`}>
                         <BrandColor
                             clickable={false}
                             setValueUpdated={setValueUpdated}
@@ -108,7 +108,7 @@ const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setP
                             extractedColors={fetchedColors}
                         />
                     </div>
-                    <div className={styles.container}>
+                    <div className={`${styles.container} ${styles.typoContainer}`}>
                         <BrandkitTypography clickable={false} fetchedFonts={fetchedFonts} flex={false} />
                     </div>
                 </div>

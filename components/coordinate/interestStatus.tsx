@@ -18,7 +18,11 @@ const eventStatuses = [
   { id: "REJECTED", label: "Rejected" },
 ];
 
-export default function InterestStatusSelector() {
+interface Props {
+  pipelineConfig: any;
+}
+
+export default function InterestStatusSelector( {pipelineConfig} : Props) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, searchParams, applyFilters } =
     useFilterContext();
@@ -90,19 +94,19 @@ export default function InterestStatusSelector() {
         align="start"
       >
         <div className="p-2 space-y-2">
-          {eventStatuses.map((status) => (
-            <div key={status.id} className="flex items-center space-x-2">
+          {pipelineConfig.map((item: any) => (
+            <div key={item.status} className="flex items-center space-x-2">
               <Checkbox
-                id={status.id}
+                id={item.status}
                 className="rounded-none"
-                checked={selectedStatuses.includes(status.id)}
-                onCheckedChange={() => handleStatusToggle(status.id)}
+                checked={selectedStatuses.includes(item.status)}
+                onCheckedChange={() => handleStatusToggle(item.status)}
               />
               <label
-                htmlFor={status.id}
+                htmlFor={item.status}
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                {status.label}
+                {item.label}
               </label>
             </div>
           ))}

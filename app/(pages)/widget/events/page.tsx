@@ -257,13 +257,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import styles from "./page.style.module.css";
-import YourEventCard from "@/app/components/internal/YourEventCard";
 import TimelineItem from "@/app/components/employee/listView/TimelineItem";
-import { myFetch } from "@/utils/myFetch";
 import { AllEventsType, EventsType } from "@/types/alleventtype";
-import { baseUrl } from "@/constants";
 import AddEvent from "@/app/components/TemplateViewsNew/AddEventForm/AddEvent";
-import CalendarIcon from "/public/calendar.svg";
 import Image from "next/image";
 import EmptyImage from "/public/widgetimages/emptyimages/addedeventempty.svg";
 import DashboardEventCard from "@/app/components/TemplateViewsNew/WidgetDashboard/DashboardEventCard";
@@ -274,7 +270,9 @@ import SubEventCard from "@/app/components/TemplateViewsNew/WidgetDashboard/SubE
 import { useEventServices } from "@/services/geniservices/eventService";
 import MonthsCalendar from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/MonthsCalendar";
 import { useTheme } from "@/context";
+import { useSearchParams } from 'next/navigation';
 const Page = () => {
+  const searchParams = useSearchParams();
   const [upcominFetchedEvents, setUpcominFetchedEvents] = useState<
     AllEventsType[]
   >([]);
@@ -363,6 +361,12 @@ const Page = () => {
 
     setTodaysDate(getCurrentDate());
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get('fromDashboard') === 'true') {
+      setChoiceFormModal(true);
+    }
+  }, [searchParams])
 
   // useEffect(() => {
   //   setPage(0);
@@ -710,28 +714,27 @@ const Page = () => {
 
   return (
     <div
-      className={`${styles.body} ${
-        isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal
+      className={`${styles.body} ${isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal
           ? styles.modalOpen
           : ""
-      }`}
+        }`}
     >
       <nav className={styles.nav}>
         <div className={styles.tabs}>
-          <div
+          <button
             className={activeTab === "upcoming" ? styles.activeTab : ""}
             onClick={() => setActiveTab("upcoming")}
           >
             Upcoming Events
-          </div>
-          <div
+          </button>
+          <button
             className={activeTab === "past" ? styles.activeTab : ""}
             onClick={() => setActiveTab("past")}
           >
             Past Events
-          </div>
+          </button>
         </div>
-        <button onClick={() => setChoiceFormModal(true)}>+ Add Event</button>
+        <button className={styles.addBtn} onClick={() => setChoiceFormModal(true)}>+ Add Event</button>
       </nav>
       <div className={styles.globalSearch}>
         <GlobalSearch

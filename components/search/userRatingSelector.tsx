@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { useFilterState } from "@/hooks/useFilterState";
 import dynamic from "next/dynamic";
 import { useFilterContext } from "@/context/filterContext";
-
+import {toast} from 'react-toastify'
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
 
 const userRatings = [
@@ -23,16 +23,25 @@ const userRatings = [
   { id: "3-4", label: "3-4" },
   { id: "4-5", label: "4-5" },
 ];
-interface UserRatingsProps {
-  source: string;
-  selectedRatings?: string[];
-  setSeectedRatings?: React.Dispatch<React.SetStateAction<string[]>>;
+interface UserRatingsProps{
+  source: string,
+  selectedRatings?: string[],
+  enabledRatingData?: ratingsInterface,
+  setSeectedRatings?: React.Dispatch<React.SetStateAction<string[]>>,
   isEnabled?: boolean;
   setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
+interface ratingsInterface{
+  isRatingEnabled?:boolean | undefined,
+  selectedValue?:string[] | undefined,
+  enabledValue?:string[] | undefined,
+  toggleOpend?:boolean,
+  popUpOpend?:boolean,
+}
 export default function UserRatingSelector({
   source,
-  selectedRatings: parentSelectedRatings = [],
+  enabledRatingData,
+  selectedRatings: parentSelectedRatings=[],
   setSeectedRatings: parentSetSelectedRatings,
   isEnabled: parentIsEnabled = false,
   setIsEnabled: parentSetIsEnabled,
@@ -60,14 +69,22 @@ export default function UserRatingSelector({
       setSelectedRatings(ratings);
       setShowRatings?.(getLocalFilterValue("show").includes("rating"));
     }
-  }, [searchParams, localFilters]);
+  }, [searchParams, getLocalFilterValue]);
 
   const handleRatingToggle = (ratingId: string) => {
-    setSelectedRatings?.((prev) =>
-      prev.includes(ratingId)
+    setSelectedRatings?.((prev) => {
+      if(enabledRatingData?.enabledValue && prev.length===1 && prev.includes(ratingId)){
+        toast.error("At least one filter must be selected", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+        return prev;
+      }
+      return prev.includes(ratingId)
         ? prev.filter((id) => id !== ratingId)
         : [...prev, ratingId]
-    );
+  });
   };
 
   const handleShowRatingsToggle = (checked: boolean) => {
@@ -94,6 +111,7 @@ export default function UserRatingSelector({
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
+          disabled={enabledRatingData && !enabledRatingData?.isRatingEnabled}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
           <span className="flex items-center gap-2">
@@ -108,6 +126,7 @@ export default function UserRatingSelector({
             <DynamicSwitch
               checked={showRatings}
               onCheckedChange={handleShowRatingsToggle}
+              disabled={enabledRatingData && !enabledRatingData?.isRatingEnabled}
               aria-label="Show ratings"
               onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                 e.stopPropagation()
@@ -115,7 +134,7 @@ export default function UserRatingSelector({
             />
           )}
         </Button>
-      </PopoverTrigger>
+      </PopoverTrigger> 
       <PopoverContent
         className="w-[var(--radix-popover-trigger-width)] p-0"
         align="start"
@@ -126,6 +145,7 @@ export default function UserRatingSelector({
               <div key={rating.id} className="flex items-center space-x-2">
                 <Checkbox
                   id={rating.id}
+                  disabled={enabledRatingData && !enabledRatingData?.enabledValue?.includes(rating.id)}
                   checked={selectedRatings.includes(rating.id)}
                   onCheckedChange={() => handleRatingToggle(rating.id)}
                 />

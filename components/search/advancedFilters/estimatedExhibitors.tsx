@@ -11,15 +11,21 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
-
+import {toast} from 'react-toastify';
+import { LockClosedSmall } from "geist-icons";
 const exhibitorRanges = [
   { id: "0-100", label: "0-100", min: 0, max: 100 },
   { id: "100-500", label: "100-500", min: 100, max: 500 },
   { id: "500-1000", label: "500-1000", min: 500, max: 1000 },
   { id: "1000+", label: "1000+", min: 1000, max: Infinity },
 ];
+interface exhibitorInterface{
+  isExhibitorsEnabled?:boolean;
+  enabledValue?:string[] | undefined;
+}
 interface EstimatedExhibitorProps {
   source: string;
+  enabledExhibitorData?:exhibitorInterface;
   selectedRanges?: string[];
   setSelectedRanges?: React.Dispatch<React.SetStateAction<string[]>>; 
   isEnabled?: boolean;
@@ -28,6 +34,7 @@ interface EstimatedExhibitorProps {
 
 export default function EstimatedExhibitorsSelector({
   source,
+  enabledExhibitorData,
   selectedRanges: parentSelectedRanges = [],
   setSelectedRanges: parentSetSelectedRanges,
   isEnabled: parentIsEnabled = false,
@@ -67,11 +74,19 @@ export default function EstimatedExhibitorsSelector({
   }, [getLocalFilterValue]);
 
   const handleRangeToggle = (rangeId: string) => {
-    setSelectedRanges?.((prev) =>
-      prev.includes(rangeId)
-        ? prev.filter((id) => id !== rangeId)
-        : [...prev, rangeId]
-    );
+    setSelectedRanges?.((prev) => {
+      if (enabledExhibitorData?.enabledValue && prev.length === 1 && prev.includes(rangeId)) {
+        toast.error("At least one filter must be selected", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+        return prev;
+      }
+      return prev.includes(rangeId)
+        ? prev.filter((id) => id !== rangeId) 
+        : [...prev, rangeId]; 
+    });
   };
 
   const handleApply = () => {
@@ -110,9 +125,14 @@ export default function EstimatedExhibitorsSelector({
         <Button
           variant="outline"
           role="combobox"
+          disabled={enabledExhibitorData && !enabledExhibitorData?.isExhibitorsEnabled}
           aria-expanded={isOpen}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
+          <div className="flex items-center">
+          {enabledExhibitorData && !enabledExhibitorData?.isExhibitorsEnabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
           <span className="flex items-center gap-2">
             Estimated Exhibitors
             {selectedRanges.length > 0 && (
@@ -121,6 +141,7 @@ export default function EstimatedExhibitorsSelector({
               </span>
             )}
           </span>
+          </div>
           <Switch
             checked={showInFilter}
             onCheckedChange={handleShowToggle}
@@ -140,6 +161,11 @@ export default function EstimatedExhibitorsSelector({
             <div key={range.id} className="flex items-center space-x-2">
               <Checkbox
                 id={range.id}
+                disabled={
+                  enabledExhibitorData && 
+                  enabledExhibitorData.enabledValue && 
+                  !enabledExhibitorData.enabledValue.includes(range.id)
+                }
                 checked={selectedRanges.includes(range.id)}
                 onCheckedChange={() => handleRangeToggle(range.id)}
               />

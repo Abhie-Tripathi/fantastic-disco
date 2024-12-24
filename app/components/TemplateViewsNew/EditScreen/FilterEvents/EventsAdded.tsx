@@ -50,8 +50,8 @@ const EventsAdded = ({
   const [minNumberOfEvents, setMinNumberOfEvents] = useState("");
   // const [nearestEvent, setNearestEvent] = useState<any[]>([]);
   const [locationEnabled, setLocationEnabled] = useState(false);
-  const {updateWidgetData, error} = useWidgetServices();
-  const {getEventById} = useEventServices()
+  const { updateWidgetData, error } = useWidgetServices();
+  const { getEventById } = useEventServices()
   let closestEvent: any = null;
   const showPromote =
     selectedTemplate === "HBL" ||
@@ -81,7 +81,7 @@ const EventsAdded = ({
             // const { data, error } = await myFetch(
             //   `${baseUrl}/event/${event.id}?source=eventgtm`
             // );
-            const data:any = await getEventById(event.id)
+            const data: any = await getEventById(event.id)
             if (error) {
               console.error(
                 `Error fetching event data for event ID ${event.id}:`,
@@ -215,7 +215,7 @@ const EventsAdded = ({
         "Please select at least one event to continue with customizations"
       );
     }
-     if (selectedTemplate === "GS") {
+    if (selectedTemplate === "GS") {
       if (promotedCount >= 1) {
         setIsCodeWindowDisable(false);
         setIsCustomisationWindowDisable(false);
@@ -374,8 +374,8 @@ const EventsAdded = ({
     //   method: "POST",
     //   body: customizedFormData,
     // });
-    
-  const data:any = await updateWidgetData(customizedFormData) 
+
+    const data: any = await updateWidgetData(customizedFormData)
     if (data) {
       console.log("widget event promote data", data);
       fetchAddedEvents(); // Refresh the list after promoting
@@ -412,7 +412,7 @@ const EventsAdded = ({
     //   method: "POST",
     //   body: formData,
     // });
-    const data:any = await updateWidgetData(formData)
+    const data: any = await updateWidgetData(formData)
     if (data) {
       console.log("widget moved to draft widgets");
     }
@@ -435,7 +435,7 @@ const EventsAdded = ({
     //   method: "POST",
     //   body: customizedFormData,
     // });
-    const data:any = await updateWidgetData(customizedFormData)
+    const data: any = await updateWidgetData(customizedFormData)
     if (data) {
       handleEventIdDelete(eventId);
       fetchEvents(0, "update");
@@ -454,7 +454,7 @@ const EventsAdded = ({
     //   method: "POST",
     //   body: customizedFormData,
     // });
-    const data:any = await updateWidgetData(customizedFormData)
+    const data: any = await updateWidgetData(customizedFormData)
     if (data) {
       fetchAddedEvents();
       console.log(data);
@@ -559,7 +559,7 @@ const EventsAdded = ({
     //   method: "POST",
     //   body: customizedFormData,
     // });
-    const data:any = await updateWidgetData(customizedFormData)
+    const data: any = await updateWidgetData(customizedFormData)
 
     if (data) {
       if (typeof fetchEvents === "function") {
@@ -643,13 +643,13 @@ const EventsAdded = ({
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(toRad(lat1)) *
-        Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
-  console.log("fetchedAddedOtherData____",fetchedAddedOtherData)
+  console.log("fetchedAddedOtherData____", fetchedAddedOtherData)
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>
@@ -670,9 +670,9 @@ const EventsAdded = ({
         </>
       )}
       {selectedTemplate === "ST" ||
-      selectedTemplate === "SB" ||
-      selectedTemplate === "PUVP" ||
-      selectedTemplate === "PUVL" ? (
+        selectedTemplate === "SB" ||
+        selectedTemplate === "PUVP" ||
+        selectedTemplate === "PUVL" ? (
         <>
           <div className={styles.location_toggle_container}>
             <div>
@@ -709,12 +709,14 @@ const EventsAdded = ({
                   {/* {
                     // event
                   } */}
-                  <div>{event.eventFormat==="Virtual"?"Virtual" :event.cityName}</div>
+                  <div>{event.eventFormat === "Virtual" ? "Virtual" : event.cityName}</div>
                 </div>
                 <div className={styles.eventDateContainer}>
                   <DateIcon />
                   <div>
-                    {formatDate(event.startDate)} - {formatDate(event.endDate)}
+                    {event.startDate === event.endDate
+                      ? formatDate(event.startDate)
+                      : `${formatDate(event.startDate)} - ${formatDate(event.endDate)}`}
                   </div>
                 </div>
               </div>
@@ -749,9 +751,9 @@ const EventsAdded = ({
                   )} */}
 
                   {(selectedTemplate === "ST" ||
-                  selectedTemplate === "SB" ||
-                  selectedTemplate === "PUVP" ||
-                  selectedTemplate === "PUVL") && locationEnabled ? (
+                    selectedTemplate === "SB" ||
+                    selectedTemplate === "PUVP" ||
+                    selectedTemplate === "PUVL") && locationEnabled ? (
                     <div style={{ cursor: "text" }}>
                       <Image
                         src={
@@ -770,7 +772,7 @@ const EventsAdded = ({
                   ) : (selectedTemplate === "ST" ||
                     selectedTemplate === "SB" ||
                     selectedTemplate === "PUVP" ||
-                    selectedTemplate === "PUVL")&&!locationEnabled ? (
+                    selectedTemplate === "PUVL") && !locationEnabled ? (
                     <div onClick={() => handlePromoteEvent(event)}>
                       <Image
                         src={
@@ -790,24 +792,24 @@ const EventsAdded = ({
                     (
                       selectedTemplate === "CVG" ||
                       selectedTemplate === "CVL") ?
-                    (
-                    // <div style={{ cursor: "text" }} onClick={() => handlePromoteEvent(event)}>
-                    //   <Image
-                    //     src={
-                    //       event.promoted === true || event.promoted === "true"
-                    //         ? StarIconFilled
-                    //         : StarIcon
-                    //     }
-                    //     alt="promote"
-                    //   />
-                    //   <span>
-                    //     {event.promoted === true || event.promoted === "true"
-                    //       ? "Promoted"
-                    //       : "Promote"}
-                    //   </span>
-                    // </div>
-                    ""
-                    ):""
+                      (
+                        // <div style={{ cursor: "text" }} onClick={() => handlePromoteEvent(event)}>
+                        //   <Image
+                        //     src={
+                        //       event.promoted === true || event.promoted === "true"
+                        //         ? StarIconFilled
+                        //         : StarIcon
+                        //     }
+                        //     alt="promote"
+                        //   />
+                        //   <span>
+                        //     {event.promoted === true || event.promoted === "true"
+                        //       ? "Promoted"
+                        //       : "Promote"}
+                        //   </span>
+                        // </div>
+                        ""
+                      ) : ""
                   )}
 
                   {/* <div onClick={() => handlePrefilledAddedEvent(event)}><EditIcon /><span>Edit</span>

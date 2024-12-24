@@ -10,26 +10,29 @@ import { Button } from "@/components/ui/button";
 import { X, Search, ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 import KeywordTabs from "./keywordTabs";
-interface KeywordSelectorProps {
-  source: string;
-  type?: string;
-  includeKeywords?: string[];
-  setIncludeKeywords?: React.Dispatch<
-    React.SetStateAction<string[] | undefined>
-  >;
-  excludeKeywords?: string[];
-  setExcludeKeywords?: React.Dispatch<
-    React.SetStateAction<string[] | undefined>
-  >;
+interface KeywordSelectorProps{
+  source:string;
+  enabledProductData?:keywordInterface,
+  type?:string;
+  includeKeywords?:string[];
+  setIncludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
+  excludeKeywords?:string[];
+  setExcludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
+}
+interface keywordInterface{
+  isKeywordEnabled?:boolean;
+  positiveKeywords?: string[] | undefined;
+  negativeKeywords?: string[] | undefined;
 }
 export default function KeywordFilter({
   type,
+  enabledProductData,
   source,
-  includeKeywords: parentIncludeKeyword = [],
-  setIncludeKeywords: setParentIncludeKeywords,
-  excludeKeywords: parentExcludeKeyword = [],
-  setExcludeKeywords: setParentExcludeKeywords,
-}: KeywordSelectorProps) {
+  includeKeywords : parentIncludeKeyword = [], 
+  setIncludeKeywords : setParentIncludeKeywords, 
+  excludeKeywords : parentExcludeKeyword = [], 
+  setExcludeKeywords : setParentExcludeKeywords,
+}:KeywordSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const {
     getLocalFilterValue,
@@ -117,53 +120,37 @@ export default function KeywordFilter({
   }, [type, isOpen]);
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
-      {type !== "T_PRODUCT_KEYWORDS" && (
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={isOpen}
-            className="w-full justify-between px-3 py-5 text-base font-normal"
-          >
-            <span className="flex items-center gap-2">
-              Products/Topics
-              {(includeKeywords.length > 0 || excludeKeywords.length > 0) && (
-                <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                  {includeKeywords.length + excludeKeywords.length}
-                </span>
-              )}
-            </span>
-            <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-      )}
-      {type === "T_PRODUCT_KEYWORDS" ? (
-        <KeywordTabs
-          type="T_PRODUCT_KEYWORDS"
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          handleAddKeyword={handleAddKeyword}
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-          includeKeywords={includeKeywords}
-          excludeKeywords={excludeKeywords}
-          handleRemoveKeyword={handleRemoveKeyword}
-        />
-      ) : (
-        <PopoverContent className="w-[348px] p-0">
-          <KeywordTabs
-            type=""
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            handleAddKeyword={handleAddKeyword}
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            includeKeywords={includeKeywords}
-            excludeKeywords={excludeKeywords}
-            handleRemoveKeyword={handleRemoveKeyword}
-          />
-        </PopoverContent>
-      )}
+      {type!=="T_PRODUCT_KEYWORDS" &&
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={isOpen}
+          disabled={enabledProductData && !enabledProductData?.isKeywordEnabled}
+          className="w-full justify-between px-3 py-5 text-base font-normal"
+        >
+          <span className="flex items-center gap-2">
+            Products/Topics
+            {(includeKeywords.length > 0 || excludeKeywords.length > 0) && (
+              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+                {includeKeywords.length + excludeKeywords.length}
+              </span>
+            )}
+          </span>
+          <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      }
+      {type==="T_PRODUCT_KEYWORDS"?(
+      <KeywordTabs type="T_PRODUCT_KEYWORDS" activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword}/>
+    ):
+        (
+          <PopoverContent className="w-[348px] p-0">
+        <KeywordTabs type="" activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword}/>
+      </PopoverContent>
+        )
+        }
+      
     </Popover>
   );
 }

@@ -18,8 +18,9 @@
     width: 95%;
     border-bottom-left-radius: 50px;
     border-bottom-right-radius: 50px;
-    filter: drop-shadow(1px 1px 4px rgb(111, 111, 111));
+    /* filter: drop-shadow(1px 1px 4px rgb(111, 111, 111)); */
     object-fit: cover;
+    
 }
 .eventName{
     word-wrap: break-word;

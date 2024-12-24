@@ -15,15 +15,19 @@ import { useFilterContext } from "@/context/filterContext";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-
+import { LockClosedSmall } from "geist-icons";
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
 
 interface RankCategory {
   name: string;
   range: [number, number];
 }
-interface EventAnalyticsProps {
-  source: string;
+interface analyticsInterface{
+  isAnalyticsEnabled?:boolean
+}
+interface EventAnalyticsProps{
+  source:string;
+  enabledAnalyticsData?:analyticsInterface;
   selectedEventRank?: [number, number];
   setSelectedEventRank?: React.Dispatch<React.SetStateAction<[number, number]>>;
   selectedLocalRank?: [number, number];
@@ -35,17 +39,7 @@ interface EventAnalyticsProps {
   rankToggles?: any;
   setRankToggles?: any;
 }
-export default function EventAnalyticsSelector({
-  source,
-  selectedEventRank,
-  setSelectedEventRank,
-  selectedLocalRank,
-  setSelectedLocalRank,
-  selectedAviationRank,
-  setSelectedAviationRank,
-  rankToggles,
-  setRankToggles,
-}: EventAnalyticsProps) {
+export default function EventAnalyticsSelector({source, selectedEventRank,enabledAnalyticsData,setSelectedEventRank, selectedLocalRank,setSelectedLocalRank, selectedAviationRank, setSelectedAviationRank, rankToggles, setRankToggles}:EventAnalyticsProps) {
   const [open, setOpen] = useState(false);
   const [showScores, setShowScores] = useState(false);
   const [categories, setCategories] = useState<RankCategory[]>([
@@ -228,16 +222,22 @@ export default function EventAnalyticsSelector({
             open ? "border-primary" : "border-input"
           }`}
           aria-expanded={open}
+          disabled={enabledAnalyticsData && !enabledAnalyticsData?.isAnalyticsEnabled}
           aria-haspopup="true"
         >
+          <div className="flex items-center">
+          {enabledAnalyticsData && !enabledAnalyticsData.isAnalyticsEnabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
           <span className="mr-2">Event Analytics</span>
-          {showScores && getAppliedFiltersCount() > 0 && (
+          </div>
+          {(showScores || rankToggles?.globalToggle) && getAppliedFiltersCount() > 0 && (
             <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
               {getAppliedFiltersCount()}
             </span>
           )}
           <DynamicSwitch
-            checked={showScores}
+            checked={showScores || rankToggles?.globalToggle}
             onCheckedChange={handleShowScoresToggle}
             aria-label="Show scores"
             onClick={(e) => e.stopPropagation()}
@@ -257,7 +257,7 @@ export default function EventAnalyticsSelector({
                 handleRangeChange(index, newRange as [number, number])
               }
               className="mb-2"
-              disabled={!showScores}
+              disabled={!showScores && !rankToggles?.globalToggle}
             />
             <div className="flex justify-between">
               <Input
@@ -269,7 +269,7 @@ export default function EventAnalyticsSelector({
                   handleInputChange(index, "min", e.target.value)
                 }
                 className="w-16 text-center"
-                disabled={!showScores}
+                disabled={!showScores && !rankToggles?.globalToggle}
                 onBlur={(e) => {
                   const value = Math.min(
                     Math.max(parseInt(e.target.value, 10), 0),
@@ -291,7 +291,7 @@ export default function EventAnalyticsSelector({
                   handleInputChange(index, "max", e.target.value)
                 }
                 className="w-16 text-center"
-                disabled={!showScores}
+                disabled={!showScores && !rankToggles?.globalToggle}
                 onBlur={(e) => {
                   const value = Math.min(
                     Math.max(parseInt(e.target.value, 10), 0),

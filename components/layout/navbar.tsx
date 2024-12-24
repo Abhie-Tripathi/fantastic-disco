@@ -44,15 +44,15 @@ const gtmroutes: Record<string, string> = {
   trends: "Event Trends",
 };
 const geniroutes: Record<string, string> = {
-  list: "Widgets",
-  edit: "Edit Widget",
-  add: "Add Widget",
-  brandkit: "Brandkit",
-  events: "Events",
-  dashboard: "Dashboard",
-  overview: "Manage",
-  settings: "Manage",
-  guests: "Manage",
+  "list": "Widgets",
+  "edit": "Edit Widget",
+  "add": "Add Widget",
+  "brandkit": "Brandkit",
+  "events": "Events",
+  "dashboard": "Dashboard",
+  "overview": "Manage",
+  "settings": "Manage",
+  "guests": "Manage"
 };
 
 export default function Navbar() {
@@ -61,7 +61,7 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
-  console.log("route", gtmroutes[pathname.split("/").slice(-1)[0]]);
+  console.log("route", pathname.split("/").slice(-1)[0])
 
   const router = useRouter();
   const handleRoute = (route: string) => {
@@ -76,20 +76,10 @@ export default function Navbar() {
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 sm:px-4 py-3">
         <div className="flex items-center">
-          <div className="flex items-center lg:!hidden mr-2">
-            <Image src={HeroLogo} alt="logo" width={34} height={34} />
-            <Image
-              className="ml-2 mb-[6px]"
-              src={HeroText}
-              alt="logotext"
-              height={22}
-              style={theme === "dark" ? { filter: "invert(100%)" } : {}}
-            />
-          </div>
-          <div className="text-lg font-semibold hidden lg:!block">
-            {pathname.split("/")[1] === "internal"
-              ? gtmroutes[pathname.split("/").slice(-1)[0]]
-              : geniroutes[pathname.split("/").slice(-1)[0]]}
+          <div className="text-lg font-semibold">
+            {pathname.split("/")[1] === "internal" ?
+              gtmroutes[pathname.split("/").slice(-1)[0]]
+              : pathname.split("/").slice(-2)[0] === "edit" ? "Edit Widget" : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
         <div className="flex items-center space-x-4">

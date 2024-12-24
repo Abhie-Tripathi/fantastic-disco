@@ -6,7 +6,7 @@ import { myFetch } from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
 import Link from 'next/link';
 import { useWidgetServices } from '@/services/geniservices/widgetService';
-
+import { useRouter } from 'next/navigation';
 type TemplateId = 'ST' | 'SB' | 'HB' | 'GS' | 'LS' | 'HBL' | 'HBG' | 'CVL' | 'CVG' | 'CV' | 'HS' | 'LSR' | 'RSR' | 'PUVP' | 'PUVL';
 interface DraftWidgetsType {
   widgetType: string;
@@ -26,6 +26,11 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
   const [allWidgets, setAllWidgets] = useState<DraftWidgetsType[]>([])
   const [draftWidgets, setDraftWidgets] = useState<DraftWidgetsType[]>([])
   const {getDraftWidget, getOnlyDraftWidget, getActiveWidget, getDeActiveWidget, error} = useWidgetServices();
+  // const router = useRouter()
+  const handleRoute = (e: any,widgetId:string ) => {
+    e.stopPropagation()
+    router.push(`/widget/edit/${widgetId}`);
+}
   const fetchDraftWidgets = async () => {
     // const { data, error } = await myFetch(`${baseUrl}/widget?status=draft`);
     // if (data) {
@@ -43,8 +48,8 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
     // if (error) {
     //   console.log(error);
     // }
-    
-    const data:any = await getDraftWidget()
+
+    const data: any = await getDraftWidget()
     if (data) {
       const filteredWidgets = data.data
         .map((widget: any) => ({
@@ -60,7 +65,7 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
     if (error) {
       console.log(error);
     }
-          
+
   };
   const asciiToString = (ascii: number): string => {
     let convertedValue = ascii.toString();
@@ -94,8 +99,8 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
     // const combinedWidgets = [...activeWidgets, ...deactivateWidgets]
     // setAllWidgets(combinedWidgets);
 
-    const activeData:any = await getActiveWidget();
-    const deactivateData:any = await getDeActiveWidget();
+    const activeData: any = await getActiveWidget();
+    const deactivateData: any = await getDeActiveWidget();
     const activeWidgets = activeData ? activeData.data.map((widget: any) => ({
       ...widget,
       templateId: asciiToString(widget.templatePublicId),
@@ -120,6 +125,16 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
     fetchDraftWidgets()
     fetchAllWidgets()
   }, [])
+
+  const router = useRouter()
+  
+  const handleNavigate = (type: string) => {
+    if (type === "draft") {
+      router.push('/widget/list?fromDashboard=true'); // Pass query parameter
+    } else router.push('/widget/list'); // Pass query parameter
+
+  };
+ 
   return (
     <div className={styles.body}>
       <div className={styles.btnContainer}>
@@ -137,7 +152,7 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
         {allWidgets.length > 0 ?
           <div className={styles.widgetList}>
             {allWidgets.slice(0, 2).map((card, key) => (
-              <div className={styles.widgetCard} key={key}>
+              <div className={styles.widgetCard} key={key} onClick={(e) => handleRoute(e,card.widgetId)}>
                 <WidgetCard
                   removeCalled={removeCalled}
                   setRemoveCalled={setRemoveCalled}
@@ -159,7 +174,7 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
           {draftWidgets.length > 0 ?
             <div className={styles.widgetList}>
               {draftWidgets.slice(0, 2).map((card, key) => (
-                <div className={styles.widgetCard} key={key}>
+                <div className={styles.widgetCard} key={key} onClick={(e) => handleRoute(e,card.widgetId)}>
                   <WidgetCard
                     removeCalled={removeCalled}
                     setRemoveCalled={setRemoveCalled}
@@ -176,7 +191,7 @@ const DashboardWidgets = ({ removeCalled, setRemoveCalled }: Props) => {
               ))}
             </div> : <Errorpage size='short' type='list' />}
         </div>}
-      <Link href={"/widget/list"} className={styles.allWidgetBtn}>Show all widgets</Link>
+      {((selectedBtn === "Widgets" && allWidgets.length > 0) || (selectedBtn === "Drafts" && draftWidgets.length > 0)) && <button className={styles.allWidgetBtn} onClick={() => handleNavigate(selectedBtn === "Drafts" ? "draft" : "main")}>Show all widgets</button>}
     </div>
   )
 }
