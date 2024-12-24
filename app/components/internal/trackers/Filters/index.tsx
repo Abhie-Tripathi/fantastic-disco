@@ -690,11 +690,11 @@ const Pages = () => {
       try{
         const promptText = `List only top 5 name similar to ${val[0]} and company name similar to ${val[1]}. Response should be in plain JSON format without any additional formatting or text: {
           "data": [
-            { "speakerName": "speaker name 1", "companyName": "company name 1" },
-            { "speakerName": "speaker name 2", "companyName": "company name 2" },
-            { "speakerName": "speaker name 3", "companyName": "company name 3" },
-            { "speakerName": "speaker name 4", "companyName": "company name 4" },
-            { "speakerName": "speaker name 5", "companyName": "company name 5" }
+            { "Speaker's Name": "speaker name 1", "Company Name": "company name 1" },
+            { "Speaker's Name": "speaker name 2", "Company Name": "company name 2" },
+            { "Speaker's Name": "speaker name 3", "Company Name": "company name 3" },
+            { "Speaker's Name": "speaker name 4", "Company Name": "company name 4" },
+            { "Speaker's Name": "speaker name 5", "Company Name": "company name 5" }
           ]
         }. Do not show example values. If no data found then return in below format: {\"data\": []}`;
         let aiResponse: any = await suggestionGenerator(promptText);
@@ -704,7 +704,7 @@ const Pages = () => {
         console.log(temp);
         if(temp && temp?.data){
           // setSpeakerSugge
-          setSuggestions(formatData(temp.data))
+          setSuggestions(temp.data)
         }
         // if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
         //   setSuggestions(temp.data);
@@ -740,7 +740,7 @@ const Pages = () => {
       setSpeakerName(speakerName);
       setSpeakerCompany(speakerCompany);
       if(speakerName.length>0 && speakerCompany.length>0)
-      fetchAISuggestion1([speakerName,speakerCompany]);
+      fetchAISuggestion1([Object.values(customData[0])[0],Object.values(customData[0])[1]]);
       // console.log(speakerName, speakerCompany);
 
     }
@@ -1666,12 +1666,23 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
 };
 const abortControllerRef = useRef<AbortController | null>(null);
 const [selected,setSelected]=useState(false);
-const addCompany = (id:number,val: string) => {
+// const addCompany = (id:number,val: any) => {
+//   console.log(val);
+  
+//   setSelected(true);
+//   setInputValues(prevValues => ({
+//     ...prevValues,
+//     [0]: val[0]
+//   }));
+// }
+const addCompany =(id:number,val: any)=>{
   setSelected(true);
+  console.log(val)
   setInputValues(prevValues => ({
-    ...prevValues,
-    [0]: val
-  }));
+        ...prevValues,
+        0: val["Speaker's Name"],
+        1: val["Company Name"]
+      }))
 }
 useEffect(()=>{
   if(selected) {
@@ -1747,6 +1758,7 @@ useEffect(()=>{
   
 },[enabledFilters])
 console.log(analyticsToggles.globalToggle);
+console.log(inputValues);
 
 return (
   <>
@@ -1982,9 +1994,14 @@ return (
                   <span className={styles.experimental_tag} >Beta</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {suggestions.map((item: string, ind: number)=>(
+                  {type==="T_SPEAKING_OPPORTUNITY" && 
+                    suggestions.map((item: any, ind: number)=>(
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{`${item["Speaker's Name"]} (${item["Company Name"]})`}</div>
+                    ))
+                  }
+                  {/* {suggestions.map((item: string, ind: number)=>(
                     <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{item}</div>
-                  ))}
+                  ))} */}
                 </div>
               </div>
             }
