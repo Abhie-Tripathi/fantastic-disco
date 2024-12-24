@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { useFilterState } from "@/hooks/useFilterState";
 import dynamic from "next/dynamic";
 import { useFilterContext } from "@/context/filterContext";
-
+import {toast} from 'react-toastify'
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
 
 const userRatings = [
@@ -32,11 +32,11 @@ interface UserRatingsProps{
   setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 interface ratingsInterface{
-  isRatingEnabled:boolean,
-  selectedValue:string[],
-  enabledValue:string[],
-  toggleOpend:boolean,
-  popUpOpend:boolean,
+  isRatingEnabled?:boolean | undefined,
+  selectedValue?:string[] | undefined,
+  enabledValue?:string[] | undefined,
+  toggleOpend?:boolean,
+  popUpOpend?:boolean,
 }
 export default function UserRatingSelector({
   source,
@@ -71,11 +71,19 @@ const setSelectedRatings=
   }, [searchParams, getLocalFilterValue]);
 
   const handleRatingToggle = (ratingId: string) => {
-    setSelectedRatings?.((prev) =>
-      prev.includes(ratingId)
+    setSelectedRatings?.((prev) => {
+      if(enabledRatingData?.enabledValue && prev.length===1 && prev.includes(ratingId)){
+        toast.error("At least one filter must be selected", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+        return prev;
+      }
+      return prev.includes(ratingId)
         ? prev.filter((id) => id !== ratingId)
         : [...prev, ratingId]
-    );
+  });
   };
 
   const handleShowRatingsToggle = (checked: boolean) => {
@@ -117,7 +125,7 @@ const setSelectedRatings=
             <DynamicSwitch
               checked={showRatings} 
               onCheckedChange={handleShowRatingsToggle}
-              disabled={!enabledRatingData?.isRatingEnabled}
+              disabled={enabledRatingData && !enabledRatingData?.isRatingEnabled}
               aria-label="Show ratings"
               onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
                 e.stopPropagation()

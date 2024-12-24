@@ -71,7 +71,7 @@ const HashtagContainer = ({ formTheme, hashtags, handleChange, loadingState, han
                     </form>
                 )}
             </div>
-            {hashtags.length > 0 && <div onClick={handleGenerateClick} className={styles.hashtagButton}>
+            {hashtags.length > 0 && <div data-name="Regerate Tags"  onClick={handleGenerateClick} className={`${styles.hashtagButton} ${styles.regeneratehashTagBtn}`}>
                 <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon} width={15} height={15}></Image>
             </div>}
         </div>

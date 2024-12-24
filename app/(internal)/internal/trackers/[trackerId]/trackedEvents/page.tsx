@@ -477,7 +477,7 @@ const activeVal =
                   addQueryString("expiredEvent");
                 }}
               >
-                Expired Events
+                Past Events
                 {
                   <div className={styles.circle}>
                     {loading ? (
@@ -567,6 +567,7 @@ const activeVal =
               showInsights={showInsights}
               eventType={active}
               setActiveValue={setActiveValue}
+              source="trackers"
             />
             </Suspense>
             </div>

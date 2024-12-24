@@ -16,6 +16,7 @@ import Image from "next/image";
 import { useMiscService } from "@/services/miscService";
 import { Country } from "@/types/events/events";
 import { useFilterContext } from "@/context/filterContext";
+import { LockClosedSmall } from "geist-icons";
 interface AudienceSpreadProps{
   source: string;
   enabledSpreadData?:spreadInterface;
@@ -23,7 +24,7 @@ interface AudienceSpreadProps{
   setSelectedCountries?: React.Dispatch<React.SetStateAction<string[]>>;
 }
 interface spreadInterface{
-  isAudienceEnabled:boolean;
+  isAudienceEnabled?:boolean;
 }
 export default function Component({
   source,
@@ -64,7 +65,6 @@ export default function Component({
     if(source!=="tracker"){
     const audienceSpread = getLocalFilterValue("audienceSpread");
     const audienceSpreadRegions = getLocalFilterValue("audienceSpreadRegions");
-
     if (audienceSpread) {
       setSelectedCountries?.(audienceSpread.split(","));
     }
@@ -131,6 +131,9 @@ export default function Component({
           aria-haspopup="true"
         >
           <div className="flex items-center">
+          {enabledSpreadData && !enabledSpreadData.isAudienceEnabled && 
+            <LockClosedSmall color="var(--secondary-text-color)" />
+          }
             <span className="mr-2">Audience Spread</span>
             {(selectedCountries.length > 0 || selectedRegions.length > 0) && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">

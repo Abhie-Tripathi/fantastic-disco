@@ -15,6 +15,7 @@
     width: 100%;
     object-fit:cover;
     min-height: 130px;  
+    /* border: 1px solid var(--border-color); */
 }
 .eventName{
     min-height: 60px;

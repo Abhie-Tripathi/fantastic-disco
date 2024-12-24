@@ -3,9 +3,10 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useFilterContext } from "@/context/filterContext";
 import { Switch } from "@/components/ui/switch";
+import { LockClosedSmall } from "geist-icons";
 interface forecastInterface{
-  isForecastedEnabled:boolean,
-  toggleOpend:boolean,
+  isForecastedEnabled?:boolean,
+  toggleOpend?:boolean,
 }
 interface ForecastedProps{
   enabledForecastData?:forecastInterface;
@@ -57,6 +58,9 @@ export default function ForecastedStatusSelector({
       className="w-full justify-between px-3 py-5 text-base font-normal"
     >
       <div className="flex items-center">
+          {enabledForecastData && !enabledForecastData.isForecastedEnabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
         <span className="mr-2">Forecasted Status</span>
       </div>
       <Switch

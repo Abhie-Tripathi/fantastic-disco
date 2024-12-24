@@ -22,6 +22,7 @@ import { useMiscService } from "@/services/miscService";
 import { useQuery } from "@tanstack/react-query";
 import { useFilterContext } from "@/context/filterContext";
 import { Designations } from "@/types/misc";
+import { LockClosedSmall } from "geist-icons";
 
 const useDesignationsAutocomplete = (input: string) => {
   const miscService = useMiscService();
@@ -36,8 +37,8 @@ const useDesignationsAutocomplete = (input: string) => {
     isError: !!error,
   };
 };
-interface desInterface{
-  isProfileEnabed:boolean
+interface desInterface {
+  isProfileEnabled?: boolean;
 }
 interface DesAndDepProps{
   source: string,
@@ -49,9 +50,19 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
   const [open, setOpen] = useState(false);
   const [selectedLabels, setSelectedLabels] = useState<Designations[]>([]);
   const [search, setSearch] = useState("");
-  const { setLocalFilter } = useFilterContext();
   const { designations } = useDesignationsAutocomplete(search);
-
+  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
+  useEffect(() => {
+    if(source!=="tracker"){
+      const designation = getLocalFilterValue("designations");
+      if(designation){
+      const result = designations.filter((item:Designations) =>
+        designation.split(',')?.some((data) => data=== item.slug)
+      );   
+      setSelectedLabels?.(result);
+    }
+  }
+  }, [getLocalFilterValue]);
   const handleSelect = (label: Designations) => {
     setSelectedLabels((prev) => {
       const isSelected = prev.some((l) => l.id === label.id);
@@ -64,13 +75,15 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
   };
 
   const handleApply = () => {
-    if(source!=="tracker")
-    setLocalFilter(
-      "designations",
-      selectedLabels.map((l) => l.slug).join(",")
-    );
-    setDesignationData?.(selectedLabels?.map((l) => l.id));
-    setOpen(false);
+   
+    // setOpen(false)
+    if(source!=="tracker"){
+    const res=selectedLabels.map((labels)=>labels.slug)
+    setLocalFilter("designations", res.join(","))
+    }else {
+      setDesignationData?.(selectedLabels?.map((l) => l.id));
+      setOpen(false);
+    }
   };
 
   const handleRemoveLabel = (labelId: string) => {
@@ -101,11 +114,16 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             open ? "border-primary" : "border-input"
           }`}
+          disabled={enabledProfileData ? !enabledProfileData.isProfileEnabled: false}
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-haspopup="true"
         >
           <div className="flex items-center">
+            {enabledProfileData && !enabledProfileData.isProfileEnabled && 
+            <LockClosedSmall color="var(--secondary-text-color)" />
+          
+            }
             <span className="mr-2">Audience Profile</span>
             {selectedLabels.length > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">

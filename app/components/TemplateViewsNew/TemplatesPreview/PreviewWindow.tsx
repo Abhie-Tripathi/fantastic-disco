@@ -38,9 +38,9 @@ interface PreviewProps {
     // templateName?: string;
     selectedImage?: StaticImageData
     cardBgColor?: string;
-    previewWindowBgColor?:string;
-    isDark?:boolean;
-    setIsDark?:(value: boolean) => void;
+    previewWindowBgColor?: string;
+    isDark?: boolean;
+    setIsDark?: (value: boolean) => void;
     cardBorderRadius?: number;
     fontSettings?: {
         heading: FontSettings;
@@ -48,7 +48,7 @@ interface PreviewProps {
         body: FontSettings;
     };
     buttonSettings?: ButtonSettingsState
-    closeButtonSetting?:ButtonSettingsState
+    closeButtonSetting?: ButtonSettingsState
     selectedBtn?: "primary" | "secondary"
     draftWidget?: boolean;
     draftWidgets?: DraftWidgetsType[]
@@ -90,7 +90,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         primary: { buttonColor: "#8F8F8F1F", fontColor: "#171717", borderRadius: 4, borderColor: "#6750a4", buttonText: "Close" },
         secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Close" }
     },
-   
+
     selectedBtn = "primary", fetchedAddedEvents, widgetId, smallCard, setIsDraftSaved }: PreviewProps) => {
 
     const [fetchedAddedOtherData, setFetchedAddedOtherData] = useState<PrefilledAddedEventsType[]>([])
@@ -99,13 +99,13 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
     const getAsciiString = (str: string): string => {
         return str.split('').map(char => char.charCodeAt(0).toString()).join('');
     };
-    const {getEventById, error} = useEventServices();
-    const {updateWidgetData} = useWidgetServices();
-    const {getBrandkit} = useBrandKitServices();
+    const { getEventById, error } = useEventServices();
+    const { updateWidgetData } = useWidgetServices();
+    const { getBrandkit } = useBrandKitServices();
     useEffect(() => {
         const fetchDomain = async () => {
             // const { data, error } = await myFetch(`${baseUrl}/kit`)
-            const data:any = await getBrandkit();
+            const data: any = await getBrandkit();
             setStoredDomain(data.domain.domain)
         }
         fetchDomain()
@@ -120,7 +120,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                 const newFetchedAddedOtherData = await Promise.all(
                     fetchedAddedEvents.map(async (event) => {
                         // const { data, error } = await myFetch(`${baseUrl}/event/${event.id}?source=eventgtm`);
-                        const data:any = await getEventById(event.id)
+                        const data: any = await getEventById(event.id)
                         if (error) {
                             console.error(`Error fetching event data for event ID ${event.id}:`, error);
                             return null;
@@ -157,8 +157,8 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                             venue: eventData.customizationData.venue,
                             hashtags: eventData.customizationData.hashtags,
                             promoted: event.promoted,
-                            eventType : data.type,
-                            event_type:eventData.event_type
+                            eventType: data.type,
+                            event_type: eventData.event_type
                         } as PrefilledAddedEventsType;
                     })
                 );
@@ -173,7 +173,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
     }, [fetchedAddedEvents]);
 
     const handleDraftWidgets = async (navigate: boolean) => {
-        if (!selectedTemplate || !widgetSelected || !fontSettings || !buttonSettings || !selectedCard || !closeButtonSetting ) {
+        if (!selectedTemplate || !widgetSelected || !fontSettings || !buttonSettings || !selectedCard || !closeButtonSetting) {
             console.error('Missing required data');
             return;
         }
@@ -211,7 +211,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         //         body: customizeData,
         //     }
         // );
-        const data:any = await updateWidgetData(customizeData);
+        const data: any = await updateWidgetData(customizeData);
         if (data) {
             console.log(data);
             if (fetchDraftWidgets && setIsDraftSaved) {
@@ -226,9 +226,18 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         }
     };
     return (
-        <div className={styles.body} 
+        <div className={styles.body}
         // style={{backgroundColor:previewWindowBgColor}}
         >
+            <div style={{ display: 'flex', margin: 'auto'}}>
+                <div className={styles.preview_screen_text}>
+                    <span>Preview Screen</span>
+                </div>
+                <div onClick={() => setIsFullScreen(!isFullScreen)} style={{ cursor: 'pointer' }}>
+                    {isFullScreen ? <CloseFullScreenIcon /> : <FullScreenIcon />}
+                </div>
+            </div>
+
             <div className={styles.heading_btnContainer}>
                 {(selectedTemplate === "LS" || selectedTemplate === "GS" || selectedTemplate === "HBL" || selectedTemplate === "HBG" || selectedTemplate === "CVL" || selectedTemplate === "CVG" || selectedTemplate === "HS" || selectedTemplate === "LSR" || selectedTemplate === "RSR" || selectedTemplate === "CV" || selectedTemplate === "HB" || selectedTemplate === "PUVP" || selectedTemplate === "PUVL") && setSelectedCard && (
                     <div className={styles.styleBtns}>
@@ -253,17 +262,18 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                     </div>
                 )}
 
-                <div className={styles.viewBtnContainer} style={{ position: "absolute", right: 10, top: selectedCard ? 10 : 0,
+                <div className={styles.viewBtnContainer} style={{
+                    position: "absolute", right: 10, top: selectedCard ? 10 : 0,
                     //   backgroundColor: "rgba(0, 0, 0, 0.2)", 
                     //   borderRadius: "50%", 
                     //   cursor: "pointer", 
                     //   zIndex:"20"
-                 }}>
+                }}>
                     {/* <div><MobileIcon color={theme === "dark" ? "white" : "black"} /></div>
                     <div><DesktopIcon color={theme === "dark" ? "white" : "black"} /></div> */}
-                    <div onClick={() => setIsFullScreen(!isFullScreen)}>
+                    {/* <div onClick={() => setIsFullScreen(!isFullScreen)}>
                         {isFullScreen ? <CloseFullScreenIcon/> : <FullScreenIcon/>}
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className={`${styles.preview_btnContainer} ${(!draftWidget || isFullScreen) ? styles.bigpreview_btnContainer : ""}`}>
@@ -272,27 +282,29 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
                         selectedTemplate === "SB" ? <StickyPreview type="down" demoDate={demoDate} fetchedAddedOtherData={fetchedAddedOtherData} smallCard={smallCard} selectedBtn={selectedBtn} buttonSettings={buttonSettings} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                             selectedTemplate === "HB" ? <HeroBanner fetchedAddedOtherData={fetchedAddedOtherData} selectedBtn={selectedBtn} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                 selectedTemplate === "GS" ? <GridView demoDate={demoDate} widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoLocation={demoLocation} /> :
-                                    selectedTemplate === "LS" ? <ListView 
-                                    smallCard={smallCard}
-                                    isFullScreen={isFullScreen}  demoDate={demoDate} widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
-                                        selectedTemplate === "HBL" ? <HeroBannerAndViews
+                                    selectedTemplate === "LS" ? <ListView
                                         smallCard={smallCard}
-                                         isFullScreen={isFullScreen} demoDate={demoDate} type='list' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                        isFullScreen={isFullScreen} demoDate={demoDate} widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                        selectedTemplate === "HBL" ? <HeroBannerAndViews
+                                            smallCard={smallCard}
+                                            isFullScreen={isFullScreen} demoDate={demoDate} type='list' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                             selectedTemplate === "HBG" ? <HeroBannerAndViews smallCard={smallCard} isFullScreen={isFullScreen} demoDate={demoDate} type='grid' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                                 selectedTemplate === "CVL" ? <CaraouselAndViews demoDate={demoDate} type='list'
-                                                smallCard={smallCard}
+                                                    smallCard={smallCard}
                                                     fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
-                                                    selectedTemplate === "CVG" ? <CaraouselAndViews 
-                                                    smallCard={smallCard} demoDate={demoDate} type='grid' fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
-                                                        selectedTemplate === "CV" ? <CaraouselView  demoDate={demoDate} widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
-                                                            selectedTemplate === "HS" ? <ScrollView demoDate={demoDate} fetchedAddedOtherData={fetchedAddedOtherData} type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
-                                                                selectedTemplate === "LSR" ? <ScrollView demoDate={demoDate} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
-                                                                    selectedTemplate === "RSR" ? <ScrollView demoDate={demoDate} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                    selectedTemplate === "CVG" ? <CaraouselAndViews
+                                                        smallCard={smallCard} demoDate={demoDate} type='grid' fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} widgetId={widgetId} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                        selectedTemplate === "CV" ? <CaraouselView demoDate={demoDate} widgetId={widgetId} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} isFullScreen={isFullScreen} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                            selectedTemplate === "HS" ? <ScrollView widgetId={widgetId} demoDate={demoDate} fetchedAddedOtherData={fetchedAddedOtherData} type='top' selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                                selectedTemplate === "LSR" ? <ScrollView widgetId={widgetId} demoDate={demoDate} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='left' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
+                                                                    selectedTemplate === "RSR" ? <ScrollView widgetId={widgetId} demoDate={demoDate} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} type='right' cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} /> :
                                                                         selectedTemplate === "PUVP" ? <PortraitPopup
+                                                                            widgetId={widgetId}
                                                                             smallCard={smallCard}
-                                                                            fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} closeButtonSetting={closeButtonSetting} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/> : 
+                                                                            fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} closeButtonSetting={closeButtonSetting} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} /> :
                                                                             selectedTemplate === "PUVL" ? <LandscapePopup
-                                                                                smallCard={smallCard} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} closeButtonSetting={closeButtonSetting} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate}/> : <></>}
+                                                                                widgetId={widgetId}
+                                                                                smallCard={smallCard} fetchedAddedOtherData={fetchedAddedOtherData} selectedCard={selectedCard} cardBgColor={cardBgColor} cardBorderRadius={cardBorderRadius} fontSettings={fontSettings} buttonSettings={buttonSettings} closeButtonSetting={closeButtonSetting} selectedBtn={selectedBtn} demoBanner={demoBanner} demoEventName={demoEventName} demoDescription={demoDescription} demoLocation={demoLocation} demoDate={demoDate} /> : <></>}
                 </div>
                 {(draftWidget && !isFullScreen) && <div className={styles.previewButtons}>
                     <button onClick={() => handleDraftWidgets(false)} className={styles.previewBtn}>Save to Draft widgets</button>
@@ -326,17 +338,17 @@ function FullScreenIcon() {
     // )
     return (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0.5" y="0.5" width="23" height="23" rx="5.5" fill="#EBEBEB"/>
-        <rect x="0.5" y="0.5" width="23" height="23" rx="5.5" stroke="#C9C9C9"/>
-        <path d="M13.625 11.224C13.5123 11.3367 13.3595 11.4 13.2002 11.4C13.0408 11.4 12.888 11.3367 12.7754 11.224C12.6627 11.1113 12.5994 10.9585 12.5994 10.7992C12.5994 10.6399 12.6627 10.4871 12.7754 10.3744L17.5754 5.5744C17.6312 5.51861 17.6974 5.47436 17.7703 5.44417C17.8432 5.41398 17.9213 5.39844 18.0002 5.39844C18.0791 5.39844 18.1572 5.41398 18.2301 5.44417C18.303 5.47436 18.3692 5.51861 18.425 5.5744C18.4808 5.63018 18.525 5.69641 18.5552 5.7693C18.5854 5.84218 18.6009 5.9203 18.6009 5.9992C18.6009 6.07809 18.5854 6.15621 18.5552 6.2291C18.525 6.30198 18.4808 6.36821 18.425 6.424L13.625 11.224ZM6.42497 18.424C6.36919 18.4798 6.30296 18.524 6.23007 18.5542C6.15719 18.5844 6.07906 18.6 6.00017 18.6C5.92128 18.6 5.84316 18.5844 5.77027 18.5542C5.69738 18.524 5.63116 18.4798 5.57537 18.424C5.51959 18.3682 5.47533 18.302 5.44514 18.2291C5.41495 18.1562 5.39941 18.0781 5.39941 17.9992C5.39941 17.9203 5.41495 17.8422 5.44514 17.7693C5.47533 17.6964 5.51959 17.6302 5.57537 17.5744L10.3754 12.7744C10.488 12.6617 10.6408 12.5984 10.8002 12.5984C10.9595 12.5984 11.1123 12.6617 11.225 12.7744C11.3376 12.8871 11.4009 13.0399 11.4009 13.1992C11.4009 13.3585 11.3376 13.5113 11.225 13.624L6.42497 18.424Z" fill="black"/>
-        <path d="M6.00039 18.5984C5.84126 18.5984 5.68865 18.5352 5.57613 18.4227C5.4636 18.3102 5.40039 18.1576 5.40039 17.9984C5.40039 17.8393 5.4636 17.6867 5.57613 17.5742C5.68865 17.4617 5.84126 17.3984 6.00039 17.3984H10.8004C10.9595 17.3984 11.1121 17.4617 11.2247 17.5742C11.3372 17.6867 11.4004 17.8393 11.4004 17.9984C11.4004 18.1576 11.3372 18.3102 11.2247 18.4227C11.1121 18.5352 10.9595 18.5984 10.8004 18.5984H6.00039Z" fill="black"/>
-        <path d="M6.59941 17.9984C6.59941 18.1576 6.5362 18.3102 6.42368 18.4227C6.31116 18.5352 6.15854 18.5984 5.99941 18.5984C5.84028 18.5984 5.68767 18.5352 5.57515 18.4227C5.46263 18.3102 5.39941 18.1576 5.39941 17.9984V13.1984C5.39941 13.0393 5.46263 12.8867 5.57515 12.7742C5.68767 12.6617 5.84028 12.5984 5.99941 12.5984C6.15854 12.5984 6.31116 12.6617 6.42368 12.7742C6.5362 12.8867 6.59941 13.0393 6.59941 13.1984V17.9984ZM18.5994 10.7984C18.5994 10.9576 18.5362 11.1102 18.4237 11.2227C18.3112 11.3352 18.1585 11.3984 17.9994 11.3984C17.8403 11.3984 17.6877 11.3352 17.5751 11.2227C17.4626 11.1102 17.3994 10.9576 17.3994 10.7984V5.99844C17.3994 5.83931 17.4626 5.6867 17.5751 5.57417C17.6877 5.46165 17.8403 5.39844 17.9994 5.39844C18.1585 5.39844 18.3112 5.46165 18.4237 5.57417C18.5362 5.6867 18.5994 5.83931 18.5994 5.99844V10.7984Z" fill="black"/>
-        <path d="M13.1996 6.59844C13.0405 6.59844 12.8879 6.53522 12.7753 6.4227C12.6628 6.31018 12.5996 6.15757 12.5996 5.99844C12.5996 5.83931 12.6628 5.6867 12.7753 5.57417C12.8879 5.46165 13.0405 5.39844 13.1996 5.39844H17.9996C18.1587 5.39844 18.3114 5.46165 18.4239 5.57417C18.5364 5.6867 18.5996 5.83931 18.5996 5.99844C18.5996 6.15757 18.5364 6.31018 18.4239 6.4227C18.3114 6.53522 18.1587 6.59844 17.9996 6.59844H13.1996Z" fill="black"/>
+            <rect x="0.5" y="0.5" width="23" height="23" rx="5.5" fill="#EBEBEB" />
+            <rect x="0.5" y="0.5" width="23" height="23" rx="5.5" stroke="#C9C9C9" />
+            <path d="M13.625 11.224C13.5123 11.3367 13.3595 11.4 13.2002 11.4C13.0408 11.4 12.888 11.3367 12.7754 11.224C12.6627 11.1113 12.5994 10.9585 12.5994 10.7992C12.5994 10.6399 12.6627 10.4871 12.7754 10.3744L17.5754 5.5744C17.6312 5.51861 17.6974 5.47436 17.7703 5.44417C17.8432 5.41398 17.9213 5.39844 18.0002 5.39844C18.0791 5.39844 18.1572 5.41398 18.2301 5.44417C18.303 5.47436 18.3692 5.51861 18.425 5.5744C18.4808 5.63018 18.525 5.69641 18.5552 5.7693C18.5854 5.84218 18.6009 5.9203 18.6009 5.9992C18.6009 6.07809 18.5854 6.15621 18.5552 6.2291C18.525 6.30198 18.4808 6.36821 18.425 6.424L13.625 11.224ZM6.42497 18.424C6.36919 18.4798 6.30296 18.524 6.23007 18.5542C6.15719 18.5844 6.07906 18.6 6.00017 18.6C5.92128 18.6 5.84316 18.5844 5.77027 18.5542C5.69738 18.524 5.63116 18.4798 5.57537 18.424C5.51959 18.3682 5.47533 18.302 5.44514 18.2291C5.41495 18.1562 5.39941 18.0781 5.39941 17.9992C5.39941 17.9203 5.41495 17.8422 5.44514 17.7693C5.47533 17.6964 5.51959 17.6302 5.57537 17.5744L10.3754 12.7744C10.488 12.6617 10.6408 12.5984 10.8002 12.5984C10.9595 12.5984 11.1123 12.6617 11.225 12.7744C11.3376 12.8871 11.4009 13.0399 11.4009 13.1992C11.4009 13.3585 11.3376 13.5113 11.225 13.624L6.42497 18.424Z" fill="black" />
+            <path d="M6.00039 18.5984C5.84126 18.5984 5.68865 18.5352 5.57613 18.4227C5.4636 18.3102 5.40039 18.1576 5.40039 17.9984C5.40039 17.8393 5.4636 17.6867 5.57613 17.5742C5.68865 17.4617 5.84126 17.3984 6.00039 17.3984H10.8004C10.9595 17.3984 11.1121 17.4617 11.2247 17.5742C11.3372 17.6867 11.4004 17.8393 11.4004 17.9984C11.4004 18.1576 11.3372 18.3102 11.2247 18.4227C11.1121 18.5352 10.9595 18.5984 10.8004 18.5984H6.00039Z" fill="black" />
+            <path d="M6.59941 17.9984C6.59941 18.1576 6.5362 18.3102 6.42368 18.4227C6.31116 18.5352 6.15854 18.5984 5.99941 18.5984C5.84028 18.5984 5.68767 18.5352 5.57515 18.4227C5.46263 18.3102 5.39941 18.1576 5.39941 17.9984V13.1984C5.39941 13.0393 5.46263 12.8867 5.57515 12.7742C5.68767 12.6617 5.84028 12.5984 5.99941 12.5984C6.15854 12.5984 6.31116 12.6617 6.42368 12.7742C6.5362 12.8867 6.59941 13.0393 6.59941 13.1984V17.9984ZM18.5994 10.7984C18.5994 10.9576 18.5362 11.1102 18.4237 11.2227C18.3112 11.3352 18.1585 11.3984 17.9994 11.3984C17.8403 11.3984 17.6877 11.3352 17.5751 11.2227C17.4626 11.1102 17.3994 10.9576 17.3994 10.7984V5.99844C17.3994 5.83931 17.4626 5.6867 17.5751 5.57417C17.6877 5.46165 17.8403 5.39844 17.9994 5.39844C18.1585 5.39844 18.3112 5.46165 18.4237 5.57417C18.5362 5.6867 18.5994 5.83931 18.5994 5.99844V10.7984Z" fill="black" />
+            <path d="M13.1996 6.59844C13.0405 6.59844 12.8879 6.53522 12.7753 6.4227C12.6628 6.31018 12.5996 6.15757 12.5996 5.99844C12.5996 5.83931 12.6628 5.6867 12.7753 5.57417C12.8879 5.46165 13.0405 5.39844 13.1996 5.39844H17.9996C18.1587 5.39844 18.3114 5.46165 18.4239 5.57417C18.5364 5.6867 18.5996 5.83931 18.5996 5.99844C18.5996 6.15757 18.5364 6.31018 18.4239 6.4227C18.3114 6.53522 18.1587 6.59844 17.9996 6.59844H13.1996Z" fill="black" />
         </svg>
     )
 
 
-    
+
 }
 
 function CloseFullScreenIcon() {
@@ -345,9 +357,9 @@ function CloseFullScreenIcon() {
     // )
     return (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0.5" y="0.5" width="23" height="23" rx="5.5" fill="#EBEBEB"/>
-        <rect x="0.5" y="0.5" width="23" height="23" rx="5.5" stroke="#C9C9C9"/>
-        <path d="M5 18.5L9.70787 13.7907M9.70787 13.7907H5M9.70787 13.7907L9.76471 18.1029M18.5 5L13.7919 9.70665M13.7919 9.70665H18.5M13.7919 9.70665V5" stroke="black" stroke-width="1.02101" stroke-linecap="round" stroke-linejoin="round"/>
+            <rect x="0.5" y="0.5" width="23" height="23" rx="5.5" fill="#EBEBEB" />
+            <rect x="0.5" y="0.5" width="23" height="23" rx="5.5" stroke="#C9C9C9" />
+            <path d="M5 18.5L9.70787 13.7907M9.70787 13.7907H5M9.70787 13.7907L9.76471 18.1029M18.5 5L13.7919 9.70665M13.7919 9.70665H18.5M13.7919 9.70665V5" stroke="black" stroke-width="1.02101" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
     )
 }

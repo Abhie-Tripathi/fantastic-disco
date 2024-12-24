@@ -3,8 +3,9 @@ import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useFilterContext } from "@/context/filterContext";
 import { Switch } from "@/components/ui/switch";
+import { LockClosedSmall } from "geist-icons";
 interface zoneInterface{
-  isZoneEnabled:boolean,
+  isZoneEnabled?:boolean,
 }
 interface AudienceZoneProps{
   enabledZoneData?:zoneInterface;
@@ -56,6 +57,9 @@ export default function AudienceZoneSatusSelector({
       disabled={enabledZoneData && !enabledZoneData?.isZoneEnabled}
     >
       <div className="flex items-center">
+      {enabledZoneData && !enabledZoneData.isZoneEnabled && 
+            <LockClosedSmall color="var(--secondary-text-color)" />
+            }
         <span className="mr-2">Audience Zone</span>
       </div>
       <Switch

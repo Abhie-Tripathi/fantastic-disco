@@ -37,7 +37,8 @@ interface YourEventCardProps {
   geniEvent?: AllEventsType;
   handlePrefillEvent?: (value: AllEventsType) => void
   handleDeleteModal?: (id: string, name: string) => void;
-  filterChanged?:boolean
+  filterChanged?:boolean;
+  enquiryStatusUpdate: (eventId: string, status: string) => void;
 }
 interface VoteStatus {
   [name: string]: boolean;
@@ -84,7 +85,8 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   isDateSame,
   handleDeleteModal,
   filterChanged,
-  setSelectedId
+  setSelectedId,
+  enquiryStatusUpdate,
   
 }) => {
   if (eventStartDate) {
@@ -197,6 +199,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                   currentEnquiryStatus={currentEnquiryStatus}
                   handleShortlistModal={handleShortlistModal}
                   pipelineConfig={pipelineConfig}
+                  enquiryStatusUpdate={enquiryStatusUpdate}
                 />
               </div>
 
@@ -227,6 +230,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                   currentEnquiryStatus={currentEnquiryStatus}
                   handleShortlistModal={handleShortlistModal}
                   pipelineConfig={pipelineConfig}
+                  enquiryStatusUpdate={enquiryStatusUpdate}
                 />
               </div>}
             </div>

@@ -58,6 +58,7 @@ export const endpoints = {
     participent: `${BASE_URL}/userInterest/totalParticipent`,
     iterestedUsers: `${BASE_URL}/userInterest`,
     enquiryDetail: `${BASE_URL}/enquiry`,
+    pocUnmask: `${BASE_URL}/event-poc/unmask`,
   },
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {
@@ -73,7 +74,7 @@ export const endpoints = {
     widget: `${BASE_URL}/widget`
   },
   events: {
-    getEvents: `${BASE_URL}/event?sortBy=start_date&sortType=asc&limit=2`,
+    getEvents: `${BASE_URL}/event?limit=2`,
     getEventsByWidgetId: `${BASE_URL}/event`,
     getSortedEvents: `${BASE_URL}/event`,
     getEventById: `${BASE_URL}/event`,

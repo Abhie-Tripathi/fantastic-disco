@@ -1,6 +1,6 @@
 import React from 'react'
 import styles from './detailsection.style.module.css'
-import Logo from '/public/10timeslogotwo.png'
+import Logo from '/public/placholderLogo.png'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -31,7 +31,7 @@ const DetailSection = ({ fetchedLogos, fetchedDomain }: Props) => {
     return (
         <div className={styles.body}>
             <div className={styles.logo}>
-                <Image src={fetchedLogos ?  fetchedLogos[0] : Logo} width={150} height={150} className='h-[150px] w-[150px]' alt='logo' />
+                <Image src={fetchedLogos?.length === 1 ?  fetchedLogos[0] : Logo} width={150} height={150} className='h-[150px] w-[150px]' alt='logo' />
             </div>
             <div className={styles.companyName}>{extractCompanyName(fetchedDomain? fetchedDomain : "" )}</div>
             <div className={styles.companyLink}>

@@ -15,7 +15,7 @@ import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-
+import { LockClosedSmall } from "geist-icons";
 interface RankCategory {
   name: string;
   enabled: boolean;
@@ -28,7 +28,7 @@ const ranks = [
   { id: "1000", label: "Top 1000" },
 ];
 interface rankInterface{
-  isRanking:boolean
+  isRanking?:boolean;
 }
 interface EvenetRankingProps{
   source:string;
@@ -211,6 +211,9 @@ export default function EventRankingSelector({source, selectedTrustScore, setSel
           aria-haspopup="true"
         >
           <div className="flex items-center truncate">
+          {enabledRankingData && !enabledRankingData.isRanking && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
             <span className="mr-2">Event Ranking</span>
             {getAppliedFiltersCount() > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">

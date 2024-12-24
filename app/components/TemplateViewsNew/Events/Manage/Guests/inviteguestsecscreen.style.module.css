@@ -1,30 +1,35 @@
-.sections{
+.sections {
     display: flex;
     min-height: 300px;
 }
-.leftSection{
+
+.leftSection {
     padding: 15px;
     display: flex;
     flex-direction: column;
     gap: 10px;
     width: 30%;
 }
-.verticalLine{
+
+.verticalLine {
     border-right: 1px solid var(--border-color);
 }
-.invitedListContainer{
+
+.invitedListContainer {
     display: flex;
     flex-direction: column;
     gap: 10px;
     max-height: 240px;
     overflow-y: scroll;
 }
-.invitedUser{
+
+.invitedUser {
     display: flex;
     align-items: center;
     gap: 9px;
 }
-.invitedUser .initial{
+
+.invitedUser .initial {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -36,37 +41,48 @@
     border-radius: 5px;
     padding: 10px;
 }
-.invitedUser .nameMailContainer{
+
+.invitedUser .nameMailContainer {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
-.nameMailContainer .name{
+
+.nameMailContainer .name {
     font-size: var(--font-size-default);
     color: var(--primary-text-color);
     font-weight: var(--font-weight-semibold);
 }
-.nameMailContainer .email{
+
+.nameMailContainer .email {
     font-size: var(--font-size-small);
     color: var(--secondary-text-color);
     font-weight: var(--font-weight-semibold);
 }
-.rightSection{
+
+.rightSection {
     padding: 15px;
 }
-.messageContainer{
+
+.messageContainer {
     border-radius: 10px;
     border: 1px solid var(--border-color);
     overflow: hidden;
 }
-.messageContainer .header{
+
+.messageContainer .header {
     background-color: var(--background-secondary-color);
     padding: 10px;
 }
-.messageContainer .textarea{
-    width: 100%; /* Fixed width */
-    height: 100px; /* Fixed height */
-    resize: none;  /* Disable resizing by the user */
-    padding: 10px; 
+
+.messageContainer .textarea {
+    width: 100%;
+    /* Fixed width */
+    height: 100px;
+    /* Fixed height */
+    resize: none;
+    /* Disable resizing by the user */
+    padding: 10px;
     border: none;
 }
+

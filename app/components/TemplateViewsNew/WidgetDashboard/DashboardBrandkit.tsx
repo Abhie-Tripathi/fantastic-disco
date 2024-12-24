@@ -99,7 +99,7 @@ const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setP
                     <div className={styles.container}>
                         <LogoComponent flex={false} fetchedLogos={fetchedLogos} />
                     </div>
-                    <div className={styles.container}>
+                    <div className={`${styles.container} ${styles.colorContainer}`}>
                         <BrandColor
                             clickable={false}
                             setValueUpdated={setValueUpdated}
@@ -108,14 +108,14 @@ const DashboardBrandkit = ({ setBrandkitLoadingState, brandkitLoadingState, setP
                             extractedColors={fetchedColors}
                         />
                     </div>
-                    <div className={styles.container}>
+                    <div className={`${styles.container} ${styles.typoContainer}`}>
                         <BrandkitTypography clickable={false} fetchedFonts={fetchedFonts} flex={false} />
                     </div>
                 </div>
             ) : (
                 <div className={styles.errorMessage}>
                     <span className={styles.error1}>Having issues while fetching your Brand kit</span>
-                    <span className={styles.error2}>Check the Domain or try fetching again later</span>
+                    <span className={styles.error2}>Check the Domain or <Link style={{color : "#6750a4"}} href={"/widget/brandkit"}>Upload</Link> your company logo</span>
                 </div>
             )}
         </div>

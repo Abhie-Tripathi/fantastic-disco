@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
+import {toast} from 'react-toastify';
 
 // const visitorRanges = [
 //   { id: "0-100", label: "0-100", min: 0, max: 100 },
@@ -34,8 +35,8 @@ const visitorRanges = [
   { id: "200k+", label: "200k+", min: 200000, max: Infinity },
 ];
 interface visitorInterface{
-  enabledValue:string[];
-  selectedValue:string[];
+  enabledValue?:string[] | undefined;
+  selectedValue?:string[] | undefined;
 }
 interface VisitorsProps{
   source: string,
@@ -84,10 +85,19 @@ export default function EstimatedVisitorsSelector({
 
   const handleRangeToggle = (rangeId: string) => {
    
-       setSelectedRanges?.((prev) =>
-        prev.includes(rangeId)
+       setSelectedRanges?.((prev) =>{
+        if(enabledVisitorData?.enabledValue && prev.length===1 && prev.includes(rangeId)){
+          toast.error("At least one filter must be selected", {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+          });
+          return prev;
+        }
+        return prev.includes(rangeId)
           ? prev.filter((id) => id !== rangeId)
           : [...prev, rangeId]
+      }
       );
   };
 
@@ -118,7 +128,7 @@ export default function EstimatedVisitorsSelector({
         <Button
           variant="outline"
           role="combobox"
-          disabled={enabledVisitorData && enabledVisitorData?.enabledValue.length===0}
+          disabled={enabledVisitorData && enabledVisitorData.enabledValue && enabledVisitorData?.enabledValue.length===0}
           aria-expanded={isOpen}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
@@ -147,7 +157,7 @@ export default function EstimatedVisitorsSelector({
                     ? `${range.min}${range.max !== Infinity ? `-${range.max}` : ''}`
                     : `${range.id}`
                 )}
-                disabled={enabledVisitorData && !enabledVisitorData?.enabledValue.includes(`${range.min}${range.max !== Infinity ? `-${range.max}` : ""}`)}
+                disabled={enabledVisitorData && enabledVisitorData.enabledValue && !enabledVisitorData?.enabledValue.includes(`${range.min}${range.max !== Infinity ? `-${range.max}` : ""}`)}
                 onCheckedChange={() =>
                   handleRangeToggle(
                     source === "tracker"

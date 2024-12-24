@@ -61,12 +61,11 @@ export const MiscAdapter = {
       adaptedParams.startDate = `${startDate},${endDate}`;
       adaptedParams.endDate = `${startDate},${endDate}`;
     }
-
-    if (activeGte) {
+    else if (activeGte) {
       const startDate = new Date(activeGte).toISOString().split("T")[0];
       adaptedParams.startDate = `${startDate},${startDate}`;
     }
-    if (activeLte) {
+    else if (activeLte) {
       const endDate = new Date(activeLte).toISOString().split("T")[0];
       adaptedParams.endDate = `${endDate},${endDate}`;
     }

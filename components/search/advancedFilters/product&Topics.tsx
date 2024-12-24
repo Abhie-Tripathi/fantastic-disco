@@ -20,9 +20,9 @@ interface KeywordSelectorProps{
   setExcludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
 }
 interface keywordInterface{
-  isKeywordEnabled:boolean;
-  positiveKeywords: string[];
-  negativeKeywords: string[];
+  isKeywordEnabled?:boolean;
+  positiveKeywords?: string[] | undefined;
+  negativeKeywords?: string[] | undefined;
 }
 export default function KeywordFilter({
   type,

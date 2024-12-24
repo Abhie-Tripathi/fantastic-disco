@@ -230,6 +230,7 @@ export const useEventsService = () => {
     getEvents,
     saveEvent,
     getEventById,
+    fetchEnabledFilters,
     getEventsCount,
     getRecentSearches,
     bookmarkThisEvent,
