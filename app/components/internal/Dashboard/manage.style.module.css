@@ -1,0 +1,17 @@
+.inputContainer{
+    margin-top: 19px;
+    width: 100%;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--primary-light-color);
+    border-radius: 8px;
+}
+.inputContainer input{
+    background: none;
+    font-size: var(--font-size-xs);
+}
+.inputContainer input:focus{
+    outline: none;
+}
