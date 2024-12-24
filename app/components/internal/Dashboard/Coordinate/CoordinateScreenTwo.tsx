@@ -8,6 +8,13 @@ import NumberPill from './NumberPill'
 
 
 const CoordinateScreenTwo = () => {
+
+  const values = [{ heading: "Attending", value: 1 },
+  { heading: "Sponsors", value: 0 },
+  { heading: "Speakers", value: 0 },
+  { heading: "Exhibitor", value: 0 },
+  ]
+
   return (
     <div className="p-4 overflow-hidden">
       <div className='flex flex-col items-start gap-2'>
@@ -15,7 +22,13 @@ const CoordinateScreenTwo = () => {
         <div className="leading-var(--line-height-small) text-[var(--bold-border-color)] text-xs">Explore events and express your interest in the ones that matter to you and start coordinating with your team.</div>
       </div>
       <div className='flex flex-col items-center mt-8'>
-        <div><NumberPill heading='Attending' value={1}/></div>
+        <div className="grid grid-cols-2 gap-6 mt-8">
+          {values.map((item, index) => (
+            <div key={index} className="flex justify-center">
+              <NumberPill heading={item.heading} value={item.value} />
+            </div>
+          ))}
+        </div>
         <Button className="mt-6" size="sm">Search Events <MoveRight width={12} /></Button>
         <div className="min-h-[202px] min-w-[202px] max-h-[202px] max-w-[202px] mt-8">
           <Image className="w-full h-full object-cover" src={CoordinateScreen} alt="coordinate" />
