@@ -114,8 +114,8 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
       </TabsContent>
       <TabsContent value="insightsAndScores">
         <div
-          className={cn("grid grid-cols-5 gap-3 pb-6 border-b", {
-            "grid-cols-4": isEventeli,
+          className={cn("grid lg:grid-cols-5 gap-3 pb-6 border-b grid-cols-3", {
+            "grid-cols-3": isEventeli,
           })}
         >
           <EstimatedVisitorsSelector
@@ -141,7 +141,7 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
       </TabsContent>
       <TabsContent value="audienceIntel">
         <div
-          className={cn("grid grid-cols-5 gap-3 pb-6 border-b", {
+          className={cn("grid lg:grid-cols-5 grid-cols-3 gap-3 pb-6 border-b", {
             "grid-cols-4": isEventeli,
           })}
         >

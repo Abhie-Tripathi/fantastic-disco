@@ -1,5 +1,6 @@
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -8,86 +9,31 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useFilterState } from "@/hooks/useFilterState";
 import { useFilterContext } from "@/context/filterContext";
-import {toast} from "react-toastify"
+
 const EventEntries = [
   { id: "free", label: "Free" },
   { id: "paid", label: "Paid" },
 ];
-interface entryInterface{
-  enabledValue?:string[] | undefined;
-}
-interface EventEntryProps{
-  enabledEntries?:entryInterface;
-  source: string;
-  selectedStatuses?: string[];
-  setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
-}
-export default function EventEntrySelector({
-  enabledEntries,
-  source,
-  selectedStatuses: parentSelectedFormats = [],
-  setSelectedStatuses: parentSetSelectedFormats,
-}: EventEntryProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const { setLocalFilter, getLocalFilterValue, searchParams } =
-    useFilterContext();
-    const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<string[]>(
-      []
-    );
-  
-    const selectedStatuses =
-      source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
-    const setSelectedStatuses =
-      source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
 
-  React.useEffect(() => {
-    if(source!=="tracker" && setSelectedStatuses){
-    const currentFilter = getLocalFilterValue("entryType");
-    setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
-    }
-  }, [searchParams, getLocalFilterValue]);
+export default function EventEntrySelector() {
+  const [isOpen, setIsOpen] = useState(false);
+  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
 
+  const selectedStatuses = getLocalFilterValue("entryType").split(",").filter(Boolean);
   const selectedStatus = selectedStatuses.length;
 
   const handleStatusToggle = (statusId: string) => {
-    setSelectedStatuses?.((prev) => {
-      if (enabledEntries?.enabledValue && prev.length === 1 && prev.includes(statusId)) {
-        toast.error("At least one filter must be selected", {
-          position: "bottom-right",
-          autoClose: 2000,
-          hideProgressBar: true,
-        });
-        return prev;
-      }
-      return prev.includes(statusId)
-        ? prev.filter((id) => id !== statusId) 
-        : [...prev, statusId]; 
-    });
-    
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    setSelectedStatuses?.(
-      checked ? EventEntries.map((eventEntry) => eventEntry.id) : []
-    );
-  };
-
-  const isAllSelected = selectedStatuses.length === EventEntries.length;
-
-  const handleApply = () => {
-    setLocalFilter("entryType", selectedStatuses.join(","));
-    setIsOpen(false);
+    const newStatuses = selectedStatuses.includes(statusId)
+      ? selectedStatuses.filter((id) => id !== statusId)
+      : [...selectedStatuses, statusId];
+    setLocalFilter("entryType", newStatuses.join(","));
   };
 
   const onOpenChange = (open: boolean) => {
-    if (!open) {
-      handleApply();
-    }
     setIsOpen(open);
   };
-  
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -119,38 +65,12 @@ export default function EventEntrySelector({
         className="w-[var(--radix-popover-trigger-width)] p-0"
         align="start"
       >
-        {/* <div className="flex justify-between items-center p-4 py-2 border-b">
-          <span className="font-medium">Event Entry</span>
-          <Button
-            variant="link"
-            className="text-primary pr-0"
-            onClick={handleApply}
-          >
-            Apply
-          </Button>
-        </div> */}
-
-        <div className="p-2 space-y-2">
-          {/* <div className="flex items-center space-x-2">
-            <Checkbox
-              id="select-all"
-              className="rounded-none"
-              checked={isAllSelected}
-              onCheckedChange={handleSelectAll}
-            />
-            <label
-              htmlFor="select-all"
-              className=" text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Select All
-            </label>
-          </div> */}
+        <div className="p-4 space-y-4">
           {EventEntries.map((eventEntry) => (
             <div key={eventEntry.id} className="flex items-center space-x-2">
               <Checkbox
                 id={eventEntry.id}
                 className="rounded-none"
-                disabled={enabledEntries && !enabledEntries?.enabledValue?.includes(eventEntry.id.toUpperCase())}
                 checked={selectedStatuses.includes(eventEntry.id)}
                 onCheckedChange={() => handleStatusToggle(eventEntry.id)}
               />

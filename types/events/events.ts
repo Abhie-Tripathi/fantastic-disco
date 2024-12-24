@@ -97,6 +97,7 @@ export interface Event {
   exhibitorsCount: number | null;
   timings: Timings;
   audienceSpread: AudienceSpread | null;
+  audienceZone: string | null;
   editions: number | null;
   website: string | null;
   frequency: string | null;

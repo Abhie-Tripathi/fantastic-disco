@@ -1055,7 +1055,7 @@ const Table = ({
                     )}
                   </div>
                   <div className={styles.truncateText_1}>
-                    <Link href={`/internal/event/${event.id}`} target="_blank">
+                    <Link href={`/internal/event/${event.id}`}>
                       {event.name}
                     </Link>
                   </div>

@@ -8,17 +8,14 @@ import {
   endOfMonth,
   startOfWeek,
   endOfWeek,
-  isBefore,
   addMonths,
   parseISO,
-  formatISO,
 } from "date-fns";
 import { ChevronDown } from "lucide-react";
 import DateRangePopup from "./dateRangePopup";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Badge } from "../ui/badge";
 import {
   Popover,
   PopoverContent,
@@ -31,14 +28,14 @@ import { useFilterContext } from "@/context/filterContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const presets = [
-  // { label: "Past", value: "past" },
-  // { label: "Upcoming", value: "upcoming" },
   { label: "This week", value: "this-week" },
   { label: "This month", value: "this-month" },
   { label: "3 months", value: "3-months" },
   { label: "6 months", value: "6-months" },
   { label: "9 Months", value: "9-months" },
   { label: "12 months", value: "12-months" },
+  { label: "Past", value: "past" },
+  { label: "Upcoming", value: "upcoming" },
   { label: "Custom", value: "custom" },
 ];
 
@@ -93,19 +90,6 @@ export default function DateRangeSelector({
 }: DateRangeProps) {
   const pathName = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
-  const [localDateRange, setLocalDateRange] = React.useState<{
-    from: Date | undefined;
-    to: Date | undefined;
-  }>({
-    from: undefined,
-    to: undefined,
-  });
-  const dateRange =
-    source === "tracker" && parentDateRange ? parentDateRange : localDateRange;
-  const setDateRange =
-    source === "tracker" && setParentDateRange
-      ? setParentDateRange
-      : setLocalDateRange;
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("");
   const [compareEnabled, setCompareEnabled] = React.useState(false);
@@ -116,62 +100,24 @@ export default function DateRangeSelector({
   );
   const enableCompareOptions = pathName === "/trends";
 
-  React.useEffect(() => {
-    if (source !== "tracker") {
-      const active_gte = getLocalFilterValue("active_gte");
-      const active_lte = getLocalFilterValue("active_lte");
-      console.log(active_gte,active_lte);
-      
-      if (active_gte && active_lte) {
-        const fromDate = parseISO(active_gte);
-        const toDate = parseISO(active_lte);
-        setDateRange({ from: fromDate, to: toDate });
+  const active_gte = getLocalFilterValue("active_gte");
+  const active_lte = getLocalFilterValue("active_lte");
 
-        const currentDate = new Date();
-        const diffInDays = Math.round(
-          (toDate.getTime() - fromDate.getTime()) / (1000 * 60 * 60 * 24)
-        );
-
-        if (
-          diffInDays === 6 &&
-          fromDate.getDay() === 0 &&
-          toDate.getDay() === 6
-        ) {
-          setSelectedPreset("this-week");
-        } else if (
-          fromDate.getDate() === 1 &&
-          toDate.getDate() ===
-            new Date(toDate.getFullYear(), toDate.getMonth() + 1, 0).getDate()
-        ) {
-          const monthsDiff =
-            (toDate.getFullYear() - fromDate.getFullYear()) * 12 +
-            toDate.getMonth() -
-            fromDate.getMonth() +
-            1;
-          if (monthsDiff === 1) setSelectedPreset("this-month");
-          else if (monthsDiff === 3) setSelectedPreset("3-months");
-          else if (monthsDiff === 6) setSelectedPreset("6-months");
-          else if (monthsDiff === 9) setSelectedPreset("9-months");
-          else if (monthsDiff === 12) setSelectedPreset("12-months");
-          else setSelectedPreset("custom");
-        } else {
-          setSelectedPreset("custom");
-        }
-      } else {
-        setDateRange({ from: undefined, to: undefined });
-        setSelectedPreset("custom");
-      }
-    }
-  }, [searchParams, getLocalFilterValue]);
+  const dateRange = React.useMemo(() => ({
+    from: active_gte ? parseISO(active_gte) : undefined,
+    to: active_lte ? parseISO(active_lte) : undefined
+  }), [active_gte, active_lte]);
 
   const handlePresetChange = (preset: string) => {
     setSelectedPreset(preset);
     if (preset === "any") {
-      setDateRange({ from: undefined, to: undefined });
+      setMultipleLocalFilters({ active_gte: "", active_lte: "" });
       return;
     }
+
     const currentDate = new Date();
     let from: Date | undefined, to: Date | undefined;
+
     switch (preset) {
       case "upcoming":
         from = currentDate;
@@ -212,75 +158,81 @@ export default function DateRangeSelector({
       default:
         return;
     }
-    setDateRange({ from, to });
+
+    const filters: { active_gte?: string; active_lte?: string } = {};
+    if (from) {
+      const fromDate = new Date(from);
+      fromDate.setHours(5, 30, 0, 0);
+      filters.active_gte = fromDate.toISOString();
+    }
+    if (to) {
+      const toDate = new Date(to);
+      toDate.setHours(5, 30, 0, 0);
+      filters.active_lte = toDate.toISOString();
+    }
+    setMultipleLocalFilters(filters);
     setCalendarDate(currentDate);
   };
 
   const handleDateSelect = (selectedDate: Date | undefined) => {
     if (!selectedDate) return;
     setSelectedPreset("custom");
+
     if (!dateRange.from && !dateRange.to) {
-      setDateRange({ from: selectedDate, to: selectedDate });
+      const date = new Date(selectedDate);
+      date.setHours(5, 30, 0, 0);
+      setMultipleLocalFilters({
+        active_gte: date.toISOString(),
+        active_lte: date.toISOString(),
+      });
       return;
     }
-    if (
-      dateRange.from &&
-      dateRange.to &&
-      dateRange.from.getTime() === dateRange.to.getTime()
-    ) {
+
+    if (dateRange.from && dateRange.to && dateRange.from.getTime() === dateRange.to.getTime()) {
+      const date = new Date(selectedDate);
+      date.setHours(5, 30, 0, 0);
       if (selectedDate < dateRange.from) {
-        setDateRange({ from: selectedDate, to: dateRange.from });
+        setMultipleLocalFilters({
+          active_gte: date.toISOString(),
+          active_lte: dateRange.from.toISOString(),
+        });
       } else {
-        setDateRange({ from: dateRange.from, to: selectedDate });
+        setMultipleLocalFilters({
+          active_gte: dateRange.from.toISOString(),
+          active_lte: date.toISOString(),
+        });
       }
       return;
     }
+
     if (dateRange.from && dateRange.to) {
-      setDateRange({ from: selectedDate, to: selectedDate });
+      const date = new Date(selectedDate);
+      date.setHours(5, 30, 0, 0);
+      setMultipleLocalFilters({
+        active_gte: date.toISOString(),
+        active_lte: date.toISOString(),
+      });
       return;
     }
+
     if (dateRange.from && !dateRange.to) {
+      const date = new Date(selectedDate);
+      date.setHours(5, 30, 0, 0);
       if (selectedDate < dateRange.from) {
-        setDateRange({ from: selectedDate, to: dateRange.from });
+        setMultipleLocalFilters({
+          active_gte: date.toISOString(),
+          active_lte: dateRange.from.toISOString(),
+        });
       } else {
-        setDateRange({ from: dateRange.from, to: selectedDate });
+        setMultipleLocalFilters({
+          active_gte: dateRange.from.toISOString(),
+          active_lte: date.toISOString(),
+        });
       }
-      return;
     }
-  };
-
-  const applyHandler = () => {
-    if(source!=="tracker"){
-    const filters: { active_gte?: string; active_lte?: string } = {};
-
-    if (dateRange.from) {
-      const fromDate = new Date(dateRange.from);
-      fromDate.setHours(5, 30, 0, 0);
-      filters.active_gte = fromDate.toISOString();
-    }
-
-    if (dateRange.to) {
-      const toDate = new Date(dateRange.to);
-      toDate.setHours(5, 30, 0, 0);
-      filters.active_lte = toDate.toISOString();
-    }
-
-    if(filters.active_gte && filters.active_lte)
-      setMultipleLocalFilters(filters);
-    else
-      deleteMultipleLocalFilters(['active_gte', 'active_lte']);
-
-    if (source === 'coordinate') {
-      applyFilters();
-    }
-    }
-    setIsOpen(false);
   };
 
   const onOpenChange = (open: boolean) => {
-    if (!open) {
-      applyHandler();
-    }
     setIsOpen(open);
   };
   useEffect(() => {
@@ -301,7 +253,7 @@ export default function DateRangeSelector({
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
-          <div className="flex items-center">
+          <div className="flex items-center truncate">
             <span className="mr-2">Dates</span>
             {(dateRange.from || dateRange.to) && (
               <span className="text-xs text-primary truncate">

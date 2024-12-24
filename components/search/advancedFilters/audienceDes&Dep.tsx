@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Check, ChevronDown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,6 @@ import { useMiscService } from "@/services/miscService";
 import { useQuery } from "@tanstack/react-query";
 import { useFilterContext } from "@/context/filterContext";
 import { Designations } from "@/types/misc";
-import { LockClosedSmall } from "geist-icons";
 
 const useDesignationsAutocomplete = (input: string) => {
   const miscService = useMiscService();
@@ -37,93 +36,54 @@ const useDesignationsAutocomplete = (input: string) => {
     isError: !!error,
   };
 };
-interface desInterface {
-  isProfileEnabled?: boolean;
-}
-interface DesAndDepProps{
-  source: string,
-  enabledProfileData?:desInterface,
-  designationData?:string[],
-  setDesignationData?:React.Dispatch<React.SetStateAction<string[]>>,
-}
-export default function AudienceDesAndDepSelector({source, designationData, setDesignationData, enabledProfileData}: DesAndDepProps) {
-  const [open, setOpen] = useState(false);
-  const [selectedLabels, setSelectedLabels] = useState<Designations[]>([]);
-  const [search, setSearch] = useState("");
-  const { designations } = useDesignationsAutocomplete(search);
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
-  useEffect(() => {
-    if(source!=="tracker"){
-      const designation = getLocalFilterValue("designations");
-      if(designation){
-      const result = designations.filter((item:Designations) =>
-        designation.split(',')?.some((data) => data=== item.slug)
-      );   
-      setSelectedLabels?.(result);
-    }
-  }
-  }, [getLocalFilterValue]);
-  const handleSelect = (label: Designations) => {
-    setSelectedLabels((prev) => {
-      const isSelected = prev.some((l) => l.id === label.id);
-      if (isSelected) {
-        return prev.filter((l) => l.id !== label.id);
-      } else {
-        return [...prev, label];
-      }
-    });
-  };
 
-  const handleApply = () => {
-   
-    // setOpen(false)
-    if(source!=="tracker"){
-    const res=selectedLabels.map((labels)=>labels.slug)
-    setLocalFilter("designations", res.join(","))
-    }else {
-      setDesignationData?.(selectedLabels?.map((l) => l.id));
-      setOpen(false);
-    }
+export default function AudienceDesAndDepSelector() {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const { localFilters, setLocalFilter } = useFilterContext();
+  const { designations } = useDesignationsAutocomplete(search);
+
+  const selectedLabels = useMemo(() => {
+    const filterDesignations =
+      localFilters.designations?.split(",").filter(Boolean) || [];
+    return designations.filter((d: Designations) =>
+      filterDesignations.includes(d.id)
+    );
+  }, [localFilters.designations, designations]);
+
+  const handleSelect = (label: Designations) => {
+    const currentDesignations =
+      localFilters.designations?.split(",").filter(Boolean) || [];
+    const isSelected = currentDesignations.includes(label.id);
+
+    const newDesignations = isSelected
+      ? currentDesignations.filter((id) => id !== label.id)
+      : [...currentDesignations, label.id];
+
+    setLocalFilter("designations", newDesignations.join(","));
   };
 
   const handleRemoveLabel = (labelId: string) => {
-    setSelectedLabels((prev) => prev.filter((l) => l.id !== labelId));
+    const currentDesignations = localFilters.designations
+      ?.split(",")
+      .filter((id) => id !== labelId);
+    if (currentDesignations)
+      setLocalFilter("designations", currentDesignations.join(","));
   };
 
-  const onOpenChange = (open: boolean) => {
-    if (!open) {
-      handleApply();
-    }
-    setOpen(open);
-  };
-  useEffect(() => {
-    if(source==="tracker"){
-    setSelectedLabels(
-      designations.filter((item:Designations) =>
-        designationData?.some((data) => data=== item.id)
-      )
-    );
-    }
-  }, [designations]);
-  
   return (
-    <Popover open={open} onOpenChange={onOpenChange}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             open ? "border-primary" : "border-input"
           }`}
-          disabled={enabledProfileData ? !enabledProfileData.isProfileEnabled: false}
           onClick={() => setOpen(!open)}
           aria-expanded={open}
           aria-haspopup="true"
         >
           <div className="flex items-center">
-            {enabledProfileData && !enabledProfileData.isProfileEnabled && 
-            <LockClosedSmall color="var(--secondary-text-color)" />
-          
-            }
             <span className="mr-2">Audience Profile</span>
             {selectedLabels.length > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
@@ -139,16 +99,6 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full max-w-[var(--radix-popover-trigger-width)] min-w-[280px] p-0">
-        {/* <div className="flex justify-between items-center p-4 py-2 border-b">
-          <span className="font-medium">Labels</span>
-          <Button
-            variant="link"
-            className="text-primary pr-0"
-            onClick={handleApply}
-          >
-            Apply
-          </Button>
-        </div> */}
         <Command shouldFilter={false}>
           <CommandInput
             placeholder="Search Audience Profile"
@@ -156,7 +106,7 @@ export default function AudienceDesAndDepSelector({source, designationData, setD
           />
           <CommandEmpty>No label found.</CommandEmpty>
           <CommandGroup>
-            <CommandList className="max-h-48" >
+            <CommandList className="max-h-48">
               {designations?.map((label: Designations) => (
                 <CommandItem
                   key={label.id}

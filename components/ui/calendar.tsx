@@ -23,7 +23,7 @@ function Calendar({
   ...props
 }: CalendarProps) {
   const [month, setMonth] = React.useState<Date>(
-    props.defaultMonth || new Date()
+    props.month || new Date()
   );
 
   const handleMonthChange = React.useCallback(

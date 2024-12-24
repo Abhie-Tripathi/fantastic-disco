@@ -1,16 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from './navbar.style.module.css'
+import styles from "./navbar.style.module.css";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import HeroLogo from "/public/HeroLogo.svg";
+import HeroText from "/public/whrai.svg";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Grip,
   LogOut,
@@ -19,7 +20,8 @@ import {
   Settings,
   Sun,
   UserSearch,
-  Search
+  Search,
+  Menu,
 } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import {
@@ -27,18 +29,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { RefreshClockwise } from "geist-icons";
 import { isEventeli } from "@/config";
 import { useTheme } from "@/context/theme";
-import Link from "next/link";
+import { Sheet, SheetTrigger, SheetContent } from "../ui/sheet";
+import Image from "next/image";
+import MobileSidebar from "./mobile-sidebar";
 
 const gtmroutes: Record<string, string> = {
   internal: "Dashboard",
-  "coordinate": "Coordinate",
-  "events": "Research",
-  "trackers": "Trackers",
+  coordinate: "Coordinate",
+  events: "Research",
+  trackers: "Trackers",
   outreach: "Outreach",
-  trends: "Event Trends"
+  trends: "Event Trends",
 };
 const geniroutes: Record<string, string> = {
   "list": "Widgets",
@@ -60,19 +63,18 @@ export default function Navbar() {
 
   console.log("route", pathname.split("/").slice(-1)[0])
 
-  const router = useRouter()
+  const router = useRouter();
   const handleRoute = (route: string) => {
     if (route === "research") {
-      router.push("/internal")
+      router.push("/internal");
     } else if (route === "promote") {
-      router.push("/widget/dashboard")
+      router.push("/widget/dashboard");
     }
-
-  }
+  };
 
   return (
     <header className="bg-background border-b">
-      <div className="flex items-center justify-between px-4 py-3">
+      <div className="flex items-center justify-between px-4 sm:px-4 py-3">
         <div className="flex items-center">
           <div className="text-lg font-semibold">
             {pathname.split("/")[1] === "internal" ?
@@ -102,20 +104,25 @@ export default function Navbar() {
               </PopoverTrigger>
               <PopoverContent className="w-52 p-0" align="end">
                 <div className="grid grid-cols-2 gap-2">
-                  {pathname.split("/")[1] === "internal" ?
-                    <Button onClick={() => handleRoute("promote")}
+                  {pathname.split("/")[1] === "internal" ? (
+                    <Button
+                      onClick={() => handleRoute("promote")}
                       variant="ghost"
                       className="flex flex-col items-center justify-center gap-2 h-auto p-4"
                     >
                       <Megaphone className="h-6 w-6" />
                       <span className="text-xs">Promote</span>
-                    </Button> : <Button onClick={() => handleRoute("research")}
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => handleRoute("research")}
                       variant="ghost"
                       className="flex flex-col items-center justify-center gap-2 h-auto p-4"
                     >
                       <Search className="h-6 w-6" />
                       <span className="text-xs">Research</span>
-                    </Button>}
+                    </Button>
+                  )}
 
                   <Button
                     variant="ghost"
@@ -134,12 +141,13 @@ export default function Navbar() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="secondary"
-                className="flex items-center bg-transparent p-1"
+                className="items-center bg-transparent p-1 hidden lg:!flex "
               >
-                <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
+                <div className="bg-primary lg:!flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10 hidden">
                   {user
-                    ? `${user?.firstname[0]?.toUpperCase() ?? ""}${user?.lastname?.[0]?.toUpperCase() ?? ""
-                    }`
+                    ? `${user?.firstname[0]?.toUpperCase() ?? ""}${
+                        user?.lastname?.[0]?.toUpperCase() ?? ""
+                      }`
                     : ""}
                 </div>
               </Button>
@@ -154,6 +162,18 @@ export default function Navbar() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="lg:!hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="p-0 sm:max-w-64">
+              <MobileSidebar />
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>

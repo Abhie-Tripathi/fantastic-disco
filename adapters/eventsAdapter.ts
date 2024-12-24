@@ -57,11 +57,11 @@ export const EventsAdapter = {
       adaptedParams.eventName = params.get("eventName")!;
       return adaptedParams;
     }
-    if(params.get("onlyBranded")!==null){
-      adaptedParams.eventBrand = params.get("onlyBranded")??"";
+    if (params.get("onlyBranded") !== null) {
+      adaptedParams.eventBrand = params.get("onlyBranded") ?? "";
     }
-    if(params.get("onlySeries")!==null){
-      adaptedParams.eventSeries = params.get("onlySeries")??"";
+    if (params.get("onlySeries") !== null) {
+      adaptedParams.eventSeries = params.get("onlySeries") ?? "";
     }
     if (params.get("eventTypes")) {
       adaptedParams.eventType = params
@@ -76,11 +76,20 @@ export const EventsAdapter = {
 
     const activeGte = params.get("active_gte");
     const activeLte = params.get("active_lte");
+
     if (activeGte && activeLte) {
       const startDate = new Date(activeGte).toISOString().split("T")[0];
       const endDate = new Date(activeLte).toISOString().split("T")[0];
       adaptedParams.startDate = `${startDate},${endDate}`;
       adaptedParams.endDate = `${startDate},${endDate}`;
+    }
+    if (activeGte) {
+      const startDate = new Date(activeGte).toISOString().split("T")[0];
+      adaptedParams.startDate = `${startDate},${startDate}`;
+    }
+    if (activeLte) {
+      const endDate = new Date(activeLte).toISOString().split("T")[0];
+      adaptedParams.endDate = `${endDate},${endDate}`;
     }
 
     if (params.get("locationIds")) {
@@ -215,11 +224,40 @@ export const EventsAdapter = {
       adaptedParams.latitude = geoCoordinates.latitude;
       adaptedParams.longitude = geoCoordinates.longitude;
     }
-    if (!params.get("active_gte") && params.get("view") == "calendar") {
+    if (
+      !(params.get("active_gte") && params.get("active_lte")) &&
+      params.get("view") == "calendar"
+    ) {
       const currentYear = new Date().getFullYear();
       const startDate = new Date(currentYear, 0, 1).toISOString().split("T")[0];
       const endDate = new Date(currentYear, 11, 31).toISOString().split("T")[0];
       adaptedParams.groupBy = `${startDate},${endDate}`;
+    }
+
+    if (
+      params.get("active_gte") &&
+      !params.get("active_lte") &&
+      params.get("view") == "calendar"
+    ) {
+      const startDate = new Date(params.get("active_gte")!);
+      const endDate = new Date(startDate);
+      endDate.setFullYear(startDate.getFullYear() + 1);
+      adaptedParams.groupBy = `${startDate.toISOString().split("T")[0]},${
+        endDate.toISOString().split("T")[0]
+      }`;
+    }
+
+    if (
+      !params.get("active_gte") &&
+      params.get("active_lte") &&
+      params.get("view") == "calendar"
+    ) {
+      const endDate = new Date(params.get("active_lte")!);
+      const startDate = new Date(endDate);
+      startDate.setFullYear(endDate.getFullYear() - 1);
+      adaptedParams.groupBy = `${startDate.toISOString().split("T")[0]},${
+        endDate.toISOString().split("T")[0]
+      }`;
     }
 
     if (
@@ -242,6 +280,10 @@ export const EventsAdapter = {
       const startDate = firstDayOfMonth.toISOString().split("T")[0];
       const endDate = lastDayOfMonth.toISOString().split("T")[0];
       adaptedParams.groupBy = `${startDate},${endDate}`;
+    }
+
+    if (params.get("take")) {
+      adaptedParams.max = params.get("take")!;
     }
 
     return adaptedParams;
@@ -463,6 +505,7 @@ export const EventsAdapter = {
           format: item.format.toLowerCase(),
           createdAt: item.createdAt,
           updatedAt: item.createdAt,
+          audienceZone: item.audienceZone,
           description: item.description,
           logoUrl: item.logoUrl,
           bannerUrl: null,
@@ -747,6 +790,7 @@ export const EventsAdapter = {
         format: response.event.format.toLowerCase(),
         createdAt: response.event.createdAt,
         updatedAt: response.event.createdAt,
+        audienceZone: response.event.audienceZone,
         description: response.event.description,
         logoUrl: response.event.logoUrl,
         bannerUrl: null,

@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 import { isEventeli } from "@/config";
-import {toast} from 'react-toastify';
+
 const eventStatuses = isEventeli
   ? [
       { id: "active", label: "Active" },
@@ -24,79 +24,26 @@ const eventStatuses = isEventeli
       { id: "cancelled", label: "Cancelled" },
       { id: "postponed", label: "Postponed" },
     ];
-interface statusInterface{
-  enabledValue?:string[] | undefined;
-  selectedValue?:string[] | undefined;
-}
-interface StatusSelectorProps {
-  enabledStatuses?:statusInterface | undefined;
-  source: string;
-  selectedStatuses?: string[];
-  setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
-}
-export default function StatusSelector({
-  source,
-  enabledStatuses,
-  selectedStatuses: parentSelectedFormats = [],
-  setSelectedStatuses: parentSetSelectedFormats,
-}: StatusSelectorProps) {
+export default function StatusSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, searchParams } =
-    useFilterContext();
-  const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<
-    string[]
-  >([]);
+  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
 
-  const selectedStatuses =
-    source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
-  const setSelectedStatuses =
-    source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
-
-  useEffect(() => {
-    if (source !== "tracker" && setSelectedStatuses) {
-      const currentFilter = getLocalFilterValue("status");
-      setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
-    }
-  }, [searchParams, getLocalFilterValue]);
-
+  const selectedStatuses = getLocalFilterValue("status")
+    .split(",")
+    .filter(Boolean);
   const selectedStatus = selectedStatuses.length;
 
   const handleStatusToggle = (statusId: string) => {
-    setSelectedStatuses?.((prev) =>{
-    if(enabledStatuses?.enabledValue && prev.length==1 && prev.includes(statusId)){
-      toast.error("At least one filter must be selected", {
-        position: "bottom-right",
-        autoClose: 2000,
-        hideProgressBar: true,
-      });
-      return prev;
-    }
-     return prev.includes(statusId)
-        ? prev.filter((id) => id !== statusId)
-        : [...prev, statusId]
-  });
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    setSelectedStatuses?.(
-      checked ? eventStatuses.map((status) => status.id) : []
-    );
-  };
-
-  const isAllSelected = selectedStatuses.length === eventStatuses.length;
-
-  const handleApply = () => {  
-    
-    setLocalFilter("status", selectedStatuses.join(","));
-    setIsOpen(false);
+    const newStatuses = selectedStatuses.includes(statusId)
+      ? selectedStatuses.filter((id) => id !== statusId)
+      : [...selectedStatuses, statusId];
+    setLocalFilter("status", newStatuses.join(","));
   };
 
   const onOpenChange = (open: boolean) => {
-    if (!open) {
-      handleApply();
-    }
     setIsOpen(open);
   };
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
@@ -139,7 +86,7 @@ export default function StatusSelector({
           </Button>
         </div> */}
 
-        <div className="p-2 space-y-2">
+        <div className="p-4 space-y-4">
           {/* <div className="flex items-center space-x-2">
             <Checkbox
               id="select-all"
@@ -158,10 +105,11 @@ export default function StatusSelector({
             <div key={status.id} className="flex items-center space-x-2">
               <Checkbox
                 id={status.id}
+                disabled={status.id == "predicted"}
                 className="rounded-none"
-                disabled={enabledStatuses?.enabledValue && !enabledStatuses.enabledValue.includes(status.id.toUpperCase())}
                 checked={selectedStatuses.includes(status.id)}
                 onCheckedChange={() => handleStatusToggle(status.id)}
+                // disabled={status.label == "Predicted"}
               />
               <label
                 htmlFor={status.id}

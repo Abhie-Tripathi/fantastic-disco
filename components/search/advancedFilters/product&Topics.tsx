@@ -34,23 +34,35 @@ export default function KeywordFilter({
   setExcludeKeywords : setParentExcludeKeywords,
 }:KeywordSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { getLocalFilterValue, setMultipleLocalFilters } = useFilterContext();
-  const [localIncludeKeywords, setLocalIncludeKeywords] = useState<string[]>([]);
-  const [localExcludeKeywords, setLocalExcludeKeywords] = useState<string[]>([]);
+  const {
+    getLocalFilterValue,
+    setMultipleLocalFilters,
+    localFilters,
+    searchParams,
+  } = useFilterContext();
+  const [localIncludeKeywords, setLocalIncludeKeywords] = useState<string[]>(
+    []
+  );
+  const [localExcludeKeywords, setLocalExcludeKeywords] = useState<string[]>(
+    []
+  );
   const [inputValue, setInputValue] = useState("");
   const [activeTab, setActiveTab] = useState<"include" | "exclude">("include");
-  const includeKeywords = source==="tracker"? parentIncludeKeyword : localIncludeKeywords;
-  const setIncludeKeywords = source==="tracker"? setParentIncludeKeywords : setLocalIncludeKeywords;
-  const excludeKeywords = source==="tracker"? parentExcludeKeyword : localExcludeKeywords;
-  const setExcludeKeywords = source==="tracker"? setParentExcludeKeywords : setLocalExcludeKeywords;
+  const includeKeywords =
+    source === "tracker" ? parentIncludeKeyword : localIncludeKeywords;
+  const setIncludeKeywords =
+    source === "tracker" ? setParentIncludeKeywords : setLocalIncludeKeywords;
+  const excludeKeywords =
+    source === "tracker" ? parentExcludeKeyword : localExcludeKeywords;
+  const setExcludeKeywords =
+    source === "tracker" ? setParentExcludeKeywords : setLocalExcludeKeywords;
+
   useEffect(() => {
-    const savedIncludeKeywords = getLocalFilterValue("includeKeywords");
-    const savedExcludeKeywords = getLocalFilterValue("excludeKeywords");
-    if (savedIncludeKeywords)
-      setIncludeKeywords?.(savedIncludeKeywords.split(","));
-    if (savedExcludeKeywords)
-      setExcludeKeywords?.(savedExcludeKeywords.split(","));
-  }, [getLocalFilterValue]);
+    const savedIncludeKeywords = localFilters.includeKeywords;
+    const savedExcludeKeywords = localFilters.excludeKeywords;
+    setIncludeKeywords?.(savedIncludeKeywords?.split(",") || []);
+    setExcludeKeywords?.(savedExcludeKeywords?.split(",") || []);
+  }, [searchParams, localFilters]);
 
   const handleAddKeyword = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,8 +76,7 @@ export default function KeywordFilter({
         const uniqueNewKeywords = newKeywords.filter(
           (k) => !includeKeywords.includes(k)
         );
-        console.log(includeKeywords);
-        
+
         setIncludeKeywords?.([...includeKeywords, ...uniqueNewKeywords]);
       } else {
         const uniqueNewKeywords = newKeywords.filter(
@@ -107,7 +118,6 @@ export default function KeywordFilter({
       handleOpenChange(true);
     }
   }, [type, isOpen]);
-  console.log(includeKeywords);
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
       {type!=="T_PRODUCT_KEYWORDS" &&

@@ -34,6 +34,14 @@ import { useToast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
 import { cn } from "@/lib/utils";
 import { eventTypeColors } from "@/constants/eventTypes";
+import { isEventeli } from "@/config";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface CircularProgressProps {
   value: number;
@@ -89,7 +97,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
           {value ? value : "-"}
         </span>
       </div>
-      <p className="text-xs border-[#EBEBEB] border bg-white rounded p-1">
+      <p className="text-xs border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded p-1">
         {label}
       </p>
     </div>
@@ -105,7 +113,9 @@ export default function EventAccordion({
 }) {
   const [openItem, setOpenItem] = useState<string | undefined>();
   const { setFilter, getFilterValue } = useFilterState();
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState<number>(
+    Number(getFilterValue("take")) || 10
+  );
   const currentPage =
     Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(count / itemsPerPage);
@@ -117,6 +127,13 @@ export default function EventAccordion({
 
   const handlePageChange = (page: number) => {
     setFilter("skip", ((page - 1) * itemsPerPage).toString());
+  };
+
+  const handleItemsPerPageChange = (value: string) => {
+    const newItemsPerPage = parseInt(value);
+    setItemsPerPage(newItemsPerPage);
+
+    setFilter("take", newItemsPerPage.toString());
   };
 
   const renderPaginationItems = () => {
@@ -211,7 +228,34 @@ export default function EventAccordion({
         </ul>
       </div>
       {totalPages > 1 && (
-        <div className="mt-4 sticky bottom-0 bg-white py-4 border-t">
+        <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
+          <div className="flex justify-between items-center mb-2 px-2">
+            <div>
+              <span className="text-sm text-muted-foreground">
+                Showing {Math.min((currentPage - 1) * itemsPerPage + 1, count)}{" "}
+                to {Math.min(currentPage * itemsPerPage, count)} of {count}{" "}
+                results
+              </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-muted-foreground">
+                Results per page:
+              </span>
+              <Select
+                value={itemsPerPage.toString()}
+                onValueChange={handleItemsPerPageChange}
+              >
+                <SelectTrigger className="w-[70px]">
+                  <SelectValue>{itemsPerPage}</SelectValue>
+                </SelectTrigger>
+                <SelectContent align="end">
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="20">20</SelectItem>
+                  <SelectItem value="30">30</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           <Pagination>
             <PaginationContent className="flex-wrap justify-center">
               <PaginationItem>
@@ -341,15 +385,13 @@ const EventListItem = ({
   };
 
   return (
-    <div className="bg-white rounded-lg border border-[#EBEBEB] shadow-sm relative">
+    <div className="bg-background rounded-lg border shadow-sm relative">
       <Link href={`/internal/event/${event.id}`} className="block">
         <div className="absolute w-[6px] h-full left-0 top-0 rounded-lg bg-[#5055A3]"></div>
         <div className="p-6">
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-7 flex flex-col justify-between gap-3">
-              <h2 className="text-2xl font-semibold text-gray-900 ">
-                {event.name}
-              </h2>
+              <h2 className="text-2xl font-semibold ">{event.name}</h2>
 
               <div>
                 <p className="text-sm capitalize">{address}</p>
@@ -494,27 +536,38 @@ const EventListItem = ({
                       Top {event.rankings.rankRange}
                     </Badge>
                   )}
+
+                  {event.audienceZone && (
+                    <Badge
+                      variant="outline"
+                      className="text-gray-600 capitalize"
+                    >
+                      {event.audienceZone} Audience
+                    </Badge>
+                  )}
                 </div>
               </div>
             </div>
 
             <div className="col-span-5 flex flex-col justify-between">
-              <div className="flex items-center justify-end">
-                <Button
-                  variant="ghost"
-                  disabled={isSaved}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleSaveEvent(event.id);
-                  }}
-                >
-                  {isSaved ? (
-                    <BookmarkCheck className="w-5 h-5 text-primary" />
-                  ) : (
-                    <Bookmark className="w-5 h-5 text-primary" />
-                  )}
-                </Button>
-              </div>
+              {isEventeli && (
+                <div className="flex items-center justify-end">
+                  <Button
+                    variant="ghost"
+                    disabled={isSaved}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleSaveEvent(event.id);
+                    }}
+                  >
+                    {isSaved ? (
+                      <BookmarkCheck className="w-5 h-5 text-primary" />
+                    ) : (
+                      <Bookmark className="w-5 h-5 text-primary" />
+                    )}
+                  </Button>
+                </div>
+              )}
               <div className="flex items-center justify-end">
                 {event.scores ? (
                   <div className="flex items-center justify-between w-full">
@@ -553,7 +606,7 @@ const EventListItem = ({
 
                     <div className="space-y-4">
                       {event.scores && (
-                        <div className="grid grid-cols-3 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                        <div className="grid grid-cols-3 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] dark:bg-[#171717] p-2 rounded">
                           <CircularProgress
                             value={event.scores.impactScore}
                             label="EIS"

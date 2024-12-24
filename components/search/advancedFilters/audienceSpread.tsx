@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,42 +16,36 @@ import Image from "next/image";
 import { useMiscService } from "@/services/miscService";
 import { Country } from "@/types/events/events";
 import { useFilterContext } from "@/context/filterContext";
-import { LockClosedSmall } from "geist-icons";
-interface AudienceSpreadProps{
+interface AudienceSpreadProps {
   source: string;
-  enabledSpreadData?:spreadInterface;
   selectedCountries?: string[];
   setSelectedCountries?: React.Dispatch<React.SetStateAction<string[]>>;
 }
-interface spreadInterface{
-  isAudienceEnabled?:boolean;
-}
-export default function Component({
-  source,
-  enabledSpreadData,
-  selectedCountries: selectedParentCountries = [],
-  setSelectedCountries: setSelectedParentCountries,
-}: AudienceSpreadProps) {
+export default function Component() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedLocalCountries, setSelectedLocalCountries] = useState<string[]>([]);
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [countries, setCountries] = useState<Country[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
-  const { setMultipleLocalFilters, getLocalFilterValue } = useFilterContext();
+  const { localFilters, setMultipleLocalFilters } = useFilterContext();
   const { getCountries, getRegions, isLoading, error } = useMiscService();
-  const selectedCountries = source==="tracker"? selectedParentCountries: selectedLocalCountries;
-  const setSelectedCountries = source==="tracker"?
-  setSelectedParentCountries: setSelectedLocalCountries;
+
+  const selectedCountries = useMemo(() => 
+    localFilters.audienceSpread?.split(',').filter(Boolean) || []
+  , [localFilters.audienceSpread]);
+
+  const selectedRegions = useMemo(() => 
+    localFilters.audienceSpreadRegions?.split(',').filter(Boolean) || []
+  , [localFilters.audienceSpreadRegions]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         const countriesResponse = await getCountries();
         console.log(countriesResponse);
-        
+
         setCountries(countriesResponse?.formattedLocations || []);
 
-        const regionsResponse = getRegions();
+        const regionsResponse = await getRegions();
         setRegions(regionsResponse?.regions || []);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -60,20 +54,6 @@ export default function Component({
 
     fetchData();
   }, []);
-
-  useEffect(() => {
-    if(source!=="tracker"){
-    const audienceSpread = getLocalFilterValue("audienceSpread");
-    const audienceSpreadRegions = getLocalFilterValue("audienceSpreadRegions");
-    if (audienceSpread) {
-      setSelectedCountries?.(audienceSpread.split(","));
-    }
-
-    if (audienceSpreadRegions) {
-      setSelectedRegions(audienceSpreadRegions.split(","));
-    }
-  }
-  }, [getLocalFilterValue]);
 
   const filteredCountries = countries.filter((country) =>
     country.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -84,45 +64,47 @@ export default function Component({
   );
 
   const toggleCountry = (code: string) => {
-    setSelectedCountries?.((prev) =>
-      prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]
-    );
-  };
-
-  const toggleRegion = (region: string) => {
-    setSelectedRegions((prev) =>
-      prev.includes(region)
-        ? prev.filter((r) => r !== region)
-        : [...prev, region]
-    );
-  };
-
-  const removeFilter = (code: string) => {
-    setSelectedCountries?.((prev) => prev.filter((c) => c !== code));
-    setSelectedRegions((prev) => prev.filter((r) => r !== code));
-  };
-
-  const handleApply = () => {
+    const newCountries = selectedCountries.includes(code)
+      ? selectedCountries.filter(c => c !== code)
+      : [...selectedCountries, code];
+    
     setMultipleLocalFilters({
-      audienceSpread: selectedCountries.join(","),
-      audienceSpreadRegions: selectedRegions.join(","),
+      audienceSpread: newCountries.join(',')
     });
   };
 
-  const onOpenChange = (open: boolean) => {
-    if (!open) {
-      handleApply();
+  const toggleRegion = (region: string) => {
+    const newRegions = selectedRegions.includes(region)
+      ? selectedRegions.filter(r => r !== region)
+      : [...selectedRegions, region];
+    
+    setMultipleLocalFilters({
+      audienceSpreadRegions: newRegions.join(',')
+    });
+  };
+
+  const removeFilter = (code: string) => {
+    if (selectedCountries.includes(code)) {
+      setMultipleLocalFilters({
+        audienceSpread: selectedCountries.filter(c => c !== code).join(',')
+      });
     }
+    if (selectedRegions.includes(code)) {
+      setMultipleLocalFilters({
+        audienceSpreadRegions: selectedRegions.filter(r => r !== code).join(',')
+      });
+    }
+  };
+
+  const onOpenChange = (open: boolean) => {
     setIsOpen(open);
   };
-  console.log(selectedCountries);
-  
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          disabled={enabledSpreadData && !enabledSpreadData?.isAudienceEnabled}
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             isOpen ? "border-primary" : "border-input"
           }`}
@@ -131,9 +113,6 @@ export default function Component({
           aria-haspopup="true"
         >
           <div className="flex items-center">
-          {enabledSpreadData && !enabledSpreadData.isAudienceEnabled && 
-            <LockClosedSmall color="var(--secondary-text-color)" />
-          }
             <span className="mr-2">Audience Spread</span>
             {(selectedCountries.length > 0 || selectedRegions.length > 0) && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
@@ -153,6 +132,7 @@ export default function Component({
           {selectedCountries.map((code) => {
             const country = countries.find((c) => c.id === code);
             if (!country) return null;
+            if (country.iso == "UK") country.iso = "GB";
             const Flag = Flags[country.iso as keyof typeof Flags];
             return (
               <div
@@ -289,6 +269,7 @@ export default function Component({
                 <div className="text-gray-500">No countries found</div>
               ) : (
                 filteredCountries.map((country) => {
+                  if (country.iso == "UK") country.iso = "GB";
                   const Flag = Flags[country.iso as keyof typeof Flags];
                   return (
                     <div

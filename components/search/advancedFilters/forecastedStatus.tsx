@@ -1,52 +1,26 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { useFilterContext } from "@/context/filterContext";
 import { Switch } from "@/components/ui/switch";
-import { LockClosedSmall } from "geist-icons";
-interface forecastInterface{
-  isForecastedEnabled?:boolean,
-  toggleOpend?:boolean,
-}
-interface ForecastedProps{
-  enabledForecastData?:forecastInterface;
-  source:string;
-  isEnabled?: boolean;
-  setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
-}
-export default function ForecastedStatusSelector({
-  enabledForecastData,
-  source,
-  isEnabled: parentIsEnabled = false,
-  setIsEnabled: parentSetIsEnabled,
-}: ForecastedProps) {
+
+export default function ForecastedStatusSelector() {
   const { setLocalFilter, getLocalFilterValue } = useFilterContext();
-  const [localIsEnabled, setLocalIsEnabled] = useState(false);
-  const isEnabled = source === "tracker" ? parentIsEnabled : localIsEnabled;
-  const setIsEnabled = source === "tracker" ? parentSetIsEnabled : setLocalIsEnabled;
-  useEffect(() => {
-    if(source!=="tracker"){
+
+  const isEnabled = useMemo(() => {
     const showFilters = getLocalFilterValue("show").split(",");
-    setIsEnabled?.(showFilters.includes("forecasted"));
-    }
+    return showFilters.includes("forecasted");
   }, [getLocalFilterValue]);
 
   const handleToggle = (checked: boolean) => {
-    setIsEnabled?.(checked);
-    const showFilters = getLocalFilterValue("show").split(",");
-    console.log(showFilters);
+    const showFilters = getLocalFilterValue("show").split(",").filter(Boolean);
+
     if (checked) {
-      setLocalFilter(
-        "show",
-        [...showFilters, "forecasted"].join(",").replace(/^,|,$/g, "")
-      );
+      setLocalFilter("show", [...showFilters, "forecasted"].join(","));
     } else {
       setLocalFilter(
         "show",
-        showFilters
-          .filter((filter) => filter !== "forecasted")
-          .join(",")
-          .replace(/^,|,$/g, "")
+        showFilters.filter((filter) => filter !== "forecasted").join(",")
       );
     }
   };
@@ -54,13 +28,9 @@ export default function ForecastedStatusSelector({
   return (
     <Button
       variant="outline"
-      disabled={enabledForecastData && !enabledForecastData?.isForecastedEnabled}
       className="w-full justify-between px-3 py-5 text-base font-normal"
     >
       <div className="flex items-center">
-          {enabledForecastData && !enabledForecastData.isForecastedEnabled && 
-              <LockClosedSmall color="var(--secondary-text-color)" />
-            }
         <span className="mr-2">Forecasted Status</span>
       </div>
       <Switch

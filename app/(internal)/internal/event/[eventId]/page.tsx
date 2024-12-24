@@ -38,6 +38,7 @@ import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import SaveThisEvent from "@/components/gtmDetail/saveThisEvent";
 import { toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
   const scrollableSectionRef = useRef<HTMLElement | null>(null);
@@ -169,17 +170,16 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   };
 
   return (
-    <div className="pt-0 p-6">
+    <div className="pt-0">
       <aside className="fixed h-screen w-[25%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[4px_0_10px_rgba(0,0,0,0.1)] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
-        <button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
+        <Button
+          variant="link"
+          onClick={() => router.back()}
+          className="flex items-center gap-2 p-0 pb-4 "
+        >
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
-          <Link
-            className="text-[var(--primary-color)] font-medium"
-            href={"/internal/search/events"}
-          >
-            Back to Search
-          </Link>
-        </button>
+          <span>Back to Search</span>
+        </Button>
         {bannerUrl && (
           <Image
             src={bannerUrl ?? "/eventDetailFallback.png"}
@@ -481,7 +481,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                         )}
                         {email && (
                           <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-                            <MailIcon width="12px" height="12px" className="self-start mt-1"/>
+                            <MailIcon
+                              width="12px"
+                              height="12px"
+                              className="self-start mt-1"
+                            />
                             <span className="break-all">{email}</span>
                           </p>
                         )}
