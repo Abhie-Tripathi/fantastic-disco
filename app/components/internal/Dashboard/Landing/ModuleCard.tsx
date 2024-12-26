@@ -1,8 +1,6 @@
 import { Button } from '@/components/ui/button'
 import React from 'react'
-import styles from './modulecard.style.module.css'
 import { MoveRight } from 'lucide-react'
-import ResearchModule from '/public/internal/dashboard/ResearchModule.png'
 import Image, { StaticImageData } from 'next/image'
 
 interface Props {
@@ -12,12 +10,12 @@ interface Props {
   subHeading: string;
   button: string;
   image: StaticImageData;
-  bottom: number;
+  top: number;
 }
 
-const ModuleCard = ({ imgHeight, imgWidth, heading, subHeading, image, button, bottom }: Props) => {
+const ModuleCard = ({ imgHeight, imgWidth, heading, subHeading, image, button, top }: Props) => {
   return (
-    <div className="flex flex-col items-center justify-start h-[267px] w-[289px] bg-primary-foreground rounded-md shadow-md overflow-hidden p-3">
+    <div className="flex flex-col items-center justify-start h-[267px] w-[289px] bg-[var(--primary-foreground)] rounded-md shadow-md overflow-hidden p-3">
       <div className="flex flex-col items-center justify-center min-h-[130px] max-h-[130px] w-[250px]">
         <div className="text-[var(--primary-color)] font-semibold text-sm">
           {heading}
@@ -25,19 +23,18 @@ const ModuleCard = ({ imgHeight, imgWidth, heading, subHeading, image, button, b
         <div className="text-[var(--bold-border-color)] text-xs mt-3 text-center">
           {subHeading}
         </div>
-        <Button className="mt-5 btn-default flex items-center">
-          {button}
-          <MoveRight width={12} />
-        </Button>
+        {button === "Coming Soon" ? 
+        <button className='text-white text-sm rounded-lg bg-gradient-to-r from-[#8C67E2] via-[#946DF0] via-[#E87D83] via-[#F2AB7F] to-[#FFC899] px-4 py-2'>{button}</button> :
+        <Button className="mt-5 btn-default flex items-center">{button}<MoveRight width={12} /></Button>}
       </div>
       <Image
-        className={`${styles.img} min-w-[${imgWidth}px] min-h-[${imgHeight}px]`}
+        className={`min-w-[${imgWidth}px] min-h-[${imgHeight}px]`}
         src={image}
         alt="research"
         width={imgWidth}
         height={imgHeight}
         unoptimized
-        style={{ bottom: bottom }}
+        style={{ marginTop: `${top}px` }}
       />
     </div>
   );
