@@ -19,7 +19,7 @@ const eventFormats = [
 
 export default function EventFormatSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
+  const { setLocalFilter, getLocalFilterValue, localFilters } = useFilterContext();
 
   const selectedFormats = getLocalFilterValue("eventFormats")
     .split(",")
@@ -36,7 +36,8 @@ export default function EventFormatSelector() {
   const onOpenChange = (open: boolean) => {
     setIsOpen(open);
   };
-
+  console.log(localFilters);
+  
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>

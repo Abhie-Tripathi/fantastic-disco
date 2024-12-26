@@ -22,7 +22,8 @@ const groupedEventTypes: Record<EventGroupType, string[]> = {
 export default function EventTypeSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue } = useFilterContext();
-
+  console.log(getLocalFilterValue("eventTypes"));
+  
   const selectedCategories = useMemo(() => {
     const eventTypes = getLocalFilterValue("eventTypes")
       .split(",")

@@ -34,6 +34,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useLocationService } from "@/services/locationService";
 import { useFilterContext } from "@/context/filterContext";
+import { useTrackerContext } from "@/context/tracker";
+import Loading from "../ui/Loading";
 import { useTrackerServices } from "@/services/trackerServices";
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
@@ -56,6 +58,8 @@ interface MapProps {
   searchParams?: string;
   source?:string;
   trackerId?:string;
+  isGlobal?:boolean;
+  trackerLoc?:string;
 }
 
 interface Coordinates {
@@ -70,10 +74,11 @@ interface PopupInfo {
 
 type ZoomGroup = "country" | "state" | "city" | "event" | null;
 
-export default function MapComponent({ searchParams, source, trackerId }: MapProps) {
+export default function MapComponent({ searchParams, source, trackerId, isGlobal, trackerLoc}: MapProps) {
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
   const {getMapViewData, getEventsLatLongData}=useTrackerServices();
+  const {data}=useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
     latitude: 20.5937,
     longitude: 78.9629,
@@ -97,7 +102,21 @@ export default function MapComponent({ searchParams, source, trackerId }: MapPro
     feature: any;
     clusteredPoints?: { name: string; count: number }[];
   } | null>(null);
+//   console.log(data?.tracker);
+//   const cityIds = data?.tracker?.filterValue?.locationIds?.city?.length > 0 
+//   ? data?.tracker?.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0]) 
+//   : [];
 
+// const countryIds = data?.tracker?.filterValue?.locationIds?.country?.length > 0 
+//   ? data?.tracker?.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0]) 
+//   : [];
+
+// const stateIds = data?.tracker?.filterValue?.locationIds?.state?.length > 0 
+//   ? data?.tracker?.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0]) 
+//   : [];
+//   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
+  console.log(trackerLoc);
+  
   const memoizedGetEventsCount = useCallback(getEventsCount, []);
   const memoizedGetEventsWithSearchParams = useCallback(
     getEventsWithSearchParams,
@@ -109,15 +128,16 @@ export default function MapComponent({ searchParams, source, trackerId }: MapPro
 
   const location = useMemo(() => {
     const geoCoordinates = getLocalFilterValue("geoCoordinates");
-    const locationIds = source?"some random location from tracker":getLocalFilterValue("locationIds");
-
+    const locationIds = source==="tracker"? trackerLoc:getLocalFilterValue("locationIds");
+    console.log(locationIds);
+    
     if (geoCoordinates) {
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
-    } else if (locationIds.length) {
+    } else if (locationIds?.length) {
       return { type: "locationIds", locationIds };
     }
     return null;
-  }, [searchParams]);
+  }, [searchParams, trackerLoc]);
 
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey: source === "tracker"
@@ -430,7 +450,9 @@ export default function MapComponent({ searchParams, source, trackerId }: MapPro
 
   useEffect(() => {
     const fetchLocationDetails = async () => {
-      if (location?.type === "locationIds" && location.locationIds.length > 0 && source!=="tracker") {
+      console.log(location);
+      
+      if (location?.type === "locationIds" && location.locationIds.length > 0) {
         try {
           const details = await getLocationDetails(location.locationIds);
           if (
@@ -477,8 +499,20 @@ export default function MapComponent({ searchParams, source, trackerId }: MapPro
     };
     fetchLocationDetails();
   }, [location]);
-
   useEffect(() => {
+    setViewport({
+      latitude: 0,
+      longitude: 0,
+      zoom: 1,
+      bearing: 0,
+      pitch: 0,
+      padding: { top: 0, bottom: 0, left: 0, right: 0 },
+    });
+    
+  }, [trackerId]);
+  useEffect(() => {
+    console.log(locationBBox);
+    
     if (!mapRef.current) return;
     if (location?.type === "geoCoordinates") {
       const { latitude, longitude, radius } = location;
@@ -539,14 +573,17 @@ export default function MapComponent({ searchParams, source, trackerId }: MapPro
 
   const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
   const showEvent = viewport.zoom >= 12 && events.length;
-
+  console.log(viewport);
+  
   return (
     <div className="relative">
+      {(eventCountsQuery.isLoading)? <Loading/>:
+      <>
       {!location ? (
         <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
       ) : (
         <ReactMapGL
-          style={{ width: "100%", height: "700px" }}
+          style={{ width: "100%",  height: !isGlobal ? "700px" : "300px"  }}
           onMove={onMove}
           onLoad={onMapLoad}
           onClick={handleMapClick}
@@ -607,6 +644,7 @@ export default function MapComponent({ searchParams, source, trackerId }: MapPro
           ref={mapRef}
           {...viewport}
         >
+          {!isGlobal &&
           <Button
             variant="default"
             className="absolute top-4 right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
@@ -615,7 +653,7 @@ export default function MapComponent({ searchParams, source, trackerId }: MapPro
             <AlignLeft className="w-5 h-5" />
             <span>Event List</span>
           </Button>
-
+          }
           {isHolidaySelected && (
             <div className="absolute top-4 left-4 bg-white rounded-sm shadow-sm flex items-center gap-2 p-2">
               <Checkbox
@@ -864,6 +902,8 @@ export default function MapComponent({ searchParams, source, trackerId }: MapPro
           )}
         </ReactMapGL>
       )}
+      </>
+      }
     </div>
   );
 }

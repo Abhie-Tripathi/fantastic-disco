@@ -400,10 +400,16 @@ const Pages = () => {
   const searchParams = useSearchParams();
   
   const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
+  const { getLocalFilterValue, setLocalFilter } = useFilterContext();
   const {enabledFilters } = useFilterContext();
   interface SelectedLocation {
     [id: string]: string;
   }
+  const eventTypes = getLocalFilterValue("eventTypes")
+      .split(",")
+      .filter(Boolean);
+      console.log(eventTypes);
+      
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const {getTrackerDetail,createTracker,editTracker, error}=useTrackerServices();
   const [isRatingOpen, setRatingOpen] = useState<boolean>(enabledFilters?.eventRating?.isRatingEnabled || false);
@@ -440,9 +446,12 @@ const Pages = () => {
 });
   const [selectedEventTypeName, setSelectedEventTypeName] = useState<string>('');
   const [selectedZone, setSelectedZone] = useState<string[]>([]);
+  // const [selectedCategories, setSelectedCategories] = useState<string[]>(
+  //   enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
+  // );
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
-    enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
-  );
+      enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
+    );
   const [selectedLocations, setSelectedLocations] = useState<string[]>(
     searchParams.get("location")?.split(",") || []
   );
@@ -780,6 +789,9 @@ const Pages = () => {
       ...(audienceSpread && {audienceSpread:true}),
       ...(freqToggle && {eventFrequency:true}),
     }
+     const eventType1=getLocalFilterValue("eventTypes")
+      .split(",")
+      .filter(Boolean);
     const formData = {
       name: trackerName,
       ...(type && type.length > 0 && {
@@ -811,8 +823,8 @@ const Pages = () => {
         ...(speakerCompany.length > 0 && {
           speakerOrg: speakerCompany,
         }),
-        ...(selectedEventType?.business?.length > 0 && {
-          eventType: selectedEventType.business
+        ...(getLocalFilterValue("eventTypes")?.length > 0 && {
+          eventType: eventType1
             .map(eventType => eventType.charAt(0).toUpperCase() + eventType.slice(1).replace(/s$/, ""))
             .join(","),
         }),
@@ -864,8 +876,8 @@ const Pages = () => {
         ...(selectedLabels?.length > 0 && {
           labels: selectedLabels.join(","),
         }),
-        ...(selectedEventFormat?.length > 0 && {
-          eventFormat: selectedEventFormat.join(","),
+        ...(getLocalFilterValue("eventFormats")?.length > 0 && {
+          eventFormat: getLocalFilterValue("eventFormats"),
         }),
         // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
         ...(selectedEventStatus?.length > 0 && {
@@ -1251,6 +1263,9 @@ const Pages = () => {
           ? editData?.tracker?.filterValue?.eventFormat?.split(",")
           : []
       );
+    console.log(editData?.tracker?.filterValue?.eventFormat);
+      setLocalFilter("eventFormats", editData?.tracker?.filterValue?.eventFormat);
+
       setIntScore(
         editData?.tracker?.filterValue?.internationalScore?.length > 0
           ? editData?.tracker?.filterValue?.internationalScore
@@ -1392,10 +1407,12 @@ const Pages = () => {
       //     : 0
       // );
       if (editData?.tracker?.filterValue?.eventType !== undefined) {
+        console.log(editData.tracker.filterValue.eventType);
+        
         const eventTypes = editData.tracker.filterValue.eventType.map((type:string) => {
           return type.charAt(0).toLowerCase() + type.slice(1) + 's';
         });
-    
+        
         if (Array.isArray(eventTypes) && eventTypes.length > 0) {
           setSelectedEventType((prev) => ({
             ...prev,
@@ -1406,6 +1423,7 @@ const Pages = () => {
                 ?.filter(item => eventTypes.includes(item.id))
                 .map(item => item.name) || [];
             setSelectedEventTypeName(selectedEventTypeNames[0] || "Default Event Name");
+            setLocalFilter("eventTypes", eventTypes.join(","));
         }
     }
 
@@ -1478,7 +1496,7 @@ const Pages = () => {
         }
       });
     }
-  }, [editData]);
+  }, [editData, searchParams]);
 
   // console.log(selectedLabels);
   const [popoverState, setPopoverState] = useState<boolean>(false);
@@ -1670,6 +1688,7 @@ useEffect(()=>{
   setRatingOpen(enabledFilters?.eventRating?.isRatingEnabled|| false);
   setExhibitOpen(enabledFilters?.estimatedExhibitScore?.isExhibitorsEnabled|| false);
   setSelectedLocationsData(enabledFilters?.locationIds?.enabledValue);
+  // setSelectedEventType({...selectedEventType,  business: enabledFilters?.eventType?.enabledValue?.map((item)=> `${item.toLowerCase()}s`) || []});
   setSelectedEventType({...selectedEventType,  business: enabledFilters?.eventType?.enabledValue?.map((item)=> `${item.toLowerCase()}s`) || []});
   setIncludeKeywords(enabledFilters?.keywords?.positiveKeywords);
   setExcludeKeywords(enabledFilters?.keywords?.negativeKeywords);

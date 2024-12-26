@@ -317,10 +317,11 @@ const Trackers = ({ searchParams }: Search) => {
   useEffect(() => {
     // console.log(item?.tracker?.eventCountry);
     if(singleTrackerData){
-    const eventCountry = singleTrackerData?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
-    const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
+    const eventCountry = singleTrackerData?.filterValue?.eventCountry?.map((countryObj:{}) => Object.keys(countryObj)[0])||[];
+    const eventState = singleTrackerData?.filterValue?.eventState?.map((stateObj:{}) => Object.keys(stateObj)[0])||[];
+    const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.keys(cityObj)[0])||[];
     const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
-    setLocations([...eventCountry, ...eventCity, ...eventZone]);
+    setLocations([...eventCountry, ...eventCity, ...eventZone, eventState]);
     if(singleTrackerData.id){
     fetchNote(singleTrackerData?.id)
   fetchSavedEvent(singleTrackerData?.id)
@@ -484,6 +485,7 @@ const Trackers = ({ searchParams }: Search) => {
           source="tracker" 
           searchParams={`active`}
           trackerId={singleTrackerData?.id}
+          trackerLoc={locations?.join(",")}
         />
         </div>
       </Suspense>

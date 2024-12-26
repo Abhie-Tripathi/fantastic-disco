@@ -85,11 +85,13 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     ) as Filters;
   }, []);
 
-  useEffect(() => {
-    setLocalFilters(
-      filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
-    );
-  }, [searchParams, filterEmptyValues]);
+  // useEffect(() => {
+  //   console.log(localFilters);
+    
+  //   setLocalFilters(
+  //     filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
+  //   );
+  // }, [searchParams, filterEmptyValues]);
 
   const setLocalFilter = useCallback((key: keyof Filters, value: string) => {
     setLocalFilters((prev) => {
@@ -160,7 +162,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-
+  console.log(localFilters);
+  
   const contextValue = useMemo(
     () => ({
       localFilters,
