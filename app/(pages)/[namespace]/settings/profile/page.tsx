@@ -121,8 +121,6 @@ const Profile = () => {
     setIsOtherInfoChange(value !== originalValue);
   };
 
- 
-
   const saveDataHandler = async () => {
     try {
       // Validation
@@ -131,33 +129,48 @@ const Profile = () => {
         return;
       }
 
-      const splitName = name.split(" ");
-      if (!splitName[1]) {
-        showToast("error", "Please enter your full name");
+      // const splitName = name.split(" ");
+      // if (!splitName[1]) {
+      //   showToast("error", "Please enter your full name");
+      //   return;
+      // }
+      const splitName = name.trim().split(/\s+/); // Split by spaces (including multiple spaces)
+      // if (splitName.length < 2) {
+      //   showToast("error", "Please enter your full name");
+      //   return;
+      // }
+
+      // if (mobileNo && (mobileNo.length !== 10 || mobileNo.startsWith("+"))) {
+      //   showToast("error", "Enter a 10-digit mobile number only");
+      //   return;
+      // }
+      if (
+        (mobileNo && !(mobileNo.length === 10 || mobileNo.length === 15)) ||
+        (mobileNo.startsWith("+") && mobileNo.length !== 15)
+      ) {
+        showToast("error", "Please enter a valid mobile number");
         return;
       }
 
-      if (mobileNo && (mobileNo.length !== 10 || mobileNo.startsWith("+"))) {
-        showToast("error", "Enter a 10-digit mobile number only");
-        return;
-      }
+      // if (!dept) {
+      //   showToast("error", "Please enter the department");
+      //   return;
+      // }
 
-      if (!dept) {
-        showToast("error", "Please enter the department");
-        return;
-      }
-
-      if (!role) {
-        showToast("error", "Please enter your role");
-        return;
-      }
+      // if (!role) {
+      //   showToast("error", "Please enter your role");
+      //   return;
+      // }
 
       // Prepare form data
       const formData = new FormData();
+     
       formData.append("firstname", splitName[0]);
-      formData.append("lastname", splitName[1]);
+      if(splitName[1]){
+        formData.append("lastname", splitName.slice(1).join(" "));;
+      }
       formData.append("phoneNumber", mobileNo);
-      formData.append("designation", role);
+      // formData.append("designation", role);
       formData.append("department", dept);
       if (picFile !== null) {
         formData.append("file", picFile);
@@ -233,7 +246,7 @@ const Profile = () => {
     formData.append("firstname", splitName[0]);
     formData.append("lastname", splitName[1]);
     formData.append("phoneNumber", mobileNo);
-    formData.append("designation", role);
+    // formData.append("designation", role);
     formData.append("department", dept);
     formData.append("removePicture", "true");
     const data: any = await updateMyProfileData({ formData });
@@ -275,7 +288,7 @@ const Profile = () => {
                       {profilePicture === null ? (
                         <span>
                           {profileData.firstname[0]}
-                          {profileData.lastname[0]}
+                          {profileData.lastname && profileData.lastname.trim() !== "" ? profileData.lastname[0] : ""}
                         </span>
                       ) : (
                         <Image
@@ -366,7 +379,8 @@ const Profile = () => {
                   </div>
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-2">
+                {/* <div className="grid gap-4 sm:grid-cols-2"> */}
+                <div className=" w-100 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="department">Department</Label>
                     <Select
@@ -385,7 +399,7 @@ const Profile = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="space-y-2">
+                  {/* <div className="space-y-2">
                     <Label htmlFor="role">Role</Label>
                     <Select
                       onValueChange={(value) => {
@@ -400,11 +414,9 @@ const Profile = () => {
                         <SelectItem value={user?.role ?? "CUSTOMER"}>
                           {user?.role}
                         </SelectItem>
-                        {/* <SelectItem value="developer">Developer</SelectItem> */}
-                        {/* <SelectItem value="designer">Designer</SelectItem> */}
                       </SelectContent>
                     </Select>
-                  </div>
+                  </div> */}
                 </div>
 
                 {/* <Button>Save Changes</Button> */}

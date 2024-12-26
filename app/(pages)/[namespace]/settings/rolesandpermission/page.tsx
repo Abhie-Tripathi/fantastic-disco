@@ -10,7 +10,7 @@ const page = () => {
           </div>
           <div className="text-sm text-muted-foreground">
             <p>
-              Here's the access and permissions you have within your
+              Here&apos; the access and permissions you have within your
               organisation
             </p>
           </div>

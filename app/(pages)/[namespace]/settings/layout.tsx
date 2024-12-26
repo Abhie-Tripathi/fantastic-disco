@@ -14,11 +14,11 @@ export default function SettingsLayout({
   const pathname = usePathname();
   const urlName = pathname.split("/").slice(-1)[0];
   const router = useRouter();
-  // useEffect(() => {
-  //   if(urlName==="users" || urlName ==="notifications"){
-  //     router.push(`/${namespace}/settings/profile`);
-  //   }
-  // }, [router]);
+  useEffect(() => {
+    if(urlName==="users" || urlName ==="notifications" || urlName==="rolesandpermission"){
+      router.push(`/${namespace}/settings/profile`);
+    }
+  }, [router]);
   return (
     <div className="w-full p-3">
       <Tabs value={urlName} className="w-full border-b">
@@ -66,13 +66,13 @@ export default function SettingsLayout({
               Product settings
             </Link>
           </TabsTrigger> */}
-            <TabsTrigger
+            {/* <TabsTrigger
             value="rolesandpermission"
             className="relative h-9 rounded-none border-b-2 border-b-transparent bg-transparent px-4 pb-3 pt-2  text-muted-foreground shadow-none transition-none data-[state=active]:border-b-primary data-[state=active]:text-primary data-[state=active]:shadow-none"
             asChild
           >
             <Link href={`/${namespace}/settings/rolesandpermission`}>Roles & Permissions</Link>
-          </TabsTrigger>
+          </TabsTrigger> */}
         </TabsList>
       </Tabs>
       <div className="mt-6">{children}</div>

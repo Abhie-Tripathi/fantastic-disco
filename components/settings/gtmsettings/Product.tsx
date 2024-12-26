@@ -442,8 +442,8 @@ export default function ProductsPage() {
           <div className="flex flex-col">
             <h4 className="text-base font-semibold">Customise to your needs</h4>
             <p className="text-sm text-muted-foreground">
-              Take Control of what others see, what modules can access and how
-              you receive updates and notify.
+              Take control of what others see, what modules can be accessed and how
+              you receive updates and notifications.
             </p>
           </div>
         </div>
@@ -461,7 +461,7 @@ export default function ProductsPage() {
               <div className="text-base text-gray-500">
                 Customise your event experience by adjusting your interest!
                 Update them any time to match your needs or goals for the event.
-                <div className="mt-10">
+                <div className="mt-10 text-sm text-red-500">
                   Please note: If this value is renamed, the changes will
                   automatically be reflected in all previous entries where it
                   has been used.
@@ -519,12 +519,12 @@ export default function ProductsPage() {
                           >
                             <CheckIcon />
                           </button>
-                          <button
+                          {/* <button
                             className="flex items-center justify-center border rounded w-10 h-10 text-base"
                             onClick={() => removeResearchScreenBox(box)}
                           >
                             <CrossIcon />
-                          </button>
+                          </button> */}
                         </div>
                       )}
                     </div>
@@ -549,7 +549,7 @@ export default function ProductsPage() {
                 Personalise your workflow by renaming columns on your kanban
                 board! Update them any time to fit your project needs or
                 preferences.
-                <div className="mt-10">
+                <div className="mt-10 text-sm text-red-500">
                   Please note: If this value is renamed, the changes will
                   automatically be reflected in all previous entries where it
                   has been used.
@@ -606,12 +606,12 @@ export default function ProductsPage() {
                           >
                             <CheckIcon />
                           </button>
-                          <button
+                          {/* <button
                             className="flex items-center justify-center border rounded w-10 h-10 text-base"
                             onClick={() => removeOutreachScreenBox(box)}
                           >
                             <CrossIcon />
-                          </button>
+                          </button> */}
                         </div>
                       )}
                     </div>
