@@ -183,7 +183,7 @@ const Search = () => {
   useEffect(()=>{
     setView(searchParams.get("view") || "")
   },[searchParams])
- 
+
  
   
   return (
