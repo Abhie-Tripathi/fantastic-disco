@@ -120,94 +120,81 @@ const Profile = () => {
     setter(value);
     setIsOtherInfoChange(value !== originalValue);
   };
+
+ 
+
   const saveDataHandler = async () => {
-    const newErrors: Record<string, string> = {};
+    try {
+      // Validation
+      if (!name.trim()) {
+        showToast("error", "Name cannot be empty");
+        return;
+      }
 
-    if (name.length === 0) {
-      // newErrors.name = "Name cannot be empty";
-      showToast("error", "Name cannot be empty");
-      return
-    }
-    const splitName = name.split(" ");
+      const splitName = name.split(" ");
+      if (!splitName[1]) {
+        showToast("error", "Please enter your full name");
+        return;
+      }
 
-    if (!name.trim()) {
-      // newErrors.name = "Name cannot be empty";
-      showToast("error", "Name cannot be empty");
-      return
-    }
-    if (name.length !== 0 && !splitName[1]) {
-      // newErrors.name = "Please Enter Full Name";
-      showToast("error", "Please Enter Full Name");
-      return
-    }
-    if (
-      mobileNo.length !== 0 &&
-      (mobileNo.length !== 10 || mobileNo.startsWith("+"))
-    ) {
-      // newErrors.mobileNo = "Enter 10 digit mobile number only";
-      showToast("error", "Enter 10 digit mobile number only");
-      return;
-    }
-    if (dept.length !== 0 && !dept) {
-      // newErrors.dept = "Please Enter the Department";
-      showToast("error", "Please Enter the Department");
-      return
-    }
-    if (role.length !== 0 && !role) {
-      // newErrors.role = "Please Enter Your Role";
-      showToast("error", "Please Enter Your Role");
-      return
-    }
+      if (mobileNo && (mobileNo.length !== 10 || mobileNo.startsWith("+"))) {
+        showToast("error", "Enter a 10-digit mobile number only");
+        return;
+      }
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+      if (!dept) {
+        showToast("error", "Please enter the department");
+        return;
+      }
 
-    setErrors({});
-    const formData = new FormData();
-    formData.append("firstname", splitName[0]);
-    formData.append("lastname", splitName[1]);
-    formData.append("phoneNumber", mobileNo);
-    formData.append("designation", role);
-    formData.append("department", dept);
-    if (picFile !== null) {
-      formData.append("file", picFile);
-    }
+      if (!role) {
+        showToast("error", "Please enter your role");
+        return;
+      }
 
-    setIsSaving(true);
-    const data: any = await updateMyProfileData({ formData });
-    setIsProfileInfoChange(false); 
+      // Prepare form data
+      const formData = new FormData();
+      formData.append("firstname", splitName[0]);
+      formData.append("lastname", splitName[1]);
+      formData.append("phoneNumber", mobileNo);
+      formData.append("designation", role);
+      formData.append("department", dept);
+      if (picFile !== null) {
+        formData.append("file", picFile);
+      }
 
-    setIsSaving(false);
+      // Save data
+      setIsSaving(true);
+      const data: any = await updateMyProfileData({ formData });
 
-    if (data) {
-      console.log(data);
-      setProfileData(data.user);
-      // setProfilePic(data.user.profilePicture)
-      showToast("success", "Data Saved Successfully");
-      fetchData();
+      if (data) {
+        // Update state and storage
+        setProfileData(data.user);
+        showToast("success", "Data saved successfully");
+        fetchData();
 
-      console.log(loginedUser);
+        const newUser = {
+          user: {
+            ...loginedUser,
+            firstname: data.user.firstname || loginedUser!.firstname,
+            lastname: data.user.lastname || loginedUser!.lastname,
+          },
+        };
 
-      const newUser = {
-        user: {
-          ...loginedUser,
-          firstname: data.user.firstname || loginedUser!.firstname,
-          lastname: data.user.lastname || loginedUser!.lastname,
-        },
-      };
-      window.localStorage.setItem("user", JSON.stringify(newUser));
-      setIsProfileUpdated(true);
-    }
-
-    if (error) {
-      console.log(error);
-      showToast("error", error.message);
-      return;
+        window.localStorage.setItem("user", JSON.stringify(newUser));
+        setIsProfileUpdated(true);
+        setIsProfileInfoChange(false);
+      }
+    } catch (error: any) {
+      console.error("Error saving data:", error);
+      showToast(
+        "error",
+        error.message || "An error occurred while saving data"
+      );
+    } finally {
+      setIsSaving(false);
     }
   };
-
   const handleUploadClick = () => {
     const fileRef = fileInputRef.current as HTMLDivElement;
     fileRef.click();
@@ -217,7 +204,7 @@ const Profile = () => {
     const file = e.target.files[0];
     if (file) {
       const sizeInMB = file.size / (1024 * 1024);
-      if ((sizeInMB) > 1) {
+      if (sizeInMB > 1) {
         showToast("error", "Image size should be less than 1 MB");
         return;
       }
@@ -366,7 +353,7 @@ const Profile = () => {
                       value={mobileNo}
                       onChange={(e) => {
                         const value = e.target.value;
-                        
+
                         if (/^\d*$/.test(value)) {
                           handleProfileInputChange(
                             setMobileNo,
@@ -382,7 +369,12 @@ const Profile = () => {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="department">Department</Label>
-                    <Select>
+                    <Select
+                      onValueChange={(value) => {
+                        setDept(value);
+                        setIsProfileInfoChange(true);
+                      }}
+                    >
                       <SelectTrigger id="department">
                         <SelectValue placeholder="Select department" />
                       </SelectTrigger>

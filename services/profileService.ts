@@ -17,10 +17,15 @@ export const useProfileServices = () => {
 
 
   const updateMyProfileData = async ({formData}:any) => {
+    // const response = await api.request(`${endpoints.myprofile}`, {
+    //   method: "PATCH",
+    //   data: formData,
+    // });
     return api.request(`${endpoints.myprofile}`, {
       method: "PATCH",
       data: formData,
     });
+    // console.log("response_",response)
   };
   
 
