@@ -8,6 +8,7 @@ import ExportModal from "@/app/components/Search/ExportModal";
 import styles from "./trackedEvents.style.module.css";
 import "chart.js/auto";
 import { useQuery } from "@tanstack/react-query";
+import List from "@/components/search/list";
 import ZeroState from "@/app/components/zerostate";
 import EventCalendar from "@/components/eventCalendar";
 import NullState from "@/app/components/trackers/nullState";
@@ -65,7 +66,7 @@ const Page = ({ params }: { params: any }) => {
   const { trackerId } = params;
   
   const {data}=useTrackerContext();
-  const {getCalendarViewEvents} = useTrackerServices();
+  const {getCalendarViewEvents,getTrackerEvents} = useTrackerServices();
   
   
   const pathname = usePathname();
@@ -134,49 +135,74 @@ const Page = ({ params }: { params: any }) => {
     ],
   };
   const {
-    data: eventData,
-    error,
-    isLoading,
-    refetch,
-  } = useQuery<
-    | CalendarMonthEventsResponse
-    | CalendarWeekEventsResponse
-    | EventsResponse
-    | MapEventsResponse
-    | undefined
-  >({
-    queryKey: ["events", params, searchParams.toString()],
-    queryFn: async () => {
-      if (viewType === "calendar") {
-        return getCalendarViewEvents(
-          trackerId,
-          `type=${
-            active === "Active Events"
-              ? "active"
-              : active === "Expired Events"
-              ? "expired"
-              : active === "New Events"
-              ? "" : active === "Saved Events"?"saved":
-               "active"
-          }&groupBy=${
-            data.tracker.filterValue.startDate
-              ? data.tracker.filterValue.startDate
-              : adaptParams(searchParams)
-          }`,
-          false,
-          Array.from(searchParams.values())[3]
-        );
-      }
-      return Promise.resolve(undefined); 
-    },
-    refetchOnWindowFocus: false,
-    staleTime: 0,
-    enabled: Boolean(params) && view === "calendar",
-  });
+  data: eventData,
+  error,
+  isLoading,
+  refetch,
+} = useQuery<
+  | CalendarMonthEventsResponse
+  | CalendarWeekEventsResponse
+  | EventsResponse
+  | MapEventsResponse
+  | undefined
+>({
+  queryKey: ["events", params, searchParams.toString(), active],
+  queryFn: async () => {
+    console.log("Query function called");
+
+    if (viewType === "calendar") {
+      return getCalendarViewEvents(
+        trackerId,
+        `type=${
+          active === "Active Events"
+            ? "active"
+            : active === "Expired Events"
+            ? "expired"
+            : active === "New Events"
+            ? ""
+            : active === "Saved Events"
+            ? "saved"
+            : "active"
+        }&groupBy=${
+          data.tracker.filterValue.startDate
+            ? data.tracker.filterValue.startDate
+            : adaptParams(searchParams)
+        }`,
+        false,
+        Array.from(searchParams.values())[3]
+      );
+    } 
+    // else if (viewType === "list") {
+    //   return getTrackerEvents(
+    //     trackerId,
+    //     ``,
+    //     active === "Active Events"
+    //       ? "active"
+    //       : active === "Expired Events"
+    //       ? "expired"
+    //       : active === "New Events"
+    //       ? ""
+    //       : active === "Saved Events"
+    //       ? "saved"
+    //       : "active"
+    //   );
+    // }
+    return undefined; 
+  },
+  refetchOnWindowFocus: false,
+  staleTime: 0,
+});
+
+// Debug the `enabled` condition
+console.log("Enabled:", Boolean(params) && view === "calendar");
+
+ 
   
   const displayData = eventData;
+   console.log(displayData);
   console.log(Array.from(searchParams.values()));
   const events = displayData?.events || [];
+  const count = displayData?.totalEvents || 0;
   // useEffect(() => {
   //   const fetchTrackerDetail = async () => {
       
@@ -558,7 +584,7 @@ const activeVal =
             </Link>
           </div>
 
-          {(view === "list") && (
+          {/* {(view === "list") && (
             <div>
               <Suspense fallback={<Loading />}>
             <Table
@@ -571,7 +597,21 @@ const activeVal =
             />
             </Suspense>
             </div>
-          )}
+          )} */}
+          {view === "list" && (
+  isLoading ? (
+    <Loading />
+  ) : error ? (
+    <ZeroState text={(error as ApiError).message} />
+  ) : count === 0 ? (
+    <ZeroState text="No events were found in the selected area." />
+  ) : (
+    <>
+      {/* <Alerts /> */}
+      <List events={events as Event[]} count={count} />
+    </>
+  )
+)}
 
           {(view === "map") && (
             <div>

@@ -22,7 +22,7 @@ import { useQuery } from "@tanstack/react-query";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import Link from "next/link";
 import { formattedDateRange } from "@/utils/date";
-
+import { useTrackerServices } from "@/services/trackerServices";
 const EventCard = memo(({ event }: { event: Event }) => {
   const address = event.venueLocation
     ? event.venueLocation.city?.name === "Online"
@@ -115,14 +115,20 @@ UnplannedCard.displayName = 'UnplannedCard';
 function EventList({
   showEventType,
   onClose,
+  trackerId,
+  source,
+  searchParam
 }: {
   showEventType: string;
   onClose: () => void;
+  source:any;
+  trackerId:string;
+  searchParam:string;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const searchParams = useSearchParams();
   const eventService = useEventsService();
-
+  const {getTrackerMapEvents}=useTrackerServices(); 
   const filteredParams = useMemo(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("view");
@@ -132,8 +138,10 @@ function EventList({
   }, [searchParams, currentPage, showEventType]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString()],
-    queryFn: () => eventService.getEventsWithSearchParams(filteredParams.toString()),
+    queryKey: ["events", filteredParams.toString(), trackerId],
+    queryFn: () => source === 'tracker' 
+      ? getTrackerMapEvents(trackerId,`limit=10&offset=${(currentPage - 1) * 10 }`, searchParam.toString())
+      : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
 
   const handlePageChange = (page: number) => {
