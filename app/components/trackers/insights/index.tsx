@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './insights.style.module.css'
 import ToggleBtn from '../../UI/ToggleBtn'
-const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank, start, end, eventSize, isTrustOpen, isExhibitOpen, eventImpactScore, eventRankToggle}: any) => {
+const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank, start, end, eventSize, isTrustOpen, isExhibitOpen, eventImpactScore, globalToggle, isRankOpen}: any) => {
   const format = ["Hybrid", "In-person", "Virtual", "Offline"]
   const freq = ["Annual", "Biannual", "Queartly"]
   const entry = ["Free", "Paid", "Invites", "Member Access"];
@@ -81,15 +81,15 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                         <div className={commonClasses.toggleContainer}>
                     <div className="flex items-center text-[var(--primary-color)] font-medium">Event Analytics</div>
                     <div className={styles.toggle_container}>
-                     <ToggleBtn isTrue={isAnalyticsOpen}/>
+                     <ToggleBtn isTrue={globalToggle}/>
                         </div>
             </div>
-            <div className={commonClasses.toggleContainer}>
+            {/* <div className={commonClasses.toggleContainer}>
                     <div className="flex items-center text-[var(--primary-color)] font-medium">Economic Impact</div>
                     <div className={styles.toggle_container}>
                          <ToggleBtn isTrue={false}/>
                         </div>
-            </div>
+            </div> */}
                 {/* <div className={styles.branded}>
                     <div className={styles.formatHead}>International Score</div>
                     <div className={styles.toggle_container}>
@@ -141,7 +141,7 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
             Event Ranking
           </div>
           <div className={styles.toggle_container}>
-          <ToggleBtn isTrue={eventRankToggle}/>
+          <ToggleBtn isTrue={isRankOpen}/>
           </div>
         </div>
       {/* <div className={styles.branded}>

@@ -57,7 +57,7 @@ export default function CreateTrackerDialog({
     }
 
     setIsLoading(true);
-
+    
     const userType = {
       ...(adaptedParams.shows?.includes("eventRating") && { rating: true }),
       ...(adaptedParams.shows?.includes("estimatedExhibitScore") && { exhibit: true }),
@@ -101,11 +101,12 @@ export default function CreateTrackerDialog({
             "eventSeries",
             "maturity",
             "eventImpactScore",
-            "eventInboundScore",
+            "inboundScore",
             "internationalScore",
             "isforecasted",
             "trustScore",
             "eventRating",
+            "eventRanking",
             "estimatedExhibitScore",
             "audienceSpread",
             "eventFrequency",
@@ -113,7 +114,7 @@ export default function CreateTrackerDialog({
         },
       },
     };
-
+    
     try {
       const { data, error } = await myFetch(`${BaseURL}/tracker`, {
         method: "POST",

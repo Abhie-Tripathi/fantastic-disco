@@ -328,6 +328,7 @@ const Table = ({
   const [zeroStateText, setZeroStateText] = useState(
     `Discover insights on business trends filtered by geography and category, all in one glance.`
   );
+  const [zeroStateBtnText,setZeroStateBtnText]=useState("Manage Configurations");
   const [totalPages, setTotalPages] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(20);
   const userMaxLimit = 100;
@@ -574,8 +575,9 @@ const Table = ({
         setTotalEvents(result.count);
   
         if (result.count === 0) {
-          setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
-        setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
+          setZeroStateHeading(`No events saved yet! Start saving events to easily track and revisit them here.`);
+          setZeroStateText("");
+          setZeroStateBtnText("");
         }
   
         if (currPage === 1) {
@@ -734,6 +736,7 @@ const Table = ({
       if (result.totalEvents === 0) {
         setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
         setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
+        setZeroStateBtnText("Manage Configurations");
       }
   
       if (result.events.length > 0) {
@@ -747,16 +750,13 @@ const Table = ({
     } catch (error:any) {
       if (error.name === "AbortError") {
         console.log("Saved events request was aborted");
-      } else if (error.status === 406) {
-              setZeroStateHeading(error?.message);
+      }else{
+        setZeroStateHeading(error?.message);
               setZeroStateText(
                 ""
               );
               setEventPerPage([]);
-              
-              // return <NullState image={TrackerNullState}  title={error?.message} />
-      } else {
-        console.error("Fetch saved data error:", error);
+              setZeroStateBtnText("");
       }
     } finally {
       // Reset the controller after the request completes or is aborted
@@ -896,7 +896,7 @@ const Table = ({
       <div className={styles.noData}>
         {path[2]==="trackers"? 
         <div className="px-10 py-5">
-        <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText="Manage Congfigurations" buttonUrl={`/internal/trackers/${path[path.length - 2]}/trackedConfiguration?type=${type}`}/>
+        <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText={zeroStateBtnText} buttonUrl={`/internal/trackers/${path[path.length - 2]}/trackedConfiguration?type=${type}`}/>
         </div>
         :
         <ZeroState title={zeroStateHeading} text={zeroStateText} />

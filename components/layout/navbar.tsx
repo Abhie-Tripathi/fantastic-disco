@@ -33,9 +33,9 @@ import { useTheme } from "@/context/theme";
 import Link from "next/link";
 
 const gtmroutes: Record<string, string> = {
-  internal: "Dashboard",
+  "": "Dashboard",
   "coordinate": "Coordinate",
-  "events": "Research",
+  "search": "Research",
   "trackers": "Trackers",
   outreach: "Outreach",
   trends: "Event Trends"
@@ -58,8 +58,9 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
 
-  console.log("route", pathname.split("/").slice(-1)[0])
-
+  function getRoute(path: string | undefined): string {
+    return gtmroutes[path || ""];
+  }
   const router = useRouter()
   const handleRoute = (route: string) => {
     if (route === "research") {
@@ -69,14 +70,13 @@ export default function Navbar() {
     }
 
   }
-
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center">
           <div className="text-lg font-semibold">
-            {pathname.split("/")[1] === "internal" ?
-              gtmroutes[pathname.split("/").slice(-1)[0]]
+          {pathname.split("/")[1] === "internal" ?
+               getRoute(pathname.split("/")[2])
               : pathname.split("/").slice(-2)[0] === "edit" ? "Edit Widget" : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
