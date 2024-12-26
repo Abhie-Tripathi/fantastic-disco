@@ -16,7 +16,7 @@ const ModuleSelection = () => {
   ]
 
   return (
-    <div className={`max-w-[100%] max-h-[100%] flex items-center justify-center gap-7 flex-col h-screen w-full bg-cover bg-center rounded-3xl`}
+    <div className={`max-w-[100%] max-h-[100%] flex items-center justify-center gap-7 flex-col h-screen bg-cover bg-center rounded-3xl`}
       style={{ backgroundImage: `url(${ModuleSelectionImage.src})` }}>
       <div className={`flex items-center flex-col`}>
         <div className={`text-5xl font-[var(--font-weight-semibold)] text-[var(--primary-text-color)]`}>Get Started with <span className='bg-gradient-to-r from-[#EE1CC082] via-[#7757DE] to-[#DD18FD40] bg-clip-text text-transparent'>Whr.ai</span></div>
