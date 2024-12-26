@@ -166,7 +166,13 @@ const NewSignUpForm = () => {
           render={({ field }) => (
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" {...field} placeholder="Email" className="h-11"/>
+              <Input
+                id="email"
+                type="email"
+                {...field}
+                placeholder="Email"
+                className="h-11"
+              />
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}
@@ -219,11 +225,23 @@ const NewSignUpForm = () => {
         </Link>
       </div>
 
-      <div className="text-center text-[#808080] text-[12px] cursor-not-allowed">
+      <div className="text-center text-[#808080] text-[12px]">
         By signing up, you agree to our
-        <span className="text-[#6750a4] font-medium ml-1">Terms </span>
+        <Link
+          target="_blank"
+          href={"https://10times.com/terms-of-service"}
+          className="text-[#6750a4] font-medium ml-1"
+        >
+          Terms{" "}
+        </Link>
         and
-        <span className="text-[#6750a4] font-medium ml-1">Privacy Policy</span>
+        <Link
+          target="_blank"
+          href={"https://10times.com/privacy-policy"}
+          className="text-[#6750a4] font-medium ml-1"
+        >
+          Privacy Policy
+        </Link>
       </div>
     </div>
   );

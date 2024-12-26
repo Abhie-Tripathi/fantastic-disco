@@ -138,16 +138,6 @@ const LocationForm = () => {
     setLoading(false);
   };
 
-  useEffect(() => {
-    toast("Please enter your location", {
-      theme: "light",
-      position: "bottom-right",
-      autoClose: 2000,
-      closeOnClick: true,
-      hideProgressBar: true,
-    });
-  }, []);
-
   // useEffect(() => {
   //   if (selectedLocation) {
   //     const currentDate = new Date();

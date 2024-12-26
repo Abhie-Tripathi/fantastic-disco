@@ -46,6 +46,8 @@ type OTPData = z.infer<typeof otpSchema>;
 
 export default function NewVerificationForm() {
   const router = useRouter();
+  const [time, setTime] = useState(30);
+  const [resendLoading, setResendLoading] = useState(false);
   const { verifyOtp, verifyLoginOTP, error, generateOTP } = useAuthContext();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -71,20 +73,35 @@ export default function NewVerificationForm() {
 
   const onSubmit = async (data: OTPData) => {
     try {
-      flow && flow === "signup"
-        ? await verifyOtp({ email, otpCode: data.otpCode }, redirectTo)
-        : await verifyLoginOTP({ email, otpCode: data.otpCode }, redirectTo);
+      setTime(30);
+      if (flow && flow === "signup") {
+        await verifyOtp({ email, otpCode: data.otpCode }, redirectTo);
+      } else {
+        await verifyLoginOTP({ email, otpCode: data.otpCode }, redirectTo);
+      }
     } catch (error) {
       console.error("OTP verification error:", error);
     }
   };
 
   const resendOTP = async () => {
+    setTime(30);
     await generateOTP(email);
   };
 
+  useEffect(() => {
+    let timer: any = null;
+    if (time >= 0) {
+      if (time > 0) {
+        timer = setTimeout(() => {
+          setTime((prev) => prev - 1);
+        }, 1000);
+      } else return () => clearTimeout(timer);
+    }
+  }, [time]);
+
   return (
-    <div className="flex flex-col gap-24 h-full w-full max-w-md p-8">
+    <div className="flex flex-col gap-6 h-full w-full max-w-md p-8">
       <p
         className="flex items-center gap-1 text-primary cursor-pointer"
         onClick={() => router.back()}
@@ -92,6 +109,13 @@ export default function NewVerificationForm() {
         <ArrowLeft width={18} height={18} />
         <span>Back</span>
       </p>
+
+      <div className="flex items-center mt-4 text-primary bg-[#eeeaf9] p-4 rounded-md">
+        <Image src={ArchiveIcon} alt="archive" className="self-start" />
+        <span className="text-center">
+          Check your mailbox for a quick verification code.
+        </span>
+      </div>
       <div className="w-full max-w-md space-y-8 p-8">
         <div className="text-[#242424] font-medium text-2xl flex items-center justify-center text-center">
           <Image src={logo} alt="logo" width={45} height={55} />
@@ -147,15 +171,21 @@ export default function NewVerificationForm() {
             </Button>
           </form>
         </Form>
-        <Button
-          variant="link"
-          className="w-full"
-          onClick={() => {
-            resendOTP();
-          }}
-        >
-          Resend OTP
-        </Button>
+        {time === 0 ? (
+          <Button
+            variant="link"
+            className="w-full"
+            onClick={() => {
+              resendOTP();
+            }}
+          >
+            Resend OTP
+          </Button>
+        ) : (
+          <span className="flex justify-center self-center">
+            00 : {time > 9 ? time : `0${time}`}
+          </span>
+        )}
       </div>
     </div>
   );

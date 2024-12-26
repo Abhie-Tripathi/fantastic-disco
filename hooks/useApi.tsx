@@ -3,7 +3,7 @@ import axiosInstance from "@/lib/axios";
 import { AxiosRequestConfig } from "axios";
 import { usePathname } from "next/navigation";
 
-interface ApiResponse<T> {
+export interface ApiResponse<T> {
   data?: T;
   error?: {
     response: string;

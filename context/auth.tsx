@@ -16,7 +16,7 @@ import { SignUpResponse, SignInResponse, TSignInWithOTPSchema } from "../types";
 import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname, useSearchParams } from "next/navigation";
-import { useApi } from "@/hooks/useApi";
+import { ApiResponse, useApi } from "@/hooks/useApi";
 
 type authContextType = {
   user: UserResponse | null;
@@ -142,20 +142,21 @@ export const AuthContextProvider = ({ children }: any) => {
     [request, router]
   );
 
-  const newcheckAuth = useCallback(async () => {
-    if (!user) {
-      const userData = localStorage.getItem("user");
-      userData && setUser(JSON.parse(userData));
-      return;
-    }
-  }, [request]);
+  // const newcheckAuth = useCallback(async () => {
+  //   if (!user) {
+  //     const userData = localStorage.getItem("user");
+  //     console.log("Request", userData && JSON.parse(userData).user);
+  //     userData && setUser(JSON.parse(userData).user);
+  //     return;
+  //   }
+  // }, [request]);
 
-  useEffect(() => {
-    const publicRoutes = ["/signin", "/signup", "/verify-otp", "/location"];
-    if (!publicRoutes.includes(pathName)) {
-      newcheckAuth();
-    }
-  }, [pathName, newcheckAuth]);
+  // useEffect(() => {
+  //   const publicRoutes = ["/signin", "/signup", "/verify-otp", "/location"];
+  //   if (!publicRoutes.includes(pathName)) {
+  //     newcheckAuth();
+  //   }
+  // }, [pathName, newcheckAuth]);
 
   const signin = useCallback(
     async (userDto: TSignInFormSchema) => {
@@ -181,64 +182,70 @@ export const AuthContextProvider = ({ children }: any) => {
     error?: any;
   }
   const [isVerifiedToken, setIsVerifiedToken] = useState(false);
-  // useEffect(() => {
-  //   if (token && token.length > 0) {
-  //     const verifyToken = async () => {
-  //       const formData = {
-  //         token: token,
-  //         invite: true,
-  //       };
-  //       const url = `${baseUrl}/auth/customer/reset-password/page`;
-  //       try {
-  //         const { data, error } = await myFetch(url, {
-  //           method: "POST",
-  //           body: JSON.stringify(formData),
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //         });
+  useEffect(() => {
+    if (token && token.length > 0) {
+      const verifyToken = async () => {
+        const formData = {
+          token: token,
+          invite: true,
+        };
+        const url = `${baseUrl}/auth/customer/reset-password/page`;
+        try {
+          const { data, error } = await myFetch(url, {
+            method: "POST",
+            body: JSON.stringify(formData),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
 
-  //         console.log("Data from signin", data);
-  //         console.log("Error from signnin", error);
-  //         if (error) {
-  //           console.error("Error fetching data:", error);
-  //           router.push("/signin");
-  //         } else {
-  //           console.log("Data fetched:", data);
-  //           const { id, firstname, lastname, email, role, profilePicture } =
-  //             data.info;
-  //           const user = {
-  //             user: {
-  //               id: id,
-  //               firstname: firstname,
-  //               lastname: lastname,
-  //               email: email,
-  //               role: role,
-  //               profilePicture: profilePicture,
-  //             },
-  //           };
-  //           const userObject = {
-  //             user: {
-  //               id: id,
-  //               firstname: firstname,
-  //               lastname: lastname,
-  //               email: email,
-  //               role: role,
-  //               profilePicture: profilePicture,
-  //             },
-  //           };
-  //           setUser(data.info);
-  //           setLocalStorage(userObject);
-  //           setIsVerifiedToken(true);
-  //         }
-  //       } catch (err) {
-  //         console.error("Fetch failed:", err);
-  //         router.push("/signin");
-  //       }
-  //     };
-  //     verifyToken();
-  //   } else setIsVerifiedToken(true);
-  // }, []);
+          console.log("Data from signin", data);
+          console.log("Error from signnin", error);
+          if (error) {
+            console.error("Error fetching data:", error);
+            router.push("/signin");
+          } else {
+            console.log("Data fetched:", data);
+            const { id, firstname, lastname, email, role, profilePicture } =
+              data.info;
+            const user = {
+              user: {
+                id: id,
+                firstname: firstname,
+                lastname: lastname,
+                email: email,
+                role: role,
+                profilePicture: profilePicture,
+              },
+            };
+            const userObject = {
+              user: {
+                id: id,
+                firstname: firstname,
+                lastname: lastname,
+                email: email,
+                role: role,
+                profilePicture: profilePicture,
+              },
+            };
+            console.log("Data", data);
+            console.log("Data.info", data.info);
+            localStorage.setItem(
+              "walkthroughCompleted",
+              JSON.stringify(["research"])
+            );
+            setUser(data.info);
+            setLocalStorage(userObject);
+            setIsVerifiedToken(true);
+          }
+        } catch (err) {
+          console.error("Fetch failed:", err);
+          router.push("/signin");
+        }
+      };
+      verifyToken();
+    } else setIsVerifiedToken(true);
+  }, []);
 
   // const signin = async (userDto: TSignInFormSchema) => {
   //   console.log("user_data_for_signin------------>", userDto);
@@ -388,6 +395,7 @@ export const AuthContextProvider = ({ children }: any) => {
   useEffect(() => {
     if (!user) {
       const userData = window.localStorage.getItem("user");
+      console.log("User", userData && JSON.parse(userData).user);
       userData && setUser(JSON.parse(userData));
     }
   }, [user]);
@@ -428,28 +436,30 @@ export const AuthContextProvider = ({ children }: any) => {
   useEffect(() => {
     const user = window.localStorage.getItem("user");
     if (user) {
+      console.log("isProfileUpdated", user && JSON.parse(user).user);
       setUser(JSON.parse(user).user);
     }
   }, [isProfileUpdated]);
 
-  // useLayoutEffect(() => {
-  //   const user = window.localStorage.getItem("user");
+  useLayoutEffect(() => {
+    const user = window.localStorage.getItem("user");
+    console.log("useLayoutEffect", user && JSON.parse(user).user);
+    if (user) {
+      setUser(JSON.parse(user).user);
+    } else {
+      const publicPaths = ["/signup", "/forgot-password", "/verify-otp"];
 
-  //   if (user) {
-  //     setUser(JSON.parse(user).user);
-  //   } else {
-  //     const publicPaths = ["/signup", "/forgot-password", "/verify-otp"];
+      const isPublicPath =
+        publicPaths.includes(pathName) ||
+        pathName.startsWith("/reset") ||
+        (token && token.length > 0);
+      console.log(isPublicPath);
 
-  //     const isPublicPath =
-  //       publicPaths.includes(pathName) ||
-  //       pathName.startsWith("/reset") ||
-  //       (token && token.length > 0);
-
-  //     if (!isPublicPath) {
-  //       router.push("/signin");
-  //     }
-  //   }
-  // }, [pathName, router, isProfileUpdated]);
+      if (!isPublicPath) {
+        router.push("/signin");
+      }
+    }
+  }, [pathName, router, isProfileUpdated]);
   // useLayoutEffect(() => {
   //   if (user) {
   //     const restrictedPaths = ["/signin", "/signup"];
@@ -466,6 +476,7 @@ export const AuthContextProvider = ({ children }: any) => {
     isVerifiedToken,
     signin,
     signOut,
+    setError,
     isLoading,
     setUser,
     generateOTP,
