@@ -574,7 +574,7 @@ const Table = ({
         setTotalEvents(result.count);
   
         if (result.count === 0) {
-          setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
+          setZeroStateHeading(`We couldn't find any events matching your tracker criteria at the moment.`);
         setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
         }
   
@@ -732,7 +732,7 @@ const Table = ({
       }
   
       if (result.totalEvents === 0) {
-        setZeroStateHeading(`We couldn’t find any events matching your tracker criteria at the moment.`);
+        setZeroStateHeading(`We couldn't find any events matching your tracker criteria at the moment.`);
         setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
       }
   
@@ -2179,50 +2179,55 @@ const Table = ({
       >
         <div className={styles.pagination_info_container}>
           <div>Showing</div>
-          {/* <Image src={ExpandAll} alt="expandall" className={iconClass} />
+          <Image src={ExpandAll} alt="expandall" className={iconClass} />
           <div className={styles.pagination_current_pageno}>
             <select
               onChange={handlePageItems}
-              name=""
-              id=""
+              value={itemsPerPage}
               className={styles.pagination_noOfPage}
             >
-              <option value="10" selected={itemsPerPage==10?true:false}>10</option>
-              <option value="15" selected={itemsPerPage==15?true:false}>15</option>
-              <option value="20" selected={itemsPerPage==20?true:false}>20</option>
+              <option value={10}>10</option>
+              <option value={20}>20</option>
             </select>
-          </div> */}
-          {/* <span className={styles.itemsPerPage} >10</span>
-          <div>results/Page</div> */}
-          <div>
-            {(currPage - 1) * 20 + 1} to {Math.min(totalEvents, currPage * 20)}{" "}
-            of {totalEvents} entries
           </div>
-          <div></div>
+          <div>
+            {totalEvents > 0 ? (
+              <>
+                {(currPage - 1) * itemsPerPage + 1} to{" "}
+                {Math.min(totalEvents, currPage * itemsPerPage)}{" "}
+                of {totalEvents} entries
+              </>
+            ) : (
+              "0 entries"
+            )}
+          </div>
         </div>
 
-        {/* <div className={styles.pagination_page_control_container}>
+        <div className={styles.pagination_page_control_container}>
           <div>Page</div>
           <div className={styles.pagination_current_page}>{currPage}</div>
           <div>of {totalPages}</div>
-        </div> */}
-        <div style={{ display: "flex", gap: "10px" }}>
-          <div
+        </div>
+
+        <div className={styles.pagination_buttons}>
+          <button
             className={`${styles.pagination_control_button} ${
               currPage === 1 ? styles.disabled : ""
             }`}
-            onClick={() => setCurrPage((page) => page - 1)}
+            onClick={() => currPage > 1 && setCurrPage((page) => page - 1)}
+            disabled={currPage === 1}
           >
             Previous
-          </div>
-          <div
+          </button>
+          <button
             className={`${styles.pagination_control_button} ${
               currPage === totalPages ? styles.disabled : ""
             }`}
-            onClick={loadMoreHandler}
+            onClick={() => currPage < totalPages && loadMoreHandler()}
+            disabled={currPage === totalPages}
           >
             Next
-          </div>
+          </button>
         </div>
       </div>
     </div>
