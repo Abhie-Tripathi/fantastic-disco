@@ -1,6 +1,12 @@
 .body{
-    min-width: 306px;
     min-height: 344px;
     border-radius: 12px;
     border: 1px solid var(--border-color);
+}
+.img{
+    position: absolute;
+    bottom: -120px;
+    right: -10px;
+    /* left: 5px; */
+    /* top: 0; */
 }

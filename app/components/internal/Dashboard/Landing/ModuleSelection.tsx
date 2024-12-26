@@ -5,9 +5,13 @@ import ResearchModule from '/public/internal/dashboard/ResearchModule.png'
 import PormoteModule from '/public/internal/dashboard/PormoteModule.png'
 import ProspectModule from '/public/internal/dashboard/ProspectModule.png'
 import Tour from './Tour'
+import Research from '../Research/Research'
 
+interface Props{
+  value : string;
+}
 
-const ModuleSelection = () => {
+const ModuleSelection = ({value}:Props) => {
 
   const modules = [
     { heading: "Research & Track", subheading: "Quickly discover events that match your interests and needs.", button: "Research", image: ResearchModule, imgHeight: 90, imgWidth: 63, top: 40 },
@@ -22,12 +26,13 @@ const ModuleSelection = () => {
         <div className={`text-5xl font-[var(--font-weight-semibold)] text-[var(--primary-text-color)]`}>Get Started with <span className='bg-gradient-to-r from-[#EE1CC082] via-[#7757DE] to-[#DD18FD40] bg-clip-text text-transparent'>Whr.ai</span></div>
         <div className='text-[var(--primary-text-color)]'>All-in-one solution to maximize ROI from your event strategy.</div>
       </div>
-      <div className="flex items-center justify-evenly w-[100%]">
+      {value === "admin" ? <div className="flex items-center justify-evenly w-[100%]">
         {modules.map((module, key) => (
           <ModuleCard image={module.image} key={key} imgHeight={module.imgHeight} imgWidth={module.imgWidth} heading={module.heading} subHeading={module.subheading} button={module.button} top={module.top} />
         ))}
-      </div>
-      <Tour />
+      </div> : <div className='w-[95%]'><Research/></div>}
+      <div className='w-[90%]'><Tour /></div>
+      
     </div>
   )
 }

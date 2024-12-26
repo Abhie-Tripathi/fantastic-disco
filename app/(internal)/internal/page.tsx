@@ -9,16 +9,18 @@ import Research from "@/app/components/internal/Dashboard/Research/Research";
 const Dashboard = () => {
 
   return (
-    <div className="flex p-3 min-h-[91vh] max-h-[91vh]">
+    <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3.5">
       <div className="flex-1">
-        {/* <ModuleSelection /> */}
-        {/* <CoordinateContainer/> */}
-        <Research/>
+        {/* <ModuleSelection value="user" /> */}
+        {/* <ModuleSelection value="user" /> */}
+        {/* <CoordinateContainer height="big"/> */}
+        <Research />
+
 
       </div>
-      <div className="flex-none w-[20%]">
-        {/* <RecentActivity/>
-      <ManageTeam/> */}
+      <div className="flex-none min-w-[20%]">
+        <RecentActivity />
+        <ManageTeam />
       </div>
     </div>
   );

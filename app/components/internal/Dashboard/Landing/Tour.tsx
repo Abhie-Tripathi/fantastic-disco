@@ -6,7 +6,7 @@ import { ArrowRight } from "geist-icons";
 
 const Tour = () => {
     return (
-        <div className={`bg-[rgba(0,0,0,0.047)] border rounded-md p-3 flex items-center justify-between w-[90%] border-[var(--primary-light-color)]`}>
+        <div className={`bg-[rgba(0,0,0,0.047)] border rounded-md p-3 flex items-center justify-between w-[100%] border-[var(--primary-light-color)]`}>
             <div className="flex items-center gap-2.5">
                 <div className="w-[34px] h-[34px] bg-[var(--primary-foreground)] rounded-sm flex items-center justify-center">
                     <Image src={BinocularsIcon} alt='see' />

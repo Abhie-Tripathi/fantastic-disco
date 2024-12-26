@@ -5,19 +5,24 @@ import { MoveRight } from 'lucide-react';
 import CoordinateScreenOne from './CoordinateScreenOne';
 import CoordinateScreenTwo from './CoordinateScreenTwo';
 
-const CoordinateContainer = () => {
+interface Props{
+    height : string;
+    // values : {heading : string, value : number}[]
+}
 
-    const values = [{ heading: "Attending", value: 1 },
-    { heading: "Sponsors", value: 0 },
+const CoordinateContainer = ({height} :Props) => {
+
+    const values = [{ heading: "Attending", value: 0 },
+    { heading: "Sponsors", value: 1 },
     { heading: "Speakers", value: 0 },
     { heading: "Exhibitor", value: 0 },
     ]
 
-    let container = "small";
+    // let container = "small";
 
     return (
         <div className="bg-[var(--background-secondary-color)] border border-[var(--border-color)] rounded-[12px] max-w-[471px]">
-            {container === "small" ? <CoordinateScreenOne values={values}/> : <CoordinateScreenTwo values={values}/>}
+            {height === "small" ? <CoordinateScreenOne values={values}/> : <CoordinateScreenTwo values={values}/>}
         </div>
     )
 }
