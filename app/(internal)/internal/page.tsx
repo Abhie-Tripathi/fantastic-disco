@@ -9,7 +9,8 @@ import Research from "@/app/components/internal/Dashboard/Research/Research";
 import ModuleCard from "@/app/components/internal/Dashboard/Landing/ModuleCard";
 import ProspectModule from '/public/internal/dashboard/ProspectModule.png'
 import Prospect from "@/app/components/internal/Dashboard/Prospect";
-import Promote from "@/app/components/internal/Dashboard/Promote/Promote";
+import PromoteOne from "@/app/components/internal/Dashboard/Promote/PromoteOne";
+import PromoteContainer from "@/app/components/internal/Dashboard/Promote/PromoteContainer";
 const Dashboard = () => {
 
   return (
@@ -17,10 +18,10 @@ const Dashboard = () => {
       <div className="flex-1">
         {/* <ModuleSelection value="admin" /> */}
         {/* <ModuleSelection value="user" /> */}
-        <CoordinateContainer height="small"/>
+        {/* <CoordinateContainer height="small"/> */}
         {/* <Research /> */}
         {/* <Prospect/> */}
-        <Promote/>
+        <PromoteContainer width="large"/>
       </div>
       <div className="flex-none min-w-[20%]">
         {/* <RecentActivity />

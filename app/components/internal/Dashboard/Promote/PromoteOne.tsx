@@ -6,12 +6,13 @@ import { MoveRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NumberPill from '../Coordinate/NumberPill';
 
-const Promote = () => {
-    const values = [
-        { name: "Widgets", value: 0 },
-        { name: "Drafts", value: 1 },
-        { name: "Events", value: 0 },
-    ]
+
+interface Props {
+    values: { name: string, value: number }[]
+}
+
+const PromoteOne = ({ values }: Props) => {
+
     const [isEmpty, setIsEmpty] = useState<boolean>(false)
 
     useEffect(() => {
@@ -20,8 +21,7 @@ const Promote = () => {
     }, [])
 
     return (
-        <div className={`bg-[var(--background-secondary-color)] border border-[var(--border-color)] flex flex-col 
-        ${isEmpty ? "items-center" : "items-start"} justify-start w-[233px] h-[273px] rounded-xl overflow-hidden`}>
+        <div className={`flex flex-col ${isEmpty ? "items-center" : "items-start"} justify-start w-[233px] h-[273px] overflow-hidden`}>
             <div className={`flex flex-col ${isEmpty ? "items-center" : "items-start"} justify-center p-4`}>
                 <div className="text-[var(--primary-color)] font-semibold text-sm">
                     Smart Promote
@@ -49,4 +49,4 @@ const Promote = () => {
     )
 }
 
-export default Promote
+export default PromoteOne
