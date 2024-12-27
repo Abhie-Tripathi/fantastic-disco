@@ -2,7 +2,6 @@ import React from 'react'
 import PromoteOne from './PromoteOne';
 import PromoteTwo from './PromoteTwo';
 
-
 interface Props {
     width: string;
 }

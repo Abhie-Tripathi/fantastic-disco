@@ -11,6 +11,7 @@ import ProspectModule from '/public/internal/dashboard/ProspectModule.png'
 import Prospect from "@/app/components/internal/Dashboard/Prospect";
 import PromoteOne from "@/app/components/internal/Dashboard/Promote/PromoteOne";
 import PromoteContainer from "@/app/components/internal/Dashboard/Promote/PromoteContainer";
+import TrackerContainer from "@/app/components/internal/Dashboard/Tracker/TrackerContainer";
 const Dashboard = () => {
 
   return (
@@ -21,7 +22,8 @@ const Dashboard = () => {
         {/* <CoordinateContainer height="small"/> */}
         {/* <Research /> */}
         {/* <Prospect/> */}
-        <PromoteContainer width="large"/>
+        {/* <PromoteContainer width="large"/> */}
+        <TrackerContainer width="large"/>
       </div>
       <div className="flex-none min-w-[20%]">
         {/* <RecentActivity />
