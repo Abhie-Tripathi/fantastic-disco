@@ -31,7 +31,7 @@ const CoordinateScreenOne = ({ values }: Props) => {
                 {!isEmpty ?
                     <div className="grid grid-cols-2 gap-2 mt-8">
                         {values.map((item, index) => (
-                            <NumberPill heading={item.heading} value={item.value} key={index}/>
+                            <NumberPill width='125px' heading={item.heading} value={item.value} key={index}/>
                         ))}
                     </div> : <Button className="mt-8" size="sm">Search Events <MoveRight width={12} /></Button>}
             </div>

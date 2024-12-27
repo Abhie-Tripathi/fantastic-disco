@@ -21,7 +21,7 @@ const CoordinateScreenTwo = ({ values }: Props) => {
       <div className='flex flex-col items-center mt-8'>
         <div className="grid grid-cols-2 gap-6 mt-8">
           {values.map((item, index) => (
-            <NumberPill heading={item.heading} value={item.value} key={index}/>
+            <NumberPill width='125px' heading={item.heading} value={item.value} key={index}/>
           ))}
         </div>
         <Button className="mt-6" size="sm">Search Events <MoveRight width={12} /></Button>

@@ -17,7 +17,7 @@ const Dashboard = () => {
       <div className="flex-1">
         {/* <ModuleSelection value="admin" /> */}
         {/* <ModuleSelection value="user" /> */}
-        {/* <CoordinateContainer height="small"/> */}
+        <CoordinateContainer height="small"/>
         {/* <Research /> */}
         {/* <Prospect/> */}
         <Promote/>
