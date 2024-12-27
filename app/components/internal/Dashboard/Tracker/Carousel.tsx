@@ -27,7 +27,7 @@ const Carousel = ({ templates }: Props) => {
         }
     };
     return (
-        <div className="flex flex-col items-center justify-center relative w-[full] h-full z-[1] gap-2.5">
+        <div className="flex flex-col items-center justify-center relative w-full h-full z-[1] gap-2.5">
             <button
                 className={`absolute cursor-pointer top-1/2 -translate-y-1/2 left-1 border-none z-[999] h-12 w-12 flex items-center justify-center bg-white rounded-full shadow-md ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''
                     }`}

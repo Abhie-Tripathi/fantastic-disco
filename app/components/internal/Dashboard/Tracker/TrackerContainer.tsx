@@ -100,7 +100,7 @@ const data = [
 ];
 const TrackerContainer = ({ width }: Props) => {
   return (
-    <div className='bg-[var(--background-secondary-color)] border border-[var(--border-color)] rounded-xl w-fit h-fit overflow-hidden'>
+    <div className='w-fit h-fit overflow-hidden'>
         {width === "large" ? <TrackerLarge templates={data}/> : <></>}
     </div>
   )
