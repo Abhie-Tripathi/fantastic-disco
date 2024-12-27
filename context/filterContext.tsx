@@ -8,8 +8,9 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
+import { useEventsService } from "@/services/eventsService";
 
 interface Filters {
   show?: string;
@@ -57,7 +58,7 @@ interface Filters {
 type FilterContextType = {
   localFilters: Filters;
   setLocalFilter: (key: keyof Filters, value: string) => void;
-  clearLocalFilters: () => void;
+  clearLocalFilters: (value:string) => void;
   applyFilters: () => void;
   getLocalFilterValue: (key: keyof Filters) => string;
   searchParams: URLSearchParams;
@@ -78,20 +79,49 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const router = useRouter();
   const { searchParams } = useFilterState();
   const [localFilters, setLocalFilters] = useState<Filters>({});
-
+  console.log(localFilters);
+  const eventService = useEventsService(); 
+  const [enabledFilters,setEnabledFilters]=useState<any>(null);
+  const pathname = usePathname()
   const filterEmptyValues = useCallback((filters: Filters): Filters => {
     return Object.fromEntries(
       Object.entries(filters).filter(([_, value]) => value !== "")
     ) as Filters;
   }, []);
 
-  // useEffect(() => {
-  //   console.log(localFilters);
+  useEffect(() => {
+    const getEnabledFilters = async () => {
+      
+      try {
+        const data = await eventService.fetchEnabledFilters("research");
+        if(data){
+        setEnabledFilters(data);
+        }else{
+          setEnabledFilters(null);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    };
+  
+    getEnabledFilters();
+  }, []);
+  
+  useEffect(() => {
+    if(!pathname.split('/').includes("editTracker")){
+   setInitialFilters();
+   console.log(11111);
+   
+    }
+  }, [searchParams, enabledFilters]);
+  useEffect(() => {
+   console.log(localFilters);
+   
     
-  //   setLocalFilters(
-  //     filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
-  //   );
-  // }, [searchParams, filterEmptyValues]);
+    // setLocalFilters(
+    //   filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
+    // );
+  }, [searchParams, filterEmptyValues]);
 
   const setLocalFilter = useCallback((key: keyof Filters, value: string) => {
     setLocalFilters((prev) => {
@@ -101,16 +131,69 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       } else {
         newFilters[key] = value;
       }
+      console.log(newFilters);
+      
       return newFilters;
     });
   }, []);
 
-  const clearLocalFilters = useCallback(() => {
-    setLocalFilters({});
+  const clearLocalFilters = useCallback((view:string) => {
+    console.log(enabledFilters);
+    router.push(`/internal/search/events?view=${view}`);
   }, []);
-
+  const setInitialFilters=()=>{
+    const temp: Record<string, string> = Object.fromEntries(searchParams.entries());
+    console.log(enabledFilters);
+    
+    if (enabledFilters&& (Object.keys(temp).includes("view") && Object.keys(temp).length===1 &&  pathname.split('/')[2]==="search" || pathname.split('/')[3]==="create")) {
+      
+      temp.eventFormats = enabledFilters.eventFormat?.enabledValue?.join(',') ?? '';
+      temp.status = enabledFilters.eventStatus?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
+      temp.categories = enabledFilters.eventCategory?.enabledValue
+        ?.map((item: any) => item.slug)
+        .join(',') ?? '';
+      temp.eventTypes = enabledFilters.eventType?.enabledValue?.map((item:string)=>`${item.toLowerCase()}s`)?.join(',') ?? '';
+      temp.locationIds = enabledFilters.locationIds?.enabledValue
+        ?.map((item: any) => item.id)
+        .join(',') ?? '';
+      temp.active_gte = enabledFilters.durations?.startDate
+        ? new Date(enabledFilters.durations.startDate.split(',')[0]).toISOString()
+        : '';
+      temp.active_lte = enabledFilters.durations?.endDate
+        ? new Date(enabledFilters.durations.endDate.split(',')[1]).toISOString()
+        : '';
+      temp.entryType = enabledFilters.eventEntry?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
+      temp.ratings = enabledFilters.eventRating?.enabledValue?.join(',') ?? '';
+      temp.maturity = enabledFilters.maturity?.enabledValue?.[0] ?? '';
+      if (enabledFilters.branded?.isBrandedEnabled) 
+        temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand ? 'true' : 'false';
+     if(enabledFilters.branded?.enabledValue?.
+      isBrandedEnabled )
+      temp.onlySeries = enabledFilters.branded?.enabledValue?.eventSeries ? 'true' : 'false';
+      temp.frequencies = enabledFilters.eventFrequency?.enabledValue?.join(',') ?? '';
+      temp.includeKeywords = enabledFilters.keywords?.positiveKeywords?.join(',') ?? '';
+      temp.excludeKeywords = enabledFilters.keywords?.negativeKeywords?.join(',') ?? '';
+      temp.estimatedVisitors = enabledFilters.eventSize?.enabledValue?.join(',') ?? '';
+      temp.estimatedExhibitors = enabledFilters.estimatedExhibitScore?.enabledValue?.join(',') ?? '';
+  
+      let dataToShow: string[] = [];
+      if (enabledFilters.eventRating?.isRatingEnabled) dataToShow.push('rating');
+      if (enabledFilters.maturity?.isMaturityEnabled) dataToShow.push('maturity');
+      if (enabledFilters.branded?.isBrandedEnabled) dataToShow.push('branded,series');
+      if (enabledFilters.eventFrequency?.isFreqEnabled) dataToShow.push('frequency');
+      if (enabledFilters.estimatedExhibitScore?.isExhibitorsEnabled) dataToShow.push('estimatedExhibitors');
+      if (enabledFilters.analytics?.isAnalyticsEnabled) dataToShow.push('scores');
+  
+      temp.show = dataToShow.join(',');
+    }
+    console.log(temp);
+    
+    setLocalFilters(temp);
+  }
   const applyFilters = useCallback(() => {
     setLocalFilters((currentFilters) => {
+      console.log(currentFilters);
+      
       const filteredFilters = filterEmptyValues(currentFilters);
       const params = new URLSearchParams();
       Object.entries(filteredFilters).forEach(([key, value]) => {

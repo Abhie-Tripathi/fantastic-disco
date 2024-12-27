@@ -77,7 +77,8 @@ export default function EventAnalyticsSelector() {
         filters.international_score_lte = newRange[1].toString();
         break;
     }
-
+    console.log(filters);
+    
     setMultipleLocalFilters(filters);
   };
 
@@ -146,7 +147,7 @@ export default function EventAnalyticsSelector() {
             open ? "border-primary" : "border-input"
           }`}
           aria-expanded={open}
-          disabled={enabledAnalyticsData && !enabledAnalyticsData?.isAnalyticsEnabled}
+          // disabled={enabledAnalyticsData && !enabledAnalyticsData?.isAnalyticsEnabled}
           aria-haspopup="true"
         >
           <span className="mr-2">Event Analytics</span>

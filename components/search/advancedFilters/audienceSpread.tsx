@@ -26,11 +26,11 @@ export default function Component() {
   const [searchTerm, setSearchTerm] = useState("");
   const [countries, setCountries] = useState<Country[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
-  const { localFilters, setMultipleLocalFilters } = useFilterContext();
+  const { localFilters, setMultipleLocalFilters, getLocalFilterValue } = useFilterContext();
   const { getCountries, getRegions, isLoading, error } = useMiscService();
 
   const selectedCountries = useMemo(() => 
-    localFilters.audienceSpread?.split(',').filter(Boolean) || []
+    getLocalFilterValue("audienceSpread")?.split(',').filter(Boolean) || []
   , [localFilters.audienceSpread]);
 
   const selectedRegions = useMemo(() => 

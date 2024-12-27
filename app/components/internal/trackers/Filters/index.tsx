@@ -400,7 +400,7 @@ const Pages = () => {
   const searchParams = useSearchParams();
   
   const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
-  const { getLocalFilterValue, setLocalFilter } = useFilterContext();
+  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
   interface SelectedLocation {
     [id: string]: string;
@@ -766,28 +766,30 @@ const Pages = () => {
     setIsCreating(true);
 
     const categorySlugs = selectedCategories;
-    const categoryIds = categorySlugs.map((slug) => {
+    const categoryIds = getLocalFilterValue("categories")
+    .split(",")
+    .filter(Boolean).map((slug) => {
       const category = newCategories.find((cat) => cat.slug === slug);
       return category ? category.id : slug;
     });
 
     const userType = {
-      ...(isRatingOpen && { rating: true }),
-      ...(isExhibitOpen && { exhibit: true }),
+      ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
+      ...(getLocalFilterValue("show").split(",").includes("estimatedExhibitors") && { exhibit: true }),
       ...(rankToggles.isTrustScore && {trust:true}),
-      ...(isMaturity && {maturity:true}),
-      ...(selectedBrandedEvent && {brandedEvent:true}),
-      ...(selectedEventSeries && {eventSeries:true}),
-      ...(isBrand && {brandSeries:true}),
-      ...(forecastedStatus && {forecastedStatus:true}),
+      ...(getLocalFilterValue("show").split(",").includes("maturity")&& {maturity:true}),
+      ...(getLocalFilterValue("onlyBranded") && {brandedEvent:true}),
+      ...(getLocalFilterValue("onlySeries") && {eventSeries:true}),
+      ...((getLocalFilterValue("show").split(",").includes("branded") && getLocalFilterValue("show").split(",").includes("series"))&& {brandSeries:true}),
+      ...((getLocalFilterValue("show").split(",").includes("forecasted")) && {forecastedStatus:true}),
       ...(analyticsToggles.impactScore&& {impactScore:true}),
       ...(analyticsToggles.inboundScore&& {inboundScore:true}),
       ...(analyticsToggles.internationalScore&& {internationalScore:true}),
-      ...(rankToggles.isEventRank&& {eventRank:true}),
-      ...(analyticsToggles.globalToggle && {globalToggle: true}),
-      ...(audienceZone && {audienceZone:true}),
+      ...((getLocalFilterValue("show").split(",").includes("rankings"))&& {eventRank:true}),
+      ...(getLocalFilterValue("show").split(",").includes("scores") && {globalToggle: true}),
+      ...(getLocalFilterValue("show").split(",").includes("audienceZone") && {audienceZone:true}),
       ...(audienceSpread && {audienceSpread:true}),
-      ...(freqToggle && {eventFrequency:true}),
+      ...(getLocalFilterValue("show").split(",").includes("frequency") && {eventFrequency:true}),
     }
      const eventType1=getLocalFilterValue("eventTypes")
       .split(",")
@@ -853,13 +855,13 @@ const Pages = () => {
           // excludeKeywords: excludeKeywords.join(','),
           excludeKeywords :excludeKeywords.map((kw: string) => kw.replace(/ /g, "_")).join(','),
         }),
-        ...(selectedCategories?.length > 0 && {
+        ...(categoryIds?.length > 0 && {
           eventCategory: categoryIds.join(","),
         }),
-        ...(selectedVisitors?.length>0 && {
-          eventSize: selectedVisitors.join(",")
+        ...(getLocalFilterValue("estimatedVisitors")?.length>0 && {
+          eventSize: getLocalFilterValue("estimatedVisitors")
          }),
-         ...(selectedExhibitScore?.length>0 && {estimatedExhibitScore:selectedExhibitScore.join(',')}),
+         ...(getLocalFilterValue("estimatedExhibitors")?.length>0 && {estimatedExhibitScore:getLocalFilterValue("estimatedExhibitors")}),
          ...(selectedRegularity[0] > 0 && {editionRange: selectedRegularity[0].toString()}),
         // ...(selectedZone?.length > 0 && {
         //   eventRegion: selectedZone.join(',')
@@ -879,18 +881,18 @@ const Pages = () => {
         ...(getLocalFilterValue("eventFormats")?.length > 0 && {
           eventFormat: getLocalFilterValue("eventFormats"),
         }),
-        // ...(selectedEventSeries && {eventSeries: selectedEventSeries.toString()}),
-        ...(selectedEventStatus?.length > 0 && {
-          eventStatus: selectedEventStatus.map((item) => item.toUpperCase()).join(","),
+        ...(getLocalFilterValue("onlySeries") && {eventSeries: getLocalFilterValue("onlySeries")}),
+        ...(getLocalFilterValue("status")?.length > 0 && {
+          eventStatus: getLocalFilterValue("status"),
         }),
-        ...(selectedEntry?.length > 0 && {
-          eventEntry: selectedEntry.map((item)=>item.toLowerCase()).join(","),
+        ...(getLocalFilterValue("entryType")?.length > 0 && {
+          eventEntry: getLocalFilterValue("entryType"),
         }),
-        ...(selectedTrustScore[0] > 0 && {
-          trustScore: selectedTrustScore[0].toString(),
+        ...(getLocalFilterValue("trust_score_gte") && {
+          trustScore: getLocalFilterValue("trust_score_gte"),
         }),
-        ...(selectedEventFrequency?.length > 0 && {
-          eventFrequency: selectedEventFrequency.map((item)=>item[0].toUpperCase()+item.slice(1)).join(","),
+        ...(getLocalFilterValue("frequencies")?.length > 0 && {
+          eventFrequency: getLocalFilterValue("frequencies").split(",").map((item)=>item[0].toUpperCase()+item.slice(1)).join(","),
         }),
         ...(selectedReptScore > 0 && {
           reputationScore: selectedReptScore.toString(),
@@ -902,16 +904,16 @@ const Pages = () => {
         //     new Date(selectedDateRange[1]).toISOString().split("T")[0],
         //   ].join(","),
         // }),
-        ...(dateRange?.from && dateRange?.to && {
+        ...(getLocalFilterValue("active_gte") && getLocalFilterValue("active_lte") && {
           startDate: [
-            dateRange.from.toLocaleDateString("en-CA"),
-            dateRange.to.toLocaleDateString("en-CA"),
+            getLocalFilterValue("active_gte"),
+            getLocalFilterValue("active_lte"),
           ].join(","),
         }),
-        ...(dateRange?.from && dateRange?.to && {
+        ...(getLocalFilterValue("active_gte") && getLocalFilterValue("active_lte") &&{
           endDate: [
-            dateRange.from.toLocaleDateString("en-CA"),
-            dateRange.to.toLocaleDateString("en-CA"),
+            getLocalFilterValue("active_gte"),
+            getLocalFilterValue("active_lte"),
           ].join(","),
         }),
         // ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
@@ -923,8 +925,8 @@ const Pages = () => {
         ...(selectedLocationsData && selectedLocationsData?.length > 0
     ? { locationIds: selectedLocationsData.map((item:LocationItem) => item.id).join(',') }
     : {}),
-        ...(selectedUserRatings?.length > 0 && {
-          eventRating: selectedUserRatings.join(","),
+        ...(getLocalFilterValue("ratings")?.length > 0 && {
+          eventRating: getLocalFilterValue("ratings"),
         }),
         // ...(rankToggles?.isEventRank === true && {
         //   eventRank: selectedEventRank.join(",")
@@ -942,31 +944,27 @@ const Pages = () => {
             +selectedEventAttendanceRange[1],
           ].join(","),
         }),
-        ...((selectedMaturity !== '' && selectedMaturity !== 'none') && { maturity: selectedMaturity }),
-        ...(analyticsToggles.globalToggle && {
-          eventImpactScore: selectedImpactScore.join("-")
-         }),
-        ...(analyticsToggles.globalToggle && {
-          inboundScore: selectedInboundScore.join("-")
-        }),
-        ...(analyticsToggles.globalToggle && {
-          internationalScore: selectedInternationalScore.join("-")
+        ...(getLocalFilterValue("maturity").length>0 && { maturity: getLocalFilterValue("maturity") }),
+        ...(getLocalFilterValue("show").split(",").includes("scores") && {
+          eventImpactScore: `${getLocalFilterValue("impact_score_gte")|| 0}-${getLocalFilterValue("impact_score_lte")|| 100}`,
+          inboundScore: `${getLocalFilterValue("inbound_score_gte")|| 0}-${getLocalFilterValue("inbound_score_lte")|| 100}`,
+          internationalScore: `${getLocalFilterValue("international_score_gte")||0}-${getLocalFilterValue("international_score_lte")|| 100}`,
         }),
         ...(forecastedStatus && {
           isforecasted: forecastedStatus.toString()
         }),
-        // ...(selectedBrandedEvent && {eventBrand:selectedBrandedEvent.toString()}),
-        ...((selectedRank !== '' && selectedRank !== 'none') && {
+        ...(getLocalFilterValue("onlyBranded") && {eventBrand:getLocalFilterValue("onlyBranded").toString()}),
+        ...(getLocalFilterValue("top") && {
           // globalRanking: selectedRank,
           // categoryRanking: selectedRank,
           // countryRanking: selectedRank,
-          eventRanking: selectedRank,
+          eventRanking: getLocalFilterValue("top"),
         }),
-        ...(selectedCountries?.length > 0 && {
-          audienceSpread: selectedCountries.join(",")
+        ...(getLocalFilterValue("audienceSpread") && {
+          audienceSpread: getLocalFilterValue("audienceSpread")
          }),
-         ...(selectedAudProfile.length > 0 && {
-          designation: selectedAudProfile.join(","),
+         ...(getLocalFilterValue("designations") && {
+          designation: getLocalFilterValue("designations"),
         }),
         ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'inboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency'].join()}
         // info: {
@@ -1179,11 +1177,46 @@ const Pages = () => {
       //   .map((item: any) => item.id);
       // console.log(filteredArr);
       let toggleOpend: Toggle = {};
+      
+     
       if (typeof editData?.tracker?.filterValue?.userType === 'string') {
           toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
       }
+      const showFilters = [...getLocalFilterValue("shows").split(",")];
+      if (toggleOpend?.rating) {
+        
+        showFilters.push("rating");
+      }
+      if (toggleOpend?.maturity) {
+        showFilters.push("maturity");
+      }
+      if (toggleOpend?.brandSeries) {
+        showFilters.push("branded");
+        showFilters.push("series");
+      }
+      if(toggleOpend?.forecastedStatus){
+        showFilters.push("forecasted");
+      }
+      if(toggleOpend?.eventFrequency){
+        showFilters.push("frequency");
+      }
+      if(toggleOpend?.exhibit){
+        showFilters.push("estimatedExhibitors");
+      }
+      if(toggleOpend?.globalToggle){
+        showFilters.push("scores")
+      }
+      if(toggleOpend?.eventRank){
+        showFilters.push("rankings")
+      }
+      if(toggleOpend?.audienceZone){
+        showFilters.push("audienceZone")
+      }
+      console.log(showFilters);
+      setLocalFilter("show",showFilters.join(","));
       setRatingOpen(toggleOpend?.rating ? true : false);
       setIsMaturity(toggleOpend?.maturity ? true : false);
+      
       setExhibitOpen(toggleOpend?.exhibit ?true:false)
       setRankToggles({
         ...rankToggles,
@@ -1199,26 +1232,52 @@ const Pages = () => {
         internationalScore: (toggleOpend?.internationalScore ? true : false),
         globalToggle: toggleOpend?.globalToggle? true: false,
       });
-
+      
       if(editData?.tracker?.filterValue?.inboundScore && editData?.tracker?.filterValue?.inboundScore !== "")
         setSelectedInboundScore(editData?.tracker?.filterValue?.inboundScore?.split("-"));
+      console.log(getLocalFilterValue("show").split(",").includes("scores"));
       
+      if(toggleOpend.globalToggle){
+        console.log(1111);
+        setLocalFilter("impact_score_gte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[0]).toString() || "0")
+        setLocalFilter("impact_score_lte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[1]).toString() || "100")
+        setLocalFilter("inbound_score_gte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[0]).toString() || "0")
+        setLocalFilter("inbound_score_lte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[1]).toString() || "0")
+        setLocalFilter("international_score_gte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[0]).toString() || "0")
+        setLocalFilter("international_score_lte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[1]).toString() || "0")
+      }
       if(editData?.tracker?.filterValue?.eventImpactScore && editData?.tracker?.filterValue?.eventImpactScore !== "")
         setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactScore?.split("-"));
 
       if(editData?.tracker?.filterValue?.internationalScore && editData?.tracker?.filterValue?.internationalScore !== "")
         setSelectedInternationalScore(editData?.tracker?.filterValue?.internationalScore?.split("-"));
 
-      if(editData?.tracker?.filterValue?.maturity && editData?.tracker?.filterValue?.maturity !== '')
+      if(editData?.tracker?.filterValue?.maturity && editData?.tracker?.filterValue?.maturity !== ''){
         setSelectedMaturity(editData?.tracker?.filterValue?.maturity)
-
+        setLocalFilter("maturity",editData?.tracker?.filterValue?.maturity)
+      }
+      if(editData?.tracker?.filterValue?.eventBrand){
+        setLocalFilter("onlyBranded","true")
+      }
+      if(editData?.tracker?.filterValue?.eventSeries){
+        setLocalFilter("onlySeries","true")
+      }
       if(editData?.tracker?.filterValue?.eventRanking && editData?.tracker?.filterValue?.eventRanking !== '')
-        setSelectedRank(editData?.tracker?.filterValue?.eventRanking)
+        setLocalFilter("top",editData?.tracker?.filterValue?.eventRanking)
 
       setAudienceZone(toggleOpend?.audienceZone ? true : false);
       setAudienceSpread(toggleOpend?.audienceSpread ? true : false);
 
       setSelectedCountries(editData.tracker.filterValue?.audienceSpread ? editData.tracker.filterValue?.audienceSpread?.split(",") : []);
+      setLocalFilter("audienceSpread",editData.tracker.filterValue?.audienceSpread);
+      if (Array.isArray(editData.tracker.filterValue.designation)) {
+        const designationIds = editData.tracker.filterValue.designation
+            .filter((item: Designations) => item.id !== undefined)
+            .map((item: Designations) => item.id)
+            .join(",");
+    
+        setLocalFilter("designations", designationIds);
+    }
       setSelectedAudProfile(
         editData.tracker.filterValue?.designation
           ? editData.tracker.filterValue.designation
@@ -1244,6 +1303,9 @@ const Pages = () => {
           const category = newCategories.find((cat) => cat.id === item.id);
           return category ? category.slug : item.id;
         });
+        console.log(categorySlugs);
+        
+        setLocalFilter("categories", categorySlugs.join(","));
         setSelectedCategories(
           categorySlugs?.length > 0
             ? categorySlugs
@@ -1277,6 +1339,10 @@ const Pages = () => {
           ? editData?.tracker?.filterValue?.eventStatus?.split(",").map((item:string) => item.toLowerCase())
           : []
       );
+      setLocalFilter(
+        "status",
+        editData?.tracker?.filterValue?.eventStatus?.split(",")?.map((item: string) => item.toLowerCase()).join(",")
+      );
       setDateRange({
         to: editData?.tracker?.filterValue?.startDate
           ? new Date(editData.tracker.filterValue.startDate.split(",")[1])
@@ -1285,6 +1351,10 @@ const Pages = () => {
           ? new Date(editData.tracker.filterValue.startDate.split(",")[0])
           : undefined
       });
+      // setMultipleLocalFilters({
+      //   active_gte: new Date(enabledFilters?.durations?.startDate?.split(",")[0]?.trim())?.toISOString(),
+      //   active_lte: new Date(enabledFilters?.durations?.endDate?.split(",")[0]?.trim())?.toISOString(),
+      // });
       // setDateRange({
       //   ...dateRange,
       //   to: editData?.tracker?.filterValue?.startDate
@@ -1345,12 +1415,14 @@ const Pages = () => {
           ? editData?.tracker?.filterValue?.eventFrequency?.split(",").map((item:string)=>item[0].toLowerCase()+item.slice(1))
           : []
       );
+      setLocalFilter("frequencies",editData?.tracker?.filterValue?.eventFrequency?.split(",").map((item:string)=>item[0].toLowerCase()+item.slice(1)).join(","))
       setSelectedEntry(
         editData.tracker.filterValue?.eventEntry &&
           editData.tracker.filterValue?.eventEntry?.length !== 0
           ? editData.tracker.filterValue?.eventEntry?.split(",")
           : []
       );
+      setLocalFilter("entryType", editData.tracker.filterValue?.eventEntry)
       setSelectedEventEdition(
         editData.tracker.filterValue?.editionRange > 0
           ? editData.tracker.filterValue?.editionRange
@@ -1445,6 +1517,13 @@ const Pages = () => {
           ? editData.tracker.filterValue?.eventRating?.split(",")
           : []
       );
+      setLocalFilter("ratings", editData.tracker.filterValue?.eventRating);
+      setLocalFilter("estimatedVisitors",editData.tracker.filterValue?.eventSize);
+      setLocalFilter("estimatedExhibitors",editData.tracker.filterValue?.estimatedExhibitScore);
+      if(editData.tracker.filterValue?.trustScore){
+        setLocalFilter("trust_score_gte", editData.tracker.filterValue?.trustScore)
+        setLocalFilter("trust_score_lte","100")
+      }
       setSelectedVisitors(
         editData.tracker.filterValue?.eventSize &&
           editData.tracker.filterValue?.eventSize?.length !== 0
@@ -1694,6 +1773,7 @@ useEffect(()=>{
   setExcludeKeywords(enabledFilters?.keywords?.negativeKeywords);
   setSelectedVisitors(enabledFilters?.eventSize?.enabledValue || []);
   setSelectedCategories( enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []);
+  
   setDateRange({
     from: enabledFilters?.durations?.startDate
       ? new Date(enabledFilters.durations.startDate.split(",")[0])

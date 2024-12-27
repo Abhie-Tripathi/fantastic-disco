@@ -128,7 +128,7 @@ export default function MapComponent({ searchParams, source, trackerId, isGlobal
 
   const location = useMemo(() => {
     const geoCoordinates = getLocalFilterValue("geoCoordinates");
-    const locationIds = source==="tracker"? trackerLoc:getLocalFilterValue("locationIds");
+    const locationIds = source==="tracker"? trackerLoc.length>0?trackerLoc:"defaultLoc":getLocalFilterValue("locationIds");
     console.log(locationIds);
     
     if (geoCoordinates) {

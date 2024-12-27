@@ -40,12 +40,12 @@ const useDesignationsAutocomplete = (input: string) => {
 export default function AudienceDesAndDepSelector() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const { localFilters, setLocalFilter } = useFilterContext();
+  const { localFilters, setLocalFilter, getLocalFilterValue } = useFilterContext();
   const { designations } = useDesignationsAutocomplete(search);
 
   const selectedLabels = useMemo(() => {
     const filterDesignations =
-      localFilters.designations?.split(",").filter(Boolean) || [];
+      getLocalFilterValue("designations")?.split(",").filter(Boolean) || [];
     return designations.filter((d: Designations) =>
       filterDesignations.includes(d.id)
     );
