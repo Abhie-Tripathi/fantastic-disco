@@ -18,8 +18,8 @@ const CoordinateScreenTwo = ({ values }: Props) => {
         <div className="flex items-center gap-2 text-xs font-[var(--font-weight-semibold)] text-[var(--primary-color)]"><Coordinate /> Coordinate</div>
         <div className="leading-var(--line-height-small) text-[var(--bold-border-color)] text-xs">Explore events and express your interest in the ones that matter to you and start coordinating with your team.</div>
       </div>
-      <div className='flex flex-col items-center mt-8'>
-        <div className="grid grid-cols-2 gap-6 mt-8">
+      <div className='flex flex-col items-center mt-8 w-full'>
+        <div className="grid grid-cols-2 gap-6 mt-8 w-[60%]">
           {values.map((item, index) => (
             <NumberPill width='125px' heading={item.heading} value={item.value} key={index}/>
           ))}

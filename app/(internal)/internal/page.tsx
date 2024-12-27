@@ -19,15 +19,17 @@ const Dashboard = () => {
       <div className="flex-1">
         {/* <ModuleSelection value="admin" /> */}
         {/* <ModuleSelection value="user" /> */}
-        {/* <CoordinateContainer height="small"/> */}
         {/* <Research /> */}
+        {/* <CoordinateContainer height="small"/> */}
+        {/* <CoordinateContainer height="large"/> */}
         {/* <Prospect/> */}
         {/* <PromoteContainer width="large"/> */}
-        <TrackerContainer width="large"/>
+        {/* <PromoteContainer width="small"/> */}
+        {/* <TrackerContainer width="large"/> */}
       </div>
-      <div className="flex-none min-w-[20%]">
-        {/* <RecentActivity />
-        <ManageTeam /> */}
+      <div className="flex flex-col min-w-[20%] gap-2">
+        <RecentActivity />
+        <ManageTeam />
       </div>
     </div>
   );

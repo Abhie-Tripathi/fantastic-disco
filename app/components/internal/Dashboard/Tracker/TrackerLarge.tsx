@@ -30,7 +30,7 @@ const TrackerLarge = ({ templates }: Props) => {
         {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
     ]
 
-    let events = 3
+    let events = 2
 
     return (
         <div className={`${events === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] h-[500px] flex flex-col items-center overflow-hidden relative rounded-xl`}>

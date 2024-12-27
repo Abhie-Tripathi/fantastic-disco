@@ -8,7 +8,7 @@ interface Props {
 
 const PromoteContainer = ({ width }: Props) => {
     const values = [
-        { name: "Widgets", value: 1 },
+        { name: "Widgets", value: 0 },
         { name: "Drafts", value: 0 },
         { name: "Events", value: 0 },
     ]
