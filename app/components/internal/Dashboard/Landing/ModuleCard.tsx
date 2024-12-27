@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import React from 'react'
 import { MoveRight } from 'lucide-react'
 import Image, { StaticImageData } from 'next/image'
-import styles from './style.module.css'
+// import styles from './style.module.css'
 
 interface Props {
   imgWidth: number
@@ -17,7 +17,7 @@ interface Props {
 const ModuleCard = ({ imgHeight, imgWidth, heading, subHeading, image, button, top }: Props) => {
   return (
     <div className="flex flex-col items-center justify-start h-[267px] w-[289px] bg-[var(--primary-foreground)] rounded-md shadow-md overflow-hidden p-3">
-      <div className={`${styles.body} flex flex-col items-center justify-center min-h-[130px] max-h-[130px] w-[250px]`}>
+      <div className={`flex flex-col items-center justify-center min-h-[130px] max-h-[130px] w-[250px]`}>
         <div className="text-[var(--primary-color)] font-semibold text-sm">
           {heading}
         </div>

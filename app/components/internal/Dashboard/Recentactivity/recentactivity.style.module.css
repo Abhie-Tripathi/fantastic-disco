@@ -7,6 +7,7 @@
     position: absolute;
     bottom: -120px;
     right: -10px;
-    /* left: 5px; */
-    /* top: 0; */
+}
+.card{
+    filter: drop-shadow(1px 1px 6px rgb(232, 232, 232));
 }

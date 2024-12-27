@@ -6,6 +6,9 @@ import RecentActivity from "@/app/components/internal/Dashboard/Recentactivity/R
 import React, { useEffect, useRef, useState } from "react";
 import styles from './page.style.module.css'
 import Research from "@/app/components/internal/Dashboard/Research/Research";
+import ModuleCard from "@/app/components/internal/Dashboard/Landing/ModuleCard";
+import ProspectModule from '/public/internal/dashboard/ProspectModule.png'
+import Prospect from "@/app/components/internal/Dashboard/Prospect";
 const Dashboard = () => {
 
   return (
@@ -14,13 +17,12 @@ const Dashboard = () => {
         {/* <ModuleSelection value="user" /> */}
         {/* <ModuleSelection value="user" /> */}
         {/* <CoordinateContainer height="big"/> */}
-        <Research />
-
-
+        {/* <Research /> */}
+        <Prospect/>
       </div>
       <div className="flex-none min-w-[20%]">
-        <RecentActivity />
-        <ManageTeam />
+        {/* <RecentActivity />
+        <ManageTeam /> */}
       </div>
     </div>
   );
