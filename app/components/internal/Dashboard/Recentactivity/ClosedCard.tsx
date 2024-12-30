@@ -7,7 +7,6 @@ interface Props {
   notification: { name: string, id: string, heading: string, mssg: string, time: string, date: string }
 }
 
-
 const ClosedCard = ({ notification }: Props) => {
   return (
     <div className='w-full h-[154px] border border-[var(--border-color)] rounded-md bg-[var(--primary-foreground)] p-3'>
