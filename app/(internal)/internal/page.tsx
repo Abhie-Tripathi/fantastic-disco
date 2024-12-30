@@ -25,7 +25,7 @@ const Dashboard = () => {
         {/* <Prospect/> */}
         {/* <PromoteContainer width="large"/> */}
         {/* <PromoteContainer width="small"/> */}
-        {/* <TrackerContainer width="large"/> */}
+        <TrackerContainer width="large"/>
       </div>
       <div className="flex flex-col min-w-[20%] gap-2">
         <RecentActivity />
