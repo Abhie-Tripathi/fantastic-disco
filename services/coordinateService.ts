@@ -1,8 +1,9 @@
 import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
-import { CoordinateListResponse, UserInterestResponse, eventPocResponse, pocDetail } from "@/types/coordinateEventType";
+import { CoordinateListResponse, PresetJsonData, UserInterestResponse, eventPocResponse, pocDetail } from "@/types/coordinateEventType";
 import { ApiError } from "@/types/api";
 import { MiscAdapter } from "@/adapters/miscAdapter";
+import externalAxios from "@/lib/externalAxios";
 
 interface fnProp {
   offset: number;
@@ -177,6 +178,13 @@ export const useCoordinateService = () => {
     });
   }
 
+  const getPresetJson = async(type: string, page: number) => {
+    const data = await externalAxios.get<PresetJsonData[]>(`/data/presetJson/competitor.json`, {
+      method: "GET",
+    });
+    return data.data;
+  }
+
   return {
     getEventsWithSearchParams,
     getParticipentCount,
@@ -193,6 +201,7 @@ export const useCoordinateService = () => {
     getInterestConfig,
     getPipelineConfig,
     unlockPocDetail,
+    getPresetJson,
     isLoading: api.isLoading,
     error: api.error as ApiError,
   };

@@ -1,27 +1,17 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, RefObject } from "react";
 import Image from "next/image";
 import styles from "./filters.style.module.css";
 import Competitor from "/public/competitor.svg";
 import Keywords from "/public/keywords.svg";
 import Speaking from "/public/speaking.svg";
 import Template from "/public/template.svg";
-import kewwordPresetJson from "@/public/data/presetJson/keyword.json";
-import competitorPresetJson from "@/public/data/presetJson/competitor.json";
-import speakerPresetJson from "@/public/data/presetJson/speaker.json";
+// import kewwordPresetJson from "@/public/data/presetJson/keyword.json";
+// import competitorPresetJson from "@/public/data/presetJson/competitor.json";
+// import speakerPresetJson from "@/public/data/presetJson/speaker.json";
 import useInfiniteScroll from "@/utils/useInfiniteScroll";
 import Loading from "@/app/components/UI/Loading";
-
-interface PresetJsonData {
-  id: number;
-  img?: any;
-  url: string;
-  trackerName: string;
-  content: string;
-  data: any;
-  enabled: boolean;
-  presetType: string;
-  eventCount?: string;
-}
+import { useCoordinateService } from "@/services/coordinateService";
+import { PresetJsonData } from "@/types/coordinateEventType";
 
 interface Props {
   template: any;
@@ -45,27 +35,49 @@ const Presets = ({ template, handlePresetClick }: Props) => {
   const [shortlistPage, setShortlistPage] = useState(1);
   const shortlistRef: RefObject<HTMLDivElement> = useRef(null);
 
+  const coordinateService = useCoordinateService();
+
   const handleScrollEnd = () => {
     setTimeout(() => {
-    //   if (!taskDetail[status].noMoreData)
-        setShortlistPage((prevPage) => prevPage + 1);
+      //   if (!taskDetail[status].noMoreData)
+      setShortlistPage((prevPage) => prevPage + 1);
     }, 1000);
   };
 
   useInfiniteScroll(shortlistRef, handleScrollEnd);
 
-  useEffect(() => {
-    // fetchPipelineData(status, taskDetail[status].label, shortlistPage);
-    console.log('fetching data for page =', shortlistPage);
-  }, [shortlistPage]);
+  const fetchPresetJson = async () => {
+    try {
+      const apiData = await coordinateService.getPresetJson(
+        "speaker",
+        shortlistPage
+      );
+      if (apiData) {
+        // setInterestedUsers(apiData.participent);
+        console.log("apiData=", apiData);
+        setPresetTemplateData(apiData);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {
-    setPresetTemplateData([
-      ...kewwordPresetJson,
-      ...competitorPresetJson,
-      ...speakerPresetJson,
-    ]);
-  }, []);
+    // fetchPipelineData(status, taskDetail[status].label, shortlistPage);
+    console.log("fetching data for page =", shortlistPage);
+    fetchPresetJson();
+
+    // setPresetTemplateData();
+  }, [shortlistPage]);
+
+  // useEffect(() => {
+  // setPresetTemplateData([
+  //   ...kewwordPresetJson,
+  //   ...competitorPresetJson,
+  //   ...speakerPresetJson,
+  // ]);
+  //   fetchPresetJson();
+  // }, []);
 
   return (
     <div>
@@ -78,46 +90,56 @@ const Presets = ({ template, handlePresetClick }: Props) => {
           }
         </span>
       </div>
-      <div className={styles.presetContainer} ref={shortlistRef} >
-        {presetTemplateData
-          .filter((item) => item.url === template?.name)
-          .map((item, ind) => (
-            <div
-              key={ind}
-              className="w-full p-2 gap-3 flex items-center flex-col h-[280px] text-sm border border-[var(--border-color)] rounded-[12px] overflow-y-auto"
-              onClick={
-                item.enabled
-                  ? () => handlePresetClick(item, item.id, item.url, item.trackerName)
-                  : undefined
-              }
-              style={{ cursor: item.enabled ? "pointer" : "unset" }}
-            >
-              <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)] relative">
-                <div className={styles.account}>
-                  <Image
-                    src={
-                      item.url === "T_COMPETITOR"
-                        ? Competitor
-                        : item.url === "T_PRODUCT_KEYWORDS"
-                        ? Keywords
-                        : item.url === "T_SPEAKING_OPPORTUNITY"
-                        ? Speaking
-                        : Keywords
-                    }
-                    alt="people"
-                  />
-                </div>
-                <div>
-                  <Image src={Template} alt="template" />
-                </div>
-                {item?.eventCount && parseInt(item.eventCount) > 0 && (
-                  <div className="p-1 px-2 bg-[var(--primary-light-color)] font-medium text-xs absolute bottom-0 right-0 rounded-br-md rounded-tl-md">
-                    {formatCount(parseInt(item.eventCount))} events
+      <div
+        className="max-h-[calc(100vh-260px)] overflow-y-auto mt-6"
+        ref={shortlistRef}
+      >
+        <div className={styles.presetContainer}>
+          {presetTemplateData
+            .filter((item) => item.url === template?.name)
+            .map((item, ind) => (
+              <div
+                key={ind}
+                className="w-full p-2 gap-3 flex items-center flex-col h-[280px] text-sm border border-[var(--border-color)] rounded-[12px] overflow-y-auto"
+                onClick={
+                  item.enabled
+                    ? () =>
+                        handlePresetClick(
+                          item,
+                          item.id,
+                          item.url,
+                          item.trackerName
+                        )
+                    : undefined
+                }
+                style={{ cursor: item.enabled ? "pointer" : "unset" }}
+              >
+                <div className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)] relative">
+                  <div className={styles.account}>
+                    <Image
+                      src={
+                        item.url === "T_COMPETITOR"
+                          ? Competitor
+                          : item.url === "T_PRODUCT_KEYWORDS"
+                          ? Keywords
+                          : item.url === "T_SPEAKING_OPPORTUNITY"
+                          ? Speaking
+                          : Keywords
+                      }
+                      alt="people"
+                    />
                   </div>
-                )}
-              </div>
-              <div className="w-full h-[60%] flex flex-col gap-3">
-                {/* <div className="flex justify-between items-center">
+                  <div>
+                    <Image src={Template} alt="template" />
+                  </div>
+                  {item?.eventCount && parseInt(item.eventCount) > 0 && (
+                    <div className="p-1 px-2 bg-[var(--primary-light-color)] font-medium text-xs absolute bottom-0 right-0 rounded-br-md rounded-tl-md">
+                      {formatCount(parseInt(item.eventCount))} events
+                    </div>
+                  )}
+                </div>
+                <div className="w-full h-[60%] flex flex-col gap-3">
+                  {/* <div className="flex justify-between items-center">
                     <div className="flex h-full items-center gap-1">
                       <Image
                         src={Vector1}
@@ -141,16 +163,18 @@ const Presets = ({ template, handlePresetClick }: Props) => {
                       </div>
                     }
                   </div> */}
-                <div className={styles.bottomViewTwo}>{item?.trackerName}</div>
-                <div className={styles.text}>{item?.content}</div>
+                  <div className={styles.bottomViewTwo}>
+                    {item?.trackerName}
+                  </div>
+                  <div className={styles.text}>{item?.content}</div>
+                </div>
               </div>
-            </div>
-          ))}
-            
-      </div>
-        <div className="flex justify-center">
-            <Loading />
+            ))}
         </div>
+        <div className="flex justify-center p-5 w-full">
+          <Loading />
+        </div>
+      </div>
     </div>
   );
 };
