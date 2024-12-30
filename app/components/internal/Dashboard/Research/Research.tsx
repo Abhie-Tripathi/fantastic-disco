@@ -24,7 +24,7 @@ const Research = () => {
                 </div>
                 <div className={`w-full bg-white p-[9px_12px] border rounded flex items-center gap-2`}>
                     <MagnifyingGlass color='#A8A8A8' width="13px" height='13px' />
-                    <input type="text" className='text-sm' placeholder='Search by locations or events' />
+                    <input type="text" className='text-sm' placeholder='Search events' />
                 </div>
                 <div className={`${styles.filterContainer}`}>
                     <div className={`${styles.heading} flex items-center gap-0.5`}>
