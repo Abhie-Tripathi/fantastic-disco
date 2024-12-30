@@ -12,6 +12,7 @@ import Prospect from "@/app/components/internal/Dashboard/Prospect";
 import PromoteOne from "@/app/components/internal/Dashboard/Promote/PromoteOne";
 import PromoteContainer from "@/app/components/internal/Dashboard/Promote/PromoteContainer";
 import TrackerContainer from "@/app/components/internal/Dashboard/Tracker/TrackerContainer";
+import Outreach from "@/app/components/internal/Dashboard/Outreach/Outreach";
 const Dashboard = () => {
 
   return (
@@ -25,7 +26,8 @@ const Dashboard = () => {
         {/* <Prospect/> */}
         {/* <PromoteContainer width="large"/> */}
         {/* <PromoteContainer width="small"/> */}
-        <TrackerContainer width="smaller"/>
+        {/* <TrackerContainer width="smaller"/> */}
+        <Outreach/>
       </div>
       <div className="flex flex-col min-w-[20%] gap-2">
         <RecentActivity />
