@@ -4,6 +4,7 @@ import Image, { StaticImageData } from 'next/image'
 import Carousel from './Carousel'
 import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'geist-icons';
+import TrackerCard from './TrackerCard';
 
 interface Props {
     templates: {
@@ -19,14 +20,14 @@ interface Props {
 
 const TrackerSmall = ({ templates }: Props) => {
     const trackers = [
-        // { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
+        { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
         // {name :"Tracker 2" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
         // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
         // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
     ]
     return (
-        <div className='flex w-[536px] h-[250px] justify-between items-start border border-[var(--border-color)] rounded-xl p-3'>
-            <div className='flex flex-col gap-7 w-[35%]'>
+        <div className={`flex ${trackers.length > 0 ? "flex-col" : "justify-between"} w-[536px] h-[250px] items-start border border-[var(--border-color)] rounded-xl p-3`}>
+            <div className={`flex flex-col ${trackers.length === 0 ? "gap-7" : "gap-2"} w-[35%]`}>
                 <div className='flex items-center gap-2'>
                     <div style={{ transform: 'rotate(15deg)', width: '12px', height: '12px' }}>
                         <Image src={ColoredTrackerIcon} alt="tracker" /></div>
@@ -35,11 +36,18 @@ const TrackerSmall = ({ templates }: Props) => {
                 <div className='text-xs text-[var(--bold-border-color)]'>
                     {trackers.length === 0 ? "Leverage the potential of smart event tracking by creating an event tracker or by using our pre-defined templates." : "Here’s your top active tracker"}
                 </div>
-                <Button className="w-[130px] z-10 mt-5 btn-default flex items-center" size="xs">Create Tracker<ArrowRight color='white' width="12px" /></Button>
+                {trackers.length === 0 && <Button className="w-[130px] z-10 mt-5 btn-default flex items-center" size="xs">Create Tracker<ArrowRight color='white' width="12px" /></Button>}
             </div>
-            <div className='h-[225px] w-[65%]'>
+            {trackers.length > 0 &&
+                <div className='mt-7 w-full bg-[var(--background-secondary-color)] rounded-xl p-5'>
+                    {trackers.map((tracker, key) => (
+                        <TrackerCard tracker={tracker} key={key} />
+                    ))}
+                </div>
+            }
+            {trackers.length === 0 && <div className='h-[225px] w-[65%]'>
                 <Carousel simple={true} templates={templates} />
-            </div>
+            </div>}
         </div>
     )
 }
