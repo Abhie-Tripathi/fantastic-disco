@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styles from './style.module.css'
 import { StaticImageData } from 'next/image'
 import TrackerTemplateCard from './TrackerTemplateCard'
+import { ChevronLeftSmall, ChevronRightSmall } from 'geist-icons'
 
 interface Props {
     templates: {
@@ -29,13 +30,14 @@ const Carousel = ({ templates }: Props) => {
     return (
         <div className="flex flex-col items-center justify-center relative w-full h-full z-[1] gap-2.5">
             <button
-                className={`absolute cursor-pointer top-1/2 -translate-y-1/2 left-1 border-none z-[999] h-12 w-12 flex items-center justify-center bg-white rounded-full shadow-md ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''
+                className={`absolute cursor-pointer top-1/2 -translate-y-1/2 left-1 border-none z-[999] h-[28px] 
+                    w-[28px] flex items-center justify-center bg-white rounded-full shadow-md ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                 onClick={handlePrev}
                 disabled={currentIndex === 0}
             >
-                <div className="transform -rotate-90">
-                    <ArrowIcon />
+                <div className="">
+                    <ChevronLeftSmall />
                 </div>
             </button>
             <div className="flex justify-center items-center overflow-hidden w-full h-full relative">
@@ -66,13 +68,14 @@ const Carousel = ({ templates }: Props) => {
                 })}
             </div>
             <button
-                className={`absolute cursor-pointer top-1/2 -translate-y-1/2 right-1 border-none z-[999] h-12 w-12 flex items-center justify-center bg-white rounded-full shadow-md ${currentIndex === templates.length - 1 ? 'opacity-50 cursor-not-allowed' : ''
+                className={`absolute cursor-pointer top-1/2 -translate-y-1/2 right-1 border-none z-[999] h-[28px] 
+                    w-[28px] flex items-center justify-center bg-white rounded-full shadow-md ${currentIndex === templates.length - 1 ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                 onClick={handleNext}
                 disabled={currentIndex === templates.length - 1}
             >
-                <div className="transform rotate-90">
-                    <ArrowIcon />
+                <div className="">
+                    <ChevronRightSmall />
                 </div>
             </button>
         </div>
