@@ -12,9 +12,10 @@ interface Props {
         url: string,
         trackerName: string,
         content: string
-    }[]
+    }[],
+    simple : boolean; //This variable will be responsible if we want to show shadow and left and right cards
 }
-const Carousel = ({ templates }: Props) => {
+const Carousel = ({ templates, simple }: Props) => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
     const handleNext = () => {
@@ -30,14 +31,13 @@ const Carousel = ({ templates }: Props) => {
     return (
         <div className="flex flex-col items-center justify-center relative w-full h-full z-[1] gap-2.5">
             <button
-                className={`absolute cursor-pointer top-1/2 -translate-y-1/2 left-1 border-none z-[999] h-[28px] 
-                    w-[28px] flex items-center justify-center bg-white rounded-full shadow-md ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''
+                className={`absolute cursor-pointer top-1/2 -translate-y-1/2 left-0 border-none z-[999] ${simple ? "h-[20px] w-[20px]": "h-[28px] w-[28px]"} flex items-center justify-center bg-white rounded-full shadow-md ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                 onClick={handlePrev}
                 disabled={currentIndex === 0}
             >
                 <div className="">
-                    <ChevronLeftSmall />
+                    <ChevronLeftSmall/>
                 </div>
             </button>
             <div className="flex justify-center items-center overflow-hidden w-full h-full relative">
@@ -50,9 +50,9 @@ const Carousel = ({ templates }: Props) => {
                             key={index}
                             className={`
                                 absolute opacity-0 transition-opacity-0 transition-transform duration-500 ease-in-out
-                                ${isActive ? 'filter drop-shadow-lg  z-[2] opacity-100' : ''}
-                                ${isLeft ? 'transform -translate-x-[40%] scale-75 z-[1] opacity-60' : ''}
-                                ${isRight ? 'transform translate-x-[40%] scale-75 z-[1] opacity-60' : ''}
+                                 ${isActive ? `${!simple ? 'filter drop-shadow-lg' : ''} z-[2] opacity-100` : ''}
+                                ${isLeft ? `transform ${!simple ? "-translate-x-[40%]" : ''} scale-75 z-[1] opacity-60` : ''}
+                                ${isRight ? `transform ${!simple ? "translate-x-[40%]" : ''} scale-75 z-[1] opacity-60` : ''}
                             `}
                         >
                             <div className="cursor-pointer">
@@ -68,8 +68,7 @@ const Carousel = ({ templates }: Props) => {
                 })}
             </div>
             <button
-                className={`absolute cursor-pointer top-1/2 -translate-y-1/2 right-1 border-none z-[999] h-[28px] 
-                    w-[28px] flex items-center justify-center bg-white rounded-full shadow-md ${currentIndex === templates.length - 1 ? 'opacity-50 cursor-not-allowed' : ''
+                className={`absolute cursor-pointer top-1/2 -translate-y-1/2 right-0 border-none z-[999] ${simple ? "h-[20px] w-[20px]": "h-[28px] w-[28px]"} flex items-center justify-center bg-white rounded-full shadow-md ${currentIndex === templates.length - 1 ? 'opacity-50 cursor-not-allowed' : ''
                     }`}
                 onClick={handleNext}
                 disabled={currentIndex === templates.length - 1}

@@ -55,11 +55,11 @@ const TrackerLarge = ({ templates }: Props) => {
                     ))}
                 </div>
             }
-            {(trackers.length === 1 || trackers.length === 0) && 
-            <div className={`w-full h-[250px] py-1 px-3 ${trackers.length === 1 ? "bg-[var(--background-secondary-color)] py-3 h-full rounded-xl" :""}`}>
-                {trackers.length === 1 && <div className='text-xs text-[var(--bold-border-color)]'>Leverage the potential of smart event tracking by creating an event tracker or by using our pre-defined templates.</div>}
-                <Carousel templates={templates} />
-            </div>}
+            {(trackers.length === 1 || trackers.length === 0) &&
+                <div className={`w-full h-[250px] py-1 px-3 ${trackers.length === 1 ? "bg-[var(--background-secondary-color)] py-3 h-full rounded-xl" : ""}`}>
+                    {trackers.length === 1 && <div className='text-xs text-[var(--bold-border-color)]'>Leverage the potential of smart event tracking by creating an event tracker or by using our pre-defined templates.</div>}
+                    <Carousel simple={false} templates={templates} />
+                </div>}
             {trackers.length === 0 && <Button className="z-10 mt-5 btn-default flex items-center">Create Tracker<ArrowRight color='white' width="12px" /></Button>}
             {trackers.length === 0 && <div className='absolute bottom-[-180px]'>
                 <Image src={TrackerImage} alt='tracker' width={370} height={370} unoptimized />
