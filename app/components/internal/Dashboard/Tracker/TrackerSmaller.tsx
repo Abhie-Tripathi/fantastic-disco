@@ -8,13 +8,13 @@ import TrackerImage from '/public/internal/dashboard/Tracker.png'
 
 const TrackerSmaller = () => {
     const trackers = [
-        // { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
+        { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
         // {name :"Tracker 2" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
         // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
         // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
     ]
     return (
-        <div className={`w-[261px] h-[250px] items-start border border-[var(--border-color)] rounded-xl p-4 relative overflow-hidden` }>
+        <div className={`w-[261px] h-[250px] items-start border border-[var(--border-color)] rounded-xl p-4 relative overflow-hidden`}>
             <div className={`flex flex-col ${trackers.length === 0 ? "gap-4" : "gap-2"} w-[100%]`}>
                 <div className='flex items-center gap-2'>
                     <div style={{ transform: 'rotate(15deg)', width: '12px', height: '12px' }}>
@@ -26,6 +26,13 @@ const TrackerSmaller = () => {
                 </div>
                 {trackers.length === 0 && <Button className="w-[130px] z-10 mt-4 btn-default flex items-center" size="xs">Create Tracker<ArrowRight color='white' width="12px" /></Button>}
             </div>
+            {trackers.length > 0 &&
+                <div className='mt-7 w-full'>
+                    {trackers.map((tracker, key) => (
+                        <TrackerCard small={true} tracker={tracker} key={key} />
+                    ))}
+                </div>
+            }
             {trackers.length === 0 && <div className='absolute bottom-[-110px] left-[25px]'>
                 <Image src={TrackerImage} alt='tracker' width={210} height={210} unoptimized />
             </div>}

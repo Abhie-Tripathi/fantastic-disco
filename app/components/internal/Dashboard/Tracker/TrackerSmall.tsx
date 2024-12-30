@@ -41,7 +41,7 @@ const TrackerSmall = ({ templates }: Props) => {
             {trackers.length > 0 &&
                 <div className='mt-7 w-full bg-[var(--background-secondary-color)] rounded-xl p-5'>
                     {trackers.map((tracker, key) => (
-                        <TrackerCard tracker={tracker} key={key} />
+                        <TrackerCard small={false} tracker={tracker} key={key} />
                     ))}
                 </div>
             }

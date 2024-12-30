@@ -49,7 +49,7 @@ const TrackerLarge = ({ templates }: Props) => {
                 <div className='mt-5 w-full'>
                     {trackers.map((tracker, key) => (
                         <div key={key}>
-                            <TrackerCard tracker={tracker} />
+                            <TrackerCard small={false} tracker={tracker} />
                             <div className='border border-[var(--border-color)] mt-3 mb-3'></div>
                         </div>
                     ))}
