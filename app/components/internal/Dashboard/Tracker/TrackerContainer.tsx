@@ -11,6 +11,7 @@ import Keywords from "/public/keywords.svg";
 import SocialCause from "/public/socialCause.svg";
 import Brand from "/public/brand.svg";
 import TrackerSmall from './TrackerSmall';
+import TrackerSmaller from './TrackerSmaller';
 
 interface Props {
   width: string;
@@ -102,7 +103,7 @@ const data = [
 const TrackerContainer = ({ width }: Props) => {
   return (
     <div className='w-fit h-fit overflow-hidden'>
-        {width === "large" ? <TrackerLarge templates={data}/> : width ==="small" ? <TrackerSmall templates={data}/> : <></>}
+        {width === "large" ? <TrackerLarge templates={data}/> : width ==="small" ? <TrackerSmall templates={data}/> : <TrackerSmaller/>}
     </div>
   )
 }
