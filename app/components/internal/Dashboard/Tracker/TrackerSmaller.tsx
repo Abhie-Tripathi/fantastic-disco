@@ -33,7 +33,7 @@ const TrackerSmaller = () => {
                     ))}
                 </div>
             }
-            {trackers.length === 0 && <div className='absolute bottom-[-110px] left-[25px]'>
+            {trackers.length === 0 && <div className='absolute bottom-[-110px] left-[15%]'>
                 <Image src={TrackerImage} alt='tracker' width={210} height={210} unoptimized />
             </div>}
         </div>

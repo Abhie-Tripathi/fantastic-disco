@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './style.module.css'
 import BackgroundImage from '/public/internal/dashboard/Researchbg.png'
+import BackgroundImageDark from '/public/internal/dashboard/Researchbgdark.png'
 import { MagnifyingGlass } from "geist-icons";
 import Handicon from '/public/hand.png'
 import Image from 'next/image';
@@ -8,23 +9,28 @@ import { Sparkles } from 'lucide-react'
 import Dropdown from './Dropdown';
 import MapContainer from './MapContainer';
 
-const Research = () => {
+interface Props {
+    theme: string | null
+}
 
-    const dropdowns = [{ name: "Event Type" }, { name: "Category" }, { name: "Event Format" }]
+const Research = ({ theme }: Props) => {
+
+    const dropdowns = [{ name: "Event Type" }, { name: "Location" }, { name: "Date" }]
 
     return (
-        <div className={`w-full h-auto gap-[61px] bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden`} style={{ backgroundImage: `url(${BackgroundImage.src})` }}>
+        <div className={`w-full h-auto gap-[61px] bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden`}
+            style={{ backgroundImage: `${theme === "dark" ? `url(${BackgroundImageDark.src})` : `url(${BackgroundImage.src})`}` }}>
             <div className={`m-[20px_30px] gap-5 w-[60%] flex flex-col`}>
                 <div className={`${styles.header} flex flex-col`}>
                     <div className="text-xl font-[var(--font-weight-semibold)] flex items-center gap-1">
-                        <span>Welcome</span>
+                        <span>Welcome back</span>
                         <Image src={Handicon} alt='hand' width={20} height={20} />
                     </div>
                     <div className='text-sm text-[var(--secondary-text-color)]'>Maximize ROI from your event strategy with Whr.ai</div>
                 </div>
-                <div className={`w-full bg-white p-[9px_12px] border rounded flex items-center gap-2`}>
+                <div className={`w-full bg-[var(--primary-foreground)] p-[9px_12px] border rounded flex items-center gap-2`}>
                     <MagnifyingGlass color='#A8A8A8' width="13px" height='13px' />
-                    <input type="text" className='text-sm' placeholder='Search events' />
+                    <input type="text" className='text-sm bg-transparent' placeholder='Search events' />
                 </div>
                 <div className={`${styles.filterContainer}`}>
                     <div className={`${styles.heading} flex items-center gap-0.5`}>
@@ -33,13 +39,13 @@ const Research = () => {
                     </div>
                     <div className={`${styles.filters} mt-2.5 flex justify-between`}>
                         {dropdowns.map((dropdown, key) => (
-                            <Dropdown name={dropdown.name} key={key} />
+                            <Dropdown theme={theme} name={dropdown.name} key={key} />
                         ))}
                     </div>
                 </div>
             </div>
             <div className="mr-[80px] w-[260px] mb-[-40px]">
-                <MapContainer/>
+                <MapContainer theme={theme}/>
             </div>
         </div>
     )

@@ -2,10 +2,14 @@ import React, { Suspense } from 'react'
 import styles from './style.module.css'
 import { MagnifyingGlass } from 'geist-icons';
 
-const MapContainer = () => {
+interface Props {
+    theme: string | null
+}
+
+const MapContainer = ({ theme }: Props) => {
     const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
     return (
-        <div className={"filter drop-shadow-[1px_0px_5px_rgba(225,225,225,1)] bg-white rounded-t-[12px] p-1"}>
+        <div className={`filter drop-shadow-lg bg-[var(--accent-color)] rounded-t-[12px] p-1`}>
             <div className="relative">
                 <Suspense fallback={<div>Loading...</div>}>
                     <Mapview latitude={28.694135}

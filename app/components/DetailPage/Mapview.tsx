@@ -5,6 +5,7 @@ import MapPointer from "/public/Marker.svg";
 import { Map, Marker } from "react-map-gl";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Image from 'next/image';
+import { useTheme } from "@/context";
 
 interface MapProps {
     latitude: number;
@@ -16,6 +17,7 @@ interface MapProps {
 }
 
 const Mapview = ({ latitude, longitude, zoom, venue, height }: MapProps) => {
+      const {theme} = useTheme()
     return (
         <div className={styles.body}>
             {venue &&
@@ -38,7 +40,7 @@ const Mapview = ({ latitude, longitude, zoom, venue, height }: MapProps) => {
                         width: "100%",
                         height: "100%",
                     }}
-                    mapStyle='mapbox://styles/mapbox/streets-v12'
+                    mapStyle={`mapbox://styles/mapbox/${theme === "dark" ? "dark" : "streets"}-${theme === "dark" ? "v11" : "v12"}`}
                 >
                     <Marker latitude={latitude} longitude={longitude}>
                         <Image src={MapPointer} alt='pointer' />

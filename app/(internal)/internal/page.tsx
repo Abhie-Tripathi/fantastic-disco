@@ -14,6 +14,7 @@ import PromoteContainer from "@/app/components/internal/Dashboard/Promote/Promot
 import TrackerContainer from "@/app/components/internal/Dashboard/Tracker/TrackerContainer";
 import Outreach from "@/app/components/internal/Dashboard/Outreach/Outreach";
 import Trends from "@/app/components/internal/Dashboard/Trends/Trends";
+import { useTheme } from "@/context";
 const Dashboard = () => {
 
   let role = "sa"
@@ -21,6 +22,9 @@ const Dashboard = () => {
   let outreach = role === "sa"
   let prospect = true
   let trends = true
+
+  const {theme} = useTheme()
+
   return (
     <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3">
       <div className="flex-1">
@@ -28,7 +32,7 @@ const Dashboard = () => {
           (role === "user" && value === "empty") ? <ModuleSelection value="user" /> :
             value === "filled" ?
               <div className="flex flex-col gap-3">
-                <Research />
+                <Research theme={theme}/>
                 <div className="flex gap-3 mb-2">
                   <div className="flex flex-col gap-3 w-[55%]">
                     <div className="w-full flex gap-3">
@@ -75,7 +79,7 @@ const Dashboard = () => {
         {/* <Outreach/> */}
         {/* <Trends container="large"/> */}
       </div>
-      <div className="flex flex-col min-w-[20%] gap-2">
+      <div className="flex flex-col min-w-[20%] gap-3">
         <RecentActivity />
         <ManageTeam />
       </div>
