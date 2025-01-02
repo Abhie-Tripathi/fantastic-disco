@@ -13,7 +13,7 @@ const TextBox = ({ user, text }: Props) => {
                 "bg-[var(--accent-color)] rounded-tl-lg rounded-tr-lg rounded-bl-lg"}
                 p-2 w-[80%]
         `}>
-            <div className={`text-[10px] ${user === "they" ? "text-black" : "text-[var(--secondary-text-color)]"}`}>{text}</div>
+            <div className={`text-[10px] ${user === "they" ? "text-[var(--primary-text-color)]" : "text-[var(--secondary-text-color)]"}`}>{text}</div>
         </div>
     )
 }

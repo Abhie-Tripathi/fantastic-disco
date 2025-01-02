@@ -1,17 +1,21 @@
 import React from 'react'
 import OutreachImage from '/public/internal/dashboard/Outreach.png'
+import OutreachImageDark from '/public/internal/dashboard/OutreachDark.png'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { MoveRight } from 'lucide-react'
 import PhaseCard from './PhaseCard'
 import RecentChat from './RecentChat'
 
-const Outreach = () => {
+interface Props {
+  theme: string | null
+}
+const Outreach = ({theme} : Props) => {
 
   const events = [
     { name: "Shortlisted", value: 0, color: "#f8712b" },
     { name: "In Progress", value: 0, color: "#166aeb" },
-    { name: "Confirmed", value: 9, color: "#f9bf44" },
+    { name: "Confirmed", value: 1, color: "#f9bf44" },
   ]
 
   return (
@@ -34,7 +38,7 @@ const Outreach = () => {
 
       </div>
       {events.length === 0 ? <div className='relative h-full w-[50%]'>
-        <Image src={OutreachImage} alt='outreach' className='absolute top-[40px] left-[20px]' width={303} height={272} /></div>
+        <Image src={theme === "dark" ? OutreachImageDark :OutreachImage} alt='outreach' className='absolute top-[40px] left-[20px]' width={303} height={272} unoptimized/></div>
         : <div className='p-4 w-[50%] h-full'><RecentChat /></div>
       }
     </div>

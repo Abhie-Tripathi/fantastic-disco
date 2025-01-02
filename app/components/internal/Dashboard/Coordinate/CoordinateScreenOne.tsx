@@ -3,14 +3,15 @@ import styles from './style.module.css'
 import { Button } from '@/components/ui/button'
 import { MoveRight } from 'lucide-react'
 import CoordinateScreen from '/public/internal/dashboard/CoordinateScreen.png'
+import CoordinateScreenDark from '/public/internal/dashboard/CoordinateScreenDark.png'
 import Image from 'next/image'
 import NumberPill from './NumberPill'
 
 interface Props {
     values: { heading: string, value: number }[]
+    theme: string | null
 }
-const CoordinateScreenOne = ({ values }: Props) => {
-
+const CoordinateScreenOne = ({ values,theme }: Props) => {
 
     const [isEmpty, setIsEmpty] = useState<boolean>(false)
 
@@ -36,7 +37,7 @@ const CoordinateScreenOne = ({ values }: Props) => {
                     </div> : <Button className="mt-8" size="sm">Search Events <MoveRight width={12} /></Button>}
             </div>
             <div className="h-full min-w-[177px] max-w-[177px] flex items-center">
-                <Image className="w-full h-[180px] object-cover ml-4" src={CoordinateScreen} alt="coordinate" />
+                <Image className="w-full h-[180px] object-cover ml-4" src={theme === "dark" ? CoordinateScreenDark : CoordinateScreen} alt="coordinate" />
             </div>
         </div>
     )

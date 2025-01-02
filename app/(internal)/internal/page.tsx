@@ -4,12 +4,8 @@ import ManageTeam from "@/app/components/internal/Dashboard/ManageTeam";
 import ModuleSelection from "@/app/components/internal/Dashboard/Landing/ModuleSelection";
 import RecentActivity from "@/app/components/internal/Dashboard/Recentactivity/RecentActivity";
 import React, { useEffect, useRef, useState } from "react";
-import styles from './page.style.module.css'
 import Research from "@/app/components/internal/Dashboard/Research/Research";
-import ModuleCard from "@/app/components/internal/Dashboard/Landing/ModuleCard";
-import ProspectModule from '/public/internal/dashboard/ProspectModule.png'
 import Prospect from "@/app/components/internal/Dashboard/Prospect";
-import PromoteOne from "@/app/components/internal/Dashboard/Promote/PromoteOne";
 import PromoteContainer from "@/app/components/internal/Dashboard/Promote/PromoteContainer";
 import TrackerContainer from "@/app/components/internal/Dashboard/Tracker/TrackerContainer";
 import Outreach from "@/app/components/internal/Dashboard/Outreach/Outreach";
@@ -18,7 +14,7 @@ import { useTheme } from "@/context";
 const Dashboard = () => {
 
   let role = "sa"
-  let value = "filled"
+  let value = "empty"
   let outreach = role === "sa"
   let prospect = true
   let trends = true
@@ -28,8 +24,8 @@ const Dashboard = () => {
   return (
     <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3">
       <div className="flex-1">
-        {(role === "sa" && value === "empty") ? <ModuleSelection value="admin" /> :
-          (role === "user" && value === "empty") ? <ModuleSelection value="user" /> :
+        {(role === "sa" && value === "empty") ? <ModuleSelection theme={theme} value="admin" /> :
+          (role === "user" && value === "empty") ? <ModuleSelection theme={theme} value="user" /> :
             value === "filled" ?
               <div className="flex flex-col gap-3">
                 <Research theme={theme}/>
@@ -43,23 +39,24 @@ const Dashboard = () => {
                         <Trends container="small" />
                       </div>}
                     </div>
-                    {(outreach && role === "sa") && <div><Outreach /> </div>}
+                    {(outreach && role === "sa") && <div><Outreach theme={theme}/> </div>}
                   </div>
 
                   <div className="flex flex-col gap-3 w-[45%]">
                     {(role === "user" && trends ) && <div><Trends container="large"/></div>}
                     <div className="w-full">
                       <CoordinateContainer 
+                      theme={theme}
                       // height={role === "sa" ? "small" : "large"}
                       height="small"
                        />
                     </div>
                     {role === "sa" && <div className="flex gap-3">
                       <div className={prospect ? "w-[50%]" : "w-full"}>
-                        <PromoteContainer width={prospect ? "small" : "large"} />
+                        <PromoteContainer theme={theme} width={prospect ? "small" : "large"} />
                       </div>
                       {prospect && <div className="w-[50%]">
-                        <Prospect />
+                        <Prospect theme={theme}/>
                       </div>}
 
                     </div>}

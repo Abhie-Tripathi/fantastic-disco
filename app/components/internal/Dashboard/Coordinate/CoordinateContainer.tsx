@@ -7,13 +7,14 @@ import CoordinateScreenTwo from './CoordinateScreenTwo';
 
 interface Props{
     height : string;
+    theme: string | null
     // values : {heading : string, value : number}[]
 }
 
-const CoordinateContainer = ({height} :Props) => {
+const CoordinateContainer = ({height, theme} :Props) => {
 
     const values = [{ heading: "Attending", value: 0 },
-    { heading: "Sponsors", value: 1 },
+    { heading: "Sponsors", value:1 },
     { heading: "Speakers", value: 0 },
     { heading: "Exhibitor", value: 0 },
     ]
@@ -23,7 +24,7 @@ const CoordinateContainer = ({height} :Props) => {
     return (
         <div className={`border border-[var(--border-color)] rounded-[12px] overflow-hidden
         `}>
-            {height === "small" ? <CoordinateScreenOne values={values}/> : <CoordinateScreenTwo values={values}/>}
+            {height === "small" ? <CoordinateScreenOne theme={theme} values={values}/> : <CoordinateScreenTwo values={values}/>}
         </div>
     )
 }

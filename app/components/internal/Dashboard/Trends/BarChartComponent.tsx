@@ -12,10 +12,12 @@ import {
   ChartOptions,
   Filler
 } from 'chart.js';
+import { useTheme } from '@/context';
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend, Filler);
 
 const BarChartComponent = () => {
+  const {theme} = useTheme()
   // Chart data
   const data: ChartData<'line'> = {
     labels: ['0', '1', '2', '3', '4', '5','6', '7', '8', '9', '10'],
@@ -48,7 +50,11 @@ const BarChartComponent = () => {
         },
         ticks : {
           display : false
-        }
+        },
+        grid: {
+          color: theme === "dark" ?'rgba(200, 200, 200, 0.1)' : 'rgba(200, 200, 200, 0.3)', // Light gray gridlines
+          lineWidth: 1, // Thickness of the gridlines
+        },
       },
       y: {
         title: {
@@ -57,6 +63,10 @@ const BarChartComponent = () => {
         },
         ticks : {
           display : false
+        },
+        grid: {
+          color: theme === "dark" ?'rgba(200, 200, 200, 0.1)' : 'rgba(200, 200, 200, 0.3)', // Light gray gridlines
+          lineWidth: 1, // Thickness of the gridlines
         },
         beginAtZero: true,
       },

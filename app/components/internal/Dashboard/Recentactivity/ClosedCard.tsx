@@ -2,12 +2,16 @@ import React from 'react'
 import SpeakerProfile from '/public/speaker1.jpeg'
 import {Email} from 'geist-icons'
 import Image from 'next/image'
+import { useTheme } from '@/context'
 
 interface Props {
   notification: { name: string, id: string, heading: string, mssg: string, time: string, date: string }
 }
 
 const ClosedCard = ({ notification }: Props) => {
+
+  const {theme} = useTheme() 
+
   return (
     <div className='w-full h-[154px] border border-[var(--border-color)] rounded-md bg-[var(--primary-foreground)] p-3'>
       <div className='flex justify-between w-full items-center'>
@@ -18,7 +22,7 @@ const ClosedCard = ({ notification }: Props) => {
             <div className='text-[10px] text-[(--background-secondary-color-active)]'>{notification.id}</div>
           </div>
         </div>
-        <div><Email width='12px' height='18px' /></div>
+        <div><Email color={theme === "dark" ? "white" : "black"} width='12px' height='18px' /></div>
       </div>
       <div className='flex flex-col gap-1 mt-2'>
         <div className='text-xs font-semibold text-[var(--secondary-text-color)]'>{notification.heading}</div>

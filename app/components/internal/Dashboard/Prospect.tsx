@@ -1,8 +1,13 @@
 import React from 'react'
 import Image from 'next/image';
 import ProspectModule from '/public/internal/dashboard/ProspectModule.png'
+import ProspectModuleDark from '/public/internal/dashboard/ProspectModuleDark.png'
 
-const Prospect = () => {
+interface Props{
+    theme: string | null
+}
+
+const Prospect = ({theme} : Props) => {
     return (
         <div className="bg-[var(--background-secondary-color)] border border-[var(--border-color)] flex flex-col items-center justify-start w-full min-h-[271px] rounded-xl">
             <div className={`flex flex-col items-center justify-center p-4`}>
@@ -16,7 +21,7 @@ const Prospect = () => {
             </div>
             <Image
                 className={`min-w-[166px] min-h-[117px]`}
-                src={ProspectModule}
+                src={theme === "dark" ? ProspectModuleDark :ProspectModule}
                 alt="research"
                 width={166}
                 height={117}

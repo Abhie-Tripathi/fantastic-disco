@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import styles from './style.module.css'
 import Image from 'next/image';
 import PormoteModule from '/public/internal/dashboard/PormoteModule.png'
+import PormoteModuleDark from '/public/internal/dashboard/PromoteModuleDark.png'
 import { MoveRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import NumberPill from '../Coordinate/NumberPill';
@@ -9,9 +10,10 @@ import NumberPill from '../Coordinate/NumberPill';
 
 interface Props {
     values: { name: string, value: number }[]
+    theme: string | null
 }
 
-const PromoteOne = ({ values }: Props) => {
+const PromoteOne = ({ values, theme }: Props) => {
 
     const [isEmpty, setIsEmpty] = useState<boolean>(false)
 
@@ -33,7 +35,7 @@ const PromoteOne = ({ values }: Props) => {
             </div>
             {isEmpty && <Image
                 // className={`min-w-[166px] min-h-[200]`}
-                src={PormoteModule}
+                src={ theme === "dark" ? PormoteModuleDark : PormoteModule}
                 alt="research"
                 width={206}
                 height={200}

@@ -22,7 +22,7 @@ const RecentChat = () => {
                 
                 {/* <div></div> */}
             </div>
-            <div className='absolute bottom-[10px] left-[22px]'><Button className="mt-4 w-[200px]" size="xs">View Response <MoveRight width={12} /></Button></div>
+            <div className='absolute w-full bottom-[10px] left-0 px-3'><Button className="mt-4 w-full" size="xs">View Response <MoveRight width={12} /></Button></div>
             
         </div>
     )

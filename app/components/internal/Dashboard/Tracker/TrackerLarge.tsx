@@ -24,10 +24,10 @@ interface Props {
 const TrackerLarge = ({ templates }: Props) => {
 
     const trackers = [
-        { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
-        {name :"Tracker 2" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
-        {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
-        {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+        // { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
+        // {name :"Tracker 2" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+        // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+        // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
     ]
 
     // let events = 1
