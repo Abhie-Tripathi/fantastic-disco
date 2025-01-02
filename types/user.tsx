@@ -7,4 +7,5 @@ export interface UserResponse {
     profilePicture:string | null;
     companyId?: string | null;
     isVerified?:boolean;
+    role?:string|null
   }

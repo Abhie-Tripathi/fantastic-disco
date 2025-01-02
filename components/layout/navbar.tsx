@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import styles from "./navbar.style.module.css";
+import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,11 +35,12 @@ import Link from "next/link";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
-  "coordinate": "Coordinate",
-  "search": "Research",
-  "trackers": "Trackers",
+  coordinate: "Coordinate",
+  search: "Research",
+  trackers: "Trackers",
   outreach: "Outreach",
   trends: "Event Trends",
+  settings: "Settings",
 };
 const geniroutes: Record<string, string> = {
   list: "Widgets",
@@ -50,6 +52,8 @@ const geniroutes: Record<string, string> = {
   overview: "Manage",
   settings: "Manage",
   guests: "Manage",
+  profile: "Settings",
+  product: "Settings",
 };
 
 export default function Navbar() {
@@ -61,12 +65,22 @@ export default function Navbar() {
   function getRoute(path: string | undefined): string {
     return gtmroutes[path || ""];
   }
-  const router = useRouter()
+  const router = useRouter();
   const handleRoute = (route: string) => {
     if (route === "research") {
       router.push("/internal");
     } else if (route === "promote") {
       router.push("/widget/dashboard");
+    }
+  };
+
+  const route = pathname.split("/")[1];
+  const handleClick = () => {
+    if (route === "internal") {
+      router.push("/internal/settings/profile");
+    }
+    if (route === "widget") {
+      router.push("/widget/settings/profile");
     }
   };
 
@@ -84,14 +98,25 @@ export default function Navbar() {
     return "";
   }, [user]);
 
+  const handleSettingsClick = () => {
+    if (route === "internal") {
+      router.push("/internal/settings/product");
+    }
+    if (route === "widget") {
+      router.push("/widget/settings/profile");
+    }
+  };
+
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center">
           <div className="text-lg font-semibold">
-          {pathname.split("/")[1] === "internal" ?
-               getRoute(pathname.split("/")[2])
-              : pathname.split("/").slice(-2)[0] === "edit" ? "Edit Widget" : geniroutes[pathname.split("/").slice(-1)[0]]}
+            {pathname.split("/")[1] === "internal"
+              ? getRoute(pathname.split("/")[2])
+              : pathname.split("/").slice(-2)[0] === "edit"
+              ? "Edit Widget"
+              : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
         <div className="flex items-center space-x-4">
@@ -153,7 +178,7 @@ export default function Navbar() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="secondary"
-                className="flex items-center bg-transparent p-1"
+                className="flex items-center bg-transparent p-1 "
               >
                 <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
                   {generateProfileName}
@@ -162,8 +187,22 @@ export default function Navbar() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
+                onClick={() => handleClick()}
+                className="flex items-center cursor-pointer"
+              >
+                <UserSearch className="h-4 w-4" />
+                <span className="ml-2">Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleSettingsClick()}
+                className="flex items-center cursor-pointer"
+              >
+                <Settings className="h-4 w-4" />
+                <span className="ml-2">Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 onClick={() => signOut()}
-                className="flex items-center"
+                className="flex items-center cursor-pointer"
               >
                 <LogOut className="h-4 w-4" />
                 <span className="ml-2">Logout</span>
