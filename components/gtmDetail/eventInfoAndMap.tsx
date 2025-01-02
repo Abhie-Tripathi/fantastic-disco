@@ -326,7 +326,7 @@ export const EventInfoAndMap = ({
             <Text variant="noMargin" color="primary">
               Start searching similar events
             </Text>
-            <Button className="cursor-not-allowed w-fit">
+            <Button className="cursor-not-allowed w-fit max-lg:bg-[#8F8F8F2E] max-lg:shadow-none max-lg:text-[#171717] max-lg:font-medium">
               Search Events
             </Button>
           </div>
