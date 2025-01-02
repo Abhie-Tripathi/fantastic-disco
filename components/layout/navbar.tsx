@@ -35,12 +35,12 @@ import Link from "next/link";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
-  "coordinate": "Coordinate",
-  "search": "Research",
-  "trackers": "Trackers",
+  coordinate: "Coordinate",
+  search: "Research",
+  trackers: "Trackers",
   outreach: "Outreach",
   trends: "Event Trends",
-  "settings": "Settings",
+  settings: "Settings",
 };
 const geniroutes: Record<string, string> = {
   list: "Widgets",
@@ -65,7 +65,7 @@ export default function Navbar() {
   function getRoute(path: string | undefined): string {
     return gtmroutes[path || ""];
   }
-  const router = useRouter()
+  const router = useRouter();
   const handleRoute = (route: string) => {
     if (route === "research") {
       router.push("/internal");
@@ -85,14 +85,25 @@ export default function Navbar() {
     }
   };
 
+  const handleSettingsClick = () => {
+    if (route === "internal") {
+      router.push("/internal/settings/product");
+    }
+    if (route === "widget") {
+      router.push("/widget/settings/profile");
+    }
+  };
+
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center">
           <div className="text-lg font-semibold">
-          {pathname.split("/")[1] === "internal" ?
-               getRoute(pathname.split("/")[2])
-              : pathname.split("/").slice(-2)[0] === "edit" ? "Edit Widget" : geniroutes[pathname.split("/").slice(-1)[0]]}
+            {pathname.split("/")[1] === "internal"
+              ? getRoute(pathname.split("/")[2])
+              : pathname.split("/").slice(-2)[0] === "edit"
+              ? "Edit Widget"
+              : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
         <div className="flex items-center space-x-4">
@@ -180,12 +191,19 @@ export default function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-            <DropdownMenuItem
+              <DropdownMenuItem
                 onClick={() => handleClick()}
                 className="flex items-center cursor-pointer"
               >
                 <UserSearch className="h-4 w-4" />
                 <span className="ml-2">Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleSettingsClick()}
+                className="flex items-center cursor-pointer"
+              >
+                <Settings className="h-4 w-4" />
+                <span className="ml-2">Settings</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => signOut()}
@@ -194,7 +212,6 @@ export default function Navbar() {
                 <LogOut className="h-4 w-4" />
                 <span className="ml-2">Logout</span>
               </DropdownMenuItem>
-            
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
