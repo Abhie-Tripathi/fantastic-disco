@@ -52,7 +52,7 @@ export const InsightsAndScores = ({
     below5CountryCategoryEvent: below5CountryCategoryEvent,
   };
   const [ref, inView, entry, rootMargin] = useInView({
-    threshold: 0.5,
+    threshold: 0.2,
     triggerOnce: false,
   });
   useMemo(() => {
