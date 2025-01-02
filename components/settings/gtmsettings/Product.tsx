@@ -529,12 +529,12 @@ export default function ProductsPage() {
                       )}
                     </div>
                   ))}
-                <button
+                {/* <button
                   className="flex items-center justify-center border rounded-md w-10 h-10 text-base"
                   onClick={addResearchScreenBox}
                 >
                   <PlusIcon />
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
@@ -616,12 +616,12 @@ export default function ProductsPage() {
                       )}
                     </div>
                   ))}
-                <button
+                {/* <button
                   className="flex items-center justify-center border rounded-md w-10 h-10 text-base"
                   onClick={addOutreachScreenBox}
                 >
                   <PlusIcon />
-                </button>
+                </button> */}
               </div>
             </div>
             <div className="grid place-items-center">
