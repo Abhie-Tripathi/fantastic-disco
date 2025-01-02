@@ -395,7 +395,6 @@ export const AuthContextProvider = ({ children }: any) => {
   useEffect(() => {
     if (!user) {
       const userData = window.localStorage.getItem("user");
-      console.log("User", userData && JSON.parse(userData).user);
       userData && setUser(JSON.parse(userData));
     }
   }, [user]);
@@ -436,14 +435,12 @@ export const AuthContextProvider = ({ children }: any) => {
   useEffect(() => {
     const user = window.localStorage.getItem("user");
     if (user) {
-      console.log("isProfileUpdated", user && JSON.parse(user).user);
       setUser(JSON.parse(user).user);
     }
   }, [isProfileUpdated]);
 
   useLayoutEffect(() => {
     const user = window.localStorage.getItem("user");
-    console.log("useLayoutEffect", user && JSON.parse(user).user);
     if (user) {
       setUser(JSON.parse(user).user);
     } else {
@@ -453,7 +450,6 @@ export const AuthContextProvider = ({ children }: any) => {
         publicPaths.includes(pathName) ||
         pathName.startsWith("/reset") ||
         (token && token.length > 0);
-      console.log(isPublicPath);
 
       if (!isPublicPath) {
         router.push("/signin");

@@ -73,7 +73,6 @@ export const EventRank = ({
     useState<number>(0);
   const [countryCategoryTotalSlides, setCountryCategoryTotalSlides] =
     useState<number>(0);
-  console.log(countryRank, categoryRank, countryCategoryRank);
 
   const rankComponents = (
     <div className="flex flex-row justify-center max-[1400px]:hidden">
