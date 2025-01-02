@@ -23,7 +23,7 @@ export const useEventServices = () => {
       `${endpoints.events.getSortedEvents}?sortBy=start_date&sortType=asc&offset=${page}&limit=8&expired=${encodeURIComponent(today)}`
     );
   };
-  
+
 
   const getEventById = async (eventId: string) => {
     return api.request(
@@ -51,28 +51,28 @@ export const useEventServices = () => {
     });
   };
 
-  const  addSpeakersData = async (speakerData: any) => {
+  const addSpeakersData = async (speakerData: any) => {
     return api.request(`${endpoints.events.addSpeakers}`, {
       method: "POST",
       data: speakerData,
     });
   };
 
-  const  addExhibitorsDataData = async (exhibitorsData: any) => {
+  const addExhibitorsDataData = async (exhibitorsData: any) => {
     return api.request(`${endpoints.events.addExhibitors}`, {
       method: "POST",
       data: exhibitorsData,
     });
   };
-  
-  const  updateEvent = async (eventData: any) => {
+
+  const updateEvent = async (eventData: any) => {
     return api.request(`${endpoints.events.updateEvent}`, {
       method: "PATCH",
       data: eventData,
     });
   };
-  
- 
+
+
 
   return {
     getEvents,

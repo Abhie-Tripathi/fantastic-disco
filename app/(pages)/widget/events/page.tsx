@@ -362,11 +362,11 @@ const Page = () => {
     setTodaysDate(getCurrentDate());
   }, []);
 
-  useEffect(() => {
-    if (searchParams.get('fromDashboard') === 'true') {
-      setChoiceFormModal(true);
-    }
-  }, [searchParams])
+  // useEffect(() => {
+  //   if (searchParams.get('fromDashboard') === 'true') {
+  //     setChoiceFormModal(true);
+  //   }
+  // }, [searchParams])
 
   // useEffect(() => {
   //   setPage(0);
@@ -715,8 +715,8 @@ const Page = () => {
   return (
     <div
       className={`${styles.body} ${isEventFormModal || deleteModal || deleteModalTwo || choiceFormModal
-          ? styles.modalOpen
-          : ""
+        ? styles.modalOpen
+        : ""
         }`}
     >
       <nav className={styles.nav}>
@@ -744,89 +744,83 @@ const Page = () => {
       </div>
       <div className={styles.mainContainer}>
         {/* <div className={styles.eventsContainer}> */}
+          {activeTab === "upcoming" && filteredUpcomingEvents.length > 0 ? (
+            filteredUpcomingEvents.map((event, index) => {
+              const showDate = event.mainEvent.startDate !== prevDate;
+              prevDate = event.mainEvent.startDate;
 
-        {activeTab === "upcoming" && filteredUpcomingEvents.length > 0 ? (
-          filteredUpcomingEvents.map((event, index) => {
-            const showDate = event.mainEvent.startDate !== prevDate;
-            prevDate = event.mainEvent.startDate;
+              return (
+                <>
+                  {showDate && (
+                    <TimelineItem
+                      eventDate={showDate ? event.mainEvent.startDate : null}
+                    />
+                  )}
+                  {event.mainEvent.eventType === "MAIN" ? (
+                    <DashboardEventCard
+                      setSelectedEventType={setSelectedEventType}
+                      handlePrefillSubEvent={handlePrefillSubEvent}
+                      width="small"
+                      handlePrefillEvent={handlePrefillEvent}
+                      handleDeleteModal={handleDeleteModal}
+                      event={event}
+                    />
+                  ) : (
+                    <SubEventCard
+                      setSelectedEventType={setSelectedEventType}
+                      width="small"
+                      handlePrefillEvent={handlePrefillEvent}
+                      normalEvent={event}
+                    />
+                  )}
+                </>
+              );
+            })
+          ) : activeTab === "past" && filteredPastEvents.length > 0 ? (
+            filteredPastEvents.map((event, index) => {
+              const showDate = event.mainEvent.startDate !== prevDate;
+              prevDate = event.mainEvent.startDate;
 
-            return (
-              <>
-                {showDate && (
-                  <TimelineItem
-                    eventDate={showDate ? event.mainEvent.startDate : null}
-                  />
-                )}
-                {event.mainEvent.eventType === "MAIN" ? (
-                  <DashboardEventCard
-                    setSelectedEventType={setSelectedEventType}
-                    handlePrefillSubEvent={handlePrefillSubEvent}
-                    width="small"
-                    handlePrefillEvent={handlePrefillEvent}
-                    handleDeleteModal={handleDeleteModal}
-                    event={event}
-                  />
-                ) : (
-                  <SubEventCard
-                    setSelectedEventType={setSelectedEventType}
-                    width="small"
-                    handlePrefillEvent={handlePrefillEvent}
-                    normalEvent={event}
-                  />
-                )}
-              </>
-            );
-          })
-        ) : activeTab === "past" && filteredPastEvents.length > 0 ? (
-          filteredPastEvents.map((event, index) => {
-            const showDate = event.mainEvent.startDate !== prevDate;
-            prevDate = event.mainEvent.startDate;
-
-            return (
-              <>
-                {showDate && (
-                  <TimelineItem
-                    eventDate={showDate ? event.mainEvent.startDate : null}
-                  />
-                )}
-                {event.mainEvent.eventType === "MAIN" ? (
-                  <DashboardEventCard
-                    setSelectedEventType={setSelectedEventType}
-                    handlePrefillSubEvent={handlePrefillSubEvent}
-                    width="small"
-                    handlePrefillEvent={handlePrefillEvent}
-                    handleDeleteModal={handleDeleteModal}
-                    event={event}
-                  />
-                ) : (
-                  <SubEventCard
-                    setSelectedEventType={setSelectedEventType}
-                    width="small"
-                    handlePrefillEvent={handlePrefillEvent}
-                    normalEvent={event}
-                  />
-                )}
-              </>
-            );
-          })
-        ) : (
-          <div className={styles.emptyScreen}>
-            <Image src={EmptyImage} alt="empty" />
-            <div>Search or Add your Events</div>
-            <span>
-              Start by searching for existing events to add to your widgets
-            </span>
-            <span>or feel free to create your own event from scratch</span>
-          </div>
-        )}
+              return (
+                <>
+                  {showDate && (
+                    <TimelineItem
+                      eventDate={showDate ? event.mainEvent.startDate : null}
+                    />
+                  )}
+                  {event.mainEvent.eventType === "MAIN" ? (
+                    <DashboardEventCard
+                      setSelectedEventType={setSelectedEventType}
+                      handlePrefillSubEvent={handlePrefillSubEvent}
+                      width="small"
+                      handlePrefillEvent={handlePrefillEvent}
+                      handleDeleteModal={handleDeleteModal}
+                      event={event}
+                    />
+                  ) : (
+                    <SubEventCard
+                      setSelectedEventType={setSelectedEventType}
+                      width="small"
+                      handlePrefillEvent={handlePrefillEvent}
+                      normalEvent={event}
+                    />
+                  )}
+                </>
+              );
+            })
+          ) : (
+            <div className={styles.emptyScreen}>
+              <Image src={EmptyImage} alt="empty" />
+              <div>Search or Add your Events</div>
+              <span>
+                Start by searching for existing events to add to your widgets
+              </span>
+              <span>or feel free to create your own event from scratch</span>
+            </div>
+          )}
 
         {/* </div> */}
-        {/* <div
-          id="calendar"
-          className={`${styles.calendarContainer} ${
-            isFixed ? styles.fixed : ""
-          }`}
-        >
+        {/* <div id="calendar" className={`${styles.calendarContainer} ${isFixed ? styles.fixed : ""}`}>
           <div className={styles.calendar_div}>
             <MonthsCalendar
               theme={theme}
