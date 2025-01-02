@@ -79,11 +79,24 @@ export default function Navbar() {
     if (route === "internal") {
       router.push("/internal/settings/profile");
     }
-
     if (route === "widget") {
       router.push("/widget/settings/profile");
     }
   };
+
+  const generateProfileName = React.useMemo(() => {
+    if (user) {
+      const { email } = user;
+      const [username] = email.split("@");
+      const parts = username.split(/[.\-_]/);
+      const abbreviation =
+        parts.length > 1
+          ? `${parts[0][0]}${parts[1][0]}`
+          : username.substring(0, 2);
+      return abbreviation.toUpperCase();
+    }
+    return "";
+  }, [user]);
 
   const handleSettingsClick = () => {
     if (route === "internal") {
@@ -167,26 +180,8 @@ export default function Navbar() {
                 variant="secondary"
                 className="flex items-center bg-transparent p-1 "
               >
-                <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10 overflow-hidden">
-                  {/* {user
-                    ? `${user?.firstname[0]?.toUpperCase() ?? ""}${
-                        user?.lastname?.[0]?.toUpperCase() ?? ""
-                      }`
-                    : ""} */}
-                  {!user?.profilePicture ? (
-                    `${user?.firstname?.[0]?.toUpperCase() ?? ""}${
-                      user?.lastname?.[0]?.toUpperCase() ?? ""
-                    }`
-                  ) : (
-                    <Image
-                      src={user?.profilePicture}
-                      alt={`${user?.firstname ?? "User"}'s Profile Picture`}
-                      width={100}
-                      height={100}
-                      className="rounded-full"
-                      // Ensures the image respects the circular shape
-                    />
-                  )}
+                <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
+                  {generateProfileName}
                 </div>
               </Button>
             </DropdownMenuTrigger>

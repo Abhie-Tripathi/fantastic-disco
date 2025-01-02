@@ -146,7 +146,7 @@ export default function LocationSelector({
     }
     setIsOpen(open);
   };
-
+  
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>

@@ -80,7 +80,7 @@ export const AudienceIntel = ({
             </h1>
             <p className="text-[#6750A4] font-semibold text-lg">
               {stats.estimatedVisitor
-                ? numberWithCommas(stats.estimatedVisitor ?? "")
+                ? numberWithCommas(stats.estimatedVisitor || "--")
                 : "--"}
             </p>
           </div>

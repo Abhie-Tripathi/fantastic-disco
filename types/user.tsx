@@ -6,5 +6,6 @@ export interface UserResponse {
     token?: string;
     profilePicture:string | null;
     companyId?: string | null;
+    isVerified?:boolean;
     role?:string|null
   }

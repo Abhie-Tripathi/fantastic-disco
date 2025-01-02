@@ -10,8 +10,11 @@ export interface SignInResponse {
 }
 
 export const SignInFormSchema = z.object({
-  email: z.string().email({ message: "Invalid Email" }),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  email: z
+    .string({ message: "Email is required" })
+    .min(1, "Email is required")
+    .email("Invalid email address"),
+  // password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 export const SignInWithOTPSchema = z.object({
