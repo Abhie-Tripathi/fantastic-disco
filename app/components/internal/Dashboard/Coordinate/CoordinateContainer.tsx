@@ -21,7 +21,8 @@ const CoordinateContainer = ({height} :Props) => {
     // let container = "small";
 
     return (
-        <div className="bg-[var(--background-secondary-color)] border border-[var(--border-color)] rounded-[12px] max-w-[471px]">
+        <div className={`border border-[var(--border-color)] rounded-[12px] overflow-hidden
+        `}>
             {height === "small" ? <CoordinateScreenOne values={values}/> : <CoordinateScreenTwo values={values}/>}
         </div>
     )

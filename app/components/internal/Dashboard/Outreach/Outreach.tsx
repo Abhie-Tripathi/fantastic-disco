@@ -15,8 +15,8 @@ const Outreach = () => {
   ]
 
   return (
-    <div className={`${events.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] w-[536px] overflow-hidden relative rounded-xl flex h-[273px]  `}>
-      <div className={`flex flex-col ${events.length > 0 ? "gap-2" : "gap-8"} w-[50%] p-3`}>
+    <div className={`${events.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] w-full overflow-hidden relative rounded-xl flex h-[273px]`}>
+      <div className={`flex flex-col ${events.length > 0 ? "gap-2" : "gap-8"} w-[50%] p-4`}>
         <div className='flex items-center gap-1 text-[var(--primary-color)] font-semibold'>
           <OutreachIcon />
           <span className='text-xs'>Outreach</span>
@@ -35,7 +35,7 @@ const Outreach = () => {
       </div>
       {events.length === 0 ? <div className='relative h-full w-[50%]'>
         <Image src={OutreachImage} alt='outreach' className='absolute top-[40px] left-[20px]' width={303} height={272} /></div>
-        : <div className='p-3 w-[50%] h-full'><RecentChat /></div>
+        : <div className='p-4 w-[50%] h-full'><RecentChat /></div>
       }
     </div>
   )

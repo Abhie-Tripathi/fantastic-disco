@@ -4,7 +4,7 @@ import ProspectModule from '/public/internal/dashboard/ProspectModule.png'
 
 const Prospect = () => {
     return (
-        <div className="bg-[var(--background-secondary-color)] border border-[var(--border-color)] flex flex-col items-center justify-start w-[233px] h-[273px] rounded-xl">
+        <div className="bg-[var(--background-secondary-color)] border border-[var(--border-color)] flex flex-col items-center justify-start w-full min-h-[271px] rounded-xl">
             <div className={`flex flex-col items-center justify-center p-4`}>
                 <div className="text-[var(--primary-color)] font-semibold text-sm">
                     Personalized Prospecting

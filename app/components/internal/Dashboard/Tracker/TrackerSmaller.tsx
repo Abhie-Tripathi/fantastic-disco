@@ -14,7 +14,7 @@ const TrackerSmaller = () => {
         // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
     ]
     return (
-        <div className={`w-[261px] h-[250px] items-start border border-[var(--border-color)] rounded-xl p-4 relative overflow-hidden`}>
+        <div className={`w-full h-[240px] items-start border border-[var(--border-color)] rounded-xl p-4 relative overflow-hidden`}>
             <div className={`flex flex-col ${trackers.length === 0 ? "gap-4" : "gap-2"} w-[100%]`}>
                 <div className='flex items-center gap-2'>
                     <div style={{ transform: 'rotate(15deg)', width: '12px', height: '12px' }}>

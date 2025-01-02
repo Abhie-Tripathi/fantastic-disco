@@ -25,15 +25,15 @@ const TrackerLarge = ({ templates }: Props) => {
 
     const trackers = [
         { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
-        // {name :"Tracker 2" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
-        // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
-        // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+        {name :"Tracker 2" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+        {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+        {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
     ]
 
     // let events = 1
 
     return (
-        <div className={`${trackers.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] h-[500px] w-[536px] flex flex-col items-center overflow-hidden relative rounded-xl p-3`}>
+        <div className={`${trackers.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] h-[505px] w-full flex flex-col items-center overflow-hidden relative rounded-xl p-4`}>
             <div className={`flex flex-col items-start ${trackers.length > 0 ? "gap-3" : "gap-8"} w-full`}>
                 <div className='flex items-center gap-2'>
                     <div style={{ transform: 'rotate(15deg)', width: '12px', height: '12px' }}>
@@ -49,7 +49,8 @@ const TrackerLarge = ({ templates }: Props) => {
                 <div className='mt-5 w-full'>
                     {trackers.map((tracker, key) => (
                         <div key={key}>
-                            <TrackerCard small={false} tracker={tracker} />
+                            <div  className="transition-shadow duration-200 hover:shadow-md"><TrackerCard small={false} tracker={tracker}/></div>
+                            
                             <div className='border-t-[1px] border-[var(--border-color)] mt-3 mb-3'></div>
                         </div>
                     ))}

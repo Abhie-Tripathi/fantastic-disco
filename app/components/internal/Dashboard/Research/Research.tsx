@@ -13,7 +13,7 @@ const Research = () => {
     const dropdowns = [{ name: "Event Type" }, { name: "Category" }, { name: "Event Format" }]
 
     return (
-        <div className={`w-full h-auto gap-[61px] bg-cover bg-center rounded-xl flex items-end overflow-hidden`} style={{ backgroundImage: `url(${BackgroundImage.src})` }}>
+        <div className={`w-full h-auto gap-[61px] bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden`} style={{ backgroundImage: `url(${BackgroundImage.src})` }}>
             <div className={`m-[20px_30px] gap-5 w-[60%] flex flex-col`}>
                 <div className={`${styles.header} flex flex-col`}>
                     <div className="text-xl font-[var(--font-weight-semibold)] flex items-center gap-1">

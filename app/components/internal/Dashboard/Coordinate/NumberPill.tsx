@@ -5,11 +5,12 @@ interface Props {
   heading: string;
   value: number;
   width : string;
+  bg : string;
 }
 
-const NumberPill = ({ heading, value, width }: Props) => {
+const NumberPill = ({ heading, value, width, bg }: Props) => {
   return (
-    <div style={{width : width}} className={`w-[${width}] h-[46px] bg-[var(--primary-foreground)] border border-[var(--border-color)] flex items-center justify-between rounded-[6px] px-4`}>
+    <div style={{width : width}} className={`w-[${width}] h-[46px] ${bg !== "none" ? "bg-[var(--primary-foreground)] border" : "bg-[var(--background-secondary-color)]"} border-[var(--border-color)] flex items-center justify-between rounded-[6px] px-4`}>
       <div className="text-xs font-[var(--font-weight-medium)] text-[var(--secondary-text-color)]">
         {heading}
       </div>

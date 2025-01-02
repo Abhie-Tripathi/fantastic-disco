@@ -18,7 +18,7 @@ const PromoteTwo = ({ values }: Props) => {
         setIsEmpty(!hasNonZeroValue);
     }, [])
     return (
-        <div className={`flex ${isEmpty ? "flex-row" : "flex-col"}  items-start justify-start h-[273px] overflow-hidden w-[473px]`}>
+        <div className={`flex ${isEmpty ? "flex-row bg-[var(--background-secondary-color)]" : "flex-col"}  items-start justify-start h-[271px] overflow-hidden w-full`}>
             <div className={`flex flex-col ${isEmpty && "w-[50%]"} items-start justify-center p-4`}>
                 <div className="text-[var(--primary-color)] font-semibold text-sm">
                     Smart Promote
@@ -46,7 +46,7 @@ const PromoteTwo = ({ values }: Props) => {
                 <div className='flex gap-16 items-end'>
                     <div className='flex flex-col gap-2 px-4 py-2 w-[201px]'>
                         {values.map((value, key) => (
-                            <NumberPill key={key} heading={value.name} value={value.value} width='201px' />
+                            <NumberPill bg={!isEmpty ? "none" : "" } key={key} heading={value.name} value={value.value} width='201px' />
                         ))}
                     </div>
                     <Image

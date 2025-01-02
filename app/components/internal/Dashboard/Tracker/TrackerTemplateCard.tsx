@@ -34,7 +34,7 @@ const TrackerTemplateCard = ({ trackerName, type, domain, img, url, content }: P
                     <div className="text-xs font-bold text-[var(--primary-color)]">
                         {trackerName}
                     </div>
-                    <div className="font-medium text-[var(--tertiary-text-color)] text-[10px]">
+                    <div className="font-medium text-[var(--tertiary-text-color)] text-[10px] leading-[14px]">
                         {content}
                     </div>
                 </div>

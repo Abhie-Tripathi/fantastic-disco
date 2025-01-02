@@ -20,8 +20,8 @@ const CoordinateScreenOne = ({ values }: Props) => {
     }, [])
 
     return (
-        <div className="p-4 flex items-center overflow-hidden">
-            <div className="mr-8 min-w-[270px]">
+        <div className={`${isEmpty && "bg-[var(--background-secondary-color)]"} flex overflow-hidden h-[240px] justify-between`} >
+            <div className="min-w-[270px] p-4 ">
                 <div className="flex items-center gap-2 text-xs font-[var(--font-weight-semibold)] text-[var(--primary-color)]"><Coordinate /> Coordinate</div>
                 <div
                     className={`leading-var(--line-height-small) text-[var(--bold-border-color)] text-xs  ${isEmpty ? "mt-8" : "mt-2"}`}
@@ -31,12 +31,12 @@ const CoordinateScreenOne = ({ values }: Props) => {
                 {!isEmpty ?
                     <div className="grid grid-cols-2 gap-2 mt-8">
                         {values.map((item, index) => (
-                            <NumberPill width='125px' heading={item.heading} value={item.value} key={index}/>
+                            <NumberPill bg={!isEmpty ? "none" : "" } width='125px' heading={item.heading} value={item.value} key={index}/>
                         ))}
                     </div> : <Button className="mt-8" size="sm">Search Events <MoveRight width={12} /></Button>}
             </div>
-            <div className="min-h-[177px] min-w-[177px] max-h-[177px] max-w-[177px]">
-                <Image className="w-full h-full object-cover" src={CoordinateScreen} alt="coordinate" />
+            <div className="h-full min-w-[177px] max-w-[177px] flex items-center">
+                <Image className="w-full h-[180px] object-cover ml-4" src={CoordinateScreen} alt="coordinate" />
             </div>
         </div>
     )

@@ -13,15 +13,15 @@ interface Props {
 const CoordinateScreenTwo = ({ values }: Props) => {
 
   return (
-    <div className="p-4 overflow-hidden">
+    <div className="bg-[var(--background-secondary-color)] p-4 overflow-hidden h-[510px]">
       <div className='flex flex-col items-start gap-2'>
         <div className="flex items-center gap-2 text-xs font-[var(--font-weight-semibold)] text-[var(--primary-color)]"><Coordinate /> Coordinate</div>
         <div className="leading-var(--line-height-small) text-[var(--bold-border-color)] text-xs">Explore events and express your interest in the ones that matter to you and start coordinating with your team.</div>
       </div>
-      <div className='flex flex-col items-center mt-8 w-full'>
-        <div className="grid grid-cols-2 gap-6 mt-8 w-[60%]">
+      <div className='flex flex-col items-center mt-10 w-full'>
+        <div className="grid grid-cols-2 gap-6 w-[60%]">
           {values.map((item, index) => (
-            <NumberPill width='125px' heading={item.heading} value={item.value} key={index}/>
+            <NumberPill bg='' width='125px' heading={item.heading} value={item.value} key={index}/>
           ))}
         </div>
         <Button className="mt-6" size="sm">Search Events <MoveRight width={12} /></Button>

@@ -21,12 +21,12 @@ interface Props {
 const TrackerSmall = ({ templates }: Props) => {
     const trackers = [
         { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
-        // {name :"Tracker 2" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+        {name :"Tracker 2" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
         // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
         // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
     ]
     return (
-        <div className={`flex ${trackers.length > 0 ? "flex-col" : "justify-between"} w-[536px] h-[250px] items-start border border-[var(--border-color)] rounded-xl p-3`}>
+        <div className={`flex ${trackers.length > 0 ? "flex-col" : "justify-between"} w-full h-[240px] items-start border border-[var(--border-color)] rounded-xl p-4`}>
             <div className={`flex flex-col ${trackers.length === 0 ? "gap-7" : "gap-2"} w-[35%]`}>
                 <div className='flex items-center gap-2'>
                     <div style={{ transform: 'rotate(15deg)', width: '12px', height: '12px' }}>
@@ -40,9 +40,9 @@ const TrackerSmall = ({ templates }: Props) => {
             </div>
             {trackers.length > 0 &&
                 <div className='mt-7 w-full bg-[var(--background-secondary-color)] rounded-xl p-5'>
-                    {trackers.map((tracker, key) => (
-                        <TrackerCard small={false} tracker={tracker} key={key} />
-                    ))}
+                    {/* {trackers.map((tracker, key) => ( */}
+                        <TrackerCard small={false} tracker={trackers[0]} />
+                    {/* ))} */}
                 </div>
             }
             {trackers.length === 0 && <div className='h-[225px] w-[65%]'>

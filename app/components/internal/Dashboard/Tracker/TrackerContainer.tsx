@@ -102,7 +102,7 @@ const data = [
 ];
 const TrackerContainer = ({ width }: Props) => {
   return (
-    <div className='w-fit h-fit overflow-hidden'>
+    <div className='w-full h-fit overflow-hidden'>
         {width === "large" ? <TrackerLarge templates={data}/> : width ==="small" ? <TrackerSmall templates={data}/> : <TrackerSmaller/>}
     </div>
   )
