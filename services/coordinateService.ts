@@ -1,6 +1,6 @@
 import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
-import { CoordinateListResponse, PresetJsonData, UserInterestResponse, eventPocResponse, pocDetail } from "@/types/coordinateEventType";
+import { CoordinateListResponse, PresetList, UserInterestResponse, eventPocResponse, pocDetail } from "@/types/coordinateEventType";
 import { ApiError } from "@/types/api";
 import { MiscAdapter } from "@/adapters/miscAdapter";
 import externalAxios from "@/lib/externalAxios";
@@ -179,7 +179,7 @@ export const useCoordinateService = () => {
   }
 
   const getPresetJson = async(type: string, page: number) => {
-    const data = await externalAxios.get<PresetJsonData[]>(`/data/presetJson/competitor.json`, {
+    const data = await externalAxios.get<PresetList>(`/data/presetJson/${type}/${page}.json`, {
       method: "GET",
     });
     return data.data;

@@ -73,3 +73,8 @@ export interface PresetJsonData {
     presetType: string;
     eventCount?: string;
 }
+
+export interface PresetList {
+    totalCount: number;
+    data: PresetJsonData[];
+}

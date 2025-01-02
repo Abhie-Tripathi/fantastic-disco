@@ -34,13 +34,14 @@ const Presets = ({ template, handlePresetClick }: Props) => {
 
   const [shortlistPage, setShortlistPage] = useState(1);
   const shortlistRef: RefObject<HTMLDivElement> = useRef(null);
+  const [count, setCount] = useState<number>(0);
 
   const coordinateService = useCoordinateService();
 
   const handleScrollEnd = () => {
     setTimeout(() => {
-      //   if (!taskDetail[status].noMoreData)
-      setShortlistPage((prevPage) => prevPage + 1);
+      if (presetTemplateData.length < count)
+        setShortlistPage((prevPage) => prevPage + 1);
     }, 1000);
   };
 
@@ -49,13 +50,12 @@ const Presets = ({ template, handlePresetClick }: Props) => {
   const fetchPresetJson = async () => {
     try {
       const apiData = await coordinateService.getPresetJson(
-        "speaker",
+        template?.name,
         shortlistPage
       );
       if (apiData) {
-        // setInterestedUsers(apiData.participent);
-        console.log("apiData=", apiData);
-        setPresetTemplateData(apiData);
+        setPresetTemplateData((prev) => [...prev, ...apiData.data]);
+        setCount(apiData.totalCount);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -63,31 +63,15 @@ const Presets = ({ template, handlePresetClick }: Props) => {
   };
 
   useEffect(() => {
-    // fetchPipelineData(status, taskDetail[status].label, shortlistPage);
-    console.log("fetching data for page =", shortlistPage);
     fetchPresetJson();
-
-    // setPresetTemplateData();
   }, [shortlistPage]);
-
-  // useEffect(() => {
-  // setPresetTemplateData([
-  //   ...kewwordPresetJson,
-  //   ...competitorPresetJson,
-  //   ...speakerPresetJson,
-  // ]);
-  //   fetchPresetJson();
-  // }, []);
 
   return (
     <div>
       <div className="flex justify-center	gap-2 items-center font-semibold">
         <span className="text-lg">Get Started with Pre-sets </span>{" "}
         <span className="text-xs bg-[var(--primary-color)] text-white py-[3px] px-2 rounded-full">
-          {
-            presetTemplateData.filter((item) => item.url === template?.name)
-              .length
-          }
+          {count}
         </span>
       </div>
       <div
@@ -171,9 +155,11 @@ const Presets = ({ template, handlePresetClick }: Props) => {
               </div>
             ))}
         </div>
-        <div className="flex justify-center p-5 w-full">
-          <Loading />
-        </div>
+        {presetTemplateData.length < count && (
+          <div className="flex justify-center p-5 w-full">
+            <Loading />
+          </div>
+        )}
       </div>
     </div>
   );
