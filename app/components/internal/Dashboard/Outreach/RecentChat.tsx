@@ -20,7 +20,7 @@ const RecentChat = () => {
                 <div className='w-full flex justify-end'><TextBox user='us' text='cassdad'/></div>
                 
                 
-                <div></div>
+                {/* <div></div> */}
             </div>
             <div className='absolute bottom-[10px] left-[22px]'><Button className="mt-4 w-[200px]" size="xs">View Response <MoveRight width={12} /></Button></div>
             
