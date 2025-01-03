@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import styles from './navbar.style.module.css'
+import styles from "./navbar.style.module.css";
+import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +20,7 @@ import {
   Settings,
   Sun,
   UserSearch,
-  Search
+  Search,
 } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import {
@@ -34,22 +35,25 @@ import Link from "next/link";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
-  "coordinate": "Coordinate",
-  "search": "Research",
-  "trackers": "Trackers",
+  coordinate: "Coordinate",
+  search: "Research",
+  trackers: "Trackers",
   outreach: "Outreach",
-  trends: "Event Trends"
+  trends: "Event Trends",
+  settings: "Settings",
 };
 const geniroutes: Record<string, string> = {
-  "list": "Widgets",
-  "edit": "Edit Widget",
-  "add": "Add Widget",
-  "brandkit": "Brandkit",
-  "events": "Events",
-  "dashboard": "Dashboard",
-  "overview": "Manage",
-  "settings": "Manage",
-  "guests": "Manage"
+  list: "Widgets",
+  edit: "Edit Widget",
+  add: "Add Widget",
+  brandkit: "Brandkit",
+  events: "Events",
+  dashboard: "Dashboard",
+  overview: "Manage",
+  settings: "Manage",
+  guests: "Manage",
+  profile: "Settings",
+  product: "Settings",
 };
 
 export default function Navbar() {
@@ -61,23 +65,58 @@ export default function Navbar() {
   function getRoute(path: string | undefined): string {
     return gtmroutes[path || ""];
   }
-  const router = useRouter()
+  const router = useRouter();
   const handleRoute = (route: string) => {
     if (route === "research") {
-      router.push("/internal")
+      router.push("/internal");
     } else if (route === "promote") {
-      router.push("/widget/dashboard")
+      router.push("/widget/dashboard");
     }
+  };
 
-  }
+  const route = pathname.split("/")[1];
+  const handleClick = () => {
+    if (route === "internal") {
+      router.push("/internal/settings/profile");
+    }
+    if (route === "widget") {
+      router.push("/widget/settings/profile");
+    }
+  };
+
+  const generateProfileName = React.useMemo(() => {
+    if (user) {
+      const { email } = user;
+      const [username] = email.split("@");
+      const parts = username.split(/[.\-_]/);
+      const abbreviation =
+        parts.length > 1
+          ? `${parts[0][0]}${parts[1][0]}`
+          : username.substring(0, 2);
+      return abbreviation.toUpperCase();
+    }
+    return "";
+  }, [user]);
+
+  const handleSettingsClick = () => {
+    if (route === "internal") {
+      router.push("/internal/settings/product");
+    }
+    if (route === "widget") {
+      router.push("/widget/settings/profile");
+    }
+  };
+
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
         <div className="flex items-center">
           <div className="text-lg font-semibold">
-          {pathname.split("/")[1] === "internal" ?
-               getRoute(pathname.split("/")[2])
-              : pathname.split("/").slice(-2)[0] === "edit" ? "Edit Widget" : geniroutes[pathname.split("/").slice(-1)[0]]}
+            {pathname.split("/")[1] === "internal"
+              ? getRoute(pathname.split("/")[2])
+              : pathname.split("/").slice(-2)[0] === "edit"
+              ? "Edit Widget"
+              : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
         <div className="flex items-center space-x-4">
@@ -102,20 +141,25 @@ export default function Navbar() {
               </PopoverTrigger>
               <PopoverContent className="w-52 p-0" align="end">
                 <div className="grid grid-cols-2 gap-2">
-                  {pathname.split("/")[1] === "internal" ?
-                    <Button onClick={() => handleRoute("promote")}
+                  {pathname.split("/")[1] === "internal" ? (
+                    <Button
+                      onClick={() => handleRoute("promote")}
                       variant="ghost"
                       className="flex flex-col items-center justify-center gap-2 h-auto p-4"
                     >
                       <Megaphone className="h-6 w-6" />
                       <span className="text-xs">Promote</span>
-                    </Button> : <Button onClick={() => handleRoute("research")}
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => handleRoute("research")}
                       variant="ghost"
                       className="flex flex-col items-center justify-center gap-2 h-auto p-4"
                     >
                       <Search className="h-6 w-6" />
                       <span className="text-xs">Research</span>
-                    </Button>}
+                    </Button>
+                  )}
 
                   <Button
                     variant="ghost"
@@ -134,20 +178,31 @@ export default function Navbar() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="secondary"
-                className="flex items-center bg-transparent p-1"
+                className="flex items-center bg-transparent p-1 "
               >
                 <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
-                  {user
-                    ? `${user?.firstname[0]?.toUpperCase() ?? ""}${user?.lastname?.[0]?.toUpperCase() ?? ""
-                    }`
-                    : ""}
+                  {generateProfileName}
                 </div>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
+                onClick={() => handleClick()}
+                className="flex items-center cursor-pointer"
+              >
+                <UserSearch className="h-4 w-4" />
+                <span className="ml-2">Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleSettingsClick()}
+                className="flex items-center cursor-pointer"
+              >
+                <Settings className="h-4 w-4" />
+                <span className="ml-2">Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 onClick={() => signOut()}
-                className="flex items-center"
+                className="flex items-center cursor-pointer"
               >
                 <LogOut className="h-4 w-4" />
                 <span className="ml-2">Logout</span>
