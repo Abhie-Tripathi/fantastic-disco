@@ -103,7 +103,7 @@ const LocationForm = () => {
       newCategories
         .filter((category) => selectedCategories.includes(category.id))
         .map((category) => category.slug);
-    const queryParams = `status=active,cancelled,postponed&view=map&groupBy=state${
+    const queryParams = `status=active,cancelled,postponed&view=map${
       categories && categories.length > 0
         ? `&categories=${categories.join(",")}`
         : ""
