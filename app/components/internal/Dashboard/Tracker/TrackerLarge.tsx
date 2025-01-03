@@ -26,7 +26,7 @@ const TrackerLarge = ({ templates }: Props) => {
 
     const trackers = [
         { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
-        // {name :"Tracker 2" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+        {name :"Tracker 2" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
         // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
         // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
     ]
@@ -47,8 +47,8 @@ const TrackerLarge = ({ templates }: Props) => {
     }
 
     return (
-        <div className={`${trackers.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] h-[505px] w-full flex flex-col items-center overflow-hidden relative rounded-xl p-4`}>
-            <div className={`flex flex-col items-start ${trackers.length > 0 ? "gap-3" : "gap-8"} w-full`}>
+        <div className={`${trackers.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] h-[505px] w-full flex flex-col items-center overflow-hidden relative rounded-xl`}>
+            <div className={`flex flex-col items-start ${trackers.length > 0 ? "gap-3" : "gap-8"} w-full p-4`}>
                 <div className='flex items-center gap-2'>
                     <div style={{ transform: 'rotate(15deg)', width: '12px', height: '12px' }}>
                         <Image src={ColoredTrackerIcon} alt="tracker" /></div>
@@ -64,12 +64,11 @@ const TrackerLarge = ({ templates }: Props) => {
                 </div>
             </div>
             {trackers.length > 0 &&
-                <div className='mt-5 w-full'>
+                <div className='w-full p-2'>
                     {trackers.map((tracker, key) => (
                         <div key={key}>
-                            <div className="transition-shadow duration-200 hover:shadow-md"><TrackerCard small={false} tracker={tracker} /></div>
-
-                            <div className='border-t-[1px] border-[var(--border-color)] mt-3 mb-3'></div>
+                            <div className="transition-shadow duration-200 hover:bg-[var(--background-color-hover)] rounded-md p-2"><TrackerCard small={false} tracker={tracker} /></div>
+                            <div className='border-t-[1px] border-[var(--border-color)] mt-3 mb-3' ></div>
                         </div>
                     ))}
                 </div>

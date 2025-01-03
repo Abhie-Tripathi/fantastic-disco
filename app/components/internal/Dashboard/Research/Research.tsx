@@ -8,6 +8,10 @@ import Image from 'next/image';
 import { Sparkles } from 'lucide-react'
 import Dropdown from './Dropdown';
 import MapContainer from './MapContainer';
+import LocationSelector from "@/components/search/location";
+import { useFilterContext } from '@/context/filterContext';
+import EventTypeSelector from '@/components/search/eventType';
+import DateRangeSelector from '@/components/search/dateRange';
 
 interface Props {
     theme: string | null
@@ -16,6 +20,7 @@ interface Props {
 const Research = ({ theme }: Props) => {
 
     const dropdowns = [{ name: "Event Type" }, { name: "Location" }, { name: "Date" }]
+      const { applyFilters, localFilters, clearLocalFilters, enabledFilters } = useFilterContext();
 
     return (
         <div className={`w-full h-auto gap-[61px] bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden`}
@@ -37,15 +42,18 @@ const Research = ({ theme }: Props) => {
                         <Sparkles width={14} height={14} color='#6750a4' />
                         <span className='text-[var(--primary-color)] text-xs'>Suggested filters</span>
                     </div>
-                    <div className={`${styles.filters} mt-2.5 flex justify-between`}>
-                        {dropdowns.map((dropdown, key) => (
+                    <div className={`${styles.filters} mt-2.5 gap-2 flex justify-between`}>
+                        {/* {dropdowns.map((dropdown, key) => (
                             <Dropdown theme={theme} name={dropdown.name} key={key} />
-                        ))}
+                        ))} */}
+                        <EventTypeSelector source="search" enabledTypeData={enabledFilters?.eventType} />
+                        <LocationSelector source="search" />
+                        <DateRangeSelector source="search" enabledDateRange={enabledFilters?.durations} />
                     </div>
                 </div>
             </div>
             <div className="mr-[80px] w-[260px] mb-[-40px]">
-                <MapContainer theme={theme}/>
+                <MapContainer theme={theme} />
             </div>
         </div>
     )

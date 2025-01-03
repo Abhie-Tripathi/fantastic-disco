@@ -13,7 +13,7 @@ import Trends from "@/app/components/internal/Dashboard/Trends/Trends";
 import { useTheme } from "@/context";
 const Dashboard = () => {
 
-  let role = "sa"
+  let role = "user"
   let value = "filled"
   let outreach = role === "sa"
   let prospect = true
