@@ -52,9 +52,9 @@ export default function NewVerificationForm() {
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
 
-  const industry = searchParams.get("industry");
-  const categories = searchParams.get("categories");
-  const flow = searchParams.get("flow");
+  const industry = searchParams.get("industry") || "";
+  const categories = searchParams.get("categories") || "";
+  const flow = searchParams.get("flow") || "";
   const redirectTo =
     flow && flow === "signup"
       ? `/location?industry=${industry}${
@@ -73,7 +73,7 @@ export default function NewVerificationForm() {
 
   const onSubmit = async (data: OTPData) => {
     try {
-      setTime(30);
+      time === 0 && setTime(30);
       if (flow && flow === "signup") {
         await verifyOtp({ email, otpCode: data.otpCode }, redirectTo);
       } else {
@@ -85,19 +85,21 @@ export default function NewVerificationForm() {
   };
 
   const resendOTP = async () => {
+    // const currentSearchParams = new URLSearchParams(searchParams.toString());
     setTime(30);
-    await generateOTP(email);
+    generateOTP(email, industry, categories, flow);
   };
 
   useEffect(() => {
-    let timer: any = null;
-    if (time >= 0) {
-      if (time > 0) {
-        timer = setTimeout(() => {
-          setTime((prev) => prev - 1);
-        }, 1000);
-      } else return () => clearTimeout(timer);
+    let timer: NodeJS.Timeout | null = null;
+    if (time > 0) {
+      timer = setTimeout(() => {
+        setTime((prev) => prev - 1);
+      }, 1000);
+    } else {
+      clearTimeout(timer!);
     }
+    return () => clearTimeout(timer!);
   }, [time]);
 
   return (
