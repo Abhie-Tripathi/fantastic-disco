@@ -18,7 +18,7 @@ const PromoteTwo = ({ values }: Props) => {
     useEffect(() => {
         const hasNonZeroValue = values.some(item => item.value > 0);
         setIsEmpty(!hasNonZeroValue);
-    }, [])
+    }, [values])
 
     const router = useRouter()
 

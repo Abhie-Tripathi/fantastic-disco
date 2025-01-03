@@ -11,6 +11,10 @@ import TrackerContainer from "@/app/components/internal/Dashboard/Tracker/Tracke
 import Outreach from "@/app/components/internal/Dashboard/Outreach/Outreach";
 import Trends from "@/app/components/internal/Dashboard/Trends/Trends";
 import { useTheme } from "@/context";
+import { useCoordinateService } from "@/services/coordinateService";
+import { useWidgetServices } from "@/services/geniservices/widgetService";
+import { useEventServices } from "@/services/geniservices/eventService";
+import { useTrackerServices } from "@/services/trackerServices";
 const Dashboard = () => {
 
   let role = "user"
@@ -19,7 +23,50 @@ const Dashboard = () => {
   let prospect = true
   let trends = true
 
-  const {theme} = useTheme()
+  const [coordinateData, setCoordinateData] = useState<{ heading: string, value: number }[]>([])
+  const [promoteData, setPromoteData] = useState<{ name: string, value: number }[]>([])
+  const [trackerData, setTrackerData] = useState<any>()
+
+
+  const { theme } = useTheme()
+  const { getParticipentCount } = useCoordinateService()
+  const { getActiveWidget, getOnlyDraftWidget } = useWidgetServices()
+  const {getUpcomingEvents} = useEventServices()
+  const {getTrackers} = useTrackerServices()
+
+  const fetchCoordinateData = async () => {
+    const data: any = await getParticipentCount()
+    const formattedData = data.filter((item: any) => item.name !== undefined && item.count !== undefined)
+      .map((item: any) => ({
+        heading: item.name,
+        value: item.count,
+      }));
+
+    setCoordinateData(formattedData);
+  }
+
+  const fetchPromoteData = async () => {
+    const activeData: any = await getActiveWidget()
+    const draftData: any = await getOnlyDraftWidget()
+    const eventData : any = await getUpcomingEvents(0)
+
+    const formattedData = [
+      { name: "Widgets", value: activeData.totalCount },
+      { name: "Drafts", value: draftData.totalCount },
+    ];
+    setPromoteData(formattedData)
+  }
+  
+  const fetchTrackerData = async()=>{
+    const trackerData : any =  await getTrackers(`limit=4&offset=0`)
+    console.log("tracker data ,", trackerData.trackerData)
+  }
+
+  useEffect(() => {
+    fetchCoordinateData()
+    fetchPromoteData()
+    fetchTrackerData()
+  }, [])
 
   return (
     <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3">
@@ -28,7 +75,7 @@ const Dashboard = () => {
           (role === "user" && value === "empty") ? <ModuleSelection theme={theme} value="user" /> :
             value === "filled" ?
               <div className="flex flex-col gap-3">
-                <Research theme={theme}/>
+                <Research theme={theme} />
                 <div className="flex gap-3 mb-2">
                   <div className="flex flex-col gap-3 w-[55%]">
                     <div className="w-full flex gap-3">
@@ -39,24 +86,25 @@ const Dashboard = () => {
                         <Trends container="small" />
                       </div>}
                     </div>
-                    {(outreach && role === "sa") && <div><Outreach theme={theme}/> </div>}
+                    {(outreach && role === "sa") && <div><Outreach theme={theme} /> </div>}
                   </div>
 
                   <div className="flex flex-col gap-3 w-[45%]">
-                    {(role === "user" && trends ) && <div><Trends container="large"/></div>}
+                    {(role === "user" && trends) && <div><Trends container="large" /></div>}
                     <div className="w-full">
-                      <CoordinateContainer 
-                      theme={theme}
-                      // height={role === "sa" ? "small" : "large"}
-                      height="small"
-                       />
+                      <CoordinateContainer
+                        theme={theme}
+                        // height={role === "sa" ? "small" : "large"}
+                        coordinateData={coordinateData}
+                        height="small"
+                      />
                     </div>
                     {role === "sa" && <div className="flex gap-3">
                       <div className={prospect ? "w-[50%]" : "w-full"}>
-                        <PromoteContainer theme={theme} width={prospect ? "small" : "large"} />
+                        <PromoteContainer promoteData={promoteData} theme={theme} width={prospect ? "small" : "large"} />
                       </div>
                       {prospect && <div className="w-[50%]">
-                        <Prospect theme={theme}/>
+                        <Prospect theme={theme} />
                       </div>}
 
                     </div>}
@@ -85,3 +133,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

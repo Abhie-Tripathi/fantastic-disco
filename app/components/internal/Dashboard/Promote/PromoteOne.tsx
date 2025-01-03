@@ -22,7 +22,7 @@ const PromoteOne = ({ values, theme }: Props) => {
     useEffect(() => {
         const hasNonZeroValue = values.some(item => item.value > 0);
         setIsEmpty(!hasNonZeroValue);
-    }, [])
+    }, [values])
 
     const router = useRouter()
 
