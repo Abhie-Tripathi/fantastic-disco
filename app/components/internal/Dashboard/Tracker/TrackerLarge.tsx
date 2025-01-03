@@ -11,6 +11,15 @@ import { Button } from '@/components/ui/button'
 import TrackerCard from './TrackerCard'
 import { useRouter } from 'next/navigation'
 
+interface TrackerData {
+    id : string;
+    location : string[]
+    name : string;
+    newCount : number;
+    expiredCount : number; 
+    activeCount : number;
+    type :string;
+  }
 interface Props {
     templates: {
         type: string,
@@ -19,14 +28,17 @@ interface Props {
         url: string,
         trackerName: string,
         content: string
-    }[]
+    }[],
+    trackers : TrackerData[]
 }
 
-const TrackerLarge = ({ templates }: Props) => {
+const TrackerLarge = ({ templates,trackers }: Props) => {
 
-    const trackers = [
-        { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
-        {name :"Tracker 2" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+    const trackersValue :TrackerData[] = [
+        {id : "asd", name: "Tracker 1", location: ["India"], type: "Custom", newCount: 100, expiredCount: 40, activeCount: 20 },
+        {id : "asd", name: "Tracker 1", location: ["India"], type: "Custom", newCount: 100, expiredCount: 40, activeCount: 20 },
+        {id : "asd", name: "Tracker 1", location: ["India"], type: "Custom", newCount: 100, expiredCount: 40, activeCount: 20 },
+        {id : "asd", name: "Tracker 1", location: ["India"], type: "Custom", newCount: 100, expiredCount: 40, activeCount: 20 },
         // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
         // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
     ]
@@ -64,11 +76,11 @@ const TrackerLarge = ({ templates }: Props) => {
                 </div>
             </div>
             {trackers.length > 0 &&
-                <div className='w-full p-2'>
-                    {trackers.map((tracker, key) => (
+                <div className='w-full p-1'>
+                    {trackersValue.map((tracker, key) => (
                         <div key={key}>
                             <div className="transition-shadow duration-200 hover:bg-[var(--background-color-hover)] rounded-md p-2"><TrackerCard small={false} tracker={tracker} /></div>
-                            <div className='border-t-[1px] border-[var(--border-color)] mt-3 mb-3' ></div>
+                            <div className='border-t-[1px] border-[var(--border-color)] m-1' ></div>
                         </div>
                     ))}
                 </div>

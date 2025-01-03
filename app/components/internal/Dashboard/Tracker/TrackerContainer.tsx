@@ -13,8 +13,17 @@ import Brand from "/public/brand.svg";
 import TrackerSmall from './TrackerSmall';
 import TrackerSmaller from './TrackerSmaller';
 
+interface TrackerData {
+  id : string;
+  location : string[]
+  name : string;
+  newCount : number;
+  expiredCount : number; 
+  activeCount : number;
+  type :string;
+}
 interface Props {
-  width: string;
+  width: string, trackers : TrackerData[]
 }
 
 const data = [
@@ -100,10 +109,10 @@ const data = [
       "Input designations and keywords, and upload job descriptions to identify relevant events effortles",
   },
 ];
-const TrackerContainer = ({ width }: Props) => {
+const TrackerContainer = ({ width, trackers }: Props) => {
   return (
     <div className='w-full h-fit overflow-hidden'>
-        {width === "large" ? <TrackerLarge templates={data}/> : width ==="small" ? <TrackerSmall templates={data}/> : <TrackerSmaller/>}
+        {width === "large" ? <TrackerLarge trackers={trackers} templates={data}/> : width ==="small" ? <TrackerSmall trackers={trackers} templates={data}/> : <TrackerSmaller trackers={trackers}/>}
     </div>
   )
 }

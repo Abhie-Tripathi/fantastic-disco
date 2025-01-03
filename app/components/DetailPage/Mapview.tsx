@@ -41,6 +41,7 @@ const Mapview = ({ latitude, longitude, zoom, venue, height }: MapProps) => {
                         height: "100%",
                     }}
                     mapStyle={`mapbox://styles/mapbox/${theme === "dark" ? "dark" : "streets"}-${theme === "dark" ? "v11" : "v12"}`}
+                    // mapStyle={`mapbox://styles/mapbox/streets-v12`}
                 >
                     <Marker latitude={latitude} longitude={longitude}>
                         <Image src={MapPointer} alt='pointer' />

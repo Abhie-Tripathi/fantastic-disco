@@ -15,9 +15,20 @@ import { useCoordinateService } from "@/services/coordinateService";
 import { useWidgetServices } from "@/services/geniservices/widgetService";
 import { useEventServices } from "@/services/geniservices/eventService";
 import { useTrackerServices } from "@/services/trackerServices";
+
+interface TrackerData {
+  id: string;
+  location: string[]
+  name: string;
+  newCount: number;
+  expiredCount: number;
+  activeCount: number;
+  type: string;
+}
+
 const Dashboard = () => {
 
-  let role = "user"
+  let role = "sa"
   let value = "filled"
   let outreach = role === "sa"
   let prospect = true
@@ -25,14 +36,14 @@ const Dashboard = () => {
 
   const [coordinateData, setCoordinateData] = useState<{ heading: string, value: number }[]>([])
   const [promoteData, setPromoteData] = useState<{ name: string, value: number }[]>([])
-  const [trackerData, setTrackerData] = useState<any>()
+  const [trackerData, setTrackerData] = useState<TrackerData[]>([])
 
 
   const { theme } = useTheme()
   const { getParticipentCount } = useCoordinateService()
   const { getActiveWidget, getOnlyDraftWidget } = useWidgetServices()
-  const {getUpcomingEvents} = useEventServices()
-  const {getTrackers} = useTrackerServices()
+  const { getUpcomingEvents } = useEventServices()
+  const { getTrackers } = useTrackerServices()
 
   const fetchCoordinateData = async () => {
     const data: any = await getParticipentCount()
@@ -48,7 +59,7 @@ const Dashboard = () => {
   const fetchPromoteData = async () => {
     const activeData: any = await getActiveWidget()
     const draftData: any = await getOnlyDraftWidget()
-    const eventData : any = await getUpcomingEvents(0)
+    const eventData: any = await getUpcomingEvents(0)
 
     const formattedData = [
       { name: "Widgets", value: activeData.totalCount },
@@ -56,10 +67,20 @@ const Dashboard = () => {
     ];
     setPromoteData(formattedData)
   }
-  
-  const fetchTrackerData = async()=>{
-    const trackerData : any =  await getTrackers(`limit=4&offset=0`)
-    console.log("tracker data ,", trackerData.trackerData)
+
+  const fetchTrackerData = async () => {
+    const trackerData: any = await getTrackers(`limit=4&offset=0`)
+    const fetchedTrackers: TrackerData[] = [];
+    trackerData.trackerData.map((tracker: any, key: any) => {
+      const eventCountry = tracker.filterValue?.eventCountry?.map((countryObj: {}) => Object.values(countryObj)[0]) || [];
+      const eventCity = tracker.filterValue?.eventCity?.map((cityObj: {}) => Object.values(cityObj)[0]) || [];
+      const eventState = tracker.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
+      const eventZone = tracker.filterValue?.eventRegion?.split(",") || [];
+      const locations = [...eventCountry, ...eventCity, ...eventZone, ...eventState]
+      const value: TrackerData = { id: tracker.id, name: tracker.name, newCount: tracker.groupedEventsCountByStatus.groupedEventsByStatus.new, activeCount: tracker.groupedEventsCountByStatus.groupedEventsByStatus.active, expiredCount: tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired, location: locations, type: tracker.type }
+      fetchedTrackers.push(value)
+    })
+    setTrackerData(fetchedTrackers)
   }
 
   useEffect(() => {
@@ -80,7 +101,7 @@ const Dashboard = () => {
                   <div className="flex flex-col gap-3 w-[55%]">
                     <div className="w-full flex gap-3">
                       <div className={(outreach && trends) ? "w-[50%]" : "w-full"}>
-                        <TrackerContainer width={(outreach && trends) ? "smaller" : "large"} />
+                        <TrackerContainer trackers={trackerData} width={(outreach && trends) ? "smaller" : "large"} />
                       </div>
                       {(trends && role === "sa") && <div className="w-[50%]">
                         <Trends container="small" />

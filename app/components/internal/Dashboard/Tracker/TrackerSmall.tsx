@@ -15,17 +15,26 @@ interface Props {
         url: string,
         trackerName: string,
         content: string
-    }[]
+    }[],
+    trackers : TrackerData[]
 }
 
-
-const TrackerSmall = ({ templates }: Props) => {
-    const trackers = [
-        { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
-        { name: "Tracker 2", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
-        // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
-        // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
-    ]
+interface TrackerData {
+    id : string;
+    location : string[]
+    name : string;
+    newCount : number;
+    expiredCount : number; 
+    activeCount : number;
+    type :string;
+  }
+const TrackerSmall = ({ templates,trackers }: Props) => {
+    // const trackers = [
+    //     { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
+    //     { name: "Tracker 2", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
+    //     // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+    //     // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+    // ]
     const router = useRouter()
     const handleRouting = (type: string) => {
         if (type === "button") {

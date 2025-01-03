@@ -6,8 +6,17 @@ import Vectore8 from "/public/expired.svg";
 import { Location } from "geist-icons";
 import Image from 'next/image';
 
+interface TrackerData {
+    id: string;
+    location: string[]
+    name: string;
+    newCount: number;
+    expiredCount: number;
+    activeCount: number;
+    type: string;
+}
 interface Props {
-    tracker: { name: string, country: string, type: string, new: number, past: number, active: number },
+    tracker: TrackerData,
     small: boolean; // if this variable is true will only show cards
 }
 
@@ -15,15 +24,20 @@ const TrackerCard = ({ tracker, small }: Props) => {
     return (
         <div className={`flex ${small && "flex-col"} justify-between cursor-pointer w-full`}>
             {!small &&
-                <div className="flex gap-2 flex-col justify-between w-[40%]">
+                <div className="flex gap-2 flex-col justify-between w-[60%]">
                     <div>
                         <div className="font-semibold text-xs break-words leading-none">
                             {tracker.name.length > 45 ? `${tracker.name.substring(0, 45)}...` : tracker.name}
                         </div>
-                        <div className="flex items-center gap-1 w-[100%] mt-2">
+                        {tracker.location.length > 0 && <div className="flex items-center gap-1 w-[100%] mt-2">
                             <span><Location style={{ color: "var(--tertiary-text-color)" }} height="10px" width="10px" /></span>
-                            <span className={`text-[var(--tertiary-text-color)] text-[10px]`}>{tracker.country}</span>
-                        </div>
+                            <span className={`text-[var(--tertiary-text-color)] text-[10px] flex gap-2 items-center`}>
+                                {tracker.location[0]}
+                                {tracker.location.length > 1 && <div className="border w-[28px] h-[17px] flex justify-center items-center rounded-lg border-[var(--tertiary-text-color)]">
+                                    +{tracker.location.length - 1}
+                                </div>}
+                            </span>
+                        </div>}
                     </div>
                     <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{ fontSize: "var(--font-size-xs)" }}>{tracker.type}</div>
                 </div>}
@@ -40,8 +54,8 @@ const TrackerCard = ({ tracker, small }: Props) => {
                         <Image src={Vectore6} alt="newVector" width={12} height={12} />
                         New
                     </div>
-                    <div style={{ color: "#454459" }} className='text-xs font-[var(--font-weight-semibold)]'>
-                        {tracker.new}
+                    <div className='text-[var(--primary-text-color)] text-xs font-[var(--font-weight-semibold)]'>
+                        {tracker.newCount}
                     </div>
                     <div className='text-[10px]'>Events</div>
                 </div>
@@ -50,8 +64,8 @@ const TrackerCard = ({ tracker, small }: Props) => {
                         <Image src={Vectore7} alt="lucide_timer" width={12} height={12} />
                         Active
                     </div>
-                    <div style={{ color: "#454459" }} className='text-xs font-[var(--font-weight-semibold)]'>
-                        {tracker.active}
+                    <div className='text-[var(--primary-text-color)] text-xs font-[var(--font-weight-semibold)]'>
+                        {tracker.activeCount}
                     </div>
                     <div className='text-[10px]'>Events</div>
                 </div>
@@ -60,8 +74,8 @@ const TrackerCard = ({ tracker, small }: Props) => {
                         <Image src={Vectore8} alt="expired" width={12} height={12} />
                         Past
                     </div>
-                    <div style={{ color: "#454459" }} className='text-xs font-[var(--font-weight-semibold)]'>
-                        {tracker.past}
+                    <div className='text-[var(--primary-text-color)] text-xs font-[var(--font-weight-semibold)]'>
+                        {tracker.expiredCount}
                     </div>
                     <div className='text-[10px]'>Events</div>
                 </div>

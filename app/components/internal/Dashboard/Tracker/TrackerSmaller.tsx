@@ -7,13 +7,25 @@ import TrackerCard from './TrackerCard';
 import TrackerImage from '/public/internal/dashboard/Tracker.png'
 import { useRouter } from 'next/navigation';
 
-const TrackerSmaller = () => {
-    const trackers = [
-        // { name: "Tracker 1", country: "India", type: "Custom", new:  100, past: 40, active: 20 },
-        { name: "Tracker 2", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
-        // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
-        // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
-    ]
+interface TrackerData {
+    id : string;
+    location : string[]
+    name : string;
+    newCount : number;
+    expiredCount : number; 
+    activeCount : number;
+    type :string;
+  }
+  interface Props{
+    trackers : TrackerData[]
+  }
+const TrackerSmaller = ({trackers} : Props) => {
+    // const trackers = [
+    //     // { name: "Tracker 1", country: "India", type: "Custom", new:  100, past: 40, active: 20 },
+    //     { name: "Tracker 2", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
+    //     // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+    //     // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+    // ]
     const router = useRouter()
 
     const handleRouting = (type: string) => {
@@ -44,9 +56,9 @@ const TrackerSmaller = () => {
             </div>
             {trackers.length > 0 &&
                 <div className='mt-7 w-full'>
-                    {trackers.map((tracker, key) => (
-                        <TrackerCard small={true} tracker={tracker} key={key} />
-                    ))}
+                    {/* {trackers.map((tracker, key) => ( */}
+                        <TrackerCard small={true} tracker={trackers[0]}/>
+                    {/* ))} */}
                 </div>
             }
             {trackers.length === 0 && <div className='absolute bottom-[-110px] left-[15%]'>
