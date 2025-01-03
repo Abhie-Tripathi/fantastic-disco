@@ -180,33 +180,55 @@ export default function ProductsPage() {
       showToast("error", "Input cannot be empty!");
       return;
     }
-    const updatedBox = researchScreenboxes.find(
-      (box) => box.status === data.status
-    );
-    for (let i = 0; i < researchScreenboxes.length; i++) {
-      if (data.status === researchScreenboxes[i].status) {
-        researchScreenboxes[i] = {
-          status: updatedBox!.status,
-          label: researchTempValue,
-          source: updatedBox!.source,
-          position: updatedBox!.position,
-        };
-        break;
-      }
-    }
-    if (updatedBox) {
-      const formData = {
-        source: "interest",
-        data: researchScreenboxes,
-      };
+    // const updatedBox = researchScreenboxes.find(
+    //   (box) => box.status === data.status
+    // );
+    // for (let i = 0; i < researchScreenboxes.length; i++) {
+    //   if (data.status === researchScreenboxes[i].status) {
+    //     researchScreenboxes[i] = {
+    //       status: updatedBox!.status,
+    //       label: researchTempValue,
+    //       source: updatedBox!.source,
+    //       position: updatedBox!.position,
+    //     };
+    //     break;
+    //   }
+    // }
+    // if (updatedBox) {
+    //   const formData = {
+    //     source: "interest",
+    //     data: researchScreenboxes,
+    //   };
 
-      try {
-        await updateResearchData({ formData });
-        setResearchScreenEditingBoxId(null);
-        getResearchResponse();
-      } catch (error) {
-        console.error("Error updating data:", error);
-      }
+    //   try {
+    //     await updateResearchData({ formData });
+    //     setResearchScreenEditingBoxId(null);
+    //     getResearchResponse();
+    //   } catch (error) {
+    //     console.error("Error updating data:", error);
+    //   }   
+    // }
+
+
+    const updatedBoxes = filteredResearchScreenboxes.map((box) =>
+      box.status === data.status
+        ? { ...box, label: researchTempValue }
+        : box
+    );
+  
+    setFilteredResearchScreenboxes(updatedBoxes);
+  
+    const formData = {
+      source: "interest",
+      data: updatedBoxes,
+
+    };
+  
+    try {
+      await updateResearchData({ formData });
+      setResearchScreenEditingBoxId(null);
+    } catch (error) {
+      console.error("Error updating data:", error);
     }
   };
 
@@ -284,6 +306,7 @@ export default function ProductsPage() {
 
   const getResearchResponse = async () => {
     const data: any = await getResearchData();
+    console.log("daasdasdta",data)
     setResearchScreenBoxes(data);
     setFilteredResearchScreenboxes(
       // (data as any).filter((value: any) => !["BOOKMARK"].includes(value.status))
@@ -311,35 +334,56 @@ export default function ProductsPage() {
       showToast("error", "Input cannot be empty!");
       return;
     }
-    const updatedBox = outreachScreenboxes.find(
-      (box) => box.status === data.status
-    );
-    for (let i = 0; i < outreachScreenboxes.length; i++) {
-      if (data.status === outreachScreenboxes[i].status) {
-        outreachScreenboxes[i] = {
-          status: updatedBox.status,
-          label: outreachTempValue,
-          source: updatedBox.source,
-          position: updatedBox.position,
-        };
-        break;
-      }
-    }
-    if (updatedBox) {
-      const formData = {
-        source: "outreach",
-        data: {
-          outreach_stage: outreachScreenboxes,
-        },
-      };
+    // const updatedBox = outreachScreenboxes.find(
+    //   (box) => box.status === data.status
+    // );
+    // for (let i = 0; i < outreachScreenboxes.length; i++) {
+    //   if (data.status === outreachScreenboxes[i].status) {
+    //     outreachScreenboxes[i] = {
+    //       status: updatedBox.status,
+    //       label: outreachTempValue,
+    //       source: updatedBox.source,
+    //       position: updatedBox.position,
+    //     };
+    //     break;
+    //   }
+    // }
+    // if (updatedBox) {
+    //   const formData = {
+    //     source: "outreach",
+    //     data: {
+    //       outreach_stage: outreachScreenboxes,
+    //     },
+    //   };
 
-      try {
-        await updateOutreachData({ formData });
-        setOutreachScreenEditingBoxId(null);
-        getOutreachResponse();
-      } catch (error) {
-        console.error("Error updating data:", error);
-      }
+    //   try {
+    //     await updateOutreachData({ formData });
+    //     setOutreachScreenEditingBoxId(null);
+    //     getOutreachResponse();
+    //   } catch (error) {
+    //     console.error("Error updating data:", error);
+    //   }
+    // }
+    const updatedBoxes = filteredOutreachScreenboxes.map((box) =>
+      box.status === data.status
+        ? { ...box, label: outreachTempValue }
+        : box
+    );
+  
+    setFilteredOutreachScreenboxes(updatedBoxes);
+  
+    const formData = {
+      source: "outreach",
+      data: {
+        outreach_stage: updatedBoxes,
+      },
+    };
+  
+    try {
+      await updateOutreachData({ formData });
+      setOutreachScreenEditingBoxId(null);
+    } catch (error) {
+      console.error("Error updating data:", error);
     }
   };
 
@@ -433,23 +477,23 @@ export default function ProductsPage() {
   };
 
   return (
-    <div>
-      <div className="grid place-items-center p-6 max-w-5xl ">
-        <div className="flex gap-2">
+    <div className="grid place-items-center min-h-screen gap-y-10 p-6">
+      <div className="grid place-items-center max-w-5xl">
+        <div className="flex gap-2 justify-start" style={{ marginLeft: "-130px" }}>
           <div className="px-3 py-1 rounded-sm bg-muted border-border flex items-center justify-center">
             <SettingIcon className={`${iconClass}`} />
           </div>
           <div className="flex flex-col">
             <h4 className="text-base font-semibold">Customise to your needs</h4>
             <p className="text-sm text-muted-foreground">
-              Take control of what others see, what modules can be accessed and how
-              you receive updates and notifications.
+              Take control of what others see, what modules can be accessed and
+              how you receive updates and notifications.
             </p>
           </div>
         </div>
       </div>
 
-      <div className="grid place-items-center min-h-screen">
+      <div className="grid place-items-center max-w-5xl">
         <div className="grid bg-muted p-6 rounded-md shadow-lg max-w-4xl gap-6">
           {/* Research Section */}
           <div className="grid gap-3 border bg-background rounded-md p-4">
@@ -458,23 +502,23 @@ export default function ProductsPage() {
               <div className="ml-5">Field Values</div>
             </div>
             <div className="grid grid-cols-2 gap-6">
-              <div className="text-base text-gray-500">
+              <div className="text-sm text-gray-500">
                 Customise your event experience by adjusting your interest!
                 Update them any time to match your needs or goals for the event.
-                <div className="mt-10 text-sm text-red-500">
+                <div className="mt-10 text-xs text-blue-500">
                   Please note: If this value is renamed, the changes will
                   automatically be reflected in all previous entries where it
                   has been used.
                 </div>
               </div>
 
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-2">
                 {filteredResearchScreenboxes
                   .slice(1)
                   .map((box: any, index: any) => (
                     <div
                       key={box.status}
-                      className="flex items-center gap-2 relative"
+                      className="flex items-center gap-1 relative"
                       draggable
                       onDragStart={(e) =>
                         handleDragStartResearchScreen(e, index + 1)
@@ -486,7 +530,7 @@ export default function ProductsPage() {
                       <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
                         <DragIcon />
                       </div>
-                      <div className="flex items-center max-w-full h-10 rounded border overflow-hidden">
+                      <div className="flex items-center max-w-full h-10 rounded border overflow-hidden focus-within:border-blue-500">
                         <input
                           type="text"
                           value={
@@ -500,7 +544,7 @@ export default function ProductsPage() {
                               e.target.value
                             )
                           }
-                          className="p-2 h-full w-full outline-none bg-muted focus:bg-background focus:border-blue-500 transition-all"
+                          className="p-2 h-full w-full outline-none bg-muted focus:bg-background"
                           onClick={() =>
                             handleResearchScreenEdit(box.status, box.label)
                           }
@@ -545,23 +589,23 @@ export default function ProductsPage() {
               <div className="ml-5">Kanban board</div>
             </div>
             <div className="grid grid-cols-2 gap-6  border-b pb-3">
-              <div className="text-base text-gray-500">
+              <div className="text-sm text-gray-500">
                 Personalise your workflow by renaming columns on your kanban
                 board! Update them any time to fit your project needs or
                 preferences.
-                <div className="mt-10 text-sm text-red-500">
+                <div className="mt-10 text-xs text-blue-500">
                   Please note: If this value is renamed, the changes will
                   automatically be reflected in all previous entries where it
                   has been used.
                 </div>
               </div>
-              <div className="flex flex-col gap-5">
+              <div className="flex flex-col gap-2">
                 {filteredOutreachScreenboxes
                   .slice(1, filteredOutreachScreenboxes.length - 1)
                   .map((box: any, index: any) => (
                     <div
                       key={box.status}
-                      className="flex items-center gap-2 relative"
+                      className="flex items-center gap-1 relative"
                       draggable
                       onDragStart={(e) =>
                         handleDragStartOutreachScreen(e, index + 1)
@@ -573,7 +617,7 @@ export default function ProductsPage() {
                       <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
                         <DragIcon />
                       </div>
-                      <div className="flex items-center max-w-full h-10 rounded border overflow-hidden">
+                      <div className="flex items-center max-w-full h-10 rounded border overflow-hidden focus-within:border-blue-500">
                         <input
                           type="text"
                           value={
@@ -587,7 +631,7 @@ export default function ProductsPage() {
                               e.target.value
                             )
                           }
-                          className="p-2 h-full w-full outline-none bg-muted focus:bg-background focus:border-blue-500 transition-all"
+                          className="p-2 h-full w-full outline-none bg-muted focus:bg-background"
                           onClick={() =>
                             handleOutreachchScreenEdit(box.status, box.label)
                           }
