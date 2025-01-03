@@ -74,9 +74,6 @@ import { useTrackerContext } from "@/context/tracker";
 import { Designations } from "@/types/misc";
 import { useFilterContext } from "@/context/filterContext";
 import { categories, newCategories } from "@/data/categories";
-import kewwordPresetJson from "@/public/data/presetJson/keyword.json"
-import competitorPresetJson from "@/public/data/presetJson/competitor.json"
-import speakerPresetJson from "@/public/data/presetJson/speaker.json"
 import Presets from "./Presets";
 type EventGroupType = "social" | "business";
 interface InputArea {
@@ -408,7 +405,7 @@ const Pages = () => {
   interface SelectedLocation {
     [id: string]: string;
   }
-  const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
+  // const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const {getTrackerDetail,createTracker,editTracker, error}=useTrackerServices();
   const [isRatingOpen, setRatingOpen] = useState<boolean>(enabledFilters?.eventRating?.isRatingEnabled || false);
   const [isExhibitOpen, setExhibitOpen] = useState<boolean>(enabledFilters?.estimatedExhibitScore?.isExhibitorsEnabled||false);
@@ -602,9 +599,6 @@ const Pages = () => {
     searchParams.get("categories")?.split(",") || []
   );
   // const [editData, setEditData] = useState<EditData | null>(null);
-  useEffect(() => {
-    setPresetTemplateData([...kewwordPresetJson, ...competitorPresetJson, ...speakerPresetJson])
-  }, []);
 
   useEffect(() => {
     if (last === "editTracker") {
@@ -2209,7 +2203,7 @@ return (
    
   </div>
     }
-      {(type !== "CUSTOM" && presetTemplateData.filter(item => item.url === template?.name).length > 0) &&
+      {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY"].includes(type)) &&
         <Presets template={template} handlePresetClick={handlePresetClick} /> 
       }
   </div>
