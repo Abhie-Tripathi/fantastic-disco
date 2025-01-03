@@ -29,7 +29,7 @@ interface TrackerData {
 const Dashboard = () => {
 
   let role = "sa"
-  let value = "filled"
+  let value = "empty"
   let outreach = role === "sa"
   let prospect = true
   let trends = true
