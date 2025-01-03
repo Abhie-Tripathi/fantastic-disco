@@ -14,7 +14,7 @@ import { useTheme } from "@/context";
 const Dashboard = () => {
 
   let role = "sa"
-  let value = "empty"
+  let value = "filled"
   let outreach = role === "sa"
   let prospect = true
   let trends = true

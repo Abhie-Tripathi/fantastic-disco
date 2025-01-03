@@ -10,7 +10,7 @@ interface Props {
 const PromoteContainer = ({ width, theme }: Props) => {
     const values = [
         { name: "Widgets", value: 0 },
-        { name: "Drafts", value: 0 },
+        { name: "Drafts", value: 1 },
         { name: "Events", value: 0 },
     ]
     return (

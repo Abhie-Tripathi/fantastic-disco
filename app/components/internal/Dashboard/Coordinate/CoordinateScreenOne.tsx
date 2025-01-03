@@ -6,12 +6,14 @@ import CoordinateScreen from '/public/internal/dashboard/CoordinateScreen.png'
 import CoordinateScreenDark from '/public/internal/dashboard/CoordinateScreenDark.png'
 import Image from 'next/image'
 import NumberPill from './NumberPill'
+import { ArrowRight } from 'geist-icons'
+import { useRouter } from 'next/navigation'
 
 interface Props {
     values: { heading: string, value: number }[]
     theme: string | null
 }
-const CoordinateScreenOne = ({ values,theme }: Props) => {
+const CoordinateScreenOne = ({ values, theme }: Props) => {
 
     const [isEmpty, setIsEmpty] = useState<boolean>(false)
 
@@ -20,10 +22,28 @@ const CoordinateScreenOne = ({ values,theme }: Props) => {
         setIsEmpty(!hasNonZeroValue);
     }, [])
 
+    const router = useRouter()
+
+    const handleRouting = (type: string) => {
+        if (type === "button") {
+            router.push("/internal/coordinate")
+        } else {
+            if (!isEmpty) {
+                router.push("/internal/coordinate")
+            }
+        }
+    }
+
     return (
         <div className={`${isEmpty && "bg-[var(--background-secondary-color)]"} flex overflow-hidden h-[240px] justify-between`} >
             <div className="min-w-[270px] p-4 ">
-                <div className="flex items-center gap-2 text-xs font-[var(--font-weight-semibold)] text-[var(--primary-color)]"><Coordinate /> Coordinate</div>
+                <div className="flex items-center gap-2 text-xs font-[var(--font-weight-semibold)] text-[var(--primary-color)]">
+                    <span><Coordinate /></span>
+                    <div className={`flex items-center gap-2 ${!isEmpty && "cursor-pointer"}`} onClick={() => handleRouting("value")}>
+                        <span className='text-xs text-[var(--primary-color)] font-[var(--font-weight-semibold)]'>Cooordinate</span>
+                        {!isEmpty && <div><ArrowRight color='#6750a4' width='12px' height='12px' /></div>}
+                    </div>
+                </div>
                 <div
                     className={`leading-var(--line-height-small) text-[var(--bold-border-color)] text-xs  ${isEmpty ? "mt-8" : "mt-2"}`}
                 >
@@ -32,9 +52,9 @@ const CoordinateScreenOne = ({ values,theme }: Props) => {
                 {!isEmpty ?
                     <div className="grid grid-cols-2 gap-2 mt-8">
                         {values.map((item, index) => (
-                            <NumberPill bg={!isEmpty ? "none" : "" } width='125px' heading={item.heading} value={item.value} key={index}/>
+                            <NumberPill bg={!isEmpty ? "none" : ""} width='125px' heading={item.heading} value={item.value} key={index} />
                         ))}
-                    </div> : <Button className="mt-8" size="sm">Search Events <MoveRight width={12} /></Button>}
+                    </div> : <Button onClick={() => handleRouting("button")} className="mt-8" size="sm">Search Events <MoveRight width={12} /></Button>}
             </div>
             <div className="h-full min-w-[177px] max-w-[177px] flex items-center">
                 <Image className="w-full h-[180px] object-cover ml-4" src={theme === "dark" ? CoordinateScreenDark : CoordinateScreen} alt="coordinate" />

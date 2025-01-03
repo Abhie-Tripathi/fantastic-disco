@@ -9,6 +9,7 @@ import Image from 'next/image'
 import { ArrowRight } from "geist-icons"
 import { Button } from '@/components/ui/button'
 import TrackerCard from './TrackerCard'
+import { useRouter } from 'next/navigation'
 
 interface Props {
     templates: {
@@ -24,7 +25,7 @@ interface Props {
 const TrackerLarge = ({ templates }: Props) => {
 
     const trackers = [
-        // { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
+        { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },
         // {name :"Tracker 2" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
         // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
         // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
@@ -32,13 +33,30 @@ const TrackerLarge = ({ templates }: Props) => {
 
     // let events = 1
 
+    const router = useRouter()
+
+    const handleRouting = (type: string) => {
+        if (type === "button") {
+            router.push("/internal/trackers")
+        }
+        else {
+            if (trackers.length > 0) {
+                router.push("/internal/trackers")
+            }
+        }
+    }
+
     return (
         <div className={`${trackers.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] h-[505px] w-full flex flex-col items-center overflow-hidden relative rounded-xl p-4`}>
             <div className={`flex flex-col items-start ${trackers.length > 0 ? "gap-3" : "gap-8"} w-full`}>
                 <div className='flex items-center gap-2'>
                     <div style={{ transform: 'rotate(15deg)', width: '12px', height: '12px' }}>
                         <Image src={ColoredTrackerIcon} alt="tracker" /></div>
-                    <span className='text-xs text-[var(--primary-color)] font-[var(--font-weight-semibold)]'>Event Tracker</span>
+                    <div className={`flex items-center gap-2 ${trackers.length > 0 && "cursor-pointer"}`} onClick={() => handleRouting("heading")}>
+                        <span className='text-xs text-[var(--primary-color)] font-[var(--font-weight-semibold)]'>Event Tracker</span>
+                        {trackers.length > 0 && <div><ArrowRight color='#6750a4' width='12px' height='12px' /></div>}
+                    </div>
+
                 </div>
                 <div className='text-xs text-[var(--bold-border-color)] w-[80%]'>
                     {trackers.length === 0 ? "Leverage the potential of smart event tracking by creating an event tracker or by using our pre-defined templates." :
@@ -49,8 +67,8 @@ const TrackerLarge = ({ templates }: Props) => {
                 <div className='mt-5 w-full'>
                     {trackers.map((tracker, key) => (
                         <div key={key}>
-                            <div  className="transition-shadow duration-200 hover:shadow-md"><TrackerCard small={false} tracker={tracker}/></div>
-                            
+                            <div className="transition-shadow duration-200 hover:shadow-md"><TrackerCard small={false} tracker={tracker} /></div>
+
                             <div className='border-t-[1px] border-[var(--border-color)] mt-3 mb-3'></div>
                         </div>
                     ))}
@@ -61,7 +79,7 @@ const TrackerLarge = ({ templates }: Props) => {
                     {trackers.length === 1 && <div className='text-xs text-[var(--bold-border-color)]'>Leverage the potential of smart event tracking by creating an event tracker or by using our pre-defined templates.</div>}
                     <Carousel simple={false} templates={templates} />
                 </div>}
-            {trackers.length === 0 && <Button className="z-10 mt-5 btn-default flex items-center">Create Tracker<ArrowRight color='white' width="12px" /></Button>}
+            {trackers.length === 0 && <Button onClick={() => handleRouting("button")} className="z-10 mt-5 btn-default flex items-center">Create Tracker<ArrowRight color='white' width="12px" /></Button>}
             {trackers.length === 0 && <div className='absolute bottom-[-180px]'>
                 <Image src={TrackerImage} alt='tracker' width={370} height={370} unoptimized />
             </div>}

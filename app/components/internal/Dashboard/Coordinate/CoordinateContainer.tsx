@@ -14,7 +14,7 @@ interface Props{
 const CoordinateContainer = ({height, theme} :Props) => {
 
     const values = [{ heading: "Attending", value: 0 },
-    { heading: "Sponsors", value:1 },
+    { heading: "Sponsors", value:2 },
     { heading: "Speakers", value: 0 },
     { heading: "Exhibitor", value: 0 },
     ]

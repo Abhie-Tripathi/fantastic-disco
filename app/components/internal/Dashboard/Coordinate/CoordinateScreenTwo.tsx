@@ -5,6 +5,7 @@ import { MoveRight } from 'lucide-react'
 import CoordinateScreen from '/public/internal/dashboard/CoordinateScreen.png'
 import Image from 'next/image'
 import NumberPill from './NumberPill'
+import { useRouter } from 'next/navigation'
 
 
 interface Props {
@@ -12,6 +13,12 @@ interface Props {
 }
 const CoordinateScreenTwo = ({ values }: Props) => {
 
+  const router = useRouter()
+
+  const handleRouting = () => {
+    router.push("/internal/coordinate")
+
+  }
   return (
     <div className="bg-[var(--background-secondary-color)] p-4 overflow-hidden h-[510px]">
       <div className='flex flex-col items-start gap-2'>
@@ -21,10 +28,10 @@ const CoordinateScreenTwo = ({ values }: Props) => {
       <div className='flex flex-col items-center mt-10 w-full'>
         <div className="grid grid-cols-2 gap-6 w-[60%]">
           {values.map((item, index) => (
-            <NumberPill bg='' width='125px' heading={item.heading} value={item.value} key={index}/>
+            <NumberPill bg='' width='125px' heading={item.heading} value={item.value} key={index} />
           ))}
         </div>
-        <Button className="mt-6" size="sm">Search Events <MoveRight width={12} /></Button>
+        <Button onClick={handleRouting} className="mt-6" size="sm">Search Events <MoveRight width={12} /></Button>
         <div className="min-h-[202px] min-w-[202px] max-h-[202px] max-w-[202px] mt-8">
           <Image className="w-full h-full object-cover" src={CoordinateScreen} alt="coordinate" />
         </div>
