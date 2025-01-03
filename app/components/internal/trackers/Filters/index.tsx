@@ -723,9 +723,7 @@ const Pages = () => {
 
   const handlePresetClick = (presetItem: PresetJsonData, id: number, trackerType: string, trackerName: string) => {
 
-    // const filteredPresetData = presetTemplateData.filter(item => item.id === id);
-    // console.log('filteredPresetData', filteredPresetData, presetItem);
-    
+    // const filteredPresetData = presetTemplateData.filter(item => item.id === id);    
     if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY') {
       const presetData: any = [];
 
@@ -2212,67 +2210,8 @@ return (
   </div>
     }
       {(type !== "CUSTOM" && presetTemplateData.filter(item => item.url === template?.name).length > 0) &&
-      // <div>
-      //     <div className="flex justify-center	gap-2 items-center font-semibold" >
-      //       <span className="text-lg">Get Started with Pre-sets </span>{" "}
-      //       <span className="text-xs bg-[var(--primary-color)] text-white py-[3px] px-2 rounded-full">{presetTemplateData.filter(item => item.url === template?.name).length}</span>
-      //     </div>
-      //     <div className={styles.presetContainer} >
-      //       {presetTemplateData.filter(item => item.url === template?.name).map((item, ind) => (
-      //         <div key={ind} className="w-full p-2 gap-3 flex items-center flex-col h-[280px] text-sm border border-[var(--border-color)] rounded-[12px] overflow-y-auto" onClick={item.enabled  ?()=>handlePresetClick(item.id, item.url, item.trackerName) : undefined} style={{cursor: item.enabled ? 'pointer' : 'unset'}}>
-      //           <div
-      //             className="w-full flex items-center h-[45%] rounded-md bg-[var(--tabs-background-color)] relative"
-      //           >
-      //             <div className={styles.account}>
-      //               <Image src={
-      //                 item.url === 'T_COMPETITOR' ? Competitor :
-      //                 item.url === 'T_PRODUCT_KEYWORDS' ? Keywords :
-      //                 item.url === 'T_SPEAKING_OPPORTUNITY' ? Speaking :
-      //                 Keywords} alt="people" />
-      //             </div>
-      //             <div>
-      //               <Image src={Template} alt="template" />
-      //             </div>
-      //             { (item?.eventCount && parseInt(item.eventCount) > 0) &&
-      //               <div className="p-1 px-2 bg-[var(--primary-light-color)] font-medium text-xs absolute bottom-0 right-0 rounded-br-md rounded-tl-md" >{formatCount(parseInt(item.eventCount))} events</div>
-      //             }
-      //           </div>
-      //           <div className="w-full h-[60%] flex flex-col gap-3">
-      //             {/* <div className="flex justify-between items-center">
-      //               <div className="flex h-full items-center gap-1">
-      //                 <Image
-      //                   src={Vector1}
-      //                   alt="vector1"
-      //                   style={{
-      //                     display: "flex",
-      //                     alignItems: "center",
-      //                     justifyContent: "center",
-      //                   }}
-      //                 />
-      //                 <div style={{ color: "#585871", fontSize: "12px" }}>
-      //                   PRE-SET
-      //                 </div>
-      //               </div>
-      //               {item.enabled ? 
-      //                 <div className={`${styles.domain}`} >
-      //                   {item.presetType}
-      //                 </div> :
-      //                 <div className="badge_success" style={{fontSize: 'var(--font-size-xs)'}}>
-      //                   Coming Soon
-      //                 </div>
-      //               }
-      //             </div> */}
-      //             <div className={styles.bottomViewTwo}>
-      //               {item?.trackerName}
-      //             </div>
-      //             <div className={styles.text}>{item?.content}</div>
-      //           </div>
-      //         </div>
-      //       ))}
-      //     </div>
-      // </div>
-      <Presets template={template} handlePresetClick={handlePresetClick} /> 
-    }
+        <Presets template={template} handlePresetClick={handlePresetClick} /> 
+      }
   </div>
   </>
   }</div>
