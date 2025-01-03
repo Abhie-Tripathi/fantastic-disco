@@ -29,7 +29,7 @@ interface TrackerData {
 const Dashboard = () => {
 
   let role = "sa"
-  let value = "empty"
+  let value = "filled"
   let outreach = role === "sa"
   let prospect = true
   let trends = true
@@ -64,6 +64,7 @@ const Dashboard = () => {
     const formattedData = [
       { name: "Widgets", value: activeData.totalCount },
       { name: "Drafts", value: draftData.totalCount },
+      { name: "Events", value:  eventData.totalCount},
     ];
     setPromoteData(formattedData)
   }
