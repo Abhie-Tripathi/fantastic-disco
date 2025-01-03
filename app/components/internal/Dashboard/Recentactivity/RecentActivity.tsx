@@ -53,7 +53,7 @@ const RecentActivity = () => {
                 </button>
             </div>}
             {(notifOpen && notifications.length > 0) &&
-                <div className='flex flex-col w-full z-10 gap-2 mt-4 overflow-y-auto'>
+                <div className='flex flex-col w-full z-10 gap-2 mt-4 overflow-y-auto pr-1'>
                     {notifications.map((notif, key) => (
                         <OpenCard key={key} notification={notif} />
                     ))}

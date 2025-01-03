@@ -18,6 +18,8 @@ const Outreach = ({ theme }: Props) => {
     { name: "Shortlisted", value: 0, color: "#f8712b" },
     { name: "In Progress", value: 0, color: "#166aeb" },
     { name: "Confirmed", value: 1, color: "#f9bf44" },
+    // { name: "Confirmed", value: 1, color: "#f9bf44" },
+    // { name: "Confirmed", value: 1, color: "#f9bf44" },
   ]
 
   const router = useRouter()
@@ -31,7 +33,7 @@ const Outreach = ({ theme }: Props) => {
       }
     }
   }
-  
+
   return (
     <div className={`${events.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] w-full overflow-hidden relative rounded-xl flex h-[273px]`}>
       <div className={`flex flex-col ${events.length > 0 ? "gap-2" : "gap-8"} w-[50%] p-4`}>
@@ -46,7 +48,12 @@ const Outreach = ({ theme }: Props) => {
           {events.length > 0 ? "Track your event outreach status from a dashboard built for events." : "Reach out to right event POCs and move your plans forward. Monitor your progress and stay organized through every phase of the process."}
         </div>
         {events.length === 0 ? <Button onClick={() => handleRouting("button")} className="mt-4 w-[110px]" size="xs">Start Outreach <MoveRight width={12} /></Button> :
-          <div className='mt-3 flex flex-col gap-2' >
+          <div
+            className={`mt-3 ${events.length === 3
+                ? "flex flex-col gap-2"
+                : "grid grid-cols-2 gap-4"
+              }`}
+          >
             {events.map((event, key) => (
               <div key={key}><PhaseCard color={event.color} heading={event.name} value={event.value} /></div>
             ))}
