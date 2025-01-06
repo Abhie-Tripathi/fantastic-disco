@@ -25,7 +25,6 @@ interface TrackerData {
   activeCount: number;
   type: string;
 }
-
 const Dashboard = () => {
 
   let role = "sa"
@@ -37,10 +36,11 @@ const Dashboard = () => {
   const [coordinateData, setCoordinateData] = useState<{ heading: string, value: number }[]>([])
   const [promoteData, setPromoteData] = useState<{ name: string, value: number }[]>([])
   const [trackerData, setTrackerData] = useState<TrackerData[]>([])
+  const [outreachData, setOutreachData] = useState<{ name: string, value: number }[]>([])
 
 
   const { theme } = useTheme()
-  const { getParticipentCount } = useCoordinateService()
+  const { getParticipentCount, getPipelineConfig, getOutreachSingleEvent } = useCoordinateService()
   const { getActiveWidget, getOnlyDraftWidget } = useWidgetServices()
   const { getUpcomingEvents } = useEventServices()
   const { getTrackers } = useTrackerServices()
@@ -64,7 +64,7 @@ const Dashboard = () => {
     const formattedData = [
       { name: "Widgets", value: activeData.totalCount },
       { name: "Drafts", value: draftData.totalCount },
-      { name: "Events", value:  eventData.totalCount},
+      { name: "Events", value: eventData.totalCount },
     ];
     setPromoteData(formattedData)
   }
@@ -84,10 +84,34 @@ const Dashboard = () => {
     setTrackerData(fetchedTrackers)
   }
 
+  // This function is to fetch the whole array
+  const fetchOutreachData = async () => {
+    const data: any = await getPipelineConfig()
+    // const outreachArray: { name: string, value: number }[] = []
+    const outreachStages = data.outreach_stage.slice(1, data.outreach_stage.length-1);
+    const promises = outreachStages.map(async (value: any) => {
+      const singleValueCount = await fetchOutreachValue(value.status);
+      return { name: value.label, value: singleValueCount };
+    });
+  
+    const outreachArray = await Promise.all(promises);
+    setOutreachData(outreachArray);
+  }
+  // This function is to get specific count from the array values
+  const fetchOutreachValue = async (status: string) => {
+    const data = await getOutreachSingleEvent({ offset: 0, status })
+    return data?.totalCount;
+  }
+
+  useEffect(()=>{
+    console.log("outreach data :", outreachData)
+  },[outreachData])
+
   useEffect(() => {
     fetchCoordinateData()
     fetchPromoteData()
     fetchTrackerData()
+    fetchOutreachData()
   }, [])
 
   return (
@@ -108,7 +132,7 @@ const Dashboard = () => {
                         <Trends container="small" />
                       </div>}
                     </div>
-                    {(outreach && role === "sa") && <div><Outreach theme={theme} /> </div>}
+                    {(outreach && role === "sa") && <div><Outreach outreachData={outreachData} theme={theme} /> </div>}
                   </div>
 
                   <div className="flex flex-col gap-3 w-[45%]">

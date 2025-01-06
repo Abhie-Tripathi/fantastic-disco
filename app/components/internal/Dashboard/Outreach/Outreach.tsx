@@ -11,16 +11,17 @@ import { ArrowRight } from 'geist-icons'
 
 interface Props {
   theme: string | null
+  outreachData : { name: string, value: number }[]
 }
-const Outreach = ({ theme }: Props) => {
+const Outreach = ({ theme, outreachData }: Props) => {
 
-  const events = [
-    { name: "Shortlisted", value: 0, color: "#f8712b" },
-    { name: "In Progress", value: 0, color: "#166aeb" },
-    { name: "Confirmed", value: 1, color: "#f9bf44" },
-    // { name: "Confirmed", value: 1, color: "#f9bf44" },
-    // { name: "Confirmed", value: 1, color: "#f9bf44" },
-  ]
+  // const events = [
+  //   // { name: "Shortlisted", value: 0, color: "#f8712b" },
+  //   // { name: "In Progress", value: 0, color: "#166aeb" },
+  //   // { name: "Confirmed", value: 1, color: "#f9bf44" },
+  //   // { name: "Confirmed", value: 1, color: "#f9bf44" },
+  //   // { name: "Confirmed", value: 1, color: "#f9bf44" },
+  // ]
 
   const router = useRouter()
 
@@ -28,40 +29,40 @@ const Outreach = ({ theme }: Props) => {
     if (type === 'button') {
       router.push("/internal/outreach")
     } else {
-      if (events.length > 0) {
+      if (outreachData.length > 0) {
         router.push("/internal/outreach")
       }
     }
   }
 
   return (
-    <div className={`${events.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] w-full overflow-hidden relative rounded-xl flex h-[273px]`}>
-      <div className={`flex flex-col ${events.length > 0 ? "gap-2" : "gap-8"} w-[50%] p-4`}>
+    <div className={`${outreachData.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] w-full overflow-hidden relative rounded-xl flex h-[273px]`}>
+      <div className={`flex flex-col ${outreachData.length > 0 ? "gap-2" : "gap-8"} w-[50%] p-4`}>
         <div className='flex items-center gap-1 text-[var(--primary-color)] font-semibold'>
           <OutreachIcon />
-          <div className={`flex items-center gap-2 ${events.length > 0 && "cursor-pointer"}`} onClick={() => handleRouting("heading")}>
+          <div className={`flex items-center gap-2 ${outreachData.length > 0 && "cursor-pointer"}`} onClick={() => handleRouting("heading")}>
             <span className='text-xs text-[var(--primary-color)] font-[var(--font-weight-semibold)]'>Event Outreach</span>
-            {events.length > 0 && <div><ArrowRight color='#6750a4' width='12px' height='12px' /></div>}
+            {outreachData.length > 0 && <div><ArrowRight color='#6750a4' width='12px' height='12px' /></div>}
           </div>
         </div>
         <div className='text-xs text-[var(--bold-border-color)]'>
-          {events.length > 0 ? "Track your event outreach status from a dashboard built for events." : "Reach out to right event POCs and move your plans forward. Monitor your progress and stay organized through every phase of the process."}
+          {outreachData.length > 0 ? "Track your event outreach status from a dashboard built for events." : "Reach out to right event POCs and move your plans forward. Monitor your progress and stay organized through every phase of the process."}
         </div>
-        {events.length === 0 ? <Button onClick={() => handleRouting("button")} className="mt-4 w-[110px]" size="xs">Start Outreach <MoveRight width={12} /></Button> :
+        {outreachData.length === 0 ? <Button onClick={() => handleRouting("button")} className="mt-4 w-[110px]" size="xs">Start Outreach <MoveRight width={12} /></Button> :
           <div
-            className={`mt-3 ${events.length === 3
+            className={`mt-3 ${outreachData.length === 3
                 ? "flex flex-col gap-2"
                 : "grid grid-cols-2 gap-4"
               }`}
           >
-            {events.map((event, key) => (
-              <div key={key}><PhaseCard color={event.color} heading={event.name} value={event.value} /></div>
+            {outreachData.map((event, key) => (
+              <div key={key}><PhaseCard color="#f8712b" heading={event.name} value={event.value} /></div>
             ))}
           </div>
         }
 
       </div>
-      {events.length === 0 ? <div className='relative h-full w-[50%]'>
+      {outreachData.length === 0 ? <div className='relative h-full w-[50%]'>
         <Image src={theme === "dark" ? OutreachImageDark : OutreachImage} alt='outreach' className='absolute top-[40px] left-[20px]' width={303} height={272} unoptimized /></div>
         : <div className='p-4 w-[50%] h-full'><RecentChat /></div>
       }
