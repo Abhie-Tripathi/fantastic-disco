@@ -306,7 +306,6 @@ export default function ProductsPage() {
 
   const getResearchResponse = async () => {
     const data: any = await getResearchData();
-    console.log("daasdasdta",data)
     setResearchScreenBoxes(data);
     setFilteredResearchScreenboxes(
       // (data as any).filter((value: any) => !["BOOKMARK"].includes(value.status))
