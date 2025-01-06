@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import styles from './style.module.css'
 import BackgroundImage from '/public/internal/dashboard/Researchbg.png'
 import BackgroundImageDark from '/public/internal/dashboard/Researchbgdark.png'
@@ -12,6 +12,7 @@ import LocationSelector from "@/components/search/location";
 import { useFilterContext } from '@/context/filterContext';
 import EventTypeSelector from '@/components/search/eventType';
 import DateRangeSelector from '@/components/search/dateRange';
+import SearchBar from "@/components/search/searchbar";
 
 interface Props {
     theme: string | null
@@ -20,8 +21,7 @@ interface Props {
 const Research = ({ theme }: Props) => {
 
     const dropdowns = [{ name: "Event Type" }, { name: "Location" }, { name: "Date" }]
-      const { applyFilters, localFilters, clearLocalFilters, enabledFilters } = useFilterContext();
-
+    const { applyFilters, localFilters, clearLocalFilters, enabledFilters } = useFilterContext();
     return (
         <div className={`w-full h-auto gap-[61px] bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden`}
             style={{ backgroundImage: `${theme === "dark" ? `url(${BackgroundImageDark.src})` : `url(${BackgroundImage.src})`}` }}>
@@ -33,9 +33,8 @@ const Research = ({ theme }: Props) => {
                     </div>
                     <div className='text-sm text-[var(--secondary-text-color)]'>Maximize ROI from your event strategy with Whr.ai</div>
                 </div>
-                <div className={`w-full bg-[var(--primary-foreground)] p-[9px_12px] border rounded flex items-center gap-2`}>
-                    <MagnifyingGlass color='#A8A8A8' width="13px" height='13px' />
-                    <input type="text" className='text-sm bg-transparent' placeholder='Search events' />
+                <div className={`w-full`}>
+                    <SearchBar />
                 </div>
                 <div className={`${styles.filterContainer}`}>
                     <div className={`${styles.heading} flex items-center gap-0.5`}>

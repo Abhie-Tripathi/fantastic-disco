@@ -1,12 +1,20 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useCallback } from 'react'
 import styles from './style.module.css'
 import { MagnifyingGlass } from 'geist-icons';
+import { Button } from '@/components/ui/button';
+import { MoveRight } from 'lucide-react';
+import { useFilterContext } from '@/context/filterContext';
 
 interface Props {
     theme: string | null
 }
 
 const MapContainer = ({ theme }: Props) => {
+    const { applyFilters, localFilters } = useFilterContext();
+
+    const searchHandler = useCallback(() => {
+        console.log("filters : ", localFilters)
+      }, []);
     const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
     return (
         <div className={`filter drop-shadow-lg bg-[var(--accent-color)] rounded-t-[12px] p-1`}>
@@ -26,6 +34,10 @@ const MapContainer = ({ theme }: Props) => {
                         <div className="text-xs text-[var(--secondary-text-color)]">New York, United States</div>
                     </div>
                 </div>
+                <div className='w-full flex justify-center absolute bottom-[50px]'>
+                    <Button onClick={searchHandler} className='w-[80%]' size="sm">Explore Events <MoveRight width={12} /></Button>
+                </div>
+
             </div>
         </div>
     )
