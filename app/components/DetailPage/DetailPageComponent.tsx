@@ -243,7 +243,8 @@ const DetailPageComponent = ({ snowTheme, venue, latitude, eventFont, longitude,
                             <Mapview latitude={latitude}
                                 venue={location_city ? location_city : location_country}
                                 longitude={longitude}
-                                zoom={6} height={200}
+                                zoom={6} 
+                                height={200}
                                 source = "detail"
                                 />
                         </Suspense>

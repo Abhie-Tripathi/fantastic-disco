@@ -59,7 +59,7 @@ const PromoteOne = ({ values, theme }: Props) => {
             />}
             {!isEmpty && <div className='flex flex-col gap-2 w-full px-4 py-2'>
                 {values.map((value, key) => (
-                    <NumberPill bg={!isEmpty ? "none" : ""} heading={value.name} value={value.value} width='full' />
+                    <NumberPill key={key} bg={!isEmpty ? "none" : ""} heading={value.name} value={value.value} width='full' />
                 ))}
             </div>}
         </div>
