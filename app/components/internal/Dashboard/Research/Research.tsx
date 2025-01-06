@@ -25,12 +25,14 @@ const Research = ({ theme }: Props) => {
     // const dropdowns = [{ name: "Event Type" }, { name: "Location" }, { name: "Date" }]
     const { enabledFilters, getLocalFilterValue, localFilters } = useFilterContext();
     const { getLocationDetails } = useLocationService()
-    const [latLang, setLatLang] = useState<{ lat: number, long: number }>({ lat: 28.694135, long: 77.148341 })
+    const [latLang, setLatLang] = useState<{ lat: number, long: number }>({ lat: 40.691293, long: -73.986610})
+    const [locationName, setLocationName] = useState<string>("")
 
     const getLatLong = async (locationId: string) => {
         const data: any = await getLocationDetails(locationId)
         const value = { lat: data.formattedLocations[0].latitude, long: data.formattedLocations[0].longitude }
         setLatLang(value)
+        setLocationName(data.formattedLocations[0].displayName)
     }
 
     useEffect(() => {
@@ -75,7 +77,7 @@ const Research = ({ theme }: Props) => {
             </div>
             <div className="mr-[80px] w-[260px] mb-[-40px]">
                 <Suspense fallback={<div>Loading...</div>}>
-                    <MapContainer theme={theme} latLang={latLang} />
+                    <MapContainer location={locationName} theme={theme} latLang={latLang} />
                 </Suspense>
             </div>
         </div>

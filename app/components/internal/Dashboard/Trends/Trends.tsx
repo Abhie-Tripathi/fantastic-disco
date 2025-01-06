@@ -15,10 +15,10 @@ const Trends = ({ container }: Props) => {
         router.push("/internal/trends")
     }
     return (
-        <div className={`border border-[var(--border-color)] p-3 rounded-xl ${container === "small" ? "h-[240px]" : "h-[252px]"} flex flex-col items-start overflow-hidden w-full`}>
+        <div className={`border border-[var(--border-color)] p-3 rounded-xl ${container === "small" ? "h-[240px]" : "h-[252px]"} flex flex-col items-start overflow-hidden w-full cursor-pointer`} onClick={handleRouting}>
             <div className='flex items-center gap-1 text-[var(--primary-color)] font-semibold'>
                 <BarChart color='#6750a4' width='12px' height='12px' />
-                <div className={`flex items-center gap-2 cursor-pointer`} onClick={handleRouting}>
+                <div className={`flex items-center gap-2 cursor-pointer`}>
                     <span className='text-xs text-[var(--primary-color)] font-[var(--font-weight-semibold)]'>Event Trends</span>
                     <div><ArrowRight color='#6750a4' width='12px' height='12px' /></div>
                 </div>

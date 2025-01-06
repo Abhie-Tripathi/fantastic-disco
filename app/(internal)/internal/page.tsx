@@ -25,17 +25,16 @@ interface TrackerData {
   activeCount: number;
   type: string;
 }
-  interface OutreachLastChat {
-    eventName: string;
-    status: string;
-    comment: string;
-    eventId: string;
-    enquiryId: string;
-  }
+interface OutreachLastChat {
+  eventName: string;
+  status: string;
+  comment: string;
+  eventId: string;
+  enquiryId: string;
+}
 const Dashboard = () => {
 
   let role = "sa"
-  let value = "filled"
   let outreach = role === "sa"
   let prospect = true
   let trends = true
@@ -45,7 +44,7 @@ const Dashboard = () => {
   const [trackerData, setTrackerData] = useState<TrackerData[]>([])
   const [outreachData, setOutreachData] = useState<{ name: string, value: number }[]>([])
   const [outreachChat, setOutreachChat] = useState<OutreachLastChat>()
-
+  const [value, setValue] = useState<string>("empty")
 
   const { theme } = useTheme()
   const { getParticipentCount, getPipelineConfig, getOutreachSingleEvent, getLatestComment } = useCoordinateService()
@@ -118,13 +117,46 @@ const Dashboard = () => {
     setOutreachChat(messageData)
   }
 
+  // useEffect(() => {
+  //   fetchTrackerData()
+  //   fetchCoordinateData()
+  //   fetchOutreachData()
+  //   fetchOutreachMessage()
+  //   fetchPromoteData()
+  // }, [])
   useEffect(() => {
-    fetchCoordinateData()
-    fetchPromoteData()
-    fetchTrackerData()
-    fetchOutreachData()
-    fetchOutreachMessage()
-  }, [])
+    const fetchData = async () => {
+      // Call all fetch functions in parallel
+      await Promise.all([
+        fetchTrackerData(),
+        fetchCoordinateData(),
+        fetchOutreachData(),
+        fetchOutreachMessage(),
+        fetchPromoteData(),
+      ]);
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    // Check if any state is filled
+    if (
+      coordinateData.length > 0 ||
+      promoteData.length > 0 ||
+      trackerData.length > 0 ||
+      outreachData.length > 0
+    ) {
+      setValue("filled");
+    } else {
+      setValue("empty");
+    }
+  }, [coordinateData,
+    promoteData,
+    trackerData,
+    outreachChat,
+    outreachData,])
+
 
   return (
     <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3">
