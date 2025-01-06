@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  SetStateAction,
+  Dispatch,
+} from "react";
 import { Search, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +40,8 @@ interface AutocompleteInputProps {
   placeholder: string;
   onSelect: (location: any) => void;
   multiple?: boolean;
+  isOpen?: boolean;
+  setIsOpen?: Dispatch<SetStateAction<boolean>>;
   value?: Location[] | Location | null;
 }
 
@@ -43,6 +51,8 @@ export default function AutocompleteInput({
   placeholder,
   onSelect,
   multiple = false,
+  isOpen,
+  setIsOpen,
   value,
 }: AutocompleteInputProps) {
   const { getCoordinates } = useLocationService();
@@ -58,6 +68,12 @@ export default function AutocompleteInput({
 
   const { predictions, isLoading, isError } =
     type === "LocationId" ? databaseLocationResult : nominatimResult;
+
+  useEffect(() => {
+    if (isOpen) {
+      setOpen(isOpen);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (value) {
@@ -111,7 +127,15 @@ export default function AutocompleteInput({
   );
 
   return (
-    <Popover open={defaultOpen || open} onOpenChange={setOpen}>
+    <Popover
+      open={defaultOpen || open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        if (setIsOpen) {
+          setIsOpen(open);
+        }
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           variant="outline"

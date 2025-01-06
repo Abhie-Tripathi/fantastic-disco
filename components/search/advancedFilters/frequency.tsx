@@ -49,7 +49,8 @@ export default function FrequencySelector() {
       setLocalFilter("frequencies", "");
     }
   };
-
+  console.log(frequencies);
+  
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>

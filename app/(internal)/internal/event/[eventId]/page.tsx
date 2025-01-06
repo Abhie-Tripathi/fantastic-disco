@@ -11,7 +11,15 @@ import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import Link from "next/link";
 import Disable from "/public/disable.svg";
-import { Editions, Event, GTMEventDetail, TTabs } from "@/types/events";
+import {
+  categoryRank,
+  countryCategoryRank,
+  countryRank,
+  Editions,
+  Event,
+  GTMEventDetail,
+  TTabs,
+} from "@/types/events";
 import {
   Accordion,
   AccordionContent,
@@ -26,6 +34,7 @@ import {
   MailIcon,
   MapPin,
   PhoneIcon,
+  Radio,
   Share2,
 } from "lucide-react";
 import { useEventsService } from "@/services/eventsService";
@@ -38,7 +47,15 @@ import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import SaveThisEvent from "@/components/gtmDetail/saveThisEvent";
 import { toast } from "react-toastify";
-import { Button } from "@/components/ui/button";
+
+export interface RankingDetail {
+  above5CountryEvent: countryRank[] | [];
+  below5CountryEvent: countryRank[] | [];
+  above5CategoryEvent: categoryRank[] | [];
+  below5CategoryEvent: categoryRank[] | [];
+  above5CountryCategoryRankEvent: countryCategoryRank[] | [];
+  below5CountryCategoryEvent: countryCategoryRank[] | [];
+}
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
   const scrollableSectionRef = useRef<HTMLElement | null>(null);
@@ -126,10 +143,33 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     endDateTime,
     organizer,
     website,
+    format: typeOfEvent,
     venueLocation,
     stats,
     status,
+    scores,
+    above5CategoryEvent,
+    below5CategoryEvent,
+    above5CountryEvent,
+    below5CountryEvent,
+    above5CountryCategoryRankEvent,
+    below5CountryCategoryEvent,
+    repeatSentiment: trustScore,
   } = eventDetails;
+
+  const rankings: RankingDetail = {
+    above5CategoryEvent: above5CategoryEvent,
+    below5CategoryEvent: below5CategoryEvent,
+    above5CountryEvent: above5CountryEvent,
+    below5CountryEvent: below5CountryEvent,
+    above5CountryCategoryRankEvent: above5CountryCategoryRankEvent,
+    below5CountryCategoryEvent: below5CountryCategoryEvent,
+  };
+
+  const isValid =
+    (scores && Object.values(scores).every((value) => value !== null)) ||
+    (trustScore !== null && trustScore > 0) ||
+    (rankings && Object.values(rankings).some((arr) => arr.length > 0));
 
   const eventStartDate = startDateTime
     ? format(new Date(startDateTime), "dd MMM yyyy")
@@ -170,16 +210,17 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   };
 
   return (
-    <div className="pt-0">
-      <aside className="fixed h-screen w-[25%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[4px_0_10px_rgba(0,0,0,0.1)] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
-        <Button
-          variant="link"
-          onClick={() => router.back()}
-          className="flex items-center gap-2 p-0 pb-4 "
-        >
+    <div className="p-6 pt-0">
+      <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
+        <button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
-          <span>Back to Search</span>
-        </Button>
+          <Link
+            className="text-[var(--primary-color)] font-medium"
+            href={"/internal/search/events"}
+          >
+            Back to Search
+          </Link>
+        </button>
         {bannerUrl && (
           <Image
             src={bannerUrl ?? "/eventDetailFallback.png"}
@@ -202,7 +243,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
           <div className="ml-auto flex gap-4 items-center">
             {website && (
-              <Link href={website} target="_blank">
+              <Link href={website} target="_blank" rel="noopener noreferrer">
                 <Globe width="16px" height="16px" color="#666666" />
               </Link>
             )}
@@ -285,31 +326,47 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           )}
         </div>
 
-        {venueLocation && venueLocation.venue && (
-          <div className="flex gap-2 items-start my-4">
-            <span className="border border-[#ebebeb] dark:border-[var(--border-color)] text-[#666666] rounded-lg flex items-center justify-center text-md font-bold w-10 h-10 aspect-square">
-              {/* <Location color="#666666" width="14px" height="14px" /> */}
-              <MapPin width={20} height={20} />
+        {(venueLocation || typeOfEvent) && (
+          <div className="flex gap-2 items-center my-4">
+            <span className="border border-[#ebebeb] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
+              {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
+                <Radio width={20} height={20} />
+              ) : (
+                <MapPin width={20} height={20} />
+              )}
             </span>
-            <div>
-              {venueLocation &&
-                (() => {
-                  const { venue, city, state, country } = venueLocation;
-                  return (
-                    <>
+            <span>
+              {venueLocation?.venue ? (
+                <>
+                  {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
+                    <Text fontWeight="semibold" variant="noMargin">
+                      {typeOfEvent.charAt(0).toUpperCase() +
+                        typeOfEvent.slice(1)}{" "}
+                      Event
+                    </Text>
+                  ) : (
+                    venueLocation.venue.name && (
                       <Text fontWeight="semibold" variant="noMargin">
-                        {venue.name ||
-                          [city?.name, state?.name, country?.name]
-                            .filter(Boolean)
-                            .join(", ")}
+                        {venueLocation.venue.name}
                       </Text>
+                    )
+                  )}
+                  {venueLocation.venue.address &&
+                    venueLocation.venue.address !== "null" && (
                       <Text variant="noMargin" color="secondary">
-                        {venue.address}
+                        {venueLocation.venue.address}
                       </Text>
-                    </>
-                  );
-                })()}
-            </div>
+                    )}
+                </>
+              ) : (
+                (typeOfEvent === "online" || typeOfEvent === "hybrid") && (
+                  <Text fontWeight="semibold" variant="noMargin">
+                    {typeOfEvent.charAt(0).toUpperCase() + typeOfEvent.slice(1)}{" "}
+                    Event
+                  </Text>
+                )
+              )}
+            </span>
           </div>
         )}
         <Accordion
@@ -522,22 +579,24 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         {/* <Button className="mt-4 w-full">Track this event</Button> */}
       </aside>
       <div className="ml-auto w-[70%] max-xl:w-[62%]">
-        <ul className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white dark:bg-[var(--heading-background-color)] shadow pt-3 items-end w-full">
+        <ul className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white dark:bg-[var(--heading-background-color)] shadow-md pt-3 items-end w-full">
           <div className="flex gap-12">
-            {tabs.map((tab) => (
-              <div
-                key={tab.tabName}
-                onClick={() => {
-                  handleScrollTo(tab.path);
-                }}
-                className={`relative font-semibold cursor-pointer pb-3 ${
-                  activeTab === tab.path
-                    ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
-                    : "text-[var(--tertiary-text-color)]"
-                }`}
-              >
-                {tab.tabName}
-                {/* {tab.tabName === "Insights" && (
+            {tabs
+              .filter((tab) => !(tab.path === "insights" && !isValid))
+              .map((tab) => (
+                <div
+                  key={tab.tabName}
+                  onClick={() => {
+                    handleScrollTo(tab.path);
+                  }}
+                  className={`relative font-semibold cursor-pointer pb-3 ${
+                    activeTab === tab.path
+                      ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
+                      : "text-[var(--tertiary-text-color)]"
+                  }`}
+                >
+                  {tab.tabName}
+                  {/* {tab.tabName === "Insights" && (
                   <div className="absolute -top-1 -right-16 w-fit">
                     <span className="bg-[#FEECF2] py-2 px-3 rounded-full text-sm text-[#DF2670] relative ml-2">
                       NEW
@@ -551,8 +610,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                     </span>
                   </div>
                 )} */}
-              </div>
-            ))}
+                </div>
+              ))}
           </div>
           {/* <div className="flex gap-4 pb-2 pr-2">
             <button className="bg-[#6750A4] rounded-md flex items-center gap-2 justify-center py-2 px-4 text-white w-fit cursor-not-allowed">

@@ -62,7 +62,10 @@ export default function LocationSelector({
 
   const fetchUrlLocation = async () => {
     const geoCoordinate = JSON.parse(localFilters.geoCoordinates || "null");
-    const locationIds = localFilters.locationIds?.split(",");
+    const ids = localFilters?.locationIds?.length
+    ? localFilters.locationIds.split(",")
+    : [];
+    const locationIds = ids;
 
     if (geoCoordinate) {
       const locationName = await getLocationName(
@@ -136,7 +139,7 @@ export default function LocationSelector({
     }
     setIsOpen(open);
   };
-
+  
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>

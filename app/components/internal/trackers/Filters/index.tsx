@@ -1,6 +1,9 @@
 "use client";
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
+import { isEventeli } from "@/config";
 import { ApiError } from "@/types/api";
 import { toast } from "react-toastify";
 import { useSearchParams, useRouter } from "next/navigation";
@@ -539,7 +542,7 @@ const Pages = () => {
     impactScore: false,
     inboundScore: false,
     internationalScore: false,
-    globalToggle: enabledFilters?.analytics?.isAnalyticsEnabled,
+    globalToggle: false
   });
 
   const [selectedImpactScore, setSelectedImpactScore] = useState<[number,number]>([0, 100]);
@@ -551,7 +554,10 @@ const Pages = () => {
   const [selectedRank, setSelectedRank] = useState<string>('');
   const [selectedCountries, setSelectedCountries] = useState<any>([]);
   const [selectedAudProfile, setSelectedAudProfile] = useState<string[]>([]);
-
+  const [selectedAdvancedView, setSelectedAdvancedView] = useState("advancedDetails");
+  const handleTabChange = (value: string) => {
+    setSelectedAdvancedView(value);
+  };
   const createTrackerHandler = () => {
     const params = new URLSearchParams(searchParams);
     if (selectedCategories.length > 0) {
@@ -1457,7 +1463,7 @@ const Pages = () => {
       setSelectedEventRanking(
         editData.tracker.filterValue?.eventRanking?.split(",") || []
       );
-      setSelectedBrandedEvent(toggleOpend?.brandedEvent ? true : false);
+      setSelectedBrandedEvent(editData?.tracker?.filterValue?.eventBrand ? true : false);
       setIsBrand(toggleOpend?.brandSeries ? true : false);
       // setSelectedCountry(
       //   editData.tracker.filterValue?.eventCountry?.length > 0
@@ -1481,7 +1487,7 @@ const Pages = () => {
       //     : {}
       // );
       setSelectedEventSeries(
-        toggleOpend?.eventSeries ? true : false
+        editData?.tracker?.filterValue?.eventSeries ? true : false
       );
       setMaturity(
         editData.tracker.filterValue?.maturity?.length > 0
@@ -1831,10 +1837,11 @@ useEffect(()=>{
   setForecastedStatus(enabledFilters?.isForecasted?.isForecastedEnabled || false);
   setAnalyticsToggles({
     ...analyticsToggles,
-    globalToggle: enabledFilters?.analytics?.isAnalyticsEnabled,
+    globalToggle: enabledFilters?.analytics?.isAnalyticsEnabled?true:false,
   });
   setAudienceZone(enabledFilters?.audienceZone?.isZoneEnabled || false);
   }
+  
 },[enabledFilters])
 console.log(enabledFilters?.eventType);
 
@@ -2197,149 +2204,75 @@ return (
 
       {/*   ADVANCE FILTER SECTION */}
 
-      <div>
-        <div
-          className="bg-[var(--tabs-background-color)] py-2.5 mx-0 my-6 rounded-[var(--border-radius-lg)] flex items-center justify-center relative"
-        >
-          <div className="flex items-center">
-            <div className={`flex items-center gap-2 ${styles.advanceFilterBtns}`}>
-              <button
-                onClick={() => setSelectedAdvFilter("AP")}
-                className={`${styles.listBtn} ${selectedAdvFilter === "AP" ? styles.active : ""
-                  }`}
-              >
-                Advance Intel
-              </button>
-              <button
-                onClick={() => setSelectedAdvFilter("IS")}
-                className={`${styles.listBtn} ${selectedAdvFilter === "IS" ? styles.active : ""
-                  }`}
-              >
-                Insights &#x26; Score
-              </button>
-              <button
-                onClick={() => setSelectedAdvFilter("AI")}
-                className={`${styles.listBtn} ${selectedAdvFilter === "AI" ? styles.active : ""
-                  }`}
-              >
-                Audience Intel
-              </button>
+          <Tabs
+           defaultValue="list"
+           value={selectedAdvancedView}
+           onValueChange={handleTabChange}
+          >
+            <div className="flex justify-center my-6">
+            <div className="flex justify-center">
+                <TabsList className="w-[570px] grid grid-cols-3 h-auto">
+                  <TabsTrigger value="advancedDetails" className="text-base">
+                              Advanced Details
+                              {/* {advancedDetailsFiltersCount ? (
+                <Badge className="ml-2">{advancedDetailsFiltersCount}</Badge>
+              ) : (
+                ""
+              )} */}
+                  </TabsTrigger>
+                  <TabsTrigger value="insightsAndScores" className=" text-base">
+                              Insights and Scores
+                              {/* {insightsAndScoresFiltersCount ? (
+                <Badge className="ml-2">{insightsAndScoresFiltersCount}</Badge>
+              ) : (
+                ""
+              )} */}
+                  </TabsTrigger>
+                  {!isEventeli && (
+                  <TabsTrigger value="audienceIntel" className=" text-base">
+                  Audience Intel
+                  {/* {audienceInterFiltersCount ? (
+                  <Badge className="ml-2">{audienceInterFiltersCount}</Badge>
+                   ) : (
+                  ""
+                   )} */}
+                  </TabsTrigger>
+                  )}
+                </TabsList>
             </div>
-          </div>
-        </div>
-        
-        {/* ADVANCE DETAILS SECTION */}
-        {showAdvanceFilter && selectedAdvFilter === "AP" && (
-          <div className={styles.inputdropdowns_container}>
-              <MaturitySelector/>
-              <GlobalAndTouringSelector/>
-              <ForecastedStatusSelector/>
-              <FrequencySelector/>
-
-            {type!=="T_PRODUCT_KEYWORDS" &&
-            <ProductSelector/>
-              }
-
-
-
-            {/* <MenuTrigger onOpenChange={setMenuOpen}>
-            <Button className={styles.disabledBtn}>
-              <div className={styles.input_container}>
-                <div className={styles.input}>
-                  <div className={styles.input_title}>
-                    Maturity
-                    {selectedMaturity > 0 && (
-                      <span className={styles.input_selected_title}>
-                        {selectedMaturity}
-                      </span>
-                    )}
+            </div>
+                <TabsContent value="advancedDetails">
+                  <div className="grid grid-cols-5 gap-3 pb-6">
+                    <MaturitySelector/>
+                    <GlobalAndTouringSelector/>
+                    <ForecastedStatusSelector/>
+                    <FrequencySelector/>
+                    {type !== "T_PRODUCT_KEYWORDS" &&
+                    <ProductSelector/>
+                    }
                   </div>
-                  <div className={styles.toggle_container}>
-                    <span>
-                      <label className={styles.switch}>
-                        <input
-                          type="checkbox"
-                          onChange={() => { }}
-                          checked={(maturity ?? [])?.length > 0}
-                        />
-                        <span className={styles.slider}></span>
-                      </label>
-                    </span>
+                </TabsContent>
+                <TabsContent value="insightsAndScores">
+                  <div className={cn("grid grid-cols-5 gap-3 pb-6", { "grid-cols-4": isEventeli,})}>
+                  <EstimatedVisitorsSelector/>
+                  {!isEventeli && (
+                  <EstimatedExhibitorsSelector/>
+                  )}
+                  <EventAnalyticsSelector/>
+                  <EstimatedEconomicImpactSelector/>
+                  <EventRankingSelector/>
                   </div>
-                </div>
-              </div>
-            </Button>
-            <Popover className={styles.filterPopover}>
-              <MaturitySlider
-                state={selectedMaturity}
-                setState={setSelectedMaturity}
-              />
-            </Popover>
-          </MenuTrigger> */}
-
-            {/* <MenuTrigger onOpenChange={setMenuOpen}>
-            <Button>
-              <div className={styles.input_container}>
-                <div className={styles.input}>
-                  <div className={styles.input_title}>
-                    Event Rankings
-                    {selectedEventRanking?.length > 1 ? (
-                      <span className={styles.input_selected_no}>
-                        {selectedEventRanking.length}
-                      </span>
-                    ) : (
-                      <span className={styles.input_selected_title}>
-                        {selectedEventRanking[0]}
-                      </span>
-                    )}
-                  </div>
-                  <Image
-                    src={DropIcon}
-                    alt="dropicon"
-                    width={20}
-                    height={20}
-                  />
-                </div>
-              </div>
-            </Button>
-            <Popover>
-              <Dialog className={styles.noBorder}>
-                <EventAdvFilter
-                  state={selectedEventRanking}
-                  setState={setSelectedEventRanking}
-                  data={eventRankData}
-                />
-              </Dialog>
-            </Popover>
-          </MenuTrigger> */}
-          </div>
-        )}
-
-        {/* INSIGHTS AND SCORES */}
-        {(showAdvanceFilter && selectedAdvFilter === "IS") && (
-          <div className={styles.inputdropdowns_container}>
-              <EstimatedVisitorsSelector />
-              <EstimatedExhibitorsSelector/>
-              <EventAnalyticsSelector />
-              <EstimatedEconomicImpactSelector/>
-              <EventRankingSelector/>
-          </div>
-        )}
-
-        {/* AUDIENCE INTEL */}
-        {showAdvanceFilter && selectedAdvFilter === "AI" && (
-          <div className={styles.inputdropdowns_container_AI}>
-
-          <AudienceQualitySelector/>
-          <ExhibitorQualitySelector/>
-          <AudienceZoneSelector/>
-          <AudienceProfileSelector />
-          <AudienceSpreadSelector/>
-
-         
-          </div>
-        )}
-      </div>
+                </TabsContent>
+                <TabsContent value="audienceIntel">
+                  <div className={cn("grid grid-cols-5 gap-3 pb-6", {"grid-cols-4": isEventeli,})}>
+                    <AudienceQualitySelector />
+                    <ExhibitorQualitySelector />
+                    <AudienceZoneSelector/>
+                    <AudienceProfileSelector/>
+                    <AudienceSpreadSelector/>
+                    </div>
+                </TabsContent>
+          </Tabs>
     </div>
   </Suspense>
     }

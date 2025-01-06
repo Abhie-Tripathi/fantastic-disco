@@ -198,6 +198,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     console.log(enabledFilters);
     const selected=mapping[key as keyof Filter];
     setLocalFilters((prev) => {
+      console.log(prev);
       
       if (
         enabledFilters?.[selected] &&

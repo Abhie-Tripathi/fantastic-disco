@@ -50,6 +50,7 @@ export interface Tracker {
     
     includeKeywords?:string;
     excludeKeywords?:string;
+    eventBrand?:string;
     estimatedExhibitScore?: string;
     speakerOrg?: string | undefined;
     speakerName?: string | undefined;

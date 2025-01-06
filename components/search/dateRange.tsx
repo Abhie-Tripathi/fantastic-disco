@@ -81,7 +81,7 @@ const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
 //   >;
 // }
 
-export default function DateRangeSelector({ type }: { type?: string }) {
+export default function DateRangeSelector({ type, source }: { type?: string, source?:string }) {
   const pathName = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());

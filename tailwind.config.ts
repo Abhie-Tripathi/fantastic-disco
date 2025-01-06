@@ -24,6 +24,9 @@ const config = {
         inherit: "inherit",
         fill: "-webkit-fill-available",
       },
+      boxShadow: {
+        "custom-lg": "0px 8px 40px -2px rgba(6, 12, 59, 0.08)",
+      },
       height: {
         inherit: "inherit",
         fill: "-webkit-fill-available",

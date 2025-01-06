@@ -1,4 +1,4 @@
-import { sendGAEvent } from "@next/third-parties/google";
+import { sendGTMEvent } from "@next/third-parties/google";
 
 export const GAEvent = (
   name: string,
@@ -6,9 +6,16 @@ export const GAEvent = (
   action: string,
   label: string
 ) => {
-  sendGAEvent("event", name, {
+  sendGTMEvent({
+    event: "gaEvent",
     "Event Category": category,
     "Event Action": action,
     "Event Label": label,
   });
+
+  // sendGAEvent("event", name, {
+  //   "Event Category": category,
+  //   "Event Action": action,
+  //   "Event Label": label,
+  // });
 };

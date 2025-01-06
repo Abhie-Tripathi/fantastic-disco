@@ -139,7 +139,7 @@ export default function EventAnalyticsSelector() {
       (category) => category.range[0] > 0 || category.range[1] < 100
     ).length;
   };
-
+  
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>

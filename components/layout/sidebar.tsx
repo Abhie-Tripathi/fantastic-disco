@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback,useRef,useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import HeroLogo from "/public/HeroLogo.svg";
 import HeroText from "/public/whrai.svg";
-import WidgetdashboardIcon from "@/app/components/sidebar/Icons/WidgetDashboard";
-import BrandkitIcon from "@/app/components/sidebar/Icons/WidgetBrandKit";
-import WidgetIcon from "@/app/components/sidebar/Icons/WidgetIcon2";
-import EventsIcon from "@/app/components/sidebar/Icons/WidgetIcon3";
+import WidgetdashboardIcon from "@/app/components/sidebar/Icons/WidgetDashboard"
+import BrandkitIcon from "@/app/components/sidebar/Icons/WidgetBrandKit"
+import WidgetIcon from "@/app/components/sidebar/Icons/WidgetIcon2"
+import EventsIcon from "@/app/components/sidebar/Icons/WidgetIcon3"
+import { Step } from "react-joyride";
 import {
   MagnifyingGlass,
   BookOpen,
@@ -24,7 +25,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context";
-
+import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
 function Coordinate() {
   return (
     <svg
@@ -113,7 +114,89 @@ const Sidebar = () => {
     setIsHovered(false);
   }, []);
 
+  // console.log("pathname", pathname)
 
+
+  // const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(false);
+  // const [run, setRun] = useState(false);
+  // const [steps, setSteps] = useState<Step[]>([]);
+  // const dashboardRef = useRef(null);
+  // const brandkitRef = useRef(null);
+  // const widgetRef = useRef(null);
+  // const eventsRef = useRef(null);
+  
+
+  // const updateSteps = useCallback(() => {
+  //   const newSteps: Step[] = [];
+
+  //   if (dashboardRef.current) {
+  //     console.log("ref_______________22", dashboardRef);
+  //     newSteps.push({
+  //       target: dashboardRef.current,
+  //       title: "Dashboard",
+  //       content:
+  //         "Stay informed with our dashboard—your hub for overall and latest updates.",
+  //       disableBeacon: true,
+  //       placement: "auto",
+  //       spotlightPadding: 10,
+  //     });
+  //   }
+
+  //   if (brandkitRef.current) {
+  //     newSteps.push({
+  //       target: brandkitRef.current,
+  //       title: "Brandkit",
+  //       content:
+  //         "ypu can customize you brandkit from here",
+  //       disableBeacon: true,
+  //       placement: "auto",
+  //     });
+  //   }
+
+  //   if (widgetRef.current) {
+  //     newSteps.push({
+  //       target: widgetRef.current,
+  //       title: "Widget",
+  //       content:
+  //         "Choose your widget from here.",
+  //       disableBeacon: true,
+  //       placement: "auto",
+  //     });
+  //   }
+
+  //   if (eventsRef.current) {
+  //     newSteps.push({
+  //       target: eventsRef.current,
+  //       title: "Events",
+  //       content:
+  //         "Check or create your Events",
+  //       disableBeacon: true,
+  //       placement: "auto",
+  //     });
+  //   }
+  //   setSteps(newSteps);
+  // }, []);
+
+  // useEffect(() => {
+  //   if (pathname === "/widget/dashboard") {
+  //     const walkthroughCompleted: string[] = JSON.parse(
+  //       localStorage.getItem("walkthroughCompleted") || "[]"
+  //     );
+
+  //     if (!walkthroughCompleted.includes("/widget/dashboard")) {
+  //       updateSteps();
+  //       setRun(true);
+  //     }
+  //   }
+  // }, [updateSteps]);
+
+  // const handleFinishWalkThrough = () => {
+  //   setRun(false);
+  //   setIsSidebarOpen(false);
+  // };
+
+ 
+  
   return (
     <aside
       className={`fixed z-50 top-0 left-0 h-full bg-background transition-all duration-300 ease-in-out flex-col border-r  ${
@@ -122,6 +205,15 @@ const Sidebar = () => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+       {/* {steps.length > 0 && (
+        <JoyRideCustom
+          steps={steps}
+          run={run}
+          onFinish={handleFinishWalkThrough}
+          pathName="/widget/dashboard"
+        />
+      )} */}
+      
       <div className="flex items-center pt-3 px-3 pb-6">
         <div className="flex items-center space-x-2">
           <Image src={HeroLogo} alt="logo" width={40} height={40} />

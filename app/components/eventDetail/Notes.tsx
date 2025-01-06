@@ -31,7 +31,7 @@ interface UserDetail {
 }
 interface Props {
   eventId?: string;
-  eventGroupId?: string;
+  enquiryId?: string;
   productId?: string | undefined;
   comments?: IComment[];
   stage?: string;
@@ -44,7 +44,7 @@ interface Reply {
   }
   id?: string;
 }
-export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Props) => {
+export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props) => {
   const { theme } = useTheme();
   const urlPath = usePathname().split('/')[2]
   const {getNotesFromTracker, saveNotes, deleteNotes, likeNotes, getUsers, error}=useNotesServices();
@@ -288,12 +288,14 @@ export const Notes = ({ eventId, eventGroupId, comments, productId, stage }: Pro
       {
         const dataToSend = {
         "eventId": eventId,
-        // "eventGroupId": eventGroupId,
         "stage": stage,
         "type": type,
         "content": note,
         "source": "GTM",
         "entityType":"ENQUIRY",
+        ...(enquiryId && {
+          "entityId": enquiryId
+        }),
         ...(type !== 'MESSAGE' && { "interestType": interestType }),
         ...(type === "RECOMMEND" && {
           "recommendUserId": suggest

@@ -14,7 +14,7 @@ const NullState = ({ image, title, text, buttonText, buttonUrl }: { image:string
       <Image src={image} alt="zerostate"/>
       {buttonText && buttonText.length>0 && 
       <Link href={`${buttonUrl}`}>
-      <Button className="text-white w-auto ml-7">
+      <Button className="text-white w-auto">
             {buttonText}
       </Button>
       </Link>
