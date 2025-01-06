@@ -193,14 +193,14 @@ const Search = () => {
       <SearchBar />
       <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
         <div className="col-span-8 grid grid-cols-4 gap-3">
-          <EventTypeSelector source="search" enabledTypeData={ enabledFilters?.eventType}/>
-          <CategorySelector source="search" enabledCategories={enabledFilters?.eventCategory}/>
-          <EventFormatSelector source="search" enabledFormat={enabledFilters?.eventFormat}/>
-          <LocationSelector source="search"/>
-          <DateRangeSelector source="search" enabledDateRange={enabledFilters?.durations}/>
-          <StatusSelector source="search" enabledStatuses={enabledFilters?.eventStatus}/>
-          <EventEntrySelector source="search" enabledEntries={enabledFilters?.eventEntry}/>
-          <UserRatingSelector source="search" enabledRatingData={enabledFilters?.eventRating}/>
+          <EventTypeSelector/>
+          <CategorySelector/>
+          <EventFormatSelector/>
+          <LocationSelector/>
+          <DateRangeSelector/>
+          <StatusSelector/>
+          <EventEntrySelector/>
+          <UserRatingSelector/>
         </div>
         <div className="col-span-2 grid grid-cols-2 gap-2">
           <div className="row-span-2 flex flex-col gap-3">

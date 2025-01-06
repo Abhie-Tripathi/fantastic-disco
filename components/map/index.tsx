@@ -128,7 +128,7 @@ export default function MapComponent({ searchParams, source, trackerId, isGlobal
 
   const location = useMemo(() => {
     const geoCoordinates = getLocalFilterValue("geoCoordinates");
-    const locationIds = source==="tracker"? trackerLoc.length>0?trackerLoc:"defaultLoc":getLocalFilterValue("locationIds");
+    const locationIds = source==="tracker"? trackerLoc?.length>0?trackerLoc:"defaultLoc":getLocalFilterValue("locationIds");
     console.log(locationIds);
     
     if (geoCoordinates) {
@@ -354,21 +354,18 @@ export default function MapComponent({ searchParams, source, trackerId, isGlobal
   ]);
 
   const onMove = useCallback(({ viewState }: { viewState: ViewState }) => {
+    console.log(viewState);
+    
     
     setViewport(viewState);
   }, []);
-  // useEffect(() => {
-  //   setViewport({
-  //     latitude: 0,
-  //     longitude: 0,
-  //     zoom: 3.95,
-  //     bearing: 0,
-  //     pitch: 0,
-  //     padding: { top: 0, bottom: 0, left: 0, right: 0 },
-  //   });
+  useEffect(() => {
+    setViewport({
+      ...viewport, zoom:2.07
+    })
     
-  //   // setCurrentZoomGroup(country)
-  // }, [trackerId]);
+  }, [searchParams
+  ]);
   console.log(viewport);
   
   const eventCountsGeoJSON = React.useMemo(() => {
@@ -498,18 +495,20 @@ export default function MapComponent({ searchParams, source, trackerId, isGlobal
       }
     };
     fetchLocationDetails();
-  }, [location]);
-  useEffect(() => {
-    setViewport({
-      latitude: 0,
-      longitude: 0,
-      zoom: 1,
-      bearing: 0,
-      pitch: 0,
-      padding: { top: 0, bottom: 0, left: 0, right: 0 },
-    });
+  }, [location, trackerId]);
+  // useEffect(() => {
+  //   console.log(trackerId);
     
-  }, [trackerId]);
+  //   setViewport({
+  //     latitude: 0,
+  //     longitude: 0,
+  //     zoom: 1,
+  //     bearing: 0,
+  //     pitch: 0,
+  //     padding: { top: 0, bottom: 0, left: 0, right: 0 },
+  //   });
+    
+  // }, [trackerId]);
   useEffect(() => {
     console.log(locationBBox);
     
@@ -577,7 +576,7 @@ export default function MapComponent({ searchParams, source, trackerId, isGlobal
   
   return (
     <div className="relative">
-      {(eventCountsQuery.isLoading)? <Loading/>:
+      {(eventCountsQuery.isLoading && currentZoomGroup==="city" )? <Loading/>:
       <>
       {!location ? (
         <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
@@ -901,9 +900,9 @@ export default function MapComponent({ searchParams, source, trackerId, isGlobal
             </div>
           )}
         </ReactMapGL>
-      )}
+        )}
       </>
-      }
+      } 
     </div>
   );
 }

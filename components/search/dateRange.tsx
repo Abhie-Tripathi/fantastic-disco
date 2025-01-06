@@ -65,29 +65,23 @@ const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
   return "";
 };
 
-interface DateRangeProps {
-  source: string;
-  enabledDateRange?:any;
-  type?:string;
-  dateRange?: {
-    from: Date | undefined;
-    to: Date | undefined;
-  };
-  setDateRange?: React.Dispatch<
-    React.SetStateAction<{
-      from: Date | undefined;
-      to: Date | undefined;
-    }>
-  >;
-}
+// interface DateRangeProps {
+//   source: string;
+//   enabledDateRange?:any;
+//   type?:string;
+//   dateRange?: {
+//     from: Date | undefined;
+//     to: Date | undefined;
+//   };
+//   setDateRange?: React.Dispatch<
+//     React.SetStateAction<{
+//       from: Date | undefined;
+//       to: Date | undefined;
+//     }>
+//   >;
+// }
 
-export default function DateRangeSelector({
-  type,
-  source,
-  enabledDateRange,
-  dateRange: parentDateRange,
-  setDateRange: setParentDateRange,
-}: DateRangeProps) {
+export default function DateRangeSelector({ type }: { type?: string }) {
   const pathName = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());

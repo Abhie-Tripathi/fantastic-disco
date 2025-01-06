@@ -11,16 +11,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
-
-const globalAndTourings = [
-  { id: "BRANDED", label: "Branded" },
-  { id: "SERIES", label: "Series" },
-];
-
+import { LockClosedSmall } from "geist-icons";
+import {EventType} from "@/public/data/searchFilters"
 export default function GlobalAndTouringSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setMultipleLocalFilters, getLocalFilterValue } = useFilterContext();
-
+  const { setMultipleLocalFilters, getLocalFilterValue, morphedData } = useFilterContext();
+  const globalAndTourings = morphedData.globalAndTourings.options;
+  const enabled = morphedData.globalAndTourings.isEnabled;
+  const showToogle = morphedData.globalAndTourings.isToogleEnabled;
   // Derive selected statuses from filters
   const selectedStatuses = useMemo(() => {
     const onlyBranded = getLocalFilterValue("onlyBranded") === "true";
@@ -68,13 +66,18 @@ export default function GlobalAndTouringSelector() {
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={isOpen}
-          className="w-full justify-between px-3 py-5 text-base font-normal"
-        >
+    <PopoverTrigger asChild>
+      <Button
+        variant="outline"
+        disabled={!enabled}
+        role="combobox"
+        aria-expanded={isOpen}
+        className="w-full justify-between px-3 py-5 text-base font-normal"
+      >
+         <div className="flex items-center">
+          {!enabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
           <span className="flex items-center gap-2">
             Brand
             {selectedStatuses.length > 0 && (
@@ -83,34 +86,35 @@ export default function GlobalAndTouringSelector() {
               </span>
             )}
           </span>
-          <Switch
-            checked={showInFilter}
-            onCheckedChange={handleShowToggle}
-            aria-label="Show Global & Touring in filter"
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-              e.stopPropagation()
-            }
-          />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-[var(--radix-popover-trigger-width)] p-0"
-        align="start"
-      >
-        <div className="p-4 space-y-4">
-          {globalAndTourings.map((item) => (
-            <div key={item.id} className="flex items-center space-x-2">
-              <Checkbox
-                id={item.id}
-                checked={selectedStatuses.includes(item.id)}
-                onCheckedChange={() => handleStatusToggle(item.id)}
-                disabled={!showInFilter}
-              />
-              <Label htmlFor={item.id}>{item.label}</Label>
-            </div>
-          ))}
-        </div>
-      </PopoverContent>
-    </Popover>
+          </div>
+        <Switch
+          checked={showInFilter}
+          onCheckedChange={handleShowToggle}
+          aria-label="Show Global & Touring in filter"
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+            e.stopPropagation()
+          }
+        />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent
+      className="w-[var(--radix-popover-trigger-width)] p-0"
+      align="start"
+    >
+      <div className="p-4 space-y-4">
+        {globalAndTourings.map((item: EventType) => (
+          <div key={item.id} className="flex items-center space-x-2">
+            <Checkbox
+              id={item.id}
+              checked={selectedStatuses.includes(item.id)}
+              onCheckedChange={() => handleStatusToggle(item.id)}
+              disabled={!item.isEnabled}
+            />
+            <Label htmlFor={item.id}>{item.label}</Label>
+          </div>
+        ))}
+      </div>
+    </PopoverContent>
+  </Popover>
   );
 }

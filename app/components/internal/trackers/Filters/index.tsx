@@ -83,6 +83,10 @@ export interface LocationItem {
   id: string;
   description: string | undefined;
 }
+interface Filters {
+  shows: string;
+  [key: string]: any; 
+}
 export type Location =  LocationItem[];
 // interface Toggle{
 //   rating?:boolean;
@@ -799,7 +803,7 @@ const Pages = () => {
       ...(type && type.length > 0 && {
         type: type.toUpperCase()
       }),
-      accessLevel: editData?.tracker?.accessLevel,
+      // accessLevel: editData?.tracker?.accessLevel,
       filterValue: {
           ...(userType &&{
            userType:JSON.stringify(userType)
@@ -847,6 +851,16 @@ const Pages = () => {
         // ...(selectedEventKeywords.length > 0 && {
         //   eventKeywords: selectedEventKeywords.join("+"),
         // }),
+        ...(getLocalFilterValue("includeKeywords").length > 0 && {
+          includeKeywords: getLocalFilterValue("includeKeywords")
+            .split(",")
+            .map((keyword) => keyword.replaceAll(" ", "_")).join(",")
+        }),
+        ...(getLocalFilterValue("excludeKeywords").length > 0 && {
+          excludeKeywords: getLocalFilterValue("excludeKeywords")
+            .split(",")
+            .map((keyword) => keyword.replaceAll(" ", "_")).join(",")
+        }),
         ...(includeKeywords && includeKeywords.length>0 &&{
           // includeKeywords: includeKeywords.join(','),
           includeKeywords :includeKeywords.map((kw: string) => kw.replace(/ /g, "_")).join(','),
@@ -883,7 +897,7 @@ const Pages = () => {
         }),
         ...(getLocalFilterValue("onlySeries") && {eventSeries: getLocalFilterValue("onlySeries")}),
         ...(getLocalFilterValue("status")?.length > 0 && {
-          eventStatus: getLocalFilterValue("status"),
+          eventStatus: getLocalFilterValue("status").split(',').map((item)=>item.toUpperCase()).join(","),
         }),
         ...(getLocalFilterValue("entryType")?.length > 0 && {
           eventEntry: getLocalFilterValue("entryType"),
@@ -925,6 +939,9 @@ const Pages = () => {
         ...(selectedLocationsData && selectedLocationsData?.length > 0
     ? { locationIds: selectedLocationsData.map((item:LocationItem) => item.id).join(',') }
     : {}),
+          ...(getLocalFilterValue("locationIds").length>0 && {
+            locationIds: getLocalFilterValue("locationIds")
+          }),
         ...(getLocalFilterValue("ratings")?.length > 0 && {
           eventRating: getLocalFilterValue("ratings"),
         }),
@@ -997,7 +1014,8 @@ const Pages = () => {
         // }
       },
     };
-   
+    console.log(formData);
+    
 
       const secondLast = pathName[pathName.length - 2];
      
@@ -1012,8 +1030,8 @@ const Pages = () => {
         return;
       }
       else if (type === "CUSTOM" && ( 
-        !selectedLocationsData || 
-        selectedLocationsData.length === 0 || 
+        !getLocalFilterValue("locationIds") || 
+        getLocalFilterValue("locationIds").length === 0 || 
         trackerName.trim().length === 0 
       )) {
         console.log("Please, Fill all the details");
@@ -1059,7 +1077,7 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type === "CUSTOM" && (selectedLocationsData &&selectedLocationsData.length === 0 || trackerName.length === 0)){
+      else if (type === "CUSTOM" && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)){
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
@@ -1182,7 +1200,8 @@ const Pages = () => {
       if (typeof editData?.tracker?.filterValue?.userType === 'string') {
           toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
       }
-      const showFilters = [...getLocalFilterValue("shows").split(",")];
+      const value = getLocalFilterValue("shows" as any);
+      const showFilters = value ? [...value.split(",")] : [];
       if (toggleOpend?.rating) {
         
         showFilters.push("rating");
@@ -1343,6 +1362,8 @@ const Pages = () => {
         "status",
         editData?.tracker?.filterValue?.eventStatus?.split(",")?.map((item: string) => item.toLowerCase()).join(",")
       );
+      setLocalFilter("active_gte",editData?.tracker?.filterValue?.startDate?.split(",")[0]);
+      setLocalFilter("active_lte",editData?.tracker?.filterValue?.startDate?.split(",")[1]);
       setDateRange({
         to: editData?.tracker?.filterValue?.startDate
           ? new Date(editData.tracker.filterValue.startDate.split(",")[1])
@@ -1396,9 +1417,14 @@ const Pages = () => {
         ? extractLocations(editData.tracker.filterValue.locationIds.state)
         : [];
     setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedState]);
-
+    const ids = [
+      ...(editData.tracker.filterValue.locationIds.city || []),
+      ...(editData.tracker.filterValue.locationIds.state || []),
+      ...(editData.tracker.filterValue.locationIds.country || []),
+    ]
+      .flatMap((location) => Object.keys(location));
       // console.log(selectedLocations);
-      
+      setLocalFilter("locationIds", ids.join(","));
       const eventCountry =
         editData?.tracker?.filterValue?.eventCountry?.map(
           (countryObj: {}) => Object.values(countryObj)[0]
@@ -1554,7 +1580,15 @@ const Pages = () => {
         editData.tracker.filterValue?.includeKeywords.split(",").length > 0
             ? editData.tracker.filterValue.includeKeywords.split(",").filter(Boolean).map((kw: string) => kw.replace(/_/g, " "))
             : []
-    );    
+    );  
+    setLocalFilter("includeKeywords",editData.tracker.filterValue?.includeKeywords
+    ?.split(",")
+    .map((keyword:string) => keyword.replaceAll("_", " "))
+    .join(","));
+    setLocalFilter("excludeKeywords",editData.tracker.filterValue?.excludeKeywords
+    ?.split(",")
+    .map((keyword:string) => keyword.replaceAll("_", " "))
+    .join(","));
       setExcludeKeywords(editData.tracker.filterValue?.excludeKeywords &&
         editData.tracker.filterValue?.excludeKeywords.split(",").length > 0
             ? editData.tracker.filterValue.excludeKeywords.split(",").filter(Boolean).map((kw: string) => kw.replace(/_/g, " "))
@@ -1802,6 +1836,8 @@ useEffect(()=>{
   setAudienceZone(enabledFilters?.audienceZone?.isZoneEnabled || false);
   }
 },[enabledFilters])
+console.log(enabledFilters?.eventType);
+
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -1936,7 +1972,7 @@ return (
     isMandatory={isMandatory}
     setIsMandatory={setIsMandatory}
     /> */}
-    <ProductSelector type="T_PRODUCT_KEYWORDS" source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords}/>
+    <ProductSelector type="T_PRODUCT_KEYWORDS"/>
     </div>
     </div>
     }
@@ -2144,28 +2180,15 @@ return (
     <div className={styles.container}>
       <div className={styles.sub_container}>
         <div className="grid grid-cols-5 gap-3">
-          <EventTypeSelector source="tracker" setSelectedCategories={setSelectedEventType} selectedCategories={selectedEventType}
-          enabledTypeData={enabledFilters?.eventType}
-          />
-          <CategorySelector  source="tracker"  selectedCategories={selectedCategories} setSelectedCategories={setSelectedCategories}
-          enabledCategories={enabledFilters?.eventCategory}
-          />
-          <EventFormatSelector source="tracker" selectedStatuses={selectedEventFormat}
-                  setSelectedStatuses={setSelectedEventFormat}
-                  enabledFormat={enabledFilters?.eventFormat}
-                  />
-          <LocationSelector source="tracker" selectedLocation={selectedLocationsData} setSelectedLocation={setSelectedLocationsData} isMandatory={isMandatory}/>
+          <EventTypeSelector/>
+          <CategorySelector/>
+          <EventFormatSelector/>
+          <LocationSelector isMandatory={isMandatory}/>
           {/* <LocationSelector/> */}
-          <DateRangeSelector source="tracker" dateRange={dateRange} setDateRange={setDateRange} enabledDateRange={enabledFilters?.durations} />
-          <EventStatusSelector source="tracker" setSelectedStatuses={setSelectedEventStatus} selectedStatuses={selectedEventStatus}
-          enabledStatuses={enabledFilters?.eventStatus}
-          />
-          <EventEntrySelector source="tracker" selectedStatuses={selectedEntry} setSelectedStatuses={setSelectedEntry}
-          enabledEntries={enabledFilters?.eventEntry}
-          />
-          <UserRatingSelector source="tracker" selectedRatings={selectedUserRatings} setSeectedRatings={setSelectedUserRatings} isEnabled={isRatingOpen} setIsEnabled={setRatingOpen}
-          enabledRatingData={enabledFilters?.eventRating}
-          />
+          <DateRangeSelector/>
+          <EventStatusSelector/>
+          <EventEntrySelector/>
+          <UserRatingSelector/>
         </div>
       </div>
       {showRecentSearches && (
@@ -2208,31 +2231,13 @@ return (
         {/* ADVANCE DETAILS SECTION */}
         {showAdvanceFilter && selectedAdvFilter === "AP" && (
           <div className={styles.inputdropdowns_container}>
-              <MaturitySelector source="tracker"      selectedStatus={selectedMaturity}
-              setSelectedStatus={setSelectedMaturity}
-              isEnabled={isMaturity}
-              setIsEnabled={setIsMaturity}
-              enabledMaturityData={enabledFilters?.maturity} 
-              />
-              <GlobalAndTouringSelector source="tracker" selectedBrandedEvent={selectedBrandedEvent}
-              setSelectedBrandedEvent={setSelectedBrandedEvent}
-              selectedEventSeries={selectedEventSeries}
-              setSelectedEventSeries={setSelectedEventSeries}
-              isEnabled={isBrand}
-              setIsEnabled={setIsBrand}
-              enabledBrandData={enabledFilters?.branded}
-              />
-              <ForecastedStatusSelector source="tracker" isEnabled={forecastedStatus} setIsEnabled={setForecastedStatus}  
-              enabledForecastData={enabledFilters?.isForecasted}
-              />
-              <FrequencySelector source="tracker" selectedFrequencies={selectedEventFrequency} setSelectedFrequencies={setSelectedEventFrequency} isEnabled={freqToggle} setIsEnabled={setFreqToggle}
-              enabledFreqData={enabledFilters?.eventFrequency}
-              />
+              <MaturitySelector/>
+              <GlobalAndTouringSelector/>
+              <ForecastedStatusSelector/>
+              <FrequencySelector/>
 
             {type!=="T_PRODUCT_KEYWORDS" &&
-            <ProductSelector source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords}
-            enabledProductData={enabledFilters?.keywords}
-            />
+            <ProductSelector/>
               }
 
 
@@ -2313,36 +2318,11 @@ return (
         {/* INSIGHTS AND SCORES */}
         {(showAdvanceFilter && selectedAdvFilter === "IS") && (
           <div className={styles.inputdropdowns_container}>
-              <EstimatedVisitorsSelector source="tracker" selectedRanges={selectedVisitors} setSelectedRanges={setSelectedVisitors}
-              enabledVisitorData={enabledFilters?.eventSize}
-              />
-              <EstimatedExhibitorsSelector selectedRanges={selectedExhibitScore}
-              setSelectedRanges={setSelectedExhibitScore}
-              isEnabled={isExhibitOpen}
-              setIsEnabled={setExhibitOpen}
-              enabledExhibitorData={enabledFilters?.estimatedExhibitScore}
-              source="tracker"/>
-              <EventAnalyticsSelector source="tracker" selectedEventRank={selectedImpactScore}
-              setSelectedEventRank={setSelectedImpactScore}
-              selectedLocalRank={selectedInboundScore}
-              setSelectedLocalRank={setSelectedInboundScore}
-              selectedAviationRank={selectedInternationalScore}
-              setSelectedAviationRank={setSelectedInternationalScore} 
-              rankToggles={analyticsToggles}
-              setRankToggles={setAnalyticsToggles}
-              enabledAnalyticsData={enabledFilters?.analytics}
-              />
+              <EstimatedVisitorsSelector />
+              <EstimatedExhibitorsSelector/>
+              <EventAnalyticsSelector />
               <EstimatedEconomicImpactSelector/>
-              <EventRankingSelector 
-              source="tracker"
-              selectedTrustScore={selectedTrustScore}
-              setSelectedTrustScore={setSelectedTrustScore}
-              rankToggles={rankToggles}
-              setRankToggles={setRankToggles}
-              selectedRank={selectedRank}
-              setSelectedRank={setSelectedRank}
-              enabledRankingData={enabledFilters?.eventRanking}
-              />
+              <EventRankingSelector/>
           </div>
         )}
 
@@ -2352,16 +2332,9 @@ return (
 
           <AudienceQualitySelector/>
           <ExhibitorQualitySelector/>
-          <AudienceZoneSelector source="tracker" isEnabled={audienceZone} setIsEnabled={setAudienceZone} enabledZoneData={enabledFilters?.audienceZone}/>
-          <AudienceProfileSelector source="tracker" 
-          designationData={selectedAudProfile}
-          setDesignationData={setSelectedAudProfile}
-          enabledProfileData={enabledFilters?.designation}
-          />
-          <AudienceSpreadSelector source="tracker" selectedCountries={selectedCountries}
-          setSelectedCountries={setSelectedCountries}
-          enabledSpreadData={enabledFilters?.audienceSpread}
-          />
+          <AudienceZoneSelector/>
+          <AudienceProfileSelector />
+          <AudienceSpreadSelector/>
 
          
           </div>

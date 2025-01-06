@@ -321,7 +321,8 @@ const Trackers = ({ searchParams }: Search) => {
     const eventState = singleTrackerData?.filterValue?.eventState?.map((stateObj:{}) => Object.keys(stateObj)[0])||[];
     const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.keys(cityObj)[0])||[];
     const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
-    setLocations([...eventCountry, ...eventCity, ...eventZone, eventState]);
+    const flattenedLocations = [...eventCountry, ...eventCity, ...eventZone, ...eventState];
+    setLocations(flattenedLocations);
     if(singleTrackerData.id){
     fetchNote(singleTrackerData?.id)
   fetchSavedEvent(singleTrackerData?.id)
@@ -485,7 +486,7 @@ const Trackers = ({ searchParams }: Search) => {
           source="tracker" 
           searchParams={`active`}
           trackerId={singleTrackerData?.id}
-          trackerLoc={locations?.join(",")}
+          trackerLoc={locations?.length>0 && locations?.join(",")}
         />
         </div>
       </Suspense>

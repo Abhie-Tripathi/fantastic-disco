@@ -219,7 +219,11 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
   //   enabled: currentZoomGroup !== "event" && location !== null,
   // });
   const eventCountsQuery = useQuery<EventCount[], Error>({
-    queryKey: source === "tracker" ? ["eventCounts", trackerId, currentZoomGroup,searchParams] : ["eventCounts", currentZoomGroup, searchParams],
+    queryKey: source === "tracker"
+    ? ["eventCounts", trackerId, currentZoomGroup, searchParams]
+    : source === "tracker_global"
+    ? [trackerId]
+    : ["eventCounts", currentZoomGroup, searchParams],
     queryFn: async () => {
       if (source === "tracker") {
         const response = await getMapViewData(trackerId, currentZoomGroup, searchParams);

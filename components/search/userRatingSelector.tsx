@@ -12,22 +12,23 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import dynamic from "next/dynamic";
 import { useFilterContext } from "@/context/filterContext";
-
+import {EventType} from "@/public/data/searchFilters"
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
 
-const userRatings = [
-  { id: "0-1", label: "0-1" },
-  { id: "1-2", label: "1-2" },
-  { id: "2-3", label: "2-3" },
-  { id: "3-4", label: "3-4" },
-  { id: "4-5", label: "4-5" },
-];
+// const userRatings = [
+//   { id: "0-1", label: "0-1" },
+//   { id: "1-2", label: "1-2" },
+//   { id: "2-3", label: "2-3" },
+//   { id: "3-4", label: "3-4" },
+//   { id: "4-5", label: "4-5" },
+// ];
 
 export default function UserRatingSelector() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
-
+  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const userRatings = morphedData.userRatings.options;
+  const showUserRatings = morphedData.userRatings.isEnabled;
   const selectedRatings = getLocalFilterValue("ratings")
     .split(",")
     .filter(Boolean);
@@ -91,10 +92,11 @@ export default function UserRatingSelector() {
       >
         <div className="p-4 space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            {userRatings.map((rating) => (
+            {userRatings.map((rating:EventType) => (
               <div key={rating.id} className="flex items-center space-x-2">
                 <Checkbox
                   id={rating.id}
+                  disabled={!rating.isEnabled}
                   checked={selectedRatings.includes(rating.id)}
                   onCheckedChange={() => handleRatingToggle(rating.id)}
                 />

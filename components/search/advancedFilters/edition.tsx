@@ -11,18 +11,21 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
-
-const maturityLevels = [
-  { id: "new", label: "New" },
-  { id: "growing", label: "Growing" },
-  { id: "established", label: "Established" },
-  { id: "flagship", label: "Flagship" },
-];
+import { LockClosedSmall } from "geist-icons";
+import {EventType} from "@/public/data/searchFilters"
+// const maturityLevels = [
+//   { id: "new", label: "New" },
+//   { id: "growing", label: "Growing" },
+//   { id: "established", label: "Established" },
+//   { id: "flagship", label: "Flagship" },
+// ];
 
 export default function EditionSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
-
+  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const maturityLevels = morphedData.maturityLevels.options;
+  const showToggle = morphedData.maturityLevels.isToggleEnabled;
+  const enabled = morphedData.maturityLevels.isEnabled;
   const selectedStatus = useMemo(
     () => getLocalFilterValue("maturity"),
     [getLocalFilterValue]
@@ -59,6 +62,7 @@ export default function EditionSelector() {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
+          disabled={!enabled}
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             isOpen ? "border-primary" : "border-input"
           }`}
@@ -67,7 +71,12 @@ export default function EditionSelector() {
           aria-haspopup="true"
         >
           <div className="flex items-center">
-            <span className="mr-2">Maturity</span>
+          {!enabled &&
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
+            <span className="mr-2">
+              Maturity
+              </span>
             {selectedStatus && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
                 1
@@ -76,6 +85,7 @@ export default function EditionSelector() {
           </div>
           <Switch
             checked={showInFilter}
+            disabled={!enabled}
             onCheckedChange={handleShowToggle}
             aria-label="Show Maturity in filter"
             onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
@@ -93,7 +103,7 @@ export default function EditionSelector() {
           onValueChange={handleStatusChange}
           className="space-y-2"
         >
-          {maturityLevels.map((maturityLevel) => (
+          {maturityLevels.map((maturityLevel: EventType) => (
             <div key={maturityLevel.id} className="flex items-center space-x-2">
               <RadioGroupItem
                 value={maturityLevel.id}
@@ -104,6 +114,7 @@ export default function EditionSelector() {
                     handleStatusChange(maturityLevel.id);
                   }
                 }}
+                disabled={!maturityLevel.isEnabled}
               />
               <Label htmlFor={maturityLevel.id}>{maturityLevel.label}</Label>
             </div>

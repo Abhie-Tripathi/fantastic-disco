@@ -15,18 +15,15 @@ import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
-
-const ranks = [
-  { id: "100", label: "Top 100" },
-  { id: "500", label: "Top 500" },
-  { id: "1000", label: "Top 1000" },
-];
-
+import { LockClosedSmall } from "geist-icons";
+import {EventType} from "@/public/data/searchFilters"
 export default function EventRankingSelector() {
   const [open, setOpen] = useState(false);
-  const { localFilters, setMultipleLocalFilters, getLocalFilterValue } =
+  const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } =
     useFilterContext();
-
+    const showToogle = morphedData.eventRanking.isToogleEnabled;
+    const enabled = morphedData.eventRanking.isEnabled;
+    const ranks = morphedData.eventRanking.options;
   const showRankings = useMemo(() => {
     const showFilters = getLocalFilterValue("show").split(",");
     return showFilters.includes("rankings");
@@ -99,14 +96,18 @@ export default function EventRankingSelector() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          disabled={!enabled}
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             open ? "border-primary" : "border-input"
           }`}
         >
-          <div className="flex items-center truncate">
+           <div className="flex items-center truncate">
+          {!enabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
             <span className="mr-2">Event Ranking</span>
-            {showRankings && getAppliedFiltersCount() > 0 && (
+            {getAppliedFiltersCount() > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
                 {getAppliedFiltersCount()}
               </span>
@@ -137,7 +138,7 @@ export default function EventRankingSelector() {
           className="space-y-2 px-4 py-2"
           disabled={!showRankings}
         >
-          {ranks.map((rank) => (
+          {ranks.map((rank: EventType) => (
             <div key={rank.id} className="flex items-center space-x-2">
               <RadioGroupItem
                 value={rank.id}

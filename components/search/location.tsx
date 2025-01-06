@@ -39,18 +39,11 @@ export interface LocationItem {
 
 export type Location = GeoLocation | LocationItem[];
 export interface LocationProps {
-  source: string;
   type?:string;
-  selectedLocation?: Location | null;
-  setSelectedLocation?: React.Dispatch<
-    React.SetStateAction<GeoLocation | LocationItem[] | null>
-  >;
   isMandatory?: boolean;
 }
 export default function LocationSelector({
-  source,
-  selectedLocation: parentSelectedLocation,
-  setSelectedLocation: parentSetSelectedLocation,
+  type,
   isMandatory,
 }: LocationProps) {
   const pathName = usePathname();
@@ -63,10 +56,7 @@ export default function LocationSelector({
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
   const [localSelectedLocation, setLocalSelectedLocation] =
     useState<Location | null>(null);
-  const selectedLocation =
-    source === "tracker" ? parentSelectedLocation : localSelectedLocation;
-  const setSelectedLocation =
-    parentSetSelectedLocation || setLocalSelectedLocation;
+  const [selectedLocation,setSelectedLocation]=useState<Location | null>();
   const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
     useFilterContext();
 
@@ -104,7 +94,7 @@ export default function LocationSelector({
   };
 
   useEffect(() => {
-    if (source !== "tracker") fetchUrlLocation();
+     fetchUrlLocation();
   }, [localFilters.locationIds]);
 
   const applyHandler = () => {

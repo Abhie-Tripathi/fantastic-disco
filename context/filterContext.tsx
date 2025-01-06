@@ -11,7 +11,47 @@ import React, {
 import { usePathname, useRouter } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
-
+import { toast } from "react-toastify";
+import { generateSearchFilters, searchFilters } from "@/public/data/searchFilters";
+import { useToast } from "@/components/ui/use-toast";
+interface EventFilterData {
+  eventFormat?: { enabledValue?: string[] };
+  eventStatus?: { enabledValue?: string[] };
+  eventCategory?: { enabledValue?: { slug: string }[] };
+  eventType?: { enabledValue?: string[] };
+  locationIds?: { enabledValue?: { id: string }[] };
+  durations?: { startDate?: string; endDate?: string };
+  eventEntry?: { enabledValue?: string[] };
+  eventRating?: { enabledValue?: string[]; isRatingEnabled?: boolean };
+  eventRanking?:{
+    isRanking?:boolean;
+  };
+  maturity?: { enabledValue?: string[]; isMaturityEnabled?: boolean };
+  branded?: {
+    enabledValue?: { eventBrand?: boolean; eventSeries?: boolean };
+    isBrandedEnabled?: boolean;
+  };
+  isForecasted?:{
+    isForecastedEnabled?: boolean;
+  };
+  eventFrequency?: { enabledValue?: string[]; isFreqEnabled?: boolean };
+  keywords?: {
+    positiveKeywords?: string[];
+    negativeKeywords?: string[];
+  };
+  eventSize?: { enabledValue?: string[] };
+  estimatedExhibitScore?: { enabledValue?: string[]; isExhibitorsEnabled?: boolean };
+  analytics?: { isAnalyticsEnabled?: boolean };
+  audienceZone?:{
+    isZoneEnabled?:boolean;
+  };
+  designation?:{
+    isProfileEnabled?:boolean;
+  };
+  audienceSpread?:{
+    isAudienceEnabled?:boolean;
+  }
+}
 interface Filters {
   show?: string;
   eventTypes?: string;
@@ -54,9 +94,21 @@ interface Filters {
   total_attendance_gte?: string;
   total_attendance_lte?: string;
 }
-
+type Filter = {
+  eventTypes: string;
+  status: string;
+  categories: string;
+  eventFormats: string;
+  entryType: string;
+  ratings: string;
+  maturity: string;
+  frequencies: string;
+  estimatedVisitors: string;
+  estimatedExhibitors: string;
+};
 type FilterContextType = {
   localFilters: Filters;
+  morphedData: any;
   setLocalFilter: (key: keyof Filters, value: string) => void;
   clearLocalFilters: (value:string) => void;
   applyFilters: () => void;
@@ -69,6 +121,7 @@ type FilterContextType = {
     newKey: keyof Filters,
     newValue: string
   ) => void;
+  enabledFilters: EventFilterData | null;
 };
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
@@ -77,6 +130,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
+  const [morphedData,setMorphedData]=useState(searchFilters);
   const { searchParams } = useFilterState();
   const [localFilters, setLocalFilters] = useState<Filters>({});
   console.log(localFilters);
@@ -91,22 +145,25 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const getEnabledFilters = async () => {
-      
       try {
         const data = await eventService.fetchEnabledFilters("research");
-        if(data){
-        setEnabledFilters(data);
-        }else{
-          setEnabledFilters(null);
-        }
+        setEnabledFilters(data || {}); 
       } catch (e) {
-        console.log(e);
+        console.error("Error fetching filters:", e);
+        setEnabledFilters({}); 
       }
     };
   
     getEnabledFilters();
   }, []);
   
+  useEffect(() => {
+    if (enabledFilters) {
+      console.log("Enabled Filters:", enabledFilters);
+      console.log("Updated Filters:", generateSearchFilters(enabledFilters));
+      setMorphedData(generateSearchFilters(enabledFilters) as any);
+    }
+  }, [enabledFilters]);
   useEffect(() => {
     if(!pathname.split('/').includes("editTracker")){
    setInitialFilters();
@@ -123,8 +180,47 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     // );
   }, [searchParams, filterEmptyValues]);
 
-  const setLocalFilter = useCallback((key: keyof Filters, value: string) => {
+  const setLocalFilter = useCallback((key: keyof Filters, value: string) => { 
+    console.log(key);
+    
+    const mapping: Record<keyof Filter, string> = {
+      eventTypes: "eventType",
+      status: "eventStatus",
+      categories: "eventCategory",
+      eventFormats: "eventFormat",
+      entryType: "eventEntry",
+      ratings: "eventRating",
+      maturity: "maturity",
+      frequencies: "eventFrequency",
+      estimatedVisitors: "eventSize",
+      estimatedExhibitors:"estimatedExhibitScore"
+    };
+    console.log(enabledFilters);
+    const selected=mapping[key as keyof Filter];
     setLocalFilters((prev) => {
+      
+      if (
+        enabledFilters?.[selected] &&
+        (
+          (selected === "maturity" && value?.length === 0) || 
+          (
+            selected !== "maturity" &&
+            typeof prev?.[key as keyof Filter] === "string" &&
+            prev[key as keyof Filter]!.split(",").length <= 1 &&
+            typeof value === "string" &&
+            value.split(",").length <= 1
+          )
+        )
+      ) {
+        toast.error("At least one filter must be selected", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+        });
+        return prev;
+      }
+      
+      
       const newFilters = { ...prev };
       if (value === "") {
         delete newFilters[key];
@@ -135,7 +231,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       
       return newFilters;
     });
-  }, []);
+  }, [enabledFilters]);
 
   const clearLocalFilters = useCallback((view:string) => {
     console.log(enabledFilters);
@@ -209,16 +305,16 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const setMultipleLocalFilters = useCallback(
     (filters: Partial<Filters>) => {
-      setLocalFilters((prev) =>
-        filterEmptyValues({
+      setLocalFilters((prev) => {
+        return filterEmptyValues({
           ...prev,
           ...filters,
-        })
-      );
+        });
+      });
     },
     [filterEmptyValues]
   );
-
+  
   const deleteMultipleLocalFilters = useCallback(
     (keys: Array<keyof Filters>) => {
       setLocalFilters((prev) => {
@@ -250,6 +346,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const contextValue = useMemo(
     () => ({
       localFilters,
+      morphedData,
+      enabledFilters,
       setLocalFilter,
       clearLocalFilters,
       applyFilters,
@@ -261,6 +359,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     }),
     [
       localFilters,
+      morphedData,
+      enabledFilters,
       setLocalFilter,
       clearLocalFilters,
       applyFilters,

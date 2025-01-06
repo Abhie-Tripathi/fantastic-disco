@@ -299,7 +299,6 @@ const Table = ({
   handleButtonLoading,
   savedEventCount,
   setSavedEventCount,
-  source,
 }: {
   savedEventCount?:number;
   setSavedEventCount?:any;
@@ -309,7 +308,6 @@ const Table = ({
   eventType?: string;
   setActiveValue?: any;
   setRequestExhausted?: any;
-  source?: string;
   handleButtonLoading?: (val: boolean) => void;
 }) => {
   const searchParams = useSearchParams();
@@ -681,14 +679,6 @@ const Table = ({
                 "You have reached the maximum limit to view data. Please get in touch with us."
               );
             }
-            if (error.status === 406) {
-              setRequestExhausted(true);
-              setZeroStateHeading(error?.message);
-              setZeroStateText(
-                ""
-              );
-              setEventPerPage([]);
-            }
           }
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -742,27 +732,18 @@ const Table = ({
         setTotalEvents(result.totalEvents);
       }
   
-     
+      setIsLoaded(true);
   
     } catch (error:any) {
       if (error.name === "AbortError") {
-        console.log("Saved events request was aborted");
-      } else if (error.status === 406) {
-              setZeroStateHeading(error?.message);
-              setZeroStateText(
-                ""
-              );
-              setEventPerPage([]);
-              
-              // return <NullState image={TrackerNullState}  title={error?.message} />
+        console.log("Request was aborted");
       } else {
-        console.error("Fetch saved data error:", error);
+        console.error("Fetch error: ", error);
       }
     } finally {
       // Reset the controller after the request completes or is aborted
       abortControllerRef.current = null;
     }
-    setIsLoaded(true);
   };
   
   // const [isSaving, setIsSaving] = useState(false);
@@ -891,12 +872,12 @@ const Table = ({
         <Loading className="w-[200px] h-[100px]" />
       </div>
     );
-  } else if (isLoaded && eventPerPage.length == 0 ) {
+  } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
         {(path[2]==="trackers")? 
         <div className="px-10 py-5">
-        <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText={path[path.length - 1] === "savedEvents" ? "Manage Configurations":""} buttonUrl={`/internal/trackers/${path[path.length - 2]}/trackedConfiguration?type=${type}`}/>
+        <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText={path[path.length - 1] !== "savedEvents" ? "Manage Configurations":""} buttonUrl={`/internal/trackers/${path[path.length - 2]}/trackedConfiguration?type=${type}`}/>
         </div>
         :
         <ZeroState title={zeroStateHeading} text={zeroStateText} />
@@ -1055,7 +1036,7 @@ const Table = ({
                     )}
                   </div>
                   <div className={styles.truncateText_1}>
-                    <Link href={`/internal/event/${event.id}`}>
+                    <Link href={`/internal/event/${event.id}`} target="_blank">
                       {event.name}
                     </Link>
                   </div>
@@ -2100,8 +2081,7 @@ const Table = ({
                             <main className={styles["modal_content"]}>
                               <form onSubmit={(e) => handleSubmit(e, close)}>
                                 <div id="field-1">
-                                  { source === 'trackers' &&
-                                  <div className={styles["form-check"]}>
+                                  {/* <div className={styles["form-check"]}>
                                     {path[path.length - 1] === "savedEvents" ||
                                     path[path.length - 1] === "trackers" ||
                                     event?.isSaved ||
@@ -2139,8 +2119,7 @@ const Table = ({
                                         </label>
                                       </>
                                     )}
-                                  </div>
-                                  }
+                                  </div> */}
                                   {coordinateActions.map((item: any, index: number) => (
                                     <div className={styles["form-check"]} key={index} >
                                       <input

@@ -10,16 +10,13 @@ import {
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useFilterContext } from "@/context/filterContext";
-
-const eventFormats = [
-  { id: "online", label: "Online/Virtual" },
-  { id: "offline", label: "Offline" },
-  { id: "hybrid", label: "Hybrid" },
-];
-
+import {EventType} from "@/public/data/searchFilters"
 export default function EventFormatSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, localFilters } = useFilterContext();
+  const { setLocalFilter, getLocalFilterValue, morphedData} = useFilterContext();
+
+  const eventFormats = morphedData?.eventFormats?.options;
+  const enabled = morphedData?.eventFormats?.isEnabled;
 
   const selectedFormats = getLocalFilterValue("eventFormats")
     .split(",")
@@ -36,12 +33,12 @@ export default function EventFormatSelector() {
   const onOpenChange = (open: boolean) => {
     setIsOpen(open);
   };
-  console.log(localFilters);
-  
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <Button
+          disabled={!enabled}
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             isOpen ? "border-primary" : "border-input"
@@ -70,13 +67,14 @@ export default function EventFormatSelector() {
         align="start"
       >
         <div className="p-4 space-y-4">
-          {eventFormats.map((eventFormat) => (
+          {eventFormats?.map((eventFormat:EventType) => (
             <div key={eventFormat.id} className="flex items-center space-x-2">
               <Checkbox
                 id={eventFormat.id}
                 className="rounded-none"
                 checked={selectedFormats.includes(eventFormat.id)}
                 onCheckedChange={() => handleFormatToggle(eventFormat.id)}
+                disabled={!eventFormat.isEnabled}
               />
               <label
                 htmlFor={eventFormat.id}

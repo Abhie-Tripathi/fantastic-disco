@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/popover";
 import { useFilterContext } from "@/context/filterContext";
 import dynamic from "next/dynamic";
-
+import { LockClosedSmall } from "geist-icons";
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
 
 interface RankCategory {
@@ -23,10 +23,12 @@ interface RankCategory {
 
 export default function EventAnalyticsSelector() {
   const [open, setOpen] = useState(false);
-  const { localFilters, setMultipleLocalFilters, getLocalFilterValue } =
+  const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } =
     useFilterContext();
 
   // Derive show scores from show filter
+  const enabled = morphedData.eventAnalytics.isEnabled;
+  const showToogle = morphedData.eventAnalytics.isToogleEnabled;
   const showScores = useMemo(() => {
     const showFilters = getLocalFilterValue("show").split(",");
     return showFilters.includes("scores");
@@ -147,10 +149,15 @@ export default function EventAnalyticsSelector() {
             open ? "border-primary" : "border-input"
           }`}
           aria-expanded={open}
-          // disabled={enabledAnalyticsData && !enabledAnalyticsData?.isAnalyticsEnabled}
+          disabled={!enabled}
           aria-haspopup="true"
         >
+           <div className="flex items-center">
+          {!enabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
           <span className="mr-2">Event Analytics</span>
+          </div>
           {showScores && getAppliedFiltersCount() > 0 && (
             <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
               {getAppliedFiltersCount()}

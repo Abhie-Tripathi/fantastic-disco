@@ -18,7 +18,7 @@ export interface Tracker {
     eventRanking?: string;
     brandedEvent?: boolean;
     trustScore?: any;
-    eventSeries?: boolean;
+    eventSeries?: string;
     reputationScore?: any;
     maturity?: any;
     internationalScore?: any;
@@ -39,6 +39,7 @@ export interface Tracker {
     eventSize?: any;
     eventCity?: any;
     eventCountry?: any;
+    eventState?:any;
     eventRegion?: string;
     eventType?: string;
     locationIds?:{
