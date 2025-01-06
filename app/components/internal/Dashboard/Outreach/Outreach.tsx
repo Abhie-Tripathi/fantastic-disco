@@ -30,7 +30,7 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
   //   // { name: "Confirmed", value: 1, color: "#f9bf44" },
   //   // { name: "Confirmed", value: 1, color: "#f9bf44" },
   // ]
-
+  const colors = ["#f8712b", "#166aeb", "#f9bf44","#52c41a", "#dd46eb" ]
   const router = useRouter()
 
   const handleRouting = (type: string) => {
@@ -64,7 +64,7 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
               }`}
           >
             {outreachData.map((event, key) => (
-              <div key={key}><PhaseCard color="#f8712b" heading={event.name} value={event.value} /></div>
+              <div key={key}><PhaseCard color={colors[key]} heading={event.name} value={event.value} /></div>
             ))}
           </div>
         }
