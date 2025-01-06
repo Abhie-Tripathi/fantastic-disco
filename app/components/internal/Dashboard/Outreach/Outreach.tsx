@@ -49,7 +49,7 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
         <div className='flex items-center gap-1 text-[var(--primary-color)] font-semibold'>
           <OutreachIcon />
           <div className={`flex items-center gap-2 ${outreachData.length > 0 && "cursor-pointer"}`} onClick={() => handleRouting("heading")}>
-            <span className='text-xs text-[var(--primary-color)] font-[var(--font-weight-semibold)]'>Event Outreach</span>
+            <span className='text-xs text-[var(--primary-color)] font-[var(--font-weight-semibold)]'>Outreach</span>
             {outreachData.length > 0 && <div><ArrowRight color='#6750a4' width='12px' height='12px' /></div>}
           </div>
         </div>

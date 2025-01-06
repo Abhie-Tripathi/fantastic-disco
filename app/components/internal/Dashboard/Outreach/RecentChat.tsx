@@ -3,6 +3,7 @@ import { ClockDashed } from 'geist-icons'
 import TextBox from './TextBox'
 import { Button } from '@/components/ui/button'
 import { MoveRight } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 interface OutreachLastChat {
     eventName: string;
@@ -16,6 +17,11 @@ interface Props {
 }
 
 const RecentChat = ({ outreachChat }: Props) => {
+
+    const router = useRouter()
+    const handleRouting = ()=>{
+        router.push(`/internal/outreach?modalOpen=true&enquiryId=${outreachChat?.enquiryId}&eventId=${outreachChat?.eventId}`)
+    }
     return (
         <div className='bg-[var(--background-secondary-color)] rounded-[10px] p-3 w-full h-full relative'>
             <div className='flex items-center w-full gap-2 h-[15%]'>
@@ -33,7 +39,7 @@ const RecentChat = ({ outreachChat }: Props) => {
 
                 {/* <div></div> */}
             </div>
-            <div className='absolute w-full bottom-[10px] left-0 px-3'><Button className="mt-4 w-full" size="xs">View Response <MoveRight width={12} /></Button></div>
+            <div className='absolute w-full bottom-[10px] left-0 px-3'><Button onClick={handleRouting} className="mt-4 w-full" size="xs">View Message <MoveRight width={12} /></Button></div>
 
         </div>
     )

@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback } from 'react'
+import React, { Suspense, useCallback, useState } from 'react'
 import styles from './style.module.css'
 import { MagnifyingGlass } from 'geist-icons';
 import { Button } from '@/components/ui/button';
@@ -8,13 +8,14 @@ import { useRouter } from 'next/navigation';
 
 interface Props {
     theme: string | null
+    latLang : {lat : number, long : number}
 }
 
-const MapContainer = ({ theme }: Props) => {
+const MapContainer = ({ theme, latLang }: Props) => {
     const { localFilters } = useFilterContext();
+
     const router = useRouter()
     const searchHandler = () => {
-        console.log("searchHandler", localFilters);
         const params = new URLSearchParams();
         Object.entries(localFilters).forEach(([key, value]) => {
             if (value && key !== "skip") {
@@ -30,10 +31,11 @@ const MapContainer = ({ theme }: Props) => {
         <div className={`filter drop-shadow-lg bg-[var(--accent-color)] rounded-t-[12px] p-1`}>
             <div className="relative">
                 <Suspense fallback={<div>Loading...</div>}>
-                    <Mapview latitude={28.694135}
-                        longitude={77.148341}
+                    <Mapview latitude={latLang.lat}
+                        longitude={latLang.long}
                         zoom={6}
-                        height={240} />
+                        height={240}
+                        source='dashboard' />
                 </Suspense>
                 <div className="p-[13px] absolute flex items-center gap-2 w-full rounded-t-[9px] top-0 bg-white/0 shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[4.2px] border border-white/21">
                     <div className='w-[22px] h-[22px] bg-[var(--primary-foreground)] rounded-sm flex items-center justify-center'>

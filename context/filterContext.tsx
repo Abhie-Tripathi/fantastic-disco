@@ -135,10 +135,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       temp.entryType = enabledFilters.eventEntry?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
       temp.ratings = enabledFilters.eventRating?.enabledValue?.join(',') ?? '';
       temp.maturity = enabledFilters.maturity?.enabledValue?.[0] ?? '';
-      if (enabledFilters.branded?.isBrandedEnabled) 
-        temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand ? 'true' : 'false';
-     if(enabledFilters.branded?.enabledValue?.
-      isBrandedEnabled )
+      temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand ? 'true' : 'false';
       temp.onlySeries = enabledFilters.branded?.enabledValue?.eventSeries ? 'true' : 'false';
       temp.frequencies = enabledFilters.eventFrequency?.enabledValue?.join(',') ?? '';
       temp.includeKeywords = enabledFilters.keywords?.positiveKeywords?.join(',') ?? '';
@@ -171,10 +168,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       });
       const currentPathname = window.location.pathname;
-      console.log("current path name ", currentPathname)
-      if(currentPathname !== "/internal/search/events"){
-        router.push(`/internal/search/events?${params.toString()}`, { scroll: false });
-      }
       router.push(`${currentPathname}?${params.toString()}`, { scroll: false });
       return currentFilters;
     });
