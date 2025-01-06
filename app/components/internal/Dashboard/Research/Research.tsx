@@ -21,7 +21,7 @@ interface Props {
 const Research = ({ theme }: Props) => {
 
     const dropdowns = [{ name: "Event Type" }, { name: "Location" }, { name: "Date" }]
-    const { applyFilters, localFilters, clearLocalFilters, enabledFilters } = useFilterContext();
+    const { enabledFilters } = useFilterContext();
     return (
         <div className={`w-full h-auto gap-[61px] bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden`}
             style={{ backgroundImage: `${theme === "dark" ? `url(${BackgroundImageDark.src})` : `url(${BackgroundImage.src})`}` }}>
@@ -45,9 +45,9 @@ const Research = ({ theme }: Props) => {
                         {/* {dropdowns.map((dropdown, key) => (
                             <Dropdown theme={theme} name={dropdown.name} key={key} />
                         ))} */}
-                        <EventTypeSelector source="search" enabledTypeData={enabledFilters?.eventType} />
-                        <LocationSelector source="search" />
-                        <DateRangeSelector source="search" enabledDateRange={enabledFilters?.durations} />
+                        <EventTypeSelector source="dashboard" />
+                        <LocationSelector source="dashboard" />
+                        <DateRangeSelector source="dashboard" />
                     </div>
                 </div>
             </div>

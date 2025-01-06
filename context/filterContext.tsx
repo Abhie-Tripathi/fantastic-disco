@@ -171,6 +171,10 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         }
       });
       const currentPathname = window.location.pathname;
+      console.log("current path name ", currentPathname)
+      if(currentPathname !== "/internal/search/events"){
+        router.push(`/internal/search/events?${params.toString()}`, { scroll: false });
+      }
       router.push(`${currentPathname}?${params.toString()}`, { scroll: false });
       return currentFilters;
     });

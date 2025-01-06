@@ -4,17 +4,27 @@ import { MagnifyingGlass } from 'geist-icons';
 import { Button } from '@/components/ui/button';
 import { MoveRight } from 'lucide-react';
 import { useFilterContext } from '@/context/filterContext';
+import { useRouter } from 'next/navigation';
 
 interface Props {
     theme: string | null
 }
 
 const MapContainer = ({ theme }: Props) => {
-    const { applyFilters, localFilters } = useFilterContext();
+    const { localFilters } = useFilterContext();
+    const router = useRouter()
+    const searchHandler = () => {
+        console.log("searchHandler", localFilters);
+        const params = new URLSearchParams();
+        Object.entries(localFilters).forEach(([key, value]) => {
+            if (value && key !== "skip") {
+                params.set(key, value);
+            }
+        });
+        console.log('params', params);
+        router.push(`/internal/search/events?${params.toString()}`, { scroll: false });
 
-    const searchHandler = useCallback(() => {
-        console.log("filters : ", localFilters)
-      }, []);
+    };
     const Mapview = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
     return (
         <div className={`filter drop-shadow-lg bg-[var(--accent-color)] rounded-t-[12px] p-1`}>
