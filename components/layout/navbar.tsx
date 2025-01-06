@@ -215,10 +215,9 @@
 //   );
 // }
 
-
 "use client";
 
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./navbar.style.module.css";
 import Image from "next/image";
 import {
@@ -306,35 +305,38 @@ export default function Navbar() {
 
   const generateProfileName = React.useMemo(() => {
     if (user) {
-      const { email } = user;
-      const [username] = email.split("@");
-      const parts = username.split(/[.\-_]/);
-      const abbreviation =
-        parts.length > 1
-          ? `${parts[0][0]}${parts[1][0]}`
-          : username.substring(0, 2);
-      return abbreviation.toUpperCase();
+      // const { email } = user;
+      // const [username] = email.split("@");
+      // const parts = username.split(/[.\-_]/);
+      // const abbreviation =
+      //   parts.length > 1
+      //     ? `${parts[0][0]}${parts[1][0]}`
+      //     : username.substring(0, 2);
+      // return abbreviation.toUpperCase();
+      const firstNameInitial = user?.firstname?.[0]?.toUpperCase() || "";
+      const lastNameInitial = user?.lastname?.[0]?.toUpperCase() || "";
+      return `${firstNameInitial}${lastNameInitial}`;
     }
     return "";
   }, [user]);
-  const fetchData = async () => {
-    const data: any = await getMyProfileData();
-    if (error) {
-      console.log(error);
-      showToast("error", error.message);
-      return;
-    }
+  // const fetchData = async () => {
+  //   const data: any = await getMyProfileData();
+  //   if (error) {
+  //     console.log(error);
+  //     showToast("error", error.message);
+  //     return;
+  //   }
 
-    if (data) {
-      setProfileData(data.user);
-    }
-  };
+  //   if (data) {
+  //     setProfileData(data.user);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (!profileData) {
-      fetchData();
-    }
-  }, [profileData]);
+  // useEffect(() => {
+  //   if (!profileData) {
+  //     fetchData();
+  //   }
+  // }, [profileData]);
 
   const handleSettingsClick = () => {
     if (route === "internal") {
@@ -420,22 +422,18 @@ export default function Navbar() {
               >
                 <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
                   {/* {generateProfileName} */}
-                  {profileData?.profilePicture ? (
+                  {user?.profilePicture ? (
                     <Image
-                      src={profileData?.profilePicture}
+                      src={user?.profilePicture}
                       alt="Profile Picture"
                       width={76}
                       height={76}
                       className="rounded-full w-10 h-10"
                     />
                   ) : (
-                    <span>
-                      {profileData?.firstname[0]}
-                      {profileData?.lastname && profileData?.lastname.trim() !== ""
-                        ? profileData?.lastname[0]
-                        : ""}
-                    </span>
+                    <span>{generateProfileName || ""}</span>
                   )}
+                  {}
                 </div>
               </Button>
             </DropdownMenuTrigger>

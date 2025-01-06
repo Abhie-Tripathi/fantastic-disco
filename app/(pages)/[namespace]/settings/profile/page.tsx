@@ -85,7 +85,6 @@ const Profile = () => {
     }
 
     if (data) {
-      console.log("data_123", data);
       setProfileData(data.user);
       setName(data.user.firstname + " " + data.user.lastname);
       setMobileNo(data.user.phoneNumber || "");
@@ -95,8 +94,6 @@ const Profile = () => {
       setProfilePic(data.user.profilePicture || null);
     }
   };
-  const loginedUser = user;
-  console.log(user);
 
   useEffect(() => {
     if (!profileData) {
@@ -164,10 +161,10 @@ const Profile = () => {
 
       // Prepare form data
       const formData = new FormData();
-     
+
       formData.append("firstname", splitName[0]);
-      if(splitName[1]){
-        formData.append("lastname", splitName.slice(1).join(" "));;
+      if (splitName[1]) {
+        formData.append("lastname", splitName.slice(1).join(" "));
       }
       formData.append("phoneNumber", mobileNo);
       // formData.append("designation", role);
@@ -179,7 +176,6 @@ const Profile = () => {
       // Save data
       setIsSaving(true);
       const data: any = await updateMyProfileData({ formData });
-
       if (data) {
         // Update state and storage
         setProfileData(data.user);
@@ -187,13 +183,12 @@ const Profile = () => {
         fetchData();
 
         const newUser = {
-          user: {
-            ...loginedUser,
-            firstname: data.user.firstname || loginedUser!.firstname,
-            lastname: data.user.lastname || loginedUser!.lastname,
-          },
-        };
+          ...user,
+          firstname: data.user.firstname || user!.firstname,
+          lastname: data.user.lastname || user!.lastname,
+          profilePicture:data.user.profilePicture
 
+        };
         window.localStorage.setItem("user", JSON.stringify(newUser));
         setIsProfileUpdated(true);
         setIsProfileInfoChange(false);
@@ -251,7 +246,13 @@ const Profile = () => {
     formData.append("removePicture", "true");
     const data: any = await updateMyProfileData({ formData });
     if (data) {
-      console.log(data);
+      const newUser = {
+        ...user,
+        profilePicture:null
+
+      };
+      window.localStorage.setItem("user", JSON.stringify(newUser));
+      setIsProfileUpdated(true);
       setProfileData(data.user);
       setProfilePicture(null);
       setProfilePic(null);
@@ -288,7 +289,10 @@ const Profile = () => {
                       {profilePicture === null ? (
                         <span>
                           {profileData.firstname[0]}
-                          {profileData.lastname && profileData.lastname.trim() !== "" ? profileData.lastname[0] : ""}
+                          {profileData.lastname &&
+                          profileData.lastname.trim() !== ""
+                            ? profileData.lastname[0]
+                            : ""}
                         </span>
                       ) : (
                         <Image
