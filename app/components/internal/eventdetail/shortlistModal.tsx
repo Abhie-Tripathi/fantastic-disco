@@ -57,7 +57,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
         status: "SHORTLISTED",
         id: shortlistedUsers.join(), // multiple userInterest id's
         modifiedBy: user.id,
-        enquiryStatus:"SHORTLISTED",
+        enquiryStatus: pipelineConfig?.[1]?.status,
       };
       try {
         const apiData = await coordinateService.shortlistUsers(payloadData);
@@ -72,7 +72,7 @@ const ShortlistModal = ({ handleShortlistModal, shortlistModalData, handleRefres
       }else{
         let payloadData = {
           enquiryId: shortlistModalData.enquiryId,
-          enquiryStatus:"SHORTLISTED"
+          enquiryStatus: pipelineConfig?.[1]?.status,
         };
         try {
           const apiData = await coordinateService.setEnquiryStatus(payloadData);
