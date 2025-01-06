@@ -3,6 +3,7 @@
 }
 .smallouterDiv{
     width: 85%;
+    /* width: 100%; */
     border-left: 1px dashed var(--disabled-background-color);
     display: flex;
     justify-content: flex-end;
@@ -56,7 +57,7 @@
 }
 .eventDataField{
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 6px;
     font-size: var(--font-size-small);
     color: var(--secondary-text-color);
@@ -64,9 +65,10 @@
 }
 .eventDateTimeContainer{
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    /* align-items: center; */
     margin-top: 4px;
-    gap: 10px;
+    gap: 5px;
 }
 .description{
     margin-top: 5px;

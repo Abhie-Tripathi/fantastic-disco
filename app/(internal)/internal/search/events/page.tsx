@@ -35,8 +35,10 @@ import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, Filter, Loader2, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { lazy, useCallback, useEffect, useState } from "react";
+import { lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
+import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
 
 const Map = lazy(() => import("@/components/map"));
 
@@ -60,9 +62,10 @@ const Search = () => {
     useFilterState();
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
-  const { applyFilters, localFilters, clearLocalFilters, enabledFilters } = useFilterContext();
+  const { applyFilters, localFilters, clearLocalFilters, enabledFilters } =
+    useFilterContext();
   const searchParams = useSearchParams();
-  const [view, setView]=useState<string>(searchParams.get("view") || "");
+  const [view, setView] = useState<string>(searchParams.get("view") || "");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
   const [validationError, setValidationError] = useState("");
@@ -106,6 +109,53 @@ const Search = () => {
 
   const searchHandler = useCallback(() => {
     applyFilters();
+  }, []);
+
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [run, setRun] = useState<boolean>(true);
+
+  const saveSearchRef = useRef(null);
+
+  const joyrideCallback = (data: CallBackProps) => {
+    const { status } = data;
+    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
+      if (typeof window !== "undefined") {
+        let walkthroughCompleted: string[] = JSON.parse(
+          localStorage.getItem("walkthroughCompleted") || "[]"
+        );
+
+        if (!walkthroughCompleted.includes("research")) {
+          walkthroughCompleted.push("research");
+
+          localStorage.setItem(
+            "walkthroughCompleted",
+            JSON.stringify(walkthroughCompleted)
+          );
+        }
+      }
+      setRun(false);
+    }
+  };
+
+  useEffect(() => {
+    const newSteps: Step[] = [
+      {
+        target: saveSearchRef.current || "",
+        title: "Save Search",
+        content: "Save this search to add it as tracker",
+        disableBeacon: true,
+      },
+    ];
+
+    if (typeof window !== "undefined") {
+      const walkthroughCompleted: string[] = JSON.parse(
+        localStorage.getItem("walkthroughCompleted") || "[]"
+      );
+      if (!walkthroughCompleted.includes("research")) {
+        setSteps(newSteps);
+        setRun(true);
+      }
+    }
   }, []);
 
   const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
@@ -171,7 +221,11 @@ const Search = () => {
 
   const filtersCount = (function () {
     let count = 0;
-    if (localFilters.onlyBranded === "true" || localFilters.onlySeries === "true") count++;
+    if (
+      localFilters.onlyBranded === "true" ||
+      localFilters.onlySeries === "true"
+    )
+      count++;
     if (localFilters.frequencies) count++;
     if (localFilters.includeKeywords || localFilters.excludeKeywords) count++;
     if (localFilters.maturity) count++;
@@ -180,25 +234,60 @@ const Search = () => {
     if (localFilters.top) count++;
     return count;
   })();
-  useEffect(()=>{
-    setView(searchParams.get("view") || "")
-  },[searchParams])
- 
- 
-  
+  useEffect(() => {
+    setView(searchParams.get("view") || "");
+  }, [searchParams]);
+
   return (
     <div className="space-y-6 p-6">
+      {steps.length > 0 && (
+        <Joyride
+          tooltipComponent={(props) => (
+            <Tooltip {...props} totalSteps={steps.length} />
+          )}
+          steps={steps}
+          run={run}
+          callback={joyrideCallback}
+          continuous
+          spotlightPadding={0}
+          showProgress
+          showSkipButton
+          disableScrolling
+          disableOverlayClose
+        />
+      )}
       <SearchBar />
       <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
         <div className="col-span-8 grid grid-cols-4 gap-3">
-          <EventTypeSelector source="search" enabledTypeData={ enabledFilters?.eventType}/>
-          <CategorySelector source="search" enabledCategories={enabledFilters?.eventCategory}/>
-          <EventFormatSelector source="search" enabledFormat={enabledFilters?.eventFormat}/>
-          <LocationSelector source="search"/>
-          <DateRangeSelector source="search" enabledDateRange={enabledFilters?.durations}/>
-          <StatusSelector source="search" enabledStatuses={enabledFilters?.eventStatus}/>
-          <EventEntrySelector source="search" enabledEntries={enabledFilters?.eventEntry}/>
-          <UserRatingSelector source="search" enabledRatingData={enabledFilters?.eventRating}/>
+          <EventTypeSelector
+            source="search"
+            enabledTypeData={enabledFilters?.eventType}
+          />
+          <CategorySelector
+            source="search"
+            enabledCategories={enabledFilters?.eventCategory}
+          />
+          <EventFormatSelector
+            source="search"
+            enabledFormat={enabledFilters?.eventFormat}
+          />
+          <LocationSelector source="search" />
+          <DateRangeSelector
+            source="search"
+            enabledDateRange={enabledFilters?.durations}
+          />
+          <StatusSelector
+            source="search"
+            enabledStatuses={enabledFilters?.eventStatus}
+          />
+          <EventEntrySelector
+            source="search"
+            enabledEntries={enabledFilters?.eventEntry}
+          />
+          <UserRatingSelector
+            source="search"
+            enabledRatingData={enabledFilters?.eventRating}
+          />
         </div>
         <div className="col-span-2 grid grid-cols-2 gap-2">
           <div className="row-span-2 flex flex-col gap-3">
@@ -213,6 +302,7 @@ const Search = () => {
               )}
             </Button>
             <Button
+              ref={saveSearchRef}
               variant="link"
               onClick={() => createTrackerHandler()}
               disabled={Object.keys(localFilters).length === 0}
@@ -248,7 +338,9 @@ const Search = () => {
           </div>
         </div>
       </div>
-      {showAdvancedFilters && <AdvancedFilters enabledFilters={enabledFilters}/>}
+      {showAdvancedFilters && (
+        <AdvancedFilters enabledFilters={enabledFilters} />
+      )}
 
       <Tabs
         defaultValue="list"

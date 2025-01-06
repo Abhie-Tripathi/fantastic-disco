@@ -16,7 +16,6 @@ import InterestTypeSelector from "@/components/coordinate/interestType";
 import { useCoordinateService } from "@/services/coordinateService";
 import { useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
-import { number } from "zod";
 import NullState from "../trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg"
 
@@ -59,7 +58,6 @@ const Internal = ({
   const [searchInput, setSearchInput] = useState("");
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
-  const [filterChanged, setFilterChanged] = useState(false);
 
   const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
 
@@ -89,10 +87,9 @@ const Internal = ({
   }, []);
 
   const fetchData = async () => {
-    console.log("fetching data... page=", page);
+    // console.log("fetching data... page=", page);
 
     if (page > 0) {
-      let apiUrl = "";
       try {
         let offset: number = (page - 1) * 10;
         const apiData = await coordinateService.getEventsWithSearchParams({
@@ -112,7 +109,6 @@ const Internal = ({
             setNoMoreData(true);
           }
         }
-        setFilterChanged(false);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -131,7 +127,7 @@ const Internal = ({
     if (statusChanged === true) {
       const updatedData = eventData1.map((item) => {
         return item.eventId === selectedId
-          ? { ...item, enquiryStatus: "SHORTLISTED" }
+          ? { ...item, enquiryStatus: pipelineConfig?.[1]?.status }
           : item;
       });
 
@@ -159,7 +155,6 @@ const Internal = ({
     if (page > 0) {
       setNoMoreData(false);
       fetchData();
-      setFilterChanged(true);
     }
   }, [page, filtersChanged]);
   if (!isLoaded) {
@@ -282,14 +277,13 @@ const Internal = ({
               prevDate = item.startDate;
               return (
                 <>
-                  <div key={index} className={styles.timeline}>
+                  <div key={item.eventId} className={styles.timeline}>
                     <TimelineItem
                       eventDate={showDate ? item.startDate : null}
                     />
                     <YourEventCard
                       eventId={item.eventId}
                       setSelectedId={setSelectedId}
-                      filterChanged={filterChanged}
                       isDateSame={showDate}
                       enquiryId={item.enquiryId}
                       eventName={item.eventName}
@@ -299,8 +293,6 @@ const Internal = ({
                       eventStartDate={item.startDate}
                       eventEndDate={item.endDate}
                       eventCompany={item.orgName}
-                      eventDuration={item.duration}
-                      userCount={item.userCount}
                       currentEnquiryStatus={item.enquiryStatus}
                       upvote={item.upvote}
                       enquiryActivity={item.enquiryActivity}
