@@ -96,9 +96,9 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const generateOTP = async (
     email: string,
-    industry?: string,
-    categories?: string,
-    flow?: string
+    industry?: string | undefined | null,
+    categories?: string | null,
+    flow?: string | null
   ) => {
     const url = `${baseUrl}/auth/customer/verify/generate`;
     const dataToSend = {

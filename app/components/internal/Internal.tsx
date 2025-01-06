@@ -127,7 +127,7 @@ const Internal = ({
     if (statusChanged === true) {
       const updatedData = eventData1.map((item) => {
         return item.eventId === selectedId
-          ? { ...item, enquiryStatus: "SHORTLISTED" }
+          ? { ...item, enquiryStatus: pipelineConfig?.[1]?.status }
           : item;
       });
 
