@@ -38,8 +38,15 @@ const Presets = ({ template, handlePresetClick }: Props) => {
 
   const coordinateService = useCoordinateService();
 
+  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const handleScrollEnd = () => {
-    setTimeout(() => {
+
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
       if (presetTemplateData.length < count)
         setShortlistPage((prevPage) => prevPage + 1);
     }, 1000);
