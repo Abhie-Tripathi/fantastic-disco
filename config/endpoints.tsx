@@ -59,6 +59,7 @@ export const endpoints = {
     iterestedUsers: `${BASE_URL}/userInterest`,
     enquiryDetail: `${BASE_URL}/enquiry`,
     pocUnmask: `${BASE_URL}/event-poc/unmask`,
+    latestComment : `${BASE_URL}/dashboard/latest-comment`
   },
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {

@@ -9,11 +9,19 @@ import RecentChat from './RecentChat'
 import { useRouter } from 'next/navigation'
 import { ArrowRight } from 'geist-icons'
 
+interface OutreachLastChat {
+  eventName: string;
+  status: string;
+  comment: string;
+  eventId: string;
+  enquiryId: string;
+}
 interface Props {
   theme: string | null
   outreachData : { name: string, value: number }[]
+  outreachChat : OutreachLastChat | undefined
 }
-const Outreach = ({ theme, outreachData }: Props) => {
+const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
 
   // const events = [
   //   // { name: "Shortlisted", value: 0, color: "#f8712b" },
@@ -64,7 +72,7 @@ const Outreach = ({ theme, outreachData }: Props) => {
       </div>
       {outreachData.length === 0 ? <div className='relative h-full w-[50%]'>
         <Image src={theme === "dark" ? OutreachImageDark : OutreachImage} alt='outreach' className='absolute top-[40px] left-[20px]' width={303} height={272} unoptimized /></div>
-        : <div className='p-4 w-[50%] h-full'><RecentChat /></div>
+        : <div className='p-4 w-[50%] h-full'><RecentChat outreachChat={outreachChat}/></div>
       }
     </div>
   )

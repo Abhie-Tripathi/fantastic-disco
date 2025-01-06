@@ -2,7 +2,7 @@ import React from 'react'
 
 interface Props {
     user: string;
-    text: string;
+    text: string | undefined;
 }
 
 const TextBox = ({ user, text }: Props) => {

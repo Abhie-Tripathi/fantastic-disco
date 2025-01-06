@@ -25,6 +25,13 @@ interface TrackerData {
   activeCount: number;
   type: string;
 }
+  interface OutreachLastChat {
+    eventName: string;
+    status: string;
+    comment: string;
+    eventId: string;
+    enquiryId: string;
+  }
 const Dashboard = () => {
 
   let role = "sa"
@@ -37,10 +44,11 @@ const Dashboard = () => {
   const [promoteData, setPromoteData] = useState<{ name: string, value: number }[]>([])
   const [trackerData, setTrackerData] = useState<TrackerData[]>([])
   const [outreachData, setOutreachData] = useState<{ name: string, value: number }[]>([])
+  const [outreachChat, setOutreachChat] = useState<OutreachLastChat>()
 
 
   const { theme } = useTheme()
-  const { getParticipentCount, getPipelineConfig, getOutreachSingleEvent } = useCoordinateService()
+  const { getParticipentCount, getPipelineConfig, getOutreachSingleEvent, getLatestComment } = useCoordinateService()
   const { getActiveWidget, getOnlyDraftWidget } = useWidgetServices()
   const { getUpcomingEvents } = useEventServices()
   const { getTrackers } = useTrackerServices()
@@ -88,12 +96,12 @@ const Dashboard = () => {
   const fetchOutreachData = async () => {
     const data: any = await getPipelineConfig()
     // const outreachArray: { name: string, value: number }[] = []
-    const outreachStages = data.outreach_stage.slice(1, data.outreach_stage.length-1);
+    const outreachStages = data.outreach_stage.slice(1, data.outreach_stage.length - 1);
     const promises = outreachStages.map(async (value: any) => {
       const singleValueCount = await fetchOutreachValue(value.status);
       return { name: value.label, value: singleValueCount };
     });
-  
+
     const outreachArray = await Promise.all(promises);
     setOutreachData(outreachArray);
   }
@@ -103,15 +111,19 @@ const Dashboard = () => {
     return data?.totalCount;
   }
 
-  useEffect(()=>{
-    console.log("outreach data :", outreachData)
-  },[outreachData])
+  const fetchOutreachMessage = async () => {
+    const data = await getLatestComment()
+    const messageData: OutreachLastChat =
+      { eventName: data.event.name, status: data.enquiry.enquiryStatus, comment: data.comment.content, eventId: data.event.id, enquiryId: data.enquiry.enquiryId }
+    setOutreachChat(messageData)
+  }
 
   useEffect(() => {
     fetchCoordinateData()
     fetchPromoteData()
     fetchTrackerData()
     fetchOutreachData()
+    fetchOutreachMessage()
   }, [])
 
   return (
@@ -132,7 +144,7 @@ const Dashboard = () => {
                         <Trends container="small" />
                       </div>}
                     </div>
-                    {(outreach && role === "sa") && <div><Outreach outreachData={outreachData} theme={theme} /> </div>}
+                    {(outreach && role === "sa") && <div><Outreach outreachChat={outreachChat} outreachData={outreachData} theme={theme} /> </div>}
                   </div>
 
                   <div className="flex flex-col gap-3 w-[45%]">
