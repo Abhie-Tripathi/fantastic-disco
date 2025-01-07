@@ -117,7 +117,6 @@ const EventsMapView: React.FC<MapProps> = ({
   const handleMarkerClick = async (eventData: MapEvents) => {
     try {
       const eventDetails = await getEventById(eventData.id);
-      console.log(eventDetails);
       const result={
         coordinates:{
               latitude: parseFloat(
@@ -141,9 +140,6 @@ const EventsMapView: React.FC<MapProps> = ({
     }
   };
   // console.log(eventDetails?.event);
-  setTimeout(()=>{
-    console.log(popupInfo);
-  },5000)
   return (
     <div className="relative">
       <Map

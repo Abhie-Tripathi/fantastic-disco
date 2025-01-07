@@ -43,7 +43,6 @@ export default function Component() {
     const fetchData = async () => {
       try {
         const countriesResponse = await getCountries();
-        console.log(countriesResponse);
 
         setCountries(countriesResponse?.formattedLocations || []);
 

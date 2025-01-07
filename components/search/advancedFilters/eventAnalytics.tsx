@@ -79,7 +79,6 @@ export default function EventAnalyticsSelector() {
         filters.international_score_lte = newRange[1].toString();
         break;
     }
-    console.log(filters);
     
     setMultipleLocalFilters(filters);
   };

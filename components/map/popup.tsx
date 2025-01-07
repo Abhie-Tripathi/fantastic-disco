@@ -34,7 +34,6 @@ interface PopupProps {
 }
 
 export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
-  console.log(popupInfo);
   
   if (!popupInfo || popupInfo?.events?.length === 0) return null;
   

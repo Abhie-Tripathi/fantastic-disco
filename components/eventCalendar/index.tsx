@@ -141,7 +141,6 @@ export default function EventCalendar({
       filterKeys.every((key) => allowedParams.has(key))
     );
   }, [searchParams]);
-console.log(Views);
 
   return (
     <>
