@@ -153,8 +153,7 @@ const Page = () => {
     
     return (
         <div className="flex flex-col items-center gap-6">
-            <div className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[36px] pt-4 bg-[var(--primary-foreground)]" style={{zIndex:"5"}}>
-            <div className="flex first-line items-center justify-between w-[100%] bg-[var(--heading-background-color)] p-3">
+            <div className="flex fixed w-[calc(100vw-134px)] mt-[54px] items-center justify-between bg-[var(--heading-background-color)] p-3" style={{zIndex:"5"}}>
             {/* <SideNav/> */}
                 <div className='flex items-center'>
                     <div></div>
@@ -171,18 +170,15 @@ const Page = () => {
                 <div className={styles.containerTopRight}>
                     <Button className="text-white" onClick={shareFunction}>Share Tracker</Button>
                 </div>
-                </div>
             </div>
             <div className='flex gap-2 w-[calc(100vw-134px)] mt-[140px]'>
             {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px] z-3'></div> */}
                 <div className="flex w-[40%] h-fit">
                     {/* <TrackerOwner adminData={userAccessData?.access?.admin}/> */}
-                    <TrackerUser userData={userAccessData?.access?.admin} type="admins" heading="Owners"/>
+                    <TrackerUser userData={userAccessData?.access?.admin} type="admins" heading="Tracker Owners"/>
                 </div>
                 <div className="flex w-[60%]">
-                    
-                    <TrackerUser userData={userAccessData?.access?.other} fetchAccess={fetchAccess} setSendInvite={setSendInvite} type="others" heading="Users"/>
-                    
+                    <TrackerUser userData={userAccessData?.access?.other} fetchAccess={fetchAccess} setSendInvite={setSendInvite} type="others" heading="Tracker Users"/>
                 </div>
             </div>
             {share && (

@@ -5,7 +5,6 @@ import Table from "@/app/components/Table";
 import ZeroState from "@/app/components/zerostate";
 import EventCalendar from "@/components/eventCalendar";
 import AdvancedFilters from "@/components/search/advancedFilters";
-import enabledValues from "@/public/data/enabledFilters"
 import UserRatingSelector from "@/components/search/userRatingSelector";
 import CategorySelector from "@/components/search/categorySelector";
 import CreateTrackerDialog from "@/components/search/createTrackerDialog";

@@ -9,7 +9,6 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { Tracker } from "@/types/trackers";
 import Loading from "@/app/components/UI/Loading";
 import { AllTrackerTypes } from "@/types/trackers";
-import { log } from "util";
 function AllTrackers({ fillColor }: { fillColor: string }) {
   return (
     <svg
