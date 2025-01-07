@@ -23,7 +23,7 @@ const Research = ({ theme }: Props) => {
     const MapContainer = React.lazy(() => import('./MapContainer'));
 
     // const dropdowns = [{ name: "Event Type" }, { name: "Location" }, { name: "Date" }]
-    const { enabledFilters, getLocalFilterValue, localFilters } = useFilterContext();
+    const { enabledFilters, getLocalFilterValue, localFilters, setLocalFilter } = useFilterContext();
     const { getLocationDetails } = useLocationService()
     const [latLang, setLatLang] = useState<{ lat: number, long: number }>({ lat: 40.691293, long: -73.986610})
     const [locationName, setLocationName] = useState<string>("")
@@ -45,6 +45,13 @@ const Research = ({ theme }: Props) => {
             getLatLong(firstLocationId)
         }
     }, [localFilters])
+
+    // useEffect(()=>{
+    //     setLocalFilter("locationIds","e3ef02ad-2f97-5fa6-9033-9addfad3f0ef")
+    //     setLocalFilter("eventTypes","tradeshows")
+    //     setLocalFilter("active_gte","2025-01-01")
+    //     setLocalFilter("active_lte","2025-01-03")
+    // },[])
 
     return (
         <div className={`w-full h-auto gap-[61px] bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden`}

@@ -17,7 +17,7 @@ const MapContainer = ({ theme, latLang, location }: Props) => {
 
     const locationParts = location ? location.split(",").map((part) => part.trim()) : [];
     const firstLocation = locationParts[0] || "Brooklyn"; // Get the first part
-    const restLocation = locationParts.slice(1).join(", ") || "New York"; // Join the remaining parts
+    const restLocation = locationParts.slice(1).join(", ") || ""; // Join the remaining parts
     const router = useRouter()
     const searchHandler = () => {
         const params = new URLSearchParams();

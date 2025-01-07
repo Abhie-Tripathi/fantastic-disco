@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
+import {LockClosed} from 'geist-icons'
 
 const ManageTeam = () => {
     return (
@@ -11,7 +12,7 @@ const ManageTeam = () => {
             <div className="mt-[19px] w-full py-1 px-2 flex items-center justify-between bg-[var(--primary-light-color)] rounded-[8px]">
                 <input type="text" placeholder="Email" className="bg-transparent focus:outline-none" style={{ fontSize: 10 }}
                 />
-                <Button size="sm">Invite</Button>
+                <Button size="sm" variant="disabled"><LockClosed width='12px' height='12px' color='grey'/>Invite</Button>
             </div>
         </div>
 

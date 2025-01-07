@@ -48,7 +48,7 @@ const RecentActivity = ({ profileData }: Props) => {
                         {/* <div className='flex items-center justify-center w-[19px] h-[16px] rounded-xl text-[10px] bg-[var(--primary-color)] leading-[12px] text-white'>{notifications.length}</div> */}
                         <div className='text-xs font-semibold text-[var(--secondary-text-color)]'>Recent Activities</div>
                     </div>
-                    <div className='text-xs font-medium text-[var(--primary-color)]'>Mark all as read</div>
+                    {/* <div className='text-xs font-medium text-[var(--primary-color)]'>Mark all as read</div> */}
                 </div>}
             {/* {(!notifOpen && notifications.length > 0) && <div className='w-full h-fit z-10 flex flex-col items-center justify-center mt-10 relative'>
                 <div className="absolute top-0 z-30 w-full drop-shadow">

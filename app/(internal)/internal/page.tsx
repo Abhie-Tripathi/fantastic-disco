@@ -17,6 +17,7 @@ import { useEventServices } from "@/services/geniservices/eventService";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useEventsService } from "@/services/eventsService";
 import { useProfileServices } from "@/services/profileService";
+import { useFilterContext } from '@/context/filterContext';
 
 interface TrackerData {
   id: string;
@@ -54,9 +55,9 @@ const Dashboard = () => {
   const [trackerData, setTrackerData] = useState<TrackerData[]>([])
   const [outreachData, setOutreachData] = useState<{ name: string, value: number }[]>([])
   const [outreachChat, setOutreachChat] = useState<OutreachLastChat>({ eventName: "", status: "", comment: "", eventId: "", enquiryId: "" })
-  const [recentSearchValue, setRecentSearchValue] = useState<any>()
+  // const [recentSearchValue, setRecentSearchValue] = useState<any>()
   const [value, setValue] = useState<string>("empty")
-  const [profileData, setProfileData] = useState<ProfileData>({ name: "", email: "", phoneNumber:"", profilePicture: "", department: "" })
+  const [profileData, setProfileData] = useState<ProfileData>({ name: "", email: "", phoneNumber: "", profilePicture: "", department: "" })
 
   const { theme } = useTheme()
   const { getParticipentCount, getPipelineConfig, getOutreachSingleEvent, getLatestComment } = useCoordinateService()
@@ -65,6 +66,7 @@ const Dashboard = () => {
   const { getRecentSearch } = useEventsService()
   const { getTrackers } = useTrackerServices()
   const { getMyProfileData } = useProfileServices()
+  const { setLocalFilter } = useFilterContext();
 
   const fetchCoordinateData = async () => {
     const data: any = await getParticipentCount()
@@ -132,14 +134,46 @@ const Dashboard = () => {
   }
 
   const fetchRecentSearch = async () => {
-    const data = await getRecentSearch();
-    console.log("recent search data ", data)
+    const data: any = await getRecentSearch();
+    if (data.length > 0) {
+      const recentSearch = data[0];
+      // Handle eventType: Convert to comma-separated string with transformations
+      const eventType = recentSearch.eventType
+        ? recentSearch.eventType.map((type: string) => {
+          if (type === "Tradeshow") return "tradeshows";
+          if (type === "Conference") return "conferences";
+          if (type === "Workshop") return "workshops";
+          return type; // Fallback for unexpected types
+        }).join(",")
+        : "";
+      const startDate = recentSearch.startDate || "";
+      const locationIds = recentSearch.locationIds || {};
+      const cityIds = locationIds.city
+        ? locationIds.city.map((c: any) => Object.keys(c)).flat().join(", ")
+        : "";
+      const stateIds = locationIds.state
+        ? locationIds.state.map((s: any) => Object.keys(s)).flat().join(", ")
+        : "";
+      const countryIds = locationIds.country
+        ? locationIds.country.map((c: any) => Object.keys(c)).flat().join(", ")
+        : "";
+
+      // Combine location IDs
+      const combinedLocationIds = [cityIds, stateIds, countryIds].filter(loc => loc).join(",");
+
+      console.log("combined locations : ", combinedLocationIds)
+      setLocalFilter("locationIds", combinedLocationIds)
+      setLocalFilter("eventTypes", eventType)
+      setLocalFilter("active_gte", startDate.split(",")[0])
+      setLocalFilter("active_lte", startDate.split(",")[1])
+    }
   }
+
   const fetchProfileData = async () => {
     const data: any = await getMyProfileData();
     console.log("profile", data)
-    const profileObject: ProfileData = 
-    { name: data.user.firstname, email: data.user.email, phoneNumber: data.user.phoneNumber, profilePicture: data.user.profilePicture, department: data.user.department }
+    const profileObject: ProfileData =
+      { name: data.user.firstname, email: data.user.email, phoneNumber: data.user.phoneNumber, profilePicture: data.user.profilePicture, department: data.user.department }
     setProfileData(profileObject)
   }
   useEffect(() => {
@@ -242,7 +276,7 @@ const Dashboard = () => {
         {/* <Trends container="large"/> */}
       </div>
       <div className="flex flex-col min-w-[20%] gap-3">
-        <RecentActivity profileData = {profileData}/>
+        <RecentActivity profileData={profileData} />
         <ManageTeam />
       </div>
     </div>
