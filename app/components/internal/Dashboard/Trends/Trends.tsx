@@ -23,7 +23,7 @@ const Trends = ({ container }: Props) => {
                     <div><ArrowRight color='#6750a4' width='12px' height='12px' /></div>
                 </div>
             </div>
-            <div className='text-[10px] text-[var(--bold-border-color)] mt-3'>Explore event trends to tailor your experience to what’s popular and relevant.</div>
+            <div className='text-xs text-[var(--bold-border-color)] mt-3'>Explore event trends to tailor your experience to what’s popular and relevant.</div>
             <div className={`w-full h-full ${container === "small" ? "mt-10" : "mt-2"}`}><BarChartComponent /></div>
 
         </div>

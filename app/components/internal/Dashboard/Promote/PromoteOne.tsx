@@ -43,7 +43,7 @@ const PromoteOne = ({ values, theme }: Props) => {
                     <span className='text-xs text-[var(--primary-color)] font-[var(--font-weight-semibold)]'>Smart Promote</span>
                     {!isEmpty &&  <div><ArrowRight color='#6750a4' width='12px' height='12px' /></div>}
                 </div>
-                <div className="text-[var(--bold-border-color)] text-[10px] mt-2 text-center">
+                <div className="text-[var(--bold-border-color)] text-xs mt-2 text-center">
                     {isEmpty ? "Promote your events through multiple touchpoints, attracting a wider audience" : "Keep track of your widgets !"}
                 </div>
                 {isEmpty && <Button onClick={() => handleRouting("button")} className="mt-3 z-10 btn-default flex items-center">Promote<MoveRight width={12} /></Button>}
