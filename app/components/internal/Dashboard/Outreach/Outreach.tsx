@@ -70,7 +70,7 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
         }
 
       </div>
-      {(outreachData.length === 0 || outreachChat === undefined) ? <div className='relative h-full w-[50%]'>
+      {(outreachData.length === 0 || outreachChat?.comment === undefined) ? <div className='relative h-full w-[50%]'>
         <Image src={theme === "dark" ? OutreachImageDark : OutreachImage} alt='outreach' className='absolute top-[40px] left-[20px]' width={303} height={272} unoptimized /></div>
         : <div className='p-4 w-[50%] h-full'><RecentChat outreachChat={outreachChat}/></div>
       }

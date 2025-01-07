@@ -43,7 +43,7 @@ const Dashboard = () => {
   const [promoteData, setPromoteData] = useState<{ name: string, value: number }[]>([])
   const [trackerData, setTrackerData] = useState<TrackerData[]>([])
   const [outreachData, setOutreachData] = useState<{ name: string, value: number }[]>([])
-  const [outreachChat, setOutreachChat] = useState<OutreachLastChat>()
+  const [outreachChat, setOutreachChat] = useState<OutreachLastChat>({ eventName: "", status: "", comment: "", eventId: "", enquiryId: "" })
   const [value, setValue] = useState<string>("empty")
 
   const { theme } = useTheme()
@@ -131,7 +131,7 @@ const Dashboard = () => {
         fetchTrackerData(),
         fetchCoordinateData(),
         fetchOutreachData(),
-        // fetchOutreachMessage(),
+        fetchOutreachMessage(),
         fetchPromoteData(),
       ]);
     };
@@ -139,24 +139,31 @@ const Dashboard = () => {
     fetchData();
   }, []);
 
+  const isCoordinateEmpty = (coordinateData: { heading: string; value: number }[]) => {
+    return !coordinateData.some(item => item.value > 0);
+  };
+  
+  const isPromoteEmpty = (promoteData: { name: string; value: number }[]) => {
+    return !promoteData.some(item => item.value > 0);
+  };
+  
+  const isOutreachEmpty = (outreachData: { name: string; value: number }[]) => {
+    return !outreachData.some(item => item.value > 0);
+  };
+
   useEffect(() => {
-    // Check if any state is filled
+    // Check if any state has meaningful data
     if (
-      coordinateData.length > 0 ||
-      promoteData.length > 0 ||
+      !isCoordinateEmpty(coordinateData) ||
+      !isPromoteEmpty(promoteData) ||
       trackerData.length > 0 ||
-      outreachData.length > 0
+      !isOutreachEmpty(outreachData)
     ) {
       setValue("filled");
     } else {
       setValue("empty");
     }
-  }, [coordinateData,
-    promoteData,
-    trackerData,
-    outreachChat,
-    outreachData,])
-
+  }, [coordinateData, promoteData, trackerData, outreachData]);
 
   return (
     <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3">

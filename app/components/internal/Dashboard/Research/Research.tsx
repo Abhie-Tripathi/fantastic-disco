@@ -1,5 +1,5 @@
 import React, { Suspense, useCallback, useEffect, useState } from 'react'
-import styles from './style.module.css'
+// import styles from './style.module.css'
 import BackgroundImage from '/public/internal/dashboard/Researchbg.png'
 import BackgroundImageDark from '/public/internal/dashboard/Researchbgdark.png'
 import { MagnifyingGlass } from "geist-icons";
@@ -50,7 +50,7 @@ const Research = ({ theme }: Props) => {
         <div className={`w-full h-auto gap-[61px] bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden`}
             style={{ backgroundImage: `${theme === "dark" ? `url(${BackgroundImageDark.src})` : `url(${BackgroundImage.src})`}` }}>
             <div className={`m-[20px_30px] gap-5 w-[60%] flex flex-col`}>
-                <div className={`${styles.header} flex flex-col`}>
+                <div className={`flex flex-col`}>
                     <div className="text-xl font-[var(--font-weight-semibold)] flex items-center gap-1">
                         <span>Welcome back</span>
                         <Image src={Handicon} alt='hand' width={20} height={20} />
@@ -60,12 +60,12 @@ const Research = ({ theme }: Props) => {
                 <div className={`w-full`}>
                     <SearchBar />
                 </div>
-                <div className={`${styles.filterContainer}`}>
-                    <div className={`${styles.heading} flex items-center gap-0.5`}>
+                <div>
+                    <div className={`flex items-center gap-0.5`}>
                         <Sparkles width={14} height={14} color='#6750a4' />
                         <span className='text-[var(--primary-color)] text-xs'>Suggested filters</span>
                     </div>
-                    <div className={`${styles.filters} mt-2.5 gap-2 flex justify-between`}>
+                    <div className={` mt-2.5 gap-2 flex justify-between`}>
                         {/* {dropdowns.map((dropdown, key) => (
                             <Dropdown theme={theme} name={dropdown.name} key={key} />
                         ))} */}

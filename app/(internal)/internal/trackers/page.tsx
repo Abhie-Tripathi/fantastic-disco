@@ -206,7 +206,7 @@ const Trackers = ({ searchParams }: Search) => {
       type: "template",
       domain: "Market Research",
       img: Keywords,
-      url:"T_PRODUCT_KE WORDS",
+      url:"T_PRODUCT_KEYWORDS",
       trackerName: "Product and Topics",
       content:
         "List all the events which belongs to given industry or associated with keywords.",
