@@ -12,6 +12,9 @@ import TrackerNullState from '@/public/trackerNullState.svg';
 const Trackers = React.lazy(
   () => import("@/app/components/internal/trackers/CommonTrackerCard")
 );
+import { TrackersAdapter } from "@/adapters/trackerAdapter";
+import { useQuery } from "@tanstack/react-query";
+import List from "@/components/search/list";
 import Table from "@/app/components/Table";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
@@ -20,6 +23,15 @@ import { GAEvent } from "@/utils/GAEvent";
 import { Calendar, Globe, ListUnordered } from "geist-icons";
 import { showToast } from "@/utils/showToast";
 import Loading from "@/app/components/UI/Loading";
+import {
+  CalendarEvent,
+  CalendarMonthEvent,
+  CalendarMonthEventsResponse,
+  CalendarWeekEventsResponse,
+  Event,
+  EventsResponse,
+  MapEventsResponse,
+} from "@/types/events";
 import Link from "next/link";
 import { useTrackerServices } from "@/services/trackerServices";
 import {Toggle} from "@/types/trackers"
@@ -52,7 +64,8 @@ const Page = ({ params }: { params: any }) => {
   
   
   const pathname = usePathname();
-  const {getTrackerDetail, error}=useTrackerServices();
+  const {getCalendarViewEvents,getTrackerEvents} = useTrackerServices();
+  const {adaptParams}=TrackersAdapter;
   const [type, setType] = useState<string | undefined>();
   const [activeValue, setActiveValue] = useState();
   const [loading, setLoading] = useState(false);
@@ -70,7 +83,9 @@ const Page = ({ params }: { params: any }) => {
   // const [data, setData] = useState<any>();
   const [open, setOpen] = useState(false);
   const [eventType, setEventType] = useState("active");
-  const [view, setView] = useState<string|null>(viewType==="list"? "list": viewType==="map"?"map":viewType==="calendar"?"calendar":"list");
+  const [view, setView] = useState<string | null>(
+    ["table", "list", "map", "calendar"].includes(viewType || "") ? viewType : "table"
+  );
   const [urlQueryString, setUrlQueryString] = useState<string>("");
 
   const [showInsights,setShowInsights] = useState({
@@ -143,7 +158,69 @@ const Page = ({ params }: { params: any }) => {
   //   };
   //   fetchTrackerDetail();
   // }, [trackerId]);
-
+  const {
+    data: eventData,
+    error,
+    isLoading,
+    refetch,
+  } = useQuery<
+    | CalendarMonthEventsResponse
+    | CalendarWeekEventsResponse
+    | EventsResponse
+    | MapEventsResponse
+    | undefined
+  >({
+    queryKey: ["events", params, searchParams.toString(), active],
+    queryFn: async () => {
+      console.log("Query function called");
+  
+      if (viewType === "calendar") {
+        return getCalendarViewEvents(
+          trackerId,
+          `type=${
+            active === "Active Events"
+              ? "active"
+              : active === "Expired Events"
+              ? "expired"
+              : active === "New Events"
+              ? ""
+              : active === "Saved Events"
+              ? "saved"
+              : "active"
+          }&groupBy=${
+            data.tracker.filterValue.startDate
+              ? data.tracker.filterValue.startDate
+              : adaptParams(searchParams)
+          }`,
+          false,
+          Array.from(searchParams.values())[3]
+        );
+      } 
+      else if (viewType === "list") {
+        return getTrackerEvents(
+          trackerId,
+          ``,
+          active === "Active Events"
+            ? "active"
+            : active === "Expired Events"
+            ? "expired"
+            : active === "New Events"
+            ? ""
+            : active === "Saved Events"
+            ? "saved"
+            : "active"
+        );
+      }
+      return undefined; 
+    },
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+  });
+  const displayData = eventData;
+  console.log(displayData);
+ console.log(Array.from(searchParams.values()));
+ const events = displayData?.events || [];
+ const count = displayData?.totalEvents || 0;
   useEffect(() => {
     setSavedEventCount(data?.tracker?.savedEventTotalCount);
     setTrackerDetail(data?.tracker);
@@ -499,7 +576,7 @@ const activeVal =
           </Link>
         </div>
 
-        {(view === "list") && (
+        {(view === "table") && (
           <div>
             <Suspense fallback={<Loading />}>
           <Table
@@ -513,13 +590,26 @@ const activeVal =
           </Suspense>
           </div>
         )}
-
-{(view === "map") && (
+         {view === "list" && (
+          isLoading ? (
+          <Loading />
+          ) : error ? (
+          <ZeroState text={(error as ApiError).message} />
+          ) : count === 0 ? (
+          <ZeroState text="No events were found in the selected area." />
+          ) : (
+          <>
+      {/* <Alerts /> */}
+      <List events={events as Event[]} count={count} />
+    </>
+  )
+)}
+        {(view === "map") && (
             <div>
               <Suspense fallback={<Loading />}>
               {Number(activeVal)===0 ?
-              <div className="p-5">
-              <NullState image={TrackerNullState} title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Congfigurations" buttonUrl={`/internal/trackers/${params.trackerId}/trackedConfiguration?type=${trackerDetail?.type}`}/>
+              <div className="px-10 py-5">
+              <NullState image={TrackerNullState} title="No events saved yet! Start saving events to easily track and revisit them here."/>
               </div>
                : 
                 <Map source="tracker" 

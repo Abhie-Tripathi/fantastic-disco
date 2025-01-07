@@ -104,6 +104,7 @@ const Search = () => {
   });
 
   const displayData = eventData;
+  console.log(displayData);
   
   const events = displayData?.events || [];
   const count = displayData?.count || 0;

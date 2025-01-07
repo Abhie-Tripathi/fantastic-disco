@@ -108,13 +108,14 @@ export const useTrackerServices = () => {
       trackerId:string, params:string, eventType:string,
       abortSignal?: AbortSignal
     ): Promise<{ totalEvents: number, events: EventTableType[] } | undefined> => {
-      return api.request(
+      const response=api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&type=${eventType}` : ''}`,
         {
           method: "GET",
           signal: abortSignal,
         }
       );
+      return EventsAdapter.adaptResponse(response, new URLSearchParams("view=list"))
     };
     const getTrackerMapEvents = async(
       trackerId:string, params:string, eventType:string,
