@@ -15,6 +15,8 @@ import { useCoordinateService } from "@/services/coordinateService";
 import { useWidgetServices } from "@/services/geniservices/widgetService";
 import { useEventServices } from "@/services/geniservices/eventService";
 import { useTrackerServices } from "@/services/trackerServices";
+import { useEventsService } from "@/services/eventsService";
+import { useProfileServices } from "@/services/profileService";
 
 interface TrackerData {
   id: string;
@@ -32,6 +34,14 @@ interface OutreachLastChat {
   eventId: string;
   enquiryId: string;
 }
+
+interface ProfileData {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  profilePicture: string;
+  department: string;
+}
 const Dashboard = () => {
 
   let role = "sa"
@@ -44,13 +54,17 @@ const Dashboard = () => {
   const [trackerData, setTrackerData] = useState<TrackerData[]>([])
   const [outreachData, setOutreachData] = useState<{ name: string, value: number }[]>([])
   const [outreachChat, setOutreachChat] = useState<OutreachLastChat>({ eventName: "", status: "", comment: "", eventId: "", enquiryId: "" })
+  const [recentSearchValue, setRecentSearchValue] = useState<any>()
   const [value, setValue] = useState<string>("empty")
+  const [profileData, setProfileData] = useState<ProfileData>({ name: "", email: "", phoneNumber:"", profilePicture: "", department: "" })
 
   const { theme } = useTheme()
   const { getParticipentCount, getPipelineConfig, getOutreachSingleEvent, getLatestComment } = useCoordinateService()
   const { getActiveWidget, getOnlyDraftWidget } = useWidgetServices()
   const { getUpcomingEvents } = useEventServices()
+  const { getRecentSearch } = useEventsService()
   const { getTrackers } = useTrackerServices()
+  const { getMyProfileData } = useProfileServices()
 
   const fetchCoordinateData = async () => {
     const data: any = await getParticipentCount()
@@ -117,22 +131,28 @@ const Dashboard = () => {
     setOutreachChat(messageData)
   }
 
-  // useEffect(() => {
-  //   fetchTrackerData()
-  //   fetchCoordinateData()
-  //   fetchOutreachData()
-  //   fetchOutreachMessage()
-  //   fetchPromoteData()
-  // }, [])
+  const fetchRecentSearch = async () => {
+    const data = await getRecentSearch();
+    console.log("recent search data ", data)
+  }
+  const fetchProfileData = async () => {
+    const data: any = await getMyProfileData();
+    console.log("profile", data)
+    const profileObject: ProfileData = 
+    { name: data.user.firstname, email: data.user.email, phoneNumber: data.user.phoneNumber, profilePicture: data.user.profilePicture, department: data.user.department }
+    setProfileData(profileObject)
+  }
   useEffect(() => {
     const fetchData = async () => {
       // Call all fetch functions in parallel
       await Promise.all([
+        fetchRecentSearch(),
         fetchTrackerData(),
         fetchCoordinateData(),
         fetchOutreachData(),
         fetchOutreachMessage(),
         fetchPromoteData(),
+        fetchProfileData()
       ]);
     };
 
@@ -142,11 +162,11 @@ const Dashboard = () => {
   const isCoordinateEmpty = (coordinateData: { heading: string; value: number }[]) => {
     return !coordinateData.some(item => item.value > 0);
   };
-  
+
   const isPromoteEmpty = (promoteData: { name: string; value: number }[]) => {
     return !promoteData.some(item => item.value > 0);
   };
-  
+
   const isOutreachEmpty = (outreachData: { name: string; value: number }[]) => {
     return !outreachData.some(item => item.value > 0);
   };
@@ -222,7 +242,7 @@ const Dashboard = () => {
         {/* <Trends container="large"/> */}
       </div>
       <div className="flex flex-col min-w-[20%] gap-3">
-        <RecentActivity />
+        <RecentActivity profileData = {profileData}/>
         <ManageTeam />
       </div>
     </div>

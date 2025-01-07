@@ -19,7 +19,8 @@ export const endpoints = {
     savedEvents: `${BASE_URL}/me/saved-events`,
     recentSearches: `${BASE_URL}/me/recent-searches`,
     poc: `${BASE_URL}/event-poc`,
-    enabledFilters: `${BASE_URL}/configuration`
+    enabledFilters: `${BASE_URL}/configuration`,
+    recentSearch : `${BASE_URL}/event/recent`
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
