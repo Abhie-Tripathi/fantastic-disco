@@ -499,7 +499,7 @@ const activeVal =
           </Link>
         </div>
 
-        {(view === "list" || active === "Saved Events") && (
+        {(view === "list") && (
           <div>
             <Suspense fallback={<Loading />}>
           <Table
@@ -518,8 +518,8 @@ const activeVal =
             <div>
               <Suspense fallback={<Loading />}>
               {Number(activeVal)===0 ?
-              <div className="p-5">
-              <NullState image={TrackerNullState} title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Congfigurations" buttonUrl={`/internal/trackers/${params.trackerId}/trackedConfiguration?type=${trackerDetail?.type}`}/>
+              <div className="px-10 py-5">
+              <NullState image={TrackerNullState} title="No events saved yet! Start saving events to easily track and revisit them here."/>
               </div>
                : 
                 <Map source="tracker" 
