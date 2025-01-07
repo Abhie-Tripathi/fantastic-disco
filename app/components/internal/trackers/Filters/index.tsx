@@ -415,7 +415,6 @@ const Pages = () => {
   const eventTypes = getLocalFilterValue("eventTypes")
       .split(",")
       .filter(Boolean);
-      console.log(eventTypes);
       
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const {getTrackerDetail,createTracker,editTracker, error}=useTrackerServices();
@@ -983,7 +982,7 @@ const Pages = () => {
         // }
       },
     };
-    console.log(formData);
+    // console.log(formData);
     
 
       const secondLast = pathName[pathName.length - 2];
@@ -1012,7 +1011,6 @@ const Pages = () => {
       try{
         const data = await editTracker(secondLast, formData) as { error?: ApiError };
         if (data) {
-          console.log(data);
           if(data?.error){
             toast.error((data.error as ApiError).message, {
               position: "bottom-right",
@@ -1025,15 +1023,15 @@ const Pages = () => {
           router.replace(`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`);
           }
         } else {
-          console.log(error);
+          // console.log(error);
           setIsCreating(false);
         }
       }catch(error){
-        console.log(error);
+        // console.log(error);
         setIsCreating(false);
       }
     } else {
-      console.log(formData);
+      // console.log(formData);
       
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
         setIsCreating(false);
@@ -1055,7 +1053,7 @@ const Pages = () => {
       try{
         const data= await createTracker(formData)
         if (error) {
-          console.log(error);
+          // console.log(error);
           setIsCreating(false);
           return;
         }
@@ -1063,7 +1061,7 @@ const Pages = () => {
           router.replace("/internal/trackers");
         }
       }catch(error){
-        console.log(error);
+        // console.log(error);
         toast.error((error as ApiError).message, {
           position: "bottom-right",
           autoClose: 2000,
@@ -1195,7 +1193,6 @@ const Pages = () => {
       if(toggleOpend?.audienceZone){
         showFilters.push("audienceZone")
       }
-      console.log(showFilters);
       setLocalFilter("show",showFilters.join(","));
       setRankToggles({
         ...rankToggles,
@@ -1214,10 +1211,8 @@ const Pages = () => {
       
       if(editData?.tracker?.filterValue?.inboundScore && editData?.tracker?.filterValue?.inboundScore !== "")
         setSelectedInboundScore(editData?.tracker?.filterValue?.inboundScore?.split("-"));
-      console.log(getLocalFilterValue("show").split(",").includes("scores"));
       
       if(toggleOpend.globalToggle){
-        console.log(1111);
         setLocalFilter("impact_score_gte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[0]).toString() || "0")
         setLocalFilter("impact_score_lte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[1]).toString() || "100")
         setLocalFilter("inbound_score_gte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[0]).toString() || "0")
@@ -1281,7 +1276,6 @@ const Pages = () => {
           const category = newCategories.find((cat) => cat.id === item.id);
           return category ? category.slug : item.id;
         });
-        console.log(categorySlugs);
         
         setLocalFilter("categories", categorySlugs.join(","));
         setSelectedCategories(
@@ -1303,7 +1297,6 @@ const Pages = () => {
           ? editData?.tracker?.filterValue?.eventFormat?.split(",")
           : []
       );
-    console.log(editData?.tracker?.filterValue?.eventFormat);
       setLocalFilter("eventFormats", editData?.tracker?.filterValue?.eventFormat);
 
       setIntScore(
@@ -1409,8 +1402,6 @@ const Pages = () => {
       );
       setLocalFilter("entryType", editData.tracker.filterValue?.eventEntry)
       if (editData?.tracker?.filterValue?.eventType !== undefined) {
-        console.log(editData.tracker.filterValue.eventType);
-        
         const eventTypes = editData.tracker.filterValue.eventType.map((type:string) => {
           return type.charAt(0).toLowerCase() + type.slice(1) + 's';
         });
@@ -1651,9 +1642,6 @@ const commonCss={
   input_container:`w-full border-[var(--input-border-color)] border rounded-[var(--border-radius-sm)] whitespace-nowrap p-2 px-4 text-inherit bg-inherit`,
   input:'flex justify-between items-center'
 }
-useEffect(() => {
-  console.log('Selected Aviation Rank:', selectedInternationalScore);
-}, [selectedInternationalScore]);
 // useEffect(()=>{
 //   const updatedIncludeKeywords = includeKeywords.map((keyword) => `${keyword.split(" ").join("_")}`);
 //   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
@@ -1701,7 +1689,6 @@ useEffect(() => {
 //   }
   
 // },[enabledFilters])
-console.log(enabledFilters?.eventType);
 
 return (
   <>
