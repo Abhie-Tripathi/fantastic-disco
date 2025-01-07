@@ -131,7 +131,7 @@ const Dashboard = () => {
         fetchTrackerData(),
         fetchCoordinateData(),
         fetchOutreachData(),
-        fetchOutreachMessage(),
+        // fetchOutreachMessage(),
         fetchPromoteData(),
       ]);
     };

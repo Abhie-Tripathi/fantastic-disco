@@ -32,7 +32,7 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
   // ]
   const colors = ["#f8712b", "#166aeb", "#f9bf44","#52c41a", "#dd46eb" ]
   const router = useRouter()
-
+  console.log("outreach chat:", outreachChat)
   const handleRouting = (type: string) => {
     if (type === 'button') {
       router.push("/internal/outreach")
@@ -70,7 +70,7 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
         }
 
       </div>
-      {outreachData.length === 0 ? <div className='relative h-full w-[50%]'>
+      {(outreachData.length === 0 || outreachChat === undefined) ? <div className='relative h-full w-[50%]'>
         <Image src={theme === "dark" ? OutreachImageDark : OutreachImage} alt='outreach' className='absolute top-[40px] left-[20px]' width={303} height={272} unoptimized /></div>
         : <div className='p-4 w-[50%] h-full'><RecentChat outreachChat={outreachChat}/></div>
       }
