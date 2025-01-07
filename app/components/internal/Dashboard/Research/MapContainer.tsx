@@ -10,26 +10,17 @@ interface Props {
     theme: string | null
     latLang: { lat: number, long: number }
     location: string;
+    searchHandler : () => void
 }
 
-const MapContainer = ({ theme, latLang, location }: Props) => {
+const MapContainer = ({ theme, latLang, location, searchHandler }: Props) => {
     const { localFilters } = useFilterContext();
 
     const locationParts = location ? location.split(",").map((part) => part.trim()) : [];
     const firstLocation = locationParts[0] || "Brooklyn"; // Get the first part
     const restLocation = locationParts.slice(1).join(", ") || ""; // Join the remaining parts
-    const router = useRouter()
-    const searchHandler = () => {
-        const params = new URLSearchParams();
-        Object.entries(localFilters).forEach(([key, value]) => {
-            if (value && key !== "skip") {
-                params.set(key, value);
-            }
-        });
-        console.log('params', params);
-        router.push(`/internal/search/events?${params.toString()}`, { scroll: false });
 
-    };
+
     const MapView = React.lazy(() => import('@/app/components/DetailPage/Mapview'));
     // const MapView = React.lazy(() => import("@/components/map"));
     return (

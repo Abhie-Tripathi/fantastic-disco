@@ -5,7 +5,7 @@ import BackgroundImageDark from '/public/internal/dashboard/Researchbgdark.png'
 import { MagnifyingGlass } from "geist-icons";
 import Handicon from '/public/hand.png'
 import Image from 'next/image';
-import { Sparkles } from 'lucide-react'
+import { MoveRight, Sparkles } from 'lucide-react'
 import Dropdown from './Dropdown';
 // import MapContainer from './MapContainer';
 import LocationSelector from "@/components/search/location";
@@ -14,6 +14,8 @@ import EventTypeSelector from '@/components/search/eventType';
 import DateRangeSelector from '@/components/search/dateRange';
 import SearchBar from "@/components/search/searchbar";
 import { useLocationService } from '@/services/locationService';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 interface Props {
     theme: string | null
@@ -25,7 +27,7 @@ const Research = ({ theme }: Props) => {
     // const dropdowns = [{ name: "Event Type" }, { name: "Location" }, { name: "Date" }]
     const { enabledFilters, getLocalFilterValue, localFilters, setLocalFilter } = useFilterContext();
     const { getLocationDetails } = useLocationService()
-    const [latLang, setLatLang] = useState<{ lat: number, long: number }>({ lat: 40.691293, long: -73.986610})
+    const [latLang, setLatLang] = useState<{ lat: number, long: number }>({ lat: 40.691293, long: -73.986610 })
     const [locationName, setLocationName] = useState<string>("")
 
     const getLatLong = async (locationId: string) => {
@@ -37,14 +39,27 @@ const Research = ({ theme }: Props) => {
 
     useEffect(() => {
         const locationId = getLocalFilterValue("locationIds");
-        const firstLocationId = locationId 
-        ? locationId.split(",")[0].trim() // Split by comma and get the first value
-        : null; // Handle empty or null cases
+        const firstLocationId = locationId
+            ? locationId.split(",")[0].trim() // Split by comma and get the first value
+            : null; // Handle empty or null cases
 
-        if(firstLocationId){
+        if (firstLocationId) {
             getLatLong(firstLocationId)
         }
     }, [localFilters])
+    const router = useRouter()
+
+    const searchHandler = () => {
+        const params = new URLSearchParams();
+        Object.entries(localFilters).forEach(([key, value]) => {
+            if (value && key !== "skip") {
+                params.set(key, value);
+            }
+        });
+        console.log('params', params);
+        router.push(`/internal/search/events?${params.toString()}`, { scroll: false });
+
+    };
 
     // useEffect(()=>{
     //     setLocalFilter("locationIds","e3ef02ad-2f97-5fa6-9033-9addfad3f0ef")
@@ -56,7 +71,7 @@ const Research = ({ theme }: Props) => {
     return (
         <div className={`w-full h-auto gap-[61px] bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden`}
             style={{ backgroundImage: `${theme === "dark" ? `url(${BackgroundImageDark.src})` : `url(${BackgroundImage.src})`}` }}>
-            <div className={`m-[20px_30px] gap-5 w-[60%] flex flex-col`}>
+            <div className={`m-[20px_30px] gap-5 w-[60%] max-[1050px]:w-full flex flex-col`}>
                 <div className={`flex flex-col`}>
                     <div className="text-xl font-[var(--font-weight-semibold)] flex items-center gap-1">
                         <span>Welcome back</span>
@@ -64,8 +79,12 @@ const Research = ({ theme }: Props) => {
                     </div>
                     <div className='text-sm text-[var(--secondary-text-color)]'>Maximize ROI from your event strategy with Whr.ai</div>
                 </div>
-                <div className={`w-full`}>
+                <div className={`w-full relative`}>
                     <SearchBar />
+                    <div className='hidden w-[20%] top-[10px] right-[5px] absolute max-[1050px]:block'>
+                        <Button onClick={searchHandler} className='' size="sm">Explore Events <MoveRight width={12} /></Button>
+                    </div>
+
                 </div>
                 <div>
                     <div className={`flex items-center gap-0.5`}>
@@ -82,9 +101,9 @@ const Research = ({ theme }: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="mr-[80px] w-[260px] mb-[-40px]">
+            <div className="border w-[260px] mb-[-40px] max-[1050px]:hidden">
                 <Suspense fallback={<div>Loading...</div>}>
-                    <MapContainer location={locationName} theme={theme} latLang={latLang} />
+                    <MapContainer searchHandler={searchHandler} location={locationName} theme={theme} latLang={latLang} />
                 </Suspense>
             </div>
         </div>

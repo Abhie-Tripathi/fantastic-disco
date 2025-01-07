@@ -36,7 +36,7 @@ const CoordinateScreenOne = ({ values, theme }: Props) => {
 
     return (
         <div className={`${isEmpty && "bg-[var(--background-secondary-color)]"} flex overflow-hidden h-[240px] justify-between`} >
-            <div className="min-w-[270px] p-4 ">
+            <div className="p-4 ">
                 <div className="flex items-center gap-2 text-xs font-[var(--font-weight-semibold)] text-[var(--primary-color)]">
                     <span><Coordinate /></span>
                     <div className={`flex items-center gap-2 ${!isEmpty && "cursor-pointer"}`} onClick={() => handleRouting("value")}>

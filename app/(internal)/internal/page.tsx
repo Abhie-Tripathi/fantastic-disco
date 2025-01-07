@@ -163,10 +163,10 @@ const Dashboard = () => {
       const combinedLocationIds = [cityIds, stateIds, countryIds].filter(loc => loc).join(",");
 
       console.log("combined locations : ", combinedLocationIds)
-      if(combinedLocationIds){
+      if (combinedLocationIds) {
         setLocalFilter("locationIds", combinedLocationIds)
-      }else setLocalFilter("locationIds", "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef")
-      
+      } else setLocalFilter("locationIds", "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef")
+
       setLocalFilter("eventTypes", eventType)
       setLocalFilter("active_gte", startDate.split(",")[0])
       setLocalFilter("active_lte", startDate.split(",")[1])
@@ -231,11 +231,45 @@ const Dashboard = () => {
             value === "filled" ?
               <div className="flex flex-col gap-3">
                 <Research theme={theme} />
-                <div className="flex gap-3 mb-2">
+                <div className="flex flex-col gap-3 mb-2">
+                  <div className="w-full flex gap-3 max-[1050px]:flex-col">
+                    <div className="w-[50%] flex gap-3 max-[1050px]:w-full max-[870px]:flex-col">
+                      <div className="w-full hidden max-[870px]:block">
+                        <TrackerContainer trackers={trackerData} width="small" />
+                      </div>
+                      <div className={`${(outreach && trends) ? "w-[50%]" : "w-full"} max-[870px]:hidden`}>
+                        <TrackerContainer trackers={trackerData} width={(role === "sa") ? "smaller" : "large"} />
+                      </div>
+                      {(trends && role === "sa") && <div className="w-[50%] max-[870px]:w-full">
+                        <Trends container="small" />
+                      </div>}
+                    </div>
+                    <div className="w-[50%] max-[1050px]:w-full">
+                      <CoordinateContainer
+                        theme={theme}
+                        coordinateData={coordinateData}
+                        height="small"
+                      />
+                    </div>
+                  </div>
+                  <div className="w-full flex gap-3 max-[870px]:flex-col">
+                    {(role === "sa") && <div className="w-[50%] max-[870px]:w-full"><Outreach outreachChat={outreachChat} outreachData={outreachData} theme={theme} /> </div>}
+                    {role === "sa" && <div className="flex gap-3 w-[50%] max-[870px]:w-full">
+                      <div className={prospect ? "w-[50%]" : "w-full"}>
+                        <PromoteContainer promoteData={promoteData} theme={theme} width={prospect ? "small" : "large"} />
+                      </div>
+                      {prospect && <div className="w-[50%]">
+                        <Prospect theme={theme} />
+                      </div>}
+
+                    </div>}
+                  </div>
+                </div>
+                {/* <div className="flex gap-3 mb-2">
                   <div className="flex flex-col gap-3 w-[55%]">
                     <div className="w-full flex gap-3">
                       <div className={(outreach && trends) ? "w-[50%]" : "w-full"}>
-                        <TrackerContainer trackers={trackerData} width={(outreach && trends) ? "smaller" : "large"} />
+                        <TrackerContainer trackers={trackerData} width={(role === "sa") ? "smaller" : "large"} />
                       </div>
                       {(trends && role === "sa") && <div className="w-[50%]">
                         <Trends container="small" />
@@ -249,7 +283,6 @@ const Dashboard = () => {
                     <div className="w-full">
                       <CoordinateContainer
                         theme={theme}
-                        // height={role === "sa" ? "small" : "large"}
                         coordinateData={coordinateData}
                         height="small"
                       />
@@ -264,26 +297,17 @@ const Dashboard = () => {
 
                     </div>}
                   </div>
-                </div>
+                </div> */}
               </div> : <></>
         }
-        {/* <ModuleSelection value="admin" /> */}
-        {/* <ModuleSelection value="user" /> */}
-        {/* <Research /> */}
-        {/* <CoordinateContainer height="small"/> */}
-        {/* <CoordinateContainer height="large"/> */}
-        {/* <Prospect/> */}
-        {/* <PromoteContainer width="large"/> */}
-        {/* <PromoteContainer width="small"/> */}
-        {/* <TrackerContainer width="smaller"/> */}
-        {/* <Outreach/> */}
-        {/* <Trends container="large"/> */}
+
       </div>
-      <div className="flex flex-col min-w-[20%] gap-3">
+      <div className="flex flex-col min-w-[20%] gap-3 max-[1310px]:hidden">
         <RecentActivity value={value} profileData={profileData} />
         <ManageTeam />
-        <Pricing/>
+        <Pricing />
       </div>
+
     </div>
   );
 };
