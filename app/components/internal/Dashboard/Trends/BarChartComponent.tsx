@@ -41,6 +41,9 @@ const BarChartComponent = () => {
         display: false,
         position: 'top',
       },
+      tooltip: {
+        enabled: false, // Disable tooltips
+      },
     },
     scales: {
       x: {

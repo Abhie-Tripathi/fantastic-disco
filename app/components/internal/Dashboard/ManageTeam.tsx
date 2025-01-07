@@ -8,7 +8,7 @@ const ManageTeam = () => {
             <div className="text-[var(--primary-color)] font-[var(--font-weight-semibold)] text-xs">
                 Manage Team
             </div>
-            <div className="text-[var(--secondary-text-color)]" style={{ fontSize: 10 }}>Share or Invite your team members to keep track of events</div>
+            <div className="text-[var(--bold-border-color)]" style={{ fontSize: 10 }}>Share or Invite your team members to keep track of events</div>
             <div className="mt-[19px] w-full py-1 px-2 flex items-center justify-between bg-[var(--primary-light-color)] rounded-[8px]">
                 <input type="text" placeholder="Email" className="bg-transparent focus:outline-none" style={{ fontSize: 10 }}
                 />
