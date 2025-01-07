@@ -228,7 +228,7 @@ export default function EventAccordion({
         </ul>
       </div>
       {totalPages > 1 && (
-        <div className="mt-4 bottom-0 bg-background py-4 border-t">
+        <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
           <div className="flex justify-between items-center mb-2 px-2">
             <div>
               <span className="text-sm text-muted-foreground">
