@@ -18,8 +18,8 @@ interface OutreachLastChat {
 }
 interface Props {
   theme: string | null
-  outreachData : { name: string, value: number }[]
-  outreachChat : OutreachLastChat | undefined
+  outreachData: { name: string, value: number }[]
+  outreachChat: OutreachLastChat | undefined
 }
 const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
 
@@ -30,7 +30,7 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
   //   // { name: "Confirmed", value: 1, color: "#f9bf44" },
   //   // { name: "Confirmed", value: 1, color: "#f9bf44" },
   // ]
-  const colors = ["#f8712b", "#166aeb", "#f9bf44","#52c41a", "#dd46eb" ]
+  const colors = ["#f8712b", "#166aeb", "#f9bf44", "#52c41a", "#dd46eb"]
   const router = useRouter()
   console.log("outreach chat:", outreachChat)
   const handleRouting = (type: string) => {
@@ -59,8 +59,8 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
         {outreachData.length === 0 ? <Button onClick={() => handleRouting("button")} className="mt-4 w-[110px]" size="xs">Start Outreach <MoveRight width={12} /></Button> :
           <div
             className={`mt-3 ${outreachData.length === 3
-                ? "flex flex-col gap-2"
-                : "grid grid-cols-2 gap-4"
+              ? "flex flex-col gap-2"
+              : "grid grid-cols-2 gap-4"
               }`}
           >
             {outreachData.map((event, key) => (
@@ -72,7 +72,7 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
       </div>
       {(outreachData.length === 0 || outreachChat?.comment === undefined) ? <div className='relative h-full w-[50%]'>
         <Image src={theme === "dark" ? OutreachImageDark : OutreachImage} alt='outreach' className='absolute top-[40px] left-[20px]' width={303} height={272} unoptimized /></div>
-        : <div className='p-4 w-[50%] h-full'><RecentChat outreachChat={outreachChat}/></div>
+        : <div className='p-4 w-[50%] h-full'><RecentChat outreachChat={outreachChat} /></div>
       }
     </div>
   )

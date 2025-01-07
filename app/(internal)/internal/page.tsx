@@ -18,6 +18,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { useEventsService } from "@/services/eventsService";
 import { useProfileServices } from "@/services/profileService";
 import { useFilterContext } from '@/context/filterContext';
+import Pricing from "@/app/components/internal/Dashboard/Pricing";
 
 interface TrackerData {
   id: string;
@@ -276,8 +277,9 @@ const Dashboard = () => {
         {/* <Trends container="large"/> */}
       </div>
       <div className="flex flex-col min-w-[20%] gap-3">
-        <RecentActivity profileData={profileData} />
+        <RecentActivity value={value} profileData={profileData} />
         <ManageTeam />
+        <Pricing/>
       </div>
     </div>
   );
