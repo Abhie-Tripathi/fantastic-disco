@@ -419,40 +419,18 @@ const Pages = () => {
       
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const {getTrackerDetail,createTracker,editTracker, error}=useTrackerServices();
-  const [isRatingOpen, setRatingOpen] = useState<boolean>(enabledFilters?.eventRating?.isRatingEnabled || false);
-  const [isExhibitOpen, setExhibitOpen] = useState<boolean>(enabledFilters?.estimatedExhibitScore?.isExhibitorsEnabled||false);
-  const [isSpreadOpen, setSpreadOpen] = useState<boolean>(false);
   const { theme } = useTheme();
   const type = searchParams.get('type');
   const [selectedLocationsData,setSelectedLocationsData]=useState<any>(enabledFilters?.locationIds?.enabledValue);
   const iconClass = theme === "light" ? "icons_light" : "icon";
-  const [selectedCity, setSelectedCity] = useState<SelectedLocation>({});
-  const [selectedCountry, setSelectedCountry] = useState<SelectedLocation>({});
   const [opend,setOpend]=useState(false);
   const pathName = usePathname().split("/");
   const last = pathName[pathName.length - 1];
   const router = useRouter();
-  const [selectedView, setSelectedView] = useState("list");
-  const [categoryData, setCatgeoryData] = useState<CategoryData>();
-  const [designationData,setDesignationData]=useState([]);
-  const [selectedRegularity, setSelectedRegularity] = useState([0, 100]);
-  const [includeKeywords, setIncludeKeywords] = useState<string[] |undefined>(enabledFilters?.keywords?.positiveKeywords || []);
-  const [excludeKeywords, setExcludeKeywords] = useState<string[] | undefined>(enabledFilters?.keywords?.negativeKeywords || []);
-  const [selectedVisitors, setSelectedVisitors] = useState<string[]>(enabledFilters?.eventSize?.enabledValue || []);
-  const [selectedReputationScore, setSelectedReputationScore] = useState([0, 100]);
-  const [websiteSuggestion, setWebsiteSuggestion]=useState(null);
+  const [includeKeywords, setIncludeKeywords] = useState<string[] |undefined>([]);
+  const [excludeKeywords, setExcludeKeywords] = useState<string[] | undefined>([]);
   // const [categorySlug, setCategorySlug] = useState([]);
-  const [searchInput, setSearchInput] = useState("");
   const [showRecentSearches, setShowRecentSearches] = useState(false);
-  const [eventData, setEventData] = useState<EventDataType | null>(null);
-  const [selectedEventType, setSelectedEventType] = useState<
-  Record<EventGroupType, string[]>
->({
-  social: [],
-  business:[],
-});
-  const [selectedEventTypeName, setSelectedEventTypeName] = useState<string>('');
-  const [selectedZone, setSelectedZone] = useState<string[]>([]);
   // const [selectedCategories, setSelectedCategories] = useState<string[]>(
   //   enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
   // );
@@ -517,16 +495,16 @@ const Pages = () => {
   exhibit:false,
   audienceSpread: false,
 });
-  const [showAdvanceFilter, setShowAdvanceFilter] = useState(true);
-  const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
-  const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(enabledFilters?.branded?.enabledValue?.eventBrand||false);
+  // const [showAdvanceFilter, setShowAdvanceFilter] = useState(true);
+  // const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
+  // const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(enabledFilters?.branded?.enabledValue?.eventBrand||false);
   
-  const [selectedEventSeries, setSelectedEventSeries] = useState(enabledFilters?.branded?.enabledValue?.eventSeries || false);
-  const [selectedReptScore, setSelectedReptScore] = useState(0);
-  const [selectedMaturity, setSelectedMaturity] = useState<string>(enabledFilters?.maturity?.enabledValue?.[0] || "");
-  const [isMaturity,setIsMaturity]=useState<boolean>(enabledFilters?.maturity?.isMaturityEnabled||false);
-  const [isBrand,setIsBrand]=useState<boolean>(enabledFilters?.branded?.isBrandedEnabled|| false);
-  const [maturity, setMaturity] = useState<string | null>();
+  // const [selectedEventSeries, setSelectedEventSeries] = useState(enabledFilters?.branded?.enabledValue?.eventSeries || false);
+  // const [selectedReptScore, setSelectedReptScore] = useState(0);
+  // const [selectedMaturity, setSelectedMaturity] = useState<string>(enabledFilters?.maturity?.enabledValue?.[0] || "");
+  // const [isMaturity,setIsMaturity]=useState<boolean>(enabledFilters?.maturity?.isMaturityEnabled||false);
+  // const [isBrand,setIsBrand]=useState<boolean>(enabledFilters?.branded?.isBrandedEnabled|| false);
+  // const [maturity, setMaturity] = useState<string | null>();
   const [intScore, setIntScore] = useState<string | null>();
   // const [selectedInboundScore, setSelectedInboundScore] = useState(0);
   const [selectedEventKeywords, setSelectedEventKeywords] = useState<string[]>(
@@ -750,8 +728,8 @@ const Pages = () => {
       setTrackerName(trackerName);
     } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
       setTrackerName(trackerName);
-      setIncludeKeywords(filteredPresetData?.[0]?.data?.[0]);
-      setExcludeKeywords(filteredPresetData?.[0]?.data?.[1]);
+      // setIncludeKeywords(filteredPresetData?.[0]?.data?.[0]);
+      // setExcludeKeywords(filteredPresetData?.[0]?.data?.[1]);
     }
 
     setSelectedPresetName(trackerName);
@@ -809,7 +787,7 @@ const Pages = () => {
       ...(type && type.length > 0 && {
         type: type.toUpperCase()
       }),
-      // accessLevel: editData?.tracker?.accessLevel,
+      accessLevel: editData?.tracker?.accessLevel,
       filterValue: {
           ...(userType &&{
            userType:JSON.stringify(userType)
@@ -867,22 +845,10 @@ const Pages = () => {
             .split(",")
             .map((keyword) => keyword.replaceAll(" ", "_")).join(",")
         }),
-        ...(includeKeywords && includeKeywords.length>0 &&{
-          // includeKeywords: includeKeywords.join(','),
-          includeKeywords :includeKeywords.map((kw: string) => kw.replace(/ /g, "_")).join(','),
-        }),
-        ...(excludeKeywords && excludeKeywords.length>0 &&{
-          // excludeKeywords: excludeKeywords.join(','),
-          excludeKeywords :excludeKeywords.map((kw: string) => kw.replace(/ /g, "_")).join(','),
-        }),
-        ...(categoryIds?.length > 0 && {
-          eventCategory: categoryIds.join(","),
-        }),
         ...(getLocalFilterValue("estimatedVisitors")?.length>0 && {
           eventSize: getLocalFilterValue("estimatedVisitors")
          }),
          ...(getLocalFilterValue("estimatedExhibitors")?.length>0 && {estimatedExhibitScore:getLocalFilterValue("estimatedExhibitors")}),
-         ...(selectedRegularity[0] > 0 && {editionRange: selectedRegularity[0].toString()}),
         // ...(selectedZone?.length > 0 && {
         //   eventRegion: selectedZone.join(',')
         // }),
@@ -913,9 +879,6 @@ const Pages = () => {
         }),
         ...(getLocalFilterValue("frequencies")?.length > 0 && {
           eventFrequency: getLocalFilterValue("frequencies").split(",").map((item)=>item[0].toUpperCase()+item.slice(1)).join(","),
-        }),
-        ...(selectedReptScore > 0 && {
-          reputationScore: selectedReptScore.toString(),
         }),
         // ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
         // ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
@@ -981,7 +944,7 @@ const Pages = () => {
           // globalRanking: selectedRank,
           // categoryRanking: selectedRank,
           // countryRanking: selectedRank,
-          eventRanking: getLocalFilterValue("top"),
+          eventRanking: `0-${getLocalFilterValue("top")}`,
         }),
         ...(getLocalFilterValue("audienceSpread") && {
           audienceSpread: getLocalFilterValue("audienceSpread")
@@ -1025,7 +988,7 @@ const Pages = () => {
 
       const secondLast = pathName[pathName.length - 2];
      
-      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(includeKeywords?.length==0 && excludeKeywords?.length===0))){
+      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1072,7 +1035,7 @@ const Pages = () => {
     } else {
       console.log(formData);
       
-      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(includeKeywords?.length==0 && excludeKeywords?.length===0))){
+      if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1128,11 +1091,6 @@ const Pages = () => {
 
   useEffect(() => {
     if (editData && editData?.tracker && last === "editTracker") {
-      const newArr: string[] = [
-        ...(categoryData?.attendedCategories ?? []),
-        ...(categoryData?.nonAttendedCategories ?? []),
-        ...(categoryData?.unscheduledCategories ?? []),
-      ];
       // if (editData.tracker.filterValue?.maturity == "low") {
       //   setSelectedMaturity(25);
       // }
@@ -1239,10 +1197,6 @@ const Pages = () => {
       }
       console.log(showFilters);
       setLocalFilter("show",showFilters.join(","));
-      setRatingOpen(toggleOpend?.rating ? true : false);
-      setIsMaturity(toggleOpend?.maturity ? true : false);
-      
-      setExhibitOpen(toggleOpend?.exhibit ?true:false)
       setRankToggles({
         ...rankToggles,
         isTrustScore : toggleOpend?.trust?true:false,
@@ -1278,7 +1232,6 @@ const Pages = () => {
         setSelectedInternationalScore(editData?.tracker?.filterValue?.internationalScore?.split("-"));
 
       if(editData?.tracker?.filterValue?.maturity && editData?.tracker?.filterValue?.maturity !== ''){
-        setSelectedMaturity(editData?.tracker?.filterValue?.maturity)
         setLocalFilter("maturity",editData?.tracker?.filterValue?.maturity)
       }
       if(editData?.tracker?.filterValue?.eventBrand){
@@ -1288,8 +1241,8 @@ const Pages = () => {
         setLocalFilter("onlySeries","true")
       }
       if(editData?.tracker?.filterValue?.eventRanking && editData?.tracker?.filterValue?.eventRanking !== '')
-        setLocalFilter("top",editData?.tracker?.filterValue?.eventRanking)
-
+        setLocalFilter("top",editData?.tracker?.filterValue?.eventRanking?.split("-")[1].toString())
+      
       setAudienceZone(toggleOpend?.audienceZone ? true : false);
       setAudienceSpread(toggleOpend?.audienceSpread ? true : false);
 
@@ -1424,9 +1377,9 @@ const Pages = () => {
         : [];
     setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedState]);
     const ids = [
-      ...(editData.tracker.filterValue.locationIds.city || []),
-      ...(editData.tracker.filterValue.locationIds.state || []),
-      ...(editData.tracker.filterValue.locationIds.country || []),
+      ...(editData?.tracker?.filterValue?.locationIds?.city || []),
+      ...(editData?.tracker?.filterValue?.locationIds?.state || []),
+      ...(editData?.tracker?.filterValue?.locationIds?.country || []),
     ]
       .flatMap((location) => Object.keys(location));
       // console.log(selectedLocations);
@@ -1447,7 +1400,7 @@ const Pages = () => {
           ? editData?.tracker?.filterValue?.eventFrequency?.split(",").map((item:string)=>item[0].toLowerCase()+item.slice(1))
           : []
       );
-      setLocalFilter("frequencies",editData?.tracker?.filterValue?.eventFrequency?.split(",").map((item:string)=>item[0].toLowerCase()+item.slice(1)).join(","))
+      setLocalFilter("frequencies",editData?.tracker?.filterValue?.eventFrequency)
       setSelectedEntry(
         editData.tracker.filterValue?.eventEntry &&
           editData.tracker.filterValue?.eventEntry?.length !== 0
@@ -1455,80 +1408,12 @@ const Pages = () => {
           : []
       );
       setLocalFilter("entryType", editData.tracker.filterValue?.eventEntry)
-      setSelectedEventEdition(
-        editData.tracker.filterValue?.editionRange > 0
-          ? editData.tracker.filterValue?.editionRange
-          : 0
-      );
-      setSelectedEventRanking(
-        editData.tracker.filterValue?.eventRanking?.split(",") || []
-      );
-      setSelectedBrandedEvent(editData?.tracker?.filterValue?.eventBrand ? true : false);
-      setIsBrand(toggleOpend?.brandSeries ? true : false);
-      // setSelectedCountry(
-      //   editData.tracker.filterValue?.eventCountry?.length > 0
-      //     ? editData.tracker.filterValue.eventCountry.reduce(
-      //       (acc: any, current: any) => {
-      //         return { ...acc, ...current };
-      //       },
-      //       {}
-      //     )
-      //     : {}
-      // );
-      setSelectedZone(editData.tracker.filterValue?.eventRegion && editData.tracker.filterValue?.eventRegion?.length > 0 ? editData.tracker.filterValue?.eventRegion?.split(',') : []);
-      // setSelectedCity(
-      //   editData.tracker.filterValue?.eventCity?.length > 0
-      //     ? editData.tracker.filterValue.eventCity.reduce(
-      //       (acc: any, current: any) => {
-      //         return { ...acc, ...current };
-      //       },
-      //       {}
-      //     )
-      //     : {}
-      // );
-      setSelectedEventSeries(
-        editData?.tracker?.filterValue?.eventSeries ? true : false
-      );
-      setMaturity(
-        editData.tracker.filterValue?.maturity?.length > 0
-          ? editData.tracker.filterValue?.maturity
-          : ""
-      );
-      setSelectedEventRank(editData.tracker.filterValue?.eventRank?.length > 0
-        ? editData.tracker.filterValue?.eventRank?.split(',')
-        : [0, 100]);
-      setSelectedLocalRank(editData.tracker.filterValue?.localRank?.length > 0
-        ? editData.tracker.filterValue?.localRank?.split(',')
-        : [0, 100])
-      setSelectedReptScore(
-        editData.tracker.filterValue?.reputationScore > 0
-          ? editData.tracker.filterValue?.reputationScore
-          : 0
-      );
-      // setSelectedMaturity(
-      //   editData.tracker.filterValue?.maturity > 0
-      //     ? editData.tracker.filterValue?.maturity
-      //     : 0
-      // );
       if (editData?.tracker?.filterValue?.eventType !== undefined) {
         console.log(editData.tracker.filterValue.eventType);
         
         const eventTypes = editData.tracker.filterValue.eventType.map((type:string) => {
           return type.charAt(0).toLowerCase() + type.slice(1) + 's';
         });
-        
-        if (Array.isArray(eventTypes) && eventTypes.length > 0) {
-          setSelectedEventType((prev) => ({
-            ...prev,
-            business: [...prev.business, ...eventTypes],
-          }));
-    
-            const selectedEventTypeNames = EventStatusData
-                ?.filter(item => eventTypes.includes(item.id))
-                .map(item => item.name) || [];
-            setSelectedEventTypeName(selectedEventTypeNames[0] || "Default Event Name");
-            setLocalFilter("eventTypes", eventTypes.join(","));
-        }
     }
 
 
@@ -1556,23 +1441,6 @@ const Pages = () => {
         setLocalFilter("trust_score_gte", editData.tracker.filterValue?.trustScore)
         setLocalFilter("trust_score_lte","100")
       }
-      setSelectedVisitors(
-        editData.tracker.filterValue?.eventSize &&
-          editData.tracker.filterValue?.eventSize?.length !== 0
-          ? editData.tracker.filterValue?.eventSize?.split(",")
-          : []
-      );
-      setSelectedExhibitScore(
-        editData.tracker.filterValue?.estimatedExhibitScore &&
-          editData.tracker.filterValue?.estimatedExhibitScore?.length !== 0
-          ? editData.tracker.filterValue?.estimatedExhibitScore?.split(",")
-          : []
-      )
-      const updatedRegularity = [...selectedRegularity];
-      updatedRegularity[0] = editData.tracker.filterValue?.editionRange > 0 ? editData.tracker.filterValue?.editionRange : 0;
-      setDesignationData(editData?.tracker?.filterValue?.designation
-      )
-      setSelectedRegularity(updatedRegularity);
       const updatedTrustScore=[...selectedTrustScore]
       updatedTrustScore[0]=
         editData.tracker.filterValue?.trustScore > 0
@@ -1581,12 +1449,6 @@ const Pages = () => {
         setSelectedTrustScore(updatedTrustScore)
       // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
       // setSelectedLocations(editData.tracker.filterValue?.location);
-      setIncludeKeywords(
-        editData.tracker.filterValue?.includeKeywords &&
-        editData.tracker.filterValue?.includeKeywords.split(",").length > 0
-            ? editData.tracker.filterValue.includeKeywords.split(",").filter(Boolean).map((kw: string) => kw.replace(/_/g, " "))
-            : []
-    );  
     setLocalFilter("includeKeywords",editData.tracker.filterValue?.includeKeywords
     ?.split(",")
     .map((keyword:string) => keyword.replaceAll("_", " "))
@@ -1595,10 +1457,6 @@ const Pages = () => {
     ?.split(",")
     .map((keyword:string) => keyword.replaceAll("_", " "))
     .join(","));
-      setExcludeKeywords(editData.tracker.filterValue?.excludeKeywords &&
-        editData.tracker.filterValue?.excludeKeywords.split(",").length > 0
-            ? editData.tracker.filterValue.excludeKeywords.split(",").filter(Boolean).map((kw: string) => kw.replace(/_/g, " "))
-            : []),
       setSelectedEventAttendanceRange((prevArray) => {
         const gte =
           editData.tracker.filterValue?.eventAttendanceRange?.split(",")[0];
@@ -1802,47 +1660,47 @@ useEffect(() => {
 //       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
 // },[includeKeywords, excludeKeywords])
 // console.log(enabledFilters.userRating.isRatingEnabled);
-useEffect(()=>{
-  if(last!=="editTracker"){
-  setRatingOpen(enabledFilters?.eventRating?.isRatingEnabled|| false);
-  setExhibitOpen(enabledFilters?.estimatedExhibitScore?.isExhibitorsEnabled|| false);
-  setSelectedLocationsData(enabledFilters?.locationIds?.enabledValue);
-  // setSelectedEventType({...selectedEventType,  business: enabledFilters?.eventType?.enabledValue?.map((item)=> `${item.toLowerCase()}s`) || []});
-  setSelectedEventType({...selectedEventType,  business: enabledFilters?.eventType?.enabledValue?.map((item)=> `${item.toLowerCase()}s`) || []});
-  setIncludeKeywords(enabledFilters?.keywords?.positiveKeywords);
-  setExcludeKeywords(enabledFilters?.keywords?.negativeKeywords);
-  setSelectedVisitors(enabledFilters?.eventSize?.enabledValue || []);
-  setSelectedCategories( enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []);
+// useEffect(()=>{
+//   if(last!=="editTracker"){
+//   setRatingOpen(enabledFilters?.eventRating?.isRatingEnabled|| false);
+//   setExhibitOpen(enabledFilters?.estimatedExhibitScore?.isExhibitorsEnabled|| false);
+//   setSelectedLocationsData(enabledFilters?.locationIds?.enabledValue);
+//   // setSelectedEventType({...selectedEventType,  business: enabledFilters?.eventType?.enabledValue?.map((item)=> `${item.toLowerCase()}s`) || []});
+//   setSelectedEventType({...selectedEventType,  business: enabledFilters?.eventType?.enabledValue?.map((item)=> `${item.toLowerCase()}s`) || []});
+//   setIncludeKeywords(enabledFilters?.keywords?.positiveKeywords);
+//   setExcludeKeywords(enabledFilters?.keywords?.negativeKeywords);
+//   setSelectedVisitors(enabledFilters?.eventSize?.enabledValue || []);
+//   setSelectedCategories( enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []);
   
-  setDateRange({
-    from: enabledFilters?.durations?.startDate
-      ? new Date(enabledFilters.durations.startDate.split(",")[0])
-      : undefined,
-    to: enabledFilters?.durations?.startDate
-      ? new Date(enabledFilters.durations.startDate.split(",")[1])
-      : undefined,
-  });
-  setIsMaturity(enabledFilters?.maturity?.isMaturityEnabled||false);
-  setSelectedEventStatus(enabledFilters?.eventStatus?.enabledValue?.map((item)=>item.toLowerCase()) || []);
-  setSelectedEventFrequency(enabledFilters?.eventFrequency?.enabledValue?.map((item)=>item.toLowerCase())|| []);
-  setFreqToggle(enabledFilters?.eventFrequency?.isFreqEnabled || false);
-  setSelectedEntry(enabledFilters?.eventEntry?.enabledValue?.map((item)=>item.toLowerCase()) || []);
-  setSelectedEventFormat(enabledFilters?.eventFormat?.enabledValue || []);
-  setSelectedExhibitScore(enabledFilters?.estimatedExhibitScore?.enabledValue || []);
-  setSelectedUserRatings(enabledFilters?.eventRating?.enabledValue || []);
-  setSelectedBrandedEvent(enabledFilters?.branded?.enabledValue?.eventBrand||false);
-  setSelectedEventSeries(enabledFilters?.branded?.enabledValue?.eventSeries || false);
-  setSelectedMaturity(enabledFilters?.maturity?.enabledValue?.[0] || "" || "");
-  setIsBrand(enabledFilters?.branded?.isBrandedEnabled|| false);
-  setForecastedStatus(enabledFilters?.isForecasted?.isForecastedEnabled || false);
-  setAnalyticsToggles({
-    ...analyticsToggles,
-    globalToggle: enabledFilters?.analytics?.isAnalyticsEnabled?true:false,
-  });
-  setAudienceZone(enabledFilters?.audienceZone?.isZoneEnabled || false);
-  }
+//   setDateRange({
+//     from: enabledFilters?.durations?.startDate
+//       ? new Date(enabledFilters.durations.startDate.split(",")[0])
+//       : undefined,
+//     to: enabledFilters?.durations?.startDate
+//       ? new Date(enabledFilters.durations.startDate.split(",")[1])
+//       : undefined,
+//   });
+//   setIsMaturity(enabledFilters?.maturity?.isMaturityEnabled||false);
+//   setSelectedEventStatus(enabledFilters?.eventStatus?.enabledValue?.map((item)=>item.toLowerCase()) || []);
+//   setSelectedEventFrequency(enabledFilters?.eventFrequency?.enabledValue?.map((item)=>item.toLowerCase())|| []);
+//   setFreqToggle(enabledFilters?.eventFrequency?.isFreqEnabled || false);
+//   setSelectedEntry(enabledFilters?.eventEntry?.enabledValue?.map((item)=>item.toLowerCase()) || []);
+//   setSelectedEventFormat(enabledFilters?.eventFormat?.enabledValue || []);
+//   setSelectedExhibitScore(enabledFilters?.estimatedExhibitScore?.enabledValue || []);
+//   setSelectedUserRatings(enabledFilters?.eventRating?.enabledValue || []);
+//   setSelectedBrandedEvent(enabledFilters?.branded?.enabledValue?.eventBrand||false);
+//   setSelectedEventSeries(enabledFilters?.branded?.enabledValue?.eventSeries || false);
+//   setSelectedMaturity(enabledFilters?.maturity?.enabledValue?.[0] || "" || "");
+//   setIsBrand(enabledFilters?.branded?.isBrandedEnabled|| false);
+//   setForecastedStatus(enabledFilters?.isForecasted?.isForecastedEnabled || false);
+//   setAnalyticsToggles({
+//     ...analyticsToggles,
+//     globalToggle: enabledFilters?.analytics?.isAnalyticsEnabled?true:false,
+//   });
+//   setAudienceZone(enabledFilters?.audienceZone?.isZoneEnabled || false);
+//   }
   
-},[enabledFilters])
+// },[enabledFilters])
 console.log(enabledFilters?.eventType);
 
 return (
@@ -1967,8 +1825,6 @@ return (
           customData={customData}
           handleCustomData={handleCustomData}
           setUploadEnabled={setUploadEnabled}
-          setIncludeKeywords={setIncludeKeywords}
-          setExcludeKeywords={setExcludeKeywords}
           // setSelectedEventKeywords={setSelectedEventKeywords}
         />
       }

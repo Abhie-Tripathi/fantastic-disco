@@ -1,4 +1,4 @@
-import { Event } from "@/types";
+import { Event } from "@/types/events";
 import React from "react";
 import { Popup } from "react-map-gl";
 import Link from "next/link";
@@ -30,12 +30,14 @@ interface PopupInfo {
 
 interface PopupProps {
   popupInfo: PopupInfo | null;
-  setPopupInfo: (popupInfo: Event[] | null) => void;
+  setPopupInfo: (popupInfo: PopupInfo | null) => void;
 }
 
 export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
-  if (!popupInfo || popupInfo.events.length === 0) return null;
-
+  console.log(popupInfo);
+  
+  if (!popupInfo || popupInfo?.events?.length === 0) return null;
+  
   const getAddress = (event: Event) => {
     return event.venueLocation
       ? event.venueLocation.city?.name === "Online"
@@ -54,8 +56,8 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
   return (
     <Popup
       className="!max-w-[300px] !w-full bg-background rounded-md shadow-md"
-      longitude={parseFloat(popupInfo.coordinates.longitude)}
-      latitude={parseFloat(popupInfo.coordinates.latitude)}
+      longitude={parseFloat(popupInfo?.coordinates?.longitude)}
+      latitude={parseFloat(popupInfo?.coordinates?.latitude)}
       anchor="bottom"
       onClose={() => setPopupInfo(null)}
       closeOnClick={false}
@@ -65,7 +67,7 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
     >
       <ScrollArea
         className={cn("w-full rounded-md", {
-          "h-[260px] p-2": popupInfo.events.length > 1,
+          "h-[260px] p-2": popupInfo?.events?.length > 1,
         })}
       >
         {popupInfo.events.map((event, index) => (
@@ -90,9 +92,8 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
                   </span>
                 </div>
                 <Link
-                  href={`/search/${event.id}`}
+                  href={`/internal/event/${event.id}`} target="_blank"
                   className="text-primary text-xs py-0 h-5 pr-0"
-                  target="_blank"
                 >
                   View Details
                 </Link>

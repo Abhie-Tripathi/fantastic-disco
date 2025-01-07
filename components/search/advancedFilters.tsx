@@ -90,26 +90,11 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
       </div>
       <TabsContent value="advancedDetails">
         <div className="grid grid-cols-5 gap-3 pb-6 border-b">
-          <EditionSelector
-            source="search"
-            enabledMaturityData={enabledFilters?.maturity}
-          />
-          <GlobalAndTouringSelector
-            source="search"
-            enabledBrandData={enabledFilters?.branded}
-          />
-          <ForecastedStatusSelector
-            source="search"
-            enabledForecastData={enabledFilters?.isForecasted}
-          />
-          <FrequencySelector
-            source="search"
-            enabledFreqData={enabledFilters?.eventFrequency}
-          />
-          <KeywordFilter
-            source="search"
-            enabledProductData={enabledFilters?.keywords}
-          />
+          <EditionSelector/>
+          <GlobalAndTouringSelector/>
+          <ForecastedStatusSelector/>
+          <FrequencySelector/>
+          <KeywordFilter/>
         </div>
       </TabsContent>
       <TabsContent value="insightsAndScores">
@@ -118,25 +103,13 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
             "grid-cols-3": isEventeli,
           })}
         >
-          <EstimatedVisitorsSelector
-            source="search"
-            enabledVisitorData={enabledFilters?.eventSize}
-          />
+          <EstimatedVisitorsSelector/>
           {!isEventeli && (
-            <EstimatedExhibitorsSelector
-              source="search"
-              enabledExhibitorData={enabledFilters?.estimatedExhibitScore}
-            />
+            <EstimatedExhibitorsSelector/>
           )}
-          <EventAnalyticsSelector
-            source="search"
-            enabledAnalyticsData={enabledFilters?.analytics}
-          />
+          <EventAnalyticsSelector/>
           <EstimatedEconomicImpactSelector />
-          <EventRankingSelector
-            source="search"
-            enabledRankingData={enabledFilters?.eventRanking}
-          />
+          <EventRankingSelector/>
         </div>
       </TabsContent>
       <TabsContent value="audienceIntel">
@@ -148,19 +121,10 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
           <AudienceQualitySelector />
           <ExhibitorQualitySelector />
           {!isEventeli && (
-            <AudienceZoneSatusSelector
-              source="search"
-              enabledZoneData={enabledFilters?.audienceZone}
-            />
+            <AudienceZoneSatusSelector/>
           )}
-          <AudienceDesAndDep
-            source="search"
-            enabledProfileData={enabledFilters?.designation}
-          />
-          <AudienceSpread
-            source="search"
-            enabledSpreadData={enabledFilters?.audienceSpread}
-          />
+          <AudienceDesAndDep/>
+          <AudienceSpread/>
         </div>
       </TabsContent>
       <TabsContent value="trackers">

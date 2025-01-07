@@ -243,7 +243,6 @@ export const useEventsService = () => {
     getEventSpeakerDetails,
     getEventsWithSearchParams,
     getEventCoOrganizerDetails,
-    fetchEnabledFilters,
     isLoading: api.isLoading,
     error: api.error as ApiError,
   };

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 // import styles from "./csvuploader.module.css";
 import { ReactSpreadsheetImport } from "react-spreadsheet-import";
-
+import { useFilterContext } from "@/context/filterContext";
 interface InputArea {
   type: string;
   placeholder: string;
@@ -36,6 +36,9 @@ const CsvUploader = ({
   setExcludeKeywords,
   // setSelectedEventKeywords,
 }: Props) => {
+  const {
+    setMultipleLocalFilters,
+  } = useFilterContext();
   useEffect(() => {
     let tempData: any = [];
     if (templateData.name === "T_PRODUCT_KEYWORDS") {
@@ -117,8 +120,12 @@ const CsvUploader = ({
         if (data["Excluded Keywords"] && data["Excluded Keywords"] !== "")
           excludeKeywords.push(data["Excluded Keywords"]);
       });
-      setIncludeKeywords(includeKeywords)
-      setExcludeKeywords(excludeKeywords)
+      setMultipleLocalFilters({
+        includeKeywords: includeKeywords.join(","),
+        excludeKeywords: excludeKeywords.join(","),
+      })
+      // setIncludeKeywords(includeKeywords)
+      // setExcludeKeywords(excludeKeywords)
       // setSelectedEventKeywords(finalData2);
     } else {
       const cleanedSpeakers = data.validData

@@ -1,98 +1,168 @@
-"use client";
-
+import { useFilterState } from "@/hooks/useFilterState";
 import { cn } from "@/lib/utils";
 import { AlertTriangle } from "lucide-react";
-import React, { memo, useMemo } from "react";
-import { useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { useEventsService } from "@/services/eventsService";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
-import { Alert } from "@/types";
-import { formattedDateRange } from "@/utils/date";
+import React, { useEffect, useState } from "react";
+import * as turf from "@turf/turf";
+import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
 
-export function AlertItem({ alert }: { alert: Alert }) {
-  console.log(alert.startDate, alert.endDate)
-  const alertItem = useMemo(
-    () => (
-      <div className="mb-2 pb-2 border-b">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium capitalize text-muted-foreground">
-            {alert.type.toLowerCase()}
-          </span>
-          <span
-            className={cn(
-              "p-1 border-2 rounded-sm",
-              getAlertLevelBorderColor(alert.level.toLowerCase())
-            )}
-          >
-            {alertIcons[alert.type]}
-          </span>
-        </div>
-        <p className="text-sm">{alert.name || `New ${alert.type} alert`}</p>
-        <time className="text-xs text-muted-foreground">
-          {formattedDateRange(alert.startDate, alert.endDate)}
-        </time>
-      </div>
-    ),
-    [alert]
-  );
-
-  return alertItem;
+interface GDACSEvent {
+  type: string;
+  geometry: {
+    type: string;
+    coordinates: [number, number];
+  };
+  properties: {
+    eventtype: string;
+    eventid: number;
+    episodeid: number;
+    name: string;
+    alertlevel: string;
+    fromdate: string;
+    todate: string;
+    country: string;
+    htmldescription: string;
+  };
 }
 
 const Alerts = () => {
-  const searchParams = useSearchParams();
-  const eventService = useEventsService();
-  const filteredParams = new URLSearchParams(searchParams.toString());
-  filteredParams.set("eventTypes", "alert");
-  filteredParams.set("view", "list");
+  const { getFilterValue } = useFilterState();
+  const [gdacsEvents, setGdacsEvents] = useState<GDACSEvent[]>([]);
+  const [filteredGdacsEvents, setFilteredGdacsEvents] = useState<{
+    alertName: string;
+    alertLevel: string;
+  }>();
+  const [isGdacsLoading, setIsGdacsLoading] = useState(true);
+  const [gdacsError, setGdacsError] = useState<string | null>(null);
+  const geoCoordinate = JSON.parse(getFilterValue("geoCoordinates") || "null");
+  const lng = geoCoordinate?.longitude || 0;
+  const lat = geoCoordinate?.latitude || 0;
+  const radius = geoCoordinate?.radius || 0;
 
-  const {
-    data: alerts,
-    error,
-    isLoading,
-  } = useQuery({
-    queryKey: ["events", filteredParams.toString()],
-    queryFn: () =>
-      eventService.getEventsWithSearchParams(filteredParams.toString()),
-    refetchOnWindowFocus: false,
-  });
+  const getAlertLevelColor = (alertLevel: string | undefined) => {
+    switch (alertLevel?.toLowerCase() || "") {
+      case "red":
+        return "bg-red-200 border-red-300";
+      case "orange":
+        return "bg-orange-200 border-orange-300";
+      case "green":
+        return "bg-green-200 border-green-300";
+      default:
+        return "bg-gray-200 border-gray-300";
+    }
+  };
 
-  if (error || !alerts?.events.length) return null;
+  const getAlertTextColor = (alertLevel: string | undefined) => {
+    switch (alertLevel?.toLowerCase() || "") {
+      case "red":
+        return "text-red-800";
+      case "orange":
+        return "text-orange-800";
+      case "green":
+        return "text-green-800";
+      default:
+        return "text-gray-800";
+    }
+  };
+
+  const getAlertName = (alertName: string) => {
+    switch (alertName) {
+      case "EQ":
+        return "Earthquakes";
+      case "TS":
+        return "Tsunami";
+      case "TC":
+        return "Tropical Cyclone";
+      case "FL":
+        return "Flood";
+      case "VO":
+        return "Volcano";
+      case "DR":
+        return "Drought";
+      case "WF":
+        return "Wildfire";
+      default:
+        return "Heavy Rainfall";
+    }
+  };
+
+  useEffect(() => {
+    const fetchGdacsEvents = async () => {
+      setIsGdacsLoading(true);
+      setGdacsError(null);
+      try {
+        const fromDate = new Date();
+        const toDate = new Date();
+        toDate.setFullYear(toDate.getFullYear() + 1);
+
+        const url = `https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?fromDate=${
+          fromDate.toISOString().split("T")[0]
+        }&toDate=${
+          toDate.toISOString().split("T")[0]
+        }&alertlevel=Green;Orange;Red&eventlist=EQ;TS,TC,FL,VO,DR,WF`;
+        const response = await fetch(url);
+        const data = await response.json();
+        setGdacsEvents(data.features);
+      } catch (err) {
+        setGdacsError("Failed to fetch GDACS events");
+      } finally {
+        setIsGdacsLoading(false);
+      }
+    };
+
+    fetchGdacsEvents();
+  }, []);
+
+  useEffect(() => {
+    const filterGdacsEventsByBoundingBox = () => {
+      const center = turf.point([lng, lat]);
+      const options = { units: "kilometers" as const };
+      const circle = turf.circle(center, radius, options);
+      const bbox = turf.bbox(circle);
+      const bboxPolygon = turf.bboxPolygon(bbox);
+
+      const filtered = gdacsEvents.filter((event) => {
+        const eventPoint = turf.point(event.geometry.coordinates);
+        return booleanPointInPolygon(eventPoint, bboxPolygon);
+      });
+
+      setFilteredGdacsEvents({
+        alertName: filtered[0]?.properties.eventtype,
+        alertLevel: filtered[0]?.properties.alertlevel,
+      });
+    };
+
+    filterGdacsEventsByBoundingBox();
+  }, [gdacsEvents, lat, lng, radius]);
+
+  if (!filteredGdacsEvents?.alertName) return null;
 
   return (
-    <div className="absolute z-10 top-4 right-1/2 translate-x-1/2">
-      <Popover>
-        <PopoverTrigger asChild>
-          <div
-            className={cn(
-              "w-full p-2 flex items-center text-sm border rounded justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors"
-            )}
-          >
-            <AlertTriangle className="w-4 h-4 mr-2" />
-            Possibility of
-            <span className={cn("mx-1 font-semibold underline text-primary")}>
-              {alerts.events.length} Alert{alerts.events.length !== 1 && "s"}
-            </span>
-            in this Region
-          </div>
-        </PopoverTrigger>
-        <PopoverContent className="w-80">
-          <ScrollArea className="h-[300px] pr-4">
-            {alerts.events.map((alert) => (
-              <AlertItem key={alert.id} alert={alert as Alert} />
-            ))}
-          </ScrollArea>
-        </PopoverContent>
-      </Popover>
+    <div className="absolute z-10 top-4 right-1/2 translate-x-1/2 p-1 bg-white rounded">
+      <div
+        className={cn(
+          "w-full p-2 flex items-center text-sm border rounded justify-center",
+          getAlertLevelColor(filteredGdacsEvents?.alertLevel)
+        )}
+      >
+        <AlertTriangle
+          className={cn(
+            "w-4 h-4 mr-2",
+            getAlertTextColor(filteredGdacsEvents?.alertLevel)
+          )}
+        />
+        Possibility of
+        <span
+          className={cn(
+            "mx-1 font-semibold",
+            getAlertTextColor(filteredGdacsEvents?.alertLevel)
+          )}
+        >
+          {getAlertName(filteredGdacsEvents?.alertName)}
+        </span>
+        on this day
+      </div>
     </div>
   );
 };
 
-export default memo(Alerts);
+export default Alerts;

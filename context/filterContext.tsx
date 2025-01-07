@@ -53,7 +53,9 @@ interface EventFilterData {
   }
 }
 interface Filters {
+  interest?:string;
   show?: string;
+  liked?: string;
   eventTypes?: string;
   categories?: string;
   status?: string;
