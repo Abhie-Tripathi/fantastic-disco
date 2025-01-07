@@ -499,7 +499,7 @@ const activeVal =
           </Link>
         </div>
 
-        {(view === "list" || active === "Saved Events") && (
+        {(view === "list") && (
           <div>
             <Suspense fallback={<Loading />}>
           <Table
