@@ -428,7 +428,7 @@ const Trackers = ({ searchParams }: Search) => {
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
               className="outline-none w-full bg-[var(--primary-foreground)]"
-              placeholder="Search by name"
+              placeholder="Enter tracker name"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
