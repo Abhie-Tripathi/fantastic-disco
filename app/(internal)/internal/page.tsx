@@ -163,7 +163,10 @@ const Dashboard = () => {
       const combinedLocationIds = [cityIds, stateIds, countryIds].filter(loc => loc).join(",");
 
       console.log("combined locations : ", combinedLocationIds)
-      setLocalFilter("locationIds", combinedLocationIds)
+      if(combinedLocationIds){
+        setLocalFilter("locationIds", combinedLocationIds)
+      }else setLocalFilter("locationIds", "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef")
+      
       setLocalFilter("eventTypes", eventType)
       setLocalFilter("active_gte", startDate.split(",")[0])
       setLocalFilter("active_lte", startDate.split(",")[1])
