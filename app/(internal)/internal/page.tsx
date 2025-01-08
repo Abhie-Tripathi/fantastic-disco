@@ -60,7 +60,7 @@ const Dashboard = () => {
   // const [recentSearchValue, setRecentSearchValue] = useState<any>()
   const [value, setValue] = useState<string>("empty")
   const [profileData, setProfileData] = useState<ProfileData>({ name: "", email: "", phoneNumber: "", profilePicture: "", department: "" })
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { theme } = useTheme()
   const { getParticipentCount, getPipelineConfig, getOutreachSingleEvent, getLatestComment } = useCoordinateService()
@@ -211,35 +211,35 @@ const Dashboard = () => {
     return !outreachData.some(item => item.value > 0);
   };
 
-  useEffect(() => {
-    // Simulate a delay for loading state (optional)
-    const timer = setTimeout(() => {
-      // Check if any state has meaningful data
-      if (
-        !isCoordinateEmpty(coordinateData) ||
-        !isPromoteEmpty(promoteData) ||
-        trackerData.length > 0 ||
-        !isOutreachEmpty(outreachData)
-      ) {
-        setValue("filled");
-      } else {
-        setValue("empty");
-      }
-      setLoading(false); // Set loading to false after the computation
-    }, 500); // Adjust delay if needed
+  // useEffect(() => {
+  //   // Simulate a delay for loading state (optional)
+  //   const timer = setTimeout(() => {
+  //     // Check if any state has meaningful data
+  //     if (
+  //       !isCoordinateEmpty(coordinateData) ||
+  //       !isPromoteEmpty(promoteData) ||
+  //       trackerData.length > 0 ||
+  //       !isOutreachEmpty(outreachData)
+  //     ) {
+  //       setValue("filled");
+  //     } else {
+  //       setValue("empty");
+  //     }
+  //     setLoading(false); // Set loading to false after the computation
+  //   }, 500); // Adjust delay if needed
 
-    return () => clearTimeout(timer); // Cleanup timeout on component unmount
-  }, [coordinateData, promoteData, trackerData, outreachData]);
+  //   return () => clearTimeout(timer); // Cleanup timeout on component unmount
+  // }, [coordinateData, promoteData, trackerData, outreachData]);
 
   return (
-    <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3">
+    <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3 max-[1010px]:max-h-none max-[1010px]:h-[100%]">
       {loading ?
         <div className="flex justify-center items-center h-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
           <Loading/>
         </div> :
         <>
           <div className="flex-1">
-            {(role === "sa" && value === "empty") ? <ModuleSelection theme={theme} value="admin" /> :
+            {(role === "sa" && value === "empty") ? <div className="h-full max-[1010px]:h-fit"><ModuleSelection theme={theme} value="admin" /></div> :
               (role === "user" && value === "empty") ? <ModuleSelection theme={theme} value="user" /> :
                 value === "filled" ?
                   <div className="flex flex-col gap-3">

@@ -2,9 +2,9 @@ import { Button } from '@/components/ui/button'
 import React from 'react'
 import { MoveRight } from 'lucide-react'
 import Image, { StaticImageData } from 'next/image'
-import { useFilterContext } from '@/context/filterContext';
 import { useRouter } from 'next/navigation'
 // import styles from './style.module.css'
+import { useFilterContext } from '@/context/filterContext';
 
 interface Props {
   imgWidth: number
@@ -19,11 +19,13 @@ interface Props {
 const ModuleCard = ({ imgHeight, imgWidth, heading, subHeading, image, button, top }: Props) => {
 
   const router = useRouter()
-    const {  getLocalFilterValue, localFilters } = useFilterContext();
-  const handleRouting = () => {
-    router.push("/widget/dashboard")
-  }
+      const {  getLocalFilterValue, localFilters } = useFilterContext();
 
+  const handleRouting = () => {
+    if (button === "Promote") {
+      router.push("/widget/dashboard")
+    } else router.push("/internal/search/events")
+  }
   const searchHandler = () => {
     const params = new URLSearchParams();
     Object.entries(localFilters).forEach(([key, value]) => {
@@ -34,6 +36,8 @@ const ModuleCard = ({ imgHeight, imgWidth, heading, subHeading, image, button, t
     console.log('params', params);
     router.push(`/internal/search/events?${params.toString()}`, { scroll: false });
   };
+
+
   return (
     <div className="flex flex-col items-center justify-start h-[267px] w-[289px] bg-[var(--primary-foreground)] rounded-md shadow-md overflow-hidden p-3">
       <div className={`flex flex-col items-center justify-center min-h-[130px] max-h-[130px] w-[250px]`}>
@@ -44,7 +48,7 @@ const ModuleCard = ({ imgHeight, imgWidth, heading, subHeading, image, button, t
           {subHeading}
         </div>
         {button === "Coming Soon" ?
-          <button className='cursor-not-allowed text-white text-sm rounded-lg bg-gradient-to-r from-[#8C67E2] via-[#946DF0] via-[#E87D83] via-[#F2AB7F] to-[#FFC899] px-4 py-2 mt-5'>{button}</button> :
+          <button className='text-white text-sm rounded-lg bg-gradient-to-r from-[#8C67E2] via-[#946DF0] via-[#E87D83] via-[#F2AB7F] to-[#FFC899] px-4 py-2 mt-5'>{button}</button> :
           <Button onClick={button === "Research" ? searchHandler : handleRouting} className="mt-5 btn-default flex items-center z-20">{button}<MoveRight width={12} /></Button>}
       </div>
       <Image

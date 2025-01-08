@@ -56,8 +56,9 @@ const CoordinateScreenOne = ({ values, theme }: Props) => {
                         ))}
                     </div> : <Button onClick={() => handleRouting("button")} className="mt-8" size="sm">Search Events <MoveRight width={12} /></Button>}
             </div>
-            <div className="h-full min-w-[177px] max-w-[177px] flex items-center max-[570px]:hidden">
-                <Image className="w-full h-[180px] object-cover ml-4" src={theme === "dark" ? CoordinateScreenDark : CoordinateScreen} alt="coordinate" />
+            <div className="h-full min-w-[177px] max-w-[177px] flex items-center max-[1050px]:min-w-[250px] max-[1050px]:p-5 max-[720px]:p-0 max-[720px]:min-w-[177px] max-[570px]:hidden">
+                <Image className="w-full h-[180px] object-cover ml-4 max-[1050px]:ml-0 max-[1050px]:h-full 
+                max-[720px]:h-[180px] max-[1050px]:ml-4" src={theme === "dark" ? CoordinateScreenDark : CoordinateScreen} alt="coordinate" />
             </div>
         </div>
     )
