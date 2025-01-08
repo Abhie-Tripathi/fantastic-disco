@@ -19,6 +19,8 @@ import {EventTableType } from '@/types/ListViewTable';
 import SavedEventWidget from "@/app/components/internal/trackers/SavedEventWidget";
 import NotesDiscussionWidget from "@/app/components/internal/trackers/NotesDiscussionWidget";
 import NotificationWidget from "@/app/components/internal/trackers/NotificationWidget";
+import NullState from "@/app/components/trackers/nullState";
+import TrackerNullState from '@/public/trackerNullState.svg';
 import Calendar from '@/public/internal/calendar.svg'
 import TrackerLocation from '@/public/internal/location.svg'
 import Table from "@/app/components/Table";
@@ -385,6 +387,7 @@ const Trackers = ({ searchParams }: Search) => {
     setTrackerId(id);
   }
   // console.log(searchValue);
+  console.log(singleTrackerData?.groupedEventsCountByStatus?.groupedEventsByStatus?.active);
   
   return (
     // <div className={styles.body}>
@@ -479,17 +482,26 @@ const Trackers = ({ searchParams }: Search) => {
    {/* {load ? (
       <Loading />
     ) : ( */}
-      <Suspense fallback={<div className="h-[300px] w-[100%] items-center justify-center"><Loading /></div>}>
-        <div className="h-[300px]">
+     <Suspense fallback={<div className="h-[300px] w-[100%] items-center justify-center"><Loading /></div>}>
+    <div className="h-[300px]">
+      {Number(singleTrackerData?.groupedEventsCountByStatus?.groupedEventsByStatus?.active || 0)===0 ? (
+        <div className="px-10 py-5 h-[100%]">
+          <NullState
+            image={TrackerNullState}
+            title="No events were found in the selected area."
+          />
+        </div>
+      ) : (
         <Map 
           isGlobal={true}
           source="tracker" 
-          searchParams={`active`}
-          trackerId={singleTrackerData?.id}
-          trackerLoc={locations?.length>0 && locations?.join(",")}
+          searchParams="active"
+          trackerId={singleTrackerData?.id || ""}
+          trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
         />
-        </div>
-      </Suspense>
+      )}
+    </div>
+  </Suspense>
     {/* )} */}
 
   </div>

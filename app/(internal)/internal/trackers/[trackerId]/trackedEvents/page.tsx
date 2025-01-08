@@ -62,6 +62,8 @@ const Page = ({ params }: { params: any }) => {
   const token = searchParams.get("token");
   const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
+  const trackerType = searchParams.get("type");
+  
   const viewType=searchParams.get("view");
   const typeOfEvent=searchParams.get("eventType");
   const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
@@ -519,7 +521,11 @@ const activeVal =
               <Suspense fallback={<Loading />}>
               {Number(activeVal)===0 ?
               <div className="px-10 py-5">
-              <NullState image={TrackerNullState} title="No events saved yet! Start saving events to easily track and revisit them here."/>
+              {active==="Saved Events"?
+                <NullState image={TrackerNullState} title="We couldn’t find any events matching your tracker criteria at the moment."/>:
+                <NullState image={TrackerNullState}  title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Configuration" buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration?type=${trackerType}`}/>
+              }
+              
               </div>
                : 
                 <Map source="tracker" 

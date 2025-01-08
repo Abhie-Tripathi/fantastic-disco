@@ -751,7 +751,7 @@ const Pages = () => {
     );
     if (isCreating) return;
     setIsCreating(true);
-
+    
     const categorySlugs = selectedCategories;
     const categoryIds = getLocalFilterValue("categories")
     .split(",")
@@ -777,6 +777,9 @@ const Pages = () => {
       ...(getLocalFilterValue("show").split(",").includes("audienceZone") && {audienceZone:true}),
       ...(audienceSpread && {audienceSpread:true}),
       ...(getLocalFilterValue("show").split(",").includes("frequency") && {eventFrequency:true}),
+      ...(getLocalFilterValue("trust_score_gte") && {
+        trust: true
+      }),
     }
      const eventType1=getLocalFilterValue("eventTypes")
       .split(",")
@@ -1211,14 +1214,17 @@ const Pages = () => {
       
       if(editData?.tracker?.filterValue?.inboundScore && editData?.tracker?.filterValue?.inboundScore !== "")
         setSelectedInboundScore(editData?.tracker?.filterValue?.inboundScore?.split("-"));
-      
+      if(editData?.tracker?.filterValue?.trustScore){
+      setLocalFilter("trust_score_gte",editData?.tracker?.filterValue?.trustScore )
+      setLocalFilter("trust_score_lte","100")
+      }
       if(toggleOpend.globalToggle){
-        setLocalFilter("impact_score_gte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[0]).toString() || "0")
-        setLocalFilter("impact_score_lte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[1]).toString() || "100")
-        setLocalFilter("inbound_score_gte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[0]).toString() || "0")
-        setLocalFilter("inbound_score_lte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[1]).toString() || "0")
-        setLocalFilter("international_score_gte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[0]).toString() || "0")
-        setLocalFilter("international_score_lte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[1]).toString() || "0")
+        setLocalFilter("impact_score_gte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[0])?.toString() || "0")
+        setLocalFilter("impact_score_lte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[1])?.toString() || "100")
+        setLocalFilter("inbound_score_gte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[0])?.toString() || "0")
+        setLocalFilter("inbound_score_lte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[1])?.toString() || "100")
+        setLocalFilter("international_score_gte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[0])?.toString() || "0")
+        setLocalFilter("international_score_lte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[1])?.toString() || "100")
       }
       if(editData?.tracker?.filterValue?.eventImpactScore && editData?.tracker?.filterValue?.eventImpactScore !== "")
         setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactScore?.split("-"));
@@ -1236,7 +1242,7 @@ const Pages = () => {
         setLocalFilter("onlySeries","true")
       }
       if(editData?.tracker?.filterValue?.eventRanking && editData?.tracker?.filterValue?.eventRanking !== '')
-        setLocalFilter("top",editData?.tracker?.filterValue?.eventRanking?.split("-")[1].toString())
+        setLocalFilter("top",editData?.tracker?.filterValue?.eventRanking?.split("-")[1]?.toString())
       
       setAudienceZone(toggleOpend?.audienceZone ? true : false);
       setAudienceSpread(toggleOpend?.audienceSpread ? true : false);

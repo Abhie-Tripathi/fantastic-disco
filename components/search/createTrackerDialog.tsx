@@ -123,12 +123,12 @@ export default function CreateTrackerDialog({
           "Content-Type": "application/json",
         },
       });
-
-      if (error) {
-        throw new Error(error);
+      
+      if(error){
+        toast.error(error.message);
       }
-
       if (data) {
+        
         toast.success(
           <div style={{ display: "flex", flexWrap: "wrap" }}>
             Tracker created successfully!{" "}
@@ -149,7 +149,7 @@ export default function CreateTrackerDialog({
       }
     } catch (error) {
       console.error("Error saving tracker:", error);
-      toast.error("Failed to create tracker. Please try again.");
+      toast.error(error);
     } finally {
       setIsLoading(false);
     }
