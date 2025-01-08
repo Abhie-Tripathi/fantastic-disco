@@ -528,7 +528,7 @@ const EventListItem = ({
                       Forecasted for {format(event.rehostDate, "MMM yyyy")}
                     </Badge>
                   )}
-                  {event.rankings && (
+                  {event.rankings?.rankRange && (
                     <Badge
                       variant="outline"
                       className="text-gray-600 capitalize"
