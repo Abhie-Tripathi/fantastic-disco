@@ -106,7 +106,7 @@ const Search = () => {
   const displayData = eventData;
 
   const events = displayData?.events || [];
-  const count = displayData?.count || 0;
+  const count = displayData?.count;
 
   const searchHandler = useCallback(() => {
     applyFilters();
@@ -384,6 +384,10 @@ const Search = () => {
             <ZeroState text={(error as ApiError).message} />
           ) : count == 0 ? (
             <ZeroState text="No events were found in the selected area." />
+          ) : count == undefined ? (
+            <div className="flex justify-center items-center">
+              <ZeroState text="Discover insights on business trends filtered by geography and category, all in one glance." />
+            </div>
           ) : (
             <>
               {/* <Alerts /> */}
