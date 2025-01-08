@@ -155,9 +155,9 @@ const NewSignUpForm = () => {
     }
   };
 
-  const type = industryData.find(
+  const isCategoryMapped = industryData.find(
     (industryItem) => industryItem.slug === industry
-  )?.type;
+  )?.subCategory;
 
   const obj = {
     email: email,
@@ -230,7 +230,7 @@ const NewSignUpForm = () => {
             </>
           )}
         />
-        {type === "category" && (
+        {isCategoryMapped && (
           <Controller
             name={"industry"}
             control={control}

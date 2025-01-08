@@ -1,6 +1,5 @@
 import { newCategories } from "@/data/categories";
 import { Category } from "@/types/onboarding";
-import { Checkbox } from "../ui/checkbox";
 import { CircleCheck } from "lucide-react";
 
 const Card = ({
@@ -10,7 +9,7 @@ const Card = ({
   category: Category;
   activeCategories: string[];
 }) => {
-  const { name, slug, id } = category;
+  const { name, id } = category;
   const isActive = activeCategories.includes(id);
   return (
     <div

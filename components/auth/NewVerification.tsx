@@ -76,11 +76,11 @@ export default function NewVerificationForm() {
 
   const redirectTo = useMemo(() => {
     if (flow && flow === "signup") {
-      const type = industryData.find(
+      const isCategoryMapped = industryData.find(
         (industryItem) => industryItem.slug === industry
-      )?.type;
-      if (type === "location") {
-        return `/${type}?industry=${industry}`;
+      )?.subCategory;
+      if (!isCategoryMapped) {
+        return `/location?industry=${industry}`;
       } else {
         return `/internal/search/events?${urlParams}`;
       }
