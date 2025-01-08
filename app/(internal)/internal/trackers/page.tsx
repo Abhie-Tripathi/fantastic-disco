@@ -387,7 +387,6 @@ const Trackers = ({ searchParams }: Search) => {
     setTrackerId(id);
   }
   // console.log(searchValue);
-  console.log(singleTrackerData?.groupedEventsCountByStatus?.groupedEventsByStatus?.active);
   
   return (
     // <div className={styles.body}>
@@ -412,7 +411,7 @@ const Trackers = ({ searchParams }: Search) => {
       <div>
     {isData &&
       <div className="flex flex-row">
-  <div className="w-1/2 h-[calc(100vh-70px)]">
+  <div className="w-1/2 h-[calc(100vh-65px)]">
     <div className="flex flex-col gap-4 px-8 py-0">
       <div className="text-sm text-[var(--secondary-text-color)] pt-8">
         Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
@@ -441,7 +440,7 @@ const Trackers = ({ searchParams }: Search) => {
           <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue}/>
       </div>
   </div>
-  <div className="w-1/2 p-8 h-[calc(100vh-61px)] bg-[var(--background-secondary-color)]" style={{padding:"32px 0px"}}>
+  <div className="w-1/2 p-8 h-[calc(100vh-65px)] bg-[var(--background-secondary-color)]" style={{padding:"32px 0px"}}>
     <div className="flex flex-col gap-4">
   <div className="flex items-center justify-between border border-[var(--border-color)] p-3" style={{margin:"0px 32px"}}>
           <span className="flex items-center gap-2 text-[#696B83]">
@@ -460,7 +459,7 @@ const Trackers = ({ searchParams }: Search) => {
             </Button>
           )}
         </div>
-        <div className="flex h-[calc(100vh-171px)] overflow-y-auto flex-col px-8 gap-4">
+        <div className="flex h-[calc(100vh-180px)] overflow-y-auto flex-col px-8 gap-4">
   {/* <div className="flex w-[45%] items-stretch">
     <div className="flex flex-col w-[100%] gap-3">
     <div className="w-[100%]">
@@ -482,26 +481,35 @@ const Trackers = ({ searchParams }: Search) => {
    {/* {load ? (
       <Loading />
     ) : ( */}
-     <Suspense fallback={<div className="h-[300px] w-[100%] items-center justify-center"><Loading /></div>}>
-    <div className="h-[300px]">
-      {Number(singleTrackerData?.groupedEventsCountByStatus?.groupedEventsByStatus?.active || 0)===0 ? (
-        <div className="px-10 py-5 h-[100%]">
-          <NullState
-            image={TrackerNullState}
-            title="No events were found in the selected area."
-          />
-        </div>
-      ) : (
-        <Map 
-          isGlobal={true}
-          source="tracker" 
-          searchParams="active"
-          trackerId={singleTrackerData?.id || ""}
-          trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
-        />
-      )}
+    <Suspense
+  fallback={
+    <div className="h-[300px] w-[100%] items-center justify-center">
+      <Loading />
     </div>
-  </Suspense>
+  }
+>
+  <div className="h-[300px]">
+    {(!singleTrackerData &&  searchValue.length<3) ? (
+        <Loading />
+    ) : Number(singleTrackerData?.groupedEventsCountByStatus?.groupedEventsByStatus?.active || 0) === 0 ? (
+      <div className="px-10 py-5 h-[100%]">
+        <NullState
+          image={TrackerNullState}
+          title="No events were found in the selected area."
+        />
+      </div>
+    ) : (
+      <Map
+        isGlobal={true}
+        source="tracker"
+        searchParams="active"
+        trackerId={singleTrackerData?.id || ""}
+        trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
+      />
+    )}
+  </div>
+</Suspense>
+
     {/* )} */}
 
   </div>
@@ -545,7 +553,7 @@ const Trackers = ({ searchParams }: Search) => {
   </div>
 </div>}
 {(!hideTemplate || !isData)&& (
-          <div className="absolute left-[63px] top-[61px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-61px)]" style={{zIndex:"11"}}>
+          <div className="absolute left-[63px] top-[65px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-70px)]" style={{zIndex:"11"}}>
             <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
           {!isData && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>}
         {isData && 

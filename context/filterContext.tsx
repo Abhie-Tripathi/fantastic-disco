@@ -248,7 +248,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       temp.eventFormats = enabledFilters.eventFormat?.enabledValue?.join(',') ?? '';
       temp.status = enabledFilters.eventStatus?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
       temp.categories = enabledFilters.eventCategory?.enabledValue
-        ?.map((item: any) => item.slug)
+        ?.map((item: any) => item.id)
         .join(',') ?? '';
       temp.eventTypes = enabledFilters.eventType?.enabledValue?.map((item:string)=>`${item.toLowerCase()}s`)?.join(',') ?? '';
       temp.locationIds = enabledFilters.locationIds?.enabledValue

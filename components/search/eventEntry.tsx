@@ -18,8 +18,8 @@ export default function EventEntrySelector() {
   const eventEntries = morphedData?.eventEntries?.options;
   const enabled = morphedData?.eventEntries?.isEnabled || [];
   const selectedStatuses = getLocalFilterValue("entryType")
-    .split(",")
-    .filter(Boolean);
+    ?.split(",")
+    ?.filter(Boolean);
   const selectedStatus = selectedStatuses.length;
 
   const handleStatusToggle = (statusId: string) => {

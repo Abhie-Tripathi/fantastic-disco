@@ -727,8 +727,8 @@ const Pages = () => {
       setTrackerName(trackerName);
     } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
       setTrackerName(trackerName);
-      // setIncludeKeywords(filteredPresetData?.[0]?.data?.[0]);
-      // setExcludeKeywords(filteredPresetData?.[0]?.data?.[1]);
+      setLocalFilter("includeKeywords",filteredPresetData?.[0]?.data?.[0].join(","));
+      setLocalFilter("excludeKeywords",filteredPresetData?.[0]?.data?.[1].join(","))
     }
 
     setSelectedPresetName(trackerName);
@@ -866,6 +866,9 @@ const Pages = () => {
         ...(selectedLabels?.length > 0 && {
           labels: selectedLabels.join(","),
         }),
+        ...(getLocalFilterValue("categories")?.length>0 &&{
+          eventCategory: categoryIds.join(",")
+        }),
         ...(getLocalFilterValue("eventFormats")?.length > 0 && {
           eventFormat: getLocalFilterValue("eventFormats"),
         }),
@@ -954,7 +957,7 @@ const Pages = () => {
          ...(getLocalFilterValue("designations") && {
           designation: getLocalFilterValue("designations"),
         }),
-        ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'inboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency'].join()}
+        ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'inboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency', 'eventRanking'].join()}
         // info: {
         //   name: trackerName,
         //   location:selectedLocations,
@@ -1284,11 +1287,6 @@ const Pages = () => {
         });
         
         setLocalFilter("categories", categorySlugs.join(","));
-        setSelectedCategories(
-          categorySlugs?.length > 0
-            ? categorySlugs
-            : []
-        );
       }
       // setSelectedCategories(
       //   editData?.tracker?.filterValue?.eventCategory?.length > 0
@@ -1406,11 +1404,13 @@ const Pages = () => {
           ? editData.tracker.filterValue?.eventEntry?.split(",")
           : []
       );
-      setLocalFilter("entryType", editData.tracker.filterValue?.eventEntry)
       if (editData?.tracker?.filterValue?.eventType !== undefined) {
         const eventTypes = editData.tracker.filterValue.eventType.map((type:string) => {
-          return type.charAt(0).toLowerCase() + type.slice(1) + 's';
+          return type.charAt(0).toLowerCase() + type.slice(1)+"s";
         });
+        console.log("");
+        
+         setLocalFilter("eventTypes",eventTypes.join(","))
     }
 
 

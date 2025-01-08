@@ -4,6 +4,14 @@ export interface Tracker {
     type?:string;
     accessLevel?:string;
     filterValue?: FilterValue;
+    groupedEventsCountByStatus?:{
+      groupedEventsByStatus?:{
+        expired?:string;
+        new?:string;
+        active?:string;
+      }
+
+    }
   }
   type LocationObject = { [id: string]: string };
   export interface FilterValue {

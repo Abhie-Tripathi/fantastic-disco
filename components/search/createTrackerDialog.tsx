@@ -149,7 +149,7 @@ export default function CreateTrackerDialog({
       }
     } catch (error) {
       console.error("Error saving tracker:", error);
-      toast.error(error);
+      toast.error("Failed to create tracker. Please try again.");
     } finally {
       setIsLoading(false);
     }
