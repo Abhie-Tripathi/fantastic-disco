@@ -107,7 +107,6 @@ export const AuthContextProvider = ({ children }: any) => {
     const queryParams = new URLSearchParams({
       email: email.trim(),
       ...(industry && { industry }),
-      ...(categories && { categories }),
       ...(flow && { flow }),
     });
     try {

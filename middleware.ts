@@ -14,7 +14,10 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/internal", request.url));
     }
   }
-  if (request.nextUrl.pathname === "/internal/search/events" && !request.nextUrl.searchParams.has("view")) {
+  if (
+    request.nextUrl.pathname === "/internal/search/events" &&
+    !request.nextUrl.searchParams.has("view")
+  ) {
     request.nextUrl.searchParams.set("view", "list");
     return NextResponse.redirect(request.nextUrl);
   }
@@ -23,6 +26,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|signin|signup|detailpage|forgot-password|reset|location|verify-otp|internal/trackers/).*)",
+    "/((?!api|_next/static|_next/image|favicon.ico|signin|signup|detailpage|forgot-password|reset|location|category|verify-otp|internal/trackers/).*)",
   ],
 };

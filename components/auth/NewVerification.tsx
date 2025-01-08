@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import styles from "@/app/(auth)/verification/page.module.css";
 import OtpInput from "react-otp-input";
@@ -35,6 +35,9 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, Loader2, TriangleAlert } from "lucide-react";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useSearchParams } from "next/navigation";
+import { Input } from "../ui/input";
+import { industryData } from "@/data/onboarding";
+import { endOfMonth, startOfMonth } from "date-fns";
 
 const otpSchema = z.object({
   otpCode: z
@@ -53,14 +56,38 @@ export default function NewVerificationForm() {
   const [isLoading, setIsLoading] = useState(false);
 
   const industry = searchParams.get("industry") || "";
-  const categories = searchParams.get("categories") || "";
+  const sessionData = sessionStorage.getItem("categories");
+  const categories = sessionData && JSON.parse(sessionData);
   const flow = searchParams.get("flow") || "";
-  const redirectTo =
-    flow && flow === "signup"
-      ? `/location?industry=${industry}${
-          categories ? `&categories=${categories}` : ""
-        }`
-      : "/";
+
+  const urlParams = useMemo(() => {
+    const currentDate = new Date();
+    const startDate = new Date(
+      startOfMonth(currentDate).setHours(5, 30, 0, 0)
+    ).toISOString();
+    const endDate = new Date(
+      endOfMonth(currentDate).setHours(5, 30, 0, 0)
+    ).toISOString();
+    const queryParams = `status=active,cancelled,postponed&view=map${
+      categories && categories.length > 0 ? `&categories=${categories}` : ""
+    }&active_gte=${startDate}&active_lte=${endDate}&locationIds=e3ef02ad-2f97-5fa6-9033-9addfad3f0ef`;
+    return queryParams;
+  }, [categories]);
+
+  const redirectTo = useMemo(() => {
+    if (flow && flow === "signup") {
+      const type = industryData.find(
+        (industryItem) => industryItem.slug === industry
+      )?.type;
+      if (type === "location") {
+        return `/${type}?industry=${industry}`;
+      } else {
+        return `/internal/search/events?${urlParams}`;
+      }
+    }
+    return "/";
+  }, [flow, industry]);
+
   const { getFilterValue } = useFilterState();
   const email = getFilterValue("email");
 
@@ -84,8 +111,7 @@ export default function NewVerificationForm() {
     }
   };
 
-  const resendOTP = async () => {
-    // const currentSearchParams = new URLSearchParams(searchParams.toString());
+  const resendOTP = async (email: string) => {
     setTime(30);
     generateOTP(email, industry, categories, flow);
   };
@@ -103,39 +129,32 @@ export default function NewVerificationForm() {
   }, [time]);
 
   return (
-    <div className="flex flex-col gap-6 h-full w-full max-w-md p-8">
-      <p
-        className="flex items-center gap-1 text-primary cursor-pointer"
-        onClick={() => router.back()}
-      >
-        <ArrowLeft width={18} height={18} />
-        <span>Back</span>
-      </p>
-
-      <div className="flex items-center mt-4 text-primary bg-[#eeeaf9] p-4 rounded-md">
-        <Image src={ArchiveIcon} alt="archive" className="self-start" />
-        <span className="text-center">
-          Check your mailbox for a quick verification code.
-        </span>
-      </div>
-      <div className="w-full max-w-md space-y-8 p-8">
-        <div className="text-[#242424] font-medium text-2xl flex items-center justify-center text-center">
-          <Image src={logo} alt="logo" width={45} height={55} />
-          <Image src={whr} alt="whr" />
+    <div className="flex flex-col gap-24 h-full w-full mx-0 sm:w-fit sm:mx-auto p-8">
+      <div className="flex flex-col justify-center items-center w-full space-y-8">
+        <p className="font-semibold text-lg leading-6 text-center">
+          Create your account
+        </p>
+        <div className="space-y-2 w-full sm:w-96 max-w-3xl self-center border-b pb-6">
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            disabled
+            placeholder="Email"
+          />
         </div>
-        {error && (
-          <Alert variant="destructive">
-            <AlertDescription className="captilize flex items-center">
-              <TriangleAlert
-                color="#EF4444"
-                className="h-4 w-4 mr-2 self-start"
-              />
-              <span className="">{error.message}</span>
-            </AlertDescription>
-          </Alert>
-        )}
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col space-y-6 w-full"
+          >
+            <p
+              className="flex items-center gap-1 text-primary cursor-pointer"
+              onClick={() => router.back()}
+            >
+              <ArrowLeft width={18} height={18} />
+              <span>Back</span>
+            </p>
             <h1 className="text-center font-medium text-sm">Enter your OTP</h1>
             <FormField
               control={form.control}
@@ -150,7 +169,7 @@ export default function NewVerificationForm() {
                             <InputOTPSlot
                               key={index}
                               index={index}
-                              className="w-10 h-10 text-xl"
+                              className="w-8 sm:w-10 h-8 sm:h-10 text-sm sm:text-xl"
                             />
                           </InputOTPGroup>
                         ))}
@@ -161,7 +180,22 @@ export default function NewVerificationForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            {error && (
+              <Alert
+                variant="destructive"
+                className="w-fit border-none self-center"
+              >
+                <AlertDescription className="captilize flex items-center">
+                  <TriangleAlert color="#EF4444" className="w-4 h-4" />
+                  <span className="ml-2">{error.message}</span>
+                </AlertDescription>
+              </Alert>
+            )}
+            <Button
+              type="submit"
+              className="w-full sm:w-80 self-center"
+              disabled={isLoading}
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -178,7 +212,7 @@ export default function NewVerificationForm() {
             variant="link"
             className="w-full"
             onClick={() => {
-              resendOTP();
+              resendOTP(email);
             }}
           >
             Resend OTP

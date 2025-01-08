@@ -1,7 +1,10 @@
+import { StaticImageData } from "next/image";
+
 export interface Industry {
   name: string;
   slug: string;
-  type: "center" | "city";
+  image?: StaticImageData;
+  type: "category" | "location";
   subCategory: boolean;
 }
 
@@ -18,6 +21,12 @@ export interface VerificationProps {
     categories?: string[];
     path: string;
   };
+}
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
 }
 
 export interface SubIndustry extends Omit<Industry, "subIndustries"> {}

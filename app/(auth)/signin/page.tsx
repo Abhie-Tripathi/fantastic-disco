@@ -48,40 +48,35 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="w-full max-w-md space-y-8 p-8">
-      <div className={styles.form_heading}>
-        <Image src={logo} alt="logo" width={45} height={55} />
-        <Image src={whr} alt="whr" />
-      </div>
+    <div className="flex flex-col justify-center items-center w-full space-y-8 h-[80dvh]">
+      <p className="font-semibold text-lg leading-6 text-center">
+        Login to your account
+      </p>
       {error && (
-        <Alert variant="destructive">
+        <Alert variant="destructive" className="w-fit">
           <AlertDescription className="capitalize flex items-center">
-            <AlertTriangle className="h-4 w-4 mr-2 self-start" />
+            <AlertTriangle className="h-4 w-4 mr-2" />
             {error.message}
           </AlertDescription>
         </Alert>
       )}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col space-y-6 w-full"
+      >
         <Controller
           name="email"
           control={control}
           render={({ field }) => (
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                {...field}
-                placeholder="Enter your email"
-                className="h-11"
-              />
+            <div className="space-y-2 w-96 max-w-3xl self-center">
+              <Input id="email" type="email" {...field} placeholder="Email" />
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}
             </div>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button type="submit" className="w-80 self-center" disabled={isLoading}>
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
