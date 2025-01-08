@@ -3,6 +3,7 @@ import React from 'react'
 import BinocularsIcon from '/public/Binoculars.svg'
 import Image from 'next/image'  
 import { ArrowRight } from "geist-icons";
+import {LockClosed} from 'geist-icons'
 
 const Tour = () => {
     return (
@@ -13,7 +14,7 @@ const Tour = () => {
                 </div>
                 <div className="text-white text-sm">Discover features that can power your business !</div>
             </div>
-            <button className="flex items-center bg-[var(--border-color)] border border-[var(--input-border-color)] gap-1 rounded-sm text-xs leading-[var(--line-height-small)] px-3 py-1.5 text-[var(--primary-color)]" >Take a Product tour<ArrowRight width='12px' height='12px' color='#6750a4' /></button>
+            <button className="flex items-center bg-[var(--border-color)] border border-[var(--input-border-color)] gap-1 rounded-sm text-xs leading-[var(--line-height-small)] px-3 py-1.5 text-[var(--primary-color)] cursor-not-allowed" ><LockClosed width='12px' height='12px' color='grey'/>Take a Product tour<ArrowRight width='12px' height='12px' color='#6750a4' /></button>
         </div>
     )
 }

@@ -19,6 +19,7 @@ import { useEventsService } from "@/services/eventsService";
 import { useProfileServices } from "@/services/profileService";
 import { useFilterContext } from '@/context/filterContext';
 import Pricing from "@/app/components/internal/Dashboard/Pricing";
+import Loading from "@/components/ui/Loading";
 
 interface TrackerData {
   id: string;
@@ -59,6 +60,7 @@ const Dashboard = () => {
   // const [recentSearchValue, setRecentSearchValue] = useState<any>()
   const [value, setValue] = useState<string>("empty")
   const [profileData, setProfileData] = useState<ProfileData>({ name: "", email: "", phoneNumber: "", profilePicture: "", department: "" })
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { theme } = useTheme()
   const { getParticipentCount, getPipelineConfig, getOutreachSingleEvent, getLatestComment } = useCoordinateService()
@@ -210,66 +212,94 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // Check if any state has meaningful data
-    if (
-      !isCoordinateEmpty(coordinateData) ||
-      !isPromoteEmpty(promoteData) ||
-      trackerData.length > 0 ||
-      !isOutreachEmpty(outreachData)
-    ) {
-      setValue("filled");
-    } else {
-      setValue("empty");
-    }
+    // Simulate a delay for loading state (optional)
+    const timer = setTimeout(() => {
+      // Check if any state has meaningful data
+      if (
+        !isCoordinateEmpty(coordinateData) ||
+        !isPromoteEmpty(promoteData) ||
+        trackerData.length > 0 ||
+        !isOutreachEmpty(outreachData)
+      ) {
+        setValue("filled");
+      } else {
+        setValue("empty");
+      }
+      setLoading(false); // Set loading to false after the computation
+    }, 500); // Adjust delay if needed
+
+    return () => clearTimeout(timer); // Cleanup timeout on component unmount
   }, [coordinateData, promoteData, trackerData, outreachData]);
 
   return (
     <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3">
-      <div className="flex-1">
-        {(role === "sa" && value === "empty") ? <ModuleSelection theme={theme} value="admin" /> :
-          (role === "user" && value === "empty") ? <ModuleSelection theme={theme} value="user" /> :
-            value === "filled" ?
-              <div className="flex flex-col gap-3">
-                <Research theme={theme} />
-                <div className="flex flex-col gap-3 mb-2">
-                  <div className="w-full flex gap-3 max-[1050px]:flex-col">
-                    <div className="w-[50%] flex gap-3 max-[1050px]:w-full max-[870px]:flex-col">
-                      <div className="w-full hidden max-[870px]:block max-[600px]:hidden">
-                        <TrackerContainer trackers={trackerData} width="small" />
+      {loading ?
+        <div className="flex justify-center items-center h-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
+          <Loading/>
+        </div> :
+        <>
+          <div className="flex-1">
+            {(role === "sa" && value === "empty") ? <ModuleSelection theme={theme} value="admin" /> :
+              (role === "user" && value === "empty") ? <ModuleSelection theme={theme} value="user" /> :
+                value === "filled" ?
+                  <div className="flex flex-col gap-3">
+                    <Research theme={theme} />
+                    <div className="flex flex-col gap-3 mb-2">
+                      <div className="w-full flex gap-3 max-[1050px]:flex-col">
+                        <div className="w-[50%] flex gap-3 max-[1050px]:w-full max-[870px]:flex-col">
+                          <div className="w-full hidden max-[870px]:block max-[600px]:hidden">
+                            <TrackerContainer trackers={trackerData} width="small" />
+                          </div>
+                          <div className="w-full hidden max-[600px]:block">
+                            <TrackerContainer trackers={trackerData} width="smaller" />
+                          </div>
+                          <div className={`${(outreach && trends) ? "w-[50%]" : "w-full"} max-[870px]:hidden`}>
+                            <TrackerContainer trackers={trackerData} width={(role === "sa") ? "smaller" : "large"} />
+                          </div>
+                          {(trends && role === "sa") && <div className="w-[50%] max-[870px]:w-full">
+                            <Trends container="small" />
+                          </div>}
+                        </div>
+                        <div className="w-[50%] max-[1050px]:w-full">
+                          <CoordinateContainer
+                            theme={theme}
+                            coordinateData={coordinateData}
+                            height="small"
+                          />
+                        </div>
                       </div>
-                      <div className="w-full hidden max-[600px]:block">
-                        <TrackerContainer trackers={trackerData} width="smaller" />
-                      </div>
-                      <div className={`${(outreach && trends) ? "w-[50%]" : "w-full"} max-[870px]:hidden`}>
-                        <TrackerContainer trackers={trackerData} width={(role === "sa") ? "smaller" : "large"} />
-                      </div>
-                      {(trends && role === "sa") && <div className="w-[50%] max-[870px]:w-full">
-                        <Trends container="small" />
-                      </div>}
-                    </div>
-                    <div className="w-[50%] max-[1050px]:w-full">
-                      <CoordinateContainer
-                        theme={theme}
-                        coordinateData={coordinateData}
-                        height="small"
-                      />
-                    </div>
-                  </div>
-                  <div className="w-full flex gap-3 max-[870px]:flex-col">
-                    {(role === "sa") && <div className="w-[50%] max-[870px]:w-full">
-                      <Outreach outreachChat={outreachChat} outreachData={outreachData} theme={theme} /> </div>}
-                    {role === "sa" && <div className="flex gap-3 w-[50%] max-[870px]:w-full max-[500px]:flex-col">
-                      <div className={`${prospect ? "w-[50%]" : "w-full"} max-[500px]:w-full`}>
-                        <PromoteContainer promoteData={promoteData} theme={theme} width={prospect ? "small" : "large"} />
-                      </div>
-                      {prospect && <div className="w-[50%] max-[500px]:w-full">
-                        <Prospect theme={theme} />
-                      </div>}
+                      <div className="w-full flex gap-3 max-[870px]:flex-col">
+                        {(role === "sa") && <div className="w-[50%] max-[870px]:w-full">
+                          <Outreach outreachChat={outreachChat} outreachData={outreachData} theme={theme} /> </div>}
+                        {role === "sa" && <div className="flex gap-3 w-[50%] max-[870px]:w-full max-[500px]:flex-col">
+                          <div className={`${prospect ? "w-[50%]" : "w-full"} max-[500px]:w-full`}>
+                            <PromoteContainer promoteData={promoteData} theme={theme} width={prospect ? "small" : "large"} />
+                          </div>
+                          {prospect && <div className="w-[50%] max-[500px]:w-full">
+                            <Prospect theme={theme} />
+                          </div>}
 
-                    </div>}
-                  </div>
-                </div>
-                {/* <div className="flex gap-3 mb-2">
+                        </div>}
+                      </div>
+                    </div>
+                  </div> : <></>
+            }
+          </div>
+          <div className="flex flex-col min-w-[20%] gap-3 max-[1350px]:hidden">
+            <RecentActivity value={value} profileData={profileData} />
+            <ManageTeam />
+            <Pricing />
+          </div>
+        </>
+      }
+    </div>
+  );
+};
+
+export default Dashboard;
+
+
+{/* <div className="flex gap-3 mb-2">
                   <div className="flex flex-col gap-3 w-[55%]">
                     <div className="w-full flex gap-3">
                       <div className={(outreach && trends) ? "w-[50%]" : "w-full"}>
@@ -302,19 +332,3 @@ const Dashboard = () => {
                     </div>}
                   </div>
                 </div> */}
-              </div> : <></>
-        }
-
-      </div>
-      <div className="flex flex-col min-w-[20%] gap-3 max-[1350px]:hidden">
-        <RecentActivity value={value} profileData={profileData} />
-        <ManageTeam />
-        <Pricing />
-      </div>
-
-    </div>
-  );
-};
-
-export default Dashboard;
-
