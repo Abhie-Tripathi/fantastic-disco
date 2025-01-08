@@ -135,7 +135,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   const [morphedData,setMorphedData]=useState(searchFilters);
   const { searchParams } = useFilterState();
   const [localFilters, setLocalFilters] = useState<Filters>({});
-  console.log(localFilters);
   const eventService = useEventsService(); 
   const [enabledFilters,setEnabledFilters]=useState<any>(null);
   const pathname = usePathname()
