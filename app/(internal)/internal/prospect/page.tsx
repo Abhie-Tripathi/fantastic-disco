@@ -23,7 +23,6 @@ interface companyDetail {
 }
 
 const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
-  console.log("params", companyDetail);
 
   return (
     <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative">
@@ -55,7 +54,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
             <div className="flex gap-2 items-center w-fit">
               <Buildings color="#666666" width="14px" height="14px" />
               {companyDetail.industries.map((item) => (
-                <span className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit">
+                <span key={item} className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit">
                   {item}
                 </span>
               ))}
@@ -188,7 +187,7 @@ const Prospect = () => {
                 collapsible
               >
                 {companyFilters.map((item) => (
-                  <AccordionItem value={item.id}>
+                  <AccordionItem value={item.id} key={item.id}>
                     <AccordionTrigger
                       className="hover:no-underline p-2 py-3 font-normal text-sm justify-start"
                       iconPosition="start"
@@ -219,7 +218,7 @@ const Prospect = () => {
                 collapsible
               >
                 {eventFilters.map((item) => (
-                  <AccordionItem value={item.id}>
+                  <AccordionItem value={item.id} key={item.id}>
                     <AccordionTrigger
                       className="hover:no-underline p-2 py-3 font-normal text-sm justify-start"
                       iconPosition="start"
@@ -273,8 +272,8 @@ const Prospect = () => {
             </span>
           </div>
           <div className="flex gap-3 flex-col">
-            {companyData.data.map((item: companyDetail) => (
-              <ProspectCard companyDetail={item} />
+            {companyData.data.map((item: companyDetail, index: number) => (
+              <ProspectCard companyDetail={item} key={index} />
             ))}
             {/* <ProspectCard />
             <ProspectCard />
