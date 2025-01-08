@@ -16,13 +16,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Event, EventsResponse } from "@/types";
+import { Event, EventsResponse } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import Link from "next/link";
 import { formattedDateRange } from "@/utils/date";
-
+import { useTrackerServices } from "@/services/trackerServices";
 const EventCard = memo(({ event }: { event: Event }) => {
   const address = event.venueLocation
     ? event.venueLocation.city?.name === "Online"
@@ -38,10 +38,10 @@ const EventCard = memo(({ event }: { event: Event }) => {
     : "Venue to be announced";
 
   return (
-    <Link href={`/search/${event.id}`}>
+    <Link href={`/internal/event/${event.id}`} target="_blank">
       <Card className="mb-4 relative">
         <div
-          className="absolute left-0 top-0 bottom-0 w-1 rounded-md"
+          className="absolute left-0 top-0 bottom-0 w-1 rounded-md bg-[#5055A3]"
           style={{
             backgroundColor: eventTypeColors[event.eventTypes[0].slug || ""],
           }}
@@ -100,7 +100,7 @@ const UnplannedCard = memo(({ event }: { event: Event }) => {
           </div>
           <h3 className="font-semibold mb-2 text-sm">{event.name}</h3>
           <div className="flex items-center text-xs mb-2">
-            <span>{formatAddress(event.eventLocation)}</span>
+            <span>{formatAddress(event.venueLocation)}</span>
           </div>
           <div className="flex items-start text-xs text-[#666666]">
             {formattedDateRange(event.startDateTime, event.endDateTime)}
@@ -115,14 +115,20 @@ UnplannedCard.displayName = 'UnplannedCard';
 function EventList({
   showEventType,
   onClose,
+  source,
+  trackerId,
+  searchParam
 }: {
   showEventType: string;
   onClose: () => void;
+  source?:string;
+  trackerId?:string | undefined;
+  searchParam?:string | undefined;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const searchParams = useSearchParams();
   const eventService = useEventsService();
-
+  const {getTrackerMapEvents}=useTrackerServices(); 
   const filteredParams = useMemo(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("view");
@@ -132,8 +138,10 @@ function EventList({
   }, [searchParams, currentPage, showEventType]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString()],
-    queryFn: () => eventService.getEventsWithSearchParams(filteredParams.toString()),
+    queryKey: ["events", filteredParams.toString(), trackerId],
+    queryFn: () => source === 'tracker' 
+      ? getTrackerMapEvents(trackerId??"",`limit=10&offset=${(currentPage - 1) * 10 }`, searchParam?.toString()??"")
+      : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
 
   const handlePageChange = (page: number) => {
@@ -320,7 +328,7 @@ function EventList({
 
   return (
     <div
-      className={`absolute z-10 top-0 right-0 h-full w-[345px] bg-white rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
+      className={`absolute z-5 top-0 right-0 h-full w-[345px] bg-white rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
         showEventType ? "translate-x-0" : "translate-x-full"
       }`}
     >

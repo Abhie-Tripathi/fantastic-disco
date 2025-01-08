@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Check, ChevronDown, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { LockClosedSmall } from "geist-icons";
 import {
   Command,
   CommandEmpty,
@@ -40,12 +41,12 @@ const useDesignationsAutocomplete = (input: string) => {
 export default function AudienceDesAndDepSelector() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const { localFilters, setLocalFilter } = useFilterContext();
+  const { localFilters, setLocalFilter, getLocalFilterValue, morphedData} = useFilterContext();
   const { designations } = useDesignationsAutocomplete(search);
-
+  const enabled = morphedData.audienceProfile.isEnabled;
   const selectedLabels = useMemo(() => {
     const filterDesignations =
-      localFilters.designations?.split(",").filter(Boolean) || [];
+      getLocalFilterValue("designations")?.split(",").filter(Boolean) || [];
     return designations.filter((d: Designations) =>
       filterDesignations.includes(d.id)
     );
@@ -76,6 +77,7 @@ export default function AudienceDesAndDepSelector() {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
+          disabled={!enabled}
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             open ? "border-primary" : "border-input"
           }`}
@@ -84,6 +86,9 @@ export default function AudienceDesAndDepSelector() {
           aria-haspopup="true"
         >
           <div className="flex items-center">
+          {!enabled && 
+            <LockClosedSmall color="var(--secondary-text-color)" />
+          }
             <span className="mr-2">Audience Profile</span>
             {selectedLabels.length > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">

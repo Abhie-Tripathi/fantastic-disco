@@ -65,9 +65,11 @@ interface Toggle{
   inboundScore?: boolean;
   internationalScore?: boolean;
   eventRank?: boolean;
+  globalToggle?:boolean;
   audienceZone?: boolean;
   audienceSpread?: boolean;
   eventFrequency?:boolean;
+  brandSeries?:boolean;
 }
 interface EditData {
   tracker: Tracker;
@@ -667,7 +669,7 @@ const userRating=
       <div
         style={{ paddingLeft: "20px" }}
       >
-        <div className={styles.advanceHead}>Advance Intel</div>
+        <div className={styles.advanceHead}>Advanced Detail</div>
         <div className={styles.advanceContent}>
           Advanced and more detailed event filter criteria for precise and
           personalized event tracking.
@@ -678,11 +680,13 @@ const userRating=
         excludeKeywords={excludeKeywords}
          freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
          isFreqToggle={toggleOpend?.eventFrequency}
-          isBranded={toggleOpend?.brandedEvent}
+          isBranded={data?.tracker?.filterValue?.eventBrand}
+          brandSeries={toggleOpend?.brandSeries==true}
           eventEdition={data?.tracker?.filterValue?.editionRange}
           type={type}
-          eventSeries={toggleOpend?.eventSeries}
-          forecastedStatus={data?.tracker?.filterValue?.isforecasted}
+          isMaturity={toggleOpend?.maturity===true}
+          eventSeries={data?.tracker?.filterValue?.eventSeries}
+          forecastedStatus={toggleOpend?.forecastedStatus===true}
           maturity={data?.tracker?.filterValue?.maturity}
         />
       </div>
@@ -700,6 +704,7 @@ const userRating=
       </div>
       <div className={styles.innerContainerRight}>
         <Insights
+        globalToggle={toggleOpend?.globalToggle===true}
             exhibitScore={
               data?.tracker?.filterValue?.estimatedExhibitScore
                 ? data?.tracker?.filterValue?.estimatedExhibitScore?.split(",")
@@ -708,6 +713,7 @@ const userRating=
             isExhibitOpen={toggleOpend?.exhibit===true}
             internationalScore={data?.tracker?.filterValue?.internationalScore}
             isTrustOpen={toggleOpend?.trust===true}
+            isRankOpen={toggleOpend?.eventRank===true}
             trustScore={data?.tracker?.filterValue?.trustScore}
            reputation={data?.tracker?.filterValue?.reputationScore}
             inboundScore={data?.tracker?.filterValue?.inboundScore}

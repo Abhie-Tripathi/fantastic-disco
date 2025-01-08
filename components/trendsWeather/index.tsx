@@ -1,27 +1,11 @@
-import {
-  Event,
-  GTMEventDetail,
-  // OpenMeteoWeatherResponse,
-  VenueLocation,
-  // Weather,
-} from "@/types/events";
-import Text from "@/components/new-ui/Text";
+import { GTMEventDetail, VenueLocation } from "@/types/events";
 import { format } from "date-fns";
-import { Card, CardContent } from "@/components/ui/card";
 import { type CarouselApi } from "@/components/ui/carousel";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { useEffect, useMemo, useRef, useState } from "react";
 import React from "react";
-import { useMiscService } from "@/services/miscService";
-import { useQueries, useQuery } from "@tanstack/react-query";
 import { EventDate } from "@/types/events";
-import MapComponent from "../impact-map";
+import EventsListView from "../detailPageEventsList/eventsListView";
+import EventsMapView from "../detailPageEventsList/eventsMapView";
 interface Props {
   eventDetails: GTMEventDetail;
   venueLocation: VenueLocation | null;
@@ -34,6 +18,7 @@ export const DetailMapComponent = ({
   startDateTime,
   endDateTime,
 }: Props) => {
+  const { format: typeOfEvent } = eventDetails;
   const currentDate = new Date().toISOString().split("T")[0];
   const isFirstRender = useRef(true);
   const [api, setApi] = useState<CarouselApi>();
@@ -72,8 +57,6 @@ export const DetailMapComponent = ({
     ): void => {
       const start = new Date(startDate || "");
       const end = new Date(endDate || "");
-
-      // Adjust startDateTime to three day before and endDateTime to three day after
       const adjustedStartDateTime = new Date(start);
       adjustedStartDateTime.setDate(adjustedStartDateTime.getDate() - 1);
 
@@ -132,113 +115,26 @@ export const DetailMapComponent = ({
     }
     api.scrollTo(activeIndex, false);
   }, [api]);
-
-  // const {
-  //   data: weatherData,
-  //   error,
-  //   isLoading,
-  // } = useQuery<Weather | undefined>({
-  //   queryKey: [weatherActiveDate],
-  //   queryFn: async () =>
-  //     getWeatherData(latitude, longitude, weatherActiveDate ?? ""),
-  //   refetchOnWindowFocus: false,
-  //   gcTime: 0,
-  //   staleTime: 0,
-  // });
-
-  // useEffect(() => {
-  //   if (weatherData) {
-  //     setWeatherInfo(weatherData);
-  //   }
-  // }, [weatherData]);
-
-  // const minTemp =
-  //   weatherData &&
-  //   weatherData.temperature.min &&
-  //   Math.floor(weatherData.temperature.min);
-  // const maxTemp =
-  //   weatherData &&
-  //   weatherData.temperature.max &&
-  //   Math.ceil(weatherData.temperature.max);
   return (
-    <div className="flex flex-col gap-4 max-xl:justify-around h-auto">
-      {/* <div className="flex justify-center items-center w-full max-[1756px]:w-80 self-center">
-        <Carousel
-          setApi={setApi}
-          className="w-full max-w-sm px-4 cursor-pointer"
-        >
-          <CarouselContent className="-ml-1">
-            {dates &&
-              dates.length > 0 &&
-              dates.map((date) => (
-                <CarouselItem
-                  key={date.formattedDate}
-                  className="pl-2 basis-[18%] carousel-item"
-                >
-                  <div className="p-1 text-center">
-                    <span className="text-sm">{date.month}</span>
-                    <Card
-                      className={`rounded-sm ${
-                        date.formattedDate === activeDate
-                          ? "bg-[#6750A4] text-[#fff]"
-                          : date.isEventDay
-                          ? `bg-[#E6E6F9] text-[#000] border border-[#A099E0]`
-                          : `bg-[#fff] text-[#000]`
-                      }`}
-                      onClick={() => {
-                        setActiveDate(date.formattedDate);
-                        setWeatherActiveDate(date.formattedDate);
-                      }}
-                    >
-                      <CardContent className="flex aspect-square items-center justify-center p-0">
-                        <span className="text-sm font-medium">{date.date}</span>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CarouselItem>
-              ))}
-          </CarouselContent>
-          <CarouselPrevious className="bg-[#F2F2F2] rounded-sm border-[var(--neutral-light-color)] w-12 h-12  my-[0.8rem] max-[1756px]:w-9 max-[1756px]:h-9 max-[1756px]:absolute max-[1756px]:-left-4" />
-          <CarouselNext className="bg-[#F2F2F2] rounded-sm border-[var(--neutral-light-color)] w-12 h-12 my-[0.8rem] max-[1756px]:w-9 max-[1756px]:h-9 max-[1756px]:absolute max-[1756px]:-right-4" />
-        </Carousel>
-      </div>
-      <div className="flex justify-between border-t-2 pt-4">
-        <Text color="secondary">
-          {[
-            venueLocation?.city?.name,
-            venueLocation?.state?.name,
-            venueLocation?.country?.name,
-          ]
-            .filter(Boolean)
-            .join(", ")}
-        </Text>
-        <Text color="primary" size="large" fontWeight="bold">
-          <span className="mr-1">
-            {minTemp} <sup>°C</sup>
-          </span>
-          <span>{"-"}</span>
-          <span className="ml-1">
-            {maxTemp} <sup>°C</sup>
-          </span>
-        </Text>
-      </div> */}
-      <div className="flex flex-col gap-4">
-        <div className="flex-1 bg-[#EBEBEB] h-[450px]">
-          {venueLocation && (
-            <MapComponent
-              event={eventDetails}
-              startDate={eventDateRange.startDate}
-              endDate={eventDateRange.endDate}
-              // activeDate={activeDate ?? ""}
-              zoom={10}
-              style={{
-                width: "100%",
-                height: "308px",
-              }}
-            />
-          )}
+    <>
+      {venueLocation && typeOfEvent !== "online" && (
+        <div className="flex flex-col gap-4 max-xl:justify-around h-auto">
+          <div className="flex flex-col gap-4">
+            <div className="flex-1 bg-[#EBEBEB] h-[450px]">
+              <EventsMapView
+                event={eventDetails}
+                startDate={eventDateRange.startDate}
+                endDate={eventDateRange.endDate}
+                zoom={10}
+                style={{
+                  width: "100%",
+                  height: "308px",
+                }}
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 };

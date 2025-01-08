@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
+import enabledFilters from "@/public/data/enabledFilters"
 import {
   Popover,
   PopoverContent,
@@ -10,11 +11,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { newCategories as categories } from "@/data/categories";
 import { useFilterContext } from "@/context/filterContext";
-
 export default function CategorySelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
-
+  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const categories=morphedData.categories.options
   const selectedCategories = getLocalFilterValue("categories")
     .split(",")
     .filter(Boolean);
@@ -33,14 +33,14 @@ export default function CategorySelector() {
     (isSelected: boolean) => {
       setLocalFilter(
         "categories",
-        isSelected ? categories.map((cat) => cat.slug).join(",") : ""
+        isSelected ? categories.map((cat:any) => cat.slug).join(",") : ""
       );
     },
     [setLocalFilter]
   );
 
   const isAllSelected = useMemo(
-    () => categories.every((cat) => selectedCategories.includes(cat.slug)),
+    () => categories.every((cat:any) => selectedCategories.includes(cat.slug)),
     [selectedCategories]
   );
 
@@ -66,7 +66,9 @@ export default function CategorySelector() {
                 (columnIndex + 1) * itemsPerColumn
               )
               .map((category) => (
-                <div key={category.id} className="flex items-center space-x-2">
+                <div key={category.id} 
+                className={`flex items-center space-x-2 ${!category.isEnabled ? 'opacity-50' : ''}`}
+                >
                   <Checkbox
                     className="rounded-none"
                     id={category.slug}
@@ -80,6 +82,7 @@ export default function CategorySelector() {
                         ? handleSelectAll(!isAllSelected)
                         : handleCategoryToggle(category.slug)
                     }
+                    disabled={!category.isEnabled && category.slug !== "all"}
                   />
                   <label
                     htmlFor={category.slug}

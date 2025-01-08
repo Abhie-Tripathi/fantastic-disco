@@ -5,28 +5,30 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import enabledFilters from "@/public/data/enabledFilters";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 import { isEventeli } from "@/config";
-
-const eventStatuses = isEventeli
-  ? [
-      { id: "active", label: "Active" },
-      { id: "cancelled", label: "Cancelled" },
-      { id: "postponed", label: "Postponed" },
-      { id: "predicted", label: "Predicted" },
-    ]
-  : [
-      { id: "active", label: "Active" },
-      { id: "cancelled", label: "Cancelled" },
-      { id: "postponed", label: "Postponed" },
-    ];
+import {EventType} from "@/public/data/searchFilters"
+// const eventStatuses = isEventeli
+//   ? [
+//       { id: "active", label: "Active", disabled:  },
+//       { id: "cancelled", label: "Cancelled" },
+//       { id: "postponed", label: "Postponed" },
+//       { id: "predicted", label: "Predicted" },
+//     ]
+//   : [
+//       { id: "active", label: "Active" },
+//       { id: "cancelled", label: "Cancelled" },
+//       { id: "postponed", label: "Postponed" },
+//     ];
 export default function StatusSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
-
+  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const eventStatuses = morphedData.eventStatus.options;
+  const enabled = morphedData.eventStatus.isEnabled;
   const selectedStatuses = getLocalFilterValue("status")
     .split(",")
     .filter(Boolean);
@@ -100,15 +102,14 @@ export default function StatusSelector() {
               Select All
             </label>
           </div> */}
-          {eventStatuses.map((status) => (
+          {eventStatuses?.map((status:EventType) => (
             <div key={status.id} className="flex items-center space-x-2">
               <Checkbox
                 id={status.id}
-                disabled={status.id == "predicted"}
+                disabled={!status.isEnabled}
                 className="rounded-none"
                 checked={selectedStatuses.includes(status.id)}
                 onCheckedChange={() => handleStatusToggle(status.id)}
-                // disabled={status.label == "Predicted"}
               />
               <label
                 htmlFor={status.id}

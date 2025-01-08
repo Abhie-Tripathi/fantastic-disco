@@ -34,7 +34,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useLocationService } from "@/services/locationService";
 import { useFilterContext } from "@/context/filterContext";
-
+import { useTrackerContext } from "@/context/tracker";
+import Loading from "../ui/Loading";
+import { useTrackerServices } from "@/services/trackerServices";
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
@@ -53,7 +55,11 @@ const iconUrls: Record<string, string> = {
 };
 
 interface MapProps {
-  searchParams: string;
+  searchParams?: string;
+  source?:string;
+  trackerId?:string;
+  isGlobal?:boolean;
+  trackerLoc?:string;
 }
 
 interface Coordinates {
@@ -68,9 +74,11 @@ interface PopupInfo {
 
 type ZoomGroup = "country" | "state" | "city" | "event" | null;
 
-export default function MapComponent({ searchParams }: MapProps) {
+export default function MapComponent({ searchParams, source, trackerId, isGlobal, trackerLoc}: MapProps) {
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
+  const {getMapViewData, getEventsLatLongData}=useTrackerServices();
+  const {data}=useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
     latitude: 20.5937,
     longitude: 78.9629,
@@ -94,7 +102,21 @@ export default function MapComponent({ searchParams }: MapProps) {
     feature: any;
     clusteredPoints?: { name: string; count: number }[];
   } | null>(null);
+//   console.log(data?.tracker);
+//   const cityIds = data?.tracker?.filterValue?.locationIds?.city?.length > 0 
+//   ? data?.tracker?.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0]) 
+//   : [];
 
+// const countryIds = data?.tracker?.filterValue?.locationIds?.country?.length > 0 
+//   ? data?.tracker?.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0]) 
+//   : [];
+
+// const stateIds = data?.tracker?.filterValue?.locationIds?.state?.length > 0 
+//   ? data?.tracker?.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0]) 
+//   : [];
+//   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
+  console.log(trackerLoc);
+  
   const memoizedGetEventsCount = useCallback(getEventsCount, []);
   const memoizedGetEventsWithSearchParams = useCallback(
     getEventsWithSearchParams,
@@ -106,26 +128,39 @@ export default function MapComponent({ searchParams }: MapProps) {
 
   const location = useMemo(() => {
     const geoCoordinates = getLocalFilterValue("geoCoordinates");
-    const locationIds = getLocalFilterValue("locationIds");
-
+    const locationIds = source==="tracker"? trackerLoc?.length>0?trackerLoc:"defaultLoc":getLocalFilterValue("locationIds");
+    console.log(locationIds);
+    
     if (geoCoordinates) {
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
-    } else if (locationIds.length) {
+    } else if (locationIds?.length) {
       return { type: "locationIds", locationIds };
     }
     return null;
-  }, [searchParams]);
+  }, [searchParams, trackerLoc]);
 
   const eventCountsQuery = useQuery<EventCount[], Error>({
-    queryKey: ["eventCounts", currentZoomGroup, searchParams],
+    queryKey: source === "tracker"
+      ? ["eventCounts", trackerId, currentZoomGroup, searchParams]
+      : source === "tracker_global"
+      ? [trackerId]
+      : ["eventCounts", currentZoomGroup, searchParams],
+  
     queryFn: async () => {
-      const response = await memoizedGetEventsCount(
-        `${searchParams}&groupBy=city`
-      );
-      return response || [];
+      if (source === "tracker" || source === "tracker_global") {
+        const response = await getMapViewData(trackerId, "city", searchParams);
+        console.log(response);
+        
+        return response || [];
+      } else {
+        const response = await memoizedGetEventsCount(`${searchParams}&groupBy=city`);
+        return response || [];
+      }
     },
+  
     enabled: location !== null,
   });
+  
 
   const handleMapClick = async (e: any) => {
     const features = e.target.queryRenderedFeatures(e.point, {
@@ -291,9 +326,13 @@ export default function MapComponent({ searchParams }: MapProps) {
 
             const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}`;
 
-            const eventsData = await memoizedGetEventsWithSearchParams(
-              `${finalSearchParams}`
-            );
+            let eventsData: any = {}; // Define type if in TypeScript
+    
+            if (source === "tracker") {
+              eventsData = await getEventsLatLongData(trackerId, `viewBound=${viewBoundString}`, searchParams);
+            } else {
+              eventsData = await memoizedGetEventsWithSearchParams(finalSearchParams);
+            }
             setEvents((eventsData?.events as MapEvents[]) || []);
           } catch (error) {
             console.error("Error fetching events:", error);
@@ -315,9 +354,20 @@ export default function MapComponent({ searchParams }: MapProps) {
   ]);
 
   const onMove = useCallback(({ viewState }: { viewState: ViewState }) => {
+    console.log(viewState);
+    
+    
     setViewport(viewState);
   }, []);
-
+  useEffect(() => {
+    setViewport({
+      ...viewport, zoom:2.07
+    })
+    
+  }, [searchParams
+  ]);
+  console.log(viewport);
+  
   const eventCountsGeoJSON = React.useMemo(() => {
     return {
       type: "FeatureCollection",
@@ -397,6 +447,8 @@ export default function MapComponent({ searchParams }: MapProps) {
 
   useEffect(() => {
     const fetchLocationDetails = async () => {
+      console.log(location);
+      
       if (location?.type === "locationIds" && location.locationIds.length > 0) {
         try {
           const details = await getLocationDetails(location.locationIds);
@@ -443,9 +495,23 @@ export default function MapComponent({ searchParams }: MapProps) {
       }
     };
     fetchLocationDetails();
-  }, [location]);
-
+  }, [location, trackerId]);
+  // useEffect(() => {
+  //   console.log(trackerId);
+    
+  //   setViewport({
+  //     latitude: 0,
+  //     longitude: 0,
+  //     zoom: 1,
+  //     bearing: 0,
+  //     pitch: 0,
+  //     padding: { top: 0, bottom: 0, left: 0, right: 0 },
+  //   });
+    
+  // }, [trackerId]);
   useEffect(() => {
+    console.log(locationBBox);
+    
     if (!mapRef.current) return;
     if (location?.type === "geoCoordinates") {
       const { latitude, longitude, radius } = location;
@@ -506,14 +572,17 @@ export default function MapComponent({ searchParams }: MapProps) {
 
   const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
   const showEvent = viewport.zoom >= 12 && events.length;
-
+  console.log(viewport);
+  
   return (
     <div className="relative">
+      {(eventCountsQuery.isLoading && currentZoomGroup==="city" )? <Loading/>:
+      <>
       {!location ? (
         <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
       ) : (
         <ReactMapGL
-          style={{ width: "100%", height: "700px" }}
+          style={{ width: "100%",  height: !isGlobal ? "700px" : "300px"  }}
           onMove={onMove}
           onLoad={onMapLoad}
           onClick={handleMapClick}
@@ -574,6 +643,7 @@ export default function MapComponent({ searchParams }: MapProps) {
           ref={mapRef}
           {...viewport}
         >
+          {!isGlobal &&
           <Button
             variant="default"
             className="absolute top-4 right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
@@ -582,7 +652,7 @@ export default function MapComponent({ searchParams }: MapProps) {
             <AlignLeft className="w-5 h-5" />
             <span>Event List</span>
           </Button>
-
+          }
           {isHolidaySelected && (
             <div className="absolute top-4 left-4 bg-white rounded-sm shadow-sm flex items-center gap-2 p-2">
               <Checkbox
@@ -598,6 +668,9 @@ export default function MapComponent({ searchParams }: MapProps) {
           <Alerts />
 
           <EventList
+            source={source}
+            trackerId={trackerId}
+            searchParam={searchParams}
             showEventType={showEventList}
             onClose={() => setShowEventList("")}
           />
@@ -827,7 +900,9 @@ export default function MapComponent({ searchParams }: MapProps) {
             </div>
           )}
         </ReactMapGL>
-      )}
+        )}
+      </>
+      } 
     </div>
   );
 }

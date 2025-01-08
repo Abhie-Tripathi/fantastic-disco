@@ -60,15 +60,16 @@ function PremiumTracker({ fillColor }: { fillColor: string }) {
   );
 }
 interface MyTrackersProps {
+  searchValue:string;
   dataPresent: boolean;
   setDataPresent: React.Dispatch<React.SetStateAction<boolean>>;
   singleTrackerData: Tracker | undefined;
   setSingleTrackerData: React.Dispatch<React.SetStateAction<Tracker | undefined>>;
   isData: boolean;
 }
-const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData}:MyTrackersProps) => {
+const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData, searchValue}:MyTrackersProps) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
-  const [isInetialRender,setIsInetialRender]=useState(true);
+  const [isInetialRender,setIsInetialRender]=useState(false);
   const [allTracker, setAllTracker] = useState<AllTrackerTypes[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
@@ -81,87 +82,59 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   const {getTrackers, isLoading}=useTrackerServices();
   const endOfListRef = useRef(null);
   useEffect(() => {
-    // const fetchData = async () => {
-    //  if(isData){
-    //   setLoading(true);
-    //   setError(null);
-    //   setLoadOne(true);
-      
-    //   try {
-    //     const firstFetchResult = await myFetch(
-    //       `${baseUrl}/tracker?offset=${page * trackerPerPage}&limit=${trackerPerPage}`
-    //     );
-
-    //     if (firstFetchResult.error) {
-    //       setError('Create your first tracker!');
-    //       setLoading(false);
-    //       setLoadOne(false);
-    //       console.log(firstFetchResult.error);
-    //       return;
-    //     } else if (firstFetchResult.data) {
-    //       if (firstFetchResult.data.trackerData.length === 0) {
-    //         setLoading(false);
-    //         setLoadOne(false);
-    //         return;
-    //       } else {
-    //         setAllTracker((prevAllTracker:any[])=> [
-    //           ...prevAllTracker,...firstFetchResult.data.trackerData
-              
-    //         ]);
-    //         if(allTracker.length===0)
-    //         setSingleTrackerData(firstFetchResult.data.trackerData[0]);
-    //         setTotalPage(Math.ceil(firstFetchResult.data.totalCount / trackerPerPage));
-    //         setTotalCount(firstFetchResult.data.totalCount)
-    //       setLoadOne(false);
-    //       setLoadTwo(true);
-    //         // const secondFetchResult = await myFetch(
-    //         //   `${baseUrl}/tracker?offset=${(page + 1) * trackerPerPage}&limit=${trackerPerPage}`
-    //         // );
-
-    //         // if (secondFetchResult.data) {
-    //         //   setAllTracker((prevAllTracker:any[]) => [
-    //         //     ...prevAllTracker, ...secondFetchResult.data.trackerData
-                
-    //         //   ]);
-    //         //   setLoadTwo(false);
-    //         // }
-    //       }
-    //     }
-
-    //   } catch (err) {
-    //     console.error('Error fetching data:', err);
-    //     setError('Error fetching data.');
-    //   } finally {
-    //     setLoading(false);
-    //   }}
-     
+    
+    // const handler = setTimeout(() => {
+    // if(searchValue.length>=3 || searchValue.length===0){
+      if(isInetialRender && page!==0)
+        fetchData(false); 
+    //  }
+    // }, 700);
+    // return () => {
+    //   clearTimeout(handler);
     // };
-    fetchData();
-  }, [page, trackerPerPage]);
-  const fetchData=async()=>{
+  }, [page]);
+  useEffect(() => {
+    setPage(0);
+    if (searchValue.length >= 3 || searchValue.length === 0) {
+      setAllTracker([]);
+      setIsInetialRender(true); // Indicate it's the first render
+      fetchData(true); // Pass true for initial render
+    }
+  }, [searchValue]);
+  // useEffect(()=>{
+  //   if(searchValue.length===0)
+  //   fetchData();
+  // },[searchValue])
+  const fetchData=async(isInetialRender:boolean)=>{
     setLoadOne(true);
-    const result= await getTrackers(`offset=${page * trackerPerPage}&limit=${trackerPerPage}`);
+    const offset = isInetialRender ? 0 : page * trackerPerPage;
+    const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${page * trackerPerPage}&limit=${trackerPerPage}`);
     // setAllTracker(result.trackerData);
-    console.log(result);
     
     if(result){
-    setAllTracker((prevAllTracker:any[])=> [
-                ...prevAllTracker,...result?.trackerData
-                
-              ]);
+      if(page===0) setAllTracker(result?.trackerData )
+        else{
+          const newData = (prevAllTracker:any) => [...prevAllTracker, ...result?.trackerData];
+          setAllTracker(newData);
+        }
               if(allTracker.length===0)
                 console.log(Math.ceil(result.totalCount / trackerPerPage));
-       if(isInetialRender){         
+              
+              
+       if(isInetialRender){     
+            
       setSingleTrackerData(result.trackerData[0]);
-      setIsInetialRender(false);
+      // setIsInetialRender(false);
        }
     setTotalPage(Math.ceil(result.totalCount / trackerPerPage));
     setTotalCount(result.totalCount)
+    if(result.totalCount===0) setDataPresent(false);
     setLoading(false);
     setLoadOne(false);
             }
   }
   const handleNextPage = () => {
+    
     if (page < totalPage - 1) {
       setPage(page + 1);
       // setAllTracker([]);
@@ -180,7 +153,6 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     // setIsLoading(false);
   }
   },[totalPage])
-  console.log(page, totalPage);
   
   return (
     <div className={styles.container} ref={endOfListRef}>
@@ -207,14 +179,14 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           </div>       
            </div> */}
       </div>
-      <div style={{ width: "100%" }}>
+     
       
       {/* {!isData &&(
             <div>Unlock your business potential—create your first tracker today to explore trends and receive real-time updates!</div>
           )} */}
-        <div className="grid gap-[var(--spacing-md)] grid-cols-[repeat(auto-fill,minmax(470px,1fr))]">
+        <div>
         <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 pt-4 pl-8 pb-4">
               <div className="text-sm font-medium">Your Trackers</div>
               <span className="bg-[#E6E6F9] rounded-full font-medium w-7 h-7 flex items-center justify-center text-sm" style={{ color: "var(--primary-color)" }}>
                {totalCount}
@@ -227,6 +199,10 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
               state={sort}
             /> */}
           </div>
+        <div className="h-[calc(100vh-320px)] overflow-auto pl-8 pr-7 grid gap-[var(--spacing-md)] grid-cols-[repeat(auto-fill,minmax(470px,1fr))]">
+          {(allTracker.length===0 && !loadOne) &&
+            <div className="flex justify-center text-[var(--secondary-text-color)] font-semibold">Tracker with the search result is not created yet.</div>
+          }
           {/* {error && <div>{error}</div>} */}
           {allTracker.length > 0 &&
             (trackerType === "All Trackers" ||
@@ -239,14 +215,12 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           <div className={styles.loadingBar}></div>
         </div>} */}
           {/* {trackerType === "Premium Trackers" && <div>Create your first tracker!</div>} */}
-        </div>
+        
         {/* {loading && <Loading/>} */}
         {totalPage > 1 &&
-          (trackerType === "All Trackers" ||
-            trackerType === "Custom Trackers") &&
-          !loading && page<(totalPage-1) &&(
+          !loadOne && page<(totalPage-1) &&(
             <div
-              className="flex item-center justify-center pt-5"
+              className="flex item-center justify-center p-4"
             >
               {/* <div className={styles.btn} onClick={handlePrevPage}>
                 Prev
@@ -256,7 +230,8 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
               </div>
             </div>
           )}
-      </div>
+          </div>
+          </div>
     </div>
   );
 };

@@ -169,7 +169,7 @@ const DashboardEvents = () => {
     }
     const router = useRouter()
     const handleNavigate = () => {
-        router.push('/widget/events?fromDashboard=true'); // Pass query parameter
+        router.push('/widget/events'); // Pass query parameter
     };
 
     return (

@@ -99,5 +99,5 @@ export const endpoints = {
     getyearlyEvents:`${BASE_URL}/event?`,
   },
   configuration: `${BASE_URL}/configuration`,
-
+  myprofile:`${BASE_URL}/auth/customer/profile`
 };

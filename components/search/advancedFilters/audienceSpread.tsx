@@ -16,6 +16,7 @@ import Image from "next/image";
 import { useMiscService } from "@/services/miscService";
 import { Country } from "@/types/events/events";
 import { useFilterContext } from "@/context/filterContext";
+import { LockClosedSmall } from "geist-icons";
 interface AudienceSpreadProps {
   source: string;
   selectedCountries?: string[];
@@ -26,11 +27,12 @@ export default function Component() {
   const [searchTerm, setSearchTerm] = useState("");
   const [countries, setCountries] = useState<Country[]>([]);
   const [regions, setRegions] = useState<string[]>([]);
-  const { localFilters, setMultipleLocalFilters } = useFilterContext();
+  const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } = useFilterContext();
+  const enabled = morphedData.audienceSpread.isEnabled
   const { getCountries, getRegions, isLoading, error } = useMiscService();
 
   const selectedCountries = useMemo(() => 
-    localFilters.audienceSpread?.split(',').filter(Boolean) || []
+    getLocalFilterValue("audienceSpread")?.split(',').filter(Boolean) || []
   , [localFilters.audienceSpread]);
 
   const selectedRegions = useMemo(() => 
@@ -41,7 +43,6 @@ export default function Component() {
     const fetchData = async () => {
       try {
         const countriesResponse = await getCountries();
-        console.log(countriesResponse);
 
         setCountries(countriesResponse?.formattedLocations || []);
 
@@ -105,6 +106,7 @@ export default function Component() {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
+          disabled={!enabled}
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             isOpen ? "border-primary" : "border-input"
           }`}
@@ -113,6 +115,9 @@ export default function Component() {
           aria-haspopup="true"
         >
           <div className="flex items-center">
+          {!enabled && 
+            <LockClosedSmall color="var(--secondary-text-color)" />
+          }
             <span className="mr-2">Audience Spread</span>
             {(selectedCountries.length > 0 || selectedRegions.length > 0) && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">

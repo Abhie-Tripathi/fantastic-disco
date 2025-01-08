@@ -15,7 +15,7 @@ export const TrackerContext = createContext<any>(
   );
 
   export const TrackerContextProvider=({ children }: any)=>{
-    const {getTrackerDetail, error}=useTrackerServices();
+    const {getTrackerDetail, error, isLoading}=useTrackerServices();
     const [data,setData]=useState<Data | null>();
     const pathName = usePathname().split('/');
     const [isNewCall,setIsNewCall]=useState(false);
@@ -59,6 +59,7 @@ export const TrackerContext = createContext<any>(
     }
     const value = {
         isNewCall,
+        isLoading,
         setIsNewCall,
         editTrue,
         setEditTrue,

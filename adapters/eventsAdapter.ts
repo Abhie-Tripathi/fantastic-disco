@@ -57,8 +57,9 @@ export const EventsAdapter = {
       adaptedParams.eventName = params.get("eventName")!;
       return adaptedParams;
     }
-    if (params.get("onlyBranded") !== null) {
-      adaptedParams.eventBrand = params.get("onlyBranded") ?? "";
+    
+    if(params.get("onlyBranded")!==null){
+      adaptedParams.eventBrand = params.get("onlyBranded")??"";
     }
     if (params.get("onlySeries") !== null) {
       adaptedParams.eventSeries = params.get("onlySeries") ?? "";

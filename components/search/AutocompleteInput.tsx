@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, Dispatch, SetStateAction } from "react";
 import { Search, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +19,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import {
   useNominatimAutocomplete,
-  useDatabaseLocationAutocomplete,
+  useDatabaseLocationcomplete,
 } from "@/hooks/useLocationAutocomplete";
 import { useLocationService } from "@/services/locationService";
 
@@ -33,6 +33,8 @@ interface AutocompleteInputProps {
   defaultOpen?: boolean;
   placeholder: string;
   onSelect: (location: any) => void;
+  isOpen?: boolean;
+  setIsOpen?: Dispatch<SetStateAction<boolean>>;
   multiple?: boolean;
   value?: Location[] | Location | null;
 }
@@ -42,6 +44,8 @@ export default function AutocompleteInput({
   defaultOpen,
   placeholder,
   onSelect,
+  isOpen,
+  setIsOpen,
   multiple = false,
   value,
 }: AutocompleteInputProps) {
@@ -49,7 +53,7 @@ export default function AutocompleteInput({
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [selectedLocations, setSelectedLocations] = useState<Location[]>([]);
-  const databaseLocationResult = useDatabaseLocationAutocomplete(
+  const databaseLocationResult = useDatabaseLocationcomplete(
     type == "LocationId" ? inputValue : ""
   );
   const nominatimResult = useNominatimAutocomplete(
@@ -58,7 +62,11 @@ export default function AutocompleteInput({
 
   const { predictions, isLoading, isError } =
     type === "LocationId" ? databaseLocationResult : nominatimResult;
-
+    useEffect(() => {
+      if (isOpen) {
+        setOpen(isOpen);
+      }
+    }, [isOpen]);
   useEffect(() => {
     if (value) {
       if (Array.isArray(value)) {
@@ -111,7 +119,12 @@ export default function AutocompleteInput({
   );
 
   return (
-    <Popover open={defaultOpen || open} onOpenChange={setOpen}>
+    <Popover open={defaultOpen || open}  onOpenChange={(open) => {
+      setOpen(open);
+      if (setIsOpen) {
+        setIsOpen(open);
+      }
+    }}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"

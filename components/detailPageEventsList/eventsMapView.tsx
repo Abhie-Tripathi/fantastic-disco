@@ -21,15 +21,20 @@ interface MapProps {
   style: React.CSSProperties;
   event: GTMEventDetail;
   zoom?: number;
-  // activeDate: string;
+}
+interface updatedEvent {
+  coordinates: {
+    latitude: string; 
+    longitude: string;
+  };
+  events: Event[];
 }
 
-const MapComponent: React.FC<MapProps> = ({
+const EventsMapView: React.FC<MapProps> = ({
   startDate,
   endDate,
   style,
   event,
-  // activeDate,
   zoom = 0,
 }) => {
   const {
@@ -46,7 +51,7 @@ const MapComponent: React.FC<MapProps> = ({
   }>({ startDate: startDateTime, endDate: endDateTime });
   const { getEventsWithSearchParams, getEventById } = useEventsService();
   const [events, setEvents] = useState<MapEvents[]>([]);
-  const [popupInfo, setPopupInfo] = useState<Event | null>(null);
+  const [popupInfo, setPopupInfo] = useState<updatedEvent | null>(null);
 
   const iconUrls: Record<string, string> = {
     "performing-arts": "/eventType/arts.png",
@@ -112,12 +117,29 @@ const MapComponent: React.FC<MapProps> = ({
   const handleMarkerClick = async (eventData: MapEvents) => {
     try {
       const eventDetails = await getEventById(eventData.id);
-      console.log(eventDetails);
-      setPopupInfo(eventDetails?.event as Event | null);
+      const result={
+        coordinates:{
+              latitude: parseFloat(
+                eventDetails?.event.venueLocation?.venue?.latitude ||
+                eventDetails?.event.venueLocation?.city?.latitude ||
+                eventDetails?.event.venueLocation?.state?.latitude ||
+                  "0"
+              ).toString(), 
+              longitude: parseFloat(
+                eventDetails?.event.venueLocation?.venue?.longitude ||
+                eventDetails?.event.venueLocation?.city?.longitude ||
+                eventDetails?.event.venueLocation?.state?.longitude ||
+                  "0"
+              ).toString()
+        },
+        events:[eventDetails?.event]
+      }
+      setPopupInfo(result as updatedEvent | null);
     } catch (error) {
       console.error("Error fetching event details:", error);
     }
   };
+  // console.log(eventDetails?.event);
   return (
     <div className="relative">
       <Map
@@ -183,4 +205,4 @@ const MapComponent: React.FC<MapProps> = ({
   );
 };
 
-export default MapComponent;
+export default EventsMapView;

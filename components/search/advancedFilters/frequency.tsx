@@ -11,24 +11,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
-
-const frequencies = [
-  { id: "weekly", label: "Weekly" },
-  { id: "monthly", label: "Monthly" },
-  { id: "quarterly", label: "Quarterly" },
-  { id: "bi-annual", label: "Bi-Annual" },
-  { id: "annual", label: "Annual" },
-  { id: "biennial", label: "Biennial" },
-  { id: "triennial", label: "Triennial" },
-  { id: "quadrennial", label: "Quadrennial" },
-  { id: "quinquennial", label: "Quinquennial" },
-  { id: "one-time", label: "One-Time" },
-];
-
+import { LockClosedSmall } from "geist-icons";
+import {EventType} from "@/public/data/searchFilters"
 export default function FrequencySelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
-
+  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const frequencies = morphedData.frequencies.options;
+  const showToogle = morphedData.frequencies.isToogleEnabled;
+  const enabled = morphedData.frequencies.isEnabled;
   const selectedFrequencies = useMemo(
     () => getLocalFilterValue("frequencies").split(",").filter(Boolean),
     [getLocalFilterValue]
@@ -59,16 +49,21 @@ export default function FrequencySelector() {
       setLocalFilter("frequencies", "");
     }
   };
-
+  
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
+          disabled={!enabled}
           aria-expanded={isOpen}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
+          <div className="flex items-center">
+          {!enabled && 
+              <LockClosedSmall color="var(--secondary-text-color)" />
+            }
           <span className="flex items-center gap-2">
             Frequency
             {selectedFrequencies.length > 0 && (
@@ -77,6 +72,7 @@ export default function FrequencySelector() {
               </span>
             )}
           </span>
+          </div>
           <Switch
             checked={showInFilter}
             onCheckedChange={handleShowToggle}
@@ -92,13 +88,13 @@ export default function FrequencySelector() {
         align="start"
       >
         <div className="p-4 space-y-4">
-          {frequencies.map((frequency) => (
+          {frequencies.map((frequency: EventType) => (
             <div key={frequency.id} className="flex items-center space-x-2">
               <Checkbox
                 id={frequency.id}
                 checked={selectedFrequencies.includes(frequency.id)}
                 onCheckedChange={() => handleFrequencyToggle(frequency.id)}
-                disabled={!showInFilter}
+                disabled={!frequency.isEnabled}
               />
               <Label htmlFor={frequency.id}>{frequency.label}</Label>
             </div>

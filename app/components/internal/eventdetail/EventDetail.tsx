@@ -219,7 +219,7 @@ const EventDetail = ({
               expandedTab === 'notes' ? (
                 <Notes
                   eventId={singleEventData.id}
-                  eventGroupId={singleEventData.eventGroupId}
+                  enquiryId={enquiryId}
                   stage={stage}
                 />
               ) : expandedTab === 'poc' ?

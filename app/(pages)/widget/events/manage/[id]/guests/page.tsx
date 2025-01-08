@@ -18,7 +18,10 @@ const Page = () => {
 
   const [registerModal, setRegisterModal] = useState<boolean>(false);
   const [inviteGuestModal, setInviteGuestModal] = useState<boolean>(false);
-  const [registerValue, setRegisterValue] = useState<boolean>(fetchedEvent?.registration && fetchedEvent?.registration === true ? true : false)
+  const [registerValue, setRegisterValue] = useState<boolean>(
+    fetchedEvent?.registration && fetchedEvent?.registration === true ? true : false
+    // true
+  )
 
   const [statusModal, setStatusModal] = useState<boolean>(false)
   const registerModalRef = useOutsideClick(() => setRegisterModal(false))
@@ -42,6 +45,8 @@ const Page = () => {
 
   useEffect(() => {
     setRegisterValue(fetchedEvent?.registration && fetchedEvent?.registration === true ? true : false)
+    // console.log("data", fetchedEvent)
+    console.log("register value ", fetchedEvent?.registration)
     fetchCounts()
   }, [fetchedEvent])
 

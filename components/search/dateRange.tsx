@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useEffect } from "react";
 import {
   format,
   startOfMonth,
@@ -11,7 +12,7 @@ import {
   parseISO,
 } from "date-fns";
 import { ChevronDown } from "lucide-react";
-
+import DateRangePopup from "./dateRangePopup";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -64,16 +65,33 @@ const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
   return "";
 };
 
-export default function DateRangeSelector() {
+// interface DateRangeProps {
+//   source: string;
+//   enabledDateRange?:any;
+//   type?:string;
+//   dateRange?: {
+//     from: Date | undefined;
+//     to: Date | undefined;
+//   };
+//   setDateRange?: React.Dispatch<
+//     React.SetStateAction<{
+//       from: Date | undefined;
+//       to: Date | undefined;
+//     }>
+//   >;
+// }
+
+export default function DateRangeSelector({ type, source }: { type?: string, source?:string }) {
+  const pathName = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("");
   const [compareEnabled, setCompareEnabled] = React.useState(false);
+  const { setMultipleLocalFilters, searchParams, getLocalFilterValue, deleteMultipleLocalFilters, applyFilters } = useFilterContext();
+  const { getFilterValue } = useFilterState();
   const [selectedComparison, setSelectedComparison] = React.useState(
     comparisonOptions[0]
   );
-  const { setMultipleLocalFilters, getLocalFilterValue } = useFilterContext();
-  const pathName = usePathname();
   const enableCompareOptions = pathName === "/trends";
 
   const active_gte = getLocalFilterValue("active_gte");
@@ -222,9 +240,14 @@ export default function DateRangeSelector() {
   const onOpenChange = (open: boolean) => {
     setIsOpen(open);
   };
-
+  useEffect(() => {
+    if (type === "T_LOCATION_DATE" && !isOpen) {
+      onOpenChange(true);
+    }
+  }, [type, isOpen]);
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
+      {type!=="T_LOCATION_DATE" &&
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -250,74 +273,42 @@ export default function DateRangeSelector() {
           />
         </Button>
       </PopoverTrigger>
+      }
+      {type==="T_LOCATION_DATE"?
+      <DateRangePopup
+      type={type}
+      presets={presets}
+      handlePresetChange={handlePresetChange}
+      selectedPreset={selectedPreset}
+      dateRange={dateRange}
+      handleDateSelect={handleDateSelect}
+      calendarDate={calendarDate}
+      setCalendarDate={setCalendarDate}
+      enableCompareOptions={true}
+      compareEnabled={compareEnabled}
+      setCompareEnabled={setCompareEnabled}
+      comparisonOptions={comparisonOptions}
+      setSelectedComparison={setSelectedComparison}
+      selectedComparison={selectedComparison}
+    /> :
       <PopoverContent className="w-auto p-0" align="start">
-        <div className="flex flex-col">
-          <div className="flex space-x-4 rounded-md p-4">
-            <ScrollArea className="h-[300px] w-[150px]">
-              <div className="space-y-2 flex flex-col justify-between pr-4">
-                {presets.map((preset) => (
-                  <Button
-                    key={preset.value}
-                    onClick={() => handlePresetChange(preset.value)}
-                    variant="outline"
-                    className={cn(
-                      "w-full font-normal",
-                      selectedPreset === preset.value && "bg-[#F2F2F2]"
-                    )}
-                  >
-                    {preset.label}
-                  </Button>
-                ))}
-              </div>
-            </ScrollArea>
-            <div className="border-l" />
-            <div>
-              <Calendar
-                mode="range"
-                selected={dateRange}
-                onSelect={(range, selectedDay) => {
-                  handleDateSelect(selectedDay);
-                }}
-                month={calendarDate}
-                onMonthChange={setCalendarDate}
-                numberOfMonths={1}
-              />
-            </div>
-          </div>
-          {enableCompareOptions && (
-            <div className="space-y-4 p-4 py-2 pt-0">
-              <div className="flex items-center space-x-2">
-                <h3 className="text-sm font-medium">Compare with Past data</h3>
-                <Switch
-                  disabled
-                  checked={compareEnabled}
-                  onCheckedChange={setCompareEnabled}
-                />
-                <span className="ml-2 bg-[#EBF5FF] text-[#0062D1] font-medium rounded text-[10px] whitespace-nowrap p-1">
-                  Coming Soon
-                </span>
-              </div>
-              {compareEnabled && (
-                <div className="space-y-2 flex flex-col">
-                  {comparisonOptions.map((option) => (
-                    <Button
-                      key={option}
-                      onClick={() => setSelectedComparison(option)}
-                      variant="ghost"
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        selectedComparison === option && "bg-[#F2F2F2]"
-                      )}
-                    >
-                      {option}
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+        <DateRangePopup
+      presets={presets}
+      handlePresetChange={handlePresetChange}
+      selectedPreset={selectedPreset}
+      dateRange={dateRange}
+      handleDateSelect={handleDateSelect}
+      calendarDate={calendarDate}
+      setCalendarDate={setCalendarDate}
+      enableCompareOptions={true}
+      compareEnabled={compareEnabled}
+      setCompareEnabled={setCompareEnabled}
+      comparisonOptions={comparisonOptions}
+      setSelectedComparison={setSelectedComparison}
+      selectedComparison={selectedComparison}
+    /> 
       </PopoverContent>
+}
     </Popover>
   );
 }

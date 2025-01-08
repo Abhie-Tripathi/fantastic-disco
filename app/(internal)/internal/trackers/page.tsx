@@ -42,6 +42,8 @@ import Vector1 from "/public/vectorTemplate.svg";
 import MyTracker from "@/app/components/internal/trackers/MyTrackers";
 import Loading from "@/app/components/UI/Loading";
 import { Button } from "@/components/ui/button";
+import data from '@/components/templateData'
+const Map = lazy(() => import("@/components/map"));
 function AllTrackers({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -129,7 +131,7 @@ interface Search {
 }
 const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
-  const {  setIsNewCall, setTrackerId } = useTrackerContext();
+  const {  setIsNewCall, setTrackerId, isLoading:load } = useTrackerContext();
   const router=useRouter();
   const [type, setType] = useState("");
   useEffect(()=>{
@@ -139,7 +141,7 @@ const Trackers = ({ searchParams }: Search) => {
   },[tab])
   const [locations, setLocations] = useState<any>();
   const [trackers, setTrackers] = useState<any[]>([]);
- 
+  const [searchValue,setSearchValue]=useState("");
   const [offset, setOffset] = useState(0);
   // const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -192,89 +194,6 @@ const Trackers = ({ searchParams }: Search) => {
     growth: true,
     repeatSent: true,
   };
-  const data = [
-    {
-      type: "template",
-      domain: "Market Research",
-      img: Competitor,
-      url: "T_COMPETITOR",
-      trackerName: "Competitor",
-      content:
-        "Track your competitor experts, influencers and where they might be participating in events",
-    },
-    {
-      type: "template",
-      domain: "Market Research",
-      img: Keywords,
-      url:"T_PRODUCT_KEYWORDS",
-      trackerName: "Product and Topics",
-      content:
-        "List all the events which belongs to given industry or associated with keywords.",
-    },
-    {
-      type: "template",
-      domain: "Networking & Outreach",
-      img: Speaking,
-      url: "T_SPEAKING_OPPORTUNITY",
-      trackerName: "Speaking Opportunity",
-      content:
-        "Input team members and their details to keep track of the events with speaking opportunities.",
-    },
-    {
-      type: "template",
-      domain: "Networking & Outreach",
-      img: PeopleFinder,
-      url: "T_PEOPLE_FINDER",
-      trackerName: "People Finder",
-      content:
-        "Track experts, influencers and where they might be participating in various events",
-    },
-    {
-      type: "template",
-      domain: "Talent Acquisition",
-      img: People,
-      trackerName: "Recruitment",
-      url: "T_RECRUITMENT",
-      content:
-        "Input designations and keywords, and upload job descriptions to identify relevant events effortlessly...",
-    },
-    {
-      type: "template",
-      domain: "Audience Analysis",
-      img: Audience,
-      url:"T_AUDIENCE_DEPT_PROFILE",
-      trackerName: "Audience Dept. & Profiles",
-      content:
-        "Track events for the specific organizational departments or audience profiles",
-    },
-    {
-      type: "template",
-      domain: "Market Research",
-      img: Customer,
-      url:"T_CUSTOMER_ICP",
-      trackerName: "Customer ICP",
-      content:
-        "Input ideal customer profile details like company, location or websites to track their interests",
-    },
-    {
-      type: "template",
-      domain: "Brand & Cause Management",
-      img: SocialCause,
-      trackerName: "Social Cause",
-      url:"T_SOCIAL_CAUSE",
-      content:
-        "Track social cause events that interests audience to be socially active and enhance their reach",
-    },
-    {
-      type: "template",
-      img: Brand,
-      domain: "Brand & Cause Management",
-      trackerName: "Brand Building",
-      url:"T_BRAND_BUILDING",
-      content:
-        "Input designations and keywords, and upload job descriptions to identify relevant events effortles",
-    },
-  ];
   const [hide, setHide] = useState(false);
   const [singleTrackerData,setSingleTrackerData]=useState<Tracker>();
   const [isLoading, setIsLoading] = useState(true);
@@ -317,7 +236,7 @@ const Trackers = ({ searchParams }: Search) => {
   //   setHideTemplate(!hideTemplate);
   // };
   const [hideTemplate, setHideTemplate] = useState(true);
-  const [dataPresent, setDataPresent] = useState(false);
+  const [dataPresent, setDataPresent] = useState(true);
   // useEffect(() => {
   //   if (dataPresent) setHideTemplate(false);
   //   console.log(dataPresent);
@@ -390,7 +309,6 @@ const Trackers = ({ searchParams }: Search) => {
   //     setRun(true);
   //   }
   // }, [updateSteps]);
-  console.log(currentUrl);
   
   const [note,setNote]=useState<any>(null);
   const [savedEvents, setSavedEvents] = useState<{ result: EventTableType[]; count: number } | undefined>(undefined);
@@ -399,10 +317,12 @@ const Trackers = ({ searchParams }: Search) => {
   useEffect(() => {
     // console.log(item?.tracker?.eventCountry);
     if(singleTrackerData){
-    const eventCountry = singleTrackerData?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
-    const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
+    const eventCountry = singleTrackerData?.filterValue?.eventCountry?.map((countryObj:{}) => Object.keys(countryObj)[0])||[];
+    const eventState = singleTrackerData?.filterValue?.eventState?.map((stateObj:{}) => Object.keys(stateObj)[0])||[];
+    const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.keys(cityObj)[0])||[];
     const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
-    setLocations([...eventCountry, ...eventCity, ...eventZone]);
+    const flattenedLocations = [...eventCountry, ...eventCity, ...eventZone, ...eventState];
+    setLocations(flattenedLocations);
     if(singleTrackerData.id){
     fetchNote(singleTrackerData?.id)
   fetchSavedEvent(singleTrackerData?.id)
@@ -464,6 +384,8 @@ const Trackers = ({ searchParams }: Search) => {
     setIsNewCall(true); 
     setTrackerId(id);
   }
+  // console.log(searchValue);
+  
   return (
     // <div className={styles.body}>
     //   <div className={styles.trackers_card_container}>
@@ -487,9 +409,9 @@ const Trackers = ({ searchParams }: Search) => {
       <div>
     {isData &&
       <div className="flex flex-row">
-  <div className="w-1/2 p-8 h-[calc(100vh-70px)] overflow-y-auto">
-    <div className="flex flex-col gap-4">
-      <div className="text-sm text-[var(--secondary-text-color)]">
+  <div className="w-1/2 h-[calc(100vh-70px)]">
+    <div className="flex flex-col gap-4 px-8 py-0">
+      <div className="text-sm text-[var(--secondary-text-color)] pt-8">
         Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
       </div>
       <div>
@@ -501,33 +423,41 @@ const Trackers = ({ searchParams }: Search) => {
       >
         Create Tracker
       </button> */}
-      <hr style={{borderBottom:"1px solid var(--border-color)"}}/>
-      {/* <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
+      <hr/>
+      <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
               className="outline-none w-full bg-[var(--primary-foreground)]"
-              placeholder="Search by name, address or tag"
+              placeholder="Enter tracker name"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
-          </div> */}
-          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData}/>
+          </div>
     </div>
+    <div >
+          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue}/>
+      </div>
   </div>
-  <div className="w-1/2 p-8 h-[calc(100vh-70px)] bg-[var(--background-secondary-color)]" style={{padding:"32px 0px"}}>
+  <div className="w-1/2 p-8 h-[calc(100vh-61px)] bg-[var(--background-secondary-color)]" style={{padding:"32px 0px"}}>
     <div className="flex flex-col gap-4">
   <div className="flex items-center justify-between border border-[var(--border-color)] p-3" style={{margin:"0px 32px"}}>
           <span className="flex items-center gap-2 text-[#696B83]">
            {singleTrackerData?.name}
           </span>
-          <Link
-        href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=activeEvent`}
-        onClick={()=>setContextData(singleTrackerData?.id)}
-      >
-        <Button className="text-white">View Events</Button>
-          </Link>
+          {dataPresent ? (
+            <Link
+            href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=activeEvent`}
+            onClick={() => setContextData(singleTrackerData?.id)}
+            >
+            <Button className="text-white">View Detail</Button>
+            </Link>
+            ) : (
+            <Button disabled className="text-white">
+            View Detail
+            </Button>
+          )}
         </div>
-        <div className="flex h-[calc(100vh-180px)] overflow-y-auto flex-col px-8 gap-4">
+        <div className="flex h-[calc(100vh-171px)] overflow-y-auto flex-col px-8 gap-4">
   {/* <div className="flex w-[45%] items-stretch">
     <div className="flex flex-col w-[100%] gap-3">
     <div className="w-[100%]">
@@ -545,6 +475,24 @@ const Trackers = ({ searchParams }: Search) => {
       alt="trackerLocation"  
     />
   </div> */}
+   <div>
+   {/* {load ? (
+      <Loading />
+    ) : ( */}
+      <Suspense fallback={<div className="h-[300px] w-[100%] items-center justify-center"><Loading /></div>}>
+        <div className="h-[300px]">
+        <Map 
+          isGlobal={true}
+          source="tracker" 
+          searchParams={`active`}
+          trackerId={singleTrackerData?.id}
+          trackerLoc={locations?.length>0 && locations?.join(",")}
+        />
+        </div>
+      </Suspense>
+    {/* )} */}
+
+  </div>
   <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
     <SavedEventWidget savedEvents={savedEvents} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=savedEvent`}/>
@@ -584,30 +532,18 @@ const Trackers = ({ searchParams }: Search) => {
  
   </div>
 </div>}
-    {
-      (!hideTemplate || !isData) && (
-        <div
-          className="absolute left-[63px] top-[61px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-61px)]"
-          style={{ zIndex: "11" }}
-        >
-          <div style={{ padding: "24px 14px", width: "100%", overflowY: "auto" }}>
-            {!isData && (
-              <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">
-                Explore trackers or create custom ones using advanced filters,
-                enabling real-time monitoring of key events and informed decisions.
-              </div>
-            )}
-            {isData && (
-              <button
-                className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center"
-                style={{ color: "var(--primary-color)" }}
-                onClick={() => setHideTemplate(true)}
-              >
-                <Image src={Back} alt="close" height={22} width={22} />
-                Back
-              </button>
-            )}
-            <div className={`${styles.container}`}>
+{(!hideTemplate || !isData)&& (
+          <div className="absolute left-[63px] top-[61px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-61px)]" style={{zIndex:"11"}}>
+            <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
+          {!isData && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>}
+        {isData && 
+            <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center"
+        style={{ color: "var(--primary-color)" }} onClick={()=>setHideTemplate(true)}>
+          <Image src={Back} alt="close" height={22} width={22} />
+            Back
+          </button>
+        }
+          <div className={`${styles.container}`}>
               {data.map((item, ind) => (
                 <Link
                   href={`/internal/trackers/create?type=${item?.url}`}
@@ -624,17 +560,14 @@ const Trackers = ({ searchParams }: Search) => {
                     </div>
                     <div className="w-full h-[60%] flex flex-col gap-2">
                       <div className="flex justify-between items-center">
-                        {item?.domain && (
-                          <div
-                            className="badge_primary"
-                            style={{
-                              fontSize: "var(--font-size-label)",
-                              padding: "6px",
-                            }}
-                          >
-                            {item?.domain}
-                          </div>
-                        )}
+                      {item?.domain &&
+                        <div
+                      className="badge_primary"
+                      style={{fontSize:"var(--font-size-label)", padding:"6px"}}
+                    >
+                      {item?.domain}
+                    </div>
+                      }
                       </div>
                       <div className="text-[16px] font-bold text-[var(--primary-color)]">
                         {item?.trackerName}

@@ -41,8 +41,14 @@ interface ApiEventData {
 
 export default function EventCalendar({
   events,
+  source,
+  trackerId,
+  type
 }: {
   events: CalendarEvent[] | CalendarMonthEvent[];
+  source: string;
+  trackerId?: string;
+  type?:string
 }) {
   const { getLocalFilterValue } = useFilterContext();
   const { getEventsWithSearchParams } = useEventsService();
@@ -64,7 +70,7 @@ export default function EventCalendar({
   } = useFilterState();
   const [showEventList, setShowEventList] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-
+  
   const view = getFilterValue("calendar_type") || ("month" as CustomView);
   const setView = (newView: CustomView) => {
     setGlobalFilter("calendar_type", newView);
@@ -230,6 +236,9 @@ export default function EventCalendar({
 
           {showEventList && (
             <EventList
+              type={type}
+              source={source}
+              trackerId={trackerId}
               eventDate={selectedDate || currentDate}
               onClose={() => setShowEventList(false)}
             />

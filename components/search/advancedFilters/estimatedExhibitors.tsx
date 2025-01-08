@@ -11,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
-
+import {EventType} from "@/public/data/searchFilters"
 const exhibitorRanges = [
   { id: "0-100", label: "0-100", min: 0, max: 100 },
   { id: "100-500", label: "100-500", min: 100, max: 500 },
@@ -21,8 +21,10 @@ const exhibitorRanges = [
 
 export default function EstimatedExhibitorsSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
-
+  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const exhibitorOptions = morphedData.estimatedExhibitor.options;
+  const enabled = morphedData.estimatedExhibitor.isEnabled;
+  const showToogle = morphedData.estimatedExhibitor.isToogleEnabled;
   const selectedRanges = useMemo(
     () => getLocalFilterValue("estimatedExhibitors").split(",").filter(Boolean),
     [getLocalFilterValue]
@@ -80,10 +82,11 @@ export default function EstimatedExhibitorsSelector() {
         align="start"
       >
         <div className="p-4 space-y-4">
-          {exhibitorRanges.map((range) => (
+          {exhibitorOptions.map((range: EventType) => (
             <div key={range.id} className="flex items-center space-x-2">
               <Checkbox
                 id={range.id}
+                disabled={!range.isEnabled}
                 checked={selectedRanges.includes(range.id)}
                 onCheckedChange={() => handleRangeToggle(range.id)}
               />

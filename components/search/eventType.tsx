@@ -10,18 +10,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 import { isEventeli } from "@/config";
-
+import {EventType} from "@/public/data/searchFilters"
 type EventGroupType = "social" | "business" | "unAttended";
-
-const groupedEventTypes: Record<EventGroupType, string[]> = {
-  social: ["festival", "concert", "sport", "performing-arts", "community"],
-  business: ["tradeshows", "conferences", "workshops"],
-  unAttended: ["holiday"],
-};
 
 export default function EventTypeSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
+  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+
+  const groupedEventTypes = morphedData.eventTypes.options;
+  const enabled = morphedData.eventTypes.isEnabled;
 
   const selectedCategories = useMemo(() => {
     const eventTypes = getLocalFilterValue("eventTypes")
@@ -29,13 +26,13 @@ export default function EventTypeSelector() {
       .filter(Boolean);
     return {
       social: eventTypes.filter((type) =>
-        groupedEventTypes.social.includes(type)
+        groupedEventTypes.social.some((event:EventType) => event.id === type)
       ),
       business: eventTypes.filter((type) =>
-        groupedEventTypes.business.includes(type)
+        groupedEventTypes.business.some((event:EventType) => event.id === type)
       ),
       unAttended: eventTypes.filter((type) =>
-        groupedEventTypes.unAttended.includes(type)
+        groupedEventTypes.unAttended.some((event:EventType) => event.id === type)
       ),
     };
   }, [getLocalFilterValue]);
@@ -54,7 +51,9 @@ export default function EventTypeSelector() {
   const handleSelectAll = useCallback(
     (eventGroupType: EventGroupType, isSelected: boolean) => {
       const currentSelected = Object.values(selectedCategories).flat();
-      const groupCategories = groupedEventTypes[eventGroupType];
+      const groupCategories = groupedEventTypes[eventGroupType]
+        .filter((event:EventType) => event.isEnabled)
+        .map((event:EventType) => event.id);
 
       const newCategories = isSelected
         ? Array.from(new Set([...currentSelected, ...groupCategories]))
@@ -67,11 +66,14 @@ export default function EventTypeSelector() {
 
   const isAllSelected = useCallback(
     (eventGroupType: EventGroupType) => {
-      const allCategories = groupedEventTypes[eventGroupType];
+      const enabledCategories = groupedEventTypes[eventGroupType]
+        .filter((cat:EventType) => cat.isEnabled)
+        .map((cat:EventType) => cat.id);
+
       return (
-        allCategories.length > 0 &&
-        allCategories.every((cat) =>
-          selectedCategories[eventGroupType].includes(cat)
+        enabledCategories.length > 0 &&
+        enabledCategories.every((catId:string) =>
+          selectedCategories[eventGroupType].includes(catId)
         )
       );
     },
@@ -103,21 +105,20 @@ export default function EventTypeSelector() {
               Select All
             </label>
           </div>
-          {groupedEventTypes[type].map((category) => (
-            <div key={category} className="flex items-center space-x-2">
+          {groupedEventTypes[type].map((category: EventType) => (
+            <div key={category.id} className="flex items-center space-x-2">
               <Checkbox
                 className="rounded-[2.5px]"
-                id={category}
-                checked={selectedCategories[type].includes(category)}
-                onCheckedChange={() => handleCategoryToggle(type, category)}
+                id={category.id}
+                checked={selectedCategories[type].includes(category.id)}
+                onCheckedChange={() => handleCategoryToggle(type, category.id)}
+                disabled={!category.isEnabled}
               />
               <label
-                htmlFor={category}
+                htmlFor={category.id}
                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
-                {category
-                  .replace(/-/g, " ")
-                  .replace(/\b\w/g, (l) => l.toUpperCase())}
+                {category.label}
               </label>
             </div>
           ))}
