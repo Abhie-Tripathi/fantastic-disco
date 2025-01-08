@@ -37,6 +37,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 import {Toggle} from "@/types/trackers"
 import SideNav from "@/app/components/trackers/sideNav";
 import { useTrackerContext } from "@/context/tracker";
+import ZeroState from "@/components/zerostate";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
@@ -218,9 +219,9 @@ const Page = ({ params }: { params: any }) => {
   });
   const displayData = eventData;
   console.log(displayData);
- console.log(Array.from(searchParams.values()));
- const events = displayData?.events || [];
- const count = displayData?.totalEvents || 0;
+  
+  const events = displayData?.events || [];
+  const count = displayData?.count || 0;
   useEffect(() => {
     setSavedEventCount(data?.tracker?.savedEventTotalCount);
     setTrackerDetail(data?.tracker);

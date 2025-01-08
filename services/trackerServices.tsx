@@ -104,18 +104,23 @@ export const useTrackerServices = () => {
         }
       )
     }
-    const getTrackerEvents = (
+    const getTrackerEvents = async(
       trackerId:string, params:string, eventType:string,
       abortSignal?: AbortSignal
     ): Promise<{ totalEvents: number, events: EventTableType[] } | undefined> => {
-      const response=api.request(
+      const response=await api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&type=${eventType}` : ''}`,
         {
           method: "GET",
           signal: abortSignal,
         }
       );
-      return EventsAdapter.adaptResponse(response, new URLSearchParams("view=list"))
+      // return response;
+      console.log(response);
+      
+      const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
+      console.log(EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list")));
+      return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
     };
     const getTrackerMapEvents = async(
       trackerId:string, params:string, eventType:string,
