@@ -61,3 +61,20 @@ export interface pocDetail {
 export interface eventPocResponse {
     eventPoc: pocDetail[]
 }
+
+export interface PresetJsonData {
+    id: number;
+    img?: any;
+    url: string;
+    trackerName: string;
+    content: string;
+    data: any;
+    enabled: boolean;
+    presetType: string;
+    eventCount?: string;
+}
+
+export interface PresetList {
+    totalCount: number;
+    data: PresetJsonData[];
+}
