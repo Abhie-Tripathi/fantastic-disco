@@ -36,8 +36,8 @@ const ModuleSelection = ({ value, theme }: Props) => {
     }}
     >
       <div className={`flex items-center flex-col`}>
-        <div className={`text-5xl font-[var(--font-weight-semibold)] text-[var(--primary-text-color)] text-center max-[620px]:text-4xl`}>Get Started with <span className='bg-gradient-to-r from-[#EE1CC082] via-[#7757DE] to-[#DD18FD40] bg-clip-text text-transparent'>Whr.ai</span></div>
-        <div className='text-[var(--primary-text-color)] text-center'>All-in-one solution to maximize ROI from your event strategy.</div>
+        <div className={`text-5xl font-[var(--font-weight-semibold)] text-[var(--primary-text-color)] text-center max-[620px]:text-3xl`}>Get Started with <span className='bg-gradient-to-r from-[#EE1CC082] via-[#7757DE] to-[#DD18FD40] bg-clip-text text-transparent'>Whr.ai</span></div>
+        <div className='text-[var(--primary-text-color)] text-center max-[620px]:text-[14px]'>All-in-one solution to maximize ROI from your event strategy.</div>
       </div>
       {value === "admin" ?
         <>
