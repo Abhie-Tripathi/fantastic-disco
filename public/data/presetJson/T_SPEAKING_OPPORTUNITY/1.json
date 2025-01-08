@@ -1,9 +1,14 @@
-[
+{
+  "totalCount": 4,
+  "data": [
     {
-      "id": 112,
-      "url": "T_SPEAKING_OPPORTUNITY",
+      "id": "1",
       "trackerName": "Top Voice in Education",
       "content": "Empowering transformative learning strategies for the future of education.",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "74",
+      "url": "T_SPEAKING_OPPORTUNITY",
       "data": [
         [
           "Sal Khan",
@@ -209,16 +214,16 @@
           "Heidi Hayes Jacobs",
           "Curriculum Designers"
         ]
-      ],
-      "enabled": true,
-      "presetType": "ALL",
-      "eventCount": "74"
+      ]
     },
     {
-      "id": 113,
-      "url": "T_SPEAKING_OPPORTUNITY",
+      "id": "2",
       "trackerName": "Top Voice in IT & Technology",
       "content": "Driving innovation through cutting-edge tech solutions and digital advancements.",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "46",
+      "url": "T_SPEAKING_OPPORTUNITY",
       "data": [
         [
           "Satya Nadella",
@@ -424,16 +429,16 @@
           "Jason Fried",
           "Basecamp"
         ]
-      ],
-      "enabled": true,
-      "presetType": "ALL",
-      "eventCount": "46"
+      ]
     },
     {
-      "id": 114,
-      "url": "T_SPEAKING_OPPORTUNITY",
+      "id": "3",
       "trackerName": "Top Voice in Electric & Electronics",
       "content": "Revolutionizing industries with smart, efficient, and connected electronic solutions.",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "25",
+      "url": "T_SPEAKING_OPPORTUNITY",
       "data": [
         [
           "Lisa Su",
@@ -639,16 +644,16 @@
           "James Dyson",
           "Dyson Ltd"
         ]
-      ],
-      "enabled": true,
-      "presetType": "ALL",
-      "eventCount": "25"
+      ]
     },
     {
-      "id": 115,
-      "url": "T_SPEAKING_OPPORTUNITY",
+      "id": "4",
       "trackerName": "Top Voice in Pharma",
       "content": "Innovating healthcare with breakthrough solutions for better wellness and care.",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "14",
+      "url": "T_SPEAKING_OPPORTUNITY",
       "data": [
         [
           "Albert Bourla",
@@ -854,439 +859,7 @@
           "Emmanuel Hanon",
           "GSK"
         ]
-      ],
-      "enabled": true,
-      "presetType": "ALL",
-      "eventCount": "14"
-    },
-    {
-      "id": 116,
-      "url": "T_SPEAKING_OPPORTUNITY",
-      "trackerName": "Top Voice in Banking & Finance",
-      "content": "Mastering modern finance through banking, investments, and wealth strategies.",
-      "data": [
-        [
-          "Jamie Dimon",
-          "JPMorgan Chase"
-        ],
-        [
-          "Christine Lagarde",
-          "European Central Bank"
-        ],
-        [
-          "Warren Buffett",
-          "Berkshire Hathaway"
-        ],
-        [
-          "Larry Fink",
-          "BlackRock"
-        ],
-        [
-          "Jerome Powell",
-          "U.S. Federal Reserve"
-        ],
-        [
-          "Kristalina Georgieva",
-          "International Monetary Fund (IMF)"
-        ],
-        [
-          "David Solomon",
-          "Goldman Sachs"
-        ],
-        [
-          "Brian Moynihan",
-          "Bank of America"
-        ],
-        [
-          "James Gorman",
-          "Morgan Stanley"
-        ],
-        [
-          "Janet Yellen",
-          "U.S. Department of the Treasury"
-        ],
-        [
-          "Axel Weber",
-          "UBS Group AG"
-        ],
-        [
-          "Ana Bot\u00edn",
-          "Santander Group"
-        ],
-        [
-          "Mark Carney",
-          "United Nations"
-        ],
-        [
-          "Ray Dalio",
-          "Bridgewater Associates"
-        ],
-        [
-          "Mohamed El-Erian",
-          "Queens' College Cambridge"
-        ],
-        [
-          "Ralph Hamers",
-          "UBS Group AG"
-        ],
-        [
-          "Jane Fraser",
-          "Citigroup"
-        ],
-        [
-          "Tidjane Thiam",
-          "Freedom Acquisition I Corp."
-        ],
-        [
-          "Urs Rohner",
-          "Credit Suisse Group AG"
-        ],
-        [
-          "Noel Quinn",
-          "HSBC Holdings plc"
-        ],
-        [
-          "Stuart Gulliver",
-          "HSBC Holdings plc"
-        ],
-        [
-          "Ginni Rometty",
-          "IBM Corporation"
-        ],
-        [
-          "Sergio Ermotti",
-          "Swiss Re"
-        ],
-        [
-          "Sheryl Sandberg",
-          "Facebook (Meta Platforms Inc.)"
-        ],
-        [
-          "Bill Gates",
-          "Bill & Melinda Gates Foundation"
-        ],
-        [
-          "Jack Ma",
-          "Alibaba Group"
-        ],
-        [
-          "Carmen Reinhart",
-          "World Bank Group"
-        ],
-        [
-          "Mary Callahan Erdoes",
-          "JPMorgan Chase"
-        ],
-        [
-          "Steven Mnuchin",
-          "U.S. Department of the Treasury"
-        ],
-        [
-          "Douglas Peterson",
-          "S&P Global"
-        ],
-        [
-          "Abigail Johnson",
-          "Fidelity Investments"
-        ],
-        [
-          "Robert Kaplan",
-          "Federal Reserve Bank of Dallas"
-        ],
-        [
-          "Gary Cohn",
-          "IBM Corporation"
-        ],
-        [
-          "Peter Thiel",
-          "Founders Fund"
-        ],
-        [
-          "Henry Kravis",
-          "KKR & Co. Inc."
-        ],
-        [
-          "Stephen Schwarzman",
-          "The Blackstone Group"
-        ],
-        [
-          "Cathy Bessant",
-          "Bank of America"
-        ],
-        [
-          "Lloyd Blankfein",
-          "Goldman Sachs"
-        ],
-        [
-          "Robert Smith",
-          "Vista Equity Partners"
-        ],
-        [
-          "Janet Cowell",
-          "Girls Who Invest"
-        ],
-        [
-          "Dr. Nouriel Roubini",
-          "Roubini Macro Associates"
-        ],
-        [
-          "Thomas Gottstein",
-          "Credit Suisse Group AG"
-        ],
-        [
-          "Sallie Krawcheck",
-          "Ellevest"
-        ],
-        [
-          "Jamie Forese",
-          "Citigroup"
-        ],
-        [
-          "Gary Gensler",
-          "U.S. Securities and Exchange Commission"
-        ],
-        [
-          "Jes Staley",
-          "Barclays plc"
-        ],
-        [
-          "Shuhei Abe",
-          "SPARX Group Co. Ltd."
-        ],
-        [
-          "David McCormick",
-          "Bridgewater Associates"
-        ],
-        [
-          "David Rubenstein",
-          "The Carlyle Group"
-        ],
-        [
-          "Sheila Bair",
-          "Federal Deposit Insurance Corporation"
-        ],
-        [
-          "Oliver B\u00e4te",
-          "Allianz SE"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL",
-      "eventCount": "10"
-    },
-    {
-      "id": 117,
-      "url": "T_SPEAKING_OPPORTUNITY",
-      "trackerName": "Top Voice in Auto & Automotive",
-      "content": "Shaping the future of mobility with electric, autonomous, and connected vehicles.",
-      "data": [
-        [
-          "Elon Musk",
-          "Tesla Inc."
-        ],
-        [
-          "Mary Barra",
-          "General Motors"
-        ],
-        [
-          "Akio Toyoda",
-          "Toyota Motor Corporation"
-        ],
-        [
-          "Herbert Diess",
-          "Volkswagen Group"
-        ],
-        [
-          "Jim Farley",
-          "Ford Motor Company"
-        ],
-        [
-          "Carlos Tavares",
-          "Stellantis N.V."
-        ],
-        [
-          "Li Shufu",
-          "Zhejiang Geely Holding Group"
-        ],
-        [
-          "Ola K\u00e4llenius",
-          "Daimler AG & Mercedes-Benz AG"
-        ],
-        [
-          "Oliver Zipse",
-          "BMW AG"
-        ],
-        [
-          "Peter Rawlinson",
-          "Lucid Motors"
-        ],
-        [
-          "Li Bin (William Li)",
-          "NIO Inc."
-        ],
-        [
-          "R.J. Scaringe",
-          "Rivian"
-        ],
-        [
-          "Luca de Meo",
-          "Renault Group"
-        ],
-        [
-          "Henrik Fisker",
-          "Fisker Inc."
-        ],
-        [
-          "Takahiro Hachigo",
-          "Honda Motor Co. Ltd."
-        ],
-        [
-          "Gill Pratt",
-          "Toyota Research Institute"
-        ],
-        [
-          "John Krafcik",
-          "Waymo (Alphabet Inc.)"
-        ],
-        [
-          "Doug Field",
-          "Apple Inc."
-        ],
-        [
-          "H\u00e5kan Samuelsson",
-          "Volvo Cars"
-        ],
-        [
-          "Jim Hackett",
-          "Ford Motor Company"
-        ],
-        [
-          "Michael Manley",
-          "Stellantis N.V."
-        ],
-        [
-          "Takao Kato",
-          "Mitsubishi Motors Corporation"
-        ],
-        [
-          "Simon Sproule",
-          "Aston Martin Lagonda"
-        ],
-        [
-          "Akira Marumoto",
-          "Mazda Motor Corporation"
-        ],
-        [
-          "Mark Fields",
-          "Ford Motor Company"
-        ],
-        [
-          "Carlos Ghosn",
-          "Renault-Nissan-Mitsubishi Alliance"
-        ],
-        [
-          "Dieter Zetsche",
-          "Daimler AG"
-        ],
-        [
-          "Thierry Bollor\u00e9",
-          "Jaguar Land Rover"
-        ],
-        [
-          "Shiro Nakamura",
-          "Shiro Nakamura Design Associates"
-        ],
-        [
-          "Franz von Holzhausen",
-          "Tesla Inc."
-        ],
-        [
-          "Chris Urmson",
-          "Aurora Innovation"
-        ],
-        [
-          "Simon Humphries",
-          "Toyota Motor Corporation"
-        ],
-        [
-          "Guenter Butschek",
-          "Tata Motors"
-        ],
-        [
-          "Albert Biermann",
-          "Hyundai Motor Group"
-        ],
-        [
-          "Anand Mahindra",
-          "Mahindra Group"
-        ],
-        [
-          "Andy Palmer",
-          "Switch Mobility Ltd."
-        ],
-        [
-          "Robert Bosch Jr.",
-          "Bosch Group"
-        ],
-        [
-          "Guido Dumarey",
-          "Punch Powertrain"
-        ],
-        [
-          "Kristin Siemen",
-          "General Motors"
-        ],
-        [
-          "Steve Center",
-          "American Honda Motor Co."
-        ],
-        [
-          "Sandy Munro",
-          "Munro & Associates"
-        ],
-        [
-          "Karl-Thomas Neumann",
-          "Former CEO of Opel"
-        ],
-        [
-          "Jim Lentz",
-          "Toyota Motor North America"
-        ],
-        [
-          "Denise Gray",
-          "LG Energy Solution Michigan"
-        ],
-        [
-          "Brian Gu",
-          "Xpeng Motors"
-        ],
-        [
-          "Elmar Degenhart",
-          "Continental AG"
-        ],
-        [
-          "Linda Zhang",
-          "Ford Motor Company"
-        ],
-        [
-          "Amnon Shashua",
-          "Mobileye (Intel Corporation)"
-        ],
-        [
-          "Jensen Huang",
-          "NVIDIA Corporation"
-        ],
-        [
-          "Mary Nichols",
-          "California Air Resources Board"
-        ],
-        [
-          "Gillian Davis",
-          "Shell New Energies"
-        ]
-      ],
-      "enabled": true,
-      "presetType": "ALL",
-      "eventCount": "9"
+      ]
     }
-]
+  ]
+}
