@@ -226,12 +226,13 @@ export const EventsAdapter = {
       adaptedParams.longitude = geoCoordinates.longitude;
     }
     if (
-      !(params.get("active_gte") && params.get("active_lte")) &&
+      params.get("active_gte") &&
+      params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      const currentYear = new Date().getFullYear();
-      const startDate = new Date(currentYear, 0, 1).toISOString().split("T")[0];
-      const endDate = new Date(currentYear, 11, 31).toISOString().split("T")[0];
+      console.log("first")
+      const startDate = params.get("active_gte");
+      const endDate = params.get("active_lte");
       adaptedParams.groupBy = `${startDate},${endDate}`;
     }
 
@@ -240,6 +241,7 @@ export const EventsAdapter = {
       !params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
+      console.log("second")
       const startDate = new Date(params.get("active_gte")!);
       const endDate = new Date(startDate);
       endDate.setFullYear(startDate.getFullYear() + 1);
@@ -253,6 +255,7 @@ export const EventsAdapter = {
       params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
+      console.log("third")
       const endDate = new Date(params.get("active_lte")!);
       const startDate = new Date(endDate);
       startDate.setFullYear(endDate.getFullYear() - 1);

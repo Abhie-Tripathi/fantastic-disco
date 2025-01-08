@@ -97,10 +97,13 @@ export default function DateRangeSelector({ type, source }: { type?: string, sou
   const active_gte = getLocalFilterValue("active_gte");
   const active_lte = getLocalFilterValue("active_lte");
 
-  const dateRange = React.useMemo(() => ({
-    from: active_gte ? parseISO(active_gte) : undefined,
-    to: active_lte ? parseISO(active_lte) : undefined
-  }), [active_gte, active_lte]);
+  const dateRange = React.useMemo(
+    () => ({
+      from: active_gte ? parseISO(active_gte) : undefined,
+      to: active_lte ? parseISO(active_lte) : undefined,
+    }),
+    [active_gte, active_lte]
+  );
 
   const handlePresetChange = (preset: string) => {
     setSelectedPreset(preset);
@@ -153,7 +156,11 @@ export default function DateRangeSelector({ type, source }: { type?: string, sou
         return;
     }
 
-    const filters: { active_gte?: string; active_lte?: string } = {};
+    const filters: { active_gte: string; active_lte: string } = {
+      active_gte: "",
+      active_lte: "",
+    };
+
     if (from) {
       const fromDate = new Date(from);
       fromDate.setHours(5, 30, 0, 0);
@@ -182,7 +189,11 @@ export default function DateRangeSelector({ type, source }: { type?: string, sou
       return;
     }
 
-    if (dateRange.from && dateRange.to && dateRange.from.getTime() === dateRange.to.getTime()) {
+    if (
+      dateRange.from &&
+      dateRange.to &&
+      dateRange.from.getTime() === dateRange.to.getTime()
+    ) {
       const date = new Date(selectedDate);
       date.setHours(5, 30, 0, 0);
       if (selectedDate < dateRange.from) {

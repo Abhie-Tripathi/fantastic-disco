@@ -106,10 +106,10 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
 
 export default function EventAccordion({
   events,
-  count,
+  count = 0,
 }: {
   events: Event[];
-  count: number;
+  count: number | undefined;
 }) {
   const [openItem, setOpenItem] = useState<string | undefined>();
   const { setFilter, getFilterValue } = useFilterState();

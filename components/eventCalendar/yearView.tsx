@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import moment from "moment";
-import { heatmapColors } from "./constants"; // Import heatmapColors from parent component
+import { heatmapColors } from "./constants"; // Import heatmapColors from parent com
 import { CalendarMonthEventWithHeatmap } from ".";
 import { useTheme } from "@/context/theme";
+import { useFilterState } from "@/hooks/useFilterState";
 
 const YearView = ({
   date,
@@ -11,19 +12,55 @@ const YearView = ({
   date: Date;
   events: CalendarMonthEventWithHeatmap[];
 }) => {
+  const { getFilterValue } = useFilterState();
   const months = moment.months();
   const { theme } = useTheme();
 
+  const startingMonth = (function () {
+    const active_gte = getFilterValue("active_gte");
+    const active_lte = getFilterValue("active_lte");
+    if (active_gte) {
+      return moment(active_gte).format("MMMM");
+    }
+    if (active_lte) {
+      return moment(active_lte).format("MMMM");
+    }
+    return moment(date).format("MMMM");
+  })();
+
+  const monthRefs = useRef<HTMLDivElement[]>([]);
+
+  useEffect(() => {
+    const startingMonthIndex = months.indexOf(startingMonth);
+    if (startingMonthIndex >= 0 && monthRefs.current[startingMonthIndex]) {
+      monthRefs.current[startingMonthIndex].scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }
+  }, [startingMonth]);
+
   const getMonthEvents = (month: string) => {
     const monthIndex = months.indexOf(month);
-    return events.filter((event) => moment(event.start).month() === monthIndex);
+    return events.filter(
+      (event) =>
+        moment(event.start).month() === monthIndex &&
+        moment(event.start).year() === date.getFullYear()
+    );
   };
+
+  // const getMonthAlerts = (month: string) => {
+  //   const monthIndex = months.indexOf(month);
+  //   return unattendedEvents.alerts?.filter(
+  //     (event) =>
+  //       moment(event.startDate).month() === monthIndex &&
+  //       moment(event.startDate).year() === date.getFullYear()
+  //   );
+  // };
 
   const getHeatmapColor = (category: string) => {
     const colorObj = heatmapColors.find((color) => color.name === category);
-    return colorObj
-      ? colorObj[theme === "light" ? "color" : "darkModeColor"]
-      : "white";
+    return colorObj ? colorObj.color : "white";
   };
 
   return (

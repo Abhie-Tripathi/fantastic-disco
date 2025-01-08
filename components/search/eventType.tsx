@@ -7,10 +7,11 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from 'lucide-react';
 import { useFilterContext } from "@/context/filterContext";
 import { isEventeli } from "@/config";
-import {EventType} from "@/public/data/searchFilters"
+import { EventType } from "@/public/data/searchFilters"
+
 type EventGroupType = "social" | "business" | "unAttended";
 
 export default function EventTypeSelector() {
@@ -26,16 +27,16 @@ export default function EventTypeSelector() {
       .filter(Boolean);
     return {
       social: eventTypes.filter((type) =>
-        groupedEventTypes.social.some((event:EventType) => event.id === type)
+        groupedEventTypes.social.some((event: EventType) => event.id === type)
       ),
       business: eventTypes.filter((type) =>
-        groupedEventTypes.business.some((event:EventType) => event.id === type)
+        groupedEventTypes.business.some((event: EventType) => event.id === type)
       ),
       unAttended: eventTypes.filter((type) =>
-        groupedEventTypes.unAttended.some((event:EventType) => event.id === type)
+        groupedEventTypes.unAttended.some((event: EventType) => event.id === type)
       ),
     };
-  }, [getLocalFilterValue]);
+  }, [getLocalFilterValue, groupedEventTypes]);
 
   const handleCategoryToggle = useCallback(
     (eventGroupType: EventGroupType, categoryId: string) => {
@@ -48,12 +49,19 @@ export default function EventTypeSelector() {
     [selectedCategories, setLocalFilter]
   );
 
+  const isAnyDisabled = useCallback(
+    (eventGroupType: EventGroupType) => {
+      return groupedEventTypes[eventGroupType].some((event: EventType) => !event.isEnabled);
+    },
+    [groupedEventTypes]
+  );
+
   const handleSelectAll = useCallback(
     (eventGroupType: EventGroupType, isSelected: boolean) => {
       const currentSelected = Object.values(selectedCategories).flat();
       const groupCategories = groupedEventTypes[eventGroupType]
-        .filter((event:EventType) => event.isEnabled)
-        .map((event:EventType) => event.id);
+        .filter((event: EventType) => event.isEnabled)
+        .map((event: EventType) => event.id);
 
       const newCategories = isSelected
         ? Array.from(new Set([...currentSelected, ...groupCategories]))
@@ -61,23 +69,24 @@ export default function EventTypeSelector() {
 
       setLocalFilter("eventTypes", newCategories.join(","));
     },
-    [selectedCategories, setLocalFilter]
+    [selectedCategories, setLocalFilter, groupedEventTypes]
   );
 
   const isAllSelected = useCallback(
     (eventGroupType: EventGroupType) => {
       const enabledCategories = groupedEventTypes[eventGroupType]
-        .filter((cat:EventType) => cat.isEnabled)
-        .map((cat:EventType) => cat.id);
+        .filter((cat: EventType) => cat.isEnabled)
+        .map((cat: EventType) => cat.id);
 
       return (
         enabledCategories.length > 0 &&
-        enabledCategories.every((catId:string) =>
+        enabledCategories.every((catId: string) =>
           selectedCategories[eventGroupType].includes(catId)
-        )
+        ) &&
+        !isAnyDisabled(eventGroupType)
       );
     },
-    [selectedCategories]
+    [selectedCategories, groupedEventTypes, isAnyDisabled]
   );
 
   const onOpenChange = (open: boolean) => {
@@ -97,10 +106,13 @@ export default function EventTypeSelector() {
               onCheckedChange={(checked) =>
                 handleSelectAll(type, checked as boolean)
               }
+              disabled={isAnyDisabled(type)}
             />
             <label
               htmlFor={`select-all-${type}`}
-              className="italic text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              className={`italic text-sm font-medium leading-none peer-disabled:cursor-not-allowed ${
+                isAnyDisabled(type) ? 'opacity-70' : ''
+              }`}
             >
               Select All
             </label>
@@ -116,7 +128,9 @@ export default function EventTypeSelector() {
               />
               <label
                 htmlFor={category.id}
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed ${
+                  !category.isEnabled ? 'opacity-70' : ''
+                }`}
               >
                 {category.label}
               </label>
@@ -125,7 +139,7 @@ export default function EventTypeSelector() {
         </div>
       </div>
     ),
-    [handleCategoryToggle, handleSelectAll, isAllSelected, selectedCategories]
+    [handleCategoryToggle, handleSelectAll, isAllSelected, selectedCategories, groupedEventTypes, isAnyDisabled]
   );
 
   return (
@@ -172,3 +186,4 @@ export default function EventTypeSelector() {
     </Popover>
   );
 }
+

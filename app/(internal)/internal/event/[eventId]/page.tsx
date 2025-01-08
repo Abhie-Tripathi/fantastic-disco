@@ -47,6 +47,7 @@ import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import SaveThisEvent from "@/components/gtmDetail/saveThisEvent";
 import { toast } from "react-toastify";
+import { Button } from "@/components/ui/button";
 
 export interface RankingDetail {
   above5CountryEvent: countryRank[] | [];
@@ -212,15 +213,16 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   return (
     <div className="p-6 pt-0">
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
-        <button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
+        <Button
+          variant="link"
+          className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
+          onClick={() => router.back()}
+        >
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
-          <Link
-            className="text-[var(--primary-color)] font-medium"
-            href={"/internal/search/events"}
-          >
+          <span className="text-[var(--primary-color)] font-medium">
             Back to Search
-          </Link>
-        </button>
+          </span>
+        </Button>
         {bannerUrl && (
           <Image
             src={bannerUrl ?? "/eventDetailFallback.png"}
