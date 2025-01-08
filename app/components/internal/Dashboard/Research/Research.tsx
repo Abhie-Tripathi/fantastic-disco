@@ -69,9 +69,9 @@ const Research = ({ theme }: Props) => {
     // },[])
 
     return (
-        <div className={`w-full h-auto gap-[61px] bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden`}
+        <div className={`w-full h-auto bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden gap-[40px]`}
             style={{ backgroundImage: `${theme === "dark" ? `url(${BackgroundImageDark.src})` : `url(${BackgroundImage.src})`}` }}>
-            <div className={`m-[20px_30px] gap-5 w-[60%] max-[1050px]:w-full flex flex-col`}>
+            <div className={`m-5 gap-5 w-[60%] max-[1100px]:w-full flex flex-col`}>
                 <div className={`flex flex-col`}>
                     <div className="text-xl font-[var(--font-weight-semibold)] flex items-center gap-1">
                         <span>Welcome back</span>
@@ -81,7 +81,7 @@ const Research = ({ theme }: Props) => {
                 </div>
                 <div className={`w-full relative`}>
                     <SearchBar />
-                    <div className='hidden w-[20%] top-[10px] right-[5px] absolute max-[1050px]:block'>
+                    <div className='hidden top-[10px] right-[10px] absolute max-[1100px]:block'>
                         <Button onClick={searchHandler} className='' size="sm">Explore Events <MoveRight width={12} /></Button>
                     </div>
 
@@ -91,17 +91,22 @@ const Research = ({ theme }: Props) => {
                         <Sparkles width={14} height={14} color='#6750a4' />
                         <span className='text-[var(--primary-color)] text-xs'>Suggested filters</span>
                     </div>
-                    <div className={` mt-2.5 gap-2 flex justify-between`}>
-                        {/* {dropdowns.map((dropdown, key) => (
-                            <Dropdown theme={theme} name={dropdown.name} key={key} />
-                        ))} */}
+                    <div className="mt-2.5 gap-2 flex justify-between max-[780px]:hidden">
                         <EventTypeSelector source="search" />
                         <LocationSelector source="search" />
                         <DateRangeSelector source="search" />
                     </div>
+                    <div className="mt-2.5 flex-col gap-2 hidden max-[780px]:flex">
+                        <div className='flex gap-2 max-[577px]:flex-col'>
+                            <EventTypeSelector source="search" />
+                            <LocationSelector source="search" />
+                        </div>
+                        <div className='w-[50%] max-[577px]:w-full'><DateRangeSelector source="search" /></div>
+                    </div>
+
                 </div>
             </div>
-            <div className="border w-[260px] mb-[-40px] max-[1050px]:hidden">
+            <div className="w-[260px] mb-[-40px] max-[1100px]:hidden">
                 <Suspense fallback={<div>Loading...</div>}>
                     <MapContainer searchHandler={searchHandler} location={locationName} theme={theme} latLang={latLang} />
                 </Suspense>

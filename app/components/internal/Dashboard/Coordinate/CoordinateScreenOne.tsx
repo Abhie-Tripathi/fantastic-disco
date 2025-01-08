@@ -52,11 +52,11 @@ const CoordinateScreenOne = ({ values, theme }: Props) => {
                 {!isEmpty ?
                     <div className="grid grid-cols-2 gap-2 mt-8">
                         {values.map((item, index) => (
-                            <NumberPill bg={!isEmpty ? "none" : ""} width='125px' heading={item.heading} value={item.value} key={index} />
+                            <NumberPill bg={!isEmpty ? "none" : ""} width='full' heading={item.heading} value={item.value} key={index} />
                         ))}
                     </div> : <Button onClick={() => handleRouting("button")} className="mt-8" size="sm">Search Events <MoveRight width={12} /></Button>}
             </div>
-            <div className="h-full min-w-[177px] max-w-[177px] flex items-center">
+            <div className="h-full min-w-[177px] max-w-[177px] flex items-center max-[570px]:hidden">
                 <Image className="w-full h-[180px] object-cover ml-4" src={theme === "dark" ? CoordinateScreenDark : CoordinateScreen} alt="coordinate" />
             </div>
         </div>

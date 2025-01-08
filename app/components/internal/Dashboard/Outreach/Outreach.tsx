@@ -44,8 +44,8 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
   }
 
   return (
-    <div className={`${outreachData.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] w-full overflow-hidden relative rounded-xl flex h-[273px]`}>
-      <div className={`flex flex-col ${outreachData.length > 0 ? "gap-2" : "gap-8"} w-[50%] p-4`}>
+    <div className={`${outreachData.length === 0 && "bg-[var(--background-secondary-color)]"} border border-[var(--border-color)] w-full overflow-hidden relative rounded-xl flex h-[273px] max-[570px]:flex-col max-[570px]:h-fit`}>
+      <div className={`flex flex-col ${outreachData.length > 0 ? "gap-2" : "gap-8"} w-[50%] p-4 max-[570px]:w-full`}>
         <div className='flex items-center gap-1 text-[var(--primary-color)] font-semibold'>
           <OutreachIcon />
           <div className={`flex items-center gap-2 ${outreachData.length > 0 && "cursor-pointer"}`} onClick={() => handleRouting("heading")}>
@@ -70,9 +70,10 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
         }
 
       </div>
-      {(outreachData.length === 0 || outreachChat?.comment === undefined) ? <div className='relative h-full w-[50%]'>
-        <Image src={theme === "dark" ? OutreachImageDark : OutreachImage} alt='outreach' className='absolute top-[40px] left-[20px]' width={303} height={272} unoptimized /></div>
-        : <div className='p-4 w-[50%] h-full'><RecentChat outreachChat={outreachChat} /></div>
+      {(outreachData.length === 0 || outreachChat?.comment === undefined || outreachChat.comment === "") ? <div className='relative h-full w-[50%]'>
+        <Image src={theme === "dark" ? OutreachImageDark : OutreachImage} alt='outreach' className='absolute top-[40px] left-[20px] max-[570px]:hidden' width={303} height={272} unoptimized /></div>
+        : 
+        <div className='p-4 w-[50%] h-full max-[570px]:w-full max-[570px]:h-[300px]'><RecentChat outreachChat={outreachChat} /></div>
       }
     </div>
   )

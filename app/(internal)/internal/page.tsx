@@ -234,8 +234,11 @@ const Dashboard = () => {
                 <div className="flex flex-col gap-3 mb-2">
                   <div className="w-full flex gap-3 max-[1050px]:flex-col">
                     <div className="w-[50%] flex gap-3 max-[1050px]:w-full max-[870px]:flex-col">
-                      <div className="w-full hidden max-[870px]:block">
+                      <div className="w-full hidden max-[870px]:block max-[600px]:hidden">
                         <TrackerContainer trackers={trackerData} width="small" />
+                      </div>
+                      <div className="w-full hidden max-[600px]:block">
+                        <TrackerContainer trackers={trackerData} width="smaller" />
                       </div>
                       <div className={`${(outreach && trends) ? "w-[50%]" : "w-full"} max-[870px]:hidden`}>
                         <TrackerContainer trackers={trackerData} width={(role === "sa") ? "smaller" : "large"} />
@@ -253,12 +256,13 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="w-full flex gap-3 max-[870px]:flex-col">
-                    {(role === "sa") && <div className="w-[50%] max-[870px]:w-full"><Outreach outreachChat={outreachChat} outreachData={outreachData} theme={theme} /> </div>}
-                    {role === "sa" && <div className="flex gap-3 w-[50%] max-[870px]:w-full">
-                      <div className={prospect ? "w-[50%]" : "w-full"}>
+                    {(role === "sa") && <div className="w-[50%] max-[870px]:w-full">
+                      <Outreach outreachChat={outreachChat} outreachData={outreachData} theme={theme} /> </div>}
+                    {role === "sa" && <div className="flex gap-3 w-[50%] max-[870px]:w-full max-[500px]:flex-col">
+                      <div className={`${prospect ? "w-[50%]" : "w-full"} max-[500px]:w-full`}>
                         <PromoteContainer promoteData={promoteData} theme={theme} width={prospect ? "small" : "large"} />
                       </div>
-                      {prospect && <div className="w-[50%]">
+                      {prospect && <div className="w-[50%] max-[500px]:w-full">
                         <Prospect theme={theme} />
                       </div>}
 
@@ -302,7 +306,7 @@ const Dashboard = () => {
         }
 
       </div>
-      <div className="flex flex-col min-w-[20%] gap-3 max-[1310px]:hidden">
+      <div className="flex flex-col min-w-[20%] gap-3 max-[1350px]:hidden">
         <RecentActivity value={value} profileData={profileData} />
         <ManageTeam />
         <Pricing />
