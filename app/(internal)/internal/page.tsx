@@ -60,7 +60,7 @@ const Dashboard = () => {
   // const [recentSearchValue, setRecentSearchValue] = useState<any>()
   const [value, setValue] = useState<string>("empty")
   const [profileData, setProfileData] = useState<ProfileData>({ name: "", email: "", phoneNumber: "", profilePicture: "", department: "" })
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const { theme } = useTheme()
   const { getParticipentCount, getPipelineConfig, getOutreachSingleEvent, getLatestComment } = useCoordinateService()
@@ -211,25 +211,25 @@ const Dashboard = () => {
     return !outreachData.some(item => item.value > 0);
   };
 
-  // useEffect(() => {
-  //   // Simulate a delay for loading state (optional)
-  //   const timer = setTimeout(() => {
-  //     // Check if any state has meaningful data
-  //     if (
-  //       !isCoordinateEmpty(coordinateData) ||
-  //       !isPromoteEmpty(promoteData) ||
-  //       trackerData.length > 0 ||
-  //       !isOutreachEmpty(outreachData)
-  //     ) {
-  //       setValue("filled");
-  //     } else {
-  //       setValue("empty");
-  //     }
-  //     setLoading(false); // Set loading to false after the computation
-  //   }, 500); // Adjust delay if needed
+  useEffect(() => {
+    // Simulate a delay for loading state (optional)
+    const timer = setTimeout(() => {
+      // Check if any state has meaningful data
+      if (
+        !isCoordinateEmpty(coordinateData) ||
+        !isPromoteEmpty(promoteData) ||
+        trackerData.length > 0 ||
+        !isOutreachEmpty(outreachData)
+      ) {
+        setValue("filled");
+      } else {
+        setValue("empty");
+      }
+      setLoading(false); // Set loading to false after the computation
+    }, 500); // Adjust delay if needed
 
-  //   return () => clearTimeout(timer); // Cleanup timeout on component unmount
-  // }, [coordinateData, promoteData, trackerData, outreachData]);
+    return () => clearTimeout(timer); // Cleanup timeout on component unmount
+  }, [coordinateData, promoteData, trackerData, outreachData]);
 
   return (
     <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3 max-[1010px]:max-h-none max-[1010px]:h-[100%]">
