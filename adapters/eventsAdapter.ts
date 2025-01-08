@@ -265,10 +265,11 @@ export const EventsAdapter = {
     }
 
     if (
-      !params.get("active_gte") &&
-      params.get("view") == "calendar" &&
-      params.get("calendar_type") == "week"
+      !params.get("active_gte") && 
+      params.get("view") == "calendar" 
+      // params.get("calendar_type") == "week"
     ) {
+      console.log("active_gte, calendar, week")
       const today = new Date();
       const firstDayOfMonth = new Date(
         today.getFullYear(),
