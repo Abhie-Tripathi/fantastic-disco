@@ -553,7 +553,7 @@ const Trackers = ({ searchParams }: Search) => {
   </div>
 </div>}
 {(!hideTemplate || !isData)&& (
-          <div className="absolute left-[63px] top-[65px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-70px)]" style={{zIndex:"11"}}>
+          <div className="absolute left-[63px] top-[65px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-65px)]" style={{zIndex:"11"}}>
             <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
           {!isData && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>}
         {isData && 

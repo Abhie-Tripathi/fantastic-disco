@@ -60,7 +60,8 @@ export default function CategorySelector() {
       ...categories,
     ];
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);
-
+    console.log(selectedCategories);
+    
     return (
       <div className="grid grid-cols-3 gap-x-4">
         {Array.from({ length: columnCount }).map((_, columnIndex) => (

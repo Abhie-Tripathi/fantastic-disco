@@ -199,7 +199,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
               state={sort}
             /> */}
           </div>
-        <div className="h-[calc(100vh-330px)] overflow-auto pl-8 pr-7 grid gap-[var(--spacing-md)] grid-cols-[repeat(auto-fill,minmax(470px,1fr))] block pb-6">
+        <div className="h-[calc(100vh-330px)] overflow-auto pl-8 pr-7 flex flex-col gap-[var(--spacing-md)] pb-6">
           {(allTracker.length===0 && !loadOne) &&
             <div className="flex justify-center text-[var(--secondary-text-color)] font-semibold">Tracker with the search result is not created yet.</div>
           }
