@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 // import  from './style.module.css'
 import Vectore6 from "/public/newVector.svg";
 import Vectore7 from "/public/lucide_timer.svg";
@@ -21,6 +21,7 @@ interface Props {
 }
 
 const TrackerCard = ({ tracker, small }: Props) => {
+    const [isHovered, setIsHovered] = useState(false);
     return (
         <div className={`flex ${small && "flex-col"} justify-between cursor-pointer w-full`}>
             {!small &&
@@ -42,10 +43,19 @@ const TrackerCard = ({ tracker, small }: Props) => {
                     <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{ fontSize: "var(--font-size-xs)" }}>{tracker.type}</div>
                 </div>}
             {small &&
-                <div className='bg-[var(--background-secondary-color)] rounded-sm flex p-2 justify-between items-center mb-3'>
-                    <div className="font-semibold text-xs break-words leading-none">
-                        {tracker.name.length > 45 ? `${tracker.name.substring(0, 45)}...` : tracker.name}
+                <div className='bg-[var(--background-secondary-color)] rounded-sm flex p-2 justify-between items-center mb-3 relative'>
+                    <div onMouseEnter={() => setIsHovered(true)}
+                        onMouseLeave={() => setIsHovered(false)}>
+                        <div className="font-semibold text-xs leading-none whitespace-nowrap">
+                            {tracker.name.length > 10 ? `${tracker.name.substring(0, 10)}...` : tracker.name}
+                        </div>
+                        {isHovered && (
+                            <div className="absolute z-10 top-[-20px] mt-1 bg-black text-white text-xs p-1 rounded shadow-lg">
+                                {tracker.name}
+                            </div>
+                        )}
                     </div>
+
                     <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{ fontSize: "var(--font-size-xs)" }}>{tracker.type}</div>
                 </div>}
             <div className={`flex ${small ? "justify-between" : "gap-2"} text-xs`}>

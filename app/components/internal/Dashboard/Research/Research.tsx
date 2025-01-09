@@ -80,8 +80,11 @@ const Research = ({ theme }: Props) => {
                 </div>
                 <div className={`w-full relative`}>
                     <SearchBar />
-                    <div className='hidden top-[10px] right-[10px] absolute max-[1100px]:block'>
+                    <div className='hidden top-[10px] right-[10px] absolute max-[1100px]:block max-[468px]:hidden'>
                         <Button onClick={searchHandler} className='' size="sm">Explore Events <MoveRight width={12} /></Button>
+                    </div>
+                    <div className='hidden top-[10px] right-[10px] absolute max-[468px]:block'>
+                        <Button onClick={searchHandler} className='' size="sm"><MoveRight width={12} /></Button>
                     </div>
 
                 </div>
