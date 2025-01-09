@@ -77,6 +77,8 @@ const Page = ({ params }: { params: any }) => {
   const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
   const viewType=searchParams.get("view");
+  const skip = searchParams.get("skip") || "0";
+  const take = searchParams.get("take") || "10";
   const typeOfEvent=searchParams.get("eventType");
   const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
   // const id = pathName[pathName.length - 2];
@@ -200,7 +202,7 @@ const Page = ({ params }: { params: any }) => {
       else if (viewType === "list") {
         return getTrackerEvents(
           trackerId,
-          ``,
+          `offset=${skip}&limit=${take}`,
           active === "Active Events"
             ? "active"
             : active === "Expired Events"

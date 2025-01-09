@@ -913,6 +913,8 @@ const Table = ({
     setCurrPage((page) => page + 1);
     GAEvent("research", "Filters", "Load More Clicked", "Load More");
   };
+  console.log(eventPerPage[0]);
+  
   return (
     <div className={styles.table_container}>
       <div
