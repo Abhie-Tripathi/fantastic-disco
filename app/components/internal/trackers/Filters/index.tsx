@@ -761,8 +761,7 @@ const Pages = () => {
     });
     let showsData = [];
     const mapping = {
-    rating: "eventRating",
-    rating: "trustScore",
+    rating: "eventRating,trustScore",
     maturity: "maturity",
     forecasted: "isforecasted",
     frequency: "eventFrequency",
