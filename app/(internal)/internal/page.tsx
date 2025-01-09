@@ -137,6 +137,7 @@ const Dashboard = () => {
   }
 
   const fetchRecentSearch = async () => {
+    console.log("recent search ran")
     const data: any = await getRecentSearch();
     if (data.length > 0) {
       const recentSearch = data[0];
@@ -160,11 +161,10 @@ const Dashboard = () => {
       const countryIds = locationIds.country
         ? locationIds.country.map((c: any) => Object.keys(c)).flat().join(", ")
         : "";
-
       // Combine location IDs
       const combinedLocationIds = [cityIds, stateIds, countryIds].filter(loc => loc).join(",");
 
-      console.log("combined locations : ", combinedLocationIds)
+      // console.log("combined locations : ", combinedLocationIds)
       if (combinedLocationIds) {
         setLocalFilter("locationIds", combinedLocationIds)
       } else setLocalFilter("locationIds", "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef")
@@ -173,6 +173,7 @@ const Dashboard = () => {
       setLocalFilter("active_gte", startDate.split(",")[0])
       setLocalFilter("active_lte", startDate.split(",")[1])
     }
+    else setLocalFilter("locationIds", "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef")
   }
 
   const fetchProfileData = async () => {
@@ -235,7 +236,7 @@ const Dashboard = () => {
     <div className="flex p-3 min-h-[91vh] max-h-[91vh] gap-3 max-[1010px]:max-h-none max-[1010px]:h-[100%]">
       {loading ?
         <div className="flex justify-center items-center h-full absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
-          <Loading/>
+          <Loading />
         </div> :
         <>
           <div className="flex-1">

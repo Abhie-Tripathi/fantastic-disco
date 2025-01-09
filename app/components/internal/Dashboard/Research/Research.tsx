@@ -25,7 +25,7 @@ const Research = ({ theme }: Props) => {
     const MapContainer = React.lazy(() => import('./MapContainer'));
 
     // const dropdowns = [{ name: "Event Type" }, { name: "Location" }, { name: "Date" }]
-    const {  getLocalFilterValue, localFilters } = useFilterContext();
+    const { getLocalFilterValue, localFilters } = useFilterContext();
     const { getLocationDetails } = useLocationService()
     const [latLang, setLatLang] = useState<{ lat: number, long: number }>({ lat: 40.691293, long: -73.986610 })
     const [locationName, setLocationName] = useState<string>("")

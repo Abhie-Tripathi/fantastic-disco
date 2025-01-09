@@ -3,13 +3,17 @@ import { ArrowRight, BarChart } from 'geist-icons'
 import BarChartComponent from './BarChartComponent';
 import { useRouter } from 'next/navigation';
 import Trendsimage from '/public/internal/dashboard/Trendsimage.png'
+import TrendsimageDark from '/public/internal/dashboard/Trendsimagedark.png'
 import Image from 'next/image';
+import { useTheme } from '@/context';
 
 interface Props {
     container: string; // to check container is small or big
 }
 
 const Trends = ({ container }: Props) => {
+
+    const {theme} = useTheme()
 
     const router = useRouter()
 
@@ -26,7 +30,7 @@ const Trends = ({ container }: Props) => {
                 </div>
             </div>
             <div className='text-xs text-[var(--bold-border-color)] mt-3'>Explore event trends to tailor your experience to what’s popular and relevant.</div>
-            <Image src={Trendsimage} alt='trends'/>
+            <Image src={theme === "light" ? Trendsimage : TrendsimageDark} alt='trends'/>
             {/* <div className={`w-full h-full ${container === "small" ? "mt-10" : "mt-2"}`}><BarChartComponent /></div> */}
 
         </div>
