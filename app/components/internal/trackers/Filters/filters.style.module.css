@@ -530,9 +530,9 @@ width: calc(100vw - 134px);
 .presetContainer {
   /* display: flex;
   gap: 20px; */
-  margin-top: 24px;
-  max-height: calc(100vh - 260px);
-  overflow-y: auto;
+  /* margin-top: 24px; */
+  /* max-height: calc(100vh - 260px);
+  overflow-y: auto; */
   width: 100%;
   display: grid;
   justify-content: center;
