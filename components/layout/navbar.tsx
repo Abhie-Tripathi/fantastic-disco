@@ -41,6 +41,7 @@ const gtmroutes: Record<string, string> = {
   outreach: "Outreach",
   trends: "Event Trends",
   settings: "Settings",
+  prospect: "Prospect",
 };
 const geniroutes: Record<string, string> = {
   list: "Widgets",
@@ -71,6 +72,8 @@ export default function Navbar() {
       router.push("/internal");
     } else if (route === "promote") {
       router.push("/widget/dashboard");
+    } else if (route === "prospect") {
+      router.push("/internal/prospect");
     }
   };
 
@@ -162,13 +165,14 @@ export default function Navbar() {
                   )}
 
                   <Button
+                    onClick={() => handleRoute("prospect")}
                     variant="ghost"
                     className="flex flex-col items-center justify-center gap-2 h-auto p-4"
                   >
                     <UserSearch className="h-6 w-6" />
                     <span className="text-xs">Prospect</span>
                   </Button>
-                  <div className={styles.tag}>Coming soon</div>
+                  {/* <div className={styles.tag}>Coming soon</div> */}
                 </div>
               </PopoverContent>
             </Popover>
