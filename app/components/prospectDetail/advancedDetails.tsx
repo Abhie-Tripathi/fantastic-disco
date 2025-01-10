@@ -1,17 +1,4 @@
 "use client";
-import { InformationFill, Tag } from "geist-icons";
-import {
-  ChevronLeftCircle,
-  CircleChevronLeft,
-  CircleChevronRight,
-  CircleSlash,
-} from "lucide-react";
-import { capitalize } from "lodash";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import { Navigation } from "swiper/modules";
-import { format } from "date-fns";
 import {
   Carousel,
   CarouselApi,
@@ -22,8 +9,6 @@ import {
 } from "@/components/ui/carousel";
 import { useEffect, useState } from "react";
 import { GTMEventDetail } from "@/types/events";
-import { renderFormattedDates } from "@/utils/dateFormat";
-import { Heading } from "@/components/eventDetail/heading";
 
 interface Props {
   eventDetails: GTMEventDetail;

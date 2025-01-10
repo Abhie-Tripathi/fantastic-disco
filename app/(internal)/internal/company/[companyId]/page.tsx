@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   ArrowLeft,
   Buildings,
@@ -7,19 +7,13 @@ import {
   Linkedin,
   Location,
   LogoTwitterX,
-  StarFill,
 } from "geist-icons";
-// import { Phone } from "geist-icons";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Heading from "@/components/new-ui/Heading";
-// import { Heading as SectionHeading } from "@/components/eventDetail/heading";
 import Text from "@/components/new-ui/Text";
 import "react-circular-progressbar/dist/styles.css";
 import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
 import Link from "next/link";
-// import Disable from "/public/disable.svg";
 import {
   categoryRank,
   countryCategoryRank,
@@ -37,13 +31,12 @@ import {
 } from "@/components/ui/accordion";
 import {
   Bookmark,
-  CalendarDays,
   CircleSlash,
   MailIcon,
   PhoneIcon,
 } from "lucide-react";
 import { useEventsService } from "@/services/eventsService";
-import { GTMEventPOCDetails, EventDate } from "@/types/events";
+import { GTMEventPOCDetails } from "@/types/events";
 import { Button } from "@/components/ui/button";
 import { AdvancedDetails } from "@/app/components/prospectDetail/advancedDetails";
 import { SectionHeading } from "@/app/components/prospectDetail/prospectHeading";
@@ -68,9 +61,6 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   const {
     getEventDetailById,
     getEventPOCDetails,
-    getEventEditionDetails,
-    getEventExhibitorDetails,
-    getEventSpeakerDetails,
   } = useEventsService();
   const { data: event } = useQuery<any>({
     queryKey: ["eventDetails"],
@@ -78,16 +68,9 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
       const [
         eventDataResult,
         eventPOCDataResult,
-        // eventEditionDataResult,
-        // eventExhibitorDataResult,
-        // eventSpeakerDataResult,
       ] = await Promise.allSettled([
         getEventDetailById(params.companyId),
         getEventPOCDetails(params.companyId),
-        // getEventEditionDetails(params.companyId, 10, 0),
-        // getEventExhibitorDetails(params.companyId, 3, 0),
-        // getEventSpeakerDetails(params.companyId, 3, 0),
-        // getEventCoOrganizerDetails(params.eventId),
       ]);
       const eventData =
         eventDataResult.status === "fulfilled" ? eventDataResult.value : null;
@@ -95,28 +78,9 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
         eventPOCDataResult.status === "fulfilled"
           ? eventPOCDataResult.value
           : null;
-      // const eventCoOrganizerData =
-      //   eventCoOrganizerDataResult.status === "fulfilled"
-      //     ? eventCoOrganizerDataResult.value
-      //     : null;
-      // const eventEditionData =
-      //   eventEditionDataResult.status === "fulfilled"
-      //     ? eventEditionDataResult.value
-      //     : null;
-      // const eventExhibitorData =
-      //   eventExhibitorDataResult.status === "fulfilled"
-      //     ? eventExhibitorDataResult.value
-      //     : null;
-      // const eventSpeakerData =
-      //   eventSpeakerDataResult.status === "fulfilled"
-      //     ? eventSpeakerDataResult.value
-      //     : null;
       return {
         eventData: eventData,
         eventPOCData: eventPOCData,
-        // eventEditionData: eventEditionData,
-        // eventExhibitorData: eventExhibitorData,
-        // eventSpeakerData: eventSpeakerData,
       };
     },
   });

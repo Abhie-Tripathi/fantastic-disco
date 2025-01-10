@@ -1,7 +1,7 @@
 import Text from "@/components/new-ui/Text";
 // import { CircleSlash } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Buildings, Gps, Plus, Tag, Users } from "geist-icons";
+import { Buildings, Location, Plus, Users } from "geist-icons";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import MapChart from "@/public/internal/MapChart.png";
@@ -42,6 +42,7 @@ export const EventCalendar = () => {
                 <TabsTrigger
                   value="past"
                   className="text-xs flex gap-2 items-center p-2"
+                  disabled={true}
                 >
                   <Users color="#666666" width="12px" height="12px" />
                   Past
@@ -65,11 +66,7 @@ export const EventCalendar = () => {
                     Clerkenwell Design Conference
                   </Text>
                   <p className="flex items-center gap-2 text-[12px] font-medium">
-                    <Gps
-                      width="10px"
-                      height="10px"
-                      color="var(--muted-foreground)"
-                    />
+                    <Location color="var(--muted-foreground)" width="12px" height="12px" />
                     <span>London, UK</span>
                   </p>
 
@@ -104,11 +101,7 @@ export const EventCalendar = () => {
                     Clerkenwell Design Conference
                   </Text>
                   <p className="flex items-center gap-2 text-[12px] font-medium">
-                    <Gps
-                      width="10px"
-                      height="10px"
-                      color="var(--muted-foreground)"
-                    />
+                    <Location color="var(--muted-foreground)" width="12px" height="12px" />
                     <span>London, UK</span>
                   </p>
 
