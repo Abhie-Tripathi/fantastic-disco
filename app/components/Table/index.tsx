@@ -21,7 +21,7 @@ import { usePathname } from "next/navigation";
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
 import NullState from "../trackers/nullState";
-import TrackerNullState from '@/public/trackerNullState.svg'
+import TrackerNullState from "@/public/trackerNullState.svg";
 import {
   TooltipTrigger,
   Button,
@@ -38,6 +38,8 @@ import { useTrackerServices } from "@/services/trackerServices";
 import ZeroState from "../zerostate";
 import { useTrackerContext } from "@/context/tracker";
 import { useCoordinateService } from "@/services/coordinateService";
+import { PaginationComponent } from "@/components/pagination";
+import { useFilterState } from "@/hooks/useFilterState";
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -301,8 +303,8 @@ const Table = ({
   setSavedEventCount,
   source,
 }: {
-  savedEventCount?:number;
-  setSavedEventCount?:any;
+  savedEventCount?: number;
+  setSavedEventCount?: any;
   eventData?: any;
   showInsights: any;
   queryString?: string;
@@ -314,8 +316,15 @@ const Table = ({
 }) => {
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
-  const {getTrackerEvents, getSavedEvents, saveNewEvent, deleteNewEvent, error}=useTrackerServices();
-  const {setData, data}=useTrackerContext();
+  const {
+    getTrackerEvents,
+    getSavedEvents,
+    saveNewEvent,
+    deleteNewEvent,
+    error,
+  } = useTrackerServices();
+  const { setData, data } = useTrackerContext();
+  const { setFilter, getFilterValue } = useFilterState();
   const [isOpen, setIsOpen] = useState<string | null>(null);
   const [currPage, setCurrPage] = useState(1);
   const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
@@ -328,8 +337,10 @@ const Table = ({
   const [zeroStateText, setZeroStateText] = useState(
     `Discover insights on business trends filtered by geography and category, all in one glance.`
   );
-  const [zeroStateBtnText,setZeroStateBtnText]=useState("Manage Configurations");
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [zeroStateBtnText, setZeroStateBtnText] = useState(
+    "Manage Configurations"
+  );
+  // const [totalPages, setTotalPages] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(20);
   const userMaxLimit = 100;
   const [pinEvent, setPinEvent] = useState<string>(
@@ -349,7 +360,7 @@ const Table = ({
   });
 
   const coordinateService = useCoordinateService();
-  
+
   const [coordinateActions, setCoordinateActions] = useState<any>([]);
 
   const handleChangeIntent = (
@@ -470,11 +481,11 @@ const Table = ({
   const getInterestConfig = async () => {
     try {
       const apiData: any = await coordinateService.getInterestConfig();
-      setCoordinateActions(apiData.slice(1));      
+      setCoordinateActions(apiData.slice(1));
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }
+  };
 
   const [val, setVal] = useState(1);
   useEffect(() => {
@@ -548,43 +559,45 @@ const Table = ({
   const [isSaved, setIsSaved] = useState(false);
   const fetchSavedData = async () => {
     setIsSaved(true);
-  
+
     // Abort previous request if it exists
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
-  
+
     // Create a new AbortController for the new request
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
-  
+
     const secondLast = path[path.length - 2];
-    
+
     try {
       const result = await getSavedEvents(
-        secondLast, 
+        secondLast,
         `max=${itemsPerPage}&offset=${(currPage - 1) * 10}`,
         abortController.signal // Pass the signal here
       );
-  
+
       if (result) {
         setIsLoaded(true);
         GAEvent("trackers", "Tracker", "View", `Saved Event | ${currPage}`);
-  
+
         setEventPerPage(result.result);
         setTotalEvents(result.count);
-  
+
         if (result.count === 0) {
-          setZeroStateHeading(`No events saved yet! Start saving events to easily track and revisit them here.`);
+          setZeroStateHeading(
+            `No events saved yet! Start saving events to easily track and revisit them here.`
+          );
           setZeroStateText("");
           setZeroStateBtnText("");
         }
-  
+
         if (currPage === 1) {
-          setTotalPages(Math.ceil(result.count / itemsPerPage));
+          // setTotalPages(Math.ceil(result.count / itemsPerPage));
         }
       }
-    } catch (error:any) {
+    } catch (error: any) {
       if (error.name === "AbortError") {
         console.log("Saved events request was aborted");
       } else {
@@ -595,7 +608,21 @@ const Table = ({
       abortControllerRef.current = null;
     }
   };
-  
+  const currentPage =
+    Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
+  const totalPages = Math.ceil(totalEvents / itemsPerPage);
+
+
+  const handlePageChange = (page: number) => {
+    setFilter("skip", ((page - 1) * itemsPerPage).toString());
+  };
+
+  const handleItemsPerPageChange = (value: string) => {
+    const newItemsPerPage = parseInt(value);
+    setItemsPerPage(newItemsPerPage);
+
+    setFilter("take", newItemsPerPage.toString());
+  };
 
   const fetchAllSavedEvent = async () => {
     const { data, error } = await myFetch(
@@ -615,7 +642,7 @@ const Table = ({
       setEventPerPage(data.result);
       setTotalEvents(data.count);
       if (currPage === 1) {
-        setTotalPages(Math.ceil(data.count / itemsPerPage));
+        // setTotalPages(Math.ceil(data.count / itemsPerPage));
         setEventPerPage(data.result);
       } else {
         setEventPerPage(data.result);
@@ -627,10 +654,14 @@ const Table = ({
   // const fetchAllSavedEvent=aync()=>{
 
   // }
-  useEffect(() => {    
-    if(showInsights?.includeKeywords || showInsights?.excludeKeywords) {
-      const includeKeywords: [] = showInsights?.includeKeywords ? showInsights?.includeKeywords?.split(',') : [];
-      const excludeKeywords: [] = showInsights?.excludeKeywords ? showInsights?.excludeKeywords?.split(',') : [];
+  useEffect(() => {
+    if (showInsights?.includeKeywords || showInsights?.excludeKeywords) {
+      const includeKeywords: [] = showInsights?.includeKeywords
+        ? showInsights?.includeKeywords?.split(",")
+        : [];
+      const excludeKeywords: [] = showInsights?.excludeKeywords
+        ? showInsights?.excludeKeywords?.split(",")
+        : [];
 
       setAppliedKeywords([...includeKeywords, ...excludeKeywords]);
     }
@@ -665,13 +696,13 @@ const Table = ({
             headers: headers,
           });
           if (data) {
-            if (data.stats.totalEvents === 0) {              
+            if (data.stats.totalEvents === 0) {
               setZeroStateHeading("No Events Found");
               setZeroStateText(
                 "Try using alternative or related industry/keywords to broaden your search."
               );
             }
-            setTotalPages(Math.ceil(data.stats.totalEvents / itemsPerPage));
+            // setTotalPages(Math.ceil(data.stats.totalEvents / itemsPerPage));
             setTotalEvents(data.stats.totalEvents);
             setEventPerPage(data.events);
           }
@@ -686,9 +717,7 @@ const Table = ({
             if (error.status === 406) {
               setRequestExhausted(true);
               setZeroStateHeading(error?.message);
-              setZeroStateText(
-                ""
-              );
+              setZeroStateText("");
               setEventPerPage([]);
             }
           }
@@ -711,52 +740,55 @@ const Table = ({
     }
     const abortController = new AbortController();
     abortControllerRef.current = abortController;
-  
+
     try {
       if (eventType === "Saved Events") return fetchSavedData();
-  
+
       const result = await getTrackerEvents(
         secondLast,
         `limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage}`,
-        eventType === "Active Events" ? "active" : eventType === "Expired Events" ? "expired" : "",
+        eventType === "Active Events"
+          ? "active"
+          : eventType === "Expired Events"
+          ? "expired"
+          : "",
         abortController.signal
       );
-  
+
       if (!result) {
         console.error("No data returned from getTrackerEvents");
         return;
       }
-      
+
       setEventPerPage(result.events);
-  
+
       if (currPage === 1) {
-        setTotalPages(Math.ceil(result.totalEvents / itemsPerPage));
+        // setTotalPages(Math.ceil(result.totalEvents / itemsPerPage));
       }
-  
+
       if (result.totalEvents === 0) {
-        setZeroStateHeading(`We couldn't find any events matching your tracker criteria at the moment.`);
-        setZeroStateText("Try adjusting your filters or checking back later, as new events are added frequently.");
+        setZeroStateHeading(
+          `We couldn't find any events matching your tracker criteria at the moment.`
+        );
+        setZeroStateText(
+          "Try adjusting your filters or checking back later, as new events are added frequently."
+        );
         setZeroStateBtnText("Manage Configurations");
       }
-  
+
       if (result.events.length > 0) {
         setActiveValue(result.totalEvents);
         GAEvent("trackers", "Tracker", "View", `${eventType} | ${currPage}`);
         setTotalEvents(result.totalEvents);
       }
-  
-     
-  
-    } catch (error:any) {
+    } catch (error: any) {
       if (error.name === "AbortError") {
         console.log("Saved events request was aborted");
-      }else{
+      } else {
         setZeroStateHeading(error?.message);
-              setZeroStateText(
-                ""
-              );
-              setEventPerPage([]);
-              setZeroStateBtnText("");
+        setZeroStateText("");
+        setEventPerPage([]);
+        setZeroStateBtnText("");
       }
     } finally {
       // Reset the controller after the request completes or is aborted
@@ -764,7 +796,7 @@ const Table = ({
     }
     setIsLoaded(true);
   };
-  
+
   // const [isSaving, setIsSaving] = useState(false);
 
   const saveEvent = async (Id: string) => {
@@ -777,40 +809,38 @@ const Table = ({
       eventId: Id,
       trackerId: secondLast,
     };
-    
-    try{
+
+    try {
       const result = await saveNewEvent(dataToSend);
-      if(result){
-        showToast('success', "Event saved");
-        setSavedEventCount((prev:number)=>prev+1)
+      if (result) {
+        showToast("success", "Event saved");
+        setSavedEventCount((prev: number) => prev + 1);
         setData({
           ...data,
           tracker: {
             ...data.tracker,
-            savedEventTotalCount: data.tracker.savedEventTotalCount + 1
-          }
+            savedEventTotalCount: data.tracker.savedEventTotalCount + 1,
+          },
         });
-            let updatedData = eventPerPage?.find((event) => event.id === Id);
-    
-            if (updatedData) {
-              const newUpdatedData = { ...updatedData, isSaved: true };
-              const updatedEventPerPage = eventPerPage.map((event) =>
-                event.id === Id ? newUpdatedData : event
-              );
-              setEventPerPage(updatedEventPerPage);
-            }
-    
-            setSaved(Id);
-          } else {
-            console.log(error);
-            showToast('error', error?.message);
-          }
-    }catch(error){
-      console.error("Error saving event:", error);
-      showToast('error', "Please try again later.");
-    }
+        let updatedData = eventPerPage?.find((event) => event.id === Id);
 
-   
+        if (updatedData) {
+          const newUpdatedData = { ...updatedData, isSaved: true };
+          const updatedEventPerPage = eventPerPage.map((event) =>
+            event.id === Id ? newUpdatedData : event
+          );
+          setEventPerPage(updatedEventPerPage);
+        }
+
+        setSaved(Id);
+      } else {
+        console.log(error);
+        showToast("error", error?.message);
+      }
+    } catch (error) {
+      console.error("Error saving event:", error);
+      showToast("error", "Please try again later.");
+    }
   };
 
   // const [isDelete, setIsDelete] = useState(false);
@@ -844,14 +874,14 @@ const Table = ({
       // });
       const result = await deleteNewEvent(dataToSend);
       if (result) {
-        if(eventType==="Saved Events"){
-        console.log(result);
-        showToast('error', "Saved event deleted");
-        const newData = eventPerPage.filter(event => event?.id !== groupId);
-        console.log(newData);
-        
-        setEventPerPage(newData);
-        }else{
+        if (eventType === "Saved Events") {
+          console.log(result);
+          showToast("error", "Saved event deleted");
+          const newData = eventPerPage.filter((event) => event?.id !== groupId);
+          console.log(newData);
+
+          setEventPerPage(newData);
+        } else {
           let updatedData = eventPerPage?.find((event) => event.id === groupId);
 
           if (updatedData) {
@@ -863,18 +893,17 @@ const Table = ({
           }
           showToast("error", "Saved event deleted");
         }
-        setSavedEventCount((prev:number)=>prev-1);
+        setSavedEventCount((prev: number) => prev - 1);
         setData({
           ...data,
           tracker: {
             ...data.tracker,
-            savedEventTotalCount: data.tracker.savedEventTotalCount - 1
-          }
+            savedEventTotalCount: data.tracker.savedEventTotalCount - 1,
+          },
         });
-      }
-       else if(error){
+      } else if (error) {
         console.log(error);
-        showToast('error', error?.response);
+        showToast("error", error?.response);
       }
     } catch (err) {
       console.error("Error deleting event:", err);
@@ -891,16 +920,24 @@ const Table = ({
         <Loading className="w-[200px] h-[100px]" />
       </div>
     );
-  } else if (isLoaded && eventPerPage.length == 0 ) {
+  } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
-        {path[2]==="trackers"? 
-        <div className="px-10 py-5">
-        <NullState image={TrackerNullState}  title={zeroStateHeading} text={zeroStateText} buttonText={zeroStateBtnText} buttonUrl={`/internal/trackers/${path[path.length - 2]}/trackedConfiguration?type=${type}`}/>
-        </div>
-        :
-        <ZeroState title={zeroStateHeading} text={zeroStateText} />
-        }
+        {path[2] === "trackers" ? (
+          <div className="px-10 py-5">
+            <NullState
+              image={TrackerNullState}
+              title={zeroStateHeading}
+              text={zeroStateText}
+              buttonText={zeroStateBtnText}
+              buttonUrl={`/internal/trackers/${
+                path[path.length - 2]
+              }/trackedConfiguration?type=${type}`}
+            />
+          </div>
+        ) : (
+          <ZeroState title={zeroStateHeading} text={zeroStateText} />
+        )}
       </div>
     );
   }
@@ -954,15 +991,21 @@ const Table = ({
                 <th style={{ textAlign: "center" }}>Trust</th>
               )}
               {showInsights.eventFrequency && (
-                <th className="text-center" >Frequency</th>
+                <th className="text-center">Frequency</th>
               )}
               {showInsights.forecasted && <th>Forecasted</th>}
               {/* {showInsights.eventSize && <th>Event Size</th>} */}
               {/* {showInsights.global && <th>International</th>} */}
-              {(type === null || type === 'CUSTOM') && appliedKeywords?.length > 0 && <th>Matched</th>}
-              {(type === null || type === 'CUSTOM') && appliedKeywords?.length >= 5 && <th>Score</th>}
+              {(type === null || type === "CUSTOM") &&
+                appliedKeywords?.length > 0 && <th>Matched</th>}
+              {(type === null || type === "CUSTOM") &&
+                appliedKeywords?.length >= 5 && <th>Score</th>}
 
-              {(type === "T_SPEAKING_OPPORTUNITY" || type === "T_COMPETITOR" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP" || type === "T_RECRUITMENT") &&
+              {(type === "T_SPEAKING_OPPORTUNITY" ||
+                type === "T_COMPETITOR" ||
+                type === "T_PEOPLE_FINDER" ||
+                type === "T_CUSTOMER_ICP" ||
+                type === "T_RECRUITMENT") &&
                 path[path.length - 1] !== "savedEvents" && (
                   <>
                     <th
@@ -1352,7 +1395,7 @@ const Table = ({
                                 height: "14px",
                                 color: "var(--success-text-color)",
                                 marginBottom: "5px",
-                                display: "inline"
+                                display: "inline",
                               }}
                             />
                           </span>
@@ -1371,7 +1414,7 @@ const Table = ({
                                 height: "14px",
                                 color: "var(--danger-text-color)",
                                 marginBottom: "5px",
-                                display: "inline"
+                                display: "inline",
                               }}
                             />
                           </span>
@@ -1379,7 +1422,12 @@ const Table = ({
                         &nbsp;
                         {getEventRating(event.stats.rating)}
                         &nbsp;
-                        <Image src={StarIcon} alt="star" width={14} className="inline" />
+                        <Image
+                          src={StarIcon}
+                          alt="star"
+                          width={14}
+                          className="inline"
+                        />
                       </>
                     ) : (
                       <>-</>
@@ -1409,7 +1457,7 @@ const Table = ({
                                       height: "14px",
                                       color: "var(--success-text-color)",
                                       marginBottom: "5px",
-                                      display: "inline"
+                                      display: "inline",
                                     }}
                                   />
                                 </span>
@@ -1429,7 +1477,7 @@ const Table = ({
                                       height: "14px",
                                       color: "var(--danger-text-color)",
                                       marginBottom: "5px",
-                                      display: "inline"
+                                      display: "inline",
                                     }}
                                   />
                                 </span>
@@ -1463,7 +1511,7 @@ const Table = ({
                       : "-"} */}
 
                 {showInsights.eventFrequency && (
-                  <td className="text-center" >
+                  <td className="text-center">
                     {event?.frequency && event?.frequency !== "" ? (
                       <span
                         style={{ textTransform: "capitalize" }}
@@ -1498,17 +1546,18 @@ const Table = ({
                     )}
                   </td>
                 )} */}
-                {(type === null || type === 'CUSTOM') && appliedKeywords?.length > 0 && (
-                  <>
-                    <td>
-                      {event.matchedKeywords.length == 0 ? (
-                        <>-</>
-                      ) : event.matchedKeywords.length == 1 ? (
-                        event.matchedKeywords[0]
-                      ) : (
-                        <>
-                          {event.matchedKeywords[0]}&nbsp;
-                          {/* <a
+                {(type === null || type === "CUSTOM") &&
+                  appliedKeywords?.length > 0 && (
+                    <>
+                      <td>
+                        {event.matchedKeywords.length == 0 ? (
+                          <>-</>
+                        ) : event.matchedKeywords.length == 1 ? (
+                          event.matchedKeywords[0]
+                        ) : (
+                          <>
+                            {event.matchedKeywords[0]}&nbsp;
+                            {/* <a
                             className={styles["products-list"]}
                             href="javascript:void(0)"
                             data-toggle="tooltip"
@@ -1516,36 +1565,39 @@ const Table = ({
                           >
                             +{event.matchedKeywords.length - 1}
                           </a> */}
-                          <TooltipTrigger>
-                            <Button className={styles["products-list"]}>
-                              +{event.matchedKeywords.length - 1}
-                            </Button>
-                            <Tooltip className={styles["react-aria-Tooltip"]}>
-                              {listProducts(event.matchedKeywords)}
-                            </Tooltip>
-                          </TooltipTrigger>
-                        </>
-                      )}
-                    </td>
-                    {(type === null || type === 'CUSTOM') && appliedKeywords?.length >= 5 && (
-                      <td>
-                        {event.keywordsMatchedScore > 20 ? (
-                          <span className={styles.badge_success}>High</span>
-                        ) : event.keywordsMatchedScore >= 10 &&
-                          event.keywordsMatchedScore <= 20 ? (
-                          <span className={styles.badge_primary}>Medium</span>
-                        ) : event.keywordsMatchedScore > 0 &&
-                          event.keywordsMatchedScore < 10 ? (
-                          <span className={styles.badge_danger}>Low</span>
-                        ) : (
-                          "-"
+                            <TooltipTrigger>
+                              <Button className={styles["products-list"]}>
+                                +{event.matchedKeywords.length - 1}
+                              </Button>
+                              <Tooltip className={styles["react-aria-Tooltip"]}>
+                                {listProducts(event.matchedKeywords)}
+                              </Tooltip>
+                            </TooltipTrigger>
+                          </>
                         )}
                       </td>
-                    )}
-                  </>
-                )}
+                      {(type === null || type === "CUSTOM") &&
+                        appliedKeywords?.length >= 5 && (
+                          <td>
+                            {event.keywordsMatchedScore > 20 ? (
+                              <span className={styles.badge_success}>High</span>
+                            ) : event.keywordsMatchedScore >= 10 &&
+                              event.keywordsMatchedScore <= 20 ? (
+                              <span className={styles.badge_primary}>
+                                Medium
+                              </span>
+                            ) : event.keywordsMatchedScore > 0 &&
+                              event.keywordsMatchedScore < 10 ? (
+                              <span className={styles.badge_danger}>Low</span>
+                            ) : (
+                              "-"
+                            )}
+                          </td>
+                        )}
+                    </>
+                  )}
 
-                {(type==="T_COMPETITOR" || type === "T_CUSTOMER_ICP") &&
+                {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") &&
                   path[path.length - 1] !== "savedEvents" && (
                     <>
                       <td
@@ -1738,75 +1790,146 @@ const Table = ({
                     </>
                   )}
 
-                {(type==="T_PEOPLE_FINDER" && path[path.length-1]!=="savedEvents" )&& (
-                  <>
-                    <td style={{ textAlign: "center", right:"150px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
-                      {(event?.peopleFinderPersonAssociation && event?.peopleFinderPersonAssociation.length > 0) ? (
-                        <>
-                          <span title={event?.peopleFinderPersonAssociation?.[0].split('_')[1]} className={styles.capitalizeText} >{event?.peopleFinderPersonAssociation?.[0].split('_')[0]}</span>&nbsp;
-                          {event?.peopleFinderPersonAssociation.length > 1 &&
-                            <TooltipTrigger>
-                              <Button className={styles["products-list"]} >+{event.peopleFinderPersonAssociation.length - 1}</Button>
-                              <Tooltip className={styles['react-aria-Tooltip']}>
-                                {event?.peopleFinderPersonAssociation.map((item)=>(
-                                  <div key={item}>
-                                    {item.split('_')[1]}
-                                    <span className={styles.capitalizeText} > ({item.split('_')[0]})</span>
-                                  </div>
-                                ))}
-                              </Tooltip>
-                            </TooltipTrigger>
-                          }
-                        </>
-                      ) : '-'}
-                    </td>
+                {type === "T_PEOPLE_FINDER" &&
+                  path[path.length - 1] !== "savedEvents" && (
+                    <>
+                      <td
+                        style={{
+                          textAlign: "center",
+                          right: "150px",
+                          boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)",
+                          minWidth: "60px",
+                        }}
+                        className={`${styles.table_actionColumn}`}
+                      >
+                        {event?.peopleFinderPersonAssociation &&
+                        event?.peopleFinderPersonAssociation.length > 0 ? (
+                          <>
+                            <span
+                              title={
+                                event?.peopleFinderPersonAssociation?.[0].split(
+                                  "_"
+                                )[1]
+                              }
+                              className={styles.capitalizeText}
+                            >
+                              {
+                                event?.peopleFinderPersonAssociation?.[0].split(
+                                  "_"
+                                )[0]
+                              }
+                            </span>
+                            &nbsp;
+                            {event?.peopleFinderPersonAssociation.length >
+                              1 && (
+                              <TooltipTrigger>
+                                <Button className={styles["products-list"]}>
+                                  +
+                                  {event.peopleFinderPersonAssociation.length -
+                                    1}
+                                </Button>
+                                <Tooltip
+                                  className={styles["react-aria-Tooltip"]}
+                                >
+                                  {event?.peopleFinderPersonAssociation.map(
+                                    (item) => (
+                                      <div key={item}>
+                                        {item.split("_")[1]}
+                                        <span className={styles.capitalizeText}>
+                                          {" "}
+                                          ({item.split("_")[0]})
+                                        </span>
+                                      </div>
+                                    )
+                                  )}
+                                </Tooltip>
+                              </TooltipTrigger>
+                            )}
+                          </>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
 
-                    <td style={{ textAlign: "center", right:"50px", minWidth:"100px"  }} className={`${styles.table_actionColumn}`}>
-                      {event?.peopleFinderPersonAssociationPercentage == 'High' ? (
-                        <span className={styles.badge_success}>High</span>
-                      ) : event?.peopleFinderPersonAssociationPercentage == 'Medium' ? (
-                        <span className={styles.badge_primary}>Medium</span>
-                      ) :event?.peopleFinderPersonAssociationPercentage == 'Low' ? (
-                        <span className={styles.badge_danger}>Low</span>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                  </>
-                )}
+                      <td
+                        style={{
+                          textAlign: "center",
+                          right: "50px",
+                          minWidth: "100px",
+                        }}
+                        className={`${styles.table_actionColumn}`}
+                      >
+                        {event?.peopleFinderPersonAssociationPercentage ==
+                        "High" ? (
+                          <span className={styles.badge_success}>High</span>
+                        ) : event?.peopleFinderPersonAssociationPercentage ==
+                          "Medium" ? (
+                          <span className={styles.badge_primary}>Medium</span>
+                        ) : event?.peopleFinderPersonAssociationPercentage ==
+                          "Low" ? (
+                          <span className={styles.badge_danger}>Low</span>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    </>
+                  )}
 
-                {(type==="T_RECRUITMENT" && path[path.length-1]!=="savedEvents") &&
-                  <>
-                    <td style={{ textAlign: "center", right:"150px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth:"60px"}} className={`${styles.table_actionColumn}`}>
-                      {event?.recruitmentAssociation ? 
-                        (event?.recruitmentAssociation.length == 1) ?
-                          (event.recruitmentAssociation[0]) : (
+                {type === "T_RECRUITMENT" &&
+                  path[path.length - 1] !== "savedEvents" && (
+                    <>
+                      <td
+                        style={{
+                          textAlign: "center",
+                          right: "150px",
+                          boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)",
+                          minWidth: "60px",
+                        }}
+                        className={`${styles.table_actionColumn}`}
+                      >
+                        {event?.recruitmentAssociation ? (
+                          event?.recruitmentAssociation.length == 1 ? (
+                            event.recruitmentAssociation[0]
+                          ) : (
                             <>
                               {event.recruitmentAssociation[0]}&nbsp;
                               <TooltipTrigger>
-                                <Button className={styles["products-list"]} >+{event.recruitmentAssociation.length - 1}</Button>
-                                <Tooltip className={styles['react-aria-Tooltip']}>
+                                <Button className={styles["products-list"]}>
+                                  +{event.recruitmentAssociation.length - 1}
+                                </Button>
+                                <Tooltip
+                                  className={styles["react-aria-Tooltip"]}
+                                >
                                   {listProducts(event.recruitmentAssociation)}
                                 </Tooltip>
                               </TooltipTrigger>
                             </>
                           )
-                      : '-'
-                      }
-                    </td>
-                    <td style={{ textAlign: "center", right:"50px", minWidth:"100px"  }} className={`${styles.table_actionColumn}`}>
-                      {event?.recruitmentAssociationPercentage == 'High' ? (
-                        <span className={styles.badge_success}>High</span>
-                      ) : event?.recruitmentAssociationPercentage == 'Medium' ? (
-                        <span className={styles.badge_primary}>Medium</span>
-                      ) :event?.recruitmentAssociationPercentage == 'Low' ? (
-                        <span className={styles.badge_danger}>Low</span>
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                  </>
-                }
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                      <td
+                        style={{
+                          textAlign: "center",
+                          right: "50px",
+                          minWidth: "100px",
+                        }}
+                        className={`${styles.table_actionColumn}`}
+                      >
+                        {event?.recruitmentAssociationPercentage == "High" ? (
+                          <span className={styles.badge_success}>High</span>
+                        ) : event?.recruitmentAssociationPercentage ==
+                          "Medium" ? (
+                          <span className={styles.badge_primary}>Medium</span>
+                        ) : event?.recruitmentAssociationPercentage == "Low" ? (
+                          <span className={styles.badge_danger}>Low</span>
+                        ) : (
+                          "-"
+                        )}
+                      </td>
+                    </>
+                  )}
 
                 {showInsights.maturity && (
                   <td>
@@ -2083,7 +2206,7 @@ const Table = ({
                           <div style={{ maxWidth: "500px" }}>
                             <header className={styles["modal_header"]}>
                               <div className={styles["modal_header-title"]}>
-                                Choose an Action to Proceed {" "}
+                                Choose an Action to Proceed{" "}
                               </div>
                               <button
                                 className={styles["close"]}
@@ -2100,60 +2223,72 @@ const Table = ({
                             <main className={styles["modal_content"]}>
                               <form onSubmit={(e) => handleSubmit(e, close)}>
                                 <div id="field-1">
-                                  { source === 'trackers' &&
-                                  <div className={styles["form-check"]}>
-                                    {path[path.length - 1] === "savedEvents" ||
-                                    path[path.length - 1] === "trackers" ||
-                                    event?.isSaved ||
-                                    bookmarkedEvent?.includes(event.id) ? (
-                                      <>
-                                        <input
-                                          className={styles["form-check-input"]}
-                                          type="radio"
-                                          defaultValue="unbookmark"
-                                          name={"interest"}
-                                          id="customradio1"
-                                          onChange={handleChangeIntent}
-                                        />
-                                        <label htmlFor="customradio1">
-                                          Un-Bookmark
-                                        </label>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <input
-                                          className={styles["form-check-input"]}
-                                          type="radio"
-                                          defaultValue="bookmark"
-                                          name={"interest"}
-                                          id="customradio1"
-                                          onChange={handleChangeIntent}
-                                          checked={
-                                            formData.markedInterest ===
-                                              "bookmark" ||
-                                            formData.markedInterest === null
-                                          }
-                                        />
-                                        <label htmlFor="customradio1">
-                                          Bookmark
-                                        </label>
-                                      </>
-                                    )}
-                                  </div>
-                                  }
-                                  {coordinateActions.map((item: any, index: number) => (
-                                    <div className={styles["form-check"]} key={index} >
-                                      <input
-                                        className={styles["form-check-input"]}
-                                        type="radio"
-                                        defaultValue={item.status}
-                                        name={"interest"}
-                                        id={`radio-${item.status}`}
-                                        onChange={handleChangeIntent}
-                                      />
-                                      <label htmlFor={`radio-${item.status}`} >{item.label}</label>
+                                  {source === "trackers" && (
+                                    <div className={styles["form-check"]}>
+                                      {path[path.length - 1] ===
+                                        "savedEvents" ||
+                                      path[path.length - 1] === "trackers" ||
+                                      event?.isSaved ||
+                                      bookmarkedEvent?.includes(event.id) ? (
+                                        <>
+                                          <input
+                                            className={
+                                              styles["form-check-input"]
+                                            }
+                                            type="radio"
+                                            defaultValue="unbookmark"
+                                            name={"interest"}
+                                            id="customradio1"
+                                            onChange={handleChangeIntent}
+                                          />
+                                          <label htmlFor="customradio1">
+                                            Un-Bookmark
+                                          </label>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <input
+                                            className={
+                                              styles["form-check-input"]
+                                            }
+                                            type="radio"
+                                            defaultValue="bookmark"
+                                            name={"interest"}
+                                            id="customradio1"
+                                            onChange={handleChangeIntent}
+                                            checked={
+                                              formData.markedInterest ===
+                                                "bookmark" ||
+                                              formData.markedInterest === null
+                                            }
+                                          />
+                                          <label htmlFor="customradio1">
+                                            Bookmark
+                                          </label>
+                                        </>
+                                      )}
                                     </div>
-                                  ))}
+                                  )}
+                                  {coordinateActions.map(
+                                    (item: any, index: number) => (
+                                      <div
+                                        className={styles["form-check"]}
+                                        key={index}
+                                      >
+                                        <input
+                                          className={styles["form-check-input"]}
+                                          type="radio"
+                                          defaultValue={item.status}
+                                          name={"interest"}
+                                          id={`radio-${item.status}`}
+                                          onChange={handleChangeIntent}
+                                        />
+                                        <label htmlFor={`radio-${item.status}`}>
+                                          {item.label}
+                                        </label>
+                                      </div>
+                                    )
+                                  )}
                                 </div>
                                 <button className={styles["submitBtn"]}>
                                   Submit
@@ -2172,7 +2307,7 @@ const Table = ({
         </table>
       </div>
 
-      <div
+      {/* <div
         className={`${styles.pagination_container} ${
           theme === "light" ? styles.pagination_container_light : ""
         }`}
@@ -2229,7 +2364,20 @@ const Table = ({
             Next
           </button>
         </div>
-      </div>
+      </div> */}
+
+      {totalPages > 1 && (
+        <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
+          <PaginationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={itemsPerPage}
+            count={totalEvents}
+            onPageChange={handlePageChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
+        </div>
+      )}
     </div>
   );
 };
