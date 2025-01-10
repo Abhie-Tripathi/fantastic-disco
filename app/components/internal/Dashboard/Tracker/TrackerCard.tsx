@@ -27,7 +27,7 @@ const TrackerCard = ({ tracker, small }: Props) => {
         return type.split("_").slice(1).map((ele) => `${ele.charAt(0)}${ele.substring(1).toLowerCase()}`).join(' ')
     }
     return (
-        <div className={`flex ${small && "flex-col"} justify-between cursor-pointer w-full`}>
+        <div className={`flex ${small && "flex-col"} justify-between w-full`}>
             {!small &&
                 <div className="flex gap-2 flex-col justify-between w-[60%]">
                     <div>
