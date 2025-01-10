@@ -57,9 +57,9 @@ export const EventsAdapter = {
       adaptedParams.eventName = params.get("eventName")!;
       return adaptedParams;
     }
-    
-    if(params.get("onlyBranded")!==null){
-      adaptedParams.eventBrand = params.get("onlyBranded")??"";
+
+    if (params.get("onlyBranded") !== null) {
+      adaptedParams.eventBrand = params.get("onlyBranded") ?? "";
     }
     if (params.get("onlySeries") !== null) {
       adaptedParams.eventSeries = params.get("onlySeries") ?? "";
@@ -230,7 +230,7 @@ export const EventsAdapter = {
       params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      console.log("first")
+      console.log("first");
       const startDate = params.get("active_gte");
       const endDate = params.get("active_lte");
       adaptedParams.groupBy = `${startDate},${endDate}`;
@@ -241,7 +241,7 @@ export const EventsAdapter = {
       !params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      console.log("second")
+      console.log("second");
       const startDate = new Date(params.get("active_gte")!);
       const endDate = new Date(startDate);
       endDate.setFullYear(startDate.getFullYear() + 1);
@@ -255,7 +255,7 @@ export const EventsAdapter = {
       params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      console.log("third")
+      console.log("third");
       const endDate = new Date(params.get("active_lte")!);
       const startDate = new Date(endDate);
       startDate.setFullYear(endDate.getFullYear() - 1);
@@ -265,11 +265,11 @@ export const EventsAdapter = {
     }
 
     if (
-      !params.get("active_gte") && 
-      params.get("view") == "calendar" 
+      !params.get("active_gte") &&
+      params.get("view") == "calendar"
       // params.get("calendar_type") == "week"
     ) {
-      console.log("active_gte, calendar, week")
+      console.log("active_gte, calendar, week");
       const today = new Date();
       const firstDayOfMonth = new Date(
         today.getFullYear(),
@@ -290,6 +290,12 @@ export const EventsAdapter = {
     if (params.get("take")) {
       adaptedParams.max = params.get("take")!;
     }
+
+    if (params.get("view") == "map") {
+      adaptedParams.max = "50";
+    }
+
+    console.log("adaptedparams");
 
     return adaptedParams;
   },
@@ -422,6 +428,13 @@ export const EventsAdapter = {
       const endDate = new Date(activeLte).toISOString().split("T")[0];
       adaptedParams.startDate = `${startDate},${endDate}`;
       adaptedParams.endDate = `${startDate},${endDate}`;
+    }
+
+    if (params.get("onlyBranded") !== null) {
+      adaptedParams.eventBrand = params.get("onlyBranded") ?? "";
+    }
+    if (params.get("onlySeries") !== null) {
+      adaptedParams.eventSeries = params.get("onlySeries") ?? "";
     }
 
     return adaptedParams;
