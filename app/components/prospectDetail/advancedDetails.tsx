@@ -114,12 +114,6 @@ export const AdvancedDetails = ({
     <div className="flex flex-col gap-6">
       <CarouselComponent />
     </div>
-    <div className="flex gap-3 items-center text-base font-medium text-[var(--primary-color)]">
-      <Tag color="#6E6F89" width="16px" height="16px" style={{fill: "red"}} />
-      <span >Pharma</span>
-      <span >Hospital</span>
-      <span >Medicines</span>
-    </div>
     </>
   );
 };

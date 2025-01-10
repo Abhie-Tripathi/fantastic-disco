@@ -189,7 +189,7 @@ export const EventCalendar = () => {
           </div>
         </div>
 
-        <div className="flex justify-between">
+        {/* <div className="flex justify-between">
           <Text
             color="primary"
             fontWeight="medium"
@@ -209,7 +209,7 @@ export const EventCalendar = () => {
           <span>Pharma</span>
           <span>Hospital</span>
           <span>Medicines</span>
-        </div>
+        </div> */}
       </div>
     </div>
   );
