@@ -1134,7 +1134,7 @@ const Table = ({
                       Hybrid
                     </div>
                   )}
-                  {event.location.cityId !== "1" &&
+                  {event?.location?.cityId !== "1" &&
                   event.format === "ONLINE" ? (
                     event.location.venueName !== undefined &&
                     event.location.venueName !== null ? (
