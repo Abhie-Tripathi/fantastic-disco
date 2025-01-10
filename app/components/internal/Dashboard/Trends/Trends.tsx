@@ -13,7 +13,7 @@ interface Props {
 
 const Trends = ({ container }: Props) => {
 
-    const {theme} = useTheme()
+    const { theme } = useTheme()
 
     const router = useRouter()
 
@@ -21,16 +21,18 @@ const Trends = ({ container }: Props) => {
         router.push("/internal/trends")
     }
     return (
-        <div className={`border border-[var(--border-color)] p-3 rounded-xl ${container === "small" ? "h-[240px]" : "h-[252px]"} flex flex-col items-start justify-between overflow-hidden w-full cursor-pointer`} onClick={handleRouting}>
-            <div className='flex items-center gap-1 text-[var(--primary-color)] font-semibold'>
-                <BarChart color='#6750a4' width='12px' height='12px' />
-                <div className={`flex items-center gap-2 cursor-pointer`}>
-                    <span className='text-xs text-[var(--primary-color)] font-[var(--font-weight-semibold)]'>Event Trends</span>
-                    <div><ArrowRight color='#6750a4' width='12px' height='12px' /></div>
+        <div className={`border border-[var(--border-color)] p-3 rounded-xl ${container === "small" ? "h-[240px]" : "h-[252px]"} flex flex-col justify-between items-start overflow-hidden w-full cursor-pointer`} onClick={handleRouting}>
+            <div>
+                <div className='flex items-center gap-1 text-[var(--primary-color)] font-semibold'>
+                    <BarChart color='#6750a4' width='12px' height='12px' />
+                    <div className={`flex items-center gap-2 cursor-pointe`}>
+                        <span className='text-xs text-[var(--primary-color)] font-[var(--font-weight-semibold)]'>Event Trends</span>
+                        <div><ArrowRight color='#6750a4' width='12px' height='12px' /></div>
+                    </div>
                 </div>
+                <div className='text-xs text-[var(--bold-border-color)] mt-3'>Explore event trends to tailor your experience to what’s popular and relevant.</div>
             </div>
-            <div className='text-xs text-[var(--bold-border-color)] mt-3'>Explore event trends to tailor your experience to what’s popular and relevant.</div>
-            <Image src={theme === "light" ? Trendsimage : TrendsimageDark} alt='trends'/>
+            <Image src={theme === "light" ? Trendsimage : TrendsimageDark} alt='trends' />
             {/* <div className={`w-full h-full ${container === "small" ? "mt-10" : "mt-2"}`}><BarChartComponent /></div> */}
 
         </div>
