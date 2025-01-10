@@ -153,7 +153,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
           <Link
             className="text-[var(--primary-color)] font-medium"
-            href={"/internal/search/events"}
+            href={"/internal/prospect"}
           >
             Back to Search
           </Link>
@@ -345,7 +345,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           </div>
         </ul>
 
-        <section className="flex flex-col gap-6 pb-6 h-[calc(100vh-180px)] mt-5 w-full pr-4 overflow-y-auto scroll-smooth">
+        <section className="flex flex-col gap-6 pb-6 h-[calc(100vh-150px)] mt-5 w-full pr-4 overflow-y-auto scroll-smooth">
           <SectionHeading
             heading="Company Details"
             scrollSection={tabs[0].path}
