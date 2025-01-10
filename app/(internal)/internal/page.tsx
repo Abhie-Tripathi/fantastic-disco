@@ -57,7 +57,6 @@ const Dashboard = () => {
   const [trackerData, setTrackerData] = useState<TrackerData[]>([])
   const [outreachData, setOutreachData] = useState<{ name: string, value: number }[]>([])
   const [outreachChat, setOutreachChat] = useState<OutreachLastChat>({ eventName: "", status: "", comment: "", eventId: "", enquiryId: "" })
-  // const [recentSearchValue, setRecentSearchValue] = useState<any>()
   const [value, setValue] = useState<string>("empty")
   const [profileData, setProfileData] = useState<ProfileData>({ name: "", email: "", phoneNumber: "", profilePicture: "", department: "" })
   const [loading, setLoading] = useState<boolean>(true);

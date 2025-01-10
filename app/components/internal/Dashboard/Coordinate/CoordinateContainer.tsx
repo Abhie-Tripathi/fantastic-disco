@@ -1,5 +1,4 @@
 import React from 'react'
-import styles from './style.module.css'
 import { Button } from '@/components/ui/button';
 import { MoveRight } from 'lucide-react';
 import CoordinateScreenOne from './CoordinateScreenOne';
