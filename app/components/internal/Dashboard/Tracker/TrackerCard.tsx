@@ -60,7 +60,7 @@ const TrackerCard = ({ tracker, small }: Props) => {
                         )}
                     </div>
 
-                    <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{ fontSize: "var(--font-size-xs)" }}>{tracker.type}</div>
+                    <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{ fontSize: "var(--font-size-xs)" }}>{formatType(tracker.type)}</div>
                 </div>}
             <div className={`flex ${small ? "justify-between" : "gap-2"} text-xs`}>
                 <div className={`flex w-1/3 flex-col gap-1 items-center justify-center h-[82px] w-[66px] border border-[var(--border-color)] rounded-sm bg-[var(--primary-foreground)]`}>
