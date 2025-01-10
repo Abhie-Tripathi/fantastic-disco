@@ -1,0 +1,9 @@
+.body{
+    /* min-height: 344px; */
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.card{
+    filter: drop-shadow(1px 1px 6px rgb(232, 232, 232));
+}
