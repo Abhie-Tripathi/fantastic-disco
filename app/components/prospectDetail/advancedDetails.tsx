@@ -7,7 +7,6 @@ import {
   CircleSlash,
 } from "lucide-react";
 import { capitalize } from "lodash";
-import { Event, EventEditionDetailResponse } from "@/types/events";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -28,7 +27,6 @@ import { Heading } from "@/components/eventDetail/heading";
 
 interface Props {
   eventDetails: GTMEventDetail;
-  eventEditionData: EventEditionDetailResponse;
   eventId: string;
 }
 
@@ -109,7 +107,6 @@ const CarouselComponent = () => {
 
 export const AdvancedDetails = ({
   eventDetails,
-  eventEditionData,
   eventId,
 }: Props) => {
   return (

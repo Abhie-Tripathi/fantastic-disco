@@ -78,15 +78,15 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
       const [
         eventDataResult,
         eventPOCDataResult,
-        eventEditionDataResult,
-        eventExhibitorDataResult,
-        eventSpeakerDataResult,
+        // eventEditionDataResult,
+        // eventExhibitorDataResult,
+        // eventSpeakerDataResult,
       ] = await Promise.allSettled([
         getEventDetailById(params.companyId),
         getEventPOCDetails(params.companyId),
-        getEventEditionDetails(params.companyId, 10, 0),
-        getEventExhibitorDetails(params.companyId, 3, 0),
-        getEventSpeakerDetails(params.companyId, 3, 0),
+        // getEventEditionDetails(params.companyId, 10, 0),
+        // getEventExhibitorDetails(params.companyId, 3, 0),
+        // getEventSpeakerDetails(params.companyId, 3, 0),
         // getEventCoOrganizerDetails(params.eventId),
       ]);
       const eventData =
@@ -99,24 +99,24 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
       //   eventCoOrganizerDataResult.status === "fulfilled"
       //     ? eventCoOrganizerDataResult.value
       //     : null;
-      const eventEditionData =
-        eventEditionDataResult.status === "fulfilled"
-          ? eventEditionDataResult.value
-          : null;
-      const eventExhibitorData =
-        eventExhibitorDataResult.status === "fulfilled"
-          ? eventExhibitorDataResult.value
-          : null;
-      const eventSpeakerData =
-        eventSpeakerDataResult.status === "fulfilled"
-          ? eventSpeakerDataResult.value
-          : null;
+      // const eventEditionData =
+      //   eventEditionDataResult.status === "fulfilled"
+      //     ? eventEditionDataResult.value
+      //     : null;
+      // const eventExhibitorData =
+      //   eventExhibitorDataResult.status === "fulfilled"
+      //     ? eventExhibitorDataResult.value
+      //     : null;
+      // const eventSpeakerData =
+      //   eventSpeakerDataResult.status === "fulfilled"
+      //     ? eventSpeakerDataResult.value
+      //     : null;
       return {
         eventData: eventData,
         eventPOCData: eventPOCData,
-        eventEditionData: eventEditionData,
-        eventExhibitorData: eventExhibitorData,
-        eventSpeakerData: eventSpeakerData,
+        // eventEditionData: eventEditionData,
+        // eventExhibitorData: eventExhibitorData,
+        // eventSpeakerData: eventSpeakerData,
       };
     },
   });
@@ -125,7 +125,6 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   const {
     eventData,
     eventPOCData,
-    eventEditionData,
   } = event;
   const eventDetails: GTMEventDetail = eventData.event || {};
   const eventPOCDetails: GTMEventPOCDetails[] = eventPOCData.eventPoc || [];
@@ -353,7 +352,6 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           />
           <AdvancedDetails
             eventDetails={eventDetails}
-            eventEditionData={eventEditionData}
             eventId={params.companyId}
           />
 
