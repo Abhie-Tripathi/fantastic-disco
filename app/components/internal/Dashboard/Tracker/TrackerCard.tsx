@@ -22,6 +22,10 @@ interface Props {
 
 const TrackerCard = ({ tracker, small }: Props) => {
     const [isHovered, setIsHovered] = useState(false);
+    const formatType = (type: string) => {
+        if (type === "CUSTOM") return "Custom"
+        return type.split("_").slice(1).map((ele) => `${ele.charAt(0)}${ele.substring(1).toLowerCase()}`).join(' ')
+    }
     return (
         <div className={`flex ${small && "flex-col"} justify-between cursor-pointer w-full`}>
             {!small &&
@@ -40,7 +44,7 @@ const TrackerCard = ({ tracker, small }: Props) => {
                             </span>
                         </div>}
                     </div>
-                    <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{ fontSize: "var(--font-size-xs)" }}>{tracker.type}</div>
+                    <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{ fontSize: "var(--font-size-xs)" }}>{formatType(tracker.type)}</div>
                 </div>}
             {small &&
                 <div className='bg-[var(--background-secondary-color)] rounded-sm flex p-2 justify-between items-center mb-3 relative'>

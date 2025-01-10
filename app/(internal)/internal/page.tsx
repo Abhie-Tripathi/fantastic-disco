@@ -10,7 +10,7 @@ import PromoteContainer from "@/app/components/internal/Dashboard/Promote/Promot
 import TrackerContainer from "@/app/components/internal/Dashboard/Tracker/TrackerContainer";
 import Outreach from "@/app/components/internal/Dashboard/Outreach/Outreach";
 import Trends from "@/app/components/internal/Dashboard/Trends/Trends";
-import { useTheme } from "@/context";
+import { useAuthContext, useTheme } from "@/context";
 import { useCoordinateService } from "@/services/coordinateService";
 import { useWidgetServices } from "@/services/geniservices/widgetService";
 import { useEventServices } from "@/services/geniservices/eventService";
@@ -36,6 +36,7 @@ interface OutreachLastChat {
   comment: string;
   eventId: string;
   enquiryId: string;
+  enquiryStatus : string;
 }
 
 interface ProfileData {
@@ -56,7 +57,7 @@ const Dashboard = () => {
   const [promoteData, setPromoteData] = useState<{ name: string, value: number }[]>([])
   const [trackerData, setTrackerData] = useState<TrackerData[]>([])
   const [outreachData, setOutreachData] = useState<{ name: string, value: number }[]>([])
-  const [outreachChat, setOutreachChat] = useState<OutreachLastChat>({ eventName: "", status: "", comment: "", eventId: "", enquiryId: "" })
+  const [outreachChat, setOutreachChat] = useState<OutreachLastChat>({ eventName: "", status: "", comment: "", eventId: "", enquiryId: "", enquiryStatus : "" })
   const [value, setValue] = useState<string>("empty")
   const [profileData, setProfileData] = useState<ProfileData>({ name: "", email: "", phoneNumber: "", profilePicture: "", department: "" })
   const [loading, setLoading] = useState<boolean>(true);
@@ -69,7 +70,8 @@ const Dashboard = () => {
   const { getTrackers } = useTrackerServices()
   const { getMyProfileData } = useProfileServices()
   const { setLocalFilter } = useFilterContext();
-
+  const { user } = useAuthContext()
+   
   const fetchCoordinateData = async () => {
     const data: any = await getParticipentCount()
     const formattedData = data.filter((item: any) => item.name !== undefined && item.count !== undefined)
@@ -96,6 +98,7 @@ const Dashboard = () => {
 
   const fetchTrackerData = async () => {
     const trackerData: any = await getTrackers(`limit=4&offset=0`)
+    console.log("tracker data," , trackerData)
     const fetchedTrackers: TrackerData[] = [];
     trackerData.trackerData.map((tracker: any, key: any) => {
       const eventCountry = tracker.filterValue?.eventCountry?.map((countryObj: {}) => Object.values(countryObj)[0]) || [];
@@ -108,6 +111,9 @@ const Dashboard = () => {
     })
     setTrackerData(fetchedTrackers)
   }
+  // useEffect(()=>{
+  //   console.log("tracker data," , trackerData)
+  // },[trackerData])
 
   // This function is to fetch the whole array
   const fetchOutreachData = async () => {
@@ -131,7 +137,7 @@ const Dashboard = () => {
   const fetchOutreachMessage = async () => {
     const data = await getLatestComment()
     const messageData: OutreachLastChat =
-      { eventName: data.event.name, status: data.enquiry.enquiryStatus, comment: data.comment.content, eventId: data.event.id, enquiryId: data.enquiry.enquiryId }
+      { eventName: data.event.name, status: data.enquiry.enquiryStatus, comment: data.comment.content, eventId: data.event.id, enquiryId: data.enquiry.enquiryId, enquiryStatus : data.enquiry.enquiryStatus}
     setOutreachChat(messageData)
   }
 
@@ -181,6 +187,7 @@ const Dashboard = () => {
     const profileObject: ProfileData =
       { name: data.user.firstname, email: data.user.email, phoneNumber: data.user.phoneNumber, profilePicture: data.user.profilePicture, department: data.user.department }
     setProfileData(profileObject)
+    // console.log("user", user)
   }
   useEffect(() => {
     const fetchData = async () => {

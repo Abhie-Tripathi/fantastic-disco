@@ -11,6 +11,7 @@ interface OutreachLastChat {
     comment: string;
     eventId: string;
     enquiryId: string;
+    enquiryStatus : string;
 }
 interface Props {
     outreachChat: OutreachLastChat | undefined
@@ -21,7 +22,7 @@ const RecentChat = ({ outreachChat }: Props) => {
     console.log("chat : ", outreachChat)
     const router = useRouter()
     const handleRouting = ()=>{
-        router.push(`/internal/outreach?modalOpen=true&enquiryId=${outreachChat?.enquiryId}&eventId=${outreachChat?.eventId}`)
+        router.push(`/internal/outreach?modalOpen=true&enquiryId=${outreachChat?.enquiryId}&eventId=${outreachChat?.eventId}&status=${outreachChat?.enquiryStatus}`)
     }
     return (
         <div className='bg-[var(--background-secondary-color)] rounded-[10px] p-3 w-full h-full relative'>

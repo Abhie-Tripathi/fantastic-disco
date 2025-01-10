@@ -11,8 +11,8 @@ const Pricing = () => {
             <div className='border-t-[1px] border-[var(--border-color)] mt-2' ></div>
             <div className='mt-2 bg-[var(--info-background-color)] rounded-xl p-4 flex flex-col h-[205px] items-center justify-center'>
                 <Image width={37} height={34} src={PricingImage} alt='img'/>
-                <div className='text-[14px] font-medium text-[#0072F5] mt-3 text-center'>You&apos;re currently on our Free Plan. </div>
-                <div className='text-xs text-[#0072F5] text-center mt-3'>Reach out to us to leverage the full potential of Event Intelligence and enjoy unlimited access.</div>
+                <div className='text-[14px] font-medium text-[#0072F5] mt-3 text-center'>Our subscription functionality is coming soon!</div>
+                <div className='text-xs text-[#0072F5] text-center mt-3'> For now, reach out to us to explore how Event Intelligence can empower your events with unlimited access and features</div>
             </div>
         </div> 
 

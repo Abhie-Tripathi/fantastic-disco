@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react'
 import styles from './recentactivity.style.module.css'
 import ActivitiesNull from '/public/internal/dashboard/ActivitiesNull.png'
 import Activities_null_top from '/public/internal/dashboard/Activities_null_top.png'
+import Activities_null_topdark from '/public/internal/dashboard/Activities_null_topdark.png'
 import ActivitiesOpen from '/public/internal/dashboard/ActivitiesOpen.png'
 import Image from 'next/image'
 import ClosedCard from './ClosedCard'
 import SpeakerProfile from '/public/speaker1.jpeg'
 import { ChevronDown } from 'geist-icons'
 import OpenCard from './OpenCard'
+import { useTheme } from '@/context'
 
 interface ProfileData {
     name: string;
@@ -22,6 +24,7 @@ interface Props {
 }
 const RecentActivity = ({ profileData, value }: Props) => {
 
+    const {theme} = useTheme()
     console.log("profile data :", profileData)
     // const notifications = [
     //     { name: "Walter White", id: "@walter", heading: "Metioned you in conversation", mssg: "Please find the propsal", time: "9:00 AM", date: "Dec 1, 2024" },
@@ -86,10 +89,10 @@ const RecentActivity = ({ profileData, value }: Props) => {
                     ))}
                 </div>
             }
-            {emptyFields.length === 0 &&
-                <Image unoptimized className={`mt-5`} width={159} height={123} src={Activities_null_top} alt='null' />}
+            {(emptyFields.length === 0 && value === "filled") &&
+                <Image unoptimized className={`mt-5`} width={159} height={123} src={theme === "light" ? Activities_null_top:Activities_null_topdark} alt='null' />}
             {emptyFields.length === 0 ?
-                <Image unoptimized className={`${styles.img} absolute bottom-[-120px] right-[-10px] min-w-[327px]`} src={ActivitiesNull} alt='null' height={150} /> :
+                <Image unoptimized className={`${styles.img} absolute bottom-[-140px] right-[-10px] min-w-[327px]`} src={ActivitiesNull} alt='null' height={150} /> :
                 (emptyFields.length > 0 && !notifOpen) ?
                     <Image unoptimized className={`${styles.img} absolute 
                     bottom-[-120px] ${value === "filled" ? "right-[-10px]" : "right-[50px] "}

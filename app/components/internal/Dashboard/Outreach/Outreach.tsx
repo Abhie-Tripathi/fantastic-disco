@@ -15,6 +15,7 @@ interface OutreachLastChat {
   comment: string;
   eventId: string;
   enquiryId: string;
+  enquiryStatus : string;
 }
 interface Props {
   theme: string | null

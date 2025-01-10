@@ -259,11 +259,13 @@ const Page: React.FC = () => {
     const modalValue = searchParams.get("modalOpen");
     const eventEnquiryId = searchParams.get("enquiryId");
     const eventId = searchParams.get("eventId");
+    const eventenquiryStatus = searchParams.get("status");
   
-    if (modalValue === "true" && eventEnquiryId && eventId) {
+    if (modalValue === "true" && eventEnquiryId && eventId && eventenquiryStatus) {
       setEnquiryId(eventEnquiryId);
       setSingleEventId(eventId);
       setModalOpen(true);
+      setCurrentEnquiryStatus(eventenquiryStatus);
     }
   };
   
