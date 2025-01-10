@@ -25,6 +25,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 import {Toggle} from "@/types/trackers"
 import SideNav from "@/app/components/trackers/sideNav";
 import { useTrackerContext } from "@/context/tracker";
+import { useFilterState } from "@/hooks/useFilterState";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
@@ -63,7 +64,7 @@ const Page = ({ params }: { params: any }) => {
   const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
   const trackerType = searchParams.get("type");
-  
+  const {setFilter} = useFilterState();
   const viewType=searchParams.get("view");
   const typeOfEvent=searchParams.get("eventType");
   const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
@@ -317,10 +318,10 @@ const Page = ({ params }: { params: any }) => {
     }
  },[trackerDetail])
  const addQueryString = (value:string) => {
-  const params = new URLSearchParams(searchParams);
-  params.set('eventType', value); 
-  const newUrl = `${pathname}?${params.toString()}`;
-  router.replace(newUrl);
+  // const params = new URLSearchParams(searchParams);
+  setFilter('eventType', value); 
+  // const newUrl = `${pathname}?${params.toString()}`;
+  // router.replace(newUrl);
 };
 const cityIds = trackerDetail?.filterValue?.locationIds?.city?.length > 0 
   ? trackerDetail.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0]) 

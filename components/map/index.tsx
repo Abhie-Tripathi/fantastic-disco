@@ -130,14 +130,17 @@ export default function MapComponent({ searchParams, source, trackerId, isGlobal
     const geoCoordinates = getLocalFilterValue("geoCoordinates");
     const locationIds = source==="tracker"? trackerLoc?.length>0?trackerLoc:"defaultLoc":getLocalFilterValue("locationIds");
     console.log(locationIds);
-    
+    if(locationIds==="defaultLoc")
+      setViewport({
+        ...viewport, zoom:1
+      })
     if (geoCoordinates) {
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
     } else if (locationIds?.length) {
       return { type: "locationIds", locationIds };
     }
     return null;
-  }, [searchParams, trackerLoc]);
+  }, [searchParams]);
 
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey: source === "tracker"
@@ -359,13 +362,11 @@ export default function MapComponent({ searchParams, source, trackerId, isGlobal
     
     setViewport(viewState);
   }, []);
-  useEffect(() => {
-    setViewport({
-      ...viewport, zoom:2.07
-    })
+  // useEffect(() => {
     
-  }, [searchParams
-  ]);
+    
+  // }, [searchParams
+  // ]);
   console.log(viewport);
   
   const eventCountsGeoJSON = React.useMemo(() => {
