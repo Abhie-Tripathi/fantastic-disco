@@ -65,7 +65,7 @@ const Page = ({ params }: { params: any }) => {
   
   
   const pathname = usePathname();
-  const {getCalendarViewEvents,getTrackerEvents} = useTrackerServices();
+  const {getCalendarViewEvents,getTrackerEvents, getSavedEvents} = useTrackerServices();
   const {adaptParams}=TrackersAdapter;
   const [type, setType] = useState<string | undefined>();
   const [activeValue, setActiveValue] = useState();
@@ -199,6 +199,12 @@ const Page = ({ params }: { params: any }) => {
           Array.from(searchParams.values())[3]
         );
       } 
+      else if(active==="Saved Events"){
+          return getSavedEvents(
+            trackerId, 
+            `offset=${skip}&max=${take}`
+          );
+        }
       else if (viewType === "list") {
         return getTrackerEvents(
           trackerId,
@@ -221,7 +227,7 @@ const Page = ({ params }: { params: any }) => {
   });
   const displayData = eventData;
   console.log(displayData);
-  
+
   const events = displayData?.events || [];
   const count = displayData?.count || 0;
   useEffect(() => {

@@ -5,12 +5,14 @@ import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
 import {EventCount} from "@/types/events";
 import { EventTableType } from '@/types/ListViewTable';
+import { useFilterState } from '@/hooks/useFilterState';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
 }
 export const useTrackerServices = () => {
     const api = useApi();
+    const {getFilterValue} =useFilterState();
     const createTracker = (formData: Tracker) => {
         
       return api.request(
@@ -36,18 +38,23 @@ export const useTrackerServices = () => {
         `${endpoints.tracker.getTrackers}?${params}`,
       )
     }
-    const getSavedEvents = (
+    const getSavedEvents = async(
       trackerId: string, 
       params: string, 
       signal?: AbortSignal
     ): Promise<{ result: EventTableType[], count: number } | undefined> => {
-      return api.request(
+      const response = await api.request(
         `${endpoints.tracker.getSavedEvents}/${trackerId}/saved-events?${params}`,
         {
           method: "GET",
           signal: signal, // Pass the signal here
         }
       );
+      if(getFilterValue("view")==="table"){
+        return response
+      }
+      const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
+      return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
     };
     
     const getTrackerDetail=(trackerId:string, params?:string):Promise<{tracker: Tracker }| undefined>=>{
@@ -117,7 +124,9 @@ export const useTrackerServices = () => {
       );
       // return response;
       console.log(response);
-      
+      if(getFilterValue("view")==="table"){
+        return response;
+      }
       const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
       console.log(EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list")));
       return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
