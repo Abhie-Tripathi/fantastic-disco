@@ -535,14 +535,19 @@ export const EventsAdapter = {
           frequency: item.frequency || null,
           co_organizers: [],
           rankings: item.ranking
-            ? {
-                rank: null,
-                rankRange: params.get("top") || null,
-                rankType: null,
-                categoryId: null,
-                countryId: null,
-              }
-            : null,
+          ? {
+            globalRank: item.ranking.globalRank ?? null,
+            countryRank: item.ranking.countryRank ?? undefined,
+            categoryRank: item.ranking.categoryRank ?? undefined,
+            countryCategoryRank: item.ranking.countryCategoryRank ?? undefined,
+            rank: item.ranking.rank ?? null,
+            rankRange: params.get("top") || null,
+            rankType: null,
+            categoryId: null,
+            countryId: null,
+           }
+           : undefined,
+
           exhibitorsCount: parseInt(item.stats.estimatedExhibitor) || null,
           timings: {
             [item.startDate.split("T")[0]]: {
@@ -820,6 +825,10 @@ export const EventsAdapter = {
         co_organizers: [],
         rankings: {
           rank: null,
+          globalRank: undefined,
+          countryRank: undefined,
+          categoryRank: null,
+          countryCategoryRank: null,
           rankRange: null,
           rankType: null,
           categoryId: null,

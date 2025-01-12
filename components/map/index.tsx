@@ -23,6 +23,7 @@ import { AlignLeft } from "lucide-react";
 import EventList from "./event-list";
 import Alerts from "./alerts";
 import mapboxgl from "mapbox-gl";
+import { useFilterState } from "@/hooks/useFilterState";
 import { Event, EventCount, MapEvents } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -77,7 +78,10 @@ type ZoomGroup = "country" | "state" | "city" | "event" | null;
 export default function MapComponent({ searchParams, source, trackerId, isGlobal, trackerLoc}: MapProps) {
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
+  const {getFilterValue } = useFilterState();
   const {getMapViewData, getEventsLatLongData}=useTrackerServices();
+  const id= getFilterValue("id");
+  
   const {data}=useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
     latitude: 20.5937,
@@ -140,7 +144,7 @@ export default function MapComponent({ searchParams, source, trackerId, isGlobal
       return { type: "locationIds", locationIds };
     }
     return null;
-  }, [searchParams]);
+  }, [searchParams,id]);
 
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey: source === "tracker"

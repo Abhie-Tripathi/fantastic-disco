@@ -358,7 +358,8 @@ const Table = ({
     markedInterest: null,
     // eventGroupId: "",
   });
-
+  const take= getFilterValue("take")||20;
+  const skip= getFilterValue("skip")||0;
   const coordinateService = useCoordinateService();
 
   const [coordinateActions, setCoordinateActions] = useState<any>([]);
@@ -499,7 +500,7 @@ const Table = ({
     // }
     // if(currPage!==1)
     fetchEventsData();
-  }, [currPage, itemsPerPage]);
+  }, [currPage, itemsPerPage, skip, take]);
 
   useEffect(() => {
     if (queryString) {
@@ -687,8 +688,8 @@ const Table = ({
           setIsLoaded(false);
           setInitialRender(false);
 
-          const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&offset=${
-            (currPage - 1) * itemsPerPage
+          const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${take}&offset=${
+            skip
           }&${queryString}`;
           // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
           const { data, error } = await myFetch(apiUrl, {
@@ -746,7 +747,7 @@ const Table = ({
 
       const result = await getTrackerEvents(
         secondLast,
-        `limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage}`,
+        `limit=${take}&offset=${skip}`,
         eventType === "Active Events"
           ? "active"
           : eventType === "Expired Events"
@@ -2366,7 +2367,7 @@ const Table = ({
         </div>
       </div> */}
 
-      {totalPages > 1 && (
+    {totalPages > 1 && (
         <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
           <PaginationComponent
             currentPage={currentPage}

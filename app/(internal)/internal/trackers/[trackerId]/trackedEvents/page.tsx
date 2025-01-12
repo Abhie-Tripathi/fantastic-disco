@@ -503,7 +503,7 @@ const activeVal =
         </div>
 
         {(view === "list") && (
-          <div>
+          <div className="flex-grow overflow-hidden">
             <Suspense fallback={<Loading />}>
           <Table
             savedEventCount={savedEventCount}
