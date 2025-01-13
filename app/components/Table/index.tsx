@@ -786,7 +786,7 @@ const Table = ({
       } else {
         setZeroStateHeading(error?.message);
         setZeroStateText("");
-        setEventPerPage([]);
+        // setEventPerPage([]);
         setZeroStateBtnText("");
       }
     } finally {
