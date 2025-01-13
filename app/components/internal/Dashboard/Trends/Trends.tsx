@@ -21,7 +21,7 @@ const Trends = ({ container }: Props) => {
         router.push("/internal/trends")
     }
     return (
-        <div className={`border border-[var(--border-color)] p-3 rounded-xl ${container === "small" ? "h-[240px]" : "h-[252px]"} flex flex-col justify-between items-start overflow-hidden w-full cursor-pointer`} onClick={handleRouting}>
+        <div className={`border border-[var(--border-color)] p-4 rounded-xl ${container === "small" ? "h-[240px]" : "h-[252px]"} flex flex-col justify-between items-start overflow-hidden w-full cursor-pointer`} onClick={handleRouting}>
             <div>
                 <div className='flex items-center gap-1 text-[var(--primary-color)] font-semibold'>
                     <BarChart color='#6750a4' width='12px' height='12px' />
