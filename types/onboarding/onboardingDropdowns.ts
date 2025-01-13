@@ -5,6 +5,7 @@ export interface Industry {
   slug: string;
   image?: StaticImageData;
   type: "category" | "location";
+  mappedSettingResearch: SettingResearchData[];
   subCategory: boolean;
 }
 
@@ -27,6 +28,13 @@ export interface Category {
   id: string;
   name: string;
   slug: string;
+}
+
+export interface SettingResearchData {
+  label: string;
+  source: string;
+  status: string;
+  position: number;
 }
 
 export interface SubIndustry extends Omit<Industry, "subIndustries"> {}

@@ -1,6 +1,7 @@
 import { newCategories } from "@/data/categories";
 import { Category } from "@/types/onboarding";
 import { CircleCheck } from "lucide-react";
+import { MutableRefObject } from "react";
 
 const Card = ({
   category,

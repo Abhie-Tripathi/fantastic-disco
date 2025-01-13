@@ -17,6 +17,8 @@ import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ApiResponse, useApi } from "@/hooks/useApi";
+import { useProductSettingServices } from "@/services/settingservices/productService";
+import { SettingResearchData } from "@/types/onboarding";
 
 type authContextType = {
   user: UserResponse | null;
@@ -34,6 +36,19 @@ type authContextType = {
   signup: (user: SignUpDTO) => Promise<any>;
   signin: (user: TSignInFormSchema) => Promise<any>;
   setUser: Dispatch<SetStateAction<UserResponse | null>>;
+  setError: (
+    error:
+      | (
+          | {
+              response: string;
+              status: number;
+              message: string;
+              name: string;
+            }
+          | undefined
+        )
+      | null
+  ) => void;
   signOut: () => void;
   generateOTP: (
     email: string,
@@ -41,7 +56,14 @@ type authContextType = {
     categories?: string,
     flow?: string
   ) => void;
-  verifyOtp: (user: any, redirectTo?: string) => Promise<any>;
+  verifyOtp: (
+    user: any,
+    mappedSettingResearch: {
+      data: SettingResearchData[];
+      source: string;
+    },
+    redirectTo?: string
+  ) => Promise<any>;
   verifyLoginOTP: (user: any, redirectTo?: string) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
   setProfilePic: any;
@@ -63,6 +85,19 @@ const authContextDefaultValues: authContextType = {
   isVerifiedToken: false,
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
+  setError: (
+    error:
+      | (
+          | {
+              response: string;
+              status: number;
+              message: string;
+              name: string;
+            }
+          | undefined
+        )
+      | null
+  ) => {},
   setUser: () => {},
   signOut: () => {},
   generateOTP: () => Promise.resolve(null),
@@ -85,6 +120,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const { request, error, isLoading, setError } = useApi<any>();
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
+  const { updateResearchData } = useProductSettingServices();
 
   interface SignUp {
     data?: SignUpResponse;
@@ -324,7 +360,11 @@ export const AuthContextProvider = ({ children }: any) => {
   // };
 
   const verifyOtp = useCallback(
-    async (verifyOtpDTO: VerifyOTP, redirectTo?: string) => {
+    async (
+      verifyOtpDTO: VerifyOTP,
+      settingsInterestData: { data: SettingResearchData[]; source: string },
+      redirectTo?: string
+    ) => {
       try {
         const url = baseUrl + "/auth/customer/verify";
         const result = await request<{ user: UserResponse }>(url, {
@@ -345,6 +385,8 @@ export const AuthContextProvider = ({ children }: any) => {
             setUser(result.user);
             setLocalStorage(result.user);
             localStorage.removeItem("walkthroughCompleted");
+            console.log(settingsInterestData);
+            await updateResearchData({ formData: settingsInterestData });
             router.push(redirectTo || "/");
           }
         }

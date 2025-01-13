@@ -1,5 +1,11 @@
 "use client";
-import React, { useState, FormEvent, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  FormEvent,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import styles from "@/app/(auth)/signup/page.module.css";
 import Image from "next/image";
 import Carousel from "@/app/components/carousel";
@@ -64,7 +70,7 @@ type FormData = z.infer<typeof SignUpFormSchema>;
 
 const NewSignUpForm = () => {
   const [showVerification, setShowVerification] = useState(false);
-  const { signup, error } = useAuthContext();
+  const { signup, error, setError } = useAuthContext();
   const { getFilterValue, setFilter, deleteFilter } = useFilterState();
 
   const [name, setName] = useState("");
@@ -85,6 +91,7 @@ const NewSignUpForm = () => {
     control,
     handleSubmit,
     setValue,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(SignUpFormSchema),
@@ -188,14 +195,6 @@ const NewSignUpForm = () => {
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-4">
-      {error && (
-        <Alert variant="destructive" className="w-fit">
-          <AlertDescription className="capitalize flex items-center">
-            <AlertTriangle className="h-4 w-4 mr-2" />
-            {error.message}
-          </AlertDescription>
-        </Alert>
-      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full"
@@ -208,9 +207,29 @@ const NewSignUpForm = () => {
           control={control}
           render={({ field }) => (
             <div className="space-y-2 w-96 max-w-3xl self-center border-b pb-6">
-              <Input id="email" type="email" {...field} placeholder="Email" />
+              <Input
+                id="email"
+                type="email"
+                {...field}
+                placeholder="Email"
+                onChange={(e) => {
+                  field.onChange(e);
+                  setError(null);
+                }}
+              />
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email.message}</p>
+              )}
+              {error && (
+                <Alert
+                  variant="destructive"
+                  className="w-fit self-center border-none p-0"
+                >
+                  <AlertDescription className="capitalize flex items-center">
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    {error.message}
+                  </AlertDescription>
+                </Alert>
               )}
             </div>
           )}
@@ -247,7 +266,12 @@ const NewSignUpForm = () => {
 
         <hr className="w-full sm:w-96 mt-6 self-center" />
 
-        <Button type="submit" className="w-80 self-center" disabled={isLoading}>
+        <Button
+          type="submit"
+          className="w-80 self-center"
+          disabled={isLoading}
+          onClick={() => clearErrors}
+        >
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

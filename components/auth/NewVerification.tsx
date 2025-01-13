@@ -38,6 +38,7 @@ import { useSearchParams } from "next/navigation";
 import { Input } from "../ui/input";
 import { industryData } from "@/data/onboarding";
 import { endOfMonth, startOfMonth } from "date-fns";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const otpSchema = z.object({
   otpCode: z
@@ -51,7 +52,8 @@ export default function NewVerificationForm() {
   const router = useRouter();
   const [time, setTime] = useState(30);
   const [resendLoading, setResendLoading] = useState(false);
-  const { verifyOtp, verifyLoginOTP, error, generateOTP } = useAuthContext();
+  const { verifyOtp, verifyLoginOTP, error, generateOTP, setError } =
+    useAuthContext();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -98,11 +100,24 @@ export default function NewVerificationForm() {
     },
   });
 
+  const { clearErrors } = form;
+
   const onSubmit = async (data: OTPData) => {
     try {
       time === 0 && setTime(30);
       if (flow && flow === "signup") {
-        await verifyOtp({ email, otpCode: data.otpCode }, redirectTo);
+        const mappedSettingResearch =
+          industryData.find((data) => data.slug === industry)
+            ?.mappedSettingResearch || [];
+        const settingsInterestData = {
+          data: mappedSettingResearch,
+          source: "interest",
+        };
+        await verifyOtp(
+          { email, otpCode: data.otpCode },
+          settingsInterestData,
+          redirectTo
+        );
       } else {
         await verifyLoginOTP({ email, otpCode: data.otpCode }, redirectTo);
       }
@@ -162,7 +177,14 @@ export default function NewVerificationForm() {
               render={({ field }) => (
                 <FormItem className="flex justify-center flex-col items-center">
                   <FormControl className="w-full flex justify-center">
-                    <InputOTP maxLength={4} {...field}>
+                    <InputOTP
+                      maxLength={4}
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        setError(null);
+                      }}
+                    >
                       <div className="flex justify-between w-full gap-4">
                         {Array.from({ length: 4 }).map((_, index) => (
                           <InputOTPGroup key={index}>
@@ -195,6 +217,7 @@ export default function NewVerificationForm() {
               type="submit"
               className="w-full sm:w-80 self-center"
               disabled={isLoading}
+              onClick={() => clearErrors}
             >
               {isLoading ? (
                 <>
