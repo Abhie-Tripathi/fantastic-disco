@@ -33,7 +33,7 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.className}`}>
       <body>
         <ToastContainer />
-        {/* <AuthContextProvider> */}
+        <AuthContextProvider>
           <ThemeProvider>
             <div className="flex h-screen bg-gray-100">
               <Sidebar />
@@ -46,7 +46,7 @@ export default function RootLayout({
             </div>
             <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
           </ThemeProvider>
-        {/* </AuthContextProvider> */}
+        </AuthContextProvider>
       </body>
     </html>
   );
