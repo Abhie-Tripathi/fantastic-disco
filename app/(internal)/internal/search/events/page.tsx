@@ -337,7 +337,7 @@ const Search = () => {
         onValueChange={onTabsChange}
         className="mt-0"
       >
-        <div className="flex justify-between items-center py-6 sticky top-[-24px] bg-white z-20 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)]">
+        <div className="flex justify-between items-center py-6 sticky top-0 bg-white z-20 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)]">
           {/* <div className="flex items-center gap-2">
             <Badge className="bg-primary text-white">{count}</Badge>
             <p className="text-primary font-semibold">Events Found</p>
