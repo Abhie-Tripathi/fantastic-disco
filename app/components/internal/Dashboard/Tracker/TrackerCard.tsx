@@ -5,6 +5,7 @@ import Vectore7 from "/public/lucide_timer.svg";
 import Vectore8 from "/public/expired.svg";
 import { Location } from "geist-icons";
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 interface TrackerData {
     id: string;
@@ -33,9 +34,13 @@ const TrackerCard = ({ tracker, small }: Props) => {
         }
         return value.toString();
     }
+    const router = useRouter()
+    const handleRouting = ()=>{
+        router.push(`/internal/trackers/${tracker.id}/trackedEvents?type=${tracker.type}&view=list&eventType=activeEvent`)
+    }
 
     return (
-        <div className={`flex ${small && "flex-col"} justify-between w-full`}>
+        <div className={`flex ${small && "flex-col"} justify-between w-full cursor-pointer`} onClick={handleRouting}>
             {!small &&
                 <div className="flex gap-2 flex-col justify-between w-[60%]">
                     <div>
