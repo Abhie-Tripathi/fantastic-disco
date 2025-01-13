@@ -63,7 +63,7 @@ export default function EventTypeSelector({
     () => getLocalFilterValue("eventTypes").split(",").filter(Boolean).length,
     [getLocalFilterValue]
   );
-
+  console.log("")
   const handleCategoryToggle = useCallback(
     (eventGroupType: EventGroupType, categoryId: string) => {
       setSelectedCategories?.((prev) => {

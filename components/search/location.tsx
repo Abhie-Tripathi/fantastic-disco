@@ -40,7 +40,7 @@ export interface LocationItem {
 export type Location = GeoLocation | LocationItem[];
 export interface LocationProps {
   source: string;
-  type?:string;
+  type?: string;
   selectedLocation?: Location | null;
   setSelectedLocation?: React.Dispatch<
     React.SetStateAction<GeoLocation | LocationItem[] | null>
@@ -146,22 +146,21 @@ export default function LocationSelector({
     }
     setIsOpen(open);
   };
-  
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            (selectedLocation === undefined ||
+          className={`w-full justify-between px-3 py-5 text-base font-normal ${(selectedLocation === undefined ||
               (Array.isArray(selectedLocation) &&
                 selectedLocation?.length === 0)) &&
-            isMandatory
+              isMandatory
               ? "border-destructive"
               : isOpen
-              ? "border-primary"
-              : "border-input"
-          }`}
+                ? "border-primary"
+                : "border-input"
+            }`}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-haspopup="true"
@@ -185,9 +184,8 @@ export default function LocationSelector({
             )}
           </div>
           <ChevronDown
-            className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
-              isOpen ? "rotate-180 transform" : ""
-            }`}
+            className={`h-4 w-4 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180 transform" : ""
+              }`}
           />
         </Button>
       </PopoverTrigger>
@@ -222,9 +220,9 @@ export default function LocationSelector({
                 value={
                   selectedLocation && Array.isArray(selectedLocation)
                     ? selectedLocation.map((loc) => ({
-                        id: loc.id,
-                        description: loc.description || "",
-                      }))
+                      id: loc.id,
+                      description: loc.description || "",
+                    }))
                     : null
                 }
               />
@@ -237,10 +235,10 @@ export default function LocationSelector({
                 value={
                   selectedLocation && !Array.isArray(selectedLocation)
                     ? {
-                        id: Math.random().toString(),
-                        description: (selectedLocation as GeoLocation)
-                          .description,
-                      }
+                      id: Math.random().toString(),
+                      description: (selectedLocation as GeoLocation)
+                        .description,
+                    }
                     : null
                 }
               />
@@ -258,9 +256,9 @@ export default function LocationSelector({
                       setSelectedLocation?.((prev) =>
                         prev
                           ? {
-                              ...prev,
-                              radius: Number(e.target.value),
-                            }
+                            ...prev,
+                            radius: Number(e.target.value),
+                          }
                           : null
                       )
                     }
@@ -297,9 +295,9 @@ export default function LocationSelector({
                       setSelectedLocation?.((prev) =>
                         prev
                           ? {
-                              ...prev,
-                              lat: Number(e.target.value),
-                            }
+                            ...prev,
+                            lat: Number(e.target.value),
+                          }
                           : null
                       )
                     }
@@ -318,9 +316,9 @@ export default function LocationSelector({
                       setSelectedLocation?.((prev) =>
                         prev
                           ? {
-                              ...prev,
-                              lng: Number(e.target.value),
-                            }
+                            ...prev,
+                            lng: Number(e.target.value),
+                          }
                           : null
                       )
                     }
@@ -339,9 +337,9 @@ export default function LocationSelector({
             value={
               selectedLocation && Array.isArray(selectedLocation)
                 ? selectedLocation.map((loc) => ({
-                    id: loc.id,
-                    description: loc.description || "",
-                  }))
+                  id: loc.id,
+                  description: loc.description || "",
+                }))
                 : null
             }
           />

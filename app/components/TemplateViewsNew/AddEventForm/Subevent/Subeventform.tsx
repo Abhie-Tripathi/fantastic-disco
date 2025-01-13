@@ -260,7 +260,10 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
                         <MapView latitude={formState.latitude}
                             longitude={formState.longitude}
                             venue={formState.cityName}
-                            zoom={6} />
+                            zoom={6}
+                            source='detail'
+                            height={200}
+                            />
                     }
                 </div>
             </div>
