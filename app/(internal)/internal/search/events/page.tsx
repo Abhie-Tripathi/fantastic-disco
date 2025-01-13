@@ -239,7 +239,7 @@ const Search = () => {
   }, [searchParams]);
 
   return (
-    <div>
+    <div className="p-6">
       {steps.length > 0 && (
         <Joyride
           tooltipComponent={(props) => (
