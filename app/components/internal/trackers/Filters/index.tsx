@@ -866,7 +866,7 @@ const Pages = () => {
         ...(getLocalFilterValue("eventFormats")?.length > 0 && {
           eventFormat: getLocalFilterValue("eventFormats"),
         }),
-        ...(getLocalFilterValue("onlySeries") && {eventSeries: getLocalFilterValue("onlySeries")}),
+        ...(getLocalFilterValue("onlySeries")==="true" && {eventSeries: getLocalFilterValue("onlySeries")}),
         ...(getLocalFilterValue("status")?.length > 0 && {
           eventStatus: getLocalFilterValue("status").split(',').map((item)=>item.toUpperCase()).join(","),
         }),
@@ -938,7 +938,7 @@ const Pages = () => {
         ...(forecastedStatus && {
           isforecasted: forecastedStatus.toString()
         }),
-        ...(getLocalFilterValue("onlyBranded") && {eventBrand:getLocalFilterValue("onlyBranded").toString()}),
+        ...(getLocalFilterValue("onlyBranded")==="true" && {eventBrand:getLocalFilterValue("onlyBranded").toString()}),
         ...(getLocalFilterValue("top") && {
           // globalRanking: selectedRank,
           // categoryRanking: selectedRank,
