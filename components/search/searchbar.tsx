@@ -110,7 +110,7 @@ export default function MultiSelectSearchBar() {
           newParams.set("show", show);
         }
 
-        router.push(`?${newParams.toString()}`);
+        router.push(`/internal/search/events?${newParams.toString()}`);
 
         return newSelectedItems;
       });
