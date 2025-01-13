@@ -114,8 +114,6 @@ const Sidebar = () => {
     setIsHovered(false);
   }, []);
 
-  console.log("pathname", pathname);
-
   // const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(false);
   // const [run, setRun] = useState(false);
   // const [steps, setSteps] = useState<Step[]>([]);

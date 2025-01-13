@@ -230,7 +230,6 @@ export const EventsAdapter = {
       params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      console.log("first");
       const startDate = params.get("active_gte");
       const endDate = params.get("active_lte");
       adaptedParams.groupBy = `${startDate},${endDate}`;
@@ -241,7 +240,6 @@ export const EventsAdapter = {
       !params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      console.log("second");
       const startDate = new Date(params.get("active_gte")!);
       const endDate = new Date(startDate);
       endDate.setFullYear(startDate.getFullYear() + 1);
@@ -255,7 +253,6 @@ export const EventsAdapter = {
       params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      console.log("third");
       const endDate = new Date(params.get("active_lte")!);
       const startDate = new Date(endDate);
       startDate.setFullYear(endDate.getFullYear() - 1);
@@ -269,7 +266,6 @@ export const EventsAdapter = {
       params.get("view") == "calendar"
       // params.get("calendar_type") == "week"
     ) {
-      console.log("active_gte, calendar, week");
       const today = new Date();
       const firstDayOfMonth = new Date(
         today.getFullYear(),
@@ -298,8 +294,6 @@ export const EventsAdapter = {
     if (params.get("view") == "map") {
       adaptedParams.max = "50";
     }
-
-    console.log("adaptedparams");
 
     return adaptedParams;
   },
