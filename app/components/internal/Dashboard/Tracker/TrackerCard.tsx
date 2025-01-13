@@ -26,6 +26,14 @@ const TrackerCard = ({ tracker, small }: Props) => {
         if (type === "CUSTOM") return "Custom"
         return type.split("_").slice(1).map((ele) => `${ele.charAt(0)}${ele.substring(1).toLowerCase()}`).join(' ')
     }
+
+    function formatNumber(value : number) {
+        if (value >= 1000) {
+            return `${(value / 1000).toFixed(1)}k`.replace('.0k', 'k'); // Avoid ".0k"
+        }
+        return value.toString();
+    }
+
     return (
         <div className={`flex ${small && "flex-col"} justify-between w-full`}>
             {!small &&
@@ -69,7 +77,7 @@ const TrackerCard = ({ tracker, small }: Props) => {
                         New
                     </div>
                     <div className='text-[var(--primary-text-color)] text-xs font-[var(--font-weight-semibold)]'>
-                        {tracker.newCount}
+                        {formatNumber(tracker.newCount)}
                     </div>
                     <div className='text-[10px]'>Events</div>
                 </div>
@@ -79,7 +87,7 @@ const TrackerCard = ({ tracker, small }: Props) => {
                         Active
                     </div>
                     <div className='text-[var(--primary-text-color)] text-xs font-[var(--font-weight-semibold)]'>
-                        {tracker.activeCount}
+                        {formatNumber(tracker.activeCount)}
                     </div>
                     <div className='text-[10px]'>Events</div>
                 </div>
@@ -89,7 +97,7 @@ const TrackerCard = ({ tracker, small }: Props) => {
                         Past
                     </div>
                     <div className='text-[var(--primary-text-color)] text-xs font-[var(--font-weight-semibold)]'>
-                        {tracker.expiredCount}
+                        {formatNumber(tracker.expiredCount)}
                     </div>
                     <div className='text-[10px]'>Events</div>
                 </div>
