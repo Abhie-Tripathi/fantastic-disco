@@ -14,30 +14,38 @@ import {
   GridMasonry,
   Wrench,
 } from "geist-icons";
-import { Coordinate, Outreach } from "@/constants";
+import { Coordinate, Outreach } from "@/constants/index";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { SheetClose } from "@/components/ui/sheet";
 import { LogOut, User } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
+import { useTheme } from "@/context";
 
 const MobileSidebar = () => {
   const pathname = usePathname();
+  const { theme } = useTheme();
   const { signOut } = useAuthContext();
 
   const links = [
-    { name: "Dashboard", href: "/", icon: GridMasonry },
-    { name: "Search Events", href: "/search/events", icon: MagnifyingGlass },
-    { name: "Tracker", href: "/trackers", icon: LineChart },
-    { name: "Event Trends", href: "/trends", icon: ChartBarRandom },
-    { name: "Coordinate", href: "/coordinate", icon: Coordinate },
-    { name: "Outreach", href: "/outreach", icon: Outreach },
-    { name: "API Tools", href: "/clients", icon: Wrench },
+    { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
-      name: "Documentation",
-      href: "https://eventeli.com/docs",
-      icon: BookOpen,
+      name: "Search Events",
+      href: "/internal/search/events",
+      icon: MagnifyingGlass,
     },
+    {
+      name: "Tracker",
+      href: "/internal/trackers?tab=allTrackers",
+      icon: LineChart,
+    },
+    { name: "Event Trends", href: "/internal/trends", icon: ChartBarRandom },
+    {
+      name: "Coordinate",
+      href: "/internal/coordinate",
+      icon: Coordinate,
+    },
+    { name: "Outreach", href: "/internal/outreach", icon: Outreach },
   ];
 
   return (
@@ -49,13 +57,15 @@ const MobileSidebar = () => {
           src={HeroText}
           alt="logotext"
           height={24}
+          style={theme === "dark" ? { filter: "invert(100%)" } : {}}
         />
       </div>
       <nav className="flex-1">
         <ul className="p-2 space-y-1">
           {links.map((link) => {
             const Icon = link.icon;
-            const isActive = pathname === link.href;
+            const isActive = pathname === link.href || (link.name === "Tracker" &&
+              pathname.startsWith("/internal/trackers"));
             return (
               <li key={link.name}>
                 <SheetClose asChild>
@@ -66,7 +76,10 @@ const MobileSidebar = () => {
                         isActive ? "bg-primary text-white hover:bg-primary" : ""
                       }`}
                     >
-                      <Icon className="flex-shrink-0 mr-2" />
+                      <Icon
+                        className="flex-shrink-0 mr-2"
+                        color={theme == "dark" ? "#fff" : ""}
+                      />
                       <span>{link.name}</span>
                     </Button>
                   </Link>
@@ -79,7 +92,7 @@ const MobileSidebar = () => {
         <ul className="p-2 space-y-1">
           <li>
             <SheetClose asChild>
-              <Link href="/profile">
+              <Link href="/internal/profile">
                 <Button
                   variant="ghost"
                   className="w-full justify-start px-3 h-10"
