@@ -17,7 +17,7 @@ import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import { EventTableType } from "@/types/ListViewTable";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
 import NullState from "../trackers/nullState";
@@ -351,6 +351,8 @@ const Table = ({
   const coordinateService = useCoordinateService();
   
   const [coordinateActions, setCoordinateActions] = useState<any>([]);
+
+  const router = useRouter();
 
   const handleChangeIntent = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -2083,7 +2085,11 @@ const Table = ({
                           <div style={{ maxWidth: "500px" }}>
                             <header className={styles["modal_header"]}>
                               <div className={styles["modal_header-title"]}>
-                                Choose an Action to Proceed {" "}
+                                Choose an {" "}
+                                <Link href="/internal/settings/product" className="text-primary hover:underline">
+                                  Action 
+                                </Link>
+                                {" "}to Proceed
                               </div>
                               <button
                                 className={styles["close"]}
