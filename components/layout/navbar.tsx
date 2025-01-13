@@ -126,7 +126,7 @@ export default function Navbar() {
         <div className="flex items-center gap-1">
           {!isEventeli && (
             <>
-              <div className={(pathname.split("/")[2] !== "prospect" && pathname.split("/")[1] === "internal") ? "border-b-[2px] border-[var(--primary-color)]" : ""}>
+              <div className="flex flex-col items-center">
                 <Button
                   onClick={() => handleRoute("research")}
                   variant="ghost"
@@ -135,9 +135,11 @@ export default function Navbar() {
                   <Search className="h-6 w-6" />
                   <span className="text-xs">Plan</span>
                 </Button>
+                <div className={(pathname.split("/")[2] !== "prospect" && pathname.split("/")[1] === "internal") ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[60px]" : ""}>
+                </div>
               </div>
               <div className='border-r-[1px] border-[var(--border-color)] h-[20px]' ></div>
-              <div className={pathname.split("/")[1] === "widget" ? "border-b-[2px] border-[var(--primary-color)] " : ""}>
+              <div className="flex flex-col items-center">
                 <Button
                   onClick={() => handleRoute("promote")}
                   variant="ghost"
@@ -146,9 +148,10 @@ export default function Navbar() {
                   <Megaphone className="h-6 w-6" />
                   <span className="text-xs">Promote</span>
                 </Button>
+                <div className={pathname.split("/")[1] === "widget" ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[80px]" : ""}></div>
               </div>
               <div className='border-r-[1px] border-[var(--border-color)] h-[20px]' ></div>
-              <div className={pathname === "/internal/prospect" ? "border-b-[2px] border-[var(--primary-color)]" : ""}>
+              <div className="flex flex-col items-center">
                 <Button
                   onClick={() => handleRoute("prospect")}
                   variant="ghost"
@@ -157,6 +160,7 @@ export default function Navbar() {
                   <UserSearch className="h-6 w-6" />
                   <span className="text-xs">Prospect</span>
                 </Button>
+                <div className={pathname === "/internal/prospect" ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[80px]" : ""}></div>
               </div>
               {/* <Popover>
                 <Button
