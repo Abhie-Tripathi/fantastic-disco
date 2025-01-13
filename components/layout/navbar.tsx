@@ -61,7 +61,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const { user, signOut } = useAuthContext();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  // const { theme, toggleTheme } = useTheme();
 
   function getRoute(path: string | undefined): string {
     return gtmroutes[path || ""];
@@ -110,6 +110,7 @@ export default function Navbar() {
     }
   };
 
+  console.log("path,", pathname)
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
@@ -122,40 +123,56 @@ export default function Navbar() {
                 : geniroutes[pathname.split("/").slice(-1)[0]]}
           </div>
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-1">
           {!isEventeli && (
             <>
-              <Button
-                onClick={() => handleRoute("research")}
-                variant="ghost"
-                className="flex flex-col items-center justify-center gap-2 h-auto"
-              >
-                <Search className="h-6 w-6" />
-                <span className="text-xs">Plan</span>
-              </Button>
-              <Button
-                onClick={() => handleRoute("promote")}
-                variant="ghost"
-                className="flex flex-col items-center justify-center gap-2 h-auto"
-              >
-                <Megaphone className="h-6 w-6" />
-                <span className="text-xs">Promote</span>
-              </Button>
-              <Popover>
+              <div className={(pathname.split("/")[2] !== "prospect" && pathname.split("/")[1] === "internal") ? "border-b-[2px] border-[var(--primary-color)]" : ""}>
+                <Button
+                  onClick={() => handleRoute("research")}
+                  variant="ghost"
+                  className={`flex items-center justify-center gap-2 h-auto`}
+                >
+                  <Search className="h-6 w-6" />
+                  <span className="text-xs">Plan</span>
+                </Button>
+              </div>
+              <div className='border-r-[1px] border-[var(--border-color)] h-[20px]' ></div>
+              <div className={pathname.split("/")[1] === "widget" ? "border-b-[2px] border-[var(--primary-color)] " : ""}>
+                <Button
+                  onClick={() => handleRoute("promote")}
+                  variant="ghost"
+                  className="flex items-center justify-center gap-2 h-auto"
+                >
+                  <Megaphone className="h-6 w-6" />
+                  <span className="text-xs">Promote</span>
+                </Button>
+              </div>
+              <div className='border-r-[1px] border-[var(--border-color)] h-[20px]' ></div>
+              <div className={pathname === "/internal/prospect" ? "border-b-[2px] border-[var(--primary-color)]" : ""}>
                 <Button
                   onClick={() => handleRoute("prospect")}
                   variant="ghost"
-                  className="flex flex-col items-center justify-center gap-2 h-auto"
+                  className="flex items-center justify-center gap-2 h-auto"
                 >
                   <UserSearch className="h-6 w-6" />
                   <span className="text-xs">Prospect</span>
                 </Button>
-                {/* <PopoverTrigger asChild>
+              </div>
+              {/* <Popover>
+                <Button
+                  onClick={() => handleRoute("prospect")}
+                  variant="ghost"
+                  className="flex items-center justify-center gap-2 h-auto"
+                >
+                  <UserSearch className="h-6 w-6" />
+                  <span className="text-xs">Prospect</span>
+                </Button>
+                <PopoverTrigger asChild>
                 <Button variant="ghost" size="icon">
                   <Grip className="h-5 w-5" />
                   <span className="sr-only">Menu</span>
                 </Button>
-              </PopoverTrigger> */}
+              </PopoverTrigger>
                 <PopoverContent className="w-52 p-0" align="end">
                   <div className="grid grid-cols-2 gap-2">
                     {pathname.split("/")[1] === "internal" ? (
@@ -186,13 +203,12 @@ export default function Navbar() {
                       <UserSearch className="h-6 w-6" />
                       <span className="text-xs">Prospect</span>
                     </Button>
-                    {/* <div className={styles.tag}>Coming soon</div> */}
                   </div>
                 </PopoverContent>
-              </Popover>
+              </Popover> */}
             </>
           )}
-          {!isEventeli && (
+          {/* {!isEventeli && (
             <Button variant="ghost" size="icon" onClick={() => toggleTheme()}>
               {theme === "dark" ? (
                 <Sun className="h-5 w-5 transition-all" />
@@ -201,7 +217,7 @@ export default function Navbar() {
               )}
               <span className="sr-only">Toggle theme</span>
             </Button>
-          )}
+          )} */}
 
 
           <DropdownMenu open={isProfileOpen} onOpenChange={setIsProfileOpen}>
