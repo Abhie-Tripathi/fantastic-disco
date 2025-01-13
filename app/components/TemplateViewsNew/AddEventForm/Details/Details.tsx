@@ -52,7 +52,7 @@ interface Props {
 }
 const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont, setLoadingState, fileInputRef,
   handleCollapseForm, isApproved, setIsApproved }: Props) => {
-console.log("prefilled",prefilledEvent)
+  console.log("prefilled", prefilledEvent)
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const { isLoading, imageUrl, generatePrompt } = usePosterGenerator();
   const { loadingState, generateHashtags, generatedHashtags } = useHashtagsGenerator();
@@ -69,8 +69,8 @@ console.log("prefilled",prefilledEvent)
 
   const handlePrefillExhibitorDetails = (profile: any, key: number) => {
     setExhibitorIndex(key)
-    handleChange("prefilledExhibitorDetails",profile)
-    handleChange('exhibitorModal',true)
+    handleChange("prefilledExhibitorDetails", profile)
+    handleChange('exhibitorModal', true)
   }
 
   const handleDescClick = () => {
@@ -111,7 +111,7 @@ console.log("prefilled",prefilledEvent)
     handleChange('prefilledExhibitorDetails', undefined);
   }
 
-  const updateExhibitorDetails = (updatedProfile:any) => {
+  const updateExhibitorDetails = (updatedProfile: any) => {
     const currentExibitor = formState.exhibitor || [];
     const updatedExhibitor = currentExibitor.map((p: any) =>
       p.id === updatedProfile.id ? updatedProfile : p
@@ -190,7 +190,7 @@ console.log("prefilled",prefilledEvent)
       });
     }
   }, [imageUrl]);
-  
+
 
   const handleInputChange = (value: string) => {
     console.log("value typed : ", value)
@@ -214,28 +214,28 @@ console.log("prefilled",prefilledEvent)
 
   return (
     <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.exhibitorModal || formState.registerModal ? styles.modalBody : ""}`}>
-      <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.exhibitorModal || formState.registerModal ||formState.capacityModal? styles.modalOpen : ""}`} >
-       
-       <div>
-       <div><EventType prefilledEvent={prefilledEvent} mainEventType={formState.event_type} handleChange={handleChange} /></div>
-       <div> {formState.isEventTypeEmpty && <p className={styles.errorMessage}>Please select any event type</p>}</div>
-       </div>
+      <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.exhibitorModal || formState.registerModal || formState.capacityModal ? styles.modalOpen : ""}`} >
+
         <div>
-        {
-          formState.event_type && (<div className={`${styles.participationContainer}`}><ParticipationContainer formTheme={formTheme} handleChange={handleChange} formState={formState} heading='Choose Your Mode of Participation' type='main' size="large" />
-          </div>)
-         }
-         {formState.event_type && formState.isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation</p>}
+          <div><EventType prefilledEvent={prefilledEvent} mainEventType={formState.event_type} handleChange={handleChange} /></div>
+          <div> {formState.isEventTypeEmpty && <p className={styles.errorMessage}>Please select any event type</p>}</div>
         </div>
-          
-      
+        <div>
+          {
+            formState.event_type && (<div className={`${styles.participationContainer}`}><ParticipationContainer formTheme={formTheme} handleChange={handleChange} formState={formState} heading='Choose Your Mode of Participation' type='main' size="large" />
+            </div>)
+          }
+          {formState.event_type && formState.isEventParticipationEmpty && <p className={styles.errorMessage}>Please select any mode of participation</p>}
+        </div>
+
+
         <div className={styles.sections}>
           <div className={styles.leftSection}>
             <div className={styles.posterContainer}>
               {isLoading ?
                 <div className={styles.loader}>
                   <div className={styles.spinner}></div>
-                </div> : <Image src={formState.banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover"}} className='h-[290px] w-[296px]' unoptimized />}
+                </div> : <Image src={formState.banner.placeHolder} alt='Poster' width={296} height={290} style={{ borderRadius: 20, objectFit: "cover" }} className='h-[290px] w-[296px]' unoptimized />}
               <div className={styles.posterIcons}>
                 <div onClick={handleGeneratePoster} data-name={formState.eventName && formState.participationMessage ? "Generate your Banner" : "Add Event name and participationMessage to generate a banner"}>
                   <Image src={AiIcon} alt='aigenerate' className={styles.aiIcon}></Image>
@@ -291,15 +291,15 @@ console.log("prefilled",prefilledEvent)
               {formState.isTextValueMessageEmpty && formState.isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
             </div>
             {
-              formState.participationType === "Organiser"?<WaitListAndCap waitlisting={formState.waitlisting} approval={formState.approval} capacity={formState.capacity} handleChange={handleChange} />:""
+              formState.participationType === "Organiser" ? <WaitListAndCap waitlisting={formState.waitlisting} approval={formState.approval} capacity={formState.capacity} handleChange={handleChange} /> : ""
             }
 
             {
-              formState.participationType === "Organiser"?<div className={styles.speakerProfileContainer}><ExhibitorDetails exhibitorDetailsData={formState.exhibitor} handlePrefillExhibitorDetails={handlePrefillExhibitorDetails} handleChange={handleChange} />
-              </div>:""
+              formState.participationType === "Organiser" ? <div className={styles.speakerProfileContainer}><ExhibitorDetails exhibitorDetailsData={formState.exhibitor} handlePrefillExhibitorDetails={handlePrefillExhibitorDetails} handleChange={handleChange} />
+              </div> : ""
             }
 
-            {formState.participationType === "Speaker" || formState.participationType === "Organiser"? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speaker}
+            {formState.participationType === "Speaker" || formState.participationType === "Organiser" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speaker}
               // setSpeakerModal={setSpeakerModal} 
               handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
                 <ExhibitorContainer formTheme={formTheme} handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
@@ -307,7 +307,10 @@ console.log("prefilled",prefilledEvent)
             {(formState.cityName && formState.eventFormat !== "Virtual") &&
               // <div className={styles.map} ref={mapDivRef}>
               // <Suspense fallback={<div>Loading...</div>}>
-              <MapView latitude={formState.latitude}
+              <MapView
+                source='detail'
+                height={200}
+                latitude={formState.latitude}
                 longitude={formState.longitude}
                 venue={formState.cityName}
                 zoom={6} />
@@ -352,11 +355,11 @@ console.log("prefilled",prefilledEvent)
       {
         formState.exhibitorModal && <div className={styles.exhibitorModal}>
           <ExhibitorDetailsModal
-          exhibitorDetailsData={formState.exhibitor}
-          handleChange={handleChange}
-          deleteExhibitorDetails={deleteExhibitorDetails}
-          updateExhibitorDetails={updateExhibitorDetails}
-          prefilledExhibitorDetails={formState.prefilledExhibitorDetails}
+            exhibitorDetailsData={formState.exhibitor}
+            handleChange={handleChange}
+            deleteExhibitorDetails={deleteExhibitorDetails}
+            updateExhibitorDetails={updateExhibitorDetails}
+            prefilledExhibitorDetails={formState.prefilledExhibitorDetails}
           />
         </div>
       }
@@ -368,19 +371,19 @@ console.log("prefilled",prefilledEvent)
         </div>
       }
       {
-          formState.participationType === "Organiser"&&
-                formState.capacityModal &&  
-                <div className={styles.capacityModal}>
-                  <CapacityModal
-                  capacityModal={formState.capacityModal}
-                  capacity={ formState.capacity}
-                  handleChange={handleChange}
-                  waitlisting={formState.waitlisting}
-                 /> 
-                </div>
-                 
+        formState.participationType === "Organiser" &&
+        formState.capacityModal &&
+        <div className={styles.capacityModal}>
+          <CapacityModal
+            capacityModal={formState.capacityModal}
+            capacity={formState.capacity}
+            handleChange={handleChange}
+            waitlisting={formState.waitlisting}
+          />
+        </div>
+
       }
-      
+
     </div >
   )
 }
