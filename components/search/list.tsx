@@ -324,12 +324,12 @@ const EventListItem = ({
       type: "",
     };
   
-    if (response?.globalRank !== undefined) {
+    if (response?.globalRank !== null && response?.globalRank !== undefined) {
       minRank.rank = response.globalRank;
       minRank.name = "";
       minRank.type = "Global";
-    } else if (response?.countryRank !== undefined) {
-      minRank.rank = response.countryRank;
+    } else if (response?.countryRank !== null  && response?.countryRank !== undefined) {
+      minRank.rank = response.countryRank as number;
       minRank.name = "";
       minRank.type = "Country";
     } else if (response?.categoryRank) {
@@ -355,6 +355,8 @@ const EventListItem = ({
     if (minRank.type === "") {
       return "";
     }
+    console.log(minRank);
+    
     return getEventRank(minRank);
   }
   function getEventRank(prop: rankTag) {
@@ -363,6 +365,8 @@ const EventListItem = ({
     else if (prop.rank == 2) rankString = "nd";
     else if (prop.rank == 3) rankString = "rd";
     else rankString = "th";
+    console.log(prop);
+    
     return (
       <>
         <Badge

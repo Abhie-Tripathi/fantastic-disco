@@ -687,9 +687,10 @@ const Table = ({
         try {
           setIsLoaded(false);
           setInitialRender(false);
-
-          const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${take}&offset=${
-            skip
+          console.log(itemsPerPage, ((currPage - 1) * itemsPerPage));
+          
+          const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${getFilterValue("take")||"20"}&offset=${
+           getFilterValue("skip")||"0"
           }&${queryString}`;
           // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
           const { data, error } = await myFetch(apiUrl, {
