@@ -60,7 +60,7 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
       value={selectedView}
       onValueChange={handleTabChange}
     >
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center my-6">
         <div className="flex justify-center">
           <TabsList className="w-[570px] grid grid-cols-3 h-auto">
             <TabsTrigger value="advancedDetails" className="text-base">

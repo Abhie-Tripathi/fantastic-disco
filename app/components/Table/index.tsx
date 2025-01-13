@@ -582,7 +582,6 @@ const Table = ({
       if (result) {
         setIsLoaded(true);
         GAEvent("trackers", "Tracker", "View", `Saved Event | ${currPage}`);
-
         setEventPerPage(result.result);
         setTotalEvents(result.count);
 
@@ -703,6 +702,7 @@ const Table = ({
             }
             // setTotalPages(Math.ceil(data.stats.totalEvents / itemsPerPage));
             setTotalEvents(data.stats.totalEvents);
+
             setEventPerPage(data.events);
           }
           if (error) {
@@ -758,7 +758,6 @@ const Table = ({
         console.error("No data returned from getTrackerEvents");
         return;
       }
-
       setEventPerPage(result.events);
 
       if (currPage === 1) {
@@ -786,7 +785,7 @@ const Table = ({
       } else {
         setZeroStateHeading(error?.message);
         setZeroStateText("");
-        setEventPerPage([]);
+        // setEventPerPage([]);
         setZeroStateBtnText("");
       }
     } finally {
@@ -841,6 +840,8 @@ const Table = ({
       showToast("error", "Please try again later.");
     }
   };
+
+
 
   // const [isDelete, setIsDelete] = useState(false);
 
@@ -919,7 +920,9 @@ const Table = ({
         <Loading className="w-[200px] h-[100px]" />
       </div>
     );
-  } else if (isLoaded && eventPerPage.length == 0) {
+  } 
+  else if (isLoaded && eventPerPage.length == 0) {
+
     return (
       <div className={styles.noData}>
         {path[2] === "trackers" ? (

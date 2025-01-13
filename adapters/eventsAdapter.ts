@@ -291,15 +291,19 @@ export const EventsAdapter = {
       adaptedParams.max = params.get("take")!;
     }
 
-    if(params.get("skip")){
-      adaptedParams.offset = params.get("skip")!
+    if (params.get("skip")) {
+      adaptedParams.offset = params.get("skip")!;
     }
 
     if (params.get("view") == "map") {
       adaptedParams.max = "50";
     }
 
-    console.log("adaptedparams");
+    if (params.get("estimatedVisitorRangeTag")) {
+      adaptedParams.estimatedVisitorRangeTag = params.get(
+        "estimatedVisitorRangeTag"
+      )!;
+    }
 
     return adaptedParams;
   },
@@ -539,18 +543,19 @@ export const EventsAdapter = {
           frequency: item.frequency || null,
           co_organizers: [],
           rankings: item.ranking
-          ? {
-            globalRank: item.ranking.globalRank ?? null,
-            countryRank: item.ranking.countryRank ?? undefined,
-            categoryRank: item.ranking.categoryRank ?? undefined,
-            countryCategoryRank: item.ranking.countryCategoryRank ?? undefined,
-            rank: item.ranking.rank ?? null,
-            rankRange: params.get("top") || null,
-            rankType: null,
-            categoryId: null,
-            countryId: null,
-           }
-           : undefined,
+            ? {
+                globalRank: item.ranking.globalRank ?? null,
+                countryRank: item.ranking.countryRank ?? undefined,
+                categoryRank: item.ranking.categoryRank ?? undefined,
+                countryCategoryRank:
+                  item.ranking.countryCategoryRank ?? undefined,
+                rank: item.ranking.rank ?? null,
+                rankRange: params.get("top") || null,
+                rankType: null,
+                categoryId: null,
+                countryId: null,
+              }
+            : undefined,
 
           exhibitorsCount: parseInt(item.stats.estimatedExhibitor) || null,
           timings: {
