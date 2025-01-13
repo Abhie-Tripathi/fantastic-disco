@@ -282,6 +282,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       temp.show = dataToShow.join(',');
     }
     console.log(temp);
+    console.log(localFilters);
     
     setLocalFilters(temp);
   }

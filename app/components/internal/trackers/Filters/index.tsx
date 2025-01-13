@@ -754,14 +754,13 @@ const Pages = () => {
       const category = newCategories.find((cat) => cat.slug === slug);
       return category ? category.id : slug;
     });
-
     const userType = {
       ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
       ...(getLocalFilterValue("show").split(",").includes("estimatedExhibitors") && { exhibit: true }),
       ...(rankToggles.isTrustScore && {trust:true}),
       ...(getLocalFilterValue("show").split(",").includes("maturity")&& {maturity:true}),
-      ...(getLocalFilterValue("onlyBranded") && {brandedEvent:true}),
-      ...(getLocalFilterValue("onlySeries") && {eventSeries:true}),
+      ...(getLocalFilterValue("onlyBranded")==="true" && {brandedEvent:true}),
+      ...(getLocalFilterValue("onlySeries")==="true" && {eventSeries:true}),
       ...((getLocalFilterValue("show").split(",").includes("branded") && getLocalFilterValue("show").split(",").includes("series"))&& {brandSeries:true}),
       ...((getLocalFilterValue("show").split(",").includes("forecasted")) && {forecastedStatus:true}),
       ...(analyticsToggles.impactScore&& {impactScore:true}),
