@@ -366,7 +366,7 @@ const Trackers = ({ searchParams }: Search) => {
     //     setSavedEvents(data);
     //   }else setSavedEvents("");
     // }
-    const result:{result: EventTableType[], count: number} | undefined = await getSavedEvents(id, `limit=2&offset=0`);
+    const result = await getSavedEvents(id, `limit=2&offset=0`) as { result: EventTableType[]; count: number }
     console.log(result);
     
     if(result && result?.count>0){
@@ -446,7 +446,7 @@ const Trackers = ({ searchParams }: Search) => {
           </span>
           {dataPresent ? (
             <Link
-            href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=activeEvent`}
+            href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=activeEvent`}
             onClick={() => setContextData(singleTrackerData?.id)}
             >
             <Button className="text-white">View Detail</Button>

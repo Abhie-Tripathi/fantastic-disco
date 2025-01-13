@@ -565,8 +565,8 @@ const Table = ({
         secondLast, 
         `max=${itemsPerPage}&offset=${(currPage - 1) * 10}`,
         abortController.signal // Pass the signal here
-      );
-  
+      ) as { result: EventTableType[]; count: number };
+      
       if (result) {
         setIsLoaded(true);
         GAEvent("trackers", "Tracker", "View", `Saved Event | ${currPage}`);
@@ -720,7 +720,7 @@ const Table = ({
         `limit=${itemsPerPage}&offset=${(currPage - 1) * itemsPerPage}`,
         eventType === "Active Events" ? "active" : eventType === "Expired Events" ? "expired" : "",
         abortController.signal
-      );
+      ) as {events: EventTableType[]; totalEvents: number};
   
       if (!result) {
         console.error("No data returned from getTrackerEvents");

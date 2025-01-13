@@ -104,7 +104,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   }
   const handleDoubleClick=(item:any)=>{
       setSingleTrackerData(item)
-      router.push(`/internal/trackers/${item.id}/trackedEvents?type=CUSTOM&view=list&eventType=activeEvent`)
+      router.push(`/internal/trackers/${item.id}/trackedEvents?type=CUSTOM&view=table&eventType=activeEvent`)
       setIsNewCall(true); 
       setTrackerId(item.id);
   }

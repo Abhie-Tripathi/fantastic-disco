@@ -3,13 +3,18 @@ import { endpoints } from "@/config/endpoints";
 import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes } from '@/types/trackers';
 import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
-import {EventCount} from "@/types/events";
+import {CalendarWeekEventsResponse, EventCount, EventsResponse, MapEventsResponse} from "@/types/events";
 import { EventTableType } from '@/types/ListViewTable';
 import { useFilterState } from '@/hooks/useFilterState';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
 }
+type GetSavedEventsResponse =
+  | { result: EventTableType[]; count: number }
+  | {events: EventTableType[]; totalEvents: number}
+  | CalendarWeekEventsResponse
+  | MapEventsResponse | EventsResponse;
 export const useTrackerServices = () => {
     const api = useApi();
     const {getFilterValue} =useFilterState();
@@ -38,24 +43,27 @@ export const useTrackerServices = () => {
         `${endpoints.tracker.getTrackers}?${params}`,
       )
     }
-    const getSavedEvents = async(
-      trackerId: string, 
-      params: string, 
+    const getSavedEvents = async (
+      trackerId: string,
+      params: string,
       signal?: AbortSignal
-    ): Promise<{ result: EventTableType[], count: number } | undefined> => {
-      const response = await api.request(
+    ): Promise<GetSavedEventsResponse | undefined> => {
+      const response = await api.request<{ result: EventTableType[]; count: number }>(
         `${endpoints.tracker.getSavedEvents}/${trackerId}/saved-events?${params}`,
         {
           method: "GET",
           signal: signal, // Pass the signal here
         }
       );
-      if(getFilterValue("view")==="table"){
-        return response
+    
+      if (getFilterValue("view") === "table") {
+        return response;
       }
+    
       const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
       return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
     };
+    
     
     const getTrackerDetail=(trackerId:string, params?:string):Promise<{tracker: Tracker }| undefined>=>{
       return api.request(
@@ -114,8 +122,8 @@ export const useTrackerServices = () => {
     const getTrackerEvents = async(
       trackerId:string, params:string, eventType:string,
       abortSignal?: AbortSignal
-    ): Promise<{ totalEvents: number, events: EventTableType[] } | undefined> => {
-      const response=await api.request(
+    ): Promise<GetSavedEventsResponse | undefined> => {
+      const response=await api.request<{ result: EventTableType[]; count: number }>(
         `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&type=${eventType}` : ''}`,
         {
           method: "GET",

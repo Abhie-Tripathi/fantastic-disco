@@ -754,26 +754,28 @@ const Pages = () => {
       const category = newCategories.find((cat) => cat.slug === slug);
       return category ? category.id : slug;
     });
-    let showsData = [];
+    const showsData: string[] = [];
+
     const mapping = {
-    rating: "eventRating,trustScore",
-    maturity: "maturity",
-    forecasted: "isforecasted",
-    frequency: "eventFrequency",
-    estimatedExhibitors: "estimatedExhibitScore",
-    scores: "eventImpactScore,inboundScore,internationalScore",
-    audienceZone: "audienceSpread",
-    branded: "eventBrand",
-    series: "eventSeries",
+      rating: "eventRating,trustScore",
+      maturity: "maturity",
+      forecasted: "isforecasted",
+      frequency: "eventFrequency",
+      estimatedExhibitors: "estimatedExhibitScore",
+      scores: "eventImpactScore,inboundScore,internationalScore",
+      audienceZone: "audienceSpread",
+      branded: "eventBrand",
+      series: "eventSeries",
     };
+    
     const filters = getLocalFilterValue("show").split(",");
+    Object.entries(mapping).forEach(([key, value]) => {
+      if (filters.includes(key)) {
+        showsData.push(value);
+      }
+    });
+    
 
-
-    Object.keys(mapping).forEach((key) => {
-    if (filters.includes(key)) {
-        showsData.push(mapping[key]);
-    }
-});
     const userType = {
       ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
       ...(getLocalFilterValue("show").split(",").includes("estimatedExhibitors") && { exhibit: true }),
