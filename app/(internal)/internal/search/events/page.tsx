@@ -163,7 +163,6 @@ const Search = () => {
 
   const adaptedQueryString = (function () {
     if (!searchParams.toString()) return;
-    delete adaptedParams.offset;
     delete adaptedParams.max;
     delete adaptedParams.sortBy;
     delete adaptedParams.sortType;
@@ -240,7 +239,7 @@ const Search = () => {
   }, [searchParams]);
 
   return (
-    <div className="space-y-6 p-6">
+    <div>
       {steps.length > 0 && (
         <Joyride
           tooltipComponent={(props) => (
@@ -258,7 +257,7 @@ const Search = () => {
         />
       )}
       <SearchBar />
-      <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
+      <div className="w-full grid grid-cols-10 gap-4 border-b pb-6 mt-6">
         <div className="col-span-8 grid lg:grid-cols-4 grid-cols-3 gap-3">
           <EventTypeSelector />
           <CategorySelector />
@@ -338,7 +337,7 @@ const Search = () => {
         onValueChange={onTabsChange}
         className="mt-0"
       >
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex justify-between items-center py-6 sticky top-[-24px] bg-white z-20 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)]">
           {/* <div className="flex items-center gap-2">
             <Badge className="bg-primary text-white">{count}</Badge>
             <p className="text-primary font-semibold">Events Found</p>

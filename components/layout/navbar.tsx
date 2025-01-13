@@ -12,6 +12,8 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import HeroLogo from "/public/HeroLogo.svg";
+import HeroText from "/public/whrai.svg";
 import {
   Grip,
   LogOut,
@@ -21,6 +23,7 @@ import {
   Sun,
   UserSearch,
   Search,
+  Menu,
 } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import {
@@ -32,6 +35,8 @@ import { RefreshClockwise } from "geist-icons";
 import { isEventeli } from "@/config";
 import { useTheme } from "@/context/theme";
 import Link from "next/link";
+import MobileSidebar from "./mobile-sidebar";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const gtmroutes: Record<string, string> = {
   "": "Dashboard",
@@ -110,8 +115,28 @@ export default function Navbar() {
   return (
     <header className="bg-background border-b">
       <div className="flex items-center justify-between px-4 py-3">
-        <div className="flex items-center">
-          <div className="text-lg font-semibold">
+        <div className="flex items-center gap-2">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="lg:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="p-0 sm:max-w-64">
+              <MobileSidebar />
+            </SheetContent>
+          </Sheet>
+          <div className="flex items-center lg:hidden mr-2">
+            <Image src={HeroLogo} alt="logo" width={34} height={34} />
+            <Image
+              className="ml-2 mb-[6px]"
+              src={HeroText}
+              alt="logotext"
+              height={22}
+            />
+          </div>
+          <div className="text-lg font-semibold hidden lg:block">
             {pathname.split("/")[1] === "internal"
               ? getRoute(pathname.split("/")[2])
               : pathname.split("/").slice(-2)[0] === "edit"

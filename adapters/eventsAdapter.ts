@@ -291,6 +291,10 @@ export const EventsAdapter = {
       adaptedParams.max = params.get("take")!;
     }
 
+    if(params.get("skip")){
+      adaptedParams.offset = params.get("skip")!
+    }
+
     if (params.get("view") == "map") {
       adaptedParams.max = "50";
     }
