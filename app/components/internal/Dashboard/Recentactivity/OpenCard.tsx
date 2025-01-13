@@ -3,15 +3,21 @@ import SpeakerProfile from '/public/speaker1.jpeg'
 import { Email } from 'geist-icons'
 import Image from 'next/image'
 import { useTheme } from '@/context'
+import { useRouter } from 'next/navigation'
 
 interface Props {
     notification: { name: string, heading: string, mssg: string, profile : string }
 }
 
 const OpenCard = ({ notification }: Props) => {
-    const {theme} = useTheme()
+    
+    const router = useRouter()
+    const handleRouting = ()=>{
+        router.push("/internal/settings/profile")
+    }
+
     return (
-        <div className='flex gap-2 items-start w-full h-[70px] rounded-md bg-[var(--neutral-light-color)] p-3'>
+        <div className='flex gap-2 items-start w-full h-[70px] rounded-md bg-[var(--neutral-light-color)] p-3' onClick={handleRouting}>
             {notification.profile ? <Image src={notification.profile} width={29} height={29} alt='profile' className='rounded-[30px]' /> :
             <div className='w-[29px] h-[29px] flex items-center justify-center rounded-[30px] bg-primary text-white'>{notification.name.substring(0,1).toUpperCase()}</div>
             }

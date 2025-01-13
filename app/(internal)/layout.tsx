@@ -40,7 +40,7 @@ export default function RootLayout({
         <ToastContainer />
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
         <ReactQueryProvider>
-          <AuthContextProvider>
+          {/* <AuthContextProvider> */}
             <FilterProvider>
               <ThemeProvider>
                 <div className="flex h-screen bg-gray-100">
@@ -55,7 +55,7 @@ export default function RootLayout({
                 {/* <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ""} /> */}
               </ThemeProvider>
             </FilterProvider>
-          </AuthContextProvider>
+          {/* </AuthContextProvider> */}
         </ReactQueryProvider>
       </body>
     </html>
