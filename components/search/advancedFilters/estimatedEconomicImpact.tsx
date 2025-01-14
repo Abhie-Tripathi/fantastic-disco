@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -12,114 +12,69 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { useFilterContext } from "@/context/filterContext";
-import { useRouter, usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
 
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
 
-interface RankCategory {
-  name: string;
-  enabled: boolean;
-  range: [number, number];
-}
-
 export default function EstimatedEconomicSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const {
-    setLocalFilter,
-    getLocalFilterValue,
-    setMultipleLocalFilters,
-    searchParams,
-  } = useFilterContext();
-  const [category, setCategory] = useState<RankCategory>({
-    name: "Economic Impact",
-    enabled: false,
-    range: [0, 100],
-  });
-  const [showEconomicImpact, setShowEconomicImpact] = useState(false);
-  const router = useRouter();
-  const pathname = usePathname();
+  const { setLocalFilter, getLocalFilterValue, setMultipleLocalFilters } =
+    useFilterContext();
+
+  // Derive show state from show filter
+  const showEconomicImpact = useMemo(() => {
+    const showFilter = getLocalFilterValue("show");
+    return showFilter.includes("economicImpact");
+  }, [getLocalFilterValue]);
+
+  // Derive range values from filters
+  const range = useMemo(() => {
+    const economicImpactLte = getLocalFilterValue("economic_impact_lte");
+    const economicImpactGte = getLocalFilterValue("economic_impact_gte");
+    return [
+      economicImpactGte ? Number(economicImpactGte) : 0,
+      economicImpactLte ? Number(economicImpactLte) : 100,
+    ] as [number, number];
+  }, [getLocalFilterValue]);
 
   const handleShowEconomicImpactToggle = (checked: boolean) => {
-    setShowEconomicImpact(checked);
     const currentShow = getLocalFilterValue("show").split(",").filter(Boolean);
     const newShow = checked
       ? [...currentShow, "economicImpact"]
       : currentShow.filter((item) => item !== "economicImpact");
 
-    const params = new URLSearchParams(searchParams);
-
-    // Update the 'show' parameter
-    if (newShow.length > 0) {
-      params.set("show", newShow.join(","));
-    } else {
-      params.delete("show");
-    }
-
-    // Remove score-related filters if unchecked, or apply them if checked
-    const scoreFilters = ["economic_impact_gte", "economic_impact_lte"];
-
-    if (!checked) {
-      scoreFilters.forEach((key) => params.delete(key));
-    } else {
-      const newFilters = {
-        economic_impact_gte: category.range[0].toString(),
-        economic_impact_lte: category.range[1].toString(),
-      };
-      Object.entries(newFilters).forEach(([key, value]) => {
-        params.set(key, value);
-      });
-    }
-
-    // Update the URL with all changes at once
-    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+    setLocalFilter("show", newShow.join(","));
   };
 
-  useEffect(() => {
-    const economicImpactLte = getLocalFilterValue("economic_impact_lte");
-    const economicImpactGte = getLocalFilterValue("economic_impact_gte");
-    const showFilter = getLocalFilterValue("show");
-    if (economicImpactLte && economicImpactGte) {
-      setCategory({
-        name: "Economic Impact",
-        enabled: true,
-        range: [Number(economicImpactGte), Number(economicImpactLte)],
-      });
-    }
-    setShowEconomicImpact(showFilter.includes("economicImpact"));
-  }, [getLocalFilterValue]);
-
   const handleRangeChange = (newRange: [number, number]) => {
-    setCategory((prev) => ({ ...prev, range: newRange }));
+    setMultipleLocalFilters({
+      economic_impact_gte: newRange[0].toString(),
+      economic_impact_lte: newRange[1].toString(),
+    });
   };
 
   const handleInputChange = (side: "min" | "max", value: string) => {
     const numValue = Math.min(Math.max(parseInt(value, 10), 0), 100);
     if (isNaN(numValue)) return;
 
-    setCategory((prev) => {
-      const newRange: [number, number] = [...prev.range];
-      newRange[side === "min" ? 0 : 1] = numValue;
-      return { ...prev, range: newRange };
+    setMultipleLocalFilters({
+      [`economic_impact_${side === "min" ? "gte" : "lte"}`]:
+        numValue.toString(),
     });
   };
 
   const onOpenChange = (open: boolean) => {
-    if (!open) {
-      const newFilters = {
-        economic_impact_gte: category.range[0].toString(),
-        economic_impact_lte: category.range[1].toString(),
-      };
-      setMultipleLocalFilters(newFilters);
-    }
     setIsOpen(open);
   };
+
+  // Check if the range is different from default to show count
+  const isRangeModified =
+    showEconomicImpact && (range[0] > 0 || range[1] < 100);
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <Button
-          disabled
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
@@ -127,9 +82,9 @@ export default function EstimatedEconomicSelector() {
         >
           <span className="flex items-center gap-2">
             Economic Impact
-            {category.enabled && showEconomicImpact && (
+            {isRangeModified && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                ✓
+                1
               </span>
             )}
           </span>
@@ -147,39 +102,39 @@ export default function EstimatedEconomicSelector() {
             htmlFor="economic-impact-toggle"
             className="text-sm font-medium"
           >
-            {category.name}
+            Economic Impact
           </Label>
           <Slider
             id="economic-impact-slider"
             min={0}
             max={100}
             step={1}
-            value={category.range}
+            value={range}
             onValueChange={(newRange) =>
               handleRangeChange(newRange as [number, number])
             }
             className="mb-2"
-            disabled={!showEconomicImpact || !category.enabled}
+            disabled={!showEconomicImpact}
           />
           <div className="flex justify-between">
             <Input
               type="number"
               min={0}
               max={100}
-              value={category.range[0]}
+              value={range[0]}
               onChange={(e) => handleInputChange("min", e.target.value)}
               className="w-16 text-center"
-              disabled={!showEconomicImpact || !category.enabled}
+              disabled={!showEconomicImpact}
             />
             <span className="mx-2 self-center">-</span>
             <Input
               type="number"
               min={0}
               max={100}
-              value={category.range[1]}
+              value={range[1]}
               onChange={(e) => handleInputChange("max", e.target.value)}
               className="w-16 text-center"
-              disabled={!showEconomicImpact || !category.enabled}
+              disabled={!showEconomicImpact}
             />
           </div>
         </div>

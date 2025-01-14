@@ -22,8 +22,13 @@ interface RankCategory {
   name: string;
   range: [number, number];
 }
+interface analyticsInterface{
+  isAnalyticsEnabled:boolean;
+  toggleOpend:boolean;
+}
 interface EventAnalyticsProps{
   source:string;
+  enabledAnalyticsData?:analyticsInterface;
   selectedEventRank?: [number, number];
   setSelectedEventRank?: React.Dispatch<React.SetStateAction<[number, number]>>;
   selectedLocalRank?: [number, number];
@@ -33,8 +38,7 @@ interface EventAnalyticsProps{
   rankToggles?:any;
   setRankToggles?:any;
 }
-export default function EventAnalyticsSelector({source, selectedEventRank,setSelectedEventRank, selectedLocalRank,setSelectedLocalRank, selectedAviationRank, setSelectedAviationRank, rankToggles, setRankToggles}:EventAnalyticsProps) {
-  console.log(rankToggles);
+export default function EventAnalyticsSelector({source,enabledAnalyticsData, selectedEventRank,setSelectedEventRank, selectedLocalRank,setSelectedLocalRank, selectedAviationRank, setSelectedAviationRank, rankToggles, setRankToggles}:EventAnalyticsProps) {
   
   const [open, setOpen] = useState(false);
   const [showScores, setShowScores] = useState(false);

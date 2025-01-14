@@ -1,4 +1,5 @@
 //@ts-nocheck
+
 "use client";
 
 import React, {
@@ -20,247 +21,285 @@ import { MapboxToken } from "@/config";
 import { Button } from "@/components/ui/button";
 import { AlignLeft } from "lucide-react";
 import EventList from "./event-list";
-import Link from "next/link";
 import Alerts from "./alerts";
+import mapboxgl from "mapbox-gl";
+import { useFilterState } from "@/hooks/useFilterState";
 import { Event, EventCount, MapEvents } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useFilterState } from "@/hooks/useFilterState";
 import { circle, point } from "@turf/turf";
 import { LayerProps } from "react-map-gl";
-import { format } from "date-fns";
 import MapPopup from "./popup";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import ZeroState from "@/app/components/zerostate";
-import { useTheme } from "@/context";
+import ZeroState from "@/components/zerostate";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import { useLocationService } from "@/services/locationService";
+import { useFilterContext } from "@/context/filterContext";
+import { useTrackerContext } from "@/context/tracker";
+import Loading from "../ui/Loading";
 import { useTrackerServices } from "@/services/trackerServices";
-
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
 };
 
 const iconUrls: Record<string, string> = {
-  "performing-arts": "/eventType/arts.png",
-  community: "/eventType/community.png",
-  concert: "/eventType/concert.png",
-  conferences: "/eventType/conference.png",
-  festival: "/eventType/festival.png",
-  sport: "/eventType/sport.png",
-  workshops: "/eventType/workshop.png",
-  tradeshows: "/eventType/expo.png",
-};
-
-const ZOOM_LEVELS = {
-  INITIAL: 0.8,
-  COUNTRY_MIN: 0,
-  COUNTRY_MAX: 4,
-  STATE_MIN: 4,
-  STATE_MAX: 6,
-  CITY_MIN: 6,
-  CITY_MAX: 12,
-  EVENT_MIN: 12,
-  COUNTRY_ZOOM: 4,
-  STATE_ZOOM: 6,
-  CITY_ZOOM: 12,
+  "performing-arts": "/eventType/map/arts.png",
+  community: "/eventType/map/community.png",
+  concert: "/eventType/map/concerts.png",
+  conferences: "/eventType/map/conferences.png",
+  festival: "/eventType/map/festivals.png",
+  sport: "/eventType/map/sports.png",
+  workshops: "/eventType/map/workshops.png",
+  tradeshows: "/eventType/map/expos.png",
+  "multiple-events": "/eventType/map/union.png",
 };
 
 interface MapProps {
-  searchParams: string;
+  searchParams?: string;
+  source?:string;
+  trackerId?:string;
+  isGlobal?:boolean;
+  trackerLoc?:string;
 }
 
-type ZoomGroup = "country" | "state" | "city" | "event";
+interface Coordinates {
+  latitude: string;
+  longitude: string;
+}
 
-export default function MapComponent({ source, searchParams, trackerId }: {source: string;
-  searchParams?: string;
-  trackerId?: string;}) {
-  const {theme} = useTheme();
+interface PopupInfo {
+  events: Event[];
+  coordinates: Coordinates;
+}
+
+type ZoomGroup = "country" | "state" | "city" | "event" | null;
+
+export default function MapComponent({ searchParams, source, trackerId, isGlobal, trackerLoc}: MapProps) {
   const mapRef = useRef<MapRef>(null);
+  const { getLocalFilterValue } = useFilterContext();
+  const {getFilterValue } = useFilterState();
   const {getMapViewData, getEventsLatLongData}=useTrackerServices();
-  const { getFilterValue } = useFilterState();
+  const id= getFilterValue("id");
+  
+  const {data}=useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
     latitude: 20.5937,
     longitude: 78.9629,
-    zoom: ZOOM_LEVELS.INITIAL,
+    zoom: 0.8,
     bearing: 0,
     pitch: 0,
     padding: { top: 0, bottom: 0, left: 0, right: 0 },
   });
-  
   const [events, setEvents] = useState<MapEvents[]>([]);
-  const [popupInfo, setPopupInfo] = useState<Event | null>(null);
-  const [showEventList, setShowEventList] = useState(false);
-  const [currentZoomGroup, setCurrentZoomGroup] =
-    useState<ZoomGroup>("country");
-
-  const queryClient = useQueryClient();
+  const { getLocationDetails, getLocationBBox } = useLocationService();
+  const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
+  const [showEventList, setShowEventList] = useState("");
+  const [currentZoomGroup, setCurrentZoomGroup] = useState<ZoomGroup>("city");
   const { getEventsCount, getEventsWithSearchParams, getEventById } =
     useEventsService();
+  const [showUnattendedEvents, setShowUnattendedEvents] = useState(false);
+  const [locationBBox, setLocationBBox] = useState<any | null>(null);
+  const [hoverInfo, setHoverInfo] = useState<{
+    x: number;
+    y: number;
+    feature: any;
+    clusteredPoints?: { name: string; count: number }[];
+  } | null>(null);
+//   console.log(data?.tracker);
+//   const cityIds = data?.tracker?.filterValue?.locationIds?.city?.length > 0 
+//   ? data?.tracker?.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0]) 
+//   : [];
 
+// const countryIds = data?.tracker?.filterValue?.locationIds?.country?.length > 0 
+//   ? data?.tracker?.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0]) 
+//   : [];
+
+// const stateIds = data?.tracker?.filterValue?.locationIds?.state?.length > 0 
+//   ? data?.tracker?.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0]) 
+//   : [];
+//   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
+  console.log(trackerLoc);
+  
   const memoizedGetEventsCount = useCallback(getEventsCount, []);
   const memoizedGetEventsWithSearchParams = useCallback(
     getEventsWithSearchParams,
     []
   );
-  
+  const isHolidaySelected = getLocalFilterValue("eventTypes")
+    .split(",")
+    .includes("holiday");
+
   const location = useMemo(() => {
-    const geoCoordinates = getFilterValue("geoCoordinates");
-    const locationIds = source!=="tracker" ? getFilterValue("locationIds"):"some random location from tracker";
-    
+    const geoCoordinates = getLocalFilterValue("geoCoordinates");
+    const locationIds = source==="tracker"? trackerLoc?.length>0?trackerLoc:"defaultLoc":getLocalFilterValue("locationIds");
+    console.log(locationIds);
+    if(locationIds==="defaultLoc")
+      setViewport({
+        ...viewport, zoom:1
+      })
     if (geoCoordinates) {
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
-    } else if (locationIds) {
-      return { type: "locationId", locationIds };
+    } else if (locationIds?.length) {
+      return { type: "locationIds", locationIds };
     }
     return null;
-  }, [searchParams]);
+  }, [searchParams,id]);
 
-  const determineZoomGroup = useCallback((zoomLevel: number): ZoomGroup => {
-    if (zoomLevel < ZOOM_LEVELS.COUNTRY_MAX) {
-      return "country";
-    } else if (
-      zoomLevel >= ZOOM_LEVELS.STATE_MIN &&
-      zoomLevel < ZOOM_LEVELS.STATE_MAX
-    ) {
-      return "state";
-    } else if (
-      zoomLevel >= ZOOM_LEVELS.CITY_MIN &&
-      zoomLevel < ZOOM_LEVELS.EVENT_MIN
-    ) {
-      return "city";
-    } else {
-      return "event";
-    }
-  }, []);
-
-  const saveTrackerHandler = async () => {
-    const userType = {
-      ...(selectedInsights.eventRating && { rating: true }),
-      ...(selectedInsights.estExhibit && { exhibit: true }),
-      ...(selectedInsights.repeatSent && { trust: true }),
-      ...(selectedMaturity !== "" &&
-        selectedMaturity !== "none" && { maturity: true }),
-      ...(selectedBrandedEvent && { brandedEvent: true }),
-      ...(selectedEventSeries && { eventSeries: true }),
-      ...(forecastedStatus && { forecastedStatus: true }),
-      ...(analyticsToggles.impactScore && { impactScore: true }),
-      ...(analyticsToggles.inboundScore && { inboundScore: true }),
-      ...(analyticsToggles.internationalScore && { internationalScore: true }),
-      ...(selectedRank !== "" &&
-        selectedRank !== "none" && { eventRank: true }),
-      ...(audienceZone && { audienceZone: true }),
-      ...(audienceSpread && { audienceSpread: true }),
-    };
-    if (customTrackerName != "") {
-      const formData = {
-        name: customTrackerName,
-        filterValue: adaptedParams,
-      };
-
-      try {
-        const { data, error } = await myFetch(`${baseUrl}/tracker`, {
-          method: "POST",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        console.log(data);
-
-        if (error) {
-          console.log(error);
-          return;
-        }
-        if (data) {
-          toast.success(
-            <div style={{ display: "flex", flexWrap: "wrap" }}>
-              Tracker created successfully!{" "}
-              <span
-                className={styles["seeTracker-btn"]}
-                onClick={() => router.replace("/internal/trackers")}
-              >
-                See Tracker
-              </span>
-            </div>,
-            {
-              position: "bottom-right",
-              autoClose: 2000,
-              // closeButton: false,
-              hideProgressBar: true,
-            }
-          );
-        }
-      } catch (error) {
-        console.error("Error saving tracker:", error);
-      } finally {
-        setTrackerModalOpen(false);
-      }
-    }
-  };
-
-  useEffect(() => {
-    const newZoomGroup = determineZoomGroup(viewport.zoom);
-    if (newZoomGroup !== currentZoomGroup) {
-      setCurrentZoomGroup(newZoomGroup);
-    }
-  }, [viewport.zoom, currentZoomGroup, determineZoomGroup]);
-
-  // const eventCountsQuery = useQuery<EventCount[], Error>({
-  //   queryKey: ["eventCounts", currentZoomGroup, searchParams],
-  //   queryFn: async () => {
-  //     const response = source === 'tracker' 
-  //     ? await getMapViewData(trackerId, currentZoomGroup)
-  //     :await memoizedGetEventsCount(
-  //       `${searchParams}&groupBy=${currentZoomGroup}`
-  //     );
-  //     return response || [];
-  //   },
-  //   staleTime: 60 * 1000,
-  //   enabled: currentZoomGroup !== "event" && location !== null,
-  // });
   const eventCountsQuery = useQuery<EventCount[], Error>({
-    queryKey: source === "tracker" ? ["eventCounts", trackerId, currentZoomGroup,searchParams] : ["eventCounts", currentZoomGroup, searchParams],
+    queryKey: source === "tracker"
+      ? ["eventCounts", trackerId, currentZoomGroup, searchParams]
+      : source === "tracker_global"
+      ? [trackerId]
+      : ["eventCounts", currentZoomGroup, searchParams],
+  
     queryFn: async () => {
-      if (source === "tracker") {
-        const response = await getMapViewData(trackerId, currentZoomGroup, searchParams);
+      if (source === "tracker" || source === "tracker_global") {
+        const response = await getMapViewData(trackerId, "city", searchParams);
+        console.log(response);
+        
         return response || [];
       } else {
-        const response = await memoizedGetEventsCount(
-          `${searchParams}&groupBy=${currentZoomGroup}`
-        );
+        const response = await memoizedGetEventsCount(`${searchParams}&groupBy=city`);
         return response || [];
       }
     },
-    staleTime: source === "tracker" ? 0 : 60 * 1000,
-    enabled: currentZoomGroup !== "event" && location !== null,
+  
+    enabled: location !== null,
   });
-  useEffect(() => {
-    const nextZoomGroup =
-      currentZoomGroup === "country"
-        ? "state"
-        : currentZoomGroup === "state"
-        ? "city"
-        : currentZoomGroup === "city"
-        ? "event"
-        : null;
+  
 
-    if (nextZoomGroup && nextZoomGroup !== "event") {
-      queryClient.prefetchQuery({
-        queryKey: ["eventCounts", nextZoomGroup, searchParams],
-        queryFn: async () => {
-          const response = source === "tracker"?await getMapViewData(trackerId, currentZoomGroup, searchParams) :await memoizedGetEventsCount(
-            `${searchParams}&groupBy=${nextZoomGroup}`
+  const handleMapClick = async (e: any) => {
+    const features = e.target.queryRenderedFeatures(e.point, {
+      layers: [
+        "unclustered-events-single",
+        "unclustered-events-multiple",
+        "clustered-counts-circle",
+        "unclustered-counts-circle",
+        "clustered-events-circle",
+      ],
+    });
+
+    if (features && features.length > 0) {
+      const clickedFeature = features[0];
+      const layerId = clickedFeature.layer.id;
+
+      switch (layerId) {
+        case "unclustered-events-single":
+          const singleEventDetails = await getEventById(
+            clickedFeature.properties.id
           );
-          return response || [];
-        },
-        staleTime: source === "tracker" ? 0 : 60 * 1000,
-      });
+          console.log("Single event clicked:", clickedFeature.properties.id);
+          if (singleEventDetails)
+            setPopupInfo({
+              events: [singleEventDetails.event],
+              coordinates: {
+                latitude: clickedFeature.geometry.coordinates[1],
+                longitude: clickedFeature.geometry.coordinates[0],
+              },
+            });
+          break;
+
+        case "unclustered-events-multiple":
+          const eventIds = JSON.parse(clickedFeature.properties.eventIds);
+          const multipleEventDetails = await Promise.all(
+            eventIds.map((id: string) =>
+              getEventById(id).then((data) => data?.event)
+            )
+          );
+          setPopupInfo({
+            events: multipleEventDetails.filter((event) => event !== null),
+            coordinates: {
+              latitude: clickedFeature.geometry.coordinates[1],
+              longitude: clickedFeature.geometry.coordinates[0],
+            },
+          });
+          break;
+
+        case "clustered-counts-circle":
+          const feature = e.features && e.features[0];
+          if (feature) {
+            if (feature.properties.cluster) {
+              const clusterId = feature.properties.cluster_id;
+              const mapboxSource = mapRef.current?.getSource(
+                "event-source"
+              ) as mapboxgl.GeoJSONSource;
+
+              mapboxSource.getClusterExpansionZoom(
+                clusterId,
+                (err: any, zoom: number) => {
+                  if (err) return;
+
+                  mapRef.current?.easeTo({
+                    center: feature.geometry.coordinates as [number, number],
+                    zoom: zoom + 4,
+                    duration: 500,
+                    essential: true,
+                  });
+                }
+              );
+            }
+          }
+          break;
+
+        case "unclustered-counts-circle":
+          console.log("unclustered-counts-circle");
+          const unclusteredFeature = e.features && e.features[0];
+          console.log(unclusteredFeature);
+          if (unclusteredFeature) {
+            mapRef.current?.easeTo({
+              center: unclusteredFeature.geometry.coordinates as [
+                number,
+                number
+              ],
+              zoom: 12,
+              duration: 500,
+              essential: true,
+            });
+          }
+          break;
+
+        case "clustered-events-circle":
+          const clusteredFeature = e.features && e.features[0];
+          if (clusteredFeature) {
+            if (clusteredFeature.properties.cluster) {
+              const clusterId = clusteredFeature.properties.cluster_id;
+              const mapboxSource = mapRef.current?.getSource(
+                "events-source"
+              ) as mapboxgl.GeoJSONSource;
+
+              mapboxSource.getClusterExpansionZoom(
+                clusterId,
+                (err: any, zoom: number) => {
+                  if (err) return;
+
+                  mapRef.current?.easeTo({
+                    center: clusteredFeature.geometry.coordinates as [
+                      number,
+                      number
+                    ],
+                    zoom: zoom * 1.2,
+                    duration: 500,
+                    essential: true,
+                  });
+                }
+              );
+            }
+          }
+          break;
+
+        default:
+          console.log("Clicked on an unexpected layer:", layerId);
+          setPopupInfo(null);
+      }
+    } else {
+      setPopupInfo(null);
     }
-  }, [currentZoomGroup, searchParams, queryClient, memoizedGetEventsCount]);
+  };
+  console.log(viewport.zoom);
 
   useEffect(() => {
     const fetchEvents = async () => {
-      
       if (currentZoomGroup === "event" && mapRef.current) {
         const map = mapRef.current.getMap();
         const center = map.getCenter();
@@ -269,7 +308,10 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
           const ne = bounds.getNorthEast();
           const sw = bounds.getSouthWest();
           const radius =
-            (Math.max(Math.abs(ne.lng - sw.lng), Math.abs(ne.lat - sw.lat)) * 111) / 2;
+            (Math.max(Math.abs(ne.lng - sw.lng), Math.abs(ne.lat - sw.lat)) *
+              111) /
+            2;
+
           const viewBound = {
             boundType: "point",
             coordinates: JSON.stringify({
@@ -278,15 +320,19 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
               radius: radius,
             }),
           };
-    
+
           try {
-            const modifiedSearchParams = searchParams
-              ? searchParams.replace(/locationIds=[^&]*&?/, "")
-              : ""; // Ensure searchParams exists
-    
-            const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
+            const modifiedSearchParams = searchParams.replace(
+              /locationIds=[^&]*&?/,
+              ""
+            );
+
+            const viewBoundString = encodeURIComponent(
+              JSON.stringify(viewBound)
+            );
+
             const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}`;
-    
+
             let eventsData: any = {}; // Define type if in TypeScript
     
             if (source === "tracker") {
@@ -294,7 +340,6 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
             } else {
               eventsData = await memoizedGetEventsWithSearchParams(finalSearchParams);
             }
-    
             setEvents((eventsData?.events as MapEvents[]) || []);
           } catch (error) {
             console.error("Error fetching events:", error);
@@ -314,13 +359,20 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
     memoizedGetEventsWithSearchParams,
     location,
   ]);
-  
-  // Handle map movement
+
   const onMove = useCallback(({ viewState }: { viewState: ViewState }) => {
+    console.log(viewState);
+    
+    
     setViewport(viewState);
   }, []);
-
-  // Prepare GeoJSON data for event counts
+  // useEffect(() => {
+    
+    
+  // }, [searchParams
+  // ]);
+  console.log(viewport);
+  
   const eventCountsGeoJSON = React.useMemo(() => {
     return {
       type: "FeatureCollection",
@@ -336,7 +388,7 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
             },
             properties: {
               count: count.count,
-              id: count.id,
+              id: count.latitude,
               name: count.name,
               type: currentZoomGroup, // "country" or "city"
             },
@@ -345,63 +397,126 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
     };
   }, [eventCountsQuery.data, currentZoomGroup]);
 
-  // Handle clicks on the map features
-  // Inside your MapComponent
-  const handleMapClick = useCallback(async (event: MapLayerMouseEvent) => {
-    if (event.features && event.features.length > 0) {
-      const feature = event.features[0];
-      const { type } = feature.properties;
-
-      if (type === "country") {
-        // Zoom into the country
-        const countryCenter: [number, number] = [
-          parseFloat(feature.geometry.coordinates[0]),
-          parseFloat(feature.geometry.coordinates[1]),
-        ];
-        mapRef.current?.flyTo({
-          center: countryCenter,
-          zoom: ZOOM_LEVELS.COUNTRY_ZOOM,
-          duration: 1000,
-          essential: true,
-        });
-      } else if (type === "state") {
-        // Zoom into the state
-        const stateCenter: [number, number] = [
-          parseFloat(feature.geometry.coordinates[0]),
-          parseFloat(feature.geometry.coordinates[1]),
-        ];
-        mapRef.current?.flyTo({
-          center: stateCenter,
-          zoom: ZOOM_LEVELS.STATE_ZOOM,
-          duration: 1000,
-          essential: true,
-        });
-      } else if (type === "city") {
-        // Zoom into the city
-        const cityCenter: [number, number] = [
-          parseFloat(feature.geometry.coordinates[0]),
-          parseFloat(feature.geometry.coordinates[1]),
-        ];
-        mapRef.current?.flyTo({
-          center: cityCenter,
-          zoom: ZOOM_LEVELS.CITY_ZOOM,
-          duration: 1000,
-          essential: true,
-        });
+  const eventsGeoJSON = React.useMemo(() => {
+    const locationInfo: { [key: string]: any } = {};
+    events.forEach((event) => {
+      const coordKey = `${event.longitude},${event.latitude}`;
+      if (!locationInfo[coordKey]) {
+        locationInfo[coordKey] = { count: 0, ids: [] };
       }
+      locationInfo[coordKey].count += 1;
+      locationInfo[coordKey].ids.push(event.id);
+    });
+
+    return {
+      type: "FeatureCollection",
+      features: events.length
+        ? events.map((event: MapEvents) => {
+            const coordKey = `${event.longitude},${event.latitude}`;
+            return {
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: [
+                  parseFloat(event.longitude),
+                  parseFloat(event.latitude),
+                ],
+              },
+              properties: {
+                id: event.id,
+                eventType: event.eventType,
+                eventImpactScore: event.eventImpactScore,
+                eventCount: locationInfo[coordKey].count,
+                eventIds: locationInfo[coordKey].ids,
+              },
+            };
+          })
+        : [],
+    };
+  }, [events]);
+
+  const determineZoomGroup = useCallback((zoomLevel: number): ZoomGroup => {
+    if (zoomLevel >= 11.5) {
+      return "event";
+    } else {
+      return "city";
     }
   }, []);
 
-  const handleMarkerClick = async (eventData: MapEvents) => {
-    try {
-      const eventDetails = await getEventById(eventData.id);
-      setPopupInfo(eventDetails?.event as Event | null);
-    } catch (error) {
-      console.error("Error fetching event details:", error);
+  useEffect(() => {
+    const newZoomGroup = determineZoomGroup(viewport.zoom);
+    if (newZoomGroup !== currentZoomGroup) {
+      setCurrentZoomGroup(newZoomGroup);
     }
-  };
+  }, [viewport.zoom, currentZoomGroup, determineZoomGroup]);
 
   useEffect(() => {
+    const fetchLocationDetails = async () => {
+      console.log(location);
+      
+      if (location?.type === "locationIds" && location.locationIds.length > 0) {
+        try {
+          const details = await getLocationDetails(location.locationIds);
+          if (
+            details?.formattedLocations &&
+            details.formattedLocations.length > 0
+          ) {
+            let bboxLocation = null;
+
+            if (details.formattedLocations.length === 1) {
+              bboxLocation =
+                details.formattedLocations[0].displayName ||
+                details.formattedLocations[0].name;
+            } else {
+              const locations = details.formattedLocations;
+
+              const firstState = locations[0].state?.name;
+              const allSameState =
+                firstState &&
+                locations.every((loc) => loc.state?.name === firstState);
+
+              const firstCountry = locations[0].country?.name;
+              const allSameCountry =
+                firstCountry &&
+                locations.every((loc) => loc.country?.name === firstCountry);
+
+              if (allSameState) {
+                bboxLocation = firstState;
+              } else if (allSameCountry) {
+                bboxLocation = firstCountry;
+              }
+            }
+
+            if (bboxLocation) {
+              const bbox = await getLocationBBox(bboxLocation);
+              setLocationBBox(bbox);
+            } else {
+              setLocationBBox(null);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching location details or bbox:", error);
+        }
+      }
+    };
+    fetchLocationDetails();
+  }, [location, trackerId]);
+  // useEffect(() => {
+  //   console.log(trackerId);
+    
+  //   setViewport({
+  //     latitude: 0,
+  //     longitude: 0,
+  //     zoom: 1,
+  //     bearing: 0,
+  //     pitch: 0,
+  //     padding: { top: 0, bottom: 0, left: 0, right: 0 },
+  //   });
+    
+  // }, [trackerId]);
+  useEffect(() => {
+    console.log(locationBBox);
+    
     if (!mapRef.current) return;
     if (location?.type === "geoCoordinates") {
       const { latitude, longitude, radius } = location;
@@ -413,15 +528,20 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
         duration: 3000,
         essential: true,
       });
-    } else {
-      mapRef.current.flyTo({
-        center: [0, 0],
-        zoom: 1,
-        duration: 3000,
+    }
+    if (locationBBox) {
+      console.log("zooming in");
+      const [minLng, minLat, maxLng, maxLat] = locationBBox;
+      const bounds = new mapboxgl.LngLatBounds(
+        [minLng, minLat],
+        [maxLng, maxLat]
+      );
+      mapRef.current.fitBounds(bounds, {
+        duration: 2000,
         essential: true,
       });
     }
-  }, [location, mapRef.current]);
+  }, [location, mapRef.current, locationBBox]);
 
   const circleLayer: LayerProps | null = useMemo(() => {
     if (location?.type === "geoCoordinates") {
@@ -438,80 +558,296 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
           data: circleGeoJSON,
         },
         paint: {
-          "fill-color": "rgba(138, 43, 226, 0.1)",
-          "fill-outline-color": "rgba(138, 43, 226, 0.8)",
+          "fill-color": "rgba(138, 43, 220, 0.1)",
+          "fill-outline-color": "rgba(138, 43, 220, 0.8)",
         },
       };
     }
     return null;
   }, [location]);
 
+  const onMapLoad = useCallback(({ target: map }) => {
+    for (const [key, url] of Object.entries(iconUrls)) {
+      map.loadImage(url, (error, image) => {
+        if (error) throw error;
+        if (!map.hasImage(key)) map.addImage(key, image);
+      });
+    }
+  }, []);
+
+  const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
+  const showEvent = viewport.zoom >= 12 && events.length;
   
-  console.log(theme,"ohh yeah")
   return (
     <div className="relative">
-      {(!location && !trackerId)? (
+      {(eventCountsQuery.isLoading && currentZoomGroup==="city" )? <Loading/>:
+      <>
+      {!location ? (
         <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
       ) : (
         <ReactMapGL
-          style={{ width: "100%", height: "78vh" }}
+          style={{ width: "100%",  height: !isGlobal ? "700px" : "300px"  }}
           onMove={onMove}
+          onLoad={onMapLoad}
           onClick={handleMapClick}
+          onMouseMove={(e) => {
+            const features = e.target.queryRenderedFeatures(e.point, {
+              layers: ["clustered-counts-circle", "unclustered-counts-circle"],
+            });
+            if (features.length > 0) {
+              const feature = features[0];
+              if (feature.properties.cluster) {
+                const clusterId = feature.properties.cluster_id;
+                const mapboxSource = mapRef.current?.getSource(
+                  "event-source"
+                ) as mapboxgl.GeoJSONSource;
+                mapboxSource.getClusterLeaves(
+                  clusterId,
+                  100,
+                  0,
+                  (err, leaves) => {
+                    if (err) {
+                      console.error("Error getting cluster leaves:", err);
+                      return;
+                    }
+                    const clusteredPoints = leaves.map((leaf) => ({
+                      name: leaf.properties.name,
+                      count: leaf.properties.count,
+                    }));
+                    setHoverInfo({
+                      x: e.point.x,
+                      y: e.point.y,
+                      feature: feature,
+                      clusteredPoints: clusteredPoints,
+                    });
+                  }
+                );
+              } else {
+                setHoverInfo({
+                  x: e.point.x,
+                  y: e.point.y,
+                  feature: feature,
+                });
+              }
+            } else {
+              setHoverInfo(null);
+            }
+          }}
+          onMouseLeave={() => setHoverInfo(null)}
           projection={{ name: "mercator" }}
-          mapStyle={theme == "dark" ? MapStyle.Dark : MapStyle.Street}
+          mapStyle={MapStyle.Street}
           mapboxAccessToken={MapboxToken}
-          minZoom={ZOOM_LEVELS.INITIAL}
-          interactiveLayerIds={["event-counts"]}
+          minZoom={0.8}
+          interactiveLayerIds={[
+            "clustered-counts-circle",
+            "unclustered-counts-circle",
+            "clustered-events-circle",
+            "unclustered-events",
+          ]}
           ref={mapRef}
           {...viewport}
         >
+          {!isGlobal &&
           <Button
             variant="default"
             className="absolute top-4 right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
-            onClick={() => setShowEventList(!showEventList)}
+            onClick={() => setShowEventList("all")}
           >
             <AlignLeft className="w-5 h-5" />
             <span>Event List</span>
           </Button>
+          }
+          {isHolidaySelected && (
+            <div className="absolute top-4 left-4 bg-white rounded-sm shadow-sm flex items-center gap-2 p-2">
+              <Checkbox
+                id="showUnattendedEvents"
+                checked={showEventList == "unAttended"}
+                onCheckedChange={() => setShowEventList("unAttended")}
+              />
+              <Label htmlFor="showUnattendedEvents">
+                Show Unattended events
+              </Label>
+            </div>
+          )}
+          <Alerts />
 
           <EventList
             source={source}
             trackerId={trackerId}
             searchParam={searchParams}
-            isVisible={showEventList}
-            onClose={() => setShowEventList(false)}
+            showEventType={showEventList}
+            onClose={() => setShowEventList("")}
           />
 
-          {eventCountsQuery.isSuccess && currentZoomGroup !== "event" && (
-            <Source
-              id="event-counts-source"
-              type="geojson"
-              data={eventCountsGeoJSON}
-            >
-              <Layer
-                id="event-counts"
-                type="circle"
-                paint={{
-                  "circle-color": "#6F48AD",
-                  "circle-radius": 20,
-                  "circle-stroke-width": 1,
-                  "circle-stroke-color": "#fff",
-                }}
-              />
-              <Layer
-                id="event-counts-label"
-                type="symbol"
-                layout={{
-                  "text-field": "{count}",
-                  "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
-                  "text-size": 12,
-                }}
-                paint={{
-                  "text-color": "#ffffff",
-                }}
-              />
-            </Source>
-          )}
+          <Source
+            id="event-source"
+            type="geojson"
+            data={eventCountsGeoJSON}
+            cluster={true}
+            clusterMaxZoom={13}
+            clusterRadius={50}
+            clusterProperties={{
+              sum: ["+", ["coalesce", ["get", "count"], 0]],
+            }}
+          >
+            <Layer
+              id="clustered-counts-circle"
+              type="circle"
+              filter={["has", "point_count"]}
+              paint={{
+                "circle-color": "#6f48ad",
+                "circle-radius": [
+                  "step",
+                  ["get", "sum"],
+                  15,
+                  100,
+                  25,
+                  1000,
+                  35,
+                ],
+                "circle-stroke-width": 1,
+                "circle-stroke-color": "#fff",
+              }}
+              layout={{ visibility: showEventCount ? "visible" : "none" }}
+            />
+
+            <Layer
+              id="cluster-count"
+              type="symbol"
+              filter={["has", "point_count"]}
+              layout={{
+                "text-field": "{sum}",
+                "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+                "text-size": 14,
+                visibility: showEventCount ? "visible" : "none",
+              }}
+              paint={{
+                "text-color": "#fff",
+              }}
+            />
+
+            <Layer
+              id="unclustered-counts-circle"
+              type="circle"
+              filter={["!", ["has", "point_count"]]}
+              layout={{ visibility: showEventCount ? "visible" : "none" }}
+              paint={{
+                "circle-color": "#6f48ad",
+                "circle-radius": [
+                  "interpolate",
+                  ["linear"],
+                  ["get", "count"],
+                  10,
+                  20,
+                  100,
+                  25,
+                  1000,
+                  35,
+                ],
+                "circle-stroke-width": 1,
+                "circle-stroke-color": "#fff",
+              }}
+            />
+
+            <Layer
+              id="unclustered-point-label"
+              type="symbol"
+              filter={["!", ["has", "point_count"]]}
+              layout={{
+                "text-field": [
+                  "coalesce",
+                  ["to-string", ["get", "count"]],
+                  "0",
+                ],
+                "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+                "text-size": 12,
+                visibility: showEventCount ? "visible" : "none",
+              }}
+              paint={{
+                "text-color": "#fff",
+              }}
+            />
+          </Source>
+
+          <Source
+            id="events-source"
+            type="geojson"
+            data={eventsGeoJSON}
+            cluster={true}
+            clusterMaxZoom={16}
+            clusterRadius={50}
+          >
+            <Layer
+              id="clustered-events-circle"
+              type="circle"
+              source="events-source"
+              filter={["has", "point_count"]}
+              layout={{ visibility: showEvent ? "visible" : "none" }}
+              paint={{
+                "circle-color": "#6f48ad",
+                "circle-radius": [
+                  "step",
+                  ["get", "point_count"],
+                  15,
+                  15,
+                  20,
+                  50,
+                  30,
+                ],
+              }}
+            />
+
+            <Layer
+              id="clustered-events-count"
+              type="symbol"
+              source="events-source"
+              filter={["has", "point_count"]}
+              layout={{
+                "text-field": "{point_count_abbreviated}",
+                "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+                "text-size": 12,
+                visibility: showEvent ? "visible" : "none",
+              }}
+              paint={{ "text-color": "#fff" }}
+            />
+
+            <Layer
+              id="unclustered-events-single"
+              type="symbol"
+              filter={[
+                "all",
+                ["!", ["has", "point_count"]],
+                ["==", ["get", "eventCount"], 1],
+              ]}
+              layout={{
+                "icon-image": ["get", "eventType"],
+                "icon-size": 0.5,
+                visibility: showEvent ? "visible" : "none",
+              }}
+            />
+
+            <Layer
+              id="unclustered-events-multiple"
+              type="symbol"
+              filter={[
+                "all",
+                ["!", ["has", "point_count"]],
+                [">", ["get", "eventCount"], 1],
+              ]}
+              layout={{
+                "icon-image": "multiple-events",
+                "icon-size": 1,
+                "text-field": "{eventCount}",
+                "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
+                "text-size": 12,
+                "text-offset": [-0.1, -0.4],
+                visibility: showEvent ? "visible" : "none",
+              }}
+              paint={{
+                "text-color": "#ffffff",
+              }}
+            />
+          </Source>
 
           {circleLayer && (
             <Source
@@ -523,36 +859,54 @@ export default function MapComponent({ source, searchParams, trackerId }: {sourc
             </Source>
           )}
 
-          {circleLayer && <Alerts />}
-
-          {(currentZoomGroup === "event" || circleLayer) &&
-            events.map((event: MapEvents) => {
-              return (
-                <Marker
-                  onClick={() => handleMarkerClick(event)}
-                  key={event.id}
-                  longitude={parseFloat(event.longitude)}
-                  latitude={parseFloat(event.latitude)}
-                  anchor="bottom"
-                >
-                  <div className="marker">
-                    {event.eventType && (
-                      <img
-                        src={iconUrls[event.eventType]}
-                        alt={event.eventType}
-                        className="w-6 h-6"
-                      />
-                    )}
-                  </div>
-                </Marker>
-              );
-            })}
-
           {popupInfo && (
             <MapPopup popupInfo={popupInfo} setPopupInfo={setPopupInfo} />
           )}
+          {hoverInfo && (
+            <div
+              className="absolute z-10 bg-white p-2 rounded shadow max-w-xs max-h-60 overflow-y-auto"
+              style={{
+                left: hoverInfo.x,
+                top: hoverInfo.y - 10,
+                transform: "translate(-50%, -100%)",
+              }}
+            >
+              {hoverInfo.clusteredPoints ? (
+                <>
+                  {hoverInfo.clusteredPoints
+                    .sort((a, b) => b.count - a.count)
+                    .slice(0, 5)
+                    .map((point, index) => (
+                      <div
+                        key={index}
+                        className="mb-1 flex justify-between items-center"
+                      >
+                        <span className="font-semibold">{point.name}</span>
+                        <span className="ml-2">{point.count}</span>
+                      </div>
+                    ))}
+                  {hoverInfo.clusteredPoints.length > 5 && (
+                    <div className="text-xs text-gray-500 italic mt-1">
+                      click to view more cities
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="mb-1 flex justify-between items-center">
+                  <span className="font-semibold">
+                    {hoverInfo.feature.properties.name}
+                  </span>
+                  <span className="ml-2">
+                    {hoverInfo.feature.properties.count}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
         </ReactMapGL>
-      )}
+        )}
+      </>
+      } 
     </div>
   );
 }

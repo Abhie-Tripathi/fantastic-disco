@@ -1,5 +1,6 @@
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -8,94 +9,36 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import {toast} from 'react-toastify'
 import { useFilterContext } from "@/context/filterContext";
+import {EventType} from "@/public/data/searchFilters"
+export default function EventFormatSelector() {
+  const [isOpen, setIsOpen] = useState(false);
+  const { setLocalFilter, getLocalFilterValue, morphedData} = useFilterContext();
 
-const eventFormats = [
-  { id: "online", label: "Online/Virtual" },
-  { id: "offline", label: "Offline" },
-  { id: "hybrid", label: "Hybrid" },
-];
-interface formatInterface{
-  enabledValue?:string[] | undefined;
-  selectedValue?:string[] | undefined;
-}
-interface EventFormatSelectorProps {
-  enabledFormat?:formatInterface;
-  source: string;
-  selectedStatuses?: string[];
-  setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
-}
- 
-export default function EventFormatSelector({
-  source,
-  enabledFormat,
-  selectedStatuses: parentSelectedFormats = [],
-  setSelectedStatuses: parentSetSelectedFormats,
-}: EventFormatSelectorProps) {
-  
-  const [isOpen, setIsOpen] = React.useState(false);
-  const { setLocalFilter, getLocalFilterValue, searchParams } =
-    useFilterContext();
-    const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<string[]>(
-      []
-    );
-  
-    const selectedStatuses =
-      source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
-    const setSelectedStatuses =
-      source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
-  React.useEffect(() => {
-    if(source!=="tracker" && setSelectedStatuses){
-    const currentFilter = getLocalFilterValue("eventFormats");
-    setSelectedStatuses?.(currentFilter ? currentFilter.split(",") : []);
-    }
-  }, [searchParams, getLocalFilterValue]);
+  const eventFormats = morphedData?.eventFormats?.options;
+  const enabled = morphedData?.eventFormats?.isEnabled;
 
-  const selectedStatus = selectedStatuses.length;
+  const selectedFormats = getLocalFilterValue("eventFormats")
+    .split(",")
+    .filter(Boolean);
+  const selectedCount = selectedFormats.length;
 
-  const handleStatusToggle = (statusId: string) => {
-    setSelectedStatuses?.((prev) => {
-      if (enabledFormat?.enabledValue && prev.length === 1 && prev.includes(statusId)) {
-        toast.error("At least one filter must be selected", {
-          position: "bottom-right",
-          autoClose: 2000,
-          hideProgressBar: true,
-        });
-        return prev;
-      }
-      return prev.includes(statusId)
-        ? prev.filter((id) => id !== statusId)
-        : [...prev, statusId];
-    });
-    
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    setSelectedStatuses?.(
-      checked ? eventFormats.map((eventFormat) => eventFormat.id) : []
-    );
-  };
-
-  const isAllSelected = selectedStatuses.length === eventFormats.length;
-
-  const handleApply = () => {
-    setLocalFilter("eventFormats", selectedStatuses.join(","));
-    setIsOpen(false);
+  const handleFormatToggle = (formatId: string) => {
+    const newFormats = selectedFormats.includes(formatId)
+      ? selectedFormats.filter((id) => id !== formatId)
+      : [...selectedFormats, formatId];
+    setLocalFilter("eventFormats", newFormats.join(","));
   };
 
   const onOpenChange = (open: boolean) => {
-    if (!open) {
-      handleApply();
-    }
     setIsOpen(open);
   };
-console.log(selectedStatuses);
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <Button
+          disabled={!enabled}
           variant="outline"
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             isOpen ? "border-primary" : "border-input"
@@ -106,9 +49,9 @@ console.log(selectedStatuses);
         >
           <div className="flex items-center">
             <span className="mr-2">Event Format</span>
-            {selectedStatus > 0 && (
+            {selectedCount > 0 && (
               <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                {selectedStatus}
+                {selectedCount}
               </span>
             )}
           </div>
@@ -123,40 +66,15 @@ console.log(selectedStatuses);
         className="w-[var(--radix-popover-trigger-width)] p-0"
         align="start"
       >
-        {/* <div className="flex justify-between items-center p-4 py-2 border-b">
-          <span className="font-medium">Event Format</span>
-          <Button
-            variant="link"
-            className="text-primary pr-0"
-            onClick={handleApply}
-          >
-            Apply
-          </Button>
-        </div> */}
-
-        <div className="p-2 space-y-2">
-          {/* <div className="flex items-center space-x-2">
-            <Checkbox
-              id="select-all"
-              className="rounded-none"
-              checked={isAllSelected}
-              onCheckedChange={handleSelectAll}
-            />
-            <label
-              htmlFor="select-all"
-              className=" text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-            >
-              Select All
-            </label>
-          </div> */}
-          {eventFormats.map((eventFormat) => (
+        <div className="p-4 space-y-4">
+          {eventFormats?.map((eventFormat:EventType) => (
             <div key={eventFormat.id} className="flex items-center space-x-2">
               <Checkbox
                 id={eventFormat.id}
                 className="rounded-none"
-                disabled={enabledFormat && !enabledFormat?.enabledValue?.includes(eventFormat.id)}
-                checked={selectedStatuses.includes(eventFormat.id)}
-                onCheckedChange={() => handleStatusToggle(eventFormat.id)}
+                checked={selectedFormats.includes(eventFormat.id)}
+                onCheckedChange={() => handleFormatToggle(eventFormat.id)}
+                disabled={!eventFormat.isEnabled}
               />
               <label
                 htmlFor={eventFormat.id}

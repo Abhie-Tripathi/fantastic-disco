@@ -479,12 +479,12 @@ export const AuthContextProvider = ({ children }: any) => {
   //   return data.user;
   // };
 
-  useEffect(() => {
-    const user = window.localStorage.getItem("user");
-    if (user) {
-      setUser(JSON.parse(user).user);
-    }
-  }, [isProfileUpdated]);
+  // useEffect(() => {
+  //   const user = window.localStorage.getItem("user");
+  //   if (user) {
+  //     setUser(JSON.parse(user));
+  //   }
+  // }, [isProfileUpdated]);
 
   useLayoutEffect(() => {
     const user = window.localStorage.getItem("user");
@@ -535,8 +535,8 @@ export const AuthContextProvider = ({ children }: any) => {
             profilePicture: profilePic,
           },
         };
-        setUser(updatedUser.user);
-        setLocalStorage(updatedUser);
+        // setUser(updatedUser.user);
+        // setLocalStorage(updatedUser);
       }
     },
   };

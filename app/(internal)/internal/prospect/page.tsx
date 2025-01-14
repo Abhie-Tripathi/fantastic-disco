@@ -11,6 +11,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import companyData from "@/public/data/companyData.json";
+import Link from "next/link";
 
 interface companyDetail {
   name: string;
@@ -26,7 +27,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
 
   return (
     <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative">
-      {/* <Link href={`/search/${event.id}`} className="block"> */}
+      <Link href={`/internal/company/${companyDetail.url}`} target="_blank" className="block">
       <div className="p-6 flex gap-6">
         {companyDetail.cdn_url && (
           <Image
@@ -66,7 +67,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
           </div>
         </div>
       </div>
-      {/* </Link> */}
+      </Link>
     </div>
   );
 };

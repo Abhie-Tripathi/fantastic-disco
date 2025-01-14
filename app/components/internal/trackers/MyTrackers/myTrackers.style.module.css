@@ -1,5 +1,6 @@
 .container{
     display:flex;
+    flex-direction: column;
 }
 .containerLeft{
     /* border-left: 2px solid #ECECF9; */
@@ -55,7 +56,7 @@
   
   .loadingContainer {
     width: 100%;
-    height: 196px; /* Adjust the height as needed */
+    height: 152px; /* Adjust the height as needed */
     background-color: #f0f0f0; /* Background color of the loading bar */
     border-radius: 5px; /* Rounded corners for the loading bar */
     overflow: hidden; /* Hide overflowing content */
