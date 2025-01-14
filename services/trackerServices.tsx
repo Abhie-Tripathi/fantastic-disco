@@ -131,12 +131,10 @@ export const useTrackerServices = () => {
         }
       );
       // return response;
-      console.log(response);
       if(getFilterValue("view")==="table"){
         return response;
       }
       const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
-      console.log(EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list")));
       return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
     };
     const getTrackerMapEvents = async(

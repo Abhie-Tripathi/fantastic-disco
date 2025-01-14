@@ -181,8 +181,6 @@ const Page = ({ params }: { params: any }) => {
   >({
     queryKey: ["events", params, searchParams.toString()],
     queryFn: async () => {
-      console.log("Query function called");
-  
       if (viewType === "calendar") {
         return getCalendarViewEvents(
           trackerId,
@@ -619,7 +617,7 @@ const activeVal =
       active === "Saved Events" ? (
         <NullState 
           image={TrackerNullState} 
-          title="We couldn’t find any events matching your tracker criteria at the moment." 
+          title="No events saved yet! Start saving events to easily track and revisit them here." 
         />
       ) : (
         <NullState 
