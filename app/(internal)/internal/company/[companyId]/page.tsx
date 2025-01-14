@@ -60,6 +60,8 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
     { tabName: "Events", path: "insights" },
   ];
 
+  const [isExpandDescription, setisExpandDescription] = useState<boolean>(false);
+
   const getCompanyDetailById = (companyId: string) => {
     const c_data =  companyDataJson.data.filter((item: any) => item.url === companyId);
     if(c_data && c_data.length > 0)
@@ -149,13 +151,22 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           </span> */}
         </div>
 
-        <div className="text-[#707287] text-sm line-clamp-4 my-4">
-          Platform that connects verified pharmacy and healthcare manufacturers
-          with distributors, sellers, and retailers, to sell business franchises
-          and take manufacturing orders. Nutrition products, derma, and
-          cosmetic, ayurvedic, common disease medicines, medical equipment,
-          pharmacy franchise, animal healthcare medicines, homeopathic, etc.
-        </div>
+        <Text variant="noMargin" color="secondary">
+          {isExpandDescription ?
+            companyDetails?.profile
+              : companyDetails?.profile?.slice(0, 200)
+          }
+          <span
+            className="font-semibold underline cursor-pointer ml-2"
+            onClick={() => setisExpandDescription(!isExpandDescription)}
+          >
+            { companyDetails?.profile?.length > 200
+              ? isExpandDescription
+                ? "Show Less"
+                : "Read More"
+              : ""}
+          </span>
+        </Text>
 
         <div className="flex gap-4 my-6">
           <Linkedin color="#666666" className="cursor-pointer" />
