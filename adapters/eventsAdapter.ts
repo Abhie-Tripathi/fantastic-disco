@@ -78,12 +78,6 @@ export const EventsAdapter = {
     const activeGte = params.get("active_gte");
     const activeLte = params.get("active_lte");
 
-    if (activeGte && activeLte) {
-      const startDate = new Date(activeGte).toISOString().split("T")[0];
-      const endDate = new Date(activeLte).toISOString().split("T")[0];
-      adaptedParams.startDate = `${startDate},${endDate}`;
-      adaptedParams.endDate = `${startDate},${endDate}`;
-    }
     if (activeGte) {
       const startDate = new Date(activeGte).toISOString().split("T")[0];
       adaptedParams.startDate = `${startDate},${startDate}`;
@@ -91,6 +85,12 @@ export const EventsAdapter = {
     if (activeLte) {
       const endDate = new Date(activeLte).toISOString().split("T")[0];
       adaptedParams.endDate = `${endDate},${endDate}`;
+    }
+    if (activeGte && activeLte) {
+      const startDate = new Date(activeGte).toISOString().split("T")[0];
+      const endDate = new Date(activeLte).toISOString().split("T")[0];
+      adaptedParams.startDate = `${startDate},${endDate}`;
+      adaptedParams.endDate = `${startDate},${endDate}`;
     }
 
     if (params.get("locationIds")) {
@@ -237,6 +237,29 @@ export const EventsAdapter = {
     }
 
     if (
+      !params.get("active_gte") &&
+      !params.get("active_lte") &&
+      params.get("view") == "calendar"
+    ) {
+      console.log("active_gte, calendar, week");
+      const today = new Date();
+      const firstDayOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        1
+      );
+      const lastDayOfMonth = new Date(
+        today.getFullYear(),
+        today.getMonth() + 1,
+        0
+      );
+
+      const startDate = firstDayOfMonth.toISOString().split("T")[0];
+      const endDate = lastDayOfMonth.toISOString().split("T")[0];
+      adaptedParams.groupBy = `${startDate},${endDate}`;
+    }
+
+    if (
       params.get("active_gte") &&
       !params.get("active_lte") &&
       params.get("view") == "calendar"
@@ -264,42 +287,21 @@ export const EventsAdapter = {
       }`;
     }
 
-    if (
-      !params.get("active_gte") &&
-      params.get("view") == "calendar"
-      // params.get("calendar_type") == "week"
-    ) {
-      console.log("active_gte, calendar, week");
-      const today = new Date();
-      const firstDayOfMonth = new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        1
-      );
-      const lastDayOfMonth = new Date(
-        today.getFullYear(),
-        today.getMonth() + 1,
-        0
-      );
-
-      const startDate = firstDayOfMonth.toISOString().split("T")[0];
-      const endDate = lastDayOfMonth.toISOString().split("T")[0];
-      adaptedParams.groupBy = `${startDate},${endDate}`;
-    }
-
     if (params.get("take")) {
       adaptedParams.max = params.get("take")!;
     }
 
-    if(params.get("skip")){
-      adaptedParams.offset = params.get("skip")!
+    if (params.get("skip")) {
+      adaptedParams.offset = params.get("skip")!;
     }
 
     if (params.get("view") == "map") {
       adaptedParams.max = "50";
     }
 
-    console.log("adaptedparams");
+    if (params.get("query")) {
+      adaptedParams.eventName = params.get("query")!;
+    }
 
     return adaptedParams;
   },
@@ -539,18 +541,19 @@ export const EventsAdapter = {
           frequency: item.frequency || null,
           co_organizers: [],
           rankings: item.ranking
-          ? {
-            globalRank: item.ranking.globalRank ?? null,
-            countryRank: item.ranking.countryRank ?? undefined,
-            categoryRank: item.ranking.categoryRank ?? undefined,
-            countryCategoryRank: item.ranking.countryCategoryRank ?? undefined,
-            rank: item.ranking.rank ?? null,
-            rankRange: params.get("top") || null,
-            rankType: null,
-            categoryId: null,
-            countryId: null,
-           }
-           : undefined,
+            ? {
+                globalRank: item.ranking.globalRank ?? null,
+                countryRank: item.ranking.countryRank ?? undefined,
+                categoryRank: item.ranking.categoryRank ?? undefined,
+                countryCategoryRank:
+                  item.ranking.countryCategoryRank ?? undefined,
+                rank: item.ranking.rank ?? null,
+                rankRange: params.get("top") || null,
+                rankType: null,
+                categoryId: null,
+                countryId: null,
+              }
+            : undefined,
 
           exhibitorsCount: parseInt(item.stats.estimatedExhibitor) || null,
           timings: {
@@ -984,5 +987,6 @@ function determineEventType(item: string): string {
   if (!item) return "";
   if (item.toLowerCase() === "tradeshow") return "tradeshows";
   if (item.toLowerCase() === "conference") return "conferences";
+  if (item.toLowerCase() === "workshop") return "workshops";
   else return "unknown";
 }

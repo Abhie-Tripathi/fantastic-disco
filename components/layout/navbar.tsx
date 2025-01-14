@@ -134,6 +134,7 @@ export default function Navbar() {
               src={HeroText}
               alt="logotext"
               height={22}
+              style={theme === "dark" ? { filter: "invert(100%)" } : {}}
             />
           </div>
           <div className="text-lg font-semibold hidden lg:block">

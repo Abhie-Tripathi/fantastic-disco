@@ -300,8 +300,8 @@ export default function DateRangeSelector({ type, source }: { type?: string, sou
       handleDateSelect={handleDateSelect}
       calendarDate={calendarDate}
       setCalendarDate={setCalendarDate}
-      enableCompareOptions={true}
-      compareEnabled={compareEnabled}
+      enableCompareOptions={false}
+      compareEnabled={false}
       setCompareEnabled={setCompareEnabled}
       comparisonOptions={comparisonOptions}
       setSelectedComparison={setSelectedComparison}

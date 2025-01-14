@@ -195,7 +195,7 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`fixed z-50 top-0 left-0 h-full bg-white transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200 ${
+      className={`fixed z-50 top-0 left-0 h-full bg-background transition-all duration-300 ease-in-out flex flex-col border-r ${
         isHovered ? "w-56" : "w-16"
       } hidden lg:flex`}
       onMouseEnter={handleMouseEnter}

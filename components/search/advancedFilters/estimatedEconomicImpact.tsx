@@ -75,6 +75,7 @@ export default function EstimatedEconomicSelector() {
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <Button
+          disabled={true}
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
@@ -89,6 +90,7 @@ export default function EstimatedEconomicSelector() {
             )}
           </span>
           <DynamicSwitch
+            disabled={true}
             checked={showEconomicImpact}
             onCheckedChange={handleShowEconomicImpactToggle}
             aria-label="Show Economic Impact"

@@ -2366,7 +2366,7 @@ const Table = ({
       </div> */}
 
     {totalPages > 1 && (
-        <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
+        <div className="sticky bottom-0 bg-background py-4">
           <PaginationComponent
             currentPage={currentPage}
             totalPages={totalPages}

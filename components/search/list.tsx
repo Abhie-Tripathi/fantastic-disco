@@ -42,6 +42,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { formatDateRange } from "@/utils/dateFormat";
 
 interface CircularProgressProps {
   value: number;
@@ -130,7 +131,7 @@ export default function EventAccordion({
   const [openItem, setOpenItem] = useState<string | undefined>();
   const { setFilter, getFilterValue } = useFilterState();
   const [itemsPerPage, setItemsPerPage] = useState<number>(
-    Number(getFilterValue("take")) || 20
+    Number(getFilterValue("take")) || 10
   );
   const currentPage =
     Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
@@ -244,7 +245,7 @@ export default function EventAccordion({
         </ul>
       </div>
       {totalPages > 1 && (
-        <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
+        <div className="mt-4 sticky bottom-0 bg-background py-4">
           <div className="flex justify-between items-center mb-2 px-2">
             <div>
               <span className="text-sm text-muted-foreground">
@@ -267,7 +268,6 @@ export default function EventAccordion({
                 <SelectContent align="end">
                   <SelectItem value="10">10</SelectItem>
                   <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="30">30</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -412,21 +412,6 @@ const EventListItem = ({
     "Venue to be announced"
   );
 
-  const formattedRange = (() => {
-    if (!event.startDateTime || !event.endDateTime) {
-      return "Date to be announced";
-    }
-
-    const formattedStartDate = format(event.startDateTime, "dd MMM yyyy");
-    const formattedEndDate = format(event.endDateTime, "dd MMM yyyy");
-    const days = differenceInDays(event.endDateTime, event.startDateTime) + 1;
-
-    return formattedStartDate === formattedEndDate
-      ? formattedStartDate
-      : `${formattedStartDate} - ${formattedEndDate} (${days} ${
-          days === 1 ? "day" : "days"
-        })`;
-  })();
 
   const isCancelled = event.status === "cancelled";
   const isPostponed = event.status === "postponed";
@@ -483,7 +468,7 @@ const EventListItem = ({
                       isCancelled || isPostponed ? "line-through" : ""
                     )}
                   >
-                    {formattedRange}
+                    {formatDateRange(event.startDateTime, event.endDateTime)}
                   </p>
                   {isCancelled && (
                     <Badge
@@ -510,7 +495,7 @@ const EventListItem = ({
                       <Badge
                         variant="secondary"
                         className={
-                          "bg-[#E0EAF5] text-[#5055A3] hover:bg-[#E0EAF5] uppercase"
+                          "bg-[#E0EAF5] text-[#5055A3] hover:bg-[#E0EAF5] capitalize"
                         }
                       >
                         {event.primaryEventType}
