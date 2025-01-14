@@ -237,7 +237,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [enabledFilters]
   );
-
+  
   const clearLocalFilters = useCallback((view: string) => {
     console.log(enabledFilters);
     router.push(`/internal/search/events?view=${view}`);

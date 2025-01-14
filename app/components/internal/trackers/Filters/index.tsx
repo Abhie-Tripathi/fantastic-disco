@@ -842,8 +842,8 @@ const Pages = () => {
             .split(",")
             .map((keyword) => keyword.replaceAll(" ", "_")).join(",")
         }),
-        ...(getLocalFilterValue("estimatedVisitors")?.length>0 && {
-          eventSize: getLocalFilterValue("estimatedVisitors")
+        ...(getLocalFilterValue("estimatedVisitorRangeTag")?.length>0 && {
+          estimatedVisitorRangeTag: getLocalFilterValue("estimatedVisitorRangeTag")
          }),
          ...(getLocalFilterValue("estimatedExhibitors")?.length>0 && {estimatedExhibitScore:getLocalFilterValue("estimatedExhibitors")}),
         // ...(selectedZone?.length > 0 && {
@@ -989,6 +989,7 @@ const Pages = () => {
       const secondLast = pathName[pathName.length - 2];
      
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
+        console.log(getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords"));
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1223,6 +1224,9 @@ const Pages = () => {
         setLocalFilter("inbound_score_lte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[1])?.toString() || "100")
         setLocalFilter("international_score_gte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[0])?.toString() || "0")
         setLocalFilter("international_score_lte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[1])?.toString() || "100")
+      }
+      if(editData?.tracker?.filterValue?.estimatedVisitorRangeTag && editData?.tracker?.filterValue?.estimatedVisitorRangeTag !== ""){
+        setLocalFilter("estimatedVisitorRangeTag", editData?.tracker?.filterValue?.estimatedVisitorRangeTag)
       }
       if(editData?.tracker?.filterValue?.eventImpactScore && editData?.tracker?.filterValue?.eventImpactScore !== "")
         setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactScore?.split("-"));
