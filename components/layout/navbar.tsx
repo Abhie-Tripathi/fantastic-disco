@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -31,7 +32,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { RefreshClockwise } from "geist-icons";
+// import { RefreshClockwise } from "geist-icons";
 import { isEventeli } from "@/config";
 import { useTheme } from "@/context/theme";
 import Link from "next/link";
@@ -46,6 +47,7 @@ const gtmroutes: Record<string, string> = {
   outreach: "Outreach",
   trends: "Event Trends",
   settings: "Settings",
+  prospect: "Prospect",
 };
 const geniroutes: Record<string, string> = {
   list: "Widgets",
@@ -66,7 +68,6 @@ export default function Navbar() {
   const { user, signOut } = useAuthContext();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
-
   function getRoute(path: string | undefined): string {
     return gtmroutes[path || ""];
   }
@@ -76,6 +77,8 @@ export default function Navbar() {
       router.push("/internal");
     } else if (route === "promote") {
       router.push("/widget/dashboard");
+    } else if (route === "prospect") {
+      router.push("/internal/prospect");
     }
   };
 
@@ -91,17 +94,21 @@ export default function Navbar() {
 
   const generateProfileName = React.useMemo(() => {
     if (user) {
-      const { email } = user;
-      const [username] = email.split("@");
-      const parts = username.split(/[.\-_]/);
-      const abbreviation =
-        parts.length > 1
-          ? `${parts[0][0]}${parts[1][0]}`
-          : username.substring(0, 2);
-      return abbreviation.toUpperCase();
+      // const { email } = user;
+      // const [username] = email.split("@");
+      // const parts = username.split(/[.\-_]/);
+      // const abbreviation =
+      //   parts.length > 1
+      //     ? `${parts[0][0]}${parts[1][0]}`
+      //     : username.substring(0, 2);
+      // return abbreviation.toUpperCase();
+      const firstNameInitial = user?.firstname?.[0]?.toUpperCase() || "";
+      const lastNameInitial = user?.lastname?.[0]?.toUpperCase() || "";
+      return `${firstNameInitial}${lastNameInitial}`;
     }
     return "";
   }, [user]);
+ 
 
   const handleSettingsClick = () => {
     if (route === "internal") {
@@ -188,13 +195,14 @@ export default function Navbar() {
                   )}
 
                   <Button
+                    onClick={() => handleRoute("prospect")}
                     variant="ghost"
                     className="flex flex-col items-center justify-center gap-2 h-auto p-4"
                   >
                     <UserSearch className="h-6 w-6" />
                     <span className="text-xs">Prospect</span>
                   </Button>
-                  <div className={styles.tag}>Coming soon</div>
+                  {/* <div className={styles.tag}>Coming soon</div> */}
                 </div>
               </PopoverContent>
             </Popover>
@@ -207,7 +215,18 @@ export default function Navbar() {
                 className="flex items-center bg-transparent p-1 "
               >
                 <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
-                  {generateProfileName}
+                  {/* {generateProfileName} */}
+                  {user?.profilePicture ? (
+                    <Image
+                      src={user?.profilePicture}
+                      alt="Profile Picture"
+                      width={76}
+                      height={76}
+                      className="rounded-full w-10 h-10"
+                    />
+                  ) : (
+                    <span>{generateProfileName || ""}</span>
+                  )}
                 </div>
               </Button>
             </DropdownMenuTrigger>

@@ -108,7 +108,6 @@ const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
       handleOpenChange(true);
     }
   }, [type, isOpen]);
-  console.log(includeKeywords);
   
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>

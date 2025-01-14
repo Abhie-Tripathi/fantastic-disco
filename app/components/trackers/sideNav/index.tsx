@@ -21,7 +21,7 @@ const Index = () => {
   const type  = searchParams.get('type');
   const typeOfView  = searchParams.get('view');
   const typeOfEvent = searchParams.get('eventType')
-  const [view,setView]=useState(typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"list");
+  const [view,setView]=useState(typeOfEvent==="table"?"table":typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"table");
   const secondLast = pathName[pathName.length - 2];
   const router = useRouter()
   const {data}= useTrackerContext();
@@ -81,7 +81,7 @@ const Index = () => {
   
   return (
     <>
-      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[65px] w-[calc(100vw-63px)] bg-[var(--primary-foreground)] z-10 text-h6 left-[63px]">
+      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[61px] w-[calc(100vw-63px)] bg-[var(--primary-foreground)] z-10 text-h6 left-[63px]">
         <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link className={styles.bottom} href={
              last === "editTracker"
@@ -103,6 +103,8 @@ const Index = () => {
           <div className="flex justify-center items-center" >
           <div className='flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md'>
             {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`}> */}
+            <div onClick={()=>handleClick("table")}>
+              <div className={`${styles.viewsTab} ${view === "table" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("table")}>Table</div></div>
             <div onClick={()=>handleClick("list")}>
               <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("list")}>List</div></div>
               {/* </Link> */}

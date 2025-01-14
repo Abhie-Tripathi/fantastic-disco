@@ -1,5 +1,5 @@
 import { useTrackerServices } from '@/services/trackerServices';
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import { usePathname } from "next/navigation";
 import { Tracker } from '@/types/trackers';
 type trackerType = {
@@ -37,26 +37,24 @@ export const TrackerContext = createContext<any>(
             fetchData();
         }
     },[isNewCall])
-    const fetchData= async()=>{
-      try{
-        // const trackerId = pathName[2];
+    const fetchData = useCallback(async () => {
+      try {
         console.log(trackerId);
-         
-        const data=await getTrackerDetail(trackerId);
+        const data = await getTrackerDetail(trackerId);
         if (data) {
           setData(data);
           console.log(data);
           setIsNewCall(false);
           setEditTrue(false);
-          }
+        }
         if (error) {
           console.error("Error fetching data:", error);
-        } 
-      }catch(error){
-        console.log(error);
-        
+        }
+      } catch (error) {
+        console.error("Fetch data error:", error);
       }
-    }
+    }, [trackerId, getTrackerDetail, error]);
+    
     const value = {
         isNewCall,
         isLoading,

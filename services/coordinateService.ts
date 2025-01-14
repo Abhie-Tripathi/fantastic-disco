@@ -185,6 +185,12 @@ export const useCoordinateService = () => {
     return data.data;
   }
 
+  const getLatestComment = () => {
+    return api.request<any>(`${endpoints.coordinate.latestComment}`, {
+      method: "GET",
+    });
+  }
+
   return {
     getEventsWithSearchParams,
     getParticipentCount,
@@ -202,6 +208,7 @@ export const useCoordinateService = () => {
     getPipelineConfig,
     unlockPocDetail,
     getPresetJson,
+    getLatestComment,
     isLoading: api.isLoading,
     error: api.error as ApiError,
   };

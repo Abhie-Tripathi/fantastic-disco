@@ -230,7 +230,6 @@ export const EventsAdapter = {
       params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      console.log("first");
       const startDate = params.get("active_gte");
       const endDate = params.get("active_lte");
       adaptedParams.groupBy = `${startDate},${endDate}`;
@@ -264,7 +263,6 @@ export const EventsAdapter = {
       !params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      console.log("second");
       const startDate = new Date(params.get("active_gte")!);
       const endDate = new Date(startDate);
       endDate.setFullYear(startDate.getFullYear() + 1);
@@ -278,7 +276,6 @@ export const EventsAdapter = {
       params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      console.log("third");
       const endDate = new Date(params.get("active_lte")!);
       const startDate = new Date(endDate);
       startDate.setFullYear(endDate.getFullYear() - 1);

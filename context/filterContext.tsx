@@ -263,10 +263,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       temp.entryType = enabledFilters.eventEntry?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
       temp.ratings = enabledFilters.eventRating?.enabledValue?.join(',') ?? '';
       temp.maturity = enabledFilters.maturity?.enabledValue?.[0] ?? '';
-      if (enabledFilters.branded?.isBrandedEnabled) 
-        temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand ? 'true' : 'false';
-     if(enabledFilters.branded?.enabledValue?.
-      isBrandedEnabled )
+      temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand ? 'true' : 'false';
       temp.onlySeries = enabledFilters.branded?.enabledValue?.eventSeries ? 'true' : 'false';
       temp.frequencies = enabledFilters.eventFrequency?.enabledValue?.join(',') ?? '';
       temp.includeKeywords = enabledFilters.keywords?.positiveKeywords?.join(',') ?? '';
@@ -285,6 +282,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       temp.show = dataToShow.join(',');
     }
     console.log(temp);
+    console.log(localFilters);
     
     setLocalFilters(temp);
   }
