@@ -94,14 +94,14 @@ const Research = ({ theme }: Props) => {
                         <span className='text-[var(--primary-color)] text-xs'>Suggested filters</span>
                     </div>
                     <div className="mt-2.5 gap-2 flex justify-between max-[780px]:hidden">
-                        <EventTypeSelector source="search" />
-                        <LocationSelector source="search" />
+                        <EventTypeSelector />
+                        <LocationSelector />
                         <DateRangeSelector source="search" />
                     </div>
                     <div className="mt-2.5 flex-col gap-2 hidden max-[780px]:flex">
                         <div className='flex gap-2 max-[577px]:flex-col'>
-                            <EventTypeSelector source="search" />
-                            <LocationSelector source="search" />
+                            <EventTypeSelector />
+                            <LocationSelector />
                         </div>
                         <div className='w-[50%] max-[577px]:w-full'><DateRangeSelector source="search" /></div>
                     </div>
