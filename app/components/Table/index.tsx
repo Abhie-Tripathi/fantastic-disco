@@ -577,8 +577,8 @@ const Table = ({
         secondLast,
         `max=${itemsPerPage}&offset=${(currPage - 1) * 10}`,
         abortController.signal // Pass the signal here
-      );
-
+      )  as { result: EventTableType[]; count: number };;
+      
       if (result) {
         setIsLoaded(true);
         GAEvent("trackers", "Tracker", "View", `Saved Event | ${currPage}`);
@@ -752,8 +752,8 @@ const Table = ({
           ? "expired"
           : "",
         abortController.signal
-      );
-
+      ) as {events: EventTableType[]; totalEvents: number};
+  
       if (!result) {
         console.error("No data returned from getTrackerEvents");
         return;
@@ -949,6 +949,7 @@ const Table = ({
     setCurrPage((page) => page + 1);
     GAEvent("research", "Filters", "Load More Clicked", "Load More");
   };
+  
   return (
     <div className={styles.table_container}>
       <div
@@ -1174,7 +1175,7 @@ const Table = ({
                       Hybrid
                     </div>
                   )}
-                  {event.location.cityId !== "1" &&
+                  {event?.location?.cityId !== "1" &&
                   event.format === "ONLINE" ? (
                     event.location.venueName !== undefined &&
                     event.location.venueName !== null ? (

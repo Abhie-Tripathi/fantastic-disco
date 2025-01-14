@@ -21,7 +21,7 @@ const Index = () => {
   const type  = searchParams.get('type');
   const typeOfView  = searchParams.get('view');
   const typeOfEvent = searchParams.get('eventType')
-  const [view,setView]=useState(typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"list");
+  const [view,setView]=useState(typeOfEvent==="table"?"table":typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"table");
   const secondLast = pathName[pathName.length - 2];
   const router = useRouter()
   const {data}= useTrackerContext();
@@ -103,6 +103,8 @@ const Index = () => {
           <div className="flex justify-center items-center" >
           <div className='flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md'>
             {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`}> */}
+            <div onClick={()=>handleClick("table")}>
+              <div className={`${styles.viewsTab} ${view === "table" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("table")}>Table</div></div>
             <div onClick={()=>handleClick("list")}>
               <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("list")}>List</div></div>
               {/* </Link> */}
