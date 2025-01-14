@@ -57,7 +57,7 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
   const { theme } = useTheme();
   const currentDate = moment(date);
   const formattedDate = currentDate.format("YYYY-MM-DD");
-
+  
   const eventsForDay = monthEvents.filter(
     (event) => moment(event.start).format("YYYY-MM-DD") === formattedDate
   );

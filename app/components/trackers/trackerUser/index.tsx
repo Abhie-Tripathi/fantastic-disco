@@ -168,4 +168,3 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
 };
 
 export default TrackerUser;
-

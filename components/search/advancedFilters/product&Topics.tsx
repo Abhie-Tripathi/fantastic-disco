@@ -10,15 +10,15 @@ import { Button } from "@/components/ui/button";
 import { X, Search, ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 import KeywordTabs from "./keywordTabs";
-interface KeywordSelectorProps{
-  source:string;
-  enabledProductData?:keywordInterface,
-  type?:string;
-  includeKeywords?:string[];
-  setIncludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
-  excludeKeywords?:string[];
-  setExcludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
-}
+// interface KeywordSelectorProps{
+//   source:string;
+//   enabledProductData?:keywordInterface,
+//   type?:string;
+//   includeKeywords?:string[];
+//   setIncludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
+//   excludeKeywords?:string[];
+//   setExcludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
+// }
 interface keywordInterface{
   isKeywordEnabled?:boolean;
   positiveKeywords?: string[] | undefined;
@@ -26,31 +26,33 @@ interface keywordInterface{
 }
 export default function KeywordFilter({
   type,
-  enabledProductData,
-  source,
-  includeKeywords : parentIncludeKeyword = [], 
-  setIncludeKeywords : setParentIncludeKeywords, 
-  excludeKeywords : parentExcludeKeyword = [], 
-  setExcludeKeywords : setParentExcludeKeywords,
-}:KeywordSelectorProps) {
+}:{type?:string}) {
   const [isOpen, setIsOpen] = useState(false);
-  const { getLocalFilterValue, setMultipleLocalFilters } = useFilterContext();
-  const [localIncludeKeywords, setLocalIncludeKeywords] = useState<string[]>([]);
-  const [localExcludeKeywords, setLocalExcludeKeywords] = useState<string[]>([]);
+  const {
+    getLocalFilterValue,
+    setMultipleLocalFilters,
+    localFilters,
+    searchParams,
+  } = useFilterContext();
+  const [localIncludeKeywords, setLocalIncludeKeywords] = useState<string[]>(
+    []
+  );
+  const [localExcludeKeywords, setLocalExcludeKeywords] = useState<string[]>(
+    []
+  );
   const [inputValue, setInputValue] = useState("");
   const [activeTab, setActiveTab] = useState<"include" | "exclude">("include");
-  const includeKeywords = source==="tracker"? parentIncludeKeyword : localIncludeKeywords;
-  const setIncludeKeywords = source==="tracker"? setParentIncludeKeywords : setLocalIncludeKeywords;
-  const excludeKeywords = source==="tracker"? parentExcludeKeyword : localExcludeKeywords;
-  const setExcludeKeywords = source==="tracker"? setParentExcludeKeywords : setLocalExcludeKeywords;
+  const [includeKeywords, setIncludeKeywords] = useState<string[]>([]);
+const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
+
   useEffect(() => {
-    const savedIncludeKeywords = getLocalFilterValue("includeKeywords");
-    const savedExcludeKeywords = getLocalFilterValue("excludeKeywords");
-    if (savedIncludeKeywords)
-      setIncludeKeywords?.(savedIncludeKeywords.split(","));
-    if (savedExcludeKeywords)
-      setExcludeKeywords?.(savedExcludeKeywords.split(","));
-  }, [getLocalFilterValue]);
+    const savedIncludeKeywords = localFilters.includeKeywords;
+    const savedExcludeKeywords = localFilters.excludeKeywords;
+    if((savedIncludeKeywords ?? "").length > 0)
+    setIncludeKeywords?.(savedIncludeKeywords?.split(",") || []);
+    if((savedExcludeKeywords ?? "").length > 0)
+    setExcludeKeywords?.(savedExcludeKeywords?.split(",") || []);
+  }, [searchParams, localFilters]);
 
   const handleAddKeyword = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +66,6 @@ export default function KeywordFilter({
         const uniqueNewKeywords = newKeywords.filter(
           (k) => !includeKeywords.includes(k)
         );
-        console.log(includeKeywords);
         
         setIncludeKeywords?.([...includeKeywords, ...uniqueNewKeywords]);
       } else {
@@ -107,7 +108,7 @@ export default function KeywordFilter({
       handleOpenChange(true);
     }
   }, [type, isOpen]);
-  console.log(includeKeywords);
+  
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
       {type!=="T_PRODUCT_KEYWORDS" &&
@@ -116,7 +117,7 @@ export default function KeywordFilter({
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
-          disabled={enabledProductData && !enabledProductData?.isKeywordEnabled}
+          // disabled={enabledProductData && !enabledProductData?.isKeywordEnabled}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
           <span className="flex items-center gap-2">
