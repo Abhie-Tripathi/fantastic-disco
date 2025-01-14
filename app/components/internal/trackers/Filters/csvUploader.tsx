@@ -109,7 +109,7 @@ const CsvUploader = ({
   };
 
   const onSubmit = (data: any) => {
-    console.log("onSubmit", data);
+    // console.log("onSubmit", data);
 
     if (templateData.name === "T_PRODUCT_KEYWORDS") {
       const includeKeywords:any=[]

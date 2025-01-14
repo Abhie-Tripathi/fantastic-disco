@@ -48,6 +48,22 @@ interface CircularProgressProps {
   label: string;
 }
 
+interface CategoryRank {
+  [key: string]: number;
+}
+
+interface RankingResponse {
+  countryRank?: number | undefined;
+  categoryRank?: any;
+  globalRank?: number | undefined ;
+  countryCategoryRank?: any;
+}
+interface rankTag {
+  rank: number;
+  type: string;
+  name: string;
+}
+
 const CircularProgress: React.FC<CircularProgressProps> = ({
   value,
   label,
@@ -106,15 +122,15 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
 
 export default function EventAccordion({
   events,
-  count,
+  count = 0,
 }: {
   events: Event[];
-  count: number;
+  count: number | undefined;
 }) {
   const [openItem, setOpenItem] = useState<string | undefined>();
   const { setFilter, getFilterValue } = useFilterState();
   const [itemsPerPage, setItemsPerPage] = useState<number>(
-    Number(getFilterValue("take")) || 10
+    Number(getFilterValue("take")) || 20
   );
   const currentPage =
     Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
@@ -228,7 +244,7 @@ export default function EventAccordion({
         </ul>
       </div>
       {totalPages > 1 && (
-        <div className="mt-4 bottom-0 bg-background py-4 border-t">
+        <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
           <div className="flex justify-between items-center mb-2 px-2">
             <div>
               <span className="text-sm text-muted-foreground">
@@ -299,7 +315,71 @@ const EventListItem = ({
   const { saveEvent } = useEventsService();
   const { toast } = useToast();
   const [isSaved, setIsSaved] = useState(event.isSaved);
-
+  function getLeastRank(response: RankingResponse) {
+    console.log(response);
+    
+    let minRank = {
+      rank: Infinity,
+      name: "",
+      type: "",
+    };
+  
+    if (response?.globalRank !== null && response?.globalRank !== undefined) {
+      minRank.rank = response.globalRank;
+      minRank.name = "";
+      minRank.type = "Global";
+    } else if (response?.countryRank !== null  && response?.countryRank !== undefined) {
+      minRank.rank = response.countryRank as number;
+      minRank.name = "";
+      minRank.type = "Country";
+    } else if (response?.categoryRank) {
+      const c_ranks = response.categoryRank;
+      for (const category in c_ranks) {
+        if (c_ranks[category] < minRank.rank) {
+          minRank.rank = c_ranks[category];
+          minRank.name = category;
+          minRank.type = "Category";
+        }
+      }
+    } else if (response?.countryCategoryRank) {
+      const c_ranks = response.countryCategoryRank;
+      for (const category in c_ranks) {
+        if (c_ranks[category] < minRank.rank) {
+          minRank.rank = c_ranks[category];
+          minRank.name = category;
+          minRank.type = "Country Category";
+        }
+      }
+    }
+  
+    if (minRank.type === "") {
+      return "";
+    }
+    console.log(minRank);
+    
+    return getEventRank(minRank);
+  }
+  function getEventRank(prop: rankTag) {
+    let rankString = "";
+    if (prop.rank == 1) rankString = "st";
+    else if (prop.rank == 2) rankString = "nd";
+    else if (prop.rank == 3) rankString = "rd";
+    else rankString = "th";
+    console.log(prop);
+    
+    return (
+      <>
+        <Badge
+                      variant="outline"
+                      className="text-gray-600"
+                    >
+          {prop.rank}
+          <sup>{rankString}</sup>
+          <span className="pl-1">{` ${prop.type}`}</span>
+        </Badge>
+      </>
+    );
+  }
   const address = event.venueLocation ? (
     event.venueLocation.city?.name === "Online" || event.format === "online" ? (
       <span className="flex items-center">
@@ -383,7 +463,8 @@ const EventListItem = ({
     }
     return spend;
   };
-
+  console.log(event);
+  
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
       <Link href={`/internal/event/${event.id}`} className="block">
@@ -529,12 +610,16 @@ const EventListItem = ({
                     </Badge>
                   )}
                   {event.rankings && (
-                    <Badge
-                      variant="outline"
-                      className="text-gray-600 capitalize"
-                    >
-                      Top {event.rankings.rankRange}
-                    </Badge>
+                    // <Badge
+                    //   variant="outline"
+                    //   className="text-gray-600 capitalize"
+                    // >
+                    //   {getLeastRank(event.rankings)}
+                    //   {/* Top {event.rankings.rankRange} */}
+                    // </Badge>
+                    <>
+                    {getLeastRank(event.rankings)}
+                    </>
                   )}
 
                   {event.audienceZone && (

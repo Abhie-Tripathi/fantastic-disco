@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState, useCallback,useRef,useEffect } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import HeroLogo from "/public/HeroLogo.svg";
 import HeroText from "/public/whrai.svg";
-import WidgetdashboardIcon from "@/app/components/sidebar/Icons/WidgetDashboard"
-import BrandkitIcon from "@/app/components/sidebar/Icons/WidgetBrandKit"
-import WidgetIcon from "@/app/components/sidebar/Icons/WidgetIcon2"
-import EventsIcon from "@/app/components/sidebar/Icons/WidgetIcon3"
+import WidgetdashboardIcon from "@/app/components/sidebar/Icons/WidgetDashboard";
+import BrandkitIcon from "@/app/components/sidebar/Icons/WidgetBrandKit";
+import WidgetIcon from "@/app/components/sidebar/Icons/WidgetIcon2";
+import EventsIcon from "@/app/components/sidebar/Icons/WidgetIcon3";
 import { Step } from "react-joyride";
 import {
   MagnifyingGlass,
@@ -20,7 +20,7 @@ import {
   Users,
   Wrench,
 } from "geist-icons";
-import { BriefcaseBusiness } from 'lucide-react'
+import { BriefcaseBusiness } from "lucide-react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -97,11 +97,13 @@ const Sidebar = () => {
   ];
   const geniLinks = [
     {
-      name: "Dashboard", href: "/widget/dashboard", icon: <WidgetdashboardIcon/>
+      name: "Dashboard",
+      href: "/widget/dashboard",
+      icon: <WidgetdashboardIcon />,
     },
-    { name: "Brandkit", href: "/widget/brandkit", icon: <BrandkitIcon/> },
-    { name: "Widget", href: "/widget/list", icon: <WidgetIcon/> },
-    { name: "Events", href: "/widget/events", icon: <EventsIcon/>  },
+    { name: "Brandkit", href: "/widget/brandkit", icon: <BrandkitIcon /> },
+    { name: "Widget", href: "/widget/list", icon: <WidgetIcon /> },
+    { name: "Events", href: "/widget/events", icon: <EventsIcon /> },
   ];
 
   const handleMouseEnter = useCallback(() => {
@@ -112,9 +114,6 @@ const Sidebar = () => {
     setIsHovered(false);
   }, []);
 
-  console.log("pathname", pathname)
-
-
   // const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(false);
   // const [run, setRun] = useState(false);
   // const [steps, setSteps] = useState<Step[]>([]);
@@ -122,7 +121,6 @@ const Sidebar = () => {
   // const brandkitRef = useRef(null);
   // const widgetRef = useRef(null);
   // const eventsRef = useRef(null);
-  
 
   // const updateSteps = useCallback(() => {
   //   const newSteps: Step[] = [];
@@ -193,16 +191,15 @@ const Sidebar = () => {
   //   setIsSidebarOpen(false);
   // };
 
- 
-  
   return (
     <aside
-      className={`fixed z-50 top-0 left-0 h-full bg-background transition-all duration-300 ease-in-out flex flex-col border-r ${isHovered ? "w-56" : "w-16"
-        }`}
+      className={`fixed z-50 top-0 left-0 h-full bg-white transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200 ${
+        isHovered ? "w-56" : "w-16"
+      } hidden lg:flex`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-       {/* {steps.length > 0 && (
+      {/* {steps.length > 0 && (
         <JoyRideCustom
           steps={steps}
           run={run}
@@ -210,7 +207,7 @@ const Sidebar = () => {
           pathName="/widget/dashboard"
         />
       )} */}
-      
+
       <div className="flex items-center pt-3 px-3 pb-6">
         <div className="flex items-center space-x-2">
           <Image src={HeroLogo} alt="logo" width={40} height={40} />
@@ -227,57 +224,72 @@ const Sidebar = () => {
       </div>
       <nav className="flex-1 overflow-y-auto">
         <ul className="p-2 space-y-1">
-          {pathname.startsWith("/internal") ?
-            gtmLinks.map((link) => {
-              const Icon = link.icon;
-              const isActive =
-                pathname === link.href ||
-                (link.name === "Tracker" &&
-                  pathname.startsWith("/internal/trackers"));
-              return (
-                <li key={link.name}>
-                  <Link href={link.href} passHref legacyBehavior>
-                    <Button
-                      variant={isActive ? "secondary" : "ghost"}
-                      className={`w-full ${isHovered ? "justify-start px-3" : "justify-center px-0"
-                        } h-10 ${isActive ? "bg-primary text-white hover:bg-primary" : ""
+          {pathname.startsWith("/internal")
+            ? gtmLinks.map((link) => {
+                const Icon = link.icon;
+                const isActive =
+                  pathname === link.href ||
+                  (link.name === "Tracker" &&
+                    pathname.startsWith("/internal/trackers"));
+                return (
+                  <li key={link.name}>
+                    <Link href={link.href} passHref legacyBehavior>
+                      <Button
+                        variant={isActive ? "secondary" : "ghost"}
+                        className={`w-full ${
+                          isHovered
+                            ? "justify-start px-3"
+                            : "justify-center px-0"
+                        } h-10 ${
+                          isActive
+                            ? "bg-primary text-white hover:bg-primary"
+                            : ""
                         }`}
-                      asChild
-                    >
-                      <a>
-                        <Icon
-                          color={theme == "dark" ? "#fff" : ""}
-                          className="flex-shrink-0"
-                        />
-                        {isHovered && <span className="ml-2">{link.name}</span>}
-                      </a>
-                    </Button>
-                  </Link>
-                </li>
-              );
-            }) :
-            geniLinks.map((link) => {
-              const isActive = pathname === link.href
-              return (
-                <li key={link.name}>
-                  <Link href={link.href} passHref legacyBehavior>
-                    <Button
-                      variant={isActive ? "secondary" : "ghost"}
-                      className={`w-full ${isHovered ? "justify-start px-3" : "justify-center px-0"
-                        } h-10 ${isActive ? "bg-primary text-white hover:bg-primary" : ""
+                        asChild
+                      >
+                        <a>
+                          <Icon
+                            color={theme == "dark" ? "#fff" : ""}
+                            className="flex-shrink-0"
+                          />
+                          {isHovered && (
+                            <span className="ml-2">{link.name}</span>
+                          )}
+                        </a>
+                      </Button>
+                    </Link>
+                  </li>
+                );
+              })
+            : geniLinks.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <li key={link.name}>
+                    <Link href={link.href} passHref legacyBehavior>
+                      <Button
+                        variant={isActive ? "secondary" : "ghost"}
+                        className={`w-full ${
+                          isHovered
+                            ? "justify-start px-3"
+                            : "justify-center px-0"
+                        } h-10 ${
+                          isActive
+                            ? "bg-primary text-white hover:bg-primary"
+                            : ""
                         }`}
-                      asChild
-                    >
-                      <a>
-                        {link.icon}
-                        {isHovered && <span className="ml-2">{link.name}</span>}
-                      </a>
-                    </Button>
-                  </Link>
-                </li>
-              );
-            })
-          }
+                        asChild
+                      >
+                        <a>
+                          {link.icon}
+                          {isHovered && (
+                            <span className="ml-2">{link.name}</span>
+                          )}
+                        </a>
+                      </Button>
+                    </Link>
+                  </li>
+                );
+              })}
         </ul>
       </nav>
     </aside>

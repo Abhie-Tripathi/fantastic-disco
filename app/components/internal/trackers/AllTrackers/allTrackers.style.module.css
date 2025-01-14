@@ -25,11 +25,11 @@
     justify-content: center;
 }
 .numberOfEvents{
-    font-weight: 700; 
-    display: flex; 
+    /* font-weight: 700; 
+    display: flex;  */
     color: var(--secondary-text-color);
-    font-size: 20px;
+    /* font-size: 20px; */
 }
-.events{
+/* .events{
     color: var(--secondary-text-color);
-}
+} */

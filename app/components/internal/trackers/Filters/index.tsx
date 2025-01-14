@@ -722,8 +722,8 @@ const Pages = () => {
       setTrackerName(trackerName);
     } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
       setTrackerName(trackerName);
-      setIncludeKeywords(presetItem?.data?.[0]);
-      setExcludeKeywords(presetItem?.data?.[1]);
+      setLocalFilter("includeKeywords",presetItem?.data?.[0].join(","));
+      setLocalFilter("excludeKeywords",presetItem?.data?.[1].join(","))
     }
 
     setSelectedPresetName(trackerName);
@@ -746,7 +746,7 @@ const Pages = () => {
     );
     if (isCreating) return;
     setIsCreating(true);
-
+    
     const categorySlugs = selectedCategories;
     const categoryIds = getLocalFilterValue("categories")
     .split(",")
@@ -781,8 +781,8 @@ const Pages = () => {
       ...(getLocalFilterValue("show").split(",").includes("estimatedExhibitors") && { exhibit: true }),
       ...(rankToggles.isTrustScore && {trust:true}),
       ...(getLocalFilterValue("show").split(",").includes("maturity")&& {maturity:true}),
-      ...(getLocalFilterValue("onlyBranded") && {brandedEvent:true}),
-      ...(getLocalFilterValue("onlySeries") && {eventSeries:true}),
+      ...(getLocalFilterValue("onlyBranded")==="true" && {brandedEvent:true}),
+      ...(getLocalFilterValue("onlySeries")==="true" && {eventSeries:true}),
       ...((getLocalFilterValue("show").split(",").includes("branded") && getLocalFilterValue("show").split(",").includes("series"))&& {brandSeries:true}),
       ...((getLocalFilterValue("show").split(",").includes("forecasted")) && {forecastedStatus:true}),
       ...(analyticsToggles.impactScore&& {impactScore:true}),
@@ -793,6 +793,9 @@ const Pages = () => {
       ...(getLocalFilterValue("show").split(",").includes("audienceZone") && {audienceZone:true}),
       ...(audienceSpread && {audienceSpread:true}),
       ...(getLocalFilterValue("show").split(",").includes("frequency") && {eventFrequency:true}),
+      ...(getLocalFilterValue("trust_score_gte") && {
+        trust: true
+      }),
     }
      const eventType1=getLocalFilterValue("eventTypes")
       .split(",")
@@ -879,10 +882,13 @@ const Pages = () => {
         ...(selectedLabels?.length > 0 && {
           labels: selectedLabels.join(","),
         }),
+        ...(getLocalFilterValue("categories")?.length>0 &&{
+          eventCategory: categoryIds.join(",")
+        }),
         ...(getLocalFilterValue("eventFormats")?.length > 0 && {
           eventFormat: getLocalFilterValue("eventFormats"),
         }),
-        ...(getLocalFilterValue("onlySeries") && {eventSeries: getLocalFilterValue("onlySeries")}),
+        ...(getLocalFilterValue("onlySeries")==="true" && {eventSeries: getLocalFilterValue("onlySeries")}),
         ...(getLocalFilterValue("status")?.length > 0 && {
           eventStatus: getLocalFilterValue("status").split(',').map((item)=>item.toUpperCase()).join(","),
         }),
@@ -954,7 +960,7 @@ const Pages = () => {
         ...(forecastedStatus && {
           isforecasted: forecastedStatus.toString()
         }),
-        ...(getLocalFilterValue("onlyBranded") && {eventBrand:getLocalFilterValue("onlyBranded").toString()}),
+        ...(getLocalFilterValue("onlyBranded")==="true" && {eventBrand:getLocalFilterValue("onlyBranded").toString()}),
         ...(getLocalFilterValue("top") && {
           // globalRanking: selectedRank,
           // categoryRanking: selectedRank,
@@ -1231,14 +1237,17 @@ const Pages = () => {
       
       if(editData?.tracker?.filterValue?.inboundScore && editData?.tracker?.filterValue?.inboundScore !== "")
         setSelectedInboundScore(editData?.tracker?.filterValue?.inboundScore?.split("-"));
-      
+      if(editData?.tracker?.filterValue?.trustScore){
+      setLocalFilter("trust_score_gte",editData?.tracker?.filterValue?.trustScore )
+      setLocalFilter("trust_score_lte","100")
+      }
       if(toggleOpend.globalToggle){
-        setLocalFilter("impact_score_gte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[0]).toString() || "0")
-        setLocalFilter("impact_score_lte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[1]).toString() || "100")
-        setLocalFilter("inbound_score_gte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[0]).toString() || "0")
-        setLocalFilter("inbound_score_lte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[1]).toString() || "0")
-        setLocalFilter("international_score_gte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[0]).toString() || "0")
-        setLocalFilter("international_score_lte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[1]).toString() || "0")
+        setLocalFilter("impact_score_gte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[0])?.toString() || "0")
+        setLocalFilter("impact_score_lte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[1])?.toString() || "100")
+        setLocalFilter("inbound_score_gte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[0])?.toString() || "0")
+        setLocalFilter("inbound_score_lte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[1])?.toString() || "100")
+        setLocalFilter("international_score_gte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[0])?.toString() || "0")
+        setLocalFilter("international_score_lte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[1])?.toString() || "100")
       }
       if(editData?.tracker?.filterValue?.eventImpactScore && editData?.tracker?.filterValue?.eventImpactScore !== "")
         setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactScore?.split("-"));
@@ -1256,7 +1265,7 @@ const Pages = () => {
         setLocalFilter("onlySeries","true")
       }
       if(editData?.tracker?.filterValue?.eventRanking && editData?.tracker?.filterValue?.eventRanking !== '')
-        setLocalFilter("top",editData?.tracker?.filterValue?.eventRanking?.split("-")[1].toString())
+        setLocalFilter("top",editData?.tracker?.filterValue?.eventRanking?.split("-")[1]?.toString())
       
       setAudienceZone(toggleOpend?.audienceZone ? true : false);
       setAudienceSpread(toggleOpend?.audienceSpread ? true : false);
@@ -1298,11 +1307,6 @@ const Pages = () => {
         });
         
         setLocalFilter("categories", categorySlugs.join(","));
-        setSelectedCategories(
-          categorySlugs?.length > 0
-            ? categorySlugs
-            : []
-        );
       }
       // setSelectedCategories(
       //   editData?.tracker?.filterValue?.eventCategory?.length > 0
@@ -1420,11 +1424,13 @@ const Pages = () => {
           ? editData.tracker.filterValue?.eventEntry?.split(",")
           : []
       );
-      setLocalFilter("entryType", editData.tracker.filterValue?.eventEntry)
       if (editData?.tracker?.filterValue?.eventType !== undefined) {
         const eventTypes = editData.tracker.filterValue.eventType.map((type:string) => {
-          return type.charAt(0).toLowerCase() + type.slice(1) + 's';
+          return type.charAt(0).toLowerCase() + type.slice(1)+"s";
         });
+        console.log("");
+        
+         setLocalFilter("eventTypes",eventTypes.join(","))
     }
 
 

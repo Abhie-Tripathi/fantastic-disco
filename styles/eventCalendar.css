@@ -88,3 +88,7 @@
 .rbc-button-link {
   pointer-events: none;
 }
+
+.rbc-month-row {
+  overflow: visible;
+}

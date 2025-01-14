@@ -104,10 +104,9 @@ const Search = () => {
   });
 
   const displayData = eventData;
-  console.log(displayData);
-  
+
   const events = displayData?.events || [];
-  const count = displayData?.count || 0;
+  const count = displayData?.count;
 
   const searchHandler = useCallback(() => {
     applyFilters();
@@ -164,7 +163,6 @@ const Search = () => {
 
   const adaptedQueryString = (function () {
     if (!searchParams.toString()) return;
-    delete adaptedParams.offset;
     delete adaptedParams.max;
     delete adaptedParams.sortBy;
     delete adaptedParams.sortType;
@@ -241,7 +239,7 @@ const Search = () => {
   }, [searchParams]);
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="p-6">
       {steps.length > 0 && (
         <Joyride
           tooltipComponent={(props) => (
@@ -259,16 +257,16 @@ const Search = () => {
         />
       )}
       <SearchBar />
-      <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
-        <div className="col-span-8 grid grid-cols-4 gap-3">
-          <EventTypeSelector/>
-          <CategorySelector/>
-          <EventFormatSelector/>
-          <LocationSelector/>
-          <DateRangeSelector/>
-          <StatusSelector/>
-          <EventEntrySelector/>
-          <UserRatingSelector/>
+      <div className="w-full grid grid-cols-10 gap-4 border-b pb-6 mt-6">
+        <div className="col-span-8 grid lg:grid-cols-4 grid-cols-3 gap-3">
+          <EventTypeSelector />
+          <CategorySelector />
+          <EventFormatSelector />
+          <LocationSelector />
+          <DateRangeSelector />
+          <StatusSelector />
+          <EventEntrySelector />
+          <UserRatingSelector />
         </div>
         <div className="col-span-2 grid grid-cols-2 gap-2">
           <div className="row-span-2 flex flex-col gap-3">
@@ -294,7 +292,7 @@ const Search = () => {
                 className="w-4 h-w-4"
                 color="#6750a4"
               />
-              Save {<span className="hidden lg:!block">as Tracker</span>}
+              Save Search
             </Button>
           </div>
           <div className="row-span-2 flex flex-col gap-3">
@@ -314,8 +312,15 @@ const Search = () => {
               className="text-destructive p-0 flex items-center"
             >
               <Filter className="h-4 w-4" />
-              <span className="hidden lg:!block">
-                {showAdvancedFilters ? "Hide" : "Advanced"}{" "}
+              <span className="ml-1">
+                {showAdvancedFilters ? (
+                  <span className="hidden lg:block">Hide</span>
+                ) : (
+                  <>
+                    <span className="hidden lg:block">Advanced</span>
+                    <span className="lg:hidden">Adv</span>
+                  </>
+                )}{" "}
               </span>
               {filtersCount ? `(${filtersCount})` : ""}
             </Button>
@@ -330,8 +335,9 @@ const Search = () => {
         defaultValue="list"
         value={selectedView}
         onValueChange={onTabsChange}
+        className="mt-0"
       >
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex justify-between items-center py-6 sticky top-0 bg-white z-20 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)]">
           {/* <div className="flex items-center gap-2">
             <Badge className="bg-primary text-white">{count}</Badge>
             <p className="text-primary font-semibold">Events Found</p>
@@ -377,6 +383,10 @@ const Search = () => {
             <ZeroState text={(error as ApiError).message} />
           ) : count == 0 ? (
             <ZeroState text="No events were found in the selected area." />
+          ) : count == undefined ? (
+            <div className="flex justify-center items-center">
+              <ZeroState text="Discover insights on business trends filtered by geography and category, all in one glance." />
+            </div>
           ) : (
             <>
               {/* <Alerts /> */}
@@ -417,7 +427,7 @@ const Search = () => {
             <ZeroState text={(error as ApiError).message} />
           ) : (
             <EventCalendar
-            source="search"
+              source="search"
               events={events as CalendarEvent[] | CalendarMonthEvent[]}
             />
           )}

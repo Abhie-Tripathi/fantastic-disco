@@ -57,9 +57,9 @@ export const EventsAdapter = {
       adaptedParams.eventName = params.get("eventName")!;
       return adaptedParams;
     }
-    
-    if(params.get("onlyBranded")!==null){
-      adaptedParams.eventBrand = params.get("onlyBranded")??"";
+
+    if (params.get("onlyBranded") !== null) {
+      adaptedParams.eventBrand = params.get("onlyBranded") ?? "";
     }
     if (params.get("onlySeries") !== null) {
       adaptedParams.eventSeries = params.get("onlySeries") ?? "";
@@ -226,12 +226,12 @@ export const EventsAdapter = {
       adaptedParams.longitude = geoCoordinates.longitude;
     }
     if (
-      !(params.get("active_gte") && params.get("active_lte")) &&
+      params.get("active_gte") &&
+      params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      const currentYear = new Date().getFullYear();
-      const startDate = new Date(currentYear, 0, 1).toISOString().split("T")[0];
-      const endDate = new Date(currentYear, 11, 31).toISOString().split("T")[0];
+      const startDate = params.get("active_gte");
+      const endDate = params.get("active_lte");
       adaptedParams.groupBy = `${startDate},${endDate}`;
     }
 
@@ -263,8 +263,8 @@ export const EventsAdapter = {
 
     if (
       !params.get("active_gte") &&
-      params.get("view") == "calendar" &&
-      params.get("calendar_type") == "week"
+      params.get("view") == "calendar"
+      // params.get("calendar_type") == "week"
     ) {
       const today = new Date();
       const firstDayOfMonth = new Date(
@@ -285,6 +285,14 @@ export const EventsAdapter = {
 
     if (params.get("take")) {
       adaptedParams.max = params.get("take")!;
+    }
+
+    if(params.get("skip")){
+      adaptedParams.offset = params.get("skip")!
+    }
+
+    if (params.get("view") == "map") {
+      adaptedParams.max = "50";
     }
 
     return adaptedParams;
@@ -420,6 +428,13 @@ export const EventsAdapter = {
       adaptedParams.endDate = `${startDate},${endDate}`;
     }
 
+    if (params.get("onlyBranded") !== null) {
+      adaptedParams.eventBrand = params.get("onlyBranded") ?? "";
+    }
+    if (params.get("onlySeries") !== null) {
+      adaptedParams.eventSeries = params.get("onlySeries") ?? "";
+    }
+
     return adaptedParams;
   },
 
@@ -518,14 +533,19 @@ export const EventsAdapter = {
           frequency: item.frequency || null,
           co_organizers: [],
           rankings: item.ranking
-            ? {
-                rank: null,
-                rankRange: params.get("top") || null,
-                rankType: null,
-                categoryId: null,
-                countryId: null,
-              }
-            : null,
+          ? {
+            globalRank: item.ranking.globalRank ?? null,
+            countryRank: item.ranking.countryRank ?? undefined,
+            categoryRank: item.ranking.categoryRank ?? undefined,
+            countryCategoryRank: item.ranking.countryCategoryRank ?? undefined,
+            rank: item.ranking.rank ?? null,
+            rankRange: params.get("top") || null,
+            rankType: null,
+            categoryId: null,
+            countryId: null,
+           }
+           : undefined,
+
           exhibitorsCount: parseInt(item.stats.estimatedExhibitor) || null,
           timings: {
             [item.startDate.split("T")[0]]: {
@@ -803,6 +823,10 @@ export const EventsAdapter = {
         co_organizers: [],
         rankings: {
           rank: null,
+          globalRank: undefined,
+          countryRank: undefined,
+          categoryRank: null,
+          countryCategoryRank: null,
           rankRange: null,
           rankType: null,
           categoryId: null,

@@ -112,7 +112,7 @@ const CarouselView = ({ selectedCard, isFullScreen, cardBgColor, cardBorderRadiu
                 })}
             </div>
             <button className={styles.navButton} onClick={handleNext} disabled={currentIndex === banners.length - 1}>
-            <div className={styles.rightArrow}><ArrowIcon /></div>
+                <div className={styles.rightArrow}><ArrowIcon /></div>
             </button>
         </div>
     );

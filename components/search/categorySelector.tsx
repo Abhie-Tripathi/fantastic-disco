@@ -8,16 +8,21 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from 'lucide-react';
 import { newCategories as categories } from "@/data/categories";
 import { useFilterContext } from "@/context/filterContext";
+
 export default function CategorySelector() {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
-  const categories=morphedData.categories.options
+  const categories = morphedData.categories.options;
   const selectedCategories = getLocalFilterValue("categories")
     .split(",")
     .filter(Boolean);
+
+  const isAnyDisabled = useMemo(() => {
+    return categories.some((cat: any) => !cat.isEnabled);
+  }, [categories]);
 
   const handleCategoryToggle = useCallback(
     (categorySlug: string) => {
@@ -33,15 +38,15 @@ export default function CategorySelector() {
     (isSelected: boolean) => {
       setLocalFilter(
         "categories",
-        isSelected ? categories.map((cat:any) => cat.slug).join(",") : ""
+        isSelected ? categories.filter((cat: any) => cat.isEnabled).map((cat: any) => cat.slug).join(",") : ""
       );
     },
-    [setLocalFilter]
+    [setLocalFilter, categories]
   );
 
   const isAllSelected = useMemo(
-    () => categories.every((cat:any) => selectedCategories.includes(cat.slug)),
-    [selectedCategories]
+    () => categories.every((cat: any) => cat.isEnabled && selectedCategories.includes(cat.slug)),
+    [selectedCategories, categories]
   );
 
   const onOpenChange = (open: boolean) => {
@@ -51,11 +56,11 @@ export default function CategorySelector() {
   const renderCategories = useCallback(() => {
     const columnCount = 3;
     const allCategories = [
-      { id: "all", name: "Select All", slug: "all" },
+      { id: "all", name: "Select All", slug: "all", isEnabled: true },
       ...categories,
     ];
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);
-
+    
     return (
       <div className="grid grid-cols-3 gap-x-4">
         {Array.from({ length: columnCount }).map((_, columnIndex) => (
@@ -82,11 +87,13 @@ export default function CategorySelector() {
                         ? handleSelectAll(!isAllSelected)
                         : handleCategoryToggle(category.slug)
                     }
-                    disabled={!category.isEnabled && category.slug !== "all"}
+                    disabled={(category.slug === "all" && isAnyDisabled) || (!category.isEnabled && category.slug !== "all")}
                   />
                   <label
                     htmlFor={category.slug}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 whitespace-nowrap"
+                    className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 whitespace-nowrap ${
+                      (category.slug === "all" && isAnyDisabled) || (!category.isEnabled && category.slug !== "all") ? 'opacity-50' : ''
+                    }`}
                   >
                     {category.name}
                   </label>
@@ -101,6 +108,8 @@ export default function CategorySelector() {
     selectedCategories,
     isAllSelected,
     handleSelectAll,
+    categories,
+    isAnyDisabled
   ]);
 
   return (

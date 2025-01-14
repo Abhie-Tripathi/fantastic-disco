@@ -128,7 +128,12 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
        }
     setTotalPage(Math.ceil(result.totalCount / trackerPerPage));
     setTotalCount(result.totalCount)
-    if(result.totalCount===0) setDataPresent(false);
+    if(result.totalCount===0){
+      console.log(result.totalCount);
+      
+      setSingleTrackerData(undefined);
+       setDataPresent(false);
+    }
     setLoading(false);
     setLoadOne(false);
             }
@@ -186,7 +191,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           )} */}
         <div>
         <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 pt-4 pl-8 pb-4">
+            <div className="flex items-center gap-2 pt-4 pl-6 pb-4">
               <div className="text-sm font-medium">Your Trackers</div>
               <span className="bg-[#E6E6F9] rounded-full font-medium w-7 h-7 flex items-center justify-center text-sm" style={{ color: "var(--primary-color)" }}>
                {totalCount}
@@ -199,7 +204,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
               state={sort}
             /> */}
           </div>
-        <div className="h-[calc(100vh-320px)] overflow-auto pl-8 pr-7 grid gap-[var(--spacing-md)] grid-cols-[repeat(auto-fill,minmax(470px,1fr))]">
+        <div className="h-[calc(100vh-300px)] overflow-auto pl-6 pr-6 flex flex-col gap-[var(--spacing-md)] pb-6">
           {(allTracker.length===0 && !loadOne) &&
             <div className="flex justify-center text-[var(--secondary-text-color)] font-semibold">Tracker with the search result is not created yet.</div>
           }
@@ -220,7 +225,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
         {totalPage > 1 &&
           !loadOne && page<(totalPage-1) &&(
             <div
-              className="flex item-center justify-center p-4"
+              className="flex item-center justify-center"
             >
               {/* <div className={styles.btn} onClick={handlePrevPage}>
                 Prev

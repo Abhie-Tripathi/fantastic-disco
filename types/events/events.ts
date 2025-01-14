@@ -113,12 +113,16 @@ export interface Event {
   primaryEventType: string | null;
   entryType: "free_and_paid" | "free" | "paid" | null;
   rankings: {
+    globalRank: number | undefined,
+    countryRank: number | undefined,
+    categoryRank: Record<string, number | null> | null | undefined,
+    countryCategoryRank: Record<string, number | null> | null;
     rank: string | null;
     rankRange: string | null;
     rankType: "global" | "country" | "category" | "category_country" | null;
     categoryId: string | null;
     countryId: string | null;
-  } | null;
+  } | undefined;
   "10TimesUrl": string | null;
 }
 

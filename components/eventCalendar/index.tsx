@@ -17,6 +17,8 @@ import { CalendarEvent, CalendarMonthEvent } from "@/types/events";
 import EventList from "./eventList";
 import ZeroState from "@/app/components/zerostate";
 import { useSearchParams } from "next/navigation";
+import { useFilterContext } from "@/context/filterContext";
+import { useEventsService } from "@/services/eventsService";
 
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
@@ -48,7 +50,17 @@ export default function EventCalendar({
   trackerId?: string;
   type?:string
 }) {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const { getLocalFilterValue } = useFilterContext();
+  const { getEventsWithSearchParams } = useEventsService();
+  const initialDate = (() => {
+    const activeGte = getLocalFilterValue("active_gte");
+    const activeLte = getLocalFilterValue("active_lte");
+    if (activeGte && activeLte) return activeGte;
+    if (activeGte) return activeGte;
+    if (activeLte) return activeLte;
+    return new Date();
+  })();
+  const [currentDate, setCurrentDate] = useState(new Date(initialDate));
   const [filter, setFilter] = useState("all");
   const searchParams = useSearchParams();
   const {
@@ -180,7 +192,7 @@ export default function EventCalendar({
             ) : (
               <Calendar
                 localizer={localizer}
-                events={processedEvents}
+                events={view === Views.WEEK ? processedEvents : undefined}
                 startAccessor="start"
                 endAccessor="end"
                 defaultView={Views.MONTH as any}
@@ -217,7 +229,7 @@ export default function EventCalendar({
                 }}
                 date={currentDate}
                 onNavigate={(date) => setCurrentDate(date)}
-                className={`h-[850px] ${showEventList ? "pr-4" : ""}`}
+                className={`${showEventList ? "pr-4" : ""}`}
               />
             )}
           </div>

@@ -19,6 +19,8 @@ import {EventTableType } from '@/types/ListViewTable';
 import SavedEventWidget from "@/app/components/internal/trackers/SavedEventWidget";
 import NotesDiscussionWidget from "@/app/components/internal/trackers/NotesDiscussionWidget";
 import NotificationWidget from "@/app/components/internal/trackers/NotificationWidget";
+import NullState from "@/app/components/trackers/nullState";
+import TrackerNullState from '@/public/trackerNullState.svg';
 import Calendar from '@/public/internal/calendar.svg'
 import TrackerLocation from '@/public/internal/location.svg'
 import Table from "@/app/components/Table";
@@ -195,7 +197,7 @@ const Trackers = ({ searchParams }: Search) => {
     repeatSent: true,
   };
   const [hide, setHide] = useState(false);
-  const [singleTrackerData,setSingleTrackerData]=useState<Tracker>();
+  const [singleTrackerData,setSingleTrackerData]=useState<Tracker | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [currentUrl, setCurrentUrl] = useState('');
   const {getSavedEvents}=useTrackerServices();
@@ -316,7 +318,11 @@ const Trackers = ({ searchParams }: Search) => {
   console.log(singleTrackerData);
   useEffect(() => {
     // console.log(item?.tracker?.eventCountry);
-    if(singleTrackerData){
+    if(singleTrackerData===undefined){
+      setNote(null);
+      setSavedEvents(undefined);
+    }
+    else{
     const eventCountry = singleTrackerData?.filterValue?.eventCountry?.map((countryObj:{}) => Object.keys(countryObj)[0])||[];
     const eventState = singleTrackerData?.filterValue?.eventState?.map((stateObj:{}) => Object.keys(stateObj)[0])||[];
     const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.keys(cityObj)[0])||[];
@@ -327,6 +333,8 @@ const Trackers = ({ searchParams }: Search) => {
     fetchNote(singleTrackerData?.id)
   fetchSavedEvent(singleTrackerData?.id)
     }
+    console.log(singleTrackerData.id);
+    
   }
   }, [singleTrackerData]);
   console.log(hideTemplate);
@@ -409,9 +417,9 @@ const Trackers = ({ searchParams }: Search) => {
       <div>
     {isData &&
       <div className="flex flex-row">
-  <div className="w-1/2 h-[calc(100vh-70px)]">
-    <div className="flex flex-col gap-4 px-8 py-0">
-      <div className="text-sm text-[var(--secondary-text-color)] pt-8">
+  <div className="w-1/2 h-[calc(100vh-65px)]">
+    <div className="flex flex-col gap-4 px-5 py-0">
+      <div className="text-sm text-[var(--secondary-text-color)] pt-5">
         Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
       </div>
       <div>
@@ -423,7 +431,7 @@ const Trackers = ({ searchParams }: Search) => {
       >
         Create Tracker
       </button> */}
-      <hr/>
+      {/* <hr/> */}
       <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
@@ -438,7 +446,7 @@ const Trackers = ({ searchParams }: Search) => {
           <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue}/>
       </div>
   </div>
-  <div className="w-1/2 p-8 h-[calc(100vh-61px)] bg-[var(--background-secondary-color)]" style={{padding:"32px 0px"}}>
+  <div className="w-1/2 p-5 h-[calc(100vh-65px)] bg-[var(--background-secondary-color)]" style={{padding:"20px 0px"}}>
     <div className="flex flex-col gap-4">
   <div className="flex items-center justify-between border border-[var(--border-color)] p-3" style={{margin:"0px 32px"}}>
           <span className="flex items-center gap-2 text-[#696B83]">
@@ -457,7 +465,7 @@ const Trackers = ({ searchParams }: Search) => {
             </Button>
           )}
         </div>
-        <div className="flex h-[calc(100vh-171px)] overflow-y-auto flex-col px-8 gap-4">
+        <div className="flex h-[calc(100vh-168px)] overflow-y-auto flex-col px-8 gap-4">
   {/* <div className="flex w-[45%] items-stretch">
     <div className="flex flex-col w-[100%] gap-3">
     <div className="w-[100%]">
@@ -479,26 +487,50 @@ const Trackers = ({ searchParams }: Search) => {
    {/* {load ? (
       <Loading />
     ) : ( */}
-      <Suspense fallback={<div className="h-[300px] w-[100%] items-center justify-center"><Loading /></div>}>
-        <div className="h-[300px]">
-        <Map 
-          isGlobal={true}
-          source="tracker" 
-          searchParams={`active`}
-          trackerId={singleTrackerData?.id}
-          trackerLoc={locations?.length>0 && locations?.join(",")}
-        />
-        </div>
-      </Suspense>
+    <Suspense
+  fallback={
+    <div className="h-[300px] w-[100%] items-center justify-center">
+      <Loading />
+    </div>
+  }
+>
+  <div className="h-[300px]">
+    {(!singleTrackerData &&  searchValue.length<3) ? (
+        <Loading />
+    ) : Number(singleTrackerData?.groupedEventsCountByStatus?.groupedEventsByStatus?.active || 0) === 0 ? (
+      <div className="px-10 py-5 h-[100%]" onClick={() => setContextData(singleTrackerData?.id)}>
+        {!singleTrackerData?<NullState image={TrackerNullState}  title="No tracker selected."/>:
+        <NullState image={TrackerNullState}  title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Configuration" buttonUrl={`/internal/trackers/${singleTrackerData && singleTrackerData.id}/trackedConfiguration?type=${singleTrackerData &&  singleTrackerData.type}`}/>
+        }
+         
+      </div>
+    ) : (
+      <Map
+        isGlobal={true}
+        source="tracker"
+        searchParams="active"
+        trackerId={singleTrackerData?.id || ""}
+        trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
+      />
+    )}
+  </div>
+</Suspense>
+
     {/* )} */}
 
   </div>
   <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
-    <SavedEventWidget savedEvents={savedEvents} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=savedEvent`}/>
+    <SavedEventWidget savedEvents={savedEvents} redirectUrl={singleTrackerData 
+    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=savedEvent`:""}/>
   </div>
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
-  <NotesDiscussionWidget note={note} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/notesDiscussion?type=${singleTrackerData?.type}`}/>
+  <NotesDiscussionWidget 
+  note={note} 
+  redirectUrl={singleTrackerData 
+    ? `${currentUrl}/${singleTrackerData.id}/notesDiscussion?type=${singleTrackerData.type}` 
+    : ''} 
+  />
   </div>
         </div>
         <div className="flex flex-row gap-3 mb-8">
@@ -506,7 +538,7 @@ const Trackers = ({ searchParams }: Search) => {
             <NotificationWidget/>
           </div>
           <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
-          <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/manageAccess?type=${singleTrackerData?.type}`}/>
+          <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground} redirectUrl={singleTrackerData?`${currentUrl}/${singleTrackerData?.id}/manageAccess?type=${singleTrackerData?.type}`:""}/>
           </div>
         </div>
         </div>
@@ -533,7 +565,7 @@ const Trackers = ({ searchParams }: Search) => {
   </div>
 </div>}
 {(!hideTemplate || !isData)&& (
-          <div className="absolute left-[63px] top-[61px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-61px)]" style={{zIndex:"11"}}>
+          <div className="absolute left-[63px] top-[65px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-65px)]" style={{zIndex:"11"}}>
             <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
           {!isData && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>}
         {isData && 

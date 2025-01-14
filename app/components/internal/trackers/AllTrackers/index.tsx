@@ -12,10 +12,12 @@ import { GAEvent } from "@/utils/GAEvent";
 import { ChartTrendingUp, Location } from "geist-icons";
 import { useRouter } from "next/navigation";
 import { useTrackerContext } from "@/context/tracker";
+import { useFilterState } from "@/hooks/useFilterState";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
   const router= useRouter();
   const {  setIsNewCall, setTrackerId, isLoading:load } = useTrackerContext();
+  const {setFilter} = useFilterState();
   // const { theme } = useTheme();
   // console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const lineData = {
@@ -108,8 +110,12 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
       setIsNewCall(true); 
       setTrackerId(item.id);
   }
+  const handleSingleClick=(item:any)=>{
+    setSingleTrackerData(item)
+    setFilter("id", item.id);
+  }
   return (
-    <div className="card cursor-pointer h-[150px]" onClick={()=>setSingleTrackerData(item)}
+    <div className="card cursor-pointer h-[150px]" onClick={()=>handleSingleClick(item)}
     onDoubleClick={() => handleDoubleClick(item)} 
     style={{border: singleTrackerData?.id===item.id?"2px solid var(--primary-color)":"2px solid var(--border-color)" }}
     >
@@ -117,7 +123,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
         <div className="flex justify-between gap-2">
           <div className="flex gap-2 flex-col justify-between w-[40%]">
             <div className="flex gap-4 flex-col">
-            <div className="font-bold break-words leading-none text-[var(--secondary-text-color)]">
+            <div className="font-bold break-words leading-none">
               {item?.name?.length>45? `${item.name.substring(0,45)}...`:item.name}
               </div>
             <div className="flex gap-1 w-[100%]">

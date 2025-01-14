@@ -596,7 +596,7 @@ const activeVal =
         </div>
 
         {(view === "table") && (
-          <div>
+          <div className="flex-grow overflow-hidden">
             <Suspense fallback={<Loading />}>
           <Table
             savedEventCount={savedEventCount}
@@ -610,6 +610,7 @@ const activeVal =
           </div>
         )}
          {view === "list" && (
+          <div className="flex-grow overflow-hidden">
           isLoading ? (
           <Loading />
            ) : error ? (
@@ -629,19 +630,24 @@ const activeVal =
         buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration?type=${trackerType}`}
       />
     )
-  )  : (
+          )  : (
           <>
       {/* <Alerts /> */}
-      <List events={events as Event[]} count={count} />
+          <List events={events as Event[]} count={count} />
     </>
   )
+  </div>
 )}
         {(view === "map") && (
             <div>
               <Suspense fallback={<Loading />}>
               {Number(activeVal)===0 ?
               <div className="px-10 py-5">
-              <NullState image={TrackerNullState} title="No events saved yet! Start saving events to easily track and revisit them here."/>
+              {active==="Saved Events"?
+                <NullState image={TrackerNullState} title="No events saved yet! Start saving events to easily track and revisit them here."/>:
+                <NullState image={TrackerNullState}  title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Configuration" buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration?type=${trackerType}`}/>
+              }
+              
               </div>
                : 
                 <Map source="tracker" 
