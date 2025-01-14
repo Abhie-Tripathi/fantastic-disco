@@ -82,7 +82,7 @@ export default function NewVerificationForm() {
         (industryItem) => industryItem.slug === industry
       )?.subCategory;
       if (!isCategoryMapped) {
-        return `/location?industry=${industry}`;
+        return `/location${industry ? `?industry=${industry}` : ""}`;
       } else {
         return `/internal/search/events?${urlParams}`;
       }
@@ -198,14 +198,14 @@ export default function NewVerificationForm() {
                       </div>
                     </InputOTP>
                   </FormControl>
-                  <FormMessage />
+                  <FormMessage className="!mt-6" />
                 </FormItem>
               )}
             />
             {error && (
               <Alert
                 variant="destructive"
-                className="w-fit border-none self-center"
+                className="w-fit border-none self-center p-0"
               >
                 <AlertDescription className="captilize flex items-center">
                   <TriangleAlert color="#EF4444" className="w-4 h-4" />
