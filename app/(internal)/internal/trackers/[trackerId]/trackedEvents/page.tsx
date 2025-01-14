@@ -80,7 +80,7 @@ const Page = ({ params }: { params: any }) => {
   const { trackerId } = params;
   const viewType=searchParams.get("view");
   const skip= getFilterValue("skip") || "0";
-  const take = getFilterValue("take") || "10";
+  const take = getFilterValue("take") || "20";
   const typeOfEvent=searchParams.get("eventType");
   const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
   // const id = pathName[pathName.length - 2];
@@ -609,35 +609,36 @@ const activeVal =
           </Suspense>
           </div>
         )}
-         {view === "list" && (
-          <div className="flex-grow overflow-hidden">
-          isLoading ? (
-          <Loading />
-           ) : error ? (
-              <ZeroState text={(error as ApiError).message} />
-            ) : count === 0 ? (
-            active === "Saved Events" ? (
-            <NullState 
-        image={TrackerNullState} 
-        title="We couldn’t find any events matching your tracker criteria at the moment." 
-      />
+        {view === "list" && (
+  <div className="flex-grow overflow-hidden">
+    {isLoading ? (
+      <Loading />
+    ) : error ? (
+      <ZeroState text={(error as ApiError).message} />
+    ) : count === 0 ? (
+      active === "Saved Events" ? (
+        <NullState 
+          image={TrackerNullState} 
+          title="We couldn’t find any events matching your tracker criteria at the moment." 
+        />
+      ) : (
+        <NullState 
+          image={TrackerNullState}
+          title="We couldn’t find any events matching your tracker criteria at the moment."
+          text="Try adjusting your filters or checking back later, as new events are added frequently."
+          buttonText="Manage Configuration"
+          buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration?type=${trackerType}`}
+        />
+      )
     ) : (
-      <NullState 
-        image={TrackerNullState}
-        title="We couldn’t find any events matching your tracker criteria at the moment."
-        text="Try adjusting your filters or checking back later, as new events are added frequently."
-        buttonText="Manage Configuration"
-        buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration?type=${trackerType}`}
-      />
-    )
-          )  : (
-          <>
-      {/* <Alerts /> */}
-          <List events={events as Event[]} count={count} />
-    </>
-  )
+      <>
+        {/* <Alerts /> */}
+        <List events={events as Event[]} count={count} />
+      </>
+    )}
   </div>
 )}
+
         {(view === "map") && (
             <div>
               <Suspense fallback={<Loading />}>
