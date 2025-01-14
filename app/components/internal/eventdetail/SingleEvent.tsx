@@ -3,7 +3,7 @@ import React from 'react'
 import styles from './singleevent.style.module.css'
 import WorkIcon from '/public/work.svg'
 import { useTheme } from '@/context';
-import Link from 'next/link';
+// import Link from 'next/link';
 
 interface EventData {
     id: string;
@@ -24,7 +24,8 @@ const SingleEvent = (props: EventData) => {
             </div>
             }
             <div className={styles.detailContainer}>
-                <Link className={`${styles.eventName} hover:text-primary cursor-pointer`} href={`/internal/event/${props.id}`} target="_blank">{props.name}</Link>
+                <div className={styles.eventName}>{props.name}</div>
+                {/* <Link className={`${styles.eventName} hover:text-primary cursor-pointer`} href={`/internal/event/${props.id}`} target="_blank">{props.name}</Link> */}
                 {/* <div className={styles.organiser}>
                     <Image src={WorkIcon} alt='work' className={iconClass} />
                     <div>Campus</div>
