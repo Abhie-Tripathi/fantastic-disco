@@ -44,7 +44,7 @@ const EventsMapView: React.FC<MapProps> = ({
   }>({ startDate: startDateTime, endDate: endDateTime });
   const { getEventsWithSearchParams, getEventById } = useEventsService();
   const [events, setEvents] = useState<MapEvents[]>([]);
-  const [popupInfo, setPopupInfo] = useState<updatedEvent | null>(null);
+  const [popupInfo, setPopupInfo] = useState<Event | null>(null);
 
   const iconUrls: Record<string, string> = {
     "performing-arts": "/eventType/arts.png",
@@ -110,29 +110,12 @@ const EventsMapView: React.FC<MapProps> = ({
   const handleMarkerClick = async (eventData: MapEvents) => {
     try {
       const eventDetails = await getEventById(eventData.id);
-      const result={
-        coordinates:{
-              latitude: parseFloat(
-                eventDetails?.event.venueLocation?.venue?.latitude ||
-                eventDetails?.event.venueLocation?.city?.latitude ||
-                eventDetails?.event.venueLocation?.state?.latitude ||
-                  "0"
-              ).toString(), 
-              longitude: parseFloat(
-                eventDetails?.event.venueLocation?.venue?.longitude ||
-                eventDetails?.event.venueLocation?.city?.longitude ||
-                eventDetails?.event.venueLocation?.state?.longitude ||
-                  "0"
-              ).toString()
-        },
-        events:[eventDetails?.event]
-      }
-      setPopupInfo(result as updatedEvent | null);
+      console.log(eventDetails);
+      setPopupInfo(eventDetails?.event as Event | null);
     } catch (error) {
       console.error("Error fetching event details:", error);
     }
   };
-  // console.log(eventDetails?.event);
   return (
     <div className="relative">
       <Map
