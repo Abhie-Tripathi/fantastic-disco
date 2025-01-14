@@ -35,13 +35,14 @@ import {
   MailIcon,
   PhoneIcon,
 } from "lucide-react";
-import { useEventsService } from "@/services/eventsService";
+// import { useEventsService } from "@/services/eventsService";
 import { GTMEventPOCDetails } from "@/types/events";
 import { Button } from "@/components/ui/button";
 import { AdvancedDetails } from "@/app/components/prospectDetail/advancedDetails";
 import { SectionHeading } from "@/app/components/prospectDetail/prospectHeading";
 import { CompanyClients } from "@/app/components/prospectDetail/CompanyClients";
 import { EventCalendar } from "@/app/components/prospectDetail/EventCalendar";
+import companyDataJson from "@/public/data/companyData.json";
 
 export interface RankingDetail {
   above5CountryEvent: countryRank[] | [];
@@ -58,49 +59,38 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
     { tabName: "Overview", path: "overview" },
     { tabName: "Events", path: "insights" },
   ];
-  const {
-    getEventDetailById,
-    getEventPOCDetails,
-  } = useEventsService();
+
+  const getCompanyDetailById = (companyId: string) => {
+    const c_data =  companyDataJson.data.filter((item: any) => item.url === companyId);
+    if(c_data && c_data.length > 0)
+      return c_data[0];
+    else
+      return [];
+  }
+
+  // const {
+  //   getEventDetailById,
+  //   getEventPOCDetails,
+  // } = useEventsService();
   const { data: event } = useQuery<any>({
     queryKey: ["eventDetails"],
     queryFn: async () => {
       const [
-        eventDataResult,
-        eventPOCDataResult,
+        companyDataResult,
       ] = await Promise.allSettled([
-        getEventDetailById(params.companyId),
-        getEventPOCDetails(params.companyId),
+        getCompanyDetailById(params.companyId),
       ]);
-      const eventData =
-        eventDataResult.status === "fulfilled" ? eventDataResult.value : null;
-      const eventPOCData =
-        eventPOCDataResult.status === "fulfilled"
-          ? eventPOCDataResult.value
-          : null;
+      const companyData = companyDataResult.status === "fulfilled" ? companyDataResult.value : null;
       return {
-        eventData: eventData,
-        eventPOCData: eventPOCData,
+        companyDetails: companyData,
       };
     },
   });
 
   if (!event) return null;
   const {
-    eventData,
-    eventPOCData,
+    companyDetails,
   } = event;
-  const eventDetails: GTMEventDetail = eventData.event || {};
-  const eventPOCDetails: GTMEventPOCDetails[] = eventPOCData.eventPoc || [];
-
-  if (!eventDetails) return null;
-  const {
-    id,
-    name,
-    bannerUrl,
-    format: typeOfEvent,
-    repeatSentiment: trustScore,
-  } = eventDetails;
 
   const handleScrollTo = (section: string) => {
     const element = document.querySelector(`.${section}`);
@@ -122,50 +112,41 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           </Link>
         </button>
 
-        {bannerUrl && (
-          <Image
-            src={bannerUrl ?? "/eventDetailFallback.png"}
-            alt="eventDetails"
-            width={420}
-            height={280}
-            className="max-h-[300px] w-fill rounded-lg"
-          />
-        )}
+        { companyDetails?.cdn_url &&
+          <div className="flex bg-[#F8F8FA] dark:bg-[var(--heading-background-color)] rounded-md px-6 py-4">
+            <Image
+              src={companyDetails?.cdn_url}
+              alt="eventLogo"
+              className="flex h-20 w-20 rounded-xl shadow-lg"
+              width={200}
+              height={200}
+            />
+          </div>
+        }
 
-        <div className="flex bg-[#F8F8FA] dark:bg-[var(--heading-background-color)] rounded-md px-6 py-4">
-          <Image
-            src="https://c1.10times.com/event/df3476a1316b6ad5c70b170b4d4a174/1519356663271/5061.jpg"
-            alt="eventLogo"
-            className="flex h-20 w-20 rounded-xl shadow-lg"
-            width={200}
-            height={200}
-          />
-        </div>
-
-        {name && (
+        {companyDetails?.name && (
           <Heading as="h6" variant="titleNoMargin" className="my-4">
-            Pharmaflair
+            {companyDetails?.name}
           </Heading>
         )}
 
         <div className="flex gap-2 items-center w-fit my-4">
           <Location color="#666666" width="14px" height="14px" />
-          <span className="text-[#6E6F89] text-sm">New Delhi, India</span>
+          <span className="text-[#6E6F89] text-sm">{companyDetails?.city}, {companyDetails?.country}</span>
         </div>
 
-        <div className="flex gap-2 items-center w-fit my-4">
+        <div className="flex gap-2 items-center w-fit my-4 flex-wrap">
           <Buildings color="#666666" width="14px" height="14px" />
-          <span className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit">
-            Pharma
-          </span>
 
-          <span className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit">
-            Hospitals
-          </span>
+          {companyDetails?.industries?.map((item: string) => (
+            <span className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md whitespace-nowrap">
+              {item}
+            </span>
+          ))}
 
-          <span className="text-[var(--info-text-color)] text-xs font-medium">
+          {/* <span className="text-[var(--info-text-color)] text-xs font-medium">
             +2 more
-          </span>
+          </span> */}
         </div>
 
         <div className="text-[#707287] text-sm line-clamp-4 my-4">
@@ -191,7 +172,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
             <AccordionTrigger className="hover:no-underline p-2 font-normal text-sm">
               <p className="flex gap-3 items-center">
                 Company POC
-                {eventPOCDetails.length > 0 && (
+                {/* {eventPOCDetails.length > 0 && (
                   <span className="text-[12px] bg-[var(--primary-color)] text-white dark:text-[#131313] py-[1px] px-2 rounded-full">
                     {eventPOCDetails.filter((poc) => poc !== null).length > 0 &&
                     eventPOCDetails.filter((poc) => poc !== null).length < 9
@@ -200,16 +181,16 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
                         }`
                       : eventPOCDetails.filter((poc) => poc !== null).length}
                   </span>
-                )}
+                )} */}
               </p>
             </AccordionTrigger>
             <AccordionContent
               className={`${
-                eventPOCDetails.length > 1 ? "h-36 overflow-y-auto" : "h-fit"
+                companyDetails?.pocData?.length > 1 ? "h-36 overflow-y-auto" : "h-fit"
               } pb-1 overflow-x-hidden`}
             >
-              {eventPOCDetails && eventPOCDetails.length > 0 ? (
-                eventPOCDetails.map((poc: GTMEventPOCDetails | null) => {
+              {companyDetails?.pocData && companyDetails?.pocData.length > 0 ? (
+                companyDetails?.pocData?.map((poc: GTMEventPOCDetails | null) => {
                   if (!poc) {
                     return <></>;
                   }
@@ -315,7 +296,6 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
             setActiveTab={setActiveTab}
           />
           <AdvancedDetails
-            eventDetails={eventDetails}
             eventId={params.companyId}
           />
 

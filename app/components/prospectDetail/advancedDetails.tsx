@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { GTMEventDetail } from "@/types/events";
 
 interface Props {
-  eventDetails: GTMEventDetail;
+  // eventDetails: GTMEventDetail;
   eventId: string;
 }
 
@@ -91,7 +91,7 @@ const CarouselComponent = () => {
 };
 
 export const AdvancedDetails = ({
-  eventDetails,
+  // eventDetails,
   eventId,
 }: Props) => {
   return (

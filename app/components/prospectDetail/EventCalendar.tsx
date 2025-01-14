@@ -5,6 +5,7 @@ import { Buildings, Location, Plus, Users } from "geist-icons";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import MapChart from "@/public/internal/MapChart.png";
+import { CircleSlash } from "lucide-react";
 
 export const EventCalendar = () => {
   return (
@@ -51,7 +52,6 @@ export const EventCalendar = () => {
             </div>
 
             <TabsContent value="upcoming" className="">
-              {/* <div className="flex flex-col gap-4"> */}
               <div className="flex flex-row gap-6 p-2 my-4">
                 <div className="flex flex-col rounded-lg shadow-md h-14 w-14 border border-[var(--border-color)]">
                   <span className="bg-[var(--primary-light-color)] text-xs font-semibold text-primary text-center py-1 rounded-tl-md rounded-tr-md">
@@ -121,7 +121,11 @@ export const EventCalendar = () => {
                   </p>
                 </div>
               </div>
-              {/* </div> */}
+
+              {/* <span className="text-[#666666] text-sm flex items-center gap-2 my-4">
+                <CircleSlash width={15} height={15} />
+                No data available
+              </span> */}
 
               <Button variant="outline" className="w-full text-primary my-2">
                 See 4 more events
