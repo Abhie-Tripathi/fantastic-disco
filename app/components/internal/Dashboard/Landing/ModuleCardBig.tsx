@@ -47,7 +47,7 @@ const ModuleCardBig = ({ imgHeight, imgWidth, heading, subHeading, image, button
         </div>
         {/* {button === "Coming Soon" ? */}
           {/* <button className='cursor-not-allowed text-white text-sm rounded-lg bg-gradient-to-r from-[#8C67E2] via-[#946DF0] via-[#E87D83] via-[#F2AB7F] to-[#FFC899] px-4 py-2 mt-5'>{button}</button> : */}
-          <Button onClick={button === "Research" ? searchHandler : handleRouting} className="mt-5 btn-default flex items-center z-20">{button}<MoveRight width={12} /></Button>
+          <Button onClick={button === "Research" ? searchHandler : handleRouting} className="mt-5 btn-default flex items-center z-20 gap-1">{button}<MoveRight width={12} /></Button>
           {/* } */}
       </div>
       <div className={button === "Research" ? "ml-10" : ""}>

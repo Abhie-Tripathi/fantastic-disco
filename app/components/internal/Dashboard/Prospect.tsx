@@ -27,7 +27,7 @@ const Prospect = ({theme} : Props) => {
                     Say goodbye to generic outreach. Our platform utilizes cutting-edge AI to automate prospecting.
                 </div>
                 {/* <button className='cursor-not-allowed text-white text-[10px] rounded-lg bg-gradient-to-r from-[#8C67E2] via-[#946DF0] via-[#E87D83] via-[#F2AB7F] to-[#FFC899] px-3 py-2 mt-3'>Coming Soon</button> */}
-                <Button onClick={handleRouting} className="mt-3 z-10 btn-default flex items-center">Prospect<MoveRight width={12} /></Button>
+                <Button onClick={handleRouting} className="mt-3 z-10 btn-default flex items-center gap-1">Prospect <MoveRight width={12} /></Button>
             </div>
             <Image
                 className={`min-w-[166px] min-h-[117px]`}

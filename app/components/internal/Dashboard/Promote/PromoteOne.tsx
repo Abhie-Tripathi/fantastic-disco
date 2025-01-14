@@ -46,7 +46,7 @@ const PromoteOne = ({ values, theme }: Props) => {
                 <div className="text-[var(--bold-border-color)] text-xs mt-2 text-center">
                     {isEmpty ? "Promote your events through multiple touchpoints, attracting a wider audience" : "Keep track of your widgets !"}
                 </div>
-                {isEmpty && <Button onClick={() => handleRouting("button")} className="mt-3 z-10 btn-default flex items-center">Promote<MoveRight width={12} /></Button>}
+                {isEmpty && <Button onClick={() => handleRouting("button")} className="mt-3 z-10 btn-default flex items-center gap-1">Promote<MoveRight width={12} /></Button>}
             </div>
             {isEmpty && <Image
                 // className={`min-w-[166px] min-h-[200]`}
