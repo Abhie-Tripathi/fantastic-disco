@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useCallback, useMemo, useEffect } from "react";
+import enabledFilters from "@/public/data/enabledFilters"
 import {
   Popover,
   PopoverContent,
@@ -7,79 +8,55 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown } from 'lucide-react';
 import { newCategories as categories } from "@/data/categories";
 import { useFilterContext } from "@/context/filterContext";
-import {toast} from 'react-toastify';
-interface categoryInterface{
-  selectedValue?: string[] | undefined;
-  enabledValue?: any;
-}
-interface categoryProps {
-  source: string;
-  selectedCategories?: string[];
-  setSelectedCategories?: React.Dispatch<React.SetStateAction<string[]>>; 
-  enabledCategories?:categoryInterface;
-}
-export default function CategorySelector({
-  source,
-  enabledCategories,
-  selectedCategories: parentSelectedCategories = [],
-  setSelectedCategories: parentSetSelectedCategories,
-}: categoryProps) {
-  const { getLocalFilterValue, setLocalFilter } = useFilterContext();
-  
+
+export default function CategorySelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedCategoriesLocal, setSelectedCategoriesLocal] = useState<string[]>([]);
-const selectedCategories = source === 'tracker' ? parentSelectedCategories : selectedCategoriesLocal;
-const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories : setSelectedCategoriesLocal;
-  useEffect(() => {
-    if(source !== 'tracker') {
-      const eventTypes = getLocalFilterValue("categories")
-        .split(",")
-        .filter(Boolean);
-        
-      setSelectedCategories?.(eventTypes);
-    }
-  }, [getLocalFilterValue]);
+  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const categories = morphedData.categories.options;
+  const selectedCategories = getLocalFilterValue("categories")
+    .split(",")
+    .filter(Boolean);
 
-  const handleCategoryToggle = useCallback((categorySlug: string) => {
+  const isAnyDisabled = useMemo(() => {
+    return categories.some((cat: any) => !cat.isEnabled);
+  }, [categories]);
 
-    setSelectedCategories?.((prev) => {
-      if(enabledCategories?.enabledValue && prev.length === 1 && prev.includes(categorySlug)) {
-        toast.error("At least one filter must be selected", {
-          position: "bottom-right",
-          autoClose: 2000,
-          hideProgressBar: true,
-        });
-        return prev;
-      }
-      return prev.includes(categorySlug)
-        ? prev.filter((slug) => slug !== categorySlug) 
-        : [...prev, categorySlug];
-    });
-    
-    
-  }, [enabledCategories]);
-
-  const handleSelectAll = useCallback((isSelected: boolean) => {
-    setSelectedCategories?.(isSelected ? categories.map((cat) => cat.slug) : []);
-  }, []);
-
-  const isAllSelected = useMemo(
-    () => categories.every((cat) => selectedCategories.includes(cat.slug)),
-    [selectedCategories]
+  const handleCategoryToggle = useCallback(
+    (categorySlug: string) => {
+      const newCategories = selectedCategories.includes(categorySlug)
+        ? selectedCategories.filter((slug) => slug !== categorySlug)
+        : [...selectedCategories, categorySlug];
+      setLocalFilter("categories", newCategories.join(","));
+    },
+    [selectedCategories, setLocalFilter]
   );
 
-  const handleApply = useCallback(() => {
-    setLocalFilter("categories", selectedCategories.join(","));
-    setIsOpen(false);
-  }, [selectedCategories, setLocalFilter]);
+  const handleSelectAll = useCallback(
+    (isSelected: boolean) => {
+      setLocalFilter(
+        "categories",
+        isSelected ? categories.filter((cat: any) => cat.isEnabled).map((cat: any) => cat.slug).join(",") : ""
+      );
+    },
+    [setLocalFilter, categories]
+  );
+
+  const isAllSelected = useMemo(
+    () => categories.every((cat: any) => cat.isEnabled && selectedCategories.includes(cat.slug)),
+    [selectedCategories, categories]
+  );
+
+  const onOpenChange = (open: boolean) => {
+    setIsOpen(open);
+  };
 
   const renderCategories = useCallback(() => {
     const columnCount = 3;
     const allCategories = [
-      { id: "all", name: "Select All", slug: "all" },
+      { id: "all", name: "Select All", slug: "all", isEnabled: true },
       ...categories,
     ];
     const itemsPerColumn = Math.ceil(allCategories.length / columnCount);
@@ -87,18 +64,19 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
     return (
       <div className="grid grid-cols-3 gap-x-4">
         {Array.from({ length: columnCount }).map((_, columnIndex) => (
-          <div key={columnIndex} className="space-y-2">
+          <div key={columnIndex} className="space-y-4">
             {allCategories
               .slice(
                 columnIndex * itemsPerColumn,
                 (columnIndex + 1) * itemsPerColumn
               )
               .map((category) => (
-                <div key={category.id} className="flex items-center space-x-2">
+                <div key={category.id} 
+                className={`flex items-center space-x-2 ${!category.isEnabled ? 'opacity-50' : ''}`}
+                >
                   <Checkbox
                     className="rounded-none"
                     id={category.slug}
-                    disabled={enabledCategories && !enabledCategories?.enabledValue?.some((item:any) => item.id === category.id)}
                     checked={
                       category.slug === "all"
                         ? isAllSelected
@@ -109,10 +87,13 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
                         ? handleSelectAll(!isAllSelected)
                         : handleCategoryToggle(category.slug)
                     }
+                    disabled={(category.slug === "all" && isAnyDisabled) || (!category.isEnabled && category.slug !== "all")}
                   />
                   <label
                     htmlFor={category.slug}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 whitespace-nowrap"
+                    className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 whitespace-nowrap ${
+                      (category.slug === "all" && isAnyDisabled) || (!category.isEnabled && category.slug !== "all") ? 'opacity-50' : ''
+                    }`}
                   >
                     {category.name}
                   </label>
@@ -127,14 +108,9 @@ const setSelectedCategories = source === 'tracker' ? parentSetSelectedCategories
     selectedCategories,
     isAllSelected,
     handleSelectAll,
+    categories,
+    isAnyDisabled
   ]);
-
-  const onOpenChange = (open: boolean) => {
-    if (!open) {
-      handleApply();
-    }
-    setIsOpen(open);
-  };
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>

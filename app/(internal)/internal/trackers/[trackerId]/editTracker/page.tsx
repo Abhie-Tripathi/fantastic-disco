@@ -5,7 +5,7 @@ import SideNav from '@/app/components/trackers/sideNav'
 const page = () => {
   return (
     <div className="flex flex-col items-center w-[100%] g-5 pb-6 ">
-      <SideNav/>
+      {/* <SideNav/> */}
       <Filter/>
     </div>
   )

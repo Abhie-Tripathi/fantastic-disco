@@ -123,12 +123,12 @@ export default function CreateTrackerDialog({
           "Content-Type": "application/json",
         },
       });
-
-      if (error) {
-        throw new Error(error);
+      
+      if(error){
+        toast.error(error.message);
       }
-
       if (data) {
+        
         toast.success(
           <div style={{ display: "flex", flexWrap: "wrap" }}>
             Tracker created successfully!{" "}
