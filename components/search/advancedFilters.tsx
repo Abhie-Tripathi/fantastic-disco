@@ -29,7 +29,11 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
   };
   const advancedDetailsFiltersCount = (function () {
     let count = 0;
-    if (localFilters.onlyBranded === "true" || localFilters.onlySeries === "true") count++;
+    if (
+      localFilters.onlyBranded === "true" ||
+      localFilters.onlySeries === "true"
+    )
+      count++;
     if (localFilters.frequencies) count++;
     if (localFilters.includeKeywords || localFilters.excludeKeywords) count++;
     if (localFilters.maturity) count++;
@@ -56,9 +60,9 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
       value={selectedView}
       onValueChange={handleTabChange}
     >
-      <div className="flex justify-center mb-6">
+      <div className="flex justify-center my-6">
         <div className="flex justify-center">
-        <TabsList className="w-[570px] grid grid-cols-3 h-auto">
+          <TabsList className="w-[570px] grid grid-cols-3 h-auto">
             <TabsTrigger value="advancedDetails" className="text-base">
               Advanced Details
               {advancedDetailsFiltersCount ? (
@@ -89,78 +93,36 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
         </div>
       </div>
       <TabsContent value="advancedDetails">
-        <div className="grid grid-cols-5 gap-3 pb-6 border-b">
-          <EditionSelector
-            source="search"
-            enabledMaturityData={enabledFilters?.maturity}
-          />
-          <GlobalAndTouringSelector
-            source="search"
-            enabledBrandData={enabledFilters?.branded}
-          />
-          <ForecastedStatusSelector
-            source="search"
-            enabledForecastData={enabledFilters?.isForecasted}
-          />
-          <FrequencySelector
-            source="search"
-            enabledFreqData={enabledFilters?.eventFrequency}
-          />
-          <KeywordFilter
-            source="search"
-            enabledProductData={enabledFilters?.keywords}
-          />
+        <div className="grid grid-cols-3 lg:grid-cols-5 gap-3 pb-6 border-b">
+          <EditionSelector />
+          <GlobalAndTouringSelector />
+          <ForecastedStatusSelector />
+          <FrequencySelector />
+          <KeywordFilter />
         </div>
       </TabsContent>
       <TabsContent value="insightsAndScores">
         <div
-          className={cn("grid grid-cols-5 gap-3 pb-6 border-b", {
-            "grid-cols-4": isEventeli,
+          className={cn("grid grid-cols-3 lg:grid-cols-5 gap-3 pb-6 border-b", {
+            "grid-cols-3": isEventeli,
           })}
         >
-          <EstimatedVisitorsSelector
-            source="search"
-            enabledVisitorData={enabledFilters?.eventSize}
-          />
-          {!isEventeli && (
-            <EstimatedExhibitorsSelector
-              source="search"
-              enabledExhibitorData={enabledFilters?.estimatedExhibitScore}
-            />
-          )}
-          <EventAnalyticsSelector
-            source="search"
-            enabledAnalyticsData={enabledFilters?.analytics}
-          />
+          <EstimatedVisitorsSelector />
+          {!isEventeli && <EstimatedExhibitorsSelector />}
+          <EventAnalyticsSelector />
           <EstimatedEconomicImpactSelector />
-          <EventRankingSelector
-            source="search"
-            enabledRankingData={enabledFilters?.eventRanking}
-          />
+          <EventRankingSelector />
         </div>
       </TabsContent>
       <TabsContent value="audienceIntel">
         <div
-          className={cn("grid grid-cols-5 gap-3 pb-6 border-b", {
-            "grid-cols-4": isEventeli,
-          })}
+          className={cn("grid grid-cols-3 lg:grid-cols-5 gap-3 pb-6 border-b")}
         >
           <AudienceQualitySelector />
           <ExhibitorQualitySelector />
-          {!isEventeli && (
-            <AudienceZoneSatusSelector
-              source="search"
-              enabledZoneData={enabledFilters?.audienceZone}
-            />
-          )}
-          <AudienceDesAndDep
-            source="search"
-            enabledProfileData={enabledFilters?.designation}
-          />
-          <AudienceSpread
-            source="search"
-            enabledSpreadData={enabledFilters?.audienceSpread}
-          />
+          {!isEventeli && <AudienceZoneSatusSelector />}
+          <AudienceDesAndDep />
+          <AudienceSpread />
         </div>
       </TabsContent>
       <TabsContent value="trackers">
@@ -169,6 +131,5 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
     </Tabs>
   );
 };
-
 
 export default AdvancedFilters;

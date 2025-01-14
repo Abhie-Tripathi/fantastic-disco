@@ -5,6 +5,10 @@ import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
 import {EventCount} from "@/types/events";
 import { EventTableType } from '@/types/ListViewTable';
+interface OriginalResponse {
+  totalEvents: number;
+  events: any[];
+}
 export const useTrackerServices = () => {
     const api = useApi();
     const createTracker = (formData: Tracker) => {
@@ -118,12 +122,13 @@ export const useTrackerServices = () => {
     ) => {
       
       const response:any= await api.request(
-        `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&${eventType}` : ''}`,
+        eventType==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?${params}`:`${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&type=${eventType}` : ''}`,
         {
           method: "GET",
           signal: abortSignal,
         }
       );
+      
       const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
       
       return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=Map"));
@@ -147,9 +152,13 @@ export const useTrackerServices = () => {
           }
         )
     }
-    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:string)=>{
+    const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any)=>{
+      
+      // const params = new URLSearchParams(new URL(type).search);
+      // const t = params.get("type"); 
+      // console.log(1111);
         const response = await api.request<EventCount[]>(
-          `${endpoints.tracker.commonUrl}/${trackerId}/events?limit=20&offset=0&${type}&groupBy=${currentZoomGroup}`,
+          type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?limit=20&offset=0&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=20&offset=0&type=${type}&groupBy=${currentZoomGroup}`,
           {
             method: "GET",
           }
@@ -159,12 +168,36 @@ export const useTrackerServices = () => {
     const getEventsLatLongData = async (trackerId:string,searchParams:string, type:string) => {
       const params = new URLSearchParams(searchParams);
     const adaptedParams = EventsAdapter.adaptRequestParams(params);
-    const response = await api.request(`${endpoints.tracker.commonUrl}/${trackerId}/events?${type}`, {
+    const response = await api.request(type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${type}`, {
       method: "GET",
       params: adaptedParams,
     });
     return  TrackersAdapter.adaptTrackerMapEventData(response)
     };
+    const getCalendarViewEvents = async (trackerId:string, searchParams:string, isListing:boolean, viewType?:string)=>{
+      // console.log(type);
+      const newParams=new URLSearchParams(searchParams);
+      const type=newParams.get("type");
+      newParams.delete("type");
+      const entries = Array.from(newParams.entries());
+      const result = entries
+      .map(([key, value]) => `${key}=${value}`)
+      .join("&");
+      
+      // console.log(`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${type}&groupBy=${searchParams}`);
+      const response: OriginalResponse | undefined = await api.request(type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?${result}`:`${endpoints.tracker.commonUrl}/${trackerId}/events?${searchParams}`, {
+        method: "GET",
+      });
+      
+      // console.log(TrackersAdapter.adaptTrackerMapEventData(response));
+      if(isListing){
+        const updatedResponse  = TrackersAdapter.adaptTrackerEventData(response);
+        
+        
+        return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams(""));
+      }else 
+      return EventsAdapter.adaptResponse(response, new URLSearchParams(`view=calendar&calendar_type=${viewType}`));
+    }
     // const getEventsCount = async (searchParams: string) => {
     //   const params = new URLSearchParams(searchParams);
     //   const adaptedParams = EventsAdapter.adaptEventCountRequestParam(params);
@@ -184,6 +217,7 @@ export const useTrackerServices = () => {
       editTracker,
       getTrackerMapEvents,
       getShareAccess,
+      getCalendarViewEvents,
       editAccess,
       shareTrackerInvite,
       createNewAccess,

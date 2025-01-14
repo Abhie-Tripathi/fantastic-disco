@@ -1,7 +1,7 @@
 export interface Designations {
     id: string;
     name: string;
-    slug?: string;
+    slug: string;
     description?: string | null;
     createdAt?: string;
     updatedAt?: string;

@@ -8,6 +8,7 @@ import { useCoordinateService } from "@/services/coordinateService";
 import NullState from "@/app/components/trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg";
 import PipelineCol from "@/app/components/outreach/pipelineCol";
+import { useSearchParams } from "next/navigation";
 
 interface taskDetailType {
   [task: string]: {
@@ -32,6 +33,8 @@ const Page: React.FC = () => {
   const [statusChanged, setStatusChanged] = useState<boolean>(false);
 
   const coordinateService = useCoordinateService();
+
+  const searchParams = useSearchParams()
 
   const handleRefresh = () => {
     setStatusChanged(!statusChanged);
@@ -194,13 +197,49 @@ const Page: React.FC = () => {
 
   const [configData, setConfigData] = useState<any>();
 
+  // const getOutreachConfig = async () => {
+  //   try {
+  //     const apiData: any = await coordinateService.getPipelineConfig();
+  //     setConfigData(apiData.outreach_stage.slice(1, apiData.outreach_stage.length - 1));  
+  //     let outreachPipeLine1 = apiData.outreach_stage.slice(1, apiData.outreach_stage.length - 1);
+  //     let temp: taskDetailType = {}
+  //     outreachPipeLine1.map((item: any)=>{
+  //       temp[item.status] = {
+  //         label: item.label,
+  //         data: [],
+  //         count: 0,
+  //         dataLoaded: false,
+  //         noMoreData: false,
+  //         page: 0,
+  //       }
+  //     });
+  //     setTaskDetail(temp);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   getOutreachConfig();
+  //   const modalValue = searchParams.get("modalOpen")
+  //   const eventEnquiryId = searchParams.get("enquiryId")
+  //   const eventId = searchParams.get("eventId")
+  //   if(modalValue === "true" && eventEnquiryId && eventId ){
+  //       setEnquiryId(eventEnquiryId)
+  //       setSingleEventId(eventId)
+  //       setModalOpen(true)
+  //   }
+  // }, []);
   const getOutreachConfig = async () => {
     try {
       const apiData: any = await coordinateService.getPipelineConfig();
-      setConfigData(apiData.outreach_stage.slice(1, apiData.outreach_stage.length - 1));  
-      let outreachPipeLine1 = apiData.outreach_stage.slice(1, apiData.outreach_stage.length - 1);
-      let temp: taskDetailType = {}
-      outreachPipeLine1.map((item: any)=>{
+      const outreachPipeLine1 = apiData.outreach_stage.slice(1, apiData.outreach_stage.length - 1);
+  
+      setConfigData(outreachPipeLine1); // Set the configuration data
+  
+      // Prepare taskDetail object
+      let temp: taskDetailType = {};
+      outreachPipeLine1.forEach((item: any) => {
         temp[item.status] = {
           label: item.label,
           data: [],
@@ -208,17 +247,37 @@ const Page: React.FC = () => {
           dataLoaded: false,
           noMoreData: false,
           page: 0,
-        }
+        };
       });
       setTaskDetail(temp);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }
-
+  };
+  
+  const initializeModalState = async () => {
+    const modalValue = searchParams.get("modalOpen");
+    const eventEnquiryId = searchParams.get("enquiryId");
+    const eventId = searchParams.get("eventId");
+    const eventenquiryStatus = searchParams.get("status");
+  
+    if (modalValue === "true" && eventEnquiryId && eventId && eventenquiryStatus) {
+      setEnquiryId(eventEnquiryId);
+      setSingleEventId(eventId);
+      setModalOpen(true);
+      setCurrentEnquiryStatus(eventenquiryStatus);
+    }
+  };
+  
   useEffect(() => {
-    getOutreachConfig();
+    const fetchAndInitialize = async () => {
+      await getOutreachConfig(); // Wait for configuration data to be set
+      await initializeModalState(); // Then proceed with modal initialization
+    };
+  
+    fetchAndInitialize();
   }, []);
+  
 
   useEffect(() => {
     if (window.innerWidth > 576) {

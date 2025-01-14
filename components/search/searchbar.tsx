@@ -25,7 +25,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function MultiSelectSearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
+  const { getLocalFilterValue, localFilters } = useFilterContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<Event[]>([]);
@@ -41,7 +41,6 @@ export default function MultiSelectSearchBar() {
       );
       try {
         const events = await Promise.all(eventPromises);
-        console.log(events);
         setSelectedItems(events as unknown as Event[]);
       } catch (error) {
         console.error("Error fetching event details:", error);
@@ -53,14 +52,14 @@ export default function MultiSelectSearchBar() {
       const eventIds = eventIdsString.split(",");
       fetchEventDetails(eventIds);
     }
-  }, []);
+  }, [localFilters]);
 
   const debouncedSearch = useCallback(
     debounce(async (value: string) => {
       if (value) {
         try {
           const response = await getEventsWithSearchParams(
-            `eventName=${encodeURIComponent(value)}`
+            `query=${encodeURIComponent(value)}`
           );
           const filteredResults =
             (response?.events as Event[])?.filter(
@@ -90,7 +89,6 @@ export default function MultiSelectSearchBar() {
   const handleSearchSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
-      console.log("Selected items:", selectedItems);
       setOpen(false);
     },
     [selectedItems]
@@ -101,20 +99,25 @@ export default function MultiSelectSearchBar() {
       setSelectedItems((prev) => {
         const newSelectedItems = [...prev, item];
         const eventIds = newSelectedItems.map((event) => event.id).join(",");
+        const show = getLocalFilterValue("show");
 
+        console.log(show);
         const newParams = new URLSearchParams();
         if (eventIds) {
           newParams.set("eventIds", eventIds);
         }
+        if (show) {
+          newParams.set("show", show);
+        }
 
-        router.push(`?${newParams.toString()}`);
+        router.push(`/internal/search/events?${newParams.toString()}`);
 
         return newSelectedItems;
       });
       setSearchTerm("");
       setSearchResults([]);
     },
-    [router]
+    [router, localFilters]
   );
 
   const handleRemoveItem = useCallback(
@@ -124,20 +127,22 @@ export default function MultiSelectSearchBar() {
           (item) => item.id !== itemToRemove.id
         );
         const eventIds = newSelectedItems.map((event) => event.id).join(",");
+        const show = getLocalFilterValue("show");
 
-        // Create a new URLSearchParams object
         const newParams = new URLSearchParams();
         if (newSelectedItems.length > 0) {
           newParams.set("eventIds", eventIds);
         }
+        if (show) {
+          newParams.set("show", show);
+        }
 
-        // Update the URL with the new search params
         router.push(`?${newParams.toString()}`);
 
         return newSelectedItems;
       });
     },
-    [router]
+    [router, localFilters]
   );
 
   useEffect(() => {

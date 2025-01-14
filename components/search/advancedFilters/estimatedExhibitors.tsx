@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -11,128 +11,56 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
-import {toast} from 'react-toastify';
-import { LockClosedSmall } from "geist-icons";
+import {EventType} from "@/public/data/searchFilters"
 const exhibitorRanges = [
   { id: "0-100", label: "0-100", min: 0, max: 100 },
   { id: "100-500", label: "100-500", min: 100, max: 500 },
   { id: "500-1000", label: "500-1000", min: 500, max: 1000 },
   { id: "1000+", label: "1000+", min: 1000, max: Infinity },
 ];
-interface exhibitorInterface{
-  isExhibitorsEnabled?:boolean;
-  enabledValue?:string[] | undefined;
-}
-interface EstimatedExhibitorProps {
-  source: string;
-  enabledExhibitorData?:exhibitorInterface;
-  selectedRanges?: string[];
-  setSelectedRanges?: React.Dispatch<React.SetStateAction<string[]>>; 
-  isEnabled?: boolean;
-  setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
-export default function EstimatedExhibitorsSelector({
-  source,
-  enabledExhibitorData,
-  selectedRanges: parentSelectedRanges = [],
-  setSelectedRanges: parentSetSelectedRanges,
-  isEnabled: parentIsEnabled = false,
-  setIsEnabled: parentSetIsEnabled,
-}: EstimatedExhibitorProps) {
+export default function EstimatedExhibitorsSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
-  const [localIsEnabled, setLocalIsEnabled] = useState(false);
-  const [selectedRangesLocal, setSelectedRangesLocal] = useState<string[]>([])
+  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const exhibitorOptions = morphedData.estimatedExhibitor.options;
+  const enabled = morphedData.estimatedExhibitor.isEnabled;
+  const showToogle = morphedData.estimatedExhibitor.isToogleEnabled;
+  const selectedRanges = useMemo(
+    () => getLocalFilterValue("estimatedExhibitors").split(",").filter(Boolean),
+    [getLocalFilterValue]
+  );
 
-  const showInFilter = source === "tracker" ? parentIsEnabled : localIsEnabled;
-  const setShowInFilter = source === "tracker" ? parentSetIsEnabled : setLocalIsEnabled;
-  const selectedRanges = source === "tracker" ? parentSelectedRanges : selectedRangesLocal;
-  const setSelectedRanges = source === "tracker" ? parentSetSelectedRanges : setSelectedRangesLocal;
-  useEffect(() => {
-    if(source!=="tracker"){
-    const estimatedExhibitors = getLocalFilterValue("estimatedExhibitors");
-    if (estimatedExhibitors) {
-      const ranges = estimatedExhibitors.split(",");
-      const selected = exhibitorRanges.filter((range) =>
-        ranges.some((r) => {
-          const [min, max] = r.split("-").map(Number);
-          return (
-            range.min === min &&
-            (range.max === max || (max === undefined && range.max === Infinity))
-          );
-        })
-      );
-      setSelectedRanges?.(selected.map((range) => range.id));
-    } else {
-      setSelectedRanges?.([]);
-    }
-    setShowInFilter?.(
-      getLocalFilterValue("show").includes("estimatedExhibitors")
-    );
-  }
+  const showInFilter = useMemo(() => {
+    const showFilters = getLocalFilterValue("show").split(",");
+    return showFilters.includes("estimatedExhibitors");
   }, [getLocalFilterValue]);
 
   const handleRangeToggle = (rangeId: string) => {
-    setSelectedRanges?.((prev) => {
-      if (enabledExhibitorData?.enabledValue && prev.length === 1 && prev.includes(rangeId)) {
-        toast.error("At least one filter must be selected", {
-          position: "bottom-right",
-          autoClose: 2000,
-          hideProgressBar: true,
-        });
-        return prev;
-      }
-      return prev.includes(rangeId)
-        ? prev.filter((id) => id !== rangeId) 
-        : [...prev, rangeId]; 
-    });
-  };
+    const newRanges = selectedRanges.includes(rangeId)
+      ? selectedRanges.filter((id) => id !== rangeId)
+      : [...selectedRanges, rangeId];
 
-  const handleApply = () => {
-    if (selectedRanges.length > 0) {
-      const selectedRangesData = exhibitorRanges.filter((range) =>
-        selectedRanges.includes(range.id)
-      );
-      const rangeStrings = selectedRangesData.map((range) =>
-        range.max === Infinity ? `${range.min}` : `${range.min}-${range.max}`
-      );
-      setLocalFilter("estimatedExhibitors", rangeStrings.join(","));
-    } else {
-      setLocalFilter("estimatedExhibitors", "");
-    }
-    setIsOpen(false);
+    setLocalFilter("estimatedExhibitors", newRanges.join(","));
   };
 
   const handleShowToggle = (checked: boolean) => {
-    setShowInFilter?.(checked);
     const currentShow = getLocalFilterValue("show").split(",").filter(Boolean);
     const newShow = checked
       ? Array.from(new Set([...currentShow, "estimatedExhibitors"]))
-      : currentShow.filter((item: string) => item !== "estimatedExhibitors");
+      : currentShow.filter((item) => item !== "estimatedExhibitors");
+
     setLocalFilter("show", newShow.join(","));
   };
 
   return (
-    <Popover
-      open={isOpen}
-      onOpenChange={(open) => {
-        if (!open) handleApply();
-        setIsOpen(open);
-      }}
-    >
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
-          disabled={enabledExhibitorData && !enabledExhibitorData?.isExhibitorsEnabled}
           aria-expanded={isOpen}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
-          <div className="flex items-center">
-          {enabledExhibitorData && !enabledExhibitorData?.isExhibitorsEnabled && 
-              <LockClosedSmall color="var(--secondary-text-color)" />
-            }
           <span className="flex items-center gap-2">
             Estimated Exhibitors
             {selectedRanges.length > 0 && (
@@ -141,14 +69,11 @@ export default function EstimatedExhibitorsSelector({
               </span>
             )}
           </span>
-          </div>
           <Switch
             checked={showInFilter}
             onCheckedChange={handleShowToggle}
             aria-label="Show Estimated Exhibitors in filter"
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-              e.stopPropagation()
-            }
+            onClick={(e) => e.stopPropagation()}
           />
         </Button>
       </PopoverTrigger>
@@ -157,15 +82,11 @@ export default function EstimatedExhibitorsSelector({
         align="start"
       >
         <div className="p-4 space-y-4">
-          {exhibitorRanges.map((range) => (
+          {exhibitorOptions.map((range: EventType) => (
             <div key={range.id} className="flex items-center space-x-2">
               <Checkbox
                 id={range.id}
-                disabled={
-                  enabledExhibitorData && 
-                  enabledExhibitorData.enabledValue && 
-                  !enabledExhibitorData.enabledValue.includes(range.id)
-                }
+                disabled={!range.isEnabled}
                 checked={selectedRanges.includes(range.id)}
                 onCheckedChange={() => handleRangeToggle(range.id)}
               />
