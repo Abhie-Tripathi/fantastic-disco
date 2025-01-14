@@ -36,7 +36,7 @@ import { ArrowLeft, Loader2, TriangleAlert } from "lucide-react";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useSearchParams } from "next/navigation";
 import { Input } from "../ui/input";
-import { industryData } from "@/data/onboarding";
+import { industryData, settingResearchData } from "@/data/onboarding";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -92,6 +92,7 @@ export default function NewVerificationForm() {
 
   const { getFilterValue } = useFilterState();
   const email = getFilterValue("email");
+  const internalConfigSetBy = getFilterValue("internalConfigSetBy");
 
   const form = useForm<OTPData>({
     resolver: zodResolver(otpSchema),
@@ -108,7 +109,7 @@ export default function NewVerificationForm() {
       if (flow && flow === "signup") {
         const mappedSettingResearch =
           industryData.find((data) => data.slug === industry)
-            ?.mappedSettingResearch || [];
+            ?.mappedSettingResearch || settingResearchData;
         const settingsInterestData = {
           data: mappedSettingResearch,
           source: "interest",
@@ -116,6 +117,7 @@ export default function NewVerificationForm() {
         await verifyOtp(
           { email, otpCode: data.otpCode },
           settingsInterestData,
+          internalConfigSetBy,
           redirectTo
         );
       } else {

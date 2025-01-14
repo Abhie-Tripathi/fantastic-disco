@@ -100,6 +100,7 @@ const NewSignUpForm = () => {
   const onSubmit = async (data: FormData) => {
     const signUpDTOData = {
       ...data,
+      industry: data.industry || "others",
       ...(categories.length > 0 && { categories: data.categories }),
     };
     const categorySlugs = categories

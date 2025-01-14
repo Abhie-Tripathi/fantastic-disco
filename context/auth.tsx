@@ -54,6 +54,7 @@ type authContextType = {
     email: string,
     industry?: string,
     categories?: string,
+    internalConfigSetBy?: string,
     flow?: string
   ) => void;
   verifyOtp: (
@@ -62,6 +63,7 @@ type authContextType = {
       data: SettingResearchData[];
       source: string;
     },
+    internalConfigSetBy: string,
     redirectTo?: string
   ) => Promise<any>;
   verifyLoginOTP: (user: any, redirectTo?: string) => Promise<any>;
@@ -134,6 +136,7 @@ export const AuthContextProvider = ({ children }: any) => {
     email: string,
     industry?: string | undefined | null,
     categories?: string | null,
+    internalConfigSetBy?: string,
     flow?: string | null
   ) => {
     const url = `${baseUrl}/auth/customer/verify/generate`;
@@ -144,6 +147,7 @@ export const AuthContextProvider = ({ children }: any) => {
       email: email.trim(),
       ...(industry && { industry }),
       ...(flow && { flow }),
+      ...(internalConfigSetBy && { internalConfigSetBy }),
     });
     try {
       const data = await request(url, {
@@ -160,7 +164,7 @@ export const AuthContextProvider = ({ children }: any) => {
     async (userDto: SignUpDTO) => {
       const url = baseUrl + authEndpoints.signup;
       try {
-        await request(url, {
+        const data = await request(url, {
           method: "POST",
           data: { ...userDto, role: "CUSTOMER" },
         });
@@ -168,6 +172,7 @@ export const AuthContextProvider = ({ children }: any) => {
           userDto.email,
           userDto.industry,
           userDto.categories,
+          data.internalConfigSetBy,
           "signup"
         );
       } catch (err) {
@@ -363,6 +368,7 @@ export const AuthContextProvider = ({ children }: any) => {
     async (
       verifyOtpDTO: VerifyOTP,
       settingsInterestData: { data: SettingResearchData[]; source: string },
+      internalConfigSetBy: string,
       redirectTo?: string
     ) => {
       try {
@@ -385,8 +391,8 @@ export const AuthContextProvider = ({ children }: any) => {
             setUser(result.user);
             setLocalStorage(result.user);
             localStorage.removeItem("walkthroughCompleted");
-            console.log(settingsInterestData);
-            await updateResearchData({ formData: settingsInterestData });
+            internalConfigSetBy === "internal" &&
+              (await updateResearchData({ formData: settingsInterestData }));
             router.push(redirectTo || "/");
           }
         }
