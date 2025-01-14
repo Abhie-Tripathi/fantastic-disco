@@ -189,22 +189,22 @@ const Dashboard = () => {
     setProfileData(profileObject)
     // console.log("user", user)
   }
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     // Call all fetch functions in parallel
-  //     await Promise.all([
-  //       fetchRecentSearch(),
-  //       fetchTrackerData(),
-  //       fetchCoordinateData(),
-  //       fetchOutreachData(),
-  //       // fetchOutreachMessage(),
-  //       fetchPromoteData(),
-  //       fetchProfileData()
-  //     ]);
-  //   };
+  useEffect(() => {
+    const fetchData = async () => {
+      // Call all fetch functions in parallel
+      await Promise.all([
+        fetchRecentSearch(),
+        fetchTrackerData(),
+        fetchCoordinateData(),
+        fetchOutreachData(),
+        // fetchOutreachMessage(),
+        fetchPromoteData(),
+        fetchProfileData()
+      ]);
+    };
 
-  //   fetchData();
-  // }, []);
+    fetchData();
+  }, []);
 
   const isCoordinateEmpty = (coordinateData: { heading: string; value: number }[]) => {
     return !coordinateData.some(item => item.value > 0);

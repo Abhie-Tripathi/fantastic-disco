@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ChevronDown } from "lucide-react";
-
+import { useState, useEffect } from "react";
+import {EventType} from "@/public/data/searchFilters"
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -8,162 +9,88 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useFilterState } from "@/hooks/useFilterState";
 import { useFilterContext } from "@/context/filterContext";
-import {toast} from "react-toastify"
-const EventEntries = [
-  { id: "free", label: "Free" },
-  { id: "paid", label: "Paid" },
-];
-interface entryInterface{
-  enabledValue?:string[] | undefined;
-}
-interface EventEntryProps{
-  enabledEntries?:entryInterface;
-  source: string;
-  selectedStatuses?: string[];
-  setSelectedStatuses?: React.Dispatch<React.SetStateAction<string[]>>;
-}
-export default function EventEntrySelector({
-  enabledEntries,
-  source,
-  selectedStatuses: parentSelectedFormats = [],
-  setSelectedStatuses: parentSetSelectedFormats,
-}: EventEntryProps) {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const { setLocalFilter, getLocalFilterValue, searchParams } =
-    useFilterContext();
-    const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<string[]>(
-      []
-    );
-  
-    const selectedStatuses =
-      source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
-    const setSelectedStatuses =
-      source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
+// import { searchFilters } from "@/data/searchFilters";
 
-  React.useEffect(() => {
-    if(source!=="tracker" && setSelectedStatuses){
-    const currentFilter = getLocalFilterValue("entryType");
-    setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
-    }
-  }, [searchParams, getLocalFilterValue]);
-
+export default function EventEntrySelector() {
+  const [isOpen, setIsOpen] = useState(false);
+  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const eventEntries = morphedData?.eventEntries?.options;
+  const enabled = morphedData?.eventEntries?.isEnabled || [];
+  const selectedStatuses = getLocalFilterValue("entryType")
+    ?.split(",")
+    ?.filter(Boolean);
   const selectedStatus = selectedStatuses.length;
 
   const handleStatusToggle = (statusId: string) => {
-    setSelectedStatuses?.((prev) => {
-      if (enabledEntries?.enabledValue && prev.length === 1 && prev.includes(statusId)) {
-        toast.error("At least one filter must be selected", {
-          position: "bottom-right",
-          autoClose: 2000,
-          hideProgressBar: true,
-        });
-        return prev;
-      }
-      return prev.includes(statusId)
-        ? prev.filter((id) => id !== statusId) 
-        : [...prev, statusId]; 
-    });
-    
-  };
-
-  const handleSelectAll = (checked: boolean) => {
-    setSelectedStatuses?.(
-      checked ? EventEntries.map((eventEntry) => eventEntry.id) : []
-    );
-  };
-
-  const isAllSelected = selectedStatuses.length === EventEntries.length;
-
-  const handleApply = () => {
-    setLocalFilter("entryType", selectedStatuses.join(","));
-    setIsOpen(false);
+    const newStatuses = selectedStatuses.includes(statusId)
+      ? selectedStatuses.filter((id) => id !== statusId)
+      : [...selectedStatuses, statusId];
+    setLocalFilter("entryType", newStatuses.join(","));
   };
 
   const onOpenChange = (open: boolean) => {
-    if (!open) {
-      handleApply();
-    }
     setIsOpen(open);
   };
+  // console.log(EventEntries);
   
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            isOpen ? "border-primary" : "border-input"
-          }`}
-          onClick={() => setIsOpen(!isOpen)}
-          aria-expanded={isOpen}
-          aria-haspopup="true"
-        >
-          <div className="flex items-center">
-            <span className="mr-2">Event Entry</span>
-            {selectedStatus > 0 && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                {selectedStatus}
-              </span>
-            )}
-          </div>
-          <ChevronDown
-            className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
-              isOpen ? "rotate-180 transform" : ""
-            }`}
-          />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-[var(--radix-popover-trigger-width)] p-0"
-        align="start"
+    <PopoverTrigger asChild>
+      <Button
+        variant="outline"
+        className={`w-full justify-between px-3 py-5 text-base font-normal ${
+          isOpen ? "border-primary" : "border-input"
+        }`}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        disabled={!enabled}
       >
-        {/* <div className="flex justify-between items-center p-4 py-2 border-b">
-          <span className="font-medium">Event Entry</span>
-          <Button
-            variant="link"
-            className="text-primary pr-0"
-            onClick={handleApply}
+        <div className="flex items-center">
+          <span className="mr-2">Event Entry</span>
+          {selectedStatus > 0 && (
+            <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+              {selectedStatus}
+            </span>
+          )}
+        </div>
+        <ChevronDown
+          className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
+            isOpen ? "rotate-180 transform" : ""
+          }`}
+        />
+      </Button>
+    </PopoverTrigger>
+    <PopoverContent
+      className="w-[var(--radix-popover-trigger-width)] p-0"
+      align="start"
+    >
+      <div className="p-4 space-y-4">
+        {eventEntries.map((eventEntry:EventType) => (
+          <div
+            key={eventEntry.id}
+            className={`flex items-center space-x-2 ${
+              !eventEntry.isEnabled ? "opacity-50" : ""
+            }`}
           >
-            Apply
-          </Button>
-        </div> */}
-
-        <div className="p-2 space-y-2">
-          {/* <div className="flex items-center space-x-2">
             <Checkbox
-              id="select-all"
+              id={eventEntry.id}
               className="rounded-none"
-              checked={isAllSelected}
-              onCheckedChange={handleSelectAll}
+              checked={selectedStatuses.includes(eventEntry.id)}
+              onCheckedChange={() => handleStatusToggle(eventEntry.id)}
+              disabled={!eventEntry.isEnabled}
             />
             <label
-              htmlFor="select-all"
-              className=" text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              htmlFor={eventEntry.id}
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              Select All
+              {eventEntry.label}
             </label>
-          </div> */}
-          {EventEntries.map((eventEntry) => (
-            <div key={eventEntry.id} className="flex items-center space-x-2">
-              <Checkbox
-                id={eventEntry.id}
-                className="rounded-none"
-                disabled={enabledEntries && !enabledEntries?.enabledValue?.includes(eventEntry.id.toUpperCase())}
-                checked={selectedStatuses.includes(eventEntry.id)}
-                onCheckedChange={() => handleStatusToggle(eventEntry.id)}
-              />
-              <label
-                htmlFor={eventEntry.id}
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-              >
-                {eventEntry.label}
-              </label>
-            </div>
-          ))}
-        </div>
-      </PopoverContent>
-    </Popover>
+          </div>
+        ))}
+      </div>
+    </PopoverContent>
+  </Popover>
   );
 }

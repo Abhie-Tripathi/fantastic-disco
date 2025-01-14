@@ -67,7 +67,7 @@ const Index = () => {
   // }, [secondLast]);
   const handleClick = (view:string) => {
     setView(view);
-    router.push(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=activeEvent`);
+    router.push(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}`);
   };
   // const fetchData=async()=>{
   //     const result = await getTrackerDetail(secondLast)
@@ -107,21 +107,25 @@ const Index = () => {
               <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("list")}>List</div></div>
               {/* </Link> */}
               <div className="cursor-pointer">
-              {/* <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>handleClick("map")}>Map</div> */}
+              <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>handleClick("map")}>Map</div>
               
-              <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
+              {/* <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
               <div className={styles.viewsTab}>
                 Map
               <span className={`${styles.tooltipText}`} style={{marginLeft:"-30%"}}>Coming Soon</span>
               </div>
+              </div> */}
               </div>
-              </div>
+              <div className="cursor-pointer">
+              {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>handleClick("calendar")}>Calendar</div> */}
               <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
               {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>setView("calendar")}>Calendar</div> */}
               <div className={styles.viewsTab}>
               Calendar
               <span className={`${styles.tooltipText}`} style={{marginLeft:"-30%"}}>Coming Soon</span>
               </div>
+              </div>
+
               </div>
             </div>
             {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}

@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: var(--primary-foreground);
+    /* background-color: var(--primary-foreground); */
   }
   
   .loader,

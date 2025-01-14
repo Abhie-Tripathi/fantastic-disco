@@ -9,9 +9,15 @@ import Vectore7 from "/public/lucide_timer.svg";
 import Vectore8 from "/public/expired.svg";
 import Link from "next/link";
 import { GAEvent } from "@/utils/GAEvent";
-import { Location } from "geist-icons";
+import { ChartTrendingUp, Location } from "geist-icons";
+import { useRouter } from "next/navigation";
+import { useTrackerContext } from "@/context/tracker";
+import { useFilterState } from "@/hooks/useFilterState";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
+  const router= useRouter();
+  const {  setIsNewCall, setTrackerId, isLoading:load } = useTrackerContext();
+  const {setFilter} = useFilterState();
   // const { theme } = useTheme();
   // console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const lineData = {
@@ -98,15 +104,26 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
     if(type==="CUSTOM") return "Custom"
     return type.split("_").slice(1).map((ele)=>`${ele.charAt(0)}${ele.substring(1).toLowerCase()}`).join(' ')
   }
+  const handleDoubleClick=(item:any)=>{
+      setSingleTrackerData(item)
+      router.push(`/internal/trackers/${item.id}/trackedEvents?type=CUSTOM&view=list&eventType=activeEvent`)
+      setIsNewCall(true); 
+      setTrackerId(item.id);
+  }
+  const handleSingleClick=(item:any)=>{
+    setSingleTrackerData(item)
+    setFilter("id", item.id);
+  }
   return (
-    <div className="card cursor-pointer" onClick={()=>setSingleTrackerData(item)}
-    style={{border: singleTrackerData?.id===item.id?"1px solid var(--primary-color)":"" }}
+    <div className="card cursor-pointer h-[150px]" onClick={()=>handleSingleClick(item)}
+    onDoubleClick={() => handleDoubleClick(item)} 
+    style={{border: singleTrackerData?.id===item.id?"2px solid var(--primary-color)":"2px solid var(--border-color)" }}
     >
      
-        <div className="flex justify-between">
+        <div className="flex justify-between gap-2">
           <div className="flex gap-2 flex-col justify-between w-[40%]">
-            <div>
-            <div className="font-semibold break-words leading-none">
+            <div className="flex gap-4 flex-col">
+            <div className="font-bold break-words leading-none">
               {item?.name?.length>45? `${item.name.substring(0,45)}...`:item.name}
               </div>
             <div className="flex gap-1 w-[100%]">
@@ -133,33 +150,41 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
             </div>
             <div className="flex gap-2">
             <div className="flex w-full h-[100px]">
-            <div className="flex gap-2 w-[100%] text-xs">
-            <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`}>
+            <div className="flex gap-2 w-[100%] text-sm font-medium">
+            <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none"}}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
                 <Image src={Vectore6} alt="newVector" width={12} height={12}/>
                 New
+                
               </div>
-              <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
+              <div className={styles.numberOfEvents}>
                 {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.new)}
+                {/* <div className="badge_success">
+                <ChartTrendingUp width="12px" height="12px" style={{color:"var(--success-text-color)"}}/>
+                <span className="text-[10px]">
+                5
+                </span>
+                </div> */}
               </div>
               <div className={styles.events}>Events</div>
             </div>
-            <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`}>
+            <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none"}}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
                 <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
+              
                 Active
               </div>
-              <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
+              <div className={styles.numberOfEvents}>
               {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.active)}
               </div>
               <div className={styles.events}>Events</div>
             </div>
-            <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`}>
+            <div className={`flex w-1/3 flex-col gap-1 items-center justify-center card`} style={{boxShadow:"none"}}>
               <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[10px] text-[var(--primary-color)] ${styles.new}`}>
-                <Image src={Vectore8} alt="expired" width={12} height={12}/>
+               <Image src={Vectore8} alt="expired" width={12} height={12}/>
                 Past
               </div>
-              <div className={styles.numberOfEvents} style={{ color: "#454459" }}>
+              <div className={styles.numberOfEvents}>
                 {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired)}
               </div>
               <div className={styles.events}>Events</div>
