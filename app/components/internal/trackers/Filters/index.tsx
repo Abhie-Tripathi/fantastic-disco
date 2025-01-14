@@ -754,6 +754,28 @@ const Pages = () => {
       const category = newCategories.find((cat) => cat.slug === slug);
       return category ? category.id : slug;
     });
+    const showsData: string[] = [];
+
+    const mapping = {
+      rating: "eventRating,trustScore",
+      maturity: "maturity",
+      forecasted: "isforecasted",
+      frequency: "eventFrequency",
+      estimatedExhibitors: "estimatedExhibitScore",
+      scores: "eventImpactScore,inboundScore,internationalScore",
+      audienceZone: "audienceSpread",
+      branded: "eventBrand",
+      series: "eventSeries",
+    };
+    
+    const filters = getLocalFilterValue("show").split(",");
+    Object.entries(mapping).forEach(([key, value]) => {
+      if (filters.includes(key)) {
+        showsData.push(value);
+      }
+    });
+    
+
     const userType = {
       ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
       ...(getLocalFilterValue("show").split(",").includes("estimatedExhibitors") && { exhibit: true }),
@@ -951,7 +973,11 @@ const Pages = () => {
          ...(getLocalFilterValue("designations") && {
           designation: getLocalFilterValue("designations"),
         }),
-        ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'inboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency', 'eventRanking'].join()}
+        ...{
+          
+        },
+        ...{shows: showsData.join(",")}
+        // ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'inboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency'].join()}
         // info: {
         //   name: trackerName,
         //   location:selectedLocations,
