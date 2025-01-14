@@ -14,10 +14,11 @@ import UpvoteSelector from "@/components/coordinate/upvote";
 import InterestStatusSelector from "@/components/coordinate/interestStatus";
 import InterestTypeSelector from "@/components/coordinate/interestType";
 import { useCoordinateService } from "@/services/coordinateService";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import NullState from "../trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg"
+import { Pencil } from "lucide-react";
 
 interface Props {
   handleModal: (id: string, enquiryId: string) => void;
@@ -60,6 +61,7 @@ const Internal = ({
   const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
 
   const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
+  const router = useRouter();
 
   const { setFilter, deleteFilter } = useFilterState();
   const handleScrollEnd = () => {
@@ -182,11 +184,16 @@ const Internal = ({
         <div className={styles.container}>
           <div className={styles.countsContainer}>
             {coordinateCount && coordinateCount.slice(1).map((item: any, index: number) => (
-              <div className={styles.exhibitorCount} key={index}>
+              <div className={`${styles.exhibitorCount}`} key={index}>
                 <div className={styles.count}>
                   {item?.count}
                 </div>
-                <div className={styles.countTitle}>{item.name}</div>
+                <div className="flex items-end cursor-pointer hover:underline relative group" onClick={()=>router.push("/internal/settings/product")}>
+                  {item.name}
+                    <div className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 p-1 rounded absolute -right-7" onClick={()=>router.push("/internal/settings/product")} title="Edit">
+                      <Pencil width="14px" height="14px" />
+                    </div>
+                </div>
               </div>
             ))}
             {/* <div className={styles.exhibitorCount}>
