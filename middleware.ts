@@ -15,7 +15,7 @@ export function middleware(request: NextRequest) {
     }
   }
   if (request.nextUrl.pathname === "/internal/search/events" && !request.nextUrl.searchParams.has("view")) {
-    request.nextUrl.searchParams.set("view", "list");
+    request.nextUrl.searchParams.set("view", "table");
     return NextResponse.redirect(request.nextUrl);
   }
   return NextResponse.next();

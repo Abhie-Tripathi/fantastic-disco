@@ -1,0 +1,169 @@
+'use client'
+
+import React from 'react'
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
+interface PaginationComponentProps {
+  currentPage: number
+  totalPages: number
+  itemsPerPage: number
+  count: number
+  onPageChange: (page: number) => void
+  onItemsPerPageChange: (value: string) => void
+}
+
+export function PaginationComponent({
+  currentPage,
+  totalPages,
+  itemsPerPage,
+  count,
+  onPageChange,
+  onItemsPerPageChange
+}: PaginationComponentProps) {
+  const renderPaginationItems = () => {
+    const items = []
+    const maxVisiblePages = 5
+    const ellipsis = <PaginationEllipsis />
+
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              href="#"
+              onClick={() => onPageChange(i)}
+              isActive={i === currentPage}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        )
+      }
+    } else {
+      items.push(
+        <PaginationItem key={1}>
+          <PaginationLink
+            href="#"
+            onClick={() => onPageChange(1)}
+            isActive={1 === currentPage}
+          >
+            1
+          </PaginationLink>
+        </PaginationItem>
+      )
+
+      if (currentPage > 3) {
+        items.push(
+          <PaginationItem key="ellipsis-start">{ellipsis}</PaginationItem>
+        )
+      }
+
+      for (
+        let i = Math.max(2, currentPage - 1);
+        i <= Math.min(totalPages - 1, currentPage + 1);
+        i++
+      ) {
+        items.push(
+          <PaginationItem key={i}>
+            <PaginationLink
+              href="#"
+              onClick={() => onPageChange(i)}
+              isActive={i === currentPage}
+            >
+              {i}
+            </PaginationLink>
+          </PaginationItem>
+        )
+      }
+
+      if (currentPage < totalPages - 2) {
+        items.push(
+          <PaginationItem key="ellipsis-end">{ellipsis}</PaginationItem>
+        )
+      }
+
+      items.push(
+        <PaginationItem key={totalPages}>
+          <PaginationLink
+            href="#"
+            onClick={() => onPageChange(totalPages)}
+            isActive={totalPages === currentPage}
+          >
+            {totalPages}
+          </PaginationLink>
+        </PaginationItem>
+      )
+    }
+
+    return items
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex justify-between items-center px-2">
+        <div>
+          <span className="text-sm text-muted-foreground">
+            Showing {Math.min((currentPage - 1) * itemsPerPage + 1, count)} to{" "}
+            {Math.min(currentPage * itemsPerPage, count)} of {count} results
+          </span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-muted-foreground">
+            Results per page:
+          </span>
+          <Select
+            value={itemsPerPage.toString()}
+            onValueChange={onItemsPerPageChange}
+          >
+            <SelectTrigger className="w-[70px]">
+              <SelectValue>{itemsPerPage}</SelectValue>
+            </SelectTrigger>
+            <SelectContent align="end">
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="20">20</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      <Pagination>
+        <PaginationContent className="flex-wrap justify-center">
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+              className={
+                currentPage === 1 ? "pointer-events-none opacity-50" : ""
+              }
+            />
+          </PaginationItem>
+          {renderPaginationItems()}
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+              className={
+                currentPage === totalPages ? "pointer-events-none opacity-50" : ""
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+    </div>
+  )
+}
+

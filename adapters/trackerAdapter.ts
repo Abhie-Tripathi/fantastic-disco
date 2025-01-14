@@ -1,7 +1,9 @@
 interface OriginalResponse {
-    totalEvents: number;
-    events: any[];
-  }
+  totalEvents?: number;
+  count?: number;
+  events?: any[];
+  result?: any[];
+}
   
   interface AdaptedResponse {
     events: any[];
@@ -11,18 +13,20 @@ interface OriginalResponse {
   }
   
   export const TrackersAdapter = {
-    adaptTrackerEventData(data: OriginalResponse): AdaptedResponse {
+    adaptTrackerEventData(data: OriginalResponse | undefined): AdaptedResponse {
       return {
-        events: data.events,
+        events: data?.events || data?.result || [],
         stats: {
-          totalEvents: data.totalEvents,
+          totalEvents: data?.totalEvents || data?.count || 0,
         },
       };
     },
   
-    adaptTrackerMapEventData(data: any) {
   
-      const eventData = data.events.map((item: any) => ({
+    adaptTrackerMapEventData(data: any) {
+      const eventKey = data.events ? "events" : "result";
+
+      const eventData = data[eventKey].map((item: any) => ({
         id: item.id,
         eventImpactScore: null,
         latitude:
@@ -38,6 +42,37 @@ interface OriginalResponse {
         events: eventData || [],
       };
     },
+    adaptParams(params:any){
+        
+        if (params.get("view") == "calendar" && params.get("calendar_type") != "week") {
+            const currentYear = new Date().getFullYear();
+            const startDate = new Date(currentYear, 0, 1).toISOString().split("T")[0];
+            const endDate = new Date(currentYear, 11, 31).toISOString().split("T")[0];
+            return `${startDate},${endDate}`;
+          }
+        if (
+            params.get("view") == "calendar" &&
+            params.get("calendar_type") == "week"
+          ) {
+            
+            const today = new Date();
+            const firstDayOfMonth = new Date(
+              today.getFullYear(),
+              today.getMonth(),
+              1
+            );
+            const lastDayOfMonth = new Date(
+              today.getFullYear(),
+              today.getMonth() + 1,
+              0
+            );
+            const startDate = firstDayOfMonth.toISOString().split("T")[0];
+            const endDate = lastDayOfMonth.toISOString().split("T")[0];
+            
+            return `${startDate},${endDate}`;
+          }
+    }
+   
   };
   
   // Helper function to determine the event type

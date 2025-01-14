@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -12,74 +12,40 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
 import { LockClosedSmall } from "geist-icons";
-import { toast } from "react-toastify";
-const maturityLevels = [
-  { id: "new", label: "New" },
-  { id: "growing", label: "Growing" },
-  { id: "established", label: "Established" },
-  { id: "flagship", label: "Flagship" },
-];
-interface enabledData{
-      isMaturityEnabled?:boolean,
-      enabledValue?: string[],
-}
-interface EditionProps{
-  source:string,
-  enabledMaturityData?:enabledData,
-  selectedStatus?: string;
-  setSelectedStatus?: React.Dispatch<React.SetStateAction<string>>;
-  isEnabled?: boolean;
-  setIsEnabled?: React.Dispatch<React.SetStateAction<boolean>>;
-}
-export default function EditionSelector({
-  source,
-  enabledMaturityData,
-  selectedStatus: parentSelectedFormats = "",
-  setSelectedStatus: parentSetSelectedFormats,
-  isEnabled: parentIsEnabled = false,
-  setIsEnabled: parentSetIsEnabled,
-}: EditionProps) {
+import {EventType} from "@/public/data/searchFilters"
+// const maturityLevels = [
+//   { id: "new", label: "New" },
+//   { id: "growing", label: "Growing" },
+//   { id: "established", label: "Established" },
+//   { id: "flagship", label: "Flagship" },
+// ];
+
+export default function EditionSelector() {
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, searchParams } =
-    useFilterContext();
-  const [selectedFormatsLocal, setSelectedFormatsLocal] = React.useState<string>("");
-  const [localIsEnabled, setLocalIsEnabled] = useState(false);
-  const showInFilter = source === "tracker" ? parentIsEnabled : localIsEnabled;
-  const setShowInFilter = source === "tracker" ? parentSetIsEnabled : setLocalIsEnabled;
+  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
+  const maturityLevels = morphedData.maturityLevels.options;
+  const showToggle = morphedData.maturityLevels.isToggleEnabled;
+  const enabled = morphedData.maturityLevels.isEnabled;
+  const selectedStatus = useMemo(
+    () => getLocalFilterValue("maturity"),
+    [getLocalFilterValue]
+  );
 
-  const selectedStatus =
-    source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
-  const setSelectedStatus =
-    source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
-
-  useEffect(() => {
-    if(source!=="tracker"){
-    setSelectedStatus?.(getLocalFilterValue("maturity"));
-    setShowInFilter?.(getLocalFilterValue("show").includes("maturity"));
-    }
-  }, [searchParams]);
+  const showInFilter = useMemo(() => {
+    const showFilters = getLocalFilterValue("show").split(",");
+    return showFilters.includes("maturity");
+  }, [getLocalFilterValue]);
 
   const handleStatusChange = (value: string) => {
     if (value === selectedStatus) {
-      if(enabledMaturityData && enabledMaturityData.enabledValue)
-      toast.error("At least one filter must be selected", {
-        position: "bottom-right",
-        autoClose: 2000,
-        hideProgressBar: true,
-      });
-      else{
-        setSelectedStatus?.("");
-        setLocalFilter("maturity", "");
-      }
+      setLocalFilter("maturity", "");
     } else {
-      setSelectedStatus?.(value);
       setLocalFilter("maturity", value);
     }
     setIsOpen(false);
   };
 
   const handleShowToggle = (checked: boolean) => {
-    setShowInFilter?.(checked);
     const currentShow = getLocalFilterValue("show").split(",").filter(Boolean);
     const newShow = checked
       ? Array.from(new Set([...currentShow, "maturity"]))
@@ -90,22 +56,22 @@ export default function EditionSelector({
   const onOpenChange = (open: boolean) => {
     setIsOpen(open);
   };
-  
+
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
+          disabled={!enabled}
           className={`w-full justify-between px-3 py-5 text-base font-normal ${
             isOpen ? "border-primary" : "border-input"
           }`}
-          disabled={enabledMaturityData && !enabledMaturityData?.isMaturityEnabled}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-haspopup="true"
         >
           <div className="flex items-center">
-          {enabledMaturityData && !enabledMaturityData.isMaturityEnabled && 
+          {!enabled &&
               <LockClosedSmall color="var(--secondary-text-color)" />
             }
             <span className="mr-2">
@@ -119,7 +85,7 @@ export default function EditionSelector({
           </div>
           <Switch
             checked={showInFilter}
-            disabled={enabledMaturityData && !enabledMaturityData?.isMaturityEnabled}
+            disabled={!enabled}
             onCheckedChange={handleShowToggle}
             aria-label="Show Maturity in filter"
             onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
@@ -137,24 +103,24 @@ export default function EditionSelector({
           onValueChange={handleStatusChange}
           className="space-y-2"
         >
-          {maturityLevels.map((maturityLevel) => (
+          {maturityLevels.map((maturityLevel: EventType) => (
             <div key={maturityLevel.id} className="flex items-center space-x-2">
               <RadioGroupItem
                 value={maturityLevel.id}
                 id={maturityLevel.id}
-                disabled={(enabledMaturityData && !enabledMaturityData?.enabledValue?.includes(maturityLevel.id))}
                 onClick={(e) => {
                   if (selectedStatus === maturityLevel.id) {
                     e.preventDefault();
                     handleStatusChange(maturityLevel.id);
                   }
                 }}
+                disabled={!maturityLevel.isEnabled}
               />
               <Label htmlFor={maturityLevel.id}>{maturityLevel.label}</Label>
             </div>
           ))}
         </RadioGroup>
-      </PopoverContent> 
+      </PopoverContent>
     </Popover>
   );
 }
