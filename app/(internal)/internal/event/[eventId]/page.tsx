@@ -391,12 +391,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 )}
               </p>
             </AccordionTrigger>
-            <AccordionContent className="flex flex-col p-2">
+            <AccordionContent className="h-fit">
               {organizer ? (
                 (() => {
                   const { cityName, countryName, logo, name } = organizer;
                   return (
-                    <div className="flex gap-4 pb-1 mb-1">
+                    <div className="flex gap-4 p-2 mb-1">
                       <img
                         src={
                           logo
