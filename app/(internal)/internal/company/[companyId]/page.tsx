@@ -139,7 +139,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           <Buildings color="#666666" width="14px" height="14px" />
 
           {companyDetails?.industries?.map((item: string) => (
-            <span className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md whitespace-nowrap">
+            <span key={item} className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md whitespace-nowrap">
               {item}
             </span>
           ))}
