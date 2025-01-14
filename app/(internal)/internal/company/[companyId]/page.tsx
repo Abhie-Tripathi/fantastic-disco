@@ -298,6 +298,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
                 </div>
               ))}
           </div>
+          <div className="border px-2.5 py-0.5 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit mb-4 mr-3">Demo</div>
         </ul>
 
         <section className="flex flex-col gap-6 pb-6 h-[calc(100vh-150px)] mt-5 w-full pr-4 overflow-y-auto scroll-smooth">
