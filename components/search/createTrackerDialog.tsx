@@ -13,6 +13,7 @@ import { BaseURL } from "@/config";
 import { myFetch } from "@/utils/myFetch";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { useFilterContext } from "@/context/filterContext";
 import styles from "@/app/(internal)/internal/search/events/search.module.css";
 import { EventsAdapter } from "@/adapters/eventsAdapter";
 import { useSearchParams } from "next/navigation";
@@ -32,7 +33,7 @@ export default function CreateTrackerDialog({
   const router = useRouter();
   const searchParams = useSearchParams();
   const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
-
+  const { getLocalFilterValue} = useFilterContext();
   const validateName = (name: string) => {
     if (name.trim().length === 0) {
       return "Tracker name cannot be empty";
@@ -89,29 +90,32 @@ export default function CreateTrackerDialog({
         eventFrequency: true,
       }),
     };
+    const showsData: string[] = [];
 
+    const mapping = {
+      rating: "eventRating,trustScore",
+      maturity: "maturity",
+      forecasted: "isforecasted",
+      frequency: "eventFrequency",
+      estimatedExhibitors: "estimatedExhibitScore",
+      scores: "eventImpactScore,inboundScore,internationalScore",
+      audienceZone: "audienceSpread",
+      branded: "eventBrand",
+      series: "eventSeries",
+    };
+    
+    const filters = getLocalFilterValue("show").split(",");
+    Object.entries(mapping).forEach(([key, value]) => {
+      if (filters.includes(key)) {
+        showsData.push(value);
+      }
+    });
     const formData = {
       name: trackerName,
       filterValue: {
         userType: JSON.stringify(userType),
         ...adaptedParams,
-        ...{
-          shows: [
-            "eventBrand",
-            "eventSeries",
-            "maturity",
-            "eventImpactScore",
-            "inboundScore",
-            "internationalScore",
-            "isforecasted",
-            "trustScore",
-            "eventRating",
-            "eventRanking",
-            "estimatedExhibitScore",
-            "audienceSpread",
-            "eventFrequency",
-          ].join(),
-        },
+        ...{shows: showsData.join(",")}
       },
     };
     
