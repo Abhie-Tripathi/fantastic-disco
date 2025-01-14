@@ -17,7 +17,7 @@ import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import { EventTableType } from "@/types/ListViewTable";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
 import NullState from "../trackers/nullState";
@@ -364,6 +364,8 @@ const Table = ({
 
   const [coordinateActions, setCoordinateActions] = useState<any>([]);
 
+  const router = useRouter();
+
   const handleChangeIntent = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -577,8 +579,8 @@ const Table = ({
         secondLast,
         `max=${itemsPerPage}&offset=${(currPage - 1) * 10}`,
         abortController.signal // Pass the signal here
-      );
-
+      )  as { result: EventTableType[]; count: number };;
+      
       if (result) {
         setIsLoaded(true);
         GAEvent("trackers", "Tracker", "View", `Saved Event | ${currPage}`);
@@ -752,8 +754,8 @@ const Table = ({
           ? "expired"
           : "",
         abortController.signal
-      );
-
+      ) as {events: EventTableType[]; totalEvents: number};
+  
       if (!result) {
         console.error("No data returned from getTrackerEvents");
         return;
@@ -949,6 +951,7 @@ const Table = ({
     setCurrPage((page) => page + 1);
     GAEvent("research", "Filters", "Load More Clicked", "Load More");
   };
+  
   return (
     <div className={styles.table_container}>
       <div
@@ -1174,7 +1177,7 @@ const Table = ({
                       Hybrid
                     </div>
                   )}
-                  {event.location.cityId !== "1" &&
+                  {event?.location?.cityId !== "1" &&
                   event.format === "ONLINE" ? (
                     event.location.venueName !== undefined &&
                     event.location.venueName !== null ? (
@@ -2205,7 +2208,11 @@ const Table = ({
                           <div style={{ maxWidth: "500px" }}>
                             <header className={styles["modal_header"]}>
                               <div className={styles["modal_header-title"]}>
-                                Choose an Action to Proceed{" "}
+                                Choose an {" "}
+                                <Link href="/internal/settings/product" className="text-primary hover:underline">
+                                  Action 
+                                </Link>
+                                {" "}to Proceed
                               </div>
                               <button
                                 className={styles["close"]}

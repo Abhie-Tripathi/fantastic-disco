@@ -577,7 +577,6 @@ export default function MapComponent({ searchParams, source, trackerId, isGlobal
 
   const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
   const showEvent = viewport.zoom >= 12 && events.length;
-  console.log(viewport);
   
   return (
     <div className="relative">
