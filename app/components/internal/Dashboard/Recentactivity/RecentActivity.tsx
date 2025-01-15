@@ -25,7 +25,6 @@ interface Props {
 const RecentActivity = ({ profileData, value }: Props) => {
 
     const {theme} = useTheme()
-    console.log("profile data :", profileData)
     // const notifications = [
     //     { name: "Walter White", id: "@walter", heading: "Metioned you in conversation", mssg: "Please find the propsal", time: "9:00 AM", date: "Dec 1, 2024" },
     //     { name: "Walter White", id: "@walter", heading: "Metioned you in conversation", mssg: "Please find the propsal", time: "9:00 AM", date: "Dec 1, 2024" },
@@ -75,12 +74,12 @@ const RecentActivity = ({ profileData, value }: Props) => {
                 {emptyFields.length > 2 && <div className="absolute top-[40px] z-10 scale-[0.9] w-full drop-shadow" >
                     <OpenCard notification={{ name: profileData.name, heading: emptyFields[2], mssg: emptyFields[2], profile: profileData.profilePicture }} />
                 </div>}
-                <button onClick={() => setNotifOpen(true)}
+                {emptyFields.length > 1 && <button onClick={() => setNotifOpen(true)}
                     className={`cursor-pointer border-none z-[999] h-[28px] w-[28px] flex items-center justify-center bg-white rounded-full shadow-md absolute ${value === "filled" ? "top-[210px]" : "top-[80px]"}`}>
                     <div className="">
                         <ChevronDown />
                     </div>
-                </button>
+                </button>}
             </div>}
             {(notifOpen && emptyFields.length > 0) &&
                 <div className='flex flex-col w-full z-10 gap-2 mt-4 overflow-y-auto pr-1'>

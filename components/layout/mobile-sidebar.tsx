@@ -5,6 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import HeroLogo from "/public/HeroLogo.svg";
+import WidgetdashboardIcon from "@/app/components/sidebar/Icons/WidgetDashboard";
+import BrandkitIcon from "@/app/components/sidebar/Icons/WidgetBrandKit";
+import WidgetIcon from "@/app/components/sidebar/Icons/WidgetIcon2";
+import EventsIcon from "@/app/components/sidebar/Icons/WidgetIcon3";
 import HeroText from "/public/whrai.svg";
 import {
   MagnifyingGlass,
@@ -18,16 +22,16 @@ import { Coordinate, Outreach } from "@/constants/index";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { SheetClose } from "@/components/ui/sheet";
-import { LogOut, User } from "lucide-react";
+import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import { useTheme } from "@/context";
 
 const MobileSidebar = () => {
   const pathname = usePathname();
-  const { theme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const { signOut } = useAuthContext();
 
-  const links = [
+  const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
       name: "Search Events",
@@ -47,6 +51,14 @@ const MobileSidebar = () => {
     },
     { name: "Outreach", href: "/internal/outreach", icon: Outreach },
   ];
+  const geniLinks = [
+    {
+      name: "Dashboard", href: "/widget/dashboard", icon: <WidgetdashboardIcon />
+    },
+    { name: "Brandkit", href: "/widget/brandkit", icon: <BrandkitIcon /> },
+    { name: "Widget", href: "/widget/list", icon: <WidgetIcon /> },
+    { name: "Events", href: "/widget/events", icon: <EventsIcon /> },
+  ];
 
   return (
     <div className="flex flex-col h-full bg-background">
@@ -62,34 +74,77 @@ const MobileSidebar = () => {
       </div>
       <nav className="flex-1">
         <ul className="p-2 space-y-1">
-          {links.map((link) => {
-            const Icon = link.icon;
-            const isActive = pathname === link.href || (link.name === "Tracker" &&
-              pathname.startsWith("/internal/trackers"));
-            return (
-              <li key={link.name}>
-                <SheetClose asChild>
-                  <Link href={link.href}>
-                    <Button
-                      variant={isActive ? "secondary" : "ghost"}
-                      className={`w-full justify-start px-3 h-10 ${
-                        isActive ? "bg-primary text-white hover:bg-primary" : ""
-                      }`}
-                    >
-                      <Icon
-                        className="flex-shrink-0 mr-2"
-                        color={theme == "dark" ? "#fff" : ""}
-                      />
-                      <span>{link.name}</span>
-                    </Button>
-                  </Link>
-                </SheetClose>
-              </li>
-            );
-          })}
+          {pathname.startsWith("/internal") ? (
+            gtmLinks.map((link) => {
+              const Icon = link.icon;
+              const isActive =
+                pathname === link.href ||
+                (link.name === "Tracker" && pathname.startsWith("/internal/trackers"));
+              return (
+                <li key={link.name}>
+                  <SheetClose asChild>
+                    <Link href={link.href}>
+                      <Button
+                        variant={isActive ? "secondary" : "ghost"}
+                        className={`w-full justify-start px-3 h-10 ${isActive ? "bg-primary text-white hover:bg-primary" : ""
+                          }`}
+                      >
+                        <Icon
+                          className="flex-shrink-0 mr-2"
+                          color={theme === "dark" ? "#fff" : ""}
+                        />
+                        <span>{link.name}</span>
+                      </Button>
+                    </Link>
+                  </SheetClose>
+                </li>
+              );
+            })
+          ) : (
+            geniLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <li key={link.name}>
+                  <SheetClose asChild>
+                    <Link href={link.href}>
+                      <Button
+                        variant={isActive ? "secondary" : "ghost"}
+                        className={`w-full justify-start px-3 h-10 ${isActive ? "bg-primary text-white hover:bg-primary" : ""
+                          }`}
+                      >
+                        {/* <Icon
+                          className="flex-shrink-0 mr-2"
+                          color={theme === "dark" ? "#fff" : ""}
+                        /> */}
+                        <div className="flex items-center gap-2">
+                          {link.icon}
+                          <span>{link.name}</span>
+                        </div>
+
+                      </Button>
+                    </Link>
+                  </SheetClose>
+                </li>
+              );
+            })
+          )}
+
         </ul>
         <Separator className="my-2 px-2" />
         <ul className="p-2 space-y-1">
+          <li>
+            <SheetClose asChild>
+              <Link href="/internal/settings/product">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start px-3 h-10"
+                >
+                  <Settings className="flex-shrink-0 mr-2" />
+                  <span>Settings</span>
+                </Button>
+              </Link>
+            </SheetClose>
+          </li>
           <li>
             <SheetClose asChild>
               <Link href="/internal/profile">
@@ -117,6 +172,14 @@ const MobileSidebar = () => {
           </li>
         </ul>
       </nav>
+      <Button className="ml-3 mb-3" variant="ghost" size="icon" onClick={() => toggleTheme()}>
+        {theme === "dark" ? (
+          <Sun className="h-5 w-5 transition-all" />
+        ) : (
+          <Moon className="h-5 w-5  transition-all" />
+        )}
+        <span className="sr-only">Toggle theme</span>
+      </Button>
     </div>
   );
 };
