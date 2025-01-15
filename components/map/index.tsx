@@ -113,7 +113,6 @@ export default function MapComponent({
     feature: any;
     clusteredPoints?: { name: string; count: number }[];
   } | null>(null);
-  //   console.log(data?.tracker);
   //   const cityIds = data?.tracker?.filterValue?.locationIds?.city?.length > 0
   //   ? data?.tracker?.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0])
   //   : [];
@@ -126,7 +125,6 @@ export default function MapComponent({
   //   ? data?.tracker?.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0])
   //   : [];
   //   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
-  console.log(trackerLoc);
 
   const memoizedGetEventsCount = useCallback(getEventsCount, []);
   const memoizedGetEventsWithSearchParams = useCallback(
@@ -170,7 +168,6 @@ export default function MapComponent({
     queryFn: async () => {
       if (source === "tracker" || source === "tracker_global") {
         const response = await getMapViewData(trackerId, "city", searchParams);
-        console.log(response);
 
         return response || [];
       } else {
@@ -204,7 +201,6 @@ export default function MapComponent({
           const singleEventDetails = await getEventById(
             clickedFeature.properties.id
           );
-          console.log("Single event clicked:", clickedFeature.properties.id);
           if (singleEventDetails)
             setPopupInfo({
               events: [singleEventDetails.event],
@@ -258,9 +254,7 @@ export default function MapComponent({
           break;
 
         case "unclustered-counts-circle":
-          console.log("unclustered-counts-circle");
           const unclusteredFeature = e.features && e.features[0];
-          console.log(unclusteredFeature);
           if (unclusteredFeature) {
             mapRef.current?.easeTo({
               center: unclusteredFeature.geometry.coordinates as [
@@ -304,14 +298,12 @@ export default function MapComponent({
           break;
 
         default:
-          console.log("Clicked on an unexpected layer:", layerId);
           setPopupInfo(null);
       }
     } else {
       setPopupInfo(null);
     }
   };
-  console.log(viewport.zoom);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -384,7 +376,6 @@ export default function MapComponent({
   ]);
 
   const onMove = useCallback(({ viewState }: { viewState: ViewState }) => {
-    console.log(viewState);
 
     setViewport(viewState);
   }, []);
@@ -392,7 +383,6 @@ export default function MapComponent({
 
   // }, [searchParams
   // ]);
-  console.log(viewport);
 
   const eventCountsGeoJSON = React.useMemo(() => {
     return {
@@ -473,7 +463,6 @@ export default function MapComponent({
 
   useEffect(() => {
     const fetchLocationDetails = async () => {
-      console.log(location);
 
       if (location?.type === "locationIds" && location.locationIds.length > 0) {
         try {
