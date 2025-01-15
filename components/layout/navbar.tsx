@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -31,7 +32,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { RefreshClockwise } from "geist-icons";
+// import { RefreshClockwise } from "geist-icons";
 import { isEventeli } from "@/config";
 import { useTheme } from "@/context/theme";
 import Link from "next/link";
@@ -96,17 +97,21 @@ export default function Navbar() {
 
   const generateProfileName = React.useMemo(() => {
     if (user) {
-      const { email } = user;
-      const [username] = email.split("@");
-      const parts = username.split(/[.\-_]/);
-      const abbreviation =
-        parts.length > 1
-          ? `${parts[0][0]}${parts[1][0]}`
-          : username.substring(0, 2);
-      return abbreviation.toUpperCase();
+      // const { email } = user;
+      // const [username] = email.split("@");
+      // const parts = username.split(/[.\-_]/);
+      // const abbreviation =
+      //   parts.length > 1
+      //     ? `${parts[0][0]}${parts[1][0]}`
+      //     : username.substring(0, 2);
+      // return abbreviation.toUpperCase();
+      const firstNameInitial = user?.firstname?.[0]?.toUpperCase() || "";
+      const lastNameInitial = user?.lastname?.[0]?.toUpperCase() || "";
+      return `${firstNameInitial}${lastNameInitial}`;
     }
     return "";
   }, [user]);
+ 
 
   const handleSettingsClick = () => {
     if (route === "internal") {
