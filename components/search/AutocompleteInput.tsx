@@ -81,7 +81,7 @@ export default function AutocompleteInput({
 
   const handleSelect = useCallback(
     async (description: string, placeId: string) => {
-      const newLocation = { id: placeId, description };
+      const newLocation = { id: placeId, description};
       if (multiple) {
         const updatedLocations = [...selectedLocations, newLocation];
         setSelectedLocations(updatedLocations);

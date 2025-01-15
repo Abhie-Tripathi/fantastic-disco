@@ -41,6 +41,7 @@ export default function MultiSelectSearchBar() {
       );
       try {
         const events = await Promise.all(eventPromises);
+        console.log(events);
         setSelectedItems(events as unknown as Event[]);
       } catch (error) {
         console.error("Error fetching event details:", error);
@@ -89,6 +90,7 @@ export default function MultiSelectSearchBar() {
   const handleSearchSubmit = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
+      console.log("Selected items:", selectedItems);
       setOpen(false);
     },
     [selectedItems]
@@ -99,25 +101,20 @@ export default function MultiSelectSearchBar() {
       setSelectedItems((prev) => {
         const newSelectedItems = [...prev, item];
         const eventIds = newSelectedItems.map((event) => event.id).join(",");
-        const show = getLocalFilterValue("show");
 
-        console.log(show);
         const newParams = new URLSearchParams();
         if (eventIds) {
           newParams.set("eventIds", eventIds);
         }
-        if (show) {
-          newParams.set("show", show);
-        }
 
-        router.push(`?${newParams.toString()}`);
+        router.push(`/internal/search/events?${newParams.toString()}`);
 
         return newSelectedItems;
       });
       setSearchTerm("");
       setSearchResults([]);
     },
-    [router, localFilters]
+    [router]
   );
 
   const handleRemoveItem = useCallback(
@@ -127,14 +124,10 @@ export default function MultiSelectSearchBar() {
           (item) => item.id !== itemToRemove.id
         );
         const eventIds = newSelectedItems.map((event) => event.id).join(",");
-        const show = getLocalFilterValue("show");
 
         const newParams = new URLSearchParams();
         if (newSelectedItems.length > 0) {
           newParams.set("eventIds", eventIds);
-        }
-        if (show) {
-          newParams.set("show", show);
         }
 
         router.push(`?${newParams.toString()}`);
@@ -142,7 +135,7 @@ export default function MultiSelectSearchBar() {
         return newSelectedItems;
       });
     },
-    [router, localFilters]
+    [router]
   );
 
   useEffect(() => {

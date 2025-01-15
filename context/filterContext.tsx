@@ -281,33 +281,19 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
           ).toISOString()
         : "";
       temp.active_lte = enabledFilters.durations?.endDate
-        ? new Date(enabledFilters.durations.endDate.split(",")[1]).toISOString()
-        : "";
-      temp.entryType =
-        enabledFilters.eventEntry?.enabledValue
-          ?.map((item: string) => item.toLowerCase())
-          ?.join(",") ?? "";
-      temp.ratings = enabledFilters.eventRating?.enabledValue?.join(",") ?? "";
-      temp.maturity = enabledFilters.maturity?.enabledValue?.[0] ?? "";
-      if (enabledFilters.branded?.isBrandedEnabled)
-        temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand
-          ? "true"
-          : "false";
-      if (enabledFilters.branded?.enabledValue?.isBrandedEnabled)
-        temp.onlySeries = enabledFilters.branded?.enabledValue?.eventSeries
-          ? "true"
-          : "false";
-      temp.frequencies =
-        enabledFilters.eventFrequency?.enabledValue?.join(",") ?? "";
-      temp.includeKeywords =
-        enabledFilters.keywords?.positiveKeywords?.join(",") ?? "";
-      temp.excludeKeywords =
-        enabledFilters.keywords?.negativeKeywords?.join(",") ?? "";
-      temp.estimatedVisitorRangeTag =
-        enabledFilters.estimatedVisitorRangeTag?.enabledValue?.join(",") ?? "";
-      temp.estimatedExhibitors =
-        enabledFilters.estimatedExhibitScore?.enabledValue?.join(",") ?? "";
-
+        ? new Date(enabledFilters.durations.endDate.split(',')[1]).toISOString()
+        : '';
+      temp.entryType = enabledFilters.eventEntry?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
+      temp.ratings = enabledFilters.eventRating?.enabledValue?.join(',') ?? '';
+      temp.maturity = enabledFilters.maturity?.enabledValue?.[0] ?? '';
+      temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand ? 'true' : '';
+      temp.onlySeries = enabledFilters.branded?.enabledValue?.eventSeries ? 'true' : '';
+      temp.frequencies = enabledFilters.eventFrequency?.enabledValue?.join(',') ?? '';
+      temp.includeKeywords = enabledFilters.keywords?.positiveKeywords?.join(',') ?? '';
+      temp.excludeKeywords = enabledFilters.keywords?.negativeKeywords?.join(',') ?? '';
+      temp.estimatedVisitorRangeTag = enabledFilters.estimatedVisitorRangeTag?.enabledValue?.join(',') ?? '';
+      temp.estimatedExhibitors = enabledFilters.estimatedExhibitScore?.enabledValue?.join(',') ?? '';
+  
       let dataToShow: string[] = [];
       if (enabledFilters.eventRating?.isRatingEnabled)
         dataToShow.push("rating");
@@ -327,6 +313,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     console.log(temp);
 
     setLocalFilters(temp);
+    applyFilters()
   };
   const applyFilters = useCallback(() => {
     setLocalFilters((currentFilters) => {

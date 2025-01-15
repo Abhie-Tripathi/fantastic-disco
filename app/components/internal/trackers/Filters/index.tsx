@@ -754,14 +754,35 @@ const Pages = () => {
       const category = newCategories.find((cat) => cat.slug === slug);
       return category ? category.id : slug;
     });
+    const showsData: string[] = [];
+
+    const mapping = {
+      rating: "eventRating,trustScore",
+      maturity: "maturity",
+      forecasted: "isforecasted",
+      frequency: "eventFrequency",
+      estimatedExhibitors: "estimatedExhibitScore",
+      scores: "eventImpactScore,inboundScore,internationalScore",
+      audienceZone: "audienceSpread",
+      branded: "eventBrand",
+      series: "eventSeries",
+    };
+    
+    const filters = getLocalFilterValue("show").split(",");
+    Object.entries(mapping).forEach(([key, value]) => {
+      if (filters.includes(key)) {
+        showsData.push(value);
+      }
+    });
+    
 
     const userType = {
       ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
       ...(getLocalFilterValue("show").split(",").includes("estimatedExhibitors") && { exhibit: true }),
       ...(rankToggles.isTrustScore && {trust:true}),
       ...(getLocalFilterValue("show").split(",").includes("maturity")&& {maturity:true}),
-      ...(getLocalFilterValue("onlyBranded") && {brandedEvent:true}),
-      ...(getLocalFilterValue("onlySeries") && {eventSeries:true}),
+      ...(getLocalFilterValue("onlyBranded")==="true" && {brandedEvent:true}),
+      ...(getLocalFilterValue("onlySeries")==="true" && {eventSeries:true}),
       ...((getLocalFilterValue("show").split(",").includes("branded") && getLocalFilterValue("show").split(",").includes("series"))&& {brandSeries:true}),
       ...((getLocalFilterValue("show").split(",").includes("forecasted")) && {forecastedStatus:true}),
       ...(analyticsToggles.impactScore&& {impactScore:true}),
@@ -867,7 +888,7 @@ const Pages = () => {
         ...(getLocalFilterValue("eventFormats")?.length > 0 && {
           eventFormat: getLocalFilterValue("eventFormats"),
         }),
-        ...(getLocalFilterValue("onlySeries") && {eventSeries: getLocalFilterValue("onlySeries")}),
+        ...(getLocalFilterValue("onlySeries")==="true" && {eventSeries: getLocalFilterValue("onlySeries")}),
         ...(getLocalFilterValue("status")?.length > 0 && {
           eventStatus: getLocalFilterValue("status").split(',').map((item)=>item.toUpperCase()).join(","),
         }),
@@ -939,7 +960,7 @@ const Pages = () => {
         ...(forecastedStatus && {
           isforecasted: forecastedStatus.toString()
         }),
-        ...(getLocalFilterValue("onlyBranded") && {eventBrand:getLocalFilterValue("onlyBranded").toString()}),
+        ...(getLocalFilterValue("onlyBranded")==="true" && {eventBrand:getLocalFilterValue("onlyBranded").toString()}),
         ...(getLocalFilterValue("top") && {
           // globalRanking: selectedRank,
           // categoryRanking: selectedRank,
@@ -952,7 +973,11 @@ const Pages = () => {
          ...(getLocalFilterValue("designations") && {
           designation: getLocalFilterValue("designations"),
         }),
-        ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'inboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency', 'eventRanking'].join()}
+        ...{
+          
+        },
+        ...{shows: showsData.join(",")}
+        // ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'inboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency'].join()}
         // info: {
         //   name: trackerName,
         //   location:selectedLocations,

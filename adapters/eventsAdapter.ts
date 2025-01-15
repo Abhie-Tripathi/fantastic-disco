@@ -1,3 +1,4 @@
+
 import {
   EventsResponse,
   Event,
@@ -74,16 +75,14 @@ export const EventsAdapter = {
         )
         .join(",");
     }
-
+    if (params.get("estimatedVisitorRangeTag")) {
+      adaptedParams.estimatedVisitorRangeTag = params.get(
+        "estimatedVisitorRangeTag"
+      )!;
+    }
     const activeGte = params.get("active_gte");
     const activeLte = params.get("active_lte");
 
-    if (activeGte && activeLte) {
-      const startDate = new Date(activeGte).toISOString().split("T")[0];
-      const endDate = new Date(activeLte).toISOString().split("T")[0];
-      adaptedParams.startDate = `${startDate},${endDate}`;
-      adaptedParams.endDate = `${startDate},${endDate}`;
-    }
     if (activeGte) {
       const startDate = new Date(activeGte).toISOString().split("T")[0];
       adaptedParams.startDate = `${startDate},${startDate}`;
@@ -91,6 +90,12 @@ export const EventsAdapter = {
     if (activeLte) {
       const endDate = new Date(activeLte).toISOString().split("T")[0];
       adaptedParams.endDate = `${endDate},${endDate}`;
+    }
+    if (activeGte && activeLte) {
+      const startDate = new Date(activeGte).toISOString().split("T")[0];
+      const endDate = new Date(activeLte).toISOString().split("T")[0];
+      adaptedParams.startDate = `${startDate},${endDate}`;
+      adaptedParams.endDate = `${startDate},${endDate}`;
     }
 
     if (params.get("locationIds")) {
@@ -230,46 +235,16 @@ export const EventsAdapter = {
       params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      console.log("first");
       const startDate = params.get("active_gte");
       const endDate = params.get("active_lte");
       adaptedParams.groupBy = `${startDate},${endDate}`;
     }
 
     if (
-      params.get("active_gte") &&
+      !params.get("active_gte") &&
       !params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      console.log("second");
-      const startDate = new Date(params.get("active_gte")!);
-      const endDate = new Date(startDate);
-      endDate.setFullYear(startDate.getFullYear() + 1);
-      adaptedParams.groupBy = `${startDate.toISOString().split("T")[0]},${
-        endDate.toISOString().split("T")[0]
-      }`;
-    }
-
-    if (
-      !params.get("active_gte") &&
-      params.get("active_lte") &&
-      params.get("view") == "calendar"
-    ) {
-      console.log("third");
-      const endDate = new Date(params.get("active_lte")!);
-      const startDate = new Date(endDate);
-      startDate.setFullYear(endDate.getFullYear() - 1);
-      adaptedParams.groupBy = `${startDate.toISOString().split("T")[0]},${
-        endDate.toISOString().split("T")[0]
-      }`;
-    }
-
-    if (
-      !params.get("active_gte") &&
-      params.get("view") == "calendar"
-      // params.get("calendar_type") == "week"
-    ) {
-      console.log("active_gte, calendar, week");
       const today = new Date();
       const firstDayOfMonth = new Date(
         today.getFullYear(),
@@ -287,6 +262,32 @@ export const EventsAdapter = {
       adaptedParams.groupBy = `${startDate},${endDate}`;
     }
 
+    if (
+      params.get("active_gte") &&
+      !params.get("active_lte") &&
+      params.get("view") == "calendar"
+    ) {
+      const startDate = new Date(params.get("active_gte")!);
+      const endDate = new Date(startDate);
+      endDate.setFullYear(startDate.getFullYear() + 1);
+      adaptedParams.groupBy = `${startDate.toISOString().split("T")[0]},${
+        endDate.toISOString().split("T")[0]
+      }`;
+    }
+
+    if (
+      !params.get("active_gte") &&
+      params.get("active_lte") &&
+      params.get("view") == "calendar"
+    ) {
+      const endDate = new Date(params.get("active_lte")!);
+      const startDate = new Date(endDate);
+      startDate.setFullYear(endDate.getFullYear() - 1);
+      adaptedParams.groupBy = `${startDate.toISOString().split("T")[0]},${
+        endDate.toISOString().split("T")[0]
+      }`;
+    }
+
     if (params.get("take")) {
       adaptedParams.max = params.get("take")!;
     }
@@ -299,10 +300,8 @@ export const EventsAdapter = {
       adaptedParams.max = "50";
     }
 
-    if (params.get("estimatedVisitorRangeTag")) {
-      adaptedParams.estimatedVisitorRangeTag = params.get(
-        "estimatedVisitorRangeTag"
-      )!;
+    if (params.get("query")) {
+      adaptedParams.eventName = params.get("query")!;
     }
 
     return adaptedParams;
@@ -989,5 +988,6 @@ function determineEventType(item: string): string {
   if (!item) return "";
   if (item.toLowerCase() === "tradeshow") return "tradeshows";
   if (item.toLowerCase() === "conference") return "conferences";
+  if (item.toLowerCase() === "workshop") return "workshops";
   else return "unknown";
 }

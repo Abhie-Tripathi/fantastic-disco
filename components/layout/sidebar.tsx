@@ -10,6 +10,7 @@ import BrandkitIcon from "@/app/components/sidebar/Icons/WidgetBrandKit";
 import WidgetIcon from "@/app/components/sidebar/Icons/WidgetIcon2";
 import EventsIcon from "@/app/components/sidebar/Icons/WidgetIcon3";
 import { Step } from "react-joyride";
+import { isEventeli } from "@/config";
 import {
   MagnifyingGlass,
   BookOpen,
@@ -20,7 +21,7 @@ import {
   Users,
   Wrench,
 } from "geist-icons";
-import { BriefcaseBusiness } from "lucide-react";
+import { BriefcaseBusiness, Moon, Sun } from 'lucide-react'
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -63,7 +64,7 @@ function Outreach() {
 }
 
 const Sidebar = () => {
-  const { theme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
 
@@ -97,9 +98,7 @@ const Sidebar = () => {
   ];
   const geniLinks = [
     {
-      name: "Dashboard",
-      href: "/widget/dashboard",
-      icon: <WidgetdashboardIcon />,
+      name: "Dashboard", href: "/widget/dashboard", icon: <WidgetdashboardIcon />
     },
     { name: "Brandkit", href: "/widget/brandkit", icon: <BrandkitIcon /> },
     { name: "Widget", href: "/widget/list", icon: <WidgetIcon /> },
@@ -114,8 +113,6 @@ const Sidebar = () => {
     setIsHovered(false);
   }, []);
 
-  console.log("pathname", pathname);
-
   // const [isSidebarOpen, setIsSidebarOpen] = useState<Boolean>(false);
   // const [run, setRun] = useState(false);
   // const [steps, setSteps] = useState<Step[]>([]);
@@ -123,6 +120,7 @@ const Sidebar = () => {
   // const brandkitRef = useRef(null);
   // const widgetRef = useRef(null);
   // const eventsRef = useRef(null);
+
 
   // const updateSteps = useCallback(() => {
   //   const newSteps: Step[] = [];
@@ -193,9 +191,11 @@ const Sidebar = () => {
   //   setIsSidebarOpen(false);
   // };
 
+
+
   return (
     <aside
-      className={`fixed z-50 top-0 left-0 h-full bg-white transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200 ${
+      className={`fixed z-50 top-0 left-0 h-full bg-background transition-all duration-300 ease-in-out flex flex-col border-r ${
         isHovered ? "w-56" : "w-16"
       } hidden lg:flex`}
       onMouseEnter={handleMouseEnter}
@@ -224,7 +224,7 @@ const Sidebar = () => {
           )}
         </div>
       </div>
-      <nav className="flex-1 overflow-y-auto">
+      <nav className="flex-1 overflow-y-auto flex flex-col justify-between">
         <ul className="p-2 space-y-1">
           {pathname.startsWith("/internal")
             ? gtmLinks.map((link) => {
@@ -293,6 +293,17 @@ const Sidebar = () => {
                 );
               })}
         </ul>
+        {!isEventeli && (
+          <Button className="ml-3 mb-3" variant="ghost" size="icon" onClick={() => toggleTheme()}>
+            {theme === "dark" ? (
+              <Sun className="h-5 w-5 transition-all" />
+            ) : (
+              <Moon className="h-5 w-5  transition-all" />
+            )}
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+        )}
+
       </nav>
     </aside>
   );
