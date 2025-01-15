@@ -8,11 +8,11 @@ interface SavedEvents{
     
 }
 interface SavedEventWidgetProps{
-  savedEvents: { result: EventTableType[]; count: number } | undefined;
+  savedEvents: { events: EventTableType[]; count: number } | undefined;
     redirectUrl:string
 }
 const SavedEventWidget = ({ savedEvents, redirectUrl }: SavedEventWidgetProps) => {
-  console.log(savedEvents?.count);
+  console.log(savedEvents);
   console.log(redirectUrl);
 
   return (
@@ -31,7 +31,8 @@ const SavedEventWidget = ({ savedEvents, redirectUrl }: SavedEventWidgetProps) =
   );
 };
 
-const EventContent = ({ savedEvents }: { savedEvents: { result: EventTableType[]; count: number } | undefined }) => (
+const EventContent = ({ savedEvents }: { savedEvents: { events: EventTableType[]; count: number } | undefined }) => (
+  
   <>
     <div className='flex items-center gap-2' style={{ color: "var(--primary-color)" }}>
       {savedEvents && savedEvents.count > 0 && (
@@ -45,7 +46,7 @@ const EventContent = ({ savedEvents }: { savedEvents: { result: EventTableType[]
       <div className='font-semibold'>Bookmarked Events</div>
     </div>
     {savedEvents && savedEvents.count > 0 ? (
-      savedEvents?.result?.map((item: any) => (
+      savedEvents?.events?.map((item: any) => (
         <div 
           className='flex p-2 flex-col border rounded gap-2' 
           style={{ border: "1px solid var(--border-color)" }} 
@@ -58,11 +59,11 @@ const EventContent = ({ savedEvents }: { savedEvents: { result: EventTableType[]
             <ArrowUpRight width="16px" height='16px' color='var(--primary-color)' />
           </div>
           <div className="text-[12px]" style={{ color: "var(--secondary-text-color)" }}>
-            {(item.location?.cityName && item.location?.countryName) ?
-              (item.location.cityName !== item.location?.countryName ?
-                item.location.cityName + ', ' + item.location?.countryName :
-                item.location.countryName) :
-              item.location.countryName}
+            {(item.venueLocation?.city.name && item.venueLocation?.country.name) ?
+              (item.venueLocation.city.name !== item.venueLocation?.country.name ?
+                item.venueLocation.city.name + ', ' + item.venueLocation?.country.name :
+                item.venueLocation.country.name) :
+              item.venueLocation.country.name}
           </div>
         </div>
       ))

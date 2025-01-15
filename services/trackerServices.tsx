@@ -48,7 +48,7 @@ export const useTrackerServices = () => {
       params: string,
       signal?: AbortSignal
     ): Promise<GetSavedEventsResponse | undefined> => {
-      const response = await api.request<{ result: EventTableType[]; count: number }>(
+      const response = await api.request<{ result: EventTableType[]; count: number  }>(
         `${endpoints.tracker.getSavedEvents}/${trackerId}/saved-events?${params}`,
         {
           method: "GET",

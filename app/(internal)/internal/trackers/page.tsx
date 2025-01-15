@@ -313,7 +313,7 @@ const Trackers = ({ searchParams }: Search) => {
   // }, [updateSteps]);
   
   const [note,setNote]=useState<any>(null);
-  const [savedEvents, setSavedEvents] = useState<{ result: EventTableType[]; count: number } | undefined>(undefined);
+  const [savedEvents, setSavedEvents] = useState<{ events: EventTableType[]; count: number } | undefined>(undefined);
 
   console.log(singleTrackerData);
   useEffect(() => {
@@ -374,7 +374,7 @@ const Trackers = ({ searchParams }: Search) => {
     //     setSavedEvents(data);
     //   }else setSavedEvents("");
     // }
-    const result = await getSavedEvents(id, `limit=2&offset=0`) as { result: EventTableType[]; count: number }
+    const result = await getSavedEvents(id, `limit=2&offset=0`) as { events: EventTableType[]; count: number }
     console.log(result);
     
     if(result && result?.count>0){
@@ -522,7 +522,7 @@ const Trackers = ({ searchParams }: Search) => {
   <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
     <SavedEventWidget savedEvents={savedEvents} redirectUrl={singleTrackerData 
-    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=savedEvent`:""}/>
+    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=savedEvent`:""}/>
   </div>
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
   <NotesDiscussionWidget 

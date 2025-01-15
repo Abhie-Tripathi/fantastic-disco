@@ -27,6 +27,8 @@ interface keywordInterface{
 export default function KeywordFilter({
   type,
 }:{type?:string}) {
+  console.log(type);
+  
   const [isOpen, setIsOpen] = useState(false);
   const {
     getLocalFilterValue,
@@ -90,6 +92,8 @@ const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
   };
 
   const handleApply = () => {
+    console.log("handleApply called");
+    
     setMultipleLocalFilters({
       includeKeywords: includeKeywords.join(","),
       excludeKeywords: excludeKeywords.join(","),
@@ -103,11 +107,16 @@ const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
       handleApply();
     }
   };
-  useEffect(() => {
-    if (type === "T_PRODUCT_KEYWORDS" && !isOpen) {
-      handleOpenChange(true);
-    }
-  }, [type, isOpen]);
+  // useEffect(() => {
+  //   if (type === "T_PRODUCT_KEYWORDS") {
+  //     // handleOpenChange(true);
+  //     setMultipleLocalFilters({
+  //       includeKeywords: includeKeywords.join(","),
+  //       excludeKeywords: excludeKeywords.join(","),
+  //     });
+  //   }
+  // }, [includeKeywords, excludeKeywords]);
+  console.log(includeKeywords, excludeKeywords);
   
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>

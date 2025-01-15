@@ -102,9 +102,12 @@ export default function CreateTrackerDialog({
       audienceZone: "audienceSpread",
       branded: "eventBrand",
       series: "eventSeries",
+      rankings: "eventRanking"
     };
     
     const filters = getLocalFilterValue("show").split(",");
+    console.log(filters);
+    
     Object.entries(mapping).forEach(([key, value]) => {
       if (filters.includes(key)) {
         showsData.push(value);
