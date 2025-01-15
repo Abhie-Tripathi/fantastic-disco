@@ -15,7 +15,7 @@ export const EventsAdapter = {
     const adaptedParams: Record<string, string> = {
       sortBy: "score",
       sortType: "desc",
-      max: "10",
+      max: "20",
       offset: params.get("skip") || "0",
     };
 
