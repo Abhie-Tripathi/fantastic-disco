@@ -15,6 +15,7 @@ import CircularProgress from "../gtmDetailRelevanceScore/circularProgress";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import _ from "lodash";
+import { useFilterContext } from "@/context/filterContext";
 interface Props {
   eventDetails: GTMEventDetail;
   scrollSection: string;
@@ -65,6 +66,8 @@ export const EventInfoAndMap = ({
   scrollSection,
   setActiveTab,
 }: Props) => {
+  const { morphedData } = useFilterContext();
+  console.log(morphedData);
   const currentDate = new Date().toISOString().split("T")[0];
   const [isExpandDescription, setisExpandDescription] =
     useState<boolean>(false);
@@ -89,6 +92,8 @@ export const EventInfoAndMap = ({
     entryType,
     website,
   } = eventDetails;
+
+  const { categories: categoryVisibility } = morphedData;
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
       {/* <div className="flex gap-2 justify-center bg-[var(--negative-light-color)] border border-[#FDD8D8] p-2 rounded-sm text-sm">
@@ -139,20 +144,22 @@ export const EventInfoAndMap = ({
               </Text>
             </div>
           }
-          {categories && categories.length > 0 && (
-            <div>
-              <h1 className="text-[1rem] mb-2 font-medium">Category</h1>
-              <ul className="flex flex-row flex-wrap gap-3">
-                {categories.map((category: any) => (
-                  <li key={category.id}>
-                    <span className="text-[var(--primary-text-color)] text-sm py-1 px-3 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)]">
-                      {category.name}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {categoryVisibility.isEnabled &&
+            categories &&
+            categories.length > 0 && (
+              <div>
+                <h1 className="text-[1rem] mb-2 font-medium">Category</h1>
+                <ul className="flex flex-row flex-wrap gap-3">
+                  {categories.map((category: any) => (
+                    <li key={category.id}>
+                      <span className="text-[var(--primary-text-color)] text-sm py-1 px-3 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)]">
+                        {category.name}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           {
             <div>
               <h1 className="text-[1rem] mb-2 font-medium">Event Keywords</h1>
@@ -326,9 +333,7 @@ export const EventInfoAndMap = ({
             <Text variant="noMargin" color="primary">
               Start searching similar events
             </Text>
-            <Button className="cursor-not-allowed w-fit">
-              Search Events
-            </Button>
+            <Button className="cursor-not-allowed w-fit">Search Events</Button>
           </div>
           {/* <div className="flex gap-6">
             <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
