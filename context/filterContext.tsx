@@ -179,17 +179,17 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log(11111);
     }
   }, [searchParams, enabledFilters]);
-  useEffect(() => {
-    console.log(localFilters);
+  // useEffect(() => {
+  //   console.log(localFilters);
 
-    // setLocalFilters(
-    //   filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
-    // );
-  }, [searchParams, filterEmptyValues]);
+  //   // setLocalFilters(
+  //   //   filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
+  //   // );
+  // }, [searchParams, filterEmptyValues]);
 
   const setLocalFilter = useCallback(
     (key: keyof Filters, value: string) => {
-      console.log(key);
+      // console.log(key);
 
       const mapping: Record<keyof Filter, string> = {
         eventTypes: "eventType",
@@ -370,7 +370,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-  console.log(localFilters);
 
   const contextValue = useMemo(
     () => ({

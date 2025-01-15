@@ -440,7 +440,6 @@ export const searchFilters = {
 
 export const generateSearchFilters=(apiResponse: any)=> {
     const  data  = apiResponse;
-    console.log(data);
     
     return {
       eventTypes: {
