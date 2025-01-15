@@ -1,14 +1,15 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar"; 
+import { Calendar } from "@/components/ui/calendar";
 import { Switch } from "@/components/ui/switch";
-import { cn } from "@/lib/utils"; 
+import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 interface DateRangePopupProps {
-    type?:string;
+  type?: string;
   presets: { value: string; label: string }[];
   handlePresetChange: (value: string) => void;
   selectedPreset: string;
-  dateRange: any; 
+  dateRange: any;
   handleDateSelect: (selectedDay: Date) => void;
   calendarDate: Date;
   setCalendarDate: (date: Date) => void;
@@ -34,31 +35,33 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
   comparisonOptions,
   setSelectedComparison,
   selectedComparison,
-  type
+  type,
 }) => {
   return (
     <div className="flex flex-col border rounded-md">
-        {type==="T_LOCATION_DATE" &&
-      <div className="flex justify-between items-center p-4 py-2 border-b">
-        <span className="font-medium">Dates</span>
-      </div>
-        }
-      <div className="flex space-x-4 rounded-md p-4">
-        <div className="space-y-2 flex flex-col justify-between min-w-36">
-          {presets.map((preset) => (
-            <Button
-              key={preset.value}
-              onClick={() => handlePresetChange(preset.value)}
-              variant="outline"
-              className={cn(
-                "w-full font-normal",
-                selectedPreset === preset.value && "bg-[#F2F2F2]"
-              )}
-            >
-              {preset.label}
-            </Button>
-          ))}
+      {type === "T_LOCATION_DATE" && (
+        <div className="flex justify-between items-center p-4 py-2 border-b">
+          <span className="font-medium">Dates</span>
         </div>
+      )}
+      <div className="flex space-x-4 rounded-md p-4">
+        <ScrollArea className="h-[300px] w-[150px]">
+          <div className="space-y-2 flex flex-col justify-between pr-4">
+            {presets.map((preset) => (
+              <Button
+                key={preset.value}
+                onClick={() => handlePresetChange(preset.value)}
+                variant="outline"
+                className={cn(
+                  "w-full font-normal",
+                  selectedPreset === preset.value && "bg-[#F2F2F2]"
+                )}
+              >
+                {preset.label}
+              </Button>
+            ))}
+          </div>
+        </ScrollArea>
         <div className="border-l" />
         <div>
           <Calendar
