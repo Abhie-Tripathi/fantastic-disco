@@ -285,6 +285,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     console.log(localFilters);
     
     setLocalFilters(temp);
+    applyFilters()
   }
   const applyFilters = useCallback(() => {
     setLocalFilters((currentFilters) => {
