@@ -263,8 +263,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       temp.entryType = enabledFilters.eventEntry?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
       temp.ratings = enabledFilters.eventRating?.enabledValue?.join(',') ?? '';
       temp.maturity = enabledFilters.maturity?.enabledValue?.[0] ?? '';
-      temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand ? 'true' : 'false';
-      temp.onlySeries = enabledFilters.branded?.enabledValue?.eventSeries ? 'true' : 'false';
+      temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand ? 'true' : '';
+      temp.onlySeries = enabledFilters.branded?.enabledValue?.eventSeries ? 'true' : '';
       temp.frequencies = enabledFilters.eventFrequency?.enabledValue?.join(',') ?? '';
       temp.includeKeywords = enabledFilters.keywords?.positiveKeywords?.join(',') ?? '';
       temp.excludeKeywords = enabledFilters.keywords?.negativeKeywords?.join(',') ?? '';
