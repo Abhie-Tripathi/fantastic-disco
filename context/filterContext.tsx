@@ -114,6 +114,7 @@ type Filter = {
   frequencies: string;
   estimatedVisitors: string;
   estimatedExhibitors: string;
+  estimatedVisitorRangeTag: string;
 };
 type FilterContextType = {
   localFilters: Filters;
@@ -201,6 +202,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         frequencies: "eventFrequency",
         estimatedVisitors: "eventSize",
         estimatedExhibitors: "estimatedExhibitScore",
+        estimatedVisitorRangeTag: "estimatedVisitorRangeTag",
       };
       console.log(enabledFilters);
       const selected = mapping[key as keyof Filter];
@@ -301,8 +303,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         enabledFilters.keywords?.positiveKeywords?.join(",") ?? "";
       temp.excludeKeywords =
         enabledFilters.keywords?.negativeKeywords?.join(",") ?? "";
-      temp.estimatedVisitors =
-        enabledFilters.eventSize?.enabledValue?.join(",") ?? "";
+      temp.estimatedVisitorRangeTag =
+        enabledFilters.estimatedVisitorRangeTag?.enabledValue?.join(",") ?? "";
       temp.estimatedExhibitors =
         enabledFilters.estimatedExhibitScore?.enabledValue?.join(",") ?? "";
 

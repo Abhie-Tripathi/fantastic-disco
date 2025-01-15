@@ -440,7 +440,8 @@ export const searchFilters = {
 
 export const generateSearchFilters=(apiResponse: any)=> {
     const  data  = apiResponse;
-  
+    console.log(data);
+    
     return {
       eventTypes: {
         isEnabled: data.eventType?.enabledValue?.length > 0 ?? true,
@@ -563,13 +564,10 @@ export const generateSearchFilters=(apiResponse: any)=> {
       estimatedVisitors: {
         isEnabled: data.eventSize?.enabledValue?.length > 0 ?? true,
         options: searchFilters.estimatedVisitors.options.map((visitor) => {
-          const visitorRange =
-            visitor.max === Infinity
-              ? `${visitor.min}`
-              : `${visitor.min}-${visitor.max}`;
           return {
             ...visitor,
-            isEnabled: data.eventSize?.enabledValue?.includes(visitorRange) ?? true,
+            isEnabled: data.estimatedVisitorRangeTag
+            ?.enabledValue?.includes(visitor.id) ?? true,
           };
         }),
       },

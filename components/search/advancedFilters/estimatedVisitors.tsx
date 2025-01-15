@@ -33,6 +33,7 @@ export default function EstimatedVisitorsSelector() {
 
     setLocalFilter("estimatedVisitorRangeTag", newRanges.join(","));
   };
+console.log(selectedRanges);
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
