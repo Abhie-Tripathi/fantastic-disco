@@ -33,7 +33,6 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
   // ]
   const colors = ["#f8712b", "#166aeb", "#f9bf44", "#52c41a", "#dd46eb"]
   const router = useRouter()
-  console.log("outreach chat:", outreachChat)
   const handleRouting = (type: string) => {
     if (type === 'button') {
       router.push("/internal/outreach")

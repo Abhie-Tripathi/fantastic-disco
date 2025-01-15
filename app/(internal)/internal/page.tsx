@@ -98,7 +98,6 @@ const Dashboard = () => {
 
   const fetchTrackerData = async () => {
     const trackerData: any = await getTrackers(`limit=4&offset=0`)
-    console.log("tracker data," , trackerData)
     const fetchedTrackers: TrackerData[] = [];
     trackerData.trackerData.map((tracker: any, key: any) => {
       const eventCountry = tracker.filterValue?.eventCountry?.map((countryObj: {}) => Object.values(countryObj)[0]) || [];
@@ -142,7 +141,6 @@ const Dashboard = () => {
   }
 
   const fetchRecentSearch = async () => {
-    console.log("recent search ran")
     const data: any = await getRecentSearch();
     if (data.length > 0) {
       const recentSearch = data[0];
@@ -183,7 +181,6 @@ const Dashboard = () => {
 
   const fetchProfileData = async () => {
     const data: any = await getMyProfileData();
-    console.log("profile", data)
     const profileObject: ProfileData =
       { name: data.user.firstname, email: data.user.email, phoneNumber: data.user.phoneNumber, profilePicture: data.user.profilePicture, department: data.user.department }
     setProfileData(profileObject)

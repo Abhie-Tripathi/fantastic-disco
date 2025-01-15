@@ -25,7 +25,6 @@ interface Props {
 const RecentActivity = ({ profileData, value }: Props) => {
 
     const {theme} = useTheme()
-    console.log("profile data :", profileData)
     // const notifications = [
     //     { name: "Walter White", id: "@walter", heading: "Metioned you in conversation", mssg: "Please find the propsal", time: "9:00 AM", date: "Dec 1, 2024" },
     //     { name: "Walter White", id: "@walter", heading: "Metioned you in conversation", mssg: "Please find the propsal", time: "9:00 AM", date: "Dec 1, 2024" },
