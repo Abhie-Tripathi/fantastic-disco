@@ -38,6 +38,8 @@ import { useFilterContext } from "@/context/filterContext";
 import { useTrackerContext } from "@/context/tracker";
 import Loading from "../ui/Loading";
 import { useTrackerServices } from "@/services/trackerServices";
+import NullState from "@/app/components/trackers/nullState";
+import TrackerNullState from '@/public/trackerNullState.svg';
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
@@ -577,10 +579,16 @@ export default function MapComponent({ searchParams, source, trackerId, isGlobal
 
   const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
   const showEvent = viewport.zoom >= 12 && events.length;
+  console.log(eventCountsQuery.error);
   
   return (
     <div className="relative">
       {(eventCountsQuery.isLoading && currentZoomGroup==="city" )? <Loading/>:
+      (eventCountsQuery.error)?
+      <div className="h-[300px]">
+      <NullState image={TrackerNullState} title={eventCountsQuery.error.message}/>
+      </div>
+      :
       <>
       {!location ? (
         <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />

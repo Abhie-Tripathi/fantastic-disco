@@ -12,9 +12,12 @@ interface OriginalResponse {
 }
 type GetSavedEventsResponse =
   | { result: EventTableType[]; count: number }
-  | {events: EventTableType[]; totalEvents: number}
+  | { events: EventTableType[]; count: number }
+  | { events: EventTableType[]; totalEvents: number }
   | CalendarWeekEventsResponse
-  | MapEventsResponse | EventsResponse;
+  | MapEventsResponse
+  | EventsResponse;
+
 export const useTrackerServices = () => {
     const api = useApi();
     const {getFilterValue} =useFilterState();
