@@ -22,7 +22,7 @@ const ModuleSelection = ({ value, theme }: Props) => {
   const modules = [
     { heading: "Research & Track", subheading: "Quickly discover events that match your interests and needs.", button: "Research", image: theme === "dark" ? ResearchModuleDark : ResearchModule, imgHeight: 120, imgWidth: 90, top: 10 },
     { heading: "Smart Promote", subheading: "Promote your events through multiple touchpoints, attracting a wider audience ", button: "Promote", image: theme === "dark" ? PromoteModuleDark : PormoteModule, imgHeight: 110, imgWidth: 150, top: -20 },
-    { heading: "Personalized Prospecting", subheading: "Say goodbye to generic outreach. Use cutting-edge AI to automate prospecting.", button: "Coming Soon", image: theme === "dark" ? ProspectModuleDark : ProspectModule, imgHeight: 111, imgWidth: 156, top: 10 },
+    { heading: "Personalized Prospecting", subheading: "Say goodbye to generic outreach. Use cutting-edge AI to automate prospecting.", button: "Prospect", image: theme === "dark" ? ProspectModuleDark : ProspectModule, imgHeight: 111, imgWidth: 156, top: 10 },
   ]
 
   return (

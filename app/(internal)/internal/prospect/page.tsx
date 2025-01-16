@@ -23,6 +23,7 @@ import coordinateNullState from "@/public/coordinateNullState.svg";
 import { ApiError } from "@/types/api";
 import { PaginationComponent } from "@/components/pagination";
 import { useFilterState } from "@/hooks/useFilterState";
+import Link from "next/link";
 
 interface companyDetail {
   name: string;
@@ -42,7 +43,7 @@ interface CompanyListResponse {
 const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
   return (
     <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative">
-      {/* <Link href={`/search/${event.id}`} className="block"> */}
+      <Link href={`/internal/company/${companyDetail.url}`} target="_blank" className="block">
       <div className="p-6 flex gap-6">
         {companyDetail.cdn_url && (
           <Image
@@ -85,7 +86,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
           </div>
         </div>
       </div>
-      {/* </Link> */}
+      </Link>
     </div>
   );
 };

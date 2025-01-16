@@ -60,7 +60,7 @@ const TrackerSmall = ({ templates,trackers }: Props) => {
                 <div className='text-xs text-[var(--bold-border-color)]'>
                     {trackers.length === 0 ? "Leverage the potential of smart event tracking by creating an event tracker or by using our pre-defined templates." : "Here’s your top active tracker"}
                 </div>
-                {trackers.length === 0 && <Button onClick={() => handleRouting("button")} className="w-[130px] z-10 mt-5 btn-default flex items-center" size="xs">Create Tracker<ArrowRight color='white' width="12px" /></Button>}
+                {trackers.length === 0 && <Button onClick={() => handleRouting("button")} className="w-[130px] z-10 mt-5 btn-default flex items-center gap-1" size="xs">Create Tracker<ArrowRight color='white' width="12px" /></Button>}
             </div>
             {trackers.length > 0 &&
                 <div className='mt-7 w-full bg-[var(--background-secondary-color)] rounded-xl p-5'>

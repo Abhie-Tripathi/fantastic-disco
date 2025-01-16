@@ -46,7 +46,7 @@ const MapContainer = ({ theme, latLang, location, searchHandler }: Props) => {
                     </div>
                 </div>
                 <div className='w-full flex justify-center absolute bottom-[50px]'>
-                    <Button onClick={searchHandler} className='w-[80%]' size="sm">Explore Events <MoveRight width={12} /></Button>
+                    <Button onClick={searchHandler} className='w-[80%] flex gap-1 items-center' size="sm">Explore Events <MoveRight width={12} /></Button>
                 </div>
 
             </div>
