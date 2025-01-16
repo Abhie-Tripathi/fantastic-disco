@@ -53,7 +53,7 @@ const CoordinateScreenOne = ({ values, theme }: Props) => {
                         {values.map((item, index) => (
                             <NumberPill bg={!isEmpty ? "none" : ""} width='full' heading={item.heading} value={item.value} key={index} />
                         ))}
-                    </div> : <Button onClick={() => handleRouting("button")} className="mt-8" size="sm">Search Events <MoveRight width={12} /></Button>}
+                    </div> : <Button onClick={() => handleRouting("button")} className="mt-8 flex items-center gap-1" size="sm">Search Events <MoveRight width={12} /></Button>}
             </div>
             <div className="h-full min-w-[177px] max-w-[177px] flex items-center max-[1050px]:min-w-[250px] max-[1050px]:p-5 max-[720px]:p-0 max-[720px]:min-w-[177px] max-[570px]:hidden">
                 <Image className="w-full h-[180px] object-cover ml-4 max-[1050px]:ml-0 max-[1050px]:h-full 
