@@ -585,7 +585,7 @@ export default function MapComponent({ searchParams, source, trackerId, isGlobal
     <div className="relative">
       {(eventCountsQuery.isLoading && currentZoomGroup==="city" )? <Loading/>:
       (eventCountsQuery.error)?
-      <div className="h-[300px]">
+      <div className="px-10 py-5">
       <NullState image={TrackerNullState} title={eventCountsQuery.error.message}/>
       </div>
       :

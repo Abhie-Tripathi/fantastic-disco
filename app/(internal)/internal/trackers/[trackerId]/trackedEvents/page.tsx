@@ -434,9 +434,12 @@ const activeVal =
       "Expired Events"
     ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
     : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
+    console.log(isLoading);
+    
   return (
     <div className="flex w-[calc(100vw-134px)]">
     {/* <SideNav/> */}
+    {/* {(isLoading && view==="list") && <Loading/>} */}
     <Suspense fallback={<p>Loading feed...</p>}>
       <div className="flex gap-5 mt-[54px] mb-[24px] flex-col w-[100%]">
         <div className="flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
@@ -610,9 +613,14 @@ const activeVal =
         {view === "list" && (
   <div className="flex-grow overflow-hidden">
     {isLoading ? (
+      <div className="px-10 py-5">
       <Loading />
+      </div>
     ) : error ? (
-      <ZeroState text={(error as ApiError).message} />
+      <div className="px-10 py-5">
+      <NullState 
+          image={TrackerNullState}  title={(error as ApiError).message} />
+          </div>
     ) : count === 0 ? (
       active === "Saved Events" ? (
         <NullState 
