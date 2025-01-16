@@ -28,7 +28,6 @@ export const TrackerContext = createContext<any>(
         setIsNewCall(true);
       }
     },[])
-    console.log(isNewCall);
     
     useEffect(()=>{
       // console.log(11111);
