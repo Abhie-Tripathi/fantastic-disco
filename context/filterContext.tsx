@@ -168,15 +168,13 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     if (enabledFilters) {
-      console.log("Enabled Filters:", enabledFilters);
-      console.log("Updated Filters:", generateSearchFilters(enabledFilters));
+      // console.log("Enabled Filters:", enabledFilters);
       setMorphedData(generateSearchFilters(enabledFilters) as any);
     }
   }, [enabledFilters]);
   useEffect(() => {
     if (!pathname.split("/").includes("editTracker")) {
       setInitialFilters();
-      console.log(11111);
     }
   }, [searchParams, enabledFilters]);
   // useEffect(() => {
@@ -204,10 +202,10 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         estimatedExhibitors: "estimatedExhibitScore",
         estimatedVisitorRangeTag: "estimatedVisitorRangeTag",
       };
-      console.log(enabledFilters);
+      // console.log(enabledFilters);
       const selected = mapping[key as keyof Filter];
       setLocalFilters((prev) => {
-        console.log(prev);
+        // console.log(prev);
 
         if (
           enabledFilters?.[selected] &&
@@ -232,7 +230,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         } else {
           newFilters[key] = value;
         }
-        console.log(newFilters);
+        // console.log(newFilters);
 
         return newFilters;
       });
@@ -241,14 +239,12 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   );
   
   const clearLocalFilters = useCallback((view: string) => {
-    console.log(enabledFilters);
     router.push(`/internal/search/events?view=${view}`);
   }, []);
   const setInitialFilters = () => {
     const temp: Record<string, string> = Object.fromEntries(
       searchParams.entries()
     );
-    console.log(enabledFilters);
 
     if (
       enabledFilters &&
@@ -310,14 +306,13 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
       temp.show = dataToShow.join(",");
     }
-    console.log(temp);
+    // console.log(temp);
 
     setLocalFilters(temp);
     applyFilters()
   };
   const applyFilters = useCallback(() => {
     setLocalFilters((currentFilters) => {
-      console.log(currentFilters);
 
       const filteredFilters = filterEmptyValues(currentFilters);
       const params = new URLSearchParams();

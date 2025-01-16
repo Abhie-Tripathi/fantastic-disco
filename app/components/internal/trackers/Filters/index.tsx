@@ -1014,7 +1014,7 @@ const Pages = () => {
       const secondLast = pathName[pathName.length - 2];
      
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
-        console.log(getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords"));
+        // console.log(getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords"));
         setIsCreating(false);
         setIsMandatory(true);
         return;
