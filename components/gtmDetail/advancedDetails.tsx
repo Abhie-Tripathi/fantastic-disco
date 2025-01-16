@@ -51,8 +51,8 @@ const CarouselComponent = ({
   const {
     maturity,
     frequency,
-    isBranded,
-    isSeries,
+    isEventBrand: isBranded,
+    isEventSeries: isSeries,
     rehostDate,
     futureExpectedEndDate,
     futureExpectedStartDate,
@@ -75,11 +75,22 @@ const CarouselComponent = ({
       (option: { label: string }) => option.label === frequency
     );
 
-  const hasGlobalAndTouringOption =
+  const hasSeriesEvent =
     globalAndTourings &&
     globalAndTourings.options.find(
-      (option: { label: string }) => option.label === frequency
-    );
+      (option: { label: string }) => option.label === "Series"
+    ).isEnabled === isSeries;
+
+  const hasBrandedEvent =
+    globalAndTourings &&
+    globalAndTourings.options.find(
+      (option: { label: string }) => option.label === "Branded"
+    ).isEnabled === isBranded;
+
+  const isBrandEnabled =
+    globalAndTourings &&
+    globalAndTourings.isEnabled &&
+    (hasBrandedEvent || hasSeriesEvent);
 
   const isMaturityEnabled =
     maturityLevels &&
@@ -99,6 +110,8 @@ const CarouselComponent = ({
     }
     setIsSlidingEnabled(api.canScrollNext() || api.canScrollPrev());
   }, [api]);
+
+  console.log(morphedData);
   return (
     <div className="flex justify-center px-3">
       <Carousel
@@ -139,7 +152,11 @@ const CarouselComponent = ({
                   </span>
                 )}
               </div>
-              {!isMaturityEnabled && <Restriction />}
+              {!isMaturityEnabled && (
+                <Restriction
+                  className={`${isSlidingEnabled ? "" : "-right-3"}`}
+                />
+              )}
             </CarouselItem>
           )}
           {editions && (
@@ -200,7 +217,11 @@ const CarouselComponent = ({
                   )}
                 </div>
               </div>
-              {!isFrequencyEnabled && <Restriction />}
+              {!isFrequencyEnabled && (
+                <Restriction
+                  className={`${isSlidingEnabled ? "" : "-right-3"}`}
+                />
+              )}
             </CarouselItem>
           )}
           {(futureExpectedStartDate || futureExpectedEndDate) && (
@@ -221,7 +242,11 @@ const CarouselComponent = ({
                     format(futureExpectedStartDate, "MMM, yyyy")}
                 </span>
               </div>
-              {forcastedStatus && !forcastedStatus.isEnabled && <Restriction />}
+              {forcastedStatus && !forcastedStatus.isEnabled && (
+                <Restriction
+                  className={`${isSlidingEnabled ? "" : "-right-3"}`}
+                />
+              )}
             </CarouselItem>
           )}
           {(isBranded || isSeries) && (
@@ -243,16 +268,29 @@ const CarouselComponent = ({
                   </span>
                 )}
                 {isBranded && (
-                  <span className="text-sm font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-full xl:w-32 text-[#DF2670] bg-[#FEECF2] dark:bg-[#3A1726] dark:border-[#551B33] text-center">
-                    Branded Event
+                  <span
+                    className={`text-sm font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-full xl:w-32 ${
+                      isBrandEnabled ? "" : "h-7"
+                    } text-[#DF2670] bg-[#FEECF2] dark:bg-[#3A1726] dark:border-[#551B33] text-center`}
+                  >
+                    {isBrandEnabled && "Branded Event"}
                   </span>
                 )}
                 {isSeries && (
-                  <span className="text-sm font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-full xl:w-32 text-[#0D8C7D] bg-[#E5FAF6] dark:bg-[#062822] dark:border-[#0D8C7D] text-center">
-                    Series Event
+                  <span
+                    className={`text-sm font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-full xl:w-32${
+                      isBrandEnabled ? "" : "h-7"
+                    } text-[#0D8C7D] bg-[#E5FAF6] dark:bg-[#062822] dark:border-[#0D8C7D] text-center`}
+                  >
+                    {isBrandEnabled && " Series Event"}
                   </span>
                 )}
               </div>
+              {!isBrandEnabled && (
+                <Restriction
+                  className={`${isSlidingEnabled ? "" : "-right-3"}`}
+                />
+              )}
             </CarouselItem>
           )}
         </CarouselContent>
@@ -273,8 +311,13 @@ export const AdvancedDetails = ({
   eventId,
 }: Props) => {
   const { morphedData } = useFilterContext();
-  const { maturity, frequency, isBranded, isSeries, futureExpectedStartDate } =
-    eventDetails;
+  const {
+    maturity,
+    frequency,
+    futureExpectedStartDate,
+    isEventBrand: isBranded,
+    isEventSeries: isSeries,
+  } = eventDetails;
   const { editions } = eventEditionData;
   return (
     (maturity ||

@@ -332,6 +332,8 @@ export interface GTMEventDetail extends Omit<Event, "organizer"> {
   below5CountryCategoryEvent: countryCategoryRank[] | [];
   organizer: GTMOrganizer | null;
   "trustScore%": number | null;
+  isEventBrand?: boolean;
+  isEventSeries?: boolean;
   rankData: {
     global: number;
     country: {

@@ -66,8 +66,7 @@ export const EventInfoAndMap = ({
   scrollSection,
   setActiveTab,
 }: Props) => {
-  const { morphedData } = useFilterContext();
-  console.log(morphedData);
+  const { enabledFilters } = useFilterContext();
   const currentDate = new Date().toISOString().split("T")[0];
   const [isExpandDescription, setisExpandDescription] =
     useState<boolean>(false);
@@ -93,7 +92,22 @@ export const EventInfoAndMap = ({
     website,
   } = eventDetails;
 
-  const { categories: categoryVisibility } = morphedData;
+  const enabledKeywords =
+    enabledFilters && enabledFilters.keywords
+      ? enabledFilters.keywords.positiveKeywords
+      : [];
+
+  const filteredTags =
+    enabledKeywords && enabledKeywords.length > 0
+      ? tags &&
+        tags.filter((tag) =>
+          enabledKeywords.some(
+            (keyword) => keyword.toLowerCase() === tag.name.toLowerCase()
+          )
+        )
+      : tags;
+
+  console.log(filteredTags);
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
       {/* <div className="flex gap-2 justify-center bg-[var(--negative-light-color)] border border-[#FDD8D8] p-2 rounded-sm text-sm">
@@ -144,26 +158,24 @@ export const EventInfoAndMap = ({
               </Text>
             </div>
           }
-          {categoryVisibility.isEnabled &&
-            categories &&
-            categories.length > 0 && (
-              <div>
-                <h1 className="text-[1rem] mb-2 font-medium">Category</h1>
-                <ul className="flex flex-row flex-wrap gap-3">
-                  {categories.map((category: any) => (
-                    <li key={category.id}>
-                      <span className="text-[var(--primary-text-color)] text-sm py-1 px-3 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)]">
-                        {category.name}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+          {categories && categories.length > 0 && (
+            <div>
+              <h1 className="text-[1rem] mb-2 font-medium">Category</h1>
+              <ul className="flex flex-row flex-wrap gap-3">
+                {categories.map((category: any) => (
+                  <li key={category.id}>
+                    <span className="text-[var(--primary-text-color)] text-sm py-1 px-3 border-[#C9C9C9] border rounded-full w-fit bg-[var(--primary-foreground)]">
+                      {category.name}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           {
             <div>
               <h1 className="text-[1rem] mb-2 font-medium">Event Keywords</h1>
-              <ExpandableTags tags={tags ?? []} />
+              <ExpandableTags tags={filteredTags ?? []} />
             </div>
           }
           <div className="flex flex-row gap-6">

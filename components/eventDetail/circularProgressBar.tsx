@@ -1,16 +1,18 @@
 "use client";
 interface CircularProgressProps {
   value: number | null;
+  visibility: boolean;
 }
 
 export const CircularProgressBar: React.FC<CircularProgressProps> = ({
   value,
+  visibility,
 }) => {
   const radius = 26;
   const circumference = 2 * Math.PI * radius;
   const svgSize = radius * 2 + 8;
 
-  const displayValue = value !== null ? value : 0;
+  const displayValue = visibility ? (value !== null ? value : 0) : 0;
 
   const getColorByValue = (score: number): string => {
     if (score <= 0) return "text-transparent";
@@ -60,7 +62,7 @@ export const CircularProgressBar: React.FC<CircularProgressProps> = ({
           className="absolute inset-0 flex items-center justify-center text-sm font-semibold"
           aria-hidden="true"
         >
-          {value !== null && value > 0 ? value : "--"}
+          {visibility ? (value !== null && value > 0 ? value : "--") : ""}
         </span>
       </div>
     </div>

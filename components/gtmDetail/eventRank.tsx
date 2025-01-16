@@ -11,6 +11,8 @@ import { Event, GTMEventDetail } from "@/types/events";
 import { RankingDetail } from "./insightsAndScores";
 import { formatDate } from "date-fns";
 import Link from "next/link";
+import { useFilterContext } from "@/context/filterContext";
+import Restriction from "../eventDetail/restriction";
 
 interface EventRank {
   id?: string;
@@ -28,6 +30,7 @@ export const EventRank = ({
   rankings: RankingDetail;
   eventDetails: GTMEventDetail;
 }) => {
+  const { morphedData } = useFilterContext();
   const {
     categories,
     venueLocation,
@@ -36,6 +39,7 @@ export const EventRank = ({
     startDateTime,
     id: eventId,
   } = eventDetails;
+  const { eventRanking } = morphedData;
   const swiperRef = useRef(null);
   const {
     above5CategoryEvent,
@@ -79,7 +83,16 @@ export const EventRank = ({
       {countryRank && (
         <div className="flex flex-col p-3 rounded-sm gap-6 w-auto h-auto items-center">
           <div className="flex flex-col items-center border border-[var(--neutral-light-color)] dark:bg-[var(--primary-foreground)] dark:border-[var(--border-color)] w-48 rounded-sm">
-            <p className="text-3xl font-semibold p-2">{countryRank ?? "--"}</p>
+            <p
+              className={`text-3xl font-semibold p-2 ${
+                eventRanking && eventRanking.isEnabled
+                  ? "opacity-100"
+                  : "opacity-0"
+              }`}
+            >
+              {(eventRanking && eventRanking.isEnabled ? countryRank : "--") ??
+                "--"}
+            </p>
             <Text
               color="secondary"
               variant="noMargin"
@@ -153,7 +166,11 @@ export const EventRank = ({
                         className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                       >
                         <p className="text-xl font-semibold p-2">
-                          #{countryrank ?? "--"}
+                          #
+                          {(eventRanking &&
+                            eventRanking.isEnabled &&
+                            countryrank) ??
+                            "--"}
                         </p>
                         <div className="flex flex-col justify-between">
                           <Text
@@ -183,7 +200,11 @@ export const EventRank = ({
                     className="flex flex-row justify-between bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
                   >
                     <p className="text-xl font-semibold p-2">
-                      #{countryRank ?? "--"}
+                      #
+                      {(eventRanking &&
+                        eventRanking.isEnabled &&
+                        countryRank) ??
+                        "--"}
                     </p>
                     <div className="flex flex-col justify-between">
                       <Text
@@ -218,7 +239,11 @@ export const EventRank = ({
                         className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                       >
                         <p className="text-xl font-semibold p-2">
-                          #{countryrank ?? "--"}
+                          #
+                          {(eventRanking &&
+                            eventRanking.isEnabled &&
+                            countryrank) ??
+                            "--"}
                         </p>
                         <div className="flex flex-col justify-between">
                           <Text
@@ -263,7 +288,16 @@ export const EventRank = ({
       {categoryRank && (
         <div className="flex flex-col p-3 rounded-sm gap-6 w-auto h-auto items-center">
           <div className="flex flex-col items-center border border-[var(--neutral-light-color)] dark:bg-[var(--primary-foreground)] dark:border-[var(--border-color)] w-48 rounded-sm">
-            <p className="text-3xl font-semibold p-2">{categoryRank}</p>
+            <p
+              className={`text-3xl font-semibold p-2 ${
+                eventRanking && eventRanking.isEnabled
+                  ? "opacity-100"
+                  : "opacity-0"
+              }`}
+            >
+              {(eventRanking && eventRanking.isEnabled ? categoryRank : "--") ??
+                "--"}
+            </p>
             <Text
               color="secondary"
               variant="noMargin"
@@ -339,7 +373,11 @@ export const EventRank = ({
                         className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                       >
                         <p className="text-xl font-semibold p-2">
-                          #{categoryrank ?? "--"}
+                          #
+                          {(eventRanking &&
+                            eventRanking.isEnabled &&
+                            categoryrank) ??
+                            "--"}
                         </p>
                         <div className="flex flex-col justify-between">
                           <Text
@@ -369,7 +407,11 @@ export const EventRank = ({
                     className="flex flex-row justify-between bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
                   >
                     <p className="text-xl font-semibold p-2">
-                      #{categoryRank ?? "--"}
+                      #
+                      {(eventRanking &&
+                        eventRanking.isEnabled &&
+                        categoryRank) ??
+                        "--"}
                     </p>
                     <div className="flex flex-col justify-between">
                       <Text
@@ -404,7 +446,11 @@ export const EventRank = ({
                         className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                       >
                         <p className="text-xl font-semibold p-2">
-                          #{categoryrank ?? "--"}
+                          #
+                          {(eventRanking &&
+                            eventRanking.isEnabled &&
+                            categoryrank) ??
+                            "--"}
                         </p>
                         <div className="flex flex-col justify-between">
                           <Text
@@ -449,7 +495,17 @@ export const EventRank = ({
       {countryCategoryRank && (
         <div className="flex flex-col p-3 rounded-sm gap-6 w-auto h-auto items-center">
           <div className="flex flex-col items-center border border-[var(--neutral-light-color)] dark:bg-[var(--primary-foreground)] dark:border-[var(--border-color)] w-48 rounded-sm">
-            <p className="text-3xl font-semibold p-2">{countryCategoryRank}</p>
+            <p
+              className={`text-3xl font-semibold p-2 ${
+                eventRanking && eventRanking.isEnabled
+                  ? "opacity-100"
+                  : "opacity-0"
+              }`}
+            >
+              {(eventRanking && eventRanking.isEnabled
+                ? countryCategoryRank
+                : "--") ?? "--"}
+            </p>
             <Text
               color="secondary"
               variant="noMargin"
@@ -534,7 +590,11 @@ export const EventRank = ({
                           className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                         >
                           <p className="text-xl font-semibold p-2">
-                            #{countrycategoryrank ?? "--"}
+                            #
+                            {(eventRanking &&
+                              eventRanking.isEnabled &&
+                              countrycategoryrank) ??
+                              "--"}
                           </p>
                           <div className="flex flex-col justify-between">
                             <Text
@@ -564,7 +624,11 @@ export const EventRank = ({
                     className="flex flex-row justify-between bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
                   >
                     <p className="text-xl font-semibold p-2">
-                      #{countryCategoryRank ?? "--"}
+                      #
+                      {(eventRanking &&
+                        eventRanking.isEnabled &&
+                        countryCategoryRank) ??
+                        "--"}
                     </p>
                     <div className="flex flex-col justify-between">
                       <Text
@@ -606,7 +670,11 @@ export const EventRank = ({
                           className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                         >
                           <p className="text-xl font-semibold p-2">
-                            #{countrycategoryrank ?? "--"}
+                            #
+                            {(eventRanking &&
+                              eventRanking.isEnabled &&
+                              countrycategoryrank) ??
+                              "--"}
                           </p>
                           <div className="flex flex-col justify-between">
                             <Text
@@ -675,8 +743,16 @@ export const EventRank = ({
           <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
             <div className="flex flex-col p-3 rounded-sm gap-6 w-auto h-auto items-center">
               <div className="flex flex-col items-center border border-[var(--neutral-light-color)] dark:bg-[var(--primary-foreground)] dark:border-[var(--border-color)] w-48 rounded-sm">
-                <p className="text-3xl font-semibold p-2">
-                  {countryRank ?? "--"}
+                <p
+                  className={`text-3xl font-semibold p-2 ${
+                    eventRanking && eventRanking.isEnabled
+                      ? "opacity-100"
+                      : "opacity-0"
+                  }`}
+                >
+                  {(eventRanking && eventRanking.isEnabled
+                    ? countryRank
+                    : "--") ?? "--"}
                 </p>
                 <Text
                   color="secondary"
@@ -760,7 +836,11 @@ export const EventRank = ({
                             className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                           >
                             <p className="text-xl font-semibold p-2">
-                              #{countryrank ?? "--"}
+                              #
+                              {(eventRanking &&
+                                eventRanking.isEnabled &&
+                                countryrank) ??
+                                "--"}
                             </p>
                             <div className="flex flex-col justify-between">
                               <Text
@@ -790,7 +870,11 @@ export const EventRank = ({
                         className="flex flex-row justify-between bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
                       >
                         <p className="text-xl font-semibold p-2">
-                          #{countryRank ?? "--"}
+                          #
+                          {(eventRanking &&
+                            eventRanking.isEnabled &&
+                            countryRank) ??
+                            "--"}
                         </p>
                         <div className="flex flex-col justify-between">
                           <Text
@@ -830,7 +914,11 @@ export const EventRank = ({
                             className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                           >
                             <p className="text-xl font-semibold p-2">
-                              #{countryrank ?? "--"}
+                              #
+                              {(eventRanking &&
+                                eventRanking.isEnabled &&
+                                countryrank) ??
+                                "--"}
                             </p>
                             <div className="flex flex-col justify-between">
                               <Text
@@ -877,7 +965,17 @@ export const EventRank = ({
           <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
             <div className="flex flex-col p-3 rounded-sm gap-6 w-auto h-auto items-center">
               <div className="flex flex-col items-center border border-[var(--neutral-light-color)] dark:bg-[var(--primary-foreground)] dark:border-[var(--border-color)] w-48 rounded-sm">
-                <p className="text-3xl font-semibold p-2">{categoryRank}</p>
+                <p
+                  className={`text-3xl font-semibold p-2 ${
+                    eventRanking && eventRanking.isEnabled
+                      ? "opacity-100"
+                      : "opacity-0"
+                  }`}
+                >
+                  {(eventRanking && eventRanking.isEnabled
+                    ? categoryRank
+                    : "--") ?? "--"}
+                </p>
                 <Text
                   color="secondary"
                   variant="noMargin"
@@ -960,7 +1058,11 @@ export const EventRank = ({
                             className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                           >
                             <p className="text-xl font-semibold p-2">
-                              #{categoryrank ?? "--"}
+                              #
+                              {(eventRanking &&
+                                eventRanking.isEnabled &&
+                                categoryrank) ??
+                                "--"}
                             </p>
                             <div className="flex flex-col justify-between">
                               <Text
@@ -990,7 +1092,11 @@ export const EventRank = ({
                         className="flex flex-row justify-between bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
                       >
                         <p className="text-xl font-semibold p-2">
-                          #{categoryRank ?? "--"}
+                          #
+                          {(eventRanking &&
+                            eventRanking.isEnabled &&
+                            categoryRank) ??
+                            "--"}
                         </p>
                         <div className="flex flex-col justify-between">
                           <Text
@@ -1030,7 +1136,11 @@ export const EventRank = ({
                             className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                           >
                             <p className="text-xl font-semibold p-2">
-                              #{categoryrank ?? "--"}
+                              #
+                              {(eventRanking &&
+                                eventRanking.isEnabled &&
+                                categoryrank) ??
+                                "--"}
                             </p>
                             <div className="flex flex-col justify-between">
                               <Text
@@ -1077,8 +1187,16 @@ export const EventRank = ({
           <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
             <div className="flex flex-col p-3 rounded-sm gap-6 w-auto h-auto items-center">
               <div className="flex flex-col items-center border border-[var(--neutral-light-color)] dark:bg-[var(--primary-foreground)] dark:border-[var(--border-color)] w-48 rounded-sm">
-                <p className="text-3xl font-semibold p-2">
-                  {countryCategoryRank}
+                <p
+                  className={`text-3xl font-semibold p-2 ${
+                    eventRanking && eventRanking.isEnabled
+                      ? "opacity-100"
+                      : "opacity-0"
+                  }`}
+                >
+                  {(eventRanking && eventRanking.isEnabled
+                    ? countryCategoryRank
+                    : "--") ?? "--"}
                 </p>
                 <Text
                   color="secondary"
@@ -1164,7 +1282,11 @@ export const EventRank = ({
                               className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                             >
                               <p className="text-xl font-semibold p-2">
-                                #{countrycategoryrank ?? "--"}
+                                #
+                                {(eventRanking &&
+                                  eventRanking.isEnabled &&
+                                  countrycategoryrank) ??
+                                  "--"}
                               </p>
                               <div className="flex flex-col justify-between">
                                 <Text
@@ -1194,7 +1316,11 @@ export const EventRank = ({
                         className="flex flex-row justify-between bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
                       >
                         <p className="text-xl font-semibold p-2">
-                          #{countryCategoryRank ?? "--"}
+                          #
+                          {(eventRanking &&
+                            eventRanking.isEnabled &&
+                            countryCategoryRank) ??
+                            "--"}
                         </p>
                         <div className="flex flex-col justify-between">
                           <Text
@@ -1237,7 +1363,11 @@ export const EventRank = ({
                                 className="flex flex-row justify-between border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                               >
                                 <p className="text-xl font-semibold p-2">
-                                  #{countrycategoryrank ?? "--"}
+                                  #
+                                  {(eventRanking &&
+                                    eventRanking.isEnabled &&
+                                    countrycategoryrank) ??
+                                    "--"}
                                 </p>
                                 <div className="flex flex-col justify-between">
                                   <Text
@@ -1297,9 +1427,12 @@ export const EventRank = ({
   );
   return (
     <>
-      <div className="border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] p-3 rounded-sm gap-12 w-fill h-auto">
+      <div className="relative border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] p-3 rounded-sm gap-12 w-fill h-auto">
         {rankComponents}
         {swiperRankComponents}
+        {eventRanking && !eventRanking.isEnabled && (
+          <Restriction className="-right-3" />
+        )}
       </div>
     </>
   );
