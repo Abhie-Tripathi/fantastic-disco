@@ -28,10 +28,9 @@ export const TrackerContext = createContext<any>(
         setIsNewCall(true);
       }
     },[])
-    console.log(isNewCall);
     
     useEffect(()=>{
-      console.log(11111);
+      // console.log(11111);
       
         if(isNewCall){
             fetchData();

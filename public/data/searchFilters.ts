@@ -327,15 +327,13 @@ export const searchFilters = {
     estimatedVisitors: {
       isEnabled: true,
       options: [
-        { id: "0-500", label: "0 - 500", min: 0, max: 500, isEnabled: true },
-        { id: "500-1000", label: "500 - 1k", min: 500, max: 1000, isEnabled: true },
-        { id: "1000-5000", label: "1k - 5k", min: 1000, max: 5000, isEnabled: true },
-        { id: "5000-10000", label: "5k - 10k", min: 5000, max: 10000, isEnabled: true },
-        { id: "10000-25000", label: "10k - 25k", min: 10000, max: 25000, isEnabled: true },
-        { id: "25000-50000", label: "25k - 50k", min: 25000, max: 50000, isEnabled: true },
-        { id: "50000-100000", label: "50k - 100k", min: 50000, max: 100000, isEnabled: true },
-        { id: "100000-200000", label: "100k - 200k", min: 100000, max: 200000, isEnabled: true },
-        { id: "200000", label: "200k+", min: 200000, max: Infinity, isEnabled: true },
+        { id: "nano", label: "Nano", min: 0, max: 500, isEnabled: true },
+        { id: "micro", label: "Micro", min: 500, max: 1000, isEnabled: true },
+        { id: "small", label: "Small", min: 1000, max: 5000, isEnabled: true },
+        { id: "medium", label: "Medium", min: 5000, max: 10000, isEnabled: true },
+        { id: "large", label: "Large", min: 10000, max: 25000, isEnabled: true },
+        { id: "mega", label: "Mega", min: 25000, max: 50000, isEnabled: true },
+        { id: "ultra", label: "Ultra", min: 50000, max: 100000, isEnabled: true }
       ],
     },
   
@@ -442,7 +440,7 @@ export const searchFilters = {
 
 export const generateSearchFilters=(apiResponse: any)=> {
     const  data  = apiResponse;
-  
+    
     return {
       eventTypes: {
         isEnabled: data.eventType?.enabledValue?.length > 0 ?? true,
@@ -565,13 +563,10 @@ export const generateSearchFilters=(apiResponse: any)=> {
       estimatedVisitors: {
         isEnabled: data.eventSize?.enabledValue?.length > 0 ?? true,
         options: searchFilters.estimatedVisitors.options.map((visitor) => {
-          const visitorRange =
-            visitor.max === Infinity
-              ? `${visitor.min}`
-              : `${visitor.min}-${visitor.max}`;
           return {
             ...visitor,
-            isEnabled: data.eventSize?.enabledValue?.includes(visitorRange) ?? true,
+            isEnabled: data.estimatedVisitorRangeTag
+            ?.enabledValue?.includes(visitor.id) ?? true,
           };
         }),
       },

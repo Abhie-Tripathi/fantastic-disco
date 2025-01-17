@@ -60,13 +60,6 @@ const Research = ({ theme }: Props) => {
         router.push(`/internal/search/events?${params.toString()}`, { scroll: false });
     };
 
-    // useEffect(()=>{
-    //     setLocalFilter("locationIds","e3ef02ad-2f97-5fa6-9033-9addfad3f0ef")
-    //     setLocalFilter("eventTypes","tradeshows")
-    //     setLocalFilter("active_gte","2025-01-01")
-    //     setLocalFilter("active_lte","2025-01-03")
-    // },[])
-
     return (
         <div className={`w-full h-auto bg-cover bg-center border border-[var(--border-color)] rounded-xl flex items-end overflow-hidden gap-[40px]`}
             style={{ backgroundImage: `${theme === "dark" ? `url(${BackgroundImageDark.src})` : `url(${BackgroundImage.src})`}` }}>
@@ -81,7 +74,7 @@ const Research = ({ theme }: Props) => {
                 <div className={`w-full relative`}>
                     <SearchBar />
                     <div className='hidden top-[10px] right-[10px] absolute max-[1100px]:block max-[468px]:hidden'>
-                        <Button onClick={searchHandler} className='' size="sm">Explore Events <MoveRight width={12} /></Button>
+                        <Button onClick={searchHandler} className='flex items-center gap-1' size="sm">Explore Events <MoveRight width={12} /></Button>
                     </div>
                     <div className='hidden top-[10px] right-[10px] absolute max-[468px]:block'>
                         <Button onClick={searchHandler} className='' size="sm"><MoveRight width={12} /></Button>
@@ -93,7 +86,7 @@ const Research = ({ theme }: Props) => {
                         <Sparkles width={14} height={14} color='#6750a4' />
                         <span className='text-[var(--primary-color)] text-xs'>Suggested filters</span>
                     </div>
-                    <div className="mt-2.5 gap-2 flex justify-between max-[780px]:hidden">
+                    <div className="mt-2.5 grid lg:grid-cols-3 grid-cols-3 gap-3 max-[780px]:hidden">
                         <EventTypeSelector/>
                         <LocationSelector/>
                         <DateRangeSelector/>

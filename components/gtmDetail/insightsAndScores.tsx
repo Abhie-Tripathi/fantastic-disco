@@ -52,7 +52,7 @@ export const InsightsAndScores = ({
     below5CountryCategoryEvent: below5CountryCategoryEvent,
   };
   const [ref, inView, entry, rootMargin] = useInView({
-    threshold: 0.5,
+    threshold: 0.2,
     triggerOnce: false,
   });
   useMemo(() => {
@@ -83,7 +83,7 @@ export const InsightsAndScores = ({
                     <CircularProgressBar value={scores.impactScore} />
                   </div>
                 )}
-                {trustScore && (
+                {trustScore !== null && (
                   <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                     <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                       Trust Score
