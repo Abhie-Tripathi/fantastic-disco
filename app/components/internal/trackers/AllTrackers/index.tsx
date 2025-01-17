@@ -16,8 +16,8 @@ import { useFilterState } from "@/hooks/useFilterState";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
   const router= useRouter();
-  const {  setIsNewCall, setTrackerId, isLoading:load } = useTrackerContext();
-  const {setFilter} = useFilterState();
+  const {  setIsNewCall, setTrackerId, isLoading:load, setSkip } = useTrackerContext();
+  const {setFilter, getFilterValue, setMultipleFilters} = useFilterState();
   // const { theme } = useTheme();
   // console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const lineData = {
@@ -114,7 +114,12 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   }
   const handleSingleClick=(item:any)=>{
     setSingleTrackerData(item)
-    setFilter("id", item.id);
+    // setSkip(Number(getFilterValue("skip"))||0);
+    // setFilter("id", item.id);
+    // setMultipleFilters({
+    //   id:item.id,
+    //   skip:getFilterValue("skip")
+    // })
   }
   return (
     <div className="card cursor-pointer h-[150px]" onClick={()=>handleSingleClick(item)}

@@ -1742,7 +1742,7 @@ return (
       <Link
         href={
           last === "create"
-            ? "/internal/trackers"
+            ? "/internal/trackers?showTemplates=true"
             : `/internal/trackers/${pathName[pathName.length - 2]
             }/trackedConfiguration?type=${type}`
         }
@@ -1754,7 +1754,7 @@ return (
       {/* <button className={styles.save} onClick={saveTrackerHandler}>
         Save Tracker
       </button> */}
-      <Button className="text-white" onClick={saveTrackerHandler}>Save Tracker</Button>
+      <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
     </div>
     </div>
   </div>

@@ -24,7 +24,7 @@ interface PaginationComponentProps {
   itemsPerPage: number
   count: number
   onPageChange: (page: number) => void
-  onItemsPerPageChange: (value: string) => void
+  onItemsPerPageChange?: (value: string) => void
 }
 
 export function PaginationComponent({
@@ -115,7 +115,7 @@ export function PaginationComponent({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center px-2">
+      {/* <div className="flex justify-between items-center px-2">
         <div>
           <span className="text-sm text-muted-foreground">
             Showing {Math.min((currentPage - 1) * itemsPerPage + 1, count)} to{" "}
@@ -139,7 +139,7 @@ export function PaginationComponent({
             </SelectContent>
           </Select>
         </div>
-      </div>
+      </div> */}
       <Pagination>
         <PaginationContent className="flex-wrap justify-center">
           <PaginationItem>

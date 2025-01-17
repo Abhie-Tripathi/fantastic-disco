@@ -125,6 +125,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { useNotesServices } from "@/services/notesServices";
 import { Tracker } from "@/types/trackers";
 import { useTrackerContext } from "@/context/tracker";
+import { useFilterState } from "@/hooks/useFilterState";
 
 interface Search {
   searchParams: {
@@ -133,9 +134,10 @@ interface Search {
 }
 const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
-  const {  setIsNewCall, setTrackerId, isLoading:load } = useTrackerContext();
+  const {  setIsNewCall, setTrackerId, isLoading:load, skip, setSkip } = useTrackerContext();
   const router=useRouter();
   const [type, setType] = useState("");
+  const {setFilter, getFilterValue, deleteFilter, setMultipleFilters} = useFilterState();
   useEffect(()=>{
     if(tab==="savedEvents") setType("Saved Events")
     else if(tab==="customTrackers") setType("Custom Trackers")
@@ -147,7 +149,7 @@ const Trackers = ({ searchParams }: Search) => {
   const [offset, setOffset] = useState(0);
   // const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
+  const searchParam=useSearchParams();
   // WalkThrough
   const [steps, setSteps] = useState<Step[]>([]);
   const [run, setRun] = useState(true);
@@ -155,7 +157,6 @@ const Trackers = ({ searchParams }: Search) => {
   const createTrackerRef = useState(null);
   const customTrackerRef = useRef(null);
   const savedEventRef = useRef(null);
-  
   const { theme } = useTheme();
   useEffect(() => {
     //  if(document.body.classList.contains(styles.bodyOverflowHidden))
@@ -212,6 +213,7 @@ const Trackers = ({ searchParams }: Search) => {
         setCurrentUrl(`${baseUrl}/trackers`);
     }
 }, []);
+
   const modalOpen = () => {
     setShowModal(true);
     console.log(document.body.style);
@@ -237,7 +239,7 @@ const Trackers = ({ searchParams }: Search) => {
   //   setShowTracker(true);
   //   setHideTemplate(!hideTemplate);
   // };
-  const [hideTemplate, setHideTemplate] = useState(true);
+  const [hideTemplate, setHideTemplate] = useState<boolean>(!getFilterValue("showTemplates") || true);
   const [dataPresent, setDataPresent] = useState(true);
   // useEffect(() => {
   //   if (dataPresent) setHideTemplate(false);
@@ -259,16 +261,16 @@ const Trackers = ({ searchParams }: Search) => {
 
     fetchData();
   }, []);
-  useEffect(() => {
-    if(type){
-    if(type==="All Trackers")
-    router.push(`/internal/trackers?tab=allTrackers`);
-    else if(type==="Custom Trackers")
-      router.push(`/internal/trackers?tab=customTrackers`);
-    else if(type==="Saved Events")
-      router.push(`/internal/trackers?tab=savedEvents`)
-    }
-  }, [type]);
+  // useEffect(() => {
+  //   if(type){
+  //   if(type==="All Trackers")
+  //   router.push(`/internal/trackers?tab=allTrackers`);
+  //   else if(type==="Custom Trackers")
+  //     router.push(`/internal/trackers?tab=customTrackers`);
+  //   else if(type==="Saved Events")
+  //     router.push(`/internal/trackers?tab=savedEvents`)
+  //   }
+  // }, [type]);
   
   
   // const updateSteps = useCallback(() => {
@@ -337,7 +339,6 @@ const Trackers = ({ searchParams }: Search) => {
     
   }
   }, [singleTrackerData]);
-  console.log(hideTemplate);
   const fetchNote=async(id:string)=>{
     // const url =
     // `${baseUrl}/comment?stage=INTERNAL&entityType=TRACKER&entityId=${id}&offset=0&limit=1`;
@@ -392,6 +393,33 @@ const Trackers = ({ searchParams }: Search) => {
     setTrackerId(id);
   }
   // console.log(searchValue);
+  const hideTemplates=(val: boolean)=>{
+
+    // setHideTemplate(false);
+    if(!val){
+    // setFilter("showTemplates", (!val).toString());
+    // console.log("skipped data",getFilterValue("skip"));
+    setSkip(getFilterValue("skip"))
+    setMultipleFilters({
+      showTemplates: (!val).toString(),
+      id: ""
+    })
+    }
+    else {
+      // deleteFilter("showTemplates");
+      console.log("skipped value", skip);
+      setMultipleFilters({
+        skip: skip,
+        showTemplates: "",
+      })
+    }
+    // setHideTemplate(val);
+  }
+  useEffect(()=>{
+    console.log(hideTemplate);
+    setHideTemplate(!getFilterValue("showTemplates"))
+  },[searchParam])
+  console.log(hideTemplate);
   
   return (
     // <div className={styles.body}>
@@ -422,7 +450,7 @@ const Trackers = ({ searchParams }: Search) => {
         Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
       </div>
       <div>
-      <Button className="text-white" onClick={()=>setHideTemplate(false)}>Create Tracker</Button>
+      <Button className="text-white w-[100px]" onClick={()=>hideTemplates(false)}>Create</Button>
       </div>
       {/* <button
         className="w-[160px] text-white font-bold py-2 px-4 rounded text-sm"
@@ -569,7 +597,7 @@ const Trackers = ({ searchParams }: Search) => {
           {!isData && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>}
         {isData && 
             <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center"
-        style={{ color: "var(--primary-color)" }} onClick={()=>setHideTemplate(true)}>
+        style={{ color: "var(--primary-color)" }} onClick={()=>hideTemplates(true)}>
           <Image src={Back} alt="close" height={22} width={22} />
             Back
           </button>
