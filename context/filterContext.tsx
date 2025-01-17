@@ -160,20 +160,16 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   
   useEffect(() => {
     if (enabledFilters) {
-      console.log("Enabled Filters:", enabledFilters);
-      console.log("Updated Filters:", generateSearchFilters(enabledFilters));
       setMorphedData(generateSearchFilters(enabledFilters) as any);
     }
   }, [enabledFilters]);
   useEffect(() => {
     if(!pathname.split('/').includes("editTracker")){
    setInitialFilters();
-   console.log(11111);
    
     }
   }, [searchParams, enabledFilters]);
   useEffect(() => {
-   console.log(localFilters);
    
     
     // setLocalFilters(
@@ -236,12 +232,10 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [enabledFilters]);
 
   const clearLocalFilters = useCallback((view:string) => {
-    console.log(enabledFilters);
     router.push(`/internal/search/events?view=${view}`);
   }, []);
   const setInitialFilters=()=>{
     const temp: Record<string, string> = Object.fromEntries(searchParams.entries());
-    console.log(enabledFilters);
     
     if (enabledFilters&& (Object.keys(temp).includes("view") && Object.keys(temp).length===1 &&  pathname.split('/')[2]==="search" || pathname.split('/')[3]==="create")) {
       
@@ -281,15 +275,12 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   
       temp.show = dataToShow.join(',');
     }
-    console.log(temp);
-    console.log(localFilters);
     
     setLocalFilters(temp);
     applyFilters()
   }
   const applyFilters = useCallback(() => {
     setLocalFilters((currentFilters) => {
-      console.log(currentFilters);
       
       const filteredFilters = filterEmptyValues(currentFilters);
       const params = new URLSearchParams();
@@ -342,7 +333,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-  console.log(localFilters);
   
   const contextValue = useMemo(
     () => ({

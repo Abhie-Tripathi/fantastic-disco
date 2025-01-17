@@ -106,8 +106,6 @@ export const EventInfoAndMap = ({
           )
         )
       : tags;
-
-  console.log(filteredTags);
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
       {/* <div className="flex gap-2 justify-center bg-[var(--negative-light-color)] border border-[#FDD8D8] p-2 rounded-sm text-sm">

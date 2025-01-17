@@ -110,8 +110,6 @@ const CarouselComponent = ({
     }
     setIsSlidingEnabled(api.canScrollNext() || api.canScrollPrev());
   }, [api]);
-
-  console.log(morphedData);
   return (
     <div className="flex justify-center px-3">
       <Carousel
