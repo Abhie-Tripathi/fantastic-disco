@@ -240,7 +240,6 @@ export const EventsAdapter = {
       !params.get("active_lte") &&
       params.get("view") == "calendar"
     ) {
-      console.log("active_gte, calendar, week");
       const today = new Date();
       const firstDayOfMonth = new Date(
         today.getFullYear(),
