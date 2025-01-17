@@ -12,7 +12,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
 import { toast } from "react-toastify";
-import { generateSearchFilters, searchFilters } from "@/public/data/searchFilters";
+import {
+  generateSearchFilters,
+  searchFilters,
+} from "@/public/data/searchFilters";
 import { useToast } from "@/components/ui/use-toast";
 interface EventFilterData {
   eventFormat?: { enabledValue?: string[] };
@@ -23,15 +26,15 @@ interface EventFilterData {
   durations?: { startDate?: string; endDate?: string };
   eventEntry?: { enabledValue?: string[] };
   eventRating?: { enabledValue?: string[]; isRatingEnabled?: boolean };
-  eventRanking?:{
-    isRanking?:boolean;
+  eventRanking?: {
+    isRanking?: boolean;
   };
   maturity?: { enabledValue?: string[]; isMaturityEnabled?: boolean };
   branded?: {
     enabledValue?: { eventBrand?: boolean; eventSeries?: boolean };
     isBrandedEnabled?: boolean;
   };
-  isForecasted?:{
+  isForecasted?: {
     isForecastedEnabled?: boolean;
   };
   eventFrequency?: { enabledValue?: string[]; isFreqEnabled?: boolean };
@@ -40,20 +43,23 @@ interface EventFilterData {
     negativeKeywords?: string[];
   };
   eventSize?: { enabledValue?: string[] };
-  estimatedExhibitScore?: { enabledValue?: string[]; isExhibitorsEnabled?: boolean };
+  estimatedExhibitScore?: {
+    enabledValue?: string[];
+    isExhibitorsEnabled?: boolean;
+  };
   analytics?: { isAnalyticsEnabled?: boolean };
-  audienceZone?:{
-    isZoneEnabled?:boolean;
+  audienceZone?: {
+    isZoneEnabled?: boolean;
   };
-  designation?:{
-    isProfileEnabled?:boolean;
+  designation?: {
+    isProfileEnabled?: boolean;
   };
-  audienceSpread?:{
-    isAudienceEnabled?:boolean;
-  }
+  audienceSpread?: {
+    isAudienceEnabled?: boolean;
+  };
 }
 interface Filters {
-  interest?:string;
+  interest?: string;
   show?: string;
   liked?: string;
   eventTypes?: string;
@@ -79,6 +85,7 @@ interface Filters {
   onlySeries?: string;
   columns?: string;
   tags?: string;
+  estimatedVisitorRangeTag?: string;
   estimatedVisitors?: string;
   estimatedExhibitors?: string;
   includeKeywords?: string;
@@ -107,12 +114,13 @@ type Filter = {
   frequencies: string;
   estimatedVisitors: string;
   estimatedExhibitors: string;
+  estimatedVisitorRangeTag: string;
 };
 type FilterContextType = {
   localFilters: Filters;
   morphedData: any;
   setLocalFilter: (key: keyof Filters, value: string) => void;
-  clearLocalFilters: (value:string) => void;
+  clearLocalFilters: (value: string) => void;
   applyFilters: () => void;
   getLocalFilterValue: (key: keyof Filters) => string;
   searchParams: URLSearchParams;
@@ -132,12 +140,12 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
-  const [morphedData,setMorphedData]=useState(searchFilters);
+  const [morphedData, setMorphedData] = useState(searchFilters);
   const { searchParams } = useFilterState();
   const [localFilters, setLocalFilters] = useState<Filters>({});
-  const eventService = useEventsService(); 
-  const [enabledFilters,setEnabledFilters]=useState<any>(null);
-  const pathname = usePathname()
+  const eventService = useEventsService();
+  const [enabledFilters, setEnabledFilters] = useState<any>(null);
+  const pathname = usePathname();
   const filterEmptyValues = useCallback((filters: Filters): Filters => {
     return Object.fromEntries(
       Object.entries(filters).filter(([_, value]) => value !== "")
@@ -148,115 +156,126 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     const getEnabledFilters = async () => {
       try {
         const data = await eventService.fetchEnabledFilters("research");
-        setEnabledFilters(data || {}); 
+        setEnabledFilters(data || {});
       } catch (e) {
         console.error("Error fetching filters:", e);
-        setEnabledFilters({}); 
+        setEnabledFilters({});
       }
     };
-  
+
     getEnabledFilters();
   }, []);
-  
+
   useEffect(() => {
     if (enabledFilters) {
-      console.log("Enabled Filters:", enabledFilters);
-      console.log("Updated Filters:", generateSearchFilters(enabledFilters));
+      // console.log("Enabled Filters:", enabledFilters);
       setMorphedData(generateSearchFilters(enabledFilters) as any);
     }
   }, [enabledFilters]);
   useEffect(() => {
-    if(!pathname.split('/').includes("editTracker")){
-   setInitialFilters();
-   console.log(11111);
-   
+    if (!pathname.split("/").includes("editTracker")) {
+      setInitialFilters();
     }
   }, [searchParams, enabledFilters]);
-  useEffect(() => {
-   console.log(localFilters);
-   
-    
-    // setLocalFilters(
-    //   filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
-    // );
-  }, [searchParams, filterEmptyValues]);
+  // useEffect(() => {
+  //   console.log(localFilters);
 
-  const setLocalFilter = useCallback((key: keyof Filters, value: string) => { 
-    console.log(key);
-    
-    const mapping: Record<keyof Filter, string> = {
-      eventTypes: "eventType",
-      status: "eventStatus",
-      categories: "eventCategory",
-      eventFormats: "eventFormat",
-      entryType: "eventEntry",
-      ratings: "eventRating",
-      maturity: "maturity",
-      frequencies: "eventFrequency",
-      estimatedVisitors: "eventSize",
-      estimatedExhibitors:"estimatedExhibitScore"
-    };
-    console.log(enabledFilters);
-    const selected=mapping[key as keyof Filter];
-    setLocalFilters((prev) => {
-      console.log(prev);
-      
-      if (
-        enabledFilters?.[selected] &&
-        (
-          (selected === "maturity" && value?.length === 0) || 
-          (
-            selected !== "maturity" &&
-            typeof prev?.[key as keyof Filter] === "string" &&
-            prev[key as keyof Filter]!.split(",").length <= 1 &&
-            typeof value === "string" &&
-            value.split(",").length <= 1
-          )
-        )
-      ) {
-        toast.error("At least one filter must be selected", {
-          position: "bottom-right",
-          autoClose: 2000,
-          hideProgressBar: true,
-        });
-        return prev;
-      }
-      
-      
-      const newFilters = { ...prev };
-      if (value === "") {
-        delete newFilters[key];
-      } else {
-        newFilters[key] = value;
-      }
-      console.log(newFilters);
-      
-      return newFilters;
-    });
-  }, [enabledFilters]);
+  //   // setLocalFilters(
+  //   //   filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
+  //   // );
+  // }, [searchParams, filterEmptyValues]);
 
-  const clearLocalFilters = useCallback((view:string) => {
-    console.log(enabledFilters);
+  const setLocalFilter = useCallback(
+    (key: keyof Filters, value: string) => {
+      // console.log(key);
+
+      const mapping: Record<keyof Filter, string> = {
+        eventTypes: "eventType",
+        status: "eventStatus",
+        categories: "eventCategory",
+        eventFormats: "eventFormat",
+        entryType: "eventEntry",
+        ratings: "eventRating",
+        maturity: "maturity",
+        frequencies: "eventFrequency",
+        estimatedVisitors: "eventSize",
+        estimatedExhibitors: "estimatedExhibitScore",
+        estimatedVisitorRangeTag: "estimatedVisitorRangeTag",
+      };
+      // console.log(enabledFilters);
+      const selected = mapping[key as keyof Filter];
+      setLocalFilters((prev) => {
+        // console.log(prev);
+
+        if (
+          enabledFilters?.[selected] &&
+          ((selected === "maturity" && value?.length === 0) ||
+            (selected !== "maturity" &&
+              typeof prev?.[key as keyof Filter] === "string" &&
+              prev[key as keyof Filter]!.split(",").length <= 1 &&
+              typeof value === "string" &&
+              value.split(",").length <= 1))
+        ) {
+          toast.error("At least one filter must be selected", {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+          });
+          return prev;
+        }
+
+        const newFilters = { ...prev };
+        if (value === "") {
+          delete newFilters[key];
+        } else {
+          newFilters[key] = value;
+        }
+        // console.log(newFilters);
+
+        return newFilters;
+      });
+    },
+    [enabledFilters]
+  );
+  
+  const clearLocalFilters = useCallback((view: string) => {
     router.push(`/internal/search/events?view=${view}`);
   }, []);
-  const setInitialFilters=()=>{
-    const temp: Record<string, string> = Object.fromEntries(searchParams.entries());
-    console.log(enabledFilters);
-    
-    if (enabledFilters&& (Object.keys(temp).includes("view") && Object.keys(temp).length===1 &&  pathname.split('/')[2]==="search" || pathname.split('/')[3]==="create")) {
-      
-      temp.eventFormats = enabledFilters.eventFormat?.enabledValue?.join(',') ?? '';
-      temp.status = enabledFilters.eventStatus?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
-      temp.categories = enabledFilters.eventCategory?.enabledValue
-        ?.map((item: any) => item.slug)
-        .join(',') ?? '';
-      temp.eventTypes = enabledFilters.eventType?.enabledValue?.map((item:string)=>`${item.toLowerCase()}s`)?.join(',') ?? '';
-      temp.locationIds = enabledFilters.locationIds?.enabledValue
-        ?.map((item: any) => item.id)
-        .join(',') ?? '';
+  const setInitialFilters = () => {
+    const temp: Record<string, string> = Object.fromEntries(
+      searchParams.entries()
+    );
+
+    if (
+      enabledFilters &&
+      ((Object.keys(temp).includes("view") &&
+        Object.keys(temp).length === 1 &&
+        pathname.split("/")[2] === "search") ||
+        pathname.split("/")[3] === "create")
+    ) {
+      temp.eventFormats =
+        enabledFilters.eventFormat?.enabledValue?.join(",") ?? "";
+      temp.status =
+        enabledFilters.eventStatus?.enabledValue
+          ?.map((item: string) => item.toLowerCase())
+          ?.join(",") ?? "";
+      temp.categories =
+        enabledFilters.eventCategory?.enabledValue
+          ?.map((item: any) => item.slug)
+          .join(",") ?? "";
+      temp.eventTypes =
+        enabledFilters.eventType?.enabledValue
+          ?.map((item: string) => `${item.toLowerCase()}s`)
+          ?.join(",") ?? "";
+      temp.locationIds =
+        enabledFilters.locationIds?.enabledValue
+          ?.map((item: any) => item.id)
+          .join(",") ?? "";
       temp.active_gte = enabledFilters.durations?.startDate
-        ? new Date(enabledFilters.durations.startDate.split(',')[0]).toISOString()
-        : '';
+        ? new Date(
+            enabledFilters.durations.startDate.split(",")[0]
+          ).toISOString()
+        : "";
       temp.active_lte = enabledFilters.durations?.endDate
         ? new Date(enabledFilters.durations.endDate.split(',')[1]).toISOString()
         : '';
@@ -268,29 +287,33 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       temp.frequencies = enabledFilters.eventFrequency?.enabledValue?.join(',') ?? '';
       temp.includeKeywords = enabledFilters.keywords?.positiveKeywords?.join(',') ?? '';
       temp.excludeKeywords = enabledFilters.keywords?.negativeKeywords?.join(',') ?? '';
-      temp.estimatedVisitors = enabledFilters.eventSize?.enabledValue?.join(',') ?? '';
+      temp.estimatedVisitorRangeTag = enabledFilters.estimatedVisitorRangeTag?.enabledValue?.join(',') ?? '';
       temp.estimatedExhibitors = enabledFilters.estimatedExhibitScore?.enabledValue?.join(',') ?? '';
   
       let dataToShow: string[] = [];
-      if (enabledFilters.eventRating?.isRatingEnabled) dataToShow.push('rating');
-      if (enabledFilters.maturity?.isMaturityEnabled) dataToShow.push('maturity');
-      if (enabledFilters.branded?.isBrandedEnabled) dataToShow.push('branded,series');
-      if (enabledFilters.eventFrequency?.isFreqEnabled) dataToShow.push('frequency');
-      if (enabledFilters.estimatedExhibitScore?.isExhibitorsEnabled) dataToShow.push('estimatedExhibitors');
-      if (enabledFilters.analytics?.isAnalyticsEnabled) dataToShow.push('scores');
-  
-      temp.show = dataToShow.join(',');
+      if (enabledFilters.eventRating?.isRatingEnabled)
+        dataToShow.push("rating");
+      if (enabledFilters.maturity?.isMaturityEnabled)
+        dataToShow.push("maturity");
+      if (enabledFilters.branded?.isBrandedEnabled)
+        dataToShow.push("branded,series");
+      if (enabledFilters.eventFrequency?.isFreqEnabled)
+        dataToShow.push("frequency");
+      if (enabledFilters.estimatedExhibitScore?.isExhibitorsEnabled)
+        dataToShow.push("estimatedExhibitors");
+      if (enabledFilters.analytics?.isAnalyticsEnabled)
+        dataToShow.push("scores");
+
+      temp.show = dataToShow.join(",");
     }
-    console.log(temp);
-    console.log(localFilters);
-    
+    // console.log(temp);
+
     setLocalFilters(temp);
     applyFilters()
-  }
+  };
   const applyFilters = useCallback(() => {
     setLocalFilters((currentFilters) => {
-      console.log(currentFilters);
-      
+
       const filteredFilters = filterEmptyValues(currentFilters);
       const params = new URLSearchParams();
       Object.entries(filteredFilters).forEach(([key, value]) => {
@@ -315,7 +338,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-  
+
   const deleteMultipleLocalFilters = useCallback(
     (keys: Array<keyof Filters>) => {
       setLocalFilters((prev) => {
@@ -342,8 +365,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-  console.log(localFilters);
-  
+
   const contextValue = useMemo(
     () => ({
       localFilters,
