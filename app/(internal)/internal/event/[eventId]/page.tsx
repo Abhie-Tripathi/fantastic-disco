@@ -46,8 +46,7 @@ import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
 import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import SaveThisEvent from "@/components/gtmDetail/saveThisEvent";
-import { toast } from "react-toastify";
-import { Button } from "@/components/ui/button";
+import { TooltipTrigger, Button, Tooltip } from "react-aria-components";
 
 export interface RankingDetail {
   above5CountryEvent: countryRank[] | [];
@@ -187,6 +186,18 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
   const isCancelled = status === "cancelled";
   const isPostponed = status === "postponed";
+
+  const venueName = venueLocation?.venue?.name;
+  const venueAddress =
+    venueLocation?.venue?.address ||
+    [
+      venueLocation?.city?.name !== "Online" && venueLocation?.city?.name,
+      venueLocation?.state?.name !== "Online" && venueLocation?.state?.name,
+      venueLocation?.country?.name !== "Online" && venueLocation?.country?.name,
+    ]
+      .filter(Boolean)
+      .join(", ");
+
   const handleShare = () => {
     if (navigator.share) {
       navigator
@@ -213,16 +224,15 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   return (
     <div className="p-6 pt-0">
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
-        <Button
-          variant="link"
-          className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
-          onClick={() => router.back()}
-        >
+        <button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
-          <span className="text-[var(--primary-color)] font-medium">
+          <Link
+            className="text-[var(--primary-color)] font-medium"
+            href={"/internal/search/events"}
+          >
             Back to Search
-          </span>
-        </Button>
+          </Link>
+        </button>
         {bannerUrl && (
           <Image
             src={bannerUrl ?? "/eventDetailFallback.png"}
@@ -338,35 +348,29 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               )}
             </span>
             <span>
-              {venueLocation?.venue ? (
-                <>
-                  {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
-                    <Text fontWeight="semibold" variant="noMargin">
-                      {typeOfEvent.charAt(0).toUpperCase() +
-                        typeOfEvent.slice(1)}{" "}
-                      Event
-                    </Text>
-                  ) : (
-                    venueLocation.venue.name && (
-                      <Text fontWeight="semibold" variant="noMargin">
-                        {venueLocation.venue.name}
-                      </Text>
-                    )
-                  )}
-                  {venueLocation.venue.address &&
-                    venueLocation.venue.address !== "null" && (
-                      <Text variant="noMargin" color="secondary">
-                        {venueLocation.venue.address}
-                      </Text>
-                    )}
-                </>
+              {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
+                <Text fontWeight="semibold" variant="noMargin">
+                  {typeOfEvent.charAt(0).toUpperCase() + typeOfEvent.slice(1)}{" "}
+                  Event
+                </Text>
+              ) : venueName ? (
+                <Text fontWeight="semibold" variant="noMargin">
+                  {venueName}
+                </Text>
               ) : (
-                (typeOfEvent === "online" || typeOfEvent === "hybrid") && (
-                  <Text fontWeight="semibold" variant="noMargin">
-                    {typeOfEvent.charAt(0).toUpperCase() + typeOfEvent.slice(1)}{" "}
-                    Event
-                  </Text>
-                )
+                <TooltipTrigger>
+                  <Button className="text-sm text-[var(--primary-text-color)] cursor-pointer font-semibold">
+                    TBA
+                  </Button>
+                  <Tooltip className="shadow-md rounded-sm outline-none p-2.5 px-3 max-w-[40vw] max-h-[30vh] translate-z-0 overflow-y-auto bg-[var(--background-secondary-color)] text-sm leading-[var(--line-height-default)] tracking-wide">
+                    <p>To be announced</p>
+                  </Tooltip>
+                </TooltipTrigger>
+              )}
+              {venueAddress !== "Online" && (
+                <Text variant="noMargin" color="secondary">
+                  {venueAddress}
+                </Text>
               )}
             </span>
           </div>
@@ -387,12 +391,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 )}
               </p>
             </AccordionTrigger>
-            <AccordionContent className="flex flex-col p-2">
+            <AccordionContent className="h-fit">
               {organizer ? (
                 (() => {
                   const { cityName, countryName, logo, name } = organizer;
                   return (
-                    <div className="flex gap-4 pb-1 mb-1">
+                    <div className="flex gap-4 p-2 mb-1">
                       <img
                         src={
                           logo

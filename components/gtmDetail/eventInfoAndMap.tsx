@@ -71,7 +71,7 @@ export const EventInfoAndMap = ({
   const [isExpandDescription, setisExpandDescription] =
     useState<boolean>(false);
   const [ref, inView] = useInView({
-    threshold: 0.5,
+    threshold: 0.2,
     triggerOnce: false,
   });
   useMemo(() => {
@@ -343,7 +343,9 @@ export const EventInfoAndMap = ({
             <Text variant="noMargin" color="primary">
               Start searching similar events
             </Text>
-            <Button className="cursor-not-allowed w-fit">Search Events</Button>
+            <Button className="cursor-not-allowed w-fit max-lg:bg-[#8F8F8F2E] max-lg:shadow-none max-lg:text-[#171717] max-lg:font-medium">
+              Search Events
+            </Button>
           </div>
           {/* <div className="flex gap-6">
             <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">

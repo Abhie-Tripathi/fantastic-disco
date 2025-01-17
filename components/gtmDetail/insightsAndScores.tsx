@@ -58,7 +58,7 @@ export const InsightsAndScores = ({
   const isAnalyticsEnabled = eventAnalytics && eventAnalytics.isEnabled;
   const isTrustScoreEnabled = eventRanking && eventRanking.isEnabled;
   const [ref, inView, entry, rootMargin] = useInView({
-    threshold: 0.5,
+    threshold: 0.2,
     triggerOnce: false,
   });
   useMemo(() => {
