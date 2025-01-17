@@ -77,7 +77,7 @@ const TrackerLarge = ({ templates,trackers }: Props) => {
             </div>
             {trackers.length > 0 &&
                 <div className='w-full p-1'>
-                    {trackersValue.map((tracker, key) => (
+                    {trackers.map((tracker, key) => (
                         <div key={key}>
                             <div className="transition-shadow duration-200 hover:bg-[var(--background-color-hover)] rounded-md p-2"><TrackerCard small={false} tracker={tracker} /></div>
                             <div className='border-t-[1px] border-[var(--border-color)] m-1' ></div>

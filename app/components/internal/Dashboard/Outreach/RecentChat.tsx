@@ -19,7 +19,6 @@ interface Props {
 
 const RecentChat = ({ outreachChat }: Props) => {
 
-    console.log("chat : ", outreachChat)
     const router = useRouter()
     const handleRouting = ()=>{
         router.push(`/internal/outreach?modalOpen=true&enquiryId=${outreachChat?.enquiryId}&eventId=${outreachChat?.eventId}&status=${outreachChat?.enquiryStatus}`)

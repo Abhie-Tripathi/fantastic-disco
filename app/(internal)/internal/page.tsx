@@ -98,7 +98,6 @@ const Dashboard = () => {
 
   const fetchTrackerData = async () => {
     const trackerData: any = await getTrackers(`limit=4&offset=0`)
-    console.log("tracker data," , trackerData)
     const fetchedTrackers: TrackerData[] = [];
     trackerData.trackerData.map((tracker: any, key: any) => {
       const eventCountry = tracker.filterValue?.eventCountry?.map((countryObj: {}) => Object.values(countryObj)[0]) || [];
@@ -137,12 +136,11 @@ const Dashboard = () => {
   const fetchOutreachMessage = async () => {
     const data = await getLatestComment()
     const messageData: OutreachLastChat =
-      { eventName: data.event.name, status: data.enquiry.enquiryStatus, comment: data.comment.content, eventId: data.event.id, enquiryId: data.enquiry.enquiryId, enquiryStatus : data.enquiry.enquiryStatus}
+      { eventName: data.event.name, status: data.enquiry.enquiryStatusLabel, comment: data.comment.content, eventId: data.event.id, enquiryId: data.enquiry.enquiryId, enquiryStatus : data.enquiry.enquiryStatus}
     setOutreachChat(messageData)
   }
 
   const fetchRecentSearch = async () => {
-    console.log("recent search ran")
     const data: any = await getRecentSearch();
     if (data.length > 0) {
       const recentSearch = data[0];
@@ -183,7 +181,6 @@ const Dashboard = () => {
 
   const fetchProfileData = async () => {
     const data: any = await getMyProfileData();
-    console.log("profile", data)
     const profileObject: ProfileData =
       { name: data.user.firstname, email: data.user.email, phoneNumber: data.user.phoneNumber, profilePicture: data.user.profilePicture, department: data.user.department }
     setProfileData(profileObject)
@@ -197,7 +194,7 @@ const Dashboard = () => {
         fetchTrackerData(),
         fetchCoordinateData(),
         fetchOutreachData(),
-        // fetchOutreachMessage(),
+        fetchOutreachMessage(),
         fetchPromoteData(),
         fetchProfileData()
       ]);
@@ -252,22 +249,22 @@ const Dashboard = () => {
                   <div className="flex flex-col gap-3">
                     <Research theme={theme} />
                     <div className="flex flex-col gap-3 mb-2">
-                      <div className="w-full flex gap-3 max-[1050px]:flex-col">
-                        <div className="w-[50%] flex gap-3 max-[1050px]:w-full max-[870px]:flex-col">
-                          <div className="w-full hidden max-[870px]:block max-[600px]:hidden">
+                      <div className="w-full flex gap-3 max-[1100px]:flex-col">
+                        <div className="w-[50%] flex gap-3 max-[1100px]:w-full max-[885px]:flex-col">
+                          <div className="w-full hidden max-[885px]:block max-[600px]:hidden">
                             <TrackerContainer trackers={trackerData} width="small" />
                           </div>
                           <div className="w-full hidden max-[600px]:block">
                             <TrackerContainer trackers={trackerData} width="smaller" />
                           </div>
-                          <div className={`${(outreach && trends) ? "w-[50%]" : "w-full"} max-[870px]:hidden`}>
+                          <div className={`${(outreach && trends) ? "w-[50%]" : "w-full"} max-[885px]:hidden`}>
                             <TrackerContainer trackers={trackerData} width={(role === "sa") ? "smaller" : "large"} />
                           </div>
-                          {(trends && role === "sa") && <div className="w-[50%] max-[870px]:w-full">
+                          {(trends && role === "sa") && <div className="w-[50%] max-[885px]:w-full">
                             <Trends container="small" />
                           </div>}
                         </div>
-                        <div className="w-[50%] max-[1050px]:w-full">
+                        <div className="w-[50%] max-[1100px]:w-full">
                           <CoordinateContainer
                             theme={theme}
                             coordinateData={coordinateData}
@@ -275,10 +272,10 @@ const Dashboard = () => {
                           />
                         </div>
                       </div>
-                      <div className="w-full flex gap-3 max-[870px]:flex-col">
-                        {(role === "sa") && <div className="w-[50%] max-[870px]:w-full">
+                      <div className="w-full flex gap-3 max-[885px]:flex-col">
+                        {(role === "sa") && <div className="w-[50%] max-[885px]:w-full">
                           <Outreach outreachChat={outreachChat} outreachData={outreachData} theme={theme} /> </div>}
-                        {role === "sa" && <div className="flex gap-3 w-[50%] max-[870px]:w-full max-[500px]:flex-col">
+                        {role === "sa" && <div className="flex gap-3 w-[50%] max-[885px]:w-full max-[500px]:flex-col">
                           <div className={`${prospect ? "w-[50%]" : "w-full"} max-[500px]:w-full`}>
                             <PromoteContainer promoteData={promoteData} theme={theme} width={prospect ? "small" : "large"} />
                           </div>
