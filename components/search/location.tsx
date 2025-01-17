@@ -139,7 +139,6 @@ export default function LocationSelector({
     }
     setIsOpen(open);
   };
-  console.log(selectedLocation)
 
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>

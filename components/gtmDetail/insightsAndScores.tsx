@@ -60,7 +60,6 @@ export const InsightsAndScores = ({
       setActiveTab(scrollSection as TTabs);
     }
   }, [inView]);
-  console.log(trustScore !== null && trustScore > 0);
   const isValid =
     (scores && Object.values(scores).every((value) => value !== null)) ||
     (trustScore !== null && trustScore > 0) ||
