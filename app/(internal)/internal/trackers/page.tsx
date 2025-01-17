@@ -314,8 +314,6 @@ const Trackers = ({ searchParams }: Search) => {
   
   const [note,setNote]=useState<any>(null);
   const [savedEvents, setSavedEvents] = useState<{ events: EventTableType[]; count: number } | undefined>(undefined);
-
-  console.log(singleTrackerData);
   useEffect(() => {
     // console.log(item?.tracker?.eventCountry);
     if(singleTrackerData===undefined){

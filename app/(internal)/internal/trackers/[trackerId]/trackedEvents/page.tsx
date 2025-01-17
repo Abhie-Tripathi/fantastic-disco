@@ -434,7 +434,6 @@ const activeVal =
       "Expired Events"
     ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
     : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
-    console.log(isLoading);
     
   return (
     <div className="flex w-[calc(100vw-134px)]">

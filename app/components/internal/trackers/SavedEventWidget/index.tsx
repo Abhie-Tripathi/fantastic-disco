@@ -12,8 +12,6 @@ interface SavedEventWidgetProps{
     redirectUrl:string
 }
 const SavedEventWidget = ({ savedEvents, redirectUrl }: SavedEventWidgetProps) => {
-  console.log(savedEvents);
-  console.log(redirectUrl);
 
   return (
     redirectUrl.length > 0 ? (
