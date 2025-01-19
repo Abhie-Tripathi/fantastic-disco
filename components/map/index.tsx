@@ -598,7 +598,7 @@ export default function MapComponent({
             <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
           ) : (
             <ReactMapGL
-              style={{ width: "100%", height: !isGlobal ? "700px" : "300px" }}
+              style={{ width: "100%", height: !isGlobal ? "calc(100vh - 178px)" : "300px" }}
               onMove={onMove}
               onLoad={onMapLoad}
               onClick={handleMapClick}
