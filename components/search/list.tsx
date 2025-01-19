@@ -32,8 +32,8 @@ import { Button } from "../ui/button";
 import { useEventsService } from "@/services/eventsService";
 import { useToast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
-import { cn } from "@/lib/utils";
-import { eventTypeColors } from "@/constants/eventTypes";
+import { cn, lightenColor } from "@/lib/utils";
+import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import { isEventeli } from "@/config";
 import {
   Select,
@@ -43,6 +43,13 @@ import {
   SelectValue,
 } from "../ui/select";
 import { formatDateRange } from "@/utils/dateFormat";
+import { PaginationComponent } from "../pagination";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 interface CircularProgressProps {
   value: number;
@@ -56,7 +63,7 @@ interface CategoryRank {
 interface RankingResponse {
   countryRank?: number | undefined;
   categoryRank?: any;
-  globalRank?: number | undefined ;
+  globalRank?: number | undefined;
   countryCategoryRank?: any;
 }
 interface rankTag {
@@ -153,84 +160,6 @@ export default function EventAccordion({
     setFilter("take", newItemsPerPage.toString());
   };
 
-  const renderPaginationItems = () => {
-    const items = [];
-    const maxVisiblePages = 5;
-    const ellipsis = <PaginationEllipsis />;
-
-    if (totalPages <= maxVisiblePages) {
-      for (let i = 1; i <= totalPages; i++) {
-        items.push(
-          <PaginationItem key={i}>
-            <PaginationLink
-              href="#"
-              onClick={() => handlePageChange(i)}
-              isActive={i === currentPage}
-            >
-              {i}
-            </PaginationLink>
-          </PaginationItem>
-        );
-      }
-    } else {
-      items.push(
-        <PaginationItem key={1}>
-          <PaginationLink
-            href="#"
-            onClick={() => handlePageChange(1)}
-            isActive={1 === currentPage}
-          >
-            1
-          </PaginationLink>
-        </PaginationItem>
-      );
-
-      if (currentPage > 3) {
-        items.push(
-          <PaginationItem key="ellipsis-start">{ellipsis}</PaginationItem>
-        );
-      }
-
-      for (
-        let i = Math.max(2, currentPage - 1);
-        i <= Math.min(totalPages - 1, currentPage + 1);
-        i++
-      ) {
-        items.push(
-          <PaginationItem key={i}>
-            <PaginationLink
-              href="#"
-              onClick={() => handlePageChange(i)}
-              isActive={i === currentPage}
-            >
-              {i}
-            </PaginationLink>
-          </PaginationItem>
-        );
-      }
-
-      if (currentPage < totalPages - 2) {
-        items.push(
-          <PaginationItem key="ellipsis-end">{ellipsis}</PaginationItem>
-        );
-      }
-
-      items.push(
-        <PaginationItem key={totalPages}>
-          <PaginationLink
-            href="#"
-            onClick={() => handlePageChange(totalPages)}
-            isActive={totalPages === currentPage}
-          >
-            {totalPages}
-          </PaginationLink>
-        </PaginationItem>
-      );
-    }
-
-    return items;
-  };
-
   return (
     <div className="flex flex-col h-full">
       <div className="flex-grow overflow-y-auto pb-6">
@@ -245,60 +174,15 @@ export default function EventAccordion({
         </ul>
       </div>
       {totalPages > 1 && (
-        <div className="mt-4 sticky bottom-0 bg-background py-4">
-          <div className="flex justify-between items-center mb-2 px-2">
-            <div>
-              <span className="text-sm text-muted-foreground">
-                Showing {Math.min((currentPage - 1) * itemsPerPage + 1, count)}{" "}
-                to {Math.min(currentPage * itemsPerPage, count)} of {count}{" "}
-                results
-              </span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-muted-foreground">
-                Results per page:
-              </span>
-              <Select
-                value={itemsPerPage.toString()}
-                onValueChange={handleItemsPerPageChange}
-              >
-                <SelectTrigger className="w-[70px]">
-                  <SelectValue>{itemsPerPage}</SelectValue>
-                </SelectTrigger>
-                <SelectContent align="end">
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <Pagination>
-            <PaginationContent className="flex-wrap justify-center">
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
-                  className={
-                    currentPage === 1 ? "pointer-events-none opacity-50" : ""
-                  }
-                />
-              </PaginationItem>
-              {renderPaginationItems()}
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={() =>
-                    handlePageChange(Math.min(totalPages, currentPage + 1))
-                  }
-                  className={
-                    currentPage === totalPages
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+        <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
+          <PaginationComponent
+            currentPage={currentPage}
+            totalPages={totalPages}
+            itemsPerPage={itemsPerPage}
+            count={count}
+            onPageChange={handlePageChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
         </div>
       )}
     </div>
@@ -317,18 +201,21 @@ const EventListItem = ({
   const [isSaved, setIsSaved] = useState(event.isSaved);
   function getLeastRank(response: RankingResponse) {
     console.log(response);
-    
+
     let minRank = {
       rank: Infinity,
       name: "",
       type: "",
     };
-  
+
     if (response?.globalRank !== null && response?.globalRank !== undefined) {
       minRank.rank = response.globalRank;
       minRank.name = "";
       minRank.type = "Global";
-    } else if (response?.countryRank !== null  && response?.countryRank !== undefined) {
+    } else if (
+      response?.countryRank !== null &&
+      response?.countryRank !== undefined
+    ) {
       minRank.rank = response.countryRank as number;
       minRank.name = "";
       minRank.type = "Country";
@@ -351,12 +238,12 @@ const EventListItem = ({
         }
       }
     }
-  
+
     if (minRank.type === "") {
       return "";
     }
     console.log(minRank);
-    
+
     return getEventRank(minRank);
   }
   function getEventRank(prop: rankTag) {
@@ -366,13 +253,10 @@ const EventListItem = ({
     else if (prop.rank == 3) rankString = "rd";
     else rankString = "th";
     console.log(prop);
-    
+
     return (
       <>
-        <Badge
-                      variant="outline"
-                      className="text-gray-600"
-                    >
+        <Badge variant="outline" className="text-gray-600">
           {prop.rank}
           <sup>{rankString}</sup>
           <span className="pl-1">{` ${prop.type}`}</span>
@@ -412,7 +296,6 @@ const EventListItem = ({
     "Venue to be announced"
   );
 
-
   const isCancelled = event.status === "cancelled";
   const isPostponed = event.status === "postponed";
 
@@ -448,8 +331,7 @@ const EventListItem = ({
     }
     return spend;
   };
-  console.log(event);
-  
+
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
       <Link href={`/internal/event/${event.id}`} className="block">
@@ -458,7 +340,6 @@ const EventListItem = ({
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-7 flex flex-col justify-between gap-3">
               <h2 className="text-2xl font-semibold ">{event.name}</h2>
-
               <div>
                 <p className="text-sm capitalize">{address}</p>
                 <div className="flex items-center gap-2">
@@ -492,62 +373,126 @@ const EventListItem = ({
                 <div className="flex flex-wrap gap-2">
                   {event.primaryEventType && (
                     <div className="flex items-center gap-2">
-                      <Badge
-                        variant="secondary"
-                        className={
-                          "bg-[#E0EAF5] text-[#5055A3] hover:bg-[#E0EAF5] capitalize"
-                        }
-                      >
-                        {event.primaryEventType}
-                      </Badge>
+                      <span>
+                        {eventTypeIcons[event.primaryEventType || "festivals"]}
+                      </span>
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="secondary"
+                              className={
+                                "bg-pink-100 text-pink-800 hover:bg-pink-100 uppercase rounded-sm"
+                              }
+                              style={{
+                                color:
+                                  eventTypeColors[event.primaryEventType || ""],
+                                backgroundColor: lightenColor(
+                                  eventTypeColors[event.primaryEventType || ""],
+                                  0.9
+                                ),
+                              }}
+                            >
+                              <span>{event.primaryEventType}</span>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Event Type</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                   )}
                   {event.categories?.slice(0, 1).map((tag, index) => (
-                    <Badge
-                      key={index}
-                      variant="outline"
-                      className="text-gray-600 capitalize"
-                    >
-                      {tag.name}
-                    </Badge>
+                    <TooltipProvider key={index}>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize rounded-sm"
+                          >
+                            {tag.name}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Category</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   ))}
                   {event.rating && event.rating > 0 ? (
-                    <Badge
-                      variant="outline"
-                      className="text-gray-600 capitalize"
-                    >
-                      <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
-                      <span>{event.rating}</span>
-                    </Badge>
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize rounded-sm"
+                          >
+                            <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+                            <span>{event.rating}</span>
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Rating</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   ) : (
                     ""
                   )}
                   {event.entryType == "free_and_paid" ? (
                     <div className="flex items-center gap-2">
-                      <Badge
-                        variant="outline"
-                        className="text-gray-600 capitalize"
-                      >
-                        <TicketPercent className="w-3 h-3 mr-1" />
-                        <span>Free</span>
-                      </Badge>
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="text-gray-600 capitalize rounded-sm"
+                            >
+                              <TicketPercent className="w-3 h-3 mr-1" />
+                              <span>Free</span>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Entry Type</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
 
-                      <Badge
-                        variant="outline"
-                        className="text-gray-600 capitalize"
-                      >
-                        <TicketPercent className="w-3 h-3 mr-1" />
-                        <span>Paid</span>
-                      </Badge>
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="text-gray-600 capitalize rounded-sm"
+                            >
+                              <TicketPercent className="w-3 h-3 mr-1" />
+                              <span>Paid</span>
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Entry Type</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
                   ) : event.entryType == "paid" ? (
-                    <Badge
-                      variant="outline"
-                      className="text-gray-600 capitalize"
-                    >
-                      <TicketPercent className="w-3 h-3 mr-1" />
-                      <span>Paid</span>
-                    </Badge>
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize rounded-sm"
+                          >
+                            <TicketPercent className="w-3 h-3 mr-1" />
+                            <span>Paid</span>
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Entry Type</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   ) : (
                     ""
                   )}
@@ -555,65 +500,125 @@ const EventListItem = ({
 
                 <div className="flex flex-wrap gap-2 mt-2">
                   {event.maturity && (
-                    <Badge
-                      variant="outline"
-                      className="text-gray-600 capitalize"
-                    >
-                      {event.maturity}
-                    </Badge>
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize rounded-sm"
+                          >
+                            {event.maturity}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Maturity</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                   {event.frequency && (
-                    <Badge
-                      variant="outline"
-                      className="text-gray-600 capitalize"
-                    >
-                      {event.frequency}
-                    </Badge>
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize rounded-sm"
+                          >
+                            {event.frequency}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Frequency</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                   {event.isBranded && (
-                    <Badge
-                      variant="outline"
-                      className="text-[#DF2670] border-[#F9D7E2] bg-[#FEECF2] capitalize"
-                    >
-                      Branded
-                    </Badge>
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-[#DF2670] border-[#F9D7E2] bg-[#FEECF2] capitalize rounded-sm"
+                          >
+                            Branded
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Brand</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                   {event.isSeries && (
-                    <Badge
-                      variant="outline"
-                      className="text-[#0D8C7D] border-[#BEF4EB] bg-[#E5FAF6]  capitalize"
-                    >
-                      Series
-                    </Badge>
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-[#0D8C7D] border-[#BEF4EB] bg-[#E5FAF6]  capitalize rounded-sm"
+                          >
+                            Series
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Brand</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                   {event.rehostDate && (
-                    <Badge
-                      variant="outline"
-                      className="text-gray-600 capitalize"
-                    >
-                      Forecasted for {format(event.rehostDate, "MMM yyyy")}
-                    </Badge>
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize rounded-sm"
+                          >
+                            Forecasted for{" "}
+                            {format(event.rehostDate, "MMM yyyy")}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Forecasted Status</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                   {event.rankings && (
-                    // <Badge
-                    //   variant="outline"
-                    //   className="text-gray-600 capitalize"
-                    // >
-                    //   {getLeastRank(event.rankings)}
-                    //   {/* Top {event.rankings.rankRange} */}
-                    // </Badge>
-                    <>
-                    {getLeastRank(event.rankings)}
-                    </>
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize rounded-sm"
+                          >
+                            {getLeastRank(event.rankings)}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Event Ranking</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
 
                   {event.audienceZone && (
-                    <Badge
-                      variant="outline"
-                      className="text-gray-600 capitalize"
-                    >
-                      {event.audienceZone} Audience
-                    </Badge>
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize"
+                          >
+                            {event.audienceZone} Audience
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Audience Zone</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                 </div>
               </div>

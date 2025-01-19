@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useCallback, useEffect, Dispatch, SetStateAction } from "react";
+import {
+  useState,
+  useCallback,
+  useEffect,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { Search, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -62,11 +68,11 @@ export default function AutocompleteInput({
 
   const { predictions, isLoading, isError } =
     type === "LocationId" ? databaseLocationResult : nominatimResult;
-    useEffect(() => {
-      if (isOpen) {
-        setOpen(isOpen);
-      }
-    }, [isOpen]);
+  useEffect(() => {
+    if (isOpen) {
+      setOpen(isOpen);
+    }
+  }, [isOpen]);
   useEffect(() => {
     if (value) {
       if (Array.isArray(value)) {
@@ -80,26 +86,33 @@ export default function AutocompleteInput({
   }, [value]);
 
   const handleSelect = useCallback(
-    async (description: string, placeId: string) => {
-      const newLocation = { id: placeId, description};
+    async (prediction: any) => {
+      const newLocation = {
+        id: prediction.placeId,
+        description: prediction.displayName,
+      };
       if (multiple) {
-        const updatedLocations = [...selectedLocations, newLocation];
+        let updatedLocations;
+        if (
+          selectedLocations.some((location) => location.id === newLocation.id)
+        ) {
+          updatedLocations = [newLocation];
+        } else updatedLocations = [...selectedLocations, newLocation];
         setSelectedLocations(updatedLocations);
         setInputValue("");
         onSelect(updatedLocations);
       } else {
         setSelectedLocations([newLocation]);
-        setInputValue(description);
+        setInputValue(prediction.displayName);
         setOpen(false);
-        onSelect(newLocation);
+        onSelect([newLocation]);
       }
 
       if (type === "GeoCoordinate") {
-        const location = await getCoordinates(placeId);
         onSelect({
-          description: description,
-          lat: location.lat,
-          lng: location.lng,
+          description: prediction.displayName,
+          lat: prediction.latitude,
+          lng: prediction.longitude,
           radius: 5,
         });
       }
@@ -119,12 +132,15 @@ export default function AutocompleteInput({
   );
 
   return (
-    <Popover open={defaultOpen || open}  onOpenChange={(open) => {
-      setOpen(open);
-      if (setIsOpen) {
-        setIsOpen(open);
-      }
-    }}>
+    <Popover
+      open={defaultOpen || open}
+      onOpenChange={(open) => {
+        setOpen(open);
+        if (setIsOpen) {
+          setIsOpen(open);
+        }
+      }}
+    >
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -164,7 +180,7 @@ export default function AutocompleteInput({
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
-        <Command>
+        <Command shouldFilter={false}>
           <CommandInput
             placeholder={placeholder}
             value={inputValue}
@@ -185,24 +201,21 @@ export default function AutocompleteInput({
           <CommandGroup>
             <CommandList>
               {predictions?.map((prediction: any) => {
-                const description =
-                  type === "GeoCoordinate"
-                    ? prediction.display_name
-                    : type === "SavedLocations"
-                    ? prediction.locationName
-                    : prediction.displayName;
-                const placeId =
-                  type === "GeoCoordinate"
-                    ? prediction.place_id
-                    : type === "SavedLocations"
-                    ? prediction.locationId
-                    : prediction.id;
+                const city = prediction.name;
+                const placeId = prediction.id;
+                const state = prediction.state?.name;
+                const country = prediction.country?.name;
                 return (
                   <CommandItem
                     key={placeId}
-                    onSelect={() => handleSelect(description, placeId)}
+                    onSelect={() => handleSelect(prediction)}
+                    className="flex flex-col items-start"
                   >
-                    {description}
+                    <span className="font-medium">{city}</span>
+                    <span className="text-sm text-muted-foreground">
+                      {state && `${state}, `}
+                      {country}
+                    </span>
                   </CommandItem>
                 );
               })}
