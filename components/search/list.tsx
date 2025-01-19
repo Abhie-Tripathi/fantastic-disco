@@ -138,7 +138,7 @@ export default function EventAccordion({
   const [openItem, setOpenItem] = useState<string | undefined>();
   const { setFilter, getFilterValue } = useFilterState();
   const [itemsPerPage, setItemsPerPage] = useState<number>(
-    Number(getFilterValue("take")) || 10
+    Number(getFilterValue("take")) || 20
   );
   const currentPage =
     Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;

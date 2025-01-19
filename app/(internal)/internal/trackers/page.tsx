@@ -417,7 +417,7 @@ const Trackers = ({ searchParams }: Search) => {
       <div>
     {isData &&
       <div className="flex flex-row">
-  <div className="w-1/2 h-[calc(100vh-65px)]">
+  <div className="w-1/2 h-[calc(100vh-67px)]">
     <div className="flex flex-col gap-4 px-5 py-0">
       <div className="text-sm text-[var(--secondary-text-color)] pt-5">
         Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
@@ -446,7 +446,7 @@ const Trackers = ({ searchParams }: Search) => {
           <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue}/>
       </div>
   </div>
-  <div className="w-1/2 p-5 h-[calc(100vh-65px)] bg-[var(--background-secondary-color)]" style={{padding:"20px 0px"}}>
+  <div className="w-1/2 p-5 h-[calc(100vh-67px)] bg-[var(--background-secondary-color)]" style={{padding:"20px 0px"}}>
     <div className="flex flex-col gap-4">
   <div className="flex items-center justify-between border border-[var(--border-color)] p-3" style={{margin:"0px 32px"}}>
           <span className="flex items-center gap-2 text-[#696B83]">
@@ -465,7 +465,7 @@ const Trackers = ({ searchParams }: Search) => {
             </Button>
           )}
         </div>
-        <div className="flex h-[calc(100vh-168px)] overflow-y-auto flex-col px-8 gap-4">
+        <div className="flex h-[calc(100vh-175px)] overflow-y-auto flex-col px-8 gap-4">
   {/* <div className="flex w-[45%] items-stretch">
     <div className="flex flex-col w-[100%] gap-3">
     <div className="w-[100%]">
@@ -565,7 +565,7 @@ const Trackers = ({ searchParams }: Search) => {
   </div>
 </div>}
 {(!hideTemplate || !isData)&& (
-          <div className="absolute left-[63px] top-[65px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-65px)]" style={{zIndex:"11"}}>
+          <div className="absolute left-[63px] top-[67px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-67px)]" style={{zIndex:"11"}}>
             <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
           {!isData && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>}
         {isData && 
