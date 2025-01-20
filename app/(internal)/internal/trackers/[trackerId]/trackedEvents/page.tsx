@@ -92,7 +92,7 @@ const Page = ({ params }: { params: any }) => {
     ["table", "list", "map", "calendar"].includes(viewType || "") ? viewType : "table"
   );
   const [urlQueryString, setUrlQueryString] = useState<string>("");
-  const trackerType = searchParams.get("type");
+  const trackerType: string = searchParams.get("type") || "";
   const [showInsights,setShowInsights] = useState({
     eventSize: true,
     eventKeywords: true,
