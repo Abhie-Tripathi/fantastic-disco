@@ -63,6 +63,7 @@ interface MapProps {
   trackerId?: string;
   isGlobal?: boolean;
   trackerLoc?: string;
+  trackerType?: string;
 }
 
 interface Coordinates {
@@ -83,6 +84,7 @@ export default function MapComponent({
   trackerId,
   isGlobal,
   trackerLoc,
+  trackerType
 }: MapProps) {
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
@@ -589,7 +591,6 @@ export default function MapComponent({
 
   const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
   const showEvent = viewport.zoom >= 12 && events.length;
-  console.log(eventCountsQuery?.data?.length);
   
   return (
     <div className="relative">

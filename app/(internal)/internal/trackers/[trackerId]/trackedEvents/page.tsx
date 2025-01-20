@@ -656,6 +656,7 @@ const activeVal =
                 searchParams={`${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":active==="Saved Events"?"saved":"active"}`}
                 trackerId={params.trackerId}
                 trackerLoc={trackerLoc.join(",")}
+                trackerType={trackerType}
                  />
                 } 
                 {/* <Map/> */}
