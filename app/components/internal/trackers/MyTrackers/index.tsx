@@ -71,23 +71,19 @@ interface MyTrackersProps {
   setSingleTrackerData: React.Dispatch<React.SetStateAction<Tracker | undefined>>;
   isData: boolean;
 }
-const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData, searchValue}:MyTrackersProps) => {
+const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData}:MyTrackersProps) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
   const [isInetialRender,setIsInetialRender]=useState(false);
   const [allTracker, setAllTracker] = useState<AllTrackerTypes[]>([]);
   const {setFilter, getFilterValue, setMultipleFilters}=useFilterState();
-  const {setSkip} = useTrackerContext();
-  const skip = Number(getFilterValue("skip")) || 0;
+  const {setSkip, skip:w, searchValue} = useTrackerContext();
+  const skip = w || 0;
   const take =Number(getFilterValue("take")) || 4;
-  const searchVal = getFilterValue("q")|| "";
-  if(Number(getFilterValue("skip"))>0){
-      setSkip(Number(getFilterValue("skip")));
-    }
-  // setSkip(Number(getFilterValue("skip"))||0);
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
   const [trackerPerPage, setTrackerPerPage] = useState(4);
-  const [page, setPage] = useState( Math.floor(Number(getFilterValue("skip") || "0") / 4) + 1);
+  const [page, setPage] = useState( Math.floor(Number(w || "0") / 4) + 1);
   const searchParams = useSearchParams();
   const [totalPage, setTotalPage] = useState<number>(0);
   const [totalCount,setTotalCount]=useState(0);
@@ -95,135 +91,45 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   const [loadTwo,setLoadTwo]=useState(false);
   const {getTrackers, isLoading}=useTrackerServices();
   const endOfListRef = useRef(null);
-  // const renderPaginationItems = () => {
-  //   const items = []
-  //   const maxVisiblePages = 5
-  //   const ellipsis = <PaginationEllipsis />
-
-  //   if (totalPage <= maxVisiblePages) {
-  //     for (let i = 1; i <= totalPage; i++) {
-  //       items.push(
-  //         <PaginationItem key={i}>
-  //           <PaginationLink
-  //             href="#"
-  //             // onClick={() => onPageChange(i)}
-  //             isActive={i === page}
-  //           >
-  //             {i}
-  //           </PaginationLink>
-  //         </PaginationItem>
-  //       )
-  //     }
-  //   } else {
-  //     items.push(
-  //       <PaginationItem key={1}>
-  //         <PaginationLink
-  //           href="#"
-  //           // onClick={() => onPageChange(1)}
-  //           isActive={1 === page}
-  //         >
-  //           1
-  //         </PaginationLink>
-  //       </PaginationItem>
-  //     )
-
-  //     if (page > 3) {
-  //       items.push(
-  //         <PaginationItem key="ellipsis-start">{ellipsis}</PaginationItem>
-  //       )
-  //     }
-
-  //     for (
-  //       let i = Math.max(2, page - 1);
-  //       i <= Math.min(totalPage - 1, page + 1);
-  //       i++
-  //     ) {
-  //       items.push(
-  //         <PaginationItem key={i}>
-  //           <PaginationLink
-  //             href="#"
-  //             // onClick={() => onPageChange(i)}
-  //             isActive={i === page}
-  //           >
-  //             {i}
-  //           </PaginationLink>
-  //         </PaginationItem>
-  //       )
-  //     }
-
-  //     if (page < totalPage - 2) {
-  //       items.push(
-  //         <PaginationItem key="ellipsis-end">{ellipsis}</PaginationItem>
-  //       )
-  //     }
-
-  //     items.push(
-  //       <PaginationItem key={page}>
-  //         <PaginationLink
-  //           href="#"
-  //           // onClick={() => onPageChange(totalPage)}
-  //           isActive={totalPage === page}
-  //         >
-  //           {totalPage}
-  //         </PaginationLink>
-  //       </PaginationItem>
-  //     )
-  //   }
-
-  //   return items
-  // }
+    const handlePageChange = (page: number) => {
+    console.log(page);
+    setPage(page);
+    setSkip(((page-1) * trackerPerPage));
+    setMultipleFilters({
+      skip:((page-1) * trackerPerPage).toString(),
+      id:allTracker[0].id,
+      q: searchValue
+    })
+   
+    // setFilter("skip", ((page-1) * trackerPerPage).toString());
+  };
   useEffect(() => {
-    
-    // const handler = setTimeout(() => {
-    // if(searchValue.length>=3 || searchValue.length===0){
-      if(isInetialRender && page!==0)
-        fetchData(false); 
-    //  }
-    // }, 700);
-    // return () => {
-    //   clearTimeout(handler);
-    // };
-  }, [skip,take]);
-  useEffect(() => {
-    // setPage(0);
-    // Pass true for initial render
-      setFilter("q",searchValue);
-  }, [searchValue]);
+        setAllTracker([]);
+        setIsInetialRender(true); 
+        fetchData(true);  
+  }, [searchParams]);
   useEffect(()=>{
-    if (searchValue.length >= 3 || searchValue.length === 0) {
-      setAllTracker([]);
-      setIsInetialRender(true); // Indicate it's the first render
-      fetchData(true); 
-    }
-  }, [searchVal])
-  // useEffect(()=>{
-  //   if(searchValue.length===0)
-  //   fetchData();
-  // },[searchValue])
+    console.log("searchVal changed");
+    // if(!isInetialRender)
+    if(searchValue.length >= 3 || searchValue.length === 0){
+      if(isInetialRender){
+          setSkip('0');
+          setPage(1);
+      }
+    setMultipleFilters({
+      skip: !isInetialRender? ((page-1) * trackerPerPage).toString(): "",
+      q: searchValue
+    })
+  }
+  },[searchValue])
   const fetchData=async(isInetialRender:boolean)=>{
     setLoadOne(true);
-    
-    // setSkip(Number(getFilterValue("skip"))||0);
-    const offset = isInetialRender ? 0 : page * trackerPerPage;
-    // const skip = (page-1) * trackerPerPage;
     const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${skip}&limit=${take}`);
-    // setAllTracker(result.trackerData);
     
     if(result){
-      // if(page===0) setAllTracker(result?.trackerData )
-      //   else{
-      //     const newData = (prevAllTracker:any) => [...prevAllTracker, ...result?.trackerData];
-      //     setAllTracker(result?.trackerData);
-      //   }
-      //         if(allTracker.length===0)
-      //           console.log(Math.ceil(result.totalCount / trackerPerPage));
-        setAllTracker(result?.trackerData);
-              
-      //  if(isInetialRender){     
+        setAllTracker(result?.trackerData);   
             
       setSingleTrackerData(result.trackerData[0]);
-      // setIsInetialRender(false);
-      //  }
     setTotalPage(Math.ceil(result.totalCount / trackerPerPage));
     setTotalCount(result.totalCount)
     if(result.totalCount===0){
@@ -236,39 +142,11 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     setLoadOne(false);
             }
   }
-  // const handleNextPage = () => {
-    
-  //   if (page < totalPage - 1) {
-  //     setPage(page + 1);
-  //     setFilter("skip",((page+1)*trackerPerPage).toString())
-  //     setAllTracker([]);
-  //   }
-  // };
-
-  // const handlePrevPage = () => {
-  //   if (page > 0) {
-  //     setPage(page - 1);
-  //     setAllTracker([]);
-  //     setFilter("skip",((page-1)*trackerPerPage).toString())
-  //   }
-  // };
-  const handlePageChange = (page: number) => {
-    console.log(page);
-    setPage(page);
-    setMultipleFilters({
-      skip:((page-1) * trackerPerPage).toString(),
-      id:allTracker[0].id
-    })
-   
-    // setFilter("skip", ((page-1) * trackerPerPage).toString());
-  };
   useEffect(()=>{
     if(totalPage>0){
     setDataPresent(true);
-    // setIsLoading(false);
   }
   },[totalPage])
-  console.log(page);
   
   return (
     <div className={styles.container} ref={endOfListRef}>
@@ -296,10 +174,6 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
            </div> */}
       </div>
      
-      
-      {/* {!isData &&(
-            <div>Unlock your business potential—create your first tracker today to explore trends and receive real-time updates!</div>
-          )} */}
         <div>
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 pt-4 pl-6 pb-4">
@@ -349,9 +223,11 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
               
               </div> */}
               {/* {renderPaginationItems()} */}
+              {totalCount!==0 &&
               <div className="sticky bottom-0 bg-background py-4">
-              <PaginationComponent currentPage={page} totalPages={totalPage} itemsPerPage={trackerPerPage} onPageChange={handlePageChange} count={totalCount}/>
+              <PaginationComponent currentPage={page} totalPages={totalPage} itemsPerPage={trackerPerPage} onPageChange={handlePageChange} count={totalCount} showEntriesCount={false}/>
               </div>
+              }
             </div>
           {/* )} */}
           </div>

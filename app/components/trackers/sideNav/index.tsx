@@ -25,7 +25,7 @@ const Index = () => {
   const [view,setView]=useState(typeOfEvent==="table"?"table":typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"table");
   const secondLast = pathName[pathName.length - 2];
   const router = useRouter()
-  const {data, skip}= useTrackerContext();
+  const {data, skip, searchValue}= useTrackerContext();
   const {getTrackerDetail, error}=useTrackerServices();
   const [trackerSection, setTrackerSection] = useState("Tracked Events");
   useEffect(() => {
@@ -89,7 +89,7 @@ const Index = () => {
               ? (last === "editTracker"
                 ? `/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`
                 : `/internal/trackers/${secondLast}/trackedEvents?type=${type}`)
-              : `/internal/trackers?skip=${skip}`
+              : `/internal/trackers?skip=${skip}${searchValue.length > 0 ? `&q=${encodeURIComponent(searchValue)}` : ""}`
           } >
           {/* <Button
           variant="link"

@@ -134,7 +134,7 @@ interface Search {
 }
 const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
-  const {  setIsNewCall, setTrackerId, isLoading:load, skip, setSkip } = useTrackerContext();
+  const {  setIsNewCall, setTrackerId, isLoading:load, skip, setSkip,setSearchValue, searchValue } = useTrackerContext();
   const router=useRouter();
   const [type, setType] = useState("");
   const {setFilter, getFilterValue, deleteFilter, setMultipleFilters} = useFilterState();
@@ -145,7 +145,7 @@ const Trackers = ({ searchParams }: Search) => {
   },[tab])
   const [locations, setLocations] = useState<any>();
   const [trackers, setTrackers] = useState<any[]>([]);
-  const [searchValue,setSearchValue]=useState("");
+  // const [searchValue,setSearchValue]=useState("");
   const [offset, setOffset] = useState(0);
   // const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -399,10 +399,11 @@ const Trackers = ({ searchParams }: Search) => {
     if(!val){
     // setFilter("showTemplates", (!val).toString());
     // console.log("skipped data",getFilterValue("skip"));
-    setSkip(getFilterValue("skip"))
+    // setSkip(getFilterValue("skip"))
     setMultipleFilters({
       showTemplates: (!val).toString(),
-      id: ""
+      id: "",
+      q:""
     })
     }
     else {
@@ -410,6 +411,7 @@ const Trackers = ({ searchParams }: Search) => {
       console.log("skipped value", skip);
       setMultipleFilters({
         skip: skip,
+        q: searchValue,
         showTemplates: "",
       })
     }

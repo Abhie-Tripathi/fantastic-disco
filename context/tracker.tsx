@@ -24,6 +24,7 @@ export const TrackerContext = createContext<any>(
     const [editTrue, setEditTrue]=useState(false);
     const [trackerId,setTrackerId]=useState("");
     const [skip,setSkip]=useState(getFilterValue("skip") || 0);
+    const [searchValue, setSearchValue] = useState(getFilterValue("q") || "");
     const pages=["manageAccess","editTracker","trackedEvents", "notesDiscussion","trackedConfiguration"]
     useEffect(()=>{
       if(pathName.length > 4 && pages.includes(pathName[4])){
@@ -68,7 +69,9 @@ export const TrackerContext = createContext<any>(
         data,
         setData,
         skip,
-        setSkip
+        setSkip,
+        searchValue,
+        setSearchValue
       };
       return <TrackerContext.Provider value={value}>{children}</TrackerContext.Provider>;
   }
