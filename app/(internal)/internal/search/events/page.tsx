@@ -41,6 +41,7 @@ import { lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
+import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 
 const Map = lazy(() => import("@/components/map"));
 
@@ -62,11 +63,11 @@ const Search = () => {
   const router = useRouter();
   const { navigateWithParams, getFilterValue, setFilter, setMultipleFilters } =
     useFilterState();
+  const { searchParams } = useDefaultFilters();
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
   const { applyFilters, localFilters, clearLocalFilters, enabledFilters } =
     useFilterContext();
-  const searchParams = useSearchParams();
   const [view, setView] = useState<string>(searchParams.get("view") || "");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
@@ -109,7 +110,7 @@ const Search = () => {
   const count = displayData?.count;
 
   const searchHandler = useCallback(() => {
-    applyFilters();
+    applyFilters({ resetPage: true });
   }, []);
 
   const [steps, setSteps] = useState<Step[]>([]);
@@ -163,13 +164,13 @@ const Search = () => {
 
   const adaptedQueryString = (function () {
     if (!searchParams.toString()) return;
-    if(adaptedParams.offset == "0"){
-      delete adaptedParams.offset
+    if (adaptedParams.offset == "0") {
+      delete adaptedParams.offset;
     }
     delete adaptedParams.max;
     delete adaptedParams.sortBy;
     delete adaptedParams.sortType;
-    console.log(new URLSearchParams(adaptedParams).toString())
+    console.log(new URLSearchParams(adaptedParams).toString());
     return new URLSearchParams(adaptedParams).toString();
   })();
 

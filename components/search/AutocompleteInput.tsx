@@ -88,7 +88,7 @@ export default function AutocompleteInput({
   const handleSelect = useCallback(
     async (prediction: any) => {
       const newLocation = {
-        id: prediction.placeId,
+        id: prediction.id,
         description: prediction.displayName,
       };
       if (multiple) {

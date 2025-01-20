@@ -121,7 +121,7 @@ type FilterContextType = {
   morphedData: any;
   setLocalFilter: (key: keyof Filters, value: string) => void;
   clearLocalFilters: (value: string) => void;
-  applyFilters: () => void;
+  applyFilters: (options?: { removeParams?: string[], preserveParams?: string[], resetPage?: boolean }) => void;
   getLocalFilterValue: (key: keyof Filters) => string;
   searchParams: URLSearchParams;
   setMultipleLocalFilters: (filters: Partial<Filters>) => void;
@@ -230,14 +230,12 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         } else {
           newFilters[key] = value;
         }
-        // console.log(newFilters);
-
         return newFilters;
       });
     },
     [enabledFilters]
   );
-  
+
   const clearLocalFilters = useCallback((view: string) => {
     router.push(`/internal/search/events?view=${view}`);
   }, []);
@@ -277,19 +275,31 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
           ).toISOString()
         : "";
       temp.active_lte = enabledFilters.durations?.endDate
-        ? new Date(enabledFilters.durations.endDate.split(',')[1]).toISOString()
-        : '';
-      temp.entryType = enabledFilters.eventEntry?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
-      temp.ratings = enabledFilters.eventRating?.enabledValue?.join(',') ?? '';
-      temp.maturity = enabledFilters.maturity?.enabledValue?.[0] ?? '';
-      temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand ? 'true' : '';
-      temp.onlySeries = enabledFilters.branded?.enabledValue?.eventSeries ? 'true' : '';
-      temp.frequencies = enabledFilters.eventFrequency?.enabledValue?.join(',') ?? '';
-      temp.includeKeywords = enabledFilters.keywords?.positiveKeywords?.join(',') ?? '';
-      temp.excludeKeywords = enabledFilters.keywords?.negativeKeywords?.join(',') ?? '';
-      temp.estimatedVisitorRangeTag = enabledFilters.estimatedVisitorRangeTag?.enabledValue?.join(',') ?? '';
-      temp.estimatedExhibitors = enabledFilters.estimatedExhibitScore?.enabledValue?.join(',') ?? '';
-  
+        ? new Date(enabledFilters.durations.endDate.split(",")[1]).toISOString()
+        : "";
+      temp.entryType =
+        enabledFilters.eventEntry?.enabledValue
+          ?.map((item: string) => item.toLowerCase())
+          ?.join(",") ?? "";
+      temp.ratings = enabledFilters.eventRating?.enabledValue?.join(",") ?? "";
+      temp.maturity = enabledFilters.maturity?.enabledValue?.[0] ?? "";
+      temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand
+        ? "true"
+        : "";
+      temp.onlySeries = enabledFilters.branded?.enabledValue?.eventSeries
+        ? "true"
+        : "";
+      temp.frequencies =
+        enabledFilters.eventFrequency?.enabledValue?.join(",") ?? "";
+      temp.includeKeywords =
+        enabledFilters.keywords?.positiveKeywords?.join(",") ?? "";
+      temp.excludeKeywords =
+        enabledFilters.keywords?.negativeKeywords?.join(",") ?? "";
+      temp.estimatedVisitorRangeTag =
+        enabledFilters.estimatedVisitorRangeTag?.enabledValue?.join(",") ?? "";
+      temp.estimatedExhibitors =
+        enabledFilters.estimatedExhibitScore?.enabledValue?.join(",") ?? "";
+
       let dataToShow: string[] = [];
       if (enabledFilters.eventRating?.isRatingEnabled)
         dataToShow.push("rating");
@@ -309,18 +319,40 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     // console.log(temp);
 
     setLocalFilters(temp);
-    applyFilters()
+    applyFilters();
   };
-  const applyFilters = useCallback(() => {
+  const applyFilters = useCallback((options: { 
+    removeParams?: string[],
+    preserveParams?: string[],
+    resetPage?: boolean 
+  } = {}) => {
     setLocalFilters((currentFilters) => {
-
       const filteredFilters = filterEmptyValues(currentFilters);
       const params = new URLSearchParams();
+
+      // Handle existing params that should be preserved
+      if (options.preserveParams?.length) {
+        const currentParams = new URLSearchParams(window.location.search);
+        options.preserveParams.forEach(param => {
+          const value = currentParams.get(param);
+          if (value) params.set(param, value);
+        });
+      }
+
+      // Add filtered params
       Object.entries(filteredFilters).forEach(([key, value]) => {
-        if (key !== "skip" && value !== undefined) {
+        if (value !== undefined && 
+            !options.removeParams?.includes(key)) {
           params.set(key, value);
         }
       });
+
+      // Reset page number if specified
+      if (options.resetPage) {
+        params.delete('skip');
+        params.delete('page');
+      }
+
       const currentPathname = window.location.pathname;
       router.push(`${currentPathname}?${params.toString()}`, { scroll: false });
       return filteredFilters;
