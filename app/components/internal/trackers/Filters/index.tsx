@@ -433,6 +433,7 @@ const Pages = () => {
   const [websiteSuggestion, setWebsiteSuggestion]=useState(null);
   // const [categorySlug, setCategorySlug] = useState([]);
   const [searchInput, setSearchInput] = useState("");
+  const [prompt,setPrompt]=useState("");
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [eventData, setEventData] = useState<EventDataType | null>(null);
   const [selectedEventType, setSelectedEventType] = useState<
@@ -685,18 +686,18 @@ const Pages = () => {
       }
     }  
     // const [speakerSuggestion,setSpeakerSuggestion]=useState();
-    const fetchAISuggestion1 = async(val:any)=>{
-      console.log(val);
+    const fetchAISuggestion1 = async(promptText:any)=>{
+      // console.log(val);
       try{
-        const promptText = `List only top 5 name similar to ${val[0]} and company name similar to ${val[1]}. Response should be in plain JSON format without any additional formatting or text: {
-          "data": [
-            { "Speaker's Name": "speaker name 1", "Company Name": "company name 1" },
-            { "Speaker's Name": "speaker name 2", "Company Name": "company name 2" },
-            { "Speaker's Name": "speaker name 3", "Company Name": "company name 3" },
-            { "Speaker's Name": "speaker name 4", "Company Name": "company name 4" },
-            { "Speaker's Name": "speaker name 5", "Company Name": "company name 5" }
-          ]
-        }. Do not show example values. If no data found then return in below format: {\"data\": []}`;
+        // const promptText = `List only top 5 name similar to ${val[0]} and company name similar to ${val[1]}. Response should be in plain JSON format without any additional formatting or text: {
+        //   "data": [
+        //     { "Speaker's Name": "speaker name 1", "Company Name": "company name 1" },
+        //     { "Speaker's Name": "speaker name 2", "Company Name": "company name 2" },
+        //     { "Speaker's Name": "speaker name 3", "Company Name": "company name 3" },
+        //     { "Speaker's Name": "speaker name 4", "Company Name": "company name 4" },
+        //     { "Speaker's Name": "speaker name 5", "Company Name": "company name 5" }
+        //   ]
+        // }. Do not show example values. If no data found then return in below format: {\"data\": []}`;
         let aiResponse: any = await suggestionGenerator(promptText);
         console.log(aiResponse);
         
@@ -740,7 +741,17 @@ const Pages = () => {
       setSpeakerName(speakerName);
       setSpeakerCompany(speakerCompany);
       if(speakerName.length>0 && speakerCompany.length>0)
-      fetchAISuggestion1([Object.values(customData[0])[0],Object.values(customData[0])[1]]);
+        const promptText = `List only top 5 name similar to ${Object.values(customData[0])[0]} and company name similar to ${Object.values(customData[0])[1]}. Response should be in plain JSON format without any additional formatting or text: {
+        "data": [
+          { "Speaker's Name": "speaker name 1", "Company Name": "company name 1" },
+          { "Speaker's Name": "speaker name 2", "Company Name": "company name 2" },
+          { "Speaker's Name": "speaker name 3", "Company Name": "company name 3" },
+          { "Speaker's Name": "speaker name 4", "Company Name": "company name 4" },
+          { "Speaker's Name": "speaker name 5", "Company Name": "company name 5" }
+        ]
+      }. Do not show example values. If no data found then return in below format: {\"data\": []}`;
+      // fetchAISuggestion1([Object.values(customData[0])[0],Object.values(customData[0])[1]]);
+      fetchAISuggestion1(promptText);
       // console.log(speakerName, speakerCompany);
 
     }
@@ -1994,11 +2005,11 @@ return (
                   <span className={styles.experimental_tag} >Beta</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {type==="T_SPEAKING_OPPORTUNITY" && 
+                  {(type==="T_SPEAKING_OPPORTUNITY" || type==="T_COMPETITOR") && 
                     suggestions.map((item: any, ind: number)=>(
                       <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{`${item["Speaker's Name"]} (${item["Company Name"]})`}</div>
                     ))
-                  }
+                 } 
                   {/* {suggestions.map((item: string, ind: number)=>(
                     <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{item}</div>
                   ))} */}
