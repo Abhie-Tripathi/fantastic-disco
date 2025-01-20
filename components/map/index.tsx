@@ -589,7 +589,8 @@ export default function MapComponent({
 
   const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
   const showEvent = viewport.zoom >= 12 && events.length;
-
+  console.log(eventCountsQuery?.data?.length);
+  
   return (
     <div className="relative">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
@@ -600,6 +601,9 @@ export default function MapComponent({
       <NullState image={TrackerNullState} title={eventCountsQuery.error.message}/>
       </div>
       :
+        <>
+        {(source==="tracker" && eventCountsQuery?.data?.length===0)?
+        <NullState image={TrackerNullState}  title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Configuration" buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration?type=${trackerType}`}/> :
         <>
           {!location ? (
             <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
@@ -939,6 +943,8 @@ export default function MapComponent({
               )}
             </ReactMapGL>
           )}
+        </>
+        }
         </>
       )}
     </div>
