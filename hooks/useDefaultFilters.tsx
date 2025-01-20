@@ -69,8 +69,8 @@ export function useDefaultFilters() {
           }
         }
       }
-      if (!currentStatus)
-        defaultSearchParams.set("status", "active,cancelled,postponed");
+      // if (!currentStatus)
+      //   defaultSearchParams.set("status", "active,cancelled,postponed");
 
       if (!currentEventTypes)
         defaultSearchParams.set(
