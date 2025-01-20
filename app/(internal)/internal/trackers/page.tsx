@@ -494,20 +494,14 @@ const Trackers = ({ searchParams }: Search) => {
   <div className="h-[300px]">
     {(!singleTrackerData &&  searchValue.length<3) ? (
         <Loading />
-    ) : Number(singleTrackerData?.groupedEventsCountByStatus?.groupedEventsByStatus?.active || 0) === 0 ? (
-      <div className="px-10 py-5 h-[100%]" onClick={() => setContextData(singleTrackerData?.id)}>
-        {!singleTrackerData?<NullState image={TrackerNullState}  title="No tracker selected."/>:
-        <NullState image={TrackerNullState}  title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Configuration" buttonUrl={`/internal/trackers/${singleTrackerData && singleTrackerData.id}/trackedConfiguration?type=${singleTrackerData &&  singleTrackerData.type}`}/>
-        }
-         
-      </div>
-    ) : (
+    ) : !singleTrackerData?<NullState image={TrackerNullState}  title="No tracker selected."/> : (
       <Map
         isGlobal={true}
         source="tracker"
         searchParams="active"
         trackerId={singleTrackerData?.id || ""}
         trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
+        trackerType={singleTrackerData?.type || ""}
       />
     )}
   </div>

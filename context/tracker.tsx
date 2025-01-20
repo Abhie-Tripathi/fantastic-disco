@@ -23,11 +23,11 @@ export const TrackerContext = createContext<any>(
     const [trackerId,setTrackerId]=useState("");
     const pages=["manageAccess","editTracker","trackedEvents", "notesDiscussion","trackedConfiguration"]
     useEffect(()=>{
-      if(pathName.length > 4 && pages.includes(pathName[4])){
+      if(pathName.length > 4 && pages.includes(pathName[4]) && (!data || data === null)){
         setTrackerId(pathName[3]);
         setIsNewCall(true);
       }
-    },[])
+    },[pathName])
     
     useEffect(()=>{
       // console.log(11111);

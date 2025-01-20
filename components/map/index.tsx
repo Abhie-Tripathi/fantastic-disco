@@ -92,7 +92,8 @@ export default function MapComponent({
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
-
+  console.log(trackerId);
+  
   const { data } = useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
     latitude: 20.5937,
