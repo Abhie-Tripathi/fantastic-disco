@@ -532,7 +532,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
       },
   
       frequencies: {
-        isEnabled: true,
+        isEnabled: data.eventFrequency?.isFreqEnabled ?? true,
         isToggleEnabled: true,
         options: searchFilters?.frequencies?.options?.map((format) => ({
             ...format,
