@@ -102,6 +102,21 @@ interface Filters {
   economic_impact_gte?: string;
   total_attendance_gte?: string;
   total_attendance_lte?: string;
+
+  // Prospect Filters
+  companyCategory?: string;
+  productTopic?: string;
+  companyType?: string;
+  companySize?: string;
+  establishedYear?: string;
+  eventFollowers?: string;
+  eventCategory?: string;
+  participationType?: string;
+  companyLocation?: string;
+  eventLocation?: string;
+  userName?: string;
+  designation?: string;
+  linkedinProfile?: string;
 }
 type Filter = {
   eventTypes: string;
