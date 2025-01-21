@@ -104,13 +104,13 @@ interface Filters {
   total_attendance_lte?: string;
 
   // Prospect Filters
-  industry?: string;
+  companyCategory?: string;
   productTopic?: string;
   companyType?: string;
   companySize?: string;
   establishedYear?: string;
   eventFollowers?: string;
-  interestedIndustry?: string;
+  eventCategory?: string;
   participationType?: string;
   companyLocation?: string;
   userName?: string;

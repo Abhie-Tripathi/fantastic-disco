@@ -111,7 +111,7 @@ const companyFilters: ProspectFilters[] = [
     id: "item-1",
     label: "Category",
     enabled: true,
-    filterName: "industry",
+    filterName: "companyCategory",
   },
   {
     id: "item-2",
@@ -155,7 +155,7 @@ const eventFilters: ProspectFilters[] = [
   {
     id: "item-3",
     label: "Category",
-    filterName: "interestedIndustry",
+    filterName: "eventCategory",
     enabled: true,
   },
   {
@@ -335,7 +335,7 @@ const Prospect = () => {
                       <AccordionContent
                         className={`"h-fit pb-1 overflow-x-hidden`}
                       >
-                        {item.filterName === "industry" ? (
+                        {item.filterName === "companyCategory" ? (
                           <Industry filterName={item.filterName} />
                         ) : item.filterName === "productTopic" ? (
                           <ProductTopics />
@@ -406,7 +406,7 @@ const Prospect = () => {
                       <AccordionContent
                         className={`"h-fit pb-1 overflow-x-hidden`}
                       >
-                        {item.filterName === "interestedIndustry" ? (
+                        {item.filterName === "eventCategory" ? (
                           <Industry filterName={item.filterName} />
                         ) : item.filterName === "participationType" ? (
                           <ParticipationType />

@@ -192,7 +192,7 @@ const designationsData = [
 ];
 
 interface Props {
-  filterName: "industry" | "interestedIndustry";
+  filterName: "companyCategory" | "eventCategory";
 }
 
 export default function Industry({filterName}: Props) {

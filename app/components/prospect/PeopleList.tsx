@@ -39,7 +39,7 @@ const PeopleCard = ({ poc }: { poc: pocDetail }) => {
                 }.jpg`
           }
           alt="image"
-          className="flex h-12 w-12 rounded-xl shadow-lg"
+          className="flex h-14 w-14 rounded-xl shadow-lg"
           width={50}
           height={50}
         />
