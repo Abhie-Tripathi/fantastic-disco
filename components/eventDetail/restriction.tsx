@@ -6,7 +6,7 @@ const Restriction = ({ className }: { className?: string }) => {
   return (
     <div
       className={cn(
-        "z-100 absolute -top-3 right-0 p-2 shadow-md border border-[var(--neutral-light-color)] rounded-md bg-white",
+        "z-100 p-2 rounded-md bg-transparent w-fit",
         className
       )}
     >

@@ -603,19 +603,19 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 >
                   {tab.tabName}
                   {/* {tab.tabName === "Insights" && (
-                  <div className="absolute -top-1 -right-16 w-fit">
-                    <span className="bg-[#FEECF2] py-2 px-3 rounded-full text-sm text-[#DF2670] relative ml-2">
-                      NEW
-                      <Image
-                        className="absolute -right-[7px] -top-[7px]"
-                        width={20}
-                        height={20}
-                        src={Star}
-                        alt="Star"
-                      />
-                    </span>
-                  </div>
-                )} */}
+                    <div className="absolute -top-1 -right-16 w-fit">
+                      <span className="bg-[#FEECF2] py-2 px-3 rounded-full text-sm text-[#DF2670] relative ml-2">
+                        NEW
+                        <Image
+                          className="absolute -right-[7px] -top-[7px]"
+                          width={20}
+                          height={20}
+                          src={Star}
+                          alt="Star"
+                        />
+                      </span>
+                    </div>
+                  )} */}
                 </div>
               ))}
           </div>

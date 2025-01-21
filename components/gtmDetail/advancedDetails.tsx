@@ -68,7 +68,6 @@ const CarouselComponent = ({
     maturityLevels.options.find(
       (option: { label: string }) => option.label === maturity
     );
-  console.log(frequencies);
 
   const hasFrequencyOption =
     frequencies &&
@@ -105,6 +104,8 @@ const CarouselComponent = ({
     hasFrequencyOption &&
     hasFrequencyOption.isEnabled;
 
+  const isForecastedEnabled = forcastedStatus && forcastedStatus.isEnabled;
+
   useEffect(() => {
     if (!api) {
       return;
@@ -138,24 +139,22 @@ const CarouselComponent = ({
                 <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                   Maturity
                 </h1>
-                {maturity ? (
-                  <span className="text-[#0062D1] dark:bg-[#10233D] dark:border-[#0D3868] bg-[#EBF5FF] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border-[#CCE6FF] border rounded-md w-full xl:w-24 text-center">
-                    {isMaturityEnabled &&
-                      maturity.charAt(0).toUpperCase() +
+                {isMaturityEnabled ? (
+                  maturity ? (
+                    <span className="text-[#0062D1] dark:bg-[#10233D] dark:border-[#0D3868] bg-[#EBF5FF] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border-[#CCE6FF] border rounded-md w-full xl:w-24 text-center">
+                      {maturity.charAt(0).toUpperCase() +
                         maturity.slice(1, maturity.length)}
-                  </span>
+                    </span>
+                  ) : (
+                    <span className="text-[#666666] text-sm flex items-center gap-2">
+                      <CircleSlash width={15} height={15} />
+                      No data available
+                    </span>
+                  )
                 ) : (
-                  <span className="text-[#666666] text-sm flex items-center gap-2">
-                    <CircleSlash width={15} height={15} />
-                    No data available
-                  </span>
+                  <Restriction />
                 )}
               </div>
-              {!isMaturityEnabled && (
-                <Restriction
-                  className={`${isSlidingEnabled ? "" : "-right-3"}`}
-                />
-              )}
             </CarouselItem>
           )}
           {editions && (
@@ -204,23 +203,22 @@ const CarouselComponent = ({
                   Frequency
                 </h1>
                 <div className="flex gap-4 flex-wrap w-full xl:w-auto">
-                  {frequency ? (
-                    <span className="text-[#A35200] bg-[#FFF4D6] dark:bg-[#331B00] dark:border-[#4D2A00] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border border-[#FEF0CD] rounded-md w-full xl:w-28 text-center">
-                      {isFrequencyEnabled && capitalize(frequency)}
-                    </span>
+                  {isFrequencyEnabled ? (
+                    frequency ? (
+                      <span className="text-[#A35200] bg-[#FFF4D6] dark:bg-[#331B00] dark:border-[#4D2A00] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border border-[#FEF0CD] rounded-md w-full xl:w-28 text-center">
+                        {capitalize(frequency)}
+                      </span>
+                    ) : (
+                      <span className="text-[#666666] text-sm flex items-center gap-2">
+                        <CircleSlash width={15} height={15} />
+                        No data available
+                      </span>
+                    )
                   ) : (
-                    <span className="text-[#666666] text-sm flex items-center gap-2">
-                      <CircleSlash width={15} height={15} />
-                      No data available
-                    </span>
+                    <Restriction />
                   )}
                 </div>
               </div>
-              {!isFrequencyEnabled && (
-                <Restriction
-                  className={`${isSlidingEnabled ? "" : "-right-3"}`}
-                />
-              )}
             </CarouselItem>
           )}
           {(futureExpectedStartDate || futureExpectedEndDate) && (
@@ -235,17 +233,16 @@ const CarouselComponent = ({
                 <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                   Rehost Month
                 </h1>
-                <span className="text-[var(--primary-color-hover)] font-semibold text-md text-center">
-                  {forcastedStatus &&
-                    forcastedStatus.isEnabled &&
-                    format(futureExpectedStartDate, "MMM, yyyy")}
-                </span>
+                {isForecastedEnabled ? (
+                  <span className="text-[var(--primary-color-hover)] font-semibold text-md text-center">
+                    {format(futureExpectedStartDate, "MMM, yyyy")}
+                  </span>
+                ) : (
+                  <Restriction
+                    className={`${isSlidingEnabled ? "" : "-right-3"}`}
+                  />
+                )}
               </div>
-              {forcastedStatus && !forcastedStatus.isEnabled && (
-                <Restriction
-                  className={`${isSlidingEnabled ? "" : "-right-3"}`}
-                />
-              )}
             </CarouselItem>
           )}
           {(isBranded || isSeries) && (
@@ -266,30 +263,31 @@ const CarouselComponent = ({
                     No data available
                   </span>
                 )}
-                {isBranded && (
-                  <span
-                    className={`text-sm font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-full xl:w-32 ${
-                      isBrandEnabled ? "" : "h-7"
-                    } text-[#DF2670] bg-[#FEECF2] dark:bg-[#3A1726] dark:border-[#551B33] text-center`}
-                  >
-                    {isBrandEnabled && "Branded Event"}
-                  </span>
-                )}
-                {isSeries && (
-                  <span
-                    className={`text-sm font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-full xl:w-32${
-                      isBrandEnabled ? "" : "h-7"
-                    } text-[#0D8C7D] bg-[#E5FAF6] dark:bg-[#062822] dark:border-[#0D8C7D] text-center`}
-                  >
-                    {isBrandEnabled && " Series Event"}
-                  </span>
+                {isBrandEnabled ? (
+                  <>
+                    {isBranded && (
+                      <span
+                        className={`text-sm font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-full xl:w-32 ${
+                          isBrandEnabled ? "" : "h-7"
+                        } text-[#DF2670] bg-[#FEECF2] dark:bg-[#3A1726] dark:border-[#551B33] text-center`}
+                      >
+                        {isBrandEnabled && "Branded Event"}
+                      </span>
+                    )}
+                    {isSeries && (
+                      <span
+                        className={`text-sm font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-full xl:w-32${
+                          isBrandEnabled ? "" : "h-7"
+                        } text-[#0D8C7D] bg-[#E5FAF6] dark:bg-[#062822] dark:border-[#0D8C7D] text-center`}
+                      >
+                        {isBrandEnabled && " Series Event"}
+                      </span>
+                    )}
+                  </>
+                ) : (
+                  <Restriction />
                 )}
               </div>
-              {!isBrandEnabled && (
-                <Restriction
-                  className={`${isSlidingEnabled ? "" : "-right-3"}`}
-                />
-              )}
             </CarouselItem>
           )}
         </CarouselContent>

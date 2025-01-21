@@ -85,13 +85,10 @@ export const InsightsAndScores = ({
                     <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                       Impact Score
                     </h1>
-
-                    <CircularProgressBar
-                      value={scores.impactScore}
-                      visibility={isAnalyticsEnabled}
-                    />
-                    {!isAnalyticsEnabled && (
-                      <Restriction className="-right-3" />
+                    {isAnalyticsEnabled ? (
+                      <CircularProgressBar value={scores.impactScore} />
+                    ) : (
+                      <Restriction />
                     )}
                   </div>
                 )}
@@ -100,12 +97,12 @@ export const InsightsAndScores = ({
                     <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                       Trust Score
                     </h1>
-                    <CircularProgressBar
-                      value={Math.round(trustScore ?? 0)}
-                      visibility={isTrustScoreEnabled}
-                    />
-                    {!isTrustScoreEnabled && (
-                      <Restriction className="-right-3" />
+                    {isTrustScoreEnabled ? (
+                      <CircularProgressBar
+                        value={Math.round(trustScore ?? 0)}
+                      />
+                    ) : (
+                      <Restriction />
                     )}
                   </div>
                 )}
@@ -114,12 +111,10 @@ export const InsightsAndScores = ({
                     <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                       Inbound Score
                     </h1>
-                    <CircularProgressBar
-                      value={scores.inboundScore}
-                      visibility={isAnalyticsEnabled}
-                    />
-                    {!isAnalyticsEnabled && (
-                      <Restriction className="-right-3" />
+                    {isAnalyticsEnabled ? (
+                      <CircularProgressBar value={scores.inboundScore} />
+                    ) : (
+                      <Restriction />
                     )}
                   </div>
                 )}
@@ -128,68 +123,68 @@ export const InsightsAndScores = ({
                     <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                       International Score
                     </h1>
-                    <CircularProgressBar
-                      value={scores.internationalScore}
-                      visibility={isAnalyticsEnabled}
-                    />
-                    {!isAnalyticsEnabled && (
-                      <Restriction className="-right-3" />
+                    {isAnalyticsEnabled ? (
+                      <CircularProgressBar value={scores.internationalScore} />
+                    ) : (
+                      <Restriction />
                     )}
                   </div>
                 )}
               </div>
 
               {/* <div className="w-1/2 border border-[#EBEBEB] rounded-md p-4 overflow-y-auto scrollbar max-xl:w-full">
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <Text variant="noMargin" fontWeight="medium">
-                    Estimated Economic Impact
-                  </Text>
-                </div>
-                <div className="text-primary font-semibold text-2xl">
-                  {`${economicImpact}`}
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <div className="pb-2 border-b border-[#EBEBEB] flex justify-between ">
-                  <Text
-                    variant="noMargin"
-                    size="small"
-                    fontWeight="medium"
-                    color="secondary"
-                  >
-                    IMPACT CATEGORIES
-                  </Text>
-                  <Text
-                    variant="noMargin"
-                    size="small"
-                    color="secondary"
-                    fontWeight="medium"
-                  >
-                    IMPACT (USD)
-                  </Text>
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Text variant="noMargin" fontWeight="medium">
+                      Estimated Economic Impact
+                    </Text>
+                  </div>
+                  <div className="text-primary font-semibold text-2xl">
+                    {`${economicImpact}`}
+                  </div>
                 </div>
 
-                <ul className="list-none flex flex-col gap-2 mt-2">
-                  {predictedEventSpendBreakUp &&
-                    predictedEventSpendBreakUp.length > 0 &&
-                    predictedEventSpendBreakUp.map(
-                      (predictedEventSpend: any) => (
-                        <li
-                          key={predictedEventSpend.title}
-                          className="flex justify-between"
-                        >
-                          <Text size="large">{predictedEventSpend.title}</Text>
-                          <span className="text-primary font-semibold leading-6">
-                            {predictedEventSpend.spend}
-                          </span>
-                        </li>
-                      )
-                    )}
-                </ul>
-              </div>
-            </div> */}
+                <div className="mt-8">
+                  <div className="pb-2 border-b border-[#EBEBEB] flex justify-between ">
+                    <Text
+                      variant="noMargin"
+                      size="small"
+                      fontWeight="medium"
+                      color="secondary"
+                    >
+                      IMPACT CATEGORIES
+                    </Text>
+                    <Text
+                      variant="noMargin"
+                      size="small"
+                      color="secondary"
+                      fontWeight="medium"
+                    >
+                      IMPACT (USD)
+                    </Text>
+                  </div>
+
+                  <ul className="list-none flex flex-col gap-2 mt-2">
+                    {predictedEventSpendBreakUp &&
+                      predictedEventSpendBreakUp.length > 0 &&
+                      predictedEventSpendBreakUp.map(
+                        (predictedEventSpend: any) => (
+                          <li
+                            key={predictedEventSpend.title}
+                            className="flex justify-between"
+                          >
+                            <Text size="large">
+                              {predictedEventSpend.title}
+                            </Text>
+                            <span className="text-primary font-semibold leading-6">
+                              {predictedEventSpend.spend}
+                            </span>
+                          </li>
+                        )
+                      )}
+                  </ul>
+                </div>
+              </div> */}
             </div>
           )}
 
