@@ -24,60 +24,77 @@ import { useQuery } from "@tanstack/react-query";
 import { useFilterContext } from "@/context/filterContext";
 import { Designations } from "@/types/misc";
 
-const useDesignationsAutocomplete = (input: string) => {
-  const miscService = useMiscService();
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["designations", input],
-    queryFn: () => miscService.getDesginationAutocomplete(input),
-  });
+const designationsData: Designations[] = [
+  {
+    id: "1",
+    name: "Education & Training",
+    slug: "Education & Training",
+  },
+  {
+    id: "2",
+    name: "Science & Research",
+    slug: "Science & Research",
+  },
+  {
+    id: "3",
+    name: "Business Services",
+    slug: "Business Services",
+  },
+  {
+    id: "4",
+    name: "Banking & Finance",
+    slug: "Banking & Finance",
+  },
+  {
+    id: "5",
+    name: "IT & Technology",
+    slug: "IT & Technology",
+  },
+];
 
-  return {
-    designations: data?.designations ?? [],
-    isLoading,
-    isError: !!error,
-  };
-};
-
-export default function CompanyType() {
+export default function ProductTopics() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const { localFilters, setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
-  const { designations } = useDesignationsAutocomplete(search);
+
+  const designations: Designations[] = designationsData.filter((country) =>
+    country.name.toLowerCase().includes(search.toLowerCase())
+  );
   const enabled = morphedData.audienceProfile.isEnabled;
   const selectedLabels = useMemo(() => {
     const filterDesignations =
-      getLocalFilterValue("designations")?.split(",").filter(Boolean) || [];
+      getLocalFilterValue("productTopic")?.split(",").filter(Boolean) || [];
     return designations.filter((d: Designations) =>
       filterDesignations.includes(d.id)
     );
-  }, [localFilters.designations, designations]);
+  }, [localFilters.productTopic, designations]);
 
   const handleSelect = (label: Designations) => {
     const currentDesignations =
-      localFilters.designations?.split(",").filter(Boolean) || [];
+      localFilters.productTopic?.split(",").filter(Boolean) || [];
     const isSelected = currentDesignations.includes(label.id);
 
     const newDesignations = isSelected
       ? currentDesignations.filter((id) => id !== label.id)
       : [...currentDesignations, label.id];
 
-    setLocalFilter("designations", newDesignations.join(","));
+    setLocalFilter("productTopic", newDesignations.join(","));
   };
 
   const handleRemoveLabel = (labelId: string) => {
-    const currentDesignations = localFilters.designations
+    const currentDesignations = localFilters.productTopic
       ?.split(",")
       .filter((id) => id !== labelId);
     if (currentDesignations)
-      setLocalFilter("designations", currentDesignations.join(","));
+      setLocalFilter("productTopic", currentDesignations.join(","));
   };
 
   return (
     <div className="w-full max-w-[var(--radix-popover-trigger-width)] min-w-[280px] p-0">
       <Command shouldFilter={false}>
         <CommandInput
-          placeholder="Search Audience Profile"
+          placeholder="Search Products"
           onValueChange={(search) => setSearch(search)}
         />
         <CommandEmpty>No label found.</CommandEmpty>

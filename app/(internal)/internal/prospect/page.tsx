@@ -1,8 +1,7 @@
 "use client";
 
 // import SearchBar from "@/components/search/searchbar";
-import { Buildings, Filter, Location, Users } from "geist-icons";
-import Image from "next/image";
+import { Buildings, Filter, LockClosedSmall, Users } from "geist-icons";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Accordion,
@@ -10,10 +9,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import CompanyType from "@/app/components/prospect/companyTypeFilter";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import { useCompanyService } from "@/services/companyService";
@@ -21,9 +19,20 @@ import Loading from "@/components/ui/Loading";
 import NullState from "@/app/components/trackers/nullState";
 import coordinateNullState from "@/public/coordinateNullState.svg";
 import { ApiError } from "@/types/api";
-import { PaginationComponent } from "@/components/pagination";
-import { useFilterState } from "@/hooks/useFilterState";
-import Link from "next/link";
+import { ProspectList } from "@/app/components/prospect/ProspectList";
+import Industry from "@/app/components/prospect/Filters/industryFilter";
+import { useFilterContext } from "@/context/filterContext";
+import ProductTopics from "@/app/components/prospect/Filters/productTopics";
+import CompanyType from "@/app/components/prospect/Filters/companyType";
+import CompanySize from "@/app/components/prospect/Filters/companySize";
+import EstablishedYear from "@/app/components/prospect/Filters/establishedYear";
+import EventFollowers from "@/app/components/prospect/Filters/eventFollowers";
+import ParticipationType from "@/app/components/prospect/Filters/participationType";
+import Designation from "@/app/components/prospect/Filters/designation";
+import LocationSelector from "@/app/components/prospect/Filters/location";
+import PeopleFilter from "@/app/components/prospect/Filters/peopleFilter";
+import { PeopleList } from "@/app/components/prospect/PeopleList";
+import { pocDetail } from "@/types/coordinateEventType";
 
 interface companyDetail {
   name: string;
@@ -40,146 +49,147 @@ interface CompanyListResponse {
   data: any[];
 }
 
-const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
-  return (
-    <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative">
-      <Link href={`/internal/company/${companyDetail.url}`} target="_blank" className="block">
-      <div className="p-6 flex gap-6">
-        {companyDetail.cdn_url && (
-          <Image
-            src={companyDetail.cdn_url}
-            alt="eventLogo"
-            className="flex h-16 w-16 rounded-lg shadow-lg"
-            width={200}
-            height={200}
-          />
-        )}
-        <div className="flex gap-2 flex-col">
-          <div className="text-xl font-semibold">{companyDetail.name}</div>
-          <div className="text-[#707287] text-sm line-clamp-2">
-            {companyDetail.profile}
-          </div>
+interface ProspectFilters {
+  id: string;
+  label: string;
+  content?: any;
+  type?: any;
+  enabled?: boolean;
+  filterName?: any;
+}
 
-          <div className="flex gap-2">
-            <div className="flex gap-2 items-center border-r w-fit pr-3">
-              <Location color="#666666" width="14px" height="14px" />
-              <span className="text-[#6E6F89] text-sm">
-                {companyDetail.city}, {companyDetail.country}
-              </span>
-            </div>
+const peopleData: pocDetail[] = [
+  {
+      "id": 63400046,
+      "name": "Vinoth",
+      "designation": "AGM - Own Shows",
+      "email": "sv@hitex.co.in",
+      "phoneNumber": "+91********159",
+      "profilePicture": "https://c1.10times.com/user/images/0/4/6/63400046_1710389446.jpg",
+      "emailActive": "2025-01-21 12:03:13"
+  },
+  {
+      "id": 35570,
+      "name": "John",
+      "designation": "Sr. Manager - Own Shows",
+      "email": "js@hitex.co.in",
+      "phoneNumber": "+91********117",
+      "profilePicture": "https://c1.10times.com/user_pic%2FskWcFEdNT4dxpz%2BZhi%2BVALFBjA85qfm3wWbW64Wn9MbKKYMMe91dsYHErZuQYxjacXZeNnGvKf7FY4qjzbUlrg%3D%3D.jpg",
+      "emailActive": "2025-01-20 18:09:28"
+  },
+  {
+      "id": 66132975,
+      "name": "Harshitha Reddy",
+      "designation": "Organizer",
+      "email": "hn*@hitex.co.in",
+      "phoneNumber": null,
+      "profilePicture": "https://c1.10times.com/userimages/h.jpg",
+      "emailActive": "2024-12-16 12:50:10"
+  },
+  {
+      "id": 66121550,
+      "name": "Sudarshan",
+      "designation": "Asst. Manager",
+      "email": "rs*@hitex.co.in",
+      "phoneNumber": "+91********610",
+      "profilePicture": "https://c1.10times.com/userimages/s.jpg",
+      "emailActive": "2024-08-31 10:52:57"
+  },
+  {
+      "id": 60350557,
+      "name": "LDF India",
+      "designation": "Marketing Manager",
+      "email": "sk*@hitex.co.in",
+      "phoneNumber": "+91********323",
+      "profilePicture": "https://c1.10times.com/user/images/5/5/7/60350557_1683541380.jpg",
+      "emailActive": "2023-11-07 14:29:38"
+  }
+];
 
-            <div className="flex gap-2 items-center w-fit">
-              <Buildings color="#666666" width="14px" height="14px" />
-              {companyDetail.industries.map((item) => (
-                <span
-                  key={item}
-                  className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
-                >
-                  {item}
-                </span>
-              ))}
-
-              {/* <span className="text-[var(--info-text-color)] text-xs font-medium">
-                +2 more
-              </span> */}
-            </div>
-          </div>
-        </div>
-      </div>
-      </Link>
-    </div>
-  );
-};
-
-const companyFilters = [
+const companyFilters: ProspectFilters[] = [
   {
     id: "item-1",
-    label: "Industry",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
-    type: "checkbox",
+    label: "Category",
     enabled: true,
+    filterName: "industry",
   },
   {
     id: "item-2",
     label: "Location",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
-    type: "search",
+    enabled: true,
+    filterName: "companyLocation",
   },
   {
     id: "item-3",
     label: "Product & Topics",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
-    type: "checkbox",
-    enabled: false,
+    enabled: true,
+    filterName: "productTopic",
   },
   {
     id: "item-4",
-    label: "Company Size",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
-    type: "checkbox",
+    label: "Community Size",
+    filterName: "companySize",
+    enabled: true,
   },
   {
     id: "item-5",
     label: "Company Type",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
-    type: "checkbox",
+    filterName: "companyType",
+    enabled: true,
   },
   {
     id: "item-6",
     label: "Established Year",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
-    type: "",
+    filterName: "establishedYear",
+    enabled: true,
   },
 ];
 
-const eventFilters = [
-  {
-    id: "item-1",
-    label: "Event Partcipation",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
-  },
+const eventFilters: ProspectFilters[] = [
   {
     id: "item-2",
-    label: "Event Regions",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
+    label: "Location",
+    filterName: "eventLocation",
+    enabled: true,
   },
   {
     id: "item-3",
-    label: "Industry Interests",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
+    label: "Category",
+    filterName: "interestedIndustry",
+    enabled: true,
   },
   {
     id: "item-4",
     label: "Followers",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
+    filterName: "eventFollowers",
+    enabled: true,
   },
   {
     id: "item-5",
     label: "Participation Type",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
+    filterName: "participationType",
+    enabled: true,
   },
 ];
 
-const peopleFilters = [
+const peopleFilters: ProspectFilters[] = [
   {
     id: "item-1",
-    filterName: "userName",
     label: "User Name",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
-    type: "checkbox",
+    filterName: "userName",
+    enabled: true,
   },
   {
     id: "item-2",
-    label: "Designation",
+    label: "Job Title",
     filterName: "designation",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
-    type: "search",
+    enabled: true,
   },
   {
     id: "item-3",
     label: "LinkedIn",
-    content: ["Industry 1", "Industry 2", "Industry 3"],
-    type: "checkbox",
+    filterName: "linkedinProfile",
+    enabled: true,
   },
 ];
 
@@ -206,25 +216,20 @@ const Prospect = () => {
 
   const companies = companyData?.data || [];
   const count = companyData?.totalCount;
-  const { setFilter, getFilterValue } = useFilterState();
-  const [itemsPerPage, setItemsPerPage] = useState<number>(20);
-  const currentPage = Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
-  const totalPages = Math.ceil(count / itemsPerPage);
+
+  const {
+    localFilters,
+    applyFilters,
+    getLocalFilterValue,
+    deleteMultipleLocalFilters,
+  } = useFilterContext();
 
   const searchHandler = useCallback(() => {
-    console.log("searchHandler", companies);
-    // applyFilters();
+    applyFilters();
   }, []);
 
-  const handlePageChange = (page: number) => {
-    setFilter("skip", ((page - 1) * itemsPerPage).toString());
-  };
-
-  const handleItemsPerPageChange = (value: string) => {
-    const newItemsPerPage = parseInt(value);
-    setItemsPerPage(newItemsPerPage);
-
-    setFilter("take", newItemsPerPage.toString());
+  const handleClearFilter = (item: any) => {
+    deleteMultipleLocalFilters([item]);
   };
 
   return (
@@ -237,43 +242,47 @@ const Prospect = () => {
         </div>
         <div className="badge_success">Coming Soon</div>
       </div>
-      <div
-        className="h-full grid grid-cols-3 mt-0"
-        style={{ height: "calc(100vh - 145px)", marginTop: "0!important" }}
-      >
-        <div className="col-span-1 overflow-y-auto py-3 px-6">
-          <Tabs
-            defaultValue={"company"}
-            className="h-full w-full flex flex-col justify-between"
-          >
-            <div className="flex w-full justify-between">
-              <TabsList className="grid grid-cols-2 h-auto px-2">
-                <TabsTrigger
-                  value="company"
-                  className="text-xs flex gap-2 items-center p-2"
-                >
-                  <Buildings
-                    color="var(--muted-foreground)"
-                    width="12px"
-                    height="12px"
-                  />
-                  Companies
-                </TabsTrigger>
-                <TabsTrigger
-                  value="people"
-                  className="text-xs flex gap-2 items-center p-2"
-                  // disabled={true}
-                >
-                  <Users color="#666666" width="12px" height="12px" />
-                  People
-                </TabsTrigger>
-              </TabsList>
-            </div>
-
-            <TabsContent
+      <Tabs defaultValue={"company"} style={{ marginTop: "12px!important" }}>
+        <div className="grid grid-cols-3 px-6">
+          <TabsList className="grid grid-cols-2 h-auto px-2 col-span-1 mr-6 w-fit">
+            <TabsTrigger
               value="company"
-              className="h-4/5 overflow-y-auto w-full"
+              className="text-xs flex gap-2 items-center p-2"
             >
+              <Buildings
+                color="var(--muted-foreground)"
+                width="12px"
+                height="12px"
+              />
+              Companies
+            </TabsTrigger>
+            <TabsTrigger
+              value="people"
+              className="text-xs flex gap-2 items-center p-2"
+              // disabled={true}
+            >
+              <Users color="#666666" width="12px" height="12px" />
+              People
+            </TabsTrigger>
+          </TabsList>
+          { companies.length > 0 &&
+            <div className="text-[#A8A8A8] text-sm font-semibold border-b mt-3 mb-6 relative col-span-2 mr">
+            <span
+              className="absolute top-[-10px] bg-background px-3"
+              style={{ right: "calc(50% - 60px)" }}
+            >
+              Search Results
+            </span>
+          </div>
+          }
+        </div>
+
+        <div
+          className="h-full grid grid-cols-3 mt-0"
+          style={{ height: "calc(100vh - 200px)", marginTop: "0!important" }}
+        >
+          <div className="col-span-1 overflow-y-auto pt-3 px-6">
+            <div className="h-4/5 overflow-y-auto w-full mt-0">
               <div className="p-3 bg-[var(--background-secondary-color)]">
                 <div className="text-xs flex gap-2 items-center p-2 pb-4 font-medium text-[var(--secondary-text-color)]">
                   <Filter
@@ -295,16 +304,52 @@ const Prospect = () => {
                       key={item.id}
                       disabled={!item?.enabled}
                     >
-                      <AccordionTrigger
-                        className="hover:no-underline p-2 py-3 font-normal text-sm justify-start"
-                        iconPosition="start"
-                      >
-                        {item.label}
-                      </AccordionTrigger>
+                      <div className="flex items-center group relative">
+                        <div className="w-4/6">
+                          <AccordionTrigger
+                            className="hover:no-underline p-2 py-3 font-normal text-sm justify-start whitespace-nowrap w-full"
+                            iconPosition="start"
+                          >
+                            {item.label}
+                            <span className="ml-4 bg-[#EBF5FF] text-[var(--info-text-color)] px-1 rounded-sm font-semibold text-xs">
+                              {item?.filterName &&
+                                getLocalFilterValue(item?.filterName) &&
+                                getLocalFilterValue(item?.filterName).split(",")
+                                  .length}
+                            </span>
+                          </AccordionTrigger>
+                        </div>
+                        {item?.filterName &&
+                          getLocalFilterValue(item?.filterName) && (
+                            <span
+                              className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 text-primary underline font-medium text-xs w-2/6"
+                              onClick={() => handleClearFilter(item.filterName)}
+                            >
+                              Remove Filter
+                            </span>
+                          )}
+                        {!item.enabled && (
+                          <LockClosedSmall color="var(--secondary-text-color)" />
+                        )}
+                      </div>
                       <AccordionContent
                         className={`"h-fit pb-1 overflow-x-hidden`}
                       >
-                        {/* content */}
+                        {item.filterName === "industry" ? (
+                          <Industry filterName={item.filterName} />
+                        ) : item.filterName === "productTopic" ? (
+                          <ProductTopics />
+                        ) : item.filterName === "companyType" ? (
+                          <CompanyType />
+                        ) : item.filterName === "companySize" ? (
+                          <CompanySize />
+                        ) : item.filterName === "establishedYear" ? (
+                          <EstablishedYear />
+                        ) : item.filterName === "companyLocation" ? (
+                          <LocationSelector filterName={item.filterName} />
+                        ) : (
+                          <></>
+                        )}
                       </AccordionContent>
                     </AccordionItem>
                   ))}
@@ -325,27 +370,59 @@ const Prospect = () => {
                   collapsible
                 >
                   {eventFilters.map((item) => (
-                    <AccordionItem value={item.id} key={item.id}>
-                      <AccordionTrigger
-                        className="hover:no-underline p-2 py-3 font-normal text-sm justify-start"
-                        iconPosition="start"
-                      >
-                        {item.label}
-                      </AccordionTrigger>
+                    <AccordionItem
+                      value={item.id}
+                      key={item.id}
+                      disabled={!item?.enabled}
+                    >
+                      <div className="flex items-center group relative">
+                        <div className="w-4/6">
+                          <AccordionTrigger
+                            className="hover:no-underline p-2 py-3 font-normal text-sm justify-start whitespace-nowrap w-full"
+                            iconPosition="start"
+                          >
+                            {item.label}
+                            <span className="ml-4 bg-[#EBF5FF] text-[var(--info-text-color)] px-1 rounded-sm font-semibold text-xs">
+                              {item?.filterName &&
+                                getLocalFilterValue(item?.filterName) &&
+                                getLocalFilterValue(item?.filterName).split(",")
+                                  .length}
+                            </span>
+                          </AccordionTrigger>
+                        </div>
+                        {item?.filterName &&
+                          getLocalFilterValue(item?.filterName) && (
+                            <span
+                              className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 text-primary underline font-medium text-xs w-2/6"
+                              onClick={() => handleClearFilter(item.filterName)}
+                            >
+                              Remove Filter
+                            </span>
+                          )}
+                        {!item.enabled && (
+                          <LockClosedSmall color="var(--secondary-text-color)" />
+                        )}
+                      </div>
                       <AccordionContent
                         className={`"h-fit pb-1 overflow-x-hidden`}
                       >
-                        {/* content */}
+                        {item.filterName === "interestedIndustry" ? (
+                          <Industry filterName={item.filterName} />
+                        ) : item.filterName === "participationType" ? (
+                          <ParticipationType />
+                        ) : item.filterName === "eventFollowers" ? (
+                          <EventFollowers />
+                        ) : item.filterName === "eventLocation" ? (
+                          <LocationSelector filterName={item.filterName} />
+                        ) : (
+                          <></>
+                        )}
                       </AccordionContent>
                     </AccordionItem>
                   ))}
                 </Accordion>
-              </div>
-            </TabsContent>
 
-            <TabsContent value="people" className="flex-grow overflow-hidden">
-              <div className="p-3 bg-[var(--background-secondary-color)]">
-                <div className="text-xs flex gap-2 items-center p-2 pb-4 font-medium text-[var(--secondary-text-color)]">
+                <div className="text-xs flex gap-2 items-center p-2 py-4 font-medium text-[var(--secondary-text-color)]">
                   <Filter
                     color="var(--muted-foreground)"
                     width="12px"
@@ -353,24 +430,54 @@ const Prospect = () => {
                   />
                   PEOPLE FILTERS
                 </div>
-
                 <Accordion
                   type="single"
                   className="bg-background border border-[var(--neutral-light-color)] rounded-sm"
                   collapsible
                 >
                   {peopleFilters.map((item) => (
-                    <AccordionItem value={item.id} key={item.id}>
-                      <AccordionTrigger
-                        className="hover:no-underline p-2 py-3 font-normal text-sm justify-start"
-                        iconPosition="start"
-                      >
-                        {item.label}
-                      </AccordionTrigger>
+                    <AccordionItem
+                      value={item.id}
+                      key={item.id}
+                      disabled={!item?.enabled}
+                    >
+                      <div className="flex items-center group relative">
+                        <div className="w-4/6">
+                          <AccordionTrigger
+                            className="hover:no-underline p-2 py-3 font-normal text-sm justify-start whitespace-nowrap w-full"
+                            iconPosition="start"
+                          >
+                            {item.label}
+                            <span className="ml-4 bg-[#EBF5FF] text-[var(--info-text-color)] px-1 rounded-sm font-semibold text-xs">
+                              {item?.filterName &&
+                                getLocalFilterValue(item?.filterName) &&
+                                getLocalFilterValue(item?.filterName).split(",")
+                                  .length}
+                            </span>
+                          </AccordionTrigger>
+                        </div>
+                        {item?.filterName &&
+                          getLocalFilterValue(item?.filterName) && (
+                            <span
+                              className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 text-primary underline font-medium text-xs w-2/6"
+                              onClick={() => handleClearFilter(item.filterName)}
+                            >
+                              Remove Filter
+                            </span>
+                          )}
+                        {!item.enabled && (
+                          <LockClosedSmall color="var(--secondary-text-color)" />
+                        )}
+                      </div>
                       <AccordionContent
                         className={`"h-fit pb-1 overflow-x-hidden`}
                       >
                         {item.filterName === "designation" ? (
+                          <Designation />
+                        ) : item.filterName === "userName" ||
+                          item.filterName === "linkedinProfile" ? (
+                          <PeopleFilter filterName={item.filterName} />
+                        ) : item.filterName === "companyType" ? (
                           <CompanyType />
                         ) : (
                           <></>
@@ -380,56 +487,87 @@ const Prospect = () => {
                   ))}
                 </Accordion>
               </div>
-            </TabsContent>
-            <Button onClick={searchHandler} disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Searching...
-                </>
-              ) : (
-                "Search"
-              )}
-            </Button>
-          </Tabs>
-        </div>
+            </div>
 
-        <div className="col-span-2 overflow-y-auto px-6 my-3">
-          {isLoading ? (
-            <Loading />
-          ) : companies.length == 0 ? (
-            <NullState image={coordinateNullState} title="No Results Found" text="Try adjusting the filter criteria to refine your search"/>
-          ) : error ? (
-            <NullState image={coordinateNullState} title={(error as ApiError).message}/>
-          ) : (
-            <>
-              <div className="text-[#A8A8A8] text-sm font-semibold border-b mt-3 mb-6 relative">
-                <span
-                  className="absolute top-[-10px] bg-background px-3"
-                  style={{ right: "calc(50% - 60px)" }}
-                >
-                  Search Results
-                </span>
-              </div>
-              <div className="flex gap-3 flex-col">
-                {companies?.map((item: companyDetail, index: number) => (
-                  <ProspectCard companyDetail={item} key={index} />
-                ))}
-                <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
-                  <PaginationComponent
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    itemsPerPage={itemsPerPage}
-                    count={count}
-                    onPageChange={handlePageChange}
-                    onItemsPerPageChange={handleItemsPerPageChange}
-                  />
-                </div>
-              </div>
-            </>
-          )}
+            <div className="w-full py-3">
+              <Button
+                onClick={searchHandler}
+                disabled={isLoading}
+                className="w-full"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Searching...
+                  </>
+                ) : (
+                  "Search"
+                )}
+              </Button>
+            </div>
+          </div>
+
+          <div className="col-span-2 overflow-y-auto pr-6">
+            <TabsContent value="company">
+              {isLoading ? (
+                <Loading />
+              ) : companies.length == 0 ? (
+                <NullState
+                  image={coordinateNullState}
+                  title="No Results Found"
+                  text="Try adjusting the filter criteria to refine your search"
+                />
+              ) : error ? (
+                <NullState
+                  image={coordinateNullState}
+                  title={(error as ApiError).message}
+                />
+              ) : (
+                <>
+                  {/* <div className="text-[#A8A8A8] text-sm font-semibold border-b mt-3 mb-6 relative">
+                  <span
+                    className="absolute top-[-10px] bg-background px-3"
+                    style={{ right: "calc(50% - 60px)" }}
+                  >
+                    Search Results
+                  </span>
+                </div> */}
+                  <ProspectList companies={companies} count={count} />
+                </>
+              )}
+            </TabsContent>
+
+            <TabsContent value="people">
+              {isLoading ? (
+                <Loading />
+              ) : companies.length == 0 ? (
+                <NullState
+                  image={coordinateNullState}
+                  title="No Results Found"
+                  text="Try adjusting the filter criteria to refine your search"
+                />
+              ) : error ? (
+                <NullState
+                  image={coordinateNullState}
+                  title={(error as ApiError).message}
+                />
+              ) : (
+                <>
+                  {/* <div className="text-[#A8A8A8] text-sm font-semibold border-b mt-3 mb-6 relative">
+                  <span
+                    className="absolute top-[-10px] bg-background px-3"
+                    style={{ right: "calc(50% - 60px)" }}
+                  >
+                    Search Results
+                  </span>
+                </div> */}
+                  <PeopleList people={peopleData} count={peopleData.length} />
+                </>
+              )}
+            </TabsContent>
+          </div>
         </div>
-      </div>
+      </Tabs>
     </div>
   );
 };
