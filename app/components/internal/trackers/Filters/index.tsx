@@ -766,6 +766,7 @@ const Pages = () => {
       audienceZone: "audienceSpread",
       branded: "eventBrand",
       series: "eventSeries",
+      rankings: "eventRanking"
     };
     
     const filters = getLocalFilterValue("show").split(",");

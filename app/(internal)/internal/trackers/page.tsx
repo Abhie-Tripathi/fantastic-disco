@@ -313,9 +313,7 @@ const Trackers = ({ searchParams }: Search) => {
   // }, [updateSteps]);
   
   const [note,setNote]=useState<any>(null);
-  const [savedEvents, setSavedEvents] = useState<{ result: EventTableType[]; count: number } | undefined>(undefined);
-
-  console.log(singleTrackerData);
+  const [savedEvents, setSavedEvents] = useState<{ events: EventTableType[]; count: number } | undefined>(undefined);
   useEffect(() => {
     // console.log(item?.tracker?.eventCountry);
     if(singleTrackerData===undefined){
@@ -374,8 +372,7 @@ const Trackers = ({ searchParams }: Search) => {
     //     setSavedEvents(data);
     //   }else setSavedEvents("");
     // }
-    const result = await getSavedEvents(id, `limit=2&offset=0`) as { result: EventTableType[]; count: number }
-    console.log(result);
+    const result = await getSavedEvents(id, `limit=2&offset=0`) as { events: EventTableType[]; count: number }
     
     if(result && result?.count>0){
       setSavedEvents(result);
@@ -497,20 +494,14 @@ const Trackers = ({ searchParams }: Search) => {
   <div className="h-[300px]">
     {(!singleTrackerData &&  searchValue.length<3) ? (
         <Loading />
-    ) : Number(singleTrackerData?.groupedEventsCountByStatus?.groupedEventsByStatus?.active || 0) === 0 ? (
-      <div className="px-10 py-5 h-[100%]" onClick={() => setContextData(singleTrackerData?.id)}>
-        {!singleTrackerData?<NullState image={TrackerNullState}  title="No tracker selected."/>:
-        <NullState image={TrackerNullState}  title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Configuration" buttonUrl={`/internal/trackers/${singleTrackerData && singleTrackerData.id}/trackedConfiguration?type=${singleTrackerData &&  singleTrackerData.type}`}/>
-        }
-         
-      </div>
-    ) : (
+    ) : !singleTrackerData?<NullState image={TrackerNullState}  title="No tracker selected."/> : (
       <Map
         isGlobal={true}
         source="tracker"
         searchParams="active"
         trackerId={singleTrackerData?.id || ""}
         trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
+        trackerType={singleTrackerData?.type || ""}
       />
     )}
   </div>
