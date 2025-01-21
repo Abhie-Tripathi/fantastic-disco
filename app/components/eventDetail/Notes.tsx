@@ -893,7 +893,7 @@ const Comment = ({
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
-  const d = `@${userDetail?.firstname}${userDetail?.lastname.toLowerCase()}`;
+  const d = `@${userDetail?.firstname}${userDetail?.lastname?.toLowerCase()}`;
   const handleReply = (id: string) => {
     setReplyId(id);
     scroll();

@@ -1,3 +1,4 @@
+
 import {
   EventsResponse,
   Event,
@@ -14,7 +15,7 @@ export const EventsAdapter = {
     const adaptedParams: Record<string, string> = {
       sortBy: "score",
       sortType: "desc",
-      max: "10",
+      max: "20",
       offset: params.get("skip") || "0",
     };
 
@@ -74,7 +75,11 @@ export const EventsAdapter = {
         )
         .join(",");
     }
-
+    if (params.get("estimatedVisitorRangeTag")) {
+      adaptedParams.estimatedVisitorRangeTag = params.get(
+        "estimatedVisitorRangeTag"
+      )!;
+    }
     const activeGte = params.get("active_gte");
     const activeLte = params.get("active_lte");
 
