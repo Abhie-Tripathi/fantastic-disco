@@ -196,9 +196,9 @@ const Prospect = () => {
     queryKey: ["events", searchParams.toString()],
     queryFn: () =>
       companyService.getCompanyWithSearchParams(searchParams.toString()),
-    enabled:
-      !!searchParams.toString() &&
-      !(Array.from(searchParams.values()).length == 0),
+    // enabled:
+    //   !!searchParams.toString() &&
+    //   !(Array.from(searchParams.values()).length == 0),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
