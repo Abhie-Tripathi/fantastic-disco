@@ -47,7 +47,7 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                                         checked={true}
                                         disabled
                                     />
-                                    <span className={styles.item}>{item}</span>
+                                    <span className={styles.item}>{`${item.charAt(0).toUpperCase()}${item.slice(1).toLowerCase()}`}</span>
                                 </label>
                             </>
                         ))}
