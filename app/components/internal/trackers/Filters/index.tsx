@@ -773,7 +773,7 @@ const Pages = () => {
         // setSpeakerSugge
         setSuggestions(temp.data)
       }
-      else if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0 && (type==="T_COMPETITOR" || type==="T_CUSTOMER_ICP"))
+      else if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0 && (type==="T_COMPETITOR" || type==="T_CUSTOMER_ICP" || type==="T_PRODUCT_KEYWORDS"))
         setSuggestions(temp.data);
       console.log(temp.data);
        
@@ -803,7 +803,16 @@ const Pages = () => {
       setTrackerName(trackerName);
     } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
       setTrackerName(trackerName);
+      let val="";
+      const len=filteredPresetData?.[0]?.data?.[0].length;
+      console.log(len);
+      if(filteredPresetData?.[0]?.data?.[0].length>0){
+        val=filteredPresetData?.[0]?.data?.[0][len-1]
+      }else if(filteredPresetData?.[0]?.data?.[1].length>0){
+        val=filteredPresetData?.[0]?.data?.[1][len-1]
+      }
       setIncludeKeywords(filteredPresetData?.[0]?.data?.[0]);
+      fetchAISuggestion1(`List top 5 keywords similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`)
       setExcludeKeywords(filteredPresetData?.[0]?.data?.[1]);
     }
 
@@ -1925,7 +1934,20 @@ return (
     isMandatory={isMandatory}
     setIsMandatory={setIsMandatory}
     /> */}
-    <ProductSelector type="T_PRODUCT_KEYWORDS" source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords} fetchAISugggestion={fetchAISuggestion1}/>
+    <ProductSelector type="T_PRODUCT_KEYWORDS" source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords} fetchAISugggestion={fetchAISuggestion1} suggestions={suggestions}/>
+    {/* {(suggestions && suggestions.length > 0) &&
+        (<div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full" >
+          <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">
+            AI SUGGESTIONS {" "}
+            <span className={styles.experimental_tag}>Beta</span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+          {suggestions.map((item: string, ind: number)=>(
+                    <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{item}</div>
+                  ))} 
+          </div>
+        </div>)
+      } */}
     </div>
     </div>
     }

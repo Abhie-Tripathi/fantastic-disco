@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { X, Search, ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 import KeywordTabs from "./keywordTabs";
+import styles from "@/app/components/internal/trackers/Filters/filters.style.module.css";
 interface KeywordSelectorProps{
   source:string;
   enabledProductData?:keywordInterface,
@@ -19,6 +20,7 @@ interface KeywordSelectorProps{
   excludeKeywords?:string[];
   setExcludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
   fetchAISugggestion?:any;
+  suggestions?:any;
 }
 interface keywordInterface{
   isKeywordEnabled?:boolean;
@@ -30,6 +32,7 @@ export default function KeywordFilter({
   enabledProductData,
   source,
   fetchAISugggestion,
+  suggestions,
   includeKeywords : parentIncludeKeyword = [], 
   setIncludeKeywords : setParentIncludeKeywords, 
   excludeKeywords : parentExcludeKeyword = [], 
@@ -62,36 +65,44 @@ export default function KeywordFilter({
         .split(",")
         .map((k) => k.trim())
         .filter(Boolean);
-      if (activeTab === "include") {
-        const uniqueNewKeywords = newKeywords.filter(
-          (k) => !includeKeywords.includes(k)
-        );
-        console.log(includeKeywords);
-        
-        setIncludeKeywords?.([...includeKeywords, ...uniqueNewKeywords]);
-        const promptText=`List top 5 keywords similar to ${inputValue}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
-        fetchAISugggestion(promptText);
-      } else {
-        const uniqueNewKeywords = newKeywords.filter(
-          (k) => !excludeKeywords.includes(k)
-        );
-        setExcludeKeywords?.([...excludeKeywords, ...uniqueNewKeywords]);
-      }
-      setInputValue("");
+     addKeywords(newKeywords)
     }
   };
-
+  const addKeywords=(newKeywords)=>{
+    if (activeTab === "include") {
+      const uniqueNewKeywords = newKeywords.filter(
+        (k) => !includeKeywords.includes(k)
+      );
+      console.log(includeKeywords);
+      
+      setIncludeKeywords?.([...includeKeywords, ...uniqueNewKeywords]);
+    } else {
+      const uniqueNewKeywords = newKeywords.filter(
+        (k) => !excludeKeywords.includes(k)
+      );
+      setExcludeKeywords?.([...excludeKeywords, ...uniqueNewKeywords]);
+    }
+    suggestionsResponse(newKeywords[newKeywords.length-1]);
+    setInputValue("");
+  }
   const handleRemoveKeyword = (
     keyword: string,
     type: "include" | "exclude"
   ) => {
     if (type === "include") {
+      const updatedKeywords = includeKeywords.filter((k) => k !== keyword);
       setIncludeKeywords?.(includeKeywords.filter((k) => k !== keyword));
+      suggestionsResponse(updatedKeywords[updatedKeywords.length-1])
     } else {
+      const updatedKeywords = includeKeywords.filter((k) => k !== keyword);
       setExcludeKeywords?.(excludeKeywords.filter((k) => k !== keyword));
+      suggestionsResponse(updatedKeywords[updatedKeywords.length-1])
     }
   };
-
+  const suggestionsResponse=(val)=>{
+    const promptText=`List top 5 keywords similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
+      fetchAISugggestion(promptText);
+  }
   const handleApply = () => {
     setMultipleLocalFilters({
       includeKeywords: includeKeywords.join(","),
@@ -136,14 +147,30 @@ export default function KeywordFilter({
       </PopoverTrigger>
       }
       {type==="T_PRODUCT_KEYWORDS"?(
-      <KeywordTabs type="T_PRODUCT_KEYWORDS" activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword}/>
-    ):
+      <>
+      <KeywordTabs type="T_PRODUCT_KEYWORDS" activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword} suggestions={suggestions}/>
+      {(activeTab && suggestions && suggestions.length > 0) &&
+        (<div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full" >
+          <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">
+            {/* <Image src={AiIcon} alt="AI" className={iconClass} width={14} height={14} /> */}
+            AI SUGGESTIONS {" "}
+            <span className={styles.experimental_tag}>Beta</span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+             {suggestions.map((item: string, ind: number)=>(
+               <div key={ind} className={styles.suggestion_badge} onClick={()=>addKeywords([item])}>{item}</div>
+             ))} 
+          </div>
+        </div>)
+      }
+      </>
+      ):
         (
           <PopoverContent className="w-[348px] p-0">
         <KeywordTabs type="" activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword}/>
       </PopoverContent>
         )
-        }
+      }
       
     </Popover>
   );
