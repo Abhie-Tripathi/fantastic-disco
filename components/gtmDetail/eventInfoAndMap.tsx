@@ -132,15 +132,27 @@ export const EventInfoAndMap = ({
                 Event Description
               </h1>
               <Text variant="noMargin" color="secondary">
-                {isExpandDescription
-                  ? description === null || undefined
-                    ? "Sourced from 10times"
-                    : description
-                  : `${
-                      description === null || undefined
-                        ? "Sourced from 10times"
-                        : description?.slice(0, 200)
-                    }`}
+                {isExpandDescription ? (
+                  description === null || undefined ? (
+                    <span className="text-[#666666] text-sm flex items-center gap-2">
+                      <CircleSlash width={15} height={15} />
+                      No data available
+                    </span>
+                  ) : (
+                    description
+                  )
+                ) : (
+                  `${
+                    description === null || undefined ? (
+                      "Sourced from 10times"
+                    ) : (
+                      <span className="text-[#666666] text-sm flex items-center gap-2">
+                        <CircleSlash width={15} height={15} />
+                        No data available
+                      </span>
+                    )
+                  }`
+                )}
                 <span
                   className="font-semibold underline cursor-pointer ml-2"
                   onClick={() => setisExpandDescription(!isExpandDescription)}
