@@ -18,12 +18,8 @@ export const useCompanyService = () => {
   const api = useApi<CompanyListResponse | undefined>();
 
   const getCompanyWithSearchParams = (searchParamsString: string) => {
-    console.log("searchParamsString", searchParamsString);
     let tempResponse: CompanyListResponse = companyData;
     return tempResponse;
-    // return api.request(`${endpoints.event.events}?${searchParamsString}`, {
-    //   method: "GET",
-    // });
   };
 
   return {

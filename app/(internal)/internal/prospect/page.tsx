@@ -34,16 +34,6 @@ import PeopleFilter from "@/app/components/prospect/Filters/peopleFilter";
 import { PeopleList } from "@/app/components/prospect/PeopleList";
 import { pocDetail } from "@/types/coordinateEventType";
 
-interface companyDetail {
-  name: string;
-  profile: string;
-  url: string;
-  city: string;
-  country: string;
-  cdn_url: string;
-  industries: string[];
-}
-
 interface CompanyListResponse {
   totalCount: number;
   data: any[];

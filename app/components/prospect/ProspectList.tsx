@@ -104,10 +104,7 @@ export const ProspectList = ({
   const totalPages = Math.ceil(count / itemsPerPage);
 
   const handlePageChange = (page: number) => {
-    console.log("skip", page, ((page - 1) * itemsPerPage).toString());
-    setFilter("skip", "10");
-
-    // setFilter("skip", ((page - 1) * itemsPerPage).toString());
+    setFilter("skip", ((page - 1) * itemsPerPage).toString());
   };
 
   const handleItemsPerPageChange = (value: string) => {
