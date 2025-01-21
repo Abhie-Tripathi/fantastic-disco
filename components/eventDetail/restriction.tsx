@@ -1,21 +1,14 @@
 import { cn } from "@/lib/utils";
-import LockRestriction from "/public/lock_restriction.svg";
-import Image from "next/image";
+import { LockClosedSmall } from "geist-icons";
 
 const Restriction = ({ className }: { className?: string }) => {
   return (
-    <div
-      className={cn(
-        "z-100 p-2 rounded-md bg-transparent w-fit",
-        className
-      )}
-    >
-      <Image
-        src={LockRestriction}
-        className="w-4 h-4 aspect-square "
-        alt="Lock"
-      />
-    </div>
+    <LockClosedSmall
+      color="var(--secondary-text-color)"
+      height="25px"
+      width="25px"
+      className={(cn("w-8 h-8"), className)}
+    />
   );
 };
 export default Restriction;
