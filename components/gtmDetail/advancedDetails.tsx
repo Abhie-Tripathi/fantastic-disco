@@ -68,6 +68,7 @@ const CarouselComponent = ({
     maturityLevels.options.find(
       (option: { label: string }) => option.label === maturity
     );
+  console.log(frequencies);
 
   const hasFrequencyOption =
     frequencies &&
