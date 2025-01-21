@@ -68,7 +68,7 @@ export default function KeywordFilter({
      addKeywords(newKeywords)
     }
   };
-  const addKeywords=(newKeywords)=>{
+  const addKeywords=(newKeywords:string[])=>{
     if (activeTab === "include") {
       const uniqueNewKeywords = newKeywords.filter(
         (k) => !includeKeywords.includes(k)
@@ -82,24 +82,29 @@ export default function KeywordFilter({
       );
       setExcludeKeywords?.([...excludeKeywords, ...uniqueNewKeywords]);
     }
+    if(type==="T_PRODUCT_KEYWORDS")
     suggestionsResponse(newKeywords[newKeywords.length-1]);
     setInputValue("");
   }
   const handleRemoveKeyword = (
     keyword: string,
-    type: "include" | "exclude"
+    keyType: "include" | "exclude"
   ) => {
-    if (type === "include") {
-      const updatedKeywords = includeKeywords.filter((k) => k !== keyword);
+    if (keyType === "include") {
       setIncludeKeywords?.(includeKeywords.filter((k) => k !== keyword));
-      suggestionsResponse(updatedKeywords[updatedKeywords.length-1])
-    } else {
+      if(type==="T_PRODUCT_KEYWORDS"){
       const updatedKeywords = includeKeywords.filter((k) => k !== keyword);
-      setExcludeKeywords?.(excludeKeywords.filter((k) => k !== keyword));
       suggestionsResponse(updatedKeywords[updatedKeywords.length-1])
+      }
+    } else {
+      setExcludeKeywords?.(excludeKeywords.filter((k) => k !== keyword));
+      if(type==="T_PRODUCT_KEYWORDS"){
+      const updatedKeywords = excludeKeywords.filter((k) => k !== keyword);
+      suggestionsResponse(updatedKeywords[updatedKeywords.length-1])
+      }
     }
   };
-  const suggestionsResponse=(val)=>{
+  const suggestionsResponse=(val:string)=>{
     const promptText=`List top 5 keywords similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
       fetchAISugggestion(promptText);
   }
@@ -122,7 +127,6 @@ export default function KeywordFilter({
       handleOpenChange(true);
     }
   }, [type, isOpen]);
-  console.log(includeKeywords);
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
       {type!=="T_PRODUCT_KEYWORDS" &&

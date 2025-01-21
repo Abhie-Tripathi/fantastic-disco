@@ -687,12 +687,12 @@ const Pages = () => {
     }  
     // const [speakerSuggestion,setSpeakerSuggestion]=useState();
    
-    const formatData=(data:any)=>{
-        return data.map((item)=> `${item.speakerName} (${item.companyName})`)
-    }
+    // const formatData=(data:any)=>{
+    //     return data.map((item)=> `${item.speakerName} (${item.companyName})`)
+    // }
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if(customData.length > 0 && Object.values(customData[0])[0]) {
-        const promptText=`List only name of top 5 companies similar to ${Object.values(customData[0])[0]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["company name 1","company name 2","company name 3","company name 4","company name 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
+        const promptText=`List only name of top 5 companies similar to ${Object.values(customData[0])[0]}. Response should be in plain JSON format without any additional formatting or text: {"data": [{"Competitor Name or Website":"company name 1"},{"Competitor Name or Website":"company name 2"},{"Competitor Name or Website":"company name 3"},{"Competitor Name or Website":"company name 4"},{"Competitor Name or Website":"company name 5"}]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
         fetchAISuggestion1(promptText);
       }
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
@@ -744,8 +744,22 @@ const Pages = () => {
     //   fetchAISuggestion1(promptText);
     // }
     else if (type === "T_PEOPLE_FINDER") {
-      setUserName(customData.map((item: {}) => Object.values(item)[0]).join(','))
-      setUserCompany(customData.map((item: {}) => Object.values(item)[1]).join(','))
+      const userName = customData.map((item: {}) => Object.values(item)[0]).join(',');
+      const userCompany = customData.map((item: {}) => Object.values(item)[1]).join(',')
+      setUserName(userName)
+      setUserCompany(userCompany)
+      if(userName.length>0 && userCompany.length>0){
+        const promptText = `List only top 5 name similar to ${Object.values(customData[0])[0]} and company name similar to ${Object.values(customData[0])[1]}. Response should be in plain JSON format without any additional formatting or text: {
+        "data": [
+          { "Name": "speaker name 1", "Company Name": "company name 1" },
+          { "Name": "speaker name 2", "Company Name": "company name 2" },
+          { "Name": "speaker name 3", "Company Name": "company name 3" },
+          { "Name": "speaker name 4", "Company Name": "company name 4" },
+          { "Name": "speaker name 5", "Company Name": "company name 5" }
+        ]
+      }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+      fetchAISuggestion1(promptText);
+      }
     } else if (type === "T_BRAND_BUILDING") {
       const designation = customData.map((item: {}) => Object.values(item)[0]).join(',');
       setDesignations(designation);
@@ -769,7 +783,7 @@ const Pages = () => {
       let temp = JSON.parse(aiResponse.choices[0].message.content);  
       console.log(temp);
       
-      if(temp && temp?.data && type==="T_SPEAKING_OPPORTUNITY"){
+      if(temp && temp?.data && (type==="T_SPEAKING_OPPORTUNITY" || type=== "T_PEOPLE_FINDER")){
         // setSpeakerSugge
         setSuggestions(temp.data)
       }
@@ -1717,12 +1731,21 @@ const [selected,setSelected]=useState(false);
 // }
 const addCompany =(id:number,val: any)=>{
   setSelected(true);
-  console.log(val)
-  setInputValues(prevValues => ({
-        ...prevValues,
-        0: val["Speaker's Name"],
-        1: val["Company Name"]
-      }))
+  // console.log(val)
+  setInputValues((prevValues) => {
+    if (!template?.inputAreas) {
+      return prevValues;
+    }
+    const updatedValues = template.inputAreas.reduce((acc: any, item: any, index: number) => {
+      acc[index] = val[item?.placeholder] || ''; 
+      return acc;
+    }, {});
+
+    return {
+      ...prevValues,
+      ...updatedValues,
+    };
+  });
 }
 useEffect(()=>{
   if(selected) {
@@ -1798,8 +1821,18 @@ useEffect(()=>{
   
 },[enabledFilters])
 console.log(analyticsToggles.globalToggle);
-console.log(inputValues);
+// console.log(template?.inputAreas[0]?.placeholder);
+const generateDynamicString = (item: any, template: any) => {
+  if (!template?.inputAreas || template.inputAreas.length === 0) return '';
 
+  return template.inputAreas
+    .map((area: any, index: number) => {
+      const value = item[area?.placeholder] || '';
+      if (index === 1) return `(${value})`;
+      return value; 
+    })
+    .join(' '); 
+};
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -2047,14 +2080,15 @@ return (
                   <span className={styles.experimental_tag} >Beta</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {(type==="T_SPEAKING_OPPORTUNITY" || type==="T_COMPETITOR") && 
+                 
+                    {suggestions.map((item: any, ind: number)=>(
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{generateDynamicString(item, template)}</div>
+                    ))}
+                 {/* {(type==="T_PEOPLE_FINDER") && 
                     suggestions.map((item: any, ind: number)=>(
-                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{`${item["Speaker's Name"]} (${item["Company Name"]})`}</div>
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{`${item["Name"]} (${item["Company Name"]})`}</div>
                     ))
-                 } 
-                  {/* {suggestions.map((item: string, ind: number)=>(
-                    <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{item}</div>
-                  ))} */}
+                 } */}
                 </div>
               </div>
             }
