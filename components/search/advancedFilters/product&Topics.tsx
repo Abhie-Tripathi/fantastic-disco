@@ -18,6 +18,7 @@ interface KeywordSelectorProps{
   setIncludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
   excludeKeywords?:string[];
   setExcludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
+  fetchAISugggestion?:any;
 }
 interface keywordInterface{
   isKeywordEnabled?:boolean;
@@ -28,6 +29,7 @@ export default function KeywordFilter({
   type,
   enabledProductData,
   source,
+  fetchAISugggestion,
   includeKeywords : parentIncludeKeyword = [], 
   setIncludeKeywords : setParentIncludeKeywords, 
   excludeKeywords : parentExcludeKeyword = [], 
@@ -67,6 +69,8 @@ export default function KeywordFilter({
         console.log(includeKeywords);
         
         setIncludeKeywords?.([...includeKeywords, ...uniqueNewKeywords]);
+        const promptText=`List top 5 keywords similar to ${inputValue}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
+        fetchAISugggestion(promptText);
       } else {
         const uniqueNewKeywords = newKeywords.filter(
           (k) => !excludeKeywords.includes(k)

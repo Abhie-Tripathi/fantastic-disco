@@ -686,40 +686,14 @@ const Pages = () => {
       }
     }  
     // const [speakerSuggestion,setSpeakerSuggestion]=useState();
-    const fetchAISuggestion1 = async(promptText:any)=>{
-      // console.log(val);
-      try{
-        // const promptText = `List only top 5 name similar to ${val[0]} and company name similar to ${val[1]}. Response should be in plain JSON format without any additional formatting or text: {
-        //   "data": [
-        //     { "Speaker's Name": "speaker name 1", "Company Name": "company name 1" },
-        //     { "Speaker's Name": "speaker name 2", "Company Name": "company name 2" },
-        //     { "Speaker's Name": "speaker name 3", "Company Name": "company name 3" },
-        //     { "Speaker's Name": "speaker name 4", "Company Name": "company name 4" },
-        //     { "Speaker's Name": "speaker name 5", "Company Name": "company name 5" }
-        //   ]
-        // }. Do not show example values. If no data found then return in below format: {\"data\": []}`;
-        let aiResponse: any = await suggestionGenerator(promptText);
-        console.log(aiResponse);
-        
-        let temp = JSON.parse(aiResponse.choices[0].message.content);  
-        console.log(temp);
-        if(temp && temp?.data){
-          // setSpeakerSugge
-          setSuggestions(temp.data)
-        }
-        // if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
-        //   setSuggestions(temp.data);
-      } catch (err) {
-        console.error("Fetch failed:", err);
-        setSuggestions([]);
-      }
-    }
+   
     const formatData=(data:any)=>{
         return data.map((item)=> `${item.speakerName} (${item.companyName})`)
     }
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if(customData.length > 0 && Object.values(customData[0])[0]) {
-        fetchAISuggestion(Object.values(customData[0])[0]);
+        const promptText=`List only name of top 5 companies similar to ${Object.values(customData[0])[0]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["company name 1","company name 2","company name 3","company name 4","company name 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
+        fetchAISuggestion1(promptText);
       }
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       const urls = customData
@@ -740,7 +714,7 @@ const Pages = () => {
       const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
       setSpeakerName(speakerName);
       setSpeakerCompany(speakerCompany);
-      if(speakerName.length>0 && speakerCompany.length>0)
+      if(speakerName.length>0 && speakerCompany.length>0){
         const promptText = `List only top 5 name similar to ${Object.values(customData[0])[0]} and company name similar to ${Object.values(customData[0])[1]}. Response should be in plain JSON format without any additional formatting or text: {
         "data": [
           { "Speaker's Name": "speaker name 1", "Company Name": "company name 1" },
@@ -752,9 +726,23 @@ const Pages = () => {
       }. Do not show example values. If no data found then return in below format: {\"data\": []}`;
       // fetchAISuggestion1([Object.values(customData[0])[0],Object.values(customData[0])[1]]);
       fetchAISuggestion1(promptText);
+      }
       // console.log(speakerName, speakerCompany);
 
     }
+    // else if(type==="T_PRODUCT_KEYWORDS"){
+    //   const promptText = `List only top 5 keywords similar to ${getLocalFil} and company name similar to ${Object.values(customData[0])[1]}. Response should be in plain JSON format without any additional formatting or text: {
+    //     "data": [
+    //       { "Speaker's Name": "speaker name 1", "Company Name": "company name 1" },
+    //       { "Speaker's Name": "speaker name 2", "Company Name": "company name 2" },
+    //       { "Speaker's Name": "speaker name 3", "Company Name": "company name 3" },
+    //       { "Speaker's Name": "speaker name 4", "Company Name": "company name 4" },
+    //       { "Speaker's Name": "speaker name 5", "Company Name": "company name 5" }
+    //     ]
+    //   }. Do not show example values. If no data found then return in below format: {\"data\": []}`;
+    //   // fetchAISuggestion1([Object.values(customData[0])[0],Object.values(customData[0])[1]]);
+    //   fetchAISuggestion1(promptText);
+    // }
     else if (type === "T_PEOPLE_FINDER") {
       setUserName(customData.map((item: {}) => Object.values(item)[0]).join(','))
       setUserCompany(customData.map((item: {}) => Object.values(item)[1]).join(','))
@@ -763,7 +751,39 @@ const Pages = () => {
       setDesignations(designation);
     }
   }, [type, customData])
-
+  const fetchAISuggestion1 = async(promptText:any)=>{
+    // console.log(val);
+    try{
+      // const promptText = `List only top 5 name similar to ${val[0]} and company name similar to ${val[1]}. Response should be in plain JSON format without any additional formatting or text: {
+      //   "data": [
+      //     { "Speaker's Name": "speaker name 1", "Company Name": "company name 1" },
+      //     { "Speaker's Name": "speaker name 2", "Company Name": "company name 2" },
+      //     { "Speaker's Name": "speaker name 3", "Company Name": "company name 3" },
+      //     { "Speaker's Name": "speaker name 4", "Company Name": "company name 4" },
+      //     { "Speaker's Name": "speaker name 5", "Company Name": "company name 5" }
+      //   ]
+      // }. Do not show example values. If no data found then return in below format: {\"data\": []}`;
+      let aiResponse: any = await suggestionGenerator(promptText);
+      console.log(aiResponse);
+      
+      let temp = JSON.parse(aiResponse.choices[0].message.content);  
+      console.log(temp);
+      
+      if(temp && temp?.data && type==="T_SPEAKING_OPPORTUNITY"){
+        // setSpeakerSugge
+        setSuggestions(temp.data)
+      }
+      else if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0 && (type==="T_COMPETITOR" || type==="T_CUSTOMER_ICP"))
+        setSuggestions(temp.data);
+      console.log(temp.data);
+       
+      // if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
+      //   setSuggestions(temp.data);
+    } catch (err) {
+      console.error("Fetch failed:", err);
+      setSuggestions([]);
+    }
+  }
   const scrollableDivRef = useRef<HTMLDivElement>(null);
 
   const handlePresetClick = (id: number, trackerType: string, trackerName: string) => {
@@ -1905,7 +1925,7 @@ return (
     isMandatory={isMandatory}
     setIsMandatory={setIsMandatory}
     /> */}
-    <ProductSelector type="T_PRODUCT_KEYWORDS" source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords}/>
+    <ProductSelector type="T_PRODUCT_KEYWORDS" source="tracker" includeKeywords={includeKeywords} setIncludeKeywords={setIncludeKeywords} excludeKeywords={excludeKeywords} setExcludeKeywords={setExcludeKeywords} fetchAISugggestion={fetchAISuggestion1}/>
     </div>
     </div>
     }
