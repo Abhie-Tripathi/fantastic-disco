@@ -113,6 +113,7 @@ interface Filters {
   eventCategory?: string;
   participationType?: string;
   companyLocation?: string;
+  eventLocation?: string;
   userName?: string;
   designation?: string;
   linkedinProfile?: string;
