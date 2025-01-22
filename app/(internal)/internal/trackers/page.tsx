@@ -406,7 +406,6 @@ const Trackers = ({ searchParams }: Search) => {
     }
     else {
       // deleteFilter("showTemplates");
-      console.log("skipped value", skip);
       setMultipleFilters({
         skip: skip,
         q: searchValue,
@@ -416,10 +415,8 @@ const Trackers = ({ searchParams }: Search) => {
     // setHideTemplate(val);
   }
   useEffect(()=>{
-    console.log(hideTemplate);
     setHideTemplate(!getFilterValue("showTemplates"))
   },[searchParam])
-  console.log(hideTemplate);
   
   return (
     // <div className={styles.body}>

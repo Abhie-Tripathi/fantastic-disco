@@ -92,7 +92,6 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   const {getTrackers, isLoading}=useTrackerServices();
   const endOfListRef = useRef(null);
     const handlePageChange = (page: number) => {
-    console.log(page);
     setPage(page);
     setSkip(((page-1) * trackerPerPage));
     setMultipleFilters({
@@ -109,7 +108,6 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
         fetchData(true);  
   }, [searchParams]);
   useEffect(()=>{
-    console.log("searchVal changed");
     // if(!isInetialRender)
     if(searchValue.length >= 3 || searchValue.length === 0){
       if(isInetialRender){
