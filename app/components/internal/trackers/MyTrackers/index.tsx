@@ -199,27 +199,9 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           {loadOne &&  <div className={`${styles.loadingContainer} loadingIndicator`}>
           <div className={styles.loadingBar}></div>
         </div>}
-          {/* {loadTwo && <div className={styles.loadingContainer}>
-          <div className={styles.loadingBar}></div>
-        </div>} */}
-          {/* {trackerType === "Premium Trackers" && <div>Create your first tracker!</div>} */}
-        
-        {/* {loading && <Loading/>} */}
-        {/* {totalPage > 1 &&
-          !loadOne && page<(totalPage-1) &&( */}
             <div
               className="flex item-center justify-center"
             >
-              {/* <div onClick={handlePrevPage}>
-              <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">
-                Prev
-                </Button>
-              </div> */}
-              {/* <div onClick={handleNextPage}>
-              <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">Next</Button>
-              
-              </div> */}
-              {/* {renderPaginationItems()} */}
               {totalCount!==0 &&
               <div className="sticky bottom-0 bg-background py-4">
               <PaginationComponent currentPage={page} totalPages={totalPage} itemsPerPage={trackerPerPage} onPageChange={handlePageChange} count={totalCount} showEntriesCount={false}/>

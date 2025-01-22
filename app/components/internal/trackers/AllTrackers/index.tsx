@@ -113,12 +113,6 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   }
   const handleSingleClick=(item:any)=>{
     setSingleTrackerData(item)
-    // setSkip(Number(getFilterValue("skip"))||0);
-    // setFilter("id", item.id);
-    // setMultipleFilters({
-    //   id:item.id,
-    //   skip:getFilterValue("skip")
-    // })
   }
   return (
     <div className="card cursor-pointer h-[150px]" onClick={()=>handleSingleClick(item)}

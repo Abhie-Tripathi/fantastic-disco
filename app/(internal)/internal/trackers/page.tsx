@@ -145,7 +145,6 @@ const Trackers = ({ searchParams }: Search) => {
   },[tab])
   const [locations, setLocations] = useState<any>();
   const [trackers, setTrackers] = useState<any[]>([]);
-  // const [searchValue,setSearchValue]=useState("");
   const [offset, setOffset] = useState(0);
   // const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -540,7 +539,7 @@ const Trackers = ({ searchParams }: Search) => {
   <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
     <SavedEventWidget savedEvents={savedEvents} redirectUrl={singleTrackerData 
-    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=savedEvent`:""}/>
+    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=savedEvent`:""}/>
   </div>
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
   <NotesDiscussionWidget 
