@@ -16,7 +16,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Event, EventsResponse } from "@/types";
+import { Event, EventsResponse } from "@/types/events";
 import { differenceInDays, format } from "date-fns";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";

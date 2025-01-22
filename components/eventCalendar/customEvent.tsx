@@ -14,11 +14,8 @@ import community from "/public/eventType/community.svg";
 import holiday from "/public/eventType/holiday.svg";
 import Image from "next/image";
 import Link from "next/link";
-import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
-import { cn } from "@/lib/utils";
 import { CalendarEventType } from ".";
 import { WeekEvent } from "@/types/events/calendarWeekEvents";
-import { useRouter } from "next/router";
 import { useFilterState } from "@/hooks/useFilterState";
 
 const eventTypeIcons: Record<string, JSX.Element> = {

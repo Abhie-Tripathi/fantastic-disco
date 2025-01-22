@@ -4,7 +4,6 @@ import { heatmapColors } from "./constants";
 import { CalendarMonthEventWithHeatmap } from ".";
 import { Alert, Event } from "@/types/events";
 import { Badge } from "../ui/badge";
-import { useFilterContext } from "@/contexts/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
 
 const YearView = ({

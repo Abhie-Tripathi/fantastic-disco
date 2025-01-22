@@ -47,7 +47,14 @@ const CustomToolbar = ({
     groupedEventTypes.unAttended.includes(eventType)
   );
 
-  console.log("b", isBusinessEnabled, "s", isSocialEnabled, "a", isAttendedEnabled)
+  console.log(
+    "b",
+    isBusinessEnabled,
+    "s",
+    isSocialEnabled,
+    "a",
+    isAttendedEnabled
+  );
 
   const goToBack = () => {
     onNavigate("PREV");
