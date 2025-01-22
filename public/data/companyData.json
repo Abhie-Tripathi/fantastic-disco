@@ -10,7 +10,9 @@
         "cdn_url": "https://c1.10times.com/event/national-business-institute/1555470156147/logo1555415159.jpg",
         "industries": [
             "Education & Training", "Business Services"
-        ]
+        ],
+        "eventCount": 120,
+        "companyType": "Private"
       },
       {
         "name": "IDP Education Pty Ltd., Australia",
@@ -19,7 +21,8 @@
         "city": "Melbourne",
         "country": "Australia",
         "cdn_url": "https://c1.10times.com/company/8407/5e1ee1e4738fb.png",
-        "industries": ["Education & Training", "IT & Technology"]
+        "industries": ["Education & Training", "IT & Technology"],
+        "companyType": "Public"
       },
       {
         "name": "Confederation Of Indian Industry, Northern Region",
@@ -30,7 +33,9 @@
         "cdn_url": "https://c1.10times.com/event/cii-newdelhi/1535637953897/logo1531113468.jpg",
         "industries": [
             "Education & Training", "Business Services"
-        ]
+        ],
+        "eventCount": 40,
+        "companyType": "Private"
       },
       {
         "name": "Fred Pryor Seminars & CareerTrack",
@@ -39,7 +44,8 @@
         "city": "Kansas City",
         "country": "United States",
         "cdn_url": "https://c1.10times.com/event/fred-pryor-seminars-careertrack/1564110095175/logo1564058832.jpg",
-        "industries": ["Education & Training", "Science & Research"]
+        "industries": ["Education & Training", "Science & Research"],
+        "eventCount": 42
       },
       {
         "name": "National Seminars Training",
@@ -48,7 +54,8 @@
         "city": "Kansas City",
         "country": "United States",
         "cdn_url": "https://c1.10times.com/event/national-seminars-training/1555470157227/logo1555415445.jpg",
-        "industries": ["Business Services", "Education & Training"]
+        "industries": ["Business Services", "Education & Training"],
+        "eventCount": 8
       },
       {
         "name": "Euromatech Training and Management Consultancy",

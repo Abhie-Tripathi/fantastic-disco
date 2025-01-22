@@ -27,15 +27,14 @@ export const TrackerContext = createContext<any>(
     const [searchValue, setSearchValue] = useState(getFilterValue("q") || "");
     const pages=["manageAccess","editTracker","trackedEvents", "notesDiscussion","trackedConfiguration"]
     useEffect(()=>{
-      if(pathName.length > 4 && pages.includes(pathName[4])){
+      if(pathName.length > 4 && pages.includes(pathName[4]) && (!data || data === null)){
         setTrackerId(pathName[3]);
         setIsNewCall(true);
       }
-    },[])
-    console.log(isNewCall);
+    },[pathName])
     
     useEffect(()=>{
-      console.log(11111);
+      // console.log(11111);
       
         if(isNewCall){
             fetchData();

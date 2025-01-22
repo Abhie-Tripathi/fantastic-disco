@@ -106,7 +106,6 @@ export default function CreateTrackerDialog({
     };
     
     const filters = getLocalFilterValue("show").split(",");
-    console.log(filters);
     
     Object.entries(mapping).forEach(([key, value]) => {
       if (filters.includes(key)) {

@@ -92,7 +92,7 @@ const Page = ({ params }: { params: any }) => {
     ["table", "list", "map", "calendar"].includes(viewType || "") ? viewType : "table"
   );
   const [urlQueryString, setUrlQueryString] = useState<string>("");
-  const trackerType = searchParams.get("type");
+  const trackerType: string = searchParams.get("type") || "";
   const [showInsights,setShowInsights] = useState({
     eventSize: true,
     eventKeywords: true,
@@ -434,7 +434,6 @@ const activeVal =
       "Expired Events"
     ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
     : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
-    console.log(isLoading);
     
   return (
     <div className="flex w-[calc(100vw-134px)]">
@@ -648,19 +647,16 @@ const activeVal =
         {(view === "map") && (
             <div>
               <Suspense fallback={<Loading />}>
-              {Number(activeVal)===0 ?
+              {(Number(activeVal)===0 && active==="Saved Events")?
               <div className="px-10 py-5">
-              {active==="Saved Events"?
-                <NullState image={TrackerNullState} title="No events saved yet! Start saving events to easily track and revisit them here."/>:
-                <NullState image={TrackerNullState}  title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Configuration" buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration?type=${trackerType}`}/>
-              }
-              
+                <NullState image={TrackerNullState} title="No events saved yet! Start saving events to easily track and revisit them here."/>
               </div>
                : 
                 <Map source="tracker" 
                 searchParams={`${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":active==="Saved Events"?"saved":"active"}`}
                 trackerId={params.trackerId}
                 trackerLoc={trackerLoc.join(",")}
+                trackerType={trackerType}
                  />
                 } 
                 {/* <Map/> */}

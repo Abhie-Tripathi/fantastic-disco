@@ -109,7 +109,7 @@ const Search = () => {
   const count = displayData?.count;
 
   const searchHandler = useCallback(() => {
-    applyFilters();
+    applyFilters({ resetPage: true });
   }, []);
 
   const [steps, setSteps] = useState<Step[]>([]);
@@ -163,13 +163,12 @@ const Search = () => {
 
   const adaptedQueryString = (function () {
     if (!searchParams.toString()) return;
-    if(adaptedParams.offset == "0"){
-      delete adaptedParams.offset
+    if (adaptedParams.offset == "0") {
+      delete adaptedParams.offset;
     }
     delete adaptedParams.max;
     delete adaptedParams.sortBy;
     delete adaptedParams.sortType;
-    console.log(new URLSearchParams(adaptedParams).toString())
     return new URLSearchParams(adaptedParams).toString();
   })();
 
@@ -304,7 +303,7 @@ const Search = () => {
               disabled={Object.keys(localFilters).length == 0}
               variant="link"
               className="text-primary"
-              onClick={() => clearLocalFilters(view)}
+              onClick={() => clearLocalFilters()}
             >
               <FilterX className="w-4 h-4 hidden lg:block" />
               <span className="ml-1">Reset</span>

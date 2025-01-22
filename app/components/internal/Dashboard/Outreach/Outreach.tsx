@@ -33,7 +33,6 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
   // ]
   const colors = ["#f8712b", "#166aeb", "#f9bf44", "#52c41a", "#dd46eb"]
   const router = useRouter()
-  console.log("outreach chat:", outreachChat)
   const handleRouting = (type: string) => {
     if (type === 'button') {
       router.push("/internal/outreach")
@@ -57,7 +56,7 @@ const Outreach = ({ theme, outreachData, outreachChat }: Props) => {
         <div className='text-xs text-[var(--bold-border-color)]'>
           {outreachData.length > 0 ? "Track your event outreach status from a dashboard built for events." : "Reach out to right event POCs and move your plans forward. Monitor your progress and stay organized through every phase of the process."}
         </div>
-        {outreachData.length === 0 ? <Button onClick={() => handleRouting("button")} className="mt-4 w-[110px]" size="xs">Start Outreach <MoveRight width={12} /></Button> :
+        {outreachData.length === 0 ? <Button onClick={() => handleRouting("button")} className="mt-4 w-[110px] flex items-center gap-1" size="xs">Start Outreach <MoveRight width={12} /></Button> :
           <div
             className={`mt-3 ${outreachData.length === 3
               ? "flex flex-col gap-2"

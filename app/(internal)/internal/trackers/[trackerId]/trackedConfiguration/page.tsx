@@ -179,8 +179,8 @@ data?.tracker?.filterValue?.eventType
   :[];
   const eventEntry=data?.tracker?.filterValue?.eventEntry ?
   data?.tracker?.filterValue?.eventEntry?.split(','):[];
-  const eventSize=data?.tracker?.filterValue?.eventSize ?
-  data?.tracker?.filterValue?.eventSize?.split(','):[];
+  const eventSize=data?.tracker?.filterValue?.estimatedVisitorRangeTag ?
+  data?.tracker?.filterValue?.estimatedVisitorRangeTag?.split(','):[];
 const format=data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(','):[];
 const endDateValue = data?.tracker?.filterValue?.endDate;
 const startDate = endDateValue ? endDateValue.split(",")[0] : null;
