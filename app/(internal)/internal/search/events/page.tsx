@@ -305,7 +305,7 @@ const Search = () => {
               disabled={Object.keys(localFilters).length == 0}
               variant="link"
               className="text-primary"
-              onClick={() => clearLocalFilters(view)}
+              onClick={() => clearLocalFilters()}
             >
               <FilterX className="w-4 h-4 hidden lg:block" />
               <span className="ml-1">Reset</span>

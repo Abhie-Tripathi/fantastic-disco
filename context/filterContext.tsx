@@ -135,8 +135,12 @@ type FilterContextType = {
   localFilters: Filters;
   morphedData: any;
   setLocalFilter: (key: keyof Filters, value: string) => void;
-  clearLocalFilters: (value: string) => void;
-  applyFilters: (options?: { removeParams?: string[], preserveParams?: string[], resetPage?: boolean }) => void;
+  clearLocalFilters: () => void;
+  applyFilters: (options?: {
+    removeParams?: string[];
+    preserveParams?: string[];
+    resetPage?: boolean;
+  }) => void;
   getLocalFilterValue: (key: keyof Filters) => string;
   searchParams: URLSearchParams;
   setMultipleLocalFilters: (filters: Partial<Filters>) => void;
@@ -192,13 +196,12 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       setInitialFilters();
     }
   }, [searchParams, enabledFilters]);
-  // useEffect(() => {
-  //   console.log(localFilters);
 
-  //   // setLocalFilters(
-  //   //   filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
-  //   // );
-  // }, [searchParams, filterEmptyValues]);
+  useEffect(() => {
+    if (pathname === "/internal") {
+      clearLocalFilters();
+    }
+  }, [pathname]);
 
   const setLocalFilter = useCallback(
     (key: keyof Filters, value: string) => {
@@ -251,14 +254,24 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     [enabledFilters]
   );
 
-  const clearLocalFilters = useCallback((view: string) => {
-    router.push(`/internal/search/events?view=${view}`);
+  const clearLocalFilters = useCallback(() => {
+    const params = new URLSearchParams(window.location.search);
+    const viewValue = params.get("view");
+    for (const key of Array.from(params.keys())) {
+      params.delete(key);
+    }
+    if (viewValue) {
+      params.set("view", viewValue);
+    }
+    router.push(`${window.location.pathname}?${params.toString()}`, {
+      scroll: false,
+    });
   }, []);
+
   const setInitialFilters = () => {
     const temp: Record<string, string> = Object.fromEntries(
       searchParams.entries()
     );
-
     if (
       enabledFilters &&
       ((Object.keys(temp).includes("view") &&
@@ -336,43 +349,49 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     setLocalFilters(temp);
     applyFilters();
   };
-  const applyFilters = useCallback((options: { 
-    removeParams?: string[],
-    preserveParams?: string[],
-    resetPage?: boolean 
-  } = {}) => {
-    setLocalFilters((currentFilters) => {
-      const filteredFilters = filterEmptyValues(currentFilters);
-      const params = new URLSearchParams();
+  const applyFilters = useCallback(
+    (
+      options: {
+        removeParams?: string[];
+        preserveParams?: string[];
+        resetPage?: boolean;
+      } = {}
+    ) => {
+      setLocalFilters((currentFilters) => {
+        const filteredFilters = filterEmptyValues(currentFilters);
+        const params = new URLSearchParams();
 
-      // Handle existing params that should be preserved
-      if (options.preserveParams?.length) {
-        const currentParams = new URLSearchParams(window.location.search);
-        options.preserveParams.forEach(param => {
-          const value = currentParams.get(param);
-          if (value) params.set(param, value);
-        });
-      }
-
-      // Add filtered params
-      Object.entries(filteredFilters).forEach(([key, value]) => {
-        if (value !== undefined && 
-            !options.removeParams?.includes(key)) {
-          params.set(key, value);
+        // Handle existing params that should be preserved
+        if (options.preserveParams?.length) {
+          const currentParams = new URLSearchParams(window.location.search);
+          options.preserveParams.forEach((param) => {
+            const value = currentParams.get(param);
+            if (value) params.set(param, value);
+          });
         }
+
+        // Add filtered params
+        Object.entries(filteredFilters).forEach(([key, value]) => {
+          if (value !== undefined && !options.removeParams?.includes(key)) {
+            params.set(key, value);
+          }
+        });
+
+        // Reset page number if specified
+        if (options.resetPage) {
+          params.delete("skip");
+          params.delete("page");
+        }
+
+        const currentPathname = window.location.pathname;
+        router.push(`${currentPathname}?${params.toString()}`, {
+          scroll: false,
+        });
+        return filteredFilters;
       });
-
-      // Reset page number if specified
-      if (options.resetPage) {
-        params.delete('skip');
-        params.delete('page');
-      }
-
-      const currentPathname = window.location.pathname;
-      router.push(`${currentPathname}?${params.toString()}`, { scroll: false });
-      return filteredFilters;
-    });
-  }, [filterEmptyValues, router]);
+    },
+    [filterEmptyValues, router]
+  );
 
   const setMultipleLocalFilters = useCallback(
     (filters: Partial<Filters>) => {
