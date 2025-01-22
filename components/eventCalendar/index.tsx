@@ -96,21 +96,10 @@ export default function EventCalendar() {
       const updatedParams = new URLSearchParams(searchParams);
       updatedParams.set("active_gte", moment(start).toISOString());
       updatedParams.set("active_lte", moment(end).toISOString());
+      updatedParams.set("view", view);
 
-      const response = await getEventsWithSearchParams(
-        updatedParams.toString()
-      );
-
-      switch (view) {
-        case Views.WEEK:
-          return response as CalendarWeekEventsResponse;
-        case Views.MONTH:
-          return response as CalendarMonthEventsResponse;
-        case Views.YEAR:
-          return response as CalendarYearEventsResponse;
-        default:
-          return response as CalendarMonthEventsResponse;
-      }
+      const response = await getEventsWithSearchParams(updatedParams.toString());
+      return response as any;
     },
     refetchOnWindowFocus: false,
     staleTime: 60 * 1000,
@@ -137,7 +126,7 @@ export default function EventCalendar() {
 
       return {
         holidays,
-        alerts: (alerts?.events as Alert[]) || [],
+        alerts: (alerts?.events as any[]) || [],
       };
     },
   });
