@@ -124,7 +124,6 @@ useEffect(()=>{
   //     handleOpenChange(true);
   //   }
   // }, [type, isOpen]);
-  console.log(activeTab);
   
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
