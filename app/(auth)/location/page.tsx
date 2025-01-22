@@ -1,14 +1,11 @@
 "use client";
 import React, { useCallback, useMemo, useState } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Plus } from "lucide-react";
 import { endOfMonth, startOfMonth } from "date-fns";
 import AutocompleteInput from "@/components/search/AutocompleteInput";
 import { newCategories } from "@/data/categories";
-import logo from "/public/croppedlogo.png";
-import whr from "/public/whrai.svg";
 import "react-toastify/dist/ReactToastify.css";
 
 export interface LocationItem {
@@ -114,11 +111,7 @@ const LocationForm = () => {
   }, [generateUrlParams, router]);
 
   return (
-    <div className="flex flex-col gap-6 flex-1 w-auto max-w-sm">
-      <div className="text-[#242424] font-medium text-2xl flex items-center justify-center text-center">
-        <Image src={logo} alt="logo" width={45} height={55} />
-        <Image src={whr} alt="whr" />
-      </div>
+    <div className="flex flex-col gap-6 flex-1  w-full justify-center h-[80vh]">
       <h3 className="text-center">Choose a location to get started !</h3>
       <section className="w-96 self-center border border-[var(--input-border-color)] px-4 py-6 rounded-sm">
         <div className="flex items-center gap-5 bg-[var(--tabs-background-color)] rounded-md py-3 px-6">
@@ -151,8 +144,8 @@ const LocationForm = () => {
         </p>
       </section>
       <Button
-        className="w-3/4 bg-[var(--primary-color)] border rounded-[var(--border-radius-sm)]
-        text-white text-center p-2 self-center"
+        className="bg-[var(--primary-color)] border rounded-[var(--border-radius-sm)]
+        text-white text-center p-2 w-80 self-center"
         disabled={loading}
         onClick={handleSubmit}
       >

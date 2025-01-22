@@ -10,6 +10,11 @@ import { GoogleTagManager } from "@next/third-parties/google";
 import ReactQueryProvider from "@/components/provider/reactQueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import Carousel from "../components/carousel";
+import Image from "next/image";
+import Outreach_Onboarding_Icon from "/public/outreach-onboarding.svg";
+import Coordinate_Onboarding_Icon from "/public/coordinate_onboarding.svg";
+import logo from "/public/croppedlogo.png";
+import whr from "/public/whrai.svg";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -31,14 +36,22 @@ export default function RootLayout({
         <ToastContainer />
         <ReactQueryProvider>
           <AuthContextProvider>
-            <div className="grid place-items-center min-h-screen">
-              <div className="flex min-h-[700px] w-3/4 shadow-custom-lg rounded-lg">
-                <Carousel />
-                {/* <CarouselNew /> */}
-                <main className="flex-1 flex items-center justify-center">
-                  {children}
-                </main>
+            <div className={`relative p-8 bg-[#FAFAFF] min-h-screen`}>
+              <Image
+                className="absolute bottom-0 left-0 w-48 h-w-48 2xl:w-64 2xl:h-64 aspect-square hidden md:block"
+                src={Coordinate_Onboarding_Icon}
+                alt="Icon"
+              />
+              <div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
+                <Image src={logo} alt="logo" width={45} height={55} />
+                <Image src={whr} alt="whr" />
               </div>
+              <Image
+                className="absolute top-0 right-0 w-48 h-w-48 2xl:w-64 2xl:h-64 aspect-square hidden md:block"
+                src={Outreach_Onboarding_Icon}
+                alt="Icon"
+              />
+              <main className="flex flex-col justify-center w-full">{children}</main>
             </div>
             <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
           </AuthContextProvider>
