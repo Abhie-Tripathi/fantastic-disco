@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect, useCallback } from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
+import { Calendar, momentLocalizer, View } from "react-big-calendar";
 import moment from "moment";
 import YearView from "./yearView";
 import CustomToolbar from "./customToolbar";
@@ -13,12 +13,23 @@ import {
 } from "./customHeaders";
 import { CustomView, Views } from "./constants";
 import { useFilterState } from "@/hooks/useFilterState";
-import { CalendarEvent, CalendarMonthEvent } from "@/types/events";
+import {
+  Alert,
+  Event,
+  CalendarWeekEventsResponse,
+  CalendarMonthEventsResponse,
+  CalendarYearEventsResponse,
+  WeekEvent,
+} from "@/types/events";
 import EventList from "./eventList";
-import ZeroState from "@/app/components/zerostate";
-import { useSearchParams } from "next/navigation";
-import { useFilterContext } from "@/context/filterContext";
+import ZeroState from "@/components/zerostate";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEventsService } from "@/services/eventsService";
+import { useFilterContext } from "@/context/filterContext";
+import { useQuery } from "@tanstack/react-query";
+import Loading from "../ui/Loading";
+import { procesEvents } from "@/utils/calendarEvents";
+import { useTrendsService } from "@/services/trendsService";
 
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
@@ -30,28 +41,25 @@ export interface CalendarMonthEventWithHeatmap {
   impactScore: number;
   count?: number;
   heatmapCategory?: string;
+  alertLevel?: string;
+  monthCount?: number;
 }
 
-interface ApiEventData {
-  total: number;
-  business: number;
-  social: number;
-  averageImpactScore: number;
-}
+export type CalendarEventType = {
+  id: string;
+  title: string;
+  start: Date;
+  end: Date;
+  eventType: string;
+  alertLevel?: string;
+};
 
-export default function EventCalendar({
-  events,
-  source,
-  trackerId,
-  type
-}: {
-  events: CalendarEvent[] | CalendarMonthEvent[];
-  source: string;
-  trackerId?: string;
-  type?:string
-}) {
+export default function EventCalendar() {
+  const searchParams = useSearchParams();
   const { getLocalFilterValue } = useFilterContext();
+  const { getEventTrends } = useTrendsService();
   const { getEventsWithSearchParams } = useEventsService();
+  const [weekDateCounts, setWeekDateCounts] = useState<any>();
   const initialDate = (() => {
     const activeGte = getLocalFilterValue("active_gte");
     const activeLte = getLocalFilterValue("active_lte");
@@ -62,74 +70,84 @@ export default function EventCalendar({
   })();
   const [currentDate, setCurrentDate] = useState(new Date(initialDate));
   const [filter, setFilter] = useState("all");
-  const searchParams = useSearchParams();
   const {
     getFilterValue,
     setFilter: setGlobalFilter,
     setMultipleFilters,
   } = useFilterState();
   const [showEventList, setShowEventList] = useState(false);
+  const [lastEventIds, setLastEventIds] = useState<Map<string, WeekEvent>>();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  
+  const filteredParams = new URLSearchParams(searchParams);
+
   const view = getFilterValue("calendar_type") || ("month" as CustomView);
-  const setView = (newView: CustomView) => {
+  const setView = (newView: string) => {
     setGlobalFilter("calendar_type", newView);
   };
 
-  const processedEvents = useMemo(() => {
-    if (view === Views.WEEK) {
-      if (!Array.isArray(events)) return [];
-      return (events as CalendarMonthEvent[])?.map((event) => ({
-        id: event.id,
-        title: event.name,
-        start: new Date(event.startDateTime),
-        end: new Date(event.endDateTime),
-        eventType: event.eventType,
-      }));
-    }
+  const { data: eventsData, isLoading: isEventsLoading } = useQuery<
+    | CalendarWeekEventsResponse
+    | CalendarMonthEventsResponse
+    | CalendarYearEventsResponse
+  >({
+    queryKey: ["events", view, currentDate, searchParams.toString()],
+    queryFn: async () => {
+      const { start, end } = getVisibleDateRange(view, currentDate);
+      const updatedParams = new URLSearchParams(searchParams);
+      updatedParams.set("active_gte", moment(start).toISOString());
+      updatedParams.set("active_lte", moment(end).toISOString());
 
-    if (!events) return [];
-
-    let filteredEvents: CalendarMonthEventWithHeatmap[] = [];
-    const maxTotal = Math.max(...Object.values(events).map((e) => e.total));
-
-    const getHeatmapCategory = (total: number) => {
-      const percentage = (total / maxTotal) * 100;
-      if (percentage <= 25) return "low";
-      if (percentage <= 50) return "medium";
-      if (percentage <= 75) return "high";
-      return "critical";
-    };
-
-    Object.entries(events).forEach(([date, eventData]) => {
-      const heatmapCategory = getHeatmapCategory(eventData.total);
-
-      ["business", "social"].forEach((eventType) => {
-        if (eventData[eventType as keyof ApiEventData] > 0) {
-          filteredEvents.push({
-            id: `${date}-${eventType}`,
-            title: `${eventType}: ${
-              eventData[eventType as keyof ApiEventData]
-            }`,
-            start: new Date(date),
-            end: new Date(date),
-            eventType,
-            impactScore: eventData.averageImpactScore,
-            count: eventData[eventType as keyof ApiEventData] as number,
-            heatmapCategory,
-          });
-        }
-      });
-    });
-
-    if (filter !== "all") {
-      filteredEvents = filteredEvents.filter(
-        (event) => event.eventType.toLowerCase() === filter.toLowerCase()
+      const response = await getEventsWithSearchParams(
+        updatedParams.toString()
       );
-    }
 
-    return filteredEvents;
-  }, [events, filter, view]);
+      switch (view) {
+        case Views.WEEK:
+          return response as CalendarWeekEventsResponse;
+        case Views.MONTH:
+          return response as CalendarMonthEventsResponse;
+        case Views.YEAR:
+          return response as CalendarYearEventsResponse;
+        default:
+          return response as CalendarMonthEventsResponse;
+      }
+    },
+    refetchOnWindowFocus: false,
+    staleTime: 60 * 1000,
+  });
+
+  const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
+    queryKey: ["unattended-events", searchParams.toString()],
+    queryFn: async () => {
+      const alertSearchParams = new URLSearchParams(searchParams);
+      alertSearchParams.set("eventTypes", "alert");
+      const alerts = await getEventsWithSearchParams(
+        alertSearchParams.toString()
+      );
+
+      let holidays: Event[] = [];
+      if (filteredParams.get("eventTypes")?.split(",").includes("holiday")) {
+        filteredParams.set("eventTypes", "holiday");
+        filteredParams.delete("view");
+        const holidayResponse = await getEventsWithSearchParams(
+          filteredParams.toString()
+        );
+        holidays = (holidayResponse?.events as Event[]) || [];
+      }
+
+      return {
+        holidays,
+        alerts: (alerts?.events as Alert[]) || [],
+      };
+    },
+  });
+
+  const processedEvents = procesEvents(
+    view,
+    unAttendedEvents,
+    eventsData,
+    filter
+  );
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
@@ -143,102 +161,232 @@ export default function EventCalendar({
     setShowEventList(true);
   }, []);
 
+  function getLastEventIdsByDate(events: WeekEvent[] | undefined) {
+    const dateEventsMap = new Map<string, WeekEvent>();
+    events?.forEach((event) => {
+      const dateKey = new Date(event.startDateTime).toISOString().split("T")[0];
+      dateEventsMap.set(dateKey, event);
+    });
+    return dateEventsMap;
+  }
+
+  const fetchEventCount = async () => {
+    if (view == "week") {
+      const LastEventIds = getLastEventIdsByDate(
+        eventsData?.events as WeekEvent[]
+      );
+      setLastEventIds(LastEventIds);
+      try {
+        const { start, end } = getVisibleDateRange(view, currentDate);
+        const eventCountParams = new URLSearchParams(searchParams);
+        eventCountParams.set("columns", "eventCount");
+        eventCountParams.set("groupBy", "date");
+        eventCountParams.set("dateView", "day");
+        eventCountParams.set("active_gte", moment(start).toISOString());
+        eventCountParams.set("active_lte", moment(end).toISOString());
+
+        const response = await getEventTrends(eventCountParams.toString());
+        if (response?.groupedData && eventsData?.events.length) {
+          const dateCounts = Object.keys(response?.groupedData).reduce<{
+            [key: string]: number;
+          }>((acc, date) => {
+            const isoDate = new Date(date);
+            const alreadyShownCount = (
+              eventsData?.events as WeekEvent[]
+            ).filter(
+              (event: WeekEvent) =>
+                new Date(event.startDateTime).getTime() ==
+                new Date(date).getTime()
+            ).length;
+            acc[isoDate.toISOString().split("T")[0]] =
+              Number(response.groupedData[date].eventCount?.total) -
+              Number(alreadyShownCount);
+            return acc;
+          }, {});
+          setWeekDateCounts(dateCounts);
+        }
+      } catch (error) {
+        console.log("Fetch Event Count Error", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchEventCount();
+  }, [view, eventsData]);
+
   const shouldShowZeroState = useMemo(() => {
     const filterKeys = Array.from(searchParams.keys());
     const allowedParams = new Set(["view", "calendar_type"]);
 
-    // Check if all filter keys are either 'view' or 'calendar_type'
     return (
       filterKeys.length === 0 ||
       filterKeys.every((key) => allowedParams.has(key))
     );
   }, [searchParams]);
 
+  const getVisibleDateRange = useCallback(
+    (view: string, date: Date) => {
+      let start = moment(date);
+      let end = moment(date);
+
+      switch (view) {
+        case Views.WEEK:
+          start.startOf("week").add(1, "day");
+          end.endOf("week");
+          break;
+        case Views.MONTH:
+          start.startOf("month");
+          end.endOf("month");
+          break;
+        case Views.YEAR:
+          start.startOf("year");
+          end.endOf("year");
+          break;
+      }
+
+      const searchStart = moment(searchParams.get("active_gte"));
+      const searchEnd = moment(searchParams.get("active_lte"));
+
+      if (searchStart.isValid() && start.isBefore(searchStart)) {
+        start = searchStart.clone();
+      }
+      if (searchEnd.isValid() && end.isAfter(searchEnd)) {
+        end = searchEnd.clone();
+      }
+
+      return { start: start.toDate(), end: end.toDate() };
+    },
+    [getLocalFilterValue]
+  );
+
+  const handleNavigate = (date: Date) => {
+    setCurrentDate(date);
+  };
+
+  const handleViewChange = (newView: string) => {
+    setView(newView);
+  };
+
+  const handleDrillDown = (date: Date, view: View) => {
+    if (view == "day") {
+      setMultipleFilters({
+        view: "list",
+        active_gte: date.toISOString(),
+        active_lte: date.toISOString(),
+      });
+    }
+  };
+
+  const renderCalendarContent = () => {
+    if (isEventsLoading) {
+      return <Loading />;
+    }
+
+    if (view === Views.YEAR) {
+      return (
+        <YearView
+          unattendedEvents={unAttendedEvents}
+          date={currentDate}
+          events={processedEvents as CalendarMonthEventWithHeatmap[]}
+        />
+      );
+    }
+
+    return (
+      <Calendar
+        localizer={localizer}
+        events={view === Views.WEEK ? processedEvents : undefined}
+        startAccessor="start"
+        endAccessor="end"
+        defaultView={Views.MONTH as any}
+        view={view as any}
+        onView={handleViewChange}
+        onDrillDown={handleDrillDown}
+        components={{
+          toolbar: () => null,
+          event: (props) => {
+            return view === Views.WEEK ? (
+              <CustomEvent
+                event={props.event as any}
+                counts={weekDateCounts}
+                lastEventIds={lastEventIds}
+              />
+            ) : (
+              <CustomMonthEvent event={props.event as any} />
+            );
+          },
+          week: {
+            header: (props) => (
+              <CustomDayHeader {...props} alerts={unAttendedEvents.alerts} />
+            ),
+          },
+          month: {
+            header: CustomMonthHeader,
+            dateHeader: (props) => (
+              <CustomDateHeader
+                {...props}
+                monthEvents={processedEvents as any}
+                unAttended={unAttendedEvents}
+                onDateClick={handleDateClick}
+              />
+            ),
+          },
+        }}
+        date={currentDate}
+        onNavigate={handleNavigate}
+        className={`${showEventList ? "pr-4" : ""}`}
+      />
+    );
+  };
+
   return (
     <>
       {shouldShowZeroState ? (
         <div className="flex justify-center items-center">
-          <ZeroState text="Discover insights on business trends filtered by geography and category, all in one glance." />
+          <ZeroState title="Discover insights on business trends filtered by geography and category, all in one glance." />
         </div>
       ) : (
-        <div className="flex">
+        <div className="flex custom-calendar">
           <div
-            className={`custom-calendar ${
+            className={`flex flex-col  ${
               showEventList ? "w-[calc(100%-345px)]" : "w-full"
             }`}
           >
-            {view === Views.YEAR ? (
-              <div>
-                <CustomToolbar
-                  date={currentDate}
-                  view={view}
-                  setView={setView as any}
-                  onNavigate={(action) => {
-                    const newDate = new Date(currentDate);
-                    if (action === "PREV")
-                      newDate.setFullYear(currentDate.getFullYear() - 1);
-                    if (action === "NEXT")
-                      newDate.setFullYear(currentDate.getFullYear() + 1);
-                    setCurrentDate(newDate);
-                  }}
-                  filter={filter}
-                  onFilterChange={handleFilterChange}
-                />
-                <YearView
-                  date={currentDate}
-                  events={processedEvents as CalendarMonthEventWithHeatmap[]}
-                />
-              </div>
-            ) : (
-              <Calendar
-                localizer={localizer}
-                events={view === Views.WEEK ? processedEvents : undefined}
-                startAccessor="start"
-                endAccessor="end"
-                defaultView={Views.MONTH as any}
-                view={view as any}
-                onView={setView as any}
-                components={{
-                  toolbar: (props) => (
-                    <CustomToolbar
-                      {...props}
-                      view={view}
-                      setView={setView as any}
-                      filter={filter}
-                      onFilterChange={handleFilterChange}
-                    />
-                  ),
-                  event: (props) => {
-                    return view === Views.WEEK ? (
-                      <CustomEvent event={props.event as any} />
-                    ) : (
-                      <CustomMonthEvent event={props.event as any} />
-                    );
-                  },
-                  week: { header: CustomDayHeader },
-                  month: {
-                    header: CustomMonthHeader,
-                    dateHeader: (props) => (
-                      <CustomDateHeader
-                        {...props}
-                        monthEvents={processedEvents as any}
-                        onDateClick={handleDateClick}
-                      />
-                    ),
-                  },
-                }}
-                date={currentDate}
-                onNavigate={(date) => setCurrentDate(date)}
-                className={`${showEventList ? "pr-4" : ""}`}
-              />
-            )}
-          </div>
+            <CustomToolbar
+              date={currentDate}
+              view={view}
+              setView={handleViewChange}
+              onNavigate={(action) => {
+                const newDate = new Date(currentDate);
+                if (action === "PREV") {
+                  if (view === Views.YEAR) {
+                    newDate.setFullYear(currentDate.getFullYear() - 1);
+                  } else if (view === Views.MONTH) {
+                    newDate.setMonth(currentDate.getMonth() - 1);
+                  } else {
+                    newDate.setDate(currentDate.getDate() - 7);
+                  }
+                }
+                if (action === "NEXT") {
+                  if (view === Views.YEAR) {
+                    newDate.setFullYear(currentDate.getFullYear() + 1);
+                  } else if (view === Views.MONTH) {
+                    newDate.setMonth(currentDate.getMonth() + 1);
+                  } else {
+                    newDate.setDate(currentDate.getDate() + 7);
+                  }
+                }
+                handleNavigate(newDate);
+              }}
+              filter={filter}
+              onFilterChange={handleFilterChange}
+            />
 
+            {renderCalendarContent()}
+          </div>
           {showEventList && (
             <EventList
-              type={type}
-              source={source}
-              trackerId={trackerId}
               eventDate={selectedDate || currentDate}
               onClose={() => setShowEventList(false)}
             />

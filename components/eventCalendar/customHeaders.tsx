@@ -1,27 +1,87 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import NestedCircularProgress from "./circularProgress";
 import { heatmapColors } from "./constants";
-import { useTheme } from "@/context";
+import { Alert, Event } from "@/types";
+import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
 import { cn } from "@/lib/utils";
+import { formatDateRange } from "@/utils/dateFormat";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 interface CustomDayHeaderProps {
   date: Date;
   label: string;
+  alerts: Alert[] | undefined;
 }
 
-export const CustomDayHeader = ({ date, label }: CustomDayHeaderProps) => (
-  <div
-    className={`h-16 text-center w-full flex items-center justify-center flex-col border bg-[var(--heading-background-color)]`}
-  >
-    <div className={`text-sm font-semibold`}>
-      {moment(date).format("D MMM")}
+export const CustomDayHeader = ({
+  date,
+  label,
+  alerts,
+}: CustomDayHeaderProps) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const alertsForDay = alerts?.filter(
+    (alert) =>
+      moment(alert.startDate).format("YYYY-MM-DD") ===
+      moment(date).format("YYYY-MM-DD")
+  );
+
+  const handleMouseEnter = () => {
+    setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setOpen(false);
+  };
+
+  return (
+    <div
+      className={`h-16 text-center w-full flex items-center justify-center flex-col border bg-[#FAFAFA] relative`}
+    >
+      <div className={`text-sm font-semibold`}>
+        {moment(date).format("D MMM")}
+      </div>
+
+      {alertsForDay && alertsForDay.length > 0 && (
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger
+            className="text-xs text-red-500"
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            {alertsForDay.length}{" "}
+            {alertsForDay.length === 1 ? "Alert" : "Alerts"}
+          </PopoverTrigger>
+          <PopoverContent>
+            {alertsForDay.map((alertForDay) => (
+              <div className="text-left" key={alertForDay.id}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium capitalize text-muted-foreground">
+                    {alertForDay.type.toLowerCase()}
+                  </span>
+                  <span
+                    className={cn(
+                      "p-1 border-2 rounded-sm",
+                      getAlertLevelBorderColor(alertForDay.level.toLowerCase())
+                    )}
+                  >
+                    {alertIcons[alertForDay.type]}
+                  </span>
+                </div>
+                <p className="text-sm">
+                  {alertForDay.name || `New ${alertForDay.type} alert`}
+                </p>
+                <time className="text-xs text-muted-foreground">
+                  {formatDateRange(alertForDay.startDate, alertForDay.endDate)}
+                </time>
+              </div>
+            ))}
+          </PopoverContent>
+        </Popover>
+      )}
     </div>
-    {/* {date.getDate() === 1 && (
-      <div className="text-xs text-red-500">High Impact</div>
-    )} */}
-  </div>
-);
+  );
+};
 
 interface CustomMonthHeaderProps {
   date: Date;
@@ -29,7 +89,7 @@ interface CustomMonthHeaderProps {
 }
 
 export const CustomMonthHeader = ({ date, label }: CustomMonthHeaderProps) => (
-  <div className="h-16 text-center w-full flex items-center justify-center flex-col border bg-[var(--heading-background-color)]">
+  <div className="h-16 text-center w-full flex items-center justify-center flex-col border bg-[#FAFAFA]">
     <div className="text-sm font-semibold">{moment(date).format("ddd")}</div>
   </div>
 );
@@ -45,6 +105,10 @@ interface CustomDateEventProps {
     count: number;
     heatmapCategory: string;
   }>;
+  unAttended: {
+    holidays: Event[] | undefined;
+    alerts: Alert[] | undefined;
+  };
   onDateClick: (date: Date) => void;
 }
 
@@ -52,14 +116,22 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
   date,
   label,
   monthEvents,
+  unAttended,
   onDateClick,
 }) => {
-  const { theme } = useTheme();
+  const [open, setOpen] = useState(false);
   const currentDate = moment(date);
   const formattedDate = currentDate.format("YYYY-MM-DD");
-  
   const eventsForDay = monthEvents.filter(
     (event) => moment(event.start).format("YYYY-MM-DD") === formattedDate
+  );
+  const holidayEventForDay = unAttended.holidays?.filter(
+    (event) =>
+      moment(event.startDateTime).format("YYYY-MM-DD") === formattedDate
+  );
+  const alertEventsForDay = unAttended.alerts?.filter(
+    (event: Alert) =>
+      moment(event.startDate).format("YYYY-MM-DD") === formattedDate
   );
 
   const businessEvents =
@@ -75,20 +147,22 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
 
   const hasEvents = eventsForDay.length > 0;
 
-  // Get the heatmap category for the day
   const heatmapCategory = hasEvents ? eventsForDay[0]?.heatmapCategory : null;
   const backgroundColor = hasEvents
-    ? heatmapColors.find((color) => color.name === heatmapCategory)?.[theme === "light" ? "color" : "darkModeColor"]
-    : "var(--primary-foreground)";
+    ? heatmapColors.find((color) => color.name === heatmapCategory)?.color
+    : "white";
+
+  const handleMouseEnter = () => {
+    setOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setOpen(false);
+  };
 
   return (
     <div
-      className={cn(
-        "p-2 h-[147px] flex flex-col justify-between cursor-pointer border",
-        {
-          "text-black": theme === "light",
-        }
-      )}
+      className={`relative p-2 h-36 flex flex-col justify-between cursor-pointer border-r-[0.5px] border-l-[0.5px]`}
       style={{ backgroundColor }}
       onClick={() => onDateClick(date)}
     >
@@ -105,6 +179,60 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
             size={68}
           />
         </div>
+      )}
+
+      {holidayEventForDay && holidayEventForDay[0] && (
+        <div className="relative mt-2 bg-white border rounded-tr-md rounded-br-md text-center text-[#7d7d7d] text-sm font-medium shadow-sm truncate px-4">
+          <div className="absolute left-0 top-0 bg-[#7d7d7d] w-1 h-full"></div>
+          {holidayEventForDay[0].name.replace(/\s*\(.*?\)\s*/g, "")}
+        </div>
+      )}
+
+      {alertEventsForDay && alertEventsForDay[0] && (
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            className={cn(
+              "absolute top-2 left-2 border-2 p-1 rounded-sm bg-background",
+              getAlertLevelBorderColor(alertEventsForDay[0].level)
+            )}
+          >
+            {alertIcons[alertEventsForDay[0].type]}
+          </PopoverTrigger>
+          <PopoverContent
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div className="text-left">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium capitalize text-muted-foreground">
+                  {alertEventsForDay[0].type.toLowerCase()}
+                </span>
+                <span
+                  className={cn(
+                    "p-1 border-2 rounded-sm",
+                    getAlertLevelBorderColor(
+                      alertEventsForDay[0].level.toLowerCase()
+                    )
+                  )}
+                >
+                  {alertIcons[alertEventsForDay[0].type]}
+                </span>
+              </div>
+              <p className="text-sm">
+                {alertEventsForDay[0].name ||
+                  `New ${alertEventsForDay[0].type} alert`}
+              </p>
+              <time className="text-xs text-muted-foreground">
+                {formatDateRange(
+                  alertEventsForDay[0].startDate,
+                  alertEventsForDay[0].endDate
+                )}
+              </time>
+            </div>
+          </PopoverContent>
+        </Popover>
       )}
     </div>
   );
