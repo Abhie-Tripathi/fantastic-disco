@@ -648,7 +648,6 @@ const Pages = () => {
 
   const [userName, setUserName] = useState("");
   const [userCompany, setUserCompany] = useState("");
-
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
@@ -684,33 +683,44 @@ const Pages = () => {
     setOrg(orgNames);
     }
     else if (type === "T_SPEAKING_OPPORTUNITY") {
+      if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
+          "data": [
+              [ "speaker name 1", "company name 1" ],
+               ["speaker name 2", "company name 2" ],
+              [ "speaker name 3",  "company name 3" ],
+              [  "speaker name 4", "company name 4" ],
+              [ "speaker name 5", "company name 5" ]
+             ]
+            }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+         fetchAISuggestion(promptText);
+      }
       const speakerName = customData.map((item: {}) => Object.values(item)[0]).join(',');
       const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
       setSpeakerName(speakerName);
       setSpeakerCompany(speakerCompany);
-      if(speakerName.length>0 && speakerCompany.length>0){
-      const promptText = `List only top 5 name similar to ${Object.values(customData[0])[0]} and company name similar to ${Object.values(customData[0])[1]}. Response should be in plain JSON format without any additional formatting or text: {
-       "data": [
-           [ "speaker name 1", "company name 1" ],
-            ["speaker name 2", "company name 2" ],
-           [ "speaker name 3",  "company name 3" ],
-           [  "speaker name 4", "company name 4" ],
-           [ "speaker name 5", "company name 5" ]
-          ]
-         }. Do not show example values. If no data found then return in below format: {\"data\": []}`
-      // fetchAISuggestion1([Object.values(customData[0])[0],Object.values(customData[0])[1]]);
-      fetchAISuggestion(promptText);
-      }
       // console.log(speakerName, speakerCompany);
 
     }
     else if (type === "T_PEOPLE_FINDER") {
+      if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
+        "data": [
+          [ "name 1", "company name 1" ],
+          ["name 2", "company name 2" ],
+          ["name 3", "company name 3" ],
+          [ "name 4", "company name 4" ],
+          [ "name 5", "company name 5" ]
+        ]
+      }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+      fetchAISuggestion(promptText);
+      }
       const userName = customData.map((item: {}) => Object.values(item)[0]).join(',');
       const userCompany = customData.map((item: {}) => Object.values(item)[1]).join(',')
       setUserName(userName)
       setUserCompany(userCompany)
       if(userName.length>0 && userCompany.length>0){
-        const promptText = `List only top 5 name similar to ${Object.values(customData[0])[0]} and company name similar to ${Object.values(customData[0])[1]}. Response should be in plain JSON format without any additional formatting or text: {
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
         "data": [
           [ "name 1", "company name 1" ],
           ["name 2", "company name 2" ],
@@ -761,14 +771,6 @@ const Pages = () => {
       setTrackerName(trackerName);
       setLocalFilter("includeKeywords",presetItem?.data?.[0].join(","));
       setLocalFilter("excludeKeywords",presetItem?.data?.[1].join(","))
-      let val="";
-      const len=presetItem?.data?.[0].length;
-      if(presetItem?.data?.[0].length>0){
-        val=presetItem?.data?.[0][len-1]
-      }else if(presetItem?.data?.[1].length>0){
-        val=presetItem?.data?.[1][len-1]
-      }
-      fetchAISuggestion(`List top 5 keywords similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`)
     }
 
     setSelectedPresetName(trackerName);
@@ -821,7 +823,6 @@ const Pages = () => {
       }
     });
     
-
     const userType = {
       ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
       ...(getLocalFilterValue("show").split(",").includes("estimatedExhibitors") && { exhibit: true }),
@@ -1775,7 +1776,6 @@ const generateDynamicString = (item: any) => {
     return `${item[0]} (${item[1]})`;
   }else return item;
 };
-
 return (
   <>
   <div>{isLoading?<Loading/>:

@@ -44,7 +44,19 @@ export default function KeywordFilter({
   const [activeTab, setActiveTab] = useState<"include" | "exclude">("include");
   const [includeKeywords, setIncludeKeywords] = useState<string[]>([]);
 const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
-
+useEffect(()=>{
+  const includeKeywords = [
+    ...getLocalFilterValue("includeKeywords")?.split(",").filter((keyword) => keyword.trim() !== "")
+  ];
+  const excludeKeywords=[
+        ...getLocalFilterValue("excludeKeywords")?.split(",").filter((keyword) => keyword.trim() !== "")
+      ];
+  if(includeKeywords.length>0 && type==="T_PRODUCT_KEYWORDS" && activeTab==="include")
+  fetchAISuggestion?.(`List top 5 keywords similar to ${includeKeywords[includeKeywords.length-1]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`);
+  else if(excludeKeywords.length>0 && type==="T_PRODUCT_KEYWORDS" && activeTab==="exclude"){
+  fetchAISuggestion?.(`List top 5 keywords similar to ${excludeKeywords[excludeKeywords.length-1]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`);
+}
+},[getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords")])
   useEffect(() => {
     const savedIncludeKeywords = localFilters.includeKeywords;
     const savedExcludeKeywords = localFilters.excludeKeywords;
@@ -79,8 +91,6 @@ const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
       setExcludeKeywords?.([...excludeKeywords, ...uniqueNewKeywords]);
       setLocalFilter("excludeKeywords",[...excludeKeywords, ...uniqueNewKeywords].join(","))
     }
-    if(type==="T_PRODUCT_KEYWORDS")
-    suggestionsResponse(newKeywords[newKeywords.length-1]);
     setInputValue("");
   }
   const handleRemoveKeyword = (
@@ -89,24 +99,12 @@ const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
   ) => {
     if (keyType === "include") {
       setIncludeKeywords?.(includeKeywords.filter((k) => k !== keyword));
-      if(type==="T_PRODUCT_KEYWORDS"){
-      const updatedKeywords = includeKeywords.filter((k) => k !== keyword);
-      suggestionsResponse(updatedKeywords[updatedKeywords.length-1])
-      }
       setLocalFilter("includeKeywords", includeKeywords.filter((k) => k !== keyword).join(","))
     } else {
       setExcludeKeywords?.(excludeKeywords.filter((k) => k !== keyword));
-      if(type==="T_PRODUCT_KEYWORDS"){
-      const updatedKeywords = excludeKeywords.filter((k) => k !== keyword);
-      suggestionsResponse(updatedKeywords[updatedKeywords.length-1])
-      }
       setLocalFilter("excludeKeywords", excludeKeywords.filter((k) => k !== keyword).join(","));
     }
   };
-  const suggestionsResponse=(val:string)=>{
-    const promptText=`List top 5 keywords similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
-      fetchAISuggestion?.(promptText);
-  }
   const handleApply = () => {
     // setMultipleLocalFilters({
     //   includeKeywords: includeKeywords.join(","),
@@ -121,11 +119,13 @@ const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
       handleApply();
     }
   };
-  useEffect(() => {
-    if (type === "T_PRODUCT_KEYWORDS" && !isOpen) {
-      handleOpenChange(true);
-    }
-  }, [type, isOpen]);
+  // useEffect(() => {
+  //   if (type === "T_PRODUCT_KEYWORDS" && !isOpen) {
+  //     handleOpenChange(true);
+  //   }
+  // }, [type, isOpen]);
+  console.log(activeTab);
+  
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>
       {type!=="T_PRODUCT_KEYWORDS" &&
