@@ -34,22 +34,25 @@ const ListCard = ({
   participant: EventParticipantsDetails;
 }) => {
   return (
-    <li className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-3 rounded-sm gap-3 w-fill h-auto">
+    <li className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-3 rounded-sm gap-3 w-fill h-20">
       <div className="flex flex-row justify-between">
         <div className="flex gap-4">
           <img
             src={
               participant.logo ||
-              `https://img.10times.com/userimages/${participant.name
-                .charAt(0)
-                .toLowerCase()}.jpg`
+              `https://img.10times.com/userimages/${
+                participant.name.match(/[a-zA-Z]/)?.[0]?.toLowerCase() ||
+                "default"
+              }.jpg`
             }
             alt="Logo"
             className="aspect-square rounded-sm w-12 h-12"
           />
           <div className="flex flex-col justify-between">
-            <Text color="primary">{participant.name || ""}</Text>
-            <Text variant="noMargin" color="secondary">
+            <Text color="primary" className="line-clamp-2">
+              {participant.name || ""}
+            </Text>
+            <Text variant="noMargin" color="secondary" className="line-clamp-2">
               {participant.details}
             </Text>
           </div>
@@ -78,13 +81,16 @@ const BadgeCount = ({ value }: { value: number | string }) => {
 const NullState = ({ nullState }: { nullState: any }) => {
   const { logo, text, linkText, redirectLink } = nullState;
   return (
-    <div className="flex flex-col items-center gap-4 justify-between">
+    <div className="flex flex-col items-center gap-4 w-fit px-4 my-auto">
       <Image src={logo} width={60} height={60} alt={"Participant Logo"} />
-      <p className="text-center text-[#8F8F8F] font-medium">{text}</p>
+      <p className="text-center text-[#8F8F8F] font-medium break-normal">
+        {text}
+      </p>
       <Link
         href={redirectLink}
-        className="text-[#6750A4] underline font-medium cursor-pointer"
         target="_blank"
+        rel="noopener noreferrer"
+        className="text-[#6750A4] underline font-medium"
       >
         {linkText}
       </Link>
@@ -106,14 +112,14 @@ const ParticipantContainer = ({
   nullState: any;
 }) => {
   return (
-    <div className="flex flex-col border border-[var(--neutral-light-color)] p-3 rounded-sm gap-6 w-full h-auto dark:bg-transparent dark:border-[var(--border-color)]">
+    <div className="flex flex-col border border-[var(--neutral-light-color)] p-3 rounded-sm gap-6 w-full h-full relative dark:bg-transparent dark:border-[var(--border-color)]">
       <div className="flex gap-4 items-center">
         <Text variant="noMargin" fontWeight="medium">
           {heading}
         </Text>
         {count !== null && count !== 0 && <BadgeCount value={count} />}
       </div>
-      <ul className="flex flex-col gap-2">
+      <ul className="flex flex-col gap-2 items-center h-full">
         {count !== null && count > 0 ? (
           participantData
             .slice(0, count)
@@ -125,8 +131,10 @@ const ParticipantContainer = ({
         )}
         {count !== null && count > 3 && (
           <Link
+            target="_blank"
+            rel="noopener noreferrer"
             href={eventPageUrl ? `https://10times.com/${eventPageUrl}` : ""}
-            className="border border-[var(--neutral-light-color)] text-[var(--primary-color)] dark:bg-transparent dark:border-[var(--border-color)] py-2 px-3 rounded-sm font-medium text-center"
+            className="border border-[var(--neutral-light-color)] w-full text-[var(--primary-color)] py-2 px-3 rounded-sm font-medium text-center dark:bg-transparent dark:border-[var(--border-color)]"
           >
             Show {count - 3} more
           </Link>
@@ -187,7 +195,7 @@ export const EventParticipants = ({
     },
   ];
   return (
-    <div className="flex flex-row gap-6">
+    <div className="flex flex-row gap-6 max-xl:flex-col h-96 max-xl:h-full">
       {participantData.map((participant) => {
         const { count, data, heading, nullState } = participant;
         return (

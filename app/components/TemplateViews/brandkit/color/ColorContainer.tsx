@@ -94,7 +94,7 @@ const ColorContainer = ({ setPreview, setColorCode,fetchedColors,handleColorModa
 
                     </div>
                 ))}
-                <div className={styles.addColor} onClick={() => handleColorClick(fetchedColors[0], "add",0)}>
+                <div className={styles.addColor} onClick={() => handleColorClick(colors[0], "add",0)}>
                     <AddIcon />
                 </div>
             </div>

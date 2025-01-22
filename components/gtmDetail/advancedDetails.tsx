@@ -68,7 +68,11 @@ const CarouselComponent = ({
         className={`${isSlidingEnabled ? "w-11/12" : "w-full"}`}
         setApi={setApi}
       >
-        <CarouselContent className="-ml-1">
+        <CarouselContent
+          className={`${
+            isSlidingEnabled ? "-ml-1" : "-ml-6"
+          } max-xl:grid max-xl:grid-cols-2 max-xl:grid-rows-subgrid max-xl:gap-y-6 max-xl:justify-items-centers`}
+        >
           {maturity && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
               <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
@@ -191,14 +195,24 @@ export const AdvancedDetails = ({
   eventEditionData,
   eventId,
 }: Props) => {
+  const { maturity, frequency, isBranded, isSeries, futureExpectedStartDate } =
+    eventDetails;
+  const { editions } = eventEditionData;
   return (
-    <div className="flex flex-col gap-6">
-      <Heading heading="Advanced Details" />
-      <CarouselComponent
-        eventDetails={eventDetails}
-        eventId={eventId}
-        eventEditionData={eventEditionData}
-      />
-    </div>
+    (maturity ||
+      editions ||
+      frequency ||
+      isBranded ||
+      isSeries ||
+      futureExpectedStartDate) && (
+      <div className="flex flex-col gap-6">
+        <Heading heading="Advanced Details" />
+        <CarouselComponent
+          eventDetails={eventDetails}
+          eventId={eventId}
+          eventEditionData={eventEditionData}
+        />
+      </div>
+    )
   );
 };

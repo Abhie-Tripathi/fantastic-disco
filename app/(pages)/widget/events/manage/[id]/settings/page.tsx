@@ -18,7 +18,7 @@ const Page = () => {
   const [capacityModal, setCapacityModal] = useState<boolean>(false)
   const [approvalModal, setApprovalModal] = useState<boolean>(false)
   const [approvalValue, setApprovalValue] = useState<boolean>(fetchedEvent?.approval && fetchedEvent?.approval === true ? true : false)
-  const [capacityValue, setCapacityValue] = useState<number>(0)
+  const [capacityValue, setCapacityValue] = useState<string>("")
   const [waitlistValue, setWaitlistValue] = useState<boolean>(fetchedEvent?.waitlisting && fetchedEvent?.waitlisting === true ? true : false)
 
   const capacityModalRef = useOutsideClick(() => setCapacityModal(false))
@@ -26,7 +26,7 @@ const Page = () => {
 
   useEffect(() => {
     setApprovalValue(fetchedEvent?.approval && fetchedEvent?.approval === true ? true : false)
-    setCapacityValue(fetchedEvent?.capacity || 0)
+    setCapacityValue(fetchedEvent?.capacity.toString() || "0")
     setWaitlistValue(fetchedEvent?.waitlisting && fetchedEvent?.waitlisting === true ? true : false)
   }, [fetchedEvent])
 

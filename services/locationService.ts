@@ -23,7 +23,7 @@ export const useLocationService = () => {
 
   const getCoordinates = async (placeId: string) => {
     const data = await externalAxios.get(
-      "https://nominatim.openstreetmap.org/details",
+      "https://nominatim.openstreetmap.org/details",  
       {
         params: { place_id: placeId, format: "json" },
       }

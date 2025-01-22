@@ -5,6 +5,7 @@ import Table from "@/app/components/Table";
 import ZeroState from "@/app/components/zerostate";
 import EventCalendar from "@/components/eventCalendar";
 import AdvancedFilters from "@/components/search/advancedFilters";
+import UserRatingSelector from "@/components/search/userRatingSelector";
 import CategorySelector from "@/components/search/categorySelector";
 import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 import DateRangeSelector from "@/components/search/dateRange";
@@ -14,9 +15,9 @@ import EventTypeSelector from "@/components/search/eventType";
 import LocationSelector from "@/components/search/location";
 import SearchBar from "@/components/search/searchbar";
 import StatusSelector from "@/components/search/status";
-import UserRatingSelector from "@/components/search/userRatingSelector";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
+import List from "@/components/search/list";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFilterContext } from "@/context/filterContext";
@@ -28,15 +29,18 @@ import {
   CalendarMonthEvent,
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
+  Event,
   EventsResponse,
   MapEventsResponse,
 } from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Filter, Loader2, Plus } from "lucide-react";
+import { ArrowUpRight, Filter, FilterX, Loader2, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { lazy, useCallback, useEffect, useState } from "react";
+import { lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
+import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
 
 const Map = lazy(() => import("@/components/map"));
 
@@ -60,9 +64,10 @@ const Search = () => {
     useFilterState();
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
-  const { applyFilters, localFilters, clearLocalFilters, enabledFilters } = useFilterContext();
+  const { applyFilters, localFilters, clearLocalFilters, enabledFilters } =
+    useFilterContext();
   const searchParams = useSearchParams();
-  const [view, setView]=useState<string>(searchParams.get("view") || "");
+  const [view, setView] = useState<string>(searchParams.get("view") || "");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [tableLoading, setTableLoading] = useState(true);
   const [validationError, setValidationError] = useState("");
@@ -85,7 +90,7 @@ const Search = () => {
       eventService.getEventsWithSearchParams(searchParams.toString()),
     enabled:
       !!searchParams.toString() &&
-      !(selectedView == "list" || selectedView == "") &&
+      !(selectedView == "table" || selectedView == "") &&
       !(
         Array.from(searchParams.values()).length == 0 ||
         (Array.from(searchParams.values()).length == 1 &&
@@ -98,24 +103,73 @@ const Search = () => {
     staleTime: 0,
   });
 
-  // console.log(Array.from(searchParams.values()));
-
   const displayData = eventData;
+
   const events = displayData?.events || [];
-  const count = displayData?.count || 0;
+  const count = displayData?.count;
 
   const searchHandler = useCallback(() => {
     applyFilters();
+  }, []);
+
+  const [steps, setSteps] = useState<Step[]>([]);
+  const [run, setRun] = useState<boolean>(true);
+
+  const saveSearchRef = useRef(null);
+
+  const joyrideCallback = (data: CallBackProps) => {
+    const { status } = data;
+    if (status === STATUS.FINISHED || status === STATUS.SKIPPED) {
+      if (typeof window !== "undefined") {
+        let walkthroughCompleted: string[] = JSON.parse(
+          localStorage.getItem("walkthroughCompleted") || "[]"
+        );
+
+        if (!walkthroughCompleted.includes("research")) {
+          walkthroughCompleted.push("research");
+
+          localStorage.setItem(
+            "walkthroughCompleted",
+            JSON.stringify(walkthroughCompleted)
+          );
+        }
+      }
+      setRun(false);
+    }
+  };
+
+  useEffect(() => {
+    const newSteps: Step[] = [
+      {
+        target: saveSearchRef.current || "",
+        title: "Save Search",
+        content: "Save this search to add it as tracker",
+        disableBeacon: true,
+      },
+    ];
+
+    if (typeof window !== "undefined") {
+      const walkthroughCompleted: string[] = JSON.parse(
+        localStorage.getItem("walkthroughCompleted") || "[]"
+      );
+      if (!walkthroughCompleted.includes("research")) {
+        setSteps(newSteps);
+        setRun(true);
+      }
+    }
   }, []);
 
   const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
 
   const adaptedQueryString = (function () {
     if (!searchParams.toString()) return;
-    delete adaptedParams.offset;
+    if(adaptedParams.offset == "0"){
+      delete adaptedParams.offset
+    }
     delete adaptedParams.max;
     delete adaptedParams.sortBy;
     delete adaptedParams.sortType;
+    console.log(new URLSearchParams(adaptedParams).toString())
     return new URLSearchParams(adaptedParams).toString();
   })();
 
@@ -171,7 +225,11 @@ const Search = () => {
 
   const filtersCount = (function () {
     let count = 0;
-    if (localFilters.onlyBranded === "true" || localFilters.onlySeries === "true") count++;
+    if (
+      localFilters.onlyBranded === "true" ||
+      localFilters.onlySeries === "true"
+    )
+      count++;
     if (localFilters.frequencies) count++;
     if (localFilters.includeKeywords || localFilters.excludeKeywords) count++;
     if (localFilters.maturity) count++;
@@ -180,26 +238,39 @@ const Search = () => {
     if (localFilters.top) count++;
     return count;
   })();
-  useEffect(()=>{
-    setView(searchParams.get("view") || "")
-  },[searchParams])
- 
- console.log(selectedInsights);
- 
-  
+  useEffect(() => {
+    setView(searchParams.get("view") || "");
+  }, [searchParams]);
+
   return (
-    <div className="space-y-6 p-6">
+    <div className="p-6">
+      {steps.length > 0 && (
+        <Joyride
+          tooltipComponent={(props) => (
+            <Tooltip {...props} totalSteps={steps.length} />
+          )}
+          steps={steps}
+          run={run}
+          callback={joyrideCallback}
+          continuous
+          spotlightPadding={0}
+          showProgress
+          showSkipButton
+          disableScrolling
+          disableOverlayClose
+        />
+      )}
       <SearchBar />
-      <div className="w-full grid grid-cols-10 gap-4 border-b pb-6">
-        <div className="col-span-8 grid grid-cols-4 gap-3">
-          <EventTypeSelector source="search" enabledTypeData={ enabledFilters?.eventType}/>
-          <CategorySelector source="search" enabledCategories={enabledFilters?.eventCategory}/>
-          <EventFormatSelector source="search" enabledFormat={enabledFilters?.eventFormat}/>
-          <LocationSelector source="search"/>
-          <DateRangeSelector source="search" enabledDateRange={enabledFilters?.durations}/>
-          <StatusSelector source="search" enabledStatuses={enabledFilters?.eventStatus}/>
-          <EventEntrySelector source="search" enabledEntries={enabledFilters?.eventEntry}/>
-          <UserRatingSelector source="search" enabledRatingData={enabledFilters?.eventRating}/>
+      <div className="w-full grid grid-cols-10 gap-4 border-b pb-6 mt-6">
+        <div className="col-span-8 grid lg:grid-cols-4 grid-cols-3 gap-3">
+          <EventTypeSelector />
+          <CategorySelector />
+          <EventFormatSelector />
+          <LocationSelector />
+          <DateRangeSelector />
+          <StatusSelector />
+          <EventEntrySelector />
+          <UserRatingSelector />
         </div>
         <div className="col-span-2 grid grid-cols-2 gap-2">
           <div className="row-span-2 flex flex-col gap-3">
@@ -214,6 +285,7 @@ const Search = () => {
               )}
             </Button>
             <Button
+              ref={saveSearchRef}
               variant="link"
               onClick={() => createTrackerHandler()}
               disabled={Object.keys(localFilters).length === 0}
@@ -224,7 +296,7 @@ const Search = () => {
                 className="w-4 h-w-4"
                 color="#6750a4"
               />
-              Save as Tracker
+              Save Search
             </Button>
           </div>
           <div className="row-span-2 flex flex-col gap-3">
@@ -234,7 +306,8 @@ const Search = () => {
               className="text-primary"
               onClick={() => clearLocalFilters(view)}
             >
-              Reset Filters
+              <FilterX className="w-4 h-4 hidden lg:block" />
+              <span className="ml-1">Reset</span>
             </Button>
 
             <Button
@@ -242,32 +315,47 @@ const Search = () => {
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
               className="text-destructive p-0 flex items-center"
             >
-              <Filter className="mr-2 h-4 w-4" />
-              {showAdvancedFilters ? "Hide" : "Advanced"}
+              <Filter className="h-4 w-4" />
+              <span className="ml-1">
+                {showAdvancedFilters ? (
+                  <span className="hidden lg:block">Hide</span>
+                ) : (
+                  <>
+                    <span className="hidden lg:block">Advanced</span>
+                    <span className="lg:hidden">Adv</span>
+                  </>
+                )}{" "}
+              </span>
               {filtersCount ? `(${filtersCount})` : ""}
             </Button>
           </div>
         </div>
       </div>
-      {showAdvancedFilters && <AdvancedFilters enabledFilters={enabledFilters}/>}
+      {showAdvancedFilters && (
+        <AdvancedFilters enabledFilters={enabledFilters} />
+      )}
 
       <Tabs
         defaultValue="list"
         value={selectedView}
         onValueChange={onTabsChange}
+        className="mt-0"
       >
-        <div className="grid grid-cols-3 items-center mb-6">
+        <div className="flex justify-between items-center py-6 sticky top-0 bg-background z-20 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)]">
           {/* <div className="flex items-center gap-2">
             <Badge className="bg-primary text-white">{count}</Badge>
             <p className="text-primary font-semibold">Events Found</p>
           </div> */}
-          <div></div>
+          <div className="w-[108px]"></div>
           <div className="flex justify-center">
-            <TabsList className="grid w-[450px] grid-cols-3 h-auto">
+            <TabsList className="grid w-[450px] grid-cols-4 h-auto">
+              <TabsTrigger value="table" className="text-base">
+                Table
+              </TabsTrigger>
               <TabsTrigger value="list" className="text-base">
                 List
               </TabsTrigger>
-              <TabsTrigger value="map" className=" text-base">
+              <TabsTrigger value="map" className="text-base">
                 Map
               </TabsTrigger>
               <TabsTrigger value="calendar" className=" text-base">
@@ -287,12 +375,31 @@ const Search = () => {
                   <ArrowUpRight className="ml-2 h-4 w-4" />
                 </Button>
               </DialogTrigger>
-              <DialogContent>{/* <ExportModal /> */}</DialogContent>
+              <DialogContent> </DialogContent>
             </Dialog>
           </div>
         </div>
 
-        <TabsContent value="list" className="flex-grow overflow-hidden">
+        <TabsContent value="list" className="flex-grow overflow-hidden mt-0">
+          {isLoading ? (
+            <Loading />
+          ) : error ? (
+            <ZeroState text={(error as ApiError).message} />
+          ) : count == 0 ? (
+            <ZeroState text="No events were found in the selected area." />
+          ) : count == undefined ? (
+            <div className="flex justify-center items-center">
+              <ZeroState text="Discover insights on business trends filtered by geography and category, all in one glance." />
+            </div>
+          ) : (
+            <>
+              {/* <Alerts /> */}
+              <List events={events as Event[]} count={count} />
+            </>
+          )}
+        </TabsContent>
+
+        <TabsContent value="table" className="flex-grow overflow-hidden">
           {isLoading ? (
             <Loading />
           ) : (
@@ -312,7 +419,7 @@ const Search = () => {
           ) : error ? (
             <ZeroState text={(error as ApiError).message} />
           ) : (
-            <Map source="search" searchParams={searchParams.toString()} />
+            <Map searchParams={searchParams.toString()} />
           )}
         </TabsContent>
         <TabsContent value="calendar">
@@ -324,6 +431,7 @@ const Search = () => {
             <ZeroState text={(error as ApiError).message} />
           ) : (
             <EventCalendar
+              source="search"
               events={events as CalendarEvent[] | CalendarMonthEvent[]}
             />
           )}

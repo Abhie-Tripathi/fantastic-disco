@@ -65,6 +65,7 @@ interface Toggle{
   inboundScore?: boolean;
   internationalScore?: boolean;
   eventRank?: boolean;
+  globalToggle?:boolean;
   audienceZone?: boolean;
   audienceSpread?: boolean;
   eventFrequency?:boolean;
@@ -178,8 +179,8 @@ data?.tracker?.filterValue?.eventType
   :[];
   const eventEntry=data?.tracker?.filterValue?.eventEntry ?
   data?.tracker?.filterValue?.eventEntry?.split(','):[];
-  const eventSize=data?.tracker?.filterValue?.eventSize ?
-  data?.tracker?.filterValue?.eventSize?.split(','):[];
+  const eventSize=data?.tracker?.filterValue?.estimatedVisitorRangeTag ?
+  data?.tracker?.filterValue?.estimatedVisitorRangeTag?.split(','):[];
 const format=data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(','):[];
 const endDateValue = data?.tracker?.filterValue?.endDate;
 const startDate = endDateValue ? endDateValue.split(",")[0] : null;
@@ -207,7 +208,6 @@ const userRating=
     data:`text-xs text-[var(--secondary-text-color)] p-1`,
     allValues: `flex gap-3`
   }
-  console.log(data?.tracker?.filterValue?.eventSeries);
   
   return (
     <>
@@ -704,6 +704,7 @@ const userRating=
       </div>
       <div className={styles.innerContainerRight}>
         <Insights
+        globalToggle={toggleOpend?.globalToggle===true}
             exhibitScore={
               data?.tracker?.filterValue?.estimatedExhibitScore
                 ? data?.tracker?.filterValue?.estimatedExhibitScore?.split(",")

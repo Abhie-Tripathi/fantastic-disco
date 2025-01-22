@@ -38,11 +38,12 @@ const WaitListAndCap = ({
   return (
     <div className={`${styles.cardContainer}`}>
       <div className={styles.cardItem}>
-        <div className={styles.icon}>
-          <Ticket />
+        <div className={styles.icon_textContainer}>
+          <div className={styles.icon}>
+            <Ticket />
+          </div>
+          <div className={styles.itemText}>Tickets</div>
         </div>
-        <div className={styles.itemText}>Tickets</div>
-
         <div className={styles.radioContainer}>
           <label style={{ display: "flex", alignItems: "center", gap: "5px" }}>
             <input
@@ -68,10 +69,12 @@ const WaitListAndCap = ({
       </div>
 
       <div className={styles.cardItem}>
-        <div className={styles.icon}>
-          <Approval />
+        <div className={styles.icon_textContainer}>
+          <div className={styles.icon}>
+            <Approval />
+          </div>
+          <div className={styles.itemText}>Require Approval</div>
         </div>
-        <div className={styles.itemText}>Require Approval</div>
         <div className={styles.toggleContainer}>
           <label className={styles.switch}>
             <input type="checkbox" checked={approval} onChange={handleToggle} />
@@ -81,26 +84,26 @@ const WaitListAndCap = ({
       </div>
 
       <div className={styles.cardItem}>
-        <div className={styles.icon}>
-          <Capacity />
-        </div>
-        <div className={styles.itemText}>
-          Capacity
-          <div className={styles.waitListText}>
-            {waitlisting ? "Waitlist Enabled" : ""}
+        <div className={styles.icon_textContainer}>
+          <div className={styles.icon}>
+            <Capacity />
+          </div>
+          <div className={styles.itemText}>
+            Capacity
+            <div className={styles.waitListText}>
+              {waitlisting ? "Waitlist Enabled" : ""}
+            </div>
           </div>
         </div>
         <div className={styles.waitlistNumber}>
           <div>{capacity === -1 ? "Unlimited" : capacity}</div>
-          
           <Image
-          className={styles.editBtn}
-          src={EditIcon}
-          alt="edit"
-          onClick={openCapacityModal}
-        />
+            className={styles.editBtn}
+            src={EditIcon}
+            alt="edit"
+            onClick={openCapacityModal}
+          />
         </div>
-       
       </div>
     </div>
   );
@@ -160,14 +163,11 @@ function Ticket() {
 
 function Approval() {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      height="20px"
-      viewBox="0 96 960 960"
-      width="20px"
-      fill="#7D7D7D"
-    >
-      <path d="M669 1026 504 861l43-43 122 122 243-243 43 43-286 286ZM479.825 696Q415 696 371.5 652.65 328 609.3 328 544.5q0-64.8 43.5-108.15 43.5-43.35 108.325-43.35Q544 393 587.175 436.35q43.175 43.35 43.175 108.15 0 64.8-43.175 108.15Q544 696 479.825 696ZM188 866v-60q0-30 15.5-54.5T258 711q51-22 103-33.5t118-11.5q30 0 59.5 3t57.5 10l-49 50q-19-3-40-5t-40-2q-59 0-112.5 9.5T257 777q-16 7-25.5 22t-9.5 32v29h259L610 866H188Zm291-366q-45 0-74-29.5T376 397q0-45 29-73.5T479 295q45 0 74.5 28.5T583 397q0 45-29.5 74.5T479 500ZM479 437Zm.5 283Z" />
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.2 12.55L12.3946 11.5798C12.4968 11.0667 12.7712 10.5928 12.8692 10.079C12.8902 9.97213 12.9005 9.86247 12.9 9.75C12.8997 9.50643 12.8486 9.26561 12.7499 9.04294C12.6512 8.82028 12.5071 8.62066 12.3268 8.45688C12.1465 8.29309 11.934 8.16874 11.703 8.09178C11.4719 8.01482 11.2273 7.98695 10.9848 8.00994C10.7423 8.03294 10.5073 8.1063 10.2948 8.22532C10.0823 8.34435 9.89698 8.50643 9.75071 8.70118C9.60444 8.89593 9.50043 9.11907 9.44535 9.35633C9.39026 9.59358 9.38531 9.83972 9.4308 10.079C9.5288 10.5935 9.8032 11.066 9.9061 11.5798L10.1 12.55M12.2 12.55H10.1M12.2 12.55L13.9479 13.0162C14.2463 13.0826 14.5132 13.2487 14.7044 13.4872C14.8957 13.7257 15 14.0223 15 14.328C15 14.699 14.699 15 14.328 15H7.972C7.79377 15 7.62285 14.9292 7.49682 14.8032C7.3708 14.6772 7.3 14.5062 7.3 14.328C7.3 13.698 7.7375 13.1527 8.3521 13.0162L10.1 12.55M11.5 5.9V5.2C11.5 3.2204 11.5 2.2299 10.8847 1.6153C10.2701 1 9.2796 1 7.3 1H5.2C3.2204 1 2.2299 1 1.6153 1.6153C1 2.2299 1 3.2204 1 5.2V10.8C1 12.7796 1 13.7701 1.6153 14.3847C2.2299 15 3.2204 15 5.2 15" stroke="#7D7D7D" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M4.50078 5.66768C4.50078 5.66768 4.93828 5.66768 5.37578 6.60078C5.37578 6.60078 6.76528 4.26768 8.00078 3.80078M3.80078 9.40078H6.60078M3.80078 11.5008H6.60078" stroke="#7D7D7D" stroke-width="1.05" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
+
+
   );
 }

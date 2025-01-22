@@ -19,7 +19,8 @@ export const endpoints = {
     savedEvents: `${BASE_URL}/me/saved-events`,
     recentSearches: `${BASE_URL}/me/recent-searches`,
     poc: `${BASE_URL}/event-poc`,
-    enabledFilters: `${BASE_URL}/configuration`
+    enabledFilters: `${BASE_URL}/configuration`,
+    recentSearch : `${BASE_URL}/event/recent`
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
@@ -59,6 +60,7 @@ export const endpoints = {
     iterestedUsers: `${BASE_URL}/userInterest`,
     enquiryDetail: `${BASE_URL}/enquiry`,
     pocUnmask: `${BASE_URL}/event-poc/unmask`,
+    latestComment : `${BASE_URL}/dashboard/latest-comment`
   },
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {
@@ -74,7 +76,7 @@ export const endpoints = {
     widget: `${BASE_URL}/widget`
   },
   events: {
-    getEvents: `${BASE_URL}/event?sortBy=start_date&sortType=asc&limit=2`,
+    getEvents: `${BASE_URL}/event?limit=2`,
     getEventsByWidgetId: `${BASE_URL}/event`,
     getSortedEvents: `${BASE_URL}/event`,
     getEventById: `${BASE_URL}/event`,
@@ -99,5 +101,5 @@ export const endpoints = {
     getyearlyEvents:`${BASE_URL}/event?`,
   },
   configuration: `${BASE_URL}/configuration`,
-
+  myprofile:`${BASE_URL}/auth/customer/profile`
 };

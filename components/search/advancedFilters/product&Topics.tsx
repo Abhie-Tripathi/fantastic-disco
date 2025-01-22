@@ -12,14 +12,8 @@ import { useFilterContext } from "@/context/filterContext";
 import KeywordTabs from "./keywordTabs";
 import styles from "@/app/components/internal/trackers/Filters/filters.style.module.css";
 interface KeywordSelectorProps{
-  source:string;
-  enabledProductData?:keywordInterface,
   type?:string;
-  includeKeywords?:string[];
-  setIncludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
-  excludeKeywords?:string[];
-  setExcludeKeywords?:React.Dispatch<React.SetStateAction<string[] | undefined>>;
-  fetchAISugggestion?:any;
+  fetchAISuggestion?: (promptText: string) => Promise<any>;
   suggestions?:any;
 }
 interface keywordInterface{
@@ -29,33 +23,36 @@ interface keywordInterface{
 }
 export default function KeywordFilter({
   type,
-  enabledProductData,
-  source,
-  fetchAISugggestion,
+  fetchAISuggestion,
   suggestions,
-  includeKeywords : parentIncludeKeyword = [], 
-  setIncludeKeywords : setParentIncludeKeywords, 
-  excludeKeywords : parentExcludeKeyword = [], 
-  setExcludeKeywords : setParentExcludeKeywords,
 }:KeywordSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { getLocalFilterValue, setMultipleLocalFilters } = useFilterContext();
-  const [localIncludeKeywords, setLocalIncludeKeywords] = useState<string[]>([]);
-  const [localExcludeKeywords, setLocalExcludeKeywords] = useState<string[]>([]);
+  const {
+    getLocalFilterValue,
+    setMultipleLocalFilters,
+    localFilters,
+    searchParams,
+    setLocalFilter
+  } = useFilterContext();
+  const [localIncludeKeywords, setLocalIncludeKeywords] = useState<string[]>(
+    []
+  );
+  const [localExcludeKeywords, setLocalExcludeKeywords] = useState<string[]>(
+    []
+  );
   const [inputValue, setInputValue] = useState("");
   const [activeTab, setActiveTab] = useState<"include" | "exclude">("include");
-  const includeKeywords = source==="tracker"? parentIncludeKeyword : localIncludeKeywords;
-  const setIncludeKeywords = source==="tracker"? setParentIncludeKeywords : setLocalIncludeKeywords;
-  const excludeKeywords = source==="tracker"? parentExcludeKeyword : localExcludeKeywords;
-  const setExcludeKeywords = source==="tracker"? setParentExcludeKeywords : setLocalExcludeKeywords;
+  const [includeKeywords, setIncludeKeywords] = useState<string[]>([]);
+const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
+
   useEffect(() => {
-    const savedIncludeKeywords = getLocalFilterValue("includeKeywords");
-    const savedExcludeKeywords = getLocalFilterValue("excludeKeywords");
-    if (savedIncludeKeywords)
-      setIncludeKeywords?.(savedIncludeKeywords.split(","));
-    if (savedExcludeKeywords)
-      setExcludeKeywords?.(savedExcludeKeywords.split(","));
-  }, [getLocalFilterValue]);
+    const savedIncludeKeywords = localFilters.includeKeywords;
+    const savedExcludeKeywords = localFilters.excludeKeywords;
+    if((savedIncludeKeywords ?? "").length > 0)
+    setIncludeKeywords?.(savedIncludeKeywords?.split(",") || []);
+    if((savedExcludeKeywords ?? "").length > 0)
+    setExcludeKeywords?.(savedExcludeKeywords?.split(",") || []);
+  }, [searchParams, localFilters]);
 
   const handleAddKeyword = (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,13 +103,13 @@ export default function KeywordFilter({
   };
   const suggestionsResponse=(val:string)=>{
     const promptText=`List top 5 keywords similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
-      fetchAISugggestion(promptText);
+      fetchAISuggestion?.(promptText);
   }
   const handleApply = () => {
-    setMultipleLocalFilters({
-      includeKeywords: includeKeywords.join(","),
-      excludeKeywords: excludeKeywords.join(","),
-    });
+    // setMultipleLocalFilters({
+    //   includeKeywords: includeKeywords.join(","),
+    //   excludeKeywords: excludeKeywords.join(","),
+    // });
     setIsOpen(false);
   };
 
@@ -135,7 +132,7 @@ export default function KeywordFilter({
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
-          disabled={enabledProductData && !enabledProductData?.isKeywordEnabled}
+          // disabled={enabledProductData && !enabledProductData?.isKeywordEnabled}
           className="w-full justify-between px-3 py-5 text-base font-normal"
         >
           <span className="flex items-center gap-2">
@@ -152,7 +149,7 @@ export default function KeywordFilter({
       }
       {type==="T_PRODUCT_KEYWORDS"?(
       <>
-      <KeywordTabs type="T_PRODUCT_KEYWORDS" activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword} suggestions={suggestions}/>
+      <KeywordTabs type="T_PRODUCT_KEYWORDS" activeTab={activeTab} setActiveTab={setActiveTab} handleAddKeyword={handleAddKeyword} inputValue={inputValue} setInputValue={setInputValue} includeKeywords={includeKeywords} excludeKeywords={excludeKeywords} handleRemoveKeyword={handleRemoveKeyword}/>
       {(activeTab && suggestions && suggestions.length > 0) &&
         (<div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full" >
           <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">

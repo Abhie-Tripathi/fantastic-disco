@@ -25,7 +25,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function MultiSelectSearchBar() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
+  const { getLocalFilterValue, localFilters } = useFilterContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [open, setOpen] = useState(false);
   const [searchResults, setSearchResults] = useState<Event[]>([]);
@@ -53,14 +53,14 @@ export default function MultiSelectSearchBar() {
       const eventIds = eventIdsString.split(",");
       fetchEventDetails(eventIds);
     }
-  }, []);
+  }, [localFilters]);
 
   const debouncedSearch = useCallback(
     debounce(async (value: string) => {
       if (value) {
         try {
           const response = await getEventsWithSearchParams(
-            `eventName=${encodeURIComponent(value)}`
+            `query=${encodeURIComponent(value)}`
           );
           const filteredResults =
             (response?.events as Event[])?.filter(
@@ -107,7 +107,7 @@ export default function MultiSelectSearchBar() {
           newParams.set("eventIds", eventIds);
         }
 
-        router.push(`?${newParams.toString()}`);
+        router.push(`/internal/search/events?${newParams.toString()}`);
 
         return newSelectedItems;
       });
@@ -125,13 +125,11 @@ export default function MultiSelectSearchBar() {
         );
         const eventIds = newSelectedItems.map((event) => event.id).join(",");
 
-        // Create a new URLSearchParams object
         const newParams = new URLSearchParams();
         if (newSelectedItems.length > 0) {
           newParams.set("eventIds", eventIds);
         }
 
-        // Update the URL with the new search params
         router.push(`?${newParams.toString()}`);
 
         return newSelectedItems;

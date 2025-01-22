@@ -1,0 +1,879 @@
+{
+  "totalCount": 60,
+  "data": [
+    {
+      "id": "1",
+      "trackerName": "Hospitality Unlocked",
+      "content": "Discover trends & innovations in hospitality sector, from luxury hotels to local dining experiences",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "39414",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "hospitality",
+          "hotel",
+          "tourism",
+          "travel",
+          "food",
+          "restaurant",
+          "lodging",
+          "catering",
+          "leisure"
+        ],
+        [
+          "logistics",
+          "freight"
+        ]
+      ]
+    },
+    {
+      "id": "2",
+      "trackerName": "Money Flow",
+      "content": "Navigate finance world through banking, investments & wealth management strategies",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "60829",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "finance",
+          "banking",
+          "investments",
+          "fintech",
+          "tax",
+          "trading",
+          "venture capital",
+          "wealth management",
+          "financial markets"
+        ],
+        [
+          "crypto",
+          "gambling"
+        ]
+      ]
+    },
+    {
+      "id": "3",
+      "trackerName": "Green Ventures",
+      "content": "Explore sustainable business opportunities & eco-innovations driving the future of green enterprise",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "44413",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "sustainability",
+          "environment",
+          "eco",
+          "renewable",
+          "green energy",
+          "climate",
+          "solar",
+          "wind",
+          "ESG",
+          "carbon-neutral"
+        ],
+        [
+          "nuclear"
+        ]
+      ]
+    },
+    {
+      "id": "4",
+      "trackerName": "Retail Reimagined",
+      "content": "Transform retail through digital innovation & customer-centric strategies in modern commerce",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "18394",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "retail",
+          "ecommerce",
+          "shopping",
+          "consumer",
+          "merchandising",
+          "fashion",
+          "storefront",
+          "digital sales"
+        ]
+      ]
+    },
+    {
+      "id": "5",
+      "trackerName": "Creative Sparks",
+      "content": "Unleash creative potential in marketing, design & brand storytelling for impactful campaigns",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "19371",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "design",
+          "marketing",
+          "advertising",
+          "branding",
+          "UX",
+          "content creation",
+          "creative services",
+          "storytelling",
+          "campaign management"
+        ]
+      ]
+    },
+    {
+      "id": "6",
+      "trackerName": "Health Forward",
+      "content": "Innovate healthcare solutions & wellness strategies for modern medical challenges & better care",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "109405",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "healthcare",
+          "wellness",
+          "medical",
+          "pharma",
+          "biotech",
+          "hospitals",
+          "diagnostics",
+          "mental health",
+          "life sciences",
+          "nutrition"
+        ]
+      ]
+    },
+    {
+      "id": "7",
+      "trackerName": "Build Beyond",
+      "content": "Shape construction future through innovative infrastructure & sustainable building practices",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "36661",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "construction",
+          "infrastructure",
+          "architecture",
+          "real estate",
+          "urban development",
+          "building materials",
+          "civil engineering",
+          "demolition"
+        ]
+      ]
+    },
+    {
+      "id": "8",
+      "trackerName": "Smart Cities",
+      "content": "Design future urban spaces with smart technology & sustainable planning for connected communities",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "20056",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "urban planning",
+          "smart cities",
+          "transportation",
+          "infrastructure",
+          "urban mobility",
+          "smart infrastructure",
+          "housing development"
+        ],
+        [
+          "private estate"
+        ]
+      ]
+    },
+    {
+      "id": "9",
+      "trackerName": "AgriNext",
+      "content": "Revolutionize farming through agritech innovation & sustainable practices for future food security",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "17495",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "agriculture",
+          "agri-tech",
+          "farming",
+          "crops",
+          "irrigation",
+          "agribusiness",
+          "livestock",
+          "soil health",
+          "sustainable farming",
+          "food production"
+        ],
+        [
+          "pet farming"
+        ]
+      ]
+    },
+    {
+      "id": "10",
+      "trackerName": "Women in Business",
+      "content": "Empower female leaders & entrepreneurs shaping the future of global business & innovation",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "1055",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "women leadership",
+          "gender diversity",
+          "female entrepreneurs",
+          "businesswomen",
+          "women empowerment",
+          "women founders"
+        ],
+        [
+          "men\u2019s networking"
+        ]
+      ]
+    },
+    {
+      "id": "11",
+      "trackerName": "Energy Unlocked",
+      "content": "Transform energy sector through sustainable solutions & innovative power generation technologies",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "31583",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "energy",
+          "power",
+          "oil",
+          "renewable",
+          "gas",
+          "solar",
+          "wind energy",
+          "power generation",
+          "hydro",
+          "energy efficiency"
+        ],
+        [
+          "nuclear",
+          "waste"
+        ]
+      ]
+    },
+    {
+      "id": "12",
+      "trackerName": "Startup Strides",
+      "content": "Guide entrepreneurs through startup challenges, funding & scaling for sustainable business growth",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "12892",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "startup",
+          "entrepreneurship",
+          "founders",
+          "funding",
+          "innovation",
+          "venture capital",
+          "scale up",
+          "accelerator",
+          "incubator"
+        ],
+        [
+          "corporate only"
+        ]
+      ]
+    },
+    {
+      "id": "13",
+      "trackerName": "Legal Leaders",
+      "content": "Navigate complex legal landscapes & compliance challenges in modern business environment",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "23050",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "law",
+          "legal",
+          "compliance",
+          "intellectual property",
+          "regulations",
+          "contracts",
+          "corporate law",
+          "dispute resolution",
+          "legal tech"
+        ],
+        [
+          "crime",
+          "forensic"
+        ]
+      ]
+    },
+    {
+      "id": "14",
+      "trackerName": "Future of Mobility",
+      "content": "Shape transportation future with electric, autonomous & shared mobility innovations",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "14285",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "automotive",
+          "mobility",
+          "electric vehicles",
+          "transport",
+          "autonomous vehicles",
+          "shared mobility",
+          "electric scooters",
+          "car tech"
+        ],
+        [
+          "aerospace"
+        ]
+      ]
+    },
+    {
+      "id": "15",
+      "trackerName": "Food Frontiers",
+      "content": "Explore culinary innovation & sustainable food solutions for next-generation consumption",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "21874",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "food",
+          "culinary",
+          "food processing",
+          "agrifood",
+          "gastronomy",
+          "food safety",
+          "plant based",
+          "nutrition",
+          "food innovation",
+          "beverages"
+        ],
+        [
+          "alcohol",
+          "wine"
+        ]
+      ]
+    },
+    {
+      "id": "16",
+      "trackerName": "Media Matrix",
+      "content": "Transform digital content & entertainment through innovative storytelling & media technologies",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "35404",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "media",
+          "film",
+          "TV",
+          "digital content",
+          "video production",
+          "broadcasting",
+          "streaming",
+          "media innovation",
+          "entertainment",
+          "influencer marketing"
+        ]
+      ]
+    },
+    {
+      "id": "17",
+      "trackerName": "Sports Synergy",
+      "content": "Advance sports industry through technology, analytics & innovative management strategies",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "5126",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "sports",
+          "athletics",
+          "sports tech",
+          "recreational sports",
+          "sports management",
+          "sports analytics"
+        ],
+        [
+          "betting"
+        ]
+      ]
+    },
+    {
+      "id": "18",
+      "trackerName": "Maritime Matters",
+      "content": "Navigate shipping & maritime innovations for efficient global trade & ocean sustainability",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "17657",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "maritime",
+          "shipping",
+          "ports",
+          "naval",
+          "offshore",
+          "logistics",
+          "marine engineering",
+          "sea freight",
+          "vessels",
+          "maritime law",
+          "deep sea"
+        ]
+      ]
+    },
+    {
+      "id": "19",
+      "trackerName": "Quantum Quest",
+      "content": "Explore quantum computing frontiers & applications for revolutionary business solutions",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "513",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "quantum computing",
+          "quantum technology",
+          "quantum algorithms",
+          "quantum cryptography",
+          "quantum supremacy",
+          "quantum hardware"
+        ],
+        [
+          "quantum mysticism"
+        ]
+      ]
+    },
+    {
+      "id": "20",
+      "trackerName": "Space Ventures",
+      "content": "Pioneer space technology & exploration innovations for commercial & scientific advancement",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "677",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "space exploration",
+          "satellite technology",
+          "space tourism",
+          "aerospace engineering",
+          "space startups",
+          "orbital mechanics"
+        ],
+        [
+          "UFO conspiracies"
+        ]
+      ]
+    },
+    {
+      "id": "21",
+      "trackerName": "Smart Manufacturing",
+      "content": "Transform production through Industry 4.0, automation & smart factory technologies",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "7168",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "Industry 4.0",
+          "automation",
+          "robotics",
+          "IoT in manufacturing",
+          "digital twins",
+          "smart factories",
+          "additive manufacturing"
+        ],
+        [
+          "manual labor"
+        ]
+      ]
+    },
+    {
+      "id": "22",
+      "trackerName": "Circular Economy",
+      "content": "Design sustainable business models & resource-efficient solutions for circular future",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "3887",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "circular economy",
+          "recycling",
+          "waste management",
+          "sustainable production",
+          "resource efficiency",
+          "eco design",
+          "circular business models"
+        ],
+        [
+          "linear economy"
+        ]
+      ]
+    },
+    {
+      "id": "23",
+      "trackerName": "Carbon Connect",
+      "content": "Drive carbon reduction strategies & sustainable practices for climate-positive business",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "7495",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "carbon footprint",
+          "carbon reduction",
+          "net-zero",
+          "carbon credits",
+          "emission control",
+          "sustainability"
+        ],
+        [
+          "fossil fuel promotion"
+        ]
+      ]
+    },
+    {
+      "id": "24",
+      "trackerName": "Metaverse Connect",
+      "content": "Shape virtual reality experiences & digital worlds for next-generation engagement",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "568",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "metaverse",
+          "virtual reality",
+          "augmented reality",
+          "virtual experiences",
+          "immersive tech"
+        ],
+        [
+          "video gaming"
+        ]
+      ]
+    },
+    {
+      "id": "25",
+      "trackerName": "RoboWorld",
+      "content": "Advance robotics & automation solutions for enhanced productivity & innovation",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "6925",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "robotics",
+          "automation",
+          "industrial robots",
+          "AI robots",
+          "robot",
+          "robotic"
+        ],
+        [
+          "toy"
+        ]
+      ]
+    },
+    {
+      "id": "26",
+      "trackerName": "Tariff Tracks",
+      "content": "Navigate international trade compliance & tariff regulations for global business success",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "239",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "tariffs",
+          "international trade compliance",
+          "HS tariff code",
+          "import export regulations",
+          "sales tax",
+          "custom duty",
+          "HS code",
+          "harmonized system",
+          "free trade"
+        ]
+      ]
+    },
+    {
+      "id": "27",
+      "trackerName": "Export Essentials",
+      "content": "Master export documentation & international trade regulations for global market access",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "739",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "export documentation",
+          "HS codes",
+          "international trade",
+          "export classifications",
+          "custom compliance"
+        ],
+        [
+          "domestic sales"
+        ]
+      ]
+    },
+    {
+      "id": "28",
+      "trackerName": "Sustainable Development",
+      "content": "Drive positive impact through environmental, social & economic sustainability initiatives",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "14508",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "sustainability",
+          "climate action",
+          "quality education",
+          "gender equality",
+          "responsible consumption",
+          "renewable energy"
+        ],
+        [
+          "non-sustainable",
+          "fossil fuels"
+        ]
+      ]
+    },
+    {
+      "id": "29",
+      "trackerName": "Future of Work",
+      "content": "Shape tomorrow's workplace through hybrid models & innovative workforce solutions",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "5276",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "hybrid work",
+          "remote work",
+          "automation",
+          "workforce transformation",
+          "gig economy"
+        ]
+      ]
+    },
+    {
+      "id": "30",
+      "trackerName": "Blue Economy",
+      "content": "Develop sustainable ocean economies & marine conservation strategies for future growth",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "468",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "sustainable ocean",
+          "marine technology",
+          "fisheries",
+          "marine conservation",
+          "ocean health",
+          "overfishing",
+          "ocean pollution"
+        ]
+      ]
+    },
+    {
+      "id": "31",
+      "trackerName": "Net-Zero",
+      "content": "Transform business operations for zero emissions & sustainable environmental impact",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "907",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "zero emissions",
+          "climate pledge",
+          "sustainable energy",
+          "carbon neutral",
+          "environmental targets"
+        ]
+      ]
+    },
+    {
+      "id": "32",
+      "trackerName": "Urban Regeneration Projects",
+      "content": "Revitalize cities through innovative development & community-focused urban planning",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "44",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "urban renewal",
+          "city planning",
+          "infrastructure redevelopment",
+          "neighborhood revitalization"
+        ]
+      ]
+    },
+    {
+      "id": "33",
+      "trackerName": "Ethical AI",
+      "content": "Develop responsible AI solutions & frameworks for ethical technology implementation",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "604",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "ethical machine learning",
+          "responsible AI",
+          "bias algorithms",
+          "AI transparency",
+          "fair technology",
+          "bias AI",
+          "ethical AI"
+        ]
+      ]
+    },
+    {
+      "id": "34",
+      "trackerName": "Tech Inclusion",
+      "content": "Build inclusive digital solutions & bridge technology gaps for universal access",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "25",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "tech accessibility",
+          "digital equality",
+          "inclusion in tech",
+          "underserved digital",
+          "bridging digital"
+        ]
+      ]
+    },
+    {
+      "id": "35",
+      "trackerName": "Open Source Movement",
+      "content": "Drive collaborative innovation through open-source development & community engagement",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "115",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "collaborative software",
+          "open development",
+          "community innovation",
+          "free software",
+          "tech transparency"
+        ]
+      ]
+    },
+    {
+      "id": "36",
+      "trackerName": "Next Billion",
+      "content": "Scale high-potential startups & unicorns through strategic funding & growth initiatives",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "31",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "growth startups",
+          "high potential companies",
+          "unicorns",
+          "funding leaders",
+          "VC backed",
+          "investment round"
+        ]
+      ]
+    },
+    {
+      "id": "37",
+      "trackerName": "Franchise Powerhouses",
+      "content": "Expand franchise networks & build successful brand systems for sustainable growth",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "75",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "franchise growth",
+          "brand expansion",
+          "franchisee support",
+          "retail franchise"
+        ]
+      ]
+    },
+    {
+      "id": "38",
+      "trackerName": "CX Innovators",
+      "content": "Transform customer experience through innovative engagement & loyalty strategies",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "688",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "customer experience",
+          "client engagement",
+          "consumer satisfaction",
+          "loyalty program"
+        ]
+      ]
+    },
+    {
+      "id": "39",
+      "trackerName": "Digital Nomad Network",
+      "content": "Enable remote work culture & location-independent business operations globally",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "175",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "remote work",
+          "freelancing",
+          "digital lifestyle",
+          "location independence",
+          "wfh",
+          "work from home"
+        ]
+      ]
+    },
+    {
+      "id": "40",
+      "trackerName": "Policy Shapers",
+      "content": "Influence regulatory frameworks & industry standards for positive business impact",
+      "enabled": true,
+      "presetType": "ALL",
+      "eventCount": "131",
+      "url": "T_PRODUCT_KEYWORDS",
+      "data": [
+        [
+          "regulatory impact",
+          "government relations",
+          "industry standards",
+          "policy making",
+          "deregulation"
+        ]
+      ]
+    }
+  ]
+}

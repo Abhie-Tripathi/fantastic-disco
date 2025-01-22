@@ -5,6 +5,8 @@ import Loading from "../UI/Loading";
 import CardTask from "./CardTask";
 import useInfiniteScroll from "@/utils/useInfiniteScroll";
 import { enquiryType } from "@/types/outreachEnquiryTypes";
+import { Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface taskDetailType {
   [task: string]: {
@@ -42,6 +44,8 @@ const PipelineCol = ({
   const [shortlistPage, setShortlistPage] = useState(1);
   const shortlistRef: RefObject<HTMLDivElement> = useRef(null);
 
+  const router = useRouter();
+
   const handleScrollEnd = () => {
     setTimeout(() => {
       if (!taskDetail[status].noMoreData)
@@ -58,12 +62,19 @@ const PipelineCol = ({
   return (
     <>
       <div className={`${styles.outerCard}`}>
-        <div className="">
-          <div className="text-white font-medium text-base p-3 bg-[var(--primary-color)] rounded-t">
-            {taskDetail[status].label}{" "}
-            <span className="bg-white/10 px-3 py-1 text-sm rounded font-semibold border border-white/10 ml-2">
-              {taskDetail[status].count}
-            </span>
+        <div className="group relative">
+          <div className="text-white font-medium text-base p-3 bg-[var(--primary-color)] rounded-t flex items-center justify-between">
+            <div>
+              <span className="cursor-pointer hover:underline" onClick={()=>router.push("/internal/settings/product")}>
+                {taskDetail[status].label}
+              </span>
+              <span className="bg-white/10 px-3 py-1 text-sm rounded font-semibold border border-white/10 ml-2">
+                {taskDetail[status].count}
+              </span>
+            </div>
+            <div className="mr-2 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 p-1 px-2 rounded" onClick={()=>router.push("/internal/settings/product")} title="Edit">
+              <Pencil color="white" width="14px" height="14px" />
+            </div>
           </div>
         </div>
         <div

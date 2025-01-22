@@ -8,7 +8,7 @@ const usePosterGenerator = () => {
   const [height, setHeight] = useState<number>(0)
   const [width, setWidth] = useState<number>(0)
 
-  const generatePrompt = async (participationMessage: string, description: string, eventname: string, bannerwidth: number, bannerheight: number) => {
+  const generatePrompt = async (participationMessage: string, eventname: string, bannerwidth: number, bannerheight: number) => {
     try {
       setHeight(bannerheight);
       setWidth(bannerwidth);
@@ -16,6 +16,19 @@ const usePosterGenerator = () => {
       // Create the prompt directly
       // const promptText = `Generate a POSTER/BANNER for event "${eventname}". Include message on the poster. Message is "Come join us at the event ${participationMessage}". Do not make any Spelling mistakes on the generated poster. Do not include any other gibberish or any texts other then the provided message`;
       const promptText = `Design a high-quality, eye-catching banner for the event '${eventname}'. The banner should feature a clean and modern layout, incorporating a bold and easy-to-read typography. Include the following text: 'Join us at ${eventname} - ${participationMessage}'. Ensure precise spelling and grammar. Exclude any unnecessary text, gibberish, or distracting elements. Incorporate relevant visuals or graphics that convey the event's theme or industry. Use a palette of 2-3 complementary colors to create visual appeal.`
+      setPrompt(promptText);
+    } catch (error) {
+      console.error("Error generating prompt:", error);
+    }
+  };
+  const generatePromptSubevent = async (eventname: string, eventType : string, bannerwidth: number, bannerheight: number) => {
+    try {
+      setHeight(bannerheight);
+      setWidth(bannerwidth);
+      setIsLoading(true);
+      // Create the prompt directly
+      // const promptText = `Generate a POSTER/BANNER for event "${eventname}". Include message on the poster. Message is "Come join us at the event ${participationMessage}". Do not make any Spelling mistakes on the generated poster. Do not include any other gibberish or any texts other then the provided message`;
+      const promptText = `Design a high-quality, eye-catching banner for the event '${eventname}' keeping in mind event type is ${eventType}. The banner should feature a clean and modern layout, incorporating a bold and easy-to-read typography. Include the following text: 'Join us at ${eventname}'. Ensure precise spelling and grammar. Exclude any unnecessary text, gibberish, or distracting elements. Incorporate relevant visuals or graphics that convey the event's theme or industry. Use a palette of 2-3 complementary colors to create visual appeal.`
       setPrompt(promptText);
     } catch (error) {
       console.error("Error generating prompt:", error);
@@ -59,7 +72,7 @@ const usePosterGenerator = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prompt]);
 
-  return { prompt, isLoading, imageUrl, generatePrompt, generatePoster };
+  return { prompt, isLoading, imageUrl, generatePrompt, generatePoster, generatePromptSubevent };
 };
 
 export default usePosterGenerator;

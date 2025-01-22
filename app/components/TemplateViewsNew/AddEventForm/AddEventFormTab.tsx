@@ -17,6 +17,7 @@ import RandomTheme from '../../UI/RandomTheme'
 import SubEventCard from '../WidgetDashboard/SubEventCard'
 import TimelineItem from '../../employee/listView/TimelineItem'
 import { useEventServices } from '@/services/geniservices/eventService'
+import { useRouter } from 'next/navigation'
 interface Props {
     uploadedPhoto: File | undefined
     snowTheme: boolean;
@@ -57,6 +58,9 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
     const confettiCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const {addEvent, addSpeakersData,addExhibitorsDataData, updateEvent,error} = useEventServices();
+
+    const router = useRouter()
+
     // const [mainEventName, setMainEventName] = useState<string>("");
     const { theme } = useTheme()
     let prevDate: any = null;
@@ -261,6 +265,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
                     if (fetchEvents) {
                         // fetchEvents(0, "update")
                         window.location.reload();
+                        
                     }
                     if (mainEventState.speaker.length > 0) {
                         mainEventState.speaker.map((speaker: any) => {
@@ -634,12 +639,12 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
         }
     }
     useEffect(() => {
-        if (mainEventState.speakerModal || mainEventState.exhibitorModal || mainEventState.descriptionModal || mainEventState.registerModal || subEventState.speakerModal || subEventState.descriptionModal || subEventState.registerModal) {
+        if (mainEventState.speakerModal || mainEventState.exhibitorModal || mainEventState.descriptionModal || mainEventState.registerModal || subEventState.speakerModal || subEventState.descriptionModal || subEventState.registerModal|| subEventState.capacityModal) {
             setIsModalOpen(true)
         } else {
             setIsModalOpen(false)
         }
-    }, [mainEventState.speakerModal, mainEventState.exhibitorModal, mainEventState.descriptionModal, mainEventState.registerModal, subEventState.speakerModal, subEventState.descriptionModal, subEventState.registerModal,])
+    }, [mainEventState.speakerModal, mainEventState.exhibitorModal, mainEventState.descriptionModal, mainEventState.registerModal, subEventState.speakerModal, subEventState.descriptionModal, subEventState.registerModal, subEventState.capacityModal ])
     const formContainerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {

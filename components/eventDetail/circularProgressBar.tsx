@@ -60,7 +60,7 @@ export const CircularProgressBar: React.FC<CircularProgressProps> = ({
           className="absolute inset-0 flex items-center justify-center text-sm font-semibold"
           aria-hidden="true"
         >
-          {value !== null ? value : "--"}
+          {value !== null && value > 0 ? value : "--"}
         </span>
       </div>
     </div>

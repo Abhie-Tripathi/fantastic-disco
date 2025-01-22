@@ -115,7 +115,7 @@ useEffect(()=>{
         >
           {/* <div className={styles.dropdown_value}> */}
             <Image src={theme==="light"?ClockIconLight:ClockIcon} alt="clock" width={16} height={16} className="icons"/>
-            {formatText(value)}
+            {value}
             <Image
                     src={theme==="light"?upArrowLight:upArrow}
                     alt="up"

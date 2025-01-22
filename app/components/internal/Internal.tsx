@@ -14,11 +14,11 @@ import UpvoteSelector from "@/components/coordinate/upvote";
 import InterestStatusSelector from "@/components/coordinate/interestStatus";
 import InterestTypeSelector from "@/components/coordinate/interestType";
 import { useCoordinateService } from "@/services/coordinateService";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
-import { number } from "zod";
 import NullState from "../trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg"
+import { Pencil } from "lucide-react";
 
 interface Props {
   handleModal: (id: string, enquiryId: string) => void;
@@ -59,9 +59,9 @@ const Internal = ({
   const [searchInput, setSearchInput] = useState("");
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
-  const [filterChanged, setFilterChanged] = useState(false);
 
   const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
+  const router = useRouter();
 
   const { setFilter, deleteFilter } = useFilterState();
   const handleScrollEnd = () => {
@@ -89,10 +89,9 @@ const Internal = ({
   }, []);
 
   const fetchData = async () => {
-    console.log("fetching data... page=", page);
+    // console.log("fetching data... page=", page);
 
     if (page > 0) {
-      let apiUrl = "";
       try {
         let offset: number = (page - 1) * 10;
         const apiData = await coordinateService.getEventsWithSearchParams({
@@ -112,7 +111,6 @@ const Internal = ({
             setNoMoreData(true);
           }
         }
-        setFilterChanged(false);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -131,7 +129,7 @@ const Internal = ({
     if (statusChanged === true) {
       const updatedData = eventData1.map((item) => {
         return item.eventId === selectedId
-          ? { ...item, enquiryStatus: "SHORTLISTED" }
+          ? { ...item, enquiryStatus: pipelineConfig?.[1]?.status }
           : item;
       });
 
@@ -159,7 +157,6 @@ const Internal = ({
     if (page > 0) {
       setNoMoreData(false);
       fetchData();
-      setFilterChanged(true);
     }
   }, [page, filtersChanged]);
   if (!isLoaded) {
@@ -187,11 +184,16 @@ const Internal = ({
         <div className={styles.container}>
           <div className={styles.countsContainer}>
             {coordinateCount && coordinateCount.slice(1).map((item: any, index: number) => (
-              <div className={styles.exhibitorCount} key={index}>
+              <div className={`${styles.exhibitorCount}`} key={index}>
                 <div className={styles.count}>
                   {item?.count}
                 </div>
-                <div className={styles.countTitle}>{item.name}</div>
+                <div className="flex items-end cursor-pointer hover:underline relative group" onClick={()=>router.push("/internal/settings/product")}>
+                  {item.name}
+                    <div className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 p-1 rounded absolute -right-7" onClick={()=>router.push("/internal/settings/product")} title="Edit">
+                      <Pencil width="14px" height="14px" />
+                    </div>
+                </div>
               </div>
             ))}
             {/* <div className={styles.exhibitorCount}>
@@ -282,14 +284,13 @@ const Internal = ({
               prevDate = item.startDate;
               return (
                 <>
-                  <div key={index} className={styles.timeline}>
+                  <div key={item.eventId} className={styles.timeline}>
                     <TimelineItem
                       eventDate={showDate ? item.startDate : null}
                     />
                     <YourEventCard
                       eventId={item.eventId}
                       setSelectedId={setSelectedId}
-                      filterChanged={filterChanged}
                       isDateSame={showDate}
                       enquiryId={item.enquiryId}
                       eventName={item.eventName}
@@ -299,8 +300,6 @@ const Internal = ({
                       eventStartDate={item.startDate}
                       eventEndDate={item.endDate}
                       eventCompany={item.orgName}
-                      eventDuration={item.duration}
-                      userCount={item.userCount}
                       currentEnquiryStatus={item.enquiryStatus}
                       upvote={item.upvote}
                       enquiryActivity={item.enquiryActivity}

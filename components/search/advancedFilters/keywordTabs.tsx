@@ -15,7 +15,6 @@ interface KeywordTabsProps {
   includeKeywords: string[];
   excludeKeywords: string[];
   handleRemoveKeyword: (keyword: string, type: "include" | "exclude") => void;
-  suggestions?:any;
 }
 
 const KeywordTabs: React.FC<KeywordTabsProps> = ({
@@ -28,7 +27,6 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
   includeKeywords,
   excludeKeywords,
   handleRemoveKeyword,
-  suggestions
 }) => {
   return (
     <Tabs

@@ -4,6 +4,9 @@
 // }
 
 export function numberWithCommas(range: string) {
+  if (range === "0" || !range) {
+    return "--";
+  }
   const parts = range.split("-").map((part) => part.trim());
   const formattedParts = parts.map((part) => {
     const number = parseInt(part, 10);

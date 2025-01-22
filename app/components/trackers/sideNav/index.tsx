@@ -21,7 +21,7 @@ const Index = () => {
   const type  = searchParams.get('type');
   const typeOfView  = searchParams.get('view');
   const typeOfEvent = searchParams.get('eventType')
-  const [view,setView]=useState(typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"list");
+  const [view,setView]=useState(typeOfEvent==="table"?"table":typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"table");
   const secondLast = pathName[pathName.length - 2];
   const router = useRouter()
   const {data}= useTrackerContext();
@@ -67,7 +67,7 @@ const Index = () => {
   // }, [secondLast]);
   const handleClick = (view:string) => {
     setView(view);
-    router.push(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=activeEvent`);
+    router.push(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}`);
   };
   // const fetchData=async()=>{
   //     const result = await getTrackerDetail(secondLast)
@@ -81,7 +81,7 @@ const Index = () => {
   
   return (
     <>
-      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[61px] w-[calc(100vw-63px)] bg-[var(--primary-foreground)] z-10 text-h6 left-[63px]">
+      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[67px] w-[calc(100vw-63px)] bg-[var(--primary-foreground)] z-10 text-h6 left-[63px]">
         <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link className={styles.bottom} href={
              last === "editTracker"
@@ -103,25 +103,31 @@ const Index = () => {
           <div className="flex justify-center items-center" >
           <div className='flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md'>
             {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`}> */}
+            <div onClick={()=>handleClick("table")}>
+              <div className={`${styles.viewsTab} ${view === "table" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("table")}>Table</div></div>
             <div onClick={()=>handleClick("list")}>
               <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("list")}>List</div></div>
               {/* </Link> */}
               <div className="cursor-pointer">
-              {/* <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>handleClick("map")}>Map</div> */}
+              <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>handleClick("map")}>Map</div>
               
-              <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
+              {/* <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
               <div className={styles.viewsTab}>
                 Map
               <span className={`${styles.tooltipText}`} style={{marginLeft:"-30%"}}>Coming Soon</span>
               </div>
+              </div> */}
               </div>
-              </div>
+              <div className="cursor-pointer">
+              {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>handleClick("calendar")}>Calendar</div> */}
               <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
               {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>setView("calendar")}>Calendar</div> */}
               <div className={styles.viewsTab}>
               Calendar
               <span className={`${styles.tooltipText}`} style={{marginLeft:"-30%"}}>Coming Soon</span>
               </div>
+              </div>
+
               </div>
             </div>
             {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}

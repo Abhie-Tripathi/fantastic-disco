@@ -17,7 +17,7 @@ interface Props{
 const StickyTemplates = ({setSelectedTemplate, selectedTemplate, setTempelateName, setSelectedImage} : Props) => {
 
     const StickyTemplates =
-        [{ key: "ST", name: "Sticky Top", desc: "Implement a Sticky Top Widget to keep essential information always visible and accessible.", tag: "Single Event", image1: StickyTopImage,image2: StickyTopImageDark },
+        [{ key: "ST", name: "Sticky", desc: "Implement a Sticky Top Widget to keep essential information always visible and accessible.", tag: "Multiple Events", image1: StickyTopImage,image2: StickyTopImageDark },
         // { key: "SB", name: "Sticky Bottom", desc: "Implement a Sticky Top Widget to keep essential information always visible and accessible.", tag: "Single Event", image1: StickyBottomImage, image2: StickyBottomImageDark },
         ]
     return (

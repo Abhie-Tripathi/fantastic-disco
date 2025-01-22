@@ -69,7 +69,7 @@ export const EventInfoAndMap = ({
   const [isExpandDescription, setisExpandDescription] =
     useState<boolean>(false);
   const [ref, inView] = useInView({
-    threshold: 0.5,
+    threshold: 0.2,
     triggerOnce: false,
   });
   useMemo(() => {
@@ -108,7 +108,7 @@ export const EventInfoAndMap = ({
         </span>
       </div> */}
       <div className="flex flex-row gap-6 max-xl:flex-col w-full">
-        <div className="flex flex-1 flex-col gap-5 max-xl:flex-none bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] p-6 rounded-sm max-xl:h-96 max-h-[800px] overflow-y-auto scrollbar">
+        <div className="flex flex-1 flex-col gap-5 max-xl:flex-none bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] p-6 rounded-sm max-xl:h-96 max-h-[831px] overflow-y-auto scrollbar">
           {
             <div>
               <h1 className="text-[1rem] mb-2 font-medium">
@@ -234,7 +234,7 @@ export const EventInfoAndMap = ({
             )}
           </div>
         </div>
-        <div className="flex flex-1 flex-col gap-8 max-xl:flex-none max-xl:h-fit w-auto bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] p-6 rounded-sm">
+        <div className="flex flex-1 flex-col gap-8 max-xl:flex-none max-xl:h-fit w-auto bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] p-6 rounded-sm h-full">
           <div className={"gap-8 flex flex-col"}>
             <div className={"flex justify-between items-center"}>
               <span style={{ fontSize: "var(--font-size-default)" }}>
@@ -326,7 +326,7 @@ export const EventInfoAndMap = ({
             <Text variant="noMargin" color="primary">
               Start searching similar events
             </Text>
-            <Button className="cursor-not-allowed max-[1600px]:w-full">
+            <Button className="cursor-not-allowed w-fit max-lg:bg-[#8F8F8F2E] max-lg:shadow-none max-lg:text-[#171717] max-lg:font-medium">
               Search Events
             </Button>
           </div>

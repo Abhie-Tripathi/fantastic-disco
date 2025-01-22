@@ -10,6 +10,8 @@ import TradeshowIcon from '/public/tradeshowIcon.svg'
 import WorkShopIcon from '/public/workshop.svg'
 import ConferenceIcon from '/public/conference.svg'
 import DefaultIcon from '/public/widgetDefaultIcon.svg'
+import { useRouter } from 'next/navigation'
+import { LocationIcon } from '../../LocationIcon'
 
 interface FontSettings {
   fontFamily: string;
@@ -29,12 +31,13 @@ interface Props {
   selectedBtn?: "primary" | "secondary"
   fetchedAddedEvents?: PrefilledAddedEventsType[];
   smallCard: boolean;
-  demoBanner:string;
-  demoEventName:string,
-  demoDescription:string
-  demoLocation:string
-  closeButtonSetting?:ButtonSettingsState
-  demoDate:string
+  demoBanner: string;
+  demoEventName: string,
+  demoDescription: string
+  demoLocation: string
+  closeButtonSetting?: ButtonSettingsState
+  demoDate: string
+  widgetId?: string;
 }
 
 const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
@@ -47,7 +50,7 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
   buttonSettings = {
     primary: { buttonColor: "#0072F5", fontColor: "#000000", borderRadius: 4, borderColor: "#0072F5", buttonText: "Meet Us" },
     secondary: { fontColor: "#000000", borderRadius: 4, borderColor: "#6750a4", buttonText: "Meet Us" }
-  }, selectedBtn = "primary", fetchedAddedEvents, smallCard, demoBanner, demoEventName, demoDescription, demoLocation, closeButtonSetting ,demoDate }: Props) => {
+  }, selectedBtn = "primary", fetchedAddedEvents, smallCard, demoBanner, demoEventName, demoDescription, demoLocation, closeButtonSetting, demoDate, widgetId }: Props) => {
 
   const formatDate = (date: string) => {
     const options: Intl.DateTimeFormatOptions = { weekday: 'short', day: '2-digit', month: 'short' };
@@ -71,84 +74,81 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
   const truncatedDescription = description.substring(0, 90) + (description.length > 150 ? "..." : "");
   const { day, month } = fetchedAddedEvents && fetchedAddedEvents.length ? formatStartDate(fetchedAddedEvents[0].startDate) : { day: 1, month: "Jan" };
 
+  const router = useRouter();
+  const handleCardClick = (eventId: string, widgetId: string) => {
+    router.push(`/detailpage?widgetId=${widgetId}&eventId=${eventId}`);
+  };
+
   return (
     <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
-      <Image 
-      width={smallCard ? 280 : 380}
-      height={smallCard ? 285 : 385}
-      className={`w-full ${smallCard ? styles.smallBanner : styles.banner} ${smallCard ? 'h-[285px]' : 'h-[385px]'} rounded-b-[50px] shadow-md`}
-      style={{width :smallCard ? 280 : 380, height :smallCard ? 285 : 385}} 
-      src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner'/>
+      <Image
+        width={smallCard ? 280 : 380}
+        height={smallCard ? 285 : 385}
+        className={`w-full ${smallCard ? styles.smallBanner : styles.banner} ${smallCard ? 'h-[285px]' : 'h-[385px]'} rounded-b-[50px] shadow-md`}
+        style={{ width: smallCard ? 280 : 380, height: smallCard ? 285 : 385 }}
+        src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' />
       <div className={styles.detailsContainer}>
         <div className={styles.valuesContainer}>
           <div className={styles.date_location_nameContainer}>
             {/* <div className={styles.dateContainer}><span className={styles.date} style={{ fontSize: fontSettings.heading.fontSize }}>{day}</span>
               <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div> */}
             <div className={styles.dateContainer}>
-               {
-                        fetchedAddedEvents![0]?.eventType === "SUB" ? <><Image src={POP} alt=''/></>:fetchedAddedEvents![0]?.eventType === "MAIN" && fetchedAddedEvents![0].event_type==="Tradeshow" ? <Image src={TradeshowIcon} alt=''/>:fetchedAddedEvents![0]?.eventType === "MAIN" && fetchedAddedEvents![0].event_type==="Conference" ? <Image src={ConferenceIcon} alt=''/>: fetchedAddedEvents![0]?.eventType === "MAIN" && fetchedAddedEvents![0].event_type==="Workshop" ?<Image src={WorkShopIcon} alt=''/>:<Image src={DefaultIcon} alt=''/>
-                    }
+              {
+                fetchedAddedEvents![0]?.eventType === "SUB" ? <><Image src={POP} alt='' /></> : fetchedAddedEvents![0]?.eventType === "MAIN" && fetchedAddedEvents![0].event_type === "Tradeshow" ? <Image src={TradeshowIcon} alt='' /> : fetchedAddedEvents![0]?.eventType === "MAIN" && fetchedAddedEvents![0].event_type === "Conference" ? <Image src={ConferenceIcon} alt='' /> : fetchedAddedEvents![0]?.eventType === "MAIN" && fetchedAddedEvents![0].event_type === "Workshop" ? <Image src={WorkShopIcon} alt='' /> : <Image src={DefaultIcon} alt='' />
+              }
             </div>
             <div className={styles.line}></div>
             <div className={styles.name_locationContainer}>
               <div className={styles.locationContainer}>
-                <LocationIcon color={fontSettings?.subheading.fontColor || "black"} />
-                <div className={`${styles.location} ${styles.truncate}`}  style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ?fetchedAddedEvents[0].eventFormat==="Virtual"?"Virtual":  fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : demoLocation}</div>
+                <LocationIcon color={fontSettings?.subheading.fontColor || "black"} iconSize={fontSettings?.subheading.fontSize || 14}/>
+                <div className={`${styles.location} ${styles.truncate}`} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].eventFormat === "Virtual" ? "Virtual" : fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : demoLocation}</div>
               </div>
-              <div className={styles.eventName} data-name={fetchedAddedEvents![0]? fetchedAddedEvents![0].name :demoEventName}  style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""}` : demoEventName}</div>
+              <div className={styles.eventName} data-name={fetchedAddedEvents![0] ? fetchedAddedEvents![0].name : demoEventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""}` : demoEventName}</div>
             </div>
           </div>
           <div className={styles.dateRange_typeContainer}>
             <div className={`${styles.pill} ${styles.dateRange}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents && fetchedAddedEvents.length ? formatDate(fetchedAddedEvents[0].startDate) + " - " + formatDate(fetchedAddedEvents[0].endDate) : demoDate}</div>
-            <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN"? fetchedAddedEvents![0].event_type: fetchedAddedEvents![0]?.eventType === "SUB" ?fetchedAddedEvents![0].event_type:"Tradeshow"}</div>
-            <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN"? fetchedAddedEvents![0].eventFormat: fetchedAddedEvents![0]?.eventType==="SUB" ?fetchedAddedEvents![0].eventFormat:"In-Person"}</div>
+            <div className={`${styles.pill} ${styles.type1}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? fetchedAddedEvents![0].event_type : fetchedAddedEvents![0]?.eventType === "SUB" ? fetchedAddedEvents![0].event_type : "Tradeshow"}</div>
+            <div className={`${styles.pill} ${styles.type2}`} style={{ fontSize: fontSettings.body.fontSize }}>{fetchedAddedEvents![0]?.eventType === "MAIN" ? fetchedAddedEvents![0].eventFormat : fetchedAddedEvents![0]?.eventType === "SUB" ? fetchedAddedEvents![0].eventFormat : "In-Person"}</div>
           </div>
           <div className={`${styles.description} ${smallCard ? styles.smallDescription : ""}`} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: truncatedDescription }}></div>
         </div>
 
         <div className={styles.btnContainer}>
-        <button
-          className={styles.btn}
-          style={{
-            fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
-            color: selectedBtn === "primary" ? buttonSettings.primary.fontColor : buttonSettings.secondary.fontColor,
-            backgroundColor: selectedBtn === "primary" ? buttonSettings.primary.buttonColor : "transparent",
-            borderRadius: selectedBtn === "primary" ? buttonSettings.primary.borderRadius : buttonSettings.secondary.borderRadius,
-            borderColor: selectedBtn === "primary" ? buttonSettings.primary.borderColor : buttonSettings.secondary.borderColor
-          }}
-        >
-          {selectedBtn === "primary" ? buttonSettings.primary.buttonText : buttonSettings.secondary.buttonText}
-        </button>
+          <button
+            onClick={() => handleCardClick(fetchedAddedEvents ? fetchedAddedEvents[0].id : "", widgetId ? widgetId : "")}
+            className={styles.btn}
+            style={{
+              fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
+              color: selectedBtn === "primary" ? buttonSettings.primary.fontColor : buttonSettings.secondary.fontColor,
+              backgroundColor: selectedBtn === "primary" ? buttonSettings.primary.buttonColor : "transparent",
+              borderRadius: selectedBtn === "primary" ? buttonSettings.primary.borderRadius : buttonSettings.secondary.borderRadius,
+              borderColor: selectedBtn === "primary" ? buttonSettings.primary.borderColor : buttonSettings.secondary.borderColor
+            }}
+          >
+            {selectedBtn === "primary" ? buttonSettings.primary.buttonText : buttonSettings.secondary.buttonText}
+          </button>
 
-        <button
-          className={styles.btn}
-          style={{
-            fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
-            color: selectedBtn === "primary" ? closeButtonSetting?.primary.fontColor : closeButtonSetting?.secondary.fontColor,
-            backgroundColor: selectedBtn === "primary" ? closeButtonSetting?.primary.buttonColor : "transparent",
-            borderRadius: selectedBtn === "primary" ? closeButtonSetting?.primary.borderRadius : closeButtonSetting?.secondary.borderRadius,
-            borderColor: selectedBtn === "primary" ? closeButtonSetting?.primary.borderColor : closeButtonSetting?.secondary.borderColor,
-            border:"none"
-          }}
-        >
-          {selectedBtn === "primary" ? closeButtonSetting?.primary.buttonText : closeButtonSetting?.secondary.buttonText}
-        </button>
+          <button
+            className={styles.btn}
+            style={{
+              fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
+              color: selectedBtn === "primary" ? closeButtonSetting?.primary.fontColor : closeButtonSetting?.secondary.fontColor,
+              backgroundColor: selectedBtn === "primary" ? closeButtonSetting?.primary.buttonColor : "transparent",
+              borderRadius: selectedBtn === "primary" ? closeButtonSetting?.primary.borderRadius : closeButtonSetting?.secondary.borderRadius,
+              borderColor: selectedBtn === "primary" ? closeButtonSetting?.primary.borderColor : closeButtonSetting?.secondary.borderColor,
+              border: "none"
+            }}
+          >
+            {selectedBtn === "primary" ? closeButtonSetting?.primary.buttonText : closeButtonSetting?.secondary.buttonText}
+          </button>
 
         </div>
-       
-        
+
+
       </div>
     </div>
   )
 }
 
 export default Popup1
-interface IconProps {
-  color: string;
-}
-
-function LocationIcon({ color }: IconProps) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" height="14" viewBox="0 -960 960 960" width="14"><path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 294q122-112 181-203.5T720-552q0-109-69.5-178.5T480-800q-101 0-170.5 69.5T240-552q0 71 59 162.5T480-186Zm0 106Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Zm0-480Z" fill={color} /></svg>
-  )
-}

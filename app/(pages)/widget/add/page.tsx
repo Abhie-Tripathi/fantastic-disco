@@ -81,12 +81,12 @@ const Page = () => {
     const checkBrandkit = async() =>{
         try {
             const res = await getBrandkit();
-            // if (!res.domain.domain) {
-            //  router.push('/widget/dashboard')
-            // }
-            if(res.color.length === 0){
-                router.push('/widget/dashboard')
+            if (!res.domain.domain) {
+             router.push('/widget/dashboard')
             }
+            // if(res.color.length === 0){
+            //     router.push('/widget/dashboard')
+            // }
         } catch (error) {
             console.log(error);
             return;

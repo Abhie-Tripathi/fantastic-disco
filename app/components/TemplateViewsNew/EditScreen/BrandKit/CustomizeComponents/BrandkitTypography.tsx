@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './brandkittypo.style.module.css'
 // import Image from 'next/image'
 // import WarningIcon from '/public/warningicon.svg'
@@ -11,8 +11,8 @@ interface Props {
     eventFont?: string;
     setEventFont?: (value: string) => void
     setFontSettings?: React.Dispatch<React.SetStateAction<FontSettingsState>>;
-    fetchedFonts : string[]
-    clickable : boolean;
+    fetchedFonts: string[]
+    clickable: boolean;
 }
 interface FontSettings {
     fontFamily: string;
@@ -27,15 +27,15 @@ interface FontSettingsState {
     body: FontSettings;
 }
 
-const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings,fetchedFonts,clickable }: Props) => {
+const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings, fetchedFonts, clickable }: Props) => {
     const { theme } = useTheme()
     const fontsList = ["Arial", "Verdana", "Tahoma", "Trebuchet MS", "Times New Roman", "Georgia", "Garamond", "Courier New", "Brush Script"]
     const [familyDropdownOpen, setFamilyDropdownOpen] = useState(false);
-    const [selectedFont, setSelectedFont] = useState<string>("Arial")
+    const [selectedFont, setSelectedFont] = useState<string>(fetchedFonts.length > 0 ? fetchedFonts[0] : "No Fonts")
     const familyDropdownRef = useOutsideClick(() => setFamilyDropdownOpen(false));
     const pathname = usePathname();
     const pathName = pathname.split("/")[2];
-    
+
 
     const handleFontSelect = (font: string) => {
         setSelectedFont(font)
@@ -61,41 +61,41 @@ const BrandkitTypography = ({ flex, eventFont, setEventFont, setFontSettings,fet
         }
 
     }
-
     return (
         <div className={`${styles.body} ${!flex ? styles.columnbody : ""}`}>
             <div className={`${styles.headingContainer} ${!flex ? styles.colheadingcontainer : ""}`}>
                 <div className={styles.heading}>Typography</div>
                 {
                     pathName !== "dashboard" && (
-                    <div className={styles.subheading}>Select or customise your text styles</div>
+                        <div className={styles.subheading}>Select or customise your text styles</div>
                     )
                 }
-                
+
             </div>
-            <div className={styles.fontFamilyWarningContainer}>
-                <div className={styles.fontFamilyContainer}>
-                    <div className={styles.fontfamily_heading}>Font Family</div>
-                    <FontFamilyIcon color={theme === "light" ? "black" : "white"} />
-                    <div ref={familyDropdownRef} className={styles.dropDownContainer} style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#1A1A1A" }} onClick={() => setFamilyDropdownOpen(!familyDropdownOpen)}>
-                        <div className={styles.display}>{selectedFont}</div>
-                        <DownArrow color={theme === "light" ? "black" : "white"} />
-                        {familyDropdownOpen && <div className={`${styles.dropDown} ${theme === "light" ? styles.lightDropdown : styles.darkDropdown}`}>
-                            {fetchedFonts.map((font, key) => (
-                                clickable ? 
+            {/* <div className={styles.fontFamilyWarningContainer}> */}
+            <div className={styles.fontFamilyContainer}>
+                <div className={styles.fontfamily_heading}>Font Family</div>
+                <FontFamilyIcon color={theme === "light" ? "black" : "white"} />
+                <div ref={familyDropdownRef} className={styles.dropDownContainer} style={{ backgroundColor: theme === "light" ? "#F2F2F2" : "#1A1A1A" }}
+                    onClick={() => setFamilyDropdownOpen(!familyDropdownOpen)}>
+                    <div className={styles.display}>{selectedFont}</div>
+                    <DownArrow color={theme === "light" ? "black" : "white"} />
+                    {(familyDropdownOpen && fetchedFonts.length > 0) && <div className={`${styles.dropDown} ${theme === "light" ? styles.lightDropdown : styles.darkDropdown}`}>
+                        {fetchedFonts.map((font, key) => (
+                            clickable ?
                                 <div key={key} className={styles.dropdownFont} onClick={() => handleFontSelect(font)}>{font}</div>
                                 :
                                 <div key={key} className={styles.disableddropdownFont}>{font}</div>
-                            ))}
-                        </div>}
-                    </div>
+                        ))}
+                    </div>}
                 </div>
-                {/* <div className={styles.warning}>
+            </div>
+            {/* <div className={styles.warning}>
                     <Image src={WarningIcon} alt='warning' />
                     <span>Failed to fetch your site&apos;s Typography styles</span>
                 </div> */}
-            </div>
         </div>
+        // </div>
     )
 }
 

@@ -17,15 +17,12 @@ interface YourEventCardProps {
   isDateSame?: boolean;
   enquiryId: string;
   eventName?: string;
-  eventCtas?: string[];
   eventCountry?: string;
   eventLocation?: string;
   eventImage?: string;
   eventStartDate?: string;
   eventEndDate?: string;
   eventCompany?: string;
-  eventDuration?: string;
-  userCount?: number;
   currentEnquiryStatus: string;
   upvote?: any;
   enquiryActivity?: any;
@@ -37,7 +34,6 @@ interface YourEventCardProps {
   geniEvent?: AllEventsType;
   handlePrefillEvent?: (value: AllEventsType) => void
   handleDeleteModal?: (id: string, name: string) => void;
-  filterChanged?:boolean;
   enquiryStatusUpdate: (eventId: string, status: string) => void;
 }
 interface VoteStatus {
@@ -64,15 +60,12 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   eventId,
   enquiryId,
   eventName,
-  eventCtas,
   eventLocation,
   eventCountry,
   eventImage,
   eventStartDate,
   eventEndDate,
   eventCompany,
-  eventDuration,
-  userCount,
   currentEnquiryStatus,
   upvote,
   enquiryActivity,
@@ -84,7 +77,6 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   handlePrefillEvent,
   isDateSame,
   handleDeleteModal,
-  filterChanged,
   setSelectedId,
   enquiryStatusUpdate,
   
@@ -148,29 +140,16 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   };
 
   useEffect(() => {
-    if (upvote) {
-      // setVoteStatus({
-      //   Attending: upvote[1]["ATTENDING"] == 1 ? true : false,
-      //   Speaking: upvote[1]["SPEAKING"] == 1 ? true : false,
-      //   Sponsoring: upvote[1]["SPONSORING"] == 1 ? true : false,
-      //   Exhibiting: upvote[1]["EXHIBITING"] == 1 ? true : false,
-      // });
-    }
-
-    if(!filterChanged){
-    fetchInterestedUsers();
+    if(Object.keys(interestedUsers).length === 0)
+      fetchInterestedUsers();
+    
     setVotesCount(upvote && upvote[0].like);
-    // setVoteStatus({ Attending: enquiryActivity?.some((item: enquiry) => item.for === 'ATTENDING' && item.like===1) ? true : false,
-    // Speaking: enquiryActivity?.some((item: enquiry) => item.for === 'SPEAKING' && item.like===1) ? true : false,
-    // Sponsoring: enquiryActivity?.some((item: enquiry) => item.for === 'SPONSORING' && item.like===1) ? true : false,
-    // Exhibiting: enquiryActivity?.some((item: enquiry) => item.for === 'EXHIBITING'&& item.like===1) ? true : false,})
-      setVoteStatus(enquiryActivity.reduce((acc: any, item: any) => {
-        acc[item.for] = item.like == 1 ? true : false;
-        return acc;
-      }, {}));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterChanged]);
+
+    setVoteStatus(enquiryActivity.reduce((acc: any, item: any) => {
+      acc[item.for] = item.like == 1 ? true : false;
+      return acc;
+    }, {}));
+  }, []);
   
   const fetchInterestedUsers = async () => {
     try {
@@ -248,7 +227,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                     /> */}
                     <Location height={'12px'} width={'12px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
                   </div>
-                  <div style={{marginTop:"3px"}}>
+                  <div>
                     {eventLocation
                       ? eventLocation === eventCountry
                         ? eventCountry
@@ -269,7 +248,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                   className='icons'
                 /> */}
                 <Calendar height={'12px'} width={'12px'} color="var(--primary-text-color)"/>
-                <div style={{marginTop:"3px"}}>
+                <div>
                   {(eventStartDate && eventEndDate) && formatEventDates(eventStartDate, eventEndDate)}
                   {/* {geniEvent && formatEventDates(geniEvent.startDate, geniEvent.endDate)} */}
                 </div>
@@ -318,7 +297,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 onClick={handleClickEvent}
               >
                 <div className={styles.allTags} style={{cursor: 'default'}}>
-                  <div className={styles.total_upvotes} title="Total upvotes count of attend, speak, sponsor, or exhibit">
+                  <div className={styles.total_upvotes} title={`Total upvotes count of ${coordinateActions.map(item => item.label).join(', ')}`}>
                     {upvote && votesCount}
                     <div style={{ display: "flex", paddingTop: "10px" }}>
                       <Image
@@ -337,7 +316,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                       type={key}
                       status={voteStatus[key] ? "voted" : ""}
                       handleVoteClick={handleVoteClick}
-                      userList={interestedUsers[key]}
+                      userList={interestedUsers?.[key]}
                     />
                   ))}
                   {/* <UpVoteTag
@@ -406,7 +385,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                   type={key}
                   status={voteStatus[key] ? "voted" : ""}
                   handleVoteClick={handleVoteClick}
-                  userList={interestedUsers[key]}
+                  userList={interestedUsers?.[key]}
                 />
               ))}
               {/* <UpVoteTag

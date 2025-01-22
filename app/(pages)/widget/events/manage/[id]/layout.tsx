@@ -74,7 +74,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             }
             const eventData = data?.data;
             // if (!eventData) return null;
-            console.log("fetchedd", eventData)
+            console.log("fetchedd", data)
             const eventObject: EventsType = {
                 eventId: eventId, // Use eventId from the URL param
                 name: data?.name || "",
@@ -99,7 +99,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                 event_type: eventData?.event_type,
                 parentData: "",
                 capacity: eventData.maxCapacity || 0,
-                registration: data?.registration === true ? true : false,
+                registration: data.registration,
                 approval: data?.approval === true ? true : false,
                 waitlisting: data?.waitlisting === true ? true : false,
                 eventFormat: eventData.format || "",

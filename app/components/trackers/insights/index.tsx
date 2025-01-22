@@ -1,7 +1,7 @@
 import React from 'react'
 import styles from './insights.style.module.css'
 import ToggleBtn from '../../UI/ToggleBtn'
-const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank, start, end, eventSize, isTrustOpen, isExhibitOpen, eventImpactScore, eventRankToggle, isRankOpen}: any) => {
+const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore, internationalScore, inboundScore, eventRank, localRank, start, end, eventSize, isTrustOpen, isExhibitOpen, eventImpactScore, globalToggle, isRankOpen}: any) => {
   const format = ["Hybrid", "In-person", "Virtual", "Offline"]
   const freq = ["Annual", "Biannual", "Queartly"]
   const entry = ["Free", "Paid", "Invites", "Member Access"];
@@ -47,7 +47,7 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                                         checked={true}
                                         disabled
                                     />
-                                    <span className={styles.item}>{item}</span>
+                                    <span className={styles.item}>{`${item.charAt(0).toUpperCase()}${item.slice(1).toLowerCase()}`}</span>
                                 </label>
                             </>
                         ))}
@@ -81,7 +81,7 @@ const index = ({ isBranded, trustScore, reputation, maturity, rank, exhibitScore
                         <div className={commonClasses.toggleContainer}>
                     <div className="flex items-center text-[var(--primary-color)] font-medium">Event Analytics</div>
                     <div className={styles.toggle_container}>
-                     <ToggleBtn isTrue={isAnalyticsOpen}/>
+                     <ToggleBtn isTrue={globalToggle}/>
                         </div>
             </div>
             {/* <div className={commonClasses.toggleContainer}>

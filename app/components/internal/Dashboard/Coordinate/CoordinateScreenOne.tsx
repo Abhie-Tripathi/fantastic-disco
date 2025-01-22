@@ -1,0 +1,85 @@
+import React, { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { MoveRight } from 'lucide-react'
+import CoordinateScreen from '/public/internal/dashboard/CoordinateScreen.png'
+import CoordinateScreenDark from '/public/internal/dashboard/CoordinateScreenDark.png'
+import Image from 'next/image'
+import NumberPill from './NumberPill'
+import { ArrowRight } from 'geist-icons'
+import { useRouter } from 'next/navigation'
+
+interface Props {
+    values: { heading: string, value: number }[]
+    theme: string | null
+}
+const CoordinateScreenOne = ({ values, theme }: Props) => {
+
+    const [isEmpty, setIsEmpty] = useState<boolean>(false)
+
+    useEffect(() => {
+        const hasNonZeroValue = values.some(item => item.value > 0);
+        setIsEmpty(!hasNonZeroValue);
+    }, [values])
+
+    const router = useRouter()
+
+    const handleRouting = (type: string) => {
+        if (type === "button") {
+            router.push("/internal/coordinate")
+        } else {
+            if (!isEmpty) {
+                router.push("/internal/coordinate")
+            }
+        }
+    }
+
+    return (
+        <div className={`${isEmpty && "bg-[var(--background-secondary-color)]"} flex overflow-hidden h-[240px] justify-between`} >
+            <div className="p-4 ">
+                <div className="flex items-center gap-2 text-xs font-[var(--font-weight-semibold)] text-[var(--primary-color)]">
+                    <span><Coordinate /></span>
+                    <div className={`flex items-center gap-2 ${!isEmpty && "cursor-pointer"}`} onClick={() => handleRouting("value")}>
+                        <span className='text-xs text-[var(--primary-color)] font-[var(--font-weight-semibold)]'>Cooordinate</span>
+                        {!isEmpty && <div><ArrowRight color='#6750a4' width='12px' height='12px' /></div>}
+                    </div>
+                </div>
+                <div
+                    className={`leading-var(--line-height-small) text-[var(--bold-border-color)] text-xs  ${isEmpty ? "mt-8" : "mt-2"}`}
+                >
+                    {!isEmpty ? "Only tool needed for end-to-end event communication management" : "Explore events and express your interest in the ones that matter to you and start coordinating with your team."}
+                </div>
+                {!isEmpty ?
+                    <div className="grid grid-cols-2 gap-2 mt-8">
+                        {values.map((item, index) => (
+                            <NumberPill bg={!isEmpty ? "none" : ""} width='full' heading={item.heading} value={item.value} key={index} />
+                        ))}
+                    </div> : <Button onClick={() => handleRouting("button")} className="mt-8 flex items-center gap-1" size="sm">Search Events <MoveRight width={12} /></Button>}
+            </div>
+            <div className="h-full min-w-[177px] max-w-[177px] flex items-center max-[1050px]:min-w-[250px] max-[1050px]:p-5 max-[720px]:p-0 max-[720px]:min-w-[177px] max-[570px]:hidden">
+                <Image className="w-full h-[180px] object-cover ml-4 max-[1050px]:ml-0 max-[1050px]:h-full 
+                max-[720px]:h-[180px] max-[1050px]:ml-4" src={theme === "dark" ? CoordinateScreenDark : CoordinateScreen} alt="coordinate" />
+            </div>
+        </div>
+    )
+}
+
+export default CoordinateScreenOne
+
+
+function Coordinate() {
+    return (
+        <svg
+            className="flex-shrink-0"
+            width="15"
+            height="15"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M3.5 14.75V14H2V14.75C2 16.1424 2.55312 17.4777 3.53769 18.4623C4.52226 19.4469 5.85761 20 7.25 20H9.5V18.5H7.25C6.25544 18.5 5.30161 18.1049 4.59835 17.4017C3.89509 16.6984 3.5 15.7446 3.5 14.75ZM17 7.25V8H18.5V7.25C18.5 5.85761 17.9469 4.52226 16.9623 3.53769C15.9777 2.55312 14.6424 2 13.25 2H11V3.5H13.25C13.7425 3.5 14.2301 3.597 14.6851 3.78545C15.14 3.97391 15.5534 4.25013 15.9017 4.59835C16.2499 4.94657 16.5261 5.35997 16.7145 5.81494C16.903 6.26991 17 6.75754 17 7.25ZM7.25 7.25H2.75C2.15326 7.25 1.58097 7.48705 1.15901 7.90901C0.737053 8.33097 0.5 8.90326 0.5 9.5V11H2V9.5C2 9.30109 2.07902 9.11032 2.21967 8.96967C2.36032 8.82902 2.55109 8.75 2.75 8.75H7.25C7.44891 8.75 7.63968 8.82902 7.78033 8.96967C7.92098 9.11032 8 9.30109 8 9.5V11H9.5V9.5C9.5 8.90326 9.26295 8.33097 8.84099 7.90901C8.41903 7.48705 7.84674 7.25 7.25 7.25ZM5 6.5C5.59334 6.5 6.17336 6.32405 6.66671 5.99441C7.16006 5.66477 7.54458 5.19623 7.77164 4.64805C7.9987 4.09987 8.05811 3.49667 7.94236 2.91473C7.8266 2.33279 7.54088 1.79824 7.12132 1.37868C6.70176 0.959123 6.16721 0.673401 5.58527 0.557646C5.00333 0.44189 4.40013 0.5013 3.85195 0.728363C3.30377 0.955426 2.83524 1.33994 2.50559 1.83329C2.17595 2.32664 2 2.90666 2 3.5C2 4.29565 2.31607 5.05871 2.87868 5.62132C3.44129 6.18393 4.20435 6.5 5 6.5ZM5 2C5.29667 2 5.58668 2.08797 5.83335 2.2528C6.08003 2.41762 6.27229 2.65189 6.38582 2.92598C6.49935 3.20007 6.52906 3.50167 6.47118 3.79264C6.4133 4.08361 6.27044 4.35088 6.06066 4.56066C5.85088 4.77044 5.58361 4.9133 5.29264 4.97118C5.00166 5.02906 4.70006 4.99935 4.42597 4.88582C4.15189 4.77229 3.91762 4.58003 3.7528 4.33336C3.58797 4.08668 3.5 3.79667 3.5 3.5C3.5 3.10218 3.65804 2.72065 3.93934 2.43934C4.22064 2.15804 4.60218 2 5 2ZM19.25 17.75H14.75C14.1533 17.75 13.581 17.9871 13.159 18.409C12.7371 18.831 12.5 19.4033 12.5 20V21.5H14V20C14 19.8011 14.079 19.6103 14.2197 19.4697C14.3603 19.329 14.5511 19.25 14.75 19.25H19.25C19.4489 19.25 19.6397 19.329 19.7803 19.4697C19.921 19.6103 20 19.8011 20 20V21.5H21.5V20C21.5 19.4033 21.2629 18.831 20.841 18.409C20.419 17.9871 19.8467 17.75 19.25 17.75ZM14 14C14 14.5933 14.1759 15.1734 14.5056 15.6667C14.8352 16.1601 15.3038 16.5446 15.8519 16.7716C16.4001 16.9987 17.0033 17.0581 17.5853 16.9424C18.1672 16.8266 18.7018 16.5409 19.1213 16.1213C19.5409 15.7018 19.8266 15.1672 19.9424 14.5853C20.0581 14.0033 19.9987 13.4001 19.7716 12.852C19.5446 12.3038 19.1601 11.8352 18.6667 11.5056C18.1734 11.1759 17.5933 11 17 11C16.2044 11 15.4413 11.3161 14.8787 11.8787C14.3161 12.4413 14 13.2044 14 14ZM18.5 14C18.5 14.2967 18.412 14.5867 18.2472 14.8334C18.0824 15.08 17.8481 15.2723 17.574 15.3858C17.2999 15.4994 16.9983 15.5291 16.7074 15.4712C16.4164 15.4133 16.1491 15.2704 15.9393 15.0607C15.7296 14.8509 15.5867 14.5836 15.5288 14.2926C15.4709 14.0017 15.5006 13.7001 15.6142 13.426C15.7277 13.1519 15.92 12.9176 16.1666 12.7528C16.4133 12.588 16.7033 12.5 17 12.5C17.3978 12.5 17.7794 12.658 18.0607 12.9393C18.342 13.2206 18.5 13.6022 18.5 14Z"
+                fill="#6750a4"
+            />
+        </svg>
+    );
+}
