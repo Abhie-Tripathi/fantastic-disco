@@ -103,6 +103,7 @@ const CarouselComponent = ({
     frequencies.isEnabled &&
     hasFrequencyOption &&
     hasFrequencyOption.isEnabled;
+    console.log(morphedData);
 
   const isForecastedEnabled = forcastedStatus && forcastedStatus.isEnabled;
 

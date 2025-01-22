@@ -102,7 +102,7 @@ export const EventInfoAndMap = ({
       ? tags &&
         tags.filter((tag) =>
           enabledKeywords.some(
-            (keyword) => keyword.toLowerCase() === tag.name.toLowerCase()
+            (keyword) => keyword.toLowerCase() === tag.slug.toLowerCase()
           )
         )
       : tags;
@@ -133,7 +133,7 @@ export const EventInfoAndMap = ({
               </h1>
               <Text variant="noMargin" color="secondary">
                 {isExpandDescription ? (
-                  description === null || undefined ? (
+                  description === null || description === undefined ? (
                     <span className="text-[#666666] text-sm flex items-center gap-2">
                       <CircleSlash width={15} height={15} />
                       No data available
@@ -143,13 +143,13 @@ export const EventInfoAndMap = ({
                   )
                 ) : (
                   `${
-                    description === null || undefined ? (
-                      "Sourced from 10times"
-                    ) : (
+                    description === null || description === undefined ? (
                       <span className="text-[#666666] text-sm flex items-center gap-2">
                         <CircleSlash width={15} height={15} />
                         No data available
                       </span>
+                    ) : (
+                      description?.slice(0, 200)
                     )
                   }`
                 )}

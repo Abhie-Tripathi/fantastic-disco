@@ -95,11 +95,10 @@ export const AudienceIntel = ({
     estimatedVisitors &&
     estimatedVisitors.options.some(
       (option: { min: number; max: number | null; isEnabled: boolean }) =>
-        option.min <= maxValue &&
-        (option.max === null || option.max >= minValue) &&
+        option.min === maxValue &&
+        (option.max === null || option.max === minValue) &&
         option.isEnabled
     );
-  console.log(estimatedExhibitor, hasEstimatedExhibitor);
 
   const isEstimatedExhibitorEnabled =
     estimatedExhibitor && estimatedExhibitor.isEnabled && hasEstimatedExhibitor;
