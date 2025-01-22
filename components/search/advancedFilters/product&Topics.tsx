@@ -71,11 +71,13 @@ const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
         (k) => !includeKeywords.includes(k)
       );
       setIncludeKeywords?.([...includeKeywords, ...uniqueNewKeywords]);
+      setLocalFilter("includeKeywords",[...includeKeywords, ...uniqueNewKeywords].join(","))
     } else {
       const uniqueNewKeywords = newKeywords.filter(
         (k) => !excludeKeywords.includes(k)
       );
       setExcludeKeywords?.([...excludeKeywords, ...uniqueNewKeywords]);
+      setLocalFilter("excludeKeywords",[...excludeKeywords, ...uniqueNewKeywords].join(","))
     }
     if(type==="T_PRODUCT_KEYWORDS")
     suggestionsResponse(newKeywords[newKeywords.length-1]);
@@ -91,12 +93,14 @@ const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
       const updatedKeywords = includeKeywords.filter((k) => k !== keyword);
       suggestionsResponse(updatedKeywords[updatedKeywords.length-1])
       }
+      setLocalFilter("includeKeywords", includeKeywords.filter((k) => k !== keyword).join(","))
     } else {
       setExcludeKeywords?.(excludeKeywords.filter((k) => k !== keyword));
       if(type==="T_PRODUCT_KEYWORDS"){
       const updatedKeywords = excludeKeywords.filter((k) => k !== keyword);
       suggestionsResponse(updatedKeywords[updatedKeywords.length-1])
       }
+      setLocalFilter("excludeKeywords", excludeKeywords.filter((k) => k !== keyword).join(","));
     }
   };
   const suggestionsResponse=(val:string)=>{

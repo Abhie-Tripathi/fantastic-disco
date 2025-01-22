@@ -712,11 +712,11 @@ const Pages = () => {
       if(userName.length>0 && userCompany.length>0){
         const promptText = `List only top 5 name similar to ${Object.values(customData[0])[0]} and company name similar to ${Object.values(customData[0])[1]}. Response should be in plain JSON format without any additional formatting or text: {
         "data": [
-          [ "speaker name 1", "company name 1" ],
-          ["speaker name 2", "company name 2" ],
-          ["speaker name 3", "company name 3" ],
-          [ "speaker name 4", "company name 4" ],
-          [ "speaker name 5", "company name 5" ]
+          [ "name 1", "company name 1" ],
+          ["name 2", "company name 2" ],
+          ["name 3", "company name 3" ],
+          [ "name 4", "company name 4" ],
+          [ "name 5", "company name 5" ]
         ]
       }. Do not show example values. If no data found then return in below format: {\"data\": []}`
       fetchAISuggestion(promptText);
@@ -729,26 +729,12 @@ const Pages = () => {
   const fetchAISuggestion = async(promptText:string)=>{
     // console.log(val);
     try{
-      // const promptText = `List only top 5 name similar to ${val[0]} and company name similar to ${val[1]}. Response should be in plain JSON format without any additional formatting or text: {
-      //   "data": [
-      //     { "Speaker's Name": "speaker name 1", "Company Name": "company name 1" },
-      //     { "Speaker's Name": "speaker name 2", "Company Name": "company name 2" },
-      //     { "Speaker's Name": "speaker name 3", "Company Name": "company name 3" },
-      //     { "Speaker's Name": "speaker name 4", "Company Name": "company name 4" },
-      //     { "Speaker's Name": "speaker name 5", "Company Name": "company name 5" }
-      //   ]
-      // }. Do not show example values. If no data found then return in below format: {\"data\": []}`;
       let aiResponse: any = await suggestionGenerator(promptText);
       
       let temp = JSON.parse(aiResponse.choices[0].message.content);  
-      
-      if(temp && temp?.data){
-        // setSpeakerSugge
+      if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0){
         setSuggestions(temp.data)
       }
-       
-      // if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
-      //   setSuggestions(temp.data);
     } catch (err) {
       console.error("Fetch failed:", err);
       setSuggestions([]);
