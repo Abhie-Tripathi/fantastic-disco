@@ -1,6 +1,5 @@
 import { Location } from "../locations";
 import { SaveLocationDTO } from "../locations/savedLocationsInsights";
-import { NominatimReverseResult } from "../nominatim";
 
 export interface UserResponse {
   id: string;
@@ -20,7 +19,7 @@ export interface UserResponse {
 }
 
 export type PrimaryLocation = LOCATION_ID | GEO_JSON;
-export type UserLocation = Location | NominatimReverseResult;
+export type UserLocation = Location | any;
 export type LocationType = "LOCATION_ID" | "GEO_JSON";
 
 export interface LOCATION_ID {
