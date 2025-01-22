@@ -654,11 +654,6 @@ const Pages = () => {
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
   useEffect(() => { 
-    // const [speakerSuggestion,setSpeakerSuggestion]=useState();
-   
-    // const formatData=(data:any)=>{
-    //     return data.map((item)=> `${item.speakerName} (${item.companyName})`)
-    // }
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if(customData.length > 0 && Object.values(customData[0])[0]) {
         let placeholder = template?.inputAreas?.[0]?.placeholder || "";
@@ -1909,19 +1904,6 @@ return (
     setIsMandatory={setIsMandatory}
     /> */}
     <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions}/>
-    {/* {(suggestions && suggestions.length > 0) &&
-        (<div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full" >
-          <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">
-            AI SUGGESTIONS {" "}
-            <span className={styles.experimental_tag}>Beta</span>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-          {suggestions.map((item: string, ind: number)=>(
-                    <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{item}</div>
-                  ))} 
-          </div>
-        </div>)
-      } */}
     </div>
     </div>
     }
@@ -2021,18 +2003,9 @@ return (
                   <span className={styles.experimental_tag} >Beta</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                 
-                    {/* {suggestions.map((item: any, ind: number)=>(
-                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{generateDynamicString(item, template)}</div>
-                    ))} */}
                     {suggestions.map((item: any, ind: number)=>(
                       <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{generateDynamicString(item)}</div>
                     ))} 
-                 {/* {(type==="T_PEOPLE_FINDER") && 
-                    suggestions.map((item: any, ind: number)=>(
-                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{`${item["Name"]} (${item["Company Name"]})`}</div>
-                    ))
-                 } */}
                 </div>
               </div>
             }
