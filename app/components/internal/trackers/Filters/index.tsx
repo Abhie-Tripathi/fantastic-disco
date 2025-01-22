@@ -739,16 +739,13 @@ const Pages = () => {
       //   ]
       // }. Do not show example values. If no data found then return in below format: {\"data\": []}`;
       let aiResponse: any = await suggestionGenerator(promptText);
-      console.log(aiResponse);
       
       let temp = JSON.parse(aiResponse.choices[0].message.content);  
-      console.log(temp);
       
       if(temp && temp?.data){
         // setSpeakerSugge
         setSuggestions(temp.data)
       }
-      console.log(temp.data);
        
       // if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
       //   setSuggestions(temp.data);
@@ -780,7 +777,6 @@ const Pages = () => {
       setLocalFilter("excludeKeywords",presetItem?.data?.[1].join(","))
       let val="";
       const len=presetItem?.data?.[0].length;
-      console.log(len);
       if(presetItem?.data?.[0].length>0){
         val=presetItem?.data?.[0][len-1]
       }else if(presetItem?.data?.[1].length>0){
@@ -1787,11 +1783,8 @@ const commonCss={
 //   }
   
 // },[enabledFilters])
-console.log(analyticsToggles.globalToggle);
 // console.log(template?.inputAreas[0]?.placeholder);
 const generateDynamicString = (item: any) => {
-  console.log(item);
-  
   if(Array.isArray(item)){
     return `${item[0]} (${item[1]})`;
   }else return item;

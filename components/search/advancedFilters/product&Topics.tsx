@@ -70,8 +70,6 @@ const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
       const uniqueNewKeywords = newKeywords.filter(
         (k) => !includeKeywords.includes(k)
       );
-      console.log(includeKeywords);
-      
       setIncludeKeywords?.([...includeKeywords, ...uniqueNewKeywords]);
     } else {
       const uniqueNewKeywords = newKeywords.filter(
