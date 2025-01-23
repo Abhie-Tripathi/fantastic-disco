@@ -29,7 +29,6 @@ import { useFilterContext } from "@/context/filterContext";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../ui/Loading";
 import { procesEvents } from "@/utils/calendarEvents";
-import { useTrendsService } from "@/services/trendsService";
 
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
@@ -57,7 +56,6 @@ export type CalendarEventType = {
 export default function EventCalendar() {
   const searchParams = useSearchParams();
   const { getLocalFilterValue } = useFilterContext();
-  const { getEventTrends } = useTrendsService();
   const { getEventsWithSearchParams } = useEventsService();
   const [weekDateCounts, setWeekDateCounts] = useState<any>();
   const initialDate = (() => {
@@ -98,45 +96,51 @@ export default function EventCalendar() {
       updatedParams.set("active_lte", moment(end).toISOString());
       updatedParams.set("view", view);
 
-      const response = await getEventsWithSearchParams(updatedParams.toString());
+      const response = await getEventsWithSearchParams(
+        updatedParams.toString()
+      );
       return response as any;
     },
     refetchOnWindowFocus: false,
     staleTime: 60 * 1000,
   });
 
-  const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
-    queryKey: ["unattended-events", searchParams.toString()],
-    queryFn: async () => {
-      const alertSearchParams = new URLSearchParams(searchParams);
-      alertSearchParams.set("eventTypes", "alert");
-      const alerts = await getEventsWithSearchParams(
-        alertSearchParams.toString()
-      );
+  // const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
+  //   queryKey: ["unattended-events", searchParams.toString()],
+  //   queryFn: async () => {
+  //     const alertSearchParams = new URLSearchParams(searchParams);
+  //     alertSearchParams.set("eventTypes", "alert");
+  //     const alerts = await getEventsWithSearchParams(
+  //       alertSearchParams.toString()
+  //     );
 
-      let holidays: Event[] = [];
-      if (filteredParams.get("eventTypes")?.split(",").includes("holiday")) {
-        filteredParams.set("eventTypes", "holiday");
-        filteredParams.delete("view");
-        const holidayResponse = await getEventsWithSearchParams(
-          filteredParams.toString()
-        );
-        holidays = (holidayResponse?.events as Event[]) || [];
-      }
+  //     let holidays: Event[] = [];
+  //     if (filteredParams.get("eventTypes")?.split(",").includes("holiday")) {
+  //       filteredParams.set("eventTypes", "holiday");
+  //       filteredParams.delete("view");
+  //       const holidayResponse = await getEventsWithSearchParams(
+  //         filteredParams.toString()
+  //       );
+  //       holidays = (holidayResponse?.events as Event[]) || [];
+  //     }
 
-      return {
-        holidays,
-        alerts: (alerts?.events as any[]) || [],
-      };
-    },
-  });
+  //     return {
+  //       holidays,
+  //       alerts: (alerts?.events as any[]) || [],
+  //     };
+  //   },
+  // });
+
+  const unAttendedEvents = { holidays: [], alerts: [] };
 
   const processedEvents = procesEvents(
     view,
     unAttendedEvents,
     eventsData,
-    filter
+    filter,
   );
+
+  console.log("eventsData", eventsData)
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
@@ -159,50 +163,50 @@ export default function EventCalendar() {
     return dateEventsMap;
   }
 
-  const fetchEventCount = async () => {
-    if (view == "week") {
-      const LastEventIds = getLastEventIdsByDate(
-        eventsData?.events as WeekEvent[]
-      );
-      setLastEventIds(LastEventIds);
-      try {
-        const { start, end } = getVisibleDateRange(view, currentDate);
-        const eventCountParams = new URLSearchParams(searchParams);
-        eventCountParams.set("columns", "eventCount");
-        eventCountParams.set("groupBy", "date");
-        eventCountParams.set("dateView", "day");
-        eventCountParams.set("active_gte", moment(start).toISOString());
-        eventCountParams.set("active_lte", moment(end).toISOString());
+  // const fetchEventCount = async () => {
+  //   if (view == "week") {
+  //     const LastEventIds = getLastEventIdsByDate(
+  //       eventsData?.events as WeekEvent[]
+  //     );
+  //     setLastEventIds(LastEventIds);
+  //     try {
+  //       const { start, end } = getVisibleDateRange(view, currentDate);
+  //       const eventCountParams = new URLSearchParams(searchParams);
+  //       eventCountParams.set("columns", "eventCount");
+  //       eventCountParams.set("groupBy", "date");
+  //       eventCountParams.set("dateView", "day");
+  //       eventCountParams.set("active_gte", moment(start).toISOString());
+  //       eventCountParams.set("active_lte", moment(end).toISOString());
 
-        const response = await getEventTrends(eventCountParams.toString());
-        if (response?.groupedData && eventsData?.events.length) {
-          const dateCounts = Object.keys(response?.groupedData).reduce<{
-            [key: string]: number;
-          }>((acc, date) => {
-            const isoDate = new Date(date);
-            const alreadyShownCount = (
-              eventsData?.events as WeekEvent[]
-            ).filter(
-              (event: WeekEvent) =>
-                new Date(event.startDateTime).getTime() ==
-                new Date(date).getTime()
-            ).length;
-            acc[isoDate.toISOString().split("T")[0]] =
-              Number(response.groupedData[date].eventCount?.total) -
-              Number(alreadyShownCount);
-            return acc;
-          }, {});
-          setWeekDateCounts(dateCounts);
-        }
-      } catch (error) {
-        console.log("Fetch Event Count Error", error);
-      }
-    }
-  };
+  //       const response = await getEventTrends(eventCountParams.toString());
+  //       if (response?.groupedData && eventsData?.events.length) {
+  //         const dateCounts = Object.keys(response?.groupedData).reduce<{
+  //           [key: string]: number;
+  //         }>((acc, date) => {
+  //           const isoDate = new Date(date);
+  //           const alreadyShownCount = (
+  //             eventsData?.events as WeekEvent[]
+  //           ).filter(
+  //             (event: WeekEvent) =>
+  //               new Date(event.startDateTime).getTime() ==
+  //               new Date(date).getTime()
+  //           ).length;
+  //           acc[isoDate.toISOString().split("T")[0]] =
+  //             Number(response.groupedData[date].eventCount?.total) -
+  //             Number(alreadyShownCount);
+  //           return acc;
+  //         }, {});
+  //         setWeekDateCounts(dateCounts);
+  //       }
+  //     } catch (error) {
+  //       console.log("Fetch Event Count Error", error);
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchEventCount();
-  }, [view, eventsData]);
+  // useEffect(() => {
+  //   fetchEventCount();
+  // }, [view, eventsData]);
 
   const shouldShowZeroState = useMemo(() => {
     const filterKeys = Array.from(searchParams.keys());
