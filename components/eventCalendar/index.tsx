@@ -29,6 +29,7 @@ import { useFilterContext } from "@/context/filterContext";
 import { useQuery } from "@tanstack/react-query";
 import Loading from "../ui/Loading";
 import { procesEvents } from "@/utils/calendarEvents";
+import { useTrackerServices } from "@/services/trackerServices";
 
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
@@ -52,15 +53,20 @@ export type CalendarEventType = {
   eventType: string;
   alertLevel?: string;
 };
-
-export default function EventCalendar() {
+interface EventCalendarProps{
+  source?:string;
+  trackerId?:string;
+  date?:any;
+}
+export default function EventCalendar({source, trackerId, date}:EventCalendarProps) {
   const searchParams = useSearchParams();
   const { getLocalFilterValue } = useFilterContext();
   const { getEventsWithSearchParams } = useEventsService();
+  const { getCalendarViewEvents } = useTrackerServices();
   const [weekDateCounts, setWeekDateCounts] = useState<any>();
   const initialDate = (() => {
-    const activeGte = getLocalFilterValue("active_gte");
-    const activeLte = getLocalFilterValue("active_lte");
+    const activeGte = source!=="tracker"?getLocalFilterValue("active_gte"):date?.split(",")[0]?.split("T")[0];
+    const activeLte = source!=="tracker"?getLocalFilterValue("active_lte"):date?.split(",")[0]?.split("T")[1];
     if (activeGte && activeLte) return activeGte;
     if (activeGte) return activeGte;
     if (activeLte) return activeLte;
@@ -82,13 +88,15 @@ export default function EventCalendar() {
   const setView = (newView: string) => {
     setGlobalFilter("calendar_type", newView);
   };
-
+  const active=getLocalFilterValue("eventType");
+  console.log(currentDate);
+  
   const { data: eventsData, isLoading: isEventsLoading } = useQuery<
     | CalendarWeekEventsResponse
     | CalendarMonthEventsResponse
     | CalendarYearEventsResponse
   >({
-    queryKey: ["events", view, currentDate, searchParams.toString()],
+    queryKey: ["events", view, currentDate, searchParams.toString(), active],
     queryFn: async () => {
       const { start, end } = getVisibleDateRange(view, currentDate);
       const updatedParams = new URLSearchParams(searchParams);
@@ -96,9 +104,18 @@ export default function EventCalendar() {
       // updatedParams.set("active_lte", moment(end).toISOString());
       // updatedParams.set("view", view);
 
-      const response = await getEventsWithSearchParams(
+      const response = source!=="tracker"?await getEventsWithSearchParams(
         updatedParams.toString()
-      );
+      ): await getCalendarViewEvents(trackerId || "", `type=${
+        active === "activeEvent"
+          ? "active"
+          : active === "expiredEvent"
+          ? "expired"
+          : active === "newEvent"
+          ? "" : active === "savedEvent" ? "saved":
+           "active"
+      }&groupBy=${date}`, false, view);
+
       return response as any;
     },
     refetchOnWindowFocus: false,
@@ -380,6 +397,8 @@ export default function EventCalendar() {
           </div>
           {showEventList && (
             <EventList
+              source={"tracker"}
+              trackerId={trackerId}
               eventDate={selectedDate || currentDate}
               onClose={() => setShowEventList(false)}
             />

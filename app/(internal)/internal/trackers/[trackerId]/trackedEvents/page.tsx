@@ -40,6 +40,7 @@ import { useTrackerContext } from "@/context/tracker";
 import ZeroState from "@/components/zerostate";
 import { ApiError } from "@/types/api";
 import { useFilterState } from "@/hooks/useFilterState";
+import EventCalendar from "@/components/eventCalendar";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
@@ -181,29 +182,7 @@ const Page = ({ params }: { params: any }) => {
   >({
     queryKey: ["events", params, searchParams.toString()],
     queryFn: async () => {
-      if (viewType === "calendar") {
-        return getCalendarViewEvents(
-          trackerId,
-          `type=${
-            active === "Active Events"
-              ? "active"
-              : active === "Expired Events"
-              ? "expired"
-              : active === "New Events"
-              ? ""
-              : active === "Saved Events"
-              ? "saved"
-              : "active"
-          }&groupBy=${
-            data.tracker.filterValue.startDate
-              ? data.tracker.filterValue.startDate
-              : adaptParams(searchParams)
-          }`,
-          false,
-          Array.from(searchParams.values())[3]
-        );
-      } 
-      else if(active==="Saved Events"){
+       if(active==="Saved Events"){
         const savedEventsResponse = await getSavedEvents(
           trackerId, 
           `offset=${skip}&max=${take}`
@@ -434,7 +413,8 @@ const activeVal =
       "Expired Events"
     ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
     : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
-    
+  console.log(data?.tracker?.filterValue?.startDate);
+  
   return (
     <div className="flex w-[calc(100vw-134px)]">
     {/* <SideNav/> */}
@@ -663,11 +643,30 @@ const activeVal =
               </Suspense>
             </div>
           )}
-
+        {/* {(view === "calendar" ) && (
+            <div>
+              <Suspense fallback={<Loading />}>
+              {isLoading ? (
+            <Loading />
+          ) : eventData?.count == 0 ? (
+            <NullState image={TrackerNullState} title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Congfigurations" buttonUrl={`/internal/trackers/${params.trackerId}/trackedConfiguration?type=${trackerDetail?.type}`}/>
+          ) : error ? (
+            <ZeroState text={(error as ApiError).message} />
+          ) : (
+            <EventCalendar
+              type={`${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":active==="Saved Events"?"saved":"active"}`}
+              source="tracker"
+              trackerId={params.trackerId}
+              events={events as CalendarEvent[] | CalendarMonthEvent[]}
+            />
+          )}
+              </Suspense>
+            </div>
+          )} */}
         {view === "calendar" && (
           <div>
             <Suspense fallback={<Loading />}>
-              <CalendarContainer queryString={urlQueryString} />
+              <EventCalendar source={"tracker"} trackerId={trackerId} date={data?.tracker?.filterValue?.startDate}/>
             </Suspense>
           </div>
         )}

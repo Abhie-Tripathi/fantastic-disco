@@ -22,18 +22,27 @@ import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import { useTrackerServices } from "@/services/trackerServices";
+import { useFilterContext } from "@/context/filterContext";
 
 export default function EventList({
   eventDate,
   onClose,
+  source,
+  trackerId
 }: {
   eventDate: Date;
   onClose: () => void;
+  source?: string;
+  trackerId?:string;
 }) {
+  const { getLocalFilterValue } = useFilterContext();
   const [currentPage, setCurrentPage] = useState(1);
   const searchParams = useSearchParams();
   const eventService = useEventsService();
-
+  const { getCalendarViewEvents } = useTrackerServices();
+  const active=getLocalFilterValue("eventType");
+  
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.delete("view");
   filteredParams.set("skip", String((currentPage - 1) * 10));
@@ -42,7 +51,15 @@ export default function EventList({
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString()],
     queryFn: () =>
-      eventService.getEventsWithSearchParams(filteredParams.toString()),
+      source!=="tracker"?eventService.getEventsWithSearchParams(filteredParams.toString()):getCalendarViewEvents(trackerId || "", `type=${
+        active === "activeEvent"
+          ? "active"
+          : active === "expiredEvent"
+          ? "expired"
+          : active === "newEvent"
+          ? "" : active === "savedEvent" ? "saved":
+           "active"
+      }&startDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&endDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&limit=10&offset=${(currentPage - 1) * 10 }`, true ),
   });
 
   const handlePageChange = (page: number) => {
