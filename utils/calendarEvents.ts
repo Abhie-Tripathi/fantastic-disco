@@ -92,8 +92,8 @@ import {
       Object.entries(eventsData_.events).forEach(([date, eventData]) => {
         const heatmapCategory = getHeatmapCategory(eventData.total);
         const monthKey = date.substring(0, 7);
-        const monthCount =
-          (eventsData_ as CalendarYearEventsResponse).countByMonth[monthKey] || 0;
+        // const monthCount =
+        //   (eventsData_ as CalendarYearEventsResponse).countByMonth[monthKey] || 0;
   
         ["business", "social"].forEach((eventType) => {
           if (eventData[eventType as keyof YearEventCount] > 0) {
@@ -108,7 +108,7 @@ import {
               impactScore: eventData.averageImpactScore,
               count: eventData[eventType as keyof YearEventCount] as number,
               heatmapCategory,
-              monthCount,
+              // monthCount,
             });
           }
         });
