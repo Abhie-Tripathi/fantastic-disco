@@ -18,8 +18,6 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   const router= useRouter();
   const {  setIsNewCall, setTrackerId, isLoading:load, setSkip } = useTrackerContext();
   const {setFilter, getFilterValue, setMultipleFilters} = useFilterState();
-  // const { theme } = useTheme();
-  // console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     datasets: [

@@ -337,19 +337,6 @@ const Trackers = ({ searchParams }: Search) => {
   }
   }, [singleTrackerData]);
   const fetchNote=async(id:string)=>{
-    // const url =
-    // `${baseUrl}/comment?stage=INTERNAL&entityType=TRACKER&entityId=${id}&offset=0&limit=1`;
-    // const { data, error } = await myFetch(url);
-    // if (data) {
-    //   // setNotes([]);
-    //   console.log(data);
-    //   // setNotes(data.comments.reverse());
-    //   if (data.comments?.length > 0){
-    //     console.log(data);
-        
-    //     setNote(data.comments);
-    //   }else setNote("");
-    // }
     const result= await getNotesFromTracker(id,`limit=1&offset=0`)
     console.log(result);
     
@@ -360,25 +347,12 @@ const Trackers = ({ searchParams }: Search) => {
     
   }
   const fetchSavedEvent=async(id:string)=>{
-    // const url=`${baseUrl}/tracker/${id}/saved-events?limit=2&offset=0`
-    // const { data, error } = await myFetch(url);
-    // if (data) {
-    //   // setNotes([]);
-    //   console.log(data);
-    //   // setNotes(data.comments.reverse());
-    //   if (data?.count > 0){
-    //     console.log(data);
-        
-    //     setSavedEvents(data);
-    //   }else setSavedEvents("");
-    // }
     const result = await getSavedEvents(id, `limit=2&offset=0`) as { events: EventTableType[]; count: number }
     
     if(result && result?.count>0){
       setSavedEvents(result);
     }else setSavedEvents(undefined);
   }
-  console.log(savedEvents);
   const setContextData=(id:string | undefined)=>{
     GAEvent(
       "trackers",
@@ -389,14 +363,8 @@ const Trackers = ({ searchParams }: Search) => {
     setIsNewCall(true); 
     setTrackerId(id);
   }
-  // console.log(searchValue);
   const hideTemplates=(val: boolean)=>{
-
-    // setHideTemplate(false);
     if(!val){
-    // setFilter("showTemplates", (!val).toString());
-    // console.log("skipped data",getFilterValue("skip"));
-    // setSkip(getFilterValue("skip"))
     setMultipleFilters({
       showTemplates: (!val).toString(),
       id: "",
@@ -404,14 +372,12 @@ const Trackers = ({ searchParams }: Search) => {
     })
     }
     else {
-      // deleteFilter("showTemplates");
       setMultipleFilters({
         skip: skip,
         q: searchValue,
         showTemplates: "",
       })
     }
-    // setHideTemplate(val);
   }
   useEffect(()=>{
     setHideTemplate(!getFilterValue("showTemplates"))
