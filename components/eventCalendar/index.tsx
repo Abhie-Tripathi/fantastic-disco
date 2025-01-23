@@ -30,7 +30,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../ui/Loading";
 import { procesEvents } from "@/utils/calendarEvents";
 import { useTrackerServices } from "@/services/trackerServices";
-
+import { TrackersAdapter}  from "@/adapters/trackerAdapter";
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
   id: string;
@@ -64,6 +64,7 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
   const { getEventsWithSearchParams } = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
   const [weekDateCounts, setWeekDateCounts] = useState<any>();
+  const {adaptParams}=TrackersAdapter;
   const initialDate = (() => {
     const activeGte = source!=="tracker"?getLocalFilterValue("active_gte"):date?.split(",")[0]?.split("T")[0];
     const activeLte = source!=="tracker"?getLocalFilterValue("active_lte"):date?.split(",")[0]?.split("T")[1];
@@ -114,7 +115,7 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
           : active === "newEvent"
           ? "" : active === "savedEvent" ? "saved":
            "active"
-      }&groupBy=${date}`, false, view);
+      }&groupBy=${date?date:adaptParams(searchParams)}`, false, view);
 
       return response as any;
     },
