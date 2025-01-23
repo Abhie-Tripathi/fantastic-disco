@@ -108,22 +108,16 @@ const LocationForm = () => {
     }
 
     const urlParams = generateUrlParams(locationsToSend);
-    const restrictedUrl = await getRestrictedUrl(
-      urlParams || "",
-      restrictedData
-    );
-    router.push(restrictedUrl);
+    const restrictedUrl = getRestrictedUrl(urlParams || "", restrictedData);
+    router.push(restrictedUrl || "/");
     setLoading(false);
   }, [selectedLocation, generateUrlParams, router, restrictedData]);
 
   const handleSkip = useCallback(async () => {
     setSelectedLocation([defaultLocation]);
     const urlParams = generateUrlParams([defaultLocation]);
-    const restrictedUrl = await getRestrictedUrl(
-      urlParams || "",
-      restrictedData
-    );
-    router.push(restrictedUrl);
+    const restrictedUrl = getRestrictedUrl(urlParams || "", restrictedData);
+    router.push(restrictedUrl || "/");
   }, [generateUrlParams, router, restrictedData]);
 
   return (
