@@ -19,6 +19,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { ApiResponse, useApi } from "@/hooks/useApi";
 import { useProductSettingServices } from "@/services/settingservices/productService";
 import { SettingResearchData } from "@/types/onboarding";
+import { GAEvent } from "@/utils/GAEvent";
 
 type authContextType = {
   user: UserResponse | null;
@@ -55,7 +56,8 @@ type authContextType = {
     industry?: string,
     categories?: string,
     internalConfigSetBy?: string,
-    flow?: string
+    flow?: string,
+    type?: string,
   ) => void;
   verifyOtp: (
     user: any,
@@ -137,8 +139,9 @@ export const AuthContextProvider = ({ children }: any) => {
     industry?: string | undefined | null,
     categories?: string | null,
     internalConfigSetBy?: string,
-    flow?: string | null
-  ) => {
+    flow?: string | null,
+    type?: string | null,
+  ) => {    
     const url = `${baseUrl}/auth/customer/verify/generate`;
     const dataToSend = {
       email: email.trim(),
@@ -154,9 +157,24 @@ export const AuthContextProvider = ({ children }: any) => {
         method: "POST",
         data: { ...dataToSend },
       });
+      if(flow === 'signup') {
+        if(type === 'resend') {
+          GAEvent("Onboarding", "Onboarding", "Sign Up", "Verify OTP | Resend OTP");
+        }else {
+          GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email Entered OTP Sent");
+        }
+      }else {
+        if(type === 'resend') {
+          GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Resend OTP");
+        }else {
+          GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email Entered OTP Sent");
+        }
+      }
       router.push(`/verify-otp?${queryParams.toString()}`);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Cannot generate otp:", err);
+      if(err?.status === 404)
+        GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email - No Account");
     }
   };
 
@@ -175,8 +193,13 @@ export const AuthContextProvider = ({ children }: any) => {
           data.internalConfigSetBy,
           "signup"
         );
-      } catch (err) {
+      } catch (err: any) {
         console.error("Sign up error:", err);
+        if(err?.status === 406) {
+          GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email - Non Bussiness");
+        } else if (err?.status === 409) {
+          GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email Already Exists");
+        }
       }
     },
     [request, router]
@@ -379,6 +402,7 @@ export const AuthContextProvider = ({ children }: any) => {
         });
         if (result) {
           if (!result.user.isVerified) {
+            GAEvent("Onboarding", "Onboarding", "Sign Up", "Verify OTP | Invalid Submitted");
             setError({
               response: "Invalid Code",
               status: 400,
@@ -388,6 +412,7 @@ export const AuthContextProvider = ({ children }: any) => {
             return;
           }
           if (result.user.isVerified) {
+            GAEvent("Onboarding", "Onboarding", "Sign Up", "Verify OTP | Valid Submitted");
             setUser(result.user);
             setLocalStorage(result.user);
             localStorage.removeItem("walkthroughCompleted");
@@ -422,6 +447,7 @@ export const AuthContextProvider = ({ children }: any) => {
             });
           }
           if (result.user.isVerified) {
+            GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Valid Submitted");
             setUser(result.user);
             setLocalStorage(result.user);
             localStorage.setItem(
@@ -434,6 +460,7 @@ export const AuthContextProvider = ({ children }: any) => {
         }
       } catch (err) {
         console.log("OTP verification error:", err);
+        GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Invalid Submitted");
       }
     },
     [request, router]
