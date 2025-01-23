@@ -1,11 +1,11 @@
-
 import {
-  EventsResponse,
   Event,
-  CalendarMonthEvent,
-  CalendarWeekEventsResponse,
-  MapEventsResponse,
   GTMEventDetail,
+  EventsResponse,
+  MapEventsResponse,
+  CalendarWeekEventsResponse,
+  CalendarMonthEventsResponse,
+  CalendarYearEventsResponse,
 } from "@/types/events";
 import { newCategories } from "@/data/categories";
 import { designations } from "@/data/designations";
@@ -578,6 +578,7 @@ export const EventsAdapter = {
             const type = item.type[0].toLowerCase();
             if (type === "tradeshow") return "tradeshows";
             if (type === "conference") return "conferences";
+            if (type === "workshop") return "workshops";
             return type;
           })(),
           categories: item.categories.map((cat: any) => ({

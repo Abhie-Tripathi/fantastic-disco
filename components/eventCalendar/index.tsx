@@ -137,10 +137,8 @@ export default function EventCalendar() {
     view,
     unAttendedEvents,
     eventsData,
-    filter,
+    filter
   );
-
-  console.log("eventsData", eventsData)
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
@@ -380,6 +378,7 @@ export default function EventCalendar() {
           </div>
           {showEventList && (
             <EventList
+              source="search"
               eventDate={selectedDate || currentDate}
               onClose={() => setShowEventList(false)}
             />
