@@ -34,13 +34,13 @@ export default function EventList({
   eventDate: Date;
   onClose: () => void;
   source: string;
-  trackerId?:string;
-  type?:string;
+  trackerId?: string;
+  type?: string;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const searchParams = useSearchParams();
   const eventService = useEventsService();
-  const {getCalendarViewEvents}=useTrackerServices();
+  const { getCalendarViewEvents } = useTrackerServices();
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.delete("view");
   filteredParams.set("skip", String((currentPage - 1) * 10));
@@ -48,8 +48,18 @@ export default function EventList({
   filteredParams.set("active_gte", eventDate.toISOString());
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString()],
-    queryFn: () => 
-      source==="tracker"?getCalendarViewEvents(trackerId || "", `type=${type}&startDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&endDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&limit=10&offset=${(currentPage - 1) * 10 }`, true ):eventService.getEventsWithSearchParams(filteredParams.toString()),
+    queryFn: () =>
+      source === "tracker"
+        ? getCalendarViewEvents(
+            trackerId || "",
+            `type=${type}&startDate=${eventDate.toISOString().split("T")[0]},${
+              eventDate.toISOString().split("T")[0]
+            }&endDate=${eventDate.toISOString().split("T")[0]},${
+              eventDate.toISOString().split("T")[0]
+            }&limit=10&offset=${(currentPage - 1) * 10}`,
+            true
+          )
+        : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
 
   const handlePageChange = (page: number) => {
@@ -89,8 +99,7 @@ export default function EventList({
         : `${formattedStartDate} - ${formattedEndDate} (${days} ${
             days === 1 ? "day" : "days"
           })`;
-          
-          console.log(event.primaryEventType)
+
     return (
       <Link href={`/internal/event/${event.id}`} target="_blank">
         <Card key={event.id} className="mb-4 relative">
