@@ -63,6 +63,7 @@ export default function NewVerificationForm() {
   const flow = searchParams.get("flow") || "";
 
   const urlParams = useMemo(() => {
+    const params = new URLSearchParams();
     const currentDate = new Date();
     const startDate = new Date(
       startOfMonth(currentDate).setHours(5, 30, 0, 0)
@@ -70,10 +71,17 @@ export default function NewVerificationForm() {
     const endDate = new Date(
       endOfMonth(currentDate).setHours(5, 30, 0, 0)
     ).toISOString();
-    const queryParams = `status=active,cancelled,postponed&view=map${
-      categories && categories.length > 0 ? `&categories=${categories}` : ""
-    }&active_gte=${startDate}&active_lte=${endDate}&locationIds=e3ef02ad-2f97-5fa6-9033-9addfad3f0ef`;
-    return queryParams;
+
+    params.set("view", "map");
+    params.set("status", "active,cancelled,postponed");
+    params.set("active_gte", startDate);
+    params.set("active_lte", endDate);
+    params.set("locationIds", "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef");
+
+    if (categories && categories.length > 0) {
+      params.set("categories", categories);
+    }
+    return params;
   }, [categories]);
 
   const redirectTo = useMemo(() => {

@@ -19,6 +19,9 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { ApiResponse, useApi } from "@/hooks/useApi";
 import { useProductSettingServices } from "@/services/settingservices/productService";
 import { SettingResearchData } from "@/types/onboarding";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useEventsService } from "@/services/eventsService";
+import { getRestrictedUrl } from "@/utils/generateUrl";
 
 type authContextType = {
   user: UserResponse | null;
@@ -123,6 +126,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
   const { updateResearchData } = useProductSettingServices();
+  const eventService = useEventsService();
 
   interface SignUp {
     data?: SignUpResponse;
@@ -393,7 +397,14 @@ export const AuthContextProvider = ({ children }: any) => {
             localStorage.removeItem("walkthroughCompleted");
             internalConfigSetBy === "internal" &&
               (await updateResearchData({ formData: settingsInterestData }));
-            router.push(redirectTo || "/");
+            const restrictedData: any = await eventService.fetchEnabledFilters(
+              "research"
+            );
+            const restrictedUrl = await getRestrictedUrl(
+              redirectTo || "",
+              restrictedData
+            );
+            router.push(restrictedUrl || "/");
           }
         }
       } catch (err) {

@@ -7,6 +7,9 @@ import { endOfMonth, startOfMonth } from "date-fns";
 import AutocompleteInput from "@/components/search/AutocompleteInput";
 import { newCategories } from "@/data/categories";
 import "react-toastify/dist/ReactToastify.css";
+import { getRestrictedUrl } from "@/utils/generateUrl";
+import { useEventsService } from "@/services/eventsService";
+import { useQuery } from "@tanstack/react-query";
 
 export interface LocationItem {
   id: string;
@@ -32,9 +35,15 @@ const LocationForm = () => {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const eventService = useEventsService();
   const [selectedLocation, setSelectedLocation] = useState<
     LocationItem[] | null
   >([]);
+
+  const { data: restrictedData } = useQuery({
+    queryKey: ["restriction"],
+    queryFn: () => eventService.fetchEnabledFilters("research"),
+  });
 
   const urlParams = useMemo(() => {
     const currentDate = new Date();
@@ -66,6 +75,8 @@ const LocationForm = () => {
 
   const generateUrlParams = useCallback(
     (locations: LocationItem[]) => {
+      const params = new URLSearchParams();
+
       const currentDate = new Date();
       const startDate = new Date(
         startOfMonth(currentDate).setHours(5, 30, 0, 0)
@@ -73,22 +84,19 @@ const LocationForm = () => {
       const endDate = new Date(
         endOfMonth(currentDate).setHours(5, 30, 0, 0)
       ).toISOString();
-      const selectedCategories =
-        searchParams.get("categories")?.split(",") || [];
-      const categories = newCategories
-        .filter((category) => selectedCategories.includes(category.id))
-        .map((category) => category.slug);
+      const locationIds = locations.map((location) => location.id).join(",");
+      params.set("view", "map");
+      params.set("status", "active,cancelled,postponed");
+      params.set("active_gte", startDate);
+      params.set("active_lte", endDate);
+      params.set("locationIds", locationIds);
 
-      return `status=active,cancelled,postponed&view=map${
-        categories.length > 0 ? `&categories=${categories.join(",")}` : ""
-      }&active_gte=${startDate}&active_lte=${endDate}&locationIds=${locations
-        .map((location) => location.id)
-        .join(",")}`;
+      return `/internal/search/events?${params.toString()}`;
     },
     [searchParams]
   );
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     setLoading(true);
 
     let locationsToSend: LocationItem[] = [];
@@ -100,15 +108,23 @@ const LocationForm = () => {
     }
 
     const urlParams = generateUrlParams(locationsToSend);
-    router.push(`/internal/search/events?${urlParams}`);
+    const restrictedUrl = await getRestrictedUrl(
+      urlParams || "",
+      restrictedData
+    );
+    router.push(restrictedUrl);
     setLoading(false);
-  }, [selectedLocation, generateUrlParams, router]);
+  }, [selectedLocation, generateUrlParams, router, restrictedData]);
 
-  const handleSkip = useCallback(() => {
+  const handleSkip = useCallback(async () => {
     setSelectedLocation([defaultLocation]);
     const urlParams = generateUrlParams([defaultLocation]);
-    router.push(`/internal/search/events?${urlParams}`);
-  }, [generateUrlParams, router]);
+    const restrictedUrl = await getRestrictedUrl(
+      urlParams || "",
+      restrictedData
+    );
+    router.push(restrictedUrl);
+  }, [generateUrlParams, router, restrictedData]);
 
   return (
     <div className="flex flex-col gap-6 flex-1  w-full justify-center h-[80vh]">
