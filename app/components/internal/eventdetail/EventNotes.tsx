@@ -5,6 +5,7 @@ import Image from "next/image";
 import PeopleIcon from "/public/user.svg";
 import downArrowIcon from "/public/arrow_down.svg";
 import { useTheme } from "@/context";
+import { MessageSquareMore } from "lucide-react";
 
 interface Props {
   setExpandedTab: any;
@@ -17,7 +18,8 @@ const EventNotes = ({ setExpandedTab }: Props) => {
   return (
     <div className={`${styles.container} card`}>
       <div className={styles.header} onClick={() => setExpandedTab("notes")}>
-        <Image src={PeopleIcon} alt="page" className={iconClass} />
+        {/* <Image src={PeopleIcon} alt="page" className={iconClass} /> */}
+        <MessageSquareMore width="24px" height="24px"/>
         <div className={styles.eventDetail_header}>
           Notes
           <span className={styles.image_container}>

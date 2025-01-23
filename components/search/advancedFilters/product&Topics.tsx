@@ -33,6 +33,7 @@ export default function KeywordFilter({
     setMultipleLocalFilters,
     localFilters,
     searchParams,
+    setLocalFilter
   } = useFilterContext();
   const [localIncludeKeywords, setLocalIncludeKeywords] = useState<string[]>(
     []
@@ -66,12 +67,13 @@ const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
         const uniqueNewKeywords = newKeywords.filter(
           (k) => !includeKeywords.includes(k)
         );
-        
+        setLocalFilter("includeKeywords",[...includeKeywords, ...uniqueNewKeywords].join(","))
         setIncludeKeywords?.([...includeKeywords, ...uniqueNewKeywords]);
       } else {
         const uniqueNewKeywords = newKeywords.filter(
           (k) => !excludeKeywords.includes(k)
         );
+        setLocalFilter("excludeKeywords",[...excludeKeywords, ...uniqueNewKeywords].join(","))
         setExcludeKeywords?.([...excludeKeywords, ...uniqueNewKeywords]);
       }
       setInputValue("");
@@ -84,16 +86,18 @@ const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
   ) => {
     if (type === "include") {
       setIncludeKeywords?.(includeKeywords.filter((k) => k !== keyword));
+      setLocalFilter("includeKeywords", includeKeywords.filter((k) => k !== keyword).join(","))
     } else {
       setExcludeKeywords?.(excludeKeywords.filter((k) => k !== keyword));
+      setLocalFilter("excludeKeywords", excludeKeywords.filter((k) => k !== keyword).join(","));
     }
   };
 
   const handleApply = () => {
-    setMultipleLocalFilters({
-      includeKeywords: includeKeywords.join(","),
-      excludeKeywords: excludeKeywords.join(","),
-    });
+    // setMultipleLocalFilters({
+    //   includeKeywords: includeKeywords.join(","),
+    //   excludeKeywords: excludeKeywords.join(","),
+    // });
     setIsOpen(false);
   };
 
@@ -103,11 +107,12 @@ const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
       handleApply();
     }
   };
-  useEffect(() => {
-    if (type === "T_PRODUCT_KEYWORDS" && !isOpen) {
-      handleOpenChange(true);
-    }
-  }, [type, isOpen]);
+  // useEffect(() => {
+  //   if (type === "T_PRODUCT_KEYWORDS" && !isOpen) {
+  //     handleOpenChange(true);
+  //   }
+  // }, [type, isOpen]);
+  // console.log(includeKeywords);
   
   return (
     <Popover open={isOpen} onOpenChange={handleOpenChange}>

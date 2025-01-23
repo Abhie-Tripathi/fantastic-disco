@@ -10,6 +10,7 @@ import { baseUrl } from "@/constants";
 import { showToast } from "@/utils/showToast";
 import downArrowIcon from "/public/arrow_down.svg";
 import UserProfile from "../../userProfile/UserProfile";
+import { UserPlus } from "lucide-react";
 
 const Follower = ({
   eventId,
@@ -79,7 +80,8 @@ const Follower = ({
           className={styles.header}
           onClick={() => setAccordianToggle(!accordianToggle)}
         >
-          <Image src={PeopleIcon} alt="page" className={iconClass} />
+          {/* <Image src={PeopleIcon} alt="page" className={iconClass} /> */}
+          <UserPlus width="24px" height="24px"/>
           <div className={styles.eventDetail_header}>
             Followers
             <span className={styles.image_container}>

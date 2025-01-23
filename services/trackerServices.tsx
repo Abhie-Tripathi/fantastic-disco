@@ -12,9 +12,12 @@ interface OriginalResponse {
 }
 type GetSavedEventsResponse =
   | { result: EventTableType[]; count: number }
-  | {events: EventTableType[]; totalEvents: number}
+  | { events: EventTableType[]; count: number }
+  | { events: EventTableType[]; totalEvents: number }
   | CalendarWeekEventsResponse
-  | MapEventsResponse | EventsResponse;
+  | MapEventsResponse
+  | EventsResponse;
+
 export const useTrackerServices = () => {
     const api = useApi();
     const {getFilterValue} =useFilterState();
@@ -48,7 +51,7 @@ export const useTrackerServices = () => {
       params: string,
       signal?: AbortSignal
     ): Promise<GetSavedEventsResponse | undefined> => {
-      const response = await api.request<{ result: EventTableType[]; count: number }>(
+      const response = await api.request<{ result: EventTableType[]; count: number  }>(
         `${endpoints.tracker.getSavedEvents}/${trackerId}/saved-events?${params}`,
         {
           method: "GET",
