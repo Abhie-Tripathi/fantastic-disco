@@ -175,6 +175,8 @@ export const AuthContextProvider = ({ children }: any) => {
       console.error("Cannot generate otp:", err);
       if(err?.status === 404)
         GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email - No Account");
+      else
+        GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email Invalid");
     }
   };
 
