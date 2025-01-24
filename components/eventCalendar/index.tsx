@@ -60,7 +60,7 @@ interface EventCalendarProps{
   trackerId?:string;
   date?:any;
 }
-export default function EventCalendar({source, trackerId, date}:EventCalendarProps) {
+export default function EventCalendar({source, trackerId, date:trackerDate}:EventCalendarProps) {
   const searchParams = useSearchParams();
   const { getLocalFilterValue } = useFilterContext();
   const { getEventsWithSearchParams } = useEventsService();
@@ -68,8 +68,8 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
   const [weekDateCounts, setWeekDateCounts] = useState<any>();
   const {adaptParams}=TrackersAdapter;
   const initialDate = (() => {
-    const activeGte = source!=="tracker"?getLocalFilterValue("active_gte"):date?.split(",")[0]?.split("T")[0];
-    const activeLte = source!=="tracker"?getLocalFilterValue("active_lte"):date?.split(",")[0]?.split("T")[1];
+    const activeGte = source!=="tracker"?getLocalFilterValue("active_gte"):trackerDate?.split(",")[0]?.split("T")[0];
+    const activeLte = source!=="tracker"?getLocalFilterValue("active_lte"):trackerDate?.split(",")[0]?.split("T")[1];
     if (activeGte && activeLte) return activeGte;
     if (activeGte) return activeGte;
     if (activeLte) return activeLte;
@@ -106,7 +106,8 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
       updatedParams.set("active_gte", moment(start).toISOString());
       updatedParams.set("active_lte", moment(end).toISOString());
       // updatedParams.set("view", view);
-
+      console.log(moment(start).toISOString());
+      
       const response = source!=="tracker"?await getEventsWithSearchParams(
         updatedParams.toString()
       ): await getCalendarViewEvents(trackerId || "", `type=${
@@ -117,7 +118,7 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
           : active === "newEvent"
           ? "" : active === "savedEvent" ? "saved":
            "active"
-      }&groupBy=${date?date:adaptParams(searchParams)}`, false, view);
+      }&groupBy=${trackerDate?trackerDate:adaptParams(searchParams)}`, false, view);
 
       return response as any;
     },
@@ -151,6 +152,7 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
   //   },
   // });
 
+  
   const unAttendedEvents = { holidays: [], alerts: [] };
 
   const processedEvents = procesEvents(
@@ -240,7 +242,8 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
     (view: string, date: Date) => {
       let start = moment(date);
       let end = moment(date);
-
+      console.log(start, end);
+      
       switch (view) {
         case Views.WEEK:
           start.startOf("week").add(1, "day");
@@ -255,9 +258,10 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
           end.endOf("year");
           break;
       }
-
-      const searchStart = moment(searchParams.get("active_gte"));
-      const searchEnd = moment(searchParams.get("active_lte"));
+      console.log(searchParams.get("active_gte"), searchParams.get("active_lte"));
+      
+      const searchStart = source!=="tracker"?moment(searchParams.get("active_gte")):moment(trackerDate?.split(",")[0]?.split("T")[0]);
+      const searchEnd = source!=="tracker"?moment(searchParams.get("active_lte")):moment(trackerDate?.split(",")[0]?.split("T")[1]);
 
       if (searchStart.isValid() && start.isBefore(searchStart)) {
         start = searchStart.clone();
@@ -268,9 +272,9 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
 
       return { start: start.toDate(), end: end.toDate() };
     },
-    [getLocalFilterValue]
+    [getLocalFilterValue, trackerDate]
   );
-
+  console.log(getVisibleDateRange(view, currentDate));
   const handleNavigate = (date: Date) => {
     setCurrentDate(date);
   };
