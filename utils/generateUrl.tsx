@@ -93,6 +93,7 @@ export const getRestrictedUrl = (redirectTo: string, restrictedData: any) => {
       const eventStatus = restrictedData.eventStatus.enabledValue
         .join(",")
         .toLowerCase();
+      params.delete("status");
       params.set("eventStatus", eventStatus);
     }
     if (
