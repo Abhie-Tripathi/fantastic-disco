@@ -75,7 +75,7 @@ export function useDefaultFilters() {
       if (!currentEventTypes)
         defaultSearchParams.set(
           "eventTypes",
-          "community,concert,performing-arts,sport,festival,workshops,tradeshows,conferences,holiday"
+          "workshops,tradeshows,conferences"
         );
 
       if (pathName === "/trends") {
@@ -117,9 +117,7 @@ export function useDefaultFilters() {
       ) {
         defaultSearchParams.set(
           "show",
-          ["alerts", "scores", "economicImpact", ...show]
-            .join(",")
-            .replace(/^,|,$/, "")
+          ["alerts", "scores", ...show].join(",").replace(/^,|,$/, "")
         );
       }
 
