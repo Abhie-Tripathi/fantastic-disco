@@ -648,29 +648,20 @@ const Pages = () => {
 
   const [userName, setUserName] = useState("");
   const [userCompany, setUserCompany] = useState("");
-
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  useEffect(() => {
-    const fetchAISuggestion = async (val: any) => {
-      try{
-        const promptText = `List only name of top 5 companies similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {"data": ["company name 1","company name 2","company name 3","company name 4","company name 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`;
-        let aiResponse: any = await suggestionGenerator(promptText);
-        let temp = JSON.parse(aiResponse.choices[0].message.content);  
-        if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
-          setSuggestions(temp.data);
-      } catch (err) {
-        console.error("Fetch failed:", err);
-        setSuggestions([]);
-      }
-    }  
-
+  useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if(customData.length > 0 && Object.values(customData[0])[0]) {
-        fetchAISuggestion(Object.values(customData[0])[0]);
+        let placeholder = template?.inputAreas?.[0]?.placeholder || "";
+        const promptText=`List only name of top 5 companies similar to ${Object.values(customData[0])[0]}. Response should be in plain JSON format without any additional formatting or text: {"data": [ "company name 1" ,
+        "company name 2" , "company name 3" ,
+         "company name 4" ,
+        "company name 5" ]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
+        fetchAISuggestion(promptText);
       }
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       const urls = customData
@@ -687,6 +678,18 @@ const Pages = () => {
     setOrg(orgNames);
     }
     else if (type === "T_SPEAKING_OPPORTUNITY") {
+      if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
+          "data": [
+              [ "speaker name 1", "company name 1" ],
+               ["speaker name 2", "company name 2" ],
+              [ "speaker name 3",  "company name 3" ],
+              [  "speaker name 4", "company name 4" ],
+              [ "speaker name 5", "company name 5" ]
+             ]
+            }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+         fetchAISuggestion(promptText);
+      }
       const speakerName = customData.map((item: {}) => Object.values(item)[0]).join(',');
       const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
       setSpeakerName(speakerName);
@@ -695,14 +698,53 @@ const Pages = () => {
 
     }
     else if (type === "T_PEOPLE_FINDER") {
-      setUserName(customData.map((item: {}) => Object.values(item)[0]).join(','))
-      setUserCompany(customData.map((item: {}) => Object.values(item)[1]).join(','))
+      if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
+        "data": [
+          [ "name 1", "company name 1" ],
+          ["name 2", "company name 2" ],
+          ["name 3", "company name 3" ],
+          [ "name 4", "company name 4" ],
+          [ "name 5", "company name 5" ]
+        ]
+      }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+      fetchAISuggestion(promptText);
+      }
+      const userName = customData.map((item: {}) => Object.values(item)[0]).join(',');
+      const userCompany = customData.map((item: {}) => Object.values(item)[1]).join(',')
+      setUserName(userName)
+      setUserCompany(userCompany)
+      if(userName.length>0 && userCompany.length>0){
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
+        "data": [
+          [ "name 1", "company name 1" ],
+          ["name 2", "company name 2" ],
+          ["name 3", "company name 3" ],
+          [ "name 4", "company name 4" ],
+          [ "name 5", "company name 5" ]
+        ]
+      }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+      fetchAISuggestion(promptText);
+      }
     } else if (type === "T_BRAND_BUILDING") {
       const designation = customData.map((item: {}) => Object.values(item)[0]).join(',');
       setDesignations(designation);
     }
   }, [type, customData])
-
+  const fetchAISuggestion = async(promptText:string)=>{
+    // console.log(val);
+    try{
+      let aiResponse: any = await suggestionGenerator(promptText);
+      
+      let temp = JSON.parse(aiResponse.choices[0].message.content);  
+      if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0){
+        setSuggestions(temp.data)
+      }
+    } catch (err) {
+      console.error("Fetch failed:", err);
+      setSuggestions([]);
+    }
+  }
   const scrollableDivRef = useRef<HTMLDivElement>(null);
 
   const handlePresetClick = (presetItem: PresetJsonData, id: number, trackerType: string, trackerName: string) => {
@@ -776,7 +818,6 @@ const Pages = () => {
       }
     });
     
-
     const userType = {
       ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
       ...(getLocalFilterValue("show").split(",").includes("estimatedExhibitors") && { exhibit: true }),
@@ -1642,12 +1683,16 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
 };
 const abortControllerRef = useRef<AbortController | null>(null);
 const [selected,setSelected]=useState(false);
-const addCompany = (id:number,val: string) => {
+const addCompany = (id:number,val: any) => {
   setSelected(true);
+  if(!Array.isArray(val)){
   setInputValues(prevValues => ({
     ...prevValues,
     [0]: val
-  }));
+  }));  
+  }else{
+    setInputValues(val);
+  }
 }
 useEffect(()=>{
   if(selected) {
@@ -1720,7 +1765,12 @@ const commonCss={
 //   }
   
 // },[enabledFilters])
-
+// console.log(template?.inputAreas[0]?.placeholder);
+const generateDynamicString = (item: any) => {
+  if(Array.isArray(item)){
+    return `${item[0]} (${item[1]})`;
+  }else return item;
+};
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -1746,7 +1796,7 @@ return (
       <Link
         href={
           last === "create"
-            ? "/internal/trackers"
+            ? "/internal/trackers?showTemplates=true"
             : `/internal/trackers/${pathName[pathName.length - 2]
             }/trackedConfiguration?type=${type}`
         }
@@ -1758,7 +1808,7 @@ return (
       {/* <button className={styles.save} onClick={saveTrackerHandler}>
         Save Tracker
       </button> */}
-      <Button className="text-white" onClick={saveTrackerHandler}>Save Tracker</Button>
+      <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
     </div>
     </div>
   </div>
@@ -1853,7 +1903,7 @@ return (
     isMandatory={isMandatory}
     setIsMandatory={setIsMandatory}
     /> */}
-    <ProductSelector type="T_PRODUCT_KEYWORDS"/>
+    <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions}/>
     </div>
     </div>
     }
@@ -1953,9 +2003,9 @@ return (
                   <span className={styles.experimental_tag} >Beta</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {suggestions.map((item: string, ind: number)=>(
-                    <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{item}</div>
-                  ))}
+                    {suggestions.map((item: any, ind: number)=>(
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{generateDynamicString(item)}</div>
+                    ))} 
                 </div>
               </div>
             }

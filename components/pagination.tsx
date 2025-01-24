@@ -19,12 +19,13 @@ import {
 } from "@/components/ui/select";
 
 interface PaginationComponentProps {
-  currentPage: number;
-  totalPages: number;
-  itemsPerPage: number;
-  count: number;
-  onPageChange: (page: number) => void;
-  onItemsPerPageChange: (value: string) => void;
+  currentPage: number
+  totalPages: number
+  itemsPerPage: number
+  count: number
+  onPageChange: (page: number) => void
+  onItemsPerPageChange?: (value: string) => void
+  showEntriesCount?:boolean;
 }
 
 export function PaginationComponent({
@@ -34,6 +35,10 @@ export function PaginationComponent({
   count,
   onPageChange,
   onItemsPerPageChange,
+<<<<<<< HEAD
+=======
+  showEntriesCount = true
+>>>>>>> 2883ca2aad0a5f5d00641c6e9a0150add4b9f313
 }: PaginationComponentProps) {
   const renderPaginationItems = () => {
     const items = [];
@@ -114,12 +119,26 @@ export function PaginationComponent({
   };
 
   return (
-    <div className="flex justify-between items-center gap-4 px-2">
-      <span className="text-sm text-muted-foreground">
-        Showing {Math.min((currentPage - 1) * itemsPerPage + 1, count)} to{" "}
-        {Math.min(currentPage * itemsPerPage, count)} of {count} results
-      </span>
-
+    <div className="space-y-4">
+        <div className="flex items-center space-x-2">
+          <span className="text-sm text-muted-foreground">
+            Results per page:
+          </span>
+          <Select
+            value={itemsPerPage.toString()}
+            onValueChange={onItemsPerPageChange}
+          >
+            <SelectTrigger className="w-[70px]">
+              <SelectValue>{itemsPerPage}</SelectValue>
+            </SelectTrigger>
+            <SelectContent align="end">
+              <SelectItem value="10">10</SelectItem>
+              <SelectItem value="20">20</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      }
       <Pagination>
         <PaginationContent className="flex-wrap justify-center">
           <PaginationItem>
@@ -128,7 +147,6 @@ export function PaginationComponent({
               onClick={() => onPageChange(Math.max(1, currentPage - 1))}
               className={
                 currentPage === 1 ? "pointer-events-none opacity-50" : ""
-              }
             />
           </PaginationItem>
           {renderPaginationItems()}

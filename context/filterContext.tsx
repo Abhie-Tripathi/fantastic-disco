@@ -197,11 +197,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [searchParams, enabledFilters]);
 
-  useEffect(() => {
-    if (pathname === "/internal") {
-      clearLocalFilters();
-    }
-  }, [pathname]);
 
   const setLocalFilter = useCallback(
     (key: keyof Filters, value: string) => {
