@@ -679,7 +679,7 @@ const Pages = () => {
     }
     else if (type === "T_SPEAKING_OPPORTUNITY") {
       if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
-        const promptText = `Provide a list of the top 5 professionals similar to ${Object.values(customData[0])[0]} from ${Object.values(customData[0])[1]}. Similarity is based on either holding the same role at a comparable company or working in the same department at ${Object.values(customData[0])[1]}. Furthermore you can use reliable sources such as LinkedIn, event speaker lists, or corporate directories to provide accurate results. Response should be in plain JSON format without any additional formatting or text: {
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}), either in the same role at a similar company. Response should be in plain JSON format without any additional formatting or text: {
           "data": [
               [ "Professional Name 1", "Company Name 1" ],
               [ "Professional Name 2", "Company Name 2" ],
