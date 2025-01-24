@@ -700,7 +700,7 @@ const Pages = () => {
     }
     else if (type === "T_PEOPLE_FINDER") {
       if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
-        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}), either in the same role at a similar company or within the same department at (${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
         "data": [
           [ "name 1", "company name 1" ],
           ["name 2", "company name 2" ],
