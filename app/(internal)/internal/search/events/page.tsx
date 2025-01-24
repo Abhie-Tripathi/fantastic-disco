@@ -169,7 +169,6 @@ const Search = () => {
     delete adaptedParams.max;
     delete adaptedParams.sortBy;
     delete adaptedParams.sortType;
-    console.log(new URLSearchParams(adaptedParams).toString());
     return new URLSearchParams(adaptedParams).toString();
   })();
 
