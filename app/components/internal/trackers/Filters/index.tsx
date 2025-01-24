@@ -679,15 +679,16 @@ const Pages = () => {
     }
     else if (type === "T_SPEAKING_OPPORTUNITY") {
       if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
-        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}), either in the same role at a similar company. Response should be in plain JSON format without any additional formatting or text: {
+        const promptText = `List the top 5 speakers with similar experience to ${Object.values(customData[0])[0]} (${Object.values(customData[0])[1]}). Not necessarily they have the same designation; instead, they must have spoken recently on the same topics. Response should be in plain JSON format without any additional formatting or text: {
           "data": [
-              [ "Professional Name 1", "Company Name 1" ],
-              [ "Professional Name 2", "Company Name 2" ],
-              [ "Professional Name 3", "Company Name 3" ],
-              [ "Professional Name 4", "Company Name 4" ],
-              [ "Professional Name 5", "Company Name 5" ]
-             ]
-            }. If no data is found, respond in this format: {\"data\": []}`;
+              [ "Speaker Name 1", "Company Name 1" ],
+              [ "Speaker Name 2", "Company Name 2" ],
+              [ "Speaker Name 3", "Company Name 3" ],
+              [ "Speaker Name 4", "Company Name 4" ],
+              [ "Speaker Name 5", "Company Name 5" ]
+          ]
+      }. If no data is found, respond in this format: {\"data\": []}`; 
+
          fetchAISuggestion(promptText);
       }
       const speakerName = customData.map((item: {}) => Object.values(item)[0]).join(',');
