@@ -88,53 +88,22 @@ export default function EventList({
             .join(", ")
       : "Venue to be announced";
 
-    const formattedRange = (() => {
-      if (!event.startDateTime || !event.endDateTime) {
-        return "Date to be announced";
-      }
+    const formattedStartDate = format(event.startDateTime, "dd MMM yyyy");
+    const formattedEndDate = format(event.endDateTime, "dd MMM yyyy");
 
-      const startMonth = format(event.startDateTime, "MMM");
-      const endMonth = format(event.endDateTime, "MMM");
-      const startYear = format(event.startDateTime, "yyyy");
-      const endYear = format(event.endDateTime, "yyyy");
-      const days = differenceInDays(event.endDateTime, event.startDateTime) + 1;
+    const days = differenceInDays(event.endDateTime, event.startDateTime) + 1;
 
-      if (
-        format(event.startDateTime, "dd MMM yyyy") ===
-        format(event.endDateTime, "dd MMM yyyy")
-      ) {
-        return format(event.startDateTime, "dd MMM yyyy");
-      }
-
-      if (startMonth === endMonth && startYear === endYear) {
-        return `${format(event.startDateTime, "dd")} - ${format(
-          event.endDateTime,
-          "dd"
-        )} ${startMonth} ${startYear} (${days} ${days === 1 ? "day" : "days"})`;
-      }
-
-      if (startYear === endYear) {
-        return `${format(event.startDateTime, "dd MMM")} - ${format(
-          event.endDateTime,
-          "dd MMM"
-        )} ${startYear} (${days} ${days === 1 ? "day" : "days"})`;
-      }
-
-      return `${format(event.startDateTime, "dd MMM yyyy")} - ${format(
-        event.endDateTime,
-        "dd MMM yyyy"
-      )} (${days} ${days === 1 ? "day" : "days"})`;
-    })();
+    const formattedRange =
+      formattedStartDate === formattedEndDate
+        ? formattedStartDate
+        : `${formattedStartDate} - ${formattedEndDate} (${days} ${
+            days === 1 ? "day" : "days"
+          })`;
 
     return (
-      <Link href={`/search/${event.id}`}>
+      <Link href={`/internal/event/${event.id}`} target="_blank">
         <Card key={event.id} className="mb-4 relative">
-          <div
-            className="absolute left-0 top-0 bottom-0 w-1 rounded-md"
-            style={{
-              backgroundColor: eventTypeColors[event.eventTypes[0].slug || ""],
-            }}
-          />
+          <div className="absolute left-0 top-0 bottom-0 w-1 rounded-md bg-[#5055A3]" />
           <CardContent className="p-4">
             <div className="flex items-center mb-2 pb-2 border-b">
               {eventTypeIcons[event.primaryEventType || "festivals"]}
@@ -248,7 +217,7 @@ export default function EventList({
 
     if (isLoading) {
       return (
-        <div className="flex items-center justify-center h-full">
+        <div className="flex items-center justify-center h-full bg-[var(--primary-foreground)]">
           <div className="text-center">
             <Loader2 className="w-12 h-12 text-primary mx-auto mb-4 animate-spin" />
             <p className="text-lg font-semibold text-primary">
@@ -296,7 +265,7 @@ export default function EventList({
             <EventCard key={event.id} event={event} />
           ))}
           {events.length > 0 && (
-            <Pagination>  
+            <Pagination>
               <PaginationContent className="flex-wrap">
                 <PaginationItem>
                   <PaginationPrevious
@@ -333,7 +302,7 @@ export default function EventList({
 
   return (
     <div
-      className={`h-[800px] w-[345px] mt-[70px] bg-white rounded-l-lg border`}
+      className={`h-[800px] w-[345px] mt-[54px] bg-[var(--primary-foreground)] rounded-l-lg border`}
     >
       {renderContent()}
     </div>

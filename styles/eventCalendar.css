@@ -81,14 +81,10 @@
   padding-right: 0 !important;
 }
 
-.rbc-month-view {
-  border: none;
-}
-
-.rbc-button-link {
-  pointer-events: none;
-}
-
 .rbc-month-row {
   overflow: visible;
+}
+
+.rbc-time-view .rbc-row {
+  max-height: 78px;
 }

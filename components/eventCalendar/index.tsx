@@ -22,7 +22,7 @@ import {
   WeekEvent,
 } from "@/types/events";
 import EventList from "./eventList";
-import ZeroState from "@/components/zerostate";
+import ZeroState from "@/app/components/zerostate";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEventsService } from "@/services/eventsService";
 import { useFilterContext } from "@/context/filterContext";
@@ -31,6 +31,8 @@ import Loading from "../ui/Loading";
 import { procesEvents } from "@/utils/calendarEvents";
 import { useTrackerServices } from "@/services/trackerServices";
 import { TrackersAdapter}  from "@/adapters/trackerAdapter";
+import NullState from "@/app/components/trackers/nullState";
+import TrackerNullState from '@/public/trackerNullState.svg';
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
   id: string;
@@ -92,7 +94,7 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
   const active=getLocalFilterValue("eventType");
   console.log(currentDate);
   
-  const { data: eventsData, isLoading: isEventsLoading } = useQuery<
+  const { data: eventsData, error, isLoading: isEventsLoading } = useQuery<
     | CalendarWeekEventsResponse
     | CalendarMonthEventsResponse
     | CalendarYearEventsResponse
@@ -155,10 +157,8 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
     view,
     unAttendedEvents,
     eventsData,
-    filter,
+    filter
   );
-
-  console.log("eventsData", eventsData)
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
@@ -303,7 +303,7 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
         />
       );
     }
-
+    console.log(error);
     return (
       <Calendar
         localizer={localizer}
@@ -354,10 +354,38 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
   return (
     <>
       {shouldShowZeroState ? (
-        <div className="flex justify-center items-center">
-          <ZeroState title="Discover insights on business trends filtered by geography and category, all in one glance." />
-        </div>
-      ) : (
+    <div className="flex justify-center items-center">
+      <ZeroState title="Discover insights on business trends filtered by geography and category, all in one glance." />
+    </div>
+  ) : error ? (
+    <div className="px-10 py-5">
+      {source==="tracker"?<NullState 
+        image={TrackerNullState} 
+        title={error?.message} 
+      />: 
+      <ZeroState text={error?.message} />
+      }
+    </div>
+  ) : (source === "tracker" && eventsData?.count === 0) ? (
+    (active === "savedEvent"? (
+      <div className="px-10 py-5">
+      <NullState 
+      image={TrackerNullState} 
+      title="No events saved yet! Start saving events to easily track and revisit them here."
+    />
+    </div>
+    ) :
+    <div className="px-10 py-5">
+    <NullState 
+      image={TrackerNullState} 
+      title="We couldn’t find any events matching your tracker criteria at the moment." 
+      text="Try adjusting your filters or checking back later, as new events are added frequently." 
+      buttonText="Manage Configuration" 
+      buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration`} 
+    />
+    </div>
+  )
+  ) : (
         <div className="flex custom-calendar">
           <div
             className={`flex flex-col  ${
