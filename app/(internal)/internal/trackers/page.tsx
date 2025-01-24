@@ -164,27 +164,6 @@ const Trackers = ({ searchParams }: Search) => {
       document.body.style.height = "";
     }
   }, []);
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setIsLoading(true);
-  //     const { data, error } = await myFetch(
-  //       `${baseUrl}/tracker?limit=5&offset=${offset}`
-  //     );
-  //     console.log(data);
-  //     if (error) {
-  //       console.log(error);
-  //       setIsLoading(false);
-  //       return;
-  //     }
-
-  //     if (data) {
-  //       setTrackers((prevTrackers) => [...prevTrackers, ...data.trackerData]);
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [offset]);
   const showInsights = {
     eventSize: true,
     eventKeywords: true,
@@ -338,7 +317,6 @@ const Trackers = ({ searchParams }: Search) => {
   }, [singleTrackerData]);
   const fetchNote=async(id:string)=>{
     const result= await getNotesFromTracker(id,`limit=1&offset=0`)
-    console.log(result);
     
     if(result && result.comments?.length > 0){
       setNote(result?.comments);
