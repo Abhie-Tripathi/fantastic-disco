@@ -103,8 +103,8 @@ export default function EventCalendar({source, trackerId, date}:EventCalendarPro
     queryFn: async () => {
       const { start, end } = getVisibleDateRange(view, currentDate);
       const updatedParams = new URLSearchParams(searchParams);
-      // updatedParams.set("active_gte", moment(start).toISOString());
-      // updatedParams.set("active_lte", moment(end).toISOString());
+      updatedParams.set("active_gte", moment(start).toISOString());
+      updatedParams.set("active_lte", moment(end).toISOString());
       // updatedParams.set("view", view);
 
       const response = source!=="tracker"?await getEventsWithSearchParams(
