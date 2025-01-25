@@ -1,0 +1,110 @@
+[
+  {
+    "month": "January",
+    "threshold": 300000,
+    "predictedAttendance": 125000,
+    "impactScore": 52,
+    "inboundScore": 65,
+    "intlScore": 43,
+    "events": "View All"
+  },
+  {
+    "month": "February",
+    "threshold": 300000,
+    "predictedAttendance": 180000,
+    "impactScore": 78,
+    "inboundScore": 84,
+    "intlScore": 61,
+    "events": "View All"
+  },
+  {
+    "month": "March",
+    "threshold": 300000,
+    "predictedAttendance": 200000,
+    "impactScore": 46,
+    "inboundScore": 72,
+    "intlScore": 55,
+    "events": "View All"
+  },
+  {
+    "month": "April",
+    "threshold": 300000,
+    "predictedAttendance": 215000,
+    "impactScore": 67,
+    "inboundScore": 54,
+    "intlScore": 76,
+    "events": "View All"
+  },
+  {
+    "month": "May",
+    "threshold": 300000,
+    "predictedAttendance": 240000,
+    "impactScore": 33,
+    "inboundScore": 48,
+    "intlScore": 92,
+    "events": "View All"
+  },
+  {
+    "month": "June",
+    "threshold": 300000,
+    "predictedAttendance": 275000,
+    "impactScore": 89,
+    "inboundScore": 65,
+    "intlScore": 82,
+    "events": "View All"
+  },
+  {
+    "month": "July",
+    "threshold": 300000,
+    "predictedAttendance": 220000,
+    "impactScore": 41,
+    "inboundScore": 72,
+    "intlScore": 53,
+    "events": "View All"
+  },
+  {
+    "month": "August",
+    "threshold": 300000,
+    "predictedAttendance": 260000,
+    "impactScore": 36,
+    "inboundScore": 66,
+    "intlScore": 47,
+    "events": "View All"
+  },
+  {
+    "month": "September",
+    "threshold": 300000,
+    "predictedAttendance": 235000,
+    "impactScore": 54,
+    "inboundScore": 59,
+    "intlScore": 73,
+    "events": "View All"
+  },
+  {
+    "month": "October",
+    "threshold": 300000,
+    "predictedAttendance": 275000,
+    "impactScore": 29,
+    "inboundScore": 78,
+    "intlScore": 81,
+    "events": "View All"
+  },
+  {
+    "month": "November",
+    "threshold": 300000,
+    "predictedAttendance": 290000,
+    "impactScore": 64,
+    "inboundScore": 42,
+    "intlScore": 59,
+    "events": "View All"
+  },
+  {
+    "month": "December",
+    "threshold": 300000,
+    "predictedAttendance": 310000,
+    "impactScore": 79,
+    "inboundScore": 68,
+    "intlScore": 46,
+    "events": "View All"
+  }
+]
