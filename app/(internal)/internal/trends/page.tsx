@@ -57,7 +57,8 @@ import SavedTrendsList from "@/components/newTrends/savedTrendsList";
 import SaveTrend from "@/components/newTrends/saveTrend";
 // import ColumnsSelector from "@/components/search/columnSelector";
 import { trendsData } from "@/data/dummyTrendsData";
-import EventTypeSelector from "@/components/eventType";
+// import EventTypeSelector from "@/components/eventType";
+import EventTypeSelector from "@/components/search/eventType";
 import ColumnsSelector from "@/components/search/columnSelector";
 import { useFilterContext } from "@/context/filterContext";
 import { useTrendsService } from "@/services/trendsService";
@@ -283,7 +284,8 @@ const EventTrends = () => {
       )} */}
       <div>
         <div className="grid grid-cols-5 max-lg:grid-cols-2 gap-4 pt-4 pb-6 border-b items-end">
-          <EventTypeSelector source={""} />
+          {/* <EventTypeSelector source={""} /> */}
+          <TrendsEventTypeSelector />
           <div className="flex flex-col gap-2 items-start">
             <LocationSelector />
           </div>
@@ -298,7 +300,7 @@ const EventTrends = () => {
           </div>
           <div className="grid grid-cols-2 max-lg:col-end-3  w-full gap-4">
             <Button
-              className="flex-1"
+              className="flex-1 py-5"
               onClick={applyHandler}
               disabled={isLoading || isDisabled || enableEditTrend}
             >
@@ -310,9 +312,8 @@ const EventTrends = () => {
               ) : (
                 "Apply"
               )}
-              Apply
             </Button>
-            <Button className="flex-1">Save</Button>
+            <Button className="flex-1 py-5">Save</Button>
             {/* <SaveTrend
               searchParams={searchParams}
               isLoading={isLoading}
@@ -341,8 +342,7 @@ const EventTrends = () => {
             <div className={styles.predictedAttendence_container}>
               <LineChartComponent
                 predictedData={graphData}
-                // selectedEventType={selectedEventType}
-                selectedEventType={"eventCount"}
+                selectedEventType={selectedEventType}
                 threshold={
                   (eventTrendsData &&
                     eventTrendsData.thresholds[selectedEventType]) ??

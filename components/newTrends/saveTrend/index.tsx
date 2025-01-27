@@ -88,7 +88,7 @@ const SaveTrendModal = ({
         <Button
           disabled={isLoading}
           variant="outline"
-          className="flex-1 border-primary text-primary font-semibold"
+          className="flex-1 py-5 border-primary text-primary font-semibold"
         >
           Save
         </Button>

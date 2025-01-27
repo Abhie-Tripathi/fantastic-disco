@@ -9,12 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
+import { columnsDropdown } from "@/data/trends";
 
 type EventGroupType = "social" | "business";
 
 const groupedEventTypes: Record<EventGroupType, string[]> = {
   social: ["festival", "concert", "sport", "performing-arts", "community"],
-  business: ["tradeshows", "conferences", "workshops"],
+  business: ["Tradeshow", "Conference", "Workshop"],
 };
 
 export default function TrendsEventTypeSelector() {
@@ -91,6 +92,14 @@ export default function TrendsEventTypeSelector() {
   const handleApply = useCallback(() => {
     const allSelected = Object.values(selectedCategories).flat();
     setLocalFilter("eventTypes", allSelected.join(","));
+    setLocalFilter(
+      "columns",
+      columnsDropdown
+        .filter((dropdown) => dropdown.value !== "impactScore")
+        .map((filteredValue) => filteredValue.value)
+        .join(",")
+    );
+    setLocalFilter("show", "alerts,scores,economicImpact");
     setIsOpen(false);
   }, [selectedCategories, setLocalFilter]);
 
@@ -164,7 +173,6 @@ export default function TrendsEventTypeSelector() {
         align="start"
       >
         <div className="p-4 grid grid-cols-2 gap-4">
-          {renderCategoryGroup("social")}
           {renderCategoryGroup("business")}
         </div>
       </PopoverContent>

@@ -523,7 +523,7 @@ const TestPeriodicAnalytics = ({
                         className="cursor-pointer"
                         onClick={() =>
                           redirectTo(
-                            "/search/events",
+                            "/internal/search/events",
                             data["date"],
                             data["date"]
                           )

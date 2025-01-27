@@ -49,7 +49,7 @@ export default function ColumnsSelector({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className={`justify-between w-full ${
+          className={`justify-between py-5 w-full ${
             isOpen ? "border-primary" : "border-input"
           }`}
           onClick={() => setIsOpen(!isOpen)}
