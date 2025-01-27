@@ -196,10 +196,10 @@ const NewSignUpForm = () => {
       const updatedSet = new Set(prev);
       if (updatedSet.has(categoryId)) {
         updatedSet.delete(categoryId);
-        GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Categroy Deselected");
+        GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Category Deselected");
       } else {
         updatedSet.add(categoryId);
-        GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Categroy Selected");
+        GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Category Selected");
       }
       const updatedCategoriesArray = Array.from(updatedSet);
       const updatedCategoriesString = updatedCategoriesArray.join(",");

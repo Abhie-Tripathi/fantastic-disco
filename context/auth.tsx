@@ -198,7 +198,7 @@ export const AuthContextProvider = ({ children }: any) => {
       } catch (err: any) {
         console.error("Sign up error:", err);
         if(err?.status === 406) {
-          GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email - Non Bussiness");
+          GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email - Non Business");
         } else if (err?.status === 409) {
           GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email Already Exists");
         }
