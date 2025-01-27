@@ -1,11 +1,9 @@
 import {
-  Event,
-  GTMEventDetail,
   EventsResponse,
-  MapEventsResponse,
+  Event,
   CalendarWeekEventsResponse,
-  CalendarMonthEventsResponse,
-  CalendarYearEventsResponse,
+  MapEventsResponse,
+  GTMEventDetail,
 } from "@/types/events";
 import { newCategories } from "@/data/categories";
 import { designations } from "@/data/designations";
@@ -238,6 +236,8 @@ export const EventsAdapter = {
       const startDate = params.get("active_gte");
       const endDate = params.get("active_lte");
       adaptedParams.groupBy = `${startDate},${endDate}`;
+      adaptedParams.startDate = `${startDate},${endDate}` || "";
+      adaptedParams.endDate = `${startDate},${endDate}` || "";
     }
 
     if (
@@ -260,6 +260,8 @@ export const EventsAdapter = {
       const startDate = firstDayOfMonth.toISOString().split("T")[0];
       const endDate = lastDayOfMonth.toISOString().split("T")[0];
       adaptedParams.groupBy = `${startDate},${endDate}`;
+      adaptedParams.startDate = `${startDate},${endDate}` || "";
+      adaptedParams.endDate = `${startDate},${endDate}` || "";
     }
 
     if (
@@ -273,6 +275,12 @@ export const EventsAdapter = {
       adaptedParams.groupBy = `${startDate.toISOString().split("T")[0]},${
         endDate.toISOString().split("T")[0]
       }`;
+      adaptedParams.startDate = `${startDate.toISOString().split("T")[0]},${
+        endDate.toISOString().split("T")[0]
+      }` || "";
+      adaptedParams.endDate = `${startDate.toISOString().split("T")[0]},${
+        endDate.toISOString().split("T")[0]
+      }` || "";
     }
 
     if (
@@ -286,6 +294,12 @@ export const EventsAdapter = {
       adaptedParams.groupBy = `${startDate.toISOString().split("T")[0]},${
         endDate.toISOString().split("T")[0]
       }`;
+      adaptedParams.startDate = `${startDate.toISOString().split("T")[0]},${
+        endDate.toISOString().split("T")[0]
+      }` || "";
+      adaptedParams.endDate = `${startDate.toISOString().split("T")[0]},${
+        endDate.toISOString().split("T")[0]
+      }` || "";
     }
 
     if (params.get("take")) {
@@ -574,13 +588,7 @@ export const EventsAdapter = {
             symbol: "$",
           },
           predictedEventSpendBreakUp: [],
-          primaryEventType: (() => {
-            const type = item.type[0].toLowerCase();
-            if (type === "tradeshow") return "tradeshows";
-            if (type === "conference") return "conferences";
-            if (type === "workshop") return "workshops";
-            return type;
-          })(),
+          primaryEventType: determineEventType(item.type[0]),
           categories: item.categories.map((cat: any) => ({
             id: cat.id,
             name: cat.name,

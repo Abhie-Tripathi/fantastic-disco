@@ -22,8 +22,8 @@ import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerServices } from "@/services/trackerServices";
-import { useFilterContext } from "@/context/filterContext";
 
 export default function EventList({
   eventDate,
@@ -36,12 +36,15 @@ export default function EventList({
   source?: string;
   trackerId?:string;
 }) {
-  const { getLocalFilterValue } = useFilterContext();
+  const {
+    getFilterValue,
+  } = useFilterState();
   const [currentPage, setCurrentPage] = useState(1);
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
-  const active=getLocalFilterValue("eventType");
+  const active=getFilterValue("eventType");
+  console.log(source);
   
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.delete("view");

@@ -59,14 +59,14 @@ interface EventCalendarProps{
   source?:string;
   trackerId?:string;
   date?:any;
+  activeVal?:number
 }
-export default function EventCalendar({source, trackerId, date:trackerDate}:EventCalendarProps) {
+export default function EventCalendar({source, trackerId, date:trackerDate, activeVal}:EventCalendarProps) {
   const searchParams = useSearchParams();
   const { getLocalFilterValue } = useFilterContext();
   const { getEventsWithSearchParams } = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
   const [weekDateCounts, setWeekDateCounts] = useState<any>();
-  const {adaptParams}=TrackersAdapter;
   const initialDate = (() => {
     const activeGte = source!=="tracker"?getLocalFilterValue("active_gte"):trackerDate?.split(",")[0]?.split("T")[0];
     const activeLte = source!=="tracker"?getLocalFilterValue("active_lte"):trackerDate?.split(",")[0]?.split("T")[1];
@@ -91,7 +91,8 @@ export default function EventCalendar({source, trackerId, date:trackerDate}:Even
   const setView = (newView: string) => {
     setGlobalFilter("calendar_type", newView);
   };
-  const active=getLocalFilterValue("eventType");
+  const active = getLocalFilterValue("eventType");
+
   console.log(currentDate);
   
   const { data: eventsData, error, isLoading: isEventsLoading } = useQuery<
@@ -99,15 +100,15 @@ export default function EventCalendar({source, trackerId, date:trackerDate}:Even
     | CalendarMonthEventsResponse
     | CalendarYearEventsResponse
   >({
-    queryKey: ["events", view, currentDate, searchParams.toString(), active],
+    queryKey: source!=="tracker"?["events", view, currentDate, searchParams.toString()] : [currentDate, active, view],
     queryFn: async () => {
       const { start, end } = getVisibleDateRange(view, currentDate);
       const updatedParams = new URLSearchParams(searchParams);
       updatedParams.set("active_gte", moment(start).toISOString());
       updatedParams.set("active_lte", moment(end).toISOString());
       // updatedParams.set("view", view);
-      console.log(moment(start).toISOString());
-      
+      // console.log(moment(start).toISOString(), trackerDate);
+      const trackerDate = `${moment(start).toISOString()},${moment(end).toISOString()}`;
       const response = source!=="tracker"?await getEventsWithSearchParams(
         updatedParams.toString()
       ): await getCalendarViewEvents(trackerId || "", `type=${
@@ -118,7 +119,7 @@ export default function EventCalendar({source, trackerId, date:trackerDate}:Even
           : active === "newEvent"
           ? "" : active === "savedEvent" ? "saved":
            "active"
-      }&groupBy=${trackerDate?trackerDate:adaptParams(searchParams)}`, false, view);
+      }&groupBy=${trackerDate}`, false, view);
 
       return response as any;
     },
@@ -242,8 +243,8 @@ export default function EventCalendar({source, trackerId, date:trackerDate}:Even
     (view: string, date: Date) => {
       let start = moment(date);
       let end = moment(date);
-      console.log(start, end);
-      
+     
+      console.log(start.toDate(), end.toDate());
       switch (view) {
         case Views.WEEK:
           start.startOf("week").add(1, "day");
@@ -252,29 +253,31 @@ export default function EventCalendar({source, trackerId, date:trackerDate}:Even
         case Views.MONTH:
           start.startOf("month");
           end.endOf("month");
+          console.log(start.startOf("month"), end.endOf("month"));
           break;
         case Views.YEAR:
           start.startOf("year");
           end.endOf("year");
           break;
       }
-      console.log(searchParams.get("active_gte"), searchParams.get("active_lte"));
+      const searchStart = source!=="tracker"?moment(searchParams.get("active_gte")):moment(trackerDate?trackerDate?.split(",")[0]: null);
+      const searchEnd = source!=="tracker"?moment(searchParams.get("active_lte")):moment(trackerDate?trackerDate?.split(",")[1]:null);
+      console.log(searchParams.get("active_gte"));
       
-      const searchStart = source!=="tracker"?moment(searchParams.get("active_gte")):moment(trackerDate?.split(",")[0]?.split("T")[0]);
-      const searchEnd = source!=="tracker"?moment(searchParams.get("active_lte")):moment(trackerDate?.split(",")[0]?.split("T")[1]);
-
       if (searchStart.isValid() && start.isBefore(searchStart)) {
         start = searchStart.clone();
+        
       }
       if (searchEnd.isValid() && end.isAfter(searchEnd)) {
         end = searchEnd.clone();
+        
       }
-
+      
+      
       return { start: start.toDate(), end: end.toDate() };
     },
     [getLocalFilterValue, trackerDate]
   );
-  console.log(getVisibleDateRange(view, currentDate));
   const handleNavigate = (date: Date) => {
     setCurrentDate(date);
   };
@@ -370,7 +373,7 @@ export default function EventCalendar({source, trackerId, date:trackerDate}:Even
       <ZeroState text={error?.message} />
       }
     </div>
-  ) : (source === "tracker" && eventsData?.count === 0) ? (
+  ) : (source === "tracker" && eventsData?.count === 0 && activeVal===0) ? (
     (active === "savedEvent"? (
       <div className="px-10 py-5">
       <NullState 
@@ -430,7 +433,7 @@ export default function EventCalendar({source, trackerId, date:trackerDate}:Even
           </div>
           {showEventList && (
             <EventList
-              source={"tracker"}
+              source={source}
               trackerId={trackerId}
               eventDate={selectedDate || currentDate}
               onClose={() => setShowEventList(false)}

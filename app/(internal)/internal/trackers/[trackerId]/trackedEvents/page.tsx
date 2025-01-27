@@ -414,6 +414,7 @@ const activeVal =
     ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
     : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
   console.log(data?.tracker?.filterValue?.startDate);
+  console.log(activeVal);
   
   return (
     <div className="flex w-[calc(100vw-134px)]">
@@ -666,7 +667,7 @@ const activeVal =
         {view === "calendar" && (
           <div>
             <Suspense fallback={<Loading />}>
-              <EventCalendar source={"tracker"} trackerId={trackerId} date={data?.tracker?.filterValue?.startDate}/>
+              <EventCalendar source={"tracker"} trackerId={trackerId} date={data?.tracker?.filterValue?.startDate} activeVal={activeVal}/>
             </Suspense>
           </div>
         )}
