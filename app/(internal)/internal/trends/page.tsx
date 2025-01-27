@@ -221,7 +221,9 @@ const EventTrends = () => {
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
     const eventTypes = params.get("eventTypes")?.split(",") || [
-      "tradeshows,conferences,workshops",
+      "tradeshows",
+      "conferences",
+      "workshops",
     ];
     const columns = params.get("columns")?.split(",") || [
       "eventCount",
@@ -296,11 +298,7 @@ const EventTrends = () => {
               )} */}
               Apply
             </Button>
-            <Button
-              className="flex-1"
-            >
-              Save
-            </Button>
+            <Button className="flex-1">Save</Button>
             {/* <SaveTrend
               searchParams={searchParams}
               isLoading={isLoading}
@@ -329,7 +327,8 @@ const EventTrends = () => {
             <div className={styles.predictedAttendence_container}>
               <LineChartComponent
                 predictedData={graphData}
-                selectedEventType={selectedEventType}
+                // selectedEventType={selectedEventType}
+                selectedEventType={"eventCount"}
                 threshold={
                   (eventTrendsData &&
                     eventTrendsData.thresholds[selectedEventType]) ??

@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/pagination";
 import { useFilterState } from "@/hooks/useFilterState";
 import CollapseIcon from "/public/collapse.svg";
-import ExpandIcon from "/public/expand.svg";
+import ExpandIcon from "/public/expandColumn.svg";
 import Text from "@/components/new-ui/Text";
 import SmartInsights from "/public/smartInsights.svg";
 import { Switch } from "@/components/ui/switch";
@@ -125,7 +125,6 @@ const TestPeriodicAnalytics = ({
       [slug]: !prevState[slug],
     }));
   };
-  // con
 
   const startDate =
     (data && data[0] && convertToLongDate(data[0].date ?? "")) || "";
