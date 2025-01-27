@@ -24,8 +24,6 @@ import { Calendar, Globe, ListUnordered } from "geist-icons";
 import { showToast } from "@/utils/showToast";
 import Loading from "@/app/components/UI/Loading";
 import {
-  CalendarEvent,
-  CalendarMonthEvent,
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
   Event,
@@ -413,8 +411,6 @@ const activeVal =
       "Expired Events"
     ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
     : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
-  console.log(data?.tracker?.filterValue?.startDate);
-  console.log(activeVal);
   
   return (
     <div className="flex w-[calc(100vw-134px)]">
