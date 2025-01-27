@@ -58,10 +58,19 @@ import SaveTrend from "@/components/newTrends/saveTrend";
 // import ColumnsSelector from "@/components/search/columnSelector";
 import { trendsData } from "@/data/dummyTrendsData";
 import EventTypeSelector from "@/components/eventType";
+import ColumnsSelector from "@/components/search/columnSelector";
+import { useFilterContext } from "@/context/filterContext";
+import { useTrendsService } from "@/services/trendsService";
 
 const EventTrends = () => {
   const { searchParams } = useDefaultFilters();
-  // const { getEventTrends, getSavedTrends } = useTrendsService();
+  const { getEventTrends, getSavedTrends } = useTrendsService();
+  const {
+    applyFilters,
+    deleteMultipleLocalFilters,
+    getLocalFilterValue,
+    localFilters,
+  } = useFilterContext();
   const columns = searchParams.get("columns");
   const editTrend = searchParams.get("editTrend");
   const enableEditTrend = editTrend ? Boolean(editTrend) : false;
@@ -102,19 +111,19 @@ const EventTrends = () => {
     return updatedSearchParams.toString();
   }, [searchParams]);
 
-  // const {
-  //   data: trendsData,
-  //   error,
-  //   isLoading,
-  //   refetch,
-  // } = useQuery<EventTrendsResponse | undefined>({
-  //   queryKey: ["trends", params.toString()],
-  //   queryFn: () => getEventTrends(params.toString()),
-  //   enabled: !!params.toString(),
-  //   refetchOnWindowFocus: false,
-  //   gcTime: 0,
-  //   staleTime: 0,
-  // });
+  const {
+    data: trendsData,
+    error,
+    isLoading,
+    refetch,
+  } = useQuery<EventTrendsResponse | undefined>({
+    queryKey: ["trends", params.toString()],
+    queryFn: () => getEventTrends(params.toString()),
+    enabled: !!params.toString(),
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
 
   // const { data: holdiayData } = useQuery({
   //   queryKey: ["holiday", updatedParams],
@@ -257,6 +266,11 @@ const EventTrends = () => {
     }
   }, [eventTrendsData, selectedEventType]);
 
+  const applyHandler = () => {
+    // deleteMultipleLocalFilters(["activeCard"]);
+    applyFilters();
+  };
+
   const handleSelectChange = (value: TEventColumnType) => {
     console.log(value);
     setSelectedEventType(value);
@@ -276,26 +290,26 @@ const EventTrends = () => {
           <div className="flex flex-col gap-2 items-start">
             <DateRangeSelector />
           </div>
-          {/* <div className="flex flex-col gap-2 items-start">
+          <div className="flex flex-col gap-2 items-start">
             <ColumnsSelector
               selectedEventType={selectedEventType}
               handleSelectChange={handleSelectChange}
             />
-          </div> */}
+          </div>
           <div className="grid grid-cols-2 max-lg:col-end-3  w-full gap-4">
             <Button
               className="flex-1"
-              // onClick={applyHandler}
-              // disabled={isLoading || isDisabled || enableEditTrend}
+              onClick={applyHandler}
+              disabled={isLoading || isDisabled || enableEditTrend}
             >
-              {/* {isLoading ? (
+              {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Applying...
                 </>
               ) : (
                 "Apply"
-              )} */}
+              )}
               Apply
             </Button>
             <Button className="flex-1">Save</Button>
