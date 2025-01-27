@@ -9,6 +9,7 @@ import NullState from "@/app/components/trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg";
 import PipelineCol from "@/app/components/outreach/pipelineCol";
 import { useSearchParams } from "next/navigation";
+import Loading from "@/app/components/UI/Loading";
 
 interface taskDetailType {
   [task: string]: {
@@ -233,7 +234,7 @@ const Page: React.FC = () => {
   const getOutreachConfig = async () => {
     try {
       const apiData: any = await coordinateService.getPipelineConfig();
-      const outreachPipeLine1 = apiData.outreach_stage.slice(1, apiData.outreach_stage.length - 1);
+      const outreachPipeLine1 = apiData?.outreach_stage?.slice(1, apiData.outreach_stage.length - 1) || [];
   
       setConfigData(outreachPipeLine1); // Set the configuration data
   
@@ -286,6 +287,12 @@ const Page: React.FC = () => {
     // fetchData();
   }, [statusChanged]);
 
+  useEffect(() => {
+    configData?.map((item: any)=>(
+      fetchPipelineData(item.status, item.label, 1)
+    ))
+  }, [configData]);
+
   const handleDropdownSelect = (target: string, source: string) => {
     const mockEvent = {
       preventDefault: () => {},
@@ -306,7 +313,7 @@ const Page: React.FC = () => {
     handleDrop2(mockEvent, target);
   };
 
-  if (Object.values(taskDetail).length > 0 && Object.values(taskDetail).every((value) => (value.dataLoaded === true && value.count === 0)) ) {
+  if ( configData?.length == 0 || (Object.values(taskDetail).length > 0 && Object.values(taskDetail).every((value) => (value.dataLoaded === true && value.count === 0))) ) {
     return (
       <div className="p-20">
         <NullState
@@ -358,9 +365,11 @@ const Page: React.FC = () => {
           </div>
         </div> */}
         <div className={`${styles.taskBody}  w-full scroll overflow-x-auto`}>
-          { Object.keys(taskDetail).map((status, index) => (
+          {Object.values(taskDetail).every(task => task.dataLoaded === true) ?
+            (Object.keys(taskDetail).map((status, index) => (
               <PipelineCol key={index} handleDragContainerStart={handleDragContainerStart} handleDragOver={handleDragOver} handleDragStart={handleDragStart} handleDrop2={handleDrop2} handleModal={handleModal} openAddModalHandler={openAddModalHandler} status={status} taskDetail={taskDetail} fetchPipelineData={fetchPipelineData} />
-            ))
+            ))) :
+            <Loading />
           }
         </div>
       </div>
