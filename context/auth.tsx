@@ -17,6 +17,8 @@ import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ApiResponse, useApi } from "@/hooks/useApi";
+import { useProductSettingServices } from "@/services/settingservices/productService";
+import { SettingResearchData } from "@/types/onboarding";
 
 type authContextType = {
   user: UserResponse | null;
@@ -34,14 +36,36 @@ type authContextType = {
   signup: (user: SignUpDTO) => Promise<any>;
   signin: (user: TSignInFormSchema) => Promise<any>;
   setUser: Dispatch<SetStateAction<UserResponse | null>>;
+  setError: (
+    error:
+      | (
+          | {
+              response: string;
+              status: number;
+              message: string;
+              name: string;
+            }
+          | undefined
+        )
+      | null
+  ) => void;
   signOut: () => void;
   generateOTP: (
     email: string,
     industry?: string,
     categories?: string,
+    internalConfigSetBy?: string,
     flow?: string
   ) => void;
-  verifyOtp: (user: any, redirectTo?: string) => Promise<any>;
+  verifyOtp: (
+    user: any,
+    mappedSettingResearch: {
+      data: SettingResearchData[];
+      source: string;
+    },
+    internalConfigSetBy: string,
+    redirectTo?: string
+  ) => Promise<any>;
   verifyLoginOTP: (user: any, redirectTo?: string) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
   setProfilePic: any;
@@ -63,6 +87,19 @@ const authContextDefaultValues: authContextType = {
   isVerifiedToken: false,
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
+  setError: (
+    error:
+      | (
+          | {
+              response: string;
+              status: number;
+              message: string;
+              name: string;
+            }
+          | undefined
+        )
+      | null
+  ) => {},
   setUser: () => {},
   signOut: () => {},
   generateOTP: () => Promise.resolve(null),
@@ -85,6 +122,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const { request, error, isLoading, setError } = useApi<any>();
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
+  const { updateResearchData } = useProductSettingServices();
 
   interface SignUp {
     data?: SignUpResponse;
@@ -98,6 +136,7 @@ export const AuthContextProvider = ({ children }: any) => {
     email: string,
     industry?: string | undefined | null,
     categories?: string | null,
+    internalConfigSetBy?: string,
     flow?: string | null
   ) => {
     const url = `${baseUrl}/auth/customer/verify/generate`;
@@ -107,8 +146,8 @@ export const AuthContextProvider = ({ children }: any) => {
     const queryParams = new URLSearchParams({
       email: email.trim(),
       ...(industry && { industry }),
-      ...(categories && { categories }),
       ...(flow && { flow }),
+      ...(internalConfigSetBy && { internalConfigSetBy }),
     });
     try {
       const data = await request(url, {
@@ -125,7 +164,7 @@ export const AuthContextProvider = ({ children }: any) => {
     async (userDto: SignUpDTO) => {
       const url = baseUrl + authEndpoints.signup;
       try {
-        await request(url, {
+        const data = await request(url, {
           method: "POST",
           data: { ...userDto, role: "CUSTOMER" },
         });
@@ -133,6 +172,7 @@ export const AuthContextProvider = ({ children }: any) => {
           userDto.email,
           userDto.industry,
           userDto.categories,
+          data.internalConfigSetBy,
           "signup"
         );
       } catch (err) {
@@ -325,7 +365,12 @@ export const AuthContextProvider = ({ children }: any) => {
   // };
 
   const verifyOtp = useCallback(
-    async (verifyOtpDTO: VerifyOTP, redirectTo?: string) => {
+    async (
+      verifyOtpDTO: VerifyOTP,
+      settingsInterestData: { data: SettingResearchData[]; source: string },
+      internalConfigSetBy: string,
+      redirectTo?: string
+    ) => {
       try {
         const url = baseUrl + "/auth/customer/verify";
         const result = await request<{ user: UserResponse }>(url, {
@@ -346,6 +391,8 @@ export const AuthContextProvider = ({ children }: any) => {
             setUser(result.user);
             setLocalStorage(result.user);
             localStorage.removeItem("walkthroughCompleted");
+            internalConfigSetBy === "internal" &&
+              (await updateResearchData({ formData: settingsInterestData }));
             router.push(redirectTo || "/");
           }
         }

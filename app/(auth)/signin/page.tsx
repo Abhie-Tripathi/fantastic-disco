@@ -29,11 +29,12 @@ import { AlertTriangle, Loader2 } from "lucide-react";
 type SignInData = z.infer<typeof SignInFormSchema>;
 
 export default function SignInForm() {
-  const { signin, error, isLoading } = useAuthContext();
+  const { signin, error, isLoading, setError } = useAuthContext();
 
   const {
     control,
     handleSubmit,
+    clearErrors,
     formState: { errors },
   } = useForm<SignInData>({
     resolver: zodResolver(SignInFormSchema),
@@ -48,40 +49,49 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="w-full max-w-md space-y-8 p-8">
-      <div className={styles.form_heading}>
-        <Image src={logo} alt="logo" width={45} height={55} />
-        <Image src={whr} alt="whr" />
-      </div>
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription className="capitalize flex items-center">
-            <AlertTriangle className="h-4 w-4 mr-2 self-start" />
-            {error.message}
-          </AlertDescription>
-        </Alert>
-      )}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <div className="flex flex-col justify-center items-center w-full space-y-8 h-[80dvh]">
+      <p className="font-semibold text-lg leading-6 text-center">
+        Login to your account
+      </p>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col space-y-6 w-full"
+      >
         <Controller
           name="email"
           control={control}
           render={({ field }) => (
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+            <div className="space-y-2 w-96 max-w-3xl self-center">
               <Input
                 id="email"
                 type="email"
                 {...field}
-                placeholder="Enter your email"
-                className="h-11"
+                placeholder="Email"
+                onChange={(e) => {
+                  field.onChange(e);
+                  setError(null);
+                }}
               />
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}
+              {error && (
+                <Alert variant="destructive" className="w-fit p-0 border-none">
+                  <AlertDescription className="capitalize flex items-center">
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    {error.message}
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
           )}
         />
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <Button
+          type="submit"
+          className="w-80 self-center"
+          disabled={isLoading}
+          onClick={() => clearErrors}
+        >
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
