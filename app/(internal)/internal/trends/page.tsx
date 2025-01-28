@@ -56,7 +56,6 @@ import { ToastAction } from "@/components/ui/toast";
 import SavedTrendsList from "@/components/newTrends/savedTrendsList";
 import SaveTrend from "@/components/newTrends/saveTrend";
 // import ColumnsSelector from "@/components/search/columnSelector";
-import { trendsData } from "@/data/dummyTrendsData";
 // import EventTypeSelector from "@/components/eventType";
 import EventTypeSelector from "@/components/search/eventType";
 import ColumnsSelector from "@/components/search/columnSelector";
@@ -103,7 +102,29 @@ const EventTrends = () => {
   );
   const [showNotificationForm, setShowNotificationForm] =
     useState<boolean>(false);
+
   const params = `groupBy=date&dateView=day&${searchParams.toString()}`;
+
+  const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
+
+  const apiParams = useMemo(() => {
+    const params = new URLSearchParams(stringParams);
+    console.log(params.get("eventTypes"));
+    const eventTypes = params.get("eventTypes") || "";
+    const capitalizedEventTypes = eventTypes
+      .split(",")
+      .map((eventType) => {
+        const trimmedEventType = eventType.endsWith("s")
+          ? eventType.slice(0, -1)
+          : eventType;
+        return (
+          trimmedEventType.charAt(0).toUpperCase() + trimmedEventType.slice(1)
+        );
+      })
+      .join(",");
+    params.set("eventTypes", capitalizedEventTypes);
+    return params.toString();
+  }, [stringParams]);
 
   const updatedParams = useMemo(() => {
     const updatedSearchParams = new URLSearchParams(searchParams.toString());
@@ -118,9 +139,9 @@ const EventTrends = () => {
     isLoading,
     refetch,
   } = useQuery<EventTrendsResponse | undefined>({
-    queryKey: ["trends", params.toString()],
-    queryFn: () => getEventTrends(params.toString()),
-    enabled: !!params.toString(),
+    queryKey: ["trends", apiParams.toString()],
+    queryFn: () => getEventTrends(apiParams.toString()),
+    enabled: !!apiParams.toString(),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
@@ -188,6 +209,7 @@ const EventTrends = () => {
 
       setSelectedEventType(() => {
         return columnsData[0] as TEventColumnType;
+        // return "eventCount";
       });
 
       setSmartInsightState((prev) => {
@@ -250,8 +272,10 @@ const EventTrends = () => {
 
       const graphData = morphToGraphData(
         eventTrendsData.groupedData,
-        "eventCount"
+        selectedEventType
+        // "eventCount"
       );
+      console.log(graphData);
 
       const tableData = morphToTrendsTableData(
         eventTrendsData.thresholds,
@@ -260,6 +284,7 @@ const EventTrends = () => {
       );
 
       const smartInsightsData = morphToSmartInsightsData(tableData);
+      console.log(smartInsightsData);
 
       setGraphData(graphData);
       setTableData(smartInsightsData);
@@ -273,7 +298,6 @@ const EventTrends = () => {
   };
 
   const handleSelectChange = (value: TEventColumnType) => {
-    console.log(value);
     setSelectedEventType(value);
   };
 
@@ -321,7 +345,7 @@ const EventTrends = () => {
             /> */}
           </div>
         </div>
-        {graphData && graphData.length > 0 && true ? (
+        {graphData && graphData.length > 0 && !isLoading ? (
           <div className="pt-8">
             {/* <div className="flex justify-between ">
               <TrendsNotification
@@ -397,7 +421,7 @@ const EventTrends = () => {
             </Text>
           </div>
         ) : (
-          false && (
+          error && (
             <div className={styles.zeroState_container}>
               <Image
                 src={ZeroStateIcon}

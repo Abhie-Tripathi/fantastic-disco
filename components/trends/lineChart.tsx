@@ -192,9 +192,11 @@ const LineChartComponent = ({
     const params = new URLSearchParams(searchParams);
     const geoCoordinates = params.get("geoCoordinates");
     const locationIds = params.get("locationIds");
-    const paramsSearchEvents = `status=active%2Ccancelled%2Cpostponed%2Cpredicted${locationIds !== null ? `&locationIds=${locationIds}` : ""
-      }${geoCoordinates !== null ? `&geoCoordinates=${geoCoordinates}` : ""}
-      ${eventTypes && eventTypes.length > 0 ? `&eventTypes=${eventTypes}` : ""
+    const paramsSearchEvents = `status=active%2Ccancelled%2Cpostponed%2Cpredicted${
+      locationIds !== null ? `&locationIds=${locationIds}` : ""
+    }${geoCoordinates !== null ? `&geoCoordinates=${geoCoordinates}` : ""}
+      ${
+        eventTypes && eventTypes.length > 0 ? `&eventTypes=${eventTypes}` : ""
       }&active_gte=${date}&active_lte=${date}`;
     return paramsSearchEvents;
   };
@@ -306,17 +308,17 @@ const LineChartComponent = ({
   const graphData =
     predictedData.length > 0
       ? predictedData.map((data: any) => ({
-        ...data,
-      }))
+          ...data,
+        }))
       : generateDatesArray(
-        searchParams.get("active_gte")?.split("T")[0] ?? "",
-        searchParams.get("active_lte")?.split("T")[0] ?? ""
-      ).map((date) => ({
-        date: format(
-          new Date(toMidnightISOString(date).split("T")[0]),
-          "d MMM yyyy"
-        ),
-      }));
+          searchParams.get("active_gte")?.split("T")[0] ?? "",
+          searchParams.get("active_lte")?.split("T")[0] ?? ""
+        ).map((date) => ({
+          date: format(
+            new Date(toMidnightISOString(date).split("T")[0]),
+            "d MMM yyyy"
+          ),
+        }));
 
   const label =
     columnsDropdown.find((column) => column.value === selectedEventType)
@@ -375,20 +377,22 @@ const LineChartComponent = ({
             {isLoading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin self-center" />
             ) : eventData && (eventData as any).events.length > 0 ? (
-              (eventData as any).events.slice(0, 4).map((event: any, index: number) => (
-                <li key={event.id} className="flex gap-4">
-                  <div className="flex flex-col items-center">
-                    <span className="text-[12px] font-semibold">
-                      {/* {event.} */}
-                      {index + 1}.
-                    </span>
-                    {/* <span className="text-[12px] text-[#79747E]">EIS</span> */}
-                  </div>
-                  <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
-                    {event.name}
-                  </p>
-                </li>
-              ))
+              (eventData as any).events
+                .slice(0, 4)
+                .map((event: any, index: number) => (
+                  <li key={event.id} className="flex gap-4">
+                    <div className="flex flex-col items-center">
+                      <span className="text-[12px] font-semibold">
+                        {/* {event.} */}
+                        {index + 1}.
+                      </span>
+                      {/* <span className="text-[12px] text-[#79747E]">EIS</span> */}
+                    </div>
+                    <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
+                      {event.name}
+                    </p>
+                  </li>
+                ))
             ) : (
               <p className="text-[#666666] text-sm flex items-center gap-2">
                 <Image src={Disable} alt="Disable" width={15} height={15} />
