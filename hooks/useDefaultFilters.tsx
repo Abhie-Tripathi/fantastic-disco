@@ -153,16 +153,12 @@ export function useDefaultFilters() {
     }
 
     const currentParams = Object.fromEntries(searchParams.entries());
-    const isEmptySearch =
-      Object.keys(currentParams).length === 0 ||
-      (Object.keys(currentParams).length === 1 && "view" in currentParams);
+    const hasOnlyViewParam = 
+      Object.keys(currentParams).length === 1 && "view" in currentParams;
+    const isEmptySearch = Object.keys(currentParams).length === 0 || hasOnlyViewParam;
 
-    // Only proceed if we're in search path with empty params or in create path
-    if (
-      !isEmptySearch &&
-      pathName.split("/")[2] !== "search" &&
-      pathName.split("/")[3] !== "create"
-    ) {
+    // Only proceed if we have empty params or just view param
+    if (!isEmptySearch) {
       return;
     }
 
