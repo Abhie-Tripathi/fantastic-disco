@@ -16,10 +16,8 @@ import { useFilterState } from "@/hooks/useFilterState";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
   const router= useRouter();
-  const {  setIsNewCall, setTrackerId, isLoading:load } = useTrackerContext();
-  const {setFilter} = useFilterState();
-  // const { theme } = useTheme();
-  // console.log(Math.floor(item?.groupedEventsCountByDate.length / 7));
+  const {  setIsNewCall, setTrackerId, isLoading:load, setSkip } = useTrackerContext();
+  const {setFilter, getFilterValue, setMultipleFilters} = useFilterState();
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
     datasets: [
@@ -113,7 +111,6 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   }
   const handleSingleClick=(item:any)=>{
     setSingleTrackerData(item)
-    setFilter("id", item.id);
   }
   return (
     <div className="card cursor-pointer h-[150px]" onClick={()=>handleSingleClick(item)}
