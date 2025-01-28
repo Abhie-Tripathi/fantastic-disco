@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { ToastAction } from "@/components/ui/toast";
 import { useToast } from "@/components/ui/use-toast";
-import { useFilterContext } from "@/contexts/filterContext";
+import { useFilterContext } from "@/context/filterContext";
 import { sessionService } from "@/services/sessionService";
 import { useTrendsService } from "@/services/trendsService";
 import {

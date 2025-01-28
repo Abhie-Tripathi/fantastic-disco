@@ -222,11 +222,11 @@ export function morphToSmartInsightsData(tableData: TableData[]) {
       const maxColumn = maxColumnValues[field];
       const thresholdHighlightCol =
         value >= avg && value <= avg * 1.5
-          ? "bg-[#398E4A1A] bg-opacity-5 text-[#398E4A]"
+          ? "trendBelowAvgColor"
           : value > avg * 1.5
           ? "bg-[#398E4A33] bg-opacity-5 text-[#398E4A]"
           : value < avg && value >= avg * 0.5
-          ? "bg-[#FF990A1A] bg-opacity-5 text-[#FF990A]"
+          ? "trendAboveAvgColor"
           : value < avg * 0.5
           ? "bg-[#FF990A33] bg-opacity-5 text-[#FF990A]"
           : "";
@@ -237,11 +237,11 @@ export function morphToSmartInsightsData(tableData: TableData[]) {
       const maxSlugValue = Math.max(...slugKeys.map((key) => fieldData[key]));
       const thresholdHighlightRow =
         maxSlugValue >= avg && maxSlugValue <= avg * 1.5
-          ? "bg-[#398E4A1A] bg-opacity-5 text-[#398E4A] border-2 border-[var(--negative-color)]"
+          ? "trendBelowAvgColor border-2 border-[var(--negative-color)]"
           : maxSlugValue > avg * 1.5
           ? "bg-[#398E4A33] bg-opacity-5 text-[#398E4A] border-2 border-[var(--negative-color)]"
           : maxSlugValue < avg && maxSlugValue >= avg * 0.5
-          ? "bg-[#FF990A1A] bg-opacity-5 text-[#FF990A] border-2 border-[var(--negative-color)]"
+          ? "trendAboveAvgColor border-2 border-[var(--negative-color)]"
           : maxSlugValue < avg * 0.5
           ? "bg-[#FF990A33] bg-opacity-5 text-[#FF990A] border-2 border-[var(--negative-color)]"
           : "";

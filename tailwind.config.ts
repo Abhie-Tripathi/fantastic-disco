@@ -18,7 +18,6 @@ const config = {
         "2xl": "1400px",
       },
     },
-    safelist: ["bg-[#FF990A1A]", "bg-[#FF990A33]"],
     extend: {
       scrollbarWidth: "thin",
       width: {

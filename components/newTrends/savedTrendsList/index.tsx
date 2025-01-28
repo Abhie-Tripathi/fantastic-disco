@@ -20,7 +20,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useFilterContext } from "@/contexts/filterContext";
+import { useFilterContext } from "@/context/filterContext";
 import { sessionService } from "@/services/sessionService";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";

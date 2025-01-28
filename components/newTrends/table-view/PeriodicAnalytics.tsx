@@ -44,12 +44,6 @@ import {
   SelectGroup,
   SelectTrigger,
 } from "@/components/ui/select";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import EnableSmartInsights from "/public/smartInsightsDisable.svg";
 import DisableSmartInsights from "/public/smartInsightsColored.svg";
 import { renderFormattedDates } from "@/utils/dateFormat";
@@ -546,56 +540,6 @@ const PeriodicAnalytics = ({
                                 width={100}
                                 className={`text-center font-semibold text-[#6750a4] px-2 flex items-center justify-center w-full sticky left-0 z-30 bg-white`}
                               >
-                                {isHoliday ? (
-                                  <TooltipProvider>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <div className="flex">
-                                          <Image
-                                            width={20}
-                                            height={20}
-                                            className="cursor-pointer"
-                                            src={HolidayIcon}
-                                            alt="Holiday Icon"
-                                          />
-                                          {count && count > 1 && (
-                                            <sup className="w-2 h-2">
-                                              {count}
-                                            </sup>
-                                          )}
-                                        </div>
-                                      </TooltipTrigger>
-                                      <TooltipContent
-                                        asChild
-                                        // className="w-24 max-w-24 text-wrap"
-                                        side="right"
-                                      >
-                                        <ul className="flex flex-col gap-2">
-                                          {holidays &&
-                                            holidays.length > 0 &&
-                                            holidays.map((holidayName) => (
-                                              <li
-                                                className="font-medium"
-                                                key={`holiday-${holidayName}`}
-                                              >
-                                                {holidayName}
-                                              </li>
-                                            ))}
-                                        </ul>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                ) : (
-                                  <div className="flex items-center opacity-0">
-                                    <Image
-                                      width={20}
-                                      height={20}
-                                      src={HolidayIcon}
-                                      alt="Holiday Icon"
-                                    />
-                                    <sup className="w-2 h-2">{count}</sup>
-                                  </div>
-                                )}
                                 <div className="w-40 flex justify-center">
                                   <p>
                                     {key !== undefined &&

@@ -15,7 +15,7 @@ type EventGroupType = "social" | "business";
 
 const groupedEventTypes: Record<EventGroupType, string[]> = {
   social: ["festival", "concert", "sport", "performing-arts", "community"],
-  business: ["Tradeshow", "Conference", "Workshop"],
+  business: ["tradeshows", "conferences", "workshops"],
 };
 
 export default function TrendsEventTypeSelector() {

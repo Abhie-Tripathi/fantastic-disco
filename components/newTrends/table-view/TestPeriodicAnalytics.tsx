@@ -575,7 +575,6 @@ const TestPeriodicAnalytics = ({
                                     ? "bg-[#DA2F35] bg-opacity-5 text-[#DF2670]"
                                     : ""
                                 }
-                                  
                                 ${
                                   isSmartInsightEnabledForColumn &&
                                   cellData["maxRow"] &&
