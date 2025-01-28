@@ -24,8 +24,6 @@ import { Calendar, Globe, ListUnordered } from "geist-icons";
 import { showToast } from "@/utils/showToast";
 import Loading from "@/app/components/UI/Loading";
 import {
-  CalendarEvent,
-  CalendarMonthEvent,
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
   Event,
