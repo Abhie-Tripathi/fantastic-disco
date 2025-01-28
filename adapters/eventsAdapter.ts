@@ -974,5 +974,5 @@ function determineEventType(item: string): string {
   if (item.toLowerCase() === "tradeshow") return "tradeshows";
   if (item.toLowerCase() === "conference") return "conferences";
   if (item.toLowerCase() === "workshop") return "workshops";
-  else return "unknown";
+  else return item;
 }
