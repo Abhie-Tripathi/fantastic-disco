@@ -37,29 +37,39 @@ interface EventCategory {
 }
 
 export interface RecentSearchItem {
-  eventFormat?: string;
-  eventStatus?: string;
-  eventCategory?: EventCategory[];
-  estimatedVisitorRangeTag?: string;
-  eventEntry?: string;
-  estimatedExhibitors?: number;
   eventType?: string[];
   startDate?: string;
   endDate?: string;
   sortBy?: string;
   sortType?: string;
+  eventRanking?: string;
+  eventFrequency?: string;
+  trustScore?: string;
+  maturity?: string;
+  estimatedExhibitScore?: string;
+  eventBrand?: string;
   shows?: string;
+  audienceSpread?: string;
+  designation?: string;
+  includeKeywords?: string;
+  excludeKeywords?: string;
+  estimatedVisitorRangeTag?: string;
+  createdAt?: string;
+  eventCategory?: EventCategory[];
+  eventEntry?: string;
+  estimatedExhibitors?: number;
   groupBy?: string;
   locationIds?: LocationIds;
   eventCity?: LocationId[];
   eventState?: LocationId[];
   eventCountry?: LocationId[];
-  createdAt: string;
-  ratings: string;
-  maturity?: string;
   onlyBranded?: boolean;
   onlySeries?: boolean;
-  frequencies?: string[];
-  includeKeywords?: string[];
-  excludeKeywords?: string[];
+  eventFormat?: string;
+  eventStatus?: string;
+  eventRating?: string;
+  eventSeries?: string;
+  inboundScore?: string;
+  internationalScore?: string
+  eventImpactScore?: string;
 }

@@ -94,18 +94,45 @@ export function useDefaultFilters() {
       recentSearch.eventEntry
         ?.split(",")
         .map((item: string) => item.toLowerCase())
-        ?.join(",") ?? "",
-    ratings: recentSearch.ratings ?? "",
-    maturity: recentSearch.maturity ?? "",
-    onlyBranded: recentSearch.onlyBranded ? "true" : undefined,
-    onlySeries: recentSearch.onlySeries ? "true" : undefined,
-    frequencies: recentSearch.frequencies?.join(",") ?? "",
-    includeKeywords: recentSearch.includeKeywords?.join(",") ?? undefined,
-    excludeKeywords: recentSearch.excludeKeywords?.join(",") ?? undefined,
+        ?.join(",") ?? "",  
+    ratings: recentSearch.eventRating ?? undefined,
+    maturity: recentSearch.maturity ?? undefined,
+    onlyBranded: recentSearch.eventBrand ? "true" : undefined,
+    onlySeries: recentSearch.eventSeries ? "true" : undefined,
+    frequencies: recentSearch.eventFrequency ?? undefined,
+    includeKeywords: recentSearch.includeKeywords ?? undefined,
+    excludeKeywords: recentSearch.excludeKeywords ?? undefined,
     estimatedVisitorRangeTag: recentSearch.estimatedVisitorRangeTag ?? "",
-    estimatedExhibitors: String(recentSearch.estimatedExhibitors) ?? undefined,
-    shows: generateShowParam(recentSearch.shows),
+    estimatedExhibitors: recentSearch.estimatedExhibitScore ?? undefined,
+    impact_score_gte: recentSearch.eventImpactScore?.split("-")[0] ?? undefined,
+    impact_score_lte: recentSearch.eventImpactScore?.split("-")[1] ?? undefined,
+    inbound_score_gte: recentSearch.inboundScore?.split("-")[0] ?? undefined,
+    inbound_score_lte: recentSearch.inboundScore?.split("-")[1] ?? undefined,
+    international_score_gte: recentSearch.internationalScore?.split("-")[0] ?? undefined,
+    international_score_lte: recentSearch.internationalScore?.split("-")[1] ?? undefined,
+    audienceSpread: recentSearch.audienceSpread ?? undefined,
+    designations: recentSearch.designation ?? undefined,
+    top: recentSearch.eventRanking?.split(",").map((item)=> item.split("-")[1])[0] ?? undefined,
+    show: generateRecentSearchShowParam(recentSearch?.shows?.split(",") ?? []),
   });
+
+  const generateRecentSearchShowParam = (shows: string[]) => {
+    const showItems = [];
+    if (shows.includes("eventRating")) showItems.push("rating");
+    if (shows.includes("maturity")) showItems.push("maturity");
+    if (shows.includes("eventBrand")) showItems.push("branded");
+    if (shows.includes("eventSeries")) showItems.push("series");
+    if (shows.includes("eventFrequency")) showItems.push("frequency");
+    if (shows.includes("estimatedExhibitScore"))
+      showItems.push("estimatedExhibitors");
+    if (shows.includes("analytics")) showItems.push("scores");
+    if (shows.includes("isforecasted")) showItems.push("forecasted");
+    if (shows.includes("eventImpactScore")) showItems.push("scores");
+    if (shows.includes("eventRanking")) showItems.push("rankings");
+    if (shows.includes("audienceZone")) showItems.push("audienceZone");
+
+    return showItems.join(",");
+  };
 
   const generateShowParam = (filters: any): string => {
     const showItems = [];
@@ -143,7 +170,7 @@ export function useDefaultFilters() {
       // Try to use enabled filters first
       const enabledFilters = await eventService.fetchEnabledFilters("research");
       if (enabledFilters) {
-        const params = new URLSearchParams(searchParams);
+        const params = new URLSearchParams(searchParams.toString());
         const enabledFilterParams = mapEnabledFiltersToParams(enabledFilters);
         Object.entries(enabledFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, value);
@@ -158,10 +185,11 @@ export function useDefaultFilters() {
       // Fall back to recent search if no enabled filters
       const recentSearchResponse = await eventService.getRecentSearch();
       if (recentSearchResponse?.[0]) {
-        const params = new URLSearchParams(searchParams);
+        const params = new URLSearchParams(searchParams.toString());
         const recentFilterParams = mapRecentSearchToParams(
           recentSearchResponse[0]
         );
+        console.log("recentFilterParams", recentFilterParams);
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });

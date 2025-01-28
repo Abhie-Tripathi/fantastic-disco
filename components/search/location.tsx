@@ -189,7 +189,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
             className="text-primary pr-0"
             onClick={applyHandler}
           >
-            Apply
+            {/* Apply */}
           </Button>
         </div>
 
