@@ -26,7 +26,7 @@ export function useDefaultFilters() {
       const currentTags = getFilterValue("tags");
       const show = getFilterValue("show").split(",");
 
-      const defaultSearchParams = new URLSearchParams(searchParams);
+      const defaultSearchParams = new URLSearchParams(searchParams.toString());
       const { primaryLocation } = user as any;
 
       if (!currentLocationId && !currentGeoCoordinates) {
