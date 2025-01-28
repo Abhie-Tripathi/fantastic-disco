@@ -224,15 +224,15 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   return (
     <div className="p-6 pt-0">
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
-        <button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
+        <Button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
-          <Link
+          <span
             className="text-[var(--primary-color)] font-medium"
-            href={"/internal/search/events"}
+            onClick={() => router.back()}
           >
             Back to Search
-          </Link>
-        </button>
+          </span>
+        </Button>
         {bannerUrl && (
           <Image
             src={bannerUrl ?? "/eventDetailFallback.png"}
