@@ -774,7 +774,6 @@ const Pages = () => {
       scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
-
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
     setEditTrue(true);
@@ -1909,7 +1908,7 @@ return (
     </div>
     }
     
-    {template && template.inputAreas &&
+    {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
     <div style={{display: 'flex', gap: '25px'}}>
       <div className={`card ${styles.competitor}`}>
         {/* <div className={styles.competitorHead}>
@@ -1922,7 +1921,10 @@ return (
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
           {" "} Please upload or manually enter the information
         </div>
-        {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP") ?
+        {type==="T_PRODUCT_KEYWORDS" && 
+          <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions}/>
+        }
+        {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP" || type==="T_PRODUCT_KEYWORDS") ?
           (uploadEnabled && 
             <CsvUploader
               templateData={template}
@@ -1933,8 +1935,9 @@ return (
             <></>
         }
         </div>
-        {template?.inputAreas &&
+        {(template?.inputAreas || type==="T_PRODUCT_KEYWORDS") &&
                 <div>
+                {type!=="T_PRODUCT_KEYWORDS"&&
                   <div className="flex items-stretch gap-2.5">
                     {template?.inputAreas?.map((inputArea: any, index: number) => (
                       <>
@@ -1982,6 +1985,7 @@ return (
                     </div>
 
                   </div>
+                }
                   {/* {customData.map((item:any, index:number) => (
     // <div key={index} className={styles.customDataOuterDiv}>
     // <div className={styles.singleInputBox}>{item.name}</div>
@@ -1996,7 +2000,7 @@ return (
   {!valid && (
               <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
             )}
-            {(suggestions && suggestions.length > 0) &&
+            {(suggestions && suggestions.length > 0 && type!=="T_PRODUCT_KEYWORDS") &&
               <div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full" >
                 <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">
                   {/* <Image src={AiIcon} alt="AI" className={iconClass} width={14} height={14} /> */}

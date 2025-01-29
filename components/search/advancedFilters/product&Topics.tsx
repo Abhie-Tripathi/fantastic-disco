@@ -154,7 +154,6 @@ useEffect(()=>{
       {(activeTab && suggestions && suggestions.length > 0) &&
         (<div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full" >
           <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">
-            {/* <Image src={AiIcon} alt="AI" className={iconClass} width={14} height={14} /> */}
             AI SUGGESTIONS {" "}
             <span className={styles.experimental_tag}>Beta</span>
           </div>
