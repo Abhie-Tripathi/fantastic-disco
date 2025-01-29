@@ -1,168 +1,144 @@
-import { useFilterState } from "@/hooks/useFilterState";
+
+
+"use client";
+
 import { cn } from "@/lib/utils";
 import { AlertTriangle } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import * as turf from "@turf/turf";
-import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
+import React, { memo, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { useEventsService } from "@/services/eventsService";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
+import { Alert } from "@/types/events/alert";
+import { formattedDateRange } from "@/utils/date";
 
-interface GDACSEvent {
-  type: string;
-  geometry: {
-    type: string;
-    coordinates: [number, number];
-  };
-  properties: {
-    eventtype: string;
-    eventid: number;
-    episodeid: number;
-    name: string;
-    alertlevel: string;
-    fromdate: string;
-    todate: string;
-    country: string;
-    htmldescription: string;
-  };
-}
-
-const Alerts = () => {
-  const { getFilterValue } = useFilterState();
-  const [gdacsEvents, setGdacsEvents] = useState<GDACSEvent[]>([]);
-  const [filteredGdacsEvents, setFilteredGdacsEvents] = useState<{
-    alertName: string;
-    alertLevel: string;
-  }>();
-  const [isGdacsLoading, setIsGdacsLoading] = useState(true);
-  const [gdacsError, setGdacsError] = useState<string | null>(null);
-  const geoCoordinate = JSON.parse(getFilterValue("geoCoordinates") || "null");
-  const lng = geoCoordinate?.longitude || 0;
-  const lat = geoCoordinate?.latitude || 0;
-  const radius = geoCoordinate?.radius || 0;
-
-  const getAlertLevelColor = (alertLevel: string | undefined) => {
-    switch (alertLevel?.toLowerCase() || "") {
-      case "red":
-        return "bg-red-200 border-red-300";
-      case "orange":
-        return "bg-orange-200 border-orange-300";
-      case "green":
-        return "bg-green-200 border-green-300";
-      default:
-        return "bg-gray-200 border-gray-300";
-    }
-  };
-
-  const getAlertTextColor = (alertLevel: string | undefined) => {
-    switch (alertLevel?.toLowerCase() || "") {
-      case "red":
-        return "text-red-800";
-      case "orange":
-        return "text-orange-800";
-      case "green":
-        return "text-green-800";
-      default:
-        return "text-gray-800";
-    }
-  };
-
-  const getAlertName = (alertName: string) => {
-    switch (alertName) {
-      case "EQ":
-        return "Earthquakes";
-      case "TS":
-        return "Tsunami";
-      case "TC":
-        return "Tropical Cyclone";
-      case "FL":
-        return "Flood";
-      case "VO":
-        return "Volcano";
-      case "DR":
-        return "Drought";
-      case "WF":
-        return "Wildfire";
-      default:
-        return "Heavy Rainfall";
-    }
-  };
-
-  useEffect(() => {
-    const fetchGdacsEvents = async () => {
-      setIsGdacsLoading(true);
-      setGdacsError(null);
-      try {
-        const fromDate = new Date();
-        const toDate = new Date();
-        toDate.setFullYear(toDate.getFullYear() + 1);
-
-        const url = `https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?fromDate=${
-          fromDate.toISOString().split("T")[0]
-        }&toDate=${
-          toDate.toISOString().split("T")[0]
-        }&alertlevel=Green;Orange;Red&eventlist=EQ;TS,TC,FL,VO,DR,WF`;
-        const response = await fetch(url);
-        const data = await response.json();
-        setGdacsEvents(data.features);
-      } catch (err) {
-        setGdacsError("Failed to fetch GDACS events");
-      } finally {
-        setIsGdacsLoading(false);
-      }
-    };
-
-    fetchGdacsEvents();
-  }, []);
-
-  useEffect(() => {
-    const filterGdacsEventsByBoundingBox = () => {
-      const center = turf.point([lng, lat]);
-      const options = { units: "kilometers" as const };
-      const circle = turf.circle(center, radius, options);
-      const bbox = turf.bbox(circle);
-      const bboxPolygon = turf.bboxPolygon(bbox);
-
-      const filtered = gdacsEvents.filter((event) => {
-        const eventPoint = turf.point(event.geometry.coordinates);
-        return booleanPointInPolygon(eventPoint, bboxPolygon);
-      });
-
-      setFilteredGdacsEvents({
-        alertName: filtered[0]?.properties.eventtype,
-        alertLevel: filtered[0]?.properties.alertlevel,
-      });
-    };
-
-    filterGdacsEventsByBoundingBox();
-  }, [gdacsEvents, lat, lng, radius]);
-
-  if (!filteredGdacsEvents?.alertName) return null;
-
+export function AlertItem({
+  alert,
+  onClick,
+}: {
+  alert: Alert;
+  onClick?: () => void;
+}) {
   return (
-    <div className="absolute z-10 top-4 right-1/2 translate-x-1/2 p-1 bg-white rounded">
-      <div
-        className={cn(
-          "w-full p-2 flex items-center text-sm border rounded justify-center",
-          getAlertLevelColor(filteredGdacsEvents?.alertLevel)
-        )}
-      >
-        <AlertTriangle
-          className={cn(
-            "w-4 h-4 mr-2",
-            getAlertTextColor(filteredGdacsEvents?.alertLevel)
-          )}
-        />
-        Possibility of
+    <div
+      className="w-full rounded-lg p-2 cursor-pointer hover:bg-gray-50"
+      onClick={(e) => {
+        onClick?.();
+      }}
+    >
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-medium capitalize text-muted-foreground">
+          {alert.type.toLowerCase()}
+        </span>
         <span
           className={cn(
-            "mx-1 font-semibold",
-            getAlertTextColor(filteredGdacsEvents?.alertLevel)
+            "p-1 border-2 rounded-sm",
+            getAlertLevelBorderColor(alert.level.toLowerCase())
           )}
         >
-          {getAlertName(filteredGdacsEvents?.alertName)}
+          {alertIcons[alert.type]}
         </span>
-        on this day
       </div>
+      <p className="text-sm">{alert.name || `New ${alert.type} alert`}</p>
+      <time className="text-xs text-muted-foreground">
+        {formattedDateRange(alert.startDate, alert.endDate)}
+      </time>
+    </div>
+  );
+}
+
+interface AlertsProps {
+  selectedAlert: string;
+  setSelectedAlert: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const searchParams = useSearchParams();
+  const eventService = useEventsService();
+  const filteredParams = new URLSearchParams(searchParams.toString());
+  filteredParams.set("eventTypes", "alert");
+  filteredParams.set("view", "list");
+  if (filteredParams.get("geoCoordinates")) {
+    const geoCoordinates = JSON.parse(filteredParams.get("geoCoordinates"));
+    filteredParams.delete("geoCoordinates");
+    filteredParams.set(
+      "viewBound",
+      JSON.stringify({
+        boundType: "point",
+        coordinates: JSON.stringify({
+          latitude: geoCoordinates.latitude,
+          longitude: geoCoordinates.longitude,
+          radius: geoCoordinates.radius,
+        }),
+      })
+    );
+  }
+
+  const {
+    data: alerts,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["alerts", filteredParams.toString()],
+    queryFn: () =>
+      eventService.getEventsWithSearchParams(filteredParams.toString()),
+    refetchOnWindowFocus: false,
+  });
+
+  const selectedAlertData = useMemo(() => {
+    return alerts?.events.find((alert) => alert.id === selectedAlert);
+  }, [alerts, selectedAlert]);
+
+  if (error || !alerts?.events.length) return null;
+
+  const onClickHandler = (id: string) => {
+    setSelectedAlert(id);
+    setOpen(false);
+  };
+
+  return (
+    <div className="absolute z-10 top-4 right-1/2 translate-x-1/2">
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          {selectedAlertData ? (
+            <div className="w-64 p-2 border flex items-center rounded-lg shadow-xl justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors">
+              <AlertItem alert={selectedAlertData as Alert} />
+            </div>
+          ) : (
+            <div className="w-full p-2 flex items-center text-sm border rounded justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors">
+              <AlertTriangle className="w-4 h-4 mr-2" />
+              Possibility of
+              <span className={cn("mx-1 font-semibold underline text-primary")}>
+                {alerts.events.length} Alert
+                {alerts.events.length !== 1 && "s"}
+              </span>
+              in this Region
+            </div>
+          )}
+        </PopoverTrigger>
+        <PopoverContent className="w-80 p-2">
+          <ScrollArea className="h-[300px] pr-4">
+            <div className="[&>*:not(:last-child)]:border-b">
+              {alerts.events.map((alert) => (
+                <AlertItem
+                  key={alert.id}
+                  alert={alert as Alert}
+                  onClick={() => onClickHandler(alert.id)}
+                />
+              ))}
+            </div>
+          </ScrollArea>
+        </PopoverContent>
+      </Popover>
     </div>
   );
 };
 
-export default Alerts;
+export default memo(Alerts);

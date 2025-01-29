@@ -23,6 +23,7 @@ import { ReadonlyURLSearchParams } from "next/navigation";
 import { BaseURL } from "@/config";
 import { ApiError } from "@/types/api";
 import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
+import { AlertPolygonResponse } from "@/types/events/alert";
 
 export const searchEvents = async (searchParams: ReadonlyURLSearchParams) => {
   return myFetch(
@@ -85,7 +86,8 @@ export const useEventsService = () => {
 
   const getEventEditionDetails = (id: string, take: number, skip: number) => {
     return api.request<EventEditionDetailResponse>(
-      `${endpoints.event.eventEditionsDetailsById}/${id}${take ? `?take=${take}` : ""
+      `${endpoints.event.eventEditionsDetailsById}/${id}${
+        take ? `?take=${take}` : ""
       }${skip !== undefined && skip !== null ? `&skip=${skip}` : ""}`,
       {
         method: "GET",
@@ -148,7 +150,6 @@ export const useEventsService = () => {
   };
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {
-    
     const params = new URLSearchParams(searchParamsString);
     const adaptedParams = EventsAdapter.adaptRequestParams(params);
     const response = await api.request(`${endpoints.event.events}`, {
@@ -219,18 +220,31 @@ export const useEventsService = () => {
     return response;
   };
   const fetchEnabledFilters = async (source: String) => {
-    const response = await api.request(`${endpoints.event.enabledFilters}?source=${source}`, {
-      method: "GET"
-    });
+    const response = await api.request(
+      `${endpoints.event.enabledFilters}?source=${source}`,
+      {
+        method: "GET",
+      }
+    );
     return response;
-  }
+  };
 
   const getRecentSearch = async () => {
     const response = await api.request(`${endpoints.event.recentSearch}`, {
-      method: "GET"
+      method: "GET",
     });
     return response;
-  }
+  };
+
+  const getAlertPolygon = (eventId: string) => {
+    return api.request<AlertPolygonResponse>(
+      `${endpoints.event.events}/${eventId}/polygons`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
   return {
     getEvents,
     saveEvent,
@@ -241,6 +255,7 @@ export const useEventsService = () => {
     bookmarkThisEvent,
     unBookmarkThisEvent,
     getIsEventBookMarked,
+    getAlertPolygon,
     getEventDetailById,
     getEventPOCDetails,
     getEventEditionDetails,
