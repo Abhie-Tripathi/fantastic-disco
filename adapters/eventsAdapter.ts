@@ -574,12 +574,7 @@ export const EventsAdapter = {
             symbol: "$",
           },
           predictedEventSpendBreakUp: [],
-          primaryEventType: (() => {
-            const type = item.type[0].toLowerCase();
-            if (type === "tradeshow") return "tradeshows";
-            if (type === "conference") return "conferences";
-            return type;
-          })(),
+          primaryEventType: determineEventType(item.type[0]),
           categories: item.categories.map((cat: any) => ({
             id: cat.id,
             name: cat.name,
@@ -723,12 +718,7 @@ export const EventsAdapter = {
           symbol: "$",
         },
         predictedEventSpendBreakUp: [],
-        primaryEventType: (() => {
-          const type = response.events[0].type[0].toLowerCase();
-          if (type === "tradeshow") return "tradeshows";
-          if (type === "conference") return "conferences";
-          return type;
-        })(),
+        primaryEventType: determineEventType(response.events[0].type[0]),
         categories: response.events[0].categories.map((cat: any) => ({
           id: cat.id,
           name: cat.name,
@@ -862,12 +852,7 @@ export const EventsAdapter = {
         designationSpread: response.event.designationSpread,
         designation: response.event.designation,
         predictedEventSpendBreakUp: [],
-        primaryEventType: (() => {
-          const type = response.event.type[0].toLowerCase();
-          if (type === "tradeshow") return "tradeshows";
-          if (type === "conference") return "conferences";
-          return type;
-        })(),
+        primaryEventType: determineEventType(response.event.type[0]),
         categories: response.event.categories.map((cat: any) => ({
           id: cat.id,
           name: cat.name,
@@ -989,5 +974,5 @@ function determineEventType(item: string): string {
   if (item.toLowerCase() === "tradeshow") return "tradeshows";
   if (item.toLowerCase() === "conference") return "conferences";
   if (item.toLowerCase() === "workshop") return "workshops";
-  else return "unknown";
+  else return item;
 }
