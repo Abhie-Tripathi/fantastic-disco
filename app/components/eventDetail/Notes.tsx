@@ -48,6 +48,7 @@ interface Reply {
 export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props) => {
   const { theme } = useTheme();
   const urlPath = usePathname().split('/')[2]
+  const pageSource = urlPath.charAt(0).toUpperCase() + urlPath.slice(1);
   const {getNotesFromTracker, saveNotes, deleteNotes, likeNotes, getUsers, error}=useNotesServices();
   const path=usePathname().split('/');
   const { user, signOut } = useAuthContext();
@@ -350,9 +351,9 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
         const data = await saveNotes(formData, replyId);
         if (data) {
           if (replyId) {
-            GAEvent("Coordinate", "Notes", "Coordinate | Enquiry Detail", "Coordinate | Enquiry Detail | Reply");
+            GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Reply`);
           } else
-            GAEvent("Coordinate", "Notes", "Coordinate | Enquiry Detail", "Coordinate | Enquiry Detail | Message Send");
+            GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Message Send`);
             const newData = transformData(data.data);
             
             setNotes(prevNotes => [...prevNotes, data.data]);
@@ -556,7 +557,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
         const data = await deleteNotes(id);
         if(data) {
             createRealtimeAction('delete', id);
-            GAEvent("Coordinate", "Notes", "Coordinate | Enquiry Detail", "Coordinate | Enquiry Detail | Delete");
+            GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Delete`);
           }
           
     }catch(error){
@@ -635,7 +636,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
   useEffect(() => {
     // const url = `${baseUrl}/auth/users?limit=100`
     console.log(`${baseUrl}/auth/users?limit=100`);
-    GAEvent("Coordinate", "Notes", "Coordinate | Enquiry Detail", "Coordinate | Enquiry Detail | View");
+    GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | View`);
     
     getAllUser();
   }, [])

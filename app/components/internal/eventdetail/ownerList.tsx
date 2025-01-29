@@ -10,6 +10,7 @@ import { useTheme } from "@/context";
 import UserProfile from "../../userProfile/UserProfile";
 import { useCoordinateService } from "@/services/coordinateService";
 import { GAEvent } from "@/utils/GAEvent";
+import { usePathname } from "next/navigation";
 
 interface PropType {
   label: string;
@@ -29,6 +30,9 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
   const { theme } = useTheme();
 
   const iconClass = theme === "light" ? "icons_light" : "icon";
+
+  const urlPath = usePathname().split("/")[2];
+  const pageSource = urlPath.charAt(0).toUpperCase() + urlPath.slice(1);
 
   const coordinateService = useCoordinateService();
 
@@ -63,7 +67,7 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
     const data: any = await coordinateService.setEnquiryOwner(dataToSend);
     if (data) {
       getOwnerDetails();
-      GAEvent("Coordinate", "Enquiry Detail", "Coordinate | Assign Owner", "Assign Owner Changed");
+      GAEvent("Assign Owner", "Enquiry Detail", `${pageSource} | Assign Owner`, "Assign Owner Changed");
     }
   };
 

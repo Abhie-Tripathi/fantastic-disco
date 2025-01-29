@@ -13,6 +13,7 @@ import Text from "@/components/new-ui/Text";
 import { CircleSlash, MailIcon, PhoneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { GAEvent } from "@/utils/GAEvent";
+import { usePathname } from "next/navigation";
 
 interface Props {
   open: boolean;
@@ -51,6 +52,8 @@ const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) 
   const [accordianToggle, setAccordianToggle] = useState(open);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
+  const urlPath = usePathname().split("/")[2];
+  const pageSource = urlPath.charAt(0).toUpperCase() + urlPath.slice(1);
 
   return (
     <div
@@ -60,7 +63,7 @@ const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) 
         className={styles.header}
         onClick={() => {
           setAccordianToggle(!accordianToggle);
-          !accordianToggle && GAEvent("Coordinate", "Enquiry Detail", "Event POC", "Expanded");
+          !accordianToggle && GAEvent("Event POC", "Enquiry Detail", "Event POC", "Expanded");
         }}
       >
         <Image src={PeopleIcon} alt="page" className={iconClass} />
@@ -146,7 +149,7 @@ const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) 
                 variant="link"
                 onClick={() => {
                   setExpandedTab('poc');
-                  GAEvent("Coordinate", "POC", "Coordinate | Enquiry Detail", "POC Side List | See All");
+                  GAEvent("Event POC", "POC", `${pageSource} | Enquiry Detail`, "POC Side List | See All");
                 }}
               >View All ({pocData?.length})</Button>
             }

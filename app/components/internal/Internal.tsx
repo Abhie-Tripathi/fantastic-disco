@@ -149,17 +149,6 @@ const Internal = ({
     setEventData1(updatedData);
   }
 
-  // useEffect(() => {
-  //   console.log('searchParams changed', searchParams.toString());
-  // },
-  // [
-  //   searchParams.get('active_gte'),
-  //   searchParams.get('active_lte'),
-  //   searchParams.get('interest'),
-  //   searchParams.get('status'),
-  //   searchParams.get('liked'),
-  // ]);
-
   useEffect(() => {
     setPage(1);
     setFiltersChanged((prev) => !prev);
