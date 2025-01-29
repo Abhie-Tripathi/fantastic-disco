@@ -24,6 +24,7 @@ import UserProfile from "../userProfile/UserProfile";
 import { useNotesServices } from "@/services/notesServices";
 import NullState from "../trackers/nullState";
 import NotesNullState from '@/public/notesNullState.svg'
+import { GAEvent } from "@/utils/GAEvent";
 interface UserDetail {
   firstname: string;
   email: string;
@@ -348,6 +349,10 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
     try{
         const data = await saveNotes(formData, replyId);
         if (data) {
+          if (replyId) {
+            GAEvent("Coordinate", "Notes", "Coordinate | Enquiry Detail", "Coordinate | Enquiry Detail | Reply");
+          } else
+            GAEvent("Coordinate", "Notes", "Coordinate | Enquiry Detail", "Coordinate | Enquiry Detail | Message Send");
             const newData = transformData(data.data);
             
             setNotes(prevNotes => [...prevNotes, data.data]);
@@ -551,6 +556,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
         const data = await deleteNotes(id);
         if(data) {
             createRealtimeAction('delete', id);
+            GAEvent("Coordinate", "Notes", "Coordinate | Enquiry Detail", "Coordinate | Enquiry Detail | Delete");
           }
           
     }catch(error){
@@ -629,6 +635,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
   useEffect(() => {
     // const url = `${baseUrl}/auth/users?limit=100`
     console.log(`${baseUrl}/auth/users?limit=100`);
+    GAEvent("Coordinate", "Notes", "Coordinate | Enquiry Detail", "Coordinate | Enquiry Detail | View");
     
     getAllUser();
   }, [])

@@ -9,6 +9,7 @@ import { showToast } from "@/utils/showToast";
 import { useTheme } from "@/context";
 import UserProfile from "../../userProfile/UserProfile";
 import { useCoordinateService } from "@/services/coordinateService";
+import { GAEvent } from "@/utils/GAEvent";
 
 interface PropType {
   label: string;
@@ -62,6 +63,7 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
     const data: any = await coordinateService.setEnquiryOwner(dataToSend);
     if (data) {
       getOwnerDetails();
+      GAEvent("Coordinate", "Enquiry Detail", "Coordinate | Assign Owner", "Assign Owner Changed");
     }
   };
 

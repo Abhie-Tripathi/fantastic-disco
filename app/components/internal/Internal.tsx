@@ -19,6 +19,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 import NullState from "../trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg"
 import { Pencil } from "lucide-react";
+import { GAEvent } from "@/utils/GAEvent";
 
 interface Props {
   handleModal: (id: string, enquiryId: string) => void;
@@ -148,6 +149,17 @@ const Internal = ({
     setEventData1(updatedData);
   }
 
+  // useEffect(() => {
+  //   console.log('searchParams changed', searchParams.toString());
+  // },
+  // [
+  //   searchParams.get('active_gte'),
+  //   searchParams.get('active_lte'),
+  //   searchParams.get('interest'),
+  //   searchParams.get('status'),
+  //   searchParams.get('liked'),
+  // ]);
+
   useEffect(() => {
     setPage(1);
     setFiltersChanged((prev) => !prev);
@@ -157,6 +169,7 @@ const Internal = ({
     if (page > 0) {
       setNoMoreData(false);
       fetchData();
+      GAEvent("Coordinate", "Pagination", "Coordinate", `Coordinate | ${page}`);
     }
   }, [page, filtersChanged]);
   if (!isLoaded) {
@@ -176,7 +189,14 @@ const Internal = ({
     setSearchInput(name);
     setShowSuggestion(true);
     setFilter("eventId", id.toString());    
+    GAEvent("Coordinate", "Filter", "Coordinate", "Coordinate | Event | Auto Applied");
   };
+
+  const handleEditAction = () => {
+    GAEvent("Coordinate", "Customize Action", "Coordinate", "Coordinate | Top Card | Edit Icon");
+    router.push("/internal/settings/product");
+  }
+
   return (
     <>
       <div className={styles.scrollContainer} ref={divRef}>
@@ -188,9 +208,9 @@ const Internal = ({
                 <div className={styles.count}>
                   {item?.count}
                 </div>
-                <div className="flex items-end cursor-pointer hover:underline relative group" onClick={()=>router.push("/internal/settings/product")}>
+                <div className="flex items-end cursor-pointer hover:underline relative group" onClick={handleEditAction}>
                   {item.name}
-                    <div className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 p-1 rounded absolute -right-7" onClick={()=>router.push("/internal/settings/product")} title="Edit">
+                    <div className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 p-1 rounded absolute -right-7" onClick={handleEditAction} title="Edit">
                       <Pencil width="14px" height="14px" />
                     </div>
                 </div>
