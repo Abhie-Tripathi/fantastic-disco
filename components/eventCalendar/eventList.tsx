@@ -44,7 +44,6 @@ export default function EventList({
   const eventService = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
   const active=getFilterValue("eventType");
-  console.log(source);
   
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.delete("view");

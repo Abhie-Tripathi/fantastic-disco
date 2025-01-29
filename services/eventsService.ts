@@ -156,7 +156,6 @@ export const useEventsService = () => {
       method: "GET",
       params: adaptedParams,
     });
-    console.log("adaptedresponse", EventsAdapter.adaptResponse(response, params))
     return EventsAdapter.adaptResponse(response, params);
   };
 

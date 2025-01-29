@@ -19,7 +19,6 @@ import {
     eventsData: any,
     filter: any
   ) => {
-    console.log(view, unattendedEvents, eventsData, filter);
     if (!eventsData?.events) return [];
   
     if (view === Views.WEEK) {

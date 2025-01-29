@@ -207,7 +207,6 @@ export const useTrackerServices = () => {
       const result = entries
       .map(([key, value]) => `${key}=${value}`)
       .join("&");
-      console.log();
       
       // console.log(`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${type}&groupBy=${searchParams}`);
       const response: OriginalResponse | undefined = await api.request(type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?${result}`:`${endpoints.tracker.commonUrl}/${trackerId}/events?${searchParams}`, {
