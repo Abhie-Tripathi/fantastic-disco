@@ -17,7 +17,7 @@ const Card = ({
 
   return (
     <li
-      className={`relative flex flex-col gap-2 items-center justify-center p-4 border  bg-white w-40 h-28 rounded-lg cursor-pointer ${
+      className={`shadow-[1.26px_2.53px_7.59px_0px_rgba(237,235,235,0.2)] relative flex flex-col gap-2 items-center justify-center p-4 border  bg-white w-36 h-24 rounded-lg cursor-pointer ${
         activeIndustry === slug ? "border-primary" : "border-[#E6E6E6]"
       } hover:border-primary`}
       onClick={() => handleIndustry(slug)}
@@ -29,7 +29,7 @@ const Card = ({
         height={"32"}
         alt={"Industry Icon"}
       />
-      <p className="text-[var(--tertiary-text-color)] text-sm font-medium">
+      <p className="text-[var(--tertiary-text-color)] text-center text-xs font-medium">
         {name}
       </p>
       {activeIndustry === slug && (

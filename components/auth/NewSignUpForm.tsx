@@ -188,7 +188,12 @@ const NewSignUpForm = () => {
   const handleIndustry = (industry: string) => {
     setValue("industry", industry);
     setIndustry(industry);
-    GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Use Case Selected");
+    GAEvent(
+      "Onboarding",
+      "Onboarding",
+      "Sign Up",
+      "Sign Up | Use Case Selected"
+    );
   };
 
   const handleCategories = (categoryId: string) => {
@@ -196,10 +201,20 @@ const NewSignUpForm = () => {
       const updatedSet = new Set(prev);
       if (updatedSet.has(categoryId)) {
         updatedSet.delete(categoryId);
-        GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Category Deselected");
+        GAEvent(
+          "Onboarding",
+          "Onboarding",
+          "Sign Up",
+          "Sign Up | Category Deselected"
+        );
       } else {
         updatedSet.add(categoryId);
-        GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Category Selected");
+        GAEvent(
+          "Onboarding",
+          "Onboarding",
+          "Sign Up",
+          "Sign Up | Category Selected"
+        );
       }
       const updatedCategoriesArray = Array.from(updatedSet);
       const updatedCategoriesString = updatedCategoriesArray.join(",");
@@ -223,6 +238,7 @@ const NewSignUpForm = () => {
           render={({ field }) => (
             <div className="space-y-2 w-96 max-w-3xl self-center border-b pb-6">
               <Input
+                className="rounded-sm bg-white ring-1 ring-primary focus-visible:ring-1 outline outline-[#D2D2F3] focus-visible:ring-primary focus-visible:outline-[#D2D2F3] outline-offset-2 focus-visible:outline-offset-2"
                 id="email"
                 type="email"
                 {...field}
@@ -249,8 +265,8 @@ const NewSignUpForm = () => {
             </div>
           )}
         />
-        <p className="text-[var(--secondary-text-color)] text-center font-semibold">
-          Let us know who you are and help us personalise your experience !
+        <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold">
+          Choose an Industry Relevant to You
         </p>
         <Controller
           name={"industry"}

@@ -33,7 +33,7 @@ const CategoryCards = ({
 }) => {
   return (
     <div className="flex flex-col">
-      <p className="text-[var(--secondary-text-color)] text-center font-semibold my-6">
+      <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold my-6">
         Let us personalize more
       </p>
       <ol className="flex flex-row flex-wrap gap-2 w-fit self-center justify-center mb-4">
