@@ -17,6 +17,7 @@ const config = {
           'c1.10times.com',
           'oaidalleapiprodscus.blob.core.windows.net',
           'img.10times.com',
+          'login.10times.com',
         ],
   },
   experimental: {

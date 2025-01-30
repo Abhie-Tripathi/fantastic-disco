@@ -26,6 +26,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 import { usePathname } from "next/navigation";
 import { useFilterContext } from "@/context/filterContext";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { GAEvent } from "@/utils/GAEvent";
 
 const presets = [
   { label: "This week", value: "this-week" },
@@ -239,12 +240,21 @@ export default function DateRangeSelector({ type, source }: { type?: string, sou
 
   const onOpenChange = (open: boolean) => {
     setIsOpen(open);
+    // Auto apply date filter in case of coordinate
+    if (!open && source === "coordinate") {
+      applyFilters();
+    }
   };
   useEffect(() => {
     if (type === "T_LOCATION_DATE" && !isOpen) {
       onOpenChange(true);
     }
   }, [type, isOpen]);
+
+  useEffect(() => {    
+    if ( source === "coordinate" && searchParams.get('active_gte') )
+      GAEvent("Coordinate", "Filter", "Coordinate", "Coordinate | Dates | Auto Applied");
+  }, [searchParams.get('active_gte')]);
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       {type!=="T_LOCATION_DATE" &&

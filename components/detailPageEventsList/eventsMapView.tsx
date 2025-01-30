@@ -96,6 +96,7 @@ const EventsMapView: React.FC<MapProps> = ({
   } = useQuery({
     queryKey: ["eventDetail", startDate, endDate],
     queryFn: async () => await getEventsWithSearchParams(params.toString()),
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {

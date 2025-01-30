@@ -39,6 +39,7 @@ import { Input } from "../ui/input";
 import { industryData, settingResearchData } from "@/data/onboarding";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { GAEvent } from "@/utils/GAEvent";
 
 const otpSchema = z.object({
   otpCode: z
@@ -138,9 +139,15 @@ export default function NewVerificationForm() {
 
   const resendOTP = async (email: string) => {
     setTime(30);
-    generateOTP(email, industry, categories, flow);
+    generateOTP(email, industry, categories, "", flow, "resend");
   };
 
+  const handleBack = () => {
+    if (flow === "signup") {
+      GAEvent("Onboarding", "Onboarding", "Sign Up", "Verify OTP | Back");
+    } else GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Back");
+    router.back();
+  };
   useEffect(() => {
     let timer: NodeJS.Timeout | null = null;
     if (time > 0) {
@@ -175,7 +182,7 @@ export default function NewVerificationForm() {
           >
             <p
               className="flex items-center gap-1 text-primary cursor-pointer"
-              onClick={() => router.back()}
+              onClick={handleBack}
             >
               <ArrowLeft width={18} height={18} />
               <span>Back</span>
