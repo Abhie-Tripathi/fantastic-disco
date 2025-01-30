@@ -77,11 +77,10 @@ export function useDefaultFilters() {
           "eventTypes",
           "workshops,tradeshows,conferences"
         );
-
-      if (pathName === "/trends") {
+      if (pathName === "/internal/trends") {
         defaultSearchParams.set(
           "eventTypes",
-          "community,concert,performing-arts,sport,festival,workshops,tradeshows,conferences,holiday"
+          "workshops,tradeshows,conferences"
         );
         defaultSearchParams.set(
           "columns",
