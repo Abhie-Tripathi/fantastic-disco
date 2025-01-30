@@ -641,6 +641,7 @@ const SaveThisEvent = ({ eventDetails }: { eventDetails: GTMEventDetail }) => {
   const { data: isEventBookmarked, isSuccess } = useQuery({
     queryKey: ["isBookmarked", id],
     queryFn: () => getIsEventBookMarked(id),
+    refetchOnWindowFocus: false,
   });
 
   const [isBookmarked, setIsBookmarked] = useState<boolean>(

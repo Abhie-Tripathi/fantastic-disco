@@ -11,6 +11,7 @@ import { showToast } from "@/utils/showToast";
 import downArrowIcon from "/public/arrow_down.svg";
 import UserProfile from "../../userProfile/UserProfile";
 import { UserPlus } from "lucide-react";
+import { GAEvent } from "@/utils/GAEvent";
 
 const Follower = ({
   eventId,
@@ -78,7 +79,10 @@ const Follower = ({
       >
         <div
           className={styles.header}
-          onClick={() => setAccordianToggle(!accordianToggle)}
+          onClick={() => {
+            setAccordianToggle(!accordianToggle);
+            !accordianToggle && GAEvent("Coordinate", "Enquiry Detail", "Followers", "Expanded");
+          }}
         >
           {/* <Image src={PeopleIcon} alt="page" className={iconClass} /> */}
           <UserPlus width="24px" height="24px"/>

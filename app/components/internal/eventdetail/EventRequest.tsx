@@ -6,6 +6,7 @@ import { useTheme } from "@/context";
 import PeopleIcon from "/public/people.svg";
 import AttendeeCard from "./AttendeeCard";
 import downArrowIcon from "/public/arrow_down.svg";
+import { GAEvent } from "@/utils/GAEvent";
 interface DetailsProps {
   open: boolean;
   participentData: any;
@@ -20,7 +21,10 @@ const EventRequest = ({ open, participentData }: DetailsProps) => {
     <div className={`${styles.container} card`}>
       <div
         className={styles.header}
-        onClick={() => setAccordianToggle(!accordianToggle)}
+        onClick={() => {
+          setAccordianToggle(!accordianToggle);
+          !accordianToggle && GAEvent("Coordinate", "Enquiry Detail", "Team Request", "Expanded");
+        }}
       >
         <Image src={PeopleIcon} alt="page" className={iconClass} />
         <div className={styles.eventRequest_header}>

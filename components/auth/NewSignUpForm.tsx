@@ -65,6 +65,7 @@ import { SignUpDTO } from "@/types";
 import IndustryCards from "./IndustryCards";
 import CategoryCards from "./CategoryCards";
 import { Category } from "@/types/events";
+import { GAEvent } from "@/utils/GAEvent";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
 
@@ -145,6 +146,16 @@ const NewSignUpForm = () => {
     }
   }, [categories]);
 
+  useEffect(() => {
+    if (
+      errors.email?.message &&
+      errors.email?.message === "Email is required" &&
+      errors.email.type === "invalid_type"
+    ) {
+      GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email Empty");
+    }
+  }, [errors.email?.message]);
+
   const generateOtp = async () => {
     const dataToSend = {
       email: email,
@@ -177,6 +188,7 @@ const NewSignUpForm = () => {
   const handleIndustry = (industry: string) => {
     setValue("industry", industry);
     setIndustry(industry);
+    GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Use Case Selected");
   };
 
   const handleCategories = (categoryId: string) => {
@@ -184,8 +196,10 @@ const NewSignUpForm = () => {
       const updatedSet = new Set(prev);
       if (updatedSet.has(categoryId)) {
         updatedSet.delete(categoryId);
+        GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Category Deselected");
       } else {
         updatedSet.add(categoryId);
+        GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Category Selected");
       }
       const updatedCategoriesArray = Array.from(updatedSet);
       const updatedCategoriesString = updatedCategoriesArray.join(",");
@@ -271,7 +285,7 @@ const NewSignUpForm = () => {
           type="submit"
           className="w-80 self-center"
           disabled={isLoading}
-          onClick={() => clearErrors}
+          onClick={() => clearErrors()}
         >
           {isLoading ? (
             <>
