@@ -37,6 +37,12 @@ import EventCountsLayer from "./layers/EventCountsLayer";
 import EventsLayer from "./layers/EventsLayer";
 import HoverTooltip from "./hoverTooltip";
 import AlertPolygonLayer from "./layers/AlertLayer";
+import { useTrackerContext } from "@/context/tracker";
+import Loading from "../ui/Loading";
+import { useTrackerServices } from "@/services/trackerServices";
+import NullState from "@/app/components/trackers/nullState";
+import TrackerNullState from "@/public/trackerNullState.svg";
+import { useFilterState } from "@/hooks/useFilterState";
 
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
@@ -60,7 +66,7 @@ interface MapProps {
   source?: string;
   trackerId?: string;
   isGlobal?: boolean;
-  trackerLoc?: string;
+  trackerLoc?: string[];
   trackerType?: string;
 }
 
@@ -79,13 +85,19 @@ type ZoomGroup = "country" | "state" | "city" | "event" | null;
 export default function MapComponent({
   searchParams,
   source,
-  trackerId,  
+  trackerId,
   isGlobal,
   trackerLoc,
   trackerType,
 }: MapProps) {
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
+  const { getFilterValue } = useFilterState();
+  const { getMapViewData, getEventsLatLongData } = useTrackerServices();
+  const id = getFilterValue("id");
+  console.log(trackerId);
+
+  const { data } = useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
     latitude: 20.5937,
     longitude: 78.9629,
@@ -95,11 +107,11 @@ export default function MapComponent({
     padding: { top: 0, bottom: 0, left: 0, right: 0 },
   });
   const [events, setEvents] = useState<MapEvents[]>([]);
-  const [currentZoomGroup, setCurrentZoomGroup] = useState<ZoomGroup>("city");
   const [selectedAlert, setSelectedAlert] = useState<string>();
   const { getLocationDetails, getLocationBBox } = useLocationService();
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
   const [showEventList, setShowEventList] = useState("");
+  const [currentZoomGroup, setCurrentZoomGroup] = useState<ZoomGroup>("city");
   const {
     getEventsCount,
     getEventsWithSearchParams,
@@ -126,7 +138,17 @@ export default function MapComponent({
 
   const location = useMemo(() => {
     const geoCoordinates = getLocalFilterValue("geoCoordinates");
-    const locationIds = getLocalFilterValue("locationIds");
+    const locationIds =
+      source === "tracker"
+        ? trackerLoc?.length > 0
+          ? trackerLoc
+          : "defaultLoc"
+        : getLocalFilterValue("locationIds");
+    if (locationIds === "defaultLoc")
+      setViewport({
+        ...viewport,
+        zoom: 1,
+      });
 
     if (geoCoordinates) {
       return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
@@ -137,16 +159,24 @@ export default function MapComponent({
   }, [searchParams]);
 
   const eventCountsQuery = useQuery<EventCount[], Error>({
-    queryKey: ["eventCounts", currentZoomGroup, searchParams],
-    queryFn: async () => {
-      const modifiedSearchParams = searchParams
-        .replace(/viewBound=[^&]*&?/, "")
-        .replace(/geoCoordinates=[^&]*&?/, "");
+    queryKey:
+      source === "tracker"
+        ? ["eventCounts", trackerId, currentZoomGroup, searchParams]
+        : source === "tracker_global"
+        ? [trackerId]
+        : ["eventCounts", currentZoomGroup, searchParams],
 
-      const response = await memoizedGetEventsCount(
-        `${modifiedSearchParams}&groupBy=city`
-      );
-      return response || [];
+    queryFn: async () => {
+      if (source === "tracker" || source === "tracker_global") {
+        const response = await getMapViewData(trackerId, "city", searchParams);
+
+        return response || [];
+      } else {
+        const response = await memoizedGetEventsCount(
+          `${searchParams}&groupBy=city`
+        );
+        return response || [];
+      }
     },
   });
 
@@ -280,9 +310,7 @@ export default function MapComponent({
 
   useEffect(() => {
     const fetchEvents = async () => {
-      console.log("useEffect fun");
       if (currentZoomGroup === "event" && mapRef.current) {
-        console.log("inside if");
         const map = mapRef.current.getMap();
         const center = map.getCenter();
         const bounds = map.getBounds();
@@ -303,39 +331,38 @@ export default function MapComponent({
             }),
           };
 
-          // try {
-          const modifiedSearchParams = searchParams
-            .replace(/locationIds=[^&]*&?/, "")
-            .replace(/take=[^&]*&?/, "");
+          try {
+            const modifiedSearchParams = searchParams
+              ?.replace(/locationIds=[^&]*&?/, "")
+              .replace(/take=[^&]*&?/, "");
 
-          const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
-
-          const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getLocalFilterValue(
-            "locationIds"
-          )}`;
-
-          let eventsData: any = {};
-
-          if (source === "tracker") {
-            eventsData = await getEventsLatLongData(
-              trackerId,
-              `viewBound=${viewBoundString}`,
-              searchParams
+            const viewBoundString = encodeURIComponent(
+              JSON.stringify(viewBound)
             );
-          } else {
-            console.log("eventsData", eventsData);
-            eventsData = await getRawEventsWithSearchParams(
-              finalSearchParams,
-              true
-            );
+
+            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getLocalFilterValue(
+              "locationIds"
+            )}`;
+
+            let eventsData: any = {};
+
+            if (source === "tracker") {
+              eventsData = await getEventsLatLongData(
+                trackerId,
+                `viewBound=${viewBoundString}`,
+                searchParams
+              );
+            } else {
+              console.log("eventsData", eventsData);
+              eventsData = await getRawEventsWithSearchParams(
+                finalSearchParams
+              );
+            }
+            setEvents((eventsData?.events as MapEvents[]) || []);
+          } catch (error) {
+            console.error("Error fetching events:", error);
           }
-          setEvents((eventsData?.events as MapEvents[]) || []);
-        }
-        // catch (error) {
-        //   console.error("Error fetching events:", error);
-        // }
-        // }
-        else {
+        } else {
           console.error("Map bounds are not available");
         }
       } else {
@@ -420,6 +447,7 @@ export default function MapComponent({
     }
   }, []);
 
+  console.log(currentZoomGroup);
 
   useEffect(() => {
     const newZoomGroup = determineZoomGroup(viewport.zoom);
@@ -549,132 +577,179 @@ export default function MapComponent({
 
   return (
     <div className="relative">
-      <ReactMapGL
-        style={{ width: "100%", height: "calc(100vh - 178px)" }}
-        onMove={onMove}
-        onLoad={onMapLoad}
-        onClick={handleMapClick}
-        onMouseMove={(e) => {
-          const features = e.target.queryRenderedFeatures(e.point, {
-            layers: ["clustered-counts-circle", "unclustered-counts-circle"],
-          });
-          if (features.length > 0) {
-            const feature = features[0];
-            if (feature.properties.cluster) {
-              const clusterId = feature.properties.cluster_id;
-              const mapboxSource = mapRef.current?.getSource(
-                "event-source"
-              ) as mapboxgl.GeoJSONSource;
-              mapboxSource.getClusterLeaves(
-                clusterId,
-                100,
-                0,
-                (err, leaves) => {
-                  if (err) {
-                    console.error("Error getting cluster leaves:", err);
-                    return;
-                  }
-                  const clusteredPoints = leaves.map((leaf) => ({
-                    name: leaf.properties.name,
-                    count: leaf.properties.count,
-                  }));
-                  setHoverInfo({
-                    x: e.point.x,
-                    y: e.point.y,
-                    feature: feature,
-                    clusteredPoints: clusteredPoints,
-                  });
-                }
-              );
-            } else {
-              setHoverInfo({
-                x: e.point.x,
-                y: e.point.y,
-                feature: feature,
-              });
-            }
-          } else {
-            setHoverInfo(null);
-          }
-        }}
-        onMouseLeave={() => setHoverInfo(null)}
-        projection={{ name: "mercator" }}
-        mapStyle={MapStyle.Street}
-        mapboxAccessToken={MapboxToken}
-        minZoom={0.8}
-        interactiveLayerIds={[
-          "clustered-counts-circle",
-          "unclustered-counts-circle",
-          "clustered-events-circle",
-          "unclustered-events",
-        ]}
-        ref={mapRef}
-        {...viewport}
-      >
-        <Button
-          variant="default"
-          className="absolute top-4 right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
-          onClick={() => setShowEventList("all")}
-        >
-          <AlignLeft className="w-5 h-5" />
-          <span>Event List</span>
-        </Button>
-
-        {isHolidaySelected && (
-          <div className="absolute top-4 left-4 bg-white rounded-sm shadow-sm flex items-center gap-2 p-2">
-            <Checkbox
-              id="showUnattendedEvents"
-              checked={showEventList == "unAttended"}
-              onCheckedChange={() => setShowEventList("unAttended")}
-            />
-            <Label htmlFor="showUnattendedEvents">Show Unattended events</Label>
-          </div>
-        )}
-        <Alerts
-          selectedAlert={selectedAlert}
-          setSelectedAlert={setSelectedAlert}
-        />
-
-        <EventList
-          showEventType={showEventList}
-          onClose={() => setShowEventList("")}
-          mapRef={mapRef}
-          onEventHover={handleEventHover}
-          onEventLeave={handleEventLeave}
-        />
-
-        <EventCountsLayer
-          eventCounts={eventCountsQuery.data || []}
-          currentZoomGroup={currentZoomGroup}
-          showEventCount={showEventCount}
-        />
-
-        {events && (
-          <EventsLayer
-            events={events}
-            showEvent={showEvent}
-            highlightedEventId={highlightedEvent?.id}
+      {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
+        <Loading />
+      ) : eventCountsQuery.error ? (
+        <div className="px-10 py-5">
+          <NullState
+            image={TrackerNullState}
+            title={eventCountsQuery.error.message}
           />
-        )}
+        </div>
+      ) : (
+        <>
+          {source === "tracker" && eventCountsQuery?.data?.length === 0 ? (
+            <NullState
+              image={TrackerNullState}
+              title="We couldn’t find any events matching your tracker criteria at the moment."
+              text="Try adjusting your filters or checking back later, as new events are added frequently."
+              buttonText="Manage Configuration"
+              buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration?type=${trackerType}`}
+            />
+          ) : (
+            <>
+              {!location ? (
+                <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
+              ) : (
+                <ReactMapGL
+                  style={{
+                    width: "100%",
+                    height: !isGlobal ? "calc(100vh - 178px)" : "300px",
+                  }}
+                  onMove={onMove}
+                  onLoad={onMapLoad}
+                  onClick={handleMapClick}
+                  onMouseMove={(e) => {
+                    const features = e.target.queryRenderedFeatures(e.point, {
+                      layers: [
+                        "clustered-counts-circle",
+                        "unclustered-counts-circle",
+                      ],
+                    });
+                    if (features.length > 0) {
+                      const feature = features[0];
+                      if (feature.properties.cluster) {
+                        const clusterId = feature.properties.cluster_id;
+                        const mapboxSource = mapRef.current?.getSource(
+                          "event-source"
+                        ) as mapboxgl.GeoJSONSource;
+                        mapboxSource.getClusterLeaves(
+                          clusterId,
+                          100,
+                          0,
+                          (err, leaves) => {
+                            if (err) {
+                              console.error(
+                                "Error getting cluster leaves:",
+                                err
+                              );
+                              return;
+                            }
+                            const clusteredPoints = leaves.map((leaf) => ({
+                              name: leaf.properties.name,
+                              count: leaf.properties.count,
+                            }));
+                            setHoverInfo({
+                              x: e.point.x,
+                              y: e.point.y,
+                              feature: feature,
+                              clusteredPoints: clusteredPoints,
+                            });
+                          }
+                        );
+                      } else {
+                        setHoverInfo({
+                          x: e.point.x,
+                          y: e.point.y,
+                          feature: feature,
+                        });
+                      }
+                    } else {
+                      setHoverInfo(null);
+                    }
+                  }}
+                  onMouseLeave={() => setHoverInfo(null)}
+                  projection={{ name: "mercator" }}
+                  mapStyle={MapStyle.Street}
+                  mapboxAccessToken={MapboxToken}
+                  minZoom={0.8}
+                  interactiveLayerIds={[
+                    "clustered-counts-circle",
+                    "unclustered-counts-circle",
+                    "clustered-events-circle",
+                    "unclustered-events",
+                  ]}
+                  ref={mapRef}
+                  {...viewport}
+                >
+                  {!isGlobal && (
+                    <Button
+                      variant="default"
+                      className="absolute top-4 right-4 bg-primary hover:bg-primary text-white font-semibold py-2 px-4 flex items-center space-x-2"
+                      onClick={() => setShowEventList("all")}
+                    >
+                      <AlignLeft className="w-5 h-5" />
+                      <span>Event List</span>
+                    </Button>
+                  )}
 
-        <AlertPolygonLayer eventId={selectedAlert} mapRef={mapRef} />
+                  {isHolidaySelected && (
+                    <div className="absolute top-4 left-4 bg-white rounded-sm shadow-sm flex items-center gap-2 p-2">
+                      <Checkbox
+                        id="showUnattendedEvents"
+                        checked={showEventList == "unAttended"}
+                        onCheckedChange={() => setShowEventList("unAttended")}
+                      />
+                      <Label htmlFor="showUnattendedEvents">
+                        Show Unattended events
+                      </Label>
+                    </div>
+                  )}
+                  {selectedAlert && (
+                    <Alerts
+                      selectedAlert={selectedAlert}
+                      setSelectedAlert={setSelectedAlert}
+                    />
+                  )}
 
-        {circleLayer && (
-          <Source
-            id="circle-source"
-            type="geojson"
-            data={circleLayer.source?.data}
-          >
-            <Layer {...circleLayer} />
-          </Source>
-        )}
+                  <EventList
+                    showEventType={showEventList}
+                    onClose={() => setShowEventList("")}
+                    mapRef={mapRef}
+                    onEventHover={handleEventHover}
+                    onEventLeave={handleEventLeave}
+                  />
 
-        {popupInfo && (
-          <MapPopup popupInfo={popupInfo} setPopupInfo={setPopupInfo} />
-        )}
+                  <EventCountsLayer
+                    eventCounts={eventCountsQuery.data || []}
+                    currentZoomGroup={currentZoomGroup}
+                    showEventCount={showEventCount}
+                  />
 
-        {hoverInfo && <HoverTooltip hoverInfo={hoverInfo} />}
-      </ReactMapGL>
+                  {events && (
+                    <EventsLayer
+                      events={events}
+                      showEvent={showEvent}
+                      highlightedEventId={highlightedEvent?.id}
+                    />
+                  )}
+
+                  <AlertPolygonLayer eventId={selectedAlert} mapRef={mapRef} />
+
+                  {circleLayer && (
+                    <Source
+                      id="circle-source"
+                      type="geojson"
+                      data={circleLayer.source?.data}
+                    >
+                      <Layer {...circleLayer} />
+                    </Source>
+                  )}
+
+                  {popupInfo && (
+                    <MapPopup
+                      popupInfo={popupInfo}
+                      setPopupInfo={setPopupInfo}
+                    />
+                  )}
+
+                  {hoverInfo && <HoverTooltip hoverInfo={hoverInfo} />}
+                </ReactMapGL>
+              )}
+            </>
+          )}
+        </>
+      )}
     </div>
   );
 }
