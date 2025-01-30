@@ -809,7 +809,7 @@ const Pages = () => {
       audienceZone: "audienceSpread",
       branded: "eventBrand",
       series: "eventSeries",
-      rankings: "eventRanking"
+      rankings: "eventRanking,trustScore"
     };
     
     const filters = getLocalFilterValue("show").split(",");
@@ -1537,6 +1537,8 @@ const Pages = () => {
         }
       });
     }
+    console.log(getLocalFilterValue("locationIds"));
+    
   }, [editData, searchParams]);
 
   // console.log(selectedLabels);

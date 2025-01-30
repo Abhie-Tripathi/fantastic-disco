@@ -149,6 +149,8 @@ export function useDefaultFilters() {
   const setInitialFilters = async () => {
     // Skip if we're in the editTracker path
     if (pathName.split("/").includes("editTracker")) {
+      
+      
       return;
     }
 
@@ -208,6 +210,7 @@ export function useDefaultFilters() {
     if (!pathName.split("/").includes("editTracker")) {
       setInitialFilters();
     }
+    console.log(11111);
   }, []);
 
   return { searchParams };
