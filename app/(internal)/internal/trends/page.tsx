@@ -85,7 +85,9 @@ const EventTrends = () => {
         }, {} as { [key: string]: boolean })
       : {}
   );
-  const [eventTrendsData, setEventTrendsData] = useState<EventTrendsResponse>();
+  const [eventTrendsData, setEventTrendsData] = useState<
+    EventTrendsResponse | undefined
+  >();
   const [graphData, setGraphData] = useState<any>();
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [tableData, setTableData] = useState<TableData[] | []>();
@@ -105,7 +107,6 @@ const EventTrends = () => {
 
   const apiParams = useMemo(() => {
     const params = new URLSearchParams(stringParams);
-    console.log(params.get("eventTypes"));
     const eventTypes = params.get("eventTypes") || "";
     const capitalizedEventTypes = eventTypes
       .split(",")
@@ -274,6 +275,12 @@ const EventTrends = () => {
       setTableColumns(tableColumns);
     }
   }, [eventTrendsData, selectedEventType]);
+
+  useEffect(() => {
+    if (trendsData === undefined) {
+      setGraphData(undefined);
+    }
+  }, [trendsData]);
 
   const applyHandler = () => {
     const columnsValue = columnsDropdown

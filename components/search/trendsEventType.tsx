@@ -100,7 +100,6 @@ export default function TrendsEventTypeSelector() {
     setLocalFilter("show", "alerts,scores,economicImpact");
     setIsOpen(false);
   }, [selectedCategories, setLocalFilter]);
-  console.log(getLocalFilterValue("columns"));
 
   const renderCategoryGroup = useCallback(
     (type: EventGroupType) => (
