@@ -206,7 +206,6 @@ const EventTrends = () => {
 
       setSelectedEventType(() => {
         return columnsData[0] as TEventColumnType;
-        // return "eventCount";
       });
 
       setSmartInsightState((prev) => {
