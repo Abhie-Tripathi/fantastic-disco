@@ -73,7 +73,7 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
                   checked={selectedIdArray.length === customData.length}
                 />
               </th>
-              {Object.entries(customData[0]).map(([entryKey, value]) => (
+              {customData?.length > 0 && Object?.entries(customData[0]).map(([entryKey, value]) => (
                 <th key={entryKey} className={styles.dataColoumn}>
                   {entryKey as string}
                 </th>

@@ -1789,32 +1789,30 @@ const generateDynamicString = (item: any) => {
     return `${item[0]} (${item[1]})`;
   }else return item;
 };
-useEffect(()=>{
-  if(type==="T_PRODUCT_KEYWORDS"){
-    console.log(activeTab);
-    
-    if(activeTab === "exclude"){
-    
-    const keywordData = getLocalFilterValue("excludeKeywords")?.split(",")?.filter(keyword => keyword.trim() !== "");
+const [includeKeyword, setIncludeKeyword] = useState([]);
+const [excludeKeyword, setExcludeKeyword] = useState([]);
 
-    const updatedData = keywordData
-    ?.filter(item => item !== " ")
-    .map(item => ({
-      "Exclude Keywords": item
-    }));
-    setCustomData(updatedData)
+useEffect(() => {
+  if (type === "T_PRODUCT_KEYWORDS") {
+    console.log(activeTab);
+
+    if (activeTab === "exclude") {
+      const keywordData = getLocalFilterValue("excludeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
+      const updatedData = keywordData.map(item => ({ "Exclude Keywords": item }));
+      setIncludeKeyword(updatedData)
     }
-    if(activeTab === "include"){
-    const keywordData = getLocalFilterValue("includeKeywords")?.split(",")?.filter(keyword => keyword.trim() !== "");
-    const updatedData = keywordData
-    ?.filter(item => item !== " ")
-    .map(item => ({
-      "Include Keywords": item
-    }));
-    setCustomData(updatedData)
+
+    if (activeTab === "include") {
+      const keywordData = getLocalFilterValue("includeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
+      const updatedData = keywordData.map(item => ({ "Include Keywords": item }));
+      setExcludeKeyword(updatedData)
     }
   }
-},[activeTab, getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords")])
+}, [getLocalFilterValue("includeKeywords"),getLocalFilterValue("excludeKeywords")]);
+useEffect(()=>{
+  if (activeTab === "include") setCustomData(includeKeyword);
+  else setCustomData(excludeKeyword);
+},[activeTab])
 
 return (
   <>
@@ -2063,10 +2061,21 @@ return (
         {/* {type === "T_PRODUCT_KEYWORDS" && excludeKeywords.length>0 && <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white ml-1">{excludeKeywords.length}</span>} */}
         </TabsTrigger>
       </TabsList>
+      <TabsContent value="include" className="mt-0">
+      {customData.length>0 &&
+      <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> 
+      }
+      </TabsContent>
+      <TabsContent value="exclude" className="mt-0">
+      {customData.length>0 &&
+      <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> 
+      }
+      </TabsContent>
       </Tabs>
         }
-        {(customData && customData.length >0)?
-          <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> :          
+        {/* {(customData && customData.length >0 && type!=="T_PRODUCT_KEYWORDS")?
+          <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> 
+          :          
           <div className={styles.emptyTableData}>
             <Image
               src={trackerEmptyTable}
@@ -2080,7 +2089,7 @@ return (
             <div className={styles.emptyTableText}>No data added</div>
             <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
           </div>
-        }
+        } */}
       </div>
     </div>
     }
