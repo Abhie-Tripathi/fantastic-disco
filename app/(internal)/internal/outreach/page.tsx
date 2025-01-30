@@ -9,6 +9,7 @@ import NullState from "@/app/components/trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg";
 import PipelineCol from "@/app/components/outreach/pipelineCol";
 import { useSearchParams } from "next/navigation";
+import { GAEvent } from "@/utils/GAEvent";
 import Loading from "@/app/components/UI/Loading";
 
 interface taskDetailType {
@@ -66,7 +67,8 @@ const Page: React.FC = () => {
 
   const handleDrop2 = (
     event: React.DragEvent<HTMLDivElement>,
-    target: string
+    target: string,
+    initiator: string = "",
   ) => {    
     event.preventDefault();
     const taskName: enquiryType = JSON.parse(
@@ -98,7 +100,7 @@ const Page: React.FC = () => {
           count: prevState[target].count + 1,
         },
       }));
-      changeEnquiryStatus(target, taskName.enquiryId, source);
+      changeEnquiryStatus(target, taskName.enquiryId, source, initiator);
     }
   };
 
@@ -142,7 +144,8 @@ const Page: React.FC = () => {
   const changeEnquiryStatus = async (
     changeStatusTo: string,
     enquiry_id: string,
-    source: string
+    source: string,
+    initiator: string,
   ) => {
     if (enquiry_id && enquiry_id != "") {
       let payloadData = {
@@ -155,6 +158,7 @@ const Page: React.FC = () => {
         );
 
         if (apiData?.message === "Data updated") {
+          GAEvent("Outreach", "Enquiry Detail", `Outreach | Enquiry Status Change`, `Change | ${initiator} | ${changeStatusTo}`);
           singleCall(source);
           // toast.success("Enquiry status updated!", {
           //   position: "bottom-right",
@@ -310,7 +314,7 @@ const Page: React.FC = () => {
       isPropagationStopped: () => false,
       persist: () => {},
     } as any;
-    handleDrop2(mockEvent, target);
+    handleDrop2(mockEvent, target, 'Status Pipeline');
   };
 
   if ( configData?.length == 0 || (Object.values(taskDetail).length > 0 && Object.values(taskDetail).every((value) => (value.dataLoaded === true && value.count === 0))) ) {
