@@ -9,7 +9,7 @@ interface Props {
   presetName?: string;
 }
 
-const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
+const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => { 
   const [expandTable, setExpandTable] = useState<boolean>(false);
   const [selectedIdArray, setSelectedIdArray] = useState<number[]>([]);
 

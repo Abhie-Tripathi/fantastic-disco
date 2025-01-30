@@ -383,6 +383,7 @@ const templates = [
     //     placeholder: "Keywords",
     //   }
     // ]
+    isUploadEnable: true,
   }
 ]
 
@@ -431,6 +432,7 @@ const Pages = () => {
   // const [selectedCategories, setSelectedCategories] = useState<string[]>(
   //   enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
   // );
+  const [hideSuggestion,setHideSuggestion]=useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
       enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
     );
@@ -508,6 +510,7 @@ const Pages = () => {
     searchParams.get("eventKeywords")?.split(",") || []
   );
   const [customData, setCustomData] = useState<any[]>([]);
+  const [activeTab,setActiveTab]=useState("include");
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
   const [add, setAdd] = useState(false);
@@ -661,7 +664,8 @@ const Pages = () => {
         "company name 2" , "company name 3" ,
          "company name 4" ,
         "company name 5" ]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
-        fetchAISuggestion(promptText);
+        if(!hideSuggestion)
+          fetchAISuggestion(promptText);
       }
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       const urls = customData
@@ -688,8 +692,8 @@ const Pages = () => {
               [ "Speaker Name 5", "Company Name 5" ]
           ]
       }. If no data is found, respond in this format: {\"data\": []}`; 
-
-         fetchAISuggestion(promptText);
+        if(!hideSuggestion)
+          fetchAISuggestion(promptText);
       }
       const speakerName = customData.map((item: {}) => Object.values(item)[0]).join(',');
       const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
@@ -709,7 +713,8 @@ const Pages = () => {
           [ "name 5", "company name 5" ]
         ]
       }. Do not show example values. If no data found then return in below format: {\"data\": []}`
-      fetchAISuggestion(promptText);
+      if(!hideSuggestion)
+        fetchAISuggestion(promptText);
       }
       const userName = customData.map((item: {}) => Object.values(item)[0]).join(',');
       const userCompany = customData.map((item: {}) => Object.values(item)[1]).join(',')
@@ -725,11 +730,21 @@ const Pages = () => {
           [ "name 5", "company name 5" ]
         ]
       }. Do not show example values. If no data found then return in below format: {\"data\": []}`
-      fetchAISuggestion(promptText);
+      if(!hideSuggestion)
+        fetchAISuggestion(promptText);
       }
     } else if (type === "T_BRAND_BUILDING") {
       const designation = customData.map((item: {}) => Object.values(item)[0]).join(',');
       setDesignations(designation);
+    }
+    else if(type === "T_PRODUCT_KEYWORDS"){
+      if(activeTab==="include"){
+        const includeKeywords = customData.map((item: {}) => Object.values(item)[0]).join(',');
+        setLocalFilter("includeKeywords", includeKeywords)
+      }else{
+        const excludeKeywords = customData.map((item: {}) => Object.values(item)[0]).join(',');
+        setLocalFilter("excludeKeywords", excludeKeywords)
+      }
     }
   }, [type, customData])
   const fetchAISuggestion = async(promptText:string)=>{
@@ -1588,6 +1603,7 @@ const Pages = () => {
   };
   const [valid,setValid]=useState(true);
   const addNew = () => {
+    setHideSuggestion(false);
     if (!template) {
       console.error('Template is not found');
       return;
@@ -1706,6 +1722,8 @@ useEffect(()=>{
 }, [type])
 
   const handleCustomData = (data: any) => {
+    console.log(data);
+    setHideSuggestion(true);
     setCustomData(data);
   }
 
@@ -1771,6 +1789,33 @@ const generateDynamicString = (item: any) => {
     return `${item[0]} (${item[1]})`;
   }else return item;
 };
+useEffect(()=>{
+  if(type==="T_PRODUCT_KEYWORDS"){
+    console.log(activeTab);
+    
+    if(activeTab === "exclude"){
+    
+    const keywordData = getLocalFilterValue("excludeKeywords")?.split(",")?.filter(keyword => keyword.trim() !== "");
+
+    const updatedData = keywordData
+    ?.filter(item => item !== " ")
+    .map(item => ({
+      "Exclude Keywords": item
+    }));
+    setCustomData(updatedData)
+    }
+    if(activeTab === "include"){
+    const keywordData = getLocalFilterValue("includeKeywords")?.split(",")?.filter(keyword => keyword.trim() !== "");
+    const updatedData = keywordData
+    ?.filter(item => item !== " ")
+    .map(item => ({
+      "Include Keywords": item
+    }));
+    setCustomData(updatedData)
+    }
+  }
+},[activeTab, getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords")])
+
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -1829,84 +1874,7 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
-    {type==="T_PRODUCT_KEYWORDS" &&
-    <div className={`card flex flex-col gap-6`} style={{gap:"var(--spacing-lg)", borderRadius:"var(--border-radius-sm)", boxShadow:"none"}}>
-      <div>
-      <div className="mb-4">{template?.description}
-        <Button
-          className={styles.uploadBtn}
-          style={{ color: "white", float: "right", gap:"4px"}}
-          size="sm"
-          onClick={handleUploadEnable}
-        >
-          <Share style={{marginBottom: "3px", color: "white", display:"flex", gap:"4px"}} height="15px" width="15px" />
-          {" "}Upload
-        </Button>
-      </div>
-      {/* <div className={`${styles.toggleDiv}`}>
-          <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-            <div>
-              <div className={styles.manualHeading}>Add data manually
-              </div>
-              <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
-            </div>
-            <div>
 
-              <span>
-                <label className={styles.switch}>
-                  <input
-                    type="checkbox"
-                    checked={true}
-                  />
-                  <span className={styles.slider}></span>
-                </label>
-              </span>
-
-            </div>
-          </div>
-          <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-            <div>
-              <div className={styles.manualHeading}>Import CSV Data
-                <div className={styles.badgeSuccess}>Coming Soon</div>
-              </div>
-              <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-            </div>
-            <div>
-
-              <span>
-                <label className={styles.switch}>
-                  <input
-                    type="checkbox"
-                    checked={selectedExhibitScore.length !== 0}
-                  />
-                  <span className={styles.slider}></span>
-                </label>
-              </span>
-
-            </div>
-          </div>
-        </div> */}
-      </div>
-      {template && uploadEnabled && 
-        <CsvUploader
-          templateData={template}
-          customData={customData}
-          handleCustomData={handleCustomData}
-          setUploadEnabled={setUploadEnabled}
-          // setSelectedEventKeywords={setSelectedEventKeywords}
-        />
-      }
-    <div style={{width:"calc(50% - 5px)"}}>
-    {/* <EventKeyword state={selectedEventKeywords}
-    setState={setSelectedEventKeywords}
-    onClose={close} type={isDiv}
-    isMandatory={isMandatory}
-    setIsMandatory={setIsMandatory}
-    /> */}
-    <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions}/>
-    </div>
-    </div>
-    }
     
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
     <div style={{display: 'flex', gap: '25px'}}>
@@ -1922,7 +1890,7 @@ return (
           {" "} Please upload or manually enter the information
         </div>
         {type==="T_PRODUCT_KEYWORDS" && 
-          <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions}/>
+          <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions} hideSuggestion={hideSuggestion} setHideSuggestion={setHideSuggestion}/>
         }
         {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP" || type==="T_PRODUCT_KEYWORDS") ?
           (uploadEnabled && 
@@ -2081,7 +2049,23 @@ return (
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
           {" "} You can edit or remove unwanted entries from here.
         </div>
-        {(customData && customData.length >0) ?
+        {(type==="T_PRODUCT_KEYWORDS" && customData) &&
+        <Tabs
+        defaultValue="include"
+        onValueChange={(value) => setActiveTab(value as "include" | "exclude")}
+        className="pb-2"
+        >
+        <TabsList className="grid w-full grid-cols-2">
+        <TabsTrigger value="include">Include
+        {/* {type === "T_PRODUCT_KEYWORDS" && includeKeywords.length>0 && <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white ml-1">{includeKeywords.length}</span>} */}
+        </TabsTrigger>
+        <TabsTrigger value="exclude">Exclude
+        {/* {type === "T_PRODUCT_KEYWORDS" && excludeKeywords.length>0 && <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white ml-1">{excludeKeywords.length}</span>} */}
+        </TabsTrigger>
+      </TabsList>
+      </Tabs>
+        }
+        {(customData && customData.length >0)?
           <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> :          
           <div className={styles.emptyTableData}>
             <Image

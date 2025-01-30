@@ -15,16 +15,15 @@ interface KeywordSelectorProps{
   type?:string;
   fetchAISuggestion?: (promptText: string) => Promise<any>;
   suggestions?:any;
-}
-interface keywordInterface{
-  isKeywordEnabled?:boolean;
-  positiveKeywords?: string[] | undefined;
-  negativeKeywords?: string[] | undefined;
+  hideSuggestion?: boolean;
+  setHideSuggestion?: (value: boolean) => void;
 }
 export default function KeywordFilter({
   type,
   fetchAISuggestion,
   suggestions,
+  hideSuggestion,
+  setHideSuggestion
 }:KeywordSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const {
@@ -44,19 +43,19 @@ export default function KeywordFilter({
   const [activeTab, setActiveTab] = useState<"include" | "exclude">("include");
   const [includeKeywords, setIncludeKeywords] = useState<string[]>([]);
 const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
-useEffect(()=>{
-  const includeKeywords = [
-    ...getLocalFilterValue("includeKeywords")?.split(",").filter((keyword) => keyword.trim() !== "")
-  ];
-  const excludeKeywords=[
-        ...getLocalFilterValue("excludeKeywords")?.split(",").filter((keyword) => keyword.trim() !== "")
-      ];
-  if(includeKeywords.length>0 && type==="T_PRODUCT_KEYWORDS" && activeTab==="include")
-  fetchAISuggestion?.(`List top 5 keywords similar to ${includeKeywords[includeKeywords.length-1]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`);
-  else if(excludeKeywords.length>0 && type==="T_PRODUCT_KEYWORDS" && activeTab==="exclude"){
-  fetchAISuggestion?.(`List top 5 keywords similar to ${excludeKeywords[excludeKeywords.length-1]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`);
-}
-},[getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords")])
+// useEffect(()=>{
+//   const includeKeywords = [
+//     ...getLocalFilterValue("includeKeywords")?.split(",").filter((keyword) => keyword.trim() !== "")
+//   ];
+//   const excludeKeywords=[
+//         ...getLocalFilterValue("excludeKeywords")?.split(",").filter((keyword) => keyword.trim() !== "")
+//       ];
+//   if(includeKeywords.length>0 && type==="T_PRODUCT_KEYWORDS" && activeTab==="include" && hideSuggestion)
+//   fetchAISuggestion?.(`List top 5 keywords similar to ${includeKeywords[includeKeywords.length-1]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`);
+//   else if(excludeKeywords.length>0 && type==="T_PRODUCT_KEYWORDS" && activeTab==="exclude" && hideSuggestion){
+//   fetchAISuggestion?.(`List top 5 keywords similar to ${excludeKeywords[excludeKeywords.length-1]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`);
+// }
+// },[getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords")])
   useEffect(() => {
     const savedIncludeKeywords = localFilters.includeKeywords;
     const savedExcludeKeywords = localFilters.excludeKeywords;
@@ -67,6 +66,7 @@ useEffect(()=>{
   }, [searchParams, localFilters]);
 
   const handleAddKeyword = (e: React.FormEvent) => {
+    setHideSuggestion?.(false);
     e.preventDefault();
     if (inputValue.trim()) {
       const newKeywords = inputValue
@@ -78,6 +78,7 @@ useEffect(()=>{
     }
   };
   const addKeywords=(newKeywords:string[])=>{
+   
     if (activeTab === "include") {
       const uniqueNewKeywords = newKeywords.filter(
         (k) => !includeKeywords.includes(k)

@@ -61,6 +61,8 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
             +
           </Button>
         </form>
+        {type!=="T_PRODUCT_KEYWORDS" &&
+        <>
         <TabsContent value="include" className="mt-0">
           <div className="flex flex-wrap gap-2">
             {includeKeywords?.map((keyword) => (
@@ -101,6 +103,8 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
             ))}
           </div>
         </TabsContent>
+        </>
+        }
       </div>
     </Tabs>
   );
