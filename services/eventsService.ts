@@ -159,6 +159,16 @@ export const useEventsService = () => {
     return EventsAdapter.adaptResponse(response, params);
   };
 
+  const getRawEventsWithSearchParams = async (searchParamsString: string) => {
+    const params = new URLSearchParams(searchParamsString);
+    const adaptedParams = EventsAdapter.adaptRequestParams(params);
+    const response = await api.request(`${endpoints.event.events}`, {
+      method: "GET",
+      params: adaptedParams,
+    }, true);
+    return response;
+  };
+
   const saveEvent = (eventId: string) => {
     return api.request(`${endpoints.event.savedEvents}`, {
       method: "POST",
@@ -255,7 +265,7 @@ export const useEventsService = () => {
     bookmarkThisEvent,
     unBookmarkThisEvent,
     getIsEventBookMarked,
-    getAlertPolygon,
+    getRawEventsWithSearchParams,
     getEventDetailById,
     getEventPOCDetails,
     getEventEditionDetails,

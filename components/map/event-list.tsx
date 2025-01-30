@@ -101,7 +101,7 @@ const EventCard = memo(
           <div
             className="absolute left-0 top-0 bottom-0 w-1 rounded-md"
             style={{
-              backgroundColor: eventTypeColors[event.eventTypes[0].slug || ""],
+              backgroundColor: eventTypeColors[event.primaryEventType || ""],
             }}
           />
           <CardContent className="p-4">
@@ -264,6 +264,7 @@ function EventList({
     const params = new URLSearchParams(searchParams.toString());
     params.delete("view");
     params.set("skip", String((currentPage - 1) * 10));
+    params.set("stats", "list");
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
     if (mapCenter && mapRadius) {

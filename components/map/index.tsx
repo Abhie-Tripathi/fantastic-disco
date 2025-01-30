@@ -56,7 +56,12 @@ const iconUrls: Record<string, string> = {
 };
 
 interface MapProps {
-  searchParams: string;
+  searchParams?: string;
+  source?: string;
+  trackerId?: string;
+  isGlobal?: boolean;
+  trackerLoc?: string;
+  trackerType?: string;
 }
 
 interface Coordinates {
@@ -71,7 +76,14 @@ interface PopupInfo {
 
 type ZoomGroup = "country" | "state" | "city" | "event" | null;
 
-export default function MapComponent({ searchParams }: MapProps) {
+export default function MapComponent({
+  searchParams,
+  source,
+  trackerId,  
+  isGlobal,
+  trackerLoc,
+  trackerType,
+}: MapProps) {
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
   const [viewport, setViewport] = useState<ViewState>({
@@ -88,9 +100,12 @@ export default function MapComponent({ searchParams }: MapProps) {
   const { getLocationDetails, getLocationBBox } = useLocationService();
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
   const [showEventList, setShowEventList] = useState("");
-  // const [currentZoomGroup, setCurrentZoomGroup] = useState<ZoomGroup>("city");
-  const { getEventsCount, getEventsWithSearchParams, getEventById } =
-    useEventsService();
+  const {
+    getEventsCount,
+    getEventsWithSearchParams,
+    getEventById,
+    getRawEventsWithSearchParams,
+  } = useEventsService();
   const [showUnattendedEvents, setShowUnattendedEvents] = useState(false);
   const [locationBBox, setLocationBBox] = useState<any | null>(null);
   const [hoverInfo, setHoverInfo] = useState<{
@@ -288,27 +303,39 @@ export default function MapComponent({ searchParams }: MapProps) {
             }),
           };
 
-          try {
-            const modifiedSearchParams = searchParams
-              .replace(/locationIds=[^&]*&?/, "")
-              .replace(/take=[^&]*&?/, "");
+          // try {
+          const modifiedSearchParams = searchParams
+            .replace(/locationIds=[^&]*&?/, "")
+            .replace(/take=[^&]*&?/, "");
 
-            const viewBoundString = encodeURIComponent(
-              JSON.stringify(viewBound)
+          const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
+
+          const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getLocalFilterValue(
+            "locationIds"
+          )}`;
+
+          let eventsData: any = {};
+
+          if (source === "tracker") {
+            eventsData = await getEventsLatLongData(
+              trackerId,
+              `viewBound=${viewBoundString}`,
+              searchParams
             );
-
-            const finalSearchParams = `${modifiedSearchParams}&viewBound=${viewBoundString}&locationIds=${getLocalFilterValue(
-              "locationIds"
-            )}`;
-
-            const eventsData = await memoizedGetEventsWithSearchParams(
-              `${finalSearchParams}`
+          } else {
+            console.log("eventsData", eventsData);
+            eventsData = await getRawEventsWithSearchParams(
+              finalSearchParams,
+              true
             );
-            setEvents((eventsData?.events as MapEvents[]) || []);
-          } catch (error) {
-            console.error("Error fetching events:", error);
           }
-        } else {
+          setEvents((eventsData?.events as MapEvents[]) || []);
+        }
+        // catch (error) {
+        //   console.error("Error fetching events:", error);
+        // }
+        // }
+        else {
           console.error("Map bounds are not available");
         }
       } else {
@@ -393,7 +420,6 @@ export default function MapComponent({ searchParams }: MapProps) {
     }
   }, []);
 
-  console.log(currentZoomGroup);
 
   useEffect(() => {
     const newZoomGroup = determineZoomGroup(viewport.zoom);

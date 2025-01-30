@@ -7,7 +7,17 @@ interface HoverTooltipProps {
   };
 }
 
-export default function hoverTooltip({ hoverInfo }: HoverTooltipProps) {
+export default function HoverTooltip({ hoverInfo }: HoverTooltipProps) {
+  const aggregatedPoints = hoverInfo.clusteredPoints?.reduce((acc, point) => {
+    const existing = acc.find(p => p.name === point.name);
+    if (existing) {
+      existing.count += point.count;
+    } else {
+      acc.push({ ...point });
+    }
+    return acc;
+  }, [] as { name: string; count: number }[]) || [];
+
   return (
     <div
       className="absolute z-10 bg-white p-2 rounded shadow max-w-xs max-h-60 overflow-y-auto"
@@ -19,19 +29,19 @@ export default function hoverTooltip({ hoverInfo }: HoverTooltipProps) {
     >
       {hoverInfo.clusteredPoints ? (
         <>
-          {hoverInfo.clusteredPoints
+          {aggregatedPoints
             .sort((a, b) => b.count - a.count)
             .slice(0, 5)
             .map((point, index) => (
               <div
-                key={index}
+                key={`${point.name}-${index}`}
                 className="mb-1 flex justify-between items-center"
               >
                 <span className="font-semibold">{point.name}</span>
                 <span className="ml-2">{point.count}</span>
               </div>
             ))}
-          {hoverInfo.clusteredPoints.length > 5 && (
+          {aggregatedPoints.length > 5 && (
             <div className="text-xs text-gray-500 italic mt-1">
               click to view more cities
             </div>

@@ -1,4 +1,3 @@
-
 import {
   EventsResponse,
   Event,
@@ -169,6 +168,10 @@ export const EventsAdapter = {
 
     if (params.get("top")) {
       adaptedParams.eventRanking = `0-${params.get("top")}`;
+    }
+
+    if (params.get("stats")) {
+      adaptedParams.stats = params.get("stats")!;
     }
 
     if (params.get("designations")) {
