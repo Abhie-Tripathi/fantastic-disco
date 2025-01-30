@@ -176,6 +176,7 @@ const Page: React.FC = () => {
   const [taskDetail, setTaskDetail] = useState<taskDetailType>({});
 
   const fetchPipelineData = async (status: string, label: string, page: number) => {
+    GAEvent("Outreach", "Pagination", "Outreach", `Outreach | ${status} | ${page}`);
     const shortlistApiData = await coordinateService.getOutreachEventList({
       offset: (page - 1) * 10,
       status: status,
@@ -322,8 +323,8 @@ const Page: React.FC = () => {
       <div className="p-20">
         <NullState
           image={coordinateNullState}
-          title="You haven't shortlisted any events yet."
-          text="Browse through our upcoming events and shortlist here for easy access and internal coordination later."
+          title="Explore events, connect seamlessly, and elevate your outreach with ease!"
+          // text="Browse through our upcoming events and shortlist here for easy access and internal coordination later."
           buttonText="Search Events"
           buttonUrl={`/internal/search/events`}
         />

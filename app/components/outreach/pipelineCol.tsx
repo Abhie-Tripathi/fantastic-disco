@@ -70,7 +70,6 @@ const PipelineCol = ({
   useEffect(() => {
     if(shortlistPage > 1)
       fetchPipelineData(status, taskDetail[status].label, shortlistPage);
-    GAEvent("Outreach", "Pagination", "Outreach", `Outreach | ${status} | ${shortlistPage}`);
   }, [shortlistPage]);
 
   return (
