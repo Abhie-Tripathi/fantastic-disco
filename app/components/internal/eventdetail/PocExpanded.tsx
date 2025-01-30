@@ -109,7 +109,7 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
                   <div className="flex justify-center w-full">
                     <Button
                       disabled={(poc?.state && (poc.state === 1 || poc?.state === 2) ) ? true : false}
-                      onClick={() => unlockPoc(poc.id)}
+                      onClick={() => unlockPoc(poc.id, "Expanded")}
                       variant={"outline"}
                       size={"sm"}
                     >
