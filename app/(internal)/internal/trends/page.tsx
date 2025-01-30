@@ -65,12 +65,8 @@ import { useTrendsService } from "@/services/trendsService";
 const EventTrends = () => {
   const { searchParams } = useDefaultFilters();
   const { getEventTrends, getSavedTrends } = useTrendsService();
-  const {
-    applyFilters,
-    deleteMultipleLocalFilters,
-    getLocalFilterValue,
-    localFilters,
-  } = useFilterContext();
+  const { applyFilters, setLocalFilter, getLocalFilterValue, localFilters } =
+    useFilterContext();
   const columns = searchParams.get("columns");
   const editTrend = searchParams.get("editTrend");
   const enableEditTrend = editTrend ? Boolean(editTrend) : false;
@@ -252,18 +248,8 @@ const EventTrends = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
-    const eventTypes = params.get("eventTypes")?.split(",") || [
-      "tradeshows",
-      "conferences",
-      "workshops",
-    ];
-    const columns = params.get("columns")?.split(",") || [
-      "eventCount",
-      "inboundEstimate",
-      "predictedAttendance",
-      "internationalEstimate",
-      "economicImpact",
-    ];
+    const eventTypes = params.get("eventTypes")?.split(",") || [];
+    const columns = params.get("columns")?.split(",") || [];
     if (eventTrendsData && eventTrendsData.groupedData) {
       const tableColumns = generateTrendsTableColumnHeaders(
         eventTypes,
@@ -273,9 +259,7 @@ const EventTrends = () => {
       const graphData = morphToGraphData(
         eventTrendsData.groupedData,
         selectedEventType
-        // "eventCount"
       );
-      console.log(graphData);
 
       const tableData = morphToTrendsTableData(
         eventTrendsData.thresholds,
@@ -284,7 +268,6 @@ const EventTrends = () => {
       );
 
       const smartInsightsData = morphToSmartInsightsData(tableData);
-      console.log(smartInsightsData);
 
       setGraphData(graphData);
       setTableData(smartInsightsData);
@@ -293,7 +276,14 @@ const EventTrends = () => {
   }, [eventTrendsData, selectedEventType]);
 
   const applyHandler = () => {
+    const columnsValue = columnsDropdown
+      .filter((dropdown) => dropdown.value !== "impactScore")
+      .map((filteredValue) => filteredValue.value)
+      .join(",");
     // deleteMultipleLocalFilters(["activeCard"]);
+    if (getLocalFilterValue("eventTypes").length > 0) {
+      setLocalFilter("columns", columnsValue);
+    }
     applyFilters();
   };
 
@@ -322,7 +312,7 @@ const EventTrends = () => {
               handleSelectChange={handleSelectChange}
             />
           </div>
-          <div className="grid grid-cols-2 max-lg:col-end-3  w-full gap-4">
+          <div className="grid grid-cols-1 max-lg:col-end-3  w-full gap-4">
             <Button
               className="flex-1 py-5"
               onClick={applyHandler}
@@ -337,7 +327,7 @@ const EventTrends = () => {
                 "Apply"
               )}
             </Button>
-            <Button className="flex-1 py-5">Save</Button>
+            {/* <Button className="flex-1 py-5">Save</Button> */}
             {/* <SaveTrend
               searchParams={searchParams}
               isLoading={isLoading}
