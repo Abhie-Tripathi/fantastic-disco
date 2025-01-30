@@ -703,6 +703,9 @@ export default function MapComponent({
                   )}
 
                   <EventList
+                    source={source}
+                    trackerId={trackerId}
+                    searchParam={searchParams}
                     showEventType={showEventList}
                     onClose={() => setShowEventList("")}
                     mapRef={mapRef}

@@ -306,7 +306,9 @@ export const EventsAdapter = {
     if (params.get("query")) {
       adaptedParams.eventName = params.get("query")!;
     }
-
+    if(params.get("type")){
+      adaptedParams.type = params.get("type")!;
+    }
     return adaptedParams;
   },
 

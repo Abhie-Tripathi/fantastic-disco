@@ -26,7 +26,7 @@ import { MapRef } from "react-map-gl";
 import MapPopup from "@/components/map/popup";
 import { getEventLatLong } from "@/utils/formater";
 import * as turf from "@turf/turf";
-
+import { useTrackerServices } from "@/services/trackerServices";
 const EventCard = memo(
   ({
     event,
@@ -92,7 +92,7 @@ const EventCard = memo(
     };
 
     return (
-      <Link href={`/search/${event.id}`}>
+      <Link href={`/internal/event/${event.id}`}>
         <Card
           className="mb-4 relative hover:shadow-md transition-shadow"
           onMouseEnter={handleMouseEnter}
@@ -202,21 +202,28 @@ UnplannedCard.displayName = "UnplannedCard";
 function EventList({
   showEventType,
   onClose,
+  source,
+  trackerId,
   mapRef,
   onEventHover,
   onEventLeave,
+  searchParam
 }: {
   showEventType: string;
   onClose: () => void;
   mapRef: React.RefObject<MapRef>;
+  source?:string;
+  trackerId?:string | undefined;
   onEventHover: (event: Event) => void;
   onEventLeave: () => void;
+  searchParam?:string | undefined;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [mapCenter, setMapCenter] = useState<
     { lat: number; lng: number } | undefined
   >();
   const [mapRadius, setMapRadius] = useState<number | undefined>();
+  const {getTrackerMapEvents}=useTrackerServices(); 
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
@@ -276,16 +283,19 @@ function EventList({
           radius: mapRadius,
         }),
       };
+      if(source==="tracker") return JSON.stringify(viewBound).toString();
       params.set("viewBound", JSON.stringify(viewBound));
     }
-
+    console.log(params.toString());
+    
     return params;
   }, [searchParams, currentPage, showEventType, mapCenter, mapRadius]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString()],
-    queryFn: () =>
-      eventService.getEventsWithSearchParams(filteredParams.toString()),
+    queryKey: ["events", filteredParams.toString(), currentPage],
+    queryFn: () =>source === 'tracker' 
+    ? getTrackerMapEvents(trackerId??"",`max=20&offset=${(currentPage - 1) * 10 }`, `type=${searchParam?.toString()}&viewBound=${filteredParams}&stats=list&limit=10&offset=${(currentPage - 1) * 10 }`??"")
+    :eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
 
   const handlePageChange = (page: number) => {
