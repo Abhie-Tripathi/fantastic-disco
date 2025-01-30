@@ -504,7 +504,7 @@ export default function MapComponent({
       }
     };
     fetchLocationDetails();
-  }, [location]);
+  }, [location, trackerId]);
 
   useEffect(() => {
     if (!mapRef.current) return;
