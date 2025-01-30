@@ -9,6 +9,7 @@ import upArrowLight from '/public/internal/up_arrow_light.svg'
 import upArrow from '/public/internal/up_arrow.svg'
 import { useCoordinateService } from '@/services/coordinateService';
 import { showToast } from '@/utils/showToast';
+import { GAEvent } from '@/utils/GAEvent';
 interface PropType {
   label: string;
   eventId: string;
@@ -72,6 +73,7 @@ useEffect(()=>{
     try {
       const apiData = await coordinateService.setEnquiryStatus(payloadData);
       if(apiData){
+        GAEvent("Coordinate", "Enquiry Detail", "Coordinate | Enquiry Status Change", `Change | REJECTED`);
         toast.error(
           <div>Status updated! <span className={styles['reject-undo-btn']} onClick={() => handleUndoClick()}>UNDO</span></div>, {
           position: 'bottom-right',
