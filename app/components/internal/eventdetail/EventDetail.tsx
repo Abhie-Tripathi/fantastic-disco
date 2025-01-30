@@ -19,6 +19,7 @@ import PocExpanded from "./PocExpanded";
 import Loading from "../../UI/Loading";
 import EventNotes from "./EventNotes";
 import { pocDetail } from "@/types/coordinateEventType";
+import { GAEvent } from "@/utils/GAEvent";
 
 interface EventData {
   id: string;
@@ -64,6 +65,7 @@ const EventDetail = ({
   const [stage, setStage] = useState<string>("");
   const [singleEventData, setSingleEventData] = useState<EventData | any>();
   const urlPath = usePathname().split("/")[2];
+  const pageSource = urlPath.charAt(0).toUpperCase() + urlPath.slice(1);
   const [participentData, setParticipentData] = useState<any>({});
 
   const [expandedTab, setExpandedTab] = useState<string>('notes');
@@ -119,7 +121,7 @@ const EventDetail = ({
 
   const [pocData, setPocData] = useState<pocDetail[]>([]);
 
-  const unlockPoc = async(pocId: number) => {
+  const unlockPoc = async(pocId: number, view?: string) => {
     try {
       setPocData(prevPocData => 
         prevPocData.map(poc => 
@@ -137,6 +139,7 @@ const EventDetail = ({
               : poc
           )
         );
+        GAEvent("Enquiry Detail", "POC", `${pageSource} | Enquiry Detail`, `POC ${view} | Show details`);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
