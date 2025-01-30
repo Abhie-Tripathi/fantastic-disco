@@ -55,7 +55,7 @@ export default function ColumnsSelector({
           onClick={() => setIsOpen(!isOpen)}
         >
           <div className="flex items-center truncate">
-            <span className="mr-2">Column</span>
+            <span className="mr-2">Metric</span>
             <span className="truncate text-xs text-primary">
               {selectedEventType &&
                 columnsDropdown.find(

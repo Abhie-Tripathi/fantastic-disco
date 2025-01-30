@@ -12,6 +12,7 @@ import {
   CartesianGrid,
   Rectangle,
   Legend,
+  LegendProps,
 } from "recharts";
 import { addDays, isAfter } from "date-fns";
 import { format, parse, differenceInDays } from "date-fns";
@@ -29,6 +30,12 @@ import Image from "next/image";
 import { generateDatesArray, toMidnightISOString } from "@/utils/lineChart";
 import { TableGroupedHoliday } from "@/types";
 import HolidayIcon from "/public/eventType/holiday.svg";
+import {
+  Tooltip as ShadcnTooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface IProps {
   predictedData: any;
@@ -38,6 +45,8 @@ interface IProps {
   doInvertTicks?: boolean;
   showThresholdLines?: boolean;
 }
+
+type CustomPayload = LegendProps["payload"] & { tooltipDescription?: string }[];
 
 const LineChartComponent = ({
   predictedData,
@@ -427,11 +436,27 @@ const LineChartComponent = ({
                   backgroundColor: entry.color,
                 }}
               ></div>
-              <span
+              {/* <span
                 className={`text-sm font-medium ${`text-[${entry.color}]`}`}
               >
                 {entry.value}
-              </span>
+              </span> */}
+              <TooltipProvider>
+                <ShadcnTooltip>
+                  <TooltipTrigger asChild>
+                    <span
+                      className={`cursor-pointer text-sm font-medium ${`text-[${entry.color}]`}`}
+                    >
+                      {entry.value}
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="w-60 bg-popover text-popover-foreground shadow-md text-sm">
+                    <p className="font-medium text-[var(--secondary-text-color)]">
+                      {entry.tooltipDescription}
+                    </p>
+                  </TooltipContent>
+                </ShadcnTooltip>
+              </TooltipProvider>
             </div>
           ))}
       </div>
@@ -595,26 +620,34 @@ const LineChartComponent = ({
           {showLegend && (
             <Legend
               content={<CustomLegend />}
-              payload={[
-                {
-                  value: "Upper Threshold",
-                  type: "circle",
-                  id: "upper_threshold",
-                  color: "#398E4A",
-                },
-                {
-                  value: "Average",
-                  type: "circle",
-                  id: "average",
-                  color: "#DF2670",
-                },
-                {
-                  value: "Lower Threshold",
-                  type: "circle",
-                  id: "lower_threshold",
-                  color: "#FF990A",
-                },
-              ]}
+              payload={
+                [
+                  {
+                    value: "Upper Threshold",
+                    type: "circle",
+                    id: "upper_threshold",
+                    color: "#398E4A",
+                    tooltipDescription:
+                      "Represents the maximum boundary relative to the average value for this trend.",
+                  },
+                  {
+                    value: "Average",
+                    type: "circle",
+                    id: "average",
+                    color: "#DF2670",
+                    tooltipDescription:
+                      "The unique average value for the trend based on the selected location.",
+                  },
+                  {
+                    value: "Lower Threshold",
+                    type: "circle",
+                    id: "lower_threshold",
+                    color: "#FF990A",
+                    tooltipDescription:
+                      "Represents the minimum boundary relative to the average value for this trend.",
+                  },
+                ] as CustomPayload
+              }
               wrapperStyle={{
                 width: "auto",
                 top: -30,

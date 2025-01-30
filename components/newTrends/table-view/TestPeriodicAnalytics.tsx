@@ -45,6 +45,12 @@ import {
   SelectGroup,
   SelectTrigger,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import EnableSmartInsights from "/public/smartInsightsDisable.svg";
 import DisableSmartInsights from "/public/smartInsightsColored.svg";
 import { renderFormattedDates } from "@/utils/dateFormat";
@@ -255,10 +261,25 @@ const TestPeriodicAnalytics = ({
           )})`}
         </div>
         <div className="flex gap-2 items-center px-3 py-3 border border-[var(--neutral-light-color)] rounded-sm">
-          <Image src={SmartInsights} width={18} height={18} alt={""} />
-          <Text color="primary" variant="noMargin" fontWeight="regular">
-            Smart Insights
-          </Text>
+          {/* <Image src={SmartInsights} width={18} height={18} alt={""} /> */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex gap-2 cursor-pointer">
+                  <Image src={SmartInsights} width={18} height={18} alt={""} />
+                  <p color="primary" variant="noMargin" fontWeight="regular">
+                    Smart Insights
+                  </p>
+                </div>
+              </TooltipTrigger>
+              <TooltipContent className="w-64 bg-popover text-popover-foreground shadow-md text-sm">
+                <p className="font-medium text-[var(--secondary-text-color)]">
+                  Identifies trends and patterns by comparing data to averages,
+                  making key insights easy to spot.
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           <Switch
             checked={isSmartInsightsEnabled}
             onCheckedChange={() => setIsSmartInsightsEnabled((prev) => !prev)}
@@ -293,7 +314,22 @@ const TestPeriodicAnalytics = ({
                         trends.columnName.toUpperCase()}
                       {trends.slug !== "date" && (
                         <div className="flex items-center justify-center mx-auto gap-4 h-inherit w-60">
-                          {trends.columnName.toUpperCase()}
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span
+                                  className={`cursor-pointer text-sm font-medium`}
+                                >
+                                  {trends.columnName.toUpperCase()}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent className="w-64 bg-popover text-popover-foreground shadow-md text-sm">
+                                <p className="font-medium text-left text-[var(--secondary-text-color)]">
+                                  {trends.tooltipDescription}
+                                </p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                           <Select>
                             <SelectTrigger className="w-5 h-5 focus:outline-none z-20 top-3 right-10 bg-white p-0 border-2 rounded-sm border-[#EBEBEBBB]"></SelectTrigger>
                             <SelectContent>
@@ -373,22 +409,33 @@ const TestPeriodicAnalytics = ({
                         </div>
                       )}
                       {trends.slug !== "date" && (
-                        <button
-                          className="absolute z-20 top-2 -right-3 bg-white"
-                          onClick={() => toggleOpenState(trends.slug)}
-                        >
-                          <Image
-                            className="p-1 z-30 shadow-lg flex items-center justify-center rounded-md border border-[#EBEBEB] aspect-auto"
-                            src={
-                              openState[trends.slug ?? ""]
-                                ? CollapseIcon
-                                : ExpandIcon
-                            }
-                            alt="TableIcons"
-                            width={25}
-                            height={25}
-                          />
-                        </button>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                className="absolute z-20 top-2 -right-3 bg-white"
+                                onClick={() => toggleOpenState(trends.slug)}
+                              >
+                                <Image
+                                  className="p-1 z-30 shadow-lg flex items-center justify-center rounded-md border border-[#EBEBEB] aspect-auto"
+                                  src={
+                                    openState[trends.slug ?? ""]
+                                      ? CollapseIcon
+                                      : ExpandIcon
+                                  }
+                                  alt="TableIcons"
+                                  width={25}
+                                  height={25}
+                                />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent className="w-44 bg-popover text-popover-foreground shadow-md text-sm">
+                              <p className="font-medium text-[var(--secondary-text-color)]">
+                                Click on it to see event type wise split
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       )}
                     </TableHead>
                   );
