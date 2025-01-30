@@ -17,7 +17,7 @@ const Card = ({
 
   return (
     <li
-      className={`shadow-[1.26px_2.53px_7.59px_0px_rgba(237,235,235,0.2)] relative flex flex-col gap-2 items-center justify-center p-4 border  bg-white w-36 h-24 rounded-lg cursor-pointer ${
+      className={`shadow-[1.26px_2.53px_7.59px_0px_rgba(237,235,235,0.2)] relative flex flex-col gap-2 items-center justify-between p-4 border bg-white w-36 h-24 rounded-lg cursor-pointer ${
         activeIndustry === slug ? "border-primary" : "border-[#E6E6E6]"
       } hover:border-primary`}
       onClick={() => handleIndustry(slug)}
@@ -50,7 +50,7 @@ const IndustryCards = ({
   handleIndustry: (industry: string) => void;
 }) => {
   return (
-    <div className="max-w-6xl self-center">
+    <div className="max-w-3xl self-center">
       <ul className="flex flex-wrap justify-center gap-4">
         {industryData.map((industry) => (
           <Card

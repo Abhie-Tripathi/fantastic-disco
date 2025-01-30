@@ -1,7 +1,6 @@
 import { newCategories } from "@/data/categories";
 import { Category } from "@/types/onboarding";
 import { CircleCheck } from "lucide-react";
-import { MutableRefObject } from "react";
 
 const Card = ({
   category,
@@ -16,10 +15,10 @@ const Card = ({
     <div
       className={`flex gap-2 justify-center items-center ${
         activeCategories.includes(id) ? "border border-primary gap-2" : "border"
-      } bg-white rounded-lg cursor-pointer py-2 px-8 `}
+      } bg-white rounded-lg cursor-pointer py-2 px-6 `}
     >
       {isActive && <CircleCheck color="#6750a4" className="w-4 h-4" />}
-      <p className="text-sm">{name}</p>
+      <p className="text-xs">{name}</p>
     </div>
   );
 };

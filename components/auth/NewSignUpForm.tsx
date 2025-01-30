@@ -238,7 +238,9 @@ const NewSignUpForm = () => {
           render={({ field }) => (
             <div className="space-y-2 w-96 max-w-3xl self-center border-b pb-6">
               <Input
-                className="rounded-sm bg-white ring-1 ring-primary focus-visible:ring-1 outline outline-[#D2D2F3] focus-visible:ring-primary focus-visible:outline-[#D2D2F3] outline-offset-2 focus-visible:outline-offset-2"
+                className="rounded-sm bg-white ring-1
+                ring-primary outline outline-[#D2D2F3] outline-offset-2
+                focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-[3px] focus-visible:outline-[#D2D2F3] focus-visible:outline-offset-2"
                 id="email"
                 type="email"
                 {...field}
