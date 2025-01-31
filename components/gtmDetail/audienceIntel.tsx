@@ -140,7 +140,7 @@ export const AudienceIntel = ({
               Estimated Visitor
             </h1>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {hasEstimatedVisitor && stats.estimatedVisitor ? (
+              {hasEstimatedVisitor || stats.estimatedVisitor ? (
                 numberWithCommas(stats.estimatedVisitor || "--")
               ) : (
                 <Restriction />
