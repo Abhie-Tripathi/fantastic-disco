@@ -17,6 +17,7 @@ import {
   searchFilters,
 } from "@/public/data/searchFilters";
 import { useToast } from "@/components/ui/use-toast";
+import { RecentSearchItem } from "@/types/events/recentSearches";
 interface EventFilterData {
   eventFormat?: { enabledValue?: string[] };
   eventStatus?: { enabledValue?: string[] };
@@ -135,8 +136,12 @@ type FilterContextType = {
   localFilters: Filters;
   morphedData: any;
   setLocalFilter: (key: keyof Filters, value: string) => void;
-  clearLocalFilters: (value: string) => void;
-  applyFilters: () => void;
+  clearLocalFilters: () => void;
+  applyFilters: (options?: {
+    removeParams?: string[];
+    preserveParams?: string[];
+    resetPage?: boolean;
+  }) => void;
   getLocalFilterValue: (key: keyof Filters) => string;
   searchParams: URLSearchParams;
   setMultipleLocalFilters: (filters: Partial<Filters>) => void;
@@ -168,6 +173,12 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   useEffect(() => {
+    setLocalFilters(
+      filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
+    );
+  }, [searchParams, filterEmptyValues]);
+
+  useEffect(() => {
     const getEnabledFilters = async () => {
       try {
         const data = await eventService.fetchEnabledFilters("research");
@@ -187,18 +198,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       setMorphedData(generateSearchFilters(enabledFilters) as any);
     }
   }, [enabledFilters]);
-  useEffect(() => {
-    if (!pathname.split("/").includes("editTracker")) {
-      setInitialFilters();
-    }
-  }, [searchParams, enabledFilters]);
-  // useEffect(() => {
-  //   console.log(localFilters);
-
-  //   // setLocalFilters(
-  //   //   filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
-  //   // );
-  // }, [searchParams, filterEmptyValues]);
 
   const setLocalFilter = useCallback(
     (key: keyof Filters, value: string) => {
@@ -245,101 +244,66 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         } else {
           newFilters[key] = value;
         }
-        // console.log(newFilters);
-
         return newFilters;
       });
     },
     [enabledFilters]
   );
-  
-  const clearLocalFilters = useCallback((view: string) => {
-    router.push(`/internal/search/events?view=${view}`);
-  }, []);
-  const setInitialFilters = () => {
-    const temp: Record<string, string> = Object.fromEntries(
-      searchParams.entries()
-    );
 
-    if (
-      enabledFilters &&
-      ((Object.keys(temp).includes("view") &&
-        Object.keys(temp).length === 1 &&
-        pathname.split("/")[2] === "search") ||
-        pathname.split("/")[3] === "create")
-    ) {
-      temp.eventFormats =
-        enabledFilters.eventFormat?.enabledValue?.join(",") ?? "";
-      temp.status =
-        enabledFilters.eventStatus?.enabledValue
-          ?.map((item: string) => item.toLowerCase())
-          ?.join(",") ?? "";
-      temp.categories =
-        enabledFilters.eventCategory?.enabledValue
-          ?.map((item: any) => item.slug)
-          .join(",") ?? "";
-      temp.eventTypes =
-        enabledFilters.eventType?.enabledValue
-          ?.map((item: string) => `${item.toLowerCase()}s`)
-          ?.join(",") ?? "";
-      temp.locationIds =
-        enabledFilters.locationIds?.enabledValue
-          ?.map((item: any) => item.id)
-          .join(",") ?? "";
-      temp.active_gte = enabledFilters.durations?.startDate
-        ? new Date(
-            enabledFilters.durations.startDate.split(",")[0]
-          ).toISOString()
-        : "";
-      temp.active_lte = enabledFilters.durations?.endDate
-        ? new Date(enabledFilters.durations.endDate.split(',')[1]).toISOString()
-        : '';
-      temp.entryType = enabledFilters.eventEntry?.enabledValue?.map((item:string)=>item.toLowerCase())?.join(',') ?? '';
-      temp.ratings = enabledFilters.eventRating?.enabledValue?.join(',') ?? '';
-      temp.maturity = enabledFilters.maturity?.enabledValue?.[0] ?? '';
-      temp.onlyBranded = enabledFilters.branded?.enabledValue?.eventBrand ? 'true' : '';
-      temp.onlySeries = enabledFilters.branded?.enabledValue?.eventSeries ? 'true' : '';
-      temp.frequencies = enabledFilters.eventFrequency?.enabledValue?.join(',') ?? '';
-      temp.includeKeywords = enabledFilters.keywords?.positiveKeywords?.join(',') ?? '';
-      temp.excludeKeywords = enabledFilters.keywords?.negativeKeywords?.join(',') ?? '';
-      temp.estimatedVisitorRangeTag = enabledFilters.estimatedVisitorRangeTag?.enabledValue?.join(',') ?? '';
-      temp.estimatedExhibitors = enabledFilters.estimatedExhibitScore?.enabledValue?.join(',') ?? '';
-  
-      let dataToShow: string[] = [];
-      if (enabledFilters.eventRating?.isRatingEnabled)
-        dataToShow.push("rating");
-      if (enabledFilters.maturity?.isMaturityEnabled)
-        dataToShow.push("maturity");
-      if (enabledFilters.branded?.isBrandedEnabled)
-        dataToShow.push("branded,series");
-      if (enabledFilters.eventFrequency?.isFreqEnabled)
-        dataToShow.push("frequency");
-      if (enabledFilters.estimatedExhibitScore?.isExhibitorsEnabled)
-        dataToShow.push("estimatedExhibitors");
-      if (enabledFilters.analytics?.isAnalyticsEnabled)
-        dataToShow.push("scores");
-
-      temp.show = dataToShow.join(",");
+  const clearLocalFilters = useCallback(() => {
+    const params = new URLSearchParams(window.location.search);
+    const viewValue = params.get("view");
+    for (const key of Array.from(params.keys())) {
+      params.delete(key);
     }
-    // console.log(temp);
-
-    setLocalFilters(temp);
-    applyFilters()
-  };
-  const applyFilters = useCallback(() => {
-    setLocalFilters((currentFilters) => {
-      const filteredFilters = filterEmptyValues(currentFilters);
-      const params = new URLSearchParams();
-      Object.entries(filteredFilters).forEach(([key, value]) => {
-        if (key !== "skip" && value !== undefined) {
-          params.set(key, value);
-        }
-      });
-      const currentPathname = window.location.pathname;
-      router.push(`${currentPathname}?${params.toString()}`, { scroll: false });
-      return filteredFilters;
+    if (viewValue) {
+      params.set("view", viewValue);
+    }
+    router.push(`${window.location.pathname}?${params.toString()}`, {
+      scroll: false,
     });
-  }, [filterEmptyValues, router]);
+  }, []);
+
+  const applyFilters = useCallback(
+    (
+      options: {
+        removeParams?: string[];
+        preserveParams?: string[];
+        resetPage?: boolean;
+      } = {}
+    ) => {
+      setLocalFilters((currentFilters) => {
+        const filteredFilters = filterEmptyValues(currentFilters);
+        const params = new URLSearchParams();
+
+        if (options.preserveParams?.length) {
+          const currentParams = new URLSearchParams(window.location.search);
+          options.preserveParams.forEach((param) => {
+            const value = currentParams.get(param);
+            if (value) params.set(param, value);
+          });
+        }
+
+        Object.entries(filteredFilters).forEach(([key, value]) => {
+          if (value !== undefined && !options.removeParams?.includes(key)) {
+            params.set(key, value);
+          }
+        });
+
+        if (options.resetPage) {
+          params.delete("skip");
+          params.delete("page");
+        }
+
+        const currentPathname = window.location.pathname;
+        router.push(`${currentPathname}?${params.toString()}`, {
+          scroll: false,
+        });
+        return filteredFilters;
+      });
+    },
+    [filterEmptyValues, router]
+  );
 
   const setMultipleLocalFilters = useCallback(
     (filters: Partial<Filters>) => {

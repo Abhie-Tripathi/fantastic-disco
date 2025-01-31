@@ -20,6 +20,7 @@ import { useProfileServices } from "@/services/profileService";
 import { useFilterContext } from '@/context/filterContext';
 import Pricing from "@/app/components/internal/Dashboard/Pricing";
 import Loading from "@/components/ui/Loading";
+import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 
 interface TrackerData {
   id: string;
@@ -52,7 +53,7 @@ const Dashboard = () => {
   let outreach = role === "sa"
   let prospect = true
   let trends = true
-
+  const { searchParams } = useDefaultFilters();
   const [coordinateData, setCoordinateData] = useState<{ heading: string, value: number }[]>([])
   const [promoteData, setPromoteData] = useState<{ name: string, value: number }[]>([])
   const [trackerData, setTrackerData] = useState<TrackerData[]>([])
@@ -140,44 +141,44 @@ const Dashboard = () => {
     setOutreachChat(messageData)
   }
 
-  const fetchRecentSearch = async () => {
-    const data: any = await getRecentSearch();
-    if (data.length > 0) {
-      const recentSearch = data[0];
-      // Handle eventType: Convert to comma-separated string with transformations
-      const eventType = recentSearch.eventType
-        ? recentSearch.eventType.map((type: string) => {
-          if (type === "Tradeshow") return "tradeshows";
-          if (type === "Conference") return "conferences";
-          if (type === "Workshop") return "workshops";
-          return type; // Fallback for unexpected types
-        }).join(",")
-        : "";
-      const startDate = recentSearch.startDate || "";
-      const locationIds = recentSearch.locationIds || {};
-      const cityIds = locationIds.city
-        ? locationIds.city.map((c: any) => Object.keys(c)).flat().join(", ")
-        : "";
-      const stateIds = locationIds.state
-        ? locationIds.state.map((s: any) => Object.keys(s)).flat().join(", ")
-        : "";
-      const countryIds = locationIds.country
-        ? locationIds.country.map((c: any) => Object.keys(c)).flat().join(", ")
-        : "";
-      // Combine location IDs
-      const combinedLocationIds = [cityIds, stateIds, countryIds].filter(loc => loc).join(",");
+  // const fetchRecentSearch = async () => {
+  //   const data: any = await getRecentSearch();
+  //   if (data.length > 0) {
+  //     const recentSearch = data[0];
+  //     // Handle eventType: Convert to comma-separated string with transformations
+  //     const eventType = recentSearch.eventType
+  //       ? recentSearch.eventType.map((type: string) => {
+  //         if (type === "Tradeshow") return "tradeshows";
+  //         if (type === "Conference") return "conferences";
+  //         if (type === "Workshop") return "workshops";
+  //         return type; // Fallback for unexpected types
+  //       }).join(",")
+  //       : "";
+  //     const startDate = recentSearch.startDate || "";
+  //     const locationIds = recentSearch.locationIds || {};
+  //     const cityIds = locationIds.city
+  //       ? locationIds.city.map((c: any) => Object.keys(c)).flat().join(", ")
+  //       : "";
+  //     const stateIds = locationIds.state
+  //       ? locationIds.state.map((s: any) => Object.keys(s)).flat().join(", ")
+  //       : "";
+  //     const countryIds = locationIds.country
+  //       ? locationIds.country.map((c: any) => Object.keys(c)).flat().join(", ")
+  //       : "";
+  //     // Combine location IDs
+  //     const combinedLocationIds = [cityIds, stateIds, countryIds].filter(loc => loc).join(",");
 
-      // console.log("combined locations : ", combinedLocationIds)
-      if (combinedLocationIds) {
-        setLocalFilter("locationIds", combinedLocationIds)
-      } else setLocalFilter("locationIds", "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef")
+  //     // console.log("combined locations : ", combinedLocationIds)
+  //     if (combinedLocationIds) {
+  //       setLocalFilter("locationIds", combinedLocationIds)
+  //     } else setLocalFilter("locationIds", "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef")
 
-      setLocalFilter("eventTypes", eventType)
-      setLocalFilter("active_gte", startDate.split(",")[0])
-      setLocalFilter("active_lte", startDate.split(",")[1])
-    }
-    else setLocalFilter("locationIds", "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef")
-  }
+  //     setLocalFilter("eventTypes", eventType)
+  //     setLocalFilter("active_gte", startDate.split(",")[0])
+  //     setLocalFilter("active_lte", startDate.split(",")[1])
+  //   }
+  //   else setLocalFilter("locationIds", "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef")
+  // }
 
   const fetchProfileData = async () => {
     const data: any = await getMyProfileData();
@@ -190,7 +191,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       // Call all fetch functions in parallel
       await Promise.all([
-        fetchRecentSearch(),
+        // fetchRecentSearch(),
         fetchTrackerData(),
         fetchCoordinateData(),
         fetchOutreachData(),

@@ -4,21 +4,36 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+export function lightenColor(hex: string | undefined, factor: number | undefined): string {
+  if (!hex) return "#ffffff";
+  
+  const defaultFactor = 0.5;
+  if (typeof factor !== 'number' || isNaN(factor)) {
+    factor = defaultFactor;
+  }
 
-export function lightenColor(hex: string, factor: number): string {
-  hex = hex.replace(/^#/, "");
+  const cleanHex = hex.replace(/^#/, "");
+  if (!/^[0-9A-Fa-f]{6}$/.test(cleanHex)) return "#ffffff";
 
-  let r = parseInt(hex.slice(0, 2), 16);
-  let g = parseInt(hex.slice(2, 4), 16);
-  let b = parseInt(hex.slice(4, 6), 16);
+  try {
+    const r = parseInt(cleanHex.slice(0, 2), 16);
+    const g = parseInt(cleanHex.slice(2, 4), 16);
+    const b = parseInt(cleanHex.slice(4, 6), 16);
 
-  r = Math.round(r + (255 - r) * factor);
-  g = Math.round(g + (255 - g) * factor);
-  b = Math.round(b + (255 - b) * factor);
+    if (isNaN(r) || isNaN(g) || isNaN(b)) return "#ffffff";
 
-  const lightenedHex = ((1 << 24) + (r << 16) + (g << 8) + b)
-    .toString(16)
-    .slice(1);
+    const clampedFactor = Math.max(0, Math.min(1, factor));
 
-  return `#${lightenedHex}`;
+    const newR = Math.round(r + (255 - r) * clampedFactor);
+    const newG = Math.round(g + (255 - g) * clampedFactor);
+    const newB = Math.round(b + (255 - b) * clampedFactor);
+
+    const lightenedHex = [newR, newG, newB]
+      .map(x => x.toString(16).padStart(2, '0'))
+      .join('');
+
+    return `#${lightenedHex}`;
+  } catch (error) {
+    return "#ffffff";
+  }
 }

@@ -1,4 +1,3 @@
-
 import {
   EventsResponse,
   Event,
@@ -238,6 +237,8 @@ export const EventsAdapter = {
       const startDate = params.get("active_gte");
       const endDate = params.get("active_lte");
       adaptedParams.groupBy = `${startDate},${endDate}`;
+      adaptedParams.startDate = `${startDate},${endDate}` || "";
+      adaptedParams.endDate = `${startDate},${endDate}` || "";
     }
 
     if (
@@ -260,6 +261,8 @@ export const EventsAdapter = {
       const startDate = firstDayOfMonth.toISOString().split("T")[0];
       const endDate = lastDayOfMonth.toISOString().split("T")[0];
       adaptedParams.groupBy = `${startDate},${endDate}`;
+      adaptedParams.startDate = `${startDate},${endDate}` || "";
+      adaptedParams.endDate = `${startDate},${endDate}` || "";
     }
 
     if (
@@ -273,6 +276,14 @@ export const EventsAdapter = {
       adaptedParams.groupBy = `${startDate.toISOString().split("T")[0]},${
         endDate.toISOString().split("T")[0]
       }`;
+      adaptedParams.startDate =
+        `${startDate.toISOString().split("T")[0]},${
+          endDate.toISOString().split("T")[0]
+        }` || "";
+      adaptedParams.endDate =
+        `${startDate.toISOString().split("T")[0]},${
+          endDate.toISOString().split("T")[0]
+        }` || "";
     }
 
     if (
@@ -286,6 +297,14 @@ export const EventsAdapter = {
       adaptedParams.groupBy = `${startDate.toISOString().split("T")[0]},${
         endDate.toISOString().split("T")[0]
       }`;
+      adaptedParams.startDate =
+        `${startDate.toISOString().split("T")[0]},${
+          endDate.toISOString().split("T")[0]
+        }` || "";
+      adaptedParams.endDate =
+        `${startDate.toISOString().split("T")[0]},${
+          endDate.toISOString().split("T")[0]
+        }` || "";
     }
 
     if (params.get("take")) {
@@ -574,12 +593,7 @@ export const EventsAdapter = {
             symbol: "$",
           },
           predictedEventSpendBreakUp: [],
-          primaryEventType: (() => {
-            const type = item.type[0].toLowerCase();
-            if (type === "tradeshow") return "tradeshows";
-            if (type === "conference") return "conferences";
-            return type;
-          })(),
+          primaryEventType: determineEventType(item.type[0]),
           categories: item.categories.map((cat: any) => ({
             id: cat.id,
             name: cat.name,
@@ -723,12 +737,7 @@ export const EventsAdapter = {
           symbol: "$",
         },
         predictedEventSpendBreakUp: [],
-        primaryEventType: (() => {
-          const type = response.events[0].type[0].toLowerCase();
-          if (type === "tradeshow") return "tradeshows";
-          if (type === "conference") return "conferences";
-          return type;
-        })(),
+        primaryEventType: determineEventType(response.events[0].type[0]),
         categories: response.events[0].categories.map((cat: any) => ({
           id: cat.id,
           name: cat.name,
@@ -862,12 +871,7 @@ export const EventsAdapter = {
         designationSpread: response.event.designationSpread,
         designation: response.event.designation,
         predictedEventSpendBreakUp: [],
-        primaryEventType: (() => {
-          const type = response.event.type[0].toLowerCase();
-          if (type === "tradeshow") return "tradeshows";
-          if (type === "conference") return "conferences";
-          return type;
-        })(),
+        primaryEventType: determineEventType(response.event.type[0]),
         categories: response.event.categories.map((cat: any) => ({
           id: cat.id,
           name: cat.name,
@@ -984,6 +988,94 @@ export const EventsAdapter = {
       },
     };
   },
+
+  adaptRecentSearchResponse: (response: any) => {
+    // Convert shows string back to original filter names
+    const showsMapping: Record<string, string> = {
+      eventBrand: "branded",
+      eventSeries: "series",
+      eventRating: "rating",
+      eventFrequency: "frequency",
+      maturity: "maturity",
+      isforecasted: "forecasted",
+      estimatedExhibitScore: "estimatedExhibitors",
+      eventImpactScore: "scores",
+      inboundScore: "scores",
+      internationalScore: "scores",
+      eventRanking: "ranking",
+      trustScore: "trustScore",
+      audienceZone: "audienceZone"
+    };
+
+    const shows = response.shows?.split(',').map((show: string) => {
+      return showsMapping[show] || show;
+    }).filter((value: string, index: number, self: string[]) => 
+      // Remove duplicates (especially for "scores" which maps to multiple values)
+      self.indexOf(value) === index
+    ) || [];
+
+    return {
+      eventCategory: response.eventCategory?.map((cat: any) => ({
+        id: cat.id,
+        name: cat.name
+      })) || [],
+      
+      eventType: response.eventType?.map((type: string) => 
+        type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()
+      ) || [],
+      
+      eventStatus: response.eventStatus?.split(',') || [],
+      eventFormat: response.eventFormat?.split(',') || [],
+      eventEntry: response.eventEntry?.split(',') || [],
+      eventRating: response.eventRating || null,
+      
+      dateRange: {
+        startDate: response.startDate?.split(',')[0] || null,
+        endDate: response.endDate?.split(',')[1] || null
+      },
+      
+      sorting: {
+        sortBy: response.sortBy || 'score',
+        sortType: response.sortType || 'desc'
+      },
+      
+      eventRanking: response.eventRanking || null,
+      eventFrequency: response.eventFrequency?.split(',') || [],
+      eventSeries: response.eventSeries === 'true',
+      maturity: response.maturity || null,
+      
+      scores: {
+        estimatedExhibitScore: response.estimatedExhibitScore || null,
+        eventImpactScore: response.eventImpactScore || null
+      },
+      
+      eventBrand: response.eventBrand === 'true',
+      
+      shows,
+      
+      designation: response.designation || null,
+      
+      locations: {
+        cities: response.locationIds?.city?.map((city: any) => ({
+          id: Object.keys(city)[0],
+          name: Object.values(city)[0]
+        })) || [],
+        states: response.locationIds?.state || [],
+        eventCities: response.eventCity?.map((city: any) => ({
+          id: Object.keys(city)[0],
+          name: Object.values(city)[0]
+        })) || [],
+        eventStates: response.eventState || [],
+        eventCountries: response.eventCountry || []
+      },
+      
+      keywords: {
+        include: response.includeKeywords || null
+      },
+      
+      estimatedVisitorRangeTag: response.estimatedVisitorRangeTag || null
+    };
+  },
 };
 
 function determineEventType(item: string): string {
@@ -991,5 +1083,5 @@ function determineEventType(item: string): string {
   if (item.toLowerCase() === "tradeshow") return "tradeshows";
   if (item.toLowerCase() === "conference") return "conferences";
   if (item.toLowerCase() === "workshop") return "workshops";
-  else return "unknown";
+  else return item;
 }
