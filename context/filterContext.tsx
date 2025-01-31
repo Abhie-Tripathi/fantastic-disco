@@ -248,8 +248,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         } else {
           newFilters[key] = value;
         }
-        console.log(newFilters);
-        
         return newFilters;
       });
     },
@@ -278,10 +276,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         resetPage?: boolean;
       } = {}
     ) => {
-      console.log(111111);
       
       setLocalFilters((currentFilters) => {
-        console.log(currentFilters);
         
         const filteredFilters = filterEmptyValues(currentFilters);
         const params = new URLSearchParams();
@@ -342,7 +338,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const replaceLocalFilter = useCallback(
     (oldKey: keyof Filters, newKey: keyof Filters, newValue: string) => {
-      console.log(11111);
       setLocalFilters((prev) => {
         const newFilters = { ...prev };
         delete newFilters[oldKey];
@@ -354,7 +349,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-console.log(localFilters);
 
   const contextValue = useMemo(
     () => ({

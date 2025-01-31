@@ -407,7 +407,6 @@ const Pages = () => {
   const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
-  console.log(enabledFilters);
   
   interface SelectedLocation {
     [id: string]: string;
@@ -1539,7 +1538,6 @@ const Pages = () => {
         }
       });
     }
-    console.log(getLocalFilterValue("locationIds"));
     
   }, [editData, searchParams]);
 
