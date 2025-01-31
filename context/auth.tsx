@@ -10,16 +10,15 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
-import { authEndpoints, baseUrl, headers } from "@/constants";
+import { authEndpoints, baseUrl } from "@/constants";
 import { UserResponse } from "../types/user";
-import { SignUpResponse, SignInResponse, TSignInWithOTPSchema } from "../types";
+import { SignUpResponse, SignInResponse } from "../types";
 import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ApiResponse, useApi } from "@/hooks/useApi";
+import { useApi } from "@/hooks/useApi";
 import { useProductSettingServices } from "@/services/settingservices/productService";
 import { SettingResearchData } from "@/types/onboarding";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEventsService } from "@/services/eventsService";
 import { getRestrictedUrl } from "@/utils/generateUrl";
 import { GAEvent } from "@/utils/GAEvent";
