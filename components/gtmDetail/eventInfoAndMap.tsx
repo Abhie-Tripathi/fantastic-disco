@@ -15,6 +15,12 @@ import CircularProgress from "../gtmDetailRelevanceScore/circularProgress";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import _ from "lodash";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 interface Props {
   eventDetails: GTMEventDetail;
   scrollSection: string;

@@ -37,6 +37,7 @@ import {
   Radio,
   Share2,
 } from "lucide-react";
+
 import { useEventsService } from "@/services/eventsService";
 import { GTMEventPOCDetails, EventDate } from "@/types/events";
 import { Badge } from "@/components/ui/badge";
@@ -46,7 +47,13 @@ import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
 import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import SaveThisEvent from "@/components/gtmDetail/saveThisEvent";
-import { TooltipTrigger, Button, Tooltip } from "react-aria-components";
+// import { TooltipTrigger, Button, Tooltip } from "react-aria-components";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export interface RankingDetail {
   above5CountryEvent: countryRank[] | [];
@@ -246,10 +253,25 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center gap-1">
             {stats && stats.rating !== null && stats.rating > 0 && (
-              <span className="flex items-center gap-1">
-                <StarFill width="16px" height="16px" color="#FFB224" />
-                <span>{stats.rating}</span>
-              </span>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span className="flex items-center gap-1">
+                      <StarFill width="16px" height="16px" color="#FFB224" />
+                      <span>{stats.rating}</span>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    align="end"
+                    alignOffset={-50}
+                    className="border bg-popover text-popover-foreground shadow-md text-sm cursor-pointer"
+                  >
+                    <p className="text-[var(--secondary-text-color)] font-medium">
+                      User Ratings
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
 
@@ -271,12 +293,23 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             eventDetails.eventTypes.length > 0 && (
               <ul className="flex flex-row flex-wrap gap-3">
                 {eventDetails.eventTypes.map((type: any) => (
-                  <li
-                    className="text-[12px] font-semibold py-1 px-3 border-[#CCE6FF] border rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D] dark:border-[#0D3868]"
-                    key={type.id}
-                  >
-                    {type.name}
-                  </li>
+                  <TooltipProvider key={type.id}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <li className="text-[12px] font-semibold py-1 px-3 border-[#CCE6FF] border rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D] dark:border-[#0D3868] cursor-pointer">
+                          {type.name}
+                        </li>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        align="center"
+                        className="border bg-popover text-popover-foreground shadow-md text-sm"
+                      >
+                        <p className="text-[var(--secondary-text-color)] font-medium">
+                          Event Type
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 ))}
               </ul>
             )}
@@ -358,14 +391,20 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   {venueName}
                 </Text>
               ) : (
-                <TooltipTrigger>
-                  <Button className="text-sm text-[var(--primary-text-color)] cursor-pointer font-semibold">
-                    TBA
-                  </Button>
-                  <Tooltip className="shadow-md rounded-sm outline-none p-2.5 px-3 max-w-[40vw] max-h-[30vh] translate-z-0 overflow-y-auto bg-[var(--background-secondary-color)] text-sm leading-[var(--line-height-default)] tracking-wide">
-                    <p>To be announced</p>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <p className="text-sm text-[var(--primary-text-color)] cursor-pointer font-semibold">
+                        TBA
+                      </p>
+                    </TooltipTrigger>
+                    <TooltipContent className="border bg-popover text-popover-foreground shadow-md text-sm">
+                      <p className="text-[var(--secondary-text-color)]">
+                        To be announced
+                      </p>
+                    </TooltipContent>
                   </Tooltip>
-                </TooltipTrigger>
+                </TooltipProvider>
               )}
               {venueAddress !== "Online" && (
                 <Text variant="noMargin" color="secondary">
@@ -486,19 +525,34 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         >
           <AccordionItem value="item-2">
             <AccordionTrigger className="hover:no-underline p-2 font-normal text-sm">
-              <p className="flex gap-3 items-center">
-                Event POC
-                {eventPOCDetails.length > 0 && (
-                  <span className="text-[12px] bg-[var(--primary-color)] text-white dark:text-[#131313] py-[1px] px-2 rounded-full">
-                    {eventPOCDetails.filter((poc) => poc !== null).length > 0 &&
-                    eventPOCDetails.filter((poc) => poc !== null).length < 9
-                      ? `0${
-                          eventPOCDetails.filter((poc) => poc !== null).length
-                        }`
-                      : eventPOCDetails.filter((poc) => poc !== null).length}
-                  </span>
-                )}
-              </p>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <p className="flex gap-3 items-center">
+                      Event POC
+                      {eventPOCDetails.length > 0 && (
+                        <span className="text-[12px] bg-[var(--primary-color)] text-white dark:text-[#131313] py-[1px] px-2 rounded-full">
+                          {eventPOCDetails.filter((poc) => poc !== null)
+                            .length > 0 &&
+                          eventPOCDetails.filter((poc) => poc !== null).length <
+                            9
+                            ? `0${
+                                eventPOCDetails.filter((poc) => poc !== null)
+                                  .length
+                              }`
+                            : eventPOCDetails.filter((poc) => poc !== null)
+                                .length}
+                        </span>
+                      )}
+                    </p>
+                  </TooltipTrigger>
+                  <TooltipContent className="w-40 border bg-popover text-popover-foreground shadow-md text-sm">
+                    <p className="text-left text-[var(--secondary-text-color)] font-medium">
+                      Point of Contact for this event
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </AccordionTrigger>
             <AccordionContent
               className={`${
