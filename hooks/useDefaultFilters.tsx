@@ -160,9 +160,7 @@ export function useDefaultFilters() {
     const isEmptySearch = Object.keys(currentParams).length === 0 || hasOnlyViewParam;
 
     // Only proceed if we have empty params or just view param
-    if (!isEmptySearch) {
-      return;
-    }
+   
 
     try {
       // Try to use enabled filters first
@@ -174,12 +172,20 @@ export function useDefaultFilters() {
           if (value) params.set(key, value);
         });
 
-        setTimeout(() => {
-          router.push(`${pathName}?${params.toString()}`, { scroll: false });
-        }, 0);
+        if (pathName.split("/").includes("search")) {
+          setTimeout(() => {
+            router.push(`${pathName}?${params.toString()}`, { scroll: false });
+          }, 0);
+        } else {
+          console.log(enabledFilterParams);
+          
+          setMultipleLocalFilters(enabledFilterParams);
+        }
         return;
       }
-
+      if (!isEmptySearch || pathName.split("/").includes("tracker")) {
+        return;
+      }
       // Fall back to recent search if no enabled filters
       const recentSearchResponse = await eventService.getRecentSearch();
       if (recentSearchResponse?.[0]) {

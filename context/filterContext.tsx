@@ -173,11 +173,14 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   useEffect(() => {
-
+    // console.log(pathname.split("/").includes("create"));
+    
+   if(!pathname.split("/").includes("editTracker")){
     setLocalFilters(
       filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
     );
-  }, [filterEmptyValues]);
+    }
+  }, [filterEmptyValues, searchParams]);
 
   useEffect(() => {
     const getEnabledFilters = async () => {
@@ -278,6 +281,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log(111111);
       
       setLocalFilters((currentFilters) => {
+        console.log(currentFilters);
+        
         const filteredFilters = filterEmptyValues(currentFilters);
         const params = new URLSearchParams();
 
