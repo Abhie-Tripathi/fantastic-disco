@@ -66,7 +66,7 @@ interface MapProps {
   source?: string;
   trackerId?: string;
   isGlobal?: boolean;
-  trackerLoc?: string[];
+  trackerLoc?: string;
   trackerType?: string;
 }
 
