@@ -801,7 +801,7 @@ const Pages = () => {
     const showsData: string[] = [];
 
     const mapping = {
-      rating: "eventRating,trustScore",
+      rating: "eventRating",
       maturity: "maturity",
       forecasted: "isforecasted",
       frequency: "eventFrequency",
