@@ -143,7 +143,7 @@ export default function MapComponent({
         ? trackerLoc?.length > 0
           ? trackerLoc
           : "defaultLoc"
-        : getLocalFilterValue("locationIds");
+        :  getLocalFilterValue("locationIds").length===0?"defaultLoc":getLocalFilterValue("locationIds");
     if (locationIds === "defaultLoc")
       setViewport({
         ...viewport,
