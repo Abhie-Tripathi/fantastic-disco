@@ -1,19 +1,7 @@
 "use client";
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import Image from "next/image";
-import styles from "@/app/(auth)/verification/page.module.css";
-import OtpInput from "react-otp-input";
-import Carousel from "@/app/components/carousel";
-import VerificationVisuals from "/public/verificationVisuals.svg";
-import ArchiveIcon from "/public/archive.svg";
-import { usePathname, useRouter } from "next/navigation";
-import { baseUrl } from "@/constants";
-import { myFetch } from "@/utils/myFetch";
+import React, { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context";
-import logo from "/public/croppedlogo.png";
-import whr from "/public/whrai.svg";
-import LocationForm from "@/app/(auth)/location/page";
-import { VerificationProps } from "@/types/onboarding";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -23,7 +11,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -38,7 +25,6 @@ import { useSearchParams } from "next/navigation";
 import { Input } from "../ui/input";
 import { industryData, settingResearchData } from "@/data/onboarding";
 import { endOfMonth, startOfMonth } from "date-fns";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { GAEvent } from "@/utils/GAEvent";
 
 const otpSchema = z.object({
@@ -90,9 +76,7 @@ export default function NewVerificationForm() {
       const isCategoryMapped = industryData.find(
         (industryItem) => industryItem.slug === industry
       )?.subCategory;
-      if (!isCategoryMapped) {
-        return `/location${industry ? `?industry=${industry}` : ""}`;
-      } else {
+      if (isCategoryMapped) {
         return `/internal/search/events?${urlParams}`;
       }
     }

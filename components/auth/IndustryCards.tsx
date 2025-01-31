@@ -1,7 +1,6 @@
 import { industryData } from "@/data/onboarding";
 import { Industry } from "@/types/onboarding";
 import Image from "next/image";
-import { ArrowLeft } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
 
 const Card = ({
