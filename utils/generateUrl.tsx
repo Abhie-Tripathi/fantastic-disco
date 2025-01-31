@@ -17,7 +17,7 @@
  *    - status: A comma-separated list of lowercase event statuses.
  */
 
-export const getRestrictedUrl = (redirectTo: string, restrictedData: any) => {
+export const getRestrictedUrl = (redirectTo: string, restrictedData: any): string => {
   const url = new URL(redirectTo || "", window.location.origin);
   const params = new URLSearchParams(url.search);
   if (restrictedData) {
