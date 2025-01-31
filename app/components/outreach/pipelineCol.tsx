@@ -68,8 +68,8 @@ const PipelineCol = ({
   useInfiniteScroll(shortlistRef, handleScrollEnd);
 
   useEffect(() => {
-    fetchPipelineData(status, taskDetail[status].label, shortlistPage);
-    GAEvent("Outreach", "Pagination", "Outreach", `Outreach | ${status} | ${shortlistPage}`);
+    if(shortlistPage > 1)
+      fetchPipelineData(status, taskDetail[status].label, shortlistPage);
   }, [shortlistPage]);
 
   return (

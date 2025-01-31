@@ -47,6 +47,8 @@ import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import SaveThisEvent from "@/components/gtmDetail/saveThisEvent";
 import { TooltipTrigger, Button, Tooltip } from "react-aria-components";
+import { Button as ButtonUI } from "@/components/ui/button";
+import { useCoordinateService } from "@/services/coordinateService";
 
 export interface RankingDetail {
   above5CountryEvent: countryRank[] | [];
@@ -62,6 +64,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const currentDate = new Date().toISOString().split("T")[0];
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
   const [eventDates, setEventDates] = useState<EventDate[]>();
+  const [eventPOCDetails, setEventPOCDetails] = useState<GTMEventPOCDetails[]>([]);
   const tabs = [
     { tabName: "Overview", path: "overview" },
     { tabName: "Insights", path: "insights" },
@@ -74,6 +77,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     getEventExhibitorDetails,
     getEventSpeakerDetails,
   } = useEventsService();
+  const coordinateService = useCoordinateService();
   const { data: event } = useQuery<any>({
     queryKey: ["eventDetails"],
     queryFn: async () => {
@@ -97,6 +101,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventPOCDataResult.status === "fulfilled"
           ? eventPOCDataResult.value
           : null;
+      setEventPOCDetails(eventPOCData?.eventPoc || []);
       // const eventCoOrganizerData =
       //   eventCoOrganizerDataResult.status === "fulfilled"
       //     ? eventCoOrganizerDataResult.value
@@ -121,18 +126,17 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventSpeakerData: eventSpeakerData,
       };
     },
+    refetchOnWindowFocus: false,
   });
 
   if (!event) return null;
   const {
     eventData,
-    eventPOCData,
     eventEditionData,
     eventExhibitorData,
     eventSpeakerData,
   } = event;
   const eventDetails: GTMEventDetail = eventData.event || {};
-  const eventPOCDetails: GTMEventPOCDetails[] = eventPOCData.eventPoc || [];
 
   if (!eventDetails) return null;
   const {
@@ -221,18 +225,42 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     }
   };
 
+  const unlockPoc = async(pocId: number) => {
+    try {
+      setEventPOCDetails(prevPocData => 
+        prevPocData.map(poc => 
+          poc.id === pocId
+            ? { ...poc, state: 1 }
+            : poc
+        )
+      );
+      const data = await coordinateService.unlockPocDetail(pocId, id);
+      if (data) {
+        setEventPOCDetails(prevPocData => 
+          prevPocData.map(poc => 
+            poc.id === pocId
+              ? { ...poc, email: data.email, phoneNumber: data.phoneNumber, state: 2 }
+              : poc
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
   return (
     <div className="p-6 pt-0">
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
-        <button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
+        <Button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
-          <Link
+          <span
             className="text-[var(--primary-color)] font-medium"
-            href={"/internal/search/events"}
+            onClick={() => router.back()}
           >
             Back to Search
-          </Link>
-        </button>
+          </span>
+        </Button>
         {bannerUrl && (
           <Image
             src={bannerUrl ?? "/eventDetailFallback.png"}
@@ -517,6 +545,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                     phoneNumber,
                     profilePicture,
                     name,
+                    state,
                   } = poc;
                   return (
                     <div key={id} className="flex flex-row gap-3 p-2">
@@ -557,6 +586,16 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                             <PhoneIcon width="12px" height="12px" />
                             <span>{phoneNumber}</span>
                           </p>
+                        )}
+                        {(email || phoneNumber) && (
+                          <div>
+                            <ButtonUI
+                              disabled={(state && (state === 1 || state === 2) ) ? true : false}
+                              onClick={()=>unlockPoc(id)}
+                              variant={'outline'}
+                              size={"sm"}
+                            >Show details</ButtonUI>
+                          </div>
                         )}
                       </div>
                     </div>

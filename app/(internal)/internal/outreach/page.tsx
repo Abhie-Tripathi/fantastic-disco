@@ -10,6 +10,7 @@ import coordinateNullState from "/public/coordinateNullState.svg";
 import PipelineCol from "@/app/components/outreach/pipelineCol";
 import { useSearchParams } from "next/navigation";
 import { GAEvent } from "@/utils/GAEvent";
+import Loading from "@/app/components/UI/Loading";
 
 interface taskDetailType {
   [task: string]: {
@@ -175,6 +176,7 @@ const Page: React.FC = () => {
   const [taskDetail, setTaskDetail] = useState<taskDetailType>({});
 
   const fetchPipelineData = async (status: string, label: string, page: number) => {
+    GAEvent("Outreach", "Pagination", "Outreach", `Outreach | ${status} | ${page}`);
     const shortlistApiData = await coordinateService.getOutreachEventList({
       offset: (page - 1) * 10,
       status: status,
@@ -237,7 +239,7 @@ const Page: React.FC = () => {
   const getOutreachConfig = async () => {
     try {
       const apiData: any = await coordinateService.getPipelineConfig();
-      const outreachPipeLine1 = apiData.outreach_stage.slice(1, apiData.outreach_stage.length - 1);
+      const outreachPipeLine1 = apiData?.outreach_stage?.slice(1, apiData.outreach_stage.length - 1) || [];
   
       setConfigData(outreachPipeLine1); // Set the configuration data
   
@@ -290,6 +292,12 @@ const Page: React.FC = () => {
     // fetchData();
   }, [statusChanged]);
 
+  useEffect(() => {
+    configData?.map((item: any)=>(
+      fetchPipelineData(item.status, item.label, 1)
+    ))
+  }, [configData]);
+
   const handleDropdownSelect = (target: string, source: string) => {
     const mockEvent = {
       preventDefault: () => {},
@@ -310,13 +318,13 @@ const Page: React.FC = () => {
     handleDrop2(mockEvent, target, 'Status Pipeline');
   };
 
-  if (Object.values(taskDetail).length > 0 && Object.values(taskDetail).every((value) => (value.dataLoaded === true && value.count === 0)) ) {
+  if ( configData?.length == 0 || (Object.values(taskDetail).length > 0 && Object.values(taskDetail).every((value) => (value.dataLoaded === true && value.count === 0))) ) {
     return (
       <div className="p-20">
         <NullState
           image={coordinateNullState}
-          title="You haven't shortlisted any events yet."
-          text="Browse through our upcoming events and shortlist here for easy access and internal coordination later."
+          title="Explore events, connect seamlessly, and elevate your outreach with ease!"
+          // text="Browse through our upcoming events and shortlist here for easy access and internal coordination later."
           buttonText="Search Events"
           buttonUrl={`/internal/search/events`}
         />
@@ -362,9 +370,11 @@ const Page: React.FC = () => {
           </div>
         </div> */}
         <div className={`${styles.taskBody}  w-full scroll overflow-x-auto`}>
-          { Object.keys(taskDetail).map((status, index) => (
+          {Object.values(taskDetail).every(task => task.dataLoaded === true) ?
+            (Object.keys(taskDetail).map((status, index) => (
               <PipelineCol key={index} handleDragContainerStart={handleDragContainerStart} handleDragOver={handleDragOver} handleDragStart={handleDragStart} handleDrop2={handleDrop2} handleModal={handleModal} openAddModalHandler={openAddModalHandler} status={status} taskDetail={taskDetail} fetchPipelineData={fetchPipelineData} />
-            ))
+            ))) :
+            <Loading />
           }
         </div>
       </div>

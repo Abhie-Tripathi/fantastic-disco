@@ -15,6 +15,7 @@ import {
   EventsResponse,
   MapEventsResponse,
   RecentSearchesResponse,
+  RecentSearchItem,
 } from "@/types/events";
 import { EventSearchParams } from "@/types/events";
 import { EventsAdapter } from "@/adapters/eventsAdapter";
@@ -240,21 +241,14 @@ export const useEventsService = () => {
   };
 
   const getRecentSearch = async () => {
-    const response = await api.request(`${endpoints.event.recentSearch}`, {
-      method: "GET",
-    });
-    return response;
-  };
-
-  const getAlertPolygon = (eventId: string) => {
-    return api.request<AlertPolygonResponse>(
-      `${endpoints.event.events}/${eventId}/polygons`,
+    const response = await api.request<RecentSearchItem[]>(
+      `${endpoints.event.recentSearch}`,
       {
         method: "GET",
       }
     );
-  };
-
+    return response;
+  }
   return {
     getEvents,
     saveEvent,
