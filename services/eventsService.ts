@@ -16,6 +16,7 @@ import {
   EventsResponse,
   MapEventsResponse,
   RecentSearchesResponse,
+  RecentSearchItem,
 } from "@/types/events";
 import { EventSearchParams } from "@/types/events";
 import { EventsAdapter } from "@/adapters/eventsAdapter";
@@ -87,7 +88,8 @@ export const useEventsService = () => {
 
   const getEventEditionDetails = (id: string, take: number, skip: number) => {
     return api.request<EventEditionDetailResponse>(
-      `${endpoints.event.eventEditionsDetailsById}/${id}${take ? `?take=${take}` : ""
+      `${endpoints.event.eventEditionsDetailsById}/${id}${
+        take ? `?take=${take}` : ""
       }${skip !== undefined && skip !== null ? `&skip=${skip}` : ""}`,
       {
         method: "GET",
@@ -220,18 +222,24 @@ export const useEventsService = () => {
     return response;
   };
   const fetchEnabledFilters = async (source: String) => {
-    const response = await api.request(`${endpoints.event.enabledFilters}?source=${source}`, {
-      method: "GET"
-    });
+    const response = await api.request(
+      `${endpoints.event.enabledFilters}?source=${source}`,
+      {
+        method: "GET",
+      }
+    );
     return response;
-  }
+  };
 
   const getRecentSearch = async () => {
-    const response = await api.request(`${endpoints.event.recentSearch}`, {
-      method: "GET"
-    });
+    const response = await api.request<RecentSearchItem[]>(
+      `${endpoints.event.recentSearch}`,
+      {
+        method: "GET",
+      }
+    );
     return response;
-  }
+  };
   return {
     getEvents,
     saveEvent,

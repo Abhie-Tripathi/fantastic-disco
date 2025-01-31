@@ -10,6 +10,7 @@ import Placehodler from "/public/placeholder.png";
 import { useTheme } from "@/context";
 import downArrowIcon from "/public/arrow_down.svg";
 import rightDirectIcon from "/public/right_direction.svg";
+import { GAEvent } from "@/utils/GAEvent";
 
 interface Props {
   open: boolean;
@@ -26,7 +27,10 @@ const Organiser = ({ open, organizerData }: Props) => {
     >
       <div
         className={styles.header}
-        onClick={() => setAccordianToggle(!accordianToggle)}
+        onClick={() => {
+          setAccordianToggle(!accordianToggle);
+          !accordianToggle && GAEvent("Coordinate", "Enquiry Detail", "Organiser", "Expanded");
+        }}
       >
         <Image src={OrganiserIcon} width={24} height={24} alt="page" className={iconClass} />
         <div className={styles.eventDetail_header}>

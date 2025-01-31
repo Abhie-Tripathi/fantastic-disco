@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
+import { GAEvent } from "@/utils/GAEvent";
 
 const eventStatuses = [
   { id: "EXHIBITOR", label: "Exhibit" },
@@ -24,14 +25,16 @@ interface Props {
 
 export default function InterestTypeSelector( { coordinateActions }: Props ) {  
   const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, searchParams, applyFilters } =
+  const { localFilters, setLocalFilter, applyFilters } =
     useFilterContext();
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
   useEffect(() => {
-    const currentFilter = getLocalFilterValue("interest");
-    setSelectedStatuses(currentFilter ? currentFilter.split(",") : []);
-  }, [searchParams, getLocalFilterValue]);
+    if (localFilters?.interest)
+      GAEvent("Coordinate", "Filter", "Coordinate", "Coordinate | Type | Auto Applied");
+
+    setSelectedStatuses(localFilters?.interest?.split(",") || []);
+  }, [localFilters?.interest]);
 
   const selectedStatus = selectedStatuses.length;
 
