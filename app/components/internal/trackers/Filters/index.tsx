@@ -434,7 +434,6 @@ const Pages = () => {
   // const [selectedCategories, setSelectedCategories] = useState<string[]>(
   //   enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
   // );
-  console.log(enabledFilters);
   
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
       enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
@@ -1164,7 +1163,7 @@ const Pages = () => {
 
   useEffect(() => {
     if (editData && editData?.tracker && last === "editTracker") {
-      console.log(enabledFilters);
+
       
       // if (editData.tracker.filterValue?.maturity == "low") {
       //   setSelectedMaturity(25);
