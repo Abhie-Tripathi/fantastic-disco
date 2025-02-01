@@ -256,7 +256,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <span className="flex items-center gap-1">
+                    <span className="flex items-center gap-1 cursor-pointer">
                       <StarFill width="16px" height="16px" color="#FFB224" />
                       <span>{stats.rating}</span>
                     </span>
@@ -264,7 +264,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   <TooltipContent
                     align="end"
                     alignOffset={-50}
-                    className="border bg-popover text-popover-foreground shadow-md text-sm cursor-pointer"
+                    className="tooltip-content-styles"
                   >
                     <p className="text-[var(--secondary-text-color)] font-medium">
                       User Ratings
@@ -302,7 +302,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                       </TooltipTrigger>
                       <TooltipContent
                         align="center"
-                        className="border bg-popover text-popover-foreground shadow-md text-sm"
+                        className="tooltip-content-styles"
                       >
                         <p className="text-[var(--secondary-text-color)] font-medium">
                           Event Type
@@ -398,7 +398,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                         TBA
                       </p>
                     </TooltipTrigger>
-                    <TooltipContent className="border bg-popover text-popover-foreground shadow-md text-sm">
+                    <TooltipContent className="tooltip-content-styles">
                       <p className="text-[var(--secondary-text-color)]">
                         To be announced
                       </p>
@@ -546,7 +546,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                       )}
                     </p>
                   </TooltipTrigger>
-                  <TooltipContent className="w-40 border bg-popover text-popover-foreground shadow-md text-sm">
+                  <TooltipContent className="w-40 tooltip-content-styles">
                     <p className="text-left text-[var(--secondary-text-color)] font-medium">
                       Point of Contact for this event
                     </p>

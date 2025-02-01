@@ -14,6 +14,12 @@ import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { Heading } from "../eventDetail/heading";
 import { GTMEventDetail } from "@/types/events";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 interface Props {
   eventDetails: GTMEventDetail;
   scrollSection: string;
@@ -76,34 +82,82 @@ export const InsightsAndScores = ({
               <div className="grid grid-cols-4 grid-rows-1 gap-6 w-full max-xl:grid-cols-2 max-xl:grid-rows-subgrid">
                 {scores && scores.impactScore !== null && (
                   <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
-                    <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                      Impact Score
-                    </h1>
-
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                            Impact Score
+                          </h1>
+                        </TooltipTrigger>
+                        <TooltipContent className="w-56 tooltip-content-styles">
+                          <p className="text-[var(--secondary-text-color)] font-medium">
+                            Quantifies the significance of an event within a
+                            specific location.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                     <CircularProgressBar value={scores.impactScore} />
                   </div>
                 )}
                 {trustScore !== null && (
                   <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
-                    <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                      Trust Score
-                    </h1>
+                    <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                              Trust Score
+                            </h1>
+                          </TooltipTrigger>
+                          <TooltipContent className="w-56 tooltip-content-styles">
+                            <p className="text-[var(--secondary-text-color)] font-medium">
+                              Reflects an event&apos;s reliability and user
+                              confidence based on interest, feedback, and past
+                              attendance.
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     <CircularProgressBar value={Math.round(trustScore ?? 0)} />
                   </div>
                 )}
                 {scores && scores.inboundScore && (
                   <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
-                    <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                      Inbound Score
-                    </h1>
+                    <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                                Inbound Score
+                              </h1>
+                            </TooltipTrigger>
+                            <TooltipContent className="w-56 tooltip-content-styles">
+                              <p className="text-[var(--secondary-text-color)] font-medium">
+                                The number of attendees traveling to the event
+                                from other cities within the host country.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                     <CircularProgressBar value={scores.inboundScore} />
                   </div>
                 )}
                 {scores && scores.internationalScore && (
                   <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
-                    <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                      International Score
-                    </h1>
+                    <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                                International Score
+                              </h1>
+                            </TooltipTrigger>
+                            <TooltipContent className="w-56 tooltip-content-styles">
+                              <p className="text-[var(--secondary-text-color)] font-medium">
+                                The number of attendees traveling to the event
+                                from outside the host country.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                     <CircularProgressBar value={scores.internationalScore} />
                   </div>
                 )}

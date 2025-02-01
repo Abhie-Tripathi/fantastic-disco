@@ -28,6 +28,12 @@ import { Card } from "../ui/card";
 import { useEffect, useState } from "react";
 import { GTMEventDetail } from "@/types/events";
 import { renderFormattedDates } from "@/utils/dateFormat";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface Props {
   eventDetails: GTMEventDetail;
@@ -76,9 +82,26 @@ const CarouselComponent = ({
           {maturity && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
               <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
-                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                  Maturity
-                </h1>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                        Maturity
+                      </h1>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      align="start"
+                      alignOffset={-10}
+                      className="w-52 tooltip-content-styles"
+                      side="top"
+                    >
+                      <p className="text-[var(--secondary-text-color)] font-medium">
+                        Lifecycle stage of an event, based on how often it has
+                        occurred
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 {maturity ? (
                   <span className="text-[#0062D1] dark:bg-[#10233D] dark:border-[#0D3868] bg-[#EBF5FF] h-fit font-semibold text-sm py-1 px-4 border-[#CCE6FF] border rounded-md w-fit">
                     {maturity.charAt(0).toUpperCase() +
@@ -96,9 +119,29 @@ const CarouselComponent = ({
           {editions && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
               <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
-                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                  Edition
-                </h1>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                        Edition
+                      </h1>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      align="center"
+                      alignOffset={-70}
+                      className="w-80 tooltip-content-styles"
+                      side="top"
+                      avoidCollisions={true}
+                      collisionPadding={{ right: 30 }}
+                    >
+                      <p className="text-[var(--secondary-text-color)] font-medium">
+                        Specific occurrence or iteration of a recurring event,
+                        often distinguished by its year, version, or any changes
+                        made to the event&apos;s details.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 {editions && (
                   // <span className="text-[#6750A4] bg-[#E6E6F9] h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit cursor-not-allowed">
                   //   {`${editions} Edition${
@@ -123,9 +166,26 @@ const CarouselComponent = ({
           {frequency && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
               <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
-                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                  Frequency
-                </h1>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                        Frequency
+                      </h1>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      align="start"
+                      alignOffset={-10}
+                      className="w-52 tooltip-content-styles"
+                      side="top"
+                    >
+                      <p className="text-[var(--secondary-text-color)] font-medium">
+                        Recurring pattern or interval at which an event takes
+                        place
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <div className="flex gap-4 flex-wrap">
                   {frequency ? (
                     <span className="text-[#A35200] bg-[#FFF4D6] dark:bg-[#331B00] dark:border-[#4D2A00] h-fit font-semibold text-sm py-1 px-4 border border-[#FEF0CD]  rounded-md w-fit cursor-pointer">
@@ -144,9 +204,24 @@ const CarouselComponent = ({
           {(futureExpectedStartDate || futureExpectedEndDate) && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
               <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
-                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                  Rehost Month
-                </h1>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                        Rehost Month
+                      </h1>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      className="w-60 tooltip-content-styles"
+                      side="top"
+                    >
+                      <p className="text-[var(--secondary-text-color)] font-medium">
+                        Predicted timeline for when an event is expected to take
+                        place, based on available data and historical patterns.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 <span className="text-[var(--primary-color-hover)] font-semibold text-md">
                   {format(futureExpectedStartDate, "MMM, yyyy")}
                 </span>
@@ -156,9 +231,28 @@ const CarouselComponent = ({
           {(isBranded || isSeries) && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
               <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
-                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                  Brand
-                </h1>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                        Brand
+                      </h1>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      align="center"
+                      avoidCollisions={true}
+                      collisionPadding={{ right: 30 }}
+                      className="w-72 tooltip-content-styles"
+                      side="top"
+                    >
+                      <p className="text-[var(--secondary-text-color)] font-medium">
+                        Brand categorizes events as recurring in multiple
+                        locations (Branded) or different locations each time
+                        (Series).
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 {!isBranded && !isSeries && (
                   <span className="text-[#666666] text-sm flex items-center gap-2">
                     <CircleSlash width={15} height={15} />

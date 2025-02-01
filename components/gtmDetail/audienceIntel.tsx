@@ -25,6 +25,12 @@ import {
 } from "@/data/dummyDataEventDetail";
 import { numberWithCommas } from "@/utils/formater";
 import { Badge } from "../ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // type TTabs = "Department Type" | "Designation Type";
 interface Props {
@@ -75,9 +81,25 @@ export const AudienceIntel = ({
       <div className="flex flex-col gap-6">
         <div className="flex gap-6">
           <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
-            <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
-              Estimated Visitor
-            </h1>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <h1 className="text-[1rem] font-medium border-b pb-2 w-full cursor-pointer">
+                    Estimated Visitor
+                  </h1>
+                </TooltipTrigger>
+                <TooltipContent
+                  align="start"
+                  alignOffset={-80}
+                  className="w-80 tooltip-content-styles"
+                >
+                  <p className="text-[var(--secondary-text-color)] font-medium">
+                    Number of people who are predicted or estimated to attend an
+                    event.
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <p className="text-[#6750A4] font-semibold text-lg">
               {stats.estimatedVisitor
                 ? numberWithCommas(stats.estimatedVisitor || "--")
@@ -85,9 +107,25 @@ export const AudienceIntel = ({
             </p>
           </div>
           <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
-            <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
-              Estimated Exhibitor
-            </h1>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <h1 className="text-[1rem] font-medium border-b pb-2 w-full cursor-pointer">
+                    Estimated Exhibitor
+                  </h1>
+                </TooltipTrigger>
+                <TooltipContent
+                  align="start"
+                  alignOffset={-80}
+                  className="w-80 tooltip-content-styles"
+                >
+                  <p className="text-[var(--secondary-text-color)] font-medium">
+                    Projected number of exhibitors that will participate in an
+                    event
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             <p className="text-[#6750A4] font-semibold text-lg">
               {stats.estimatedExhibitor
                 ? stats.estimatedExhibitor ?? "--"
@@ -98,14 +136,25 @@ export const AudienceIntel = ({
         <div className="flex gap-6 max-xl:flex-col max-h-full">
           <div className="flex flex-1 flex-col gap-6 border border-[#EBEBEB] dark:bg-transparent dark:border-[var(--border-color)] rounded-md p-4 h-auto overflow-y-auto scrollbar w-full">
             <div className="flex justify-between">
-              <Text
-                color="primary"
-                fontWeight="medium"
-                variant="noMargin"
-                size="large"
-              >
-                Audience Spread
-              </Text>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <p className="cursor-pointer font-medium text-[var(--primary-text-color)]">
+                      Audience Spread
+                    </p>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    align="start"
+                    alignOffset={-80}
+                    className="w-80 tooltip-content-styles"
+                  >
+                    <p className="text-[var(--secondary-text-color)] font-medium">
+                      Indicates the geographical diversity of the audience,
+                      showing which countries are represented at the event.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
               {!audienceSpread && (
                 <Badge
                   variant={"outline"}
@@ -158,14 +207,21 @@ export const AudienceIntel = ({
 
           <div className="flex flex-1 flex-col gap-6 border border-[#EBEBEB] dark:bg-transparent dark:border-[var(--border-color)] rounded-md p-4 h-auto w-full">
             <div className="flex justify-between">
-              <Text
-                color="primary"
-                fontWeight="medium"
-                variant="noMargin"
-                size="large"
-              >
-                Designation Types
-              </Text>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <p className="cursor-pointer font-medium text-[var(--primary-text-color)]">
+                      Designation Types
+                    </p>
+                  </TooltipTrigger>
+                  <TooltipContent className="w-72 tooltip-content-styles">
+                    <p className="text-[var(--secondary-text-color)] font-medium">
+                      Specific roles (designations) and departments of auidence
+                      that are going to attend the event
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
 
               {!designation && (
                 <Badge
@@ -245,7 +301,11 @@ export const AudienceIntel = ({
             </ul>
           </div>
         </div>
-        <EventParticipants eventDetails={eventDetails} eventExhibitorData={eventExhibitorData} eventSpeakerData={eventSpeakerData}/>
+        <EventParticipants
+          eventDetails={eventDetails}
+          eventExhibitorData={eventExhibitorData}
+          eventSpeakerData={eventSpeakerData}
+        />
       </div>
     </div>
   );
