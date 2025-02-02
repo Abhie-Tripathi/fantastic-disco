@@ -272,7 +272,7 @@ const TestPeriodicAnalytics = ({
                   </p>
                 </div>
               </TooltipTrigger>
-              <TooltipContent className="w-64 bg-popover text-popover-foreground shadow-md text-sm">
+              <TooltipContent className="w-64 tooltip-content-styles ">
                 <p className="font-medium text-[var(--secondary-text-color)]">
                   Identifies trends and patterns by comparing data to averages,
                   making key insights easy to spot.
@@ -323,7 +323,7 @@ const TestPeriodicAnalytics = ({
                                   {trends.columnName.toUpperCase()}
                                 </span>
                               </TooltipTrigger>
-                              <TooltipContent className="w-64 bg-popover text-popover-foreground shadow-md text-sm">
+                              <TooltipContent className="w-64 tooltip-content-styles ">
                                 <p className="font-medium text-left text-[var(--secondary-text-color)]">
                                   {trends.tooltipDescription}
                                 </p>
@@ -429,7 +429,7 @@ const TestPeriodicAnalytics = ({
                                 />
                               </button>
                             </TooltipTrigger>
-                            <TooltipContent className="w-44 bg-popover text-popover-foreground shadow-md text-sm">
+                            <TooltipContent className="w-44 tooltip-content-styles ">
                               <p className="font-medium text-[var(--secondary-text-color)]">
                                 Click on it to see event type wise split
                               </p>

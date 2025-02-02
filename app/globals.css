@@ -745,6 +745,10 @@ button {
   font-size: 12px;
 }
 
+.tooltip-content-styles {
+  @apply border bg-popover text-popover-foreground shadow-md text-sm;
+}
+
 .trendAboveAvgColor {
   background: #ff990a1a;
   color: #ff990a;
