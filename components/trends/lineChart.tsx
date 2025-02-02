@@ -450,7 +450,7 @@ const LineChartComponent = ({
                       {entry.value}
                     </span>
                   </TooltipTrigger>
-                  <TooltipContent className="w-60 bg-popover text-popover-foreground shadow-md text-sm">
+                  <TooltipContent className="w-60 tooltip-content-styles">
                     <p className="font-medium text-[var(--secondary-text-color)]">
                       {entry.tooltipDescription}
                     </p>
