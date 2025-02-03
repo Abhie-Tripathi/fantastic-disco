@@ -95,8 +95,8 @@ export const AudienceIntel = ({
     estimatedVisitors &&
     estimatedVisitors.options.some(
       (option: { min: number; max: number | null; isEnabled: boolean }) =>
-        option.min === maxValue &&
-        (option.max === null || option.max === minValue) &&
+        option.min <= maxValue &&
+        (option.max === null || option.max >= minValue) &&
         option.isEnabled
     );
 
@@ -140,11 +140,12 @@ export const AudienceIntel = ({
               Estimated Visitor
             </h1>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {hasEstimatedVisitor || stats.estimatedVisitor ? (
-                numberWithCommas(stats.estimatedVisitor || "--")
-              ) : (
-                <Restriction />
-              )}
+              {stats.estimatedVisitor &&
+                (hasEstimatedVisitor ? (
+                  numberWithCommas(stats.estimatedVisitor || "--")
+                ) : (
+                  <Restriction />
+                ))}
             </p>
           </div>
           <div className="relative flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
@@ -181,7 +182,7 @@ export const AudienceIntel = ({
                   </Badge>
                 )}
               </div>
-              {!isAudienceSpreadEnabled && <Restriction className="-right-3" />}
+              {!isAudienceSpreadEnabled && <Restriction />}
               {isAudienceSpreadEnabled && (
                 <ul className="h-80">
                   {audienceSpread && Object.keys(audienceSpread).length > 0 ? (
@@ -238,7 +239,7 @@ export const AudienceIntel = ({
                   variant="noMargin"
                   size="large"
                 >
-                  Designation Types
+                  Audience Profile
                 </Text>
 
                 {!designation && (

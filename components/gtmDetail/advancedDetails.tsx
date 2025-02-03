@@ -238,9 +238,7 @@ const CarouselComponent = ({
                     {format(futureExpectedStartDate, "MMM, yyyy")}
                   </span>
                 ) : (
-                  <Restriction
-                    className={`${isSlidingEnabled ? "" : "-right-3"}`}
-                  />
+                  <Restriction />
                 )}
               </div>
             </CarouselItem>

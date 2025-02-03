@@ -92,20 +92,12 @@ export const EventInfoAndMap = ({
     website,
   } = eventDetails;
 
-  const enabledKeywords =
-    enabledFilters && enabledFilters.keywords
-      ? enabledFilters.keywords.positiveKeywords
-      : [];
+  // const enabledKeywords =
+  //   enabledFilters && enabledFilters.keywords
+  //     ? enabledFilters.keywords.positiveKeywords
+  //     : [];
 
-  const filteredTags =
-    enabledKeywords && enabledKeywords.length > 0
-      ? tags &&
-        tags.filter((tag) =>
-          enabledKeywords.some(
-            (keyword) => keyword.toLowerCase() === tag.slug.toLowerCase()
-          )
-        )
-      : tags;
+  const filteredTags = tags;
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
       {/* <div className="flex gap-2 justify-center bg-[var(--negative-light-color)] border border-[#FDD8D8] p-2 rounded-sm text-sm">

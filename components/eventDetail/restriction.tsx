@@ -1,14 +1,11 @@
-import { cn } from "@/lib/utils";
-import { LockClosedSmall } from "geist-icons";
+import LockRestriction from "/public/lock_restriction.svg";
+import Image from "next/image";
 
-const Restriction = ({ className }: { className?: string }) => {
+const Restriction = () => {
   return (
-    <LockClosedSmall
-      color="var(--secondary-text-color)"
-      height="25px"
-      width="25px"
-      className={(cn("w-8 h-8"), className)}
-    />
+    <div className="flex items-center justify-center p-2 border border-[var(--neutral-light-color)] rounded-md bg-white shadow-md w-8 h-8 aspect-square">
+      <Image src={LockRestriction} alt="Lock" />
+    </div>
   );
 };
 export default Restriction;

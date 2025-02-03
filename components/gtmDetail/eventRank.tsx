@@ -1405,7 +1405,10 @@ export const EventRank = ({
   );
   return (
     <>
-      <div className="relative border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] p-3 rounded-sm gap-12 w-fill h-auto">
+      <div className="flex flex-col gap-6 relative border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] p-3 rounded-sm w-fill h-auto">
+        <h1 className="text-[1rem] font-medium w-full max-[1400px]:text-center">
+          Event Ranking
+        </h1>
         {rankComponents}
         {swiperRankComponents}
       </div>
