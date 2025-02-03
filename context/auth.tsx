@@ -266,14 +266,10 @@ export const AuthContextProvider = ({ children }: any) => {
               "Content-Type": "application/json",
             },
           });
-
-          console.log("Data from signin", data);
-          console.log("Error from signnin", error);
           if (error) {
             console.error("Error fetching data:", error);
             router.push("/signin");
           } else {
-            console.log("Data fetched:", data);
             const { id, firstname, lastname, email, role, profilePicture } =
               data.info;
             const user = {
@@ -296,8 +292,6 @@ export const AuthContextProvider = ({ children }: any) => {
                 profilePicture: profilePicture,
               },
             };
-            console.log("Data", data);
-            console.log("Data.info", data.info);
             localStorage.setItem(
               "walkthroughCompleted",
               JSON.stringify(["research"])
