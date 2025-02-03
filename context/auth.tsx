@@ -448,7 +448,6 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: dataToSend,
         });
-        console.log(result);
         if (result) {
           if (!result.user.isVerified) {
             GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Invalid Submitted");
