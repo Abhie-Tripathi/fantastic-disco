@@ -75,7 +75,6 @@ export default function EstimatedEconomicSelector() {
     <Popover open={isOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <Button
-          disabled={true}
           variant="outline"
           role="combobox"
           aria-expanded={isOpen}
@@ -90,7 +89,6 @@ export default function EstimatedEconomicSelector() {
             )}
           </span>
           <DynamicSwitch
-            disabled={true}
             checked={showEconomicImpact}
             onCheckedChange={handleShowEconomicImpactToggle}
             aria-label="Show Economic Impact"
@@ -98,49 +96,6 @@ export default function EstimatedEconomicSelector() {
           />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-80 p-0" align="start">
-        <div className="p-4 space-y-4">
-          <Label
-            htmlFor="economic-impact-toggle"
-            className="text-sm font-medium"
-          >
-            Economic Impact
-          </Label>
-          <Slider
-            id="economic-impact-slider"
-            min={0}
-            max={100}
-            step={1}
-            value={range}
-            onValueChange={(newRange) =>
-              handleRangeChange(newRange as [number, number])
-            }
-            className="mb-2"
-            disabled={!showEconomicImpact}
-          />
-          <div className="flex justify-between">
-            <Input
-              type="number"
-              min={0}
-              max={100}
-              value={range[0]}
-              onChange={(e) => handleInputChange("min", e.target.value)}
-              className="w-16 text-center"
-              disabled={!showEconomicImpact}
-            />
-            <span className="mx-2 self-center">-</span>
-            <Input
-              type="number"
-              min={0}
-              max={100}
-              value={range[1]}
-              onChange={(e) => handleInputChange("max", e.target.value)}
-              className="w-16 text-center"
-              disabled={!showEconomicImpact}
-            />
-          </div>
-        </div>
-      </PopoverContent>
     </Popover>
   );
 }

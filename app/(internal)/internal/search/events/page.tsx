@@ -167,7 +167,9 @@ const Search = () => {
     }
   }, []);
 
-  const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
+  const adaptedParams = EventsAdapter.adaptRequestParams(
+    new URLSearchParams(searchParams.toString())
+  );
 
   const adaptedQueryString = (function () {
     if (!searchParams.toString()) return;
@@ -196,6 +198,7 @@ const Search = () => {
     reptSent: false,
     eventRating: adaptedParams.shows?.includes("eventRating"),
     estExhibit: adaptedParams.shows?.includes("estimatedExhibitScore"),
+    economicImpact: adaptedParams.shows?.includes("economicImpact"),
     repeatSent: adaptedParams.trustScore ? true : false,
     maturity: adaptedParams.shows?.includes("maturity"),
     impactScore: adaptedParams.shows?.includes("eventImpactScore"),

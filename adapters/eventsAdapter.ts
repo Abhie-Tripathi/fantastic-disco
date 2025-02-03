@@ -675,7 +675,7 @@ export const EventsAdapter = {
               }
             : null,
           isSaved: false,
-          economicImpact: null,
+          economicImpact: item.economicImpact || null,
           scores:
             item.eventImpactScore ||
             item.eventInboundScore ||
@@ -819,7 +819,7 @@ export const EventsAdapter = {
             }
           : null,
         isSaved: false,
-        economicImpact: null,
+        economicImpact: response.events[0].economicImpact || null,
         scores: {
           impactScore: response.events[0].eventImpactScore || null,
           inboundScore: response.events[0].eventInboundScore || null,
@@ -956,7 +956,7 @@ export const EventsAdapter = {
             }
           : null,
         isSaved: false,
-        economicImpact: null,
+        economicImpact: response.event.economicImpact || null,
         "trustScore%": response.event["trustScore%"],
         "10TimesUrl": response.event["10TimesUrl"],
         scores: {
