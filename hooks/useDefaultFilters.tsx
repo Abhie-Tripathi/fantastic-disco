@@ -94,7 +94,7 @@ export function useDefaultFilters() {
       recentSearch.eventEntry
         ?.split(",")
         .map((item: string) => item.toLowerCase())
-        ?.join(",") ?? "",  
+        ?.join(",") ?? "",
     ratings: recentSearch.eventRating ?? undefined,
     maturity: recentSearch.maturity ?? undefined,
     onlyBranded: recentSearch.eventBrand ? "true" : undefined,
@@ -108,11 +108,16 @@ export function useDefaultFilters() {
     impact_score_lte: recentSearch.eventImpactScore?.split("-")[1] ?? undefined,
     inbound_score_gte: recentSearch.inboundScore?.split("-")[0] ?? undefined,
     inbound_score_lte: recentSearch.inboundScore?.split("-")[1] ?? undefined,
-    international_score_gte: recentSearch.internationalScore?.split("-")[0] ?? undefined,
-    international_score_lte: recentSearch.internationalScore?.split("-")[1] ?? undefined,
+    international_score_gte:
+      recentSearch.internationalScore?.split("-")[0] ?? undefined,
+    international_score_lte:
+      recentSearch.internationalScore?.split("-")[1] ?? undefined,
     audienceSpread: recentSearch.audienceSpread ?? undefined,
     designations: recentSearch.designation ?? undefined,
-    top: recentSearch.eventRanking?.split(",").map((item)=> item.split("-")[1])[0] ?? undefined,
+    top:
+      recentSearch.eventRanking
+        ?.split(",")
+        .map((item) => item.split("-")[1])[0] ?? undefined,
     show: generateRecentSearchShowParam(recentSearch?.shows?.split(",") ?? []),
   });
 
@@ -149,18 +154,62 @@ export function useDefaultFilters() {
   const setInitialFilters = async () => {
     // Skip if we're in the editTracker path
     if (pathName.split("/").includes("editTracker")) {
-      
-      
       return;
     }
 
     const currentParams = Object.fromEntries(searchParams.entries());
-    const hasOnlyViewParam = 
+    const hasOnlyViewParam =
       Object.keys(currentParams).length === 1 && "view" in currentParams;
-    const isEmptySearch = Object.keys(currentParams).length === 0 || hasOnlyViewParam;
+    const isEmptySearch =
+      Object.keys(currentParams).length === 0 || hasOnlyViewParam;
+
+    // Checking only for trends, applying default filters in trends.
+    const defaultSearchParams = new URLSearchParams(searchParams);
+    const active_gte = getFilterValue("active_gte");
+    const active_lte = getFilterValue("active_lte");
+    const currentTags = getFilterValue("tags");
+    const show = getFilterValue("show").split(",");
+
+    if (pathName === "/internal/trends") {
+      defaultSearchParams.set("eventTypes", "workshops,tradeshows,conferences");
+      defaultSearchParams.set(
+        "columns",
+        columnsDropdown
+          .filter((column) => column.value !== "impactScore")
+          .map((column) => column.value)
+          .join(",")
+      );
+
+      if (!(active_gte && active_lte)) {
+        const today = new Date();
+        const startOfToday = startOfMonth(today);
+        startOfToday.setHours(5, 30, 0, 0);
+
+        defaultSearchParams.set("active_gte", startOfToday.toISOString());
+
+        const endOfToday = endOfMonth(addMonths(today, 2));
+        endOfToday.setHours(5, 30, 0, 0);
+
+        defaultSearchParams.set("active_lte", endOfToday.toISOString());
+      }
+      if (currentTags) defaultSearchParams.set("tags", "");
+      if (
+        !show.includes("alerts") ||
+        !show.includes("scores") ||
+        !show.includes("economicImpact")
+      ) {
+        defaultSearchParams.set(
+          "show",
+          ["alerts", "scores", ...show].join(",").replace(/^,|,$/, "")
+        );
+      }
+
+      router.push(`${pathName}?${defaultSearchParams.toString()}`, {
+        scroll: false,
+      });
+    }
 
     // Only proceed if we have empty params or just view param
-   
 
     try {
       // Try to use enabled filters first
