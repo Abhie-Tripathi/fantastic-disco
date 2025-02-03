@@ -160,9 +160,9 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
 
   return (
     <div
-      className={`relative p-2 h-36 flex flex-col justify-between cursor-pointer border-r-[0.5px] border-l-[0.5px]`}
+      className={`relative p-2 h-36 flex flex-col justify-between ${hasEvents ? 'cursor-pointer' : ''} border-r-[0.5px] border-l-[0.5px]`}
       style={{ backgroundColor }}
-      onClick={() => onDateClick(date)}
+      onClick={hasEvents ? () => onDateClick(date) : undefined}
     >
       <div className="text-lg font-semibold text-end mr-2">
         {currentDate.date()}

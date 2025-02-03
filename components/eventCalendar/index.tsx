@@ -30,9 +30,9 @@ import { useQuery } from "@tanstack/react-query";
 import Loading from "../ui/Loading";
 import { procesEvents } from "@/utils/calendarEvents";
 import { useTrackerServices } from "@/services/trackerServices";
-import { TrackersAdapter}  from "@/adapters/trackerAdapter";
+import { TrackersAdapter } from "@/adapters/trackerAdapter";
 import NullState from "@/app/components/trackers/nullState";
-import TrackerNullState from '@/public/trackerNullState.svg';
+import TrackerNullState from "@/public/trackerNullState.svg";
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
   id: string;
@@ -55,27 +55,24 @@ export type CalendarEventType = {
   eventType: string;
   alertLevel?: string;
 };
-interface EventCalendarProps{
-  source?:string;
-  trackerId?:string;
-  date?:any;
-  activeVal?:number
+interface EventCalendarProps {
+  source?: string;
+  trackerId?: string;
+  date?: any;
+  activeVal?: number;
 }
-export default function EventCalendar({source, trackerId, date:trackerDate, activeVal}:EventCalendarProps) {
+export default function EventCalendar({
+  source,
+  trackerId,
+  date: trackerDate,
+  activeVal,
+}: EventCalendarProps) {
   const searchParams = useSearchParams();
   const { getLocalFilterValue } = useFilterContext();
   const { getEventsWithSearchParams } = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
   const [weekDateCounts, setWeekDateCounts] = useState<any>();
-  const initialDate = (() => {
-    const activeGte = source!=="tracker"?getLocalFilterValue("active_gte"):trackerDate?.split(",")[0]?.split("T")[0];
-    const activeLte = source!=="tracker"?getLocalFilterValue("active_lte"):trackerDate?.split(",")[0]?.split("T")[1];
-    if (activeGte && activeLte) return activeGte;
-    if (activeGte) return activeGte;
-    if (activeLte) return activeLte;
-    return new Date();
-  })();
-  const [currentDate, setCurrentDate] = useState(new Date(initialDate));
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [filter, setFilter] = useState("all");
   const {
     getFilterValue,
@@ -85,7 +82,7 @@ export default function EventCalendar({source, trackerId, date:trackerDate, acti
   const [showEventList, setShowEventList] = useState(false);
   const [lastEventIds, setLastEventIds] = useState<Map<string, WeekEvent>>();
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const filteredParams = new URLSearchParams(searchParams);
+  const filteredParams = new URLSearchParams(searchParams.toString());
 
   const view = getFilterValue("calendar_type") || ("month" as CustomView);
   const setView = (newView: string) => {
@@ -93,33 +90,48 @@ export default function EventCalendar({source, trackerId, date:trackerDate, acti
   };
   const active = getLocalFilterValue("eventType");
 
-  console.log(currentDate);
-  
-  const { data: eventsData, error, isLoading: isEventsLoading } = useQuery<
+  const {
+    data: eventsData,
+    error,
+    isLoading: isEventsLoading,
+  } = useQuery<
     | CalendarWeekEventsResponse
     | CalendarMonthEventsResponse
     | CalendarYearEventsResponse
   >({
-    queryKey: source!=="tracker"?["events", view, currentDate, searchParams.toString()] : [currentDate, active, view],
+    queryKey:
+      source !== "tracker"
+        ? ["events", view, currentDate, searchParams.toString()]
+        : [currentDate, active, view],
     queryFn: async () => {
       const { start, end } = getVisibleDateRange(view, currentDate);
-      const updatedParams = new URLSearchParams(searchParams);
+      const updatedParams = new URLSearchParams(searchParams.toString());
       updatedParams.set("active_gte", moment(start).toISOString());
       updatedParams.set("active_lte", moment(end).toISOString());
       // updatedParams.set("view", view);
       // console.log(moment(start).toISOString(), trackerDate);
-      const trackerDate = `${moment(start).toISOString()},${moment(end).toISOString()}`;
-      const response = source!=="tracker"?await getEventsWithSearchParams(
-        updatedParams.toString()
-      ): await getCalendarViewEvents(trackerId || "", `type=${
-        active === "activeEvent"
-          ? "active"
-          : active === "expiredEvent"
-          ? "expired"
-          : active === "newEvent"
-          ? "" : active === "savedEvent" ? "saved":
-           "active"
-      }&groupBy=${trackerDate}`, false, view);
+      const trackerDate = `${moment(start).toISOString()},${moment(
+        end
+      ).toISOString()}`;
+      const response =
+        source !== "tracker"
+          ? await getEventsWithSearchParams(updatedParams.toString())
+          : await getCalendarViewEvents(
+              trackerId || "",
+              `type=${
+                active === "activeEvent"
+                  ? "active"
+                  : active === "expiredEvent"
+                  ? "expired"
+                  : active === "newEvent"
+                  ? ""
+                  : active === "savedEvent"
+                  ? "saved"
+                  : "active"
+              }&groupBy=${trackerDate}`,
+              false,
+              view
+            );
 
       return response as any;
     },
@@ -127,11 +139,32 @@ export default function EventCalendar({source, trackerId, date:trackerDate, acti
     staleTime: 60 * 1000,
   });
 
+  useEffect(() => {
+    const initialDate = () => {
+      const activeGte =
+        source !== "tracker"
+          ? searchParams.get("active_gte")
+          : trackerDate?.split(",")[0]?.split("T")[0];
+      const activeLte =
+        source !== "tracker"
+          ? searchParams.get("active_lte")
+          : trackerDate?.split(",")[0]?.split("T")[1];
+
+      console.log(activeGte, activeLte);
+      if (activeGte && activeLte) return activeGte;
+      if (activeGte) return activeGte;
+      if (activeLte) return activeLte;
+      return new Date();
+    };
+    setCurrentDate(initialDate());
+  }, [eventsData]);
+
   // const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
   //   queryKey: ["unattended-events", searchParams.toString()],
   //   queryFn: async () => {
   //     const alertSearchParams = new URLSearchParams(searchParams);
   //     alertSearchParams.set("eventTypes", "alert");
+
   //     const alerts = await getEventsWithSearchParams(
   //       alertSearchParams.toString()
   //     );
@@ -153,7 +186,6 @@ export default function EventCalendar({source, trackerId, date:trackerDate, acti
   //   },
   // });
 
-  
   const unAttendedEvents = { holidays: [], alerts: [] };
 
   const processedEvents = procesEvents(
@@ -243,7 +275,7 @@ export default function EventCalendar({source, trackerId, date:trackerDate, acti
     (view: string, date: Date) => {
       let start = moment(date);
       let end = moment(date);
-     
+
       console.log(start.toDate(), end.toDate());
       switch (view) {
         case Views.WEEK:
@@ -260,20 +292,22 @@ export default function EventCalendar({source, trackerId, date:trackerDate, acti
           end.endOf("year");
           break;
       }
-      const searchStart = source!=="tracker"?moment(searchParams.get("active_gte")):moment(trackerDate?trackerDate?.split(",")[0]: null);
-      const searchEnd = source!=="tracker"?moment(searchParams.get("active_lte")):moment(trackerDate?trackerDate?.split(",")[1]:null);
-      console.log(searchParams.get("active_gte"));
-      
+      const searchStart =
+        source !== "tracker"
+          ? moment(searchParams.get("active_gte"))
+          : moment(trackerDate ? trackerDate?.split(",")[0] : null);
+      const searchEnd =
+        source !== "tracker"
+          ? moment(searchParams.get("active_lte"))
+          : moment(trackerDate ? trackerDate?.split(",")[1] : null);
+
       if (searchStart.isValid() && start.isBefore(searchStart)) {
         start = searchStart.clone();
-        
       }
       if (searchEnd.isValid() && end.isAfter(searchEnd)) {
         end = searchEnd.clone();
-        
       }
-      
-      
+
       return { start: start.toDate(), end: end.toDate() };
     },
     [getLocalFilterValue, trackerDate]
@@ -361,38 +395,37 @@ export default function EventCalendar({source, trackerId, date:trackerDate, acti
   return (
     <>
       {shouldShowZeroState ? (
-    <div className="flex justify-center items-center">
-      <ZeroState title="Discover insights on business trends filtered by geography and category, all in one glance." />
-    </div>
-  ) : error ? (
-    <div className="px-10 py-5">
-      {source==="tracker"?<NullState 
-        image={TrackerNullState} 
-        title={error?.message} 
-      />: 
-      <ZeroState text={error?.message} />
-      }
-    </div>
-  ) : (source === "tracker" && eventsData?.count === 0 && activeVal===0) ? (
-    (active === "savedEvent"? (
-      <div className="px-10 py-5">
-      <NullState 
-      image={TrackerNullState} 
-      title="No events saved yet! Start saving events to easily track and revisit them here."
-    />
-    </div>
-    ) :
-    <div className="px-10 py-5">
-    <NullState 
-      image={TrackerNullState} 
-      title="We couldn’t find any events matching your tracker criteria at the moment." 
-      text="Try adjusting your filters or checking back later, as new events are added frequently." 
-      buttonText="Manage Configuration" 
-      buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration`} 
-    />
-    </div>
-  )
-  ) : (
+        <div className="flex justify-center items-center">
+          <ZeroState title="Discover insights on business trends filtered by geography and category, all in one glance." />
+        </div>
+      ) : error ? (
+        <div className="px-10 py-5">
+          {source === "tracker" ? (
+            <NullState image={TrackerNullState} title={error?.message} />
+          ) : (
+            <ZeroState text={error?.message} />
+          )}
+        </div>
+      ) : source === "tracker" && eventsData?.count === 0 && activeVal === 0 ? (
+        active === "savedEvent" ? (
+          <div className="px-10 py-5">
+            <NullState
+              image={TrackerNullState}
+              title="No events saved yet! Start saving events to easily track and revisit them here."
+            />
+          </div>
+        ) : (
+          <div className="px-10 py-5">
+            <NullState
+              image={TrackerNullState}
+              title="We couldn’t find any events matching your tracker criteria at the moment."
+              text="Try adjusting your filters or checking back later, as new events are added frequently."
+              buttonText="Manage Configuration"
+              buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration`}
+            />
+          </div>
+        )
+      ) : (
         <div className="flex custom-calendar">
           <div
             className={`flex flex-col  ${
