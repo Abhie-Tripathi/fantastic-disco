@@ -1799,13 +1799,13 @@ useEffect(() => {
     if (activeTab === "exclude" ) {
       const keywordData = getLocalFilterValue("excludeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
       const updatedData = keywordData.map(item => ({ "Exclude Keywords": item }));
-      setExcludeKeyword(updatedData)
+      setCustomData(updatedData);
     }
 
-    if (activeTab === "include" ) {
+    else if (activeTab === "include" ) {
       const keywordData = getLocalFilterValue("includeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
       const updatedData = keywordData.map(item => ({ "Include Keywords": item }));
-      setIncludeKeyword(updatedData);
+      setCustomData(updatedData);
     }
   }
 }, [activeTab,getLocalFilterValue("includeKeywords"),getLocalFilterValue("excludeKeywords")]);
@@ -2047,54 +2047,8 @@ return (
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
           {" "} You can edit or remove unwanted entries from here.
         </div>
-        {(type==="T_PRODUCT_KEYWORDS" && customData) &&
-        <Tabs defaultValue="include" onValueChange={(value) => setActiveTab(value as "include" | "exclude")} className="pb-2">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="include">
-            Include
-            {/* Display count if there are included keywords */}
-          </TabsTrigger>
-          <TabsTrigger value="exclude">
-            Exclude
-            {/* Display count if there are excluded keywords */}
-          </TabsTrigger>
-        </TabsList>
-        {includeKeyword.length>0&&
-        <TabsContent value="include" className="mt-0">
-          <TemplateTable
-            customData={includeKeyword}
-            handleCustomData={handleCustomData}
-            presetName={selectedPresetName}
-          />
-        </TabsContent>
-        }
-       
-        <TabsContent value="exclude" className="mt-0">
-        {excludeKeyword.length>0 ?
-          <TemplateTable
-            customData={excludeKeyword}
-            handleCustomData={handleCustomData}
-            presetName={selectedPresetName}
-          />:
-          <div className={styles.emptyTableData}>
-         <Image
-           src={trackerEmptyTable}
-           alt="table"
-           style={{
-             display: "flex",
-             alignItems: "center",
-             justifyContent: "center",
-           }}
-         />
-         <div className={styles.emptyTableText}>No data added</div>
-         <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
-       </div>
-        }
-        </TabsContent>
-      </Tabs>
-      
-        }
-        {/* {(customData && customData.length >0 && type!=="T_PRODUCT_KEYWORDS")?
+        
+        {(customData && customData.length >0)?
           <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> 
           :          
           <div className={styles.emptyTableData}>
@@ -2110,7 +2064,7 @@ return (
             <div className={styles.emptyTableText}>No data added</div>
             <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
           </div>
-        } */}
+        }
       </div>
     </div>
     }
