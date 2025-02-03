@@ -14,6 +14,8 @@ import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { Heading } from "../eventDetail/heading";
 import { GTMEventDetail } from "@/types/events";
+import { useFilterContext } from "@/context/filterContext";
+import Restriction from "../eventDetail/restriction";
 interface Props {
   eventDetails: GTMEventDetail;
   scrollSection: string;
@@ -51,6 +53,10 @@ export const InsightsAndScores = ({
     above5CountryCategoryRankEvent: above5CountryCategoryRankEvent,
     below5CountryCategoryEvent: below5CountryCategoryEvent,
   };
+  const { morphedData } = useFilterContext();
+  const { eventAnalytics, eventRanking } = morphedData;
+  const isAnalyticsEnabled = eventAnalytics && eventAnalytics.isEnabled;
+  const isTrustScoreEnabled = eventRanking && eventRanking.isEnabled;
   const [ref, inView, entry, rootMargin] = useInView({
     threshold: 0.2,
     triggerOnce: false,
@@ -75,91 +81,110 @@ export const InsightsAndScores = ({
             <div className="flex gap-6 h-auto max-xl:flex-col max-xl:h-full">
               <div className="grid grid-cols-4 grid-rows-1 gap-6 w-full max-xl:grid-cols-2 max-xl:grid-rows-subgrid">
                 {scores && scores.impactScore !== null && (
-                  <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+                  <div className="relative flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                     <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                       Impact Score
                     </h1>
-
-                    <CircularProgressBar value={scores.impactScore} />
+                    {isAnalyticsEnabled ? (
+                      <CircularProgressBar value={scores.impactScore} />
+                    ) : (
+                      <Restriction />
+                    )}
                   </div>
                 )}
                 {trustScore !== null && (
-                  <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+                  <div className="relative flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                     <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                       Trust Score
                     </h1>
-                    <CircularProgressBar value={Math.round(trustScore ?? 0)} />
+                    {isTrustScoreEnabled ? (
+                      <CircularProgressBar
+                        value={Math.round(trustScore ?? 0)}
+                      />
+                    ) : (
+                      <Restriction />
+                    )}
                   </div>
                 )}
                 {scores && scores.inboundScore && (
-                  <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+                  <div className="relative flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                     <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                       Inbound Score
                     </h1>
-                    <CircularProgressBar value={scores.inboundScore} />
+                    {isAnalyticsEnabled ? (
+                      <CircularProgressBar value={scores.inboundScore} />
+                    ) : (
+                      <Restriction />
+                    )}
                   </div>
                 )}
                 {scores && scores.internationalScore && (
-                  <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+                  <div className="relative flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                     <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                       International Score
                     </h1>
-                    <CircularProgressBar value={scores.internationalScore} />
+                    {isAnalyticsEnabled ? (
+                      <CircularProgressBar value={scores.internationalScore} />
+                    ) : (
+                      <Restriction />
+                    )}
                   </div>
                 )}
               </div>
 
               {/* <div className="w-1/2 border border-[#EBEBEB] rounded-md p-4 overflow-y-auto scrollbar max-xl:w-full">
-              <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <Text variant="noMargin" fontWeight="medium">
-                    Estimated Economic Impact
-                  </Text>
-                </div>
-                <div className="text-primary font-semibold text-2xl">
-                  {`${economicImpact}`}
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <div className="pb-2 border-b border-[#EBEBEB] flex justify-between ">
-                  <Text
-                    variant="noMargin"
-                    size="small"
-                    fontWeight="medium"
-                    color="secondary"
-                  >
-                    IMPACT CATEGORIES
-                  </Text>
-                  <Text
-                    variant="noMargin"
-                    size="small"
-                    color="secondary"
-                    fontWeight="medium"
-                  >
-                    IMPACT (USD)
-                  </Text>
+                <div>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Text variant="noMargin" fontWeight="medium">
+                      Estimated Economic Impact
+                    </Text>
+                  </div>
+                  <div className="text-primary font-semibold text-2xl">
+                    {`${economicImpact}`}
+                  </div>
                 </div>
 
-                <ul className="list-none flex flex-col gap-2 mt-2">
-                  {predictedEventSpendBreakUp &&
-                    predictedEventSpendBreakUp.length > 0 &&
-                    predictedEventSpendBreakUp.map(
-                      (predictedEventSpend: any) => (
-                        <li
-                          key={predictedEventSpend.title}
-                          className="flex justify-between"
-                        >
-                          <Text size="large">{predictedEventSpend.title}</Text>
-                          <span className="text-primary font-semibold leading-6">
-                            {predictedEventSpend.spend}
-                          </span>
-                        </li>
-                      )
-                    )}
-                </ul>
-              </div>
-            </div> */}
+                <div className="mt-8">
+                  <div className="pb-2 border-b border-[#EBEBEB] flex justify-between ">
+                    <Text
+                      variant="noMargin"
+                      size="small"
+                      fontWeight="medium"
+                      color="secondary"
+                    >
+                      IMPACT CATEGORIES
+                    </Text>
+                    <Text
+                      variant="noMargin"
+                      size="small"
+                      color="secondary"
+                      fontWeight="medium"
+                    >
+                      IMPACT (USD)
+                    </Text>
+                  </div>
+
+                  <ul className="list-none flex flex-col gap-2 mt-2">
+                    {predictedEventSpendBreakUp &&
+                      predictedEventSpendBreakUp.length > 0 &&
+                      predictedEventSpendBreakUp.map(
+                        (predictedEventSpend: any) => (
+                          <li
+                            key={predictedEventSpend.title}
+                            className="flex justify-between"
+                          >
+                            <Text size="large">
+                              {predictedEventSpend.title}
+                            </Text>
+                            <span className="text-primary font-semibold leading-6">
+                              {predictedEventSpend.spend}
+                            </span>
+                          </li>
+                        )
+                      )}
+                  </ul>
+                </div>
+              </div> */}
             </div>
           )}
 
