@@ -2047,7 +2047,20 @@ return (
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
           {" "} You can edit or remove unwanted entries from here.
         </div>
-        
+        {type==="T_PRODUCT_KEYWORDS" && 
+           <Tabs defaultValue="include" onValueChange={(value) => setActiveTab(value as "include" | "exclude")} className="pb-2">
+           <TabsList className="grid w-full grid-cols-2">
+             <TabsTrigger value="include">
+               Include
+               {/* Display count if there are included keywords */}
+             </TabsTrigger>
+             <TabsTrigger value="exclude">
+               Exclude
+               {/* Display count if there are excluded keywords */}
+             </TabsTrigger>
+           </TabsList>
+           </Tabs>
+        }
         {(customData && customData.length >0)?
           <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> 
           :          
