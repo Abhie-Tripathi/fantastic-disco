@@ -29,8 +29,14 @@ interface PopupInfo {
 }
 
 interface PopupProps {
-  popupInfo: PopupInfo | null;
-  setPopupInfo: (popupInfo: Event[] | null) => void;
+  popupInfo: {
+    coordinates: {
+      latitude: string;
+      longitude: string;
+    };
+    events: Event[];
+  };
+  setPopupInfo: (popupInfo: any | null) => void;
 }
 
 export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
