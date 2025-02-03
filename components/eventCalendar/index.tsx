@@ -139,25 +139,25 @@ export default function EventCalendar({
     staleTime: 60 * 1000,
   });
 
-  useEffect(() => {
-    const initialDate = () => {
-      const activeGte =
-        source !== "tracker"
-          ? searchParams.get("active_gte")
-          : trackerDate?.split(",")[0]?.split("T")[0];
-      const activeLte =
-        source !== "tracker"
-          ? searchParams.get("active_lte")
-          : trackerDate?.split(",")[0]?.split("T")[1];
+  // useEffect(() => {
+  //   const initialDate = () => {
+  //     const activeGte =
+  //       source !== "tracker"
+  //         ? searchParams.get("active_gte")
+  //         : trackerDate?.split(",")[0]?.split("T")[0];
+  //     const activeLte =
+  //       source !== "tracker"
+  //         ? searchParams.get("active_lte")
+  //         : trackerDate?.split(",")[0]?.split("T")[1];
 
-      console.log(activeGte, activeLte);
-      if (activeGte && activeLte) return activeGte;
-      if (activeGte) return activeGte;
-      if (activeLte) return activeLte;
-      return new Date();
-    };
-    setCurrentDate(initialDate());
-  }, [eventsData]);
+  //     console.log(activeGte, activeLte);
+  //     if (activeGte && activeLte) return activeGte;
+  //     if (activeGte) return activeGte;
+  //     if (activeLte) return activeLte;
+  //     return new Date();
+  //   };
+  //   setCurrentDate(initialDate());
+  // }, [eventsData]);
 
   // const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
   //   queryKey: ["unattended-events", searchParams.toString()],
