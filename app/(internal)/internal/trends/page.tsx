@@ -305,7 +305,8 @@ const EventTrends = () => {
       <div>
         <div className="grid grid-cols-5 max-lg:grid-cols-2 gap-4 pt-4 pb-6 border-b items-end">
           {/* <EventTypeSelector source={""} /> */}
-          <TrendsEventTypeSelector />
+          {/* <TrendsEventTypeSelector /> */}
+           <EventTypeSelector />
           <div className="flex flex-col gap-2 items-start">
             <LocationSelector />
           </div>

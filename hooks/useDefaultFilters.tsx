@@ -151,6 +151,62 @@ export function useDefaultFilters() {
     return showItems.join(",");
   };
 
+  const generateTrendsParams = (params: URLSearchParams) => {
+    const trendsParams = new URLSearchParams(params);
+    const eventTypes = trendsParams.get("eventTypes")?.split(",");
+    const allowedEventTypes = ["tradeshows", "conferences", "workshops"];
+    const filteredEventTypes =
+      eventTypes &&
+      eventTypes.filter((type) => allowedEventTypes.includes(type));
+
+    const startDate = trendsParams.get("active_gte");
+    const endDate = trendsParams.get("active_lte");
+
+    const isStartDateFormatted =
+      startDate && startDate.endsWith("T00:00:00.000Z");
+    const isEndDateFormatted = endDate && endDate.endsWith("T00:00:00.000Z");
+
+    const formattedStartDate = isStartDateFormatted
+      ? startDate
+      : new Date(`${startDate}T00:00:00.000Z`).toISOString();
+
+    const formattedEndDate = isEndDateFormatted
+      ? endDate
+      : new Date(`${endDate}T00:00:00.000Z`).toISOString();
+
+    const paramsToDelete = [
+      "eventFormats",
+      "status",
+      "categories",
+      "entryType",
+      "ratings",
+      "maturity",
+      "onlySeries",
+      "frequencies",
+      "includeKeywords",
+      "excludeKeywords",
+      "estimatedVisitorRangeTag",
+      "estimatedExhibitors",
+      "show",
+    ];
+
+    paramsToDelete.forEach((param) => trendsParams.delete(param));
+    trendsParams.set(
+      "columns",
+      columnsDropdown
+        .filter((column) => column.value !== "impactScore")
+        .map((column) => column.value)
+        .join(",")
+    );
+    trendsParams.set("show", "alerts,scores,economicImpact");
+    filteredEventTypes &&
+      filteredEventTypes.length > 0 &&
+      trendsParams.set("eventTypes", filteredEventTypes.join(","));
+    trendsParams.set("active_gte", formattedStartDate);
+    trendsParams.set("active_lte", formattedEndDate);
+    return trendsParams;
+  };
+
   const setInitialFilters = async () => {
     // Skip if we're in the editTracker path
     if (pathName.split("/").includes("editTracker")) {
@@ -171,7 +227,6 @@ export function useDefaultFilters() {
     const show = getFilterValue("show").split(",");
 
     if (pathName === "/internal/trends") {
-      defaultSearchParams.set("eventTypes", "workshops,tradeshows,conferences");
       defaultSearchParams.set(
         "columns",
         columnsDropdown
@@ -179,34 +234,6 @@ export function useDefaultFilters() {
           .map((column) => column.value)
           .join(",")
       );
-
-      if (!(active_gte && active_lte)) {
-        const today = new Date();
-        const startOfToday = startOfMonth(today);
-        startOfToday.setHours(5, 30, 0, 0);
-
-        defaultSearchParams.set("active_gte", startOfToday.toISOString());
-
-        const endOfToday = endOfMonth(addMonths(today, 2));
-        endOfToday.setHours(5, 30, 0, 0);
-
-        defaultSearchParams.set("active_lte", endOfToday.toISOString());
-      }
-      if (currentTags) defaultSearchParams.set("tags", "");
-      if (
-        !show.includes("alerts") ||
-        !show.includes("scores") ||
-        !show.includes("economicImpact")
-      ) {
-        defaultSearchParams.set(
-          "show",
-          ["alerts", "scores", ...show].join(",").replace(/^,|,$/, "")
-        );
-      }
-
-      router.push(`${pathName}?${defaultSearchParams.toString()}`, {
-        scroll: false,
-      });
     }
 
     // Only proceed if we have empty params or just view param
@@ -221,9 +248,21 @@ export function useDefaultFilters() {
           if (value) params.set(key, value);
         });
 
-        if (pathName.split("/").includes("search")) {
+        const trendsParams = generateTrendsParams(params);
+
+        if (
+          pathName.split("/").includes("search") ||
+          pathName === "/internal/trends"
+        ) {
           setTimeout(() => {
-            router.push(`${pathName}?${params.toString()}`, { scroll: false });
+            router.push(
+              `${pathName}?${
+                pathName === "/internal/trends"
+                  ? trendsParams.toString()
+                  : params.toString()
+              }`,
+              { scroll: false }
+            );
           }, 0);
         } else {
           setMultipleLocalFilters(enabledFilterParams);
@@ -240,14 +279,24 @@ export function useDefaultFilters() {
         const recentFilterParams = mapRecentSearchToParams(
           recentSearchResponse[0]
         );
-        console.log("recentFilterParams", recentFilterParams);
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });
 
-        if (pathName.split("/").includes("search")) {
+        if (
+          pathName.split("/").includes("search") ||
+          pathName === "/internal/trends"
+        ) {
+          const trendsParams = generateTrendsParams(params);
           setTimeout(() => {
-            router.push(`${pathName}?${params.toString()}`, { scroll: false });
+            router.push(
+              `${pathName}?${
+                pathName === "/internal/trends"
+                  ? trendsParams.toString()
+                  : params.toString()
+              }`,
+              { scroll: false }
+            );
           }, 0);
         } else {
           // Set local filters using the context
