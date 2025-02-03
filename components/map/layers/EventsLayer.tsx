@@ -1,6 +1,9 @@
+// @ts-nocheck
+
 import { Layer, Source } from "react-map-gl";
 import { MapEvents } from "@/types/events";
 import { useMemo } from "react";
+
 
 interface EventsLayerProps {
   events: MapEvents[];

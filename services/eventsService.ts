@@ -105,6 +105,15 @@ export const useEventsService = () => {
     );
   };
 
+  const getAlertPolygon = (eventId: string) => {
+    return api.request<AlertPolygonResponse>(
+      `${endpoints.event.events}/${eventId}/polygons`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
   // const getEventExhibitorDetails = (id: string, take: number, skip: number) => {
   //   return api.request<EventExhibitorDetailsResponse>(
   //     `${endpoints.event.eventDetailById}/exhibitor?id=${id}&take=${take}&skip=${skip}`,
@@ -253,6 +262,7 @@ export const useEventsService = () => {
     getEvents,
     saveEvent,
     getEventById,
+    getAlertPolygon,
     fetchEnabledFilters,
     getEventsCount,
     getRecentSearches,

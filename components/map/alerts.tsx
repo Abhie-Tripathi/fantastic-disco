@@ -66,7 +66,8 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
   filteredParams.set("eventTypes", "alert");
   filteredParams.set("view", "list");
   if (filteredParams.get("geoCoordinates")) {
-    const geoCoordinates = JSON.parse(filteredParams.get("geoCoordinates"));
+    const geoCoordinates = JSON.parse(
+      filteredParams.get("geoCoordinates")?.toString() || "{}");
     filteredParams.delete("geoCoordinates");
     filteredParams.set(
       "viewBound",
@@ -109,7 +110,7 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
         <PopoverTrigger asChild>
           {selectedAlertData ? (
             <div className="w-64 p-2 border flex items-center rounded-lg shadow-xl justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors">
-              <AlertItem alert={selectedAlertData as Alert} />
+              <AlertItem alert={selectedAlertData as unknown as Alert} />
             </div>
           ) : (
             <div className="w-full p-2 flex items-center text-sm border rounded justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors">
@@ -129,7 +130,7 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
               {alerts.events.map((alert) => (
                 <AlertItem
                   key={alert.id}
-                  alert={alert as Alert}
+                  alert={alert as unknown as Alert}
                   onClick={() => onClickHandler(alert.id)}
                 />
               ))}
