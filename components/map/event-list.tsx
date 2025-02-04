@@ -132,7 +132,7 @@ function EventList({
   const filteredParams = useMemo(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("view");
-    params.set("skip", String((currentPage - 1) * 10));
+    params.set("skip", String((currentPage - 1) * 20));
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
     return params;
   }, [searchParams, currentPage, showEventType]);
@@ -140,7 +140,7 @@ function EventList({
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString(), trackerId],
     queryFn: () => source === 'tracker' 
-      ? getTrackerMapEvents(trackerId??"",`limit=10&offset=${(currentPage - 1) * 10 }`, searchParam?.toString()??"")
+      ? getTrackerMapEvents(trackerId??"",`limit=20&offset=${(currentPage - 1) * 20 }`, searchParam?.toString()??"")
       : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
 
@@ -154,7 +154,7 @@ function EventList({
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
   const count = isEventResponse(data) ? data.count : 0;
-  const totalPages = Math.ceil(count / 10) || 1;
+  const totalPages = Math.ceil(count / 20) || 1;
 
   const renderPaginationItems = () => {
     const items = [];
