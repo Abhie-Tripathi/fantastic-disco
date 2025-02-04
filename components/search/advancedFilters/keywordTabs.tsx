@@ -35,10 +35,10 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
     >
       <TabsList className="grid w-full grid-cols-2">
         <TabsTrigger value="include">Include
-        {type === "T_PRODUCT_KEYWORDS" && includeKeywords.length>0 && <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white ml-1">{includeKeywords.length}</span>}
+        {/* {type === "T_PRODUCT_KEYWORDS" && includeKeywords.length>0 && <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white ml-1">{includeKeywords.length}</span>} */}
         </TabsTrigger>
         <TabsTrigger value="exclude">Exclude
-        {type === "T_PRODUCT_KEYWORDS" && excludeKeywords.length>0 && <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white ml-1">{excludeKeywords.length}</span>}
+        {/* {type === "T_PRODUCT_KEYWORDS" && excludeKeywords.length>0 && <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white ml-1">{excludeKeywords.length}</span>} */}
         </TabsTrigger>
       </TabsList>
       <div className="space-y-4"   style={{
@@ -61,7 +61,7 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
             +
           </Button>
         </form>
-        {/* {type!=="T_PRODUCT_KEYWORDS" && */}
+        {type!=="T_PRODUCT_KEYWORDS" &&
         <>
         <TabsContent value="include" className="mt-0">
           <div className="flex flex-wrap gap-2">
@@ -104,7 +104,7 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
           </div>
         </TabsContent>
         </>
-        {/* } */}
+        } 
       </div>
     </Tabs>
   );

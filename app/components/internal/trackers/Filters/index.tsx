@@ -1728,21 +1728,7 @@ useEffect(()=>{
 }, [type])
 
   const handleCustomData = (data: any) => {
-    console.log(data);
     setHideSuggestion(true);
-    const d=data.map(item => item["Include Keywords"]);
-    console.log(d.join(","));
-    
-    if(type==="T_PRODUCT_KEYWORDS"){
-      
-      
-      if(activeTab==="include"){ 
-        setLocalFilter("includeKeywords",d.join(","));
-      // setLocalFilter("excludeKeywords",data?.["Include Keywords"].join(","))
-      }
-      else setLocalFilter("excludeKeywords",data.map(item => item["Exclude Keywords"]).join(", "));
-
-    }
     setCustomData(data);
   }
 
@@ -1815,6 +1801,8 @@ useEffect(() => {
   if (type === "T_PRODUCT_KEYWORDS") {
       const keywordData = getLocalFilterValue("excludeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
       const updatedData = keywordData.map(item => ({ "Exclude Keywords": item }));
+      console.log(updatedData);
+      setLocalFilter("excludeKeywords", keywordData.join(","));
       setExcludeKeyword(updatedData);
   }
 }, [getLocalFilterValue("excludeKeywords")]);
@@ -2072,7 +2060,7 @@ return (
         } */}
         {(type==="T_PRODUCT_KEYWORDS") &&
         <Tabs defaultValue="include" onValueChange={(value) => setActiveTab(value as "include" | "exclude")} className="pb-2">
-        {(includeKeyword.length > 0 || excludeKeyword.length>0)&&
+        {(getLocalFilterValue("includeKeywords").length > 0 || getLocalFilterValue("excludeKeywords").length >0)&&
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="include">
             Include

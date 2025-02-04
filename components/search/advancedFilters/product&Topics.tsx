@@ -44,7 +44,6 @@ export default function KeywordFilter({
   const [includeKeywords, setIncludeKeywords] = useState<string[]>([]);
 const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
 useEffect(()=>{
-  console.log(1111111111);
   
   const includeKeywords = [
     ...getLocalFilterValue("includeKeywords")?.split(",").filter((keyword) => keyword.trim() !== "")
