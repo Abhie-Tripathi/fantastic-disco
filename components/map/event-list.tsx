@@ -207,23 +207,23 @@ function EventList({
   mapRef,
   onEventHover,
   onEventLeave,
-  searchParam
+  searchParam,
 }: {
   showEventType: string;
   onClose: () => void;
   mapRef: React.RefObject<MapRef>;
-  source?:string;
-  trackerId?:string | undefined;
+  source?: string;
+  trackerId?: string | undefined;
   onEventHover: (event: Event) => void;
   onEventLeave: () => void;
-  searchParam?:string | undefined;
+  searchParam?: string | undefined;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [mapCenter, setMapCenter] = useState<
     { lat: number; lng: number } | undefined
   >();
   const [mapRadius, setMapRadius] = useState<number | undefined>();
-  const {getTrackerMapEvents}=useTrackerServices(); 
+  const { getTrackerMapEvents } = useTrackerServices();
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
@@ -243,12 +243,13 @@ function EventList({
       const radius = turf.distance(
         turf.point([center.lng, center.lat]),
         turf.point([ne.lng, ne.lat]),
-        { units: 'kilometers' }
+        { units: "kilometers" }
       );
 
       setMapCenter({ lat: center.lat, lng: center.lng });
       setMapRadius(radius);
-    };  
+      setCurrentPage(1);
+    };
 
     const handleMoveEnd = () => {
       if (timeoutId) clearTimeout(timeoutId);
@@ -270,7 +271,7 @@ function EventList({
   const filteredParams = useMemo(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("view");
-    params.set("skip", String((currentPage - 1) * 10));
+    params.set("skip", String((currentPage - 1) * 20));
     params.set("stats", "list");
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
@@ -283,19 +284,25 @@ function EventList({
           radius: mapRadius,
         }),
       };
-      if(source==="tracker") return JSON.stringify(viewBound).toString();
+      if (source === "tracker") return JSON.stringify(viewBound).toString();
       params.set("viewBound", JSON.stringify(viewBound));
     }
-    console.log(params.toString());
-    
+
     return params;
   }, [searchParams, currentPage, showEventType, mapCenter, mapRadius]);
 
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString(), currentPage],
-    queryFn: () =>source === 'tracker' 
-    ? getTrackerMapEvents(trackerId??"",`max=20&offset=${(currentPage - 1) * 10 }`, `type=${searchParam?.toString()}&viewBound=${filteredParams}&stats=list&limit=10&offset=${(currentPage - 1) * 10 }`??"")
-    :eventService.getEventsWithSearchParams(filteredParams.toString()),
+    queryFn: () =>
+      source === "tracker"
+        ? getTrackerMapEvents(
+            trackerId ?? "",
+            `max=20&offset=${(currentPage - 1) * 20}`,
+            `type=${searchParam}&viewBound=${filteredParams}&stats=list&limit=20&offset=${
+              (currentPage - 1) * 20
+            }`
+          )
+        : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
 
   const handlePageChange = (page: number) => {
@@ -308,7 +315,7 @@ function EventList({
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
   const count = isEventResponse(data) ? data.count : 0;
-  const totalPages = Math.ceil(count / 10) || 1;
+  const totalPages = Math.ceil(count / 20) || 1;
 
   const renderPaginationItems = () => {
     const items = [];

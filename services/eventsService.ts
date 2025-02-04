@@ -25,6 +25,7 @@ import { BaseURL } from "@/config";
 import { ApiError } from "@/types/api";
 import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
 import { AlertPolygonResponse } from "@/types/events/alert";
+import { TrackersAdapter } from "@/adapters/trackerAdapter";
 
 export const searchEvents = async (searchParams: ReadonlyURLSearchParams) => {
   return myFetch(
@@ -176,8 +177,10 @@ export const useEventsService = () => {
       method: "GET",
       params: adaptedParams,
     }, true);
-    return response;
+    
+    return TrackersAdapter.adaptTrackerMapEventData(response);
   };
+
 
   const saveEvent = (eventId: string) => {
     return api.request(`${endpoints.event.savedEvents}`, {
