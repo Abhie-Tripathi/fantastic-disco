@@ -72,8 +72,25 @@ export default function EventCalendar({
   const { getEventsWithSearchParams } = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
   const [weekDateCounts, setWeekDateCounts] = useState<any>();
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const initialDate = () => {
+    const activeGte =
+      source !== "tracker"
+        ? searchParams.get("active_gte")
+        : trackerDate?.split(",")[0]?.split("T")[0];
+    const activeLte =
+      source !== "tracker"
+        ? searchParams.get("active_lte")
+        : trackerDate?.split(",")[0]?.split("T")[1];
+
+    if (activeGte && activeLte) return new Date(activeGte);
+    if (activeGte) return new Date(activeGte);
+    if (activeLte) return new Date(activeLte);
+    return new Date();
+
+  };
+  const [currentDate, setCurrentDate] = useState(initialDate());
   const [filter, setFilter] = useState("all");
+
   const {
     getFilterValue,
     setFilter: setGlobalFilter,
@@ -139,25 +156,10 @@ export default function EventCalendar({
     staleTime: 60 * 1000,
   });
 
-  // useEffect(() => {
-  //   const initialDate = () => {
-  //     const activeGte =
-  //       source !== "tracker"
-  //         ? searchParams.get("active_gte")
-  //         : trackerDate?.split(",")[0]?.split("T")[0];
-  //     const activeLte =
-  //       source !== "tracker"
-  //         ? searchParams.get("active_lte")
-  //         : trackerDate?.split(",")[0]?.split("T")[1];
-
-  //     console.log(activeGte, activeLte);
-  //     if (activeGte && activeLte) return activeGte;
-  //     if (activeGte) return activeGte;
-  //     if (activeLte) return activeLte;
-  //     return new Date();
-  //   };
-  //   setCurrentDate(initialDate());
-  // }, [eventsData]);
+  useEffect(() => {
+    
+    setCurrentDate(initialDate());
+  }, [searchParams, trackerDate]);
 
   // const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
   //   queryKey: ["unattended-events", searchParams.toString()],
