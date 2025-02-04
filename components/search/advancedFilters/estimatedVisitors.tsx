@@ -22,7 +22,7 @@ export default function EstimatedVisitorsSelector() {
   const enabled = morphedData?.estimatedVisitors?.isEnabled;
 
   const selectedRanges = useMemo(
-    () => getLocalFilterValue("estimatedVisitors").split(",").filter(Boolean),
+    () => getLocalFilterValue("estimatedVisitorRangeTag").split(",").filter(Boolean),
     [getLocalFilterValue]
   );
 
@@ -31,7 +31,7 @@ export default function EstimatedVisitorsSelector() {
       ? selectedRanges.filter((id) => id !== rangeId)
       : [...selectedRanges, rangeId];
 
-    setLocalFilter("estimatedVisitors", newRanges.join(","));
+    setLocalFilter("estimatedVisitorRangeTag", newRanges.join(","));
   };
 
   return (

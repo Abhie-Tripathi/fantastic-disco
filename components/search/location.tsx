@@ -39,13 +39,10 @@ export interface LocationItem {
 
 export type Location = GeoLocation | LocationItem[];
 export interface LocationProps {
-  type?:string;
+  type?: string;
   isMandatory?: boolean;
 }
-export default function LocationSelector({
-  type,
-  isMandatory,
-}: LocationProps) {
+export default function LocationSelector({ type, isMandatory }: LocationProps) {
   const pathName = usePathname();
   const { localFilters } = useFilterContext();
   const { saveLastSearchedLocation, clearLastSearchedLocation } =
@@ -56,15 +53,15 @@ export default function LocationSelector({
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
   const [localSelectedLocation, setLocalSelectedLocation] =
     useState<Location | null>(null);
-  const [selectedLocation,setSelectedLocation]=useState<Location | null>();
+  const [selectedLocation, setSelectedLocation] = useState<Location | null>();
   const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
     useFilterContext();
 
   const fetchUrlLocation = async () => {
     const geoCoordinate = JSON.parse(localFilters.geoCoordinates || "null");
     const ids = localFilters?.locationIds?.length
-    ? localFilters.locationIds.split(",")
-    : [];
+      ? localFilters.locationIds.split(",")
+      : [];
     const locationIds = ids;
 
     if (geoCoordinate) {
@@ -97,7 +94,7 @@ export default function LocationSelector({
   };
 
   useEffect(() => {
-     fetchUrlLocation();
+    fetchUrlLocation();
   }, [localFilters.locationIds]);
 
   const applyHandler = () => {
@@ -145,15 +142,16 @@ export default function LocationSelector({
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className={`w-full justify-between px-3 py-5 text-base font-normal ${(selectedLocation === undefined ||
+          className={`w-full justify-between px-3 py-5 text-base font-normal ${
+            (selectedLocation === undefined ||
               (Array.isArray(selectedLocation) &&
                 selectedLocation?.length === 0)) &&
-              isMandatory
+            isMandatory
               ? "border-destructive"
               : isOpen
-                ? "border-primary"
-                : "border-input"
-            }`}
+              ? "border-primary"
+              : "border-input"
+          }`}
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-haspopup="true"
@@ -177,8 +175,9 @@ export default function LocationSelector({
             )}
           </div>
           <ChevronDown
-            className={`h-4 w-4 shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180 transform" : ""
-              }`}
+            className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
+              isOpen ? "rotate-180 transform" : ""
+            }`}
           />
         </Button>
       </PopoverTrigger>
@@ -190,7 +189,7 @@ export default function LocationSelector({
             className="text-primary pr-0"
             onClick={applyHandler}
           >
-            Apply
+            {/* Apply */}
           </Button>
         </div>
 
@@ -213,9 +212,9 @@ export default function LocationSelector({
                 value={
                   selectedLocation && Array.isArray(selectedLocation)
                     ? selectedLocation.map((loc) => ({
-                      id: loc.id,
-                      description: loc.description || "",
-                    }))
+                        id: loc.id,
+                        description: loc.description || "",
+                      }))
                     : null
                 }
               />
@@ -228,10 +227,10 @@ export default function LocationSelector({
                 value={
                   selectedLocation && !Array.isArray(selectedLocation)
                     ? {
-                      id: Math.random().toString(),
-                      description: (selectedLocation as GeoLocation)
-                        .description,
-                    }
+                        id: Math.random().toString(),
+                        description: (selectedLocation as GeoLocation)
+                          .description,
+                      }
                     : null
                 }
               />
@@ -249,9 +248,9 @@ export default function LocationSelector({
                       setSelectedLocation?.((prev) =>
                         prev
                           ? {
-                            ...prev,
-                            radius: Number(e.target.value),
-                          }
+                              ...prev,
+                              radius: Number(e.target.value),
+                            }
                           : null
                       )
                     }
@@ -288,9 +287,9 @@ export default function LocationSelector({
                       setSelectedLocation?.((prev) =>
                         prev
                           ? {
-                            ...prev,
-                            lat: Number(e.target.value),
-                          }
+                              ...prev,
+                              lat: Number(e.target.value),
+                            }
                           : null
                       )
                     }
@@ -309,9 +308,9 @@ export default function LocationSelector({
                       setSelectedLocation?.((prev) =>
                         prev
                           ? {
-                            ...prev,
-                            lng: Number(e.target.value),
-                          }
+                              ...prev,
+                              lng: Number(e.target.value),
+                            }
                           : null
                       )
                     }
@@ -330,9 +329,9 @@ export default function LocationSelector({
             value={
               selectedLocation && Array.isArray(selectedLocation)
                 ? selectedLocation.map((loc) => ({
-                  id: loc.id,
-                  description: loc.description || "",
-                }))
+                    id: loc.id,
+                    description: loc.description || "",
+                  }))
                 : null
             }
           />

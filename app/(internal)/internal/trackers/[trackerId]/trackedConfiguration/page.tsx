@@ -179,8 +179,8 @@ data?.tracker?.filterValue?.eventType
   :[];
   const eventEntry=data?.tracker?.filterValue?.eventEntry ?
   data?.tracker?.filterValue?.eventEntry?.split(','):[];
-  const eventSize=data?.tracker?.filterValue?.eventSize ?
-  data?.tracker?.filterValue?.eventSize?.split(','):[];
+  const eventSize=data?.tracker?.filterValue?.estimatedVisitorRangeTag ?
+  data?.tracker?.filterValue?.estimatedVisitorRangeTag?.split(','):[];
 const format=data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(','):[];
 const endDateValue = data?.tracker?.filterValue?.endDate;
 const startDate = endDateValue ? endDateValue.split(",")[0] : null;
@@ -191,14 +191,22 @@ const userRating=
     ? data?.tracker?.filterValue?.eventRating.split(",")
     : []
    const allKeywords=data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : [];
-   const includeKeywords=data?.tracker?.filterValue?.includeKeywords &&
-   data.tracker.filterValue?.includeKeywords.split(",").length > 0
-       ? data.tracker.filterValue.includeKeywords.split(",").filter(Boolean)
-       : [];
-    const excludeKeywords=data?.tracker?.filterValue?.excludeKeywords &&
-    data.tracker.filterValue?.excludeKeywords.split(",").length > 0
-        ? data.tracker.filterValue.excludeKeywords.split(",").filter(Boolean)
-        : [];
+   const includeKeywords =
+  data?.tracker?.filterValue?.includeKeywords &&
+  data.tracker.filterValue.includeKeywords.split(",").length > 0
+    ? data.tracker.filterValue.includeKeywords
+        .split(",")
+        .filter(Boolean)
+        .map((keyword: string) => keyword.replaceAll("_", "  "))
+    : [];
+    const excludeKeywords =
+  data?.tracker?.filterValue?.excludeKeywords &&
+  data.tracker.filterValue.excludeKeywords.split(",").length > 0
+    ? data.tracker.filterValue.excludeKeywords
+        .split(",")
+        .filter(Boolean)
+        .map((keyword: string) => keyword.replaceAll("_", "  "))
+    : [];
    let toggleOpend: Toggle={};
   if(data?.tracker?.filterValue?.userType)
   toggleOpend=JSON.parse(data?.tracker?.filterValue?.userType);

@@ -17,6 +17,9 @@ import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ApiResponse, useApi } from "@/hooks/useApi";
+import { useProductSettingServices } from "@/services/settingservices/productService";
+import { SettingResearchData } from "@/types/onboarding";
+import { GAEvent } from "@/utils/GAEvent";
 
 type authContextType = {
   user: UserResponse | null;
@@ -34,14 +37,37 @@ type authContextType = {
   signup: (user: SignUpDTO) => Promise<any>;
   signin: (user: TSignInFormSchema) => Promise<any>;
   setUser: Dispatch<SetStateAction<UserResponse | null>>;
+  setError: (
+    error:
+      | (
+          | {
+              response: string;
+              status: number;
+              message: string;
+              name: string;
+            }
+          | undefined
+        )
+      | null
+  ) => void;
   signOut: () => void;
   generateOTP: (
     email: string,
     industry?: string,
     categories?: string,
-    flow?: string
+    internalConfigSetBy?: string,
+    flow?: string,
+    type?: string,
   ) => void;
-  verifyOtp: (user: any, redirectTo?: string) => Promise<any>;
+  verifyOtp: (
+    user: any,
+    mappedSettingResearch: {
+      data: SettingResearchData[];
+      source: string;
+    },
+    internalConfigSetBy: string,
+    redirectTo?: string
+  ) => Promise<any>;
   verifyLoginOTP: (user: any, redirectTo?: string) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
   setProfilePic: any;
@@ -63,6 +89,19 @@ const authContextDefaultValues: authContextType = {
   isVerifiedToken: false,
   signup: () => Promise.resolve(null),
   signin: () => Promise.resolve(null),
+  setError: (
+    error:
+      | (
+          | {
+              response: string;
+              status: number;
+              message: string;
+              name: string;
+            }
+          | undefined
+        )
+      | null
+  ) => {},
   setUser: () => {},
   signOut: () => {},
   generateOTP: () => Promise.resolve(null),
@@ -85,6 +124,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const { request, error, isLoading, setError } = useApi<any>();
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
+  const { updateResearchData } = useProductSettingServices();
 
   interface SignUp {
     data?: SignUpResponse;
@@ -98,8 +138,10 @@ export const AuthContextProvider = ({ children }: any) => {
     email: string,
     industry?: string | undefined | null,
     categories?: string | null,
-    flow?: string | null
-  ) => {
+    internalConfigSetBy?: string,
+    flow?: string | null,
+    type?: string | null,
+  ) => {    
     const url = `${baseUrl}/auth/customer/verify/generate`;
     const dataToSend = {
       email: email.trim(),
@@ -107,17 +149,34 @@ export const AuthContextProvider = ({ children }: any) => {
     const queryParams = new URLSearchParams({
       email: email.trim(),
       ...(industry && { industry }),
-      ...(categories && { categories }),
       ...(flow && { flow }),
+      ...(internalConfigSetBy && { internalConfigSetBy }),
     });
     try {
       const data = await request(url, {
         method: "POST",
         data: { ...dataToSend },
       });
+      if(flow === 'signup') {
+        if(type === 'resend') {
+          GAEvent("Onboarding", "Onboarding", "Sign Up", "Verify OTP | Resend OTP");
+        }else {
+          GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email Entered OTP Sent");
+        }
+      }else {
+        if(type === 'resend') {
+          GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Resend OTP");
+        }else {
+          GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email Entered OTP Sent");
+        }
+      }
       router.push(`/verify-otp?${queryParams.toString()}`);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Cannot generate otp:", err);
+      if(err?.status === 404)
+        GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email - No Account");
+      else
+        GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email Invalid");
     }
   };
 
@@ -125,7 +184,7 @@ export const AuthContextProvider = ({ children }: any) => {
     async (userDto: SignUpDTO) => {
       const url = baseUrl + authEndpoints.signup;
       try {
-        await request(url, {
+        const data = await request(url, {
           method: "POST",
           data: { ...userDto, role: "CUSTOMER" },
         });
@@ -133,10 +192,16 @@ export const AuthContextProvider = ({ children }: any) => {
           userDto.email,
           userDto.industry,
           userDto.categories,
+          data.internalConfigSetBy,
           "signup"
         );
-      } catch (err) {
+      } catch (err: any) {
         console.error("Sign up error:", err);
+        if(err?.status === 406) {
+          GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email - Non Business");
+        } else if (err?.status === 409) {
+          GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email Already Exists");
+        }
       }
     },
     [request, router]
@@ -325,7 +390,12 @@ export const AuthContextProvider = ({ children }: any) => {
   // };
 
   const verifyOtp = useCallback(
-    async (verifyOtpDTO: VerifyOTP, redirectTo?: string) => {
+    async (
+      verifyOtpDTO: VerifyOTP,
+      settingsInterestData: { data: SettingResearchData[]; source: string },
+      internalConfigSetBy: string,
+      redirectTo?: string
+    ) => {
       try {
         const url = baseUrl + "/auth/customer/verify";
         const result = await request<{ user: UserResponse }>(url, {
@@ -334,6 +404,7 @@ export const AuthContextProvider = ({ children }: any) => {
         });
         if (result) {
           if (!result.user.isVerified) {
+            GAEvent("Onboarding", "Onboarding", "Sign Up", "Verify OTP | Invalid Submitted");
             setError({
               response: "Invalid Code",
               status: 400,
@@ -343,9 +414,12 @@ export const AuthContextProvider = ({ children }: any) => {
             return;
           }
           if (result.user.isVerified) {
+            GAEvent("Onboarding", "Onboarding", "Sign Up", "Verify OTP | Valid Submitted");
             setUser(result.user);
             setLocalStorage(result.user);
             localStorage.removeItem("walkthroughCompleted");
+            internalConfigSetBy === "internal" &&
+              (await updateResearchData({ formData: settingsInterestData }));
             router.push(redirectTo || "/");
           }
         }
@@ -367,6 +441,7 @@ export const AuthContextProvider = ({ children }: any) => {
         console.log(result);
         if (result) {
           if (!result.user.isVerified) {
+            GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Invalid Submitted");
             setError({
               response: "Invalid Code",
               status: 400,
@@ -375,6 +450,7 @@ export const AuthContextProvider = ({ children }: any) => {
             });
           }
           if (result.user.isVerified) {
+            GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Valid Submitted");
             setUser(result.user);
             setLocalStorage(result.user);
             localStorage.setItem(
@@ -387,6 +463,7 @@ export const AuthContextProvider = ({ children }: any) => {
         }
       } catch (err) {
         console.log("OTP verification error:", err);
+        GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Invalid Submitted");
       }
     },
     [request, router]

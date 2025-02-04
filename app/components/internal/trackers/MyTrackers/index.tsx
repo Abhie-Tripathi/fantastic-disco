@@ -9,6 +9,10 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { Tracker } from "@/types/trackers";
 import Loading from "@/app/components/UI/Loading";
 import { AllTrackerTypes } from "@/types/trackers";
+import { useFilterState } from "@/hooks/useFilterState";
+import { PaginationComponent } from "@/components/pagination";
+import { useSearchParams } from "next/navigation";
+import { useTrackerContext } from "@/context/tracker";
 function AllTrackers({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -67,65 +71,63 @@ interface MyTrackersProps {
   setSingleTrackerData: React.Dispatch<React.SetStateAction<Tracker | undefined>>;
   isData: boolean;
 }
-const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData, searchValue}:MyTrackersProps) => {
+const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData}:MyTrackersProps) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
   const [isInetialRender,setIsInetialRender]=useState(false);
   const [allTracker, setAllTracker] = useState<AllTrackerTypes[]>([]);
+  const {setFilter, getFilterValue, setMultipleFilters}=useFilterState();
+  const {setSkip, skip:w, searchValue} = useTrackerContext();
+  const skip = w || 0;
+  const take =Number(getFilterValue("take")) || 4;
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
-  const [page, setPage] = useState(0);
   const [trackerPerPage, setTrackerPerPage] = useState(4);
+  const [page, setPage] = useState( Math.floor(Number(w || "0") / 4) + 1);
+  const searchParams = useSearchParams();
   const [totalPage, setTotalPage] = useState<number>(0);
   const [totalCount,setTotalCount]=useState(0);
   const [loadOne,setLoadOne]=useState(false);
   const [loadTwo,setLoadTwo]=useState(false);
   const {getTrackers, isLoading}=useTrackerServices();
   const endOfListRef = useRef(null);
+    const handlePageChange = (page: number) => {
+    setPage(page);
+    setSkip(((page-1) * trackerPerPage));
+    setMultipleFilters({
+      skip:((page-1) * trackerPerPage).toString(),
+      id:allTracker[0].id,
+      q: searchValue
+    })
+   
+    // setFilter("skip", ((page-1) * trackerPerPage).toString());
+  };
   useEffect(() => {
-    
-    // const handler = setTimeout(() => {
-    // if(searchValue.length>=3 || searchValue.length===0){
-      if(isInetialRender && page!==0)
-        fetchData(false); 
-    //  }
-    // }, 700);
-    // return () => {
-    //   clearTimeout(handler);
-    // };
-  }, [page]);
-  useEffect(() => {
-    setPage(0);
-    if (searchValue.length >= 3 || searchValue.length === 0) {
-      setAllTracker([]);
-      setIsInetialRender(true); // Indicate it's the first render
-      fetchData(true); // Pass true for initial render
-    }
-  }, [searchValue]);
-  // useEffect(()=>{
-  //   if(searchValue.length===0)
-  //   fetchData();
-  // },[searchValue])
+        setAllTracker([]);
+        setIsInetialRender(true); 
+        fetchData(true);  
+  }, [searchParams]);
+  useEffect(()=>{
+    // if(!isInetialRender)
+    if(searchValue.length >= 3 || searchValue.length === 0){
+      if(isInetialRender){
+          setSkip('0');
+          setPage(1);
+      }
+    setMultipleFilters({
+      skip: !isInetialRender? ((page-1) * trackerPerPage).toString(): "",
+      q: searchValue
+    })
+  }
+  },[searchValue])
   const fetchData=async(isInetialRender:boolean)=>{
     setLoadOne(true);
-    const offset = isInetialRender ? 0 : page * trackerPerPage;
-    const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${page * trackerPerPage}&limit=${trackerPerPage}`);
-    // setAllTracker(result.trackerData);
+    const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${skip}&limit=${take}`);
     
     if(result){
-      if(page===0) setAllTracker(result?.trackerData )
-        else{
-          const newData = (prevAllTracker:any) => [...prevAllTracker, ...result?.trackerData];
-          setAllTracker(newData);
-        }
-              if(allTracker.length===0)
-                console.log(Math.ceil(result.totalCount / trackerPerPage));
-              
-              
-       if(isInetialRender){     
+        setAllTracker(result?.trackerData);   
             
       setSingleTrackerData(result.trackerData[0]);
-      // setIsInetialRender(false);
-       }
     setTotalPage(Math.ceil(result.totalCount / trackerPerPage));
     setTotalCount(result.totalCount)
     if(result.totalCount===0){
@@ -138,24 +140,9 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     setLoadOne(false);
             }
   }
-  const handleNextPage = () => {
-    
-    if (page < totalPage - 1) {
-      setPage(page + 1);
-      // setAllTracker([]);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (page > 0) {
-      setPage(page - 1);
-      setAllTracker([]);
-    }
-  };
   useEffect(()=>{
     if(totalPage>0){
     setDataPresent(true);
-    // setIsLoading(false);
   }
   },[totalPage])
   
@@ -185,10 +172,6 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
            </div> */}
       </div>
      
-      
-      {/* {!isData &&(
-            <div>Unlock your business potential—create your first tracker today to explore trends and receive real-time updates!</div>
-          )} */}
         <div>
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 pt-4 pl-6 pb-4">
@@ -204,7 +187,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
               state={sort}
             /> */}
           </div>
-        <div className="h-[calc(100vh-300px)] overflow-auto pl-6 pr-6 flex flex-col gap-[var(--spacing-md)] pb-6">
+        <div className="h-[calc(100vh-307px)] overflow-auto pl-6 pr-6 flex flex-col gap-[var(--spacing-md)]">
           {(allTracker.length===0 && !loadOne) &&
             <div className="flex justify-center text-[var(--secondary-text-color)] font-semibold">Tracker with the search result is not created yet.</div>
           }
@@ -216,25 +199,16 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           {loadOne &&  <div className={`${styles.loadingContainer} loadingIndicator`}>
           <div className={styles.loadingBar}></div>
         </div>}
-          {/* {loadTwo && <div className={styles.loadingContainer}>
-          <div className={styles.loadingBar}></div>
-        </div>} */}
-          {/* {trackerType === "Premium Trackers" && <div>Create your first tracker!</div>} */}
-        
-        {/* {loading && <Loading/>} */}
-        {totalPage > 1 &&
-          !loadOne && page<(totalPage-1) &&(
             <div
               className="flex item-center justify-center"
             >
-              {/* <div className={styles.btn} onClick={handlePrevPage}>
-                Prev
-              </div> */}
-              <div onClick={handleNextPage}>
-              <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">Next</Button>
+              {totalCount!==0 &&
+              <div className="sticky bottom-0 bg-background py-4">
+              <PaginationComponent currentPage={page} totalPages={totalPage} itemsPerPage={trackerPerPage} onPageChange={handlePageChange} count={totalCount} showEntriesCount={false}/>
               </div>
+              }
             </div>
-          )}
+          {/* )} */}
           </div>
           </div>
     </div>

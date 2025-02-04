@@ -1,5 +1,11 @@
 "use client";
-import React, { useState, FormEvent, useEffect } from "react";
+import React, {
+  useState,
+  FormEvent,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import styles from "@/app/(auth)/signup/page.module.css";
 import Image from "next/image";
 import Carousel from "@/app/components/carousel";
@@ -56,12 +62,16 @@ import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import HeroLogoText from "/public/heroLogoText.svg";
 import { useDatabaseLocationcomplete } from "@/hooks/useLocationAutocomplete";
 import { SignUpDTO } from "@/types";
+import IndustryCards from "./IndustryCards";
+import CategoryCards from "./CategoryCards";
+import { Category } from "@/types/events";
+import { GAEvent } from "@/utils/GAEvent";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
 
 const NewSignUpForm = () => {
   const [showVerification, setShowVerification] = useState(false);
-  const { signup, error } = useAuthContext();
+  const { signup, error, setError } = useAuthContext();
   const { getFilterValue, setFilter, deleteFilter } = useFilterState();
 
   const [name, setName] = useState("");
@@ -77,10 +87,12 @@ const NewSignUpForm = () => {
     useState(false);
   // const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
-
+  const set = new Set<string>();
   const {
     control,
     handleSubmit,
+    setValue,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(SignUpFormSchema),
@@ -89,12 +101,20 @@ const NewSignUpForm = () => {
   const onSubmit = async (data: FormData) => {
     const signUpDTOData = {
       ...data,
-      ...(categories && categories.length > 0
-        ? { categories: categories.join(",") }
-        : {}),
+      industry: data.industry || "others",
+      ...(categories.length > 0 && { categories: data.categories }),
     };
-    if (!categories || categories.length === 0) {
-      delete signUpDTOData.categories;
+    const categorySlugs = categories
+      .map(
+        (category) =>
+          newCategories.find((newCategory) => newCategory.id === category)?.slug
+      )
+      .join(",");
+
+    if (categorySlugs && categorySlugs.length > 0) {
+      sessionStorage.setItem("categories", JSON.stringify(categorySlugs));
+    } else {
+      sessionStorage.removeItem("categories");
     }
     try {
       await signup(signUpDTOData);
@@ -120,6 +140,22 @@ const NewSignUpForm = () => {
     setCategories(selectedCategories);
   }, [getFilterValue]);
 
+  useEffect(() => {
+    if (categories.length === 0) {
+      sessionStorage.removeItem("categories");
+    }
+  }, [categories]);
+
+  useEffect(() => {
+    if (
+      errors.email?.message &&
+      errors.email?.message === "Email is required" &&
+      errors.email.type === "invalid_type"
+    ) {
+      GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email Empty");
+    }
+  }, [errors.email?.message]);
+
   const generateOtp = async () => {
     const dataToSend = {
       email: email,
@@ -138,6 +174,10 @@ const NewSignUpForm = () => {
     }
   };
 
+  const isCategoryMapped = industryData.find(
+    (industryItem) => industryItem.slug === industry
+  )?.subCategory;
+
   const obj = {
     email: email,
     industry: industry,
@@ -145,64 +185,108 @@ const NewSignUpForm = () => {
     path: "signup",
   };
 
+  const handleIndustry = (industry: string) => {
+    setValue("industry", industry);
+    setIndustry(industry);
+    GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Use Case Selected");
+  };
+
+  const handleCategories = (categoryId: string) => {
+    setCategories((prev) => {
+      const updatedSet = new Set(prev);
+      if (updatedSet.has(categoryId)) {
+        updatedSet.delete(categoryId);
+        GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Category Deselected");
+      } else {
+        updatedSet.add(categoryId);
+        GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Category Selected");
+      }
+      const updatedCategoriesArray = Array.from(updatedSet);
+      const updatedCategoriesString = updatedCategoriesArray.join(",");
+      setValue("categories", updatedCategoriesString);
+      return updatedCategoriesArray;
+    });
+  };
+
   return (
-    <div className="w-full max-w-md space-y-8 p-8">
-      <div className={styles.form_heading}>
-        <Image src={logo} alt="logo" width={45} height={55} />
-        <Image src={whr} alt="whr" />
-      </div>
-      {error && (
-        <Alert variant="destructive">
-          <AlertDescription className="capitalize flex items-center">
-            <AlertTriangle className="h-4 w-4 mr-2 self-start" />
-            {error.message}
-          </AlertDescription>
-        </Alert>
-      )}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <div className="flex flex-col justify-center items-center w-full space-y-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col space-y-6 w-full"
+      >
+        <p className="font-semibold text-lg leading-6 text-center">
+          Create your account
+        </p>
         <Controller
           name="email"
           control={control}
           render={({ field }) => (
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+            <div className="space-y-2 w-96 max-w-3xl self-center border-b pb-6">
               <Input
                 id="email"
                 type="email"
                 {...field}
                 placeholder="Email"
-                className="h-11"
+                onChange={(e) => {
+                  field.onChange(e);
+                  setError(null);
+                }}
               />
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email.message}</p>
               )}
+              {error && (
+                <Alert
+                  variant="destructive"
+                  className="w-fit self-center border-none p-0"
+                >
+                  <AlertDescription className="capitalize flex items-center">
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    {error.message}
+                  </AlertDescription>
+                </Alert>
+              )}
             </div>
           )}
         />
+        <p className="text-[var(--secondary-text-color)] text-center font-semibold">
+          Let us know who you are and help us personalise your experience !
+        </p>
         <Controller
-          name="industry"
+          name={"industry"}
           control={control}
           render={({ field }) => (
-            <div className="space-y-2">
-              <Label htmlFor="industry">Industry</Label>
-              <IndustryDropdown
-                selected={industry}
-                setSelected={setIndustry}
-                field={field}
+            <>
+              <IndustryCards
+                activeIndustry={industry}
+                handleIndustry={handleIndustry}
               />
-            </div>
+            </>
           )}
         />
-
-        {industryData.find((indust) => indust.slug === industry)
-          ?.subCategory && (
-          <div className={styles.input_container}>
-            <div className={styles.input_title}>Category</div>
-            <CategorySelector source="search" />
-          </div>
+        {isCategoryMapped && (
+          <Controller
+            name={"industry"}
+            control={control}
+            render={({ field }) => (
+              <>
+                <CategoryCards
+                  activeCategories={categories}
+                  handleCategories={handleCategories}
+                />
+              </>
+            )}
+          />
         )}
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
+        <hr className="w-full sm:w-96 mt-6 self-center" />
+
+        <Button
+          type="submit"
+          className="w-80 self-center"
+          disabled={isLoading}
+          onClick={() => clearErrors()}
+        >
           {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -224,24 +308,25 @@ const NewSignUpForm = () => {
           Log In
         </Link>
       </div>
-
-      <div className="text-center text-[#808080] text-[12px]">
-        By signing up, you agree to our
-        <Link
-          target="_blank"
-          href={"https://10times.com/terms-of-service"}
-          className="text-[#6750a4] font-medium ml-1"
-        >
-          Terms{" "}
-        </Link>
-        and
-        <Link
-          target="_blank"
-          href={"https://10times.com/privacy-policy"}
-          className="text-[#6750a4] font-medium ml-1"
-        >
-          Privacy Policy
-        </Link>
+      <div className="flex items-center gap-2">
+        <div className="text-center text-[#808080] text-[12px]">
+          By signing up, you agree to our
+          <Link
+            target="_blank"
+            href={"https://10times.com/terms-of-service"}
+            className="text-[#6750a4] font-medium ml-1"
+          >
+            Terms{" "}
+          </Link>
+          and
+          <Link
+            target="_blank"
+            href={"https://10times.com/privacy-policy"}
+            className="text-[#6750a4] font-medium ml-1"
+          >
+            Privacy Policy
+          </Link>
+        </div>
       </div>
     </div>
   );

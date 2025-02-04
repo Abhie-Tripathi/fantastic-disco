@@ -21,6 +21,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useFilterContext } from "@/context/filterContext";
 interface Props {
   eventDetails: GTMEventDetail;
   scrollSection: string;
@@ -71,6 +72,7 @@ export const EventInfoAndMap = ({
   scrollSection,
   setActiveTab,
 }: Props) => {
+  const { enabledFilters } = useFilterContext();
   const currentDate = new Date().toISOString().split("T")[0];
   const [isExpandDescription, setisExpandDescription] =
     useState<boolean>(false);
@@ -95,6 +97,13 @@ export const EventInfoAndMap = ({
     entryType,
     website,
   } = eventDetails;
+
+  // const enabledKeywords =
+  //   enabledFilters && enabledFilters.keywords
+  //     ? enabledFilters.keywords.positiveKeywords
+  //     : [];
+
+  const filteredTags = tags;
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
       {/* <div className="flex gap-2 justify-center bg-[var(--negative-light-color)] border border-[#FDD8D8] p-2 rounded-sm text-sm">
@@ -121,15 +130,27 @@ export const EventInfoAndMap = ({
                 Event Description
               </h1>
               <Text variant="noMargin" color="secondary">
-                {isExpandDescription
-                  ? description === null || undefined
-                    ? "Sourced from 10times"
-                    : description
-                  : `${
-                      description === null || undefined
-                        ? "Sourced from 10times"
-                        : description?.slice(0, 200)
-                    }`}
+                {isExpandDescription ? (
+                  description === null || description === undefined ? (
+                    <span className="text-[#666666] text-sm flex items-center gap-2">
+                      <CircleSlash width={15} height={15} />
+                      No data available
+                    </span>
+                  ) : (
+                    description
+                  )
+                ) : (
+                  `${
+                    description === null || description === undefined ? (
+                      <span className="text-[#666666] text-sm flex items-center gap-2">
+                        <CircleSlash width={15} height={15} />
+                        No data available
+                      </span>
+                    ) : (
+                      description?.slice(0, 200)
+                    )
+                  }`
+                )}
                 <span
                   className="font-semibold underline cursor-pointer ml-2"
                   onClick={() => setisExpandDescription(!isExpandDescription)}
@@ -178,8 +199,8 @@ export const EventInfoAndMap = ({
                     </p>
                   </TooltipContent>
                 </Tooltip>
-              </TooltipProvider>
-              <ExpandableTags tags={tags ?? []} />
+              </TooltipProvider>              
+              <ExpandableTags tags={filteredTags ?? []} />
             </div>
           }
           <div className="flex flex-row gap-6">

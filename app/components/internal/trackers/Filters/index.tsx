@@ -56,6 +56,7 @@ import EventKeyword from "@/app/components/dropdown/EventKeyword";
 // const Map = lazy(() => import("@/components/Map"));
 
 //JSON Data files:
+import { useDefaultFilters } from '@/hooks/useDefaultFilters';
 import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
 import SearchBar from "../../searchBar/SearchBar";
@@ -402,11 +403,13 @@ const formatCount = (count: number ) => {
 };
 
 const Pages = () => {
+  const {searchParams: search} = useDefaultFilters();
   const searchParams = useSearchParams();
   
   const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
+  
   interface SelectedLocation {
     [id: string]: string;
   }
@@ -431,6 +434,7 @@ const Pages = () => {
   // const [selectedCategories, setSelectedCategories] = useState<string[]>(
   //   enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
   // );
+  
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
       enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
     );
@@ -648,29 +652,20 @@ const Pages = () => {
 
   const [userName, setUserName] = useState("");
   const [userCompany, setUserCompany] = useState("");
-
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
 
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  useEffect(() => {
-    const fetchAISuggestion = async (val: any) => {
-      try{
-        const promptText = `List only name of top 5 companies similar to ${val}. Response should be in plain JSON format without any additional formatting or text: {"data": ["company name 1","company name 2","company name 3","company name 4","company name 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`;
-        let aiResponse: any = await suggestionGenerator(promptText);
-        let temp = JSON.parse(aiResponse.choices[0].message.content);  
-        if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0)
-          setSuggestions(temp.data);
-      } catch (err) {
-        console.error("Fetch failed:", err);
-        setSuggestions([]);
-      }
-    }  
-
+  useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if(customData.length > 0 && Object.values(customData[0])[0]) {
-        fetchAISuggestion(Object.values(customData[0])[0]);
+        let placeholder = template?.inputAreas?.[0]?.placeholder || "";
+        const promptText=`List only name of top 5 companies similar to ${Object.values(customData[0])[0]}. Response should be in plain JSON format without any additional formatting or text: {"data": [ "company name 1" ,
+        "company name 2" , "company name 3" ,
+         "company name 4" ,
+        "company name 5" ]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
+        fetchAISuggestion(promptText);
       }
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       const urls = customData
@@ -687,6 +682,19 @@ const Pages = () => {
     setOrg(orgNames);
     }
     else if (type === "T_SPEAKING_OPPORTUNITY") {
+      if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
+        const promptText = `List the top 5 speakers with similar experience to ${Object.values(customData[0])[0]} (${Object.values(customData[0])[1]}). Not necessarily they have the same designation; instead, they must have spoken recently on the same topics. Response should be in plain JSON format without any additional formatting or text: {
+          "data": [
+              [ "Speaker Name 1", "Company Name 1" ],
+              [ "Speaker Name 2", "Company Name 2" ],
+              [ "Speaker Name 3", "Company Name 3" ],
+              [ "Speaker Name 4", "Company Name 4" ],
+              [ "Speaker Name 5", "Company Name 5" ]
+          ]
+      }. If no data is found, respond in this format: {\"data\": []}`; 
+
+         fetchAISuggestion(promptText);
+      }
       const speakerName = customData.map((item: {}) => Object.values(item)[0]).join(',');
       const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
       setSpeakerName(speakerName);
@@ -695,14 +703,53 @@ const Pages = () => {
 
     }
     else if (type === "T_PEOPLE_FINDER") {
-      setUserName(customData.map((item: {}) => Object.values(item)[0]).join(','))
-      setUserCompany(customData.map((item: {}) => Object.values(item)[1]).join(','))
+      if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
+        "data": [
+          [ "name 1", "company name 1" ],
+          ["name 2", "company name 2" ],
+          ["name 3", "company name 3" ],
+          [ "name 4", "company name 4" ],
+          [ "name 5", "company name 5" ]
+        ]
+      }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+      fetchAISuggestion(promptText);
+      }
+      const userName = customData.map((item: {}) => Object.values(item)[0]).join(',');
+      const userCompany = customData.map((item: {}) => Object.values(item)[1]).join(',')
+      setUserName(userName)
+      setUserCompany(userCompany)
+      if(userName.length>0 && userCompany.length>0){
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
+        "data": [
+          [ "name 1", "company name 1" ],
+          ["name 2", "company name 2" ],
+          ["name 3", "company name 3" ],
+          [ "name 4", "company name 4" ],
+          [ "name 5", "company name 5" ]
+        ]
+      }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+      fetchAISuggestion(promptText);
+      }
     } else if (type === "T_BRAND_BUILDING") {
       const designation = customData.map((item: {}) => Object.values(item)[0]).join(',');
       setDesignations(designation);
     }
   }, [type, customData])
-
+  const fetchAISuggestion = async(promptText:string)=>{
+    // console.log(val);
+    try{
+      let aiResponse: any = await suggestionGenerator(promptText);
+      
+      let temp = JSON.parse(aiResponse.choices[0].message.content);  
+      if(temp && temp?.data && Array.isArray(temp.data) && temp?.data?.length > 0){
+        setSuggestions(temp.data)
+      }
+    } catch (err) {
+      console.error("Fetch failed:", err);
+      setSuggestions([]);
+    }
+  }
   const scrollableDivRef = useRef<HTMLDivElement>(null);
 
   const handlePresetClick = (presetItem: PresetJsonData, id: number, trackerType: string, trackerName: string) => {
@@ -757,7 +804,7 @@ const Pages = () => {
     const showsData: string[] = [];
 
     const mapping = {
-      rating: "eventRating,trustScore",
+      rating: "eventRating",
       maturity: "maturity",
       forecasted: "isforecasted",
       frequency: "eventFrequency",
@@ -766,6 +813,7 @@ const Pages = () => {
       audienceZone: "audienceSpread",
       branded: "eventBrand",
       series: "eventSeries",
+      rankings: "eventRanking,trustScore"
     };
     
     const filters = getLocalFilterValue("show").split(",");
@@ -775,7 +823,6 @@ const Pages = () => {
       }
     });
     
-
     const userType = {
       ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
       ...(getLocalFilterValue("show").split(",").includes("estimatedExhibitors") && { exhibit: true }),
@@ -863,8 +910,8 @@ const Pages = () => {
             .split(",")
             .map((keyword) => keyword.replaceAll(" ", "_")).join(",")
         }),
-        ...(getLocalFilterValue("estimatedVisitors")?.length>0 && {
-          eventSize: getLocalFilterValue("estimatedVisitors")
+        ...(getLocalFilterValue("estimatedVisitorRangeTag")?.length>0 && {
+          estimatedVisitorRangeTag: getLocalFilterValue("estimatedVisitorRangeTag")
          }),
          ...(getLocalFilterValue("estimatedExhibitors")?.length>0 && {estimatedExhibitScore:getLocalFilterValue("estimatedExhibitors")}),
         // ...(selectedZone?.length > 0 && {
@@ -1014,6 +1061,7 @@ const Pages = () => {
       const secondLast = pathName[pathName.length - 2];
      
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
+        // console.log(getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords"));
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -1115,6 +1163,8 @@ const Pages = () => {
 
   useEffect(() => {
     if (editData && editData?.tracker && last === "editTracker") {
+
+      
       // if (editData.tracker.filterValue?.maturity == "low") {
       //   setSelectedMaturity(25);
       // }
@@ -1248,6 +1298,9 @@ const Pages = () => {
         setLocalFilter("inbound_score_lte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[1])?.toString() || "100")
         setLocalFilter("international_score_gte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[0])?.toString() || "0")
         setLocalFilter("international_score_lte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[1])?.toString() || "100")
+      }
+      if(editData?.tracker?.filterValue?.estimatedVisitorRangeTag && editData?.tracker?.filterValue?.estimatedVisitorRangeTag !== ""){
+        setLocalFilter("estimatedVisitorRangeTag", editData?.tracker?.filterValue?.estimatedVisitorRangeTag)
       }
       if(editData?.tracker?.filterValue?.eventImpactScore && editData?.tracker?.filterValue?.eventImpactScore !== "")
         setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactScore?.split("-"));
@@ -1490,6 +1543,7 @@ const Pages = () => {
         }
       });
     }
+    
   }, [editData, searchParams]);
 
   // console.log(selectedLabels);
@@ -1637,12 +1691,16 @@ const dateShowFormatter = (selectedDateRange: string[]) => {
 };
 const abortControllerRef = useRef<AbortController | null>(null);
 const [selected,setSelected]=useState(false);
-const addCompany = (id:number,val: string) => {
+const addCompany = (id:number,val: any) => {
   setSelected(true);
+  if(!Array.isArray(val)){
   setInputValues(prevValues => ({
     ...prevValues,
     [0]: val
-  }));
+  }));  
+  }else{
+    setInputValues(val);
+  }
 }
 useEffect(()=>{
   if(selected) {
@@ -1715,7 +1773,12 @@ const commonCss={
 //   }
   
 // },[enabledFilters])
-
+// console.log(template?.inputAreas[0]?.placeholder);
+const generateDynamicString = (item: any) => {
+  if(Array.isArray(item)){
+    return `${item[0]} (${item[1]})`;
+  }else return item;
+};
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -1741,7 +1804,7 @@ return (
       <Link
         href={
           last === "create"
-            ? "/internal/trackers"
+            ? "/internal/trackers?showTemplates=true"
             : `/internal/trackers/${pathName[pathName.length - 2]
             }/trackedConfiguration?type=${type}`
         }
@@ -1753,7 +1816,7 @@ return (
       {/* <button className={styles.save} onClick={saveTrackerHandler}>
         Save Tracker
       </button> */}
-      <Button className="text-white" onClick={saveTrackerHandler}>Save Tracker</Button>
+      <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
     </div>
     </div>
   </div>
@@ -1848,7 +1911,7 @@ return (
     isMandatory={isMandatory}
     setIsMandatory={setIsMandatory}
     /> */}
-    <ProductSelector type="T_PRODUCT_KEYWORDS"/>
+    <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions}/>
     </div>
     </div>
     }
@@ -1948,9 +2011,9 @@ return (
                   <span className={styles.experimental_tag} >Beta</span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {suggestions.map((item: string, ind: number)=>(
-                    <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{item}</div>
-                  ))}
+                    {suggestions.map((item: any, ind: number)=>(
+                      <div key={ind} className={styles.suggestion_badge} onClick={()=>addCompany(0, item)} >{generateDynamicString(item)}</div>
+                    ))} 
                 </div>
               </div>
             }

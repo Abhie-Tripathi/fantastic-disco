@@ -11,6 +11,7 @@ import UpVoteTag from "@/app/components/internal/coordinate/upVoteTag";
 import { Calendar, Location } from "geist-icons";
 import { AllEventsType } from "@/types/alleventtype";
 import { useCoordinateService } from "@/services/coordinateService";
+import { GAEvent } from "@/utils/GAEvent";
 
 interface YourEventCardProps {
   eventId: string;
@@ -164,7 +165,14 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   return (
 
     <div className={styles.outerDiv} >
-      <div className={`${styles.card} card`} onClick={handleModalOpen} style={{ marginTop: (!isDateSame && !geniEvent) ? "0px" : "25px" }}>
+      <div
+        className={`${styles.card} card`}
+        onClick={() => {
+          handleModalOpen();
+          GAEvent("Coordinate", "Coordinate", "Enquiry", "Card Clicked | View Detail");
+        }}
+        style={{ marginTop: !isDateSame && !geniEvent ? "0px" : "25px" }}
+      >
         {/* <div className={styles.cardBefore}></div> */}
         <div className={styles.topContainer} style={{ display: "flex" }}>
           {eventImage &&
@@ -297,7 +305,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 onClick={handleClickEvent}
               >
                 <div className={styles.allTags} style={{cursor: 'default'}}>
-                  <div className={styles.total_upvotes} title="Total upvotes count of attend, speak, sponsor, or exhibit">
+                  <div className={styles.total_upvotes} title={`Total upvotes count of ${coordinateActions.map(item => item.label).join(', ')}`}>
                     {upvote && votesCount}
                     <div style={{ display: "flex", paddingTop: "10px" }}>
                       <Image
@@ -347,7 +355,10 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 <div className={styles.viewCtas}>
                   {/* <button className={styles.notesBtn} onClick={handleModalOpen}>Notes</button> */}
                   <button className={styles.notesBtn} style={{ color: "var(--coordinate-primary-color)" }}
-                    onClick={handleModalOpen}
+                    onClick={() => {
+                      handleModalOpen();
+                      GAEvent("Coordinate", "Coordinate", "Enquiry", "View Detail");
+                    }}
                   >View Details</button>
                 </div>
               </div>

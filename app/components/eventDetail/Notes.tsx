@@ -24,6 +24,7 @@ import UserProfile from "../userProfile/UserProfile";
 import { useNotesServices } from "@/services/notesServices";
 import NullState from "../trackers/nullState";
 import NotesNullState from '@/public/notesNullState.svg'
+import { GAEvent } from "@/utils/GAEvent";
 interface UserDetail {
   firstname: string;
   email: string;
@@ -47,6 +48,7 @@ interface Reply {
 export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props) => {
   const { theme } = useTheme();
   const urlPath = usePathname().split('/')[2]
+  const pageSource = urlPath.charAt(0).toUpperCase() + urlPath.slice(1);
   const {getNotesFromTracker, saveNotes, deleteNotes, likeNotes, getUsers, error}=useNotesServices();
   const path=usePathname().split('/');
   const { user, signOut } = useAuthContext();
@@ -348,6 +350,10 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
     try{
         const data = await saveNotes(formData, replyId);
         if (data) {
+          if (replyId) {
+            GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Reply`);
+          } else
+            GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Message Send`);
             const newData = transformData(data.data);
             
             setNotes(prevNotes => [...prevNotes, data.data]);
@@ -551,6 +557,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
         const data = await deleteNotes(id);
         if(data) {
             createRealtimeAction('delete', id);
+            GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Delete`);
           }
           
     }catch(error){
@@ -629,6 +636,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
   useEffect(() => {
     // const url = `${baseUrl}/auth/users?limit=100`
     console.log(`${baseUrl}/auth/users?limit=100`);
+    GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | View`);
     
     getAllUser();
   }, [])
@@ -893,7 +901,7 @@ const Comment = ({
   useEffect(() => {
     setUserDetail(user);
   }, [user]);
-  const d = `@${userDetail?.firstname}${userDetail?.lastname.toLowerCase()}`;
+  const d = `@${userDetail?.firstname}${userDetail?.lastname?.toLowerCase()}`;
   const handleReply = (id: string) => {
     setReplyId(id);
     scroll();

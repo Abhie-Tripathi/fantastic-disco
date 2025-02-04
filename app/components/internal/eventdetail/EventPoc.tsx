@@ -12,6 +12,8 @@ import { pocDetail } from "@/types/coordinateEventType";
 import Text from "@/components/new-ui/Text";
 import { CircleSlash, MailIcon, PhoneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { GAEvent } from "@/utils/GAEvent";
+import { usePathname } from "next/navigation";
 
 interface Props {
   open: boolean;
@@ -50,6 +52,8 @@ const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) 
   const [accordianToggle, setAccordianToggle] = useState(open);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
+  const urlPath = usePathname().split("/")[2];
+  const pageSource = urlPath.charAt(0).toUpperCase() + urlPath.slice(1);
 
   return (
     <div
@@ -57,7 +61,10 @@ const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) 
     >
       <div
         className={styles.header}
-        onClick={() => setAccordianToggle(!accordianToggle)}
+        onClick={() => {
+          setAccordianToggle(!accordianToggle);
+          !accordianToggle && GAEvent("Event POC", "Enquiry Detail", "Event POC", "Expanded");
+        }}
       >
         <Image src={PeopleIcon} alt="page" className={iconClass} />
         <div className={styles.eventDetail_header}>
@@ -120,7 +127,7 @@ const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) 
                         <div>
                           <Button
                             disabled={(poc?.state && (poc.state === 1 || poc?.state === 2) ) ? true : false}
-                            onClick={()=>unlockPoc(poc.id)}
+                            onClick={()=>unlockPoc(poc.id, "Side List")}
                             variant={'outline'}
                             size={"sm"}
                           >Show details</Button>
@@ -140,7 +147,10 @@ const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) 
             {pocData?.length > 5 &&
               <Button
                 variant="link"
-                onClick={() => setExpandedTab('poc')}
+                onClick={() => {
+                  setExpandedTab('poc');
+                  GAEvent("Event POC", "POC", `${pageSource} | Enquiry Detail`, "POC Side List | See All");
+                }}
               >View All ({pocData?.length})</Button>
             }
           </div>

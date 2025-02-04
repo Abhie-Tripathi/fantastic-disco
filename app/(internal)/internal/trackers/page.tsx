@@ -125,6 +125,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { useNotesServices } from "@/services/notesServices";
 import { Tracker } from "@/types/trackers";
 import { useTrackerContext } from "@/context/tracker";
+import { useFilterState } from "@/hooks/useFilterState";
 
 interface Search {
   searchParams: {
@@ -133,9 +134,10 @@ interface Search {
 }
 const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
-  const {  setIsNewCall, setTrackerId, isLoading:load } = useTrackerContext();
+  const {  setIsNewCall, setTrackerId, isLoading:load, skip, setSkip,setSearchValue, searchValue } = useTrackerContext();
   const router=useRouter();
   const [type, setType] = useState("");
+  const {setFilter, getFilterValue, deleteFilter, setMultipleFilters} = useFilterState();
   useEffect(()=>{
     if(tab==="savedEvents") setType("Saved Events")
     else if(tab==="customTrackers") setType("Custom Trackers")
@@ -143,11 +145,10 @@ const Trackers = ({ searchParams }: Search) => {
   },[tab])
   const [locations, setLocations] = useState<any>();
   const [trackers, setTrackers] = useState<any[]>([]);
-  const [searchValue,setSearchValue]=useState("");
   const [offset, setOffset] = useState(0);
   // const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
+  const searchParam=useSearchParams();
   // WalkThrough
   const [steps, setSteps] = useState<Step[]>([]);
   const [run, setRun] = useState(true);
@@ -155,7 +156,6 @@ const Trackers = ({ searchParams }: Search) => {
   const createTrackerRef = useState(null);
   const customTrackerRef = useRef(null);
   const savedEventRef = useRef(null);
-  
   const { theme } = useTheme();
   useEffect(() => {
     //  if(document.body.classList.contains(styles.bodyOverflowHidden))
@@ -164,27 +164,6 @@ const Trackers = ({ searchParams }: Search) => {
       document.body.style.height = "";
     }
   }, []);
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     setIsLoading(true);
-  //     const { data, error } = await myFetch(
-  //       `${baseUrl}/tracker?limit=5&offset=${offset}`
-  //     );
-  //     console.log(data);
-  //     if (error) {
-  //       console.log(error);
-  //       setIsLoading(false);
-  //       return;
-  //     }
-
-  //     if (data) {
-  //       setTrackers((prevTrackers) => [...prevTrackers, ...data.trackerData]);
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [offset]);
   const showInsights = {
     eventSize: true,
     eventKeywords: true,
@@ -212,6 +191,7 @@ const Trackers = ({ searchParams }: Search) => {
         setCurrentUrl(`${baseUrl}/trackers`);
     }
 }, []);
+
   const modalOpen = () => {
     setShowModal(true);
     console.log(document.body.style);
@@ -237,7 +217,7 @@ const Trackers = ({ searchParams }: Search) => {
   //   setShowTracker(true);
   //   setHideTemplate(!hideTemplate);
   // };
-  const [hideTemplate, setHideTemplate] = useState(true);
+  const [hideTemplate, setHideTemplate] = useState<boolean>(!getFilterValue("showTemplates") || true);
   const [dataPresent, setDataPresent] = useState(true);
   // useEffect(() => {
   //   if (dataPresent) setHideTemplate(false);
@@ -259,16 +239,16 @@ const Trackers = ({ searchParams }: Search) => {
 
     fetchData();
   }, []);
-  useEffect(() => {
-    if(type){
-    if(type==="All Trackers")
-    router.push(`/internal/trackers?tab=allTrackers`);
-    else if(type==="Custom Trackers")
-      router.push(`/internal/trackers?tab=customTrackers`);
-    else if(type==="Saved Events")
-      router.push(`/internal/trackers?tab=savedEvents`)
-    }
-  }, [type]);
+  // useEffect(() => {
+  //   if(type){
+  //   if(type==="All Trackers")
+  //   router.push(`/internal/trackers?tab=allTrackers`);
+  //   else if(type==="Custom Trackers")
+  //     router.push(`/internal/trackers?tab=customTrackers`);
+  //   else if(type==="Saved Events")
+  //     router.push(`/internal/trackers?tab=savedEvents`)
+  //   }
+  // }, [type]);
   
   
   // const updateSteps = useCallback(() => {
@@ -313,9 +293,7 @@ const Trackers = ({ searchParams }: Search) => {
   // }, [updateSteps]);
   
   const [note,setNote]=useState<any>(null);
-  const [savedEvents, setSavedEvents] = useState<{ result: EventTableType[]; count: number } | undefined>(undefined);
-
-  console.log(singleTrackerData);
+  const [savedEvents, setSavedEvents] = useState<{ events: EventTableType[]; count: number } | undefined>(undefined);
   useEffect(() => {
     // console.log(item?.tracker?.eventCountry);
     if(singleTrackerData===undefined){
@@ -337,23 +315,8 @@ const Trackers = ({ searchParams }: Search) => {
     
   }
   }, [singleTrackerData]);
-  console.log(hideTemplate);
   const fetchNote=async(id:string)=>{
-    // const url =
-    // `${baseUrl}/comment?stage=INTERNAL&entityType=TRACKER&entityId=${id}&offset=0&limit=1`;
-    // const { data, error } = await myFetch(url);
-    // if (data) {
-    //   // setNotes([]);
-    //   console.log(data);
-    //   // setNotes(data.comments.reverse());
-    //   if (data.comments?.length > 0){
-    //     console.log(data);
-        
-    //     setNote(data.comments);
-    //   }else setNote("");
-    // }
     const result= await getNotesFromTracker(id,`limit=1&offset=0`)
-    console.log(result);
     
     if(result && result.comments?.length > 0){
       setNote(result?.comments);
@@ -362,26 +325,12 @@ const Trackers = ({ searchParams }: Search) => {
     
   }
   const fetchSavedEvent=async(id:string)=>{
-    // const url=`${baseUrl}/tracker/${id}/saved-events?limit=2&offset=0`
-    // const { data, error } = await myFetch(url);
-    // if (data) {
-    //   // setNotes([]);
-    //   console.log(data);
-    //   // setNotes(data.comments.reverse());
-    //   if (data?.count > 0){
-    //     console.log(data);
-        
-    //     setSavedEvents(data);
-    //   }else setSavedEvents("");
-    // }
-    const result = await getSavedEvents(id, `limit=2&offset=0`) as { result: EventTableType[]; count: number }
-    console.log(result);
+    const result = await getSavedEvents(id, `limit=2&offset=0`) as { events: EventTableType[]; count: number }
     
     if(result && result?.count>0){
       setSavedEvents(result);
     }else setSavedEvents(undefined);
   }
-  console.log(savedEvents);
   const setContextData=(id:string | undefined)=>{
     GAEvent(
       "trackers",
@@ -392,7 +341,25 @@ const Trackers = ({ searchParams }: Search) => {
     setIsNewCall(true); 
     setTrackerId(id);
   }
-  // console.log(searchValue);
+  const hideTemplates=(val: boolean)=>{
+    if(!val){
+    setMultipleFilters({
+      showTemplates: (!val).toString(),
+      id: "",
+      q:""
+    })
+    }
+    else {
+      setMultipleFilters({
+        skip: skip,
+        q: searchValue,
+        showTemplates: "",
+      })
+    }
+  }
+  useEffect(()=>{
+    setHideTemplate(!getFilterValue("showTemplates"))
+  },[searchParam])
   
   return (
     // <div className={styles.body}>
@@ -417,13 +384,13 @@ const Trackers = ({ searchParams }: Search) => {
       <div>
     {isData &&
       <div className="flex flex-row">
-  <div className="w-1/2 h-[calc(100vh-65px)]">
+  <div className="w-1/2 h-[calc(100vh-67px)]">
     <div className="flex flex-col gap-4 px-5 py-0">
       <div className="text-sm text-[var(--secondary-text-color)] pt-5">
         Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
       </div>
       <div>
-      <Button className="text-white" onClick={()=>setHideTemplate(false)}>Create Tracker</Button>
+      <Button className="text-white w-[100px]" onClick={()=>hideTemplates(false)}>Create</Button>
       </div>
       {/* <button
         className="w-[160px] text-white font-bold py-2 px-4 rounded text-sm"
@@ -446,7 +413,7 @@ const Trackers = ({ searchParams }: Search) => {
           <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue}/>
       </div>
   </div>
-  <div className="w-1/2 p-5 h-[calc(100vh-65px)] bg-[var(--background-secondary-color)]" style={{padding:"20px 0px"}}>
+  <div className="w-1/2 p-5 h-[calc(100vh-67px)] bg-[var(--background-secondary-color)]" style={{padding:"20px 0px"}}>
     <div className="flex flex-col gap-4">
   <div className="flex items-center justify-between border border-[var(--border-color)] p-3" style={{margin:"0px 32px"}}>
           <span className="flex items-center gap-2 text-[#696B83]">
@@ -465,7 +432,7 @@ const Trackers = ({ searchParams }: Search) => {
             </Button>
           )}
         </div>
-        <div className="flex h-[calc(100vh-168px)] overflow-y-auto flex-col px-8 gap-4">
+        <div className="flex h-[calc(100vh-175px)] overflow-y-auto flex-col px-8 gap-4">
   {/* <div className="flex w-[45%] items-stretch">
     <div className="flex flex-col w-[100%] gap-3">
     <div className="w-[100%]">
@@ -497,20 +464,14 @@ const Trackers = ({ searchParams }: Search) => {
   <div className="h-[300px]">
     {(!singleTrackerData &&  searchValue.length<3) ? (
         <Loading />
-    ) : Number(singleTrackerData?.groupedEventsCountByStatus?.groupedEventsByStatus?.active || 0) === 0 ? (
-      <div className="px-10 py-5 h-[100%]" onClick={() => setContextData(singleTrackerData?.id)}>
-        {!singleTrackerData?<NullState image={TrackerNullState}  title="No tracker selected."/>:
-        <NullState image={TrackerNullState}  title="We couldn’t find any events matching your tracker criteria at the moment." text="Try adjusting your filters or checking back later, as new events are added frequently." buttonText="Manage Configuration" buttonUrl={`/internal/trackers/${singleTrackerData && singleTrackerData.id}/trackedConfiguration?type=${singleTrackerData &&  singleTrackerData.type}`}/>
-        }
-         
-      </div>
-    ) : (
+    ) : !singleTrackerData?<NullState image={TrackerNullState}  title="No tracker selected."/> : (
       <Map
         isGlobal={true}
         source="tracker"
         searchParams="active"
         trackerId={singleTrackerData?.id || ""}
         trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
+        trackerType={singleTrackerData?.type || ""}
       />
     )}
   </div>
@@ -522,7 +483,7 @@ const Trackers = ({ searchParams }: Search) => {
   <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
     <SavedEventWidget savedEvents={savedEvents} redirectUrl={singleTrackerData 
-    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=list&eventType=savedEvent`:""}/>
+    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=savedEvent`:""}/>
   </div>
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
   <NotesDiscussionWidget 
@@ -565,12 +526,12 @@ const Trackers = ({ searchParams }: Search) => {
   </div>
 </div>}
 {(!hideTemplate || !isData)&& (
-          <div className="absolute left-[63px] top-[65px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-65px)]" style={{zIndex:"11"}}>
+          <div className="absolute left-[63px] top-[67px] bg-[var(--primary-foreground)] flex right-0 h-[calc(100vh-67px)]" style={{zIndex:"11"}}>
             <div  style={{padding:"24px 14px",width:"100%", overflowY:"auto"}}>
           {!isData && <div className="flex items-center pb-6 !pl-14 text-lg text-[var(--secondary-text-color)] font-semibold">Explore trackers or create custom ones using advanced filters, enabling real-time monitoring of key events and informed decisions.</div>}
         {isData && 
             <button className="w-[50px] flex text-white font-bold py-2 px-4 rounded text-sm items-center justify-center"
-        style={{ color: "var(--primary-color)" }} onClick={()=>setHideTemplate(true)}>
+        style={{ color: "var(--primary-color)" }} onClick={()=>hideTemplates(true)}>
           <Image src={Back} alt="close" height={22} width={22} />
             Back
           </button>

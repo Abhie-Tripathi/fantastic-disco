@@ -14,6 +14,7 @@ import { GAEvent } from '@/utils/GAEvent';
 import { SettingsGear, User } from 'geist-icons';
 import { useTrackerServices } from '@/services/trackerServices';
 import { useTrackerContext } from '@/context/tracker';
+import { Button } from "@/components/ui/button";
 const Index = () => {
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
@@ -24,7 +25,7 @@ const Index = () => {
   const [view,setView]=useState(typeOfEvent==="table"?"table":typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"table");
   const secondLast = pathName[pathName.length - 2];
   const router = useRouter()
-  const {data}= useTrackerContext();
+  const {data, skip, searchValue}= useTrackerContext();
   const {getTrackerDetail, error}=useTrackerServices();
   const [trackerSection, setTrackerSection] = useState("Tracked Events");
   useEffect(() => {
@@ -81,22 +82,29 @@ const Index = () => {
   
   return (
     <>
-      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[61px] w-[calc(100vw-63px)] bg-[var(--primary-foreground)] z-10 text-h6 left-[63px]">
+      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[67px] w-[calc(100vw-63px)] bg-[var(--primary-foreground)] z-10 text-h6 left-[63px]">
         <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link className={styles.bottom} href={
              last === "editTracker"
               ? (last === "editTracker"
                 ? `/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`
                 : `/internal/trackers/${secondLast}/trackedEvents?type=${type}`)
-              : '/internal/trackers'
+              : `/internal/trackers?skip=${skip}${searchValue.length > 0 ? `&q=${encodeURIComponent(searchValue)}` : ""}`
           } >
+          {/* <Button
+          variant="link"
+          className="flex items-center gap-2 p-0"
+          onClick={() => router.back()}
+          > */}
             <Image style={{ display: "flex" }} src={Back} alt="back" />
+            
           </Link>
           <div className={styles.tooltipContainer} style={{ cursor: data?.tracker?.name?.length > 20 ? "pointer" : "default" }}>
             {data?.tracker?.name?.length > 20 ? data?.tracker?.name?.substring(0, 20) + '...' : data?.tracker?.name}
             {data?.tracker?.name?.length > 20 && <span className={styles.tooltipText}>{data?.tracker?.name}</span>}
 
           </div>
+          {/* </Button> */}
         </div>
 
         <>
