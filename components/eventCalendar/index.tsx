@@ -344,7 +344,6 @@ export default function EventCalendar({
         />
       );
     }
-    console.log(error);
     return (
       <Calendar
         localizer={localizer}
