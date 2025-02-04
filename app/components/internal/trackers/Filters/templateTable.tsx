@@ -14,6 +14,8 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
   const [selectedIdArray, setSelectedIdArray] = useState<number[]>([]);
 
   const deleteEntry = (entryKey: string, itemIndex: number) => {
+    console.log(itemIndex);
+    
     if (!selectedIdArray.includes(itemIndex)) {
       setSelectedIdArray((prevNumbers) => [...prevNumbers, itemIndex]);
     } else {

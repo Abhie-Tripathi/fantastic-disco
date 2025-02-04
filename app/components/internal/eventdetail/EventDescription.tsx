@@ -12,6 +12,7 @@ import person1 from "@/public/person1.svg";
 import { useTheme } from "@/context";
 import { formatEventDates } from "@/utils/dateFormat";
 import { Calendar, Location } from "geist-icons";
+import { GAEvent } from "@/utils/GAEvent";
 
 
 const formatDate = (dateString: string | null): string => {
@@ -44,7 +45,10 @@ const EventDescription = ({
     >
       <div
         className={styles.header}
-        onClick={() => setAccordianToggle(!accordianToggle)}
+        onClick={() => {
+          setAccordianToggle(!accordianToggle);
+          !accordianToggle && GAEvent("Coordinate", "Enquiry Detail", "Event Details", "Expanded");
+        }}
       >
         <Image src={PageIcon} width={24} height={24} alt="page" className={iconClass} />
         <div className={styles.eventDetail_header}>

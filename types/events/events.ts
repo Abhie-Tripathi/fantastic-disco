@@ -294,8 +294,8 @@ export interface GTMEventPOCDetails {
   id: number;
   name: string;
   designation: string;
-  email: string;
-  phoneNumber: string;
+  email: string | null;
+  phoneNumber: string | null;
   location: {
     cityName: string | null;
     countryName: string | null;
@@ -303,6 +303,7 @@ export interface GTMEventPOCDetails {
   profilePicture: string;
   level: string;
   emailActive: string;
+  state?: number,
 }
 
 export interface AudienceSpread {
@@ -332,6 +333,8 @@ export interface GTMEventDetail extends Omit<Event, "organizer"> {
   below5CountryCategoryEvent: countryCategoryRank[] | [];
   organizer: GTMOrganizer | null;
   "trustScore%": number | null;
+  isEventBrand?: boolean;
+  isEventSeries?: boolean;
   rankData: {
     global: number;
     country: {

@@ -83,13 +83,13 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
                       <span className="break-all">{poc?.email}</span>
 
                       {poc?.emailActive &&
-                        (lastActiveDays(poc?.emailActive) > 0 &&
+                        (lastActiveDays(poc?.emailActive) >= 0 &&
                         lastActiveDays(poc?.emailActive) <= 180 ? (
                           <div
                             className="h-[8px] w-[8px] bg-[var(--success-text-color)] rounded-full cursor-pointer"
                             title="Active within last 6 months"
                           ></div>
-                        ) : lastActiveDays(poc?.emailActive) > 0 &&
+                        ) : lastActiveDays(poc?.emailActive) >= 0 &&
                           lastActiveDays(poc?.emailActive) <= 270 ? (
                           <div
                             className="h-[8px] w-[8px] bg-[var(--warning-text-color)] rounded-full cursor-pointer"
@@ -109,7 +109,7 @@ const PocExpanded = ({ eventId, pocData, unlockPoc }: Props) => {
                   <div className="flex justify-center w-full">
                     <Button
                       disabled={(poc?.state && (poc.state === 1 || poc?.state === 2) ) ? true : false}
-                      onClick={() => unlockPoc(poc.id)}
+                      onClick={() => unlockPoc(poc.id, "Expanded")}
                       variant={"outline"}
                       size={"sm"}
                     >

@@ -69,7 +69,6 @@ export function formatDateRange(startISOString: any, endISOString: any) {
     const utc1 = Date.UTC(a.year, a.monthNo, a.dayOfMonth);
     const utc2 = Date.UTC(b.year, b.monthNo, b.dayOfMonth);
 
-    console.log(utc1, utc2);
     return Math.floor((utc2 - utc1) / (1000 * 60 * 60 * 24));
   };
 

@@ -89,11 +89,14 @@ export default function CreateTrackerDialog({
       ...(adaptedParams.shows?.includes("eventFrequency") && {
         eventFrequency: true,
       }),
+      ...(getLocalFilterValue("trust_score_gte") && {
+        trust: true
+      }),
     };
     const showsData: string[] = [];
 
     const mapping = {
-      rating: "eventRating,trustScore",
+      rating: "eventRating",
       maturity: "maturity",
       forecasted: "isforecasted",
       frequency: "eventFrequency",
@@ -102,7 +105,7 @@ export default function CreateTrackerDialog({
       audienceZone: "audienceSpread",
       branded: "eventBrand",
       series: "eventSeries",
-      rankings: "eventRanking"
+      rankings: "eventRanking,trustScore"
     };
     
     const filters = getLocalFilterValue("show").split(",");

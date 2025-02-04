@@ -200,8 +200,6 @@ const EventListItem = ({
   const { toast } = useToast();
   const [isSaved, setIsSaved] = useState(event.isSaved);
   function getLeastRank(response: RankingResponse) {
-    console.log(response);
-
     let minRank = {
       rank: Infinity,
       name: "",
@@ -242,7 +240,6 @@ const EventListItem = ({
     if (minRank.type === "") {
       return "";
     }
-    console.log(minRank);
 
     return getEventRank(minRank);
   }
@@ -252,7 +249,6 @@ const EventListItem = ({
     else if (prop.rank == 2) rankString = "nd";
     else if (prop.rank == 3) rankString = "rd";
     else rankString = "th";
-    console.log(prop);
 
     return (
       <>

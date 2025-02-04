@@ -56,6 +56,7 @@ import EventKeyword from "@/app/components/dropdown/EventKeyword";
 // const Map = lazy(() => import("@/components/Map"));
 
 //JSON Data files:
+import { useDefaultFilters } from '@/hooks/useDefaultFilters';
 import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
 import SearchBar from "../../searchBar/SearchBar";
@@ -403,11 +404,13 @@ const formatCount = (count: number ) => {
 };
 
 const Pages = () => {
+  const {searchParams: search} = useDefaultFilters();
   const searchParams = useSearchParams();
   
   const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
+  
   interface SelectedLocation {
     [id: string]: string;
   }
@@ -764,7 +767,7 @@ const Pages = () => {
   const scrollableDivRef = useRef<HTMLDivElement>(null);
 
   const handlePresetClick = (presetItem: PresetJsonData, id: number, trackerType: string, trackerName: string) => {
-
+    setHideSuggestion(false);
     // const filteredPresetData = presetTemplateData.filter(item => item.id === id);    
     if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY') {
       const presetData: any = [];
@@ -814,7 +817,7 @@ const Pages = () => {
     const showsData: string[] = [];
 
     const mapping = {
-      rating: "eventRating,trustScore",
+      rating: "eventRating",
       maturity: "maturity",
       forecasted: "isforecasted",
       frequency: "eventFrequency",
@@ -823,7 +826,7 @@ const Pages = () => {
       audienceZone: "audienceSpread",
       branded: "eventBrand",
       series: "eventSeries",
-      rankings: "eventRanking"
+      rankings: "eventRanking,trustScore"
     };
     
     const filters = getLocalFilterValue("show").split(",");
@@ -1173,6 +1176,8 @@ const Pages = () => {
 
   useEffect(() => {
     if (editData && editData?.tracker && last === "editTracker") {
+
+      
       // if (editData.tracker.filterValue?.maturity == "low") {
       //   setSelectedMaturity(25);
       // }
@@ -1551,6 +1556,7 @@ const Pages = () => {
         }
       });
     }
+    
   }, [editData, searchParams]);
 
   // console.log(selectedLabels);
@@ -1724,6 +1730,19 @@ useEffect(()=>{
   const handleCustomData = (data: any) => {
     console.log(data);
     setHideSuggestion(true);
+    const d=data.map(item => item["Include Keywords"]);
+    console.log(d.join(","));
+    
+    if(type==="T_PRODUCT_KEYWORDS"){
+      
+      
+      if(activeTab==="include"){ 
+        setLocalFilter("includeKeywords",d.join(","));
+      // setLocalFilter("excludeKeywords",data?.["Include Keywords"].join(","))
+      }
+      else setLocalFilter("excludeKeywords",data.map(item => item["Exclude Keywords"]).join(", "));
+
+    }
     setCustomData(data);
   }
 
@@ -1789,31 +1808,23 @@ const generateDynamicString = (item: any) => {
     return `${item[0]} (${item[1]})`;
   }else return item;
 };
-const [includeKeyword, setIncludeKeyword] = useState([]);
-const [excludeKeyword, setExcludeKeyword] = useState([]);
+const [includeKeyword, setIncludeKeyword] = useState<{ "Include Keywords": string }[]>([]);
+const [excludeKeyword, setExcludeKeyword] = useState<{ "Exclude Keywords": string }[]>([]);
 
 useEffect(() => {
   if (type === "T_PRODUCT_KEYWORDS") {
-    console.log(activeTab);
-
-    if (activeTab === "exclude" ) {
       const keywordData = getLocalFilterValue("excludeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
       const updatedData = keywordData.map(item => ({ "Exclude Keywords": item }));
-      setCustomData(updatedData);
-    }
-
-    else if (activeTab === "include" ) {
+      setExcludeKeyword(updatedData);
+  }
+}, [getLocalFilterValue("excludeKeywords")]);
+useEffect(()=>{
+  if (type === "T_PRODUCT_KEYWORDS") {
       const keywordData = getLocalFilterValue("includeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
       const updatedData = keywordData.map(item => ({ "Include Keywords": item }));
-      setCustomData(updatedData);
-    }
+      setIncludeKeyword(updatedData);
   }
-}, [activeTab,getLocalFilterValue("includeKeywords"),getLocalFilterValue("excludeKeywords")]);
-// useEffect(()=>{
-//   if (activeTab === "include") setCustomData(includeKeyword);
-//   else setCustomData(excludeKeyword);
-// },[activeTab])
-
+},[getLocalFilterValue("includeKeywords")])
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -1890,7 +1901,7 @@ return (
         {type==="T_PRODUCT_KEYWORDS" && 
           <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions} hideSuggestion={hideSuggestion} setHideSuggestion={setHideSuggestion}/>
         }
-        {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP" || type==="T_PRODUCT_KEYWORDS") ?
+        {((type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP" || type==="T_PRODUCT_KEYWORDS") && template) ?
           (uploadEnabled && 
             <CsvUploader
               templateData={template}
@@ -1944,8 +1955,8 @@ return (
 
                       </>
                     ))}
-                    <div onClick={() => template.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
-                      style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+                    <div onClick={() => template?.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
+                      style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
                     >+
                       {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
                     </div>
@@ -2047,21 +2058,82 @@ return (
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
           {" "} You can edit or remove unwanted entries from here.
         </div>
-        {type==="T_PRODUCT_KEYWORDS" && 
-           <Tabs defaultValue="include" onValueChange={(value) => setActiveTab(value as "include" | "exclude")} className="pb-2">
+        {/* {type==="T_PRODUCT_KEYWORDS" && 
+           <Tabs className="pb-2">
            <TabsList className="grid w-full grid-cols-2">
-             <TabsTrigger value="include">
+             <TabsTrigger value="include" onClick={()=>setActiveTab("include")}>
                Include
-               {/* Display count if there are included keywords */}
              </TabsTrigger>
-             <TabsTrigger value="exclude">
+             <TabsTrigger value="exclude" onClick={()=>setActiveTab("exclude")}>
                Exclude
-               {/* Display count if there are excluded keywords */}
              </TabsTrigger>
            </TabsList>
            </Tabs>
+        } */}
+        {(type==="T_PRODUCT_KEYWORDS") &&
+        <Tabs defaultValue="include" onValueChange={(value) => setActiveTab(value as "include" | "exclude")} className="pb-2">
+        {(includeKeyword.length > 0 || excludeKeyword.length>0)&&
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="include">
+            Include
+            {/* Display count if there are included keywords */}
+          </TabsTrigger>
+          <TabsTrigger value="exclude">
+            Exclude
+            {/* Display count if there are excluded keywords */}
+          </TabsTrigger>
+        </TabsList>
+      }
+        <TabsContent value="include" className="mt-0">
+          {includeKeyword.length > 0 ? (
+          <TemplateTable
+          customData={includeKeyword}
+          handleCustomData={handleCustomData}
+          presetName={selectedPresetName}
+          />
+          ) : (
+            <div className={`pt-12 ${styles.emptyTableData}`}>
+            <Image
+              src={trackerEmptyTable}
+              alt="table"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            />
+            <div className={styles.emptyTableText}>No data added</div>
+            <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
+          </div>
+  )}
+</TabsContent>
+
+       
+        <TabsContent value="exclude" className="mt-0">
+        {excludeKeyword.length>0 ?
+          <TemplateTable
+            customData={excludeKeyword}
+            handleCustomData={handleCustomData}
+            presetName={selectedPresetName}
+          />:
+          <div className={`pt-12 ${styles.emptyTableData}`}>
+         <Image
+           src={trackerEmptyTable}
+           alt="table"
+           style={{
+             display: "flex",
+             alignItems: "center",
+             justifyContent: "center",
+           }}
+         />
+         <div className={styles.emptyTableText}>No data added</div>
+         <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
+       </div>
         }
-        {(customData && customData.length >0)?
+        </TabsContent>
+      </Tabs>
+        }
+        {/* {(customData && customData.length >0)?
           <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> 
           :          
           <div className={styles.emptyTableData}>
@@ -2077,7 +2149,7 @@ return (
             <div className={styles.emptyTableText}>No data added</div>
             <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
           </div>
-        }
+        } */}
       </div>
     </div>
     }

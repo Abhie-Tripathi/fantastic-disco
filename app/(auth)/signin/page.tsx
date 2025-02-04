@@ -25,6 +25,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle, Loader2 } from "lucide-react";
+import { GAEvent } from "@/utils/GAEvent";
 
 type SignInData = z.infer<typeof SignInFormSchema>;
 
@@ -47,6 +48,16 @@ export default function SignInForm() {
       console.error("Sign in error:", error);
     }
   };
+
+  useEffect(() => {
+    if (
+      errors.email?.message &&
+      errors.email?.message === "Email is required" &&
+      errors.email.type === "invalid_type"
+    ) {
+      GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email Empty");
+    }
+  }, [errors.email?.message]);
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-8 h-[80dvh]">
@@ -90,7 +101,7 @@ export default function SignInForm() {
           type="submit"
           className="w-80 self-center"
           disabled={isLoading}
-          onClick={() => clearErrors}
+          onClick={() => clearErrors()}
         >
           {isLoading ? (
             <>
@@ -103,7 +114,13 @@ export default function SignInForm() {
         </Button>
       </form>
       <div className="text-center">
-        <Link href="/signup" className="text-primary hover:underline">
+        <Link
+          href="/signup"
+          className="text-primary hover:underline"
+          onClick={() =>
+            GAEvent("Onboarding", "Onboarding", "Sign In", "Sign Up")
+          }
+        >
           Don&apos;t have an account? Sign up
         </Link>
       </div>
