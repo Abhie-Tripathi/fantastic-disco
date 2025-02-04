@@ -47,7 +47,7 @@ export default function EventList({
   
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.delete("view");
-  filteredParams.set("skip", String((currentPage - 1) * 10));
+  filteredParams.set("skip", String((currentPage - 1) * 20));
   filteredParams.set("active_lte", eventDate.toISOString());
   filteredParams.set("active_gte", eventDate.toISOString());
   const { data, error, isLoading } = useQuery({
@@ -61,7 +61,7 @@ export default function EventList({
           : active === "newEvent"
           ? "" : active === "savedEvent" ? "saved":
            "active"
-      }&startDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&endDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&limit=10&offset=${(currentPage - 1) * 10 }`, true ),
+      }&startDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&endDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&limit=20&offset=${(currentPage - 1) * 20 }`, true ),
   });
 
   const handlePageChange = (page: number) => {
@@ -74,7 +74,7 @@ export default function EventList({
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
   const count = isEventResponse(data) ? data.count : 0;
-  const totalPages = Math.ceil(count / 10) || 1;
+  const totalPages = Math.ceil(count / 20) || 1;
 
   const EventCard = ({ event }: { event: Event }) => {
     const address = event.venueLocation
