@@ -1,8 +1,10 @@
 import { Industry, SettingResearchData } from "@/types/onboarding";
-import Media_Agency from "/public/authIcons/media_agency.svg";
-import Research from "/public/authIcons/research.svg";
-import IndustryPartners from "/public/authIcons/industry_partners.svg";
-import EventParticipant from "/public/authIcons/event_participant.svg";
+import Media_Agency from "/public/authIcons/media_marketing.svg";
+import Research from "/public/authIcons/research_consultancy.svg";
+import IndustryPartners from "/public/authIcons/eventPlanners.svg";
+import EventParticipant from "/public/authIcons/enterprises.svg";
+import InfraAndTechnology from "/public/authIcons/infra_technology.svg";
+import Venue from "/public/authIcons/venue.svg";
 import Others from "/public/authIcons/others.svg";
 
 export const settingResearchData: SettingResearchData[] = [
@@ -23,36 +25,52 @@ export const mediaAgencyResearchData: SettingResearchData[] = [
 
 export const industryData: Industry[] = [
   {
-    name: "Media & Agency",
-    slug: "media_agency",
+    name: "Media and Marketing",
+    slug: "media_and_marketing",
     image: Media_Agency,
     type: "category",
     mappedSettingResearch: mediaAgencyResearchData,
     subCategory: true,
   },
   {
-    name: "Research",
-    slug: "research",
+    name: "Research and M&A",
+    slug: "research_and_ma",
     image: Research,
     type: "category",
     mappedSettingResearch: mediaAgencyResearchData,
     subCategory: true,
   },
   {
-    name: "Industry Partners",
-    slug: "industry_partners",
+    name: "Event Planners",
+    slug: "event_planners",
     image: IndustryPartners,
-    type: "location",
-    mappedSettingResearch: mediaAgencyResearchData,
-    subCategory: false,
+    type: "category",
+    mappedSettingResearch: settingResearchData,
+    subCategory: true,
   },
   {
-    name: "Event Participant",
-    slug: "event_participant",
+    name: "Corporates and Brands",
+    slug: "corporates_and_brands",
     image: EventParticipant,
-    type: "location",
+    type: "category",
     mappedSettingResearch: settingResearchData,
-    subCategory: false,
+    subCategory: true,
+  },
+  {
+    name: "Infra and Technology",
+    slug: "infra_and_technology",
+    image: InfraAndTechnology,
+    type: "category",
+    mappedSettingResearch: mediaAgencyResearchData,
+    subCategory: true,
+  },
+  {
+    name: "Venue and Real Estate",
+    slug: "venue_and_real_estate",
+    image: Venue,
+    type: "category",
+    mappedSettingResearch: mediaAgencyResearchData,
+    subCategory: true,
   },
   {
     name: "Others",

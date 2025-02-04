@@ -1,19 +1,7 @@
 "use client";
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import Image from "next/image";
-import styles from "@/app/(auth)/verification/page.module.css";
-import OtpInput from "react-otp-input";
-import Carousel from "@/app/components/carousel";
-import VerificationVisuals from "/public/verificationVisuals.svg";
-import ArchiveIcon from "/public/archive.svg";
-import { usePathname, useRouter } from "next/navigation";
-import { baseUrl } from "@/constants";
-import { myFetch } from "@/utils/myFetch";
+import React, { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuthContext } from "@/context";
-import logo from "/public/croppedlogo.png";
-import whr from "/public/whrai.svg";
-import LocationForm from "@/app/(auth)/location/page";
-import { VerificationProps } from "@/types/onboarding";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -23,7 +11,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import {
@@ -38,7 +25,6 @@ import { useSearchParams } from "next/navigation";
 import { Input } from "../ui/input";
 import { industryData, settingResearchData } from "@/data/onboarding";
 import { endOfMonth, startOfMonth } from "date-fns";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { GAEvent } from "@/utils/GAEvent";
 
 const otpSchema = z.object({
@@ -64,6 +50,7 @@ export default function NewVerificationForm() {
   const flow = searchParams.get("flow") || "";
 
   const urlParams = useMemo(() => {
+    const params = new URLSearchParams();
     const currentDate = new Date();
     const startDate = new Date(
       startOfMonth(currentDate).setHours(5, 30, 0, 0)
@@ -71,10 +58,17 @@ export default function NewVerificationForm() {
     const endDate = new Date(
       endOfMonth(currentDate).setHours(5, 30, 0, 0)
     ).toISOString();
-    const queryParams = `status=active,cancelled,postponed&view=map${
-      categories && categories.length > 0 ? `&categories=${categories}` : ""
-    }&active_gte=${startDate}&active_lte=${endDate}&locationIds=e3ef02ad-2f97-5fa6-9033-9addfad3f0ef`;
-    return queryParams;
+
+    params.set("view", "map");
+    params.set("status", "active,cancelled,postponed");
+    params.set("active_gte", startDate);
+    params.set("active_lte", endDate);
+    params.set("locationIds", "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef");
+
+    if (categories && categories.length > 0) {
+      params.set("categories", categories);
+    }
+    return params;
   }, [categories]);
 
   const redirectTo = useMemo(() => {
@@ -82,9 +76,7 @@ export default function NewVerificationForm() {
       const isCategoryMapped = industryData.find(
         (industryItem) => industryItem.slug === industry
       )?.subCategory;
-      if (!isCategoryMapped) {
-        return `/location${industry ? `?industry=${industry}` : ""}`;
-      } else {
+      if (isCategoryMapped) {
         return `/internal/search/events?${urlParams}`;
       }
     }

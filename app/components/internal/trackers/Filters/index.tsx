@@ -56,6 +56,7 @@ import EventKeyword from "@/app/components/dropdown/EventKeyword";
 // const Map = lazy(() => import("@/components/Map"));
 
 //JSON Data files:
+import { useDefaultFilters } from '@/hooks/useDefaultFilters';
 import { useTheme } from "@/context";
 import { GAEvent } from "@/utils/GAEvent";
 import SearchBar from "../../searchBar/SearchBar";
@@ -402,11 +403,13 @@ const formatCount = (count: number ) => {
 };
 
 const Pages = () => {
+  const {searchParams: search} = useDefaultFilters();
   const searchParams = useSearchParams();
   
   const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
+  
   interface SelectedLocation {
     [id: string]: string;
   }
@@ -431,6 +434,7 @@ const Pages = () => {
   // const [selectedCategories, setSelectedCategories] = useState<string[]>(
   //   enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
   // );
+  
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
       enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
     );
@@ -800,7 +804,7 @@ const Pages = () => {
     const showsData: string[] = [];
 
     const mapping = {
-      rating: "eventRating,trustScore",
+      rating: "eventRating",
       maturity: "maturity",
       forecasted: "isforecasted",
       frequency: "eventFrequency",
@@ -809,7 +813,7 @@ const Pages = () => {
       audienceZone: "audienceSpread",
       branded: "eventBrand",
       series: "eventSeries",
-      rankings: "eventRanking"
+      rankings: "eventRanking,trustScore"
     };
     
     const filters = getLocalFilterValue("show").split(",");
@@ -1159,6 +1163,8 @@ const Pages = () => {
 
   useEffect(() => {
     if (editData && editData?.tracker && last === "editTracker") {
+
+      
       // if (editData.tracker.filterValue?.maturity == "low") {
       //   setSelectedMaturity(25);
       // }
@@ -1537,6 +1543,7 @@ const Pages = () => {
         }
       });
     }
+    
   }, [editData, searchParams]);
 
   // console.log(selectedLabels);
