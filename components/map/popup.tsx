@@ -106,7 +106,7 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
                     </span>
                   </div>
                   <Link
-                    href={`/search/${event.id}`}
+                    href={`/internal/event/${event.id}`}
                     className="text-primary text-xs py-0 h-5 pr-0"
                     target="_blank"
                   >
