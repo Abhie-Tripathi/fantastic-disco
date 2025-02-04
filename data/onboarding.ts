@@ -45,7 +45,7 @@ export const industryData: Industry[] = [
     slug: "event_planners",
     image: IndustryPartners,
     type: "category",
-    mappedSettingResearch: mediaAgencyResearchData,
+    mappedSettingResearch: settingResearchData,
     subCategory: true,
   },
   {
@@ -61,15 +61,15 @@ export const industryData: Industry[] = [
     slug: "infra_and_technology",
     image: InfraAndTechnology,
     type: "category",
-    mappedSettingResearch: settingResearchData,
+    mappedSettingResearch: mediaAgencyResearchData,
     subCategory: true,
   },
   {
-    name: "Venue and RealEstate",
+    name: "Venue and Real Estate",
     slug: "venue_and_real_estate",
     image: Venue,
     type: "category",
-    mappedSettingResearch: settingResearchData,
+    mappedSettingResearch: mediaAgencyResearchData,
     subCategory: true,
   },
   {
