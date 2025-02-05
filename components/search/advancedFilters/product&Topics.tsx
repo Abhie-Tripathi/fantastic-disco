@@ -43,6 +43,7 @@ export default function KeywordFilter({
   const [activeTab, setActiveTab] = useState<"include" | "exclude">("include");
   const [includeKeywords, setIncludeKeywords] = useState<string[]>([]);
 const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
+console.log(localFilters.includeKeywords);
 useEffect(()=>{
   
   const includeKeywords = [

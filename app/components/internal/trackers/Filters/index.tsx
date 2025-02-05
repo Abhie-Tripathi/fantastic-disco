@@ -1729,6 +1729,16 @@ useEffect(()=>{
 
   const handleCustomData = (data: any) => {
     setHideSuggestion(true);
+    console.log(data);
+    // if(type==="T_PRODUCT_KEYWORDS"){
+    //   const d = data.map((item) => item["Include Keywords"]);
+    //   console.log(d);
+    //   if(activeTab==="include"){
+    //     console.log(data);
+    //     setLocalFilter("includeKeywords","");
+    //      setIncludeKeyword(data);
+    //   }
+    // }else
     setCustomData(data);
   }
 
@@ -1753,16 +1763,23 @@ useEffect(() => {
   if (type === "T_PRODUCT_KEYWORDS") {
       const keywordData = getLocalFilterValue("excludeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
       const updatedData = keywordData.map(item => ({ "Exclude Keywords": item }));
+      
       setExcludeKeyword(updatedData);
   }
 }, [getLocalFilterValue("excludeKeywords")]);
 useEffect(()=>{
   if (type === "T_PRODUCT_KEYWORDS") {
+    console.log(getLocalFilterValue("includeKeywords"));
+    
       const keywordData = getLocalFilterValue("includeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
       const updatedData = keywordData.map(item => ({ "Include Keywords": item }));
+      //  console.log(updatedData);
+      //  setLocalFilter("includeKeywords", keywordData.join(","));
       setIncludeKeyword(updatedData);
   }
 },[getLocalFilterValue("includeKeywords")])
+console.log(customData);
+
 return (
   <>
   <div>{isLoading?<Loading/>:

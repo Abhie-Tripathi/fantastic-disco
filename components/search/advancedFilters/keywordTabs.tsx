@@ -4,7 +4,7 @@ import { X, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
+import { useFilterContext } from "@/context/filterContext";
 interface KeywordTabsProps {
   type?:string;
   activeTab: "include" | "exclude";
@@ -28,6 +28,9 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
   excludeKeywords,
   handleRemoveKeyword,
 }) => {
+  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
+  console.log(includeKeywords);
+  const inc = getLocalFilterValue("includeKeywords").split(",");
   return (
     <Tabs
       defaultValue="include"
@@ -63,7 +66,7 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
         <>
         <TabsContent value="include" className="mt-0">
           <div className="flex flex-wrap gap-2">
-            {includeKeywords?.map((keyword) => (
+            {inc?.map((keyword) => (
               <Badge
                 key={keyword}
                 variant="secondary"
