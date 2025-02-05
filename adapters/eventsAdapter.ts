@@ -58,9 +58,19 @@ export const EventsAdapter = {
       return adaptedParams;
     }
 
+    if (params.get("sortBy")) {
+      adaptedParams.sortBy = params.get("sortBy")!;
+    }
+
+    if (params.get("shortType")) {
+      adaptedParams.shortType = params.get("shortType")!;
+    }
+
     if (params.get("onlyBranded") !== null) {
       adaptedParams.eventBrand = params.get("onlyBranded") ?? "";
     }
+
+
     if (params.get("onlySeries") !== null) {
       adaptedParams.eventSeries = params.get("onlySeries") ?? "";
     }

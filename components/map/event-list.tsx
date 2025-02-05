@@ -39,7 +39,6 @@ const EventCard = memo(
     onHover: () => void;
     onLeave: () => void;
   }) => {
-    const [isHovered, setIsHovered] = useState(false);
     const [mapZoom, setMapZoom] = useState(0);
 
     useEffect(() => {
@@ -55,7 +54,7 @@ const EventCard = memo(
       ? event.venueLocation.city?.name === "Online"
         ? "Online"
         : [
-            event.venueLocation?.venue?.name,
+            event.venueLocation?.venue?.name || "TBA",
             event.venueLocation?.city?.name,
             event.venueLocation?.state?.name,
             event.venueLocation?.country?.name,
@@ -70,34 +69,17 @@ const EventCard = memo(
         const { lat, lon } = getEventLatLong(event);
         mapRef.current.flyTo({
           center: [lon, lat],
-          zoom: 16,
+          zoom: 18,
           duration: 2000,
           essential: true,
         });
       }
-    };
-
-    const handleMouseEnter = () => {
-      if (mapZoom >= 16) {
-        setIsHovered(true);
-        onHover();
-      }
-    };
-
-    const handleMouseLeave = () => {
-      if (mapZoom >= 16) {
-        setIsHovered(false);
-        onLeave();
-      }
+      onHover();
     };
 
     return (
       <Link href={`/internal/event/${event.id}`}>
-        <Card
-          className="mb-4 relative hover:shadow-md transition-shadow"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
+        <Card className="mb-4 relative hover:shadow-md transition-shadow">
           <div
             className="absolute left-0 top-0 bottom-0 w-1 rounded-md"
             style={{
@@ -120,17 +102,15 @@ const EventCard = memo(
                 {formattedDateRange(event.startDateTime, event.endDateTime)}
               </div>
               {/* Show button always if zoom is less than 16 */}
-              {mapZoom < 16 && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-6 text-xs text-primary hover:text-primary/80"
-                  onClick={handleZoomToLocation}
-                >
-                  <Focus className="w-3 h-3 mr-1" />
-                  Zoom to location
-                </Button>
-              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 text-xs text-primary hover:text-primary/80"
+                onClick={handleZoomToLocation}
+              >
+                <Focus className="w-3 h-3 mr-1" />
+                Zoom to location
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -273,6 +253,8 @@ function EventList({
     params.delete("view");
     params.set("skip", String((currentPage - 1) * 20));
     params.set("stats", "list");
+    params.set("sortBy", "distance");
+    params.set("shortType", "asc")
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
     if (mapCenter && mapRadius) {

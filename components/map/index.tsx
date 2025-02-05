@@ -143,7 +143,9 @@ export default function MapComponent({
         ? trackerLoc?.length > 0
           ? trackerLoc
           : "defaultLoc"
-        :  getLocalFilterValue("locationIds").length===0?"defaultLoc":getLocalFilterValue("locationIds");
+        : getLocalFilterValue("locationIds").length === 0
+        ? "defaultLoc"
+        : getLocalFilterValue("locationIds");
     if (locationIds === "defaultLoc")
       setViewport({
         ...viewport,
@@ -440,7 +442,7 @@ export default function MapComponent({
   }, [events]);
 
   const determineZoomGroup = useCallback((zoomLevel: number): ZoomGroup => {
-    if (zoomLevel >= 11.5) {
+    if (zoomLevel >= 7.5) {
       return "event";
     } else {
       return "city";
@@ -564,8 +566,8 @@ export default function MapComponent({
     }
   }, []);
 
-  const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
-  const showEvent = viewport.zoom >= 12;
+  const showEventCount = viewport.zoom < 10 && eventCountsQuery.isSuccess;
+  const showEvent = viewport.zoom >= 10;
 
   const handleEventHover = (event: Event) => {
     setHighlightedEvent(event);
