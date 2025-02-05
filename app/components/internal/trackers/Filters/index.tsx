@@ -1741,54 +1741,6 @@ const commonCss={
   input_container:`w-full border-[var(--input-border-color)] border rounded-[var(--border-radius-sm)] whitespace-nowrap p-2 px-4 text-inherit bg-inherit`,
   input:'flex justify-between items-center'
 }
-// useEffect(()=>{
-//   const updatedIncludeKeywords = includeKeywords.map((keyword) => `${keyword.split(" ").join("_")}`);
-//   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
-//       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
-// },[includeKeywords, excludeKeywords])
-// console.log(enabledFilters.userRating.isRatingEnabled);
-// useEffect(()=>{
-//   if(last!=="editTracker"){
-//   setRatingOpen(enabledFilters?.eventRating?.isRatingEnabled|| false);
-//   setExhibitOpen(enabledFilters?.estimatedExhibitScore?.isExhibitorsEnabled|| false);
-//   setSelectedLocationsData(enabledFilters?.locationIds?.enabledValue);
-//   // setSelectedEventType({...selectedEventType,  business: enabledFilters?.eventType?.enabledValue?.map((item)=> `${item.toLowerCase()}s`) || []});
-//   setSelectedEventType({...selectedEventType,  business: enabledFilters?.eventType?.enabledValue?.map((item)=> `${item.toLowerCase()}s`) || []});
-//   setIncludeKeywords(enabledFilters?.keywords?.positiveKeywords);
-//   setExcludeKeywords(enabledFilters?.keywords?.negativeKeywords);
-//   setSelectedVisitors(enabledFilters?.eventSize?.enabledValue || []);
-//   setSelectedCategories( enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []);
-  
-//   setDateRange({
-//     from: enabledFilters?.durations?.startDate
-//       ? new Date(enabledFilters.durations.startDate.split(",")[0])
-//       : undefined,
-//     to: enabledFilters?.durations?.startDate
-//       ? new Date(enabledFilters.durations.startDate.split(",")[1])
-//       : undefined,
-//   });
-//   setIsMaturity(enabledFilters?.maturity?.isMaturityEnabled||false);
-//   setSelectedEventStatus(enabledFilters?.eventStatus?.enabledValue?.map((item)=>item.toLowerCase()) || []);
-//   setSelectedEventFrequency(enabledFilters?.eventFrequency?.enabledValue?.map((item)=>item.toLowerCase())|| []);
-//   setFreqToggle(enabledFilters?.eventFrequency?.isFreqEnabled || false);
-//   setSelectedEntry(enabledFilters?.eventEntry?.enabledValue?.map((item)=>item.toLowerCase()) || []);
-//   setSelectedEventFormat(enabledFilters?.eventFormat?.enabledValue || []);
-//   setSelectedExhibitScore(enabledFilters?.estimatedExhibitScore?.enabledValue || []);
-//   setSelectedUserRatings(enabledFilters?.eventRating?.enabledValue || []);
-//   setSelectedBrandedEvent(enabledFilters?.branded?.enabledValue?.eventBrand||false);
-//   setSelectedEventSeries(enabledFilters?.branded?.enabledValue?.eventSeries || false);
-//   setSelectedMaturity(enabledFilters?.maturity?.enabledValue?.[0] || "" || "");
-//   setIsBrand(enabledFilters?.branded?.isBrandedEnabled|| false);
-//   setForecastedStatus(enabledFilters?.isForecasted?.isForecastedEnabled || false);
-//   setAnalyticsToggles({
-//     ...analyticsToggles,
-//     globalToggle: enabledFilters?.analytics?.isAnalyticsEnabled?true:false,
-//   });
-//   setAudienceZone(enabledFilters?.audienceZone?.isZoneEnabled || false);
-//   }
-  
-// },[enabledFilters])
-// console.log(template?.inputAreas[0]?.placeholder);
 const generateDynamicString = (item: any) => {
   if(Array.isArray(item)){
     return `${item[0]} (${item[1]})`;
@@ -1801,8 +1753,6 @@ useEffect(() => {
   if (type === "T_PRODUCT_KEYWORDS") {
       const keywordData = getLocalFilterValue("excludeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
       const updatedData = keywordData.map(item => ({ "Exclude Keywords": item }));
-      console.log(updatedData);
-      setLocalFilter("excludeKeywords", keywordData.join(","));
       setExcludeKeyword(updatedData);
   }
 }, [getLocalFilterValue("excludeKeywords")]);
@@ -2060,15 +2010,15 @@ return (
         } */}
         {(type==="T_PRODUCT_KEYWORDS") &&
         <Tabs defaultValue="include" onValueChange={(value) => setActiveTab(value as "include" | "exclude")} className="pb-2">
-        {(getLocalFilterValue("includeKeywords").length > 0 || getLocalFilterValue("excludeKeywords").length >0)&&
+        {(includeKeyword.length > 0 || excludeKeyword.length >0)&&
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="include">
             Include
-            {/* Display count if there are included keywords */}
+            {type === "T_PRODUCT_KEYWORDS" && includeKeyword.length>0 && <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white ml-1">{includeKeyword.length}</span>}
           </TabsTrigger>
           <TabsTrigger value="exclude">
             Exclude
-            {/* Display count if there are excluded keywords */}
+            {type === "T_PRODUCT_KEYWORDS" && excludeKeyword.length>0 && <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white ml-1">{excludeKeyword.length}</span>}
           </TabsTrigger>
         </TabsList>
       }
@@ -2121,23 +2071,28 @@ return (
         </TabsContent>
       </Tabs>
         }
-        {/* {(customData && customData.length >0)?
-          <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> 
-          :          
-          <div className={styles.emptyTableData}>
-            <Image
-              src={trackerEmptyTable}
-              alt="table"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            />
-            <div className={styles.emptyTableText}>No data added</div>
-            <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
-          </div>
-        } */}
+       {type !== "T_PRODUCT_KEYWORDS" && 
+  (customData && customData.length > 0 ? (
+    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} />
+  ) : (
+    <div className={styles.emptyTableData}>
+      <Image
+        src={trackerEmptyTable}
+        alt="table"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      />
+      <div className={styles.emptyTableText}>No data added</div>
+      <div className={styles.emptyTableText} style={{ maxWidth: '220px', padding: '0', fontWeight: 'unset' }}>
+        Please upload or manually enter the information
+      </div>
+    </div>
+  ))
+}
+
       </div>
     </div>
     }
