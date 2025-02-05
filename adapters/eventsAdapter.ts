@@ -52,7 +52,9 @@ export const EventsAdapter = {
       if (adaptedShowsParams.length > 0)
         adaptedParams.shows = adaptedShowsParams.join(",");
     }
-
+    if(params.get("limit")){
+      adaptedParams.limit = params.get("limit")!;
+    }
     if (params.get("eventName")) {
       adaptedParams.eventName = params.get("eventName")!;
       return adaptedParams;
@@ -409,7 +411,6 @@ export const EventsAdapter = {
     if (params.get("estimatedExhibitors")) {
       adaptedParams.estimatedExhibitScore = params.get("estimatedExhibitors")!;
     }
-
     if (params.get("impact_score_gte") && params.get("impact_score_lte")) {
       adaptedParams.eventImpactScore = `${params.get(
         "impact_score_gte"
@@ -425,7 +426,6 @@ export const EventsAdapter = {
     if (params.get("top")) {
       adaptedParams.eventRanking = `0-${params.get("top")}`;
     }
-
     if (params.get("designations")) {
       const designationSlugs = params.get("designations")?.split(",") || [];
       const designationIds = designationSlugs.map((slug) => {

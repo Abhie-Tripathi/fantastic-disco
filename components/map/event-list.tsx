@@ -280,7 +280,7 @@ function EventList({
         ? getTrackerMapEvents(
             trackerId ?? "",
             `max=20&offset=${(currentPage - 1) * 20}`,
-            `type=${searchParam}&viewBound=${filteredParams}&stats=list&limit=20&offset=${
+            `type=${searchParam}&viewBound=${filteredParams}&stats=list&limit=20&skip=${
               (currentPage - 1) * 20
             }`
           )
@@ -421,6 +421,7 @@ function EventList({
         </div>
       );
     }
+console.log(currentPage);
 
     return (
       <>

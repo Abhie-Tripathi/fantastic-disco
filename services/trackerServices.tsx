@@ -163,7 +163,6 @@ export const useTrackerServices = () => {
     ) => {
       const setParams = new URLSearchParams(eventType);
     const adaptedParams = EventsAdapter.adaptRequestParams(setParams);
-    
       const response:any= await api.request(
         setParams.get("type")==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events`,
         {
