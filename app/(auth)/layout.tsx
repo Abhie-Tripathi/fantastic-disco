@@ -42,7 +42,7 @@ export default function RootLayout({
                 src={Coordinate_Onboarding_Icon}
                 alt="Icon"
               />
-              <div className="flex text-[var(--sidebar-active)] items-center justify-center text-center font-medium text-2xl ">
+              <div className="flex text-[var(--sidebar-active)] mb-4 items-center justify-center text-center font-medium text-2xl ">
                 <Image src={logo} alt="logo" width={45} height={55} />
                 <Image src={whr} alt="whr" />
               </div>
