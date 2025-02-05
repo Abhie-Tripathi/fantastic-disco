@@ -442,7 +442,7 @@ export default function MapComponent({
   }, [events]);
 
   const determineZoomGroup = useCallback((zoomLevel: number): ZoomGroup => {
-    if (zoomLevel >= 7.5) {
+    if (zoomLevel >= 11.5) {
       return "event";
     } else {
       return "city";
@@ -566,8 +566,8 @@ export default function MapComponent({
     }
   }, []);
 
-  const showEventCount = viewport.zoom < 10 && eventCountsQuery.isSuccess;
-  const showEvent = viewport.zoom >= 10;
+  const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
+  const showEvent = viewport.zoom >= 12;
 
   const handleEventHover = (event: Event) => {
     setHighlightedEvent(event);
