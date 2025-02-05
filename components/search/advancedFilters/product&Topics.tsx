@@ -59,16 +59,21 @@ useEffect(()=>{
 }
 },[getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords")])
   useEffect(() => {
-    const savedIncludeKeywords = localFilters.includeKeywords;
-    const savedExcludeKeywords = localFilters.excludeKeywords;
-    if((savedIncludeKeywords ?? "").length > 0)
-    setIncludeKeywords?.(savedIncludeKeywords?.split(",") || []);
-    if((savedExcludeKeywords ?? "").length > 0)
-    setExcludeKeywords?.(savedExcludeKeywords?.split(",") || []);
+    const savedIncludeKeywords = localFilters?.includeKeywords;
+    const savedExcludeKeywords = localFilters?.excludeKeywords;
+    setIncludeKeywords(
+      savedIncludeKeywords
+      ?.split(",")
+      .filter(item => item.trim().length !== 0) || []
+      );
+    setExcludeKeywords(
+      savedExcludeKeywords
+      ?.split(",")
+      .filter(item => item.trim().length !== 0) || []
+      );
   }, [searchParams, localFilters]);
 
   const handleAddKeyword = (e: React.FormEvent) => {
-    setHideSuggestion?.(false);
     e.preventDefault();
     if (inputValue.trim()) {
       const newKeywords = inputValue
@@ -80,7 +85,7 @@ useEffect(()=>{
     }
   };
   const addKeywords=(newKeywords:string[])=>{
-   
+    setHideSuggestion?.(false);
     if (activeTab === "include") {
       const uniqueNewKeywords = newKeywords.filter(
         (k) => !includeKeywords.includes(k)

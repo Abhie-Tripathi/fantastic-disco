@@ -28,9 +28,6 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
   excludeKeywords,
   handleRemoveKeyword,
 }) => {
-  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
-  console.log(includeKeywords);
-  const inc = getLocalFilterValue("includeKeywords").split(",");
   return (
     <Tabs
       defaultValue="include"
@@ -66,7 +63,7 @@ const KeywordTabs: React.FC<KeywordTabsProps> = ({
         <>
         <TabsContent value="include" className="mt-0">
           <div className="flex flex-wrap gap-2">
-            {inc?.map((keyword) => (
+            {includeKeywords?.map((keyword) => (
               <Badge
                 key={keyword}
                 variant="secondary"
