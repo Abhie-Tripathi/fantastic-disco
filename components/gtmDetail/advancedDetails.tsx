@@ -171,7 +171,6 @@ const CarouselComponent = ({
                 ) : (
                   <Restriction />
                 )}
-                
               </div>
             </CarouselItem>
           )}
@@ -258,7 +257,7 @@ const CarouselComponent = ({
                   </Tooltip>
                 </TooltipProvider>
                 <div className="flex gap-4 flex-wrap">
-                {isFrequencyEnabled ? (
+                  {isFrequencyEnabled ? (
                     frequency ? (
                       <span className="text-[#A35200] bg-[#FFF4D6] dark:bg-[#331B00] dark:border-[#4D2A00] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border border-[#FEF0CD] rounded-md w-full xl:w-28 text-center">
                         {capitalize(frequency)}
@@ -405,7 +404,10 @@ export const AdvancedDetails = ({
       isSeries ||
       futureExpectedStartDate) && (
       <div className="flex flex-col">
-        <Heading heading="Advanced Details" />
+        <Heading
+          heading="Advanced Details"
+          tooltipDescription="Highlights the event's maturity and history, such as its stage and editions held."
+        />
         <CarouselComponent
           morphedData={morphedData}
           eventDetails={eventDetails}

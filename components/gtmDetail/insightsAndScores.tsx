@@ -79,7 +79,11 @@ export const InsightsAndScores = ({
   return (
     isValid && (
       <div className={`flex flex-col gap-6`} ref={ref}>
-        <Heading heading="Insights and Scores" scrollSection={scrollSection} />
+        <Heading
+          heading="Insights and Scores"
+          scrollSection={scrollSection}
+          tooltipDescription="Shows the event’s influence, visitor appeal, and economic impact."
+        />
         <div className="flex flex-col gap-6">
           {((scores &&
             Object.values(scores).every((value) => value !== null)) ||
@@ -113,22 +117,22 @@ export const InsightsAndScores = ({
                 {trustScore !== null && (
                   <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                     <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
-                              Trust Score
-                            </h1>
-                          </TooltipTrigger>
-                          <TooltipContent className="w-56 tooltip-content-styles">
-                            <p className="text-[var(--secondary-text-color)] font-medium">
-                              Reflects an event&apos;s reliability and user
-                              confidence based on interest, feedback, and past
-                              attendance.
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      {isTrustScoreEnabled ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                            Trust Score
+                          </h1>
+                        </TooltipTrigger>
+                        <TooltipContent className="w-56 tooltip-content-styles">
+                          <p className="text-[var(--secondary-text-color)] font-medium">
+                            Reflects an event&apos;s reliability and user
+                            confidence based on interest, feedback, and past
+                            attendance.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    {isTrustScoreEnabled ? (
                       <CircularProgressBar
                         value={Math.round(trustScore ?? 0)}
                       />
@@ -140,21 +144,21 @@ export const InsightsAndScores = ({
                 {scores && scores.inboundScore && (
                   <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                     <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
-                                Inbound Score
-                              </h1>
-                            </TooltipTrigger>
-                            <TooltipContent className="w-56 tooltip-content-styles">
-                              <p className="text-[var(--secondary-text-color)] font-medium">
-                                The number of attendees traveling to the event
-                                from other cities within the host country.
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        {isAnalyticsEnabled ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                            Inbound Score
+                          </h1>
+                        </TooltipTrigger>
+                        <TooltipContent className="w-56 tooltip-content-styles">
+                          <p className="text-[var(--secondary-text-color)] font-medium">
+                            The number of attendees traveling to the event from
+                            other cities within the host country.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    {isAnalyticsEnabled ? (
                       <CircularProgressBar value={scores.inboundScore} />
                     ) : (
                       <Restriction />
@@ -164,21 +168,21 @@ export const InsightsAndScores = ({
                 {scores && scores.internationalScore && (
                   <div className="flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                     <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
-                                International Score
-                              </h1>
-                            </TooltipTrigger>
-                            <TooltipContent className="w-56 tooltip-content-styles">
-                              <p className="text-[var(--secondary-text-color)] font-medium">
-                                The number of attendees traveling to the event
-                                from outside the host country.
-                              </p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        {isAnalyticsEnabled ? (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                            International Score
+                          </h1>
+                        </TooltipTrigger>
+                        <TooltipContent className="w-56 tooltip-content-styles">
+                          <p className="text-[var(--secondary-text-color)] font-medium">
+                            The number of attendees traveling to the event from
+                            outside the host country.
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    {isAnalyticsEnabled ? (
                       <CircularProgressBar value={scores.internationalScore} />
                     ) : (
                       <Restriction />

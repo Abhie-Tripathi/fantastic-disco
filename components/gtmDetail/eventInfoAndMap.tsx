@@ -139,17 +139,13 @@ export const EventInfoAndMap = ({
                   ) : (
                     description
                   )
+                ) : description === null || description === undefined ? (
+                  <span className="text-[#666666] text-sm flex items-center gap-2">
+                    <CircleSlash width={15} height={15} />
+                    No data available
+                  </span>
                 ) : (
-                  `${
-                    description === null || description === undefined ? (
-                      <span className="text-[#666666] text-sm flex items-center gap-2">
-                        <CircleSlash width={15} height={15} />
-                        No data available
-                      </span>
-                    ) : (
-                      description?.slice(0, 200)
-                    )
-                  }`
+                  description?.slice(0, 200)
                 )}
                 <span
                   className="font-semibold underline cursor-pointer ml-2"
@@ -199,7 +195,7 @@ export const EventInfoAndMap = ({
                     </p>
                   </TooltipContent>
                 </Tooltip>
-              </TooltipProvider>              
+              </TooltipProvider>
               <ExpandableTags tags={filteredTags ?? []} />
             </div>
           }
