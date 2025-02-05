@@ -22,6 +22,7 @@ import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import { formattedDateRange } from "@/utils/date";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerServices } from "@/services/trackerServices";
 
@@ -118,7 +119,7 @@ export default function EventList({
               <span>{address}</span>
             </div>
             <div className="flex items-start text-xs text-[#666666]">
-              {formattedRange}
+            {formattedDateRange(event.startDateTime, event.endDateTime)}
             </div>
           </CardContent>
         </Card>
