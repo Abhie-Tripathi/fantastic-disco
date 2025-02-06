@@ -114,18 +114,31 @@ export const EventInfoAndMap = ({
             .map((category) => category.slug)
             .join(",")
         : categories && categories.length > 0
-        ? categories.slice(0,2).map((category) => category.slug).join(",")
+        ? (() => {
+            const groupedCategories = categories.filter(
+              (category) => category.isGroup === true
+            );
+            return groupedCategories.length > 0
+              ? groupedCategories
+                  .slice(0, 2)
+                  .map((category) => category.slug)
+                  .join(",")
+              : null;
+          })()
         : null;
+
     const locationIds =
       format === "offline" && venueLocation
         ? venueLocation.country.id ||
           venueLocation.state.id ||
           venueLocation.city.id ||
-          venueLocation.venue.id
+          venueLocation.venue.id ||
+          null
         : null;
-    const eventFormats = format === "ONLINE" ? format : null;
+
     enabledCategories && params.set("categories", enabledCategories);
     locationIds && params.set("locationIds", locationIds);
+    
     return params.toString();
   };
 

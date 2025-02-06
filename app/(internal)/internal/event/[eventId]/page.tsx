@@ -402,7 +402,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         {(venueLocation || typeOfEvent) && (
           <div className="flex gap-2 items-center my-4">
-            <span className="border border-[#ebebeb] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
+            <span className="border border-[#ebebeb] dark:border-[var(--border-color)] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
                 <Radio width={20} height={20} />
               ) : (
