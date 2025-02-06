@@ -77,6 +77,7 @@ export interface Tracker {
   export interface Toggle{
     rating?:boolean;
     exhibit?:boolean;
+    economicImpact?:boolean;
     trust?:boolean;
     maturity?: boolean;
     brandedEvent?: boolean;
