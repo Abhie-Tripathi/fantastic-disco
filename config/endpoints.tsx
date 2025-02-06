@@ -1,6 +1,6 @@
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "";
-
+const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
 export const endpoints = {
   //   auth: {
   //     me: `${BASE_URL}/me`,
@@ -47,8 +47,8 @@ export const endpoints = {
     access: `${BASE_URL}/tracker/access`,
     shareAccess: `${BASE_URL}/access`,
     createNewAccess: `${BASE_URL}/tracker/invite`,
-    create: `${BASE_URL}/tracker`,
-    getTrackers: `${BASE_URL}/tracker`,
+    create: `${BASE_URL_NEW}/trackers`,
+    getTrackers: `${BASE_URL_NEW}/me/trackers`,
     getSavedEvents: `${BASE_URL}/tracker`,
     saveEvent: `${BASE_URL}/tracker/saved-events`,
     getNotes: `${BASE_URL}/comment?stage=INTERNAL&entityType=TRACKER`,

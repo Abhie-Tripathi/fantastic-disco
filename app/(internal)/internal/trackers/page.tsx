@@ -575,7 +575,7 @@ const Trackers = ({ searchParams }: Search) => {
               <div className={styles.innerContainerOne}>
                 <Image src={Add} alt="add" />
                 <Link
-                  href="/internal/trackers/create?type=CUSTOM"
+                  href="/internal/trackers/create?type=T_CUSTOM"
                   className={styles.createUrl}
                 >
                   <Button

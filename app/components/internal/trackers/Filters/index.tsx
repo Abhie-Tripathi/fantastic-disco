@@ -421,6 +421,7 @@ const Pages = () => {
   const {getTrackerDetail,createTracker,editTracker, error}=useTrackerServices();
   const { theme } = useTheme();
   const type = searchParams.get('type');
+  const defaultType="T_CUSTOM";
   const [selectedLocationsData,setSelectedLocationsData]=useState<any>(enabledFilters?.locationIds?.enabledValue);
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [opend,setOpend]=useState(false);
@@ -822,6 +823,35 @@ const Pages = () => {
         showsData.push(value);
       }
     });
+    const filterValueMapping={
+      eventTypes:"evenTypes",
+      categories: "eventCategory",
+      eventFormats: "eventFormats",
+      locationIds: "locationIds",
+      active_gte: "active_gte",
+      active_lte: "active_lte",
+      status: "status",
+      entryType: "entryType",
+      ratings: "ratings",
+      maturity: "maturity",
+      onlyBranded: "onlyBranded",
+      onlySeries: "onlySeries",
+      frequencies: "frequencies"
+    }
+    const filterValues = Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
+      const value = getLocalFilterValue(key);
+    
+      if (Array.isArray(value) && value.length > 0) {
+        acc[mappedKey] = value;
+      } else if (typeof value === "string" && value === "true") {
+        acc[mappedKey] = value;
+      } else if (value) {
+        acc[mappedKey] = value;
+      }
+    
+      return acc;
+    }, {});
+    console.log(filterValues);
     
     const userType = {
       ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
@@ -853,209 +883,50 @@ const Pages = () => {
         type: type.toUpperCase()
       }),
       accessLevel: editData?.tracker?.accessLevel,
-      filterValue: {
-          ...(userType &&{
-           userType:JSON.stringify(userType)
-          }),
-        ...(selectedLabels?.length > 0 && {
-          labels: selectedLabels.join(","),
-        }),
-        // ...(selectedEventType?.length > 0 && {
-        //   eventType: selectedEventTypeName
-        // }),
-        ...(websites.length > 0 && {
-          orgWebsite: websites,
-        }),
-        ...(org.length > 0 && {
-          orgName : org,
-        }),
-        ...(designations.length > 0 && {
-          userDesignation: designations,
-        }),
-        ...(speakerName.length > 0 && {
-          speakerName: speakerName,
-        }),
-        ...(speakerCompany.length > 0 && {
-          speakerOrg: speakerCompany,
-        }),
-        ...(getLocalFilterValue("eventTypes")?.length > 0 && {
-          eventType: eventType1
-            .map(eventType => eventType.charAt(0).toUpperCase() + eventType.slice(1).replace(/s$/, ""))
-            .join(","),
-        }),
-        ...(userName.length > 0 && {
-          userName: userName,
-        }),
-        ...(userCompany.length > 0 && {
-          speakerOrg: userCompany,
-        }),
-        ...(selectedEventEdition > 0 && {
-          editionRange: selectedEventEdition.toString(),
-        }),
-        // ...(
-        //   type === "competitor" && customData.length > 0
-        //     ? { orgWebsite: customData.map(item => item.companyUrl).join(', ') }
-        //     : {}
-        // )
-        // ...(selectedEventKeywords.length > 0 && {
-        //   eventKeywords: selectedEventKeywords.join("+"),
-        // }),
-        ...(getLocalFilterValue("includeKeywords").length > 0 && {
-          includeKeywords: getLocalFilterValue("includeKeywords")
-            .split(",")
-            .map((keyword) => keyword.replaceAll(" ", "_")).join(",")
-        }),
-        ...(getLocalFilterValue("excludeKeywords").length > 0 && {
-          excludeKeywords: getLocalFilterValue("excludeKeywords")
-            .split(",")
-            .map((keyword) => keyword.replaceAll(" ", "_")).join(",")
-        }),
-        ...(getLocalFilterValue("estimatedVisitorRangeTag")?.length>0 && {
-          estimatedVisitorRangeTag: getLocalFilterValue("estimatedVisitorRangeTag")
-         }),
-         ...(getLocalFilterValue("estimatedExhibitors")?.length>0 && {estimatedExhibitScore:getLocalFilterValue("estimatedExhibitors")}),
-        // ...(selectedZone?.length > 0 && {
-        //   eventRegion: selectedZone.join(',')
-        // }),
-        // brandedEvent: selectedBrandedEvent?.toString(),
-        // labels:selectedLabels.join(','),
-        // eventKeywords:selectedEventKeywords.join(','),
-        // ...(Object.entries(selectedCountry).length > 0 && {
-        //   eventCountry: Object.keys(selectedCountry).join(","),
-        // }),
-        // ...(Object.entries(selectedCity).length > 0 && {
-        //   eventCity: Object.keys(selectedCity).join(","),
-        // }),
-        ...(selectedLabels?.length > 0 && {
-          labels: selectedLabels.join(","),
-        }),
-        ...(getLocalFilterValue("categories")?.length>0 &&{
-          eventCategory: categoryIds.join(",")
-        }),
-        ...(getLocalFilterValue("eventFormats")?.length > 0 && {
-          eventFormat: getLocalFilterValue("eventFormats"),
-        }),
-        ...(getLocalFilterValue("onlySeries")==="true" && {eventSeries: getLocalFilterValue("onlySeries")}),
-        ...(getLocalFilterValue("status")?.length > 0 && {
-          eventStatus: getLocalFilterValue("status").split(',').map((item)=>item.toUpperCase()).join(","),
-        }),
-        ...(getLocalFilterValue("entryType")?.length > 0 && {
-          eventEntry: getLocalFilterValue("entryType"),
-        }),
-        ...(getLocalFilterValue("trust_score_gte") && {
-          trustScore: getLocalFilterValue("trust_score_gte"),
-        }),
-        ...(getLocalFilterValue("frequencies")?.length > 0 && {
-          eventFrequency: getLocalFilterValue("frequencies").split(",").map((item)=>item[0].toUpperCase()+item.slice(1)).join(","),
-        }),
-        // ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
-        // ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
-        //   startDate: [
-        //     new Date(selectedDateRange[0]).toISOString().split("T")[0],
-        //     new Date(selectedDateRange[1]).toISOString().split("T")[0],
-        //   ].join(","),
-        // }),
-        ...(getLocalFilterValue("active_gte") && getLocalFilterValue("active_lte") && {
-          startDate: [
-            getLocalFilterValue("active_gte"),
-            getLocalFilterValue("active_lte"),
-          ].join(","),
-        }),
-        ...(getLocalFilterValue("active_gte") && getLocalFilterValue("active_lte") &&{
-          endDate: [
-            getLocalFilterValue("active_gte"),
-            getLocalFilterValue("active_lte"),
-          ].join(","),
-        }),
-        // ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
-        //   endDate: [
-        //     new Date(selectedDateRange[0]).toISOString().split("T")[0],
-        //     new Date(selectedDateRange[1]).toISOString().split("T")[0],
-        //   ].join(","),
-        // }),
-        ...(selectedLocationsData && selectedLocationsData?.length > 0
-    ? { locationIds: selectedLocationsData.map((item:LocationItem) => item.id).join(',') }
-    : {}),
-          ...(getLocalFilterValue("locationIds").length>0 && {
-            locationIds: getLocalFilterValue("locationIds")
-          }),
-        ...(getLocalFilterValue("ratings")?.length > 0 && {
-          eventRating: getLocalFilterValue("ratings"),
-        }),
-        // ...(rankToggles?.isEventRank === true && {
-        //   eventRank: selectedEventRank.join(",")
-        // }),
-        ...(rankToggles?.isLocalRank === true && {
-          localRank: selectedLocalRank.join(',')
-        }),
-        ...(selectedINScore > 0 && { internationalScore: intScore?.toLowerCase() }),
-        // ...(selectedInboundScore > 0 && {
-        //   inboundScore: selectedInboundScore.toString(),
-        // }),
-        ...(selectedEventAttendanceRange?.length === 2 && {
-          eventAttendanceRange: [
-            +selectedEventAttendanceRange[0],
-            +selectedEventAttendanceRange[1],
-          ].join(","),
-        }),
-        ...(getLocalFilterValue("maturity").length>0 && { maturity: getLocalFilterValue("maturity") }),
-        ...(getLocalFilterValue("show").split(",").includes("scores") && {
-          eventImpactScore: `${getLocalFilterValue("impact_score_gte")|| 0}-${getLocalFilterValue("impact_score_lte")|| 100}`,
-          inboundScore: `${getLocalFilterValue("inbound_score_gte")|| 0}-${getLocalFilterValue("inbound_score_lte")|| 100}`,
-          internationalScore: `${getLocalFilterValue("international_score_gte")||0}-${getLocalFilterValue("international_score_lte")|| 100}`,
-        }),
-        ...(forecastedStatus && {
-          isforecasted: forecastedStatus.toString()
-        }),
-        ...(getLocalFilterValue("onlyBranded")==="true" && {eventBrand:getLocalFilterValue("onlyBranded").toString()}),
-        ...(getLocalFilterValue("top") && {
-          // globalRanking: selectedRank,
-          // categoryRanking: selectedRank,
-          // countryRanking: selectedRank,
-          eventRanking: `0-${getLocalFilterValue("top")}`,
-        }),
-        ...(getLocalFilterValue("audienceSpread") && {
-          audienceSpread: getLocalFilterValue("audienceSpread")
-         }),
-         ...(getLocalFilterValue("designations") && {
-          designation: getLocalFilterValue("designations"),
-        }),
-        ...{
-          
-        },
-        ...{shows: showsData.join(",")}
-        // ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'inboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency'].join()}
-        // info: {
-        //   name: trackerName,
-        //   location:selectedLocations,
-        //   keywords:selectedEventKeywords.join(','),
-        //   labels: selectedLabels.join(','),
-        //   startDate: selectedDateRange[0],
-        //   endDate: selectedDateRange[1],
-        //   eventFormat: selectedEventFormat.join(','),
-        //   category: categorySlug.join(','),
-        //   eventStatus: selectedEventStatus.join(','),
-        //   eventFrequency: selectedEventFrequency.join(','),
-        //   eventEntry: selectedEntry.join(','),
-        //   eventEdition: selectedEventEdition.toString(),
-        //   eventKeywords: selectedLabels.join(','),
-        //   eventRanking: selectedEventRanking.join(','),
-        //   brandedEvent: selectedBrandedEvent,
-        //   trustScore: selectedTrustScore.toString(),
-        //   eventSeries: selectedEventSeries,
-        //   reputationScore: selectedReptScore.toString(),
-        //   maturity: selectedMaturity.toString(),
-        //   internationalScore: selectedINScore.toString(),
-        //   inboundScore: selectedInboundScore.toString(),
-        //   userRating: selectedUserRatings.join(','),
-        //   exhibitScore: selectedExhibitScore.join(','),
-        //   total_attendance_gte: selectedEventAttendanceRange[0],
-        //   total_attendance_lte:
-        //     selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : selectedEventAttendanceRange[1],
-        // }
-      },
+      filterValues
+      // filterValues:{
+      //   ...(getLocalFilterValue("eventTypes")?.length>0 &&{
+      //     eventTypes: getLocalFilterValue("eventTypes")
+      //   }),
+      //   ...(getLocalFilterValue("categories")?.length>0 &&{
+      //     eventCategory: getLocalFilterValue("categories")
+      //   }),
+      //   ...(getLocalFilterValue("eventFormats")?.length > 0 && {
+      //     eventFormats: getLocalFilterValue("eventFormats"),
+      //   }),
+      //   ...(getLocalFilterValue("locationIds").length>0 && {
+      //     locationIds: getLocalFilterValue("locationIds")
+      //   }),
+      //   ...(getLocalFilterValue("active_gte") &&{
+      //       active_gte: getLocalFilterValue("active_gte")
+      //   }),
+      //   ...(getLocalFilterValue("active_lte") && {
+      //       active_lte: getLocalFilterValue("active_lte")
+      //   }),
+      //   ...(getLocalFilterValue("status")?.length>0 &&{
+      //       status: getLocalFilterValue("status")
+      //   }),
+      //   ...(getLocalFilterValue("entryType")?.length > 0 && {
+      //       entryType: getLocalFilterValue("entryType"),
+      //   }),
+      //   ...(getLocalFilterValue("ratings")?.length > 0 && {
+      //       ratings: getLocalFilterValue("ratings"),
+      //   }),
+      //   ...(getLocalFilterValue("maturity").length>0 && { 
+      //       maturity: getLocalFilterValue("maturity"),
+      //   }),
+      //   ...(getLocalFilterValue("onlyBranded")==="true" && {
+      //       onlyBranded: getLocalFilterValue("onlyBranded"),
+      //   }),
+      //   ...(getLocalFilterValue("onlySeries")==="true" &&{
+      //       onlySeries: getLocalFilterValue("onlySeries")
+      //   }),
+      //   ...(getLocalFilterValue("frequencies").length>0 &&{
+      //       frequencies: getLocalFilterValue("frequencies")
+      //   })
+      // }
     };
-    // console.log(formData);
+    console.log(formData, defaultType);
     
 
       const secondLast = pathName[pathName.length - 2];
@@ -1066,12 +937,12 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
+      else if (type !== defaultType && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      else if (type === "CUSTOM" && ( 
+      else if (type === defaultType && ( 
         !getLocalFilterValue("locationIds") || 
         getLocalFilterValue("locationIds").length === 0 || 
         trackerName.trim().length === 0 
@@ -1112,13 +983,13 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
+      else if (type !== defaultType && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      else if (type === "CUSTOM" && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)){
+      else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)){
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
@@ -2104,8 +1975,8 @@ return (
     </div>
     }
    {
-   <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} >
-    {type !== "CUSTOM" &&
+   <div className={`${type !== defaultType ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} >
+    {type !== "T_CUSTOM" &&
     <div className={`${styles.hiddenFilters}`} onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
     <div className={styles.hiddenFiltersInnerDiv}>
     {/* <Plus style={{width:"16px", height:"16px"}} className="icons"/> */}
@@ -2114,7 +1985,7 @@ return (
     <div><ChevronDown className="icons"/></div>
     </div>
     }
-  {(type==="CUSTOM" || opend )&&
+  {(type=== defaultType || opend )&&
     <Suspense fallback={<Loading />}>
     <div className={styles.container}>
       <div className={styles.sub_container}>

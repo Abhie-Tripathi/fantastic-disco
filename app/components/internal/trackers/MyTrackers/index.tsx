@@ -125,13 +125,15 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${skip}&limit=${take}`);
     
     if(result){
-        setAllTracker(result?.trackerData);   
+      console.log(result);
+      
+        setAllTracker(result?.trackers);   
             
-      setSingleTrackerData(result.trackerData[0]);
-    setTotalPage(Math.ceil(result.totalCount / trackerPerPage));
-    setTotalCount(result.totalCount)
-    if(result.totalCount===0){
-      console.log(result.totalCount);
+      setSingleTrackerData(result.trackers[0]);
+    setTotalPage(Math.ceil(result.count / trackerPerPage));
+    setTotalCount(result.count)
+    if(result.count===0){
+      console.log(result.count);
       
       setSingleTrackerData(undefined);
        setDataPresent(false);
