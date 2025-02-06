@@ -9,7 +9,7 @@ import { capitalize } from "lodash";
 import TicketDetails from "../eventDetail/tickets";
 import DetailDialog from "../eventDetail/modal";
 import { Button } from "@/components/ui/button";
-import { numberWithCommas } from "@/utils/formater";
+import { formatEstimatedSpend, numberWithCommas } from "@/utils/formater";
 import { useInView } from "react-intersection-observer";
 import CircularProgress from "../gtmDetailRelevanceScore/circularProgress";
 import { Badge } from "../ui/badge";
@@ -91,7 +91,7 @@ export const EventInfoAndMap = ({
     startDateTime,
     endDateTime,
     venueLocation,
-    estimatedAttendance,
+    economicImpact,
     tags,
     // tickets,
     entryType,
@@ -123,7 +123,11 @@ export const EventInfoAndMap = ({
         </span>
       </div> */}
       <div className="flex flex-row gap-6 max-xl:flex-col w-full">
-        <div className="flex flex-1 flex-col gap-5 max-xl:flex-none bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] p-6 rounded-sm max-xl:h-96 max-h-[831px] overflow-y-auto scrollbar">
+        <div
+          className={`flex flex-1 flex-col gap-5 max-xl:flex-none bg-[var(--primary-foreground)] border border-[var( --neutral-light-color)] dark:border-[var(--border-color)] p-6 rounded-sm max-xl:h-96 overflow-y-auto scrollbar ${
+            economicImpact ? "max-h-[968px]" : "max-h-[831px]"
+          }`}
+        >
           {
             <div>
               <h1 className="text-[1rem] mb-2 font-medium">
@@ -385,30 +389,35 @@ export const EventInfoAndMap = ({
               Search Events
             </Button>
           </div>
-          {/* <div className="flex gap-6">
-            <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
-              <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
-                Predicted Attendance
-              </h1>
-              {estimatedAttendance ? (
+          {economicImpact && (
+            <div className="flex gap-6">
+              {/* <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+                <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
+                  Predicted Attendance
+                </h1>
+                {estimatedAttendance ? (
+                  <p className="text-[#6750A4] font-semibold text-lg">
+                    {numberWithCommas(estimatedAttendance)}
+                  </p>
+                ) : (
+                  <span className="text-[#666666] text-sm flex items-center gap-2">
+                    <CircleSlash width={15} height={15} />
+                    No data available
+                  </span>
+                )}
+              </div> */}
+
+              <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
+                <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
+                  Predicted Spend
+                </h1>
                 <p className="text-[#6750A4] font-semibold text-lg">
-                  {numberWithCommas(estimatedAttendance)}
+                  {economicImpact && formatEstimatedSpend(economicImpact)}
                 </p>
-              ) : (
-                <span className="text-[#666666] text-sm flex items-center gap-2">
-                  <CircleSlash width={15} height={15} />
-                  No data available
-                </span>
-              )}
+              </div>
             </div>
-            <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
-              <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
-                Predicted Spend
-              </h1>
-              <p className="text-[#6750A4] font-semibold text-lg">$3759K</p>
-            </div>
-          </div>
-          <div className="flex flex-row items-center gap-4 bg-[#F6F6FF] border border-[#E6E6F9] px-4 py-6 rounded-sm">
+          )}
+          {/* <div className="flex flex-row items-center gap-4 bg-[#F6F6FF] border border-[#E6E6F9] px-4 py-6 rounded-sm">
             <Text variant="noMargin" color="primary" className="line-clamp-2">
               Create an event tracker for, real-time updates of upcoming and
               past events
