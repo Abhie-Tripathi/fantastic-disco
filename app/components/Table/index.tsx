@@ -358,8 +358,8 @@ const Table = ({
     markedInterest: null,
     // eventGroupId: "",
   });
-  const take= getFilterValue("take")||20;
-  const skip= getFilterValue("skip")||0;
+  const take = getFilterValue("take") || 20;
+  const skip = getFilterValue("skip") || 0;
   const coordinateService = useCoordinateService();
 
   const [coordinateActions, setCoordinateActions] = useState<any>([]);
@@ -516,6 +516,15 @@ const Table = ({
   //   if(currPage!==1)
   //   fetchData(secondLast);
   // },[currPage])
+
+  const formatEstimatedSpend = (spend: string) => {
+    const spendNumber = parseFloat(spend.slice(1).replace(/,/g, ""));
+    if (spendNumber >= 100000) {
+      return `$${(spendNumber / 1000).toFixed(0)}k`;
+    }
+    return spend;
+  };
+
   useEffect(() => {
     if (path[2] === "search") setInitialRender(true);
     const fetchBookmarkData = async () => {
@@ -575,12 +584,12 @@ const Table = ({
     const secondLast = path[path.length - 2];
 
     try {
-      const result = await getSavedEvents(
+      const result = (await getSavedEvents(
         secondLast,
         `max=${itemsPerPage}&offset=${(currPage - 1) * 10}`,
         abortController.signal // Pass the signal here
-      )  as { result: EventTableType[]; count: number };;
-      
+      )) as { result: EventTableType[]; count: number };
+
       if (result) {
         setIsLoaded(true);
         GAEvent("trackers", "Tracker", "View", `Saved Event | ${currPage}`);
@@ -613,7 +622,6 @@ const Table = ({
   const currentPage =
     Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
-
 
   const handlePageChange = (page: number) => {
     setFilter("skip", ((page - 1) * itemsPerPage).toString());
@@ -745,7 +753,7 @@ const Table = ({
     try {
       if (eventType === "Saved Events") return fetchSavedData();
 
-      const result = await getTrackerEvents(
+      const result = (await getTrackerEvents(
         secondLast,
         `limit=${take}&offset=${skip}`,
         eventType === "Active Events"
@@ -754,8 +762,8 @@ const Table = ({
           ? "expired"
           : "",
         abortController.signal
-      ) as {events: EventTableType[]; totalEvents: number};
-  
+      )) as { events: EventTableType[]; totalEvents: number };
+
       if (!result) {
         console.error("No data returned from getTrackerEvents");
         return;
@@ -843,8 +851,6 @@ const Table = ({
     }
   };
 
-
-
   // const [isDelete, setIsDelete] = useState(false);
 
   const deleteEvent = async (groupId: string) => {
@@ -922,9 +928,7 @@ const Table = ({
         <Loading className="w-[200px] h-[100px]" />
       </div>
     );
-  } 
-  else if (isLoaded && eventPerPage.length == 0) {
-
+  } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
         {path[2] === "trackers" ? (
@@ -954,7 +958,7 @@ const Table = ({
     setCurrPage((page) => page + 1);
     GAEvent("research", "Filters", "Load More Clicked", "Load More");
   };
-  
+
   return (
     <div className={styles.table_container}>
       <div
@@ -1064,6 +1068,7 @@ const Table = ({
               {showInsights.internationalScore && <th>International Score</th>}
               {showInsights.audienceZone && <th>Audience Zone</th>}
               {showInsights.audienceSpread && <th>Audience Spread</th>}
+              {showInsights.economicImpact && <th>Economic Impact</th>}
               <th
                 className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}
                 style={{ display: "flex" }}
@@ -1302,6 +1307,10 @@ const Table = ({
                       ? event.stats?.estimatedExhibitor
                       : "-"}
                   </td>
+                )}
+
+                {showInsights.economicImpact && (
+                  <td>{formatEstimatedSpend(event.economicImpact || "$0")}</td>
                 )}
 
                 {/* {showInsights.eventSeries ||
@@ -2211,11 +2220,14 @@ const Table = ({
                           <div style={{ maxWidth: "500px" }}>
                             <header className={styles["modal_header"]}>
                               <div className={styles["modal_header-title"]}>
-                                Choose an {" "}
-                                <Link href="/internal/settings/product" className="text-primary hover:underline">
-                                  Action 
-                                </Link>
-                                {" "}to Proceed
+                                Choose an{" "}
+                                <Link
+                                  href="/internal/settings/product"
+                                  className="text-primary hover:underline"
+                                >
+                                  Action
+                                </Link>{" "}
+                                to Proceed
                               </div>
                               <button
                                 className={styles["close"]}
@@ -2375,7 +2387,7 @@ const Table = ({
         </div>
       </div> */}
 
-    {totalPages > 1 && (
+      {totalPages > 1 && (
         <div className="sticky bottom-0 bg-background py-4">
           <PaginationComponent
             currentPage={currentPage}

@@ -20,6 +20,8 @@ export const EventsAdapter = {
     if (params.get("show") || params.get("trust_score_gte")) {
       const adaptedShowsParams = [];
       const showsParams = params.get("show");
+      if (showsParams?.includes("economicImpact"))
+        adaptedShowsParams.push("economicImpact");
       if (showsParams?.includes("branded"))
         adaptedShowsParams.push("eventBrand");
       if (showsParams?.includes("series"))
