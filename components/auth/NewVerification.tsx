@@ -45,11 +45,14 @@ export default function NewVerificationForm() {
     useAuthContext();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
+  const { getFilterValue } = useFilterState();
+  const sessionCategories =
+    (sessionStorage && sessionStorage.getItem("categories")) || "";
+  const email = (sessionStorage && sessionStorage.getItem("userEmail")) || "";
+  const industry = (sessionStorage && sessionStorage.getItem("industry")) || "";
+  const flow = (sessionStorage && sessionStorage.getItem("flow")) || "";
 
-  const industry = searchParams.get("industry") || "";
-  const sessionData = sessionStorage && sessionStorage.getItem("categories");
-  const categories = sessionData && JSON.parse(sessionData);
-  const flow = searchParams.get("flow") || "";
+  const categories = sessionCategories && JSON.parse(sessionCategories);
 
   const urlParams = useMemo(() => {
     const params = new URLSearchParams();
@@ -85,10 +88,6 @@ export default function NewVerificationForm() {
     return "/";
   }, [flow, industry]);
 
-  const { getFilterValue } = useFilterState();
-  const email = sessionStorage.getItem("userEmail") || "";
-  const internalConfigSetBy = getFilterValue("internalConfigSetBy");
-
   const form = useForm<OTPData>({
     resolver: zodResolver(otpSchema),
     defaultValues: {
@@ -118,7 +117,6 @@ export default function NewVerificationForm() {
           "signUp",
           redirectTo,
           settingsInterestData,
-          internalConfigSetBy
         );
       } else {
         await verifyOtp(verifyOtpDTO, "signIn", redirectTo);
@@ -131,7 +129,7 @@ export default function NewVerificationForm() {
 
   const resendOTP = async (email: string) => {
     setTime(30);
-    generateOTP(email, industry, categories, "", flow, "resend");
+    generateOTP(email, industry, categories, flow, "resend");
   };
 
   const handleBack = () => {
@@ -139,6 +137,8 @@ export default function NewVerificationForm() {
       GAEvent("Onboarding", "Onboarding", "Sign Up", "Verify OTP | Back");
     } else GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Back");
     sessionStorage.removeItem("userEmail");
+    sessionStorage.removeItem("industry");
+    sessionStorage.removeItem("categories");
     router.back();
   };
   useEffect(() => {

@@ -26,7 +26,7 @@ export const mediaAgencyResearchData: SettingResearchData[] = [
 export const industryData: Industry[] = [
   {
     name: "Media and Marketing",
-    slug: "media_and_marketing",
+    slug: "Media_Marketing",
     image: Media_Agency,
     type: "category",
     mappedSettingResearch: mediaAgencyResearchData,
@@ -34,7 +34,7 @@ export const industryData: Industry[] = [
   },
   {
     name: "Research and M&A",
-    slug: "research_and_ma",
+    slug: "Research_MA",
     image: Research,
     type: "category",
     mappedSettingResearch: mediaAgencyResearchData,
@@ -42,7 +42,7 @@ export const industryData: Industry[] = [
   },
   {
     name: "Event Planners",
-    slug: "event_planners",
+    slug: "Event_Planners",
     image: IndustryPartners,
     type: "category",
     mappedSettingResearch: settingResearchData,
@@ -50,7 +50,7 @@ export const industryData: Industry[] = [
   },
   {
     name: "Corporates and Brands",
-    slug: "corporates_and_brands",
+    slug: "Corporate_Brands",
     image: EventParticipant,
     type: "category",
     mappedSettingResearch: settingResearchData,
@@ -58,7 +58,7 @@ export const industryData: Industry[] = [
   },
   {
     name: "Infra and Technology",
-    slug: "infra_and_technology",
+    slug: "Infra_Technology",
     image: InfraAndTechnology,
     type: "category",
     mappedSettingResearch: mediaAgencyResearchData,
@@ -66,7 +66,7 @@ export const industryData: Industry[] = [
   },
   {
     name: "Venue and Real Estate",
-    slug: "venue_and_real_estate",
+    slug: "Venue_Real_Estate",
     image: Venue,
     type: "category",
     mappedSettingResearch: mediaAgencyResearchData,
@@ -74,7 +74,7 @@ export const industryData: Industry[] = [
   },
   {
     name: "Others",
-    slug: "others",
+    slug: "Others",
     image: Others,
     type: "category",
     mappedSettingResearch: settingResearchData,

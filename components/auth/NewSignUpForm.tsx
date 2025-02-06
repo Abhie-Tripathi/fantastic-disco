@@ -39,11 +39,16 @@ const NewSignUpForm = () => {
   });
 
   const onSubmit = async (data: FormData) => {
+    sessionStorage.removeItem("categories");
+    sessionStorage.removeItem("industry");
+    sessionStorage.removeItem("userEmail");
+
     const signUpDTOData = {
       ...data,
       industry: data.industry || "others",
-      ...(categories.length > 0 && { categories: data.categories }),
+      ...(categories.length > 0 && { category: data.categories }),
     };
+    delete signUpDTOData.categories;
     const categorySlugs = categories
       .map(
         (category) =>
@@ -53,9 +58,15 @@ const NewSignUpForm = () => {
 
     if (categorySlugs && categorySlugs.length > 0) {
       sessionStorage.setItem("categories", JSON.stringify(categorySlugs));
-    } else {
-      sessionStorage.removeItem("categories");
     }
+    if (data && data.industry) {
+      sessionStorage.setItem("industry", data.industry);
+    }
+    if (data && data.email) {
+      sessionStorage.setItem("userEmail", data.email);
+    }
+    sessionStorage.setItem("flow", "signUp");
+
     try {
       await signup(signUpDTOData);
     } catch (error) {

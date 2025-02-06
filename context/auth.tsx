@@ -59,7 +59,6 @@ type authContextType = {
     email: string,
     industry?: string,
     categories?: string,
-    internalConfigSetBy?: string,
     flow?: string,
     type?: string
   ) => void;
@@ -68,7 +67,6 @@ type authContextType = {
     flow: "signIn" | "signUp",
     redirectTo?: string,
     settingsInterestData?: SettingsInterestData,
-    internalConfigSetBy?: string
   ) => Promise<any>;
   verifyLoginOTP: (user: any, redirectTo?: string) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
@@ -138,7 +136,6 @@ export const AuthContextProvider = ({ children }: any) => {
     email: string,
     industry?: string | undefined | null,
     categories?: string | null,
-    internalConfigSetBy?: string,
     flow?: string | null,
     type?: string | null
   ) => {
@@ -150,7 +147,6 @@ export const AuthContextProvider = ({ children }: any) => {
       email: email.trim(),
       ...(industry && { industry }),
       ...(flow && { flow }),
-      ...(internalConfigSetBy && { internalConfigSetBy }),
     });
     try {
       const data = await request(url, {
@@ -217,13 +213,7 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: { ...userDto },
         });
-        await generateOTP(
-          userDto.email,
-          userDto.industry,
-          userDto.categories,
-          data.internalConfigSetBy,
-          "signup"
-        );
+        router.push("/verify-otp");
       } catch (err: any) {
         console.error("Sign up error:", err);
         if (err?.status === 406) {
@@ -346,12 +336,8 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const signUpActions = async (
     redirectTo: string | undefined,
-    internalConfigSetBy: string | undefined,
-    settingsInterestData: SettingsInterestData | undefined
   ) => {
     localStorage.removeItem("walkthroughCompleted");
-    internalConfigSetBy === "internal" &&
-      (await updateResearchData({ formData: settingsInterestData }));
     const restrictedData: any = await eventService.fetchEnabledFilters(
       "research"
     );
@@ -362,13 +348,11 @@ export const AuthContextProvider = ({ children }: any) => {
   const handleFlowAction = (
     flow: "signIn" | "signUp",
     redirectTo: string | undefined,
-    internalConfigSetBy: string | undefined,
-    settingsInterestData: SettingsInterestData | undefined
   ) => {
     if (flow === "signIn") {
       signInActions(redirectTo);
     } else {
-      signUpActions(redirectTo, internalConfigSetBy, settingsInterestData);
+      signUpActions(redirectTo);
     }
   };
 
@@ -377,8 +361,6 @@ export const AuthContextProvider = ({ children }: any) => {
       verifyOtpDTO: VerifyOTP,
       flow: "signUp" | "signIn",
       redirectTo?: string,
-      settingsInterestData?: SettingsInterestData,
-      internalConfigSetBy?: string
     ) => {
       try {
         const result = await request<{ user: UserResponse }>(
@@ -416,8 +398,6 @@ export const AuthContextProvider = ({ children }: any) => {
             handleFlowAction(
               flow,
               redirectTo,
-              internalConfigSetBy,
-              settingsInterestData
             );
           }
         }

@@ -44,6 +44,7 @@ export default function SignInForm() {
   const onSubmit = async (data: SignInData) => {
     try {
       sessionStorage.setItem("userEmail", data.email);
+      sessionStorage.setItem("flow", "signIn");
       await signin(data);
     } catch (error) {
       console.error("Sign in error:", error);
