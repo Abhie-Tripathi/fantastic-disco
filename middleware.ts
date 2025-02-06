@@ -6,9 +6,10 @@ export function middleware(request: NextRequest) {
     (process.env.NEXT_COOKIE_PREFIX
       ? `${process.env.NEXT_COOKIE_PREFIX}-`
       : "") + "token";
+
   const cookie = request.cookies.get(key)?.value;
   if (!cookie) {
-    return NextResponse.redirect(new URL("/signin", request.url));
+    // return NextResponse.redirect(new URL("/signin", request.url));
   } else {
     if (request.nextUrl.pathname == "/") {
       return NextResponse.redirect(new URL("/internal", request.url));

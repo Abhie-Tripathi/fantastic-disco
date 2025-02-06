@@ -18,6 +18,11 @@ export interface UserResponse {
   userLocation?: UserLocation;
 }
 
+export interface VerifyOTP {
+  email: string;
+  otp: string;
+}
+
 export type PrimaryLocation = LOCATION_ID | GEO_JSON;
 export type UserLocation = Location | any;
 export type LocationType = "LOCATION_ID" | "GEO_JSON";

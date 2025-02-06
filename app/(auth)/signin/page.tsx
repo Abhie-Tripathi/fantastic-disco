@@ -43,6 +43,7 @@ export default function SignInForm() {
 
   const onSubmit = async (data: SignInData) => {
     try {
+      sessionStorage.setItem("userEmail", data.email);
       await signin(data);
     } catch (error) {
       console.error("Sign in error:", error);
@@ -81,6 +82,7 @@ export default function SignInForm() {
                 type="email"
                 {...field}
                 placeholder="Email"
+                value={field.value || ""}
                 onChange={(e) => {
                   field.onChange(e);
                   setError(null);

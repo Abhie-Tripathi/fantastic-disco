@@ -26,11 +26,12 @@ import { Input } from "../ui/input";
 import { industryData, settingResearchData } from "@/data/onboarding";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { GAEvent } from "@/utils/GAEvent";
+import { VerifyOTP } from "@/types/auth/user";
 
 const otpSchema = z.object({
   otpCode: z
     .string({ message: "OTP is required" })
-    .length(4, "OTP must be 4 digits"),
+    .length(6, "OTP must be 6 digits"),
 });
 
 type OTPData = z.infer<typeof otpSchema>;
@@ -84,7 +85,7 @@ export default function NewVerificationForm() {
   }, [flow, industry]);
 
   const { getFilterValue } = useFilterState();
-  const email = getFilterValue("email");
+  const email = sessionStorage.getItem("userEmail") || "";
   const internalConfigSetBy = getFilterValue("internalConfigSetBy");
 
   const form = useForm<OTPData>({
@@ -99,6 +100,10 @@ export default function NewVerificationForm() {
   const onSubmit = async (data: OTPData) => {
     try {
       time === 0 && setTime(30);
+      const verifyOtpDTO: VerifyOTP = {
+        email,
+        otp: data.otpCode,
+      };
       if (flow && flow === "signup") {
         const mappedSettingResearch =
           industryData.find((data) => data.slug === industry)
@@ -108,13 +113,17 @@ export default function NewVerificationForm() {
           source: "interest",
         };
         await verifyOtp(
-          { email, otpCode: data.otpCode },
+          verifyOtpDTO,
+          redirectTo,
           settingsInterestData,
-          internalConfigSetBy,
-          redirectTo
+          internalConfigSetBy
         );
       } else {
-        await verifyLoginOTP({ email, otpCode: data.otpCode }, redirectTo);
+        await verifyOtp(
+          verifyOtpDTO,
+          redirectTo,
+        );
+        // await verifyLoginOTP({ email, otpCode: data.otpCode }, redirectTo);
       }
     } catch (error) {
       console.error("OTP verification error:", error);
@@ -130,6 +139,7 @@ export default function NewVerificationForm() {
     if (flow === "signup") {
       GAEvent("Onboarding", "Onboarding", "Sign Up", "Verify OTP | Back");
     } else GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Back");
+    sessionStorage.removeItem("userEmail");
     router.back();
   };
   useEffect(() => {
@@ -179,7 +189,7 @@ export default function NewVerificationForm() {
                 <FormItem className="flex justify-center flex-col items-center">
                   <FormControl className="w-full flex justify-center">
                     <InputOTP
-                      maxLength={4}
+                      maxLength={6}
                       {...field}
                       onChange={(e) => {
                         field.onChange(e);
@@ -187,7 +197,7 @@ export default function NewVerificationForm() {
                       }}
                     >
                       <div className="flex justify-between w-full gap-4">
-                        {Array.from({ length: 4 }).map((_, index) => (
+                        {Array.from({ length: 6 }).map((_, index) => (
                           <InputOTPGroup key={index}>
                             <InputOTPSlot
                               key={index}

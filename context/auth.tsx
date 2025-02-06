@@ -22,6 +22,8 @@ import { SettingResearchData } from "@/types/onboarding";
 import { useEventsService } from "@/services/eventsService";
 import { getRestrictedUrl } from "@/utils/generateUrl";
 import { GAEvent } from "@/utils/GAEvent";
+import { endpoints } from "@/config/endpoints";
+import { VerifyOTP } from "@/types/auth/user";
 
 type authContextType = {
   user: UserResponse | null;
@@ -59,16 +61,16 @@ type authContextType = {
     categories?: string,
     internalConfigSetBy?: string,
     flow?: string,
-    type?: string,
+    type?: string
   ) => void;
   verifyOtp: (
-    user: any,
-    mappedSettingResearch: {
+    verifyOtpDTO: VerifyOTP,
+    redirectTo?: string,
+    settingsInterestData?: {
       data: SettingResearchData[];
       source: string;
     },
-    internalConfigSetBy: string,
-    redirectTo?: string
+    internalConfigSetBy?: string
   ) => Promise<any>;
   verifyLoginOTP: (user: any, redirectTo?: string) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
@@ -128,11 +130,8 @@ export const AuthContextProvider = ({ children }: any) => {
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
   const { updateResearchData } = useProductSettingServices();
   const eventService = useEventsService();
+  const [isVerifiedToken, setIsVerifiedToken] = useState(false);
 
-  interface SignUp {
-    data?: SignUpResponse;
-    error?: any;
-  }
   const searchParams = useSearchParams();
 
   const token = searchParams.get("token");
@@ -143,8 +142,8 @@ export const AuthContextProvider = ({ children }: any) => {
     categories?: string | null,
     internalConfigSetBy?: string,
     flow?: string | null,
-    type?: string | null,
-  ) => {    
+    type?: string | null
+  ) => {
     const url = `${baseUrl}/auth/customer/verify/generate`;
     const dataToSend = {
       email: email.trim(),
@@ -160,36 +159,65 @@ export const AuthContextProvider = ({ children }: any) => {
         method: "POST",
         data: { ...dataToSend },
       });
-      if(flow === 'signup') {
-        if(type === 'resend') {
-          GAEvent("Onboarding", "Onboarding", "Sign Up", "Verify OTP | Resend OTP");
-        }else {
-          GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email Entered OTP Sent");
+      if (flow === "signup") {
+        if (type === "resend") {
+          GAEvent(
+            "Onboarding",
+            "Onboarding",
+            "Sign Up",
+            "Verify OTP | Resend OTP"
+          );
+        } else {
+          GAEvent(
+            "Onboarding",
+            "Onboarding",
+            "Sign Up",
+            "Sign Up | Email Entered OTP Sent"
+          );
         }
-      }else {
-        if(type === 'resend') {
-          GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Resend OTP");
-        }else {
-          GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email Entered OTP Sent");
+      } else {
+        if (type === "resend") {
+          GAEvent(
+            "Onboarding",
+            "Onboarding",
+            "Sign In",
+            "Verify OTP | Resend OTP"
+          );
+        } else {
+          GAEvent(
+            "Onboarding",
+            "Onboarding",
+            "Sign In",
+            "Sign In | Email Entered OTP Sent"
+          );
         }
       }
       router.push(`/verify-otp?${queryParams.toString()}`);
     } catch (err: any) {
       console.error("Cannot generate otp:", err);
-      if(err?.status === 404)
-        GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email - No Account");
+      if (err?.status === 404)
+        GAEvent(
+          "Onboarding",
+          "Onboarding",
+          "Sign In",
+          "Sign In | Email - No Account"
+        );
       else
-        GAEvent("Onboarding", "Onboarding", "Sign In", "Sign In | Email Invalid");
+        GAEvent(
+          "Onboarding",
+          "Onboarding",
+          "Sign In",
+          "Sign In | Email Invalid"
+        );
     }
   };
 
   const signup = useCallback(
     async (userDto: SignUpDTO) => {
-      const url = baseUrl + authEndpoints.signup;
       try {
-        const data = await request(url, {
+        const data = await request(endpoints.auth.signUp, {
           method: "POST",
-          data: { ...userDto, role: "CUSTOMER" },
+          data: { ...userDto },
         });
         await generateOTP(
           userDto.email,
@@ -200,36 +228,35 @@ export const AuthContextProvider = ({ children }: any) => {
         );
       } catch (err: any) {
         console.error("Sign up error:", err);
-        if(err?.status === 406) {
-          GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email - Non Business");
+        if (err?.status === 406) {
+          GAEvent(
+            "Onboarding",
+            "Onboarding",
+            "Sign Up",
+            "Sign Up | Email - Non Business"
+          );
         } else if (err?.status === 409) {
-          GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Email Already Exists");
+          GAEvent(
+            "Onboarding",
+            "Onboarding",
+            "Sign Up",
+            "Sign Up | Email Already Exists"
+          );
         }
       }
     },
     [request, router]
   );
 
-  // const newcheckAuth = useCallback(async () => {
-  //   if (!user) {
-  //     const userData = localStorage.getItem("user");
-  //     console.log("Request", userData && JSON.parse(userData).user);
-  //     userData && setUser(JSON.parse(userData).user);
-  //     return;
-  //   }
-  // }, [request]);
-
-  // useEffect(() => {
-  //   const publicRoutes = ["/signin", "/signup", "/verify-otp", "/location"];
-  //   if (!publicRoutes.includes(pathName)) {
-  //     newcheckAuth();
-  //   }
-  // }, [pathName, newcheckAuth]);
-
   const signin = useCallback(
     async (userDto: TSignInFormSchema) => {
       try {
-        await generateOTP(userDto.email);
+        await request(endpoints.auth.signIn, {
+          method: "POST",
+          data: { ...userDto },
+        });
+        router.push("/verify-otp");
+        // await generateOTP(userDto.email);
       } catch (err) {
         console.error("Sign in error:", err);
       }
@@ -240,17 +267,13 @@ export const AuthContextProvider = ({ children }: any) => {
   const signOut = () => {
     setUser(null);
     deleteLocalStorage();
-    myFetch(`${baseUrl}/auth/customer/logout`, { method: "POST" }).then(() =>
+    myFetch(endpoints.auth.logout, { method: "POST" }).then(() =>
       router.push("/signin")
     );
   };
 
-  interface SignIn {
-    data?: SignInResponse;
-    error?: any;
-  }
-  const [isVerifiedToken, setIsVerifiedToken] = useState(false);
   useEffect(() => {
+    console.log(token);
     if (token && token.length > 0) {
       const verifyToken = async () => {
         const formData = {
@@ -266,6 +289,7 @@ export const AuthContextProvider = ({ children }: any) => {
               "Content-Type": "application/json",
             },
           });
+          console.log(data, error);
           if (error) {
             console.error("Error fetching data:", error);
             router.push("/signin");
@@ -309,40 +333,6 @@ export const AuthContextProvider = ({ children }: any) => {
     } else setIsVerifiedToken(true);
   }, []);
 
-  // const signin = async (userDto: TSignInFormSchema) => {
-  //   console.log("user_data_for_signin------------>", userDto);
-  //   const url = baseUrl + authEndpoints.signin;
-  //   console.log(url);
-  //   const { error, data }: SignIn = await myFetch(url, {
-  //     method: "POST",
-  //     headers: headers,
-  //     body: JSON.stringify(userDto),
-  //   });
-  //   if (data) {
-  //     console.log("data", data);
-  //     setUser(data);
-  //     setLocalStorage(data);
-  //     return { data };
-  //   }
-
-  //   let emailError = null;
-  //   let passwordError = null;
-
-  //   if (error) {
-  //     console.log(error);
-  //     if (error.message.includes("password")) {
-  //       passwordError = error.message;
-  //       return { passwordError };
-  //     }
-  //     if (error.message.includes("email") || error.message) {
-  //       emailError = error.message;
-  //       return { emailError };
-  //     }
-  //   }
-
-  //   return [];
-  // };
-
   const setLocalStorage = (user?: UserResponse | newUserResponse) => {
     window.localStorage.setItem("user", JSON.stringify(user));
   };
@@ -351,57 +341,29 @@ export const AuthContextProvider = ({ children }: any) => {
     window.localStorage.removeItem("user");
   };
 
-  interface VerifyOTP {
-    email: string;
-    otpCode: string;
-  }
-
-  // const verifyOtp = async (dataToSend: VerifyOTP, redirectTo?: string) => {
-  //   const url = baseUrl + "/auth/customer/verify";
-
-  //   const { data, error } = await myFetch(url, {
-  //     method: "POST",
-  //     body: JSON.stringify(dataToSend),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-
-  //   if (data) {
-  //     if (!data.user.isVerified) {
-  //       return;
-  //     }
-  //     if (data.user.isVerified) {
-  //       setUser(data);
-  //       setLocalStorage(data);
-  //       router.push(redirectTo || "/");
-  //     }
-  //   }
-
-  //   if (error) {
-  //     console.log(error);
-  //     return;
-  //   }
-
-  //   return data.user;
-  // };
-
   const verifyOtp = useCallback(
     async (
       verifyOtpDTO: VerifyOTP,
-      settingsInterestData: { data: SettingResearchData[]; source: string },
-      internalConfigSetBy: string,
-      redirectTo?: string
+      redirectTo?: string,
+      settingsInterestData?: { data: SettingResearchData[]; source: string },
+      internalConfigSetBy?: string
     ) => {
       try {
-        const url = baseUrl + "/auth/customer/verify";
-        const result = await request<{ user: UserResponse }>(url, {
-          method: "POST",
-          data: verifyOtpDTO,
-        });
+        const result = await request<{ user: UserResponse }>(
+          endpoints.auth.verifyOTP,
+          {
+            method: "POST",
+            data: verifyOtpDTO,
+          }
+        );
         if (result) {
           if (!result.user.isVerified) {
-            GAEvent("Onboarding", "Onboarding", "Sign Up", "Verify OTP | Invalid Submitted");
+            GAEvent(
+              "Onboarding",
+              "Onboarding",
+              "Sign Up",
+              "Verify OTP | Invalid Submitted"
+            );
             setError({
               response: "Invalid Code",
               status: 400,
@@ -411,7 +373,12 @@ export const AuthContextProvider = ({ children }: any) => {
             return;
           }
           if (result.user.isVerified) {
-            GAEvent("Onboarding", "Onboarding", "Sign Up", "Verify OTP | Valid Submitted");
+            GAEvent(
+              "Onboarding",
+              "Onboarding",
+              "Sign Up",
+              "Verify OTP | Valid Submitted"
+            );
             setUser(result.user);
             setLocalStorage(result.user);
             localStorage.removeItem("walkthroughCompleted");
@@ -444,7 +411,12 @@ export const AuthContextProvider = ({ children }: any) => {
         });
         if (result) {
           if (!result.user.isVerified) {
-            GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Invalid Submitted");
+            GAEvent(
+              "Onboarding",
+              "Onboarding",
+              "Sign In",
+              "Verify OTP | Invalid Submitted"
+            );
             setError({
               response: "Invalid Code",
               status: 400,
@@ -453,7 +425,12 @@ export const AuthContextProvider = ({ children }: any) => {
             });
           }
           if (result.user.isVerified) {
-            GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Valid Submitted");
+            GAEvent(
+              "Onboarding",
+              "Onboarding",
+              "Sign In",
+              "Verify OTP | Valid Submitted"
+            );
             setUser(result.user);
             setLocalStorage(result.user);
             localStorage.setItem(
@@ -466,7 +443,12 @@ export const AuthContextProvider = ({ children }: any) => {
         }
       } catch (err) {
         console.log("OTP verification error:", err);
-        GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Invalid Submitted");
+        GAEvent(
+          "Onboarding",
+          "Onboarding",
+          "Sign In",
+          "Verify OTP | Invalid Submitted"
+        );
       }
     },
     [request, router]
@@ -478,46 +460,6 @@ export const AuthContextProvider = ({ children }: any) => {
       userData && setUser(JSON.parse(userData));
     }
   }, [user]);
-
-  // const verifyLoginOTP = async (dataToSend: VerifyOTP, redirectTo?: string) => {
-  //   const url = baseUrl + "/auth/customer/verify-otp";
-
-  //   const { data, error } = await myFetch(url, {
-  //     method: "POST",
-  //     body: JSON.stringify(dataToSend),
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-
-  //   console.log(data, error);
-
-  //   if (data) {
-  //     console.log(data);
-  //     if (!data.user.isVerified) {
-  //       return;
-  //     }
-  //     if (data.user.isVerified) {
-  //       setUser(data);
-  //       setLocalStorage(data);
-  //       router.push(redirectTo || "/internal");
-  //     }
-  //   }
-
-  //   if (error) {
-  //     console.log(error);
-  //     return;
-  //   }
-
-  //   return data.user;
-  // };
-
-  // useEffect(() => {
-  //   const user = window.localStorage.getItem("user");
-  //   if (user) {
-  //     setUser(JSON.parse(user));
-  //   }
-  // }, [isProfileUpdated]);
 
   useLayoutEffect(() => {
     const user = window.localStorage.getItem("user");
@@ -532,18 +474,10 @@ export const AuthContextProvider = ({ children }: any) => {
         (token && token.length > 0);
 
       if (!isPublicPath) {
-        router.push("/signin");
+        // router.push("/signin");
       }
     }
   }, [pathName, router, isProfileUpdated]);
-  // useLayoutEffect(() => {
-  //   if (user) {
-  //     const restrictedPaths = ["/signin", "/signup"];
-  //     if (restrictedPaths.includes(pathName)) {
-  //       router.replace("/internal");
-  //     }
-  //   }
-  // }, [user, pathName, router]);
 
   const value = {
     user,
