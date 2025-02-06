@@ -1,3 +1,4 @@
+import { settingResearchData } from "@/data/onboarding";
 import { Location } from "../locations";
 import { SaveLocationDTO } from "../locations/savedLocationsInsights";
 
@@ -22,6 +23,8 @@ export interface VerifyOTP {
   email: string;
   otp: string;
 }
+
+export type AuthFlow = "signIn" | "signUp";
 
 export type PrimaryLocation = LOCATION_ID | GEO_JSON;
 export type UserLocation = Location | any;

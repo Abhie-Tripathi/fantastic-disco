@@ -18,7 +18,7 @@ import { myFetch } from "@/utils/myFetch";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 import { useProductSettingServices } from "@/services/settingservices/productService";
-import { SettingResearchData } from "@/types/onboarding";
+import { SettingResearchData, SettingsInterestData } from "@/types/onboarding";
 import { useEventsService } from "@/services/eventsService";
 import { getRestrictedUrl } from "@/utils/generateUrl";
 import { GAEvent } from "@/utils/GAEvent";
@@ -65,11 +65,9 @@ type authContextType = {
   ) => void;
   verifyOtp: (
     verifyOtpDTO: VerifyOTP,
+    flow: "signIn" | "signUp",
     redirectTo?: string,
-    settingsInterestData?: {
-      data: SettingResearchData[];
-      source: string;
-    },
+    settingsInterestData?: SettingsInterestData,
     internalConfigSetBy?: string
   ) => Promise<any>;
   verifyLoginOTP: (user: any, redirectTo?: string) => Promise<any>;
@@ -341,11 +339,45 @@ export const AuthContextProvider = ({ children }: any) => {
     window.localStorage.removeItem("user");
   };
 
+  const signInActions = (redirectTo: string | undefined) => {
+    localStorage.setItem("walkthroughCompleted", JSON.stringify(["research"]));
+    router.push(redirectTo || "/internal");
+  };
+
+  const signUpActions = async (
+    redirectTo: string | undefined,
+    internalConfigSetBy: string | undefined,
+    settingsInterestData: SettingsInterestData | undefined
+  ) => {
+    localStorage.removeItem("walkthroughCompleted");
+    internalConfigSetBy === "internal" &&
+      (await updateResearchData({ formData: settingsInterestData }));
+    const restrictedData: any = await eventService.fetchEnabledFilters(
+      "research"
+    );
+    const restrictedUrl = getRestrictedUrl(redirectTo || "", restrictedData);
+    router.push(restrictedUrl || "/");
+  };
+
+  const handleFlowAction = (
+    flow: "signIn" | "signUp",
+    redirectTo: string | undefined,
+    internalConfigSetBy: string | undefined,
+    settingsInterestData: SettingsInterestData | undefined
+  ) => {
+    if (flow === "signIn") {
+      signInActions(redirectTo);
+    } else {
+      signUpActions(redirectTo, internalConfigSetBy, settingsInterestData);
+    }
+  };
+
   const verifyOtp = useCallback(
     async (
       verifyOtpDTO: VerifyOTP,
+      flow: "signUp" | "signIn",
       redirectTo?: string,
-      settingsInterestData?: { data: SettingResearchData[]; source: string },
+      settingsInterestData?: SettingsInterestData,
       internalConfigSetBy?: string
     ) => {
       try {
@@ -357,7 +389,7 @@ export const AuthContextProvider = ({ children }: any) => {
           }
         );
         if (result) {
-          if (!result.user.isVerified) {
+          if (!result.user) {
             GAEvent(
               "Onboarding",
               "Onboarding",
@@ -372,7 +404,7 @@ export const AuthContextProvider = ({ children }: any) => {
             });
             return;
           }
-          if (result.user.isVerified) {
+          if (result.user) {
             GAEvent(
               "Onboarding",
               "Onboarding",
@@ -381,17 +413,12 @@ export const AuthContextProvider = ({ children }: any) => {
             );
             setUser(result.user);
             setLocalStorage(result.user);
-            localStorage.removeItem("walkthroughCompleted");
-            internalConfigSetBy === "internal" &&
-              (await updateResearchData({ formData: settingsInterestData }));
-            const restrictedData: any = await eventService.fetchEnabledFilters(
-              "research"
+            handleFlowAction(
+              flow,
+              redirectTo,
+              internalConfigSetBy,
+              settingsInterestData
             );
-            const restrictedUrl = await getRestrictedUrl(
-              redirectTo || "",
-              restrictedData
-            );
-            router.push(restrictedUrl || "/");
           }
         }
       } catch (err) {

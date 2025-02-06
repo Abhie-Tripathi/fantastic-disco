@@ -14,7 +14,6 @@ axiosInstance.interceptors.response.use(
       // Redirect to login page or refresh token
       // window.location.href = "/signin";
     }
-    console.log(error);
     return (error.response && error.response.data) || "Something went wrong";
   }
 );

@@ -27,6 +27,7 @@ import { industryData, settingResearchData } from "@/data/onboarding";
 import { endOfMonth, startOfMonth } from "date-fns";
 import { GAEvent } from "@/utils/GAEvent";
 import { VerifyOTP } from "@/types/auth/user";
+import { SettingsInterestData } from "@/types/onboarding";
 
 const otpSchema = z.object({
   otpCode: z
@@ -46,7 +47,7 @@ export default function NewVerificationForm() {
   const [isLoading, setIsLoading] = useState(false);
 
   const industry = searchParams.get("industry") || "";
-  const sessionData = sessionStorage.getItem("categories");
+  const sessionData = sessionStorage && sessionStorage.getItem("categories");
   const categories = sessionData && JSON.parse(sessionData);
   const flow = searchParams.get("flow") || "";
 
@@ -108,21 +109,19 @@ export default function NewVerificationForm() {
         const mappedSettingResearch =
           industryData.find((data) => data.slug === industry)
             ?.mappedSettingResearch || settingResearchData;
-        const settingsInterestData = {
+        const settingsInterestData: SettingsInterestData = {
           data: mappedSettingResearch,
           source: "interest",
         };
         await verifyOtp(
           verifyOtpDTO,
+          "signUp",
           redirectTo,
           settingsInterestData,
           internalConfigSetBy
         );
       } else {
-        await verifyOtp(
-          verifyOtpDTO,
-          redirectTo,
-        );
+        await verifyOtp(verifyOtpDTO, "signIn", redirectTo);
         // await verifyLoginOTP({ email, otpCode: data.otpCode }, redirectTo);
       }
     } catch (error) {
