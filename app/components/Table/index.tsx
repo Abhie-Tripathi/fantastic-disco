@@ -40,6 +40,7 @@ import { useTrackerContext } from "@/context/tracker";
 import { useCoordinateService } from "@/services/coordinateService";
 import { PaginationComponent } from "@/components/pagination";
 import { useFilterState } from "@/hooks/useFilterState";
+import { formatEstimatedSpend } from "@/utils/formater";
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -516,14 +517,6 @@ const Table = ({
   //   if(currPage!==1)
   //   fetchData(secondLast);
   // },[currPage])
-
-  const formatEstimatedSpend = (spend: string) => {
-    const spendNumber = parseFloat(spend.slice(1).replace(/,/g, ""));
-    if (spendNumber >= 100000) {
-      return `$${(spendNumber / 1000).toFixed(0)}k`;
-    }
-    return spend;
-  };
 
   useEffect(() => {
     if (path[2] === "search") setInitialRender(true);
@@ -1310,7 +1303,7 @@ const Table = ({
                 )}
 
                 {showInsights.economicImpact && (
-                  <td>{formatEstimatedSpend(event.economicImpact || "$0")}</td>
+                  <td>{formatEstimatedSpend(event.economicImpact)}</td>
                 )}
 
                 {/* {showInsights.eventSeries ||
