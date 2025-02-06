@@ -34,6 +34,25 @@ export function normalizeLon(lon: number) {
   return lon;
 }
 
+export const formatEstimatedSpend = (spend: string | null) => {
+  if (!spend) return "--";
+  const spendNumber = parseFloat(spend.slice(1).replace(/,/g, ""));
+
+  if (spendNumber >= 1000000000) {
+    const billions = (spendNumber / 1000000000).toFixed(1);
+    return `$${billions}B`;
+  }
+  if (spendNumber >= 1000000) {
+    const millions = (spendNumber / 1000000).toFixed(1);
+    return `$${millions}M`;
+  }
+  if (spendNumber >= 100000) {
+    const thousands = (spendNumber / 1000).toFixed(0);
+    return `$${thousands}k`;
+  }
+  return spend;
+}
+
 export const getEventLatLong = (event: Event) => {
   const lat = parseFloat(
     event.venueLocation?.venue?.latitude ||
