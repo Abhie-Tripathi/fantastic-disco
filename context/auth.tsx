@@ -10,15 +10,17 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
-import { authEndpoints, baseUrl, headers } from "@/constants";
+import { authEndpoints, baseUrl } from "@/constants";
 import { UserResponse } from "../types/user";
-import { SignUpResponse, SignInResponse, TSignInWithOTPSchema } from "../types";
+import { SignUpResponse, SignInResponse } from "../types";
 import { TSignInFormSchema, SignUpDTO } from "../types";
 import { myFetch } from "@/utils/myFetch";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ApiResponse, useApi } from "@/hooks/useApi";
+import { useApi } from "@/hooks/useApi";
 import { useProductSettingServices } from "@/services/settingservices/productService";
 import { SettingResearchData } from "@/types/onboarding";
+import { useEventsService } from "@/services/eventsService";
+import { getRestrictedUrl } from "@/utils/generateUrl";
 import { GAEvent } from "@/utils/GAEvent";
 
 type authContextType = {
@@ -125,6 +127,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
   const { updateResearchData } = useProductSettingServices();
+  const eventService = useEventsService();
 
   interface SignUp {
     data?: SignUpResponse;
@@ -263,14 +266,10 @@ export const AuthContextProvider = ({ children }: any) => {
               "Content-Type": "application/json",
             },
           });
-
-          console.log("Data from signin", data);
-          console.log("Error from signnin", error);
           if (error) {
             console.error("Error fetching data:", error);
             router.push("/signin");
           } else {
-            console.log("Data fetched:", data);
             const { id, firstname, lastname, email, role, profilePicture } =
               data.info;
             const user = {
@@ -293,8 +292,6 @@ export const AuthContextProvider = ({ children }: any) => {
                 profilePicture: profilePicture,
               },
             };
-            console.log("Data", data);
-            console.log("Data.info", data.info);
             localStorage.setItem(
               "walkthroughCompleted",
               JSON.stringify(["research"])
@@ -420,7 +417,14 @@ export const AuthContextProvider = ({ children }: any) => {
             localStorage.removeItem("walkthroughCompleted");
             internalConfigSetBy === "internal" &&
               (await updateResearchData({ formData: settingsInterestData }));
-            router.push(redirectTo || "/");
+            const restrictedData: any = await eventService.fetchEnabledFilters(
+              "research"
+            );
+            const restrictedUrl = await getRestrictedUrl(
+              redirectTo || "",
+              restrictedData
+            );
+            router.push(restrictedUrl || "/");
           }
         }
       } catch (err) {
@@ -438,7 +442,6 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: dataToSend,
         });
-        console.log(result);
         if (result) {
           if (!result.user.isVerified) {
             GAEvent("Onboarding", "Onboarding", "Sign In", "Verify OTP | Invalid Submitted");

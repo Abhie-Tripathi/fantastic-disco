@@ -1,93 +1,33 @@
 "use client";
-import React, {
-  useState,
-  FormEvent,
-  useEffect,
-  useCallback,
-  useRef,
-} from "react";
-import styles from "@/app/(auth)/signup/page.module.css";
-import Image from "next/image";
-import Carousel from "@/app/components/carousel";
-// import Verification from "@/app/(auth)/verification/page";
+import React, { useState, useEffect } from "react";
 import { useAuthContext } from "@/context/auth";
 import Link from "next/link";
 import { SignUpFormSchema } from "@/types/signup";
-import { ZodError } from "zod";
-import Visibility from "@/public/visibility.svg";
-import VisibilityOff from "@/public/visibilityOff.svg";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
-// import logo from "/public/Logo_Light mode.png";
-import logo from "/public/croppedlogo.png";
-import whr from "/public/whrai.svg";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { BaseURL } from "@/config";
-import CategorySelector from "../categorySelector";
-import IndustryDropdown from "./IndustryDropdown";
 import { industryData } from "@/data/onboarding";
-import { useFilterContext } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
 import { newCategories } from "@/data/categories";
-import LocationForm from "@/app/(auth)/location/page";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { AlertTriangle, Check, ChevronsUpDown, Loader2 } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { cn } from "@/lib/utils";
-import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import HeroLogoText from "/public/heroLogoText.svg";
-import { useDatabaseLocationcomplete } from "@/hooks/useLocationAutocomplete";
-import { SignUpDTO } from "@/types";
+import { AlertTriangle, Loader2 } from "lucide-react";
+import { Alert, AlertDescription } from "../ui/alert";
 import IndustryCards from "./IndustryCards";
 import CategoryCards from "./CategoryCards";
-import { Category } from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
 
 const NewSignUpForm = () => {
-  const [showVerification, setShowVerification] = useState(false);
   const { signup, error, setError } = useAuthContext();
-  const { getFilterValue, setFilter, deleteFilter } = useFilterState();
-
-  const [name, setName] = useState("");
+  const { getFilterValue, deleteFilter } = useFilterState();
   const [email, setEmail] = useState("");
-  const [mobileNo, setMobileNo] = useState("");
-  const [password, setPassword] = useState("");
-  const [selected, setSelected] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [industry, setIndustry] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
-  const [passwordVisibility, setPasswordVisibility] = useState(false);
-  const [confirmPasswordVisibility, setConfirmPasswordVisibility] =
-    useState(false);
-  // const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const set = new Set<string>();
   const {
     control,
     handleSubmit,
@@ -188,7 +128,12 @@ const NewSignUpForm = () => {
   const handleIndustry = (industry: string) => {
     setValue("industry", industry);
     setIndustry(industry);
-    GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Use Case Selected");
+    GAEvent(
+      "Onboarding",
+      "Onboarding",
+      "Sign Up",
+      "Sign Up | Use Case Selected"
+    );
   };
 
   const handleCategories = (categoryId: string) => {
@@ -196,10 +141,20 @@ const NewSignUpForm = () => {
       const updatedSet = new Set(prev);
       if (updatedSet.has(categoryId)) {
         updatedSet.delete(categoryId);
-        GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Category Deselected");
+        GAEvent(
+          "Onboarding",
+          "Onboarding",
+          "Sign Up",
+          "Sign Up | Category Deselected"
+        );
       } else {
         updatedSet.add(categoryId);
-        GAEvent("Onboarding", "Onboarding", "Sign Up", "Sign Up | Category Selected");
+        GAEvent(
+          "Onboarding",
+          "Onboarding",
+          "Sign Up",
+          "Sign Up | Category Selected"
+        );
       }
       const updatedCategoriesArray = Array.from(updatedSet);
       const updatedCategoriesString = updatedCategoriesArray.join(",");
@@ -223,6 +178,9 @@ const NewSignUpForm = () => {
           render={({ field }) => (
             <div className="space-y-2 w-96 max-w-3xl self-center border-b pb-6">
               <Input
+                className="rounded-sm bg-white ring-1
+                ring-primary outline outline-[#D2D2F3] outline-offset-2
+                focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-[3px] focus-visible:outline-[#D2D2F3] focus-visible:outline-offset-2"
                 id="email"
                 type="email"
                 {...field}
@@ -249,8 +207,8 @@ const NewSignUpForm = () => {
             </div>
           )}
         />
-        <p className="text-[var(--secondary-text-color)] text-center font-semibold">
-          Let us know who you are and help us personalise your experience !
+        <p className="text-[var(--secondary-text-color)] text-sm text-center font-semibold">
+          Choose an Industry Relevant to You
         </p>
         <Controller
           name={"industry"}

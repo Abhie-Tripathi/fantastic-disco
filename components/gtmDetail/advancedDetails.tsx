@@ -28,6 +28,12 @@ import { Card } from "../ui/card";
 import { useEffect, useState } from "react";
 import { GTMEventDetail } from "@/types/events";
 import { renderFormattedDates } from "@/utils/dateFormat";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useFilterContext } from "@/context/filterContext";
 import Restriction from "../eventDetail/restriction";
 
@@ -128,17 +134,28 @@ const CarouselComponent = ({
           }`}
         >
           {maturity && (
-            <CarouselItem
-              className={`relative ${
-                isSlidingEnabled
-                  ? "px-4 sm:basis-3/5 md:basis-1/2 lg:basis-1/3"
-                  : "pl-6 basis-3/12"
-              } carousel-item`}
-            >
-              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full xl:w-auto h-full">
-                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                  Maturity
-                </h1>
+            <CarouselItem className="pl-6 basis-3/12 carousel-item">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                        Maturity
+                      </h1>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      align="start"
+                      alignOffset={-10}
+                      className="w-52 tooltip-content-styles"
+                      side="top"
+                    >
+                      <p className="text-[var(--secondary-text-color)] font-medium">
+                        Lifecycle stage of an event, based on how often it has
+                        occurred
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 {isMaturityEnabled ? (
                   maturity ? (
                     <span className="text-[#0062D1] dark:bg-[#10233D] dark:border-[#0D3868] bg-[#EBF5FF] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border-[#CCE6FF] border rounded-md w-full xl:w-24 text-center">
@@ -166,9 +183,29 @@ const CarouselComponent = ({
               }  carousel-item`}
             >
               <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
-                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                  Edition
-                </h1>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                        Edition
+                      </h1>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      align="center"
+                      alignOffset={-70}
+                      className="w-80 tooltip-content-styles"
+                      side="top"
+                      avoidCollisions={true}
+                      collisionPadding={{ right: 30 }}
+                    >
+                      <p className="text-[var(--secondary-text-color)] font-medium">
+                        Specific occurrence or iteration of a recurring event,
+                        often distinguished by its year, version, or any changes
+                        made to the event&apos;s details.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 {editions && (
                   // <span className="text-[#6750A4] bg-[#E6E6F9] flex items-center h-7 font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit text-center cursor-not-allowed">
                   //   {`${editions} Edition${
@@ -199,10 +236,27 @@ const CarouselComponent = ({
               }  carousel-item`}
             >
               <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
-                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                  Frequency
-                </h1>
-                <div className="flex gap-4 flex-wrap w-full xl:w-auto">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                        Frequency
+                      </h1>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      align="start"
+                      alignOffset={-10}
+                      className="w-52 tooltip-content-styles"
+                      side="top"
+                    >
+                      <p className="text-[var(--secondary-text-color)] font-medium">
+                        Recurring pattern or interval at which an event takes
+                        place
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <div className="flex gap-4 flex-wrap">
                   {isFrequencyEnabled ? (
                     frequency ? (
                       <span className="text-[#A35200] bg-[#FFF4D6] dark:bg-[#331B00] dark:border-[#4D2A00] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border border-[#FEF0CD] rounded-md w-full xl:w-28 text-center">
@@ -230,9 +284,24 @@ const CarouselComponent = ({
               }  carousel-item`}
             >
               <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
-                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                  Rehost Month
-                </h1>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                        Rehost Month
+                      </h1>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      className="w-60 tooltip-content-styles"
+                      side="top"
+                    >
+                      <p className="text-[var(--secondary-text-color)] font-medium">
+                        Predicted timeline for when an event is expected to take
+                        place, based on available data and historical patterns.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 {isForecastedEnabled ? (
                   <span className="text-[var(--primary-color-hover)] font-semibold text-md text-center">
                     {format(futureExpectedStartDate, "MMM, yyyy")}
@@ -244,17 +313,30 @@ const CarouselComponent = ({
             </CarouselItem>
           )}
           {(isBranded || isSeries) && (
-            <CarouselItem
-              className={`relative ${
-                isSlidingEnabled
-                  ? "px-4 sm:basis-3/5 md:basis-1/2 lg:basis-1/3"
-                  : "pl-6 basis-3/12"
-              }  carousel-item`}
-            >
-              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full xl:w-auto h-full">
-                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                  Brand
-                </h1>
+            <CarouselItem className="pl-6 basis-3/12 carousel-item">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                        Brand
+                      </h1>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      align="center"
+                      avoidCollisions={true}
+                      collisionPadding={{ right: 30 }}
+                      className="w-72 tooltip-content-styles"
+                      side="top"
+                    >
+                      <p className="text-[var(--secondary-text-color)] font-medium">
+                        Brand categorizes events as recurring in multiple
+                        locations (Branded) or different locations each time
+                        (Series).
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
                 {!isBranded && !isSeries && (
                   <span className="text-[#666666] text-sm flex items-center gap-2">
                     <CircleSlash width={15} height={15} />
@@ -322,7 +404,10 @@ export const AdvancedDetails = ({
       isSeries ||
       futureExpectedStartDate) && (
       <div className="flex flex-col">
-        <Heading heading="Advanced Details" />
+        <Heading
+          heading="Advanced Details"
+          tooltipDescription="Highlights the event's maturity and history, such as its stage and editions held."
+        />
         <CarouselComponent
           morphedData={morphedData}
           eventDetails={eventDetails}
