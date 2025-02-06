@@ -46,6 +46,7 @@ export interface EventTableType {
     reputationSentiment: number;
     interestsGrowth: number;
     interestsGrowthRange: any,
+    economicImpact: string;
     repeatSentiment: number;
     eventSize: number;
     isSaved?:boolean;
