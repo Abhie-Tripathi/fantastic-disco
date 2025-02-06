@@ -4,7 +4,6 @@ import { X, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useFilterContext } from "@/context/filterContext";
 interface KeywordTabsProps {
   type?:string;
   activeTab: "include" | "exclude";

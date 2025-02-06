@@ -783,8 +783,8 @@ const Pages = () => {
       setTrackerName(trackerName);
     } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
       setTrackerName(trackerName);
-      setLocalFilter("includeKeywords",presetItem?.data?.[0].join(","));
-      setLocalFilter("excludeKeywords",presetItem?.data?.[1].join(","))
+      setLocalFilter("includeKeywords",presetItem?.data?.[0]?.join(","));
+      setLocalFilter("excludeKeywords",presetItem?.data?.[1]?.join(","))
     }
 
     setSelectedPresetName(trackerName);
