@@ -92,6 +92,9 @@ export default function CreateTrackerDialog({
       ...(getLocalFilterValue("trust_score_gte") && {
         trust: true
       }),
+      ...(getLocalFilterValue("show").split(",").includes("economicImpact") && {
+        economicImpact: true
+      })
     };
     const showsData: string[] = [];
 
@@ -105,6 +108,7 @@ export default function CreateTrackerDialog({
       audienceZone: "audienceSpread",
       branded: "eventBrand",
       series: "eventSeries",
+      economicImpact: "economicImpact",
       rankings: "eventRanking,trustScore"
     };
     
