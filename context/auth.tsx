@@ -349,7 +349,6 @@ export const AuthContextProvider = ({ children }: any) => {
   };
 
   const handleFlowAction = (flow: AuthFlow, redirectTo: string | undefined) => {
-    console.log(flow)
     if (flow === "signIn") {
       signInActions(redirectTo);
     } else {
