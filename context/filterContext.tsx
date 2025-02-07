@@ -202,7 +202,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       setMorphedData(generateSearchFilters(enabledFilters) as any);
     }
   }, [enabledFilters]);
-
+  
   const setLocalFilter = useCallback(
     (key: keyof Filters, value: string) => {
       // console.log(key);

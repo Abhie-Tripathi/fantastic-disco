@@ -805,16 +805,15 @@ const Pages = () => {
     const showsData: string[] = [];
 
     const mapping = {
-      rating: "eventRating",
+      rating: "rating",
       maturity: "maturity",
-      forecasted: "isforecasted",
-      frequency: "eventFrequency",
-      estimatedExhibitors: "estimatedExhibitScore",
+      branded: "branded,series",
+      forecasted: "forecasted",
+      frequency: "frequency",
+      estimatedExhibitors: "estimatedExhibitors",
       scores: "eventImpactScore,inboundScore,internationalScore",
-      audienceZone: "audienceSpread",
-      branded: "eventBrand",
-      series: "eventSeries",
-      rankings: "eventRanking,trustScore"
+      audienceZone: "audienceZone",
+      rankings: "rankings,trustScore",
     };
     
     const filters = getLocalFilterValue("show").split(",");
@@ -836,10 +835,24 @@ const Pages = () => {
       maturity: "maturity",
       onlyBranded: "onlyBranded",
       onlySeries: "onlySeries",
-      frequencies: "frequencies"
+      frequencies: "frequencies",
+      includeKeywords: "includeKeywords",
+      excludeKeywords: "excludeKeywords",
+      estimatedVisitorRangeTag:"estimatedVisitorRangeTag",
+      estimatedExhibitors:"estimatedExhibitors",
+      impact_score_gte:"impact_score_gte",
+      impact_score_lte:"impact_score_lte",
+      inbound_score_gte:"inbound_score_gte",
+      inbound_score_lte:"inbound_score_lte",
+      international_score_gte:"international_score_gte",
+      international_score_lte:"international_score_lte",
+      top:"top",
+      designations:"designations",
+      audienceSpread:"audienceSpread",
+      orgWebsite: "websites"
     }
     const filterValues = Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
-      const value = getLocalFilterValue(key);
+      const value = getLocalFilterValue(key)?getLocalFilterValue(key):key;
     
       if (Array.isArray(value) && value.length > 0) {
         acc[mappedKey] = value;
@@ -851,6 +864,9 @@ const Pages = () => {
     
       return acc;
     }, {});
+    if(showsData.length>0){
+      filterValues.show=showsData.join(",");
+    }
     console.log(filterValues);
     
     const userType = {
@@ -883,7 +899,10 @@ const Pages = () => {
         type: type.toUpperCase()
       }),
       accessLevel: editData?.tracker?.accessLevel,
-      filterValues
+      filterValue:{
+
+      }
+      
       // filterValues:{
       //   ...(getLocalFilterValue("eventTypes")?.length>0 &&{
       //     eventTypes: getLocalFilterValue("eventTypes")
