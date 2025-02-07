@@ -183,10 +183,10 @@ data?.filterValues?.eventType
   data?.tracker?.filterValue?.eventEntry?.split(','):[];
   const eventSize=data?.tracker?.filterValue?.estimatedVisitorRangeTag ?
   data?.tracker?.filterValue?.estimatedVisitorRangeTag?.split(','):[];
-const format=data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(','):[];
-const endDateValue = data?.tracker?.filterValue?.endDate;
-const startDate = endDateValue ? endDateValue.split(",")[0] : null;
-const endDate = endDateValue ? endDateValue.split(",")[1] : null;
+const format=data?.filterValues?.eventFormats?.length !== 0 ? data?.filterValues?.eventFormats:[];
+const endDateValue = data?.filterValues?.endDate;
+const startDate = data?.filterValues?.startDate?.split(",")[0];
+const endDate = data?.filterValues?.endDate?.split(",")[0];
 const eventStatus = data?.tracker?.filterValue?.eventStatus?.length >0 ? data?.tracker?.filterValue?.eventStatus?.split(','):[]
 const userRating=
   data?.tracker?.filterValue?.eventRating?.length>0
