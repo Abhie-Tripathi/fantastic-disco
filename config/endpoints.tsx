@@ -1,6 +1,4 @@
-
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "";
-
 export const endpoints = {
   //   auth: {
   //     me: `${BASE_URL}/me`,
@@ -10,6 +8,13 @@ export const endpoints = {
   //     verifyOtp: `${BASE_URL}/auth/customer/verify`,
   //     generateOtp: `${BASE_URL}/auth/customer/verify/generate`,
   //   },
+ 
+  auth: {
+    signUp: `${BASE_URL}/auth/sign-up`,
+    signIn: `${BASE_URL}/auth/sign-in`,
+    verifyOTP: `${BASE_URL}/auth/verify-otp`,
+    logout: `${BASE_URL}/me/sign-out`,
+  },
   event: {
     count: `${BASE_URL}/event/search`,
     events: `${BASE_URL}/event/search`,
@@ -20,7 +25,7 @@ export const endpoints = {
     recentSearches: `${BASE_URL}/me/recent-searches`,
     poc: `${BASE_URL}/event-poc`,
     enabledFilters: `${BASE_URL}/configuration`,
-    recentSearch : `${BASE_URL}/event/recent`
+    recentSearch: `${BASE_URL}/event/recent`,
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
@@ -60,7 +65,7 @@ export const endpoints = {
     iterestedUsers: `${BASE_URL}/userInterest`,
     enquiryDetail: `${BASE_URL}/enquiry`,
     pocUnmask: `${BASE_URL}/event-poc/unmask`,
-    latestComment : `${BASE_URL}/dashboard/latest-comment`
+    latestComment: `${BASE_URL}/dashboard/latest-comment`,
   },
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {
@@ -73,7 +78,7 @@ export const endpoints = {
     deActiveWidget: `${BASE_URL}/widget?status=deactivate`,
     onlyDraftWidget: `${BASE_URL}/widget?status=draft`,
     widgetById: `${BASE_URL}/widget`,
-    widget: `${BASE_URL}/widget`
+    widget: `${BASE_URL}/widget`,
   },
   events: {
     getEvents: `${BASE_URL}/event?limit=2`,
@@ -85,7 +90,7 @@ export const endpoints = {
     addEvent: `${BASE_URL}/event`,
     addSpeakers: `${BASE_URL}/event/speaker`,
     addExhibitors: `${BASE_URL}/event/speaker`,
-    updateEvent: `${BASE_URL}/event`
+    updateEvent: `${BASE_URL}/event`,
   },
   intend: {
     getGuest: `${BASE_URL}/intend/users`,
@@ -97,9 +102,9 @@ export const endpoints = {
     getSuggestions: `${BASE_URL}/invite`,
     sendInvite: `${BASE_URL}/invite/send`,
   },
-  calendar:{
-    getyearlyEvents:`${BASE_URL}/event?`,
+  calendar: {
+    getyearlyEvents: `${BASE_URL}/event?`,
   },
   configuration: `${BASE_URL}/configuration`,
-  myprofile:`${BASE_URL}/auth/customer/profile`
+  myprofile: `${BASE_URL}/auth/customer/profile`,
 };

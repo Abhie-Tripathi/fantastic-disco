@@ -5,7 +5,7 @@ import Link from "next/link";
 import { SignUpFormSchema } from "@/types/signup";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
-import { industryData } from "@/data/onboarding";
+import { industryData, sessionKeys } from "@/data/onboarding";
 import { useFilterState } from "@/hooks/useFilterState";
 import { newCategories } from "@/data/categories";
 import { useForm, Controller } from "react-hook-form";
@@ -39,11 +39,17 @@ const NewSignUpForm = () => {
   });
 
   const onSubmit = async (data: FormData) => {
+    sessionKeys.forEach((key) => sessionStorage.removeItem(key));
+
     const signUpDTOData = {
       ...data,
-      industry: data.industry || "others",
-      ...(categories.length > 0 && { categories: data.categories }),
+      industry:
+        data.industry ||
+        industryData.find((industry) => industry.name === "Others")?.slug ||
+        "Others",
+      ...(categories.length > 0 && { category: data.categories }),
     };
+    delete signUpDTOData.categories;
     const categorySlugs = categories
       .map(
         (category) =>
@@ -53,9 +59,15 @@ const NewSignUpForm = () => {
 
     if (categorySlugs && categorySlugs.length > 0) {
       sessionStorage.setItem("categories", JSON.stringify(categorySlugs));
-    } else {
-      sessionStorage.removeItem("categories");
     }
+    if (signUpDTOData && signUpDTOData.industry) {
+      sessionStorage.setItem("industry", signUpDTOData.industry);
+    }
+    if (signUpDTOData && signUpDTOData.email) {
+      sessionStorage.setItem("userEmail", signUpDTOData.email);
+    }
+    sessionStorage.setItem("flow", "signUp");
+
     try {
       await signup(signUpDTOData);
     } catch (error) {
@@ -185,6 +197,7 @@ const NewSignUpForm = () => {
                 type="email"
                 {...field}
                 placeholder="Email"
+                value={field.value || ""}
                 onChange={(e) => {
                   field.onChange(e);
                   setError(null);
