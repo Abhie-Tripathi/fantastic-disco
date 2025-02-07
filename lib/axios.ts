@@ -9,7 +9,11 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
-  (error: AxiosError) => {
+  (error: AxiosError<{
+    issues: any[];
+    statusCode: number;
+    message: string;
+  }>) => {
     if (error.response?.status === 401) {
       // Redirect to login page or refresh token
       window.location.href = "/signin";

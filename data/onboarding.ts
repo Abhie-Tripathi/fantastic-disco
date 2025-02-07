@@ -81,3 +81,5 @@ export const industryData: Industry[] = [
     subCategory: true,
   },
 ];
+
+export const sessionKeys = ["userEmail", "flow", "categories"];

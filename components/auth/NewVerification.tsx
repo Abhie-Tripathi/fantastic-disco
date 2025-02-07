@@ -77,7 +77,7 @@ export default function NewVerificationForm() {
   }, [categories]);
 
   const redirectTo = useMemo(() => {
-    if (flow && flow === "signup") {
+    if (flow && flow === "signUp") {
       const isCategoryMapped = industryData.find(
         (industryItem) => industryItem.slug === industry
       )?.subCategory;
@@ -104,7 +104,7 @@ export default function NewVerificationForm() {
         email,
         otp: data.otpCode,
       };
-      if (flow && flow === "signup") {
+      if (flow && flow === "signUp") {
         const mappedSettingResearch =
           industryData.find((data) => data.slug === industry)
             ?.mappedSettingResearch || settingResearchData;

@@ -23,7 +23,8 @@ import { useEventsService } from "@/services/eventsService";
 import { getRestrictedUrl } from "@/utils/generateUrl";
 import { GAEvent } from "@/utils/GAEvent";
 import { endpoints } from "@/config/endpoints";
-import { VerifyOTP } from "@/types/auth/user";
+import { AuthFlow, VerifyOTP } from "@/types/auth/user";
+import { sessionKeys } from "@/data/onboarding";
 
 type authContextType = {
   user: UserResponse | null;
@@ -66,7 +67,7 @@ type authContextType = {
     verifyOtpDTO: VerifyOTP,
     flow: "signIn" | "signUp",
     redirectTo?: string,
-    settingsInterestData?: SettingsInterestData,
+    settingsInterestData?: SettingsInterestData
   ) => Promise<any>;
   verifyLoginOTP: (user: any, redirectTo?: string) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
@@ -131,7 +132,6 @@ export const AuthContextProvider = ({ children }: any) => {
   const searchParams = useSearchParams();
 
   const token = searchParams.get("token");
-  console.log(error);
 
   const generateOTP = async (
     email: string,
@@ -253,16 +253,18 @@ export const AuthContextProvider = ({ children }: any) => {
     [request, router]
   );
 
-  const signOut = () => {
+  const signOut = useCallback(async () => {
     setUser(null);
     deleteLocalStorage();
-    myFetch(endpoints.auth.logout, { method: "POST" }).then(() =>
-      router.push("/signin")
-    );
-  };
+    localStorage.removeItem("walkthroughCompleted");
+    sessionKeys.forEach((key) => sessionStorage.removeItem(key));
+    await request(endpoints.auth.logout, {
+      method: "POST",
+    });
+    router.push("/signin");
+  }, [request, router]);
 
   useEffect(() => {
-    console.log(token);
     if (token && token.length > 0) {
       const verifyToken = async () => {
         const formData = {
@@ -332,24 +334,22 @@ export const AuthContextProvider = ({ children }: any) => {
 
   const signInActions = (redirectTo: string | undefined) => {
     localStorage.setItem("walkthroughCompleted", JSON.stringify(["research"]));
+    sessionKeys.forEach((key) => sessionStorage.removeItem(key));
     router.push(redirectTo || "/internal");
   };
 
-  const signUpActions = async (
-    redirectTo: string | undefined,
-  ) => {
+  const signUpActions = async (redirectTo: string | undefined) => {
     localStorage.removeItem("walkthroughCompleted");
     const restrictedData: any = await eventService.fetchEnabledFilters(
       "research"
     );
     const restrictedUrl = getRestrictedUrl(redirectTo || "", restrictedData);
+    sessionKeys.forEach((key) => sessionStorage.removeItem(key));
     router.push(restrictedUrl || "/");
   };
 
-  const handleFlowAction = (
-    flow: "signIn" | "signUp",
-    redirectTo: string | undefined,
-  ) => {
+  const handleFlowAction = (flow: AuthFlow, redirectTo: string | undefined) => {
+    console.log(flow)
     if (flow === "signIn") {
       signInActions(redirectTo);
     } else {
@@ -358,11 +358,7 @@ export const AuthContextProvider = ({ children }: any) => {
   };
 
   const verifyOtp = useCallback(
-    async (
-      verifyOtpDTO: VerifyOTP,
-      flow: "signUp" | "signIn",
-      redirectTo?: string,
-    ) => {
+    async (verifyOtpDTO: VerifyOTP, flow: AuthFlow, redirectTo?: string) => {
       try {
         const result = await request<{ user: UserResponse }>(
           endpoints.auth.verifyOTP,
@@ -379,12 +375,6 @@ export const AuthContextProvider = ({ children }: any) => {
               "Sign Up",
               "Verify OTP | Invalid Submitted"
             );
-            setError({
-              response: "Invalid Code",
-              status: 400,
-              message: "Invalid code entered",
-              name: "InvalidCodeError",
-            });
             return;
           }
           if (result.user) {
@@ -396,10 +386,7 @@ export const AuthContextProvider = ({ children }: any) => {
             );
             setUser(result.user);
             setLocalStorage(result.user);
-            handleFlowAction(
-              flow,
-              redirectTo,
-            );
+            handleFlowAction(flow, redirectTo);
           }
         }
       } catch (err) {
@@ -425,12 +412,6 @@ export const AuthContextProvider = ({ children }: any) => {
               "Sign In",
               "Verify OTP | Invalid Submitted"
             );
-            setError({
-              response: "Invalid Code",
-              status: 400,
-              message: "Invalid code entered",
-              name: "InvalidCodeError",
-            });
           }
           if (result.user.isVerified) {
             GAEvent(

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { SignUpFormSchema } from "@/types/signup";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
-import { industryData } from "@/data/onboarding";
+import { industryData, sessionKeys } from "@/data/onboarding";
 import { useFilterState } from "@/hooks/useFilterState";
 import { newCategories } from "@/data/categories";
 import { useForm, Controller } from "react-hook-form";
@@ -39,13 +39,14 @@ const NewSignUpForm = () => {
   });
 
   const onSubmit = async (data: FormData) => {
-    sessionStorage.removeItem("categories");
-    sessionStorage.removeItem("industry");
-    sessionStorage.removeItem("userEmail");
+    sessionKeys.forEach((key) => sessionStorage.removeItem(key));
 
     const signUpDTOData = {
       ...data,
-      industry: data.industry || "others",
+      industry:
+        data.industry ||
+        industryData.find((industry) => industry.name === "Others")?.slug ||
+        "Others",
       ...(categories.length > 0 && { category: data.categories }),
     };
     delete signUpDTOData.categories;
@@ -59,11 +60,11 @@ const NewSignUpForm = () => {
     if (categorySlugs && categorySlugs.length > 0) {
       sessionStorage.setItem("categories", JSON.stringify(categorySlugs));
     }
-    if (data && data.industry) {
-      sessionStorage.setItem("industry", data.industry);
+    if (signUpDTOData && signUpDTOData.industry) {
+      sessionStorage.setItem("industry", signUpDTOData.industry);
     }
-    if (data && data.email) {
-      sessionStorage.setItem("userEmail", data.email);
+    if (signUpDTOData && signUpDTOData.email) {
+      sessionStorage.setItem("userEmail", signUpDTOData.email);
     }
     sessionStorage.setItem("flow", "signUp");
 
@@ -196,6 +197,7 @@ const NewSignUpForm = () => {
                 type="email"
                 {...field}
                 placeholder="Email"
+                value={field.value || ""}
                 onChange={(e) => {
                   field.onChange(e);
                   setError(null);

@@ -6,10 +6,9 @@ import { usePathname } from "next/navigation";
 export interface ApiResponse<T> {
   data?: T;
   error?: {
-    response: string;
-    status: number;
+    issues: any[];
+    statusCode: number;
     message: string;
-    name: string;
   };
 }
 
@@ -45,10 +44,13 @@ export function useApi<T>() {
         ...config,
       });
       if ("error" in response) {
-        console.log(response.error);
         setState({
           data: undefined,
-          error: response.error,
+          error: response.error as {
+            issues: any[];
+            statusCode: number;
+            message: string;
+          },
           isLoading: false,
         });
       }
@@ -69,10 +71,9 @@ export function useApi<T>() {
         throw response.data.error;
       } else {
         const unknownError = {
-          response: "Unknown error occurred",
-          status: 500,
+          issues: [],
+          statusCode: 500,
           message: "An unexpected error occurred",
-          name: "UnknownError",
         };
         setState({ data: undefined, error: unknownError, isLoading: false });
         throw unknownError;

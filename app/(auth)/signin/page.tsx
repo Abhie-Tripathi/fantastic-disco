@@ -94,7 +94,7 @@ export default function SignInForm() {
               )}
               {error && (
                 <Alert variant="destructive" className="w-fit p-0 border-none">
-                  <AlertDescription className="capitalize flex items-center">
+                  <AlertDescription className="capitalize flex items-start">
                     <AlertTriangle className="h-4 w-4 mr-2" />
                     {error.message}
                   </AlertDescription>

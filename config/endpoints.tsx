@@ -1,5 +1,4 @@
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "";
-
 export const endpoints = {
   //   auth: {
   //     me: `${BASE_URL}/me`,
@@ -9,6 +8,7 @@ export const endpoints = {
   //     verifyOtp: `${BASE_URL}/auth/customer/verify`,
   //     generateOtp: `${BASE_URL}/auth/customer/verify/generate`,
   //   },
+ 
   auth: {
     signUp: `${BASE_URL}/auth/sign-up`,
     signIn: `${BASE_URL}/auth/sign-in`,
