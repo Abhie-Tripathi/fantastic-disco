@@ -52,15 +52,27 @@ export const EventsAdapter = {
       if (adaptedShowsParams.length > 0)
         adaptedParams.shows = adaptedShowsParams.join(",");
     }
-
+    if(params.get("limit")){
+      adaptedParams.limit = params.get("limit")!;
+    }
     if (params.get("eventName")) {
       adaptedParams.eventName = params.get("eventName")!;
       return adaptedParams;
     }
 
+    if (params.get("sortBy")) {
+      adaptedParams.sortBy = params.get("sortBy")!;
+    }
+
+    if (params.get("shortType")) {
+      adaptedParams.shortType = params.get("shortType")!;
+    }
+
     if (params.get("onlyBranded") !== null) {
       adaptedParams.eventBrand = params.get("onlyBranded") ?? "";
     }
+
+
     if (params.get("onlySeries") !== null) {
       adaptedParams.eventSeries = params.get("onlySeries") ?? "";
     }
@@ -168,6 +180,10 @@ export const EventsAdapter = {
 
     if (params.get("top")) {
       adaptedParams.eventRanking = `0-${params.get("top")}`;
+    }
+
+    if (params.get("stats")) {
+      adaptedParams.stats = params.get("stats")!;
     }
 
     if (params.get("designations")) {
@@ -322,7 +338,9 @@ export const EventsAdapter = {
     if (params.get("query")) {
       adaptedParams.eventName = params.get("query")!;
     }
-
+    if(params.get("type")){
+      adaptedParams.type = params.get("type")!;
+    }
     return adaptedParams;
   },
 
@@ -393,7 +411,6 @@ export const EventsAdapter = {
     if (params.get("estimatedExhibitors")) {
       adaptedParams.estimatedExhibitScore = params.get("estimatedExhibitors")!;
     }
-
     if (params.get("impact_score_gte") && params.get("impact_score_lte")) {
       adaptedParams.eventImpactScore = `${params.get(
         "impact_score_gte"
@@ -409,7 +426,6 @@ export const EventsAdapter = {
     if (params.get("top")) {
       adaptedParams.eventRanking = `0-${params.get("top")}`;
     }
-
     if (params.get("designations")) {
       const designationSlugs = params.get("designations")?.split(",") || [];
       const designationIds = designationSlugs.map((slug) => {

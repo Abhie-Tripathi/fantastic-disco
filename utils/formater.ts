@@ -3,6 +3,8 @@
 //   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 // }
 
+import { Event } from "@/types/events";
+
 export function numberWithCommas(range: string) {
   if (range === "0" || !range) {
     return "--";
@@ -31,3 +33,21 @@ export function normalizeLon(lon: number) {
 
   return lon;
 }
+
+export const getEventLatLong = (event: Event) => {
+  const lat = parseFloat(
+    event.venueLocation?.venue?.latitude ||
+      event.venueLocation?.city?.latitude ||
+      event.venueLocation?.state?.latitude ||
+      event.venueLocation?.country?.latitude ||
+      ""
+  );
+  const lon = parseFloat(
+    event.venueLocation?.venue?.longitude ||
+      event.venueLocation?.city?.longitude ||
+      event.venueLocation?.state?.longitude ||
+      event.venueLocation?.country?.longitude ||
+      ""
+  );
+  return { lat, lon };
+};

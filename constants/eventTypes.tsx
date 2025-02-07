@@ -6,6 +6,12 @@ import expo from "/public/eventType/expo-outline.svg";
 import festivals from "/public/eventType/festival-outline.svg";
 import sport from "/public/eventType/sport-outline.svg";
 import workshop from "/public/eventType/workshop-outline.svg";
+import earthquake from "/public/alert/earthquake.svg";
+import fire from "/public/alert/fire.svg";
+import flood from "/public/alert/flood.svg";
+import tornado from "/public/alert/tornado.svg";
+import tsunami from "/public/alert/tsunami.svg";
+import volcano from "/public/alert/volcano.svg";
 import Image from "next/image";
 
 export const eventTypeIcons: Record<string, JSX.Element> = {
@@ -37,4 +43,40 @@ export const eventTypeColors: Record<string, string> = {
 export const groupedEventTypes = {
   social: ["festival", "concert", "sport", "performing-arts", "community"],
   business: ["tradeshows", "conferences", "workshops"],
+};
+
+
+export const alertIcons: Record<string, JSX.Element> = {
+  EARTHQUAKES: <Image src={earthquake} alt="earthquake" className="w-6 h-6" />,
+  FOREST_FIRES: <Image src={fire} alt="fire" className="w-6 h-6" />,
+  FLOODS: <Image src={flood} alt="flood" className="w-6 h-6" />,
+  CYCLONES: <Image src={tornado} alt="tornado" className="w-6 h-6" />,
+  TSUNAMIS: <Image src={tsunami} alt="tsunami" className="w-6 h-6" />,
+  VOLCANIC_ERUPTIONS: <Image src={volcano} alt="volcano" className="w-6 h-6" />,
+};
+
+export const getAlertLevelBorderColor = (level: string) => {
+  switch (level.toLowerCase()) {
+    case "green":
+      return "border-[#398E4A]";
+    case "orange":
+      return "border-[#FF990A]";
+    case "red":
+      return "border-[#DA2F35]";
+    default:
+      return "border-gray-500";
+  }
+};
+
+export const getAlertLevelBackgroundColor = (level: string) => {
+  switch (level.toLowerCase()) {
+    case "green":
+      return "bg-[#398E4A]";
+    case "orange":
+      return "bg-[#FF990A]";
+    case "red":
+      return "bg-[#DA2F35]";
+    default:
+      return "bg-gray-500";
+  }
 };
