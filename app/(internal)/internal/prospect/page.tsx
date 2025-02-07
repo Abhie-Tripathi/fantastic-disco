@@ -33,6 +33,7 @@ import LocationSelector from "@/app/components/prospect/Filters/location";
 import PeopleFilter from "@/app/components/prospect/Filters/peopleFilter";
 import { PeopleList } from "@/app/components/prospect/PeopleList";
 import { pocDetail } from "@/types/coordinateEventType";
+import { useCoordinateService } from "@/services/coordinateService";
 
 interface CompanyListResponse {
   totalCount: number;
@@ -186,26 +187,29 @@ const peopleFilters: ProspectFilters[] = [
 const Prospect = () => {
   const searchParams = useSearchParams();
   const companyService = useCompanyService();
+  const coordinateService = useCoordinateService();
 
   const {
     data: companyData,
     error,
     isLoading,
     refetch,
-  } = useQuery<CompanyListResponse | undefined>({
-    queryKey: ["events", searchParams.toString()],
-    queryFn: () =>
-      companyService.getCompanyWithSearchParams(searchParams.toString()),
-    // enabled:
-    //   !!searchParams.toString() &&
-    //   !(Array.from(searchParams.values()).length == 0),
+  } = useQuery<CompanyListResponse | undefined | any>({
+    queryKey: ["prospect", searchParams.toString()],
+    queryFn: () => companyService.getCompanyList(searchParams.toString()),
+    enabled:
+      !!searchParams.toString(),
+      // !(Array.from(searchParams.values()).length == 0),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
   });
 
-  const companies = companyData?.data || [];
-  const count = companyData?.totalCount;
+  console.log('companyData', companyData);
+  
+
+  const companies = companyData?.companyData || [];
+  const count = companyData?.totalCount || 9;
 
   const {
     localFilters,
@@ -215,7 +219,7 @@ const Prospect = () => {
   } = useFilterContext();
 
   const searchHandler = useCallback(() => {
-    applyFilters();
+    applyFilters({ resetPage: true });
   }, []);
 
   const handleClearFilter = (item: any) => {

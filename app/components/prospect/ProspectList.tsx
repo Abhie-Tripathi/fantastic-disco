@@ -18,20 +18,33 @@ interface companyDetail {
   industries: string[];
   eventCount?: number;
   companyType?: string;
+
+  id: number | string;
+  description: string;
+  location: {
+    cityName: string,
+    countryName: string,
+  };
+  logo: string | null;
+  event_categoryName: string[];
+  stats: {
+    totalEvents: number;
+  };
+
 }
 
 const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
   return (
     <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative">
       <Link
-        href={`/internal/company/${companyDetail.url}`}
+        href={`/internal/company/${companyDetail.id}`}
         target="_blank"
         className="block"
       >
         <div className="p-6 flex gap-6">
-          {companyDetail.cdn_url && (
+          {companyDetail.logo && (
             <Image
-              src={companyDetail.cdn_url}
+              src={companyDetail.logo}
               alt="eventLogo"
               className="flex h-16 w-16 rounded-lg shadow-lg"
               width={200}
@@ -41,20 +54,20 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
           <div className="flex gap-2 flex-col">
             <div className="text-xl font-semibold">{companyDetail.name}</div>
             <div className="text-[#707287] text-sm line-clamp-2">
-              {companyDetail.profile}
+              {companyDetail.description}
             </div>
 
             <div className="flex gap-2">
               <div className="flex gap-2 items-center border-r w-fit pr-3">
                 <Location color="#666666" width="14px" height="14px" />
                 <span className="text-[#6E6F89] text-sm">
-                  {companyDetail.city}, {companyDetail.country}
+                  {companyDetail.location.cityName}, {companyDetail.location.countryName}
                 </span>
               </div>
 
               <div className="flex gap-2 items-center w-fit">
                 <Buildings color="#666666" width="14px" height="14px" />
-                {companyDetail.industries.map((item) => (
+                {companyDetail.event_categoryName.map((item) => (
                   <span
                     key={item}
                     className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
@@ -63,7 +76,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
                   </span>
                 ))}
 
-                {companyDetail.companyType && (
+                {companyDetail?.companyType && (
                   <span className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-2 border-[#CCE6FF] border rounded-md w-fit flex">
                     <Factory height={14} color="#666666" />
                     Private
@@ -76,10 +89,10 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
               </div>
             </div>
 
-            {companyDetail.eventCount && (
+            {companyDetail.stats.totalEvents > 0 && (
               <div className="flex gap-2 items-center w-fit">
                 <span className="text-[#A35200] bg-[#FFF4D6] h-fit font-semibold text-xs py-1 px-4 border-[#FEF0CD] border rounded-md w-fit">
-                  {companyDetail.eventCount} Events
+                  {companyDetail.stats.totalEvents} Events
                 </span>
               </div>
             )}
@@ -87,6 +100,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
         </div>
       </Link>
     </div>
+
   );
 };
 

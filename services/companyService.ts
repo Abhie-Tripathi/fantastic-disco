@@ -3,6 +3,7 @@ import { useApi } from "@/hooks/useApi";
 // import { CoordinateListResponse, UserInterestResponse, eventPocResponse } from "@/types/coordinateEventType";
 import { ApiError } from "@/types/api";
 import companyData from "@/public/data/companyData.json";
+import { endpoints } from "@/config/endpoints";
 
 interface fnProp {
   offset: number;
@@ -15,15 +16,16 @@ interface CompanyListResponse {
 }
 
 export const useCompanyService = () => {
-  const api = useApi<CompanyListResponse | undefined>();
+  const api = useApi<CompanyListResponse | undefined | any>();
 
-  const getCompanyWithSearchParams = (searchParamsString: string) => {
-    let tempResponse: CompanyListResponse = companyData;
-    return tempResponse;
+  const getCompanyList = (searchParamsString: string) => {
+    return api.request(`${endpoints.company.list}?viewBy=company&viewAs=list&${searchParamsString}`, {
+      method: "GET",
+    });
   };
 
   return {
-    getCompanyWithSearchParams,
+    getCompanyList,
     isLoading: api.isLoading,
     error: api.error as ApiError,
   };
