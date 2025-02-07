@@ -128,7 +128,7 @@ export const EventInfoAndMap = ({
         : null;
 
     const locationIds =
-      format === "offline" && venueLocation
+      (format === "offline" || format === "hybrid") && venueLocation
         ? venueLocation.country.id ||
           venueLocation.state.id ||
           venueLocation.city.id ||
@@ -138,7 +138,7 @@ export const EventInfoAndMap = ({
 
     enabledCategories && params.set("categories", enabledCategories);
     locationIds && params.set("locationIds", locationIds);
-    
+
     return params.toString();
   };
 
