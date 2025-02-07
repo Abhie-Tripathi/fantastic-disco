@@ -2316,64 +2316,6 @@ const Table = ({
         </table>
       </div>
 
-      {/* <div
-        className={`${styles.pagination_container} ${
-          theme === "light" ? styles.pagination_container_light : ""
-        }`}
-      >
-        <div className={styles.pagination_info_container}>
-          <div>Showing</div>
-          <Image src={ExpandAll} alt="expandall" className={iconClass} />
-          <div className={styles.pagination_current_pageno}>
-            <select
-              onChange={handlePageItems}
-              value={itemsPerPage}
-              className={styles.pagination_noOfPage}
-            >
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-            </select>
-          </div>
-          <div>
-            {totalEvents > 0 ? (
-              <>
-                {(currPage - 1) * itemsPerPage + 1} to{" "}
-                {Math.min(totalEvents, currPage * itemsPerPage)}{" "}
-                of {totalEvents} entries
-              </>
-            ) : (
-              "0 entries"
-            )}
-          </div>
-        </div>
-
-        <div className={styles.pagination_page_control_container}>
-          <div>Page</div>
-          <div className={styles.pagination_current_page}>{currPage}</div>
-          <div>of {totalPages}</div>
-        </div>
-
-        <div className={styles.pagination_buttons}>
-          <button
-            className={`${styles.pagination_control_button} ${
-              currPage === 1 ? styles.disabled : ""
-            }`}
-            onClick={() => currPage > 1 && setCurrPage((page) => page - 1)}
-            disabled={currPage === 1}
-          >
-            Previous
-          </button>
-          <button
-            className={`${styles.pagination_control_button} ${
-              currPage === totalPages ? styles.disabled : ""
-            }`}
-            onClick={() => currPage < totalPages && loadMoreHandler()}
-            disabled={currPage === totalPages}
-          >
-            Next
-          </button>
-        </div>
-      </div> */}
 
     {totalPages > 1 && (
         <div className="sticky bottom-0 bg-background py-4">

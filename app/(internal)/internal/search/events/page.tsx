@@ -30,7 +30,6 @@ import {
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
   Event,
-  EventsResponse,
   MapEventsResponse,
 } from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
@@ -82,7 +81,6 @@ const Search = () => {
   } = useQuery<
     | CalendarMonthEventsResponse
     | CalendarWeekEventsResponse
-    | EventsResponse
     | MapEventsResponse
     | undefined
   >({
@@ -348,10 +346,10 @@ const Search = () => {
           </div> */}
           <div className="w-[108px]"></div>
           <div className="flex justify-center">
-            <TabsList className="grid w-[450px] grid-cols-4 h-auto">
-              <TabsTrigger value="table" className="text-base">
+            <TabsList className="grid w-[450px] grid-cols-3 h-auto">
+              {/* <TabsTrigger value="table" className="text-base">
                 Table
-              </TabsTrigger>
+              </TabsTrigger> */}
               <TabsTrigger value="list" className="text-base">
                 List
               </TabsTrigger>
@@ -399,7 +397,7 @@ const Search = () => {
           )}
         </TabsContent>
 
-        <TabsContent value="table" className="flex-grow overflow-hidden">
+        {/* <TabsContent value="table" className="flex-grow overflow-hidden">
           {isLoading ? (
             <Loading />
           ) : (
@@ -410,7 +408,7 @@ const Search = () => {
               handleButtonLoading={() => setTableLoading}
             />
           )}
-        </TabsContent>
+        </TabsContent> */}
         <TabsContent value="map">
           {isLoading ? (
             <Loading />

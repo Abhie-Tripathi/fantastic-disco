@@ -17,7 +17,7 @@ export const endpoints = {
   },
   event: {
     count: `${BASE_URL}/event/search`,
-    events: `${BASE_URL}/event/search`,
+    events: `${BASE_URL}/events`,
     eventDetailById: `${BASE_URL}/event`,
     eventEditionsDetailsById: `${BASE_URL}/event/editions`,
     eventPOCDetailById: `${BASE_URL}/event-poc`,
@@ -44,7 +44,7 @@ export const endpoints = {
   //     eventTypes: `${BASE_URL}/trends/event-types`,
   //   },
   locations: `${BASE_URL}/location/country`,
-  locationSuggestion: `${BASE_URL}/location/suggestion`,
+  locationSuggestion: `${BASE_URL}/suggestions/locations`,
   designations: `${BASE_URL}/designation`,
   users: `${BASE_URL}/auth/users`,
   tracker: {

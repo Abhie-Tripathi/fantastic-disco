@@ -1,243 +1,215 @@
-export interface Location {
-  id: string;
-  name: string;
-  locationType: string;
-  latitude: string;
-  longitude: string;
-}
+import { z } from "zod";
 
-export interface State extends Location {
-  countryId: string;
-}
+const LocationSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  locationType: z.string(),
+  latitude: z.string(),
+  longitude: z.string(),
+});
 
-export interface City extends Location {
-  stateId: string;
-  countryId: string;
-}
+const RankingSchema = z.object({
+  global: z.number().nullable(),
+  country: z
+    .object({
+      countryId: z.string(),
+      rank: z.number(),
+    })
+    .nullable(),
 
-export interface Country extends Location {
-  regions: string[];
-}
+  categories: z
+    .array(
+      z.object({
+        categoryId: z.string(),
+        rank: z.number(),
+      })
+    )
+    .nullable(),
+  category_country: z
+    .array(
+      z.object({
+        categoryId: z.string(),
+        countryId: z.string(),
+        rank: z.number(),
+      })
+    )
+    .nullable(),
+});
 
-export interface Venue extends Location {
-  cityId: string;
-  stateId: string;
-  countryId: string;
-  address: string;
-  displayName: string;
-}
+const AudienceSpreadSchema = z.record(
+  z.string(),
+  z.object({
+    iso: z.string(),
+    name: z.string(),
+    count: z.number(),
+    percentage: z.number(),
+  })
+);
 
-interface CategoryItem {
-  id: string;
+const StateSchema = LocationSchema.extend({
+  countryId: z.string(),
+});
 
-  name: string;
-  slug: string;
-}
+const CitySchema = LocationSchema.extend({
+  stateId: z.string(),
+  countryId: z.string(),
+});
 
-interface EventType extends CategoryItem {
-  eventGroupType: string;
-}
+const CountrySchema = LocationSchema.extend({
+  regions: z.array(z.string()),
+});
 
-interface OrganizerLocation {
-  address: string | null;
-  city: {
-    id: string;
-    name: string;
-    stateId: string;
-    countryId: string;
-    latitude: string;
-    longitude: string;
-    locationType: string;
-  } | null;
-  state: {
-    id: string;
-    name: string;
-    countryId: string;
-    latitude: string;
-    longitude: string;
-    locationType: string;
-  } | null;
-  country: {
-    id: string;
-    name: string;
-    latitude: string;
-    longitude: string;
-    regions: string[];
-    locationType: string;
-  } | null;
-}
+const VenueSchema = LocationSchema.extend({
+  cityId: z.string(),
+  stateId: z.string(),
+  countryId: z.string(),
+  address: z.string(),
+  displayName: z.string(),
+});
 
-interface Organizer {
-  id: string;
-  name: string;
-  website: string;
-  logoUrl: string | null;
-  totalExhibit: number;
-  totalSponsor: number;
-  totalVisitor: number;
-  totalOrganize: number;
-  location: OrganizerLocation;
-}
+const BasicEventSchema = z.object({
+  id: z.string(),
+  startDateTime: z.string(),
+  endDateTime: z.string(),
+  status: z.string(),
+  format: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  description: z.string(),
+  logoUrl: z.string().nullable(),
+  bannerUrl: z.string().nullable(),
+  timings: z.string().nullable(),
+  lastVerifiedOn: z.string().nullable(),
+  rating: z.number(),
+  name: z.string(),
+  website: z.string(),
+  entryType: z.string().nullable(),
+  primaryEventType: z.string(),
+  categories: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      slug: z.string(),
+    })
+  ),
+  designations: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      slug: z.string(),
+    })
+  ),
+  eventTypes: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      slug: z.string(),
+      eventGroupType: z.string(),
+    })
+  ),
+  tags: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      slug: z.string(),
+    })
+  ),
+  eventLocation: z.object({
+    country: CountrySchema.nullable(),
+    venue: VenueSchema.nullable(),
+    city: CitySchema.nullable(),
+    state: StateSchema.nullable(),
+  }),
+  organizer: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+      website: z.string(),
+      logoUrl: z.string().nullable(),
+      location: z.object({
+        address: z.string().nullable(),
+        city: CitySchema.nullable(),
+        state: StateSchema.nullable(),
+        country: CountrySchema.nullable(),
+      }),
+    })
+    .nullable(),
+  tickets: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        type: z.string(),
+        currency: z.string(),
+        price: z.string(),
+        ticketUrl: z.string().nullable(),
+      })
+    )
+    .nullable(),
+});
 
-interface Ticket {
-  id: string;
-  name: string;
-  type: string;
-  currency: string;
-  price: string;
-  ticketUrl: string | null;
-}
+const AdvanceEventSchema = z.object({
+  editions: z.number(),
+  isBranded: z.boolean(),
+  isSeries: z.boolean(),
+  estimatedExhibitors: z.string(),
+  rehostDate: z.string(),
+  maturity: z.string().nullable(),
+  frequency: z.string().nullable(),
+});
 
-export interface Event {
-  id: string;
-  startDateTime: string;
-  endDateTime: string;
-  status: string;
-  format: string;
-  createdAt: string;
-  updatedAt: string;
-  description: string;
-  logoUrl: string | null;
-  bannerUrl: string | null;
-  editions: number;
-  "10timesEventPageUrl": string;
-  sponsorsCount: number;
-  speakersCount: number;
-  exhibitorsCount: number;
-  timings: string | null;
-  lastVerifiedOn: string | null;
-  estimatedVisitorRangeTag: string | null;
-  economicImpactBreakdown: Record<string, number>;
-  isBranded: boolean;
-  eventPageUrl: string;
-  isSeries: boolean;
-  rehostDate: string;
-  rating: number;
-  estimatedExhibitors: string;
-  trustScore: number;
-  entryType: string | null;
-  audienceSpread: Record<
-    string,
-    {
-      iso: string;
-      name: string;
-      count: number;
-      percentage: number;
-    }
-  >;
-  designationSpread: Array<{
-    count: string;
-    percentage: number;
-    designation: string;
-  }>;
-  audienceZone: string | null;
-  economicImpact: string;
-  alerts: any[];
-  rankings: {
-    global: number;
-    country: {
-      countryId: string;
-      rank: number;
-    } | null;
-    categories: Array<{
-      categoryId: string;
-      rank: number;
-    }>;
-    category_country: Array<{
-      categoryId: string;
-      countryId: string;
-      rank: number;
-    }>;
-  };
-  scores: {
-    impactScore: number | null;
-    inboundScore: number | null;
-    internationalScore: number | null;
-    internationalScoreTag: string | null;
-  };
-  maturity: string | null;
-  frequency: string | null;
-  yoyGrowth: number | null;
-  name: string;
-  website: string;
-  repeatSentiment: number;
-  reputationScore: number;
-  rehostScore: number;
-  estimatedAttendanceMean: number | null;
-  estimatedAttendance: number | null;
-  primaryEventType: string;
-  trackerMatchInfo: any;
-  categories: Array<{
-    id: string;
-    name: string;
-    slug: string;
-  }>;
-  designations: Array<{
-    id: string;
-    name: string;
-    slug: string;
-  }>;
-  eventTypes: Array<{
-    id: string;
-    name: string;
-    slug: string;
-    eventGroupType: string;
-  }>;
-  tags: Array<{
-    id: string;
-    name: string;
-    slug: string;
-  }>;
-  eventLocation: {
-    state: State | State[] | null;
-    city: City | City[] | null;
-    venue: Venue | null;
-    country: Country | null;
-  };
-  organizer: {
-    id: string;
-    name: string;
-    website: string;
-    logoUrl: string | null;
-    totalExhibit: number;
-    totalSponsor: number;
-    totalVisitor: number;
-    totalOrganize: number;
-    location: {
-      address: string | null;
-      city: {
-        id: string;
-        name: string;
-        stateId: string;
-        countryId: string;
-        latitude: string;
-        longitude: string;
-        locationType: string;
-      } | null;
-      state: {
-        id: string;
-        name: string;
-        countryId: string;
-        latitude: string;
-        longitude: string;
-        locationType: string;
-      } | null;
-      country: {
-        id: string;
-        name: string;
-        latitude: string;
-        longitude: string;
-        regions: string[];
-        locationType: string;
-      } | null;
-    };
-  } | null;
-  tickets: Array<{
-    id: string;
-    name: string;
-    type: string;
-    currency: string;
-    price: string;
-    ticketUrl: string | null;
-  }> | null;
-}
+const InsightsEventSchema = z.object({
+  yoyGrowth: z.number().nullable(),
+  sponsorsCount: z.number(),
+  speakersCount: z.number(),
+  exhibitorsCount: z.number(),
+  economicImpact: z.string(),
+  estimatedVisitorRangeTag: z.string().nullable(),
+  repeatSentiment: z.number(),
+  reputationScore: z.number(),
+  rehostScore: z.number(),
+  estimatedAttendanceMean: z.number().nullable(),
+  estimatedAttendance: z.string().nullable(),
+  rankings: RankingSchema,
+  scores: z.object({
+    impactScore: z.number().nullable(),
+    inboundScore: z.number().nullable(),
+    internationalScore: z.number().nullable(),
+    internationalScoreTag: z.string().nullable(),
+  }).optional(),
+});
+
+const AudienceSchema = z.object({
+  audienceSpread: AudienceSpreadSchema,
+  designationSpread: z.array(
+    z.object({
+      count: z.string(),
+      percentage: z.number(),
+      designation: z.string(),
+    })
+  ),
+  audienceZone: z.string().nullable(),
+});
+
+const EventDataSchema = z.object({
+  basic: BasicEventSchema,
+  advance: AdvanceEventSchema.optional(),
+  insights: InsightsEventSchema.optional(),
+  audience: AudienceSchema.optional(),
+  interests: z
+    .record(
+      z.enum(["speak", "sponsor", "attend", "exhibit", "bookmark"]),
+      z.object({
+        interestId: z.string(),
+      })
+    )
+    .optional(),
+});
+
+export type Location = z.infer<typeof LocationSchema>;
+export type State = z.infer<typeof StateSchema>;
+export type City = z.infer<typeof CitySchema>;
+export type Country = z.infer<typeof CountrySchema>;
+export type Venue = z.infer<typeof VenueSchema>;
+export type Event = z.infer<typeof EventDataSchema>;
+export type Ranking = z.infer<typeof RankingSchema>;

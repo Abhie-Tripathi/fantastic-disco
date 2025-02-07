@@ -1,78 +1,36 @@
 import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
 import {
-  CalendarMonthEventsResponse,
-  CalendarWeekEventsResponse,
-  EventBookmarkResponse,
-  EventCoOrganizerDetailResponse,
   EventCount,
-  EventDetailResponse,
-  EventEditionDetailResponse,
-  EventExhibitorDetails,
-  EventExhibitorDetailsResponse,
-  EventPOCDetailResponse,
-  EventSpeakerDetails,
-  EventsResponse,
-  MapEventsResponse,
   RecentSearchesResponse,
   RecentSearchItem,
+  Event,
 } from "@/types/events";
-import { EventSearchParams } from "@/types/events";
 import { EventsAdapter } from "@/adapters/eventsAdapter";
-import { myFetch } from "@/utils/myFetch";
-import { ReadonlyURLSearchParams } from "next/navigation";
-import { BaseURL } from "@/config";
 import { ApiError } from "@/types/api";
-import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
-
-export const searchEvents = async (searchParams: ReadonlyURLSearchParams) => {
-  return myFetch(
-    `${BaseURL}/event/all?${searchParams.toString().replace(/%2C/g, ",")}`
-  );
-};
-
-export const searchEventId = async (id: string) => {
-  return myFetch(`${BaseURL}/event/all?id=${id}`);
-};
+import { EventQuery } from "@/types/events/dto/event-query.dto";
 
 export const useEventsService = () => {
-  const api = useApi<
-    | CalendarMonthEventsResponse
-    | CalendarWeekEventsResponse
-    | MapEventsResponse
-    | EventsResponse
-  >();
+  const api = useApi();
 
-  const { exhibitorAdapter, speakerAdapter } = EventParticpantAdapter();
-
-  const getEvents = (params?: EventSearchParams) => {
-    return api.request(endpoints.event.events, {
+  const getEvents = (params?: EventQuery) => {
+    return api.request<Event[]>(endpoints.event.events, {
       method: "GET",
       params,
     });
   };
 
-  const getEventById = async (id: string) => {
-    const response = await api.request<EventDetailResponse>(
-      `${endpoints.event.events}`,
-      {
-        method: "GET",
-        params: {
-          eventId: id,
-        },
-      }
-    );
-    return EventsAdapter.adaptEventByIdResponse(response);
+  const getEventDetailById = async (id: string) => {
+    return api.request<Event>(`${endpoints.event.eventDetailById}/${id}`, {
+      method: "GET",
+    });
   };
 
-  const getEventDetailById = async (id: string) => {
-    const response = await api.request<EventDetailResponse>(
-      `${endpoints.event.eventDetailById}/${id}`,
-      {
-        method: "GET",
-      }
-    );
-    return EventsAdapter.adaptEventDetailByIdResponse(response);
+  const getEventsCount = async (params?: EventQuery) => {
+    return await api.request<EventCount[]>(`${endpoints.event.count}`, {
+      method: "GET",
+      params,
+    });
   };
 
   const getEventPOCDetails = (id: string) => {
@@ -177,19 +135,6 @@ export const useEventsService = () => {
     });
   };
 
-  const getEventsCount = async (searchParams: string) => {
-    const params = new URLSearchParams(searchParams);
-    const adaptedParams = EventsAdapter.adaptEventCountRequestParam(params);
-    const response = await api.request<EventCount[]>(
-      `${endpoints.event.count}`,
-      {
-        method: "GET",
-        params: adaptedParams,
-      }
-    );
-    return EventsAdapter.adaptEventCountResponse(response);
-  };
-
   const bookmarkThisEvent = async (id: string) => {
     const response = await api.request(`${endpoints.tracker.saveEvent}`, {
       method: "POST",
@@ -241,7 +186,6 @@ export const useEventsService = () => {
   return {
     getEvents,
     saveEvent,
-    getEventById,
     fetchEnabledFilters,
     getEventsCount,
     getRecentSearches,
