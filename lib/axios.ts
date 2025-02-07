@@ -12,7 +12,7 @@ axiosInstance.interceptors.response.use(
   (error: AxiosError) => {
     if (error.response?.status === 401) {
       // Redirect to login page or refresh token
-      // window.location.href = "/signin";
+      window.location.href = "/signin";
     }
     return (error.response && error.response.data) || "Something went wrong";
   }

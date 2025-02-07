@@ -44,8 +44,14 @@ export function useApi<T>() {
         url,
         ...config,
       });
-      console.log(response, response.data);
-
+      if ("error" in response) {
+        console.log(response.error);
+        setState({
+          data: undefined,
+          error: response.error,
+          isLoading: false,
+        });
+      }
       if ("data" in response.data) {
         setState({
           data: response.data.data as unknown as T,
@@ -54,7 +60,7 @@ export function useApi<T>() {
         });
         return response.data.data;
       } else if ("error" in response.data) {
-        console.log("andar")
+        console.log("andar");
         setState({
           data: undefined,
           error: response.data.error,

@@ -41,7 +41,7 @@ export default function NewVerificationForm() {
   const router = useRouter();
   const [time, setTime] = useState(30);
   const [resendLoading, setResendLoading] = useState(false);
-  const { verifyOtp, verifyLoginOTP, error, generateOTP, setError } =
+  const { verifyOtp, verifyLoginOTP, error, generateOTP, signin, setError } =
     useAuthContext();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -116,7 +116,7 @@ export default function NewVerificationForm() {
           verifyOtpDTO,
           "signUp",
           redirectTo,
-          settingsInterestData,
+          settingsInterestData
         );
       } else {
         await verifyOtp(verifyOtpDTO, "signIn", redirectTo);
@@ -129,7 +129,8 @@ export default function NewVerificationForm() {
 
   const resendOTP = async (email: string) => {
     setTime(30);
-    generateOTP(email, industry, categories, flow, "resend");
+    await signin({ email });
+    // generateOTP(email, industry, categories, flow, "resend");
   };
 
   const handleBack = () => {
@@ -217,7 +218,7 @@ export default function NewVerificationForm() {
                 variant="destructive"
                 className="w-fit border-none self-center p-0"
               >
-                <AlertDescription className="captilize flex items-center">
+                <AlertDescription className="captilize flex items-start">
                   <TriangleAlert color="#EF4444" className="w-4 h-4" />
                   <span className="ml-2">{error.message}</span>
                 </AlertDescription>

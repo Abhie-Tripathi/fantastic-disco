@@ -131,6 +131,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const searchParams = useSearchParams();
 
   const token = searchParams.get("token");
+  console.log(error);
 
   const generateOTP = async (
     email: string,
