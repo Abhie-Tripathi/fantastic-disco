@@ -42,6 +42,8 @@ interface Props {
   currentEnquiryStatus?: string;
   handleRefresh?: () => void;
   configData?: any;
+  coordinateActions?: any;
+  modalContent?: any;
 }
 
 const EventDetail = ({
@@ -55,6 +57,8 @@ const EventDetail = ({
   enquiryId,
   currentEnquiryStatus,
   configData,
+  coordinateActions,
+  modalContent,
   handleRefresh,
   handleDropdownSelect
 }: Props) => {
@@ -63,7 +67,7 @@ const EventDetail = ({
   const rightContainerRef = useRef<HTMLDivElement>(null); // Define rightContainerRef
   const pathName = usePathname().split("/")[2];
   const [stage, setStage] = useState<string>("");
-  const [singleEventData, setSingleEventData] = useState<EventData | any>();
+  const [singleEventData, setSingleEventData] = useState<any>();
   const urlPath = usePathname().split("/")[2];
   const pageSource = urlPath.charAt(0).toUpperCase() + urlPath.slice(1);
   const [participentData, setParticipentData] = useState<any>({});
@@ -101,9 +105,9 @@ const EventDetail = ({
       try {
         const data: any = await coordinateService.getEventDetailById(eventId);
         if (data) {
-          const eventsData = data.event;
+          // const eventsData = data.event;
           
-          setSingleEventData(eventsData);
+          setSingleEventData(data);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -148,9 +152,9 @@ const EventDetail = ({
 
   useEffect(() => {
     const fetchInterestData = async () => {
-      const data = await coordinateService.getInterestedUsers(eventId, enquiryId);
+      const data: any = await coordinateService.getInterestedUsers(eventId, enquiryId);
       if (data) {
-        setParticipentData(data.participent);
+        setParticipentData(data.interestedUsers);
         // setParticipentData({
         //   attendee: data.participent.attendee,
         //   speakers: data.participent.speakers,
@@ -198,30 +202,30 @@ const EventDetail = ({
             </div>
             {singleEventData && (
               <>
-                <SingleEvent {...singleEventData} />
+                <SingleEvent {...singleEventData?.basic} />
                 <EventDescription
-                  description={singleEventData.description}
+                  description={singleEventData?.basic?.description}
                   open={openEventDetails}
                   speakers={false}
                   shortlist={false}
-                  eventDetail={singleEventData}
+                  eventDetail={singleEventData?.basic}
                 />
               </>
             )}
             <EventNotes setExpandedTab={setExpandedTab} />
-            <EventRequest open={openEventRequest} participentData={participentData} />
+            <EventRequest open={openEventRequest} participentData={participentData} coordinateActions={coordinateActions} />
             <Organiser
               open={openOrganiserDetails}
-              organizerData={singleEventData?.organizer}
+              organizerData={singleEventData?.basic?.organizer}
             />
             <EventPoc open={openPocDetails} eventId={eventId} setExpandedTab={setExpandedTab} pocData={pocData} unlockPoc={unlockPoc} />
-            <Follower eventId={eventId} enquiryId={enquiryId} />
+            <Follower eventId={eventId} enquiryId={enquiryId} myActivity={modalContent.myActivity.filter((users: any) => users.activityType === "FOLLOW")} />
           </div>
           <div className={styles.containerRight} ref={rightContainerRef}>
             {singleEventData && 
               expandedTab === 'notes' ? (
                 <Notes
-                  eventId={singleEventData.id}
+                  eventId={singleEventData?.basic?.id}
                   enquiryId={enquiryId}
                   stage={stage}
                 />

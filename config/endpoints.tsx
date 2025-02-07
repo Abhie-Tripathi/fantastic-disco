@@ -1,5 +1,6 @@
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "";
+const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
 
 export const endpoints = {
   //   auth: {
@@ -55,12 +56,21 @@ export const endpoints = {
     saveNotes: `${BASE_URL}/comment`,
   },
   coordinate: {
-    enquiry: `${BASE_URL}/userInterest/enquiry`,
+    enquiry: `${BASE_URL_NEW}/me/account/enquiries`,
     participent: `${BASE_URL}/userInterest/totalParticipent`,
     iterestedUsers: `${BASE_URL}/userInterest`,
-    enquiryDetail: `${BASE_URL}/enquiry`,
+    enquiryDetail: `${BASE_URL_NEW}/enquiries`,
     pocUnmask: `${BASE_URL}/event-poc/unmask`,
-    latestComment : `${BASE_URL}/dashboard/latest-comment`
+    latestComment : `${BASE_URL}/dashboard/latest-comment`,
+    createIntent: `${BASE_URL_NEW}/intents/user-event-interest`,
+    eventDetail: `${BASE_URL_NEW}/events`,
+  },
+  intent: {
+    enquiryActivity: `${BASE_URL_NEW}/intents/enquiry-activity`,
+  },
+  account: {
+    users: `${BASE_URL_NEW}/me/account/users`,
+    configuration: `${BASE_URL_NEW}/me/account/configuration`,
   },
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {

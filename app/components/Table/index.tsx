@@ -452,25 +452,32 @@ const Table = ({
         }
       } else {
         let payloadData = {
-          source: "GTM",
-          entityId: formData?.entityId_id,
+          sourceModule: "RESEARCH",
+          eventId: formData?.entityId_id,
           interest: formData?.markedInterest,
         };
         try {
-          const apiUrl = baseUrl + "/userInterest";
-          const { data, error } = await myFetch(apiUrl, {
+          // const data = await coordinateService.createUserIntent(payloadData);
+          // console.log('data..1', data);
+          
+          const apiUrl = "https://api.dev.gtm.whr.ai/intents/user-event-interest";
+          const data = await myFetch(apiUrl, {
             method: "POST",
             headers: headers,
             body: JSON.stringify(payloadData),
           });
+          console.log('data..1', data);
 
-          if (data && data.message == "Entry Created") {
+          // if (data && data.message == "Entry Created") {
+          //   showToast("success", "Interest marked successfully!");
+          //   setIsOpen(null);
+          // }
+          if (data.error) {
+            // if (error?.status === 300)
+              showToast("success", data.error.message);
+          } else {
             showToast("success", "Interest marked successfully!");
             setIsOpen(null);
-          }
-          if (error) {
-            if (error?.status === 300)
-              showToast("success", "Interest marked successfully!");
           }
         } catch (error) {
           console.error("Error fetching data:", error);
@@ -484,7 +491,7 @@ const Table = ({
   const getInterestConfig = async () => {
     try {
       const apiData: any = await coordinateService.getInterestConfig();
-      setCoordinateActions(apiData.slice(1));
+      setCoordinateActions(apiData?.interest?.slice(1));
     } catch (error) {
       console.error("Error fetching data:", error);
     }

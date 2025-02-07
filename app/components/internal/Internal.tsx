@@ -5,7 +5,7 @@ import styles from "./internal.style.module.css";
 import TimelineItem from "@/app/components/employee/listView/TimelineItem";
 import CloseIcon from "/public/internal/cross.svg";
 import { useTheme } from "@/context";
-import { eventDataType } from "../../../types/coordinateEventType";
+import { enquiryType, eventDataType } from "../../../types/coordinateEventType";
 import Loading from "../UI/Loading";
 import useInfiniteScroll from "@/utils/useInfiniteScroll";
 import SearchBar from "./searchBar/SearchBar";
@@ -51,7 +51,7 @@ const Internal = ({
   let prevDate: any = null;
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
-  const [eventData1, setEventData1] = useState<eventDataType[]>([]);
+  const [eventData1, setEventData1] = useState<enquiryType[]>([]);
   const [page, setPage] = useState(0);
   const divRef: RefObject<HTMLDivElement> = useRef(null);
   const [noMoreData, setNoMoreData] = useState<boolean>(false);
@@ -99,16 +99,16 @@ const Internal = ({
           offset,
           searchParams,
         });
-        if (apiData?.enquiryData) {
-          if (apiData.enquiryData.length === 0 && page === 1) {
+        if (apiData?.enquiries) {
+          if (apiData.enquiries.length === 0 && page === 1) {
             setEventData1([]);
           }
           if (page == 1) {
-            setEventData1(apiData.enquiryData);
+            setEventData1(apiData.enquiries);
           } else if (page > 1) {
-            setEventData1((prevData) => [...prevData, ...apiData.enquiryData]);
+            setEventData1((prevData) => [...prevData, ...apiData.enquiries]);
           }
-          if (apiData.enquiryData.length < 10) {
+          if (apiData.enquiries.length < 10) {
             setNoMoreData(true);
           }
         }
@@ -167,13 +167,14 @@ const Internal = ({
         <Loading />
       </div>
     );
-  } else if (isLoaded && coordinateCount[0]?.totalEvent === 0) {
-    return (
-      <div className="p-20">
-        <NullState image={coordinateNullState}  title="You haven't shortlisted any events yet." text="Browse through our upcoming events and shortlist here for easy access and internal coordination later." buttonText="Search Events" buttonUrl={`/internal/search/events`} />
-      </div>
-    );
-  }
+  } 
+  // else if (isLoaded && coordinateCount[0]?.totalEvent === 0) {
+  //   return (
+  //     <div className="p-20">
+  //       <NullState image={coordinateNullState}  title="You haven't shortlisted any events yet." text="Browse through our upcoming events and shortlist here for easy access and internal coordination later." buttonText="Search Events" buttonUrl={`/internal/search/events`} />
+  //     </div>
+  //   );
+  // }
   const handleSelect = (id: number, name: string) => {
     setSearchInput(name);
     setShowSuggestion(true);
@@ -288,30 +289,30 @@ const Internal = ({
           <div className={styles.timelineContainer}>
             {eventData1?.map((item, index) => {
               // Check if current event's date is different from previous event's date
-              const showDate = item.startDate !== prevDate;
+              const showDate = item.eventData.startDate !== prevDate;
               // Update previous date
-              prevDate = item.startDate;
+              prevDate = item.eventData.startDate;
               return (
                 <>
                   <div key={item.eventId} className={styles.timeline}>
                     <TimelineItem
-                      eventDate={showDate ? item.startDate : null}
+                      eventDate={showDate ? item.eventData.startDate : null}
                     />
                     <YourEventCard
                       eventId={item.eventId}
                       setSelectedId={setSelectedId}
                       isDateSame={showDate}
-                      enquiryId={item.enquiryId}
-                      eventName={item.eventName}
-                      eventLocation={item.eventCity}
-                      eventCountry={item.eventCountry}
-                      eventImage={item?.logo}
-                      eventStartDate={item.startDate}
-                      eventEndDate={item.endDate}
-                      eventCompany={item.orgName}
-                      currentEnquiryStatus={item.enquiryStatus}
-                      upvote={item.upvote}
-                      enquiryActivity={item.enquiryActivity}
+                      enquiryId={item.id}
+                      eventName={item.eventData.name}
+                      eventLocation={item.eventData.location.cityName}
+                      eventCountry={item.eventData.location.countryName}
+                      eventImage={item.eventData.logoUrl}
+                      eventStartDate={item.eventData.startDate}
+                      eventEndDate={item.eventData.endDate}
+                      eventCompany={item.eventData.organizerName}
+                      currentEnquiryStatus={item.status}
+                      upvote={item.activityCount} // upvote activity data
+                      enquiryActivity={item.myActivity}
                       coordinateActions={coordinateActions}
                       pipelineConfig={pipelineConfig}
                       handleModal={handleModal}

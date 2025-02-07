@@ -4,7 +4,7 @@ import styles from "./pipelinecol.style.module.css";
 import Loading from "../UI/Loading";
 import CardTask from "./CardTask";
 import useInfiniteScroll from "@/utils/useInfiniteScroll";
-import { enquiryType } from "@/types/outreachEnquiryTypes";
+import { enquiryType } from "@/types/coordinateEventType";
 import { Pencil } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { GAEvent } from "@/utils/GAEvent";
@@ -101,16 +101,16 @@ const PipelineCol = ({
             <CardTask
               key={index}
               task={task}
-              name={task.eventName}
-              interests={task.userCountPerInterest}
+              name={task.eventData.name}
+              interests={task.interestedCount}
               draggable={true}
               eventLocation={""}
-              eventCompany={task.orgName}
-              eventStartDate={task.startDate}
-              eventEndDate={task.endDate}
+              eventCompany={task.eventData.organizerName}
+              eventStartDate={task.eventData.startDate}
+              eventEndDate={task.eventData.endDate}
               eventId={task.eventId}
-              enquiryId={task.enquiryId}
-              enquiryStatus={task.enquiryStatus}
+              enquiryId={task.id}
+              enquiryStatus={task.status}
               onDragStart={(event) => handleDragStart(event, task)}
               handleModal={handleModal}
               onClick={openAddModalHandler}

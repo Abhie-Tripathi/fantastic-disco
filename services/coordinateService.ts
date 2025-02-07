@@ -18,7 +18,7 @@ interface upVoteProp {
 
 interface setOwnerProp {
   enquiryId: string,
-  userId: string,
+  ownerId: string,
 }
 
 interface updateEnquiryStatusProp {
@@ -37,6 +37,12 @@ interface shortlistProp {
 interface outreachListProp {
   offset: number,
   status: string,
+}
+
+interface createIntentProp {
+  sourceModule: string;
+  eventId: string;
+  interest: string;
 }
 
 export const useCoordinateService = () => {
@@ -61,9 +67,14 @@ export const useCoordinateService = () => {
   };
 
   const getInterestedUsers = (eventId: string, enquiryId: string) => {
-    return api.request<UserInterestResponse>(`${endpoints.coordinate.iterestedUsers}/${eventId}?enquiryId=${enquiryId}`, {
+    // https://api.dev.gtm.whr.ai/enquiries/2daa7ddb-d747-4302-8b89-523dbc7a5fdb/interested-users
+    return api.request(`${endpoints.coordinate.enquiryDetail}/${enquiryId}/interested-users`, {
       method: "GET",
     });
+
+    // return api.request<UserInterestResponse>(`${endpoints.coordinate.iterestedUsers}/${eventId}?enquiryId=${enquiryId}`, {
+    //   method: "GET",
+    // });
   };
 
   const upVote = async ({
@@ -83,7 +94,7 @@ export const useCoordinateService = () => {
   }
 
   const getEventDetailById = (eventId: string) => {
-    return api.request(`${endpoints.event.eventDetailById}/${eventId}`, {
+    return api.request(`${endpoints.coordinate.eventDetail}/${eventId}`, {
       method: "GET",
     });
   };
@@ -102,13 +113,12 @@ export const useCoordinateService = () => {
 
   const setEnquiryOwner = async ({
     enquiryId,
-    userId,
+    ownerId,
   }: setOwnerProp) => {
-    const response = await api.request(`${endpoints.coordinate.enquiryDetail}/owner`, {
+    const response = await api.request(`${endpoints.coordinate.enquiryDetail}/${enquiryId}/owner`, {
       method: "POST",
       data: {
-        enquiryId: enquiryId,
-        userId: userId,
+        ownerId: ownerId,
       },
     });
     return response;
@@ -118,11 +128,11 @@ export const useCoordinateService = () => {
     enquiryId,
     enquiryStatus,
   }: updateEnquiryStatusProp) => {
-    const response = await api.request(`${endpoints.coordinate.enquiry}`, {
+    const response = await api.request(`${endpoints.coordinate.enquiryDetail}/${enquiryId}`, {
       method: "PATCH",
       data: {
-        enquiryId: enquiryId,
-        enquiryStatus: enquiryStatus,
+        // enquiryId: enquiryId,
+        status: enquiryStatus,
       },
     });
     return response;
@@ -161,13 +171,30 @@ export const useCoordinateService = () => {
   }
 
   const getInterestConfig = () => {
-    return api.request<CoordinateListResponse>(`${endpoints.configuration}?source=interest`, {
+    // return tempRes;
+    // https://api.dev.gtm.whr.ai/me/account/configuration/interest
+    return api.request(`${endpoints.account.configuration}/interest`, {
       method: "GET",
     });
   }
 
-  const getPipelineConfig = () => {
-    return api.request<CoordinateListResponse>(`${endpoints.configuration}?source=outreach`, {
+  const getPipelineConfig = async() => {
+
+    // const temp = await api.request('https://api.dev.gtm.whr.ai/auth/verify-otp', {
+    //   method: "POST",
+    //   data: {
+    //     email:'rajat@10times.com',
+    //     otp: '729203',
+    //   },
+    // });
+    // console.log(temp);
+    // const temp2 = await api.request<any>('https://api.dev.gtm.whr.ai/me/account/enquiries', {
+    //   method: "GET",
+    // });
+    // console.log(temp2);
+    
+
+    return api.request(`${endpoints.account.configuration}/outreach`, {
       method: "GET",
     });
   }
@@ -191,6 +218,43 @@ export const useCoordinateService = () => {
     });
   }
 
+  const createUserIntent = (payload: createIntentProp) => {
+    console.log('endpoint..',`${endpoints.coordinate.createIntent}`);
+    
+    return api.request<any>(`${endpoints.coordinate.createIntent}`, {
+      method: "POST",
+      data: payload,
+    });
+  };
+
+  const getAllUsers = () => {
+    return api.request<any>(`${endpoints.account.users}`, {
+      method: "GET",
+    });
+  }
+
+  const getEnquiryFollowers = (enquiryId: string) => {
+    return api.request(`${endpoints.coordinate.enquiryDetail}/${enquiryId}/followers`, {
+      method: "GET",
+    });
+  }
+
+  const setEnquiryFollowers = (enquiryId: string) => {
+    return api.request(`${endpoints.intent.enquiryActivity}`, {
+      method: "POST",
+      data: {
+        activityType: 'FOLLOW',
+        enquiryId: enquiryId,
+      },
+    });
+  }
+
+  const deleteEnquiryActivityIntent = (intentId: string) => {
+    return api.request<any>(`${endpoints.intent.enquiryActivity}/${intentId}`, {
+      method: "DELETE",
+    });
+  }
+
   return {
     getEventsWithSearchParams,
     getParticipentCount,
@@ -209,6 +273,11 @@ export const useCoordinateService = () => {
     unlockPocDetail,
     getPresetJson,
     getLatestComment,
+    createUserIntent,
+    getAllUsers,
+    getEnquiryFollowers,
+    setEnquiryFollowers,
+    deleteEnquiryActivityIntent,
     isLoading: api.isLoading,
     error: api.error as ApiError,
   };

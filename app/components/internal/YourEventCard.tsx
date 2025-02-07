@@ -18,9 +18,9 @@ interface YourEventCardProps {
   isDateSame?: boolean;
   enquiryId: string;
   eventName?: string;
-  eventCountry?: string;
-  eventLocation?: string;
-  eventImage?: string;
+  eventCountry?: string | null;
+  eventLocation?: string | null;
+  eventImage?: string | null;
   eventStartDate?: string;
   eventEndDate?: string;
   eventCompany?: string;
@@ -90,7 +90,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   const [votesCount, setVotesCount] = useState(0);
   const [voteStatus, setVoteStatus] = useState<VoteStatus>({});
   
-  const [interestedUsers, setInterestedUsers] = useState<any>({})
+  const [interestedUsers, setInterestedUsers] = useState<any>([])
 
   const coordinateService = useCoordinateService();
 
@@ -141,22 +141,29 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   };
 
   useEffect(() => {
-    if(Object.keys(interestedUsers).length === 0)
+    if(interestedUsers.length === 0)
       fetchInterestedUsers();
+      
+    console.log('upvote', upvote);
     
-    setVotesCount(upvote && upvote[0].like);
+    
+    setVotesCount(upvote?.total || 0);
+    
+    const temp = enquiryActivity.filter((myActivity: any) => (myActivity.activityType == "UPVOTE" && myActivity.activitySubType == 'SPEAK' ));
+    console.log('temp1', temp);
+    
 
-    setVoteStatus(enquiryActivity.reduce((acc: any, item: any) => {
-      acc[item.for] = item.like == 1 ? true : false;
-      return acc;
-    }, {}));
+    // setVoteStatus(enquiryActivity.reduce((acc: any, item: any) => {
+    //   acc[item.for] = item.like == 1 ? true : false;
+    //   return acc;
+    // }, {}));
   }, []);
   
   const fetchInterestedUsers = async () => {
     try {
-      const apiData = await coordinateService.getInterestedUsers(eventId, enquiryId);
+      const apiData: any = await coordinateService.getInterestedUsers(eventId, enquiryId);
       if (apiData) {
-        setInterestedUsers(apiData.participent);
+        setInterestedUsers(apiData.interestedUsers);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -286,7 +293,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
             {!geniEvent && <div className="tablet_view mobile_view">
               <div>
                 <div className={styles.total_upvotes}>
-                  {upvote && upvote[0].like}
+                  {upvote && votesCount}
                   <div style={{ display: "flex", paddingTop: "5px" }}>
                     <Image
                       src={theme === "light" ? upArrowLight : upArrow}
@@ -318,7 +325,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                       &nbsp;Upvotes
                     </div>
                   </div>
-                  {Object.entries(upvote[1]).map(([key, value], index: number) => (
+                  {/* {Object.entries(upvote[1]).map(([key, value], index: number) => (
                     <UpVoteTag
                       key={index}
                       type={key}
@@ -326,7 +333,22 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                       handleVoteClick={handleVoteClick}
                       userList={interestedUsers?.[key]}
                     />
-                  ))}
+                  ))} */}
+
+                  {coordinateActions.map(
+                    (item: any) => (
+                      <UpVoteTag
+                        key={item.status}
+                        type={item.label}
+                        status={enquiryActivity.filter((myActivity: any) => (myActivity.activityType == "UPVOTE" && myActivity.activitySubType == item.status )).length > 0 ? "voted" : ""}
+                        handleVoteClick={handleVoteClick}
+                        // userList={interestedUsers?.[key]}
+                        userList={interestedUsers?.filter(
+                          (users: any) => users.interest === item.status
+                        )}
+                      />
+                    )
+                  )}
                   {/* <UpVoteTag
                     type="Attending"
                     status={voteStatus.Attending ? "voted" : ""}
@@ -390,7 +412,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
               style={{ display: "flex", gap: "6px", paddingTop: "20px", justifyContent: "center" }}
               onClick={handleClickEvent}
             >
-              {Object.entries(upvote[1]).map(([key, value], index: number) => (
+              {/* {Object.entries(upvote[1]).map(([key, value], index: number) => (
                 <UpVoteTag
                   key={index}
                   type={key}
@@ -398,7 +420,7 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                   handleVoteClick={handleVoteClick}
                   userList={interestedUsers?.[key]}
                 />
-              ))}
+              ))} */}
               {/* <UpVoteTag
                 type="Attending"
                 status={voteStatus.Attending ? "voted" : ""}

@@ -38,10 +38,10 @@ const Page = () => {
   const getInterestConfig = async () => {
     try {
       const apiData: any = await coordinateService.getInterestConfig();
-      setCoordinateActions(apiData.slice(1));
+      setCoordinateActions(apiData?.interest?.slice(1));
 
       const pipelineData: any = await coordinateService.getPipelineConfig();
-      setPipelineConfig(pipelineData.outreach_stage);
+      setPipelineConfig(pipelineData.outreach);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -110,6 +110,7 @@ const Page = () => {
             handleModal={handleModal}
             eventId={singleEventId}
             enquiryId={enquiryId}
+            coordinateActions={coordinateActions}
           />
         </div>
       )}

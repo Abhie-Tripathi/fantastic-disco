@@ -84,7 +84,7 @@
 }
 
 .modalContainer {
-    width: calc(100vw - 130px);
+    /* width: calc(100vw - 130px); */
     overflow-y: auto;
 }
 
@@ -117,8 +117,8 @@
     .containerLeft {
         padding-right: 0px;
     }
-    .modalContainer {
+    /* .modalContainer {
         width: 100%;
-    }
+    } */
 }
 

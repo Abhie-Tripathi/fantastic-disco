@@ -29,9 +29,40 @@ export interface eventDataType {
     };
 }
 
+export interface enquiryType {
+    id: string;
+    status: string;
+    eventId: string;
+    eventData: {
+        name: string;
+        startDate: string;
+        endDate: string;
+        eventId: string;
+        logoUrl: string | null;
+        organizerName: string;
+        location: {
+            cityName: string | null,
+            stateName: string | null,
+            countryName: string | null
+        }
+    };
+    ownerId: string | null;
+    createdAt: string;
+    updatedAt: string;
+    interestedCount: {
+        total: number,
+        [name: string]: number,
+    };
+    activityCount: {
+        total: number,
+        [name: string]: number,
+    };
+    myActivity: any;
+}
+
 export interface CoordinateListResponse {
-    totalCount: number;
-    enquiryData: eventDataType[];
+    count: number;
+    enquiries: enquiryType[];
 }
 
 export interface UserInterestResponse {
