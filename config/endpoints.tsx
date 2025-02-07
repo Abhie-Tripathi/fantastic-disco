@@ -43,7 +43,7 @@ export const endpoints = {
   designations: `${BASE_URL}/designation`,
   users: `${BASE_URL}/auth/users`,
   tracker: {
-    commonUrl: `${BASE_URL}/tracker`,
+    commonUrl: `${BASE_URL_NEW}/trackers`,
     access: `${BASE_URL}/tracker/access`,
     shareAccess: `${BASE_URL}/access`,
     createNewAccess: `${BASE_URL}/tracker/invite`,

@@ -811,7 +811,7 @@ const Pages = () => {
       forecasted: "forecasted",
       frequency: "frequency",
       estimatedExhibitors: "estimatedExhibitors",
-      scores: "eventImpactScore,inboundScore,internationalScore",
+      scores: "scores",
       audienceZone: "audienceZone",
       rankings: "rankings,trustScore",
     };
@@ -824,7 +824,7 @@ const Pages = () => {
     });
     const filterValueMapping={
       eventTypes:"evenTypes",
-      categories: "eventCategory",
+      categories: "categories",
       eventFormats: "eventFormats",
       locationIds: "locationIds",
       active_gte: "active_gte",
@@ -849,10 +849,9 @@ const Pages = () => {
       top:"top",
       designations:"designations",
       audienceSpread:"audienceSpread",
-      orgWebsite: "websites"
     }
     const filterValues = Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
-      const value = getLocalFilterValue(key)?getLocalFilterValue(key):key;
+      const value = getLocalFilterValue(key);
     
       if (Array.isArray(value) && value.length > 0) {
         acc[mappedKey] = value;
@@ -864,10 +863,19 @@ const Pages = () => {
     
       return acc;
     }, {});
+    if(websites.length>0){
+      filterValues.orgWebsites=websites;
+    }
+    if(org.length>0){
+      filterValues.orgName=org;
+    }
     if(showsData.length>0){
       filterValues.show=showsData.join(",");
     }
-    console.log(filterValues);
+    if(speakerName.length>0){
+
+    }
+    console.log(showsData);
     
     const userType = {
       ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
@@ -899,9 +907,7 @@ const Pages = () => {
         type: type.toUpperCase()
       }),
       accessLevel: editData?.tracker?.accessLevel,
-      filterValue:{
-
-      }
+      filterValues
       
       // filterValues:{
       //   ...(getLocalFilterValue("eventTypes")?.length>0 &&{

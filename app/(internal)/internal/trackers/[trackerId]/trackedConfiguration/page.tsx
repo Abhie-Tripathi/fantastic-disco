@@ -99,6 +99,8 @@ const Page = () => {
 
   //   fetchData();
   // }, []);
+  console.log(data);
+  
   useEffect(()=>{
     if(editTrue)
     setIsNewCall(true);
@@ -174,8 +176,8 @@ const Page = () => {
     const eventState = data?.tracker?.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
     setLocations([...eventCountry, ...eventCity, ...eventZone, ...eventState]);
   }, [data]);
-const eventType=data?.tracker?.filterValue?.eventType?
-data?.tracker?.filterValue?.eventType
+const eventType=data?.filterValues?.eventType?
+data?.filterValues?.eventType
   :[];
   const eventEntry=data?.tracker?.filterValue?.eventEntry ?
   data?.tracker?.filterValue?.eventEntry?.split(','):[];
@@ -264,7 +266,7 @@ const userRating=
     </div>
     <div className="flex flex-col mt-[140px] gap-6">
       {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{zIndex:"3"}}></div> */}
-    <div className="px-[27px] py-[4px] border-[0.5px] border-[var(--border-color)] rounded-lg h-[55px] flex items-center font-medium">{data?.tracker?.name}</div>
+    <div className="px-[27px] py-[4px] border-[0.5px] border-[var(--border-color)] rounded-lg h-[55px] flex items-center font-medium">{data?.name}</div>
     {data?.tracker && data.tracker.type === "T_PRODUCT_KEYWORDS" &&
       <>
         <div className={styles.innerContainer}>
@@ -493,8 +495,8 @@ const userRating=
         {data && (
           <BasicFilter
             category={
-              data?.tracker?.filterValue?.eventCategory?.length > 0
-                ? data?.tracker?.filterValue?.eventCategory
+              data?.filterValue?.categories?.length > 0
+                ? data?.filterValue?.categories
                 : []
             }
           />
