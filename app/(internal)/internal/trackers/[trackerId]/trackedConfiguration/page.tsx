@@ -712,8 +712,8 @@ const userRating=
         <Insights
         globalToggle={toggleOpend?.globalToggle===true}
             exhibitScore={
-              data?.tracker?.filterValue?.estimatedExhibitScore
-                ? data?.tracker?.filterValue?.estimatedExhibitScore?.split(",")
+              data?.filterValues?.estimatedExhibitors
+                ? data?.filterValues?.estimatedExhibitors
                 : []
             }
             isExhibitOpen={toggleOpend?.exhibit===true}
@@ -762,8 +762,8 @@ const userRating=
           //     : []
           // }
           exhibitScore={
-            data?.tracker?.filterValue?.eventSize
-              ? data?.tracker?.filterValue?.eventSize?.split(",")
+            data?.filterValues?.estimatedExhibitors
+            ? data?.filterValues?.estimatedExhibitors
               : []
           }
           audienceZone={toggleOpend?.audienceZone}
