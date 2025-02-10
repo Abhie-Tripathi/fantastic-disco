@@ -8,7 +8,7 @@ export const endpoints = {
   //     verifyOtp: `${BASE_URL}/auth/customer/verify`,
   //     generateOtp: `${BASE_URL}/auth/customer/verify/generate`,
   //   },
- 
+
   auth: {
     signUp: `${BASE_URL}/auth/sign-up`,
     signIn: `${BASE_URL}/auth/sign-in`,
@@ -18,9 +18,8 @@ export const endpoints = {
   event: {
     count: `${BASE_URL}/event/search`,
     events: `${BASE_URL}/events`,
-    eventDetailById: `${BASE_URL}/event`,
+    eventDetailById: `${BASE_URL}/events`,
     eventEditionsDetailsById: `${BASE_URL}/event/editions`,
-    eventPOCDetailById: `${BASE_URL}/event-poc`,
     savedEvents: `${BASE_URL}/me/saved-events`,
     recentSearches: `${BASE_URL}/me/recent-searches`,
     poc: `${BASE_URL}/event-poc`,

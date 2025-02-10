@@ -171,12 +171,14 @@ const InsightsEventSchema = z.object({
   estimatedAttendanceMean: z.number().nullable(),
   estimatedAttendance: z.string().nullable(),
   rankings: RankingSchema,
-  scores: z.object({
-    impactScore: z.number().nullable(),
-    inboundScore: z.number().nullable(),
-    internationalScore: z.number().nullable(),
-    internationalScoreTag: z.string().nullable(),
-  }).optional(),
+  scores: z
+    .object({
+      impactScore: z.number().nullable(),
+      inboundScore: z.number().nullable(),
+      internationalScore: z.number().nullable(),
+      internationalScoreTag: z.string().nullable(),
+    })
+    .optional(),
 });
 
 const AudienceSchema = z.object({
@@ -213,3 +215,4 @@ export type Country = z.infer<typeof CountrySchema>;
 export type Venue = z.infer<typeof VenueSchema>;
 export type Event = z.infer<typeof EventDataSchema>;
 export type Ranking = z.infer<typeof RankingSchema>;
+export type TTabs = "overview" | "insights" | "audience";

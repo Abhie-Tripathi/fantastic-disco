@@ -5,6 +5,8 @@ import {
   RecentSearchesResponse,
   RecentSearchItem,
   Event,
+  EventPOCDetailResponse,
+  OverallRankingsDetail,
 } from "@/types/events";
 import { EventsAdapter } from "@/adapters/eventsAdapter";
 import { ApiError } from "@/types/api";
@@ -35,7 +37,7 @@ export const useEventsService = () => {
 
   const getEventPOCDetails = (id: string) => {
     return api.request<EventPOCDetailResponse>(
-      `${endpoints.event.eventPOCDetailById}/${id}`,
+      `${endpoints.event.events}/${id}/pocs`,
       {
         method: "GET",
       }
@@ -44,9 +46,9 @@ export const useEventsService = () => {
 
   const getEventEditionDetails = (id: string, take: number, skip: number) => {
     return api.request<EventEditionDetailResponse>(
-      `${endpoints.event.eventEditionsDetailsById}/${id}${
-        take ? `?take=${take}` : ""
-      }${skip !== undefined && skip !== null ? `&skip=${skip}` : ""}`,
+      `${endpoints.event.events}/${id}/editions${take ? `?take=${take}` : ""}${
+        skip !== undefined && skip !== null ? `&skip=${skip}` : ""
+      }`,
       {
         method: "GET",
       }
@@ -56,6 +58,15 @@ export const useEventsService = () => {
   const getEventCoOrganizerDetails = (id: string) => {
     return api.request<EventCoOrganizerDetailResponse>(
       `${endpoints.event.events}/${id}/coorganizers`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
+  const getEventsRankingDetailsById = (id: string) => {
+    return api.request<OverallRankingsDetail>(
+      `${endpoints.event.events}/${id}/rankings`,
       {
         method: "GET",
       }
@@ -199,6 +210,7 @@ export const useEventsService = () => {
     getEventSpeakerDetails,
     getEventsWithSearchParams,
     getEventCoOrganizerDetails,
+    getEventsRankingDetailsById,
     getRecentSearch,
     isLoading: api.isLoading,
     error: api.error as ApiError,

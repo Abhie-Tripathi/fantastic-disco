@@ -1,5 +1,5 @@
 "use client";
-import { Event, GTMEventDetail, Tag, TTabs } from "@/types/events";
+import { Event, TTabs } from "@/types/events";
 import { DetailMapComponent } from "../trendsWeather";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { CircleSlash, TriangleAlert } from "lucide-react";
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useFilterContext } from "@/context/filterContext";
 interface Props {
-  eventDetails: GTMEventDetail;
+  eventDetails: Event["basic"];
   scrollSection: string;
   setActiveTab: Dispatch<SetStateAction<TTabs>>;
 }
@@ -32,7 +32,7 @@ const TagList = ({
   tags,
   isExpanded,
 }: {
-  tags: Tag[];
+  tags: Event["basic"]["tags"];
   isExpanded: boolean;
 }) => {
   const displayedTags = isExpanded ? tags : tags.slice(0, tags.length);
@@ -44,7 +44,7 @@ const TagList = ({
     </li>
   ));
 };
-const ExpandableTags = ({ tags }: { tags: Tag[] }) => {
+const ExpandableTags = ({ tags }: { tags: Event["basic"]["tags"] }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const hasTags = tags?.length > 0;
 
@@ -90,8 +90,7 @@ export const EventInfoAndMap = ({
     categories,
     startDateTime,
     endDateTime,
-    venueLocation,
-    estimatedAttendance,
+    eventLocation,
     tags,
     // tickets,
     entryType,
@@ -373,7 +372,7 @@ export const EventInfoAndMap = ({
 
           <DetailMapComponent
             eventDetails={eventDetails}
-            venueLocation={venueLocation}
+            venueLocation={eventLocation}
             startDateTime={startDateTime}
             endDateTime={endDateTime}
           />
