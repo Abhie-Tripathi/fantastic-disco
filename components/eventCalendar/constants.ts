@@ -23,18 +23,6 @@ export const eventTypeColors: Record<string, string> = {
   community: "#F4E5F6",
 };
 
-export const darkEventTypeColors: Record<string, string> = {
-  concert: "#4F4750",
-  protests: "#F0F0F0",
-  sport: "#4F4750",
-  conferences: "#4F5063",
-  festival: "#4F4750",
-  tradeshows: "#4F5063",
-  exhibitions: "#4F5063",
-  workshops: "#4F5063",
-  community: "#4F5063",
-};
-
 export const groupedEventTypeColors: Record<string, string> = {
   business: "#5055A3",
   social: "#9D50A3",
@@ -44,27 +32,24 @@ export const groupedEventTypeColors: Record<string, string> = {
 export const groupedEventTypes = {
   social: ["festival", "concert", "sport", "performing-arts", "community"],
   business: ["tradeshows", "conferences", "workshops"],
+  unAttended: ["holiday"],
 };
 
 export const heatmapColors = [
   {
     name: "low",
     color: "#FEF1DB",
-    darkModeColor: "#675F4A",
   },
   {
     name: "medium",
     color: "#FFF1CA",
-    darkModeColor: "#6A5D38",
   },
   {
     name: "high",
     color: "#FDDADA",
-    darkModeColor: "#71585B",
   },
   {
     name: "critical",
     color: "#FFCCCC",
-    darkModeColor: "#713E3E",
   },
 ];

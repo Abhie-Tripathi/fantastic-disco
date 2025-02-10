@@ -1,20 +1,25 @@
-import React, { useRef, useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import moment from "moment";
-import { heatmapColors } from "./constants"; // Import heatmapColors from parent com
+import { heatmapColors } from "./constants";
 import { CalendarMonthEventWithHeatmap } from ".";
-import { useTheme } from "@/context/theme";
+import { Alert, Event } from "@/types/events";
+import { Badge } from "../ui/badge";
 import { useFilterState } from "@/hooks/useFilterState";
 
 const YearView = ({
   date,
   events,
+  unattendedEvents,
 }: {
   date: Date;
   events: CalendarMonthEventWithHeatmap[];
+  unattendedEvents: {
+    holidays: Event[] | undefined;
+    alerts: Alert[] | undefined;
+  };
 }) => {
   const { getFilterValue } = useFilterState();
   const months = moment.months();
-  const { theme } = useTheme();
 
   const startingMonth = (function () {
     const active_gte = getFilterValue("active_gte");
@@ -49,14 +54,21 @@ const YearView = ({
     );
   };
 
-  // const getMonthAlerts = (month: string) => {
-  //   const monthIndex = months.indexOf(month);
-  //   return unattendedEvents.alerts?.filter(
-  //     (event) =>
-  //       moment(event.startDate).month() === monthIndex &&
-  //       moment(event.startDate).year() === date.getFullYear()
-  //   );
-  // };
+  const getMonthAlerts = (month: string) => {
+    const monthIndex = months.indexOf(month);
+    return unattendedEvents.alerts?.filter(
+      (event) =>
+        moment(event.startDate).month() === monthIndex &&
+        moment(event.startDate).year() === date.getFullYear()
+    );
+  };
+
+  const getMonthHolidays = (month: string) => {
+    const monthIndex = months.indexOf(month);
+    return unattendedEvents.holidays?.filter(
+      (event) => moment(event.startDateTime).month() === monthIndex
+    );
+  };
 
   const getHeatmapColor = (category: string) => {
     const colorObj = heatmapColors.find((color) => color.name === category);
@@ -64,29 +76,35 @@ const YearView = ({
   };
 
   return (
-    <div className="grid grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 overflow-auto">
       {months.map((month, index) => {
         const monthEvents = getMonthEvents(month);
-        const totalEvents = monthEvents.reduce(
-          (sum, event) => sum + (event?.count || 0),
-          0
-        );
-        const businessEvents = monthEvents
-          .filter((event) => event.eventType === "business")
-          .reduce((sum, event) => sum + (event?.count || 0), 0);
-        const socialEvents = monthEvents
-          .filter((event) => event.eventType === "social")
-          .reduce((sum, event) => sum + (event?.count || 0), 0);
+        const monthAlerts = getMonthAlerts(month);
+        const monthHolidays = getMonthHolidays(month);
 
         return (
-          <div key={month}>
-            <h3 className="font-semibold mb-4 flex gap-5">
-              {month}
-              {totalEvents > 0 && (
+          <div
+            key={month}
+            ref={(el) => {
+              if (el) monthRefs.current[index] = el;
+            }}
+            className="scroll-target"
+          >
+            <h3 className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="font-semibold flex gap-5 ">{month}</div>
+                {monthAlerts && monthAlerts.length > 0 && (
+                  <span className="bg-destructive text-white text-xs px-2 py-1 rounded-full">
+                    {monthAlerts.length} Alert
+                  </span>
+                )}
+              </div>
+
+              {monthEvents?.[0]?.monthCount ? (
                 <span className="bg-primary text-white text-xs px-2 py-1 rounded-full">
-                  {totalEvents} Events
+                  {monthEvents[0].monthCount ?? 0} Events
                 </span>
-              )}
+              ) : null}
             </h3>
             <table className="w-full text-sm">
               <thead>
@@ -95,7 +113,7 @@ const YearView = ({
                     (day) => (
                       <th
                         key={day}
-                        className="border font-medium text-[#666666] h-12 w-[calc(100%/7)] text-xs bg-[var(--heading-background-color)]"
+                        className="border font-medium text-[#666666] h-12 w-[calc(100%/7)] text-xs bg-[#FAFAFA]"
                       >
                         {day}
                       </th>
@@ -107,24 +125,25 @@ const YearView = ({
                 {[...Array(6)].map((_, weekIndex) => (
                   <tr key={weekIndex}>
                     {[...Array(7)].map((_, dayIndex) => {
+                      const firstDayOfMonth = moment(
+                        `${date.getFullYear()}-${index + 1}-01`
+                      );
                       const dayOfMonth =
-                        weekIndex * 7 +
-                        dayIndex -
-                        moment(`${date.getFullYear()}-${index + 1}-01`).day() +
-                        1;
+                        weekIndex * 7 + dayIndex - firstDayOfMonth.day() + 1;
                       const isCurrentMonth =
                         dayOfMonth > 0 &&
-                        dayOfMonth <=
-                          moment(
-                            `${date.getFullYear()}-${index + 1}`,
-                            "YYYY-MM"
-                          ).daysInMonth();
-                      const currentDate = moment(
-                        `${date.getFullYear()}-${index + 1}-${dayOfMonth}`,
-                        "YYYY-MM-DD"
+                        dayOfMonth <= firstDayOfMonth.daysInMonth();
+                      const currentDate = moment(firstDayOfMonth).add(
+                        dayOfMonth - 1,
+                        "days"
                       );
+
                       const dayEvents = monthEvents.filter((event) =>
-                        moment(event.start).isSame(currentDate, "day")
+                        moment(event.start).isSame(currentDate, "date")
+                      );
+
+                      const dayHolidays = monthHolidays?.filter((event) =>
+                        moment(event.startDateTime).isSame(currentDate, "day")
                       );
                       const dayTotalEvents = dayEvents.reduce(
                         (sum, event) => sum + (event?.count || 0),
@@ -142,7 +161,7 @@ const YearView = ({
                       const backgroundColor =
                         dayTotalEvents > 0
                           ? getHeatmapColor(heatmapCategory)
-                          : "var(--primary-foreground)";
+                          : "white";
 
                       return (
                         <td
@@ -154,21 +173,22 @@ const YearView = ({
                             {isCurrentMonth ? dayOfMonth : ""}
                           </div>
 
-                          {isCurrentMonth && dayTotalEvents > 0 && (
+                          {isCurrentMonth && (
                             <>
-                              <p
-                                className={`font-semibold text-sm text-center mb-1 ${
-                                  theme == "light" ? "text-primary" : ""
-                                }`}
-                              >
-                                {dayTotalEvents}
-                              </p>
+                              {dayTotalEvents > 0 && (
+                                <div className="text-primary font-semibold text-sm text-center mb-1">
+                                  {dayTotalEvents}
+                                </div>
+                              )}
                               <div className="flex items-center justify-center gap-[2px]">
                                 {dayBusinessEvents > 0 && (
                                   <span className="w-[10px] h-[10px] bg-[#9D50A3] rounded-full"></span>
                                 )}
                                 {daySocialEvents > 0 && (
                                   <span className="w-[10px] h-[10px] bg-[#5055A3] rounded-full"></span>
+                                )}
+                                {dayHolidays && dayHolidays.length > 0 && (
+                                  <span className="w-[10px] h-[10px] bg-[#7D7D7D] rounded-full"></span>
                                 )}
                               </div>
                             </>
