@@ -253,11 +253,9 @@ const EventListItem = ({
 
     return (
       <>
-        <Badge variant="outline" className="text-gray-600">
-          {prop.rank}
-          <sup>{rankString}</sup>
-          <span className="pl-1">{` ${prop.type}`}</span>
-        </Badge>
+        {prop.rank}
+        <sup>{rankString}</sup>
+        <span className="pl-1">{` ${prop.type}`}</span>
       </>
     );
   }
@@ -659,7 +657,7 @@ const EventListItem = ({
                       {event.economicImpact && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
-                            Economic Impact
+                            Est. Economic Impact
                           </p>
                           <p className="text-lg font-semibold text-primary">
                             {formatEstimatedSpend(event.economicImpact)}

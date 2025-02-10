@@ -454,10 +454,11 @@ export const EventInfoAndMap = ({
 
               <div className="flex flex-col bg-[#FAFAFA] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
                 <h1 className="text-[1rem] font-medium border-b pb-2 w-full">
-                  Predicted Spend
+                  Estimated Economic Impact
                 </h1>
                 <p className="text-[#6750A4] font-semibold text-lg">
                   {economicImpact && formatEstimatedSpend(economicImpact)}
+
                 </p>
               </div>
             </div>

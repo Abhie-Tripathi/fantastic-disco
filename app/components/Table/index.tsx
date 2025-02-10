@@ -1056,12 +1056,13 @@ const Table = ({
                   </>
                 )}
               {showInsights.maturity && <th>Maturity</th>}
-              {showInsights.impactScore && <th>Impact Score</th>}
-              {showInsights.inboundScore && <th>Inbound Score</th>}
-              {showInsights.internationalScore && <th>International Score</th>}
-              {showInsights.audienceZone && <th>Audience Zone</th>}
+              {showInsights.impactScore && <th title="Event Impact Score">EIS</th>}
+              {showInsights.inboundScore && <th title="Inbound Score">Inbound</th>}
+              {showInsights.internationalScore && <th title="International Score">International</th>}
+              {showInsights.economicImpact && <th title="Estimated Economic Impact">Est. Impact ($)</th>}
+              {showInsights.audienceZone && <th title="Audience Zone">Audience Zone</th>}
+
               {showInsights.audienceSpread && <th>Audience Spread</th>}
-              {showInsights.economicImpact && <th>Economic Impact</th>}
               <th
                 className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}
                 style={{ display: "flex" }}
@@ -1300,10 +1301,6 @@ const Table = ({
                       ? event.stats?.estimatedExhibitor
                       : "-"}
                   </td>
-                )}
-
-                {showInsights.economicImpact && (
-                  <td>{formatEstimatedSpend(event.economicImpact)}</td>
                 )}
 
                 {/* {showInsights.eventSeries ||
@@ -1987,6 +1984,10 @@ const Table = ({
                       ? event.internationalScore
                       : "-"}
                   </td>
+                )}
+
+                {showInsights.economicImpact && (
+                  <td className="text-right">{formatEstimatedSpend(event.economicImpact)}</td>
                 )}
 
                 {showInsights.audienceZone && (
