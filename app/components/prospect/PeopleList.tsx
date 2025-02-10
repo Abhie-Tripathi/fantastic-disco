@@ -8,9 +8,19 @@ import { useState } from "react";
 import Text from "@/components/new-ui/Text";
 import { MailIcon, PhoneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCompanyService } from "@/services/companyService";
 
+interface userDetail {
+  user_id: number | null;
+  user_name: string | null;
+  user_designationName: string | null;
+  user_profilePicture: string | null;
+  email?: string | null
+  phoneNumber?: string | null,
+  state?: number,
+}
 
-const PeopleCard = ({ poc }: { poc: pocDetail }) => {
+const PeopleCard = ({ poc, unlockPoc }: { poc: userDetail, unlockPoc: any }) => {
   return (
     <div
       className="card flex flex-col gap-3  w-full overflow-y-auto"
@@ -32,10 +42,10 @@ const PeopleCard = ({ poc }: { poc: pocDetail }) => {
       <div className="flex bg-[#F8F8FA] dark:bg-[var(--heading-background-color)] rounded-md px-6 py-4">
         <Image
           src={
-            poc?.profilePicture
-              ? poc?.profilePicture
+            poc?.user_profilePicture
+              ? poc?.user_profilePicture
               : `https://img.10times.com/userimages/${
-                  poc?.name && poc?.name.charAt(0).toLowerCase()
+                  poc?.user_name && poc?.user_name.charAt(0).toLowerCase()
                 }.jpg`
           }
           alt="image"
@@ -46,18 +56,18 @@ const PeopleCard = ({ poc }: { poc: pocDetail }) => {
       </div>
       <div className="flex flex-col gap-2 flex-1 flex-wrap relative">
         <Text className="min-h-5" fontWeight="medium" variant="noMargin">
-          {poc?.name}
+          {poc?.user_name}
         </Text>
         <p className="text-[#666666] text-[12px] min-h-5">
           <span
             className="line-clamp-2 overflow-hidden"
-            title={poc?.designation ? poc?.designation : ""}
+            title={poc?.user_designationName ? poc?.user_designationName : ""}
           >
-            {poc?.designation}
+            {poc?.user_designationName}
           </span>
         </p>
-        <div className="blur-sm w-full">
-          {poc?.email && (
+        <div className={`${poc?.state !== 2 ? 'blur-sm' : ''} w-full`}>
+          {/* {poc?.email && ( */}
             <p className="text-[#666666] flex items-center gap-2 text-[12px]">
               <MailIcon
                 width="12px"
@@ -66,21 +76,21 @@ const PeopleCard = ({ poc }: { poc: pocDetail }) => {
               />
               <span className="break-all">{poc?.email}</span>
             </p>
-          )}
+          {/* )} */}
           <p className="text-[#666666] flex items-center gap-2 text-[12px]">
             <PhoneIcon width="12px" height="12px" />
             <span>{poc?.phoneNumber ? poc?.phoneNumber : "-"}</span>
           </p>
         </div>
-        {(poc?.email || poc?.phoneNumber) && (
+        {(poc?.state !== 2) && (
           <div className="absolute bottom-0 right-[30%]">
             <Button
               disabled={
-                poc?.state && (poc.state === 1 || poc?.state === 2)
+                poc?.state && (poc.state === 1)
                   ? true
                   : false
               }
-              // onClick={() => unlockPoc(poc.id)}
+              onClick={() => unlockPoc(poc.user_id)}
               variant={"default"}
               size={"sm"}
               className="blur-none"
@@ -98,14 +108,16 @@ export const PeopleList = ({
   people,
   count = 0,
 }: {
-  people: pocDetail[];
+  people: userDetail[];
   count: number | undefined;
 }) => {
+  const [companyUsers, setCompanyUsers] = useState(people);
   const { setFilter, getFilterValue } = useFilterState();
   const [itemsPerPage, setItemsPerPage] = useState<number>(20);
   const currentPage =
     Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(count / itemsPerPage);
+  const companyService = useCompanyService();
 
   const handlePageChange = (page: number) => {
     setFilter("skip", ((page - 1) * itemsPerPage).toString());
@@ -117,11 +129,36 @@ export const PeopleList = ({
 
     setFilter("take", newItemsPerPage.toString());
   };
+
+  const unlockPoc = async(pocId: number) => {
+    try {
+      setCompanyUsers(prevPocData => 
+        prevPocData.map(poc => 
+          poc.user_id === pocId
+            ? { ...poc, state: 1 }
+            : poc
+        )
+      );
+      const data = await companyService.unlockUserDetail(pocId, 1725);
+      if (data) {
+        setCompanyUsers(prevPocData => 
+          prevPocData.map(poc => 
+            poc.user_id === pocId
+              ? { ...poc, email: data.email, phoneNumber: data.phoneNumber, state: 2 }
+              : poc
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
+
   return (
     <div className="">
       <div className="h-full overflow-y-auto w-full grid grid-cols-[repeat(auto-fill,_220px)] gap-4 pb-3">
-        {people?.map((item, index: number) => (
-          <PeopleCard poc={item} key={index} />
+        {companyUsers?.map((item, index: number) => (
+          <PeopleCard poc={item} key={index} unlockPoc={unlockPoc} />
         ))}
       </div>
       <div className="bg-background py-2 border-t">

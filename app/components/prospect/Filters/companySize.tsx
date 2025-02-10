@@ -28,7 +28,7 @@ export default function CompanySize() {
   // const enabled = morphedData?.estimatedVisitors?.isEnabled;
 
   const selectedRanges = useMemo(
-    () => getLocalFilterValue("companySize").split(",").filter(Boolean),
+    () => getLocalFilterValue("communitySize").split(",").filter(Boolean),
     [getLocalFilterValue]
   );
 
@@ -37,7 +37,7 @@ export default function CompanySize() {
       ? selectedRanges.filter((id) => id !== rangeId)
       : [...selectedRanges, rangeId];
 
-    setLocalFilter("companySize", newRanges.join(","));
+    setLocalFilter("communitySize", newRanges.join(","));
   };
 
   return (

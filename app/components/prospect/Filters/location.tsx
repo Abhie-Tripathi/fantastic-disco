@@ -22,7 +22,7 @@ export interface LocationItem {
 
 export type Location = GeoLocation | LocationItem[];
 export interface LocationProps {
-  filterName: "companyLocation" | "eventLocation";
+  filterName: "companyLocationIds" | "eventLocationIds";
 }
 export default function LocationSelector({ filterName }: LocationProps) {
   const pathName = usePathname();

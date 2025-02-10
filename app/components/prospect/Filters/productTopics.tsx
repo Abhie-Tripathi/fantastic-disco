@@ -64,30 +64,30 @@ export default function ProductTopics() {
   const enabled = morphedData.audienceProfile.isEnabled;
   const selectedLabels = useMemo(() => {
     const filterDesignations =
-      getLocalFilterValue("productTopic")?.split(",").filter(Boolean) || [];
+      getLocalFilterValue("companyProductIds")?.split(",").filter(Boolean) || [];
     return designations.filter((d: Designations) =>
       filterDesignations.includes(d.id)
     );
-  }, [localFilters.productTopic, designations]);
+  }, [localFilters.companyProductIds, designations]);
 
   const handleSelect = (label: Designations) => {
     const currentDesignations =
-      localFilters.productTopic?.split(",").filter(Boolean) || [];
+      localFilters.companyProductIds?.split(",").filter(Boolean) || [];
     const isSelected = currentDesignations.includes(label.id);
 
     const newDesignations = isSelected
       ? currentDesignations.filter((id) => id !== label.id)
       : [...currentDesignations, label.id];
 
-    setLocalFilter("productTopic", newDesignations.join(","));
+    setLocalFilter("companyProductIds", newDesignations.join(","));
   };
 
   const handleRemoveLabel = (labelId: string) => {
-    const currentDesignations = localFilters.productTopic
+    const currentDesignations = localFilters.companyProductIds
       ?.split(",")
       .filter((id) => id !== labelId);
     if (currentDesignations)
-      setLocalFilter("productTopic", currentDesignations.join(","));
+      setLocalFilter("companyProductIds", currentDesignations.join(","));
   };
 
   return (

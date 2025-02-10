@@ -64,6 +64,7 @@ export const endpoints = {
   },
   company: {
     list: `${BASE_URL}/company/search`,
+    unmaskUser: `${BASE_URL}/company/unmask`,
   },
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {

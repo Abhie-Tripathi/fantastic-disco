@@ -105,19 +105,20 @@ interface Filters {
   total_attendance_lte?: string;
 
   // Prospect Filters
-  companyCategory?: string;
-  productTopic?: string;
+  viewBy?: string;
+  companyCategoryIds?: string;
+  companyLocationIds?: string;
+  companyProductIds?: string;
+  communitySize?: string;
   companyType?: string;
-  companySize?: string;
   establishedYear?: string;
+  eventLocationIds?: string;
+  eventCategoryIds?: string;
   eventFollowers?: string;
-  eventCategory?: string;
-  participationType?: string;
-  companyLocation?: string;
-  eventLocation?: string;
-  userName?: string;
-  designation?: string;
-  linkedinProfile?: string;
+  eventParticipationType?: string;
+  userNames?: string;
+  userJobTitle?: string;
+  userSocialLink?: string;
 }
 type Filter = {
   eventTypes: string;

@@ -21,7 +21,7 @@ export default function ParticipationType() {
   // const enabled = morphedData?.estimatedVisitors?.isEnabled;
 
   const selectedRanges = useMemo(
-    () => getLocalFilterValue("participationType").split(",").filter(Boolean),
+    () => getLocalFilterValue("eventParticipationType").split(",").filter(Boolean),
     [getLocalFilterValue]
   );
 
@@ -30,7 +30,7 @@ export default function ParticipationType() {
       ? selectedRanges.filter((id) => id !== rangeId)
       : [...selectedRanges, rangeId];
 
-    setLocalFilter("participationType", newRanges.join(","));
+    setLocalFilter("eventParticipationType", newRanges.join(","));
   };
 
   return (

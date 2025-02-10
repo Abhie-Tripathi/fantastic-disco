@@ -32,8 +32,6 @@ import Designation from "@/app/components/prospect/Filters/designation";
 import LocationSelector from "@/app/components/prospect/Filters/location";
 import PeopleFilter from "@/app/components/prospect/Filters/peopleFilter";
 import { PeopleList } from "@/app/components/prospect/PeopleList";
-import { pocDetail } from "@/types/coordinateEventType";
-import { useCoordinateService } from "@/services/coordinateService";
 
 interface CompanyListResponse {
   totalCount: number;
@@ -49,77 +47,77 @@ interface ProspectFilters {
   filterName?: any;
 }
 
-const peopleData: pocDetail[] = [
-  {
-      "id": 63400046,
-      "name": "Vinoth",
-      "designation": "AGM - Own Shows",
-      "email": "sv@hitex.co.in",
-      "phoneNumber": "+91********159",
-      "profilePicture": "https://c1.10times.com/user/images/0/4/6/63400046_1710389446.jpg",
-      "emailActive": "2025-01-21 12:03:13"
-  },
-  {
-      "id": 35570,
-      "name": "John",
-      "designation": "Sr. Manager - Own Shows",
-      "email": "js@hitex.co.in",
-      "phoneNumber": "+91********117",
-      "profilePicture": "https://c1.10times.com/user_pic%2FskWcFEdNT4dxpz%2BZhi%2BVALFBjA85qfm3wWbW64Wn9MbKKYMMe91dsYHErZuQYxjacXZeNnGvKf7FY4qjzbUlrg%3D%3D.jpg",
-      "emailActive": "2025-01-20 18:09:28"
-  },
-  {
-      "id": 66132975,
-      "name": "Harshitha Reddy",
-      "designation": "Organizer",
-      "email": "hn*@hitex.co.in",
-      "phoneNumber": null,
-      "profilePicture": "https://c1.10times.com/userimages/h.jpg",
-      "emailActive": "2024-12-16 12:50:10"
-  },
-  {
-      "id": 66121550,
-      "name": "Sudarshan",
-      "designation": "Asst. Manager",
-      "email": "rs*@hitex.co.in",
-      "phoneNumber": "+91********610",
-      "profilePicture": "https://c1.10times.com/userimages/s.jpg",
-      "emailActive": "2024-08-31 10:52:57"
-  },
-  {
-      "id": 60350557,
-      "name": "LDF India",
-      "designation": "Marketing Manager",
-      "email": "sk*@hitex.co.in",
-      "phoneNumber": "+91********323",
-      "profilePicture": "https://c1.10times.com/user/images/5/5/7/60350557_1683541380.jpg",
-      "emailActive": "2023-11-07 14:29:38"
-  }
-];
+// const peopleData: pocDetail[] = [
+//   {
+//       "id": 63400046,
+//       "name": "Vinoth",
+//       "designation": "AGM - Own Shows",
+//       "email": "sv@hitex.co.in",
+//       "phoneNumber": "+91********159",
+//       "profilePicture": "https://c1.10times.com/user/images/0/4/6/63400046_1710389446.jpg",
+//       "emailActive": "2025-01-21 12:03:13"
+//   },
+//   {
+//       "id": 35570,
+//       "name": "John",
+//       "designation": "Sr. Manager - Own Shows",
+//       "email": "js@hitex.co.in",
+//       "phoneNumber": "+91********117",
+//       "profilePicture": "https://c1.10times.com/user_pic%2FskWcFEdNT4dxpz%2BZhi%2BVALFBjA85qfm3wWbW64Wn9MbKKYMMe91dsYHErZuQYxjacXZeNnGvKf7FY4qjzbUlrg%3D%3D.jpg",
+//       "emailActive": "2025-01-20 18:09:28"
+//   },
+//   {
+//       "id": 66132975,
+//       "name": "Harshitha Reddy",
+//       "designation": "Organizer",
+//       "email": "hn*@hitex.co.in",
+//       "phoneNumber": null,
+//       "profilePicture": "https://c1.10times.com/userimages/h.jpg",
+//       "emailActive": "2024-12-16 12:50:10"
+//   },
+//   {
+//       "id": 66121550,
+//       "name": "Sudarshan",
+//       "designation": "Asst. Manager",
+//       "email": "rs*@hitex.co.in",
+//       "phoneNumber": "+91********610",
+//       "profilePicture": "https://c1.10times.com/userimages/s.jpg",
+//       "emailActive": "2024-08-31 10:52:57"
+//   },
+//   {
+//       "id": 60350557,
+//       "name": "LDF India",
+//       "designation": "Marketing Manager",
+//       "email": "sk*@hitex.co.in",
+//       "phoneNumber": "+91********323",
+//       "profilePicture": "https://c1.10times.com/user/images/5/5/7/60350557_1683541380.jpg",
+//       "emailActive": "2023-11-07 14:29:38"
+//   }
+// ];
 
 const companyFilters: ProspectFilters[] = [
   {
     id: "item-1",
     label: "Category",
     enabled: true,
-    filterName: "companyCategory",
+    filterName: "companyCategoryIds",
   },
   {
     id: "item-2",
     label: "Location",
     enabled: true,
-    filterName: "companyLocation",
+    filterName: "companyLocationIds",
   },
   {
     id: "item-3",
     label: "Product & Topics",
     enabled: true,
-    filterName: "productTopic",
+    filterName: "companyProductIds",
   },
   {
     id: "item-4",
     label: "Community Size",
-    filterName: "companySize",
+    filterName: "communitySize",
     enabled: true,
   },
   {
@@ -140,13 +138,13 @@ const eventFilters: ProspectFilters[] = [
   {
     id: "item-2",
     label: "Location",
-    filterName: "eventLocation",
+    filterName: "eventLocationIds",
     enabled: true,
   },
   {
     id: "item-3",
     label: "Category",
-    filterName: "eventCategory",
+    filterName: "eventCategoryIds",
     enabled: true,
   },
   {
@@ -158,7 +156,7 @@ const eventFilters: ProspectFilters[] = [
   {
     id: "item-5",
     label: "Participation Type",
-    filterName: "participationType",
+    filterName: "eventParticipationType",
     enabled: true,
   },
 ];
@@ -167,19 +165,19 @@ const peopleFilters: ProspectFilters[] = [
   {
     id: "item-1",
     label: "User Name",
-    filterName: "userName",
+    filterName: "userNames",
     enabled: true,
   },
   {
     id: "item-2",
     label: "Job Title",
-    filterName: "designation",
+    filterName: "userJobTitle",
     enabled: true,
   },
   {
     id: "item-3",
     label: "LinkedIn",
-    filterName: "linkedinProfile",
+    filterName: "userSocialLink",
     enabled: true,
   },
 ];
@@ -187,7 +185,6 @@ const peopleFilters: ProspectFilters[] = [
 const Prospect = () => {
   const searchParams = useSearchParams();
   const companyService = useCompanyService();
-  const coordinateService = useCoordinateService();
 
   const {
     data: companyData,
@@ -209,12 +206,14 @@ const Prospect = () => {
   
 
   const companies = companyData?.companyData || [];
+  const peopleData = companyData?.userData || [];
   const count = companyData?.totalCount || 9;
 
   const {
     localFilters,
     applyFilters,
     getLocalFilterValue,
+    setLocalFilter,
     deleteMultipleLocalFilters,
   } = useFilterContext();
 
@@ -226,6 +225,11 @@ const Prospect = () => {
     deleteMultipleLocalFilters([item]);
   };
 
+  const handleTabChange = (prop: string) => {
+    setLocalFilter('viewBy', prop);
+    applyFilters({ resetPage: true });
+  }
+
   return (
     <div className="space-y-6">
       <div className="pb-6 shadow-sm p-6 flex gap-6 items-center">
@@ -236,7 +240,7 @@ const Prospect = () => {
         </div>
         <div className="badge_success">Coming Soon</div>
       </div>
-      <Tabs defaultValue={"company"} style={{ marginTop: "12px!important" }}>
+      <Tabs defaultValue={"company"} style={{ marginTop: "12px!important" }} onValueChange={handleTabChange} >
         <div className="grid grid-cols-3 px-6">
           <TabsList className="grid grid-cols-2 h-auto px-2 col-span-1 mr-6 w-fit">
             <TabsTrigger
@@ -251,7 +255,7 @@ const Prospect = () => {
               Companies
             </TabsTrigger>
             <TabsTrigger
-              value="people"
+              value="user"
               className="text-xs flex gap-2 items-center p-2"
               // disabled={true}
             >
@@ -259,7 +263,7 @@ const Prospect = () => {
               People
             </TabsTrigger>
           </TabsList>
-          { companies.length > 0 &&
+          { (companies.length > 0 || peopleData.length > 0) &&
             <div className="text-[#A8A8A8] text-sm font-semibold border-b mt-3 mb-6 relative col-span-2 mr">
             <span
               className="absolute top-[-10px] bg-background px-3"
@@ -329,17 +333,17 @@ const Prospect = () => {
                       <AccordionContent
                         className={`"h-fit pb-1 overflow-x-hidden`}
                       >
-                        {item.filterName === "companyCategory" ? (
+                        {item.filterName === "companyCategoryIds" ? (
                           <Industry filterName={item.filterName} />
-                        ) : item.filterName === "productTopic" ? (
+                        ) : item.filterName === "companyProductIds" ? (
                           <ProductTopics />
                         ) : item.filterName === "companyType" ? (
                           <CompanyType />
-                        ) : item.filterName === "companySize" ? (
+                        ) : item.filterName === "communitySize" ? (
                           <CompanySize />
                         ) : item.filterName === "establishedYear" ? (
                           <EstablishedYear />
-                        ) : item.filterName === "companyLocation" ? (
+                        ) : item.filterName === "companyLocationIds" ? (
                           <LocationSelector filterName={item.filterName} />
                         ) : (
                           <></>
@@ -400,13 +404,13 @@ const Prospect = () => {
                       <AccordionContent
                         className={`"h-fit pb-1 overflow-x-hidden`}
                       >
-                        {item.filterName === "eventCategory" ? (
+                        {item.filterName === "eventCategoryIds" ? (
                           <Industry filterName={item.filterName} />
-                        ) : item.filterName === "participationType" ? (
+                        ) : item.filterName === "eventParticipationType" ? (
                           <ParticipationType />
                         ) : item.filterName === "eventFollowers" ? (
                           <EventFollowers />
-                        ) : item.filterName === "eventLocation" ? (
+                        ) : item.filterName === "eventLocationIds" ? (
                           <LocationSelector filterName={item.filterName} />
                         ) : (
                           <></>
@@ -531,10 +535,10 @@ const Prospect = () => {
               )}
             </TabsContent>
 
-            <TabsContent value="people">
+            <TabsContent value="user">
               {isLoading ? (
                 <Loading />
-              ) : companies.length == 0 ? (
+              ) : peopleData.length == 0 ? (
                 <NullState
                   image={coordinateNullState}
                   title="No Results Found"
