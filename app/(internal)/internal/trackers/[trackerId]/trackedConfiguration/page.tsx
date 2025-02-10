@@ -185,9 +185,9 @@ data?.filterValues?.eventType
   data?.tracker?.filterValue?.estimatedVisitorRangeTag?.split(','):[];
 const format=data?.filterValues?.eventFormats?.length !== 0 ? data?.filterValues?.eventFormats:[];
 const endDateValue = data?.filterValues?.endDate;
-const startDate = data?.filterValues?.startDate?.split(",")[0];
-const endDate = data?.filterValues?.endDate?.split(",")[0];
-const eventStatus = data?.tracker?.filterValue?.eventStatus?.length >0 ? data?.tracker?.filterValue?.eventStatus?.split(','):[]
+const startDate = data?.filterValues?.active_gte?.split("T")[0];
+const endDate = data?.filterValues?.active_lte?.split("T")[0];
+const eventStatus = data?.filterValues?.status?.length >0 ? data?.tracker?.filterValue?.eventStatus?.split(','):[]
 const userRating=
   data?.tracker?.filterValue?.eventRating?.length>0
     ? data?.tracker?.filterValue?.eventRating.split(",")
