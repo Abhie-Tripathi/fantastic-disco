@@ -96,7 +96,7 @@ export const InsightsAndScores = ({
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
-                            Impact Score
+                            Event Impact Score
                           </h1>
                         </TooltipTrigger>
                         <TooltipContent className="w-56 tooltip-content-styles">

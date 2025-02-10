@@ -130,6 +130,7 @@ export function useDefaultFilters() {
     if (shows.includes("eventImpactScore")) showItems.push("scores");
     if (shows.includes("eventRanking")) showItems.push("rankings");
     if (shows.includes("audienceZone")) showItems.push("audienceZone");
+    if (shows.includes("economicImpact")) showItems.push("economicImpact");
 
     return showItems.join(",");
   };
@@ -142,6 +143,7 @@ export function useDefaultFilters() {
     if (filters.eventFrequency?.isFreqEnabled) showItems.push("frequency");
     if (filters.estimatedExhibitScore?.isExhibitorsEnabled)
       showItems.push("estimatedExhibitors");
+    if (filters.economicImpact?.isEconomicImpactEnabled) showItems.push("economicImpact");
     if (filters.analytics?.isAnalyticsEnabled) showItems.push("scores");
     return showItems.join(",");
   };
