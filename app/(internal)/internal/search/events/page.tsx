@@ -1,6 +1,5 @@
 "use client";
 
-import { EventsAdapter } from "@/adapters/eventsAdapter";
 import Table from "@/app/components/Table";
 import ZeroState from "@/app/components/zerostate";
 import EventCalendar from "@/components/eventCalendar";
@@ -62,6 +61,8 @@ const Search = () => {
   const router = useRouter();
   const { navigateWithParams, getFilterValue, setFilter, setMultipleFilters } =
     useFilterState();
+
+  const { getLocalFilterValue } = useFilterContext();
   const { searchParams } = useDefaultFilters();
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
@@ -86,20 +87,11 @@ const Search = () => {
   >({
     queryKey: ["events", searchParams.toString()],
     queryFn: () =>
-      eventService.getEventsWithSearchParams(searchParams.toString()),
-    enabled:
-      !!searchParams.toString() &&
-      !(selectedView == "table" || selectedView == "") &&
-      !(
-        Array.from(searchParams.values()).length == 0 ||
-        (Array.from(searchParams.values()).length == 1 &&
-          (Array.from(searchParams.values())[0] == "list" ||
-            Array.from(searchParams.values())[0] == "calendar" ||
-            Array.from(searchParams.values())[0] == "map"))
-      ),
+      eventService.getEvents(Object.fromEntries(searchParams.entries())),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
+
   });
 
   const displayData = eventData;
@@ -158,51 +150,49 @@ const Search = () => {
     }
   }, []);
 
-  const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
-
-  const adaptedQueryString = (function () {
-    if (!searchParams.toString()) return;
-    if (adaptedParams.offset == "0") {
-      delete adaptedParams.offset;
-    }
-    delete adaptedParams.max;
-    delete adaptedParams.sortBy;
-    delete adaptedParams.sortType;
-    return new URLSearchParams(adaptedParams).toString();
-  })();
+  // const adaptedQueryString = (function () {
+  //   if (!searchParams.toString()) return;
+  //   if (adaptedParams.offset == "0") {
+  //     delete adaptedParams.offset;
+  //   }
+  //   delete adaptedParams.max;
+  //   delete adaptedParams.sortBy;
+  //   delete adaptedParams.sortType;
+  //   return new URLSearchParams(adaptedParams).toString();
+  // })();
 
   const onTabsChange = (value: string) => {
     setFilter("view", value);
   };
 
-  const selectedInsights = {
-    eventSize: true,
-    eventKeywords: true,
-    eventRank: adaptedParams.shows?.includes("eventRanking"),
-    matchScore: adaptedParams.keywords ? true : false,
-    growth: false,
-    eventSeries: adaptedParams.shows?.includes("eventSeries"),
-    brandedEvent: adaptedParams.shows?.includes("eventBrand"),
-    global: false,
-    reptSent: false,
-    eventRating: adaptedParams.shows?.includes("eventRating"),
-    estExhibit: adaptedParams.shows?.includes("estimatedExhibitScore"),
-    repeatSent: adaptedParams.trustScore ? true : false,
-    maturity: adaptedParams.shows?.includes("maturity"),
-    impactScore: adaptedParams.shows?.includes("eventImpactScore"),
-    inboundScore: adaptedParams.shows?.includes("inboundScore"),
-    internationalScore: adaptedParams.shows?.includes("internationalScore"),
-    forecasted: adaptedParams.shows?.includes("isforecasted"),
-    audienceZone: adaptedParams.shows?.includes("audienceZone"),
-    audienceSpread: adaptedParams.audienceSpread ? true : false,
-    eventFrequency: adaptedParams.shows?.includes("eventFrequency"),
-    includeKeywords: adaptedParams.includeKeywords
-      ? adaptedParams.includeKeywords
-      : "",
-    excludeKeywords: adaptedParams.excludeKeywords
-      ? adaptedParams.excludeKeywords
-      : "",
-  };
+  // const selectedInsights = {
+  //   eventSize: true,
+  //   eventKeywords: true,
+  //   eventRank: adaptedParams.shows?.includes("eventRanking"),
+  //   matchScore: adaptedParams.keywords ? true : false,
+  //   growth: false,
+  //   eventSeries: adaptedParams.shows?.includes("eventSeries"),
+  //   brandedEvent: adaptedParams.shows?.includes("eventBrand"),
+  //   global: false,
+  //   reptSent: false,
+  //   eventRating: adaptedParams.shows?.includes("eventRating"),
+  //   estExhibit: adaptedParams.shows?.includes("estimatedExhibitScore"),
+  //   repeatSent: adaptedParams.trustScore ? true : false,
+  //   maturity: adaptedParams.shows?.includes("maturity"),
+  //   impactScore: adaptedParams.shows?.includes("eventImpactScore"),
+  //   inboundScore: adaptedParams.shows?.includes("inboundScore"),
+  //   internationalScore: adaptedParams.shows?.includes("internationalScore"),
+  //   forecasted: adaptedParams.shows?.includes("isforecasted"),
+  //   audienceZone: adaptedParams.shows?.includes("audienceZone"),
+  //   audienceSpread: adaptedParams.audienceSpread ? true : false,
+  //   eventFrequency: adaptedParams.shows?.includes("eventFrequency"),
+  //   includeKeywords: adaptedParams.includeKeywords
+  //     ? adaptedParams.includeKeywords
+  //     : "",
+  //   excludeKeywords: adaptedParams.excludeKeywords
+  //     ? adaptedParams.excludeKeywords
+  //     : "",
+  // };
 
   // console.log(adaptedQueryString);
 

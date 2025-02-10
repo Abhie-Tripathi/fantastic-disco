@@ -8,7 +8,7 @@ export const endpoints = {
   //     verifyOtp: `${BASE_URL}/auth/customer/verify`,
   //     generateOtp: `${BASE_URL}/auth/customer/verify/generate`,
   //   },
- 
+
   auth: {
     signUp: `${BASE_URL}/auth/sign-up`,
     signIn: `${BASE_URL}/auth/sign-in`,
@@ -105,6 +105,10 @@ export const endpoints = {
   calendar: {
     getyearlyEvents: `${BASE_URL}/event?`,
   },
-  configuration: `${BASE_URL}/configuration`,
+  configuration: {
+    filterConfiguration: `${BASE_URL}/me/account/configuration/filter`,
+    interestConfiguration: `${BASE_URL}/me/account/configuration/interest`,
+    outreachConfiguration: `${BASE_URL}/me/account/configuration/outreach`,
+  },
   myprofile: `${BASE_URL}/auth/customer/profile`,
 };

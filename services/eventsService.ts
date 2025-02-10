@@ -6,18 +6,21 @@ import {
   RecentSearchItem,
   Event,
 } from "@/types/events";
-import { EventsAdapter } from "@/adapters/eventsAdapter";
 import { ApiError } from "@/types/api";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 
 export const useEventsService = () => {
   const api = useApi();
 
-  const getEvents = (params?: EventQuery) => {
-    return api.request<Event[]>(endpoints.event.events, {
+  const getEvents = async (params?: EventQuery) => {
+    console.log("service called");
+    const response = await api.request<Event[]>(endpoints.event.events, {
       method: "GET",
       params,
+
     });
+    console.log(response);
+    return response;
   };
 
   const getEventDetailById = async (id: string) => {

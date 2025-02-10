@@ -266,7 +266,7 @@ const EventListItem = ({
         <Radio className="w-4 h-4 mr-1" />
         <span>Hybrid&nbsp;-&nbsp;</span>
         {[
-          event.basic.eventLocation.venue?.name,
+          event.basic.eventLocation.venue?.name || "TBA",
           event.basic.eventLocation.city?.name,
           event.basic.eventLocation.state?.name,
           event.basic.eventLocation.country?.name,

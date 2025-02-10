@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useFilterContext } from "@/context/filterContext";
 import styles from "@/app/(internal)/internal/search/events/search.module.css";
-import { EventsAdapter } from "@/adapters/eventsAdapter";
+// import { EventsAdapter } from "@/adapters/eventsAdapter";
 import { useSearchParams } from "next/navigation";
 
 interface CreateTrackerDialog {
@@ -32,7 +32,8 @@ export default function CreateTrackerDialog({
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
+  // const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
+  const adaptedParams = searchParams;
   const { getLocalFilterValue} = useFilterContext();
   const validateName = (name: string) => {
     if (name.trim().length === 0) {
