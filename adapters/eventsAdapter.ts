@@ -1,7 +1,6 @@
 import {
   EventsResponse,
   Event,
-  CalendarMonthEvent,
   CalendarWeekEventsResponse,
   MapEventsResponse,
   GTMEventDetail,

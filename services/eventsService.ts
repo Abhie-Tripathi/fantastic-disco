@@ -3,6 +3,7 @@ import { endpoints } from "@/config/endpoints";
 import {
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
+  CalendarYearEventsResponse,
   EventBookmarkResponse,
   EventCoOrganizerDetailResponse,
   EventCount,
@@ -41,6 +42,7 @@ export const useEventsService = () => {
   const api = useApi<
     | CalendarMonthEventsResponse
     | CalendarWeekEventsResponse
+    | CalendarYearEventsResponse
     | MapEventsResponse
     | EventsResponse
   >();
