@@ -179,34 +179,30 @@ const Page = () => {
 const eventType=data?.filterValues?.eventType?
 data?.filterValues?.eventType
   :[];
-  const eventEntry=data?.tracker?.filterValue?.eventEntry ?
-  data?.tracker?.filterValue?.eventEntry?.split(','):[];
-  const eventSize=data?.tracker?.filterValue?.estimatedVisitorRangeTag ?
-  data?.tracker?.filterValue?.estimatedVisitorRangeTag?.split(','):[];
+  const eventEntry=data?.filterValues?.entryType ?
+  data?.filterValues?.entryType:[];
+  const eventSize=data?.filterValues?.estimatedVisitors ?
+  data?.filterValues?.estimatedVisitors:[];
 const format=data?.filterValues?.eventFormats?.length !== 0 ? data?.filterValues?.eventFormats:[];
 const endDateValue = data?.filterValues?.endDate;
 const startDate = data?.filterValues?.active_gte?.split("T")[0];
 const endDate = data?.filterValues?.active_lte?.split("T")[0];
-const eventStatus = data?.filterValues?.status?.length >0 ? data?.tracker?.filterValue?.eventStatus?.split(','):[]
+const eventStatus = data?.filterValues?.status?.length >0 ? data?.filterValues?.status:[]
 const userRating=
-  data?.tracker?.filterValue?.eventRating?.length>0
-    ? data?.tracker?.filterValue?.eventRating.split(",")
+  data?.filterValues?.ratings?.length>0
+    ? data?.filterValues?.ratings
     : []
    const allKeywords=data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : [];
    const includeKeywords =
-  data?.tracker?.filterValue?.includeKeywords &&
-  data.tracker.filterValue.includeKeywords.split(",").length > 0
-    ? data.tracker.filterValue.includeKeywords
-        .split(",")
-        .filter(Boolean)
+  data?.filterValues?.includeKeywords &&
+  data?.filterValues.includeKeywords?.length > 0
+    ? data?.filterValues.includeKeywords?.filter(Boolean)
         .map((keyword: string) => keyword.replaceAll("_", "  "))
     : [];
     const excludeKeywords =
-  data?.tracker?.filterValue?.excludeKeywords &&
-  data.tracker.filterValue.excludeKeywords.split(",").length > 0
-    ? data.tracker.filterValue.excludeKeywords
-        .split(",")
-        .filter(Boolean)
+  data?.filterValues?.excludeKeywords &&
+  data?.filterValues?.excludeKeywords?.length > 0
+    ? data?.filterValues?.excludeKeywords?.filter(Boolean)
         .map((keyword: string) => keyword.replaceAll("_", "  "))
     : [];
    let toggleOpend: Toggle={};
@@ -690,12 +686,12 @@ const userRating=
         excludeKeywords={excludeKeywords}
          freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
          isFreqToggle={toggleOpend?.eventFrequency}
-          isBranded={data?.tracker?.filterValue?.eventBrand}
+          isBranded={data?.filterValues?.onlyBranded}
           brandSeries={toggleOpend?.brandSeries==true}
           eventEdition={data?.tracker?.filterValue?.editionRange}
           type={type}
           isMaturity={toggleOpend?.maturity===true}
-          eventSeries={data?.tracker?.filterValue?.eventSeries}
+          eventSeries={data?.filterValues?.onlySeries}
           forecastedStatus={toggleOpend?.forecastedStatus===true}
           maturity={data?.tracker?.filterValue?.maturity}
         />

@@ -838,7 +838,7 @@ const Pages = () => {
       frequencies: "frequencies",
       includeKeywords: "includeKeywords",
       excludeKeywords: "excludeKeywords",
-      estimatedVisitorRangeTag:"estimatedVisitorRangeTag",
+      estimatedVisitorRangeTag:"estimatedVisitors",
       estimatedExhibitors:"estimatedExhibitors",
       impact_score_gte:"impact_score_gte",
       impact_score_lte:"impact_score_lte",
