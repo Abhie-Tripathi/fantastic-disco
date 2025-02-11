@@ -89,8 +89,8 @@ export function useDefaultFilters() {
       recentSearch.eventType
         ?.map((item: string) => `${item.toLowerCase()}s`)
         ?.join(",") ?? "",
-    active_gte: recentSearch.startDate?.split(",")[0] ?? "",
-    active_lte: recentSearch.endDate?.split(",")[1] ?? "",
+    active_gte: recentSearch.startDate ? new Date(recentSearch.startDate?.split(",")[0]).toISOString() : "",
+    active_lte: recentSearch.endDate ? new Date(recentSearch.endDate?.split(",")[1]).toISOString() : "",
     locationIds:
       recentSearch.locationIds?.city
         ?.map((city: any) => Object.keys(city)[0])
