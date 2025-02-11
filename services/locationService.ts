@@ -11,6 +11,7 @@ import {
 } from "@/types/locations";
 import { FeatureCollection, Polygon, MultiPolygon, Point, BBox } from "geojson";
 import { LocationAdapter } from "@/adapters/locationAdapter";
+import { LocationResponse } from "@/types/suggestion";
 
 export const useLocationService = () => {
   const api = useApi();
@@ -91,7 +92,7 @@ export const useLocationService = () => {
   // };
 
   const getDatabaseLocationAutocomplete = async (input: string) => {
-    const response = await api.request<SearchLocationResponse>(
+    const response = await api.request<LocationResponse>(
       `${endpoints.locationSuggestion}`,
       {
         method: "GET",

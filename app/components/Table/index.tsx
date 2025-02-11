@@ -400,7 +400,7 @@ const Table = ({
           const { data, error } = await myFetch(
             `${baseUrl}/tracker/saved-events`,
             {
-              method: "POST",
+              method: "POST
               body: JSON.stringify(payloadData),
               headers: {
                 "Content-Type": "application/json",
