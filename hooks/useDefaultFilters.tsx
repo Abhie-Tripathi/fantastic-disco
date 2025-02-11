@@ -362,7 +362,6 @@ export function useDefaultFilters() {
           pathName === "/internal/trends"
         ) {
           const trendsParams = generateTrendsParams(params, recentFilterParams);
-          console.log(recentFilterParams);
           setTimeout(() => {
             router.push(
               `${pathName}?${
