@@ -951,6 +951,7 @@ export const EventsAdapter = {
           internationalScore: response.event.internationalScore || null,
         },
         rating: response.event.stats.eventRating || null,
+        economicImpactBreakdown: response.event.economicImpactBreakdown || null,
         audienceSpread: response.event.audienceSpread || null,
         rehostDate: response.event.isforecasted || null,
         futureExpectedStartDate: response.event.futureExpectedStartDate || null,
