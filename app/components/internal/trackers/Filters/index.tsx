@@ -779,7 +779,34 @@ const Pages = () => {
       scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
-
+  const filterValueMapping={
+    eventTypes:"evenTypes",
+    categories: "categories",
+    eventFormats: "eventFormats",
+    locationIds: "locationIds",
+    active_gte: "active_gte",
+    active_lte: "active_lte",
+    status: "status",
+    entryType: "entryType",
+    ratings: "ratings",
+    maturity: "maturity",
+    onlyBranded: "onlyBranded",
+    onlySeries: "onlySeries",
+    frequencies: "frequencies",
+    includeKeywords: "includeKeywords",
+    excludeKeywords: "excludeKeywords",
+    estimatedVisitorRangeTag:"estimatedVisitors",
+    estimatedExhibitors:"estimatedExhibitors",
+    impact_score_gte:"impact_score_gte",
+    impact_score_lte:"impact_score_lte",
+    inbound_score_gte:"inbound_score_gte",
+    inbound_score_lte:"inbound_score_lte",
+    international_score_gte:"international_score_gte",
+    international_score_lte:"international_score_lte",
+    top:"top",
+    designations:"designations",
+    audienceSpread:"audienceSpread",
+  }
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
     setEditTrue(true);
@@ -822,34 +849,7 @@ const Pages = () => {
         showsData.push(value);
       }
     });
-    const filterValueMapping={
-      eventTypes:"evenTypes",
-      categories: "categories",
-      eventFormats: "eventFormats",
-      locationIds: "locationIds",
-      active_gte: "active_gte",
-      active_lte: "active_lte",
-      status: "status",
-      entryType: "entryType",
-      ratings: "ratings",
-      maturity: "maturity",
-      onlyBranded: "onlyBranded",
-      onlySeries: "onlySeries",
-      frequencies: "frequencies",
-      includeKeywords: "includeKeywords",
-      excludeKeywords: "excludeKeywords",
-      estimatedVisitorRangeTag:"estimatedVisitors",
-      estimatedExhibitors:"estimatedExhibitors",
-      impact_score_gte:"impact_score_gte",
-      impact_score_lte:"impact_score_lte",
-      inbound_score_gte:"inbound_score_gte",
-      inbound_score_lte:"inbound_score_lte",
-      international_score_gte:"international_score_gte",
-      international_score_lte:"international_score_lte",
-      top:"top",
-      designations:"designations",
-      audienceSpread:"audienceSpread",
-    }
+   
     const filterValues = Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
       const value = getLocalFilterValue(key);
     
@@ -873,9 +873,18 @@ const Pages = () => {
       filterValues.show=showsData.join(",");
     }
     if(speakerName.length>0){
-
+      filterValues.userName = speakerName;
     }
-    console.log(showsData);
+    if(speakerCompany.length > 0) {
+      filterValues.userOrgWebsite = speakerCompany;
+    }
+    if(userName.length>0){
+      filterValues.userName=userName;
+    }
+    if(userCompany.length>0 ){
+      filterValues.userOrgWebsite=userCompany;
+    }
+    // console.log(filterValues);
     
     const userType = {
       ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
@@ -1129,315 +1138,24 @@ const Pages = () => {
       //   .map((item: any) => item.id);
       // console.log(filteredArr);
       let toggleOpend: Toggle = {};
+      Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
+        const value = editData.filterValues[key];
+      console.log(key);
       
+        // if (Array.isArray(value) && value.length > 0) {
+        //   acc[mappedKey] = value;
+        // } else if (typeof value === "string" && value === "true") {
+        //   acc[mappedKey] = value;
+        // } else if (value) {
+        //   acc[mappedKey] = value;
+        // }
+      
+        return acc;
+      }, {})
      
       if (typeof editData?.tracker?.filterValue?.userType === 'string') {
           toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
       }
-      const value = getLocalFilterValue("shows" as any);
-      const showFilters = value ? [...value.split(",")] : [];
-      if (toggleOpend?.rating) {
-        
-        showFilters.push("rating");
-      }
-      if (toggleOpend?.maturity) {
-        showFilters.push("maturity");
-      }
-      if (toggleOpend?.brandSeries) {
-        showFilters.push("branded");
-        showFilters.push("series");
-      }
-      if(toggleOpend?.forecastedStatus){
-        showFilters.push("forecasted");
-      }
-      if(toggleOpend?.eventFrequency){
-        showFilters.push("frequency");
-      }
-      if(toggleOpend?.exhibit){
-        showFilters.push("estimatedExhibitors");
-      }
-      if(toggleOpend?.globalToggle){
-        showFilters.push("scores")
-      }
-      if(toggleOpend?.eventRank){
-        showFilters.push("rankings")
-      }
-      if(toggleOpend?.audienceZone){
-        showFilters.push("audienceZone")
-      }
-      setLocalFilter("show",showFilters.join(","));
-      setRankToggles({
-        ...rankToggles,
-        isTrustScore : toggleOpend?.trust?true:false,
-        isEventRank: toggleOpend?.eventRank ? true : false,
-      })
-      setForecastedStatus(toggleOpend?.forecastedStatus ? true : false);
-      setFreqToggle(toggleOpend?.eventFrequency ? true : false);
-      setAnalyticsToggles({
-        ...analyticsToggles,
-        impactScore: (toggleOpend?.impactScore ? true : false),
-        inboundScore: (toggleOpend?.inboundScore ? true : false),
-        internationalScore: (toggleOpend?.internationalScore ? true : false),
-        globalToggle: toggleOpend?.globalToggle? true: false,
-      });
-      
-      if(editData?.tracker?.filterValue?.inboundScore && editData?.tracker?.filterValue?.inboundScore !== "")
-        setSelectedInboundScore(editData?.tracker?.filterValue?.inboundScore?.split("-"));
-      if(editData?.tracker?.filterValue?.trustScore){
-      setLocalFilter("trust_score_gte",editData?.tracker?.filterValue?.trustScore )
-      setLocalFilter("trust_score_lte","100")
-      }
-      if(toggleOpend.globalToggle){
-        setLocalFilter("impact_score_gte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[0])?.toString() || "0")
-        setLocalFilter("impact_score_lte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[1])?.toString() || "100")
-        setLocalFilter("inbound_score_gte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[0])?.toString() || "0")
-        setLocalFilter("inbound_score_lte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[1])?.toString() || "100")
-        setLocalFilter("international_score_gte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[0])?.toString() || "0")
-        setLocalFilter("international_score_lte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[1])?.toString() || "100")
-      }
-      if(editData?.tracker?.filterValue?.estimatedVisitorRangeTag && editData?.tracker?.filterValue?.estimatedVisitorRangeTag !== ""){
-        setLocalFilter("estimatedVisitorRangeTag", editData?.tracker?.filterValue?.estimatedVisitorRangeTag)
-      }
-      if(editData?.tracker?.filterValue?.eventImpactScore && editData?.tracker?.filterValue?.eventImpactScore !== "")
-        setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactScore?.split("-"));
-
-      if(editData?.tracker?.filterValue?.internationalScore && editData?.tracker?.filterValue?.internationalScore !== "")
-        setSelectedInternationalScore(editData?.tracker?.filterValue?.internationalScore?.split("-"));
-
-      if(editData?.tracker?.filterValue?.maturity && editData?.tracker?.filterValue?.maturity !== ''){
-        setLocalFilter("maturity",editData?.tracker?.filterValue?.maturity)
-      }
-      if(editData?.tracker?.filterValue?.eventBrand){
-        setLocalFilter("onlyBranded","true")
-      }
-      if(editData?.tracker?.filterValue?.eventSeries){
-        setLocalFilter("onlySeries","true")
-      }
-      if(editData?.tracker?.filterValue?.eventRanking && editData?.tracker?.filterValue?.eventRanking !== '')
-        setLocalFilter("top",editData?.tracker?.filterValue?.eventRanking?.split("-")[1]?.toString())
-      
-      setAudienceZone(toggleOpend?.audienceZone ? true : false);
-      setAudienceSpread(toggleOpend?.audienceSpread ? true : false);
-
-      setSelectedCountries(editData.tracker.filterValue?.audienceSpread ? editData.tracker.filterValue?.audienceSpread?.split(",") : []);
-      setLocalFilter("audienceSpread",editData.tracker.filterValue?.audienceSpread);
-      if (Array.isArray(editData.tracker.filterValue.designation)) {
-        const designationIds = editData.tracker.filterValue.designation
-            .filter((item: Designations) => item.id !== undefined)
-            .map((item: Designations) => item.id)
-            .join(",");
-    
-        setLocalFilter("designations", designationIds);
-    }
-      setSelectedAudProfile(
-        editData.tracker.filterValue?.designation
-          ? editData.tracker.filterValue.designation
-              .filter((item: Designations) => item.id !== undefined)
-              .map((item: Designations) => item.id)
-          : []
-      );
-
-      setSelectedEventKeywords(
-        editData?.tracker?.filterValue?.eventKeywords?.length > 0
-          ? editData?.tracker?.filterValue?.eventKeywords?.split("+")
-          : []
-      );
-      setTrackerName(editData?.tracker?.name || "");
-      setSelectedLabels(editData?.tracker?.filterValue?.labels && 
-        editData?.tracker?.filterValue?.labels?.length > 0
-          ? editData?.tracker?.filterValue?.labels?.split(",")
-          : []
-      );
-      if(editData?.tracker?.filterValue?.eventCategory?.length > 0) {
-        const categories = editData?.tracker?.filterValue?.eventCategory;
-        const categorySlugs = categories.map((item: any) => {
-          const category = newCategories.find((cat) => cat.id === item.id);
-          return category ? category.slug : item.id;
-        });
-        
-        setLocalFilter("categories", categorySlugs.join(","));
-      }
-      // setSelectedCategories(
-      //   editData?.tracker?.filterValue?.eventCategory?.length > 0
-      //     ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all').map(
-      //       (cat: Cat) => cat.id
-      //     )
-      //     : []
-      // );
-      setSelectedEventFormat(
-        editData?.tracker?.filterValue?.eventFormat &&
-        editData?.tracker?.filterValue?.eventFormat?.length > 0
-          ? editData?.tracker?.filterValue?.eventFormat?.split(",")
-          : []
-      );
-      setLocalFilter("eventFormats", editData?.tracker?.filterValue?.eventFormat);
-
-      setIntScore(
-        editData?.tracker?.filterValue?.internationalScore?.length > 0
-          ? editData?.tracker?.filterValue?.internationalScore
-          : ""
-      );
-      setSelectedEventStatus(
-        editData?.tracker?.filterValue?.eventStatus &&
-          editData?.tracker?.filterValue?.eventStatus?.length !== 0
-          ? editData?.tracker?.filterValue?.eventStatus?.split(",").map((item:string) => item.toLowerCase())
-          : []
-      );
-      setLocalFilter(
-        "status",
-        editData?.tracker?.filterValue?.eventStatus?.split(",")?.map((item: string) => item.toLowerCase()).join(",")
-      );
-      setLocalFilter("active_gte",editData?.tracker?.filterValue?.startDate?.split(",")[0]);
-      setLocalFilter("active_lte",editData?.tracker?.filterValue?.startDate?.split(",")[1]);
-      setDateRange({
-        to: editData?.tracker?.filterValue?.startDate
-          ? new Date(editData.tracker.filterValue.startDate.split(",")[1])
-          : undefined,
-        from: editData?.tracker?.filterValue?.startDate
-          ? new Date(editData.tracker.filterValue.startDate.split(",")[0])
-          : undefined
-      });
-      // setMultipleLocalFilters({
-      //   active_gte: new Date(enabledFilters?.durations?.startDate?.split(",")[0]?.trim())?.toISOString(),
-      //   active_lte: new Date(enabledFilters?.durations?.endDate?.split(",")[0]?.trim())?.toISOString(),
-      // });
-      // setDateRange({
-      //   ...dateRange,
-      //   to: editData?.tracker?.filterValue?.startDate
-      //     ? new Date(editData.tracker.filterValue.startDate.split(",")[1])
-      //     : undefined
-      // });
-      // setSelectedDateRange(
-      //   editData?.tracker?.filterValue?.startDate && 
-      //   editData?.tracker?.filterValue?.startDate?.length > 0
-      //     ? [
-      //       editData?.tracker?.filterValue?.startDate?.split(",")[0],
-      //       editData?.tracker?.filterValue?.startDate?.split(",")[1],
-      //     ]
-      //     : []
-      // );
-      setCategorySlug(
-        editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all')?.map(
-            (cat: Cat) => cat.name
-          )
-          : []
-      );
-      const selectedCountrie = 
-      typeof editData?.tracker?.filterValue?.locationIds === 'object'
-        ? extractLocations(editData.tracker.filterValue.locationIds.country)
-        : [];
-    
-    // const selectedZone = 
-    //   typeof editData?.tracker?.filterValue?.locationIds === 'object'
-    //     ? extractLocations(editData.tracker.filterValue.locationIds.zone)
-    //     : [];
-    
-    const selectedCity = 
-      typeof editData?.tracker?.filterValue?.locationIds === 'object'
-        ? extractLocations(editData.tracker.filterValue.locationIds.city)
-        : [];
-    const selectedState = 
-      typeof editData?.tracker?.filterValue?.locationIds === 'object'
-        ? extractLocations(editData.tracker.filterValue.locationIds.state)
-        : [];
-    setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedState]);
-    const ids = [
-      ...(editData?.tracker?.filterValue?.locationIds?.city || []),
-      ...(editData?.tracker?.filterValue?.locationIds?.state || []),
-      ...(editData?.tracker?.filterValue?.locationIds?.country || []),
-    ]
-      .flatMap((location) => Object.keys(location));
-      // console.log(selectedLocations);
-      setLocalFilter("locationIds", ids.join(","));
-      const eventCountry =
-        editData?.tracker?.filterValue?.eventCountry?.map(
-          (countryObj: {}) => Object.values(countryObj)[0]
-        ) || [];
-      const eventCity =
-        editData?.tracker?.filterValue?.eventCity?.map(
-          (cityObj: {}) => Object.values(cityObj)[0]
-        ) || [];
-
-      setSelectedLocations([...eventCountry, ...eventCity]);
-      setSelectedEventFrequency(
-        editData?.tracker?.filterValue?.eventFrequency && 
-        editData?.tracker?.filterValue?.eventFrequency?.length > 0
-          ? editData?.tracker?.filterValue?.eventFrequency?.split(",").map((item:string)=>item[0].toLowerCase()+item.slice(1))
-          : []
-      );
-      setLocalFilter("frequencies",editData?.tracker?.filterValue?.eventFrequency)
-      setSelectedEntry(
-        editData.tracker.filterValue?.eventEntry &&
-          editData.tracker.filterValue?.eventEntry?.length !== 0
-          ? editData.tracker.filterValue?.eventEntry?.split(",")
-          : []
-      );
-      if (editData?.tracker?.filterValue?.eventType !== undefined) {
-        const eventTypes = editData.tracker.filterValue.eventType.map((type:string) => {
-          return type.charAt(0).toLowerCase() + type.slice(1)+"s";
-        });
-        console.log("");
-        
-         setLocalFilter("eventTypes",eventTypes.join(","))
-    }
-
-
-
-      // setSelectedINScore(
-      //   editData.tracker.filterValue?.internationalScore.length > 0
-      //     ? editData.tracker.filterValue?.internationalScore
-      //     : ""
-      // );
-      // setSelectedInboundScore(
-      //   editData.tracker.filterValue?.inboundScore > 0
-      //     ? editData.tracker.filterValue?.inboundScore
-      //     : 0
-      // );
-      setSelectedUserRatings(
-        editData.tracker.filterValue?.eventRating &&
-          editData.tracker.filterValue?.eventRating?.length !== 0
-          ? editData.tracker.filterValue?.eventRating?.split(",")
-          : []
-      );
-      setLocalFilter("ratings", editData.tracker.filterValue?.eventRating);
-      setLocalFilter("estimatedVisitors",editData.tracker.filterValue?.eventSize);
-      setLocalFilter("estimatedExhibitors",editData.tracker.filterValue?.estimatedExhibitScore);
-      if(editData.tracker.filterValue?.trustScore){
-        setLocalFilter("trust_score_gte", editData.tracker.filterValue?.trustScore)
-        setLocalFilter("trust_score_lte","100")
-      }
-      const updatedTrustScore=[...selectedTrustScore]
-      updatedTrustScore[0]=
-        editData.tracker.filterValue?.trustScore > 0
-          ? editData.tracker.filterValue?.trustScore
-          : 0;
-        setSelectedTrustScore(updatedTrustScore)
-      // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
-      // setSelectedLocations(editData.tracker.filterValue?.location);
-    setLocalFilter("includeKeywords",editData.tracker.filterValue?.includeKeywords
-    ?.split(",")
-    .map((keyword:string) => keyword.replaceAll("_", " "))
-    .join(","));
-    setLocalFilter("excludeKeywords",editData.tracker.filterValue?.excludeKeywords
-    ?.split(",")
-    .map((keyword:string) => keyword.replaceAll("_", " "))
-    .join(","));
-      setSelectedEventAttendanceRange((prevArray) => {
-        const gte =
-          editData.tracker.filterValue?.eventAttendanceRange?.split(",")[0];
-        const lte =
-          editData.tracker.filterValue?.eventAttendanceRange?.split(",")[1];
-
-        if (!isNaN(gte) && !isNaN(lte)) {
-          const newArray = [...prevArray];
-          newArray[0] = gte;
-          newArray[1] = lte;
-          return newArray;
-        } else {
-          return prevArray;
-        }
-      });
     }
     
   }, [editData, searchParams]);

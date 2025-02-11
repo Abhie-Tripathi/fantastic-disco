@@ -170,11 +170,18 @@ const Page = () => {
     document.body.style.overflow = '';
   };
   useEffect(() => {
-    const eventCountry = data?.tracker?.filterValue?.eventCountry?.map((countryObj: any) => Object.values(countryObj)[0]) || [];
-    const eventCity = data?.tracker?.filterValue?.eventCity?.map((cityObj: any) => Object.values(cityObj)[0]) || [];
-    const eventZone = data?.tracker?.filterValue?.eventRegion?.split(",") || [];
-    const eventState = data?.tracker?.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
-    setLocations([...eventCountry, ...eventCity, ...eventZone, ...eventState]);
+    // const eventLocations = data?.filterValues?.locationIds?.map((countryObj: any) => Object.values(countryObj)[0]) || [];
+    // const eventCity = data?.tracker?.filterValue?.eventCity?.map((cityObj: any) => Object.values(cityObj)[0]) || [];
+    // const eventZone = data?.tracker?.filterValue?.eventRegion?.split(",") || [];
+    // const eventState = data?.tracker?.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
+    // setLocations([...eventCountry, ...eventCity, ...eventZone, ...eventState]);
+    const eventLocation = 
+    Object.values(data?.filterValues?.locationIds || {}).map((location) => {
+      return location.displayName;
+    });
+    
+    setLocations(eventLocation);
+    
   }, [data]);
 const eventType=data?.filterValues?.eventType?
 data?.filterValues?.eventType
@@ -205,9 +212,9 @@ const userRating=
     ? data?.filterValues?.excludeKeywords?.filter(Boolean)
         .map((keyword: string) => keyword.replaceAll("_", "  "))
     : [];
-   let toggleOpend: Toggle={};
-  if(data?.tracker?.filterValue?.userType)
-  toggleOpend=JSON.parse(data?.tracker?.filterValue?.userType);
+   let toggleOpend: Toggle=[];
+  if(data?.filterValues?.show)
+  toggleOpend=data?.filterValues?.show;
   const commonClasses={
     filter:`flex flex-col gap-[var(--spacing-sm)] p-3 border border-[var(--border-color)] rounded-[var(--border-radius-sm)]`,
     filterHeading:`text-[var(--primary-color)] font-medium`,
@@ -263,7 +270,7 @@ const userRating=
     <div className="flex flex-col mt-[140px] gap-6">
       {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{zIndex:"3"}}></div> */}
     <div className="px-[27px] py-[4px] border-[0.5px] border-[var(--border-color)] rounded-lg h-[55px] flex items-center font-medium">{data?.name}</div>
-    {data?.tracker && data.tracker.type === "T_PRODUCT_KEYWORDS" &&
+    {data && data.type === "T_PRODUCT_KEYWORDS" &&
       <>
         <div className={styles.innerContainer}>
           <div
@@ -300,7 +307,7 @@ const userRating=
         <div className={styles.line}></div>
       </>
     }
-    {data?.tracker && data.tracker.type === "T_COMPETITOR" &&
+    {data && data.type === "T_COMPETITOR" &&
       <>
         <div className={styles.innerContainer}>
           <div
@@ -318,13 +325,13 @@ const userRating=
           </div>
           <div className={styles.innerContainerRight}>
           <div className={styles.allInputBox}>
-          {data?.tracker?.filterValue?.orgName?.split(',')?.map((item: string, ind: number) => (
+          {data?.filterValues?.orgName?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   {/* <Image src={ <div className={styles.line}></div>Url} alt="url_icon"/> */}
                   <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
                   </div>
                 ))}
-                {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
+                {data?.filterValues?.orgWebsites?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   {/* <Image src={Url} alt="url_icon"/> */}
                   <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
@@ -336,7 +343,7 @@ const userRating=
         <div className={styles.line}></div>
       </>
     }
-    {data?.tracker && data.tracker.type === "T_SPEAKING_OPPORTUNITY" &&
+    {data && data.type === "T_SPEAKING_OPPORTUNITY" &&
       <>
         <div className={styles.innerContainer}>
           <div
@@ -358,7 +365,7 @@ const userRating=
                   {/* <Image src={Name} alt="url_icon" className="icons" width={10}/> */}
                   <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)"}}>Speaker&apos;s Name</div>
           </div>
-                {data?.tracker?.filterValue?.speakerName?.split(',')?.map((item: string, ind: number) => (
+                {data?.filterValues?.userName?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   <Image src={Name} alt="url_icon" className="icons" width={10}/>
                   <div key={ind} className={styles.singleInputBox}>{item}</div>
@@ -370,7 +377,7 @@ const userRating=
                   {/* <Image src={Company} alt="url_icon" className="icons" width={10}/> */}
                   <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)", padding:"0"}}>Company Name</div>
                   </div>
-                {data?.tracker?.filterValue?.speakerOrg?.split(',')?.map((item: string, ind: number) => (
+                {data?.filterValues?.userOrgWebsite?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   <Image src={Company} alt="url_icon" className="icons" width={10}/>
                   <div key={ind} className={styles.singleInputBox}>{item}</div>
@@ -382,7 +389,7 @@ const userRating=
         <div className={styles.line}></div>
       </>
     }
-    {data?.tracker && data.tracker.type === "T_PEOPLE_FINDER" &&
+    {data && data.type === "T_PEOPLE_FINDER" &&
       <>
         <div className={styles.innerContainer}>
           <div
@@ -400,7 +407,7 @@ const userRating=
                   {/* <Image src={Name} alt="url_icon" className="icons" width={10}/> */}
                   <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)"}}>Name</div>
           </div>
-                {data?.tracker?.filterValue?.userName?.split(',')?.map((item: string, ind: number) => (
+                {data?.filterValues?.userName?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   <Image src={Name} alt="url_icon" className="icons" width={10}/>
                   <div key={ind} className={styles.singleInputBox}>{item}</div>
@@ -412,7 +419,7 @@ const userRating=
                   {/* <Image src={Company} alt="url_icon" className="icons" width={10}/> */}
                   <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)", padding:"0"}}>Company Name</div>
                   </div>
-                {data?.tracker?.filterValue?.speakerOrg?.split(',')?.map((item: string, ind: number) => (
+                {data?.filterValues?.userOrgWebsite?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   <Image src={Company} alt="url_icon" className="icons" width={10}/>
                   <div key={ind} className={styles.singleInputBox}>{item}</div>
@@ -450,7 +457,7 @@ const userRating=
         <div className={styles.line}></div>
       </>
     }
-    {data?.tracker && data.tracker.type === "T_CUSTOMER_ICP" &&
+    {data && data.type === "T_CUSTOMER_ICP" &&
       <>
         <div className={styles.innerContainer}>
           <div
@@ -464,13 +471,13 @@ const userRating=
           </div>
           <div className={styles.innerContainerRight}>
           <div className={styles.allInputBox}>
-          {data?.tracker?.filterValue?.orgName?.split(',')?.map((item: string, ind: number) => (
+          {data?.filterValueS?.orgName?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   {/* <Image src={ <div className={styles.line}></div>Url} alt="url_icon"/> */}
                   <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
                   </div>
                 ))}
-                {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
+                {data?.filterValues?.orgWebsites?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   {/* <Image src={Url} alt="url_icon"/> */}
                   <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
@@ -624,7 +631,7 @@ const userRating=
                 <span className={`${toggleOpend?.rating ? keyStyles.sliderBranded : keyStyles.slider}`}></span>
               </label>
             </span> */}
-            <ToggleBtn isTrue={toggleOpend?.rating === true}/>
+            <ToggleBtn isTrue={toggleOpend?.includes('rating')}/>
           </div>
                     </div>
                     <div className={commonClasses.allValues}>
@@ -684,15 +691,15 @@ const userRating=
       <div className={styles.innerContainerRight}>
         <AdvanceFilter includeKeywords={includeKeywords} 
         excludeKeywords={excludeKeywords}
-         freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
-         isFreqToggle={toggleOpend?.eventFrequency}
+         freq={data?.filterValues?.frequencies?.length !== 0 ? data?.filterValues?.frequencies : []} 
+         isFreqToggle={toggleOpend?.includes("frequency")}
           isBranded={data?.filterValues?.onlyBranded}
-          brandSeries={toggleOpend?.brandSeries==true}
+          brandSeries={toggleOpend?.includes("branded")||toggleOpend?.includes("series")}
           eventEdition={data?.tracker?.filterValue?.editionRange}
           type={type}
-          isMaturity={toggleOpend?.maturity===true}
+          isMaturity={toggleOpend?.includes("maturity")}
           eventSeries={data?.filterValues?.onlySeries}
-          forecastedStatus={toggleOpend?.forecastedStatus===true}
+          forecastedStatus={toggleOpend?.includes("forecasted")}
           maturity={data?.tracker?.filterValue?.maturity}
         />
       </div>
@@ -710,16 +717,16 @@ const userRating=
       </div>
       <div className={styles.innerContainerRight}>
         <Insights
-        globalToggle={toggleOpend?.globalToggle===true}
+        globalToggle={toggleOpend?.includes("scores")}
             exhibitScore={
               data?.filterValues?.estimatedExhibitors
                 ? data?.filterValues?.estimatedExhibitors
                 : []
             }
-            isExhibitOpen={toggleOpend?.exhibit===true}
+            isExhibitOpen={toggleOpend?.includes("estimatedExhibitors")}
             internationalScore={data?.tracker?.filterValue?.internationalScore}
-            isTrustOpen={toggleOpend?.trust===true}
-            isRankOpen={toggleOpend?.eventRank===true}
+            isTrustOpen={toggleOpend?.includes("trustScore")}
+            isRankOpen={toggleOpend?.includes("rankings")}
             trustScore={data?.tracker?.filterValue?.trustScore}
            reputation={data?.tracker?.filterValue?.reputationScore}
             inboundScore={data?.tracker?.filterValue?.inboundScore}
@@ -766,9 +773,9 @@ const userRating=
             ? data?.filterValues?.estimatedExhibitors
               : []
           }
-          audienceZone={toggleOpend?.audienceZone}
+          audienceZone={toggleOpend?.includes('audienceZone')}
           audienceSpread={toggleOpend?.audienceSpread}
-          audienceSpreadCount={data?.tracker?.filterValue?.audienceSpread?.split(',').length}
+          audienceSpreadCount={data?.filterValues?.audienceSpread?.length}
           audienceProfile={data?.tracker?.filterValue?.designation}
         />
       </div>
