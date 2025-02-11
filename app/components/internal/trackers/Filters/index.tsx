@@ -780,7 +780,7 @@ const Pages = () => {
     }
   }
   const filterValueMapping={
-    eventTypes:"evenTypes",
+    eventTypes:"eventTypes",
     categories: "categories",
     eventFormats: "eventFormats",
     locationIds: "locationIds",
@@ -807,6 +807,18 @@ const Pages = () => {
     designations:"designations",
     audienceSpread:"audienceSpread",
   }
+  const showsData: string[] = [];
+  const mapping = {
+    rating: "rating",
+    maturity: "maturity",
+    branded: "branded,series",
+    forecasted: "forecasted",
+    frequency: "frequency",
+    estimatedExhibitors: "estimatedExhibitors",
+    scores: "scores",
+    audienceZone: "audienceZone",
+    rankings: "rankings,trustScore",
+  };
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
     setEditTrue(true);
@@ -829,27 +841,12 @@ const Pages = () => {
       const category = newCategories.find((cat) => cat.slug === slug);
       return category ? category.id : slug;
     });
-    const showsData: string[] = [];
-
-    const mapping = {
-      rating: "rating",
-      maturity: "maturity",
-      branded: "branded,series",
-      forecasted: "forecasted",
-      frequency: "frequency",
-      estimatedExhibitors: "estimatedExhibitors",
-      scores: "scores",
-      audienceZone: "audienceZone",
-      rankings: "rankings,trustScore",
-    };
-    
     const filters = getLocalFilterValue("show").split(",");
     Object.entries(mapping).forEach(([key, value]) => {
       if (filters.includes(key)) {
         showsData.push(value);
       }
     });
-   
     const filterValues = Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
       const value = getLocalFilterValue(key);
     
@@ -884,7 +881,7 @@ const Pages = () => {
     if(userCompany.length>0 ){
       filterValues.userOrgWebsite=userCompany;
     }
-    // console.log(filterValues);
+    // console.log(filterValues, showsData);
     
     const userType = {
       ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
@@ -1144,9 +1141,14 @@ const Pages = () => {
         // if(value && key!=="categories"){
         //   setLocalFilter(mappedKey,value);
         // }
+        
         if (Array.isArray(value))
           setLocalFilter(key,value.join(','));
-        
+        else if (typeof value === "string") {
+          setLocalFilter(key, value);
+        }else if(typeof value === "number" || typeof value === "boolean"){
+          setLocalFilter(key, value.toString());
+        }
         // if(value.length>0)
         // setLocalFilter(key,value.join(","));
       
@@ -1160,6 +1162,28 @@ const Pages = () => {
       
         // return acc;
       }, {})
+      Object.entries(mapping).forEach(([key, value]) => {
+        if (editData?.filterValues?.show?.includes(key)) {
+          showsData.push(value);
+        }
+        // console.log(editData?.filterValues?.shows);
+        
+      });
+      const ids = Object.keys(editData?.filterValues?.locationIds);
+      console.log(ids);
+      
+      setLocalFilter("show", showsData.join(","))
+      setLocalFilter("locationIds", ids.join(","))
+      const eventLocation = 
+    // Object.values(data?.filterValues?.locationIds || {}).map((location) => {
+    //   return location.displayName;
+    // });
+    // setLocalFilter("locationIds", )
+      // Object.entries(mapping).forEach(([key, value]) => {
+      //   if()
+      //     showsData.push(value);
+      // });
+      // setLocalFilter("show",showsData.join(','))
       console.log(editData);
       
      
