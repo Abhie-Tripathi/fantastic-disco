@@ -5,6 +5,7 @@ import {
   RecentSearchesResponse,
   RecentSearchItem,
   Event,
+  EventResponse,
 } from "@/types/events";
 import { ApiError } from "@/types/api";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
@@ -14,10 +15,9 @@ export const useEventsService = () => {
 
   const getEvents = async (params?: EventQuery) => {
     console.log("service called");
-    const response = await api.request<Event[]>(endpoints.event.events, {
+    const response = await api.request<EventResponse>(endpoints.event.events, {
       method: "GET",
       params,
-
     });
     console.log(response);
     return response;

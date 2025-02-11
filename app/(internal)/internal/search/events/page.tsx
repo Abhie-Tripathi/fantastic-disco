@@ -74,6 +74,8 @@ const Search = () => {
   const [validationError, setValidationError] = useState("");
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
   const [customTrackerName, setCustomTrackerName] = useState<string>("");
+  const modifiedSearchParams = new URLSearchParams(searchParams.toString());
+  modifiedSearchParams.set("view", "list");
   const {
     data: eventData,
     error,
@@ -87,11 +89,10 @@ const Search = () => {
   >({
     queryKey: ["events", searchParams.toString()],
     queryFn: () =>
-      eventService.getEvents(Object.fromEntries(searchParams.entries())),
+      eventService.getEvents(Object.fromEntries(modifiedSearchParams.entries())),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
-
   });
 
   const displayData = eventData;
@@ -150,49 +151,38 @@ const Search = () => {
     }
   }, []);
 
-  // const adaptedQueryString = (function () {
-  //   if (!searchParams.toString()) return;
-  //   if (adaptedParams.offset == "0") {
-  //     delete adaptedParams.offset;
-  //   }
-  //   delete adaptedParams.max;
-  //   delete adaptedParams.sortBy;
-  //   delete adaptedParams.sortType;
-  //   return new URLSearchParams(adaptedParams).toString();
-  // })();
-
   const onTabsChange = (value: string) => {
     setFilter("view", value);
   };
 
-  // const selectedInsights = {
-  //   eventSize: true,
-  //   eventKeywords: true,
-  //   eventRank: adaptedParams.shows?.includes("eventRanking"),
-  //   matchScore: adaptedParams.keywords ? true : false,
-  //   growth: false,
-  //   eventSeries: adaptedParams.shows?.includes("eventSeries"),
-  //   brandedEvent: adaptedParams.shows?.includes("eventBrand"),
-  //   global: false,
-  //   reptSent: false,
-  //   eventRating: adaptedParams.shows?.includes("eventRating"),
-  //   estExhibit: adaptedParams.shows?.includes("estimatedExhibitScore"),
-  //   repeatSent: adaptedParams.trustScore ? true : false,
-  //   maturity: adaptedParams.shows?.includes("maturity"),
-  //   impactScore: adaptedParams.shows?.includes("eventImpactScore"),
-  //   inboundScore: adaptedParams.shows?.includes("inboundScore"),
-  //   internationalScore: adaptedParams.shows?.includes("internationalScore"),
-  //   forecasted: adaptedParams.shows?.includes("isforecasted"),
-  //   audienceZone: adaptedParams.shows?.includes("audienceZone"),
-  //   audienceSpread: adaptedParams.audienceSpread ? true : false,
-  //   eventFrequency: adaptedParams.shows?.includes("eventFrequency"),
-  //   includeKeywords: adaptedParams.includeKeywords
-  //     ? adaptedParams.includeKeywords
-  //     : "",
-  //   excludeKeywords: adaptedParams.excludeKeywords
-  //     ? adaptedParams.excludeKeywords
-  //     : "",
-  // };
+  const selectedInsights = {
+    eventSize: true,
+    eventKeywords: true,
+    eventRank: searchParams.get("sortBy") === "score" ? true : false,
+    matchScore: searchParams.get("keywords") ? true : false,
+    growth: false,
+    eventSeries: searchParams.get("shows")?.includes("eventSeries"),
+    brandedEvent: searchParams.get("shows")?.includes("eventBrand"),
+    global: false,
+    reptSent: false,
+    eventRating: searchParams.get("shows")?.includes("eventRating"),
+    estExhibit: searchParams.get("shows")?.includes("estimatedExhibitScore"),
+    repeatSent: searchParams.get("trustScore") ? true : false,
+    maturity: searchParams.get("shows")?.includes("maturity"),
+    impactScore: searchParams.get("shows")?.includes("eventImpactScore"),
+    inboundScore: searchParams.get("shows")?.includes("inboundScore"),
+    internationalScore: searchParams.get("shows")?.includes("internationalScore"),
+    forecasted: searchParams.get("shows")?.includes("isforecasted"),
+    audienceZone: searchParams.get("shows")?.includes("audienceZone"),
+    audienceSpread: searchParams.get("shows")?.includes("audienceSpread"),
+    eventFrequency: searchParams.get("shows")?.includes("eventFrequency"),
+    includeKeywords: searchParams.get("includeKeywords")
+      ? searchParams.get("includeKeywords")
+      : "",
+    excludeKeywords: searchParams.get("excludeKeywords")
+      ? searchParams.get("excludeKeywords")
+      : "",
+  };
 
   // console.log(adaptedQueryString);
 
@@ -229,6 +219,8 @@ const Search = () => {
   useEffect(() => {
     setView(searchParams.get("view") || "");
   }, [searchParams]);
+
+  
 
   return (
     <div className="p-6">
@@ -336,10 +328,10 @@ const Search = () => {
           </div> */}
           <div className="w-[108px]"></div>
           <div className="flex justify-center">
-            <TabsList className="grid w-[450px] grid-cols-3 h-auto">
-              {/* <TabsTrigger value="table" className="text-base">
+            <TabsList className="grid w-[450px] grid-cols-4 h-auto">
+              <TabsTrigger value="table" className="text-base">
                 Table
-              </TabsTrigger> */}
+              </TabsTrigger>
               <TabsTrigger value="list" className="text-base">
                 List
               </TabsTrigger>
@@ -387,18 +379,18 @@ const Search = () => {
           )}
         </TabsContent>
 
-        {/* <TabsContent value="table" className="flex-grow overflow-hidden">
+        <TabsContent value="table" className="flex-grow overflow-hidden">
           {isLoading ? (
             <Loading />
           ) : (
             <Table
               showInsights={selectedInsights}
-              queryString={adaptedQueryString}
+              queryString={modifiedSearchParams.toString()}
               setRequestExhausted={() => {}}
               handleButtonLoading={() => setTableLoading}
             />
           )}
-        </TabsContent> */}
+        </TabsContent>
         <TabsContent value="map">
           {isLoading ? (
             <Loading />

@@ -1,4 +1,39 @@
 import React, { useEffect, useRef, useState } from "react";
+import {
+  Table as ShadcnTable,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+
 import styles from "./table.module.css";
 import ExpandAll from "/public/expandAll.svg";
 import Image from "next/image";
@@ -17,29 +52,23 @@ import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import { EventTableType } from "@/types/ListViewTable";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from "@/utils/GAEvent";
 import NullState from "../trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
 import {
-  TooltipTrigger,
-  Button,
-  Tooltip,
-  OverlayArrow,
   MenuTrigger,
   Popover,
-  Dialog,
 } from "react-aria-components";
-import { useSearchParams } from "next/navigation";
-import { ArrowDown, ArrowUp } from "geist-icons";
 import { useTrackerServices } from "@/services/trackerServices";
-// import { AllEventsType } from '@/types/ListViewTable';
 import ZeroState from "../zerostate";
 import { useTrackerContext } from "@/context/tracker";
 import { useCoordinateService } from "@/services/coordinateService";
 import { PaginationComponent } from "@/components/pagination";
 import { useFilterState } from "@/hooks/useFilterState";
+import { ArrowDown } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -400,7 +429,7 @@ const Table = ({
           const { data, error } = await myFetch(
             `${baseUrl}/tracker/saved-events`,
             {
-              method: "POST
+              method: "POST",
               body: JSON.stringify(payloadData),
               headers: {
                 "Content-Type": "application/json",
@@ -516,24 +545,24 @@ const Table = ({
   //   if(currPage!==1)
   //   fetchData(secondLast);
   // },[currPage])
-  useEffect(() => {
-    if (path[2] === "search") setInitialRender(true);
-    const fetchBookmarkData = async () => {
-      const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`);
-      if (error) {
-        console.log(error);
-        return;
-      }
-      if (data) {
-        let bookmarkGroupIds = data.result.map((event: any) => event.id);
-        setBookmarkedEvent(bookmarkGroupIds);
-      }
-    };
-    if (path[2] !== "trackers") {
-      fetchBookmarkData();
-    }
-    getInterestConfig();
-  }, []);
+  // useEffect(() => {
+  //   if (path[2] === "search") setInitialRender(true);
+  //   const fetchBookmarkData = async () => {
+  //     const { data, error } = await myFetch(`${baseUrl}/tracker/saved-events`);
+  //     if (error) {
+  //       console.log(error);
+  //       return;
+  //     }
+  //     if (data) {
+  //       let bookmarkGroupIds = data.result.map((event: any) => event.id);
+  //       setBookmarkedEvent(bookmarkGroupIds);
+  //     }
+  //   };
+  //   if (path[2] !== "trackers") {
+  //     fetchBookmarkData();
+  //   }
+  //   getInterestConfig();
+  // }, []);
 
   const handleModalOpen = (eventId: string, bookmarkedStatus: boolean) => {
     GAEvent("research", "Filters", "Saved Event | Viewed", "Saved Event");
@@ -689,7 +718,7 @@ const Table = ({
           setIsLoaded(false);
           setInitialRender(false);
 
-          const apiUrl = `${baseUrl}/event/search?sortBy=score&sortType=desc&max=${itemsPerPage}&${queryString}`;
+          const apiUrl = `${baseUrl}/events`;
           // const apiUrl = 'https://api.eventgeni.com/event/search?eventId=46e52e7e-1e0d-4422-a2dd-6033fe279ba6';
           const { data, error } = await myFetch(apiUrl, {
             method: "GET",
@@ -905,7 +934,7 @@ const Table = ({
         });
       } else if (error) {
         console.log(error);
-        showToast("error", error?.response);
+        showToast("error", error?.message);
       }
     } catch (err) {
       console.error("Error deleting event:", err);
@@ -946,7 +975,7 @@ const Table = ({
     );
   }
 
-  const loadMoreHandler = () => {
+  const loadMoreHandler = () => { 
     if ((currPage + 1) * itemsPerPage - userMaxLimit >= itemsPerPage) {
       showToast("error", "Please contact us to increase the limit.");
       return;
@@ -962,49 +991,28 @@ const Table = ({
           theme === "light" ? styles.table_wrapper_light : ""
         }`}
       >
-        <table className={styles.table}>
-          <thead className={`${styles.table_head}`}>
-            <tr className={styles.table_head_row}>
-              <th
-                className={`${styles.table_firstColumn} ${styles.table_actionColumn}`}
-                style={{
-                  left: "0",
-                  boxShadow: "10px 0 15px -5px rgba(0, 0, 0, 0.3)",
-                }}
-              >
+        <ShadcnTable className={styles.table}>
+          <TableHeader className={styles.table_head}>
+            <TableRow className={styles.table_head_row}>
+              <TableHead className={`${styles.table_firstColumn} ${styles.table_actionColumn}`}>
                 Event
-              </th>
-              <th>Date</th>
-              <th>Venue</th>
-              <th>City</th>
-              <th>Country</th>
-              {showInsights.eventKeywords && <th>Keywords</th>}
-              <th>Category</th>
-              {showInsights.eventSize && <th>Event Size</th>}
-              {showInsights.estExhibit && <th>Est. Exhibitor</th>}
-              {/* {showInsights.eventSeries ||
-                (eventPerPage[0]?.series && <th>Event Series</th>)} */}
-              {showInsights.eventRank && (
-                <th style={{ textAlign: "center" }}>Rank</th>
-              )}
-              {/* {showInsights.growth && <th>Growth</th>} */}
-              {showInsights.reptSent && <th>Reputation</th>}
-              {showInsights.eventRating && (
-                <th style={{ textAlign: "center" }}>Rating</th>
-              )}
-              {showInsights.repeatSent && (
-                <th style={{ textAlign: "center" }}>Trust</th>
-              )}
-              {showInsights.eventFrequency && (
-                <th className="text-center">Frequency</th>
-              )}
-              {showInsights.forecasted && <th>Forecasted</th>}
-              {/* {showInsights.eventSize && <th>Event Size</th>} */}
-              {/* {showInsights.global && <th>International</th>} */}
-              {(type === null || type === "CUSTOM") &&
-                appliedKeywords?.length > 0 && <th>Matched</th>}
-              {(type === null || type === "CUSTOM") &&
-                appliedKeywords?.length >= 5 && <th>Score</th>}
+              </TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>Venue</TableHead>
+              <TableHead>City</TableHead>
+              <TableHead>Country</TableHead>
+              {showInsights.eventKeywords && <TableHead>Keywords</TableHead>}
+              <TableHead>Category</TableHead>
+              {showInsights.eventSize && <TableHead>Event Size</TableHead>}
+              {showInsights.estExhibit && <TableHead>Est. Exhibitor</TableHead>}
+              {showInsights.eventRank && <TableHead style={{ textAlign: "center" }}>Rank</TableHead>}
+              {showInsights.reptSent && <TableHead>Reputation</TableHead>}
+              {showInsights.eventRating && <TableHead style={{ textAlign: "center" }}>Rating</TableHead>}
+              {showInsights.repeatSent && <TableHead style={{ textAlign: "center" }}>Trust</TableHead>}
+              {showInsights.eventFrequency && <TableHead className="text-center">Frequency</TableHead>}
+              {showInsights.forecasted && <TableHead>Forecasted</TableHead>}
+              {(type === null || type === "CUSTOM") && appliedKeywords?.length > 0 && <TableHead>Matched</TableHead>}
+              {(type === null || type === "CUSTOM") && appliedKeywords?.length >= 5 && <TableHead>Score</TableHead>}
 
               {(type === "T_SPEAKING_OPPORTUNITY" ||
                 type === "T_COMPETITOR" ||
@@ -1013,77 +1021,44 @@ const Table = ({
                 type === "T_RECRUITMENT") &&
                 path[path.length - 1] !== "savedEvents" && (
                   <>
-                    <th
-                      className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`}
-                      style={{ right: "150px", minWidth: "60px" }}
-                    >
+                    <TableHead className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`} style={{ right: "150px", minWidth: "60px" }}>
                       Matched
-                    </th>
-                    <th
-                      className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`}
-                      style={{
-                        right: "50px",
-                        minWidth: "100px",
-                        textAlign: "center",
-                      }}
-                    >
+                    </TableHead>
+                    <TableHead className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`} style={{ right: "50px", minWidth: "100px", textAlign: "center" }}>
                       Score
-                    </th>
+                    </TableHead>
                   </>
                 )}
 
               {type === "T_PRODUCT_KEYWORDS" &&
                 path[path.length - 1] !== "savedEvents" && (
                   <>
-                    <th
-                      className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`}
-                      style={{
-                        right: appliedKeywords?.length >= 5 ? "150px" : "50px",
-                        minWidth: "60px",
-                      }}
-                    >
+                    <TableHead className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`} style={{ right: appliedKeywords?.length >= 5 ? "150px" : "50px", minWidth: "60px" }}>
                       Matched
-                    </th>
+                    </TableHead>
                     {appliedKeywords?.length >= 5 && (
-                      <th
-                        className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`}
-                        style={{
-                          right: "50px",
-                          minWidth: "100px",
-                          textAlign: "center",
-                        }}
-                      >
+                      <TableHead className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`} style={{ right: "50px", minWidth: "100px", textAlign: "center" }}>
                         Score
-                      </th>
+                      </TableHead>
                     )}
                   </>
                 )}
-              {showInsights.maturity && <th>Maturity</th>}
-              {showInsights.impactScore && <th>Impact Score</th>}
-              {showInsights.inboundScore && <th>Inbound Score</th>}
-              {showInsights.internationalScore && <th>International Score</th>}
-              {showInsights.audienceZone && <th>Audience Zone</th>}
-              {showInsights.audienceSpread && <th>Audience Spread</th>}
-              <th
-                className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}
-                style={{ display: "flex" }}
-              >
+              {showInsights.maturity && <TableHead>Maturity</TableHead>}
+              {showInsights.impactScore && <TableHead>Impact Score</TableHead>}
+              {showInsights.inboundScore && <TableHead>Inbound Score</TableHead>}
+              {showInsights.internationalScore && <TableHead>International Score</TableHead>}
+              {showInsights.audienceZone && <TableHead>Audience Zone</TableHead>}
+              {showInsights.audienceSpread && <TableHead>Audience Spread</TableHead>}
+              <TableHead className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`} style={{ display: "flex" }}>
                 {/* Actions */}
-              </th>
-            </tr>
-          </thead>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
 
-          <tbody className={styles.table_body}>
+          <TableBody className={styles.table_body}>
             {eventPerPage.map((event: EventTableType) => (
-              <tr key={event.id}>
-                <td
-                  className={`${styles.table_actionColumn}`}
-                  style={{
-                    left: "0",
-                    textAlign: "left",
-                    boxShadow: "10px 0 15px -5px rgba(0, 0, 0, 0.3)",
-                  }}
-                >
+              <TableRow key={event.id}>
+                <TableCell className={`${styles.table_actionColumn}`} style={{ left: "0", textAlign: "left", boxShadow: "10px 0 15px -5px rgba(0, 0, 0, 0.3)" }}>
                   <div className={styles.event_badge_container}>
                     {showInsights.brandedEvent &&
                       event?.eventBrand &&
@@ -1110,8 +1085,8 @@ const Table = ({
                   <div className={styles.event_organizer}>
                     {event?.organizer?.name}
                   </div>
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   {event.status &&
                   (event.status === "CANCELLED" ||
                     event.status === "POSTPONED") ? (
@@ -1169,8 +1144,8 @@ const Table = ({
                         : null}
                     </span>
                   )}
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   {event.format === "HYBRID" && (
                     <div
                       className={styles.hybridTag}
@@ -1221,11 +1196,11 @@ const Table = ({
                       TBA
                     </div>
                   ) : null}
-                </td>
-                <td>{event.location.cityName}</td>
-                <td>{event?.location?.countryName}</td>
+                </TableCell>
+                <TableCell>{event.location.cityName}</TableCell>
+                <TableCell>{event?.location?.countryName}</TableCell>
                 {showInsights.eventKeywords && (
-                  <td>
+                  <TableCell>
                     {event?.eventKeywords?.length == 0 ? (
                       <>-</>
                     ) : event?.eventKeywords?.length == 1 ? (
@@ -1233,27 +1208,19 @@ const Table = ({
                     ) : (
                       <>
                         {event?.eventKeywords[0]}&nbsp;
-                        {/* <a
-                          className={styles["products-list"]}
-                          href="javascript:void(0)"
-                          data-toggle="tooltip"
-                          title={listProducts(event.eventKeywords)}
-                        >
-                          +{event.eventKeywords.length - 1}
-                        </a> */}
                         <TooltipTrigger>
                           <Button className={styles["products-list"]}>
                             +{event.eventKeywords.length - 1}
                           </Button>
-                          <Tooltip className={styles["react-aria-Tooltip"]}>
+                          <Tooltip>
                             {listProducts(event.eventKeywords)}
                           </Tooltip>
                         </TooltipTrigger>
                       </>
                     )}
-                  </td>
+                  </TableCell>
                 )}
-                <td>
+                <TableCell>
                   {/* Finance & Banking */}
                   {event.categories !== undefined &&
                   event.categories.filter((item) => item.isGroup === true)
@@ -1274,7 +1241,7 @@ const Table = ({
                             (item) => item.isGroup === true
                           ).length - 1}
                         </Button>
-                        <Tooltip className={styles["react-aria-Tooltip"]}>
+                        <Tooltip>
                           {event.categories
                             .filter((item) => item.isGroup === true)
                             .map((item) => item.name)
@@ -1285,80 +1252,38 @@ const Table = ({
                   ) : (
                     "-"
                   )}
-                </td>
+                </TableCell>
                 {showInsights.eventSize && (
-                  <td>
+                  <TableCell>
                     {/* {getEventSize(event)} */}
                     {event.eventSize ? event.eventSize : "-"}
-                  </td>
+                  </TableCell>
                 )}
 
                 {showInsights.estExhibit && (
-                  <td>
+                  <TableCell>
                     {/* {getEstimatedExhibitors(event)} */}
                     {event.stats?.estimatedExhibitor &&
                     event.stats?.estimatedExhibitor !== "" &&
                     event.stats?.estimatedExhibitor !== "null"
                       ? event.stats?.estimatedExhibitor
                       : "-"}
-                  </td>
+                  </TableCell>
                 )}
 
-                {/* {showInsights.eventSeries ||
-                  (event?.series && (
-                    <td>{event.series ? event.series : "-"}</td>
-                  ))} */}
                 {showInsights.eventRank && (
-                  <td style={{ textAlign: "center", width: "fit-content" }}>
+                  <TableCell style={{ textAlign: "center", width: "fit-content" }}>
                     {event?.ranking ? (
                       <div>
-                        {/* {getEventRank(event.ranking?.globalRank)} */}
                         {getLeastRank(event.ranking)}
-                        {/* <span className="badge_warning" style={{display: 'inline-block'}}>Global</span> */}
                       </div>
                     ) : (
                       "-"
                     )}
-                  </td>
+                  </TableCell>
                 )}
-                {/* {showInsights.growth && (
-                  <td>
-                    {event.interestsGrowth && event.interestsGrowth != 0 ? (
-                      event.interestsGrowth > 0 ? (
-                        <div className={styles.text_green}>
-                          {event.interestsGrowth}%{" "}
-                          <Image src={UpArrow} alt="up" width={10} />
-                        </div>
-                      ) : (
-                        <div className={styles.text_red}>
-                          {event.interestsGrowth}%{" "}
-                          <Image src={DownArrow} alt="down" width={10} />
-                        </div>
-                      )
-                    ) : (
-                      <></>
-                    )}
-                    {event.interestsGrowthRange &&
-                      // <>{getGrowthRange(event.interestsGrowthRange)}</>
-                      event.interestsGrowthRange}
-                    {(event.interestsGrowth == undefined ||
-                      event.interestsGrowth == 0) &&
-                      (event.interestsGrowthRange == undefined ||
-                        event.interestsGrowthRange == 0) &&
-                      "-"}
-                  </td>
-                )} */}
                 {showInsights.reptSent && (
-                  <td>
-                    {/* {event.stats.rating !== undefined &&
-                      event.stats.rating !== null &&
-                      event.stats.rating > "0" && (
-                        <>
-                          {getEventRating(event.stats.rating)}
-                          &nbsp;
-                          <Image src={StarIcon} alt="star" width={14} />
-                        </>
-                      )} */}
+                  <TableCell>
                     {event.reputationSentiment !== undefined &&
                     event.reputationSentiment !== null &&
                     (event.reputationSentiment > 1 ||
@@ -1377,10 +1302,10 @@ const Table = ({
                     ) : (
                       <>-</>
                     )}
-                  </td>
+                  </TableCell>
                 )}
                 {showInsights.eventRating && (
-                  <td style={{ textAlign: "center" }}>
+                  <TableCell style={{ textAlign: "center" }}>
                     {event.stats.rating !== undefined &&
                     event.stats.rating !== null &&
                     event.stats.rating > "0" ? (
@@ -1437,10 +1362,10 @@ const Table = ({
                     ) : (
                       <>-</>
                     )}
-                  </td>
+                  </TableCell>
                 )}
                 {showInsights.repeatSent && (
-                  <td style={{ textAlign: "center" }}>
+                  <TableCell style={{ textAlign: "center" }}>
                     {event?.repeatSentiment !== undefined &&
                     event?.repeatSentiment > 0 ? (
                       <>
@@ -1495,28 +1420,11 @@ const Table = ({
                     ) : (
                       "-"
                     )}
-                  </td>
+                  </TableCell>
                 )}
 
-                {/* {(event?.repeatSentiment && event?.repeatSentiment !== 0)
-                      ? <>
-                          {event["trustScore%"] && event["trustScore%"] > 10 &&
-                            <span style={{borderRadius:"50%", backgroundColor: "var(--success-background-color)", padding:"4px"}}>
-                              <ArrowUp style={{width:"14px", height:"14px", color:"var(--success-text-color)", marginBottom:"5px"}}/>
-                            </span>
-                          }
-                          {event["trustScore%"] && event["trustScore%"] < -10 &&
-                            <span style={{borderRadius:"50%", backgroundColor: "var(--danger-background-color)", padding:"4px"}}>
-                              <ArrowDown style={{width:"14px", height:"14px", color:"var(--danger-text-color)", marginBottom:"5px"}}/>
-                            </span>
-                          }
-                          &nbsp;
-                          {event.repeatSentiment}
-                        </> + "%"
-                      : "-"} */}
-
                 {showInsights.eventFrequency && (
-                  <td className="text-center">
+                  <TableCell className="text-center">
                     {event?.frequency && event?.frequency !== "" ? (
                       <span
                         style={{ textTransform: "capitalize" }}
@@ -1527,34 +1435,17 @@ const Table = ({
                     ) : (
                       "-"
                     )}
-                  </td>
+                  </TableCell>
                 )}
 
                 {showInsights.forecasted && (
-                  <td>{getForecastedStatus(event.futureExpectedStartDate)}</td>
+                  <TableCell>{getForecastedStatus(event.futureExpectedStartDate)}</TableCell>
                 )}
 
-                {/* {showInsights.global && (
-                  <td>
-                    {event["internationalAudience%"] !== undefined ? (
-                      event["internationalAudience%"] == "high" ? (
-                        <span className={styles.badge_success}>High</span>
-                      ) : event["internationalAudience%"] == "medium" ? (
-                        <span className={styles.badge_primary}>Medium</span>
-                      ) : event["internationalAudience%"] == "low" ? (
-                        <span className={styles.badge_danger}>Low</span>
-                      ) : (
-                        <></>
-                      )
-                    ) : (
-                      <></>
-                    )}
-                  </td>
-                )} */}
                 {(type === null || type === "CUSTOM") &&
                   appliedKeywords?.length > 0 && (
                     <>
-                      <td>
+                      <TableCell>
                         {event.matchedKeywords.length == 0 ? (
                           <>-</>
                         ) : event.matchedKeywords.length == 1 ? (
@@ -1562,28 +1453,20 @@ const Table = ({
                         ) : (
                           <>
                             {event.matchedKeywords[0]}&nbsp;
-                            {/* <a
-                            className={styles["products-list"]}
-                            href="javascript:void(0)"
-                            data-toggle="tooltip"
-                            title={listProducts(event.matchedKeywords)}
-                          >
-                            +{event.matchedKeywords.length - 1}
-                          </a> */}
                             <TooltipTrigger>
                               <Button className={styles["products-list"]}>
                                 +{event.matchedKeywords.length - 1}
                               </Button>
-                              <Tooltip className={styles["react-aria-Tooltip"]}>
+                              <Tooltip>
                                 {listProducts(event.matchedKeywords)}
                               </Tooltip>
                             </TooltipTrigger>
                           </>
                         )}
-                      </td>
+                      </TableCell>
                       {(type === null || type === "CUSTOM") &&
                         appliedKeywords?.length >= 5 && (
-                          <td>
+                          <TableCell>
                             {event.keywordsMatchedScore > 20 ? (
                               <span className={styles.badge_success}>High</span>
                             ) : event.keywordsMatchedScore >= 10 &&
@@ -1597,7 +1480,7 @@ const Table = ({
                             ) : (
                               "-"
                             )}
-                          </td>
+                          </TableCell>
                         )}
                     </>
                   )}
@@ -1605,15 +1488,7 @@ const Table = ({
                 {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") &&
                   path[path.length - 1] !== "savedEvents" && (
                     <>
-                      <td
-                        style={{
-                          textAlign: "center",
-                          right: "150px",
-                          boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)",
-                          minWidth: "60px",
-                        }}
-                        className={`${styles.table_actionColumn}`}
-                      >
+                      <TableCell style={{ textAlign: "center", right: "150px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth: "60px" }} className={`${styles.table_actionColumn}`}>
                         {event?.competitorDomainOrName &&
                         event?.competitorDomainOrName.length > 0 ? (
                           <>
@@ -1631,9 +1506,7 @@ const Table = ({
                                 <Button className={styles["products-list"]}>
                                   +{event.competitorDomainOrName.length - 1}
                                 </Button>
-                                <Tooltip
-                                  className={styles["react-aria-Tooltip"]}
-                                >
+                                <Tooltip>
                                   {event?.competitorDomainOrName.map((item) => (
                                     <div key={item}>
                                       {item.split("_")[1]}
@@ -1650,16 +1523,9 @@ const Table = ({
                         ) : (
                           "-"
                         )}
-                      </td>
+                      </TableCell>
 
-                      <td
-                        style={{
-                          textAlign: "center",
-                          right: "50px",
-                          minWidth: "100px",
-                        }}
-                        className={`${styles.table_actionColumn}`}
-                      >
+                      <TableCell style={{ textAlign: "center", right: "50px", minWidth: "100px" }} className={`${styles.table_actionColumn}`}>
                         {event?.competitorPercentage == "High" ? (
                           <span className={styles.badge_success}>High</span>
                         ) : event?.competitorPercentage == "Medium" ? (
@@ -1669,22 +1535,14 @@ const Table = ({
                         ) : (
                           "-"
                         )}
-                      </td>
+                      </TableCell>
                     </>
                   )}
 
                 {type === "T_SPEAKING_OPPORTUNITY" &&
                   path[path.length - 1] !== "savedEvents" && (
                     <>
-                      <td
-                        style={{
-                          textAlign: "center",
-                          right: "150px",
-                          boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)",
-                          minWidth: "60px",
-                        }}
-                        className={`${styles.table_actionColumn}`}
-                      >
+                      <TableCell style={{ textAlign: "center", right: "150px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth: "60px" }} className={`${styles.table_actionColumn}`}>
                         {event?.speakerPersonAssociation ? (
                           event?.speakerPersonAssociation.length == 1 ? (
                             event.speakerPersonAssociation[0]
@@ -1695,9 +1553,7 @@ const Table = ({
                                 <Button className={styles["products-list"]}>
                                   +{event.speakerPersonAssociation.length - 1}
                                 </Button>
-                                <Tooltip
-                                  className={styles["react-aria-Tooltip"]}
-                                >
+                                <Tooltip>
                                   {listProducts(event.speakerPersonAssociation)}
                                 </Tooltip>
                               </TooltipTrigger>
@@ -1706,16 +1562,9 @@ const Table = ({
                         ) : (
                           "-"
                         )}
-                      </td>
+                      </TableCell>
 
-                      <td
-                        style={{
-                          textAlign: "center",
-                          right: "50px",
-                          minWidth: "100px",
-                        }}
-                        className={`${styles.table_actionColumn}`}
-                      >
+                      <TableCell style={{ textAlign: "center", right: "50px", minWidth: "100px" }} className={`${styles.table_actionColumn}`}>
                         {event?.speakerPersonAssociationPercentage == "High" ? (
                           <span className={styles.badge_success}>High</span>
                         ) : event?.speakerPersonAssociationPercentage ==
@@ -1727,23 +1576,14 @@ const Table = ({
                         ) : (
                           "-"
                         )}
-                      </td>
+                      </TableCell>
                     </>
                   )}
 
                 {type === "T_PRODUCT_KEYWORDS" &&
                   path[path.length - 1] !== "savedEvents" && (
                     <>
-                      <td
-                        style={{
-                          textAlign: "center",
-                          right:
-                            appliedKeywords?.length >= 5 ? "150px" : "50px",
-                          boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)",
-                          minWidth: "60px",
-                        }}
-                        className={`${styles.table_actionColumn}`}
-                      >
+                      <TableCell style={{ textAlign: "center", right: appliedKeywords?.length >= 5 ? "150px" : "50px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth: "60px" }} className={`${styles.table_actionColumn}`}>
                         {event.matchedKeywords.length == 0 ? (
                           <>-</>
                         ) : event.matchedKeywords.length == 1 ? (
@@ -1751,34 +1591,19 @@ const Table = ({
                         ) : (
                           <>
                             {event.matchedKeywords[0]}&nbsp;
-                            {/* <a
-                            className={styles["products-list"]}
-                            href="javascript:void(0)"
-                            data-toggle="tooltip"
-                            title={listProducts(event.matchedKeywords)}
-                          >
-                            +{event.matchedKeywords.length - 1}
-                          </a> */}
                             <TooltipTrigger>
                               <Button className={styles["products-list"]}>
                                 +{event.matchedKeywords.length - 1}
                               </Button>
-                              <Tooltip className={styles["react-aria-Tooltip"]}>
+                              <Tooltip>
                                 {listProducts(event.matchedKeywords)}
                               </Tooltip>
                             </TooltipTrigger>
                           </>
                         )}
-                      </td>
+                      </TableCell>
                       {appliedKeywords?.length >= 5 && (
-                        <td
-                          style={{
-                            textAlign: "center",
-                            right: "50px",
-                            minWidth: "100px",
-                          }}
-                          className={`${styles.table_actionColumn}`}
-                        >
+                        <TableCell style={{ textAlign: "center", right: "50px", minWidth: "100px" }} className={`${styles.table_actionColumn}`}>
                           {event.keywordsMatchedScore > 20 ? (
                             <span className={styles.badge_success}>High</span>
                           ) : event.keywordsMatchedScore >= 10 &&
@@ -1790,7 +1615,7 @@ const Table = ({
                           ) : (
                             "-"
                           )}
-                        </td>
+                        </TableCell>
                       )}
                     </>
                   )}
@@ -1798,15 +1623,7 @@ const Table = ({
                 {type === "T_PEOPLE_FINDER" &&
                   path[path.length - 1] !== "savedEvents" && (
                     <>
-                      <td
-                        style={{
-                          textAlign: "center",
-                          right: "150px",
-                          boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)",
-                          minWidth: "60px",
-                        }}
-                        className={`${styles.table_actionColumn}`}
-                      >
+                      <TableCell style={{ textAlign: "center", right: "150px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth: "60px" }} className={`${styles.table_actionColumn}`}>
                         {event?.peopleFinderPersonAssociation &&
                         event?.peopleFinderPersonAssociation.length > 0 ? (
                           <>
@@ -1833,9 +1650,7 @@ const Table = ({
                                   {event.peopleFinderPersonAssociation.length -
                                     1}
                                 </Button>
-                                <Tooltip
-                                  className={styles["react-aria-Tooltip"]}
-                                >
+                                <Tooltip>
                                   {event?.peopleFinderPersonAssociation.map(
                                     (item) => (
                                       <div key={item}>
@@ -1854,16 +1669,9 @@ const Table = ({
                         ) : (
                           "-"
                         )}
-                      </td>
+                      </TableCell>
 
-                      <td
-                        style={{
-                          textAlign: "center",
-                          right: "50px",
-                          minWidth: "100px",
-                        }}
-                        className={`${styles.table_actionColumn}`}
-                      >
+                      <TableCell style={{ textAlign: "center", right: "50px", minWidth: "100px" }} className={`${styles.table_actionColumn}`}>
                         {event?.peopleFinderPersonAssociationPercentage ==
                         "High" ? (
                           <span className={styles.badge_success}>High</span>
@@ -1876,22 +1684,14 @@ const Table = ({
                         ) : (
                           "-"
                         )}
-                      </td>
+                      </TableCell>
                     </>
                   )}
 
                 {type === "T_RECRUITMENT" &&
                   path[path.length - 1] !== "savedEvents" && (
                     <>
-                      <td
-                        style={{
-                          textAlign: "center",
-                          right: "150px",
-                          boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)",
-                          minWidth: "60px",
-                        }}
-                        className={`${styles.table_actionColumn}`}
-                      >
+                      <TableCell style={{ textAlign: "center", right: "150px", boxShadow: "-10px 0 15px -5px rgba(0, 0, 0, 0.3)", minWidth: "60px" }} className={`${styles.table_actionColumn}`}>
                         {event?.recruitmentAssociation ? (
                           event?.recruitmentAssociation.length == 1 ? (
                             event.recruitmentAssociation[0]
@@ -1902,9 +1702,7 @@ const Table = ({
                                 <Button className={styles["products-list"]}>
                                   +{event.recruitmentAssociation.length - 1}
                                 </Button>
-                                <Tooltip
-                                  className={styles["react-aria-Tooltip"]}
-                                >
+                                <Tooltip>
                                   {listProducts(event.recruitmentAssociation)}
                                 </Tooltip>
                               </TooltipTrigger>
@@ -1913,15 +1711,8 @@ const Table = ({
                         ) : (
                           "-"
                         )}
-                      </td>
-                      <td
-                        style={{
-                          textAlign: "center",
-                          right: "50px",
-                          minWidth: "100px",
-                        }}
-                        className={`${styles.table_actionColumn}`}
-                      >
+                      </TableCell>
+                      <TableCell style={{ textAlign: "center", right: "50px", minWidth: "100px" }} className={`${styles.table_actionColumn}`}>
                         {event?.recruitmentAssociationPercentage == "High" ? (
                           <span className={styles.badge_success}>High</span>
                         ) : event?.recruitmentAssociationPercentage ==
@@ -1932,12 +1723,12 @@ const Table = ({
                         ) : (
                           "-"
                         )}
-                      </td>
+                      </TableCell>
                     </>
                   )}
 
                 {showInsights.maturity && (
-                  <td>
+                  <TableCell>
                     {event?.maturity && event?.maturity !== "" ? (
                       <span
                         style={{ textTransform: "capitalize" }}
@@ -1948,47 +1739,34 @@ const Table = ({
                     ) : (
                       "-"
                     )}
-                  </td>
+                  </TableCell>
                 )}
 
                 {showInsights.impactScore && (
-                  <td>
+                  <TableCell>
                     {event?.eventImpactScore && event?.eventImpactScore !== 0
                       ? event.eventImpactScore
                       : "-"}
-                  </td>
+                  </TableCell>
                 )}
                 {showInsights.inboundScore && (
-                  <td>
+                  <TableCell>
                     {event?.eventInboundScore && event?.eventInboundScore !== 0
                       ? event.eventInboundScore
                       : "-"}
-                  </td>
+                  </TableCell>
                 )}
                 {showInsights.internationalScore && (
-                  <td>
-                    {/* {event["internationalAudience%"] !== undefined ? (
-                      event["internationalAudience%"] == "high" ? (
-                        <span className={styles.badge_success}>High</span>
-                      ) : event["internationalAudience%"] == "medium" ? (
-                        <span className={styles.badge_primary}>Medium</span>
-                      ) : event["internationalAudience%"] == "low" ? (
-                        <span className={styles.badge_danger}>Low</span>
-                      ) : (
-                        <></>
-                      )
-                    ) : (
-                      <></>
-                    )} */}
+                  <TableCell>
                     {event?.internationalScore &&
                     event?.internationalScore !== 0
                       ? event.internationalScore
                       : "-"}
-                  </td>
+                  </TableCell>
                 )}
 
                 {showInsights.audienceZone && (
-                  <td>
+                  <TableCell>
                     {event?.audienceZone && event?.audienceZone !== "" ? (
                       <span className={styles.badge_primary}>
                         {event.audienceZone}
@@ -1996,11 +1774,11 @@ const Table = ({
                     ) : (
                       "-"
                     )}
-                  </td>
+                  </TableCell>
                 )}
 
                 {showInsights.audienceSpread && (
-                  <td>
+                  <TableCell>
                     <div style={{ display: "flex", gap: "8px" }}>
                       {event?.audienceSpread &&
                       Object.entries(event?.audienceSpread).length > 0
@@ -2023,148 +1801,10 @@ const Table = ({
                           )
                         : "-"}
                     </div>
-                  </td>
+                  </TableCell>
                 )}
 
-                <td
-                  className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}
-                >
-                  {/* {path[path.length - 1] === "trackedEvents" ||
-                    path[path.length - 1] === "savedEvents" ||
-                    path[path.length - 1] === "trackers" ? (
-                    path[path.length - 1] === "trackedEvents" ? (
-                      <>
-                        {event?.isSaved ? (
-                          <button
-                          onClick={() => deleteEvent(event?.id)}
-                          >
-                           <BookmarkFilled fillColor={"var(--primary-color)"} />
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => saveEvent(event?.id)}
-                            
-                          >
-                             <BookmarkIcon fillColor={"var(--secondary-text-color)"} />
-                          </button>
-                        )}
-                      </>
-                    ) : (
-                      <button
-                        onClick={() => deleteEvent(event?.id)}
-                      >
-                        <BookmarkFilled fillColor={"var(--primary-color)"} />
-                      </button>
-                    )
-                  ) : (
-                    <span
-                      className={styles.save_image_container}
-                      style={{cursor:"pointer"}}
-                      onClick={() => handleModalOpen(event.id, event.eventGroupId)}
-                    >
-                      {bookmarkedEvent?.includes(event.id) ? (
-                        <BookmarkFilled fillColor={"var(--primary-color)"} />
-                      ) : (
-                        <BookmarkIcon fillColor={"var(--secondary-text-color)"} />
-                      )}
-                    </span>
-                  )} */}
-
-                  {/* Optional Pin Section */}
-                  {/* {isOpen == event.id && (
-                    <div className={styles.modal}>
-                      <header className={styles["modal_header"]}>
-                        <div className={styles["modal_header-title"]}>
-                          Do you want to participate in &quot;{event.name}&quot;?
-                        </div>
-                        <button
-                          className={styles["close"]}
-                          onClick={() => handleModalOpen(event.id, event.eventGroupId)}
-                        >
-                          <Image src={closeIcon} alt="clock" width={16} height={16} />
-                        </button>
-                      </header>
-                      <main className={styles["modal_content"]}>
-                        <form onSubmit={handleSubmit}>
-                          <div id="field-1">
-                            <div className={styles["form-check"]}>
-                              {bookmarkedEvent?.includes(event.id) ? (
-                                <>
-                                  <input
-                                    className={styles["form-check-input"]}
-                                    type="radio"
-                                    defaultValue="unbookmark"
-                                    name={"interest"}
-                                    id="customradio1"
-                                    onChange={handleChangeIntent}
-                                  />
-                                  <label htmlFor="customradio1">Un-Bookmark</label>
-                                </>
-                              ) : (
-                                <>
-                                  <input
-                                    className={styles["form-check-input"]}
-                                    type="radio"
-                                    defaultValue="bookmark"
-                                    name={"interest"}
-                                    id="customradio1"
-                                    onChange={handleChangeIntent}
-                                  />
-                                  <label htmlFor="customradio1">Bookmark</label>
-                                </>
-                              )}
-                            </div>
-                            <div className={styles["form-check"]}>
-                              <input
-                                className={styles["form-check-input"]}
-                                type="radio"
-                                defaultValue="ATTENDEE"
-                                name={"interest"}
-                                id="customradio2"
-                                onChange={handleChangeIntent}
-                              />
-                              <label htmlFor="customradio2">Attending</label>
-                            </div>
-                            <div className={styles["form-check"]}>
-                              <input
-                                className={styles["form-check-input"]}
-                                type="radio"
-                                defaultValue="SPEAKER"
-                                name={"interest"}
-                                id="customradio3"
-                                onChange={handleChangeIntent}
-                              />
-                              <label htmlFor="customradio3">Speaking</label>
-                            </div>
-                            <div className={styles["form-check"]}>
-                              <input
-                                className={styles["form-check-input"]}
-                                type="radio"
-                                defaultValue="EXHIBITOR"
-                                name={"interest"}
-                                id="customradio4"
-                                onChange={handleChangeIntent}
-                              />
-                              <label htmlFor="customradio4">Exhibiting</label>
-                            </div>
-                            <div className={styles["form-check"]}>
-                              <input
-                                className={styles["form-check-input"]}
-                                type="radio"
-                                defaultValue="SPONSOR"
-                                name={"interest"}
-                                id="customradio5"
-                                onChange={handleChangeIntent}
-                              />
-                              <label htmlFor="customradio5">Sponsoring</label>
-                            </div>
-                          </div>
-                          <button className={styles["submitBtn"]}>Submit</button>
-                        </form>
-                      </main>
-                    </div>
-                  )} */}
-
+                <TableCell className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}>
                   <MenuTrigger
                     onOpenChange={() =>
                       handleModalOpen(
@@ -2206,8 +1846,8 @@ const Table = ({
                       className={styles.interestPopover}
                       placement="left"
                     >
-                      <Dialog className={styles.dialogBorder}>
-                        {({ close }) => (
+                      <Dialog>
+                        <DialogContent>
                           <div style={{ maxWidth: "500px" }}>
                             <header className={styles["modal_header"]}>
                               <div className={styles["modal_header-title"]}>
@@ -2305,15 +1945,15 @@ const Table = ({
                               </form>
                             </main>
                           </div>
-                        )}
+                        </DialogContent>
                       </Dialog>
                     </Popover>
                   </MenuTrigger>
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </ShadcnTable>
       </div>
 
 
