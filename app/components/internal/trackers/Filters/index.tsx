@@ -795,7 +795,7 @@ const Pages = () => {
     frequencies: "frequencies",
     includeKeywords: "includeKeywords",
     excludeKeywords: "excludeKeywords",
-    estimatedVisitorRangeTag:"estimatedVisitors",
+    estimatedVisitorRangeTag:"estimatedVisitorRangeTag",
     estimatedExhibitors:"estimatedExhibitors",
     impact_score_gte:"impact_score_gte",
     impact_score_lte:"impact_score_lte",
@@ -1138,20 +1138,22 @@ const Pages = () => {
       //   .map((item: any) => item.id);
       // console.log(filteredArr);
       let toggleOpend: Toggle = {};
-      Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
-        const value = editData.filterValues[key];
-      console.log(key);
+      // Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
+      //   const value = editData.filterValues[key];
+      // console.log(key);
       
-        // if (Array.isArray(value) && value.length > 0) {
-        //   acc[mappedKey] = value;
-        // } else if (typeof value === "string" && value === "true") {
-        //   acc[mappedKey] = value;
-        // } else if (value) {
-        //   acc[mappedKey] = value;
-        // }
+      //   // if (Array.isArray(value) && value.length > 0) {
+      //   //   acc[mappedKey] = value;
+      //   // } else if (typeof value === "string" && value === "true") {
+      //   //   acc[mappedKey] = value;
+      //   // } else if (value) {
+      //   //   acc[mappedKey] = value;
+      //   // }
       
-        return acc;
-      }, {})
+      //   return acc;
+      // }, {})
+      console.log(editData);
+      
      
       if (typeof editData?.tracker?.filterValue?.userType === 'string') {
           toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
