@@ -34,7 +34,7 @@ import {
 } from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Filter, FilterX, Loader2, Plus } from "lucide-react";
+import { ArrowUpRight, Filter, FilterX, Loader2, Plus, TableIcon, ListIcon, MapIcon, CalendarIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   lazy,
@@ -358,18 +358,22 @@ const Search = () => {
           </div> */}
           <div className="w-[108px]"></div>
           <div className="flex justify-center">
-            <TabsList className="grid w-[450px] grid-cols-4 h-auto">
-              <TabsTrigger value="table" className="text-base">
-                Table
+            <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
+              <TabsTrigger value="table" className="flex items-center gap-2 py-2 px-4">
+                <TableIcon className="h-4 w-4" />
+                <span>Table</span>
               </TabsTrigger>
-              <TabsTrigger value="list" className="text-base">
-                List
+              <TabsTrigger value="list" className="flex items-center gap-2 py-2 px-4">
+                <ListIcon className="h-4 w-4" />
+                <span>List</span>
               </TabsTrigger>
-              <TabsTrigger value="map" className="text-base">
-                Map
+              <TabsTrigger value="map" className="flex items-center gap-2 py-2 px-4">
+                <MapIcon className="h-4 w-4" />
+                <span>Map</span>
               </TabsTrigger>
-              <TabsTrigger value="calendar" className=" text-base">
-                Calendar
+              <TabsTrigger value="calendar" className="flex items-center gap-2 py-2 px-4">
+                <CalendarIcon className="h-4 w-4" />
+                <span>Calendar</span>
               </TabsTrigger>
             </TabsList>
           </div>
