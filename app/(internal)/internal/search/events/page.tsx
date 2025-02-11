@@ -34,7 +34,7 @@ import {
 } from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Filter, FilterX, Loader2, Plus, TableIcon, ListIcon, MapIcon, CalendarIcon } from "lucide-react";
+import { ArrowUpRight, Filter, FilterX, Loader2, Plus, TableIcon, ListIcon, MapIcon, CalendarIcon, Globe } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   lazy,
@@ -368,7 +368,7 @@ const Search = () => {
                 <span>List</span>
               </TabsTrigger>
               <TabsTrigger value="map" className="flex items-center gap-2 py-2 px-4">
-                <MapIcon className="h-4 w-4" />
+                <Globe className="h-4 w-4" />
                 <span>Map</span>
               </TabsTrigger>
               <TabsTrigger value="calendar" className="flex items-center gap-2 py-2 px-4">
