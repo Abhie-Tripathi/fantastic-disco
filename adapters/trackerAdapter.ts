@@ -30,12 +30,10 @@ interface OriginalResponse {
         id: item.id,
         eventImpactScore: null,
         latitude:
-          item.location.geoCordinates.latitude ||
-          item.location.cityCordinates.latitude,
+          item.latitude,
         longitude:
-          item.location.geoCordinates.longitude ||
-          item.location.cityCordinates.longitude,
-        eventType: determineEventType(item.type[0]),
+          item.longitude,
+        eventType: determineEventType(item.eventType),
       }));
       return {
         count: data?.totalEvents || 0,
@@ -80,6 +78,7 @@ interface OriginalResponse {
     if (!item) return "";
     if (item.toLowerCase() === "tradeshow") return "tradeshows";
     if (item.toLowerCase() === "conference") return "conferences";
-    return "unknown";
+    if (item.toLowerCase() === "workshop") return "workshops";
+    else return item;
   }
   

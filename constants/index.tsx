@@ -10,6 +10,12 @@ export const authEndpoints = {
   signin: "/auth/customer/signin",
 };
 
+export const groupedEventTypes = {
+  social: ["festival", "concert", "sport", "performing-arts", "community"],
+  business: ["tradeshows", "conferences", "workshops"],
+  unAttended: ["holiday"],
+};
+
 export function Coordinate() {
   return (
     <svg
