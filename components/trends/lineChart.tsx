@@ -246,7 +246,7 @@ const LineChartComponent = ({
   } = useQuery({
     queryKey: ["events", link],
     queryFn: () =>
-      eventService.getEventsWithSearchParams(link + "&sortBy=-visitors"),
+      eventService.getEventsWithSearchParams(link + "&sortBy=estimatedVisitorMean"),
     enabled: !!link,
     refetchOnWindowFocus: false,
     gcTime: 0,
