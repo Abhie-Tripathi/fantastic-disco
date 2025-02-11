@@ -2009,7 +2009,7 @@ return (
            </Tabs>
         } */}
         {(type==="T_PRODUCT_KEYWORDS") &&
-        <Tabs defaultValue="include" onValueChange={(value) => setActiveTab(value as "include" | "exclude")} className="pb-2">
+        <Tabs defaultValue="include" onValueChange={(value) => setActiveTab(value as "include" | "exclude")} className="pb-2 mb-1">
         {(includeKeyword.length > 0 || excludeKeyword.length >0)&&
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="include">
