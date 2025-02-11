@@ -194,7 +194,10 @@ export function useDefaultFilters() {
     trendsParams.set(
       "columns",
       columnsDropdown
-        .filter((column) => column.value !== "impactScore")
+        .filter(
+          (column) =>
+            column.value !== "impactScore" && column.value !== "economicImpact"
+        )
         .map((column) => column.value)
         .join(",")
     );
@@ -230,7 +233,11 @@ export function useDefaultFilters() {
       defaultSearchParams.set(
         "columns",
         columnsDropdown
-          .filter((column) => column.value !== "impactScore")
+          .filter(
+            (column) =>
+              column.value !== "impactScore" &&
+              column.value !== "economicImpact"
+          )
           .map((column) => column.value)
           .join(",")
       );

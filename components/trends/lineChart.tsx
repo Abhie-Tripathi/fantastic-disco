@@ -57,6 +57,7 @@ const LineChartComponent = ({
   showThresholdLines = true,
 }: IProps) => {
   const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams);
   const locationIds = searchParams.get("locationIds");
   const eventTypes = searchParams.get("eventTypes");
   const [link, setLink] = useState("");
@@ -198,24 +199,31 @@ const LineChartComponent = ({
   }, []);
 
   const setRedirectionLinkOnDate = (date: string): string => {
-    const params = new URLSearchParams(searchParams);
     const geoCoordinates = params.get("geoCoordinates");
     const locationIds = params.get("locationIds");
-    const paramsSearchEvents = `status=active%2Ccancelled%2Cpostponed%2Cpredicted${
-      locationIds !== null ? `&locationIds=${locationIds}` : ""
-    }${geoCoordinates !== null ? `&geoCoordinates=${geoCoordinates}` : ""}
-      ${
-        eventTypes && eventTypes.length > 0 ? `&eventTypes=${eventTypes}` : ""
-      }&active_gte=${date}&active_lte=${date}`;
-    return paramsSearchEvents;
+    const searchEventParams = new URLSearchParams({
+      status: "active,cancelled,postponed",
+    });
+
+    if (date) {
+      searchEventParams.set("active_gte", date);
+      searchEventParams.set("active_lte", date);
+    }
+    if (locationIds) {
+      searchEventParams.set("locationIds", locationIds);
+    }
+    if (geoCoordinates) {
+      searchEventParams.set("geoCoordinates", geoCoordinates);
+    }
+    if (eventTypes && eventTypes.length > 0) {
+      searchEventParams.set("eventTypes", eventTypes);
+    }
+    return searchEventParams.toString();
   };
 
   const handleChartClick = (e: CategoricalChartState) => {
     if (e.activeLabel) {
       const utcDate = new Date(e.activeLabel).toISOString();
-      // const link = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&locationIds=${locationIds}${
-      //   eventTypes && eventTypes.length > 0 ? `&eventTypes=${eventTypes}` : ""
-      // }&active_gte=${utcDate}&active_lte=${utcDate}`;
       const link = setRedirectionLinkOnDate(utcDate);
       setLink(link);
       if (e.activePayload && e.activePayload.length > 0) {
@@ -360,16 +368,7 @@ const LineChartComponent = ({
         </div>
         <div className="flex flex-col px-4 py-2 gap-2 border-b">
           <div className="flex justify-between">
-            <div className="flex gap-2">
-              <div className="bg-[var(--social-color)] w-1 rounded-lg h-5"></div>
-              <p className="font-semibold text-[var(--social-color)]">
-                Social Events
-              </p>
-            </div>
-            <p className="font-semibold text-[var(--social-color)]">{social}</p>
-          </div>
-          <div className="flex justify-between">
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <div className="bg-[var(--business-color)] w-1 rounded-lg h-5"></div>
               <p className="font-semibold text-[var(--business-color)]">
                 Business Events
@@ -411,7 +410,7 @@ const LineChartComponent = ({
           </ul>
         </div>
         <Link
-          href={`/search/events?${link}`}
+          href={`/internal/search/events?${link}`}
           className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer"
         >
           VIEW ALL
