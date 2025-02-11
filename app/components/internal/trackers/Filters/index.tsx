@@ -1067,8 +1067,9 @@ const Pages = () => {
   };
 
   useEffect(() => {
-    if (editData && editData?.tracker && last === "editTracker") {
-
+    if (editData && last === "editTracker") {
+      console.log(editData);
+      
       
       // if (editData.tracker.filterValue?.maturity == "low") {
       //   setSelectedMaturity(25);
@@ -1123,35 +1124,42 @@ const Pages = () => {
         }));
         setCustomData(presentCustomData);
       }
-      if (editData.tracker.filterValue?.localRank?.length > 0 || editData.tracker.filterValue?.eventRank?.length > 0) {
-        const newToggles = { ...rankToggles };
-        if (editData?.tracker?.filterValue?.localRank?.length > 0) {
-          newToggles.isLocalRank = true;
-        }
-        if (editData?.tracker?.filterValue?.eventRank?.length > 0) {
-          newToggles.isEventRank = true;
-        }
-        setRankToggles(newToggles);
-      }
+      // if (editData.tracker.filterValue?.localRank?.length > 0 || editData.tracker.filterValue?.eventRank?.length > 0) {
+      //   const newToggles = { ...rankToggles };
+      //   if (editData?.tracker?.filterValue?.localRank?.length > 0) {
+      //     newToggles.isLocalRank = true;
+      //   }
+      //   if (editData?.tracker?.filterValue?.eventRank?.length > 0) {
+      //     newToggles.isEventRank = true;
+      //   }
+      //   setRankToggles(newToggles);
+      // }
       // const filteredArr = newArr
       //   .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
       //   .map((item: any) => item.id);
       // console.log(filteredArr);
       let toggleOpend: Toggle = {};
-      // Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
-      //   const value = editData.filterValues[key];
-      // console.log(key);
+      Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
+        const value = editData.filterValues[key];
+        // if(value && key!=="categories"){
+        //   setLocalFilter(mappedKey,value);
+        // }
+        if (Array.isArray(value))
+          setLocalFilter(key,value.join(','));
+        
+        // if(value.length>0)
+        // setLocalFilter(key,value.join(","));
       
-      //   // if (Array.isArray(value) && value.length > 0) {
-      //   //   acc[mappedKey] = value;
-      //   // } else if (typeof value === "string" && value === "true") {
-      //   //   acc[mappedKey] = value;
-      //   // } else if (value) {
-      //   //   acc[mappedKey] = value;
-      //   // }
+        // if (Array.isArray(value) && value.length > 0) {
+        //   acc[mappedKey] = value;
+        // } else if (typeof value === "string" && value === "true") {
+        //   acc[mappedKey] = value;
+        // } else if (value) {
+        //   acc[mappedKey] = value;
+        // }
       
-      //   return acc;
-      // }, {})
+        // return acc;
+      }, {})
       console.log(editData);
       
      
