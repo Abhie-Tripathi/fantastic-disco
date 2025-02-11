@@ -118,6 +118,7 @@ interface Filters {
   userName?: string;
   designation?: string;
   linkedinProfile?: string;
+  eventType?:string;
 }
 type Filter = {
   eventTypes: string;

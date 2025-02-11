@@ -25,8 +25,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
 import { ApiError } from "@/types/api";
 import {
-  CalendarEvent,
-  CalendarMonthEvent,
+  CalendarYearEventsResponse,
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
   Event,
@@ -37,7 +36,15 @@ import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, Filter, FilterX, Loader2, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { toast } from "react-toastify";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
@@ -423,18 +430,9 @@ const Search = () => {
           )}
         </TabsContent>
         <TabsContent value="calendar">
-          {isLoading ? (
-            <Loading />
-          ) : eventData?.count == 0 ? (
-            <ZeroState text="No events were found in the selected area." />
-          ) : error ? (
-            <ZeroState text={(error as ApiError).message} />
-          ) : (
-            <EventCalendar
-              source="search"
-              events={events as CalendarEvent[] | CalendarMonthEvent[]}
-            />
-          )}
+          <Suspense fallback={<Loading />}>
+            <EventCalendar />
+          </Suspense>
         </TabsContent>
       </Tabs>
 
