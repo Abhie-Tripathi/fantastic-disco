@@ -52,8 +52,9 @@ export const InsightsAndScores = ({
     below5CountryCategoryEvent,
     repeatSentiment: trustScore,
   } = eventDetails;
-  const estimatedEconomicImpact =
-    economicImpact && parseFloat(economicImpact.replace(/[$,]/g, ""));
+  const estimatedEconomicImpact = parseFloat(
+    economicImpact?.replace(/[$,]/g, "") ?? "0"
+  );
   const roundedEstimatedEconomicImpact =
     estimatedEconomicImpact && Math.ceil(estimatedEconomicImpact);
   const rankings: RankingDetail = {
@@ -234,7 +235,9 @@ export const InsightsAndScores = ({
                         </Tooltip>
                       </TooltipProvider>
                       <div className="text-primary font-semibold text-xl">
-                        {`$${roundedEstimatedEconomicImpact}`}
+                        {`$${Intl.NumberFormat("en-US").format(
+                          roundedEstimatedEconomicImpact
+                        )}`}
                       </div>
                     </div>
                   </div>
@@ -269,7 +272,9 @@ export const InsightsAndScores = ({
                               <Text size="large">{key}</Text>
                               <span className="text-primary font-semibold leading-6">
                                 ${""}
-                                {Math.ceil(value)}
+                                {Intl.NumberFormat("en-US").format(
+                                  Math.ceil(value)
+                                )}
                               </span>
                             </li>
                           ))}
