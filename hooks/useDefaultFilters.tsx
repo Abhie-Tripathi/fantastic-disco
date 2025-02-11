@@ -13,12 +13,24 @@ import { newCategories } from "@/data/categories";
 
 export function useDefaultFilters() {
   const { user } = useAuthContext();
+  const now = new Date();
   const { getFilterValue, searchParams } = useFilterState();
   const { setMultipleLocalFilters } = useFilterContext();
   const pathName = usePathname();
   const router = useRouter();
   const { getLastSearchedLocation } = sessionService();
   const eventService = useEventsService();
+  const allowedEventTypes = ["tradeshows", "conferences", "workshops"];
+  const defaultTrendsParams = {
+    locationIds: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef", //New York, United States
+    active_gte: new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0)
+    ).toISOString(), // Starting date of current month going on.
+    active_lte: new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 0, 0, 0, 0)
+    ).toISOString(), // Ending date of current month going on.
+    eventTypes: allowedEventTypes, // All three tradeshows, conferences, workshops
+  };
 
   const mapEnabledFiltersToParams = (filters: any) => ({
     eventFormats: filters.eventFormat?.enabledValue?.join(",") ?? "",
@@ -151,21 +163,64 @@ export function useDefaultFilters() {
     return showItems.join(",");
   };
 
-  const generateTrendsParams = (params: URLSearchParams) => {
+  /**
+   * This function generates and returns URL search parameters for event trends.
+   * The parameters are set using the following priority:
+   *
+   * 1. **Enabled Filters:** First, it checks if the parameters exist in the provided URL and applies them.
+   * 2. **Recent Search Filters:** If not found in the URL, it checks recent search filters and applies them if they exist.
+   * 3. **Default Filters:** If parameters are not found in recent search filters, it falls back to default filters.
+   */
+  const generateTrendsParams = (
+    params: URLSearchParams,
+    recentFilterParams?: any
+  ) => {
     const trendsParams = new URLSearchParams(params);
-    const eventTypes = trendsParams.get("eventTypes")?.split(",");
-    const allowedEventTypes = ["tradeshows", "conferences", "workshops"];
+    const eventTypesParams = trendsParams.get("eventTypes");
+    const locationIdsParams = trendsParams.get("locationIds");
+    const startDateParams = trendsParams.get("active_gte");
+    const endDateParams = trendsParams.get("active_lte");
+
+    // Determine event types based on priority: URL params > recent filters > default.
+    const eventTypes =
+      (eventTypesParams && eventTypesParams.split(",")) ||
+      (recentFilterParams &&
+        recentFilterParams.eventTypes &&
+        recentFilterParams.eventTypes.split(",")) ||
+      defaultTrendsParams.eventTypes;
+
+    // Determine location IDs based on priority.
+    const locationIds =
+      locationIdsParams ||
+      (recentFilterParams &&
+        recentFilterParams.locationIds &&
+        recentFilterParams.locationIds !== "" &&
+        recentFilterParams.locationIds) ||
+      defaultTrendsParams.locationIds;
+
+    // Determine start date based on priority.
+    const startDate =
+      startDateParams ||
+      (recentFilterParams && recentFilterParams.active_gte) ||
+      defaultTrendsParams.active_gte;
+
+    // Determine end date based on priority.
+    const endDate =
+      endDateParams ||
+      (recentFilterParams && recentFilterParams.active_lte) ||
+      defaultTrendsParams.active_lte;
+
+    // Filter event types based on allowed types.
     const filteredEventTypes =
       eventTypes &&
-      eventTypes.filter((type) => allowedEventTypes.includes(type));
+      eventTypes.filter((type: string) => allowedEventTypes.includes(type));
 
-    const startDate = trendsParams.get("active_gte");
-    const endDate = trendsParams.get("active_lte");
-
+    // Check if the dates are already formatted correctly.
     const isStartDateFormatted =
       startDate && startDate.endsWith("T00:00:00.000Z");
     const isEndDateFormatted = endDate && endDate.endsWith("T00:00:00.000Z");
 
+    // Format the start and end dates if necessary.
     const formattedStartDate = isStartDateFormatted
       ? startDate
       : new Date(`${startDate}T00:00:00.000Z`).toISOString();
@@ -174,6 +229,7 @@ export function useDefaultFilters() {
       ? endDate
       : new Date(`${endDate}T00:00:00.000Z`).toISOString();
 
+    // Remove unnecessary parameters from the URL.
     const paramsToDelete = [
       "eventFormats",
       "status",
@@ -191,6 +247,8 @@ export function useDefaultFilters() {
     ];
 
     paramsToDelete.forEach((param) => trendsParams.delete(param));
+
+    // Set columns by filtering out specific values.
     trendsParams.set(
       "columns",
       columnsDropdown
@@ -201,12 +259,21 @@ export function useDefaultFilters() {
         .map((column) => column.value)
         .join(",")
     );
+
+    // Set fixed and filtered parameters.
     trendsParams.set("show", "alerts,scores,economicImpact");
-    filteredEventTypes &&
-      filteredEventTypes.length > 0 &&
+    if (filteredEventTypes && filteredEventTypes.length > 0) {
       trendsParams.set("eventTypes", filteredEventTypes.join(","));
-    trendsParams.set("active_gte", formattedStartDate);
-    trendsParams.set("active_lte", formattedEndDate);
+    }
+    if (formattedStartDate) {
+      trendsParams.set("active_gte", formattedStartDate);
+    }
+    if (formattedEndDate) {
+      trendsParams.set("active_lte", formattedEndDate);
+    }
+    if (locationIds) {
+      trendsParams.set("locationIds", locationIds);
+    }
     return trendsParams;
   };
 
@@ -294,7 +361,8 @@ export function useDefaultFilters() {
           pathName.split("/").includes("search") ||
           pathName === "/internal/trends"
         ) {
-          const trendsParams = generateTrendsParams(params);
+          const trendsParams = generateTrendsParams(params, recentFilterParams);
+          console.log(recentFilterParams);
           setTimeout(() => {
             router.push(
               `${pathName}?${

@@ -65,8 +65,13 @@ import { useTrendsService } from "@/services/trendsService";
 const EventTrends = () => {
   const { searchParams } = useDefaultFilters();
   const { getEventTrends, getSavedTrends } = useTrendsService();
-  const { applyFilters, setLocalFilter, getLocalFilterValue, localFilters } =
-    useFilterContext();
+  const {
+    applyFilters,
+    setLocalFilter,
+    getLocalFilterValue,
+    localFilters,
+    deleteMultipleLocalFilters,
+  } = useFilterContext();
   const columns = searchParams.get("columns");
   const editTrend = searchParams.get("editTrend");
   const enableEditTrend = editTrend ? Boolean(editTrend) : false;
@@ -283,7 +288,11 @@ const EventTrends = () => {
 
   const applyHandler = () => {
     const columnsValue = columnsDropdown
-      .filter((dropdown) => dropdown.value !== "impactScore")
+      .filter(
+        (dropdown) =>
+          dropdown.value !== "impactScore" &&
+          dropdown.value !== "economicImpact"
+      )
       .map((filteredValue) => filteredValue.value)
       .join(",");
     // deleteMultipleLocalFilters(["activeCard"]);
@@ -291,7 +300,7 @@ const EventTrends = () => {
       setLocalFilter("columns", columnsValue);
       setLocalFilter("show", "alerts,scores,economicImpact");
     }
-    applyFilters();
+    applyFilters({ resetPage: true });
   };
 
   const handleSelectChange = (value: TEventColumnType) => {
