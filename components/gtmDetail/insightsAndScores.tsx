@@ -66,9 +66,11 @@ export const InsightsAndScores = ({
     below5CountryCategoryEvent: below5CountryCategoryEvent,
   };
   const { morphedData } = useFilterContext();
+  console.log(morphedData);
   const { eventAnalytics, eventRanking } = morphedData;
   const isAnalyticsEnabled = eventAnalytics && eventAnalytics.isEnabled;
   const isTrustScoreEnabled = eventRanking && eventRanking.isEnabled;
+  const economicImpactEnabled = morphedData.economicImpact.isEnabled;
   const [ref, inView, entry, rootMargin] = useInView({
     threshold: 0.2,
     triggerOnce: false,
@@ -100,7 +102,7 @@ export const InsightsAndScores = ({
                   economicImpact &&
                   economicImpact.trim() !== "" &&
                   Object.keys(economicImpactBreakdown).length > 0
-                    ? "w-1/2  grid-cols-2 grid-rows-2"
+                    ? "w-1/2 grid-cols-2 grid-rows-2"
                     : "w-full grid-rows-1 grid-cols-4 h-fit max-xl:grid-cols-2 max-xl:grid-rows-2"
                 }  gap-6 max-xl:w-full`}
               >
@@ -215,7 +217,7 @@ export const InsightsAndScores = ({
                     (trustScore !== null && trustScore > 0)
                       ? "w-1/2"
                       : "w-fill"
-                  } border border-[#EBEBEB] rounded-md p-4 h-full max-h-96 overflow-y-auto scrollbar max-xl:w-full`}
+                  } border border-[#EBEBEB] relative rounded-md p-4 h-full max-h-96 overflow-y-auto scrollbar max-xl:w-full`}
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-4">
@@ -234,52 +236,57 @@ export const InsightsAndScores = ({
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-                      <div className="text-primary font-semibold text-xl">
-                        {`$${Intl.NumberFormat("en-US").format(
-                          roundedEstimatedEconomicImpact
-                        )}`}
+                      {economicImpactEnabled && (
+                        <div className="text-primary font-semibold text-xl">
+                          {`$${Intl.NumberFormat("en-US").format(
+                            roundedEstimatedEconomicImpact
+                          )}`}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  {economicImpactEnabled ? (
+                    <div className="mt-8">
+                      <div className="pb-2 border-b border-[#EBEBEB] flex justify-between ">
+                        <Text
+                          variant="noMargin"
+                          size="small"
+                          fontWeight="medium"
+                          color="secondary"
+                        >
+                          IMPACT CATEGORIES
+                        </Text>
+                        <Text
+                          variant="noMargin"
+                          size="small"
+                          color="secondary"
+                          fontWeight="medium"
+                        >
+                          IMPACT (USD)
+                        </Text>
                       </div>
-                    </div>
-                  </div>
 
-                  <div className="mt-8">
-                    <div className="pb-2 border-b border-[#EBEBEB] flex justify-between ">
-                      <Text
-                        variant="noMargin"
-                        size="small"
-                        fontWeight="medium"
-                        color="secondary"
-                      >
-                        IMPACT CATEGORIES
-                      </Text>
-                      <Text
-                        variant="noMargin"
-                        size="small"
-                        color="secondary"
-                        fontWeight="medium"
-                      >
-                        IMPACT (USD)
-                      </Text>
+                      <ul className="list-none flex flex-col gap-2 mt-2">
+                        {economicImpactBreakdown &&
+                          Object.keys(economicImpactBreakdown).length > 0 &&
+                          Object.entries(economicImpactBreakdown)
+                            .sort(([, valueA], [, valueB]) => valueB - valueA)
+                            .map(([key, value]) => (
+                              <li key={key} className="flex justify-between">
+                                <Text size="large">{key}</Text>
+                                <span className="text-primary font-semibold leading-6">
+                                  ${""}
+                                  {Intl.NumberFormat("en-US").format(
+                                    Math.ceil(value)
+                                  )}
+                                </span>
+                              </li>
+                            ))}
+                      </ul>
                     </div>
-
-                    <ul className="list-none flex flex-col gap-2 mt-2">
-                      {economicImpactBreakdown &&
-                        Object.keys(economicImpactBreakdown).length > 0 &&
-                        Object.entries(economicImpactBreakdown)
-                          .sort(([, valueA], [, valueB]) => valueB - valueA)
-                          .map(([key, value]) => (
-                            <li key={key} className="flex justify-between">
-                              <Text size="large">{key}</Text>
-                              <span className="text-primary font-semibold leading-6">
-                                ${""}
-                                {Intl.NumberFormat("en-US").format(
-                                  Math.ceil(value)
-                                )}
-                              </span>
-                            </li>
-                          ))}
-                    </ul>
-                  </div>
+                  ) : (
+                    <Restriction className="xl:absolute xl:top-1/2 xl:right-1/2 xl:transform xl:-translate-x-1/2 xl:-translate-y-1/2" />
+                  )}
                 </div>
               )}
           </div>
