@@ -331,7 +331,7 @@ const userRating=
                   <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
                   </div>
                 ))}
-                {data?.filterValues?.orgWebsites?.split(',')?.map((item: string, ind: number) => (
+                {data?.filterValues?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   {/* <Image src={Url} alt="url_icon"/> */}
                   <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
@@ -477,7 +477,7 @@ const userRating=
                   <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
                   </div>
                 ))}
-                {data?.filterValues?.orgWebsites?.split(',')?.map((item: string, ind: number) => (
+                {data?.filterValues?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
                   <div className={styles.singleUrl} key={ind}>
                   {/* <Image src={Url} alt="url_icon"/> */}
                   <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>

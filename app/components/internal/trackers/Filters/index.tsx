@@ -538,55 +538,6 @@ const Pages = () => {
   const handleTabChange = (value: string) => {
     setSelectedAdvancedView(value);
   };
-  const createTrackerHandler = () => {
-    const params = new URLSearchParams(searchParams);
-    if (selectedCategories.length > 0) {
-      params.set("category", selectedCategories.join(","));
-    }
-    if (selectedLocations.length > 0) {
-      params.set("locations", selectedLocations?.join(","));
-    }
-    if (selectedEventStatus.length > 0) {
-      params.set("status", selectedEventStatus?.join(","));
-    }
-    if (selectedLabels.length > 0) {
-      params.set("labels", selectedLabels?.join(","));
-    }
-    if (selectedDateRange[0] !== null) {
-      params.set("active_gte", convertToYYYYMMDD(selectedDateRange[0]));
-      params.set("active_lte", convertToYYYYMMDD(selectedDateRange[1]));
-    }
-    if (selectedEventAttendanceRange.length > 0) {
-      params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
-      params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
-    }
-    router.push(`/trackers/create?${params.toString()}`);
-  };
-
-  const searchHandler = () => {
-    const params = new URLSearchParams(searchParams);
-    if (selectedCategories.length > 0) {
-      params.set("category", selectedCategories.join(","));
-    }
-    if (selectedLocations.length > 0) {
-      params.set("city", selectedLocations?.join(","));
-    }
-    if (selectedEventStatus.length > 0) {
-      params.set("status", selectedEventStatus?.join(","));
-    }
-    if (selectedLabels.length > 0) {
-      params.set("labels", selectedLabels?.join(","));
-    }
-    if (selectedDateRange[0] !== null) {
-      params.set("active_gte", selectedDateRange[0]);
-      params.set("active_lte", selectedDateRange[1]);
-    }
-    if (selectedEventAttendanceRange.length > 0) {
-      params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
-      params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
-    }
-    router.push(`/search/events?${params.toString()}`);
-  };
   const [trackerName, setTrackerName] = useState("");
   const [selectedPresetName, setSelectedPresetName] = useState<string>('');
   // const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
@@ -861,7 +812,7 @@ const Pages = () => {
       return acc;
     }, {});
     if(websites.length>0){
-      filterValues.orgWebsites=websites;
+      filterValues.orgWebsite=websites;
     }
     if(org.length>0){
       filterValues.orgName=org;
@@ -1067,14 +1018,14 @@ const Pages = () => {
     if (editData && last === "editTracker") {
       console.log(editData);
       
-      
+      setTrackerName(editData?.name || "");
       // if (editData.tracker.filterValue?.maturity == "low") {
       //   setSelectedMaturity(25);
       // }
       if (type === "T_COMPETITOR" || type == "T_CUSTOMER_ICP") {
-        const orgNames = editData?.tracker?.filterValue?.orgName?.
+        const orgNames = editData?.filterValues?.orgName?.
           split(',');
-        const orgWebsites = editData?.tracker?.filterValue?.orgWebsite?.
+        const orgWebsites = editData?.filterValues?.orgWebsite?.
           split(',');
         if (Array.isArray(orgNames)) {
           setCustomData((prevData: any) => [
@@ -1094,9 +1045,9 @@ const Pages = () => {
         }
       }
       if (type === "T_SPEAKING_OPPORTUNITY") {
-        const speakerOrgs = editData?.tracker?.filterValue?.speakerOrg?.
+        const speakerOrgs = editData?.filterValues?.userOrgWebsite?.
           split(',');
-        const speakerNames = editData?.tracker?.filterValue?.speakerName?.
+        const speakerNames = editData?.filterValues?.userName?.
           split(',');
         const presentCustomData = (speakerNames ?? []).map((speakerName: string, index: number) => ({
           "Speaker's Name": speakerName.trim(),
@@ -1111,9 +1062,9 @@ const Pages = () => {
         // ]);
       }
       if (type === "T_PEOPLE_FINDER") {
-        const speakerOrgs = editData?.tracker?.filterValue?.speakerOrg?.
+        const speakerOrgs = editData?.filterValues?.userOrgWebsite?.
           split(',');
-        const speakerNames = editData?.tracker?.filterValue?.userName?.
+        const speakerNames = editData?.filterValues?.userName?.
           split(',');
         const presentCustomData = speakerNames.map((speakerName: string, index: number) => ({
           "Name": speakerName.trim(),
@@ -1136,7 +1087,7 @@ const Pages = () => {
       //   .map((item: any) => item.id);
       // console.log(filteredArr);
       let toggleOpend: Toggle = {};
-      Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
+      Object?.entries(filterValueMapping)?.reduce((acc, [key, mappedKey]) => {
         const value = editData.filterValues[key];
         // if(value && key!=="categories"){
         //   setLocalFilter(mappedKey,value);
@@ -1162,18 +1113,27 @@ const Pages = () => {
       
         // return acc;
       }, {})
-      Object.entries(mapping).forEach(([key, value]) => {
+      Object?.entries(mapping)?.forEach(([key, value]) => {
         if (editData?.filterValues?.show?.includes(key)) {
           showsData.push(value);
         }
         // console.log(editData?.filterValues?.shows);
         
       });
-      const ids = Object.keys(editData?.filterValues?.locationIds);
+      const eventTypes = 
+    Object?.values(editData?.filterValues?.eventTypes || {}).map((eventType) => {
+      return eventType.slug;
+    });
+    
+    setLocalFilter("eventTypes",eventTypes.join(","))
+    if(editData?.filterValues?.locationIds){
+      const ids = Object?.keys(editData?.filterValues?.locationIds);
+      setLocalFilter("locationIds", ids.join(","))
       console.log(ids);
+    }
       
       setLocalFilter("show", showsData.join(","))
-      setLocalFilter("locationIds", ids.join(","))
+      
       const eventLocation = 
     // Object.values(data?.filterValues?.locationIds || {}).map((location) => {
     //   return location.displayName;
