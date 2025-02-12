@@ -9,16 +9,12 @@ import * as Flags from "country-flag-icons/react/3x2";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import {
-  DesignationSpread,
   Event,
-  EventExhibitorDetails,
-  EventParticipantsDetails,
   TTabs,
 } from "@/types/events";
 import { CircularProgressBar } from "../eventDetail/circularProgressBar";
 import { useInView } from "react-intersection-observer";
 import { Heading } from "../eventDetail/heading";
-import { GTMEventDetail } from "@/types/events";
 import {
   audienceSpreadDummyData,
   designationsDummyData as designations,
@@ -36,7 +32,7 @@ import Restriction from "../eventDetail/restriction";
 
 // type TTabs = "Department Type" | "Designation Type";
 interface Props {
-  eventDetails: GTMEventDetail;
+  eventDetails: Event;
   eventExhibitorData: EventParticipantsDetails[];
   eventSpeakerData: EventParticipantsDetails[];
   scrollSection: string;
@@ -58,8 +54,10 @@ export const AudienceIntel = ({
     audienceProfile,
   } = morphedData;
 
-  const { audienceSpread, stats, designation, designationSpread } =
-    eventDetails;
+  const { audienceSpread, designationSpread } =
+    (eventDetails && eventDetails.audience) || {};
+
+
 
   const parseEstimatedExhibitor = (value: string | number) => {
     if (typeof value === "string" && value.includes("-")) {

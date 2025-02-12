@@ -1,3 +1,4 @@
+import { X } from "lucide-react";
 import { z } from "zod";
 
 const LocationSchema = z.object({
@@ -164,6 +165,7 @@ const InsightsEventSchema = z.object({
   speakersCount: z.number(),
   exhibitorsCount: z.number(),
   economicImpact: z.string(),
+  economicImpactBreakdown: z.record(z.number()).nullable(),
   estimatedVisitorRangeTag: z.string().nullable(),
   repeatSentiment: z.number(),
   trustScore: z.number().nullable(),

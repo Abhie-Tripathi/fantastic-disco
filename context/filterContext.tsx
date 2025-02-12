@@ -185,7 +185,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const getEnabledFilters = async () => {
       try {
-        const data = await eventService.fetchEnabledFilters("research");
+        const data = await eventService.fetchEnabledFilters("filter");
         setEnabledFilters(data || {});
       } catch (e) {
         console.error("Error fetching filters:", e);

@@ -769,17 +769,18 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             eventId={params.eventId}
           />
           <InsightsAndScores
-            eventDetails={insights}
+            eventDetails={eventData}
+            eventRankingDetails={eventRankingDetails}
             scrollSection={tabs[1].path}
             setActiveTab={setActiveTab}
           />
-          {/* <AudienceIntel
-            eventDetails={eventDetails}
+          <AudienceIntel
+            eventDetails={eventData}
             eventExhibitorData={eventExhibitorData}
             eventSpeakerData={eventSpeakerData}
             scrollSection={tabs[2].path}
             setActiveTab={setActiveTab}
-          /> */}
+          />
         </section>
         {/* <section className="flex flex-col flex-1 h-full right-0  overflow-y-hidden"></section> */}
       </div>

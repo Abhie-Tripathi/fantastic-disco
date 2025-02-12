@@ -164,7 +164,7 @@ export function useDefaultFilters() {
 
     try {
       // Try to use enabled filters first
-      const enabledFilters = await eventService.fetchEnabledFilters("research");
+      const enabledFilters = await eventService.fetchEnabledFilters("filter");
       if (enabledFilters) {
         const params = new URLSearchParams(searchParams.toString());
         const enabledFilterParams = mapEnabledFiltersToParams(enabledFilters);

@@ -66,7 +66,6 @@ const CarouselComponent = ({
     eventDetails || {};
   const { maturityLevels, frequencies, forcastedStatus, globalAndTourings } =
     morphedData;
-  console.log(eventEditionData);
   const { count, editions } = eventEditionData;
   const [api, setApi] = useState<CarouselApi>();
   const [isSlidingEnabled, setIsSlidingEnabled] = useState<boolean>();

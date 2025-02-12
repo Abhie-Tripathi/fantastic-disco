@@ -61,6 +61,20 @@ export interface EventRankingDetail {
   };
 }
 
+export interface EventSpeakerDetails {
+  id: number;
+  name: string;
+  designation: string;
+  company: string;
+  title: string;
+  location: {
+    cityName: string;
+    countryName: string;
+  };
+  profilePicture: string;
+  interestCapturedOn: string;
+}
+
 export interface EventRankingLocation {
   id: string;
   name: string;

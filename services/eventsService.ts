@@ -7,6 +7,7 @@ import {
   Event,
   EventPOCDetailResponse,
   OverallRankingsDetail,
+  EventSpeakerDetails,
 } from "@/types/events";
 import { EventsAdapter } from "@/adapters/eventsAdapter";
 import { ApiError } from "@/types/api";
@@ -106,7 +107,7 @@ export const useEventsService = () => {
     skip: number
   ) => {
     const response = await api.request<EventSpeakerDetails[]>(
-      `${endpoints.event.eventDetailById}/speaker?id=${id}&take=${take}&skip=${skip}`,
+      `${endpoints.event.eventDetailById}/${id}/speakers?take=${take}&skip=${skip}`,
       {
         method: "GET",
       }
@@ -177,7 +178,7 @@ export const useEventsService = () => {
   };
   const fetchEnabledFilters = async (source: String) => {
     const response = await api.request(
-      `${endpoints.event.enabledFilters}?source=${source}`,
+      `${endpoints.event.enabledFilters}/${source}`,
       {
         method: "GET",
       }
