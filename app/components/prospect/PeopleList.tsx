@@ -161,7 +161,7 @@ export const PeopleList = ({
           <PeopleCard poc={item} key={index} unlockPoc={unlockPoc} />
         ))}
       </div>
-      <div className="bg-background py-2 border-t">
+      <div className="sticky bottom-0 bg-background py-2 border-t">
         <PaginationComponent
           currentPage={currentPage}
           totalPages={totalPages}
