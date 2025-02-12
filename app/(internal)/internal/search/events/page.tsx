@@ -1,6 +1,6 @@
 "use client";
 
-import Table from "@/app/components/Table";
+import Table from "@/app/components/Table/EventTable";
 import ZeroState from "@/app/components/zerostate";
 import EventCalendar from "@/components/eventCalendar";
 import AdvancedFilters from "@/components/search/advancedFilters";
@@ -89,7 +89,9 @@ const Search = () => {
   >({
     queryKey: ["events", searchParams.toString()],
     queryFn: () =>
-      eventService.getEvents(Object.fromEntries(modifiedSearchParams.entries())),
+      eventService.getEvents(
+        Object.fromEntries(modifiedSearchParams.entries())
+      ),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
@@ -155,35 +157,6 @@ const Search = () => {
     setFilter("view", value);
   };
 
-  const selectedInsights = {
-    eventSize: true,
-    eventKeywords: true,
-    eventRank: searchParams.get("sortBy") === "score" ? true : false,
-    matchScore: searchParams.get("keywords") ? true : false,
-    growth: false,
-    eventSeries: searchParams.get("shows")?.includes("eventSeries"),
-    brandedEvent: searchParams.get("shows")?.includes("eventBrand"),
-    global: false,
-    reptSent: false,
-    eventRating: searchParams.get("shows")?.includes("eventRating"),
-    estExhibit: searchParams.get("shows")?.includes("estimatedExhibitScore"),
-    repeatSent: searchParams.get("trustScore") ? true : false,
-    maturity: searchParams.get("shows")?.includes("maturity"),
-    impactScore: searchParams.get("shows")?.includes("eventImpactScore"),
-    inboundScore: searchParams.get("shows")?.includes("inboundScore"),
-    internationalScore: searchParams.get("shows")?.includes("internationalScore"),
-    forecasted: searchParams.get("shows")?.includes("isforecasted"),
-    audienceZone: searchParams.get("shows")?.includes("audienceZone"),
-    audienceSpread: searchParams.get("shows")?.includes("audienceSpread"),
-    eventFrequency: searchParams.get("shows")?.includes("eventFrequency"),
-    includeKeywords: searchParams.get("includeKeywords")
-      ? searchParams.get("includeKeywords")
-      : "",
-    excludeKeywords: searchParams.get("excludeKeywords")
-      ? searchParams.get("excludeKeywords")
-      : "",
-  };
-
   // console.log(adaptedQueryString);
 
   const createTrackerHandler = async () => {
@@ -219,8 +192,6 @@ const Search = () => {
   useEffect(() => {
     setView(searchParams.get("view") || "");
   }, [searchParams]);
-
-  
 
   return (
     <div className="p-6">
@@ -380,16 +351,7 @@ const Search = () => {
         </TabsContent>
 
         <TabsContent value="table" className="flex-grow overflow-hidden">
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <Table
-              showInsights={selectedInsights}
-              queryString={modifiedSearchParams.toString()}
-              setRequestExhausted={() => {}}
-              handleButtonLoading={() => setTableLoading}
-            />
-          )}
+          <Table />
         </TabsContent>
         <TabsContent value="map">
           {isLoading ? (

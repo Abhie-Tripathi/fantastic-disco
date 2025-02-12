@@ -23,7 +23,7 @@ import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from '@/public/trackerNullState.svg';
 import Calendar from '@/public/internal/calendar.svg'
 import TrackerLocation from '@/public/internal/location.svg'
-import Table from "@/app/components/Table";
+import Table from "@/app/components/Table/EventTable";
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
 import { baseUrl } from "@/constants";
 import Add from "/public/add.svg";

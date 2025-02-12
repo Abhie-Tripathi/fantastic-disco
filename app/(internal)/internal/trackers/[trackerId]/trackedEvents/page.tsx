@@ -15,7 +15,7 @@ const Trackers = React.lazy(
 import { TrackersAdapter } from "@/adapters/trackerAdapter";
 import { useQuery } from "@tanstack/react-query";
 import List from "@/components/search/list";
-import Table from "@/app/components/Table";
+import Table from "@/app/components/Table/EventTable";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl} from "@/context";

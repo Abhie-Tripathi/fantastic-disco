@@ -171,6 +171,7 @@ const InsightsEventSchema = z.object({
   estimatedAttendanceMean: z.number().nullable(),
   estimatedAttendance: z.string().nullable(),
   rankings: RankingSchema,
+  trustScore: z.number().nullable(),
   scores: z
     .object({
       impactScore: z.number().nullable(),
