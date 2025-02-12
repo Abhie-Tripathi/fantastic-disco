@@ -149,15 +149,6 @@ const EventTrends = () => {
     staleTime: 0,
   });
 
-  // const { data: holdiayData } = useQuery({
-  //   queryKey: ["holiday", updatedParams],
-  //   queryFn: async () => await getEventsWithSearchParams(updatedParams),
-  //   enabled: !!updatedParams,
-  //   refetchOnWindowFocus: false,
-  //   gcTime: 0,
-  //   staleTime: 0,
-  // });
-
   // const { data: savedTrendsList } = useQuery<GetSaveTrendData>({
   //   queryKey: ["getSavedTrends"],
   //   queryFn: async () => {
@@ -314,8 +305,6 @@ const EventTrends = () => {
       )} */}
       <div>
         <div className="grid grid-cols-5 max-lg:grid-cols-2 gap-4 pt-4 pb-6 border-b items-end">
-          {/* <EventTypeSelector source={""} /> */}
-          {/* <TrendsEventTypeSelector /> */}
           <EventTypeSelector />
           <div className="flex flex-col gap-2 items-start">
             <LocationSelector />
@@ -381,11 +370,6 @@ const EventTrends = () => {
                 }
                 showLegend
               />
-              {/* <D3Chart predictedData={filteredData} /> */}
-              {/* <D3AreaChart
-                predictedData={graphData}
-                selectedEventType={selectedEventType}
-              /> */}
             </div>
             <div className={styles.inner_container}>
               <div className="py-8">
@@ -397,15 +381,6 @@ const EventTrends = () => {
                   data={tableData && tableData.length > 0 ? tableData : []}
                   tableColumns={tableColumns || []}
                 />
-                {/* <PeriodicAnalytics
-                isSmartInsightsEnabled={isSmartInsightsEnabled}
-                smartInsightState={smartInsightState}
-                setIsSmartInsightsEnabled={setIsSmartInsightsEnabled}
-                setSmartInsightState={setSmartInsightState}
-                data={tableData && tableData.length > 0 ? tableData : []}
-                holidayByDates={holidaysByDate}
-                tableColumns={tableColumns || []}
-              /> */}
               </div>
             </div>
           </div>
