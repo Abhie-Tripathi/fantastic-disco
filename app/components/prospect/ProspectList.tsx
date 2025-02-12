@@ -1,9 +1,10 @@
 "use client";
 
 import { PaginationComponent } from "@/components/pagination";
+import { Badge } from "@/components/ui/badge";
 import { useFilterState } from "@/hooks/useFilterState";
+import { convertToCustomFormat } from "@/utils/dateFormat";
 import { Buildings, Location } from "geist-icons";
-import { Factory } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -22,15 +23,21 @@ interface companyDetail {
   id: number | string;
   description: string;
   location: {
-    cityName: string,
-    countryName: string,
+    cityName: string;
+    countryName: string;
+    state: string;
   };
   logo: string | null;
   event_categoryName: string[];
   stats: {
     totalEvents: number;
+    upcomingEvents: number;
+    totalExhibit: number;
+    totalVisitor: number;
+    totalSponsor: number;
+    lastLogin: string;
   };
-
+  company_tag: string[];
 }
 
 const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
@@ -53,35 +60,60 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
           )}
           <div className="flex gap-2 flex-col">
             <div className="text-xl font-semibold">{companyDetail.name}</div>
-            <div className="text-[#707287] text-sm line-clamp-2">
-              {companyDetail.description}
-            </div>
+            {companyDetail?.description &&
+              companyDetail?.description.length > 10 && (
+                <div className="text-[#707287] text-sm line-clamp-2">
+                  {companyDetail?.description}
+                </div>
+              )}
 
             <div className="flex gap-2">
               <div className="flex gap-2 items-center border-r w-fit pr-3">
                 <Location color="#666666" width="14px" height="14px" />
                 <span className="text-[#6E6F89] text-sm">
-                  {companyDetail.location.cityName}, {companyDetail.location.countryName}
+                  {[
+                    companyDetail.location?.cityName,
+                    companyDetail.location?.countryName,
+                  ]
+                    .filter(Boolean)
+                    .join(", ")}
                 </span>
               </div>
 
               <div className="flex gap-2 items-center w-fit">
-                <Buildings color="#666666" width="14px" height="14px" />
-                {companyDetail.event_categoryName.map((item) => (
-                  <span
-                    key={item}
-                    className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
-                  >
-                    {item}
-                  </span>
-                ))}
+                {companyDetail.event_categoryName?.length > 0 && (
+                  <>
+                    <Buildings color="#666666" width="14px" height="14px" />
+                    {companyDetail.event_categoryName?.map((item) => (
+                      <span
+                        key={item}
+                        className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
+                      >
+                        {item}
+                      </span>
+                    ))}
+                  </>
+                )}
 
-                {companyDetail?.companyType && (
+                {companyDetail?.company_tag.length > 0 &&
+                  companyDetail?.company_tag
+                    ?.filter(Boolean)
+                    .slice(0, 2)
+                    ?.map((item: any, index: number) => (
+                      <span
+                        key={item}
+                        className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
+                      >
+                        #{item}
+                      </span>
+                    ))}
+
+                {/* {companyDetail?.companyType && (
                   <span className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-2 border-[#CCE6FF] border rounded-md w-fit flex">
                     <Factory height={14} color="#666666" />
                     Private
                   </span>
-                )}
+                )} */}
 
                 {/* <span className="text-[var(--info-text-color)] text-xs font-medium">
                   +2 more
@@ -89,18 +121,61 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
               </div>
             </div>
 
-            {companyDetail.stats.totalEvents > 0 && (
-              <div className="flex gap-2 items-center w-fit">
-                <span className="text-[#A35200] bg-[#FFF4D6] h-fit font-semibold text-xs py-1 px-4 border-[#FEF0CD] border rounded-md w-fit">
-                  {companyDetail.stats.totalEvents} Events
-                </span>
-              </div>
-            )}
+            <div className="flex flex-wrap gap-2 items-center w-fit">
+              {companyDetail.stats?.totalEvents > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                >
+                  Total Events: {companyDetail.stats.totalEvents}
+                </Badge>
+              )}
+              {companyDetail.stats?.upcomingEvents > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                >
+                  Upcoming Events: {companyDetail.stats.upcomingEvents}
+                </Badge>
+              )}
+              {companyDetail.stats?.totalExhibit > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                >
+                  Events Exhibited: {companyDetail.stats.totalExhibit}
+                </Badge>
+              )}
+              {companyDetail.stats?.totalSponsor > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                >
+                  Events Sponsored: {companyDetail.stats.totalSponsor}
+                </Badge>
+              )}
+              {companyDetail.stats?.totalVisitor > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                >
+                  Events Visited: {companyDetail.stats.totalVisitor}
+                </Badge>
+              )}
+              {companyDetail?.stats?.lastLogin && (
+                <Badge
+                  variant="outline"
+                  className="text-gray-600 capitalize rounded-sm"
+                >
+                  Last Active:{" "}
+                  {convertToCustomFormat(companyDetail?.stats?.lastLogin)}
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
       </Link>
     </div>
-
   );
 };
 
@@ -132,7 +207,7 @@ export const ProspectList = ({
       {companies?.map((item: companyDetail, index: number) => (
         <ProspectCard companyDetail={item} key={index} />
       ))}
-      <div className="bg-background py-2 border-t">
+      <div className="sticky bottom-0 bg-background py-2 border-t">
         <PaginationComponent
           currentPage={currentPage}
           totalPages={totalPages}

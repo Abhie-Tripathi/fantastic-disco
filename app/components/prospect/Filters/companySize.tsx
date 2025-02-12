@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useFilterContext } from "@/context/filterContext";
 import { EventType } from "@/public/data/searchFilters";
 
 const filterData = [
-  { id: "0-500", label: "1 - 10", min: 0, max: 500, isEnabled: true },
+  { id: "1-10", label: "1 - 10", min: 1, max: 10, isEnabled: true },
   { id: "11-20", label: "11 - 20", min: 11, max: 20, isEnabled: true },
   { id: "21-50", label: "21 - 50", min: 21, max: 50, isEnabled: true },
   { id: "51-100", label: "51 - 100", min: 51, max: 100, isEnabled: true },

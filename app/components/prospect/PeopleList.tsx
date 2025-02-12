@@ -139,7 +139,7 @@ export const PeopleList = ({
             : poc
         )
       );
-      const data = await companyService.unlockUserDetail(pocId, 1725);
+      const data = await companyService.unlockUserDetail(pocId, 'isUser');
       if (data) {
         setCompanyUsers(prevPocData => 
           prevPocData.map(poc => 
@@ -156,8 +156,8 @@ export const PeopleList = ({
 
   return (
     <div className="">
-      <div className="h-full overflow-y-auto w-full grid grid-cols-[repeat(auto-fill,_220px)] gap-4 pb-3">
-        {companyUsers?.map((item, index: number) => (
+      <div className="h-full overflow-y-auto w-full grid grid-cols-[repeat(auto-fill,_220px)] gap-4 pb-3 justify-center">
+        {companyUsers.filter((item) => (item.user_name !== null && item.user_profilePicture !== null))?.map((item, index: number) => (
           <PeopleCard poc={item} key={index} unlockPoc={unlockPoc} />
         ))}
       </div>

@@ -14,90 +14,148 @@ import Text from "@/components/new-ui/Text";
 import "react-circular-progressbar/dist/styles.css";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import {
-  categoryRank,
-  countryCategoryRank,
-  countryRank,
-  Editions,
-  Event,
-  GTMEventDetail,
-  TTabs,
-} from "@/types/events";
+import { TTabs } from "@/types/events";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Bookmark,
-  CircleSlash,
-  MailIcon,
-  PhoneIcon,
-} from "lucide-react";
-// import { useEventsService } from "@/services/eventsService";
+import { CircleSlash, Factory, MailIcon, PhoneIcon } from "lucide-react";
 import { GTMEventPOCDetails } from "@/types/events";
-import { Button } from "@/components/ui/button";
 import { AdvancedDetails } from "@/app/components/prospectDetail/advancedDetails";
 import { SectionHeading } from "@/app/components/prospectDetail/prospectHeading";
-import { CompanyClients } from "@/app/components/prospectDetail/CompanyClients";
 import { EventCalendar } from "@/app/components/prospectDetail/EventCalendar";
-import companyDataJson from "@/public/data/companyData.json";
+import { Button as ButtonUI } from "@/components/ui/button";
+import { useCompanyService } from "@/services/companyService";
 
-export interface RankingDetail {
-  above5CountryEvent: countryRank[] | [];
-  below5CountryEvent: countryRank[] | [];
-  above5CategoryEvent: categoryRank[] | [];
-  below5CategoryEvent: categoryRank[] | [];
-  above5CountryCategoryRankEvent: countryCategoryRank[] | [];
-  below5CountryCategoryEvent: countryCategoryRank[] | [];
-}
+const getCompanyIndustries = (industries: any[], companyTag: any[]) => {
+  if (industries && industries.length > 0) {
+    const topData = industries
+      .filter((item) => item.isGroup === 1)
+      .sort((a, b) => b.eventCount - a.eventCount)
+      .slice(0, 5);
+
+    // const names = [...topData.map(item => item.name), ...companyTag.map(item => '#'+item)];
+    return topData.map((item) => item.name);
+  } else return [];
+};
+
 const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
-
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
   const tabs = [
     { tabName: "Overview", path: "overview" },
     { tabName: "Events", path: "insights" },
   ];
 
-  const [isExpandDescription, setisExpandDescription] = useState<boolean>(false);
+  const [isExpandDescription, setisExpandDescription] =
+    useState<boolean>(false);
 
-  const getCompanyDetailById = (companyId: string) => {
-    const c_data =  companyDataJson.data.filter((item: any) => item.url === companyId);
-    if(c_data && c_data.length > 0)
-      return c_data[0];
-    else
-      return [];
-  }
+  // const [isExpandIndustry, setisExpandIndustry] = useState<boolean>(false);
 
-  // const {
-  //   getEventDetailById,
-  //   getEventPOCDetails,
-  // } = useEventsService();
-  const { data: event } = useQuery<any>({
+  const [eventPOCDetails, setEventPOCDetails] = useState<GTMEventPOCDetails[]>(
+    []
+  );
+  const [upcomingEvents, setUpcomingEvents] = useState<any[]>([]);
+  const [pastEvents, setPastEvents] = useState<any[]>([]);
+
+  const {
+    getCompanyDetailById,
+    getCompanyEvents,
+    getCompanyPOC,
+    unlockUserDetail,
+  } = useCompanyService();
+
+  const { data: company } = useQuery<any>({
     queryKey: ["eventDetails"],
     queryFn: async () => {
       const [
         companyDataResult,
+        upcomingEvents,
+        pastEvents,
+        eventPOCDataResult,
       ] = await Promise.allSettled([
         getCompanyDetailById(params.companyId),
+        getCompanyEvents(params.companyId, "upcomming"),
+        getCompanyEvents(params.companyId, "past"),
+        getCompanyPOC(params.companyId),
       ]);
-      const companyData = companyDataResult.status === "fulfilled" ? companyDataResult.value : null;
+      const companyResponse =
+        companyDataResult.status === "fulfilled"
+          ? companyDataResult.value
+          : null;
+      const upcomingEventRes =
+        upcomingEvents.status === "fulfilled" ? upcomingEvents.value : null;
+      const pastEventRes =
+        pastEvents.status === "fulfilled" ? pastEvents.value : null;
+      const eventPOCData =
+        eventPOCDataResult.status === "fulfilled"
+          ? eventPOCDataResult.value
+          : null;
+      setEventPOCDetails(eventPOCData?.companyPoc || []);
+      setUpcomingEvents(upcomingEventRes.events || []);
+      setPastEvents(pastEventRes.events || []);
       return {
-        companyDetails: companyData,
+        companyDetails: companyResponse.companyData,
+        upcomingEventsCount: upcomingEventRes.stats.totalEvents,
+        pastEventsCount: pastEventRes.stats.totalEvents,
       };
     },
+    refetchOnWindowFocus: false,
   });
 
-  if (!event) return null;
-  const {
-    companyDetails,
-  } = event;
+  if (!company) return null;
+  const { companyDetails, upcomingEventsCount, pastEventsCount } = company;
 
   const handleScrollTo = (section: string) => {
     const element = document.querySelector(`.${section}`);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const unlockPoc = async (pocId: number) => {
+    try {
+      setEventPOCDetails((prevPocData) =>
+        prevPocData.map((poc) =>
+          poc.id === pocId ? { ...poc, state: 1 } : poc
+        )
+      );
+      const data = await unlockUserDetail(pocId, params.companyId);
+      if (data) {
+        setEventPOCDetails((prevPocData) =>
+          prevPocData.map((poc) =>
+            poc.id === pocId
+              ? {
+                  ...poc,
+                  email: data.email,
+                  phoneNumber: data.phoneNumber,
+                  state: 2,
+                }
+              : poc
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const loadMoreEvents = async (type: string) => {
+    if (type === "past") {
+      const moreEvents = await getCompanyEvents(
+        params.companyId,
+        "past",
+        pastEvents.length
+      );
+      setPastEvents((prev) => [...prev, ...moreEvents?.events]);
+    } else if (type === "upcoming") {
+      const moreEvents = await getCompanyEvents(
+        params.companyId,
+        "upcomming",
+        upcomingEvents.length
+      );
+      setUpcomingEvents((prev) => [...prev, ...moreEvents?.events]);
     }
   };
 
@@ -114,17 +172,17 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           </Link>
         </button>
 
-        { companyDetails?.cdn_url &&
+        {companyDetails?.logo && (
           <div className="flex bg-[#F8F8FA] dark:bg-[var(--heading-background-color)] rounded-md px-6 py-4">
             <Image
-              src={companyDetails?.cdn_url}
+              src={companyDetails?.logo}
               alt="eventLogo"
               className="flex h-20 w-20 rounded-xl shadow-lg"
               width={200}
               height={200}
             />
           </div>
-        }
+        )}
 
         {companyDetails?.name && (
           <Heading as="h6" variant="titleNoMargin" className="my-4">
@@ -134,33 +192,68 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
 
         <div className="flex gap-2 items-center w-fit my-4">
           <Location color="#666666" width="14px" height="14px" />
-          <span className="text-[#6E6F89] text-sm">{companyDetails?.city}, {companyDetails?.country}</span>
+          <span className="text-[#6E6F89] text-sm">
+            {[
+              companyDetails.location?.cityName,
+              companyDetails.location?.state,
+              companyDetails.location?.countryName,
+            ]
+              .filter(Boolean)
+              .join(", ")}
+          </span>
         </div>
 
         <div className="flex gap-2 items-center w-fit my-4 flex-wrap">
-          <Buildings color="#666666" width="14px" height="14px" />
-
-          {companyDetails?.industries?.map((item: string) => (
-            <span key={item} className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md whitespace-nowrap">
+          {companyDetails?.industries?.asOrganizer.length > 0 && (
+            <Buildings color="#666666" width="14px" height="14px" />
+          )}
+          {getCompanyIndustries(
+            companyDetails?.industries?.asOrganizer,
+            companyDetails?.companyTag
+          )?.map((item: any) => (
+            <span
+              key={item}
+              className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-2 border-[#CCE6FF] border rounded-md whitespace-nowrap"
+            >
               {item}
             </span>
           ))}
 
-          {/* <span className="text-[var(--info-text-color)] text-xs font-medium">
-            +2 more
+          {/* <span
+            className="text-[var(--info-text-color)] text-xs font-medium cursor-pointer"
+            onClick={() => setisExpandIndustry(!isExpandIndustry)}
+          >
+            { (companyDetails?.industries?.asOrganizer?.length + companyDetails?.companyTag?.length) > 2
+              ? isExpandIndustry
+                ? "Show Less"
+                : `+${(companyDetails?.industries?.asOrganizer?.length + companyDetails?.companyTag?.length) -2} more`
+              : ""}
           </span> */}
         </div>
 
+        <div className="flex gap-2 items-center w-fit my-4 flex-wrap">
+          {companyDetails?.companyTag.length > 0 && (
+            <Factory color="#666666" width="14px" height="14px" />
+          )}
+          {companyDetails?.companyTag.slice(0, 2)?.map((item: any) => (
+            <span
+              key={item}
+              className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-2 border-[#CCE6FF] border rounded-md whitespace-nowrap"
+            >
+              #{item}
+            </span>
+          ))}
+        </div>
+
         <Text variant="noMargin" color="secondary">
-          {isExpandDescription ?
-            companyDetails?.profile
-              : companyDetails?.profile?.slice(0, 200)
-          }
+          {isExpandDescription
+            ? companyDetails?.description
+            : companyDetails?.description?.slice(0, 200)}
           <span
             className="font-semibold underline cursor-pointer ml-2"
             onClick={() => setisExpandDescription(!isExpandDescription)}
           >
-            { companyDetails?.profile?.length > 200
+            {companyDetails?.description?.length > 200
               ? isExpandDescription
                 ? "Show Less"
                 : "Read More"
@@ -169,9 +262,33 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
         </Text>
 
         <div className="flex gap-4 my-6">
-          <Linkedin color="#666666" className="cursor-pointer" />
-          <LogoTwitterX color="#666666" className="cursor-pointer" />
-          <Globe color="#666666" className="cursor-pointer" />
+          {companyDetails?.social?.linkedinId && (
+            <Link
+              href={companyDetails?.social?.linkedinId}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Linkedin color="#666666" className="cursor-pointer" />
+            </Link>
+          )}
+          {companyDetails?.social?.twitterId && (
+            <Link
+              href={companyDetails?.social?.twitterId}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <LogoTwitterX color="#666666" className="cursor-pointer" />
+            </Link>
+          )}
+          {companyDetails?.website && (
+            <Link
+              href={companyDetails?.website}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Globe color="#666666" className="cursor-pointer" />
+            </Link>
+          )}
         </div>
 
         <Accordion
@@ -183,7 +300,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
             <AccordionTrigger className="hover:no-underline p-2 font-normal text-sm">
               <p className="flex gap-3 items-center">
                 Company POC
-                {/* {eventPOCDetails.length > 0 && (
+                {eventPOCDetails.length > 0 && (
                   <span className="text-[12px] bg-[var(--primary-color)] text-white dark:text-[#131313] py-[1px] px-2 rounded-full">
                     {eventPOCDetails.filter((poc) => poc !== null).length > 0 &&
                     eventPOCDetails.filter((poc) => poc !== null).length < 9
@@ -192,16 +309,18 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
                         }`
                       : eventPOCDetails.filter((poc) => poc !== null).length}
                   </span>
-                )} */}
+                )}
               </p>
             </AccordionTrigger>
             <AccordionContent
               className={`${
-                companyDetails?.pocData?.length > 1 ? "h-36 overflow-y-auto" : "h-fit"
+                companyDetails?.pocData?.length > 1
+                  ? "h-36 overflow-y-auto"
+                  : "h-fit"
               } pb-1 overflow-x-hidden`}
             >
-              {companyDetails?.pocData && companyDetails?.pocData.length > 0 ? (
-                companyDetails?.pocData?.map((poc: GTMEventPOCDetails | null) => {
+              {eventPOCDetails && eventPOCDetails.length > 0 ? (
+                eventPOCDetails.map((poc: GTMEventPOCDetails | null) => {
                   if (!poc) {
                     return <></>;
                   }
@@ -212,6 +331,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
                     phoneNumber,
                     profilePicture,
                     name,
+                    state,
                   } = poc;
                   return (
                     <div key={id} className="flex flex-row gap-3 p-2">
@@ -253,6 +373,22 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
                             <span>{phoneNumber}</span>
                           </p>
                         )}
+                        {(email || phoneNumber) && (
+                          <div>
+                            <ButtonUI
+                              disabled={
+                                state && (state === 1 || state === 2)
+                                  ? true
+                                  : false
+                              }
+                              onClick={() => unlockPoc(id)}
+                              variant={"outline"}
+                              size={"sm"}
+                            >
+                              Show details
+                            </ButtonUI>
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -267,7 +403,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           </AccordionItem>
         </Accordion>
 
-        <div className="flex gap-6 mt-4 justify-center">
+        {/* <div className="flex gap-6 mt-4 justify-center">
           <Button variant="outline" className="p-5 w-1/2 border-[var(--primary-color)] text-[var(--primary-color)]">
             <Bookmark
               width={15}
@@ -276,32 +412,33 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
             />
             Bookmark</Button>
           <Button className="p-5 w-1/2">Connect</Button>
-        </div>
+        </div> */}
       </aside>
       <div className="ml-auto w-[70%] max-xl:w-[62%]">
         <ul className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white dark:bg-[var(--heading-background-color)] shadow-md pt-3 items-end w-full">
           <div className="flex gap-12">
-            {tabs
-              .map((tab) => (
-                <div
-                  key={tab.tabName}
-                  onClick={() => {
-                    handleScrollTo(tab.path);
-                  }}
-                  className={`relative font-semibold cursor-pointer pb-3 ${
-                    activeTab === tab.path
-                      ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
-                      : "text-[var(--tertiary-text-color)]"
-                  }`}
-                >
-                  {tab.tabName}
-                </div>
-              ))}
+            {tabs.map((tab) => (
+              <div
+                key={tab.tabName}
+                onClick={() => {
+                  handleScrollTo(tab.path);
+                }}
+                className={`relative font-semibold cursor-pointer pb-3 ${
+                  activeTab === tab.path
+                    ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
+                    : "text-[var(--tertiary-text-color)]"
+                }`}
+              >
+                {tab.tabName}
+              </div>
+            ))}
           </div>
-          <div className="border px-2.5 py-0.5 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit mb-4 mr-3">Demo</div>
+          <div className="border px-2.5 py-0.5 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit mb-4 mr-3">
+            Demo
+          </div>
         </ul>
 
-        <section className="flex flex-col gap-6 pb-6 h-[calc(100vh-150px)] mt-5 w-full pr-4 overflow-y-auto scroll-smooth">
+        <section className="flex flex-col gap-6 pb-6 h-[calc(100vh-180px)] mt-5 w-full pr-4 overflow-y-auto scroll-smooth">
           <SectionHeading
             heading="Company Details"
             scrollSection={tabs[0].path}
@@ -309,11 +446,12 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           />
           <AdvancedDetails
             eventId={params.companyId}
+            stats={companyDetails.stats}
           />
 
-          <SectionHeading heading="Clients" />
+          {/* <SectionHeading heading="Clients" /> */}
 
-          <CompanyClients />
+          {/* <CompanyClients /> */}
 
           <SectionHeading
             heading="Events"
@@ -321,7 +459,14 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
             setActiveTab={setActiveTab}
           />
 
-          <EventCalendar />
+          <EventCalendar
+            companyId={params.companyId}
+            upcomingEvents={upcomingEvents}
+            upcomingEventsCount={upcomingEventsCount}
+            pastEvents={pastEvents}
+            pastEventsCount={pastEventsCount}
+            loadMoreEvents={loadMoreEvents}
+          />
         </section>
       </div>
     </div>

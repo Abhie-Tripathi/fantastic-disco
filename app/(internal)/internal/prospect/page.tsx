@@ -32,6 +32,7 @@ import Designation from "@/app/components/prospect/Filters/designation";
 import LocationSelector from "@/app/components/prospect/Filters/location";
 import PeopleFilter from "@/app/components/prospect/Filters/peopleFilter";
 import { PeopleList } from "@/app/components/prospect/PeopleList";
+import { useFilterState } from "@/hooks/useFilterState";
 
 interface CompanyListResponse {
   totalCount: number;
@@ -46,54 +47,6 @@ interface ProspectFilters {
   enabled?: boolean;
   filterName?: any;
 }
-
-// const peopleData: pocDetail[] = [
-//   {
-//       "id": 63400046,
-//       "name": "Vinoth",
-//       "designation": "AGM - Own Shows",
-//       "email": "sv@hitex.co.in",
-//       "phoneNumber": "+91********159",
-//       "profilePicture": "https://c1.10times.com/user/images/0/4/6/63400046_1710389446.jpg",
-//       "emailActive": "2025-01-21 12:03:13"
-//   },
-//   {
-//       "id": 35570,
-//       "name": "John",
-//       "designation": "Sr. Manager - Own Shows",
-//       "email": "js@hitex.co.in",
-//       "phoneNumber": "+91********117",
-//       "profilePicture": "https://c1.10times.com/user_pic%2FskWcFEdNT4dxpz%2BZhi%2BVALFBjA85qfm3wWbW64Wn9MbKKYMMe91dsYHErZuQYxjacXZeNnGvKf7FY4qjzbUlrg%3D%3D.jpg",
-//       "emailActive": "2025-01-20 18:09:28"
-//   },
-//   {
-//       "id": 66132975,
-//       "name": "Harshitha Reddy",
-//       "designation": "Organizer",
-//       "email": "hn*@hitex.co.in",
-//       "phoneNumber": null,
-//       "profilePicture": "https://c1.10times.com/userimages/h.jpg",
-//       "emailActive": "2024-12-16 12:50:10"
-//   },
-//   {
-//       "id": 66121550,
-//       "name": "Sudarshan",
-//       "designation": "Asst. Manager",
-//       "email": "rs*@hitex.co.in",
-//       "phoneNumber": "+91********610",
-//       "profilePicture": "https://c1.10times.com/userimages/s.jpg",
-//       "emailActive": "2024-08-31 10:52:57"
-//   },
-//   {
-//       "id": 60350557,
-//       "name": "LDF India",
-//       "designation": "Marketing Manager",
-//       "email": "sk*@hitex.co.in",
-//       "phoneNumber": "+91********323",
-//       "profilePicture": "https://c1.10times.com/user/images/5/5/7/60350557_1683541380.jpg",
-//       "emailActive": "2023-11-07 14:29:38"
-//   }
-// ];
 
 const companyFilters: ProspectFilters[] = [
   {
@@ -126,12 +79,12 @@ const companyFilters: ProspectFilters[] = [
     filterName: "companyType",
     enabled: true,
   },
-  {
-    id: "item-6",
-    label: "Established Year",
-    filterName: "establishedYear",
-    enabled: true,
-  },
+  // {
+  //   id: "item-6",
+  //   label: "Established Year",
+  //   filterName: "establishedYear",
+  //   enabled: false,
+  // },
 ];
 
 const eventFilters: ProspectFilters[] = [
@@ -186,28 +139,7 @@ const Prospect = () => {
   const searchParams = useSearchParams();
   const companyService = useCompanyService();
 
-  const {
-    data: companyData,
-    error,
-    isLoading,
-    refetch,
-  } = useQuery<CompanyListResponse | undefined | any>({
-    queryKey: ["prospect", searchParams.toString()],
-    queryFn: () => companyService.getCompanyList(searchParams.toString()),
-    enabled:
-      !!searchParams.toString(),
-      // !(Array.from(searchParams.values()).length == 0),
-    refetchOnWindowFocus: false,
-    gcTime: 0,
-    staleTime: 0,
-  });
-
-  console.log('companyData', companyData);
-  
-
-  const companies = companyData?.companyData || [];
-  const peopleData = companyData?.userData || [];
-  const count = companyData?.totalCount || 9;
+  const { setFilter, getFilterValue } = useFilterState();
 
   const {
     localFilters,
@@ -216,6 +148,27 @@ const Prospect = () => {
     setLocalFilter,
     deleteMultipleLocalFilters,
   } = useFilterContext();
+
+  const selectedView = getFilterValue("viewBy") || "company";
+
+  const {
+    data: companyData,
+    error,
+    isLoading,
+  } = useQuery<CompanyListResponse | undefined | any>({
+    queryKey: ["prospect", searchParams.toString()],
+    queryFn: () => companyService.getCompanyList(searchParams.toString()),
+    enabled:
+      !!searchParams.toString() &&
+      !(Array.from(searchParams.values()).length == 0),
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
+  const companies = companyData?.companyData || [];
+  const peopleData = companyData?.userData || [];
+  const count = companyData?.totalCount || 0;
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
@@ -226,9 +179,8 @@ const Prospect = () => {
   };
 
   const handleTabChange = (prop: string) => {
-    setLocalFilter('viewBy', prop);
-    applyFilters({ resetPage: true });
-  }
+    setFilter("viewBy", prop);
+  };
 
   return (
     <div className="space-y-6">
@@ -238,9 +190,14 @@ const Prospect = () => {
           Find your next ideal customers with real-time insights backed by
           trusted data.
         </div>
-        <div className="badge_success">Coming Soon</div>
+        <div className="badge_success">Beta</div>
       </div>
-      <Tabs defaultValue={"company"} style={{ marginTop: "12px!important" }} onValueChange={handleTabChange} >
+      <Tabs
+        defaultValue={"company"}
+        value={selectedView}
+        style={{ marginTop: "12px!important" }}
+        onValueChange={handleTabChange}
+      >
         <div className="grid grid-cols-3 px-6">
           <TabsList className="grid grid-cols-2 h-auto px-2 col-span-1 mr-6 w-fit">
             <TabsTrigger
@@ -263,16 +220,16 @@ const Prospect = () => {
               People
             </TabsTrigger>
           </TabsList>
-          { (companies.length > 0 || peopleData.length > 0) &&
+          {(companies.length > 0 || peopleData.length > 0) && (
             <div className="text-[#A8A8A8] text-sm font-semibold border-b mt-3 mb-6 relative col-span-2 mr">
-            <span
-              className="absolute top-[-10px] bg-background px-3"
-              style={{ right: "calc(50% - 60px)" }}
-            >
-              Search Results
-            </span>
-          </div>
-          }
+              <span
+                className="absolute top-[-10px] bg-background px-3"
+                style={{ right: "calc(50% - 60px)" }}
+              >
+                Search Results
+              </span>
+            </div>
+          )}
         </div>
 
         <div
@@ -470,13 +427,11 @@ const Prospect = () => {
                       <AccordionContent
                         className={`"h-fit pb-1 overflow-x-hidden`}
                       >
-                        {item.filterName === "designation" ? (
+                        {item.filterName === "userJobTitle" ? (
                           <Designation />
-                        ) : item.filterName === "userName" ||
-                          item.filterName === "linkedinProfile" ? (
+                        ) : item.filterName === "userNames" ||
+                          item.filterName === "userSocialLink" ? (
                           <PeopleFilter filterName={item.filterName} />
-                        ) : item.filterName === "companyType" ? (
-                          <CompanyType />
                         ) : (
                           <></>
                         )}
@@ -521,17 +476,7 @@ const Prospect = () => {
                   title={(error as ApiError).message}
                 />
               ) : (
-                <>
-                  {/* <div className="text-[#A8A8A8] text-sm font-semibold border-b mt-3 mb-6 relative">
-                  <span
-                    className="absolute top-[-10px] bg-background px-3"
-                    style={{ right: "calc(50% - 60px)" }}
-                  >
-                    Search Results
-                  </span>
-                </div> */}
-                  <ProspectList companies={companies} count={count} />
-                </>
+                <ProspectList companies={companies} count={count} />
               )}
             </TabsContent>
 
@@ -550,17 +495,7 @@ const Prospect = () => {
                   title={(error as ApiError).message}
                 />
               ) : (
-                <>
-                  {/* <div className="text-[#A8A8A8] text-sm font-semibold border-b mt-3 mb-6 relative">
-                  <span
-                    className="absolute top-[-10px] bg-background px-3"
-                    style={{ right: "calc(50% - 60px)" }}
-                  >
-                    Search Results
-                  </span>
-                </div> */}
-                  <PeopleList people={peopleData} count={peopleData.length} />
-                </>
+                <PeopleList people={peopleData} count={count} />
               )}
             </TabsContent>
           </div>
