@@ -105,6 +105,7 @@ const Page = ({ params }: { params: any }) => {
     trackerKeywords: true,
     eventRating:false, 
     eventFrequency:false,
+    economicImpact:false,
     includeKeywords: '',
     excludeKeywords: '',
   });
@@ -358,6 +359,9 @@ const Page = ({ params }: { params: any }) => {
     }
     if(toggleOpend?.exhibit===true){
       setShowInsights(prev=>({...prev, estExhibit:true}));
+    }
+    if(toggleOpend?.economicImpact===true){
+      setShowInsights(prev=>({...prev, economicImpact:true}));
     }
     if(toggleOpend?.rating===true){
       setShowInsights(prev=>({...prev, eventRating:true}));

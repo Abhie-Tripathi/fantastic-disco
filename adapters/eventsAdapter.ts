@@ -20,6 +20,8 @@ export const EventsAdapter = {
     if (params.get("show") || params.get("trust_score_gte")) {
       const adaptedShowsParams = [];
       const showsParams = params.get("show");
+      if (showsParams?.includes("economicImpact"))
+        adaptedShowsParams.push("economicImpact");
       if (showsParams?.includes("branded"))
         adaptedShowsParams.push("eventBrand");
       if (showsParams?.includes("series"))
@@ -675,7 +677,7 @@ export const EventsAdapter = {
               }
             : null,
           isSaved: false,
-          economicImpact: null,
+          economicImpact: item.economicImpact || null,
           scores:
             item.eventImpactScore ||
             item.eventInboundScore ||
@@ -819,7 +821,7 @@ export const EventsAdapter = {
             }
           : null,
         isSaved: false,
-        economicImpact: null,
+        economicImpact: response.events[0].economicImpact || null,
         scores: {
           impactScore: response.events[0].eventImpactScore || null,
           inboundScore: response.events[0].eventInboundScore || null,
@@ -955,7 +957,7 @@ export const EventsAdapter = {
             }
           : null,
         isSaved: false,
-        economicImpact: null,
+        economicImpact: response.event.economicImpact || null,
         "trustScore%": response.event["trustScore%"],
         "10TimesUrl": response.event["10TimesUrl"],
         scores: {
@@ -964,6 +966,7 @@ export const EventsAdapter = {
           internationalScore: response.event.internationalScore || null,
         },
         rating: response.event.stats.eventRating || null,
+        economicImpactBreakdown: response.event.economicImpactBreakdown || null,
         audienceSpread: response.event.audienceSpread || null,
         rehostDate: response.event.isforecasted || null,
         futureExpectedStartDate: response.event.futureExpectedStartDate || null,
@@ -1019,76 +1022,86 @@ export const EventsAdapter = {
       internationalScore: "scores",
       eventRanking: "ranking",
       trustScore: "trustScore",
-      audienceZone: "audienceZone"
+      audienceZone: "audienceZone",
     };
 
-    const shows = response.shows?.split(',').map((show: string) => {
-      return showsMapping[show] || show;
-    }).filter((value: string, index: number, self: string[]) => 
-      // Remove duplicates (especially for "scores" which maps to multiple values)
-      self.indexOf(value) === index
-    ) || [];
+    const shows =
+      response.shows
+        ?.split(",")
+        .map((show: string) => {
+          return showsMapping[show] || show;
+        })
+        .filter(
+          (value: string, index: number, self: string[]) =>
+            // Remove duplicates (especially for "scores" which maps to multiple values)
+            self.indexOf(value) === index
+        ) || [];
 
     return {
-      eventCategory: response.eventCategory?.map((cat: any) => ({
-        id: cat.id,
-        name: cat.name
-      })) || [],
-      
-      eventType: response.eventType?.map((type: string) => 
-        type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()
-      ) || [],
-      
-      eventStatus: response.eventStatus?.split(',') || [],
-      eventFormat: response.eventFormat?.split(',') || [],
-      eventEntry: response.eventEntry?.split(',') || [],
+      eventCategory:
+        response.eventCategory?.map((cat: any) => ({
+          id: cat.id,
+          name: cat.name,
+        })) || [],
+
+      eventType:
+        response.eventType?.map(
+          (type: string) =>
+            type.charAt(0).toUpperCase() + type.slice(1).toLowerCase()
+        ) || [],
+
+      eventStatus: response.eventStatus?.split(",") || [],
+      eventFormat: response.eventFormat?.split(",") || [],
+      eventEntry: response.eventEntry?.split(",") || [],
       eventRating: response.eventRating || null,
-      
+
       dateRange: {
-        startDate: response.startDate?.split(',')[0] || null,
-        endDate: response.endDate?.split(',')[1] || null
+        startDate: response.startDate?.split(",")[0] || null,
+        endDate: response.endDate?.split(",")[1] || null,
       },
-      
+
       sorting: {
-        sortBy: response.sortBy || 'score',
-        sortType: response.sortType || 'desc'
+        sortBy: response.sortBy || "score",
+        sortType: response.sortType || "desc",
       },
-      
+
       eventRanking: response.eventRanking || null,
-      eventFrequency: response.eventFrequency?.split(',') || [],
-      eventSeries: response.eventSeries === 'true',
+      eventFrequency: response.eventFrequency?.split(",") || [],
+      eventSeries: response.eventSeries === "true",
       maturity: response.maturity || null,
-      
+
       scores: {
         estimatedExhibitScore: response.estimatedExhibitScore || null,
-        eventImpactScore: response.eventImpactScore || null
+        eventImpactScore: response.eventImpactScore || null,
       },
-      
-      eventBrand: response.eventBrand === 'true',
-      
+
+      eventBrand: response.eventBrand === "true",
+
       shows,
-      
+
       designation: response.designation || null,
-      
+
       locations: {
-        cities: response.locationIds?.city?.map((city: any) => ({
-          id: Object.keys(city)[0],
-          name: Object.values(city)[0]
-        })) || [],
+        cities:
+          response.locationIds?.city?.map((city: any) => ({
+            id: Object.keys(city)[0],
+            name: Object.values(city)[0],
+          })) || [],
         states: response.locationIds?.state || [],
-        eventCities: response.eventCity?.map((city: any) => ({
-          id: Object.keys(city)[0],
-          name: Object.values(city)[0]
-        })) || [],
+        eventCities:
+          response.eventCity?.map((city: any) => ({
+            id: Object.keys(city)[0],
+            name: Object.values(city)[0],
+          })) || [],
         eventStates: response.eventState || [],
-        eventCountries: response.eventCountry || []
+        eventCountries: response.eventCountry || [],
       },
-      
+
       keywords: {
-        include: response.includeKeywords || null
+        include: response.includeKeywords || null,
       },
-      
-      estimatedVisitorRangeTag: response.estimatedVisitorRangeTag || null
+
+      estimatedVisitorRangeTag: response.estimatedVisitorRangeTag || null,
     };
   },
 };

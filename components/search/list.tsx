@@ -50,6 +50,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { formatEstimatedSpend } from "@/utils/formater";
 
 interface CircularProgressProps {
   value: number;
@@ -252,11 +253,9 @@ const EventListItem = ({
 
     return (
       <>
-        <Badge variant="outline" className="text-gray-600">
-          {prop.rank}
-          <sup>{rankString}</sup>
-          <span className="pl-1">{` ${prop.type}`}</span>
-        </Badge>
+        {prop.rank}
+        <sup>{rankString}</sup>
+        <span className="pl-1">{` ${prop.type}`}</span>
       </>
     );
   }
@@ -318,14 +317,6 @@ const EventListItem = ({
         ),
       });
     }
-  };
-
-  const formatEstimatedSpend = (spend: string) => {
-    const spendNumber = parseFloat(spend.slice(1).replace(/,/g, ""));
-    if (spendNumber >= 100000) {
-      return `$${(spendNumber / 1000).toFixed(0)}k`;
-    }
-    return spend;
   };
 
   return (
@@ -666,10 +657,10 @@ const EventListItem = ({
                       {event.economicImpact && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
-                            Economic Impact
+                            Est. Economic Impact
                           </p>
                           <p className="text-lg font-semibold text-primary">
-                            {formatEstimatedSpend(event.economicImpact || "$0")}
+                            {formatEstimatedSpend(event.economicImpact)}
                           </p>
                         </div>
                       )}

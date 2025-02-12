@@ -19,7 +19,7 @@ import LocationSelector from "@/components/search/location";
 import EstimatedVisitorsSelector from "@/components/search/advancedFilters/estimatedVisitors";
 import GlobalAndTouringSelector from "@/components/search/advancedFilters/globalAndTouring";
 import EstimatedExhibitorsSelector from "@/components/search/advancedFilters/estimatedExhibitors";
-import EstimatedEconomicImpactSelector from "@/components/advancedFilters/estimatedEconomicImpact";
+import EstimatedEconomicImpactSelector from "@/components/search/advancedFilters/estimatedEconomicImpact";
 import AudienceProfileSelector from "@/components/search/advancedFilters/audienceDes&Dep";
 import ProductSelector from "@/components/search/advancedFilters/product&Topics"
 import AudienceSpreadSelector from "@/components/search/advancedFilters/audienceSpread"
@@ -826,6 +826,7 @@ const Pages = () => {
       audienceZone: "audienceSpread",
       branded: "eventBrand",
       series: "eventSeries",
+      economicImpact: "economicImpact",
       rankings: "eventRanking,trustScore"
     };
     
@@ -856,6 +857,9 @@ const Pages = () => {
       ...(getLocalFilterValue("trust_score_gte") && {
         trust: true
       }),
+      ...(getLocalFilterValue("show").split(",").includes("economicImpact")&&{
+        economicImpact:true
+      })
     }
      const eventType1=getLocalFilterValue("eventTypes")
       .split(",")
@@ -1281,6 +1285,9 @@ const Pages = () => {
       }
       if(toggleOpend?.audienceZone){
         showFilters.push("audienceZone")
+      }
+      if(toggleOpend?.economicImpact){
+        showFilters.push("economicImpact")
       }
       setLocalFilter("show",showFilters.join(","));
       setRankToggles({
