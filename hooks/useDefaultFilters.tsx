@@ -40,10 +40,10 @@ export function useDefaultFilters() {
         .join(",") ?? "",
     active_gte: filters.durations?.startDate
       ? new Date(filters.durations.startDate.split(",")[0]).toISOString()
-      : "",
+      : startOfMonth(new Date()).toISOString(),
     active_lte: filters.durations?.endDate
       ? new Date(filters.durations.endDate.split(",")[1]).toISOString()
-      : "",
+      : endOfMonth(addMonths(new Date(), 3)).toISOString(),
     entryType:
       filters.eventEntry?.enabledValue
         ?.map((item: string) => item.toLowerCase())
@@ -77,8 +77,12 @@ export function useDefaultFilters() {
       recentSearch.eventType
         ?.map((item: string) => `${item.toLowerCase()}s`)
         ?.join(",") ?? "",
-    active_gte: recentSearch.startDate ? new Date(recentSearch.startDate?.split(",")[0]).toISOString() : "",
-    active_lte: recentSearch.endDate ? new Date(recentSearch.endDate?.split(",")[1]).toISOString() : "",
+    active_gte: recentSearch.startDate
+      ? new Date(recentSearch.startDate?.split(",")[0]).toISOString()
+      : startOfMonth(new Date()).toISOString(),
+    active_lte: recentSearch.endDate
+      ? new Date(recentSearch.endDate?.split(",")[1]).toISOString()
+      : endOfMonth(addMonths(new Date(), 3)).toISOString(),
     locationIds:
       recentSearch.locationIds?.city
         ?.map((city: any) => Object.keys(city)[0])
@@ -94,7 +98,7 @@ export function useDefaultFilters() {
       recentSearch.eventEntry
         ?.split(",")
         .map((item: string) => item.toLowerCase())
-        ?.join(",") ?? "",  
+        ?.join(",") ?? "",
     ratings: recentSearch.eventRating ?? undefined,
     maturity: recentSearch.maturity ?? undefined,
     onlyBranded: recentSearch.eventBrand ? "true" : undefined,
@@ -108,11 +112,16 @@ export function useDefaultFilters() {
     impact_score_lte: recentSearch.eventImpactScore?.split("-")[1] ?? undefined,
     inbound_score_gte: recentSearch.inboundScore?.split("-")[0] ?? undefined,
     inbound_score_lte: recentSearch.inboundScore?.split("-")[1] ?? undefined,
-    international_score_gte: recentSearch.internationalScore?.split("-")[0] ?? undefined,
-    international_score_lte: recentSearch.internationalScore?.split("-")[1] ?? undefined,
+    international_score_gte:
+      recentSearch.internationalScore?.split("-")[0] ?? undefined,
+    international_score_lte:
+      recentSearch.internationalScore?.split("-")[1] ?? undefined,
     audienceSpread: recentSearch.audienceSpread ?? undefined,
     designations: recentSearch.designation ?? undefined,
-    top: recentSearch.eventRanking?.split(",").map((item)=> item.split("-")[1])[0] ?? undefined,
+    top:
+      recentSearch.eventRanking
+        ?.split(",")
+        .map((item) => item.split("-")[1])[0] ?? undefined,
     show: generateRecentSearchShowParam(recentSearch?.shows?.split(",") ?? []),
   });
 
@@ -143,7 +152,8 @@ export function useDefaultFilters() {
     if (filters.eventFrequency?.isFreqEnabled) showItems.push("frequency");
     if (filters.estimatedExhibitScore?.isExhibitorsEnabled)
       showItems.push("estimatedExhibitors");
-    if (filters.economicImpact?.isEconomicImpactEnabled) showItems.push("economicImpact");
+    if (filters.economicImpact?.isEconomicImpactEnabled)
+      showItems.push("economicImpact");
     if (filters.analytics?.isAnalyticsEnabled) showItems.push("scores");
     return showItems.join(",");
   };
@@ -151,18 +161,16 @@ export function useDefaultFilters() {
   const setInitialFilters = async () => {
     // Skip if we're in the editTracker path
     if (pathName.split("/").includes("editTracker")) {
-      
-      
       return;
     }
 
     const currentParams = Object.fromEntries(searchParams.entries());
-    const hasOnlyViewParam = 
+    const hasOnlyViewParam =
       Object.keys(currentParams).length === 1 && "view" in currentParams;
-    const isEmptySearch = Object.keys(currentParams).length === 0 || hasOnlyViewParam;
+    const isEmptySearch =
+      Object.keys(currentParams).length === 0 || hasOnlyViewParam;
 
     // Only proceed if we have empty params or just view param
-   
 
     try {
       // Try to use enabled filters first
