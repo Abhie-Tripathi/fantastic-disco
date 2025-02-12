@@ -103,6 +103,7 @@ interface Filters {
   economic_impact_gte?: string;
   total_attendance_gte?: string;
   total_attendance_lte?: string;
+  eventType?:string;
 
   // Prospect Filters
   viewBy?: string;

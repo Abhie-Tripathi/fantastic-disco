@@ -49,14 +49,16 @@ export default function CreateTrackerDialog({
     setTrackerName(newName);
     setError(validateName(newName));
   };
-
+  console.log(adaptedParams);
   const saveTrackerHandler = async () => {
     const validationError = validateName(trackerName);
     if (validationError) {
       setError(validationError);
       return;
     }
-
+    if("groupBy" in adaptedParams){
+      delete adaptedParams.groupBy;
+    }
     setIsLoading(true);
     
     const userType = {
@@ -92,6 +94,9 @@ export default function CreateTrackerDialog({
       ...(getLocalFilterValue("trust_score_gte") && {
         trust: true
       }),
+      ...(getLocalFilterValue("show").split(",").includes("economicImpact") && {
+        economicImpact: true
+      })
     };
     const showsData: string[] = [];
 
@@ -105,6 +110,7 @@ export default function CreateTrackerDialog({
       audienceZone: "audienceSpread",
       branded: "eventBrand",
       series: "eventSeries",
+      economicImpact: "economicImpact",
       rankings: "eventRanking,trustScore"
     };
     

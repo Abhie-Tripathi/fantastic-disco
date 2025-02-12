@@ -3,6 +3,7 @@ import { endpoints } from "@/config/endpoints";
 import {
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
+  CalendarYearEventsResponse,
   EventBookmarkResponse,
   EventCoOrganizerDetailResponse,
   EventCount,
@@ -24,6 +25,8 @@ import { ReadonlyURLSearchParams } from "next/navigation";
 import { BaseURL } from "@/config";
 import { ApiError } from "@/types/api";
 import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
+import { AlertPolygonResponse } from "@/types/events/alert";
+import { TrackersAdapter } from "@/adapters/trackerAdapter";
 
 export const searchEvents = async (searchParams: ReadonlyURLSearchParams) => {
   return myFetch(
@@ -39,6 +42,7 @@ export const useEventsService = () => {
   const api = useApi<
     | CalendarMonthEventsResponse
     | CalendarWeekEventsResponse
+    | CalendarYearEventsResponse
     | MapEventsResponse
     | EventsResponse
   >();
@@ -104,6 +108,15 @@ export const useEventsService = () => {
     );
   };
 
+  const getAlertPolygon = (eventId: string) => {
+    return api.request<AlertPolygonResponse>(
+      `${endpoints.event.events}/${eventId}/polygons`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
   // const getEventExhibitorDetails = (id: string, take: number, skip: number) => {
   //   return api.request<EventExhibitorDetailsResponse>(
   //     `${endpoints.event.eventDetailById}/exhibitor?id=${id}&take=${take}&skip=${skip}`,
@@ -158,6 +171,18 @@ export const useEventsService = () => {
     });
     return EventsAdapter.adaptResponse(response, params);
   };
+
+  const getRawEventsWithSearchParams = async (searchParamsString: string) => {
+    const params = new URLSearchParams(searchParamsString);
+    const adaptedParams = EventsAdapter.adaptRequestParams(params);
+    const response = await api.request(`${endpoints.event.events}`, {
+      method: "GET",
+      params: adaptedParams,
+    }, true);
+    
+    return TrackersAdapter.adaptTrackerMapEventData(response);
+  };
+
 
   const saveEvent = (eventId: string) => {
     return api.request(`${endpoints.event.savedEvents}`, {
@@ -237,17 +262,19 @@ export const useEventsService = () => {
       }
     );
     return response;
-  };
+  }
   return {
     getEvents,
     saveEvent,
     getEventById,
+    getAlertPolygon,
     fetchEnabledFilters,
     getEventsCount,
     getRecentSearches,
     bookmarkThisEvent,
     unBookmarkThisEvent,
     getIsEventBookMarked,
+    getRawEventsWithSearchParams,
     getEventDetailById,
     getEventPOCDetails,
     getEventEditionDetails,

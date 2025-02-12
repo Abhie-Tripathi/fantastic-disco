@@ -36,7 +36,6 @@ const zones = {
 
 const WorldMap = ({ companyId }: { companyId: string }) => {
   const [fullView, setFullView] = useState(true);
-  const [eventPerPage, setEventPerPage] = useState<EventTableType[]>([]);
   // const [zonePerPage, setZonePerPage] = useState<any[]>([]);
   const [countryPerPage, setCountryPerPage] = useState<any[]>([]);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -46,8 +45,8 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
   const [mostAttendedCountry, setMostAttendedCountry] = useState<string>();
 
   const [viewport, setViewport] = useState<any>({
-    latitude: 22.1991660760527,
-    longitude: 78.476681027237,
+    latitude: countryPerPage?.[0]?.geoCordinates?.latitude ?? 22.1991660760527,
+    longitude: countryPerPage?.[0]?.geoCordinates?.longitude ?? 78.476681027237,
     width: fullView ? "calc(100vw - 85px)" : "",
     height: fullView ? "90vh" : "350px",
     zoom: 1,
@@ -82,10 +81,13 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
     try {
       const countryData = await getEventCountByCountry(companyId);
       if (countryData) {
-        setCountryPerPage(
-          countryData.sort((a: any, b: any) => b.eventCount - a.eventCount)
-        );
-        setEventPerPage([]);
+        const sortedData = countryData.sort((a: any, b: any) => b.eventCount - a.eventCount);
+        setCountryPerPage(sortedData);
+        setViewport((prevViewport: any) => ({
+          ...prevViewport,
+          latitude: sortedData?.[0]?.geoCordinates?.latitude,
+          longitude: sortedData?.[0]?.geoCordinates?.longitude,
+        }));
         const countryEventCountsObj: any = {};
         let totalAttentCount = 0;
         countryData.forEach((country: any) => {

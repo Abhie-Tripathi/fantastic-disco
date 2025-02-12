@@ -203,23 +203,23 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           </span>
         </div>
 
-        <div className="flex gap-2 items-center w-fit my-4 flex-wrap">
-          {companyDetails?.industries?.asOrganizer.length > 0 && (
+        {companyDetails?.industries?.asOrganizer.length > 0 && (
+          <div className="flex gap-2 items-center w-fit my-4 flex-wrap">
             <Buildings color="#666666" width="14px" height="14px" />
-          )}
-          {getCompanyIndustries(
-            companyDetails?.industries?.asOrganizer,
-            companyDetails?.companyTag
-          )?.map((item: any) => (
-            <span
-              key={item}
-              className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-2 border-[#CCE6FF] border rounded-md whitespace-nowrap"
-            >
-              {item}
-            </span>
-          ))}
 
-          {/* <span
+            {getCompanyIndustries(
+              companyDetails?.industries?.asOrganizer,
+              companyDetails?.companyTag
+            )?.map((item: any) => (
+              <span
+                key={item}
+                className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-2 border-[#CCE6FF] border rounded-md whitespace-nowrap"
+              >
+                {item}
+              </span>
+            ))}
+
+            {/* <span
             className="text-[var(--info-text-color)] text-xs font-medium cursor-pointer"
             onClick={() => setisExpandIndustry(!isExpandIndustry)}
           >
@@ -229,37 +229,41 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
                 : `+${(companyDetails?.industries?.asOrganizer?.length + companyDetails?.companyTag?.length) -2} more`
               : ""}
           </span> */}
-        </div>
+          </div>
+        )}
 
-        <div className="flex gap-2 items-center w-fit my-4 flex-wrap">
-          {companyDetails?.companyTag.length > 0 && (
+        {companyDetails?.companyTag.length > 0 && (
+          <div className="flex gap-2 items-center w-fit my-4 flex-wrap">
             <Factory color="#666666" width="14px" height="14px" />
-          )}
-          {companyDetails?.companyTag.slice(0, 2)?.map((item: any) => (
-            <span
-              key={item}
-              className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-2 border-[#CCE6FF] border rounded-md whitespace-nowrap"
-            >
-              #{item}
-            </span>
-          ))}
-        </div>
+            {companyDetails?.companyTag.slice(0, 2)?.map((item: any) => (
+              <span
+                key={item}
+                className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-2 border-[#CCE6FF] border rounded-md whitespace-nowrap"
+              >
+                #{item}
+              </span>
+            ))}
+          </div>
+        )}
 
-        <Text variant="noMargin" color="secondary">
-          {isExpandDescription
-            ? companyDetails?.description
-            : companyDetails?.description?.slice(0, 200)}
-          <span
-            className="font-semibold underline cursor-pointer ml-2"
-            onClick={() => setisExpandDescription(!isExpandDescription)}
-          >
-            {companyDetails?.description?.length > 200
-              ? isExpandDescription
-                ? "Show Less"
-                : "Read More"
-              : ""}
-          </span>
-        </Text>
+        {companyDetails?.description &&
+          companyDetails?.description?.length > 0 && (
+            <Text variant="noMargin" color="secondary">
+              {isExpandDescription
+                ? companyDetails?.description
+                : companyDetails?.description?.slice(0, 200)}
+              <span
+                className="font-semibold underline cursor-pointer ml-2"
+                onClick={() => setisExpandDescription(!isExpandDescription)}
+              >
+                {companyDetails?.description?.length > 200
+                  ? isExpandDescription
+                    ? "Show Less"
+                    : "Read More"
+                  : ""}
+              </span>
+            </Text>
+          )}
 
         <div className="flex gap-4 my-6">
           {companyDetails?.social?.linkedinId && (

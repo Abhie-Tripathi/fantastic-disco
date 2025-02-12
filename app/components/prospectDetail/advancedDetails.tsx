@@ -44,16 +44,18 @@ const CarouselComponent = ({ stats }: CarouselProp) => {
             isSlidingEnabled ? "-ml-1" : "-ml-6"
           } max-xl:grid max-xl:grid-cols-2 max-xl:grid-rows-subgrid max-xl:gap-y-6 max-xl:justify-items-centers`}
         >
-          <CarouselItem className="pl-6 basis-3/12 carousel-item">
-            <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
-              <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                Total Events
-              </h1>
-              <span className="text-base font-semibold flex items-center gap-2">
-                {stats.totalEvents}
-              </span>
-            </div>
-          </CarouselItem>
+          {stats.upcomingEvents > 0 && (
+            <CarouselItem className="pl-6 basis-3/12 carousel-item">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
+                  Total Events
+                </h1>
+                <span className="text-base font-semibold flex items-center gap-2">
+                  {stats.totalEvents}
+                </span>
+              </div>
+            </CarouselItem>
+          )}
 
           {stats.upcomingEvents > 0 && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">

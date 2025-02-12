@@ -68,17 +68,20 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
               )}
 
             <div className="flex gap-2">
-              <div className="flex gap-2 items-center border-r w-fit pr-3">
-                <Location color="#666666" width="14px" height="14px" />
-                <span className="text-[#6E6F89] text-sm">
-                  {[
-                    companyDetail.location?.cityName,
-                    companyDetail.location?.countryName,
-                  ]
-                    .filter(Boolean)
-                    .join(", ")}
-                </span>
-              </div>
+              {companyDetail.location?.cityName !== null &&
+                companyDetail.location?.countryName !== null && (
+                  <div className="flex gap-2 items-center border-r w-fit pr-3">
+                    <Location color="#666666" width="14px" height="14px" />
+                    <span className="text-[#6E6F89] text-sm">
+                      {[
+                        companyDetail.location?.cityName,
+                        companyDetail.location?.countryName,
+                      ]
+                        .filter(Boolean)
+                        .join(", ")}
+                    </span>
+                  </div>
+                )}
 
               <div className="flex gap-2 items-center w-fit">
                 {companyDetail.event_categoryName?.length > 0 && (
