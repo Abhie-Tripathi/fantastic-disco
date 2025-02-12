@@ -31,10 +31,10 @@ const EventTable = () => {
         }`}
       >
         <Table className={styles.table}>
-          <EventTableHeader />
+          <EventTableHeader events={events} />
           <TableBody className={styles.table_body}>
             {events.map((event: Event) => (
-              <EventTableRow event={event} />
+              <EventTableRow key={event.basic.id} event={event} />
             ))}
           </TableBody>
         </Table>

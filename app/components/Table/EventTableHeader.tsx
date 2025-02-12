@@ -1,98 +1,75 @@
 import type React from "react";
 import styles from "./table.module.css";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Event } from "@/types/events";
 
-interface EventTableHeaderProps {}
+interface EventTableHeaderProps {
+  events: Event[];
+}
 
-export const EventTableHeader: React.FC<EventTableHeaderProps> = () => (
-  <TableHeader className={styles.table_head}>
-    <TableRow className={styles.table_head_row}>
-      <TableHead
-        className={`${styles.table_firstColumn} ${styles.table_actionColumn}`}
-      >
-        Event
-      </TableHead>
-      <TableHead>Date</TableHead>
-      <TableHead>Venue</TableHead>
-      <TableHead>City</TableHead>
-      <TableHead>Country</TableHead>
-      <TableHead>Keywords</TableHead>
-      <TableHead>Category</TableHead>
-      <TableHead>Event Size</TableHead>
-      <TableHead>Est. Exhibitor</TableHead>
-      <TableHead>Rank</TableHead>
-      <TableHead>Reputation</TableHead>
-      <TableHead style={{ textAlign: "center" }}>Rating</TableHead>
-      <TableHead style={{ textAlign: "center" }}>Trust</TableHead>
-      <TableHead className="text-center">Frequency</TableHead>
-      <TableHead>Forecasted</TableHead>
-      <TableHead>Matched</TableHead>
-      <TableHead>Score</TableHead>
+export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
+  events,
+}) => {
+  const hasField = (path: string) => {
+    return events.some((event) => {
+      const parts = path.split(".");
+      let value: any = event;
+      for (const part of parts) {
+        value = value?.[part];
+      }
+      return value !== undefined && value !== null;
+    });
+  };
 
-      {/* {(type === "T_SPEAKING_OPPORTUNITY" ||
-        type === "T_COMPETITOR" ||
-        type === "T_PEOPLE_FINDER" ||
-        type === "T_CUSTOMER_ICP" ||
-        type === "T_RECRUITMENT") &&
-        path[path.length - 1] !== "savedEvents" && (
-          <>
-            <TableHead
-              className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`}
-              style={{ right: "150px", minWidth: "60px" }}
-            >
-              Matched
-            </TableHead>
-            <TableHead
-              className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`}
-              style={{
-                right: "50px",
-                minWidth: "100px",
-                textAlign: "center",
-              }}
-            >
-              Score
-            </TableHead>
-          </>
-        )} */}
-
-      {/* {type === "T_PRODUCT_KEYWORDS" &&
-        path[path.length - 1] !== "savedEvents" && (
-          <>
-            <TableHead
-              className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`}
-              style={{
-                right: appliedKeywords?.length >= 5 ? "150px" : "50px",
-                minWidth: "60px",
-              }}
-            >
-              Matched
-            </TableHead>
-            {appliedKeywords?.length >= 5 && (
-              <TableHead
-                className={`${styles.table_actionColumn} ${styles.table_actionColumn_header}`}
-                style={{
-                  right: "50px",
-                  minWidth: "100px",
-                  textAlign: "center",
-                }}
-              >
-                Score
-              </TableHead>
-            )}
-          </>
-        )} */}
-      <TableHead>Maturity</TableHead>
-      <TableHead>Impact Score</TableHead>
-      <TableHead>Inbound Score</TableHead>
-      <TableHead>International Score</TableHead>
-      <TableHead>Audience Zone</TableHead>
-      <TableHead>Audience Spread</TableHead>
-      <TableHead
-        className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}
-        style={{ display: "flex" }}
-      >
-        {/* Actions */}
-      </TableHead>
-    </TableRow>
-  </TableHeader>
-);
+  return (
+    <TableHeader className={styles.table_head}>
+      <TableRow className={styles.table_head_row}>
+        <TableHead
+          className={`${styles.table_firstColumn} ${styles.table_actionColumn}`}
+        >
+          Event
+        </TableHead>
+        <TableHead>Date</TableHead>
+        <TableHead>Venue</TableHead>
+        <TableHead>City</TableHead>
+        <TableHead>Country</TableHead>
+        {/* {hasField("insights.keywords") && <TableHead>Keywords</TableHead>} */}
+        <TableHead>Category</TableHead>
+        {hasField("insights.estimatedAttendance") && (
+          <TableHead>Event Size</TableHead>
+        )}
+        {hasField("advance.estimatedExhibitors") && (
+          <TableHead>Est. Exhibitors</TableHead>
+        )}
+        {hasField("insights.rankings") && <TableHead>Rank</TableHead>}
+        {hasField("insights.repeatSentiment") && (
+          <TableHead>Reputation</TableHead>
+        )}
+        {hasField("insights.reputationScore") && (
+          <TableHead>Event Rating</TableHead>
+        )}
+        {hasField("insights.trustScore") && <TableHead>Trust</TableHead>}
+        {hasField("advance.frequency") && <TableHead>Frequency</TableHead>}
+        <TableHead>Forecasted</TableHead>
+        {hasField("advance.maturity") && <TableHead>Maturity</TableHead>}
+        {hasField("insights.scores.impactScore") && <TableHead>Impact</TableHead>}
+        {hasField("insights.scores.inboundScore") && <TableHead>Inbound</TableHead>}
+        {hasField("insights.scores.internationalScore") && (
+          <TableHead>International</TableHead>
+        )}
+        {hasField("insights.economicImpact") && (
+          <TableHead>Economic Impact</TableHead>
+        )}
+        {hasField("audience.audienceZone") && <TableHead>Audience Zone</TableHead>}
+        {hasField("audience.audienceSpread") && (
+          <TableHead>Audience Spread</TableHead>
+        )}
+        <TableHead
+          className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}
+        >
+          Actions
+        </TableHead>
+      </TableRow>
+    </TableHeader>
+  );
+};

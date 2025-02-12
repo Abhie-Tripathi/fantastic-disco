@@ -96,6 +96,7 @@
 }
 
 .table_firstColumn {
+  @apply sticky left-0 bg-background z-10;
   min-width: 300px;
 }
 
