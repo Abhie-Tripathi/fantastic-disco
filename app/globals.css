@@ -238,6 +238,7 @@
   --link-color: #0062d1;
   --border-color: #dcdfe4;
   --card-border-color: #dcdfe4;
+  --business-color: #5055a3;
   --heading-background-color: #f7f7f9;
   /* --link-color: #053c34;
   --link-hover-color: #066d5b;
@@ -746,4 +747,14 @@ button {
 
 .tooltip-content-styles {
   @apply border bg-popover text-popover-foreground shadow-md text-sm;
+}
+
+.trendAboveAvgColor {
+  background: #ff990a1a;
+  color: #ff990a;
+}
+
+.trendBelowAvgColor {
+  background: #398e4a1a;
+  color: #398e4a;
 }

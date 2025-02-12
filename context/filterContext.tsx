@@ -85,6 +85,9 @@ interface Filters {
   onlyBranded?: string;
   onlySeries?: string;
   columns?: string;
+  activeCard?: string;
+  activeCardName?: string;
+  editTrend?: string;
   tags?: string;
   estimatedVisitorRangeTag?: string;
   estimatedVisitors?: string;
