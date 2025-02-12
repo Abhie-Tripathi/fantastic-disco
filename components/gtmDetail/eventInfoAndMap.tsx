@@ -48,7 +48,13 @@ const ExpandableTags = ({ tags }: { tags: Event["basic"]["tags"] }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const hasTags = tags?.length > 0;
 
-  if (!hasTags) return <p>--</p>;
+  if (!hasTags)
+    return (
+      <span className="text-[#666666] text-sm flex items-center gap-2">
+        <CircleSlash width={15} height={15} />
+        No data available
+      </span>
+    );
 
   const remainingTagsCount = tags.length - 20;
 
@@ -128,37 +134,44 @@ export const EventInfoAndMap = ({
               <h1 className="text-[1rem] mb-2 font-medium">
                 Event Description
               </h1>
-              <Text variant="noMargin" color="secondary">
-                {isExpandDescription ? (
-                  description === null || description === undefined ? (
+              {description !== null && description !== undefined ? (
+                <Text variant="noMargin" color="secondary">
+                  {isExpandDescription ? (
+                    description === null || description === undefined ? (
+                      <span className="text-[#666666] text-sm flex items-center gap-2">
+                        <CircleSlash width={15} height={15} />
+                        No data available
+                      </span>
+                    ) : (
+                      description
+                    )
+                  ) : description === null || description === undefined ? (
                     <span className="text-[#666666] text-sm flex items-center gap-2">
                       <CircleSlash width={15} height={15} />
                       No data available
                     </span>
                   ) : (
-                    description
-                  )
-                ) : description === null || description === undefined ? (
-                  <span className="text-[#666666] text-sm flex items-center gap-2">
-                    <CircleSlash width={15} height={15} />
-                    No data available
+                    description?.slice(0, 200)
+                  )}
+                  <span
+                    className="font-semibold underline cursor-pointer ml-2"
+                    onClick={() => setisExpandDescription(!isExpandDescription)}
+                  >
+                    {description !== null &&
+                    description !== undefined &&
+                    description.length > 200
+                      ? isExpandDescription
+                        ? "Show Less"
+                        : "Read More"
+                      : ""}
                   </span>
-                ) : (
-                  description?.slice(0, 200)
-                )}
-                <span
-                  className="font-semibold underline cursor-pointer ml-2"
-                  onClick={() => setisExpandDescription(!isExpandDescription)}
-                >
-                  {description !== null &&
-                  description !== undefined &&
-                  description.length > 200
-                    ? isExpandDescription
-                      ? "Show Less"
-                      : "Read More"
-                    : ""}
+                </Text>
+              ) : (
+                <span className="text-[#666666] text-sm flex items-center gap-2">
+                  <CircleSlash width={15} height={15} />
+                  No data available
                 </span>
-              </Text>
+              )}
             </div>
           }
           {categories && categories.length > 0 && (

@@ -8,13 +8,20 @@ import {
   EventPOCDetailResponse,
   OverallRankingsDetail,
   EventSpeakerDetails,
+  EventExhibitorDetails,
+  EventEditionDetailResponse,
+  EventSpeakerDetailsResponse,
+  EventExhibitorDetailsResponse,
 } from "@/types/events";
 import { EventsAdapter } from "@/adapters/eventsAdapter";
 import { ApiError } from "@/types/api";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
+import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
 
 export const useEventsService = () => {
   const api = useApi();
+
+  const { exhibitorAdapter, speakerAdapter } = EventParticpantAdapter();
 
   const getEvents = (params?: EventQuery) => {
     return api.request<Event[]>(endpoints.event.events, {
@@ -88,8 +95,8 @@ export const useEventsService = () => {
     take: number,
     skip: number
   ) => {
-    const response = await api.request<EventExhibitorDetails[]>(
-      `${endpoints.event.eventDetailById}/exhibitor?id=${id}&take=${take}&skip=${skip}`,
+    const response = await api.request<EventExhibitorDetailsResponse>(
+      `${endpoints.event.eventDetailById}/${id}/exhibitors?take=${take}&skip=${skip}`,
       {
         method: "GET",
       }
@@ -106,7 +113,7 @@ export const useEventsService = () => {
     take: number,
     skip: number
   ) => {
-    const response = await api.request<EventSpeakerDetails[]>(
+    const response = await api.request<EventSpeakerDetailsResponse>(
       `${endpoints.event.eventDetailById}/${id}/speakers?take=${take}&skip=${skip}`,
       {
         method: "GET",
@@ -117,6 +124,12 @@ export const useEventsService = () => {
     }
     const adaptedSpeakerData = speakerAdapter(response);
     return adaptedSpeakerData;
+  };
+
+  const getEventSponsorDetails = (id: string) => {
+    return api.request(`${endpoints.event.events}/${id}/sponsors`, {
+      method: "GET",
+    });
   };
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {

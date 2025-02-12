@@ -1,7 +1,7 @@
 import Text from "../new-ui/Text";
 import Image from "next/image";
 import Link from "next/link";
-import { EventParticipantsDetails, GTMEventDetail } from "@/types/events";
+import { Event, EventParticipantsDetails } from "@/types/events";
 import { Badge } from "../ui/badge";
 
 const sponsorsData = [
@@ -49,12 +49,14 @@ const ListCard = ({
             className="aspect-square rounded-sm w-12 h-12"
           />
           <div className="flex flex-col justify-between">
-            <Text color="primary" className="line-clamp-2">
+            <p className="text-sm line-clamp-2 text-[var(--primary-text-color)] mb-1">
               {participant.name || ""}
-            </Text>
-            <Text variant="noMargin" color="secondary" className="line-clamp-2">
-              {participant.details}
-            </Text>
+            </p>
+            <p className="text-sm line-clamp-2 text-[var(--secondary-text-color)]">
+              {participant.type === "exhibitor"
+                ? `Stand - ${participant.details}`
+                : participant.details}
+            </p>
           </div>
         </div>
         {participant.type === "sponsor" && (
@@ -149,16 +151,13 @@ export const EventParticipants = ({
   eventExhibitorData,
   eventSpeakerData,
 }: {
-  eventDetails: GTMEventDetail;
+  eventDetails: Event;
   eventExhibitorData: EventParticipantsDetails[];
   eventSpeakerData: EventParticipantsDetails[];
 }) => {
-  const {
-    exhibitorsCount,
-    speakersCount,
-    sponsorsCount,
-    "10TimesUrl": websiteUrl,
-  } = eventDetails;
+  const { exhibitorsCount, speakersCount, sponsorsCount } =
+    (eventDetails && eventDetails.insights) || {};
+  const { eventPageUrl } = (eventDetails && eventDetails.basic) || {};
   const participantData = [
     {
       heading: "Exhibitors",
@@ -168,7 +167,7 @@ export const EventParticipants = ({
         logo: "/exhibitorsIcon.svg",
         text: "No Exhibitor mapped to this event. Are you interested to Exhibit ?",
         linkText: "Exhibit Request",
-        redirectLink: `https://10times.com/${websiteUrl}`,
+        redirectLink: `https://10times.com/${eventPageUrl || ""}`,
       },
     },
     {
@@ -179,7 +178,7 @@ export const EventParticipants = ({
         logo: "/speakersIcon.svg",
         text: "No Speakers mapped to this event. Are you interested to attend as a speaker?",
         linkText: "Speaker Request",
-        redirectLink: `https://10times.com/${websiteUrl}`,
+        redirectLink: `https://10times.com/${eventPageUrl || ""}`,
       },
     },
     {
@@ -190,7 +189,7 @@ export const EventParticipants = ({
         logo: "/sponsorsIcon.svg",
         text: "No Sponsors mapped to this event. Interested in sponsoring this event?",
         linkText: "Sponsor Request",
-        redirectLink: `https://10times.com/${websiteUrl}`,
+        redirectLink: `https://10times.com/${eventPageUrl || ""}`,
       },
     },
   ];
@@ -201,10 +200,10 @@ export const EventParticipants = ({
         return (
           <ParticipantContainer
             key={heading}
-            count={count}
+            count={count || 0}
             heading={heading}
             participantData={data}
-            eventPageUrl={websiteUrl}
+            eventPageUrl={eventPageUrl}
             nullState={nullState}
           />
         );

@@ -3,25 +3,25 @@ import {
   EventExhibitorDetailsResponse,
   EventSpeakerDetails,
   EventSpeakerDetailsResponse,
-} from "@/types/events/events";
+} from "@/types/events";
 
 export const EventParticpantAdapter = () => {
-  const exhibitorAdapter = (response: EventExhibitorDetails[]) => {
-    const data = response || [];
+  const exhibitorAdapter = (response: EventExhibitorDetailsResponse) => {
+    const data = response.eventExhibitors || response.exhibitors || [];
     const exhibitorData =
       data && data.length > 0
         ? data.slice(0, 3).map((exhibitor) => ({
             id: exhibitor.id || "",
             name: exhibitor.name || "",
             logo: exhibitor.logo || "",
-            details: "",
+            details: exhibitor.boothNo || "",
             type: "exhibitor",
           }))
         : [];
     return exhibitorData;
   };
-  const speakerAdapter = (response: EventSpeakerDetails[]) => {
-    const data = response || [];
+  const speakerAdapter = (response: EventSpeakerDetailsResponse) => {
+    const data = response.eventSpeakers || [];
     const speakerData =
       data && data.length > 0
         ? data.slice(0, 3).map((speaker) => ({

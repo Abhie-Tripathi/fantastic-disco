@@ -8,10 +8,7 @@ import Text from "../new-ui/Text";
 import * as Flags from "country-flag-icons/react/3x2";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import {
-  Event,
-  TTabs,
-} from "@/types/events";
+import { Event, EventParticipantsDetails, TTabs } from "@/types/events";
 import { CircularProgressBar } from "../eventDetail/circularProgressBar";
 import { useInView } from "react-intersection-observer";
 import { Heading } from "../eventDetail/heading";
@@ -57,22 +54,28 @@ export const AudienceIntel = ({
   const { audienceSpread, designationSpread } =
     (eventDetails && eventDetails.audience) || {};
 
+  const { estimatedAttendance } = (eventDetails && eventDetails.insights) || {};
 
+  const { estimatedExhibitors } = (eventDetails && eventDetails.advance) || {};
 
-  const parseEstimatedExhibitor = (value: string | number) => {
-    if (typeof value === "string" && value.includes("-")) {
-      const [minExhibitorValue, maxExhibitorValue] = value
-        .split("-")
-        .map((v) => Number(v.trim()));
-      return { minExhibitorValue, maxExhibitorValue };
-    } else {
-      return { minExhibitorValue: value, maxExhibitorValue: value };
+  const parseEstimatedExhibitor = (
+    value: string | number | undefined | null
+  ) => {
+    if (value) {
+      if (typeof value === "string" && value.includes("-")) {
+        const [minExhibitorValue, maxExhibitorValue] = value
+          .split("-")
+          .map((v) => Number(v.trim()));
+        return { minExhibitorValue, maxExhibitorValue };
+      } else {
+        return { minExhibitorValue: value, maxExhibitorValue: value };
+      }
     }
   };
 
   const { minExhibitorValue, maxExhibitorValue } = parseEstimatedExhibitor(
-    stats.estimatedExhibitor
-  );
+    estimatedExhibitor
+  ) || { minExhibitorValue: 0, maxExhibitorValue: 0 };
 
   // const hasEstimatedExhibitor =
   //   estimatedExhibitor &&
@@ -91,12 +94,13 @@ export const AudienceIntel = ({
         (option.max === null || Number(maxExhibitorValue) <= option.max)
     );
 
-  const [minValue, maxValue] = stats.estimatedVisitor
-    .split("-")
-    .map((v) => Number(v.trim()));
+  const [minValue, maxValue] = (estimatedAttendance &&
+    estimatedAttendance.split("-").map((v) => Number(v.trim()))) || [0, 0];
 
   const hasEstimatedVisitor =
     estimatedVisitors &&
+    minValue &&
+    maxValue &&
     estimatedVisitors.options.some(
       (option: { min: number; max: number | null; isEnabled: boolean }) =>
         option.min <= maxValue &&
@@ -123,7 +127,12 @@ export const AudienceIntel = ({
       setActiveTab(scrollSection as TTabs);
     }
   }, [inView]);
-  const getMaxCountObject = (designationSpread: DesignationSpread[]) => {
+  const getMaxCountObject = (
+    designationSpread:
+      | NonNullable<Event["audience"]>["designationSpread"]
+      | undefined
+      | null
+  ) => {
     if (!designationSpread || designationSpread.length === 0) return null;
 
     return designationSpread.reduce((maxObj, currentObj) => {
@@ -164,9 +173,9 @@ export const AudienceIntel = ({
               </Tooltip>
             </TooltipProvider>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {stats.estimatedVisitor &&
+              {estimatedAttendance &&
                 (hasEstimatedVisitor ? (
-                  numberWithCommas(stats.estimatedVisitor || "--")
+                  numberWithCommas(estimatedAttendance || "--")
                 ) : (
                   <Restriction />
                 ))}
@@ -193,8 +202,8 @@ export const AudienceIntel = ({
               </Tooltip>
             </TooltipProvider>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {isEstimatedExhibitorEnabled && stats.estimatedExhibitor ? (
-                stats.estimatedExhibitor ?? "--"
+              {isEstimatedExhibitorEnabled && estimatedExhibitor ? (
+                estimatedExhibitor ?? "--"
               ) : (
                 <Restriction />
               )}
@@ -300,7 +309,7 @@ export const AudienceIntel = ({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                {!designation && (
+                {!designationSpread && (
                   <Badge
                     variant={"outline"}
                     className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none"

@@ -81,6 +81,7 @@ const BasicEventSchema = z.object({
   bannerUrl: z.string().nullable(),
   timings: z.string().nullable(),
   lastVerifiedOn: z.string().nullable(),
+  eventPageUrl: z.string().nullable(),
   rating: z.number(),
   name: z.string(),
   website: z.string(),

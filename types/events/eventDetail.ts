@@ -7,6 +7,14 @@ export interface EventEditionDetailResponse {
   editions: Editions[] | [];
 }
 
+export interface EventExhibitorDetailsResponse {
+  [key: string]: EventExhibitorDetails[];
+}
+
+export interface EventSpeakerDetailsResponse {
+  eventSpeakers: EventSpeakerDetails[];
+}
+
 export interface Editions {
   edition_id: number;
   edition_venue_name: string | null;
@@ -73,6 +81,26 @@ export interface EventSpeakerDetails {
   };
   profilePicture: string;
   interestCapturedOn: string;
+}
+
+export interface EventExhibitorDetails {
+  id: number;
+  name: string;
+  location: {
+    cityName: string;
+    countryName: string;
+  };
+  logo: any;
+  interestCapturedOn: string;
+  boothNo: string;
+}
+
+export interface EventParticipantsDetails {
+  id: string;
+  name: string;
+  logo: string;
+  details: string;
+  type: "exhibitor" | "speaker" | "sponsor";
 }
 
 export interface EventRankingLocation {
