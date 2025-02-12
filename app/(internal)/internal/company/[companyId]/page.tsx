@@ -449,8 +449,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
             setActiveTab={setActiveTab}
           />
           <AdvancedDetails
-            eventId={params.companyId}
-            stats={companyDetails.stats}
+            companyData={companyDetails}
           />
 
           {/* <SectionHeading heading="Clients" /> */}

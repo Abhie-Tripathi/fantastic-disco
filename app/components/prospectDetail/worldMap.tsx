@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useState } from "react";
 import ReactMapGL, {
   Marker,
@@ -8,31 +8,10 @@ import ReactMapGL, {
   ViewState,
   LayerProps,
 } from "react-map-gl";
-import { EventTableType } from "@/types/ListViewTable";
 // import Loading from "@/app/components/UI/Loading";
 import { useCompanyService } from "@/services/companyService";
 import { MapboxToken } from "@/config";
 
-interface MapProps {
-  queryString?: string;
-}
-
-const zones = {
-  Antarctica: { lat: -82.5, lng: 0 },
-  "East Asia": { lat: 35, lng: 120 },
-  "Eastern Europe": { lat: 52.5, lng: 25 },
-  "India Subcontinent": { lat: 22.5, lng: 82.5 },
-  "Latin America": { lat: -10, lng: -60 },
-  "Middle East": { lat: 25, lng: 45 },
-  "North America": { lat: 40, lng: -100 },
-  "Northern Africa": { lat: 20, lng: 10 },
-  "Northern Europe": { lat: 55, lng: 10 },
-  Oceania: { lat: -20, lng: 150 },
-  "SouthEast Asia": { lat: 10, lng: 110 },
-  "Southern Africa": { lat: -25, lng: 25 },
-  UK: { lat: 55, lng: -2 },
-  "Western Europe": { lat: 45, lng: 5 },
-};
 
 const WorldMap = ({ companyId }: { companyId: string }) => {
   const [fullView, setFullView] = useState(true);
@@ -49,7 +28,7 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
     longitude: countryPerPage?.[0]?.geoCordinates?.longitude ?? 78.476681027237,
     width: fullView ? "calc(100vw - 85px)" : "",
     height: fullView ? "90vh" : "350px",
-    zoom: 1,
+    zoom: 2,
     maxZoom: 20,
   });
 
@@ -202,7 +181,7 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
         </div>
 
         <div className="flex flex-col justify-center bg-white dark:bg-transparent dark:border-[var(--border-color)] shadow-md border border-[var(--neutral-light-color)] p-2 rounded-md gap-2 w-auto h-full">
-          <span className="text-[#6E6F89] text-xs">Other Countries..</span>
+          <span className="text-[#6E6F89] text-xs">Other Countries</span>
           <span
             className="text-base font-bold line-clamp-1"
             title={countryPerPage.map((item) => item.name).join(", ")}
