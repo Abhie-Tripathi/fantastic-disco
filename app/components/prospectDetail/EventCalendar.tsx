@@ -98,7 +98,7 @@ export const EventCalendar = ({
               className="h-80 overflow-y-auto w-full"
             >
               {upcomingEvents.map((event: any) => (
-                <div className="flex flex-row gap-6 p-2 my-4">
+                <div className="flex flex-row gap-6 p-2 my-4" key={event.id}>
                   <div className="flex flex-col rounded-lg shadow-md h-14 w-14 border border-[var(--border-color)]">
                     <span className="bg-[var(--primary-light-color)] text-xs font-semibold text-primary text-center py-1 rounded-tl-md rounded-tr-md">
                       {getMonthFromDate(event?.startDate)}
@@ -166,7 +166,7 @@ export const EventCalendar = ({
 
             <TabsContent value="past" className="h-80 overflow-y-auto w-full">
               {pastEvents.map((event: any) => (
-                <div className="flex flex-row gap-6 p-2 my-4">
+                <div className="flex flex-row gap-6 p-2 my-4" key={event.id}>
                   <div className="flex flex-col rounded-lg shadow-md h-14 w-14 border border-[var(--border-color)]">
                     <span className="bg-[var(--primary-light-color)] text-xs font-semibold text-primary text-center py-1 rounded-tl-md rounded-tr-md">
                       {getMonthFromDate(event?.startDate)}
