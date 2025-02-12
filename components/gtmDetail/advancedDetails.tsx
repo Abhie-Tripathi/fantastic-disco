@@ -66,6 +66,7 @@ const CarouselComponent = ({
     eventDetails || {};
   const { maturityLevels, frequencies, forcastedStatus, globalAndTourings } =
     morphedData;
+  console.log(eventEditionData);
   const { count, editions } = eventEditionData;
   const [api, setApi] = useState<CarouselApi>();
   const [isSlidingEnabled, setIsSlidingEnabled] = useState<boolean>();
@@ -206,7 +207,7 @@ const CarouselComponent = ({
                       </p>
                     </TooltipContent>
                   </Tooltip>
-                </TooltipProvider>Editions
+                </TooltipProvider>
                 {editions && (
                   // <span className="text-[#6750A4] bg-[#E6E6F9] flex items-center h-7 font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit text-center cursor-not-allowed">
                   //   {`${editions} Edition${
@@ -216,13 +217,10 @@ const CarouselComponent = ({
                   <DetailDialog
                     titleColor="text-[var(--primary-text-color)]"
                     title={"No. of Editions"}
-                    triggerText={`${count} Edition${count > 1 ? "s" : ""}`}
+                    triggerText={`${count} Edition${count || 0 > 1 ? "s" : ""}`}
                     className="text-[#6750A4] bg-[#E6E6F9] dark:bg-[#2D2541] dark:border-[#8F80D4] flex items-center justify-center h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-full xl:w-fit text-center cursor-pointer"
                   >
-                    <PastEditions
-                      eventId={eventId}
-                      eventEditionData={eventEditionData}
-                    />
+                    <PastEditions eventId={eventId} />
                   </DetailDialog>
                 )}
               </div>

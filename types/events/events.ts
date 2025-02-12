@@ -166,6 +166,7 @@ const InsightsEventSchema = z.object({
   economicImpact: z.string(),
   estimatedVisitorRangeTag: z.string().nullable(),
   repeatSentiment: z.number(),
+  trustScore: z.number().nullable(),
   reputationScore: z.number(),
   rehostScore: z.number(),
   estimatedAttendanceMean: z.number().nullable(),

@@ -768,12 +768,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             eventEditionData={eventEditionData}
             eventId={params.eventId}
           />
-          {/* <InsightsAndScores
-            eventDetails={eventDetails}
+          <InsightsAndScores
+            eventDetails={insights}
             scrollSection={tabs[1].path}
             setActiveTab={setActiveTab}
           />
-          <AudienceIntel
+          {/* <AudienceIntel
             eventDetails={eventDetails}
             eventExhibitorData={eventExhibitorData}
             eventSpeakerData={eventSpeakerData}

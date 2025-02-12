@@ -3,7 +3,8 @@ export interface EventPOCDetailResponse {
 }
 
 export interface EventEditionDetailResponse {
-  editions: Editions[];
+  count: number | null;
+  editions: Editions[] | [];
 }
 
 export interface Editions {
