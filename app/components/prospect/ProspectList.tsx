@@ -3,11 +3,12 @@
 import { PaginationComponent } from "@/components/pagination";
 import { Badge } from "@/components/ui/badge";
 import { useFilterState } from "@/hooks/useFilterState";
+import { useCompanyService } from "@/services/companyService";
 import { convertToCustomFormat } from "@/utils/dateFormat";
 import { Buildings, Location } from "geist-icons";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface companyDetail {
   name: string;
@@ -38,9 +39,31 @@ interface companyDetail {
     lastLogin: string;
   };
   company_tag: string[];
+  website: string | null;
 }
 
 const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
+  const { checkCompanyLogo } = useCompanyService();
+  const [compLogo, setCompLogo] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      if (companyDetail.logo !== null) {
+        setCompLogo(companyDetail.logo);
+      } else if (
+        companyDetail.logo === null &&
+        companyDetail.website !== null
+      ) {
+        const tempLogo = await checkCompanyLogo(companyDetail.website);
+        if (tempLogo) {
+          setCompLogo(`https://logo.clearbit.com/${companyDetail.website}`);
+        }
+      }
+    };
+
+    fetchLogo();
+  }, []);
+
   return (
     <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative">
       <Link
@@ -49,9 +72,9 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
         className="block"
       >
         <div className="p-6 flex gap-6">
-          {companyDetail.logo && (
+          {compLogo !== null && (
             <Image
-              src={companyDetail.logo}
+              src={compLogo}
               alt="eventLogo"
               className="flex h-16 w-16 rounded-lg shadow-lg"
               width={200}

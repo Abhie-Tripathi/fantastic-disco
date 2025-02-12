@@ -158,9 +158,9 @@ const Prospect = () => {
   } = useQuery<CompanyListResponse | undefined | any>({
     queryKey: ["prospect", searchParams.toString()],
     queryFn: () => companyService.getCompanyList(searchParams.toString()),
-    enabled:
-      !!searchParams.toString() &&
-      !(Array.from(searchParams.values()).length == 0),
+    // enabled:
+    //   !!searchParams.toString() &&
+    //   !(Array.from(searchParams.values()).length == 0),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
@@ -190,7 +190,7 @@ const Prospect = () => {
           Find your next ideal customers with real-time insights backed by
           trusted data.
         </div>
-        <div className="badge_success">Beta</div>
+        {/* <div className="badge_success">Beta</div> */}
       </div>
       <Tabs
         defaultValue={"company"}
@@ -199,6 +199,7 @@ const Prospect = () => {
         onValueChange={handleTabChange}
       >
         <div className="grid grid-cols-3 px-6">
+          <div className="flex gap-3">
           <TabsList className="grid grid-cols-2 h-auto px-2 col-span-1 mr-6 w-fit">
             <TabsTrigger
               value="company"
@@ -220,6 +221,8 @@ const Prospect = () => {
               People
             </TabsTrigger>
           </TabsList>
+          <div className="badge_success h-8">Beta</div>
+          </div>
           {(companies.length > 0 || peopleData.length > 0) && (
             <div className="text-[#A8A8A8] text-sm font-semibold border-b mt-3 mb-6 relative col-span-2 mr">
               <span
@@ -461,7 +464,7 @@ const Prospect = () => {
           </div>
 
           <div className="col-span-2 overflow-y-auto pr-6">
-            <TabsContent value="company">
+            <TabsContent value="company" className="mt-0">
               {isLoading ? (
                 <Loading />
               ) : companies.length == 0 ? (

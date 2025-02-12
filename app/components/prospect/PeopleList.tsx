@@ -40,7 +40,7 @@ const PeopleCard = ({ poc, unlockPoc }: { poc: userDetail, unlockPoc: any }) => 
         />
       </div> */}
       <div className="flex bg-[#F8F8FA] dark:bg-[var(--heading-background-color)] rounded-md px-6 py-4">
-        <Image
+        <img
           src={
             poc?.user_profilePicture
               ? poc?.user_profilePicture

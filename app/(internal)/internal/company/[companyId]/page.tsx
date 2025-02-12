@@ -51,6 +51,8 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
   const [isExpandDescription, setisExpandDescription] =
     useState<boolean>(false);
 
+  const [compLogo, setCompLogo] = useState<string | null>(null);
+
   // const [isExpandIndustry, setisExpandIndustry] = useState<boolean>(false);
 
   const [eventPOCDetails, setEventPOCDetails] = useState<GTMEventPOCDetails[]>(
@@ -64,6 +66,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
     getCompanyEvents,
     getCompanyPOC,
     unlockUserDetail,
+    checkCompanyLogo,
   } = useCompanyService();
 
   const { data: company } = useQuery<any>({
@@ -95,6 +98,21 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
       setEventPOCDetails(eventPOCData?.companyPoc || []);
       setUpcomingEvents(upcomingEventRes.events || []);
       setPastEvents(pastEventRes.events || []);
+      if (companyResponse.companyData.logo !== null) {
+        setCompLogo(companyResponse.companyData.logo);
+      } else if (
+        companyResponse.companyData.logo === null &&
+        companyResponse.companyData.website !== null
+      ) {
+        const tempLogo = await checkCompanyLogo(
+          companyResponse.companyData.website
+        );
+        if (tempLogo) {
+          setCompLogo(
+            `https://logo.clearbit.com/${companyResponse.companyData.website}`
+          );
+        }
+      }
       return {
         companyDetails: companyResponse.companyData,
         upcomingEventsCount: upcomingEventRes.stats.totalEvents,
@@ -172,10 +190,10 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           </Link>
         </button>
 
-        {companyDetails?.logo && (
+        {compLogo !== null && (
           <div className="flex bg-[#F8F8FA] dark:bg-[var(--heading-background-color)] rounded-md px-6 py-4">
             <Image
-              src={companyDetails?.logo}
+              src={compLogo}
               alt="eventLogo"
               className="flex h-20 w-20 rounded-xl shadow-lg"
               width={200}
@@ -190,18 +208,20 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           </Heading>
         )}
 
-        <div className="flex gap-2 items-center w-fit my-4">
-          <Location color="#666666" width="14px" height="14px" />
-          <span className="text-[#6E6F89] text-sm">
-            {[
-              companyDetails.location?.cityName,
-              companyDetails.location?.state,
-              companyDetails.location?.countryName,
-            ]
-              .filter(Boolean)
-              .join(", ")}
-          </span>
-        </div>
+        {companyDetails.location?.cityName !== null &&
+          companyDetails.location?.countryName !== null && (
+            <div className="flex gap-2 items-center w-fit my-4">
+              <Location color="#666666" width="14px" height="14px" />
+              <span className="text-[#6E6F89] text-sm">
+                {[
+                  companyDetails.location?.cityName,
+                  companyDetails.location?.countryName,
+                ]
+                  .filter(Boolean)
+                  .join(", ")}
+              </span>
+            </div>
+          )}
 
         {companyDetails?.industries?.asOrganizer.length > 0 && (
           <div className="flex gap-2 items-center w-fit my-4 flex-wrap">
@@ -448,9 +468,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
             scrollSection={tabs[0].path}
             setActiveTab={setActiveTab}
           />
-          <AdvancedDetails
-            companyData={companyDetails}
-          />
+          <AdvancedDetails companyData={companyDetails} />
 
           {/* <SectionHeading heading="Clients" /> */}
 

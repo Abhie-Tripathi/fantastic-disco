@@ -5,6 +5,7 @@ import { ApiError } from "@/types/api";
 import companyData from "@/public/data/companyData.json";
 import { endpoints } from "@/config/endpoints";
 import { pocDetail } from "@/types/coordinateEventType";
+import externalAxios from "@/lib/externalAxios";
 
 interface fnProp {
   offset: number;
@@ -23,7 +24,7 @@ export const useCompanyService = () => {
     const params = new URLSearchParams(searchParamsString);
     if (params.get("viewBy") === null) params.set("viewBy", "company");
 
-    params.set("limit", params.get("take") || "10");
+    params.set("limit", params.get("take") || "20");
     params.set("offset", params.get("skip") || "0");
     params.delete("skip");
     params.delete("take");
@@ -84,6 +85,21 @@ export const useCompanyService = () => {
     );
   };
 
+  const checkCompanyLogo = async (website: string): Promise<boolean> => {
+    try {
+      const response = await externalAxios.get(
+        `https://logo.clearbit.com/${website}`
+      );
+      if (response.status >= 200 && response.status < 300) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch {
+      return false;
+    }
+  };
+
   return {
     getCompanyList,
     unlockUserDetail,
@@ -91,6 +107,7 @@ export const useCompanyService = () => {
     getCompanyEvents,
     getCompanyPOC,
     getEventCountByCountry,
+    checkCompanyLogo,
     isLoading: api.isLoading,
     error: api.error as ApiError,
   };
