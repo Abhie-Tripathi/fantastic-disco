@@ -201,6 +201,8 @@ export function useDefaultFilters() {
         const recentFilterParams = mapRecentSearchToParams(
           recentSearchResponse[0]
         );
+
+        console.log(params)
         console.log("recentFilterParams", recentFilterParams);
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));

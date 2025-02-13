@@ -18,6 +18,9 @@ import {
 } from "@/public/data/searchFilters";
 import { useToast } from "@/components/ui/use-toast";
 import { RecentSearchItem } from "@/types/events/recentSearches";
+import { endOfMonth } from "date-fns";
+import { addMonths } from "date-fns";
+import { startOfMonth } from "date-fns";
 interface EventFilterData {
   eventFormat?: { enabledValue?: string[] };
   eventStatus?: { enabledValue?: string[] };
@@ -118,7 +121,7 @@ interface Filters {
   userName?: string;
   designation?: string;
   linkedinProfile?: string;
-  eventType?:string;
+  eventType?: string;
 }
 type Filter = {
   eventTypes: string;
@@ -175,11 +178,11 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     // console.log(pathname.split("/").includes("create"));
-    
-   if(!pathname.split("/").includes("editTracker")){
-    setLocalFilters(
-      filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
-    );
+
+    if (!pathname.split("/").includes("editTracker")) {
+      setLocalFilters(
+        filterEmptyValues(Object.fromEntries(searchParams.entries()) as Filters)
+      );
     }
   }, [filterEmptyValues, searchParams]);
 
@@ -264,6 +267,13 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     if (viewValue) {
       params.set("view", viewValue);
     }
+
+    params.set("active_gte", startOfMonth(new Date()).toISOString());
+    params.set(
+      "active_lte",
+      endOfMonth(addMonths(new Date(), 3)).toISOString()
+    );
+
     router.push(`${window.location.pathname}?${params.toString()}`, {
       scroll: false,
     });
@@ -277,9 +287,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         resetPage?: boolean;
       } = {}
     ) => {
-      
       setLocalFilters((currentFilters) => {
-        
         const filteredFilters = filterEmptyValues(currentFilters);
         const params = new URLSearchParams();
 
