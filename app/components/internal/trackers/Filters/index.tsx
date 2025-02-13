@@ -19,7 +19,7 @@ import LocationSelector from "@/components/search/location";
 import EstimatedVisitorsSelector from "@/components/search/advancedFilters/estimatedVisitors";
 import GlobalAndTouringSelector from "@/components/search/advancedFilters/globalAndTouring";
 import EstimatedExhibitorsSelector from "@/components/search/advancedFilters/estimatedExhibitors";
-import EstimatedEconomicImpactSelector from "@/components/advancedFilters/estimatedEconomicImpact";
+import EstimatedEconomicImpactSelector from "@/components/search/advancedFilters/estimatedEconomicImpact";
 import AudienceProfileSelector from "@/components/search/advancedFilters/audienceDes&Dep";
 import ProductSelector from "@/components/search/advancedFilters/product&Topics"
 import AudienceSpreadSelector from "@/components/search/advancedFilters/audienceSpread"
@@ -384,6 +384,7 @@ const templates = [
     //     placeholder: "Keywords",
     //   }
     // ]
+    isUploadEnable: true,
   }
 ]
 
@@ -434,7 +435,7 @@ const Pages = () => {
   // const [selectedCategories, setSelectedCategories] = useState<string[]>(
   //   enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
   // );
-  
+  const [hideSuggestion,setHideSuggestion]=useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
       enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
     );
@@ -512,6 +513,7 @@ const Pages = () => {
     searchParams.get("eventKeywords")?.split(",") || []
   );
   const [customData, setCustomData] = useState<any[]>([]);
+  const [activeTab,setActiveTab]=useState("include");
   const [selectedEventEdition, setSelectedEventEdition] = useState(0);
   const [selectedINScore, setSelectedINScore] = useState(0);
   const [add, setAdd] = useState(false);
@@ -665,7 +667,8 @@ const Pages = () => {
         "company name 2" , "company name 3" ,
          "company name 4" ,
         "company name 5" ]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
-        fetchAISuggestion(promptText);
+        if(!hideSuggestion)
+          fetchAISuggestion(promptText);
       }
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       const urls = customData
@@ -692,8 +695,8 @@ const Pages = () => {
               [ "Speaker Name 5", "Company Name 5" ]
           ]
       }. If no data is found, respond in this format: {\"data\": []}`; 
-
-         fetchAISuggestion(promptText);
+        if(!hideSuggestion)
+          fetchAISuggestion(promptText);
       }
       const speakerName = customData.map((item: {}) => Object.values(item)[0]).join(',');
       const speakerCompany = customData.map((item: {}) => Object.values(item)[1]).join(',');
@@ -713,7 +716,8 @@ const Pages = () => {
           [ "name 5", "company name 5" ]
         ]
       }. Do not show example values. If no data found then return in below format: {\"data\": []}`
-      fetchAISuggestion(promptText);
+      if(!hideSuggestion)
+        fetchAISuggestion(promptText);
       }
       const userName = customData.map((item: {}) => Object.values(item)[0]).join(',');
       const userCompany = customData.map((item: {}) => Object.values(item)[1]).join(',')
@@ -729,11 +733,21 @@ const Pages = () => {
           [ "name 5", "company name 5" ]
         ]
       }. Do not show example values. If no data found then return in below format: {\"data\": []}`
-      fetchAISuggestion(promptText);
+      if(!hideSuggestion)
+        fetchAISuggestion(promptText);
       }
     } else if (type === "T_BRAND_BUILDING") {
       const designation = customData.map((item: {}) => Object.values(item)[0]).join(',');
       setDesignations(designation);
+    }
+    else if(type === "T_PRODUCT_KEYWORDS"){
+      if(activeTab==="include"){
+        const includeKeywords = customData.map((item: {}) => Object.values(item)[0]).join(',');
+        setLocalFilter("includeKeywords", includeKeywords)
+      }else{
+        const excludeKeywords = customData.map((item: {}) => Object.values(item)[0]).join(',');
+        setLocalFilter("excludeKeywords", excludeKeywords)
+      }
     }
   }, [type, customData])
   const fetchAISuggestion = async(promptText:string)=>{
@@ -753,7 +767,7 @@ const Pages = () => {
   const scrollableDivRef = useRef<HTMLDivElement>(null);
 
   const handlePresetClick = (presetItem: PresetJsonData, id: number, trackerType: string, trackerName: string) => {
-
+    setHideSuggestion(false);
     // const filteredPresetData = presetTemplateData.filter(item => item.id === id);    
     if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY') {
       const presetData: any = [];
@@ -769,8 +783,8 @@ const Pages = () => {
       setTrackerName(trackerName);
     } else if (trackerType === 'T_PRODUCT_KEYWORDS') {
       setTrackerName(trackerName);
-      setLocalFilter("includeKeywords",presetItem?.data?.[0].join(","));
-      setLocalFilter("excludeKeywords",presetItem?.data?.[1].join(","))
+      setLocalFilter("includeKeywords",presetItem?.data?.[0]?.join(","));
+      setLocalFilter("excludeKeywords",presetItem?.data?.[1]?.join(","))
     }
 
     setSelectedPresetName(trackerName);
@@ -778,7 +792,6 @@ const Pages = () => {
       scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
-
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
     setEditTrue(true);
@@ -813,6 +826,7 @@ const Pages = () => {
       audienceZone: "audienceSpread",
       branded: "eventBrand",
       series: "eventSeries",
+      economicImpact: "economicImpact",
       rankings: "eventRanking,trustScore"
     };
     
@@ -843,6 +857,9 @@ const Pages = () => {
       ...(getLocalFilterValue("trust_score_gte") && {
         trust: true
       }),
+      ...(getLocalFilterValue("show").split(",").includes("economicImpact")&&{
+        economicImpact:true
+      })
     }
      const eventType1=getLocalFilterValue("eventTypes")
       .split(",")
@@ -1269,6 +1286,9 @@ const Pages = () => {
       if(toggleOpend?.audienceZone){
         showFilters.push("audienceZone")
       }
+      if(toggleOpend?.economicImpact){
+        showFilters.push("economicImpact")
+      }
       setLocalFilter("show",showFilters.join(","));
       setRankToggles({
         ...rankToggles,
@@ -1596,6 +1616,7 @@ const Pages = () => {
   };
   const [valid,setValid]=useState(true);
   const addNew = () => {
+    setHideSuggestion(false);
     if (!template) {
       console.error('Template is not found');
       return;
@@ -1714,6 +1735,7 @@ useEffect(()=>{
 }, [type])
 
   const handleCustomData = (data: any) => {
+    setHideSuggestion(true);
     setCustomData(data);
   }
 
@@ -1726,59 +1748,28 @@ const commonCss={
   input_container:`w-full border-[var(--input-border-color)] border rounded-[var(--border-radius-sm)] whitespace-nowrap p-2 px-4 text-inherit bg-inherit`,
   input:'flex justify-between items-center'
 }
-// useEffect(()=>{
-//   const updatedIncludeKeywords = includeKeywords.map((keyword) => `${keyword.split(" ").join("_")}`);
-//   const updatedExcludeKeywords = excludeKeywords.map((keyword) => `-${keyword.split(" ").join("_")}`);
-//       setSelectedEventKeywords([...includeKeywords, ...excludeKeywords]);
-// },[includeKeywords, excludeKeywords])
-// console.log(enabledFilters.userRating.isRatingEnabled);
-// useEffect(()=>{
-//   if(last!=="editTracker"){
-//   setRatingOpen(enabledFilters?.eventRating?.isRatingEnabled|| false);
-//   setExhibitOpen(enabledFilters?.estimatedExhibitScore?.isExhibitorsEnabled|| false);
-//   setSelectedLocationsData(enabledFilters?.locationIds?.enabledValue);
-//   // setSelectedEventType({...selectedEventType,  business: enabledFilters?.eventType?.enabledValue?.map((item)=> `${item.toLowerCase()}s`) || []});
-//   setSelectedEventType({...selectedEventType,  business: enabledFilters?.eventType?.enabledValue?.map((item)=> `${item.toLowerCase()}s`) || []});
-//   setIncludeKeywords(enabledFilters?.keywords?.positiveKeywords);
-//   setExcludeKeywords(enabledFilters?.keywords?.negativeKeywords);
-//   setSelectedVisitors(enabledFilters?.eventSize?.enabledValue || []);
-//   setSelectedCategories( enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []);
-  
-//   setDateRange({
-//     from: enabledFilters?.durations?.startDate
-//       ? new Date(enabledFilters.durations.startDate.split(",")[0])
-//       : undefined,
-//     to: enabledFilters?.durations?.startDate
-//       ? new Date(enabledFilters.durations.startDate.split(",")[1])
-//       : undefined,
-//   });
-//   setIsMaturity(enabledFilters?.maturity?.isMaturityEnabled||false);
-//   setSelectedEventStatus(enabledFilters?.eventStatus?.enabledValue?.map((item)=>item.toLowerCase()) || []);
-//   setSelectedEventFrequency(enabledFilters?.eventFrequency?.enabledValue?.map((item)=>item.toLowerCase())|| []);
-//   setFreqToggle(enabledFilters?.eventFrequency?.isFreqEnabled || false);
-//   setSelectedEntry(enabledFilters?.eventEntry?.enabledValue?.map((item)=>item.toLowerCase()) || []);
-//   setSelectedEventFormat(enabledFilters?.eventFormat?.enabledValue || []);
-//   setSelectedExhibitScore(enabledFilters?.estimatedExhibitScore?.enabledValue || []);
-//   setSelectedUserRatings(enabledFilters?.eventRating?.enabledValue || []);
-//   setSelectedBrandedEvent(enabledFilters?.branded?.enabledValue?.eventBrand||false);
-//   setSelectedEventSeries(enabledFilters?.branded?.enabledValue?.eventSeries || false);
-//   setSelectedMaturity(enabledFilters?.maturity?.enabledValue?.[0] || "" || "");
-//   setIsBrand(enabledFilters?.branded?.isBrandedEnabled|| false);
-//   setForecastedStatus(enabledFilters?.isForecasted?.isForecastedEnabled || false);
-//   setAnalyticsToggles({
-//     ...analyticsToggles,
-//     globalToggle: enabledFilters?.analytics?.isAnalyticsEnabled?true:false,
-//   });
-//   setAudienceZone(enabledFilters?.audienceZone?.isZoneEnabled || false);
-//   }
-  
-// },[enabledFilters])
-// console.log(template?.inputAreas[0]?.placeholder);
 const generateDynamicString = (item: any) => {
   if(Array.isArray(item)){
     return `${item[0]} (${item[1]})`;
   }else return item;
 };
+const [includeKeyword, setIncludeKeyword] = useState<{ "Include Keywords": string }[]>([]);
+const [excludeKeyword, setExcludeKeyword] = useState<{ "Exclude Keywords": string }[]>([]);
+
+useEffect(() => {
+  if (type === "T_PRODUCT_KEYWORDS") {
+      const keywordData = getLocalFilterValue("excludeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
+      const updatedData = keywordData.map(item => ({ "Exclude Keywords": item }));
+      setExcludeKeyword(updatedData);
+  }
+}, [getLocalFilterValue("excludeKeywords")]);
+useEffect(()=>{
+  if (type === "T_PRODUCT_KEYWORDS") {
+      const keywordData = getLocalFilterValue("includeKeywords")?.toString()?.split(",")?.filter(keyword => keyword.trim() !== "");
+      const updatedData = keywordData.map(item => ({ "Include Keywords": item }));
+      setIncludeKeyword(updatedData);
+  }
+},[getLocalFilterValue("includeKeywords")])
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -1837,86 +1828,9 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
-    {type==="T_PRODUCT_KEYWORDS" &&
-    <div className={`card flex flex-col gap-6`} style={{gap:"var(--spacing-lg)", borderRadius:"var(--border-radius-sm)", boxShadow:"none"}}>
-      <div>
-      <div className="mb-4">{template?.description}
-        <Button
-          className={styles.uploadBtn}
-          style={{ color: "white", float: "right", gap:"4px"}}
-          size="sm"
-          onClick={handleUploadEnable}
-        >
-          <Share style={{marginBottom: "3px", color: "white", display:"flex", gap:"4px"}} height="15px" width="15px" />
-          {" "}Upload
-        </Button>
-      </div>
-      {/* <div className={`${styles.toggleDiv}`}>
-          <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-            <div>
-              <div className={styles.manualHeading}>Add data manually
-              </div>
-              <div className={styles.manualSubHeading}>Manually enter your custom fields to ensure all your information is personalized and accurate.</div>
-            </div>
-            <div>
 
-              <span>
-                <label className={styles.switch}>
-                  <input
-                    type="checkbox"
-                    checked={true}
-                  />
-                  <span className={styles.slider}></span>
-                </label>
-              </span>
-
-            </div>
-          </div>
-          <div className={`${styles.manualDiv}`} style={{ padding: "10px" }}>
-            <div>
-              <div className={styles.manualHeading}>Import CSV Data
-                <div className={styles.badgeSuccess}>Coming Soon</div>
-              </div>
-              <div className={styles.manualSubHeading}>Upload your CSV file to quickly import and organize your data accurately.</div>
-            </div>
-            <div>
-
-              <span>
-                <label className={styles.switch}>
-                  <input
-                    type="checkbox"
-                    checked={selectedExhibitScore.length !== 0}
-                  />
-                  <span className={styles.slider}></span>
-                </label>
-              </span>
-
-            </div>
-          </div>
-        </div> */}
-      </div>
-      {template && uploadEnabled && 
-        <CsvUploader
-          templateData={template}
-          customData={customData}
-          handleCustomData={handleCustomData}
-          setUploadEnabled={setUploadEnabled}
-          // setSelectedEventKeywords={setSelectedEventKeywords}
-        />
-      }
-    <div style={{width:"calc(50% - 5px)"}}>
-    {/* <EventKeyword state={selectedEventKeywords}
-    setState={setSelectedEventKeywords}
-    onClose={close} type={isDiv}
-    isMandatory={isMandatory}
-    setIsMandatory={setIsMandatory}
-    /> */}
-    <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions}/>
-    </div>
-    </div>
-    }
     
-    {template && template.inputAreas &&
+    {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
     <div style={{display: 'flex', gap: '25px'}}>
       <div className={`card ${styles.competitor}`}>
         {/* <div className={styles.competitorHead}>
@@ -1929,7 +1843,10 @@ return (
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
           {" "} Please upload or manually enter the information
         </div>
-        {(type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP") ?
+        {type==="T_PRODUCT_KEYWORDS" && 
+          <ProductSelector type="T_PRODUCT_KEYWORDS" fetchAISuggestion={fetchAISuggestion} suggestions={suggestions} hideSuggestion={hideSuggestion} setHideSuggestion={setHideSuggestion}/>
+        }
+        {((type==="T_COMPETITOR" || type==="T_SPEAKING_OPPORTUNITY" || type === "T_PEOPLE_FINDER" || type === "T_CUSTOMER_ICP" || type==="T_PRODUCT_KEYWORDS") && template) ?
           (uploadEnabled && 
             <CsvUploader
               templateData={template}
@@ -1940,8 +1857,9 @@ return (
             <></>
         }
         </div>
-        {template?.inputAreas &&
+        {(template?.inputAreas || type==="T_PRODUCT_KEYWORDS") &&
                 <div>
+                {type!=="T_PRODUCT_KEYWORDS"&&
                   <div className="flex items-stretch gap-2.5">
                     {template?.inputAreas?.map((inputArea: any, index: number) => (
                       <>
@@ -1982,13 +1900,14 @@ return (
 
                       </>
                     ))}
-                    <div onClick={() => template.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
-                      style={{ backgroundColor: template.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
+                    <div onClick={() => template?.type === "enabled" && addNew()} className="flex items-center px-3 cursor-pointer bg-[var(--primary-color)] rounded-[4px] text-white font-medium text-lg"
+                      style={{ backgroundColor: template?.type !== "enabled" ? "var(--disabled-btn-color)" : "var(--primary-color)" }}
                     >+
                       {/* <Image src={Add} alt="add_Icon" className="w-[15px] h-[15px]" /> */}
                     </div>
 
                   </div>
+                }
                   {/* {customData.map((item:any, index:number) => (
     // <div key={index} className={styles.customDataOuterDiv}>
     // <div className={styles.singleInputBox}>{item.name}</div>
@@ -2003,7 +1922,7 @@ return (
   {!valid && (
               <div style={{ color: "var(--danger-text-color)", fontSize:"var(--font-size-small)", marginTop:"2px" }}>Enter valid input</div>
             )}
-            {(suggestions && suggestions.length > 0) &&
+            {(suggestions && suggestions.length > 0 && type!=="T_PRODUCT_KEYWORDS") &&
               <div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full" >
                 <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">
                   {/* <Image src={AiIcon} alt="AI" className={iconClass} width={14} height={14} /> */}
@@ -2084,9 +2003,41 @@ return (
           <InformationFill style={{marginBottom: "3px"}} color="var(--info-text-color)" height="12px" />
           {" "} You can edit or remove unwanted entries from here.
         </div>
-        {(customData && customData.length >0) ?
-          <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} /> :          
-          <div className={styles.emptyTableData}>
+        {/* {type==="T_PRODUCT_KEYWORDS" && 
+           <Tabs className="pb-2">
+           <TabsList className="grid w-full grid-cols-2">
+             <TabsTrigger value="include" onClick={()=>setActiveTab("include")}>
+               Include
+             </TabsTrigger>
+             <TabsTrigger value="exclude" onClick={()=>setActiveTab("exclude")}>
+               Exclude
+             </TabsTrigger>
+           </TabsList>
+           </Tabs>
+        } */}
+        {(type==="T_PRODUCT_KEYWORDS") &&
+        <Tabs defaultValue="include" onValueChange={(value) => setActiveTab(value as "include" | "exclude")} className="pb-2">
+        {(includeKeyword.length > 0 || excludeKeyword.length >0)&&
+        <TabsList className="grid w-full grid-cols-2 mb-1">
+          <TabsTrigger value="include">
+            Include
+            {type === "T_PRODUCT_KEYWORDS" && includeKeyword.length>0 && <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white ml-1">{includeKeyword.length}</span>}
+          </TabsTrigger>
+          <TabsTrigger value="exclude">
+            Exclude
+            {type === "T_PRODUCT_KEYWORDS" && excludeKeyword.length>0 && <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white ml-1">{excludeKeyword.length}</span>}
+          </TabsTrigger>
+        </TabsList>
+      }
+        <TabsContent value="include" className="mt-0">
+          {includeKeyword.length > 0 ? (
+          <TemplateTable
+          customData={includeKeyword}
+          handleCustomData={handleCustomData}
+          presetName={selectedPresetName}
+          />
+          ) : (
+            <div className={`pt-12 ${styles.emptyTableData}`}>
             <Image
               src={trackerEmptyTable}
               alt="table"
@@ -2099,7 +2050,56 @@ return (
             <div className={styles.emptyTableText}>No data added</div>
             <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
           </div>
+  )}
+</TabsContent>
+
+       
+        <TabsContent value="exclude" className="mt-0">
+        {excludeKeyword.length>0 ?
+          <TemplateTable
+            customData={excludeKeyword}
+            handleCustomData={handleCustomData}
+            presetName={selectedPresetName}
+          />:
+          <div className={`pt-12 ${styles.emptyTableData}`}>
+         <Image
+           src={trackerEmptyTable}
+           alt="table"
+           style={{
+             display: "flex",
+             alignItems: "center",
+             justifyContent: "center",
+           }}
+         />
+         <div className={styles.emptyTableText}>No data added</div>
+         <div className={styles.emptyTableText} style={{maxWidth: '220px', padding: '0', fontWeight: 'unset'}}>Please upload or manually enter the information</div>
+       </div>
         }
+        </TabsContent>
+      </Tabs>
+        }
+       {type !== "T_PRODUCT_KEYWORDS" && 
+  (customData && customData.length > 0 ? (
+    <TemplateTable customData={customData} handleCustomData={handleCustomData} presetName={selectedPresetName} />
+  ) : (
+    <div className={styles.emptyTableData}>
+      <Image
+        src={trackerEmptyTable}
+        alt="table"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      />
+      <div className={styles.emptyTableText}>No data added</div>
+      <div className={styles.emptyTableText} style={{ maxWidth: '220px', padding: '0', fontWeight: 'unset' }}>
+        Please upload or manually enter the information
+      </div>
+    </div>
+  ))
+}
+
       </div>
     </div>
     }

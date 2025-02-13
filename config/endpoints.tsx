@@ -47,6 +47,12 @@ export const endpoints = {
   locationSuggestion: `${BASE_URL}/suggestions/locations`,
   designations: `${BASE_URL}/designation`,
   users: `${BASE_URL}/auth/users`,
+  trends: {
+    eventTrends: `${BASE_URL}/trend`,
+    predictedAttendance: `${BASE_URL}/trends/predicted-attendance`,
+    predictedEvents: `${BASE_URL}/trends/predicted-number-of-events`,
+    eventTypes: `${BASE_URL}/trends/event-types`,
+  },
   tracker: {
     commonUrl: `${BASE_URL}/tracker`,
     access: `${BASE_URL}/tracker/access`,

@@ -9,11 +9,13 @@ interface Props {
   presetName?: string;
 }
 
-const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
+const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => { 
+  
   const [expandTable, setExpandTable] = useState<boolean>(false);
   const [selectedIdArray, setSelectedIdArray] = useState<number[]>([]);
 
   const deleteEntry = (entryKey: string, itemIndex: number) => {
+    
     if (!selectedIdArray.includes(itemIndex)) {
       setSelectedIdArray((prevNumbers) => [...prevNumbers, itemIndex]);
     } else {
@@ -73,7 +75,7 @@ const TemplateTable = ({ customData, handleCustomData, presetName }: Props) => {
                   checked={selectedIdArray.length === customData.length}
                 />
               </th>
-              {Object.entries(customData[0]).map(([entryKey, value]) => (
+              {customData?.length > 0 && Object?.entries(customData[0]).map(([entryKey, value]) => (
                 <th key={entryKey} className={styles.dataColoumn}>
                   {entryKey as string}
                 </th>

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle, Loader2, X } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -22,44 +22,58 @@ import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import { formattedDateRange } from "@/utils/date";
+import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerServices } from "@/services/trackerServices";
+import SortDropdown from "@/components/search/sortDropdown";
 
 export default function EventList({
   eventDate,
   onClose,
   source,
   trackerId,
-  type,
 }: {
   eventDate: Date;
   onClose: () => void;
-  source: string;
+  source?: string;
   trackerId?: string;
-  type?: string;
 }) {
+  const { getFilterValue } = useFilterState();
   const [currentPage, setCurrentPage] = useState(1);
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
+  const active = getFilterValue("eventType");
+
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.delete("view");
-  filteredParams.set("skip", String((currentPage - 1) * 10));
+  filteredParams.set("skip", String((currentPage - 1) * 20));
   filteredParams.set("active_lte", eventDate.toISOString());
   filteredParams.set("active_gte", eventDate.toISOString());
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString()],
     queryFn: () =>
-      source === "tracker"
-        ? getCalendarViewEvents(
+      source !== "tracker"
+        ? eventService.getEventsWithSearchParams(filteredParams.toString())
+        : getCalendarViewEvents(
             trackerId || "",
-            `type=${type}&startDate=${eventDate.toISOString().split("T")[0]},${
+            `type=${
+              active === "activeEvent"
+                ? "active"
+                : active === "expiredEvent"
+                ? "expired"
+                : active === "newEvent"
+                ? ""
+                : active === "savedEvent"
+                ? "saved"
+                : "active"
+            }&startDate=${eventDate.toISOString().split("T")[0]},${
               eventDate.toISOString().split("T")[0]
             }&endDate=${eventDate.toISOString().split("T")[0]},${
               eventDate.toISOString().split("T")[0]
-            }&limit=10&offset=${(currentPage - 1) * 10}`,
+            }&limit=20&offset=${(currentPage - 1) * 20}`,
             true
-          )
-        : eventService.getEvents(Object.fromEntries(filteredParams)),
+          ),
   });
 
   const handlePageChange = (page: number) => {
@@ -72,7 +86,7 @@ export default function EventList({
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
   const count = isEventResponse(data) ? data.count : 0;
-  const totalPages = Math.ceil(count / 10) || 1;
+  const totalPages = Math.ceil(count / 20) || 1;
 
   const EventCard = ({ event }: { event: Event }) => {
     const address = event.basic.eventLocation
@@ -91,7 +105,8 @@ export default function EventList({
     const formattedStartDate = format(event.basic.startDateTime, "dd MMM yyyy");
     const formattedEndDate = format(event.basic.endDateTime, "dd MMM yyyy");
 
-    const days = differenceInDays(event.basic.endDateTime, event.basic.startDateTime) + 1;
+    const days =
+      differenceInDays(event.basic.endDateTime, event.basic.startDateTime) + 1;
 
     const formattedRange =
       formattedStartDate === formattedEndDate
@@ -116,7 +131,10 @@ export default function EventList({
               <span>{address}</span>
             </div>
             <div className="flex items-start text-xs text-[#666666]">
-              {formattedRange}
+              {formattedDateRange(
+                event.basic.startDateTime,
+                event.basic.endDateTime
+              )}
             </div>
           </CardContent>
         </Card>
@@ -242,14 +260,14 @@ export default function EventList({
             <Button
               variant="ghost"
               size="sm"
-              className="text-lg"
+              className="h-7 w-7 p-0"
               onClick={onClose}
             >
-              &times;
+              <X className="w-4 h-4" />
             </Button>
           </div>
 
-          <div className="flex space-x-2 mt-4">
+          <div className="flex justify-between items-center mt-4">
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="text-white bg-primary">
                 {count}
@@ -258,6 +276,7 @@ export default function EventList({
                 Events Found
               </span>
             </div>
+            <SortDropdown compact={true} />
           </div>
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">
@@ -302,7 +321,7 @@ export default function EventList({
 
   return (
     <div
-      className={`h-[800px] w-[345px] mt-[54px] bg-[var(--primary-foreground)] rounded-l-lg border`}
+      className={`h-[800px] w-[345px] mt-[66px] bg-[var(--primary-foreground)] rounded-l-lg border`}
     >
       {renderContent()}
     </div>
