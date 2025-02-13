@@ -203,6 +203,7 @@ export default function Navbar() {
                   >
                     <UserSearch className="h-6 w-6" />
                     <span className="text-xs">Prospect</span>
+                    <div className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#fff0f0] text-[#e5484d]">Beta</div>
                   </Button>
                   <div className={pathname === "/internal/prospect" ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[80px]" : ""}></div>
                 </div>

@@ -61,7 +61,6 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
       const countryData = await getEventCountByCountry(companyId);
       if (countryData) {
         const sortedData = countryData.sort((a: any, b: any) => b.eventCount - a.eventCount);
-        setCountryPerPage(sortedData);
         setViewport((prevViewport: any) => ({
           ...prevViewport,
           latitude: sortedData?.[0]?.geoCordinates?.latitude,
@@ -69,10 +68,14 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
         }));
         const countryEventCountsObj: any = {};
         let totalAttentCount = 0;
-        countryData.forEach((country: any) => {
+        sortedData.forEach((country: any) => {
+          if (country.countryCode === "WW") {
+            country.name = "Virtually";
+          }
           countryEventCountsObj[country.countryCode] = country.eventCount;
           totalAttentCount += country.eventCount;
         });
+        setCountryPerPage(sortedData);
         setTotalAttentCount(totalAttentCount);
         setCountryEventCounts(countryEventCountsObj);
       }

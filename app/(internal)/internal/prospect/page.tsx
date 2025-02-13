@@ -69,14 +69,14 @@ const companyFilters: ProspectFilters[] = [
   },
   {
     id: "item-4",
-    label: "Community Size",
+    label: "Followers",
     filterName: "communitySize",
     enabled: true,
   },
   {
     id: "item-5",
     label: "Company Type",
-    filterName: "companyType",
+    filterName: "eventParticipationType",
     enabled: true,
   },
   // {
@@ -106,12 +106,12 @@ const eventFilters: ProspectFilters[] = [
     filterName: "eventFollowers",
     enabled: true,
   },
-  {
-    id: "item-5",
-    label: "Participation Type",
-    filterName: "eventParticipationType",
-    enabled: true,
-  },
+  // {
+  //   id: "item-5",
+  //   label: "Participation Type",
+  //   filterName: "eventParticipationType",
+  //   enabled: true,
+  // },
 ];
 
 const peopleFilters: ProspectFilters[] = [
@@ -184,63 +184,63 @@ const Prospect = () => {
 
   return (
     <div className="space-y-6">
-      <div className="pb-6 shadow-sm p-6 flex gap-6 items-center">
-        {/* <SearchBar /> */}
+      {/* <div className="pb-6 shadow-sm p-6 flex gap-6 items-center">
+        <SearchBar />
         <div className="text-lg font-medium">
           Find your next ideal customers with real-time insights backed by
           trusted data.
         </div>
-        {/* <div className="badge_success">Beta</div> */}
-      </div>
+      </div> */}
       <Tabs
         defaultValue={"company"}
         value={selectedView}
-        style={{ marginTop: "12px!important" }}
+        // style={{ marginTop: "12px!important" }}
         onValueChange={handleTabChange}
       >
-        <div className="grid grid-cols-3 px-6">
-          <div className="flex gap-3">
-          <TabsList className="grid grid-cols-2 h-auto px-2 col-span-1 mr-6 w-fit">
-            <TabsTrigger
-              value="company"
-              className="text-xs flex gap-2 items-center p-2"
-            >
-              <Buildings
-                color="var(--muted-foreground)"
-                width="12px"
-                height="12px"
-              />
-              Companies
-            </TabsTrigger>
-            <TabsTrigger
-              value="user"
-              className="text-xs flex gap-2 items-center p-2"
-              // disabled={true}
-            >
-              <Users color="#666666" width="12px" height="12px" />
-              People
-            </TabsTrigger>
-          </TabsList>
-          <div className="badge_success h-8">Beta</div>
-          </div>
-          {(companies.length > 0 || peopleData.length > 0) && (
-            <div className="text-[#A8A8A8] text-sm font-semibold border-b mt-3 mb-6 relative col-span-2 mr">
-              <span
-                className="absolute top-[-10px] bg-background px-3"
-                style={{ right: "calc(50% - 60px)" }}
-              >
-                Search Results
-              </span>
-            </div>
-          )}
-        </div>
-
         <div
           className="h-full grid grid-cols-3 mt-0"
-          style={{ height: "calc(100vh - 200px)", marginTop: "0!important" }}
+          style={{ height: "calc(100vh - 70px)", marginTop: "0!important" }}
         >
-          <div className="col-span-1 overflow-y-auto pt-3 px-6">
-            <div className="h-4/5 overflow-y-auto w-full mt-0">
+          <div className="col-span-1 h-full overflow-y-auto pt-6 px-6">
+            {/* Tabs */}
+            {/* <div className="grid grid-cols-3 px-6 pt-6"> */}
+            <div className="pb-3">
+              <TabsList className="grid grid-cols-2 h-auto px-2 col-span-1 mr-6 w-fit">
+                <TabsTrigger
+                  value="company"
+                  className="text-xs flex gap-2 items-center p-2"
+                >
+                  <Buildings
+                    color="var(--muted-foreground)"
+                    width="12px"
+                    height="12px"
+                  />
+                  Companies
+                </TabsTrigger>
+                <TabsTrigger
+                  value="user"
+                  className="text-xs flex gap-2 items-center p-2"
+                  // disabled={true}
+                >
+                  <Users color="#666666" width="12px" height="12px" />
+                  People
+                </TabsTrigger>
+              </TabsList>
+              {/* <div className="badge_success h-8">Beta</div> */}
+            </div>
+            {/* {(companies.length > 0 || peopleData.length > 0) && (
+                <div className="text-[#A8A8A8] text-sm font-semibold border-b mt-3 mb-6 relative col-span-2 mr">
+                  <span
+                    className="absolute top-[-10px] bg-background px-3"
+                    style={{ right: "calc(50% - 60px)" }}
+                  >
+                    Search Results
+                  </span>
+                </div>
+              )} */}
+            {/* </div> */}
+            {/* Tabs */}
+            <div className="h-[80%] overflow-y-auto w-full mt-0">
               <div className="p-3 bg-[var(--background-secondary-color)]">
                 <div className="text-xs flex gap-2 items-center p-2 pb-4 font-medium text-[var(--secondary-text-color)]">
                   <Filter
@@ -297,8 +297,8 @@ const Prospect = () => {
                           <Industry filterName={item.filterName} />
                         ) : item.filterName === "companyProductIds" ? (
                           <ProductTopics />
-                        ) : item.filterName === "companyType" ? (
-                          <CompanyType />
+                        ) : item.filterName === "eventParticipationType" ? (
+                          <ParticipationType />
                         ) : item.filterName === "communitySize" ? (
                           <CompanySize />
                         ) : item.filterName === "establishedYear" ? (
@@ -463,10 +463,10 @@ const Prospect = () => {
             </div>
           </div>
 
-          <div className="col-span-2 overflow-y-auto pr-6">
-            <TabsContent value="company" className="mt-0">
+          <div className="col-span-2 h-full overflow-y-auto pt-4 pr-6">
+            <TabsContent value="company" className="mt-0 overflow-y-auto">
               {isLoading ? (
-                <Loading />
+                <div className="p-8"><Loading /></div>
               ) : companies.length == 0 ? (
                 <NullState
                   image={coordinateNullState}
@@ -485,7 +485,7 @@ const Prospect = () => {
 
             <TabsContent value="user">
               {isLoading ? (
-                <Loading />
+                <div className="p-8"><Loading /></div>
               ) : peopleData.length == 0 ? (
                 <NullState
                   image={coordinateNullState}

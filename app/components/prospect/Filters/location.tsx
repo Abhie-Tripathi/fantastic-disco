@@ -125,7 +125,7 @@ export default function LocationSelector({ filterName }: LocationProps) {
   };
 
   return (
-    <div className="">
+    <div className="h-[150px]">
       <AutocompleteInput
         defaultOpen
         multiple

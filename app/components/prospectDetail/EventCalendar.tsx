@@ -120,9 +120,12 @@ export const EventCalendar = ({
                         height="12px"
                       />
                       <span>
-                        {[event.location?.cityName, event.location?.countryName]
+                        {(event.location?.cityName === event.location?.countryName) ?
+                          event.location?.cityName :
+                          [event.location?.cityName, event.location?.countryName]
                           .filter(Boolean)
-                          .join(", ")}
+                          .join(", ")
+                        }
                       </span>
                     </p>
 
@@ -188,9 +191,12 @@ export const EventCalendar = ({
                         height="12px"
                       />
                       <span>
-                        {[event.location?.cityName, event.location?.countryName]
+                        {(event.location?.cityName === event.location?.countryName) ?
+                          event.location?.cityName :
+                          [event.location?.cityName, event.location?.countryName]
                           .filter(Boolean)
-                          .join(", ")}
+                          .join(", ")
+                        }
                       </span>
                     </p>
 

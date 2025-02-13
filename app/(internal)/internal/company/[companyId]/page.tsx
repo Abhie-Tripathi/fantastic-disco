@@ -28,6 +28,7 @@ import { SectionHeading } from "@/app/components/prospectDetail/prospectHeading"
 import { EventCalendar } from "@/app/components/prospectDetail/EventCalendar";
 import { Button as ButtonUI } from "@/components/ui/button";
 import { useCompanyService } from "@/services/companyService";
+import { useRouter } from "next/navigation";
 
 const getCompanyIndustries = (industries: any[], companyTag: any[]) => {
   if (industries && industries.length > 0) {
@@ -42,6 +43,7 @@ const getCompanyIndustries = (industries: any[], companyTag: any[]) => {
 };
 
 const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
   const tabs = [
     { tabName: "Overview", path: "overview" },
@@ -182,12 +184,12 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
         <button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
-          <Link
+          <span
             className="text-[var(--primary-color)] font-medium"
-            href={"/internal/prospect"}
+            onClick={() => router.back()}
           >
             Back to Search
-          </Link>
+          </span>
         </button>
 
         {compLogo !== null && (
@@ -213,12 +215,12 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
             <div className="flex gap-2 items-center w-fit my-4">
               <Location color="#666666" width="14px" height="14px" />
               <span className="text-[#6E6F89] text-sm">
-                {[
-                  companyDetails.location?.cityName,
-                  companyDetails.location?.countryName,
-                ]
+                {(companyDetails.location?.cityName === companyDetails.location?.countryName) ?
+                  companyDetails.location?.cityName :
+                  [companyDetails.location?.cityName, companyDetails.location?.countryName]
                   .filter(Boolean)
-                  .join(", ")}
+                  .join(", ")
+                }
               </span>
             </div>
           )}
@@ -292,7 +294,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Linkedin color="#666666" className="cursor-pointer" />
+              <Linkedin color="#0077B5" className="cursor-pointer" />
             </Link>
           )}
           {companyDetails?.social?.twitterId && (
@@ -456,9 +458,6 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
                 {tab.tabName}
               </div>
             ))}
-          </div>
-          <div className="border px-2.5 py-0.5 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit mb-4 mr-3">
-            Beta
           </div>
         </ul>
 
