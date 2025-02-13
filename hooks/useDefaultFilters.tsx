@@ -10,6 +10,7 @@ import { useEventsService } from "@/services/eventsService";
 import { RecentSearchItem } from "@/types/events/recentSearches";
 import { useFilterContext } from "@/context/filterContext";
 import { newCategories } from "@/data/categories";
+import { log } from "console";
 
 export function useDefaultFilters() {
   const { user } = useAuthContext();

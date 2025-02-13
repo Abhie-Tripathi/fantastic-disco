@@ -59,7 +59,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
 
   const [isDraggingOver, setIsDraggingOver] = useState(true);
   const [drop, setDrop] = useState(false);
-  const [type, setType] = useState("MESSAGE");
+  const [type, setType] = useState("TEXT");
   // const [stage,setStage]=useState("");
   const [userDetail, setUserDetail] = useState<UserDetail | null>(
     user ? user : null
@@ -275,12 +275,11 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
       console.log(replyName);
       if(path[path.length-1]==="notesDiscussion"){
         const dataToSend = {
-          "stage": "INTERNAL",
-          "type": "MESSAGE",
+          "commentType": "TEXT",
           "content": note,
-          "source": "GTM",
-          "entityType": "TRACKER",
-          "entityId":path[path.length-2],
+          // "source": "GTM",
+          "sourceModule": "TRACKER",
+          "sourceId":path[path.length-2],
           ...(replyId !== null && {
             "parentCommentId": replyId
           })
@@ -298,7 +297,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
         ...(enquiryId && {
           "entityId": enquiryId
         }),
-        ...(type !== 'MESSAGE' && { "interestType": interestType }),
+        ...(type !== 'TEXT' && { "interestType": interestType }),
         ...(type === "RECOMMEND" && {
           "recommendUserId": suggest
         }),
@@ -349,14 +348,19 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
     });
     try{
         const data = await saveNotes(formData, replyId);
+        console.log(data);
+        
         if (data) {
-          if (replyId) {
-            GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Reply`);
-          } else
-            GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Message Send`);
-            const newData = transformData(data.data);
+          console.log(11111);
+          
+          // if (replyId) {
+          //   GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Reply`);
+          // } else
+          //   GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Message Send`);
+            // const newData = transformData(data);
+            console.log(data);
             
-            setNotes(prevNotes => [...prevNotes, data.data]);
+            setNotes(prevNotes => [...prevNotes, data]);
             createRealtimeAction('add', data.data.id);
             setScrolling(false);
             setZeroState(false);
@@ -365,10 +369,11 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
         console.log(error);
         
     }
-    setType("MESSAGE")
+    setType("TEXT")
   }
   const transformData = (data: any) => {
-
+    console.log(data);
+    
     const transformedCommentFiles = data.CommentFiles.map((file: any) => ({
       ...file,
       Attachment: [file.Attachment],
@@ -494,7 +499,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
   useEffect(() => {
     const reply: Reply = notes?.find((comment) => comment.id == replyId);
     // console.log("reply is: " + reply?.text);
-    setReplyName(reply?.user.firstname + " " + reply?.user.lastname);
+    setReplyName((reply?.user.firstname|| "User") + " " + (reply?.user.lastname || ""));
     setReplyText(reply?.content);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [replyId]);
@@ -900,6 +905,7 @@ const Comment = ({
 
   useEffect(() => {
     setUserDetail(user);
+    
   }, [user]);
   const d = `@${userDetail?.firstname}${userDetail?.lastname?.toLowerCase()}`;
   const handleReply = (id: string) => {
@@ -931,12 +937,13 @@ const Comment = ({
     console.log(comment?.CommentFiles);
   }, 5000)
 
+console.log(comment.parentComment);
 
   const { theme } = useTheme();
   return (
     <>
       {
-        comment.type === "MESSAGE" ? (
+        comment.commentType === "TEXT" ? (
         <>
           <div className={styles.comment__user}>
             <header className="flex flex-row justify-start gap-2 h-fit">
@@ -948,7 +955,7 @@ const Comment = ({
                   src={person1}
                   alt=""
                 /> */}
-                <UserProfile name={comment.user?.firstname + " " + comment.user?.lastname} height={50} width={50} />
+                <UserProfile name={(comment?.user?.firstname || "user") + " " + (comment?.user?.lastname || "")} height={50} width={50} />
               </span>
               <div
                 // className={`${styles.comment_name} ${theme === "light" && styles.comment_name_light
@@ -956,13 +963,16 @@ const Comment = ({
                 className="flex flex-col"
               >
                 <span className="font-medium">
-                  {comment.user?.firstname} {comment.user?.lastname}
+                  {comment?.user?.firstname || "User"} {comment?.user?.lastname || ""}
                   <span className="text-[var(--tertiary-text-color)]">
                     {" "}
                     @
-                    {`${comment.user.firstname}${comment.user.lastname
-                      .charAt(0)
-                      .toLowerCase()}${comment.user.lastname.slice(1)}`}
+                    {`${comment?.user?.firstname ? comment.user.firstname : "User"}${
+                comment?.user?.lastname
+                  ? comment.user.lastname.charAt(0).toLowerCase() + comment.user.lastname.slice(1)
+                       : ""
+                  }`}
+
                   </span>
                 </span>
 
@@ -982,7 +992,7 @@ const Comment = ({
           <div
             className="flex flex-col gap-1 ml-[58px]"
             style={{
-              background: comment?.parentCommentId
+              background: comment?.parentComment
                 ? "var(--background-secondary-color)"
                   
                 : "none",
@@ -990,25 +1000,25 @@ const Comment = ({
           >
             <div className="block">
               <span>{userName}</span>{" "}
-              {comment?.parentCommentId && (
+              {comment?.parentComment && (
                 <div
                   // className={
                   //   theme === "light" ? styles.replyDivLight : styles.replyDiv
                   // }
                   className="p-[10px] text-left flex gap-2 w-full justify-between flex-col cursor-pointer"
-                  onClick={(e) => getCommentPos(e, comment.parentCommentId)}
+                  onClick={(e) => getCommentPos(e, comment?.parentComment?.id)}
                 >
                   <div className="py-5 px-2.5 bg-black bg-opacity-20 w-full rounded-2xl flex justify-between">
                     <div className="overflow-hidden relative m-0">
                       <div className="absolute bg-[var(--primary-color)] w-1 h-full"></div>
-                      {comment.parentCommentId !== null ?
-                        <div className="pl-4 pb-2 text-[var(--primary-color)]">{comment.parent && comment?.parent?.user?.firstname}{" "}{comment.parent && comment?.parent?.user?.lastname}</div>
+                      {comment.parentComment !== null ?
+                        <div className="pl-4 pb-2 text-[var(--primary-color)]">{comment.parentComment && (comment?.parentComment?.user?.firstname || "User")}{" "}{comment.parentComment && (comment?.parentComment?.user?.lastname||"")}</div>
                         :
                         <div className="pl-4 pb-2 text-[var(--primary-color)]">{comment?.replyName}</div>
                       }
 
-                      <div className={styles.replyText1} id={comment.parent?.id}>
-                        {comment?.parent?.content}
+                      <div className={styles.replyText1} id={comment.parentComment?.id}>
+                        {comment?.parentComment?.content}
                       </div>
                     </div>
                   </div>
@@ -1087,7 +1097,7 @@ const Comment = ({
                       // If line is not empty, return the line wrapped in a <p> tag
                       return (
                         <>
-                          {comment?.parentCommentId ? (
+                          {comment?.parentComment ? (
                             <>
                               {/* <div className={styles.replyDiv}>
 
@@ -1246,9 +1256,9 @@ const Comment = ({
               Reply
             </button>
             {/* <ButtonView view={"replyBtn"} /> */}
-            {comment?.created ? (
+            {comment?.createdAt ? (
               <p className="font-medium">
-                {new Date(comment.created).toLocaleDateString("en-US", {
+                {new Date(comment.createdAt).toLocaleDateString("en-US", {
                   month: "short",
                   day: "2-digit",
                   year: "numeric",
@@ -1257,7 +1267,7 @@ const Comment = ({
             ) : (
               <p>Mar 20,2024</p>
             )}
-            {userDetail?.firstname === comment.user.firstname && userDetail?.lastname === comment.user.lastname &&
+            {/* {userDetail?.firstname === comment.user.firstname && userDetail?.lastname === comment.user.lastname && */}
               <button
                 className={styles.deleteBtn}
                 onClick={() => handleDelete(comment.id)}
@@ -1265,7 +1275,7 @@ const Comment = ({
                 {/* Delete */}
                 <Trash style={{marginBottom: '4px'}} color="var(--tertiary-text-color)" height="15px" />
               </button>
-            }
+            {/* } */}
 
             {/* <ButtonView
         view={"editDeleteButton"}
@@ -1382,7 +1392,7 @@ const Comment = ({
                             );
                           } else {
                             return (
-                              <React.Fragment key={idx}>{word} </React.Fragment>
+                              <React.Fragment key={idx}>{word}1 </React.Fragment>
                             );
                           }
                         } else if (word.startsWith("#")) {

@@ -19,7 +19,7 @@ export const endpoints = {
     savedEvents: `${BASE_URL}/me/saved-events`,
     recentSearches: `${BASE_URL}/me/recent-searches`,
     poc: `${BASE_URL}/event-poc`,
-    enabledFilters: `${BASE_URL}/configuration`,
+    enabledFilters: `${BASE_URL_NEW}/me/account/configuration/filter`,
     recentSearch : `${BASE_URL}/event/recent`
   },
   //   designations: `${BASE_URL}/designations`,
@@ -43,6 +43,7 @@ export const endpoints = {
   designations: `${BASE_URL}/designation`,
   users: `${BASE_URL}/auth/users`,
   tracker: {
+    suggestion:`${BASE_URL_NEW}/suggestions/companies`,
     commonUrl: `${BASE_URL_NEW}/trackers`,
     access: `${BASE_URL}/tracker/access`,
     shareAccess: `${BASE_URL}/access`,
@@ -51,8 +52,8 @@ export const endpoints = {
     getTrackers: `${BASE_URL_NEW}/me/trackers`,
     getSavedEvents: `${BASE_URL}/tracker`,
     saveEvent: `${BASE_URL}/tracker/saved-events`,
-    getNotes: `${BASE_URL}/comment?stage=INTERNAL&entityType=TRACKER`,
-    saveNotes: `${BASE_URL}/comment`,
+    getNotes: `${BASE_URL_NEW}/trackers`,
+    saveNotes: `${BASE_URL_NEW}/comments`,
   },
   coordinate: {
     enquiry: `${BASE_URL}/userInterest/enquiry`,

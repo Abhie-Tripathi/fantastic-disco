@@ -221,7 +221,7 @@ export const useEventsService = () => {
   };
   const fetchEnabledFilters = async (source: String) => {
     const response = await api.request(
-      `${endpoints.event.enabledFilters}?source=${source}`,
+      `${endpoints.event.enabledFilters}`,
       {
         method: "GET",
       }

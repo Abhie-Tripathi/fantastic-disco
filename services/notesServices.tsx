@@ -7,12 +7,12 @@ export const useNotesServices =() =>{
     const api = useApi();
     const getNotesFromTracker=(trackerId?:string, params?:string): Promise<NotesResponse | undefined>=>{
         return api.request(
-          `${endpoints.tracker.getNotes}&entityId=${trackerId}&${params}`
+          `${endpoints.tracker.getNotes}/${trackerId}/comments?${params}`
         )
       }
       const saveNotes=(formData:any, replyId:string | null): Promise<{data: Comment }| undefined>=>{
         return api.request(
-          `${endpoints.tracker.saveNotes}${replyId!==null ? '/reply':''}`,
+          `${endpoints.tracker.saveNotes}`,
           {
             method: 'POST',
             data: formData

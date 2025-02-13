@@ -157,7 +157,29 @@ export const useTrackerServices = () => {
       
       return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=Map"));
     };
-    
+    const getSuggestion = async (endpoint, searchInput, abortSignal) => {
+      console.log("Received AbortSignal:", abortSignal);
+  
+      try {
+          const response: any = await api.request(
+              `${endpoints.tracker.suggestion}/${endpoint}?query=${searchInput}&offset=0&limit=5`,
+              {
+                  method: "GET",
+                  signal: abortSignal,
+              }
+          );
+  
+          console.log("API Response:", response);
+          return response;
+      } catch (error: any) {
+          if (error.name === "AbortError") {
+              console.log("Fetch aborted");
+              return null;
+          }
+          console.error("Error fetching suggestions:", error);
+          throw error;
+      }
+  };
     const saveNewEvent=(formData:any)=>{
         return api.request(
           `${endpoints.tracker.saveEvent}`,
@@ -237,6 +259,7 @@ export const useTrackerServices = () => {
     return {
       createTracker,
       getMapViewData,
+      getSuggestion,
       getEventsLatLongData,
       editTracker,
       getTrackerMapEvents,

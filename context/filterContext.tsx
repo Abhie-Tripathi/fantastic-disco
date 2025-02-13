@@ -186,6 +186,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     const getEnabledFilters = async () => {
       try {
         const data = await eventService.fetchEnabledFilters("research");
+        console.log(data);
+        
         setEnabledFilters(data || {});
       } catch (e) {
         console.error("Error fetching filters:", e);
@@ -200,6 +202,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     if (enabledFilters) {
       // console.log("Enabled Filters:", enabledFilters);
       setMorphedData(generateSearchFilters(enabledFilters) as any);
+      console.log(generateSearchFilters(enabledFilters));
+      
     }
   }, [enabledFilters]);
   
@@ -248,6 +252,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         } else {
           newFilters[key] = value;
         }
+        
         return newFilters;
       });
     },
@@ -349,6 +354,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
+  console.log(localFilters);
+  
   const contextValue = useMemo(
     () => ({
       localFilters,

@@ -101,7 +101,7 @@ const Index = () => {
           </Link>
           <div className={styles.tooltipContainer} style={{ cursor: data?.tracker?.name?.length > 20 ? "pointer" : "default" }}>
             {data?.name?.length > 20 ? data?.name?.substring(0, 20) + '...' : data?.name}
-            {data?.tracker?.name?.length > 20 && <span className={styles.tooltipText}>{data?.tracker?.name}</span>}
+            {data?.name?.length > 20 && <span className={styles.tooltipText}>{data?.name}</span>}
 
           </div>
           {/* </Button> */}
