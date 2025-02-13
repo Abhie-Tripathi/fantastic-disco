@@ -34,18 +34,21 @@ interface PopupProps {
 }
 
 export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
-  
   if (!popupInfo || popupInfo?.events?.length === 0) return null;
-  
+
+  const { primaryEventType, id, name, startDateTime, endDateTime } =
+    popupInfo && popupInfo.events[0].basic;
+
   const getAddress = (event: Event) => {
-    return event.venueLocation
-      ? event.venueLocation.city?.name === "Online"
+    const { eventLocation } = (event && event.basic) || {};
+    return eventLocation
+      ? eventLocation.city?.name === "Online"
         ? "Online"
         : [
-            event.venueLocation?.venue?.name,
-            event.venueLocation?.city?.name,
-            event.venueLocation?.state?.name,
-            event.venueLocation?.country?.name,
+            eventLocation?.venue?.name,
+            eventLocation?.city?.name,
+            eventLocation?.state?.name,
+            eventLocation?.country?.name,
           ]
             .filter(Boolean)
             .join(", ")
@@ -70,37 +73,37 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
         })}
       >
         {popupInfo.events.map((event, index) => (
-          <React.Fragment key={`${event.id}-${index}`}>
+          <React.Fragment key={`${id}-${index}`}>
             <div className="relative pl-4 pr-2 py-2">
               <div
                 className="absolute left-0 top-0 bottom-0 w-1 rounded-md"
                 style={{
-                  backgroundColor:
-                    eventTypeColors[event.primaryEventType || ""],
+                  backgroundColor: eventTypeColors[primaryEventType || ""],
                 }}
               />
               <div className="flex items-center justify-between pb-2 border-b">
                 <div className="flex items-center gap-2">
                   <img
-                    src={iconUrls[event.primaryEventType || "festival"]}
-                    alt={event.primaryEventType || "Event"}
+                    src={iconUrls[primaryEventType || "festival"]}
+                    alt={primaryEventType || "Event"}
                     className="w-5 h-5"
                   />
                   <span className="text-primary font-medium text-xs">
-                    {event.primaryEventType?.toUpperCase() || "EVENT"}
+                    {primaryEventType?.toUpperCase() || "EVENT"}
                   </span>
                 </div>
                 <Link
-                  href={`/internal/event/${event.id}`} target="_blank"
+                  href={`/internal/event/${id}`}
+                  target="_blank"
                   className="text-primary text-xs py-0 h-5 pr-0"
                 >
                   View Details
                 </Link>
               </div>
-              <h3 className="font-medium text-sm my-2">{event.name}</h3>
+              <h3 className="font-medium text-sm my-2">{name}</h3>
               <p className="text-xs mb-2 font-medium">{getAddress(event)}</p>
               <div className="flex items-start text-xs text-primary">
-                {formattedDateRange(event.startDateTime, event.endDateTime)}
+                {formattedDateRange(startDateTime, endDateTime)}
               </div>
             </div>
             {index < popupInfo.events.length - 1 && (

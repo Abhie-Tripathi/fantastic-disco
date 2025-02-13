@@ -14,6 +14,7 @@ import { MapEvents } from "@/types/events";
 import { Loader2 } from "lucide-react";
 import { useMiscService } from "@/services/miscService";
 import MapPopup from "../map/popup";
+import { EventStatus } from "@/types/events/dto/event-query.dto";
 
 interface MapProps {
   startDate: string;
@@ -49,7 +50,7 @@ const EventsMapView: React.FC<MapProps> = ({
     startDate: string;
     endDate: string;
   }>({ startDate: startDateTime, endDate: endDateTime });
-  const { getEventsWithSearchParams, getEventDetailById } = useEventsService();
+  const { getEvents, getEventDetailById } = useEventsService();
   const [events, setEvents] = useState<MapEvents[]>([]);
   const [popupInfo, setPopupInfo] = useState<updatedEvent | null>(null);
 
@@ -75,23 +76,23 @@ const EventsMapView: React.FC<MapProps> = ({
 
   const viewBound = {
     boundType: "point",
-    coordinates: JSON.stringify({
+    coordinates: {
       latitude: Number(latitude),
       longitude: Number(longitude),
       radius: 10,
-    }),
+    },
   };
-  const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
+  const viewBoundString = JSON.stringify(viewBound);
 
-  const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
-    startDate
-  ).toISOString()}&active_lte=${new Date(endDate).toISOString()}&view=map${
-    !latitude && !longitude
-      ? `&locationIds=${
-          eventLocation && eventLocation.city && eventLocation?.city.id
-        }`
-      : ""
-  }&viewBound=${viewBoundString}`;
+  // const params = `?status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
+  //   startDate
+  // ).toISOString()}&active_lte=${new Date(endDate).toISOString()}&view=map${
+  //   !latitude && !longitude
+  //     ? `&locationIds=${
+  //         eventLocation && eventLocation.city && eventLocation?.city.id
+  //       }`
+  //     : ""
+  // }&viewBound=${viewBoundString}`;
 
   // const params = useMemo(() => {
   //   const searchParams = new URLSearchParams({
@@ -131,8 +132,17 @@ const EventsMapView: React.FC<MapProps> = ({
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["eventDetail", params.toString()],
-    queryFn: async () => await getEventsWithSearchParams(params.toString()),
+    queryKey: ["eventDetail", startDate, endDate],
+    queryFn: async () =>
+      await getEvents({
+        status: "active,cancelled,postponed",
+        eventTypes: "workshops,tradeshows,conferences",
+        view: "map",
+        active_gte: new Date(startDate).toISOString(),
+        active_lte: new Date(endDate).toISOString(),
+        locationIds: eventLocation?.city?.id || "",
+        viewBound: JSON.stringify(viewBound),
+      }),
     refetchOnWindowFocus: false,
   });
 
@@ -140,7 +150,7 @@ const EventsMapView: React.FC<MapProps> = ({
 
   useEffect(() => {
     if (eventsData) {
-      setEvents((eventsData?.events as MapEvents[]) || []);
+      setEvents((eventsData.events as MapEvents[]) || []);
     }
   }, [eventsData]);
 

@@ -235,14 +235,6 @@ export const AudienceIntel = ({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                {!audienceSpread && (
-                  <Badge
-                    variant={"outline"}
-                    className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
-                  >
-                    Demo
-                  </Badge>
-                )}
               </div>
               {!isAudienceSpreadEnabled && <Restriction />}
               {isAudienceSpreadEnabled && (
@@ -311,18 +303,10 @@ export const AudienceIntel = ({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                {!designationSpread && (
-                  <Badge
-                    variant={"outline"}
-                    className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none"
-                  >
-                    Demo
-                  </Badge>
-                )}
               </div>
-              {isDesignationEnabled ? (
-                <>
-                  {designationSpread && designationSpread.length > 0 && (
+              {designationSpread && designationSpread.length > 0 ? (
+                isDesignationEnabled ? (
+                  <>
                     <div className="flex flex-col gap-4 bg-[#FAFAFA] dark:bg-[#171717] border border-[#EBEBEB] dark:border-[#2E2E2E] rounded-md p-3">
                       <Text
                         color="primary"
@@ -358,18 +342,16 @@ export const AudienceIntel = ({
                         />
                       </div>
                     </div>
-                  )}
-                  <Text
-                    color="primary"
-                    fontWeight="medium"
-                    variant="noMargin"
-                    size="large"
-                  >
-                    Other designations
-                  </Text>
-                  <ul className="flex flex-col gap-4 h-64 overflow-y-auto pr-2">
-                    {designationSpread && designationSpread.length > 0 ? (
-                      designationSpread.map((designation, index) => (
+                    <Text
+                      color="primary"
+                      fontWeight="medium"
+                      variant="noMargin"
+                      size="large"
+                    >
+                      Other designations
+                    </Text>
+                    <ul className="flex flex-col gap-4 h-64 overflow-y-auto pr-2">
+                      {designationSpread.map((designation, index) => (
                         <li
                           key={`designation-${designation.designation}-${index}`}
                         >
@@ -386,17 +368,17 @@ export const AudienceIntel = ({
                             className="h-2"
                           />
                         </li>
-                      ))
-                    ) : (
-                      <span className="text-[#666666] text-sm flex items-center gap-2">
-                        <CircleSlash width={15} height={15} />
-                        No data available
-                      </span>
-                    )}
-                  </ul>
-                </>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <Restriction />
+                )
               ) : (
-                <Restriction />
+                <span className="text-[#666666] text-sm flex items-center gap-2">
+                  <CircleSlash width={15} height={15} />
+                  No data available
+                </span>
               )}
             </div>
           </div>

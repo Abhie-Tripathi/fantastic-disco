@@ -26,12 +26,10 @@ export const useEventsService = () => {
     EventParticpantAdapter();
 
   const getEvents = async (params?: EventQuery) => {
-    console.log("service called");
     const response = await api.request<EventResponse>(endpoints.event.events, {
       method: "GET",
       params,
     });
-    console.log(response);
     return response;
   };
 
@@ -151,7 +149,7 @@ export const useEventsService = () => {
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {
     const response = await api.request(
-      `${endpoints.event.events}/${searchParamsString}`,
+      `${endpoints.event.events}${searchParamsString}`,
       {
         method: "GET",
       }
