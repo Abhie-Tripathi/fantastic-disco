@@ -156,7 +156,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
                 
               </div>
               <div className={styles.numberOfEvents}>
-                {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.new)}
+                {formatCount(item?.groupedEventsCount?.new)}
                 {/* <div className="badge_success">
                 <ChartTrendingUp width="12px" height="12px" style={{color:"var(--success-text-color)"}}/>
                 <span className="text-[10px]">
@@ -173,7 +173,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
                 Active
               </div>
               <div className={styles.numberOfEvents}>
-              {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.active)}
+              {formatCount(item?.groupedEventsCount?.active)}
               </div>
               <div className={styles.events}>Events</div>
             </div>
@@ -183,7 +183,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
                 Past
               </div>
               <div className={styles.numberOfEvents}>
-                {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired)}
+                {formatCount(item?.groupedEventsCount?.past)}
               </div>
               <div className={styles.events}>Events</div>
             </div>

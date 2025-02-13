@@ -212,7 +212,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       // console.log(key);
 
       const mapping: Record<keyof Filter, string> = {
-        eventTypes: "eventType",
+        eventTypes: "eventTypes",
         status: "eventStatus",
         categories: "eventCategory",
         eventFormats: "eventFormat",
@@ -224,13 +224,13 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         estimatedExhibitors: "estimatedExhibitScore",
         estimatedVisitorRangeTag: "estimatedVisitorRangeTag",
       };
-      // console.log(enabledFilters);
+      console.log(enabledFilters);
       const selected = mapping[key as keyof Filter];
       setLocalFilters((prev) => {
         // console.log(prev);
 
         if (
-          enabledFilters?.[selected] &&
+          enabledFilters?.filter?.data?.[selected] &&
           ((selected === "maturity" && value?.length === 0) ||
             (selected !== "maturity" &&
               typeof prev?.[key as keyof Filter] === "string" &&

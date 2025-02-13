@@ -166,10 +166,12 @@ export function useDefaultFilters() {
     try {
       // Try to use enabled filters first
       const enabledFilters = await eventService.fetchEnabledFilters("research");
-      if (enabledFilters) {
+      console.log(enabledFilters.filter.data);
+      
+      if (enabledFilters.filter.data) {
         const params = new URLSearchParams(searchParams.toString());
-        const enabledFilterParams = mapEnabledFiltersToParams(enabledFilters);
-        Object.entries(enabledFilterParams).forEach(([key, value]) => {
+        const enabledFilterParams = mapEnabledFiltersToParams(enabledFilters.filter.data);
+        Object.entries(enabledFilters.filter.data).forEach(([key, value]) => {
           if (value) params.set(key, value);
         });
 
@@ -178,6 +180,8 @@ export function useDefaultFilters() {
             router.push(`${pathName}?${params.toString()}`, { scroll: false });
           }, 0);
         } else {
+          console.log(11111);
+          
           setMultipleLocalFilters(enabledFilterParams);
         }
         return;
