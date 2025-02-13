@@ -1,4 +1,4 @@
-import {  Event } from "@/types/events";
+import { Event } from "@/types/events";
 import { format } from "date-fns";
 import { type CarouselApi } from "@/components/ui/carousel";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -121,7 +121,7 @@ export const DetailMapComponent = ({
         <div className="flex flex-col gap-4 max-xl:justify-around h-auto">
           <div className="flex flex-col gap-4">
             <div className="flex-1 bg-[#EBEBEB] h-[450px]">
-              {/* <EventsMapView
+              <EventsMapView
                 event={eventDetails}
                 startDate={eventDateRange.startDate}
                 endDate={eventDateRange.endDate}
@@ -130,7 +130,7 @@ export const DetailMapComponent = ({
                   width: "100%",
                   height: "308px",
                 }}
-              /> */}
+              />
             </div>
           </div>
         </div>
