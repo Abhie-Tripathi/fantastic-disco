@@ -66,7 +66,6 @@ export const InsightsAndScores = ({
     below5CountryCategoryEvent: below5CountryCategoryEvent,
   };
   const { morphedData } = useFilterContext();
-  console.log(morphedData);
   const { eventAnalytics, eventRanking } = morphedData;
   const isAnalyticsEnabled = eventAnalytics && eventAnalytics.isEnabled;
   const isTrustScoreEnabled = eventRanking && eventRanking.isEnabled;
@@ -126,8 +125,11 @@ export const InsightsAndScores = ({
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
-
-                        <CircularProgressBar value={scores.impactScore} />
+                        {isAnalyticsEnabled ? (
+                          <CircularProgressBar value={scores.impactScore} />
+                        ) : (
+                          <Restriction />
+                        )}
                       </div>
                     )}
                   {trustScore !== null && trustScore > 0 && (
@@ -148,8 +150,13 @@ export const InsightsAndScores = ({
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-
-                      <CircularProgressBar value={trustScore} />
+                      {isTrustScoreEnabled ? (
+                        <CircularProgressBar
+                          value={Math.round(trustScore ?? 0)}
+                        />
+                      ) : (
+                        <Restriction />
+                      )}
                     </div>
                   )}
                   {scores &&
@@ -171,8 +178,10 @@ export const InsightsAndScores = ({
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
-                        {scores && scores.inboundScore !== null && (
+                        {isAnalyticsEnabled ? (
                           <CircularProgressBar value={scores.inboundScore} />
+                        ) : (
+                          <Restriction />
                         )}
                       </div>
                     )}
@@ -195,11 +204,12 @@ export const InsightsAndScores = ({
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
-
-                        {scores && scores.internationalScore !== null && (
+                        {isAnalyticsEnabled ? (
                           <CircularProgressBar
                             value={scores.internationalScore}
                           />
+                        ) : (
+                          <Restriction />
                         )}
                       </div>
                     )}
