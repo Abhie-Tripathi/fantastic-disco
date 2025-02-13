@@ -561,6 +561,7 @@ export const QueryFilter = z.object({
     )
     .transform((val) => val.split(",").map((item) => item.toUpperCase()))
     .optional(),
+  view: z.string().optional(),
 });
 
 export const FilterNames = Object.keys(QueryFilter.shape);

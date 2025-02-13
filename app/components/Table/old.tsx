@@ -40,6 +40,7 @@ import { useTrackerContext } from "@/context/tracker";
 import { useCoordinateService } from "@/services/coordinateService";
 import { PaginationComponent } from "@/components/pagination";
 import { useFilterState } from "@/hooks/useFilterState";
+import { formatEstimatedSpend } from "@/utils/formater";
 interface FormDataType {
   entityId_id: string;
   markedInterest?: string | null;
@@ -358,8 +359,8 @@ const Table = ({
     markedInterest: null,
     // eventGroupId: "",
   });
-  const take= getFilterValue("take")||20;
-  const skip= getFilterValue("skip")||0;
+  const take = getFilterValue("take") || 20;
+  const skip = getFilterValue("skip") || 0;
   const coordinateService = useCoordinateService();
 
   const [coordinateActions, setCoordinateActions] = useState<any>([]);
@@ -516,6 +517,7 @@ const Table = ({
   //   if(currPage!==1)
   //   fetchData(secondLast);
   // },[currPage])
+
   useEffect(() => {
     if (path[2] === "search") setInitialRender(true);
     const fetchBookmarkData = async () => {
@@ -575,12 +577,12 @@ const Table = ({
     const secondLast = path[path.length - 2];
 
     try {
-      const result = await getSavedEvents(
+      const result = (await getSavedEvents(
         secondLast,
         `max=${itemsPerPage}&offset=${(currPage - 1) * 10}`,
         abortController.signal // Pass the signal here
-      )  as { result: EventTableType[]; count: number };;
-      
+      )) as { result: EventTableType[]; count: number };
+
       if (result) {
         setIsLoaded(true);
         GAEvent("trackers", "Tracker", "View", `Saved Event | ${currPage}`);
@@ -613,7 +615,6 @@ const Table = ({
   const currentPage =
     Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
-
 
   const handlePageChange = (page: number) => {
     setFilter("skip", ((page - 1) * itemsPerPage).toString());
@@ -745,7 +746,7 @@ const Table = ({
     try {
       if (eventType === "Saved Events") return fetchSavedData();
 
-      const result = await getTrackerEvents(
+      const result = (await getTrackerEvents(
         secondLast,
         `limit=${take}&offset=${skip}`,
         eventType === "Active Events"
@@ -754,8 +755,8 @@ const Table = ({
           ? "expired"
           : "",
         abortController.signal
-      ) as {events: EventTableType[]; totalEvents: number};
-  
+      )) as { events: EventTableType[]; totalEvents: number };
+
       if (!result) {
         console.error("No data returned from getTrackerEvents");
         return;
@@ -843,8 +844,6 @@ const Table = ({
     }
   };
 
-
-
   // const [isDelete, setIsDelete] = useState(false);
 
   const deleteEvent = async (groupId: string) => {
@@ -922,9 +921,7 @@ const Table = ({
         <Loading className="w-[200px] h-[100px]" />
       </div>
     );
-  } 
-  else if (isLoaded && eventPerPage.length == 0) {
-
+  } else if (isLoaded && eventPerPage.length == 0) {
     return (
       <div className={styles.noData}>
         {path[2] === "trackers" ? (
@@ -954,7 +951,7 @@ const Table = ({
     setCurrPage((page) => page + 1);
     GAEvent("research", "Filters", "Load More Clicked", "Load More");
   };
-  
+
   return (
     <div className={styles.table_container}>
       <div
@@ -1059,10 +1056,12 @@ const Table = ({
                   </>
                 )}
               {showInsights.maturity && <th>Maturity</th>}
-              {showInsights.impactScore && <th>Impact Score</th>}
-              {showInsights.inboundScore && <th>Inbound Score</th>}
-              {showInsights.internationalScore && <th>International Score</th>}
-              {showInsights.audienceZone && <th>Audience Zone</th>}
+              {showInsights.impactScore && <th title="Event Impact Score">EIS</th>}
+              {showInsights.inboundScore && <th title="Inbound Score">Inbound</th>}
+              {showInsights.internationalScore && <th title="International Score">International</th>}
+              {showInsights.economicImpact && <th title="Estimated Economic Impact">Est. Impact ($)</th>}
+              {showInsights.audienceZone && <th title="Audience Zone">Audience Zone</th>}
+
               {showInsights.audienceSpread && <th>Audience Spread</th>}
               <th
                 className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}
@@ -1103,7 +1102,7 @@ const Table = ({
                     )}
                   </div>
                   <div className={styles.truncateText_1}>
-                    <Link href={`/internal/event/${event.id}`} target="_blank">
+                    <Link href={`/internal/event/${event.id}`}>
                       {event.name}
                     </Link>
                   </div>
@@ -1987,6 +1986,10 @@ const Table = ({
                   </td>
                 )}
 
+                {showInsights.economicImpact && (
+                  <td className="text-right">{formatEstimatedSpend(event.economicImpact)}</td>
+                )}
+
                 {showInsights.audienceZone && (
                   <td>
                     {event?.audienceZone && event?.audienceZone !== "" ? (
@@ -2211,11 +2214,14 @@ const Table = ({
                           <div style={{ maxWidth: "500px" }}>
                             <header className={styles["modal_header"]}>
                               <div className={styles["modal_header-title"]}>
-                                Choose an {" "}
-                                <Link href="/internal/settings/product" className="text-primary hover:underline">
-                                  Action 
-                                </Link>
-                                {" "}to Proceed
+                                Choose an{" "}
+                                <Link
+                                  href="/internal/settings/product"
+                                  className="text-primary hover:underline"
+                                >
+                                  Action
+                                </Link>{" "}
+                                to Proceed
                               </div>
                               <button
                                 className={styles["close"]}
@@ -2316,8 +2322,66 @@ const Table = ({
         </table>
       </div>
 
+      {/* <div
+        className={`${styles.pagination_container} ${
+          theme === "light" ? styles.pagination_container_light : ""
+        }`}
+      >
+        <div className={styles.pagination_info_container}>
+          <div>Showing</div>
+          <Image src={ExpandAll} alt="expandall" className={iconClass} />
+          <div className={styles.pagination_current_pageno}>
+            <select
+              onChange={handlePageItems}
+              value={itemsPerPage}
+              className={styles.pagination_noOfPage}
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+            </select>
+          </div>
+          <div>
+            {totalEvents > 0 ? (
+              <>
+                {(currPage - 1) * itemsPerPage + 1} to{" "}
+                {Math.min(totalEvents, currPage * itemsPerPage)}{" "}
+                of {totalEvents} entries
+              </>
+            ) : (
+              "0 entries"
+            )}
+          </div>
+        </div>
 
-    {totalPages > 1 && (
+        <div className={styles.pagination_page_control_container}>
+          <div>Page</div>
+          <div className={styles.pagination_current_page}>{currPage}</div>
+          <div>of {totalPages}</div>
+        </div>
+
+        <div className={styles.pagination_buttons}>
+          <button
+            className={`${styles.pagination_control_button} ${
+              currPage === 1 ? styles.disabled : ""
+            }`}
+            onClick={() => currPage > 1 && setCurrPage((page) => page - 1)}
+            disabled={currPage === 1}
+          >
+            Previous
+          </button>
+          <button
+            className={`${styles.pagination_control_button} ${
+              currPage === totalPages ? styles.disabled : ""
+            }`}
+            onClick={() => currPage < totalPages && loadMoreHandler()}
+            disabled={currPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      </div> */}
+
+      {totalPages > 1 && (
         <div className="sticky bottom-0 bg-background py-4">
           <PaginationComponent
             currentPage={currentPage}

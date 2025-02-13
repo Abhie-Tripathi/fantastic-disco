@@ -61,7 +61,8 @@ export function useApi<T>() {
           isLoading: false,
         });
         return response.data.data;
-      } else if ("error" in response.data) {
+      } 
+      else if ("error" in response.data) {
         console.log("andar");
         setState({
           data: undefined,

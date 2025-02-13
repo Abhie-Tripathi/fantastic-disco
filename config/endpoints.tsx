@@ -16,7 +16,7 @@ export const endpoints = {
     logout: `${BASE_URL}/me/sign-out`,
   },
   event: {
-    count: `${BASE_URL}/event/search`,
+    count: `${BASE_URL}/events/count`,
     events: `${BASE_URL}/events`,
     eventDetailById: `${BASE_URL}/events`,
     eventEditionsDetailsById: `${BASE_URL}/event/editions`,
@@ -104,6 +104,10 @@ export const endpoints = {
   calendar: {
     getyearlyEvents: `${BASE_URL}/event?`,
   },
-  configuration: `${BASE_URL}/configuration`,
+  configuration: {
+    filterConfiguration: `${BASE_URL}/me/account/configuration/filter`,
+    interestConfiguration: `${BASE_URL}/me/account/configuration/interest`,
+    outreachConfiguration: `${BASE_URL}/me/account/configuration/outreach`,
+  },
   myprofile: `${BASE_URL}/auth/customer/profile`,
 };

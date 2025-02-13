@@ -1,7 +1,6 @@
 "use client";
 
-import { EventsAdapter } from "@/adapters/eventsAdapter";
-import Table from "@/app/components/Table";
+import Table from "@/app/components/Table/EventTable";
 import ZeroState from "@/app/components/zerostate";
 import EventCalendar from "@/components/eventCalendar";
 import AdvancedFilters from "@/components/search/advancedFilters";
@@ -18,7 +17,6 @@ import StatusSelector from "@/components/search/status";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
 import List from "@/components/search/list";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFilterContext } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
@@ -34,13 +32,24 @@ import {
 } from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Filter, FilterX, Loader2, Plus } from "lucide-react";
+import {
+  ArrowUpRight,
+  CalendarIcon,
+  Filter,
+  FilterX,
+  Globe,
+  ListIcon,
+  Loader2,
+  Plus,
+  TableIcon,
+} from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
+import SortDropdown from "@/components/search/sortDropdown";
 
 const Map = lazy(() => import("@/components/map"));
 
@@ -62,6 +71,8 @@ const Search = () => {
   const router = useRouter();
   const { navigateWithParams, getFilterValue, setFilter, setMultipleFilters } =
     useFilterState();
+
+  const { getLocalFilterValue } = useFilterContext();
   const { searchParams } = useDefaultFilters();
   const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
@@ -73,6 +84,7 @@ const Search = () => {
   const [validationError, setValidationError] = useState("");
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
   const [customTrackerName, setCustomTrackerName] = useState<string>("");
+  const modifiedSearchParams = new URLSearchParams(searchParams.toString());
   const {
     data: eventData,
     error,
@@ -86,16 +98,8 @@ const Search = () => {
   >({
     queryKey: ["events", searchParams.toString()],
     queryFn: () =>
-      eventService.getEventsWithSearchParams(searchParams.toString()),
-    enabled:
-      !!searchParams.toString() &&
-      !(selectedView == "table" || selectedView == "") &&
-      !(
-        Array.from(searchParams.values()).length == 0 ||
-        (Array.from(searchParams.values()).length == 1 &&
-          (Array.from(searchParams.values())[0] == "list" ||
-            Array.from(searchParams.values())[0] == "calendar" ||
-            Array.from(searchParams.values())[0] == "map"))
+      eventService.getEvents(
+        Object.fromEntries(modifiedSearchParams.entries())
       ),
     refetchOnWindowFocus: false,
     gcTime: 0,
@@ -158,50 +162,8 @@ const Search = () => {
     }
   }, []);
 
-  const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
-
-  const adaptedQueryString = (function () {
-    if (!searchParams.toString()) return;
-    if (adaptedParams.offset == "0") {
-      delete adaptedParams.offset;
-    }
-    delete adaptedParams.max;
-    delete adaptedParams.sortBy;
-    delete adaptedParams.sortType;
-    return new URLSearchParams(adaptedParams).toString();
-  })();
-
   const onTabsChange = (value: string) => {
     setFilter("view", value);
-  };
-
-  const selectedInsights = {
-    eventSize: true,
-    eventKeywords: true,
-    eventRank: adaptedParams.shows?.includes("eventRanking"),
-    matchScore: adaptedParams.keywords ? true : false,
-    growth: false,
-    eventSeries: adaptedParams.shows?.includes("eventSeries"),
-    brandedEvent: adaptedParams.shows?.includes("eventBrand"),
-    global: false,
-    reptSent: false,
-    eventRating: adaptedParams.shows?.includes("eventRating"),
-    estExhibit: adaptedParams.shows?.includes("estimatedExhibitScore"),
-    repeatSent: adaptedParams.trustScore ? true : false,
-    maturity: adaptedParams.shows?.includes("maturity"),
-    impactScore: adaptedParams.shows?.includes("eventImpactScore"),
-    inboundScore: adaptedParams.shows?.includes("inboundScore"),
-    internationalScore: adaptedParams.shows?.includes("internationalScore"),
-    forecasted: adaptedParams.shows?.includes("isforecasted"),
-    audienceZone: adaptedParams.shows?.includes("audienceZone"),
-    audienceSpread: adaptedParams.audienceSpread ? true : false,
-    eventFrequency: adaptedParams.shows?.includes("eventFrequency"),
-    includeKeywords: adaptedParams.includeKeywords
-      ? adaptedParams.includeKeywords
-      : "",
-    excludeKeywords: adaptedParams.excludeKeywords
-      ? adaptedParams.excludeKeywords
-      : "",
   };
 
   // console.log(adaptedQueryString);
@@ -346,40 +308,52 @@ const Search = () => {
           </div> */}
           <div className="w-[108px]"></div>
           <div className="flex justify-center">
-            <TabsList className="grid w-[450px] grid-cols-3 h-auto">
-              {/* <TabsTrigger value="table" className="text-base">
-                Table
-              </TabsTrigger> */}
-              <TabsTrigger value="list" className="text-base">
-                List
+            <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
+              <TabsTrigger
+                value="table"
+                className="flex items-center gap-2 py-2 px-4"
+              >
+                <TableIcon className="h-4 w-4" />
+                <span>Table</span>
               </TabsTrigger>
-              <TabsTrigger value="map" className="text-base">
-                Map
+              <TabsTrigger
+                value="list"
+                className="flex items-center gap-2 py-2 px-4"
+              >
+                <ListIcon className="h-4 w-4" />
+                <span>List</span>
               </TabsTrigger>
-              <TabsTrigger value="calendar" className=" text-base">
-                Calendar
+              <TabsTrigger
+                value="map"
+                className="flex items-center gap-2 py-2 px-4"
+              >
+                <Globe className="h-4 w-4" />
+                <span>Map</span>
+              </TabsTrigger>
+              <TabsTrigger
+                value="calendar"
+                className="flex items-center gap-2 py-2 px-4"
+              >
+                <CalendarIcon className="h-4 w-4" />
+                <span>Calendar</span>
               </TabsTrigger>
             </TabsList>
           </div>
           <div className="flex justify-end">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  disabled
-                  variant="link"
-                  className="text-primary hover:text-primary/90 hover:bg-purple-50"
-                >
-                  Export
-                  <ArrowUpRight className="ml-2 h-4 w-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent> </DialogContent>
-            </Dialog>
+            <Button
+              disabled
+              variant="link"
+              className="text-primary hover:text-primary/90 hover:bg-purple-50"
+            >
+              Export
+              <ArrowUpRight className="ml-2 h-4 w-4" />
+            </Button>
+            <SortDropdown />
           </div>
         </div>
 
         <TabsContent value="list" className="flex-grow overflow-hidden mt-0">
-          {isLoading ? (
+          {/* {isLoading ? (
             <Loading />
           ) : error ? (
             <ZeroState text={(error as ApiError).message} />
@@ -390,35 +364,26 @@ const Search = () => {
               <ZeroState text="Discover insights on business trends filtered by geography and category, all in one glance." />
             </div>
           ) : (
-            <>
-              {/* <Alerts /> */}
-              <List events={events as Event[]} count={count} />
-            </>
-          )}
+            <> */}
+          {/* <Alerts /> */}
+          <List events={events as Event[]} count={count} />
+          {/* </> */}
+          {/* )} */}
         </TabsContent>
 
-        {/* <TabsContent value="table" className="flex-grow overflow-hidden">
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <Table
-              showInsights={selectedInsights}
-              queryString={adaptedQueryString}
-              setRequestExhausted={() => {}}
-              handleButtonLoading={() => setTableLoading}
-            />
-          )}
-        </TabsContent> */}
+        <TabsContent value="table" className="flex-grow overflow-hidden">
+          <Table />
+        </TabsContent>
         <TabsContent value="map">
-          {isLoading ? (
+          {/* {isLoading ? (
             <Loading />
           ) : eventData?.count == 0 ? (
             <ZeroState text="No events were found in the selected area." />
           ) : error ? (
             <ZeroState text={(error as ApiError).message} />
-          ) : (
+          ) : ( */}
             <Map searchParams={searchParams.toString()} />
-          )}
+          {/* )} */}
         </TabsContent>
         <TabsContent value="calendar">
           {isLoading ? (

@@ -1,9 +1,10 @@
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
 import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes } from '@/types/trackers';
-import { EventsAdapter } from "@/adapters/eventsAdapter";
+// import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
-import {CalendarWeekEventsResponse, EventCount, EventsResponse, MapEventsResponse} from "@/types/events";
+
+import {CalendarWeekEventsResponse, EventCount, MapEventsResponse} from "@/types/events";
 import { EventTableType } from '@/types/ListViewTable';
 import { useFilterState } from '@/hooks/useFilterState';
 interface OriginalResponse {
@@ -11,12 +12,13 @@ interface OriginalResponse {
   events: any[];
 }
 type GetSavedEventsResponse =
+
   | { result: EventTableType[]; count: number }
   | { events: EventTableType[]; count: number }
   | { events: EventTableType[]; totalEvents: number }
   | CalendarWeekEventsResponse
   | MapEventsResponse
-  | EventsResponse;
+
 
 export const useTrackerServices = () => {
     const api = useApi();

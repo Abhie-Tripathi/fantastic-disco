@@ -197,20 +197,25 @@ const AudienceSchema = z.object({
   audienceZone: z.string().nullable(),
 });
 
+const InterestSchema = z.record(
+  z.enum(["speak", "sponsor", "attend", "exhibit", "bookmark"]),
+  z.object({
+    interestId: z.string(),
+  })
+);
+
 const EventDataSchema = z.object({
   basic: BasicEventSchema,
   advance: AdvanceEventSchema.optional(),
   insights: InsightsEventSchema.optional(),
   audience: AudienceSchema.optional(),
-  interests: z
-    .record(
-      z.enum(["speak", "sponsor", "attend", "exhibit", "bookmark"]),
-      z.object({
-        interestId: z.string(),
-      })
-    )
-    .optional(),
+  interests: InterestSchema.optional(),
 });
+
+export interface EventResponse {
+  count: number;
+  events: Event[];
+}
 
 export type Location = z.infer<typeof LocationSchema>;
 export type State = z.infer<typeof StateSchema>;
@@ -220,3 +225,4 @@ export type Venue = z.infer<typeof VenueSchema>;
 export type Event = z.infer<typeof EventDataSchema>;
 export type Ranking = z.infer<typeof RankingSchema>;
 export type TTabs = "overview" | "insights" | "audience";
+export type Interest = z.infer<typeof InterestSchema>;

@@ -13,8 +13,8 @@ import {
   EventSpeakerDetailsResponse,
   EventExhibitorDetailsResponse,
   EventSponsorDetailsResponse,
+  EventResponse,
 } from "@/types/events";
-import { EventsAdapter } from "@/adapters/eventsAdapter";
 import { ApiError } from "@/types/api";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
@@ -25,11 +25,14 @@ export const useEventsService = () => {
   const { exhibitorAdapter, speakerAdapter, sponsorAdapter } =
     EventParticpantAdapter();
 
-  const getEvents = (params?: EventQuery) => {
-    return api.request<Event[]>(endpoints.event.events, {
+  const getEvents = async (params?: EventQuery) => {
+    console.log("service called");
+    const response = await api.request<EventResponse>(endpoints.event.events, {
       method: "GET",
       params,
     });
+    console.log(response);
+    return response;
   };
 
   const getEventDetailById = async (id: string) => {
@@ -147,13 +150,13 @@ export const useEventsService = () => {
   };
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {
-    const params = new URLSearchParams(searchParamsString);
-    const adaptedParams = EventsAdapter.adaptRequestParams(params);
-    const response = await api.request(`${endpoints.event.events}`, {
-      method: "GET",
-      params: adaptedParams,
-    });
-    return EventsAdapter.adaptResponse(response, params);
+    const response = await api.request(
+      `${endpoints.event.events}/${searchParamsString}`,
+      {
+        method: "GET",
+      }
+    );
+    return response;
   };
 
   const saveEvent = (eventId: string) => {
