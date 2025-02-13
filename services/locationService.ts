@@ -10,7 +10,6 @@ import {
   SavedLocationInsightsByIdResponse,
 } from "@/types/locations";
 import { FeatureCollection, Polygon, MultiPolygon, Point, BBox } from "geojson";
-import { LocationAdapter } from "@/adapters/locationAdapter";
 import { LocationResponse } from "@/types/suggestion";
 
 export const useLocationService = () => {
@@ -24,7 +23,7 @@ export const useLocationService = () => {
 
   const getCoordinates = async (placeId: string) => {
     const data = await externalAxios.get(
-      "https://nominatim.openstreetmap.org/details",  
+      "https://nominatim.openstreetmap.org/details",
       {
         params: { place_id: placeId, format: "json" },
       }
@@ -96,10 +95,10 @@ export const useLocationService = () => {
       `${endpoints.locationSuggestion}`,
       {
         method: "GET",
-        params: { q: input },
+        params: { query: input },
       }
     );
-    return LocationAdapter.adaptDatabaseLocationAutocomplete(response);
+    return response;
   };
 
   const getLocationDetails = async (id: string) => {
@@ -107,10 +106,10 @@ export const useLocationService = () => {
       `${endpoints.locationSuggestion}`,
       {
         method: "GET",
-        params: { locationIds: id },
+        params: { ids: id },
       }
     );
-    return LocationAdapter.adaptDatabaseLocationAutocomplete(response);
+    return response;
   };
 
   const getLocationBoundary = async (

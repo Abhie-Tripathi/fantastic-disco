@@ -1,28 +1,26 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEventsService } from "@/services/eventsService";
-import type { EventTableType } from "@/types/ListViewTable";
+import { EventQuery } from "@/types/events/dto/event-query.dto";
 
 export const eventsKeys = {
   all: ["events"] as const,
-  list: () => [...eventsKeys.all] as const,
+  list: (query: EventQuery) => [...eventsKeys.all, query] as const,
 };
 
 export const useEvents = {
-  list: () => {
-    const queryClient = useQueryClient();
+  list: (query: EventQuery) => {
     const eventsService = useEventsService();
-
-    const query = useQuery({
-      queryKey: eventsKeys.list(),
-      queryFn: () => eventsService.getEvents(),
+    const EventQuery = useQuery({
+      queryKey: eventsKeys.list(query),
+      queryFn: () => eventsService.getEvents(query),
       staleTime: 5 * 60 * 1000,
     });
 
     return {
-      events: query.data?.events || [],
-      totalEvents: query.data?.count || 0,
-      isLoading: query.isLoading,
-      error: query.error,
+      events: EventQuery.data?.events || [],
+      totalEvents: EventQuery.data?.count || 0,
+      isLoading: EventQuery.isLoading,
+      error: EventQuery.error,
     };
   },
 };

@@ -17,7 +17,6 @@ import StatusSelector from "@/components/search/status";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
 import List from "@/components/search/list";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFilterContext } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
@@ -33,13 +32,24 @@ import {
 } from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Filter, FilterX, Loader2, Plus } from "lucide-react";
+import {
+  ArrowUpRight,
+  CalendarIcon,
+  Filter,
+  FilterX,
+  Globe,
+  ListIcon,
+  Loader2,
+  Plus,
+  TableIcon,
+} from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
+import SortDropdown from "@/components/search/sortDropdown";
 
 const Map = lazy(() => import("@/components/map"));
 
@@ -75,7 +85,6 @@ const Search = () => {
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
   const [customTrackerName, setCustomTrackerName] = useState<string>("");
   const modifiedSearchParams = new URLSearchParams(searchParams.toString());
-  modifiedSearchParams.set("view", "list");
   const {
     data: eventData,
     error,
@@ -299,40 +308,52 @@ const Search = () => {
           </div> */}
           <div className="w-[108px]"></div>
           <div className="flex justify-center">
-            <TabsList className="grid w-[450px] grid-cols-4 h-auto">
-              <TabsTrigger value="table" className="text-base">
-                Table
+            <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
+              <TabsTrigger
+                value="table"
+                className="flex items-center gap-2 py-2 px-4"
+              >
+                <TableIcon className="h-4 w-4" />
+                <span>Table</span>
               </TabsTrigger>
-              <TabsTrigger value="list" className="text-base">
-                List
+              <TabsTrigger
+                value="list"
+                className="flex items-center gap-2 py-2 px-4"
+              >
+                <ListIcon className="h-4 w-4" />
+                <span>List</span>
               </TabsTrigger>
-              <TabsTrigger value="map" className="text-base">
-                Map
+              <TabsTrigger
+                value="map"
+                className="flex items-center gap-2 py-2 px-4"
+              >
+                <Globe className="h-4 w-4" />
+                <span>Map</span>
               </TabsTrigger>
-              <TabsTrigger value="calendar" className=" text-base">
-                Calendar
+              <TabsTrigger
+                value="calendar"
+                className="flex items-center gap-2 py-2 px-4"
+              >
+                <CalendarIcon className="h-4 w-4" />
+                <span>Calendar</span>
               </TabsTrigger>
             </TabsList>
           </div>
           <div className="flex justify-end">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  disabled
-                  variant="link"
-                  className="text-primary hover:text-primary/90 hover:bg-purple-50"
-                >
-                  Export
-                  <ArrowUpRight className="ml-2 h-4 w-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent> </DialogContent>
-            </Dialog>
+            <Button
+              disabled
+              variant="link"
+              className="text-primary hover:text-primary/90 hover:bg-purple-50"
+            >
+              Export
+              <ArrowUpRight className="ml-2 h-4 w-4" />
+            </Button>
+            <SortDropdown />
           </div>
         </div>
 
         <TabsContent value="list" className="flex-grow overflow-hidden mt-0">
-          {isLoading ? (
+          {/* {isLoading ? (
             <Loading />
           ) : error ? (
             <ZeroState text={(error as ApiError).message} />
@@ -343,26 +364,26 @@ const Search = () => {
               <ZeroState text="Discover insights on business trends filtered by geography and category, all in one glance." />
             </div>
           ) : (
-            <>
-              {/* <Alerts /> */}
-              <List events={events as Event[]} count={count} />
-            </>
-          )}
+            <> */}
+          {/* <Alerts /> */}
+          <List events={events as Event[]} count={count} />
+          {/* </> */}
+          {/* )} */}
         </TabsContent>
 
         <TabsContent value="table" className="flex-grow overflow-hidden">
           <Table />
         </TabsContent>
         <TabsContent value="map">
-          {isLoading ? (
+          {/* {isLoading ? (
             <Loading />
           ) : eventData?.count == 0 ? (
             <ZeroState text="No events were found in the selected area." />
           ) : error ? (
             <ZeroState text={(error as ApiError).message} />
-          ) : (
+          ) : ( */}
             <Map searchParams={searchParams.toString()} />
-          )}
+          {/* )} */}
         </TabsContent>
         <TabsContent value="calendar">
           {isLoading ? (

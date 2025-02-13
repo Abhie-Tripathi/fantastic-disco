@@ -67,7 +67,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         <TableHead
           className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}
         >
-          Actions
+          {/* Actions */}
         </TableHead>
       </TableRow>
     </TableHeader>

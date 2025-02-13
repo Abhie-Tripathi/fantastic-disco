@@ -111,13 +111,13 @@ export const useEventsService = () => {
   };
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {
-    const params = new URLSearchParams(searchParamsString);
-    const adaptedParams = EventsAdapter.adaptRequestParams(params);
-    const response = await api.request(`${endpoints.event.events}`, {
-      method: "GET",
-      params: adaptedParams,
-    });
-    return EventsAdapter.adaptResponse(response, params);
+    const response = await api.request(
+      `${endpoints.event.events}/${searchParamsString}`,
+      {
+        method: "GET",
+      }
+    );
+    return response;
   };
 
   const saveEvent = (eventId: string) => {

@@ -61,6 +61,13 @@ function getForecastedStatus(data: any) {
   } else return "-";
 }
 
+function displayValue(value: any) {
+  if (value === null || value === undefined || value === "") {
+    return "-";
+  }
+  return value;
+}
+
 export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
   const handleActionSubmit = (action: string) => {
     // Handle the action submission
@@ -91,23 +98,28 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
             {event.basic.name}
           </Link>
         </div>
-        <div className={styles.event_organizer}>{event.basic.organizer?.name}</div>
+        <div className={styles.event_organizer}>
+          {event.basic.organizer?.name}
+        </div>
       </TableCell>
 
       {/* Date Column */}
       <TableCell>
-        {event.basic.status === "CANCELLED" || event.basic.status === "POSTPONED" ? (
+        {event.basic.status === "CANCELLED" ||
+        event.basic.status === "POSTPONED" ? (
           <del data-toggle="tooltip" title={event.basic.status}>
             {formatDate(event.basic.startDateTime)}
             <br />
-            {formatDate(event.basic.startDateTime) !== formatDate(event.basic.endDateTime) &&
+            {formatDate(event.basic.startDateTime) !==
+              formatDate(event.basic.endDateTime) &&
               formatDate(event.basic.endDateTime)}
           </del>
         ) : (
           <span style={{ whiteSpace: "nowrap" }}>
             {formatDate(event.basic.startDateTime)}
             <br />
-            {formatDate(event.basic.startDateTime) !== formatDate(event.basic.endDateTime) &&
+            {formatDate(event.basic.startDateTime) !==
+              formatDate(event.basic.endDateTime) &&
               formatDate(event.basic.endDateTime)}
           </span>
         )}
@@ -123,10 +135,14 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       </TableCell>
 
       {/* City Column */}
-      <TableCell>{event.basic.eventLocation.city?.name}</TableCell>
+      <TableCell>
+        {displayValue(event.basic.eventLocation.city?.name)}
+      </TableCell>
 
       {/* Country Column */}
-      <TableCell>{event.basic.eventLocation.country?.name}</TableCell>
+      <TableCell>
+        {displayValue(event.basic.eventLocation.country?.name)}
+      </TableCell>
 
       {/* Keywords Column - if enabled */}
       {/* {event.insights?.keywords && (
@@ -172,18 +188,24 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
 
       {/* Event Size Column */}
       {event.insights?.estimatedAttendance !== undefined && (
-        <TableCell>{event.insights?.estimatedAttendance || "-"}</TableCell>
+        <TableCell>
+          {displayValue(event.insights?.estimatedAttendance)}
+        </TableCell>
       )}
 
       {/* Estimated Exhibitors Column */}
       {event.advance?.estimatedExhibitors !== undefined && (
-        <TableCell>{event.advance?.estimatedExhibitors || "-"}</TableCell>
+        <TableCell>
+          {displayValue(event.advance?.estimatedExhibitors)}
+        </TableCell>
       )}
 
       {/* Event Rank Column */}
       {event.insights?.rankings !== undefined && (
         <TableCell style={{ textAlign: "center" }}>
-          {event.insights?.rankings ? getLeastRank(event.insights.rankings) : "-"}
+          {event.insights?.rankings
+            ? displayValue(getLeastRank(event.insights.rankings))
+            : "-"}
         </TableCell>
       )}
 
@@ -191,14 +213,17 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       {event.insights?.repeatSentiment !== undefined && (
         <TableCell>
           {event.insights?.repeatSentiment !== null &&
-          (event.insights?.repeatSentiment > 1 || event.insights?.repeatSentiment < -1) ? (
+          (event.insights?.repeatSentiment > 1 ||
+            event.insights?.repeatSentiment < -1) ? (
             event.insights?.repeatSentiment > 0 ? (
               <div className={styles.text_green}>
-                {event.insights?.repeatSentiment}% <ArrowUp className="w-4 h-4" />
+                {event.insights?.repeatSentiment}%{" "}
+                <ArrowUp className="w-4 h-4" />
               </div>
             ) : (
               <div className={styles.text_red}>
-                {event.insights?.repeatSentiment}% <ArrowDown className="w-4 h-4" />
+                {event.insights?.repeatSentiment}%{" "}
+                <ArrowDown className="w-4 h-4" />
               </div>
             )
           ) : (
@@ -277,7 +302,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       {event.advance?.maturity !== undefined && (
         <TableCell>
           {event.advance?.maturity ? (
-            <span className="badge_primary capitalize">{event.advance?.maturity}</span>
+            <span className="badge_primary capitalize">
+              {event.advance?.maturity}
+            </span>
           ) : (
             "-"
           )}
@@ -287,21 +314,27 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       {/* Impact Score Column */}
       {event.insights?.scores?.impactScore !== undefined && (
         <TableCell>
-          {event.insights?.scores?.impactScore !== 0 ? event.insights?.scores?.impactScore : "-"}
+          {event.insights?.scores?.impactScore !== 0
+            ? event.insights?.scores?.impactScore
+            : "-"}
         </TableCell>
       )}
 
       {/* Inbound Score Column */}
       {event.insights?.scores?.inboundScore !== undefined && (
         <TableCell>
-          {event.insights?.scores?.inboundScore !== 0 ? event.insights?.scores?.inboundScore : "-"}
+          {event.insights?.scores?.inboundScore !== 0
+            ? event.insights?.scores?.inboundScore
+            : "-"}
         </TableCell>
       )}
 
       {/* International Score Column */}
       {event.insights?.scores?.internationalScore !== undefined && (
         <TableCell>
-          {event.insights?.scores?.internationalScore !== 0 ? event.insights?.scores?.internationalScore : "-"}
+          {event.insights?.scores?.internationalScore !== 0
+            ? event.insights?.scores?.internationalScore
+            : "-"}
         </TableCell>
       )}
 
@@ -316,7 +349,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       {event.audience?.audienceZone !== undefined && (
         <TableCell>
           {event.audience?.audienceZone ? (
-            <span className={styles.badge_primary}>{event.audience?.audienceZone}</span>
+            <span className={styles.badge_primary}>
+              {event.audience?.audienceZone}
+            </span>
           ) : (
             "-"
           )}
@@ -328,29 +363,33 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
         <TableCell>
           <div className="flex gap-2">
             {event.audience?.audienceSpread &&
-            Object.entries(event.audience?.audienceSpread).length > 0 ? (
-              Object.entries(event.audience?.audienceSpread).map(
-                ([key, { iso, name, count, percentage }]) => (
-                  <span key={key} className={styles.country_badge} title={name}>
-                    <Image
-                      src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`}
-                      alt="flag"
-                      width={25}
-                      height={18}
-                    />
-                  </span>
+            Object.entries(event.audience?.audienceSpread).length > 0
+              ? Object.entries(event.audience?.audienceSpread).map(
+                  ([key, { iso, name, count, percentage }]) => (
+                    <span
+                      key={key}
+                      className={styles.country_badge}
+                      title={name}
+                    >
+                      <Image
+                        src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`}
+                        alt="flag"
+                        width={25}
+                        height={18}
+                      />
+                    </span>
+                  )
                 )
-              )
-            ) : (
-              "-"
-            )}
+              : "-"}
           </div>
         </TableCell>
       )}
 
-      <TableCell className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}>
-        <ActionPopover 
-          interests={event.interests} 
+      <TableCell
+        className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}
+      >
+        <ActionPopover
+          interests={event.interests}
           onSubmit={handleActionSubmit}
         />
       </TableCell>

@@ -16,7 +16,7 @@ export const endpoints = {
     logout: `${BASE_URL}/me/sign-out`,
   },
   event: {
-    count: `${BASE_URL}/event/search`,
+    count: `${BASE_URL}/events/count`,
     events: `${BASE_URL}/events`,
     eventDetailById: `${BASE_URL}/event`,
     eventEditionsDetailsById: `${BASE_URL}/event/editions`,

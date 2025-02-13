@@ -1,5 +1,3 @@
-//@ts-nocheck
-
 "use client";
 
 import React, {
@@ -40,6 +38,7 @@ import Loading from "../ui/Loading";
 import { useTrackerServices } from "@/services/trackerServices";
 import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
+import { useSearchParams } from "next/navigation";
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
@@ -86,6 +85,7 @@ export default function MapComponent({
   trackerLoc,
   trackerType,
 }: MapProps) {
+  const searchparams = useSearchParams();
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
   const [location, setLocation] = useState();
@@ -108,7 +108,7 @@ export default function MapComponent({
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
   const [showEventList, setShowEventList] = useState("");
   const [currentZoomGroup, setCurrentZoomGroup] = useState<ZoomGroup>("city");
-  const { getEventsCount, getEventsWithSearchParams, getEventById } =
+  const { getEventsCount, getEventsWithSearchParams, getEvents } =
     useEventsService();
   const [showUnattendedEvents, setShowUnattendedEvents] = useState(false);
   const [locationBBox, setLocationBBox] = useState<any | null>(null);
@@ -131,11 +131,6 @@ export default function MapComponent({
   //   : [];
   //   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
 
-  const memoizedGetEventsCount = useCallback(getEventsCount, []);
-  const memoizedGetEventsWithSearchParams = useCallback(
-    getEventsWithSearchParams,
-    []
-  );
   const isHolidaySelected = getLocalFilterValue("eventTypes")
     .split(",")
     .includes("holiday");
@@ -176,9 +171,11 @@ export default function MapComponent({
 
         return response || [];
       } else {
-        const response = await memoizedGetEventsCount(
-          `${searchParams}&groupBy=city`
-        );
+        const response = await getEventsCount({
+          ...Object.fromEntries(searchparams.entries()),
+          groupBy: "city",
+        });
+        console.log("response", response);
         return response || [];
       }
     },
@@ -203,12 +200,12 @@ export default function MapComponent({
 
       switch (layerId) {
         case "unclustered-events-single":
-          const singleEventDetails = await getEventById(
-            clickedFeature.properties.id
-          );
+          const singleEventDetails = await getEvents({
+            eventIds: [clickedFeature.properties.id],
+          });
           if (singleEventDetails)
             setPopupInfo({
-              events: [singleEventDetails.event],
+              events: [singleEventDetails.events[0]],
               coordinates: {
                 latitude: clickedFeature.geometry.coordinates[1],
                 longitude: clickedFeature.geometry.coordinates[0],
@@ -220,7 +217,9 @@ export default function MapComponent({
           const eventIds = JSON.parse(clickedFeature.properties.eventIds);
           const multipleEventDetails = await Promise.all(
             eventIds.map((id: string) =>
-              getEventById(id).then((data) => data?.event)
+              getEvents({
+                eventIds: [id],
+              }).then((data) => data?.events[0])
             )
           );
           setPopupInfo({
@@ -334,7 +333,7 @@ export default function MapComponent({
           };
 
           try {
-            const modifiedSearchParams = searchParams.replace(
+            const modifiedSearchParams = searchParams?.replace(
               /locationIds=[^&]*&?/,
               ""
             );
@@ -356,9 +355,7 @@ export default function MapComponent({
                 searchParams
               );
             } else {
-              eventsData = await memoizedGetEventsWithSearchParams(
-                finalSearchParams
-              );
+              eventsData = await getEventsWithSearchParams(finalSearchParams);
             }
             setEvents((eventsData?.events as MapEvents[]) || []);
           } catch (error) {
@@ -373,12 +370,7 @@ export default function MapComponent({
     };
 
     fetchEvents();
-  }, [
-    currentZoomGroup,
-    searchParams,
-    memoizedGetEventsWithSearchParams,
-    location,
-  ]);
+  }, [currentZoomGroup, searchParams, location]);
 
   const onMove = useCallback(({ viewState }: { viewState: ViewState }) => {
     setViewport(viewState);
@@ -387,6 +379,8 @@ export default function MapComponent({
 
   // }, [searchParams
   // ]);
+
+  console.log("eventCountsQuery", eventCountsQuery.data);
 
   const eventCountsGeoJSON = React.useMemo(() => {
     return {
@@ -514,19 +508,7 @@ export default function MapComponent({
     };
     fetchLocationDetails();
   }, [location, trackerId]);
-  // useEffect(() => {
-  //   console.log(trackerId);
 
-  //   setViewport({
-  //     latitude: 0,
-  //     longitude: 0,
-  //     zoom: 1,
-  //     bearing: 0,
-  //     pitch: 0,
-  //     padding: { top: 0, bottom: 0, left: 0, right: 0 },
-  //   });
-
-  // }, [trackerId]);
   useEffect(() => {
     console.log(locationBBox);
 
@@ -614,7 +596,7 @@ export default function MapComponent({
             />
           ) : (
             <>
-              {!location ? (
+              {false ? (
                 <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
               ) : (
                 <ReactMapGL
