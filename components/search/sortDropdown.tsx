@@ -39,18 +39,22 @@ const sortOptions: SortOption[] = [
   { value: "score", label: "Score" },
 ];
 
-const SortDropdown = () => {
+interface SortDropdownProps {
+  compact?: boolean;
+  value?: string;
+  onSort?: (value: string) => void;
+}
+
+const SortDropdown = ({ compact = false, value, onSort }: SortDropdownProps) => {
   const { getFilterValue, setFilter } = useFilterState();
   const [open, setOpen] = useState(false);
-
-  // Get initial sort value from URL
-  const sortParam = getFilterValue("sortBy") || "start";
+  
+  const sortParam = value || getFilterValue("sortBy") || "start";
   const [sortField, setSortField] = useState(sortParam.replace("-", ""));
   const [sortOrder, setSortOrder] = useState(
     sortParam.startsWith("-") ? "desc" : "asc"
   );
 
-  // Update button text based on current sort
   const getCurrentSortLabel = () => {
     const option = sortOptions.find((opt) => opt.value === sortField);
     return option?.label || "Sort by";
@@ -58,34 +62,44 @@ const SortDropdown = () => {
 
   const handleApply = () => {
     const sortValue = sortOrder === "desc" ? `-${sortField}` : sortField;
-    setFilter("sortBy", sortValue);
+    if (onSort) {
+      onSort(sortValue);
+    } else {
+      setFilter("sortBy", sortValue);
+    }
     setOpen(false);
   };
 
-  // Update local state when URL changes
   useEffect(() => {
-    const newSortParam = getFilterValue("sortBy") || "start";
+    const newSortParam = value || getFilterValue("sortBy") || "start";
     setSortField(newSortParam.replace("-", ""));
     setSortOrder(newSortParam.startsWith("-") ? "desc" : "asc");
-  }, [getFilterValue]);
+  }, [getFilterValue, value]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="flex items-center gap-2">
-          <span className="flex items-center gap-1">
-            <ArrowUpDown className="h-4 w-4" />
-            {getCurrentSortLabel()}
-            <ChevronDown className="h-4 w-4" />
-          </span>
-        </Button>
+        {compact ? (
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-7 w-7 p-0"
+          >
+            <ArrowUpDown className="h-4 w-4 text-primary" />
+          </Button>
+        ) : (
+          <Button variant="outline" className="flex items-center gap-2">
+            <span className="flex items-center gap-1">
+              <ArrowUpDown className="h-4 w-4" />
+              {getCurrentSortLabel()}
+              <ChevronDown className="h-4 w-4" />
+            </span>
+          </Button>
+        )}
       </PopoverTrigger>
-      <PopoverContent className="w-[280px] p-4">
+      <PopoverContent className="w-[240px] p-4" align="end">
         <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium">Sort by</span>
-            <Info className="h-4 w-4 text-muted-foreground hover:cursor-help" />
-          </div>
+            <span className="text-sm font-medium text-secondary-foreground">Sort by</span>
 
           <Select value={sortField} onValueChange={setSortField}>
             <SelectTrigger>

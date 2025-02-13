@@ -1,0 +1,123 @@
+.predictedAttendence_container {
+    padding: 30px 0px;
+  }
+  
+  .filter_dropdowns_container {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+  }
+  
+  .filter {
+    flex: 1;
+    position: relative;
+  }
+  
+  .dropdown_title {
+    text-align: left;
+    color: #79747e;
+  }
+  
+  .dropdown_container {
+    cursor: pointer;
+    margin-top: 8px;
+    border: 1px solid #cac4d0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px;
+  }
+  
+  .dropdown_value {
+    color: #6750a4;
+    font-weight: 500;
+    line-height: 20px;
+  }
+  
+  .dropdown_value_stats {
+    background-color: #6750a4;
+    color: white;
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-left: 10px;
+  }
+  
+  .filter_buttons_container {
+    /* padding: 25px 0px; */
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  
+  .filter_buttons_container > button{
+    min-width: 135px;
+    height: 2.4rem;
+  }
+  
+  .apply_button {
+    font-size: inherit;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    background-color: #6750a4;
+    color: white;
+    text-align: center;
+    min-width: 140px;
+  }
+  
+  .clearfilters_button {
+    cursor: pointer;
+    font-size: inherit;
+    border: 1px solid #79747e;
+    border-radius: 4px;
+    padding: 12px 24px;
+    color: rgb(103, 80, 164);
+    background-color: white;
+    min-width: 140px;
+    text-align: center;
+  }
+  
+  /* .inner_container {
+    padding: 10px 52px 32px 52px;
+    margin-top: 15px;
+    background-color: #ffffff;
+  } */
+  
+  .tab_container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid #ececf9;
+  }
+  
+  .dropdown {
+    top: unset;
+    left: unset;
+  }
+  
+  .rank_dropdown {
+    right: 0px;
+    top: unset;
+    left: unset;
+  }
+  
+  .zeroState_container{
+    height: 70dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+    color: #6750A4;
+    font-weight: 500;
+  }
+  

@@ -149,13 +149,25 @@ export const useEventsService = () => {
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {
     const response = await api.request(
-      `${endpoints.event.events}${searchParamsString}`,
+      `${endpoints.event.events}?${searchParamsString}`,
       {
         method: "GET",
       }
     );
     return response;
   };
+
+  const getRawEventsWithSearchParams = async (searchParamsString: string) => {
+    const params = new URLSearchParams(searchParamsString);
+    const adaptedParams = EventsAdapter.adaptRequestParams(params);
+    const response = await api.request(`${endpoints.event.events}`, {
+      method: "GET",
+      params: adaptedParams,
+    }, true);
+    
+    return TrackersAdapter.adaptTrackerMapEventData(response);
+  };
+
 
   const saveEvent = (eventId: string) => {
     return api.request(`${endpoints.event.savedEvents}`, {
@@ -222,7 +234,7 @@ export const useEventsService = () => {
       }
     );
     return response;
-  };
+  }
   return {
     getEvents,
     saveEvent,
@@ -232,6 +244,7 @@ export const useEventsService = () => {
     bookmarkThisEvent,
     unBookmarkThisEvent,
     getIsEventBookMarked,
+    getRawEventsWithSearchParams,
     getEventDetailById,
     getEventPOCDetails,
     getEventEditionDetails,

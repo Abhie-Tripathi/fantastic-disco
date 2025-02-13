@@ -15,12 +15,6 @@ import CircularProgress from "../gtmDetailRelevanceScore/circularProgress";
 import { Badge } from "../ui/badge";
 import Link from "next/link";
 import _ from "lodash";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useFilterContext } from "@/context/filterContext";
 interface Props {
   eventDetails: Event["basic"];
@@ -190,47 +184,15 @@ export const EventInfoAndMap = ({
           )}
           {
             <div>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <h1 className="text-[1rem] mb-2 font-medium cursor-pointer">
-                      Event Keywords
-                    </h1>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    align={"start"}
-                    alignOffset={-30}
-                    className="w-40 tooltip-content-styles"
-                  >
-                    <p className="text-[var(--secondary-text-color)] font-medium">
-                      Detailed view of event types within a category.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <h1 className="text-[1rem] mb-2 font-medium">Event Keywords</h1>
               <ExpandableTags tags={filteredTags ?? []} />
             </div>
           }
           <div className="flex flex-row gap-6">
             <div className="flex flex-col border border-[var(--neutral-light-color)] bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] p-3 rounded-sm w-fill">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <h1 className="text-[1rem] mb-2 font-medium border-b-[1px] pb-2 cursor-pointer">
-                      Entry Fees
-                    </h1>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    align="start"
-                    alignOffset={-30}
-                    className="w-44 tooltip-content-styles"
-                  >
-                    <p className="text-[var(--secondary-text-color)] font-medium">
-                      Type of access or ticketing required to attend an event.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <h1 className="text-[1rem] mb-2 font-medium border-b-[1px] pb-2">
+                Entry Fees
+              </h1>
 
               {entryType ? (
                 <span className="text-[var(--primary-color)] font-semibold">

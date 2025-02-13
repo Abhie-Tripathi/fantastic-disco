@@ -2,7 +2,6 @@ import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
 import { CoordinateListResponse, PresetList, UserInterestResponse, eventPocResponse, pocDetail } from "@/types/coordinateEventType";
 import { ApiError } from "@/types/api";
-// import { MiscAdapter } from "@/adapters/miscAdapter";
 import externalAxios from "@/lib/externalAxios";
 
 interface fnProp {
@@ -47,10 +46,9 @@ export const useCoordinateService = () => {
     searchParams,
   }: fnProp) => {
     const params = new URLSearchParams(searchParams);
-    const adaptedParams = MiscAdapter.adaptCoordinateRequestParam(params);
     return api.request<CoordinateListResponse>(`${endpoints.coordinate.enquiry}?offset=${offset}`, {
       method: "GET",
-      params: adaptedParams,
+      params: params,
     });
   };
 
