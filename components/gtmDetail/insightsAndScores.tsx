@@ -66,6 +66,7 @@ export const InsightsAndScores = ({
     below5CountryCategoryEvent: below5CountryCategoryEvent,
   };
   const { morphedData } = useFilterContext();
+  console.log(morphedData);
   const { eventAnalytics, eventRanking } = morphedData;
   const isAnalyticsEnabled = eventAnalytics && eventAnalytics.isEnabled;
   const isTrustScoreEnabled = eventRanking && eventRanking.isEnabled;
@@ -223,7 +224,7 @@ export const InsightsAndScores = ({
                 <div
                   className={`${
                     (scores &&
-                      Object.values(scores).every((value) => value === null)) ||
+                      Object.values(scores).some((value) => value !== null)) ||
                     (trustScore !== null && trustScore > 0)
                       ? "w-1/2"
                       : "w-fill"
