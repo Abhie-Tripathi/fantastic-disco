@@ -218,6 +218,7 @@ function EventList({
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
+  const [sortBy, setSortBy] = useState("start");
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -263,6 +264,7 @@ function EventList({
     const params = new URLSearchParams(searchParams.toString());
     params.delete("view");
     params.set("skip", String((currentPage - 1) * 20));
+
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
     if (mapCenter && mapRadius) {
@@ -276,13 +278,14 @@ function EventList({
       };
       if (source === "tracker") return JSON.stringify(viewBound).toString();
       params.set("viewBound", JSON.stringify(viewBound));
+      params.set("sortBy", sortBy);
     }
 
     return params;
-  }, [searchParams, currentPage, showEventType, mapCenter, mapRadius]);
+  }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString(), currentPage],
+    queryKey: ["events", filteredParams.toString(), currentPage, sortBy],
     queryFn: () =>
       source === "tracker"
         ? getTrackerMapEvents(
@@ -306,6 +309,10 @@ function EventList({
   const events: Event[] = isEventResponse(data) ? data.events : [];
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;
+
+  const handleSort = (newSortValue: string) => {
+    setSortBy(newSortValue);
+  };
 
   const renderPaginationItems = () => {
     const items = [];
@@ -444,7 +451,7 @@ function EventList({
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <SortDropdown compact={true} />
+              <SortDropdown compact={true} value={sortBy} onSort={handleSort} />
               <Button
                 variant="ghost"
                 size="sm"

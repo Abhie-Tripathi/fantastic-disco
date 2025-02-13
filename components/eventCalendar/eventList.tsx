@@ -32,14 +32,17 @@ export default function EventList({
   onClose,
   source,
   trackerId,
+  onSort,
 }: {
   eventDate: Date;
   onClose: () => void;
   source?: string;
   trackerId?: string;
+  onSort?: (sortValue: string) => void;
 }) {
-  const { getFilterValue } = useFilterState();
+  const { getFilterValue, setFilter } = useFilterState();
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState(getFilterValue("sortBy") || "start");
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
@@ -50,8 +53,9 @@ export default function EventList({
   filteredParams.set("skip", String((currentPage - 1) * 20));
   filteredParams.set("active_lte", eventDate.toISOString());
   filteredParams.set("active_gte", eventDate.toISOString());
+  filteredParams.set("sortBy", sortBy);
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString()],
+    queryKey: ["events", sortBy, filteredParams.toString()],
     queryFn: () =>
       source !== "tracker"
         ? eventService.getEventsWithSearchParams(filteredParams.toString())
@@ -78,6 +82,10 @@ export default function EventList({
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
+  };
+
+  const handleSort = (newSortValue: string) => {
+    setSortBy(newSortValue);
   };
 
   function isEventResponse(data: any): data is EventsResponse {
@@ -276,7 +284,7 @@ export default function EventList({
                 Events Found
               </span>
             </div>
-            <SortDropdown compact={true} />
+            <SortDropdown compact={true} value={sortBy} onSort={handleSort} />
           </div>
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">

@@ -40,15 +40,16 @@ const sortOptions: SortOption[] = [
 ];
 
 interface SortDropdownProps {
-  compact?: boolean; // New prop to control display mode
+  compact?: boolean;
+  value?: string;
+  onSort?: (value: string) => void;
 }
 
-const SortDropdown = ({ compact = false }: SortDropdownProps) => {
+const SortDropdown = ({ compact = false, value, onSort }: SortDropdownProps) => {
   const { getFilterValue, setFilter } = useFilterState();
   const [open, setOpen] = useState(false);
-
   
-  const sortParam = getFilterValue("sortBy") || "start";
+  const sortParam = value || getFilterValue("sortBy") || "start";
   const [sortField, setSortField] = useState(sortParam.replace("-", ""));
   const [sortOrder, setSortOrder] = useState(
     sortParam.startsWith("-") ? "desc" : "asc"
@@ -61,15 +62,19 @@ const SortDropdown = ({ compact = false }: SortDropdownProps) => {
 
   const handleApply = () => {
     const sortValue = sortOrder === "desc" ? `-${sortField}` : sortField;
-    setFilter("sortBy", sortValue);
+    if (onSort) {
+      onSort(sortValue);
+    } else {
+      setFilter("sortBy", sortValue);
+    }
     setOpen(false);
   };
 
   useEffect(() => {
-    const newSortParam = getFilterValue("sortBy") || "start";
+    const newSortParam = value || getFilterValue("sortBy") || "start";
     setSortField(newSortParam.replace("-", ""));
     setSortOrder(newSortParam.startsWith("-") ? "desc" : "asc");
-  }, [getFilterValue]);
+  }, [getFilterValue, value]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
