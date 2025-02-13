@@ -49,7 +49,6 @@ export default function CreateTrackerDialog({
     setTrackerName(newName);
     setError(validateName(newName));
   };
-  console.log(adaptedParams);
   const saveTrackerHandler = async () => {
     const validationError = validateName(trackerName);
     if (validationError) {
