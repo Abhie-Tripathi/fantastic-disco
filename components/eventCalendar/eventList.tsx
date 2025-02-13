@@ -34,13 +34,13 @@ export default function EventList({
   eventDate: Date;
   onClose: () => void;
   source: string;
-  trackerId?:string;
-  type?:string;
+  trackerId?: string;
+  type?: string;
 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const searchParams = useSearchParams();
   const eventService = useEventsService();
-  const {getCalendarViewEvents}=useTrackerServices();
+  const { getCalendarViewEvents } = useTrackerServices();
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.delete("view");
   filteredParams.set("skip", String((currentPage - 1) * 10));
@@ -48,8 +48,18 @@ export default function EventList({
   filteredParams.set("active_gte", eventDate.toISOString());
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString()],
-    queryFn: () => 
-      source==="tracker"?getCalendarViewEvents(trackerId || "", `type=${type}&startDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&endDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&limit=10&offset=${(currentPage - 1) * 10 }`, true ):eventService.getEventsWithSearchParams(filteredParams.toString()),
+    queryFn: () =>
+      source === "tracker"
+        ? getCalendarViewEvents(
+            trackerId || "",
+            `type=${type}&startDate=${eventDate.toISOString().split("T")[0]},${
+              eventDate.toISOString().split("T")[0]
+            }&endDate=${eventDate.toISOString().split("T")[0]},${
+              eventDate.toISOString().split("T")[0]
+            }&limit=10&offset=${(currentPage - 1) * 10}`,
+            true
+          )
+        : eventService.getEvents(Object.fromEntries(filteredParams)),
   });
 
   const handlePageChange = (page: number) => {
@@ -65,23 +75,23 @@ export default function EventList({
   const totalPages = Math.ceil(count / 10) || 1;
 
   const EventCard = ({ event }: { event: Event }) => {
-    const address = event.venueLocation
-      ? event.venueLocation.city?.name === "Online"
+    const address = event.basic.eventLocation
+      ? event.basic.eventLocation.city?.name === "Online"
         ? "Online"
         : [
-            event.venueLocation?.venue?.name,
-            event.venueLocation?.city?.name,
-            event.venueLocation?.state?.name,
-            event.venueLocation?.country?.name,
+            event.basic.eventLocation?.venue?.name,
+            event.basic.eventLocation?.city?.name,
+            event.basic.eventLocation?.state?.name,
+            event.basic.eventLocation?.country?.name,
           ]
             .filter(Boolean)
             .join(", ")
       : "Venue to be announced";
 
-    const formattedStartDate = format(event.startDateTime, "dd MMM yyyy");
-    const formattedEndDate = format(event.endDateTime, "dd MMM yyyy");
+    const formattedStartDate = format(event.basic.startDateTime, "dd MMM yyyy");
+    const formattedEndDate = format(event.basic.endDateTime, "dd MMM yyyy");
 
-    const days = differenceInDays(event.endDateTime, event.startDateTime) + 1;
+    const days = differenceInDays(event.basic.endDateTime, event.basic.startDateTime) + 1;
 
     const formattedRange =
       formattedStartDate === formattedEndDate
@@ -89,19 +99,19 @@ export default function EventList({
         : `${formattedStartDate} - ${formattedEndDate} (${days} ${
             days === 1 ? "day" : "days"
           })`;
-          
+
     return (
-      <Link href={`/internal/event/${event.id}`} target="_blank">
-        <Card key={event.id} className="mb-4 relative">
+      <Link href={`/internal/event/${event.basic.id}`} target="_blank">
+        <Card key={event.basic.id} className="mb-4 relative">
           <div className="absolute left-0 top-0 bottom-0 w-1 rounded-md bg-[#5055A3]" />
           <CardContent className="p-4">
             <div className="flex items-center mb-2 pb-2 border-b">
-              {eventTypeIcons[event.primaryEventType || "festivals"]}
+              {eventTypeIcons[event.basic.eventTypes[0].name || "festivals"]}
               <span className="text-xs font-semibold text-primary capitalize ml-2">
-                {event.primaryEventType}
+                {event.basic.eventTypes[0].name}
               </span>
             </div>
-            <h3 className="font-semibold mb-2 text-sm">{event.name}</h3>
+            <h3 className="font-semibold mb-2 text-sm">{event.basic.name}</h3>
             <div className="flex items-center text-xs mb-2">
               <span>{address}</span>
             </div>
@@ -252,7 +262,7 @@ export default function EventList({
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">
           {events.map((event: Event) => (
-            <EventCard key={event.id} event={event} />
+            <EventCard key={event.basic.id} event={event} />
           ))}
           {events.length > 0 && (
             <Pagination>

@@ -24,41 +24,41 @@ import Link from "next/link";
 import { formattedDateRange } from "@/utils/date";
 import { useTrackerServices } from "@/services/trackerServices";
 const EventCard = memo(({ event }: { event: Event }) => {
-  const address = event.venueLocation
-    ? event.venueLocation.city?.name === "Online"
+  const address = event.basic.eventLocation
+    ? event.basic.eventLocation.city?.name === "Online"
       ? "Online"
       : [
-          event.venueLocation?.venue?.name,
-          event.venueLocation?.city?.name,
-          event.venueLocation?.state?.name,
-          event.venueLocation?.country?.name,
+          event.basic.eventLocation?.venue?.name,
+          event.basic.eventLocation?.city?.name,
+          event.basic.eventLocation?.state?.name,
+          event.basic.eventLocation?.country?.name,
         ]
           .filter(Boolean)
           .join(", ")
     : "Venue to be announced";
 
   return (
-    <Link href={`/internal/event/${event.id}`} target="_blank">
+    <Link href={`/internal/event/${event.basic.id}`} target="_blank">
       <Card className="mb-4 relative">
         <div
           className="absolute left-0 top-0 bottom-0 w-1 rounded-md bg-[#5055A3]"
           style={{
-            backgroundColor: eventTypeColors[event.eventTypes[0].slug || ""],
+            backgroundColor: eventTypeColors[event.basic.eventTypes[0].slug || ""],
           }}
         />
         <CardContent className="p-4">
           <div className="flex items-center mb-2 pb-2 border-b">
-            {eventTypeIcons[event.primaryEventType || "festivals"]}
+            {eventTypeIcons[event.basic.eventTypes[0].name || "festivals"]}
             <span className="text-xs font-semibold text-primary capitalize ml-2">
-              {event.primaryEventType}
+              {event.basic.eventTypes[0].name}
             </span>
           </div>
-          <h3 className="font-semibold mb-2 text-sm">{event.name}</h3>
+          <h3 className="font-semibold mb-2 text-sm">{event.basic.name}</h3>
           <div className="flex items-center text-xs mb-2">
             <span>{address}</span>
           </div>
           <div className="flex items-start text-xs text-[#666666]">
-            {formattedDateRange(event.startDateTime, event.endDateTime)}
+            {formattedDateRange(event.basic.startDateTime, event.basic.endDateTime)}
           </div>
         </CardContent>
       </Card>
@@ -90,20 +90,20 @@ const UnplannedCard = memo(({ event }: { event: Event }) => {
         />
         <CardContent className="p-4">
           <div className="flex items-center mb-2 pb-2 border-b">
-            {eventTypeIcons[event.primaryEventType || "festivals"]}
+            {eventTypeIcons[event.basic.eventTypes[0].name || "festivals"]}
             <span
               className="text-xs font-semibold text-primary capitalize ml-2"
-              style={{ color: eventTypeColors[event.primaryEventType || ""] }}
+              style={{ color: eventTypeColors[event.basic.eventTypes[0].name || ""] }}
             >
-              {event.primaryEventType}
+              {event.basic.eventTypes[0].name}
             </span>
           </div>
-          <h3 className="font-semibold mb-2 text-sm">{event.name}</h3>
+          <h3 className="font-semibold mb-2 text-sm">{event.basic.name}</h3>
           <div className="flex items-center text-xs mb-2">
-            <span>{formatAddress(event.venueLocation)}</span>
+            <span>{formatAddress(event.basic.eventLocation)}</span>
           </div>
           <div className="flex items-start text-xs text-[#666666]">
-            {formattedDateRange(event.startDateTime, event.endDateTime)}
+            {formattedDateRange(event.basic.startDateTime, event.basic.endDateTime)}
           </div>
         </CardContent>
       </Card>
@@ -286,9 +286,9 @@ function EventList({
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">
           {events.map((event: Event) => {
-            if (event.primaryEventType == "holiday")
-              return <UnplannedCard event={event} key={event.id} />;
-            return <EventCard key={event.id} event={event} />;
+            if (event.basic.eventTypes[0].name == "holiday")
+              return <UnplannedCard event={event} key={event.basic.id} />;
+            return <EventCard key={event.basic.id} event={event} />;
           })}
           {events.length > 0 && (
             <Pagination>
