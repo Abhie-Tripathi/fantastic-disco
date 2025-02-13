@@ -54,19 +54,13 @@ const ListCard = ({
             </p>
             <p className="text-sm line-clamp-2 text-[var(--secondary-text-color)]">
               {participant.type === "exhibitor"
-                ? `Stand - ${participant.details}`
+                ? participant.details
+                  ? `Stand - ${participant.details}`
+                  : ""
                 : participant.details}
             </p>
           </div>
         </div>
-        {participant.type === "sponsor" && (
-          <Badge
-            variant={"outline"}
-            className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
-          >
-            Demo
-          </Badge>
-        )}
       </div>
     </li>
   );
@@ -150,10 +144,12 @@ export const EventParticipants = ({
   eventDetails,
   eventExhibitorData,
   eventSpeakerData,
+  eventSponsorData,
 }: {
   eventDetails: Event;
   eventExhibitorData: EventParticipantsDetails[];
   eventSpeakerData: EventParticipantsDetails[];
+  eventSponsorData: EventParticipantsDetails[];
 }) => {
   const { exhibitorsCount, speakersCount, sponsorsCount } =
     (eventDetails && eventDetails.insights) || {};
@@ -184,7 +180,7 @@ export const EventParticipants = ({
     {
       heading: "Sponsors",
       count: sponsorsCount,
-      data: sponsorsData,
+      data: eventSponsorData,
       nullState: {
         logo: "/sponsorsIcon.svg",
         text: "No Sponsors mapped to this event. Interested in sponsoring this event?",

@@ -12,6 +12,7 @@ import {
   EventEditionDetailResponse,
   EventSpeakerDetailsResponse,
   EventExhibitorDetailsResponse,
+  EventSponsorDetailsResponse,
 } from "@/types/events";
 import { EventsAdapter } from "@/adapters/eventsAdapter";
 import { ApiError } from "@/types/api";
@@ -21,7 +22,8 @@ import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
 export const useEventsService = () => {
   const api = useApi();
 
-  const { exhibitorAdapter, speakerAdapter } = EventParticpantAdapter();
+  const { exhibitorAdapter, speakerAdapter, sponsorAdapter } =
+    EventParticpantAdapter();
 
   const getEvents = (params?: EventQuery) => {
     return api.request<Event[]>(endpoints.event.events, {
@@ -126,10 +128,22 @@ export const useEventsService = () => {
     return adaptedSpeakerData;
   };
 
-  const getEventSponsorDetails = (id: string) => {
-    return api.request(`${endpoints.event.events}/${id}/sponsors`, {
-      method: "GET",
-    });
+  const getEventSponsorDetails = async (
+    id: string,
+    take: number,
+    skip: number
+  ) => {
+    const response = await api.request<EventSponsorDetailsResponse>(
+      `${endpoints.event.events}/${id}/sponsors?take=${take}&skip=${skip}`,
+      {
+        method: "GET",
+      }
+    );
+    if (!response) {
+      throw new Error("Failed to fetch exhibitor details");
+    }
+    const adaptedExhibitorData = sponsorAdapter(response);
+    return adaptedExhibitorData;
   };
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {
@@ -222,6 +236,7 @@ export const useEventsService = () => {
     getEventEditionDetails,
     getEventExhibitorDetails,
     getEventSpeakerDetails,
+    getEventSponsorDetails,
     getEventsWithSearchParams,
     getEventCoOrganizerDetails,
     getEventsRankingDetailsById,

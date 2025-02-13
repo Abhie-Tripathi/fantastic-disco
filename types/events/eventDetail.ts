@@ -8,11 +8,18 @@ export interface EventEditionDetailResponse {
 }
 
 export interface EventExhibitorDetailsResponse {
-  [key: string]: EventExhibitorDetails[];
+  count: number | null;
+  eventExhibitors: EventExhibitorDetails[];
 }
 
 export interface EventSpeakerDetailsResponse {
+  count: number | null;
   eventSpeakers: EventSpeakerDetails[];
+}
+
+export interface EventSponsorDetailsResponse {
+  count: number | null;
+  eventSponsors: EventSponsorDetails[];
 }
 
 export interface Editions {
@@ -93,6 +100,21 @@ export interface EventExhibitorDetails {
   logo: any;
   interestCapturedOn: string;
   boothNo: string;
+}
+
+export interface EventSponsorDetails {
+  id: number | null;
+  company: string | null;
+  title: string | null;
+  website: string | null;
+  cityId: string | null;
+  cityName: string | null;
+  countryId: string | null;
+  countryName: string | null;
+  companyId: string | null;
+  companyRating: string | null;
+  position: string | null;
+  logo: string | null;
 }
 
 export interface EventParticipantsDetails {

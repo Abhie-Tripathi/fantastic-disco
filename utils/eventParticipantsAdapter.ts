@@ -3,11 +3,12 @@ import {
   EventExhibitorDetailsResponse,
   EventSpeakerDetails,
   EventSpeakerDetailsResponse,
+  EventSponsorDetailsResponse,
 } from "@/types/events";
 
 export const EventParticpantAdapter = () => {
   const exhibitorAdapter = (response: EventExhibitorDetailsResponse) => {
-    const data = response.eventExhibitors || response.exhibitors || [];
+    const data = response.eventExhibitors || [];
     const exhibitorData =
       data && data.length > 0
         ? data.slice(0, 3).map((exhibitor) => ({
@@ -34,7 +35,20 @@ export const EventParticpantAdapter = () => {
         : [];
     return speakerData;
   };
-  const sponsorAdapter = () => {};
+  const sponsorAdapter = (response: EventSponsorDetailsResponse) => {
+    const data = response.eventSponsors || [];
+    const sponsorData =
+      data && data.length > 0
+        ? data.slice(0, 3).map((sponsor) => ({
+            id: sponsor.id || "",
+            name: sponsor.company || "",
+            logo: sponsor.logo || "",
+            details: sponsor.title || "",
+            type: "sponsor",
+          }))
+        : [];
+    return sponsorData;
+  };
 
   return { exhibitorAdapter, speakerAdapter, sponsorAdapter };
 };

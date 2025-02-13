@@ -32,6 +32,7 @@ import {
 
 import { useEventsService } from "@/services/eventsService";
 import { EventPOCDetails } from "@/types/events";
+import Loading from "@/components/ui/Loading";
 import { Badge } from "@/components/ui/badge";
 import { EventInfoAndMap } from "@/components/gtmDetail/eventInfoAndMap";
 import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
@@ -71,9 +72,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     getEventEditionDetails,
     getEventExhibitorDetails,
     getEventSpeakerDetails,
+    getEventSponsorDetails,
   } = useEventsService();
   const coordinateService = useCoordinateService();
-  const { data: event } = useQuery<any>({
+  const { data: event, isLoading } = useQuery<any>({
     queryKey: ["eventDetails"],
     queryFn: async () => {
       const [
@@ -83,6 +85,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventEditionDataResult,
         eventExhibitorDataResult,
         eventSpeakerDataResult,
+        eventSponsorDataResult,
       ] = await Promise.allSettled([
         getEventDetailById(params.eventId),
         getEventPOCDetails(params.eventId),
@@ -90,6 +93,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         getEventEditionDetails(params.eventId, 10, 0),
         getEventExhibitorDetails(params.eventId, 3, 0),
         getEventSpeakerDetails(params.eventId, 3, 0),
+        getEventSponsorDetails(params.eventId, 3, 0),
         // getEventCoOrganizerDetails(params.eventId),
       ]);
       const eventData =
@@ -119,6 +123,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventSpeakerDataResult.status === "fulfilled"
           ? eventSpeakerDataResult.value
           : null;
+
+      const eventSponsorData =
+        eventSponsorDataResult.status === "fulfilled"
+          ? eventSponsorDataResult.value
+          : null;
       return {
         eventData: eventData,
         eventPOCData: eventPOCData,
@@ -126,12 +135,20 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventEditionData: eventEditionData,
         eventExhibitorData: eventExhibitorData,
         eventSpeakerData: eventSpeakerData,
+        eventSponsorData: eventSponsorData,
       };
     },
     refetchOnWindowFocus: false,
   });
 
-  if (!event) return null;
+  if (isLoading) {
+    return <Loading className="absolute right-1/2 top-1/2" />;
+  }
+
+  if (!event) {
+    return null;
+  }
+
   const {
     eventData,
     eventPOCData,
@@ -139,10 +156,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     eventEditionData,
     eventExhibitorData,
     eventSpeakerData,
+    eventSponsorData,
   } = event;
   const { basic, advance, insights, audience }: Event = eventData || {};
 
-  if (!basic) return null;
   const {
     id,
     name,
@@ -161,7 +178,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     // below5CountryEvent,
     // above5CountryCategoryRankEvent,
     // below5CountryCategoryEvent,
-  } = basic;
+  } = basic || {};
 
   const {
     scores,
@@ -177,15 +194,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     location: organizerLocation,
     name: organizerName,
   } = organizer || {};
-
-  // const rankings: RankingDetail = {
-  //   above5CategoryEvent: above5CategoryEvent,
-  //   below5CategoryEvent: below5CategoryEvent,
-  //   above5CountryEvent: above5CountryEvent,
-  //   below5CountryEvent: below5CountryEvent,
-  //   above5CountryCategoryRankEvent: above5CountryCategoryRankEvent,
-  //   below5CountryCategoryEvent: below5CountryCategoryEvent,
-  // };
 
   const isInsightVisible =
     (scores && Object.values(scores).every((value) => value !== null)) ||
@@ -778,6 +786,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             eventDetails={eventData}
             eventExhibitorData={eventExhibitorData}
             eventSpeakerData={eventSpeakerData}
+            eventSponsorData={eventSponsorData}
             scrollSection={tabs[2].path}
             setActiveTab={setActiveTab}
           />
