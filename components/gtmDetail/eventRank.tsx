@@ -249,7 +249,7 @@ const RankContainer = ({
 }) => {
   const { maxRank, currentEvent } = rankData;
   const { categoryId, rank, location } = currentEvent;
-  const { categories } = eventDetails;
+  const { categories } = (eventDetails && eventDetails.basic) || {};
   const categoryName =
     categoryId &&
     categories?.find((category) => category.id === categoryId)?.name;
@@ -314,6 +314,7 @@ export const EventRank = ({
 
   const { categories, eventLocation } =
     (eventDetails && eventDetails.basic) || {};
+
   const minCategory =
     rankings &&
     rankings.categories &&
@@ -321,25 +322,32 @@ export const EventRank = ({
       return category < min ? category : min;
     }, rankings.categories[0]);
 
-  const categoryRank =
-    minCategory &&
-    Object.assign(minCategory, {
-      rank: minCategory.rank,
-      category: categories?.find((category) => category.id === minCategory.id)
-        ?.name,
-    });
-  const countryRank = rankings && rankings.country && {
-    rank: rankings.country?.rank,
-    country:
-      eventLocation?.country.id === rankings.country?.id
-        ? eventLocation?.country.name
-        : "",
-  };
   const minCategoryCountry =
+    rankings &&
     rankings.category_country &&
     rankings.category_country.reduce((min, category) => {
       return category < min ? category : min;
     }, rankings.category_country[0]);
+
+  const categoryRank =
+    minCategory &&
+    Object.assign(minCategory, {
+      rank: minCategory.rank,
+      category: categories?.find((category) => category.id === minCategory.categoryId)
+        ?.name,
+    });
+
+  const countryRank = rankings &&
+    rankings.country && {
+      rank: rankings.country?.rank,
+      country:
+        eventLocation &&
+        eventLocation.country &&
+        eventLocation?.country.id === rankings.country?.countryId
+          ? eventLocation?.country.name
+          : "",
+    };
+
   const categoryCountryRank =
     minCategoryCountry &&
     Object.assign(minCategoryCountry, {
@@ -348,6 +356,8 @@ export const EventRank = ({
         (category) => category.id === minCategoryCountry?.categoryId
       )?.name,
       country:
+        eventLocation &&
+        eventLocation.country &&
         eventLocation?.country.id === minCategoryCountry?.countryId &&
         eventLocation?.country.name,
     });

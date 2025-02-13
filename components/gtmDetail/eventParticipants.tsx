@@ -2,6 +2,7 @@ import Text from "../new-ui/Text";
 import Image from "next/image";
 import Link from "next/link";
 import { Event, EventParticipantsDetails } from "@/types/events";
+import _ from "lodash";
 import { Badge } from "../ui/badge";
 
 const sponsorsData = [
@@ -113,7 +114,9 @@ const ParticipantContainer = ({
         <Text variant="noMargin" fontWeight="medium">
           {heading}
         </Text>
-        {count !== null && count !== 0 && <BadgeCount value={count} />}
+        {count !== null && count !== 0 && (
+          <BadgeCount value={_.padStart(String(count), 2, "0")} />
+        )}
       </div>
       <ul className="flex flex-col gap-2 items-center h-full">
         {count !== null && count > 0 ? (
@@ -190,20 +193,24 @@ export const EventParticipants = ({
     },
   ];
   return (
-    <div className="flex flex-row gap-6 max-xl:flex-col h-96 max-xl:h-full">
-      {participantData.map((participant) => {
-        const { count, data, heading, nullState } = participant;
-        return (
-          <ParticipantContainer
-            key={heading}
-            count={count || 0}
-            heading={heading}
-            participantData={data}
-            eventPageUrl={eventPageUrl}
-            nullState={nullState}
-          />
-        );
-      })}
-    </div>
+    ((exhibitorsCount ?? 0) > 0 ||
+      (speakersCount ?? 0) > 0 ||
+      (sponsorsCount ?? 0) > 0) && (
+      <div className="flex flex-row gap-6 max-xl:flex-col h-96 max-xl:h-full">
+        {participantData.map((participant) => {
+          const { count, data, heading, nullState } = participant;
+          return (
+            <ParticipantContainer
+              key={heading}
+              count={count || 0}
+              heading={heading}
+              participantData={data}
+              eventPageUrl={eventPageUrl}
+              nullState={nullState}
+            />
+          );
+        })}
+      </div>
+    )
   );
 };

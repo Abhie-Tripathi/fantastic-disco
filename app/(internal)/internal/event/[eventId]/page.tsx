@@ -429,10 +429,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               renderFormattedDates(eventStartDate, eventEndDate)}
           </Text>
           {/* {eventStartTime && eventEndTime && (
-              <Text variant="noMargin" color="secondary">
-                {`${eventStartTime} - ${eventEndTime} GMT+5:30`}
-              </Text>
-            )} */}
+            <Text variant="noMargin" color="secondary">
+              {`${eventStartTime} - ${eventEndTime} GMT+5:30`}
+            </Text>
+          )} */}
           {isCancelled && (
             <Badge
               variant="outline"
@@ -776,20 +776,24 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             eventEditionData={eventEditionData}
             eventId={params.eventId}
           />
-          <InsightsAndScores
-            eventDetails={eventData}
-            eventRankingDetails={eventRankingDetails}
-            scrollSection={tabs[1].path}
-            setActiveTab={setActiveTab}
-          />
-          <AudienceIntel
-            eventDetails={eventData}
-            eventExhibitorData={eventExhibitorData}
-            eventSpeakerData={eventSpeakerData}
-            eventSponsorData={eventSponsorData}
-            scrollSection={tabs[2].path}
-            setActiveTab={setActiveTab}
-          />
+          {isInsightVisible && (
+            <InsightsAndScores
+              eventDetails={eventData}
+              eventRankingDetails={eventRankingDetails}
+              scrollSection={tabs[1].path}
+              setActiveTab={setActiveTab}
+            />
+          )}
+          {isAudienceVisible && (
+            <AudienceIntel
+              eventDetails={eventData}
+              eventExhibitorData={eventExhibitorData}
+              eventSpeakerData={eventSpeakerData}
+              eventSponsorData={eventSponsorData}
+              scrollSection={tabs[2].path}
+              setActiveTab={setActiveTab}
+            />
+          )}
         </section>
         {/* <section className="flex flex-col flex-1 h-full right-0  overflow-y-hidden"></section> */}
       </div>
