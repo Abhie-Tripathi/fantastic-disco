@@ -30,6 +30,8 @@ import { Button as ButtonUI } from "@/components/ui/button";
 import { useCompanyService } from "@/services/companyService";
 import { useRouter } from "next/navigation";
 
+const excludedTags = ["Core CRM", "All Paid", "Billing Company", "FLOOR Clients", "Complimentary Services", "Dead Account", "core-crm", "all-paid", "billing-company", "floor-clients", "complimentary-services", "dead-account"];
+
 const getCompanyIndustries = (industries: any[], companyTag: any[]) => {
   if (industries && industries.length > 0) {
     const topData = industries
@@ -210,20 +212,23 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           </Heading>
         )}
 
-        {companyDetails.location?.cityName !== null &&
-          companyDetails.location?.countryName !== null && (
-            <div className="flex gap-2 items-center w-fit my-4">
-              <Location color="#666666" width="14px" height="14px" />
-              <span className="text-[#6E6F89] text-sm">
-                {(companyDetails.location?.cityName === companyDetails.location?.countryName) ?
-                  companyDetails.location?.cityName :
-                  [companyDetails.location?.cityName, companyDetails.location?.countryName]
-                  .filter(Boolean)
-                  .join(", ")
-                }
-              </span>
-            </div>
-          )}
+        {(companyDetails.location?.cityName !== null ||
+          companyDetails.location?.countryName !== null) && (
+          <div className="flex gap-2 items-center w-fit my-4">
+            <Location color="#666666" width="14px" height="14px" />
+            <span className="text-[#6E6F89] text-sm">
+              {companyDetails.location?.cityName ===
+              companyDetails.location?.countryName
+                ? companyDetails.location?.cityName
+                : [
+                    companyDetails.location?.cityName,
+                    companyDetails.location?.countryName,
+                  ]
+                    .filter(Boolean)
+                    .join(", ")}
+            </span>
+          </div>
+        )}
 
         {companyDetails?.industries?.asOrganizer.length > 0 && (
           <div className="flex gap-2 items-center w-fit my-4 flex-wrap">
@@ -257,7 +262,11 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
         {companyDetails?.companyTag.length > 0 && (
           <div className="flex gap-2 items-center w-fit my-4 flex-wrap">
             <Factory color="#666666" width="14px" height="14px" />
-            {companyDetails?.companyTag.slice(0, 2)?.map((item: any) => (
+            { companyDetails?.companyTag
+              ?.filter((item: any) => !excludedTags.includes(item))
+              ?.filter(Boolean)
+              .slice(0, 2)
+              ?.map((item: any, index: number) => (
               <span
                 key={item}
                 className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] font-semibold text-xs py-1 px-2 border-[#CCE6FF] border rounded-md whitespace-nowrap"

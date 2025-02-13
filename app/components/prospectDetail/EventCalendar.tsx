@@ -113,7 +113,7 @@ export const EventCalendar = ({
                         {event?.name}
                       </Text>
                     </Link>
-                    <p className="flex items-center gap-2 text-[12px] font-medium">
+                    <p className="flex items-center gap-2 text-[12px]">
                       <Location
                         color="var(--muted-foreground)"
                         width="12px"
@@ -184,7 +184,7 @@ export const EventCalendar = ({
                         {event?.name}
                       </Text>
                     </Link>
-                    <p className="flex items-center gap-2 text-[12px] font-medium">
+                    <p className="flex items-center gap-2 text-[12px]">
                       <Location
                         color="var(--muted-foreground)"
                         width="12px"

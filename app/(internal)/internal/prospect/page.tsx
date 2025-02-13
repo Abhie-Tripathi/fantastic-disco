@@ -201,7 +201,7 @@ const Prospect = () => {
           className="h-full grid grid-cols-3 mt-0"
           style={{ height: "calc(100vh - 70px)", marginTop: "0!important" }}
         >
-          <div className="col-span-1 h-full overflow-y-auto pt-6 px-6">
+          <div className="col-span-1 h-full overflow-y-auto pt-6 pl-6 pr-3">
             {/* Tabs */}
             {/* <div className="grid grid-cols-3 px-6 pt-6"> */}
             <div className="pb-3">
@@ -240,7 +240,7 @@ const Prospect = () => {
               )} */}
             {/* </div> */}
             {/* Tabs */}
-            <div className="h-[80%] overflow-y-auto w-full mt-0">
+            <div className="h-[75%] overflow-y-auto w-full mt-0">
               <div className="p-3 bg-[var(--background-secondary-color)]">
                 <div className="text-xs flex gap-2 items-center p-2 pb-4 font-medium text-[var(--secondary-text-color)]">
                   <Filter
@@ -463,7 +463,7 @@ const Prospect = () => {
             </div>
           </div>
 
-          <div className="col-span-2 h-full overflow-y-auto pt-4 pr-6">
+          <div className="col-span-2 h-full overflow-y-auto pt-4 pl-3 pr-6">
             <TabsContent value="company" className="mt-0 overflow-y-auto">
               {isLoading ? (
                 <div className="p-8"><Loading /></div>

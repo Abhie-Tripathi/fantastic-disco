@@ -42,6 +42,8 @@ interface companyDetail {
   website: string | null;
 }
 
+const excludedTags = ["Core CRM", "All Paid", "Billing Company", "FLOOR Clients", "Complimentary Services", "Dead Account", "core-crm", "all-paid", "billing-company", "floor-clients", "complimentary-services", "dead-account"];
+
 const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
   const { checkCompanyLogo } = useCompanyService();
   const [compLogo, setCompLogo] = useState<string | null>(null);
@@ -66,10 +68,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
 
   return (
     <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative">
-      <Link
-        href={`/internal/company/${companyDetail.id}`}
-        className="block"
-      >
+      <Link href={`/internal/company/${companyDetail.id}`} className="block">
         <div className="p-4 flex gap-6">
           {compLogo !== null && (
             <Image
@@ -90,20 +89,23 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
               )}
 
             <div className="flex gap-2">
-              {companyDetail.location?.cityName !== null &&
-                companyDetail.location?.countryName !== null && (
-                  <div className="flex gap-2 items-center border-r w-fit pr-3">
-                    <Location color="#666666" width="14px" height="14px" />
-                    <span className="text-[#6E6F89] text-sm">
-                      {(companyDetail.location?.cityName === companyDetail.location?.countryName) ?
-                        companyDetail.location?.cityName :
-                        [companyDetail.location?.cityName, companyDetail.location?.countryName]
-                        .filter(Boolean)
-                        .join(", ")
-                      }
-                    </span>
-                  </div>
-                )}
+              {(companyDetail.location?.cityName !== null ||
+                companyDetail.location?.countryName !== null) && (
+                <div className="flex gap-2 items-center border-r w-fit pr-3">
+                  <Location color="#666666" width="14px" height="14px" />
+                  <span className="text-[#6E6F89] text-sm">
+                    {companyDetail.location?.cityName ===
+                    companyDetail.location?.countryName
+                      ? companyDetail.location?.cityName
+                      : [
+                          companyDetail.location?.cityName,
+                          companyDetail.location?.countryName,
+                        ]
+                          .filter(Boolean)
+                          .join(", ")}
+                  </span>
+                </div>
+              )}
 
               <div className="flex gap-2 items-center w-fit">
                 {companyDetail.event_categoryName?.length > 0 && (
@@ -122,6 +124,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
 
                 {companyDetail?.company_tag.length > 0 &&
                   companyDetail?.company_tag
+                    ?.filter(item => !excludedTags.includes(item))
                     ?.filter(Boolean)
                     .slice(0, 2)
                     ?.map((item: any, index: number) => (
