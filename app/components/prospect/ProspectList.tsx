@@ -4,7 +4,7 @@ import { PaginationComponent } from "@/components/pagination";
 import { Badge } from "@/components/ui/badge";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useCompanyService } from "@/services/companyService";
-import { convertToCustomFormat } from "@/utils/dateFormat";
+import { convertToCustomFormat, calculateDateDifference } from "@/utils/dateFormat";
 import { Buildings, Location } from "geist-icons";
 import Image from "next/image";
 import Link from "next/link";
@@ -60,11 +60,11 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
         if (tempLogo) {
           setCompLogo(`https://logo.clearbit.com/${companyDetail.website}`);
         }
-      }
+      } else setCompLogo(null);
     };
 
     fetchLogo();
-  }, []);
+  }, [companyDetail.id]);
 
   return (
     <div className="bg-background rounded-xl border border-[var(--border-color)] shadow-sm relative">
@@ -88,7 +88,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
                 </div>
               )}
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {(companyDetail.location?.cityName !== null ||
                 companyDetail.location?.countryName !== null) && (
                 <div className="flex gap-2 items-center border-r w-fit pr-3">
@@ -114,7 +114,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
                     {companyDetail.event_categoryName?.map((item) => (
                       <span
                         key={item}
-                        className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
+                        className="whitespace-nowrap text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
                       >
                         {item}
                       </span>
@@ -130,7 +130,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
                     ?.map((item: any, index: number) => (
                       <span
                         key={item}
-                        className="text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
+                        className="whitespace-nowrap text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
                       >
                         #{item}
                       </span>
@@ -190,7 +190,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
                   Events Visited: {companyDetail.stats.totalVisitor}
                 </Badge>
               )}
-              {companyDetail?.stats?.lastLogin && (
+              {(companyDetail?.stats?.lastLogin && calculateDateDifference(companyDetail?.stats?.lastLogin) <= 365) && (
                 <Badge
                   variant="outline"
                   className="text-gray-600 capitalize rounded-sm"
@@ -215,7 +215,7 @@ export const ProspectList = ({
   count: number | undefined;
 }) => {
   const { setFilter, getFilterValue } = useFilterState();
-  const [itemsPerPage, setItemsPerPage] = useState<number>(20);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(Number(getFilterValue("take")) || 10);
   const currentPage =
     Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(count / itemsPerPage);
@@ -235,7 +235,7 @@ export const ProspectList = ({
       {companies?.map((item: companyDetail, index: number) => (
         <ProspectCard companyDetail={item} key={index} />
       ))}
-      <div className="sticky bottom-0 bg-background py-2 border-t">
+      <div className="sticky bg-background py-2 border-t">
         <PaginationComponent
           currentPage={currentPage}
           totalPages={totalPages}

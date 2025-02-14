@@ -200,7 +200,9 @@ export default function Industry({filterName}: Props) {
   const { localFilters, setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
 
-  const categories = morphedData.categories.options;
+  const categories = morphedData.categories.options.filter((country: any) =>
+  country.name.toLowerCase().includes(search.toLowerCase())
+);
 
   const selectedLabels = useMemo(() => {
     const filterDesignations =

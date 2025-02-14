@@ -6,6 +6,7 @@ import { CircleSlash } from "lucide-react";
 import { formatEventDates } from "@/utils/dateFormat";
 import WorldMap from "./worldMap";
 import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 interface Props {
   companyId: string;
@@ -95,7 +96,7 @@ export const EventCalendar = ({
 
             <TabsContent
               value="upcoming"
-              className="h-80 overflow-y-auto w-full"
+              className="max-h-80 overflow-y-auto w-full"
             >
               {upcomingEvents.map((event: any) => (
                 <div className="flex flex-row gap-6 p-2 my-4" key={event.id}>
@@ -129,10 +130,26 @@ export const EventCalendar = ({
                       </span>
                     </p>
 
-                    <p className="text-[#666666] text-[12px]">
-                      <span>
+                    <p className="flex gap-2 items-center text-[#666666] text-[12px]">
+                      <span className={`${event?.status === "POSTPONED" || event.status === "CANCELLED" ? "line-through" : ""}`} >
                         {formatEventDates(event?.startDate, event?.endDate)}
                       </span>
+                      {event?.status === "CANCELLED" && (
+                        <Badge
+                          variant="outline"
+                          className="border-destructive text-destructive px-1"
+                        >
+                          Cancelled
+                        </Badge>
+                      )}
+                      {event?.status === "POSTPONED" && (
+                        <Badge
+                          variant="outline"
+                          className="border-[#FF990A] text-[#FF990A]"
+                        >
+                          Postponed
+                        </Badge>
+                      )}
                     </p>
 
                     {/* <p className="flex items-center gap-2 text-[12px] text-[#666666]">
@@ -167,7 +184,7 @@ export const EventCalendar = ({
               )}
             </TabsContent>
 
-            <TabsContent value="past" className="h-80 overflow-y-auto w-full">
+            <TabsContent value="past" className="max-h-80 overflow-y-auto w-full">
               {pastEvents.map((event: any) => (
                 <div className="flex flex-row gap-6 p-2 my-4" key={event.id}>
                   <div className="flex flex-col rounded-lg shadow-md h-14 w-14 border border-[var(--border-color)]">
@@ -200,10 +217,26 @@ export const EventCalendar = ({
                       </span>
                     </p>
 
-                    <p className="text-[#666666] text-[12px]">
-                      <span>
+                    <p className="flex gap-2 items-center text-[#666666] text-[12px]">
+                      <span className={`${event?.status === "POSTPONED" || event.status === "CANCELLED" ? "line-through" : ""}`} >
                         {formatEventDates(event?.startDate, event?.endDate)}
                       </span>
+                      {event?.status === "CANCELLED" && (
+                        <Badge
+                          variant="outline"
+                          className="border-destructive text-destructive px-1"
+                        >
+                          Cancelled
+                        </Badge>
+                      )}
+                      {event?.status === "POSTPONED" && (
+                        <Badge
+                          variant="outline"
+                          className="border-[#FF990A] text-[#FF990A]"
+                        >
+                          Postponed
+                        </Badge>
+                      )}
                     </p>
 
                     {/* <p className="flex items-center gap-2 text-[12px] text-[#666666]">

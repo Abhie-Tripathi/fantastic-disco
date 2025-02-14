@@ -11,13 +11,15 @@ import ReactMapGL, {
 // import Loading from "@/app/components/UI/Loading";
 import { useCompanyService } from "@/services/companyService";
 import { MapboxToken } from "@/config";
+import { CircleSlash } from "lucide-react";
+import Loading from "@/components/ui/Loading";
 
 
 const WorldMap = ({ companyId }: { companyId: string }) => {
   const [fullView, setFullView] = useState(true);
   // const [zonePerPage, setZonePerPage] = useState<any[]>([]);
   const [countryPerPage, setCountryPerPage] = useState<any[]>([]);
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   // const [isListLoaded, setIsListLoaded] = useState<boolean>(true);
 
   const [totalAttentCount, setTotalAttentCount] = useState<number>(0);
@@ -55,10 +57,10 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
   const { getEventCountByCountry } = useCompanyService();
 
   const fetchEventsData = async () => {
-    setIsLoaded(false);
+    setIsLoading(true);
     try {
       const countryData = await getEventCountByCountry(companyId);
-      if (countryData) {
+      if (countryData && countryData.length > 0) {
         const sortedData = countryData.sort((a: any, b: any) => b.eventCount - a.eventCount);
         setViewport((prevViewport: any) => ({
           ...prevViewport,
@@ -81,7 +83,7 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
-      setIsLoaded(true);
+      setIsLoading(false);
     }
   };
 
@@ -110,7 +112,16 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
     setViewport(viewState);
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="h-10">
+        <Loading />
+      </div>
+    )
+  }
+
   return (
+    countryPerPage && countryPerPage.length > 0 ? (
     <div className="">
       <ReactMapGL
         style={{
@@ -182,7 +193,12 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
           </span>
         </div>
       </div>
-    </div>
+    </div> ) : (
+      <span className="text-[#666666] text-sm flex items-center gap-2 my-4">
+        <CircleSlash width={15} height={15} />
+        No data available
+      </span>
+    )
   );
 };
 

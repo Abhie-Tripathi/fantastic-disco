@@ -244,3 +244,21 @@ export const renderFormattedDates = (startDate: string, endDate: string) => {
     return `${format(start, "dd MMM yyyy")} - ${format(end, "dd MMM yyyy")}`;
   }
 };
+
+export const calculateDateDifference = (givenDateStr: string): number => {
+  const givenDate: Date = new Date(givenDateStr);
+
+  const today: Date = new Date();
+
+  if (givenDate > today) {
+    return -1;
+  }
+
+  const timeDifference: number = today.getTime() - givenDate.getTime();
+
+  const daysDifference: number = Math.floor(
+    timeDifference / (1000 * 3600 * 24)
+  );
+
+  return daysDifference;
+}

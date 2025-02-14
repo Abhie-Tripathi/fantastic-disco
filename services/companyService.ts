@@ -24,7 +24,7 @@ export const useCompanyService = () => {
     const params = new URLSearchParams(searchParamsString);
     if (params.get("viewBy") === null) params.set("viewBy", "company");
 
-    params.set("limit", params.get("take") || "20");
+    params.set("limit", params.get("take") || "10");
     params.set("offset", params.get("skip") || "0");
     params.delete("skip");
     params.delete("take");
@@ -34,19 +34,23 @@ export const useCompanyService = () => {
     });
   };
 
-  const unlockUserDetail = (pocId: number, companyId: string) => {
+  const unlockUserDetail = (pocId: number) => {
     const payload: any = {
       pocId: pocId,
       unlockValue: "email,phone",
     };
-    if (companyId === "isUser") payload.isUser = "true";
-    else payload.companyId = companyId;
 
     return api.request<pocDetail>(`${endpoints.company.unmaskUser}`, {
       method: "GET",
       params: payload,
     });
   };
+
+  const unlockPocDetail = (pocId: number, companyId: string) => {
+    return api.request<pocDetail>(`${endpoints.coordinate.pocUnmask}?pocId=${pocId}&companyId=${companyId}&unlockValue=email,phone`, {
+      method: "GET",
+    });
+  }
 
   const getCompanyDetailById = (companyId: string | number) => {
     return api.request(
@@ -103,6 +107,7 @@ export const useCompanyService = () => {
   return {
     getCompanyList,
     unlockUserDetail,
+    unlockPocDetail,
     getCompanyDetailById,
     getCompanyEvents,
     getCompanyPOC,

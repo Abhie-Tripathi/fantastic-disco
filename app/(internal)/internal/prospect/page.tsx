@@ -53,7 +53,7 @@ const companyFilters: ProspectFilters[] = [
     id: "item-1",
     label: "Category",
     enabled: true,
-    filterName: "companyCategoryIds",
+    filterName: "eventCategoryIds",
   },
   {
     id: "item-2",
@@ -162,8 +162,8 @@ const Prospect = () => {
     //   !!searchParams.toString() &&
     //   !(Array.from(searchParams.values()).length == 0),
     refetchOnWindowFocus: false,
-    gcTime: 0,
-    staleTime: 0,
+    gcTime: 120000,
+    staleTime: 120000,
   });
 
   const companies = companyData?.companyData || [];
@@ -293,7 +293,7 @@ const Prospect = () => {
                       <AccordionContent
                         className={`"h-fit pb-1 overflow-x-hidden`}
                       >
-                        {item.filterName === "companyCategoryIds" ? (
+                        {item.filterName === "eventCategoryIds" ? (
                           <Industry filterName={item.filterName} />
                         ) : item.filterName === "eventProductIds" ? (
                           <ProductTopics />
@@ -464,15 +464,15 @@ const Prospect = () => {
           </div>
 
           <div className="col-span-2 h-full overflow-y-auto pt-4 pl-3 pr-6">
-            <TabsContent value="company" className="mt-0 overflow-y-auto">
+            <TabsContent value="company" className="mt-0 overflow-y-auto h-full">
               {isLoading ? (
                 <div className="p-8"><Loading /></div>
               ) : companies.length == 0 ? (
-                <NullState
-                  image={coordinateNullState}
-                  title="No Results Found"
-                  text="Try adjusting the filter criteria to refine your search"
-                />
+                  <NullState
+                    image={coordinateNullState}
+                    title="No Results Found"
+                    text="Try adjusting the filter criteria to refine your search"
+                  />
               ) : error ? (
                 <NullState
                   image={coordinateNullState}
@@ -483,7 +483,7 @@ const Prospect = () => {
               )}
             </TabsContent>
 
-            <TabsContent value="user">
+            <TabsContent value="user" className="mt-0 h-full" >
               {isLoading ? (
                 <div className="p-8"><Loading /></div>
               ) : peopleData.length == 0 ? (

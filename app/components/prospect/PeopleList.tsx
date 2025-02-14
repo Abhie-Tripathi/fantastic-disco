@@ -139,7 +139,7 @@ export const PeopleList = ({
             : poc
         )
       );
-      const data = await companyService.unlockUserDetail(pocId, 'isUser');
+      const data = await companyService.unlockUserDetail(pocId);
       if (data) {
         setCompanyUsers(prevPocData => 
           prevPocData.map(poc => 

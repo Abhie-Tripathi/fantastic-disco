@@ -29,17 +29,25 @@ import { EventCalendar } from "@/app/components/prospectDetail/EventCalendar";
 import { Button as ButtonUI } from "@/components/ui/button";
 import { useCompanyService } from "@/services/companyService";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/ui/Loading";
 
 const excludedTags = ["Core CRM", "All Paid", "Billing Company", "FLOOR Clients", "Complimentary Services", "Dead Account", "core-crm", "all-paid", "billing-company", "floor-clients", "complimentary-services", "dead-account"];
 
-const getCompanyIndustries = (industries: any[], companyTag: any[]) => {
-  if (industries && industries.length > 0) {
-    const topData = industries
+const getCompanyIndustries = (asOrganizer: any[], asExhibitor: any[]) => {
+  if (asOrganizer && asOrganizer.length > 0) {
+    const topData = asOrganizer
       .filter((item) => item.isGroup === 1)
       .sort((a, b) => b.eventCount - a.eventCount)
       .slice(0, 5);
 
     // const names = [...topData.map(item => item.name), ...companyTag.map(item => '#'+item)];
+    return topData.map((item) => item.name);
+  } else if (asExhibitor && asExhibitor.length > 0) {
+    const topData = asExhibitor
+      .filter((item) => item.isGroup === 1)
+      .sort((a, b) => b.eventCount - a.eventCount)
+      .slice(0, 5);
+
     return topData.map((item) => item.name);
   } else return [];
 };
@@ -69,12 +77,12 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
     getCompanyDetailById,
     getCompanyEvents,
     getCompanyPOC,
-    unlockUserDetail,
+    unlockPocDetail,
     checkCompanyLogo,
   } = useCompanyService();
 
-  const { data: company } = useQuery<any>({
-    queryKey: ["eventDetails"],
+  const { data: company, isFetching } = useQuery<any>({
+    queryKey: ["companyDetails", params.companyId],
     queryFn: async () => {
       const [
         companyDataResult,
@@ -124,7 +132,17 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
       };
     },
     refetchOnWindowFocus: false,
+    gcTime: 300000,
+    staleTime: 300000,
   });
+
+  if (isFetching) {
+    return (
+      <div className="p-8">
+        <Loading />
+      </div>
+    );
+  }
 
   if (!company) return null;
   const { companyDetails, upcomingEventsCount, pastEventsCount } = company;
@@ -143,7 +161,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
           poc.id === pocId ? { ...poc, state: 1 } : poc
         )
       );
-      const data = await unlockUserDetail(pocId, params.companyId);
+      const data = await unlockPocDetail(pocId, params.companyId);
       if (data) {
         setEventPOCDetails((prevPocData) =>
           prevPocData.map((poc) =>
@@ -196,7 +214,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
 
         {compLogo !== null && (
           <div className="flex bg-[#F8F8FA] dark:bg-[var(--heading-background-color)] rounded-md px-6 py-4">
-            <Image
+            <img
               src={compLogo}
               alt="eventLogo"
               className="flex h-20 w-20 rounded-xl shadow-lg"
@@ -236,7 +254,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
 
             {getCompanyIndustries(
               companyDetails?.industries?.asOrganizer,
-              companyDetails?.companyTag
+              companyDetails?.industries?.asExhibitor
             )?.map((item: any) => (
               <span
                 key={item}
