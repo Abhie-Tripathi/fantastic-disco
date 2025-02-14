@@ -463,8 +463,8 @@ const Prospect = () => {
             </div>
           </div>
 
-          <div className="col-span-2 h-full overflow-y-auto pt-4 pl-3 pr-6">
-            <TabsContent value="company" className="mt-0 overflow-y-auto h-full">
+          <div className="col-span-2 h-full overflow-y-auto pt-4 pl-3">
+            <TabsContent value="company" className="mt-0 overflow-y-auto h-full pr-6">
               {isLoading ? (
                 <div className="p-8"><Loading /></div>
               ) : companies.length == 0 ? (
@@ -483,7 +483,7 @@ const Prospect = () => {
               )}
             </TabsContent>
 
-            <TabsContent value="user" className="mt-0 h-full" >
+            <TabsContent value="user" className="mt-0 h-full pr-6" >
               {isLoading ? (
                 <div className="p-8"><Loading /></div>
               ) : peopleData.length == 0 ? (

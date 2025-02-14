@@ -9,6 +9,7 @@ import Text from "@/components/new-ui/Text";
 import { MailIcon, PhoneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCompanyService } from "@/services/companyService";
+import { Location } from "geist-icons";
 
 interface userDetail {
   user_id: number | null;
@@ -18,6 +19,11 @@ interface userDetail {
   email?: string | null
   phoneNumber?: string | null,
   state?: number,
+  user_city: string | number;
+  user_country: string;
+  cityName: string | null;
+  countryName: string | null;
+  user_companyName: string | null;
 }
 
 const PeopleCard = ({ poc, unlockPoc }: { poc: userDetail, unlockPoc: any }) => {
@@ -104,6 +110,90 @@ const PeopleCard = ({ poc, unlockPoc }: { poc: userDetail, unlockPoc: any }) => 
   );
 };
 
+const PeopleCardNew = ({ poc, unlockPoc }: { poc: userDetail, unlockPoc: any }) => {
+  return (
+    <div className="bg-background rounded-xl border shadow-sm relative">
+      <div className="p-4 flex gap-6">
+        {poc.user_profilePicture !== null && (
+          <Image
+            src={poc.user_profilePicture}
+            alt="eventLogo"
+            className="flex h-16 w-16 rounded-lg shadow-lg"
+            width={200}
+            height={200}
+          />
+        )}
+        <div className="flex gap-2 flex-col">
+          <div className="text-xl font-semibold">{poc.user_name}</div>
+
+          <div className="text-[#6E6F89] text-xs font-medium">
+            {poc.user_designationName}
+            {poc.user_companyName !== null &&
+               <>, {poc.user_companyName}</>
+            }
+            
+          </div>
+
+          {/* <div className="flex flex-wrap gap-2">
+            {(poc?.cityName !== null ||
+              poc?.countryName !== null) && (
+              <div className="flex gap-2 items-center w-fit pr-3">
+                <Location color="#666666" width="14px" height="14px" />
+                <span className="text-[#6E6F89] text-sm">
+                  {poc.cityName ===
+                  poc?.countryName
+                    ? poc.cityName
+                    : [
+                        poc.cityName,
+                        poc.countryName,
+                      ]
+                        .filter(Boolean)
+                        .join(", ")}
+                </span>
+              </div>
+            )}
+          </div> */}
+
+          {poc?.state === 2 &&
+            <div className={`${poc?.state !== 2 ? 'blur-sm' : ''} w-full`}>
+                <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+                  <MailIcon
+                    width="12px"
+                    height="12px"
+                    className="self-start mt-1"
+                  />
+                  <span className="break-all">{poc?.email}</span>
+                </p>
+              <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+                <PhoneIcon width="12px" height="12px" />
+                <span>{poc?.phoneNumber ? poc?.phoneNumber : "-"}</span>
+              </p>
+            </div>
+          }
+
+          {(poc?.state !== 2) && (
+            <div className="">
+              <Button
+                disabled={
+                  poc?.state && (poc.state === 1)
+                    ? true
+                    : false
+                }
+                onClick={() => unlockPoc(poc.user_id)}
+                variant={"default"}
+                size={"sm"}
+                className="blur-none"
+              >
+                Show details
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export const PeopleList = ({
   people,
   count = 0,
@@ -156,9 +246,14 @@ export const PeopleList = ({
 
   return (
     <div className="">
-      <div className="h-full overflow-y-auto w-full grid grid-cols-[repeat(auto-fill,_220px)] gap-4 pb-3 justify-center">
+      {/* <div className="h-full overflow-y-auto w-full grid grid-cols-[repeat(auto-fill,_220px)] gap-4 pb-3 justify-center">
         {companyUsers.filter((item) => (item.user_name !== null && item.user_profilePicture !== null))?.map((item, index: number) => (
           <PeopleCard poc={item} key={index} unlockPoc={unlockPoc} />
+        ))}
+      </div> */}
+      <div className="flex gap-3 flex-col">
+        {companyUsers.filter((item) => (item.user_name !== null && item.user_profilePicture !== null))?.map((item, index: number) => (
+          <PeopleCardNew poc={item} key={index} unlockPoc={unlockPoc} />
         ))}
       </div>
       <div className="sticky bg-background py-2 border-t">
