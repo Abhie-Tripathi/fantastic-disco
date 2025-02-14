@@ -48,6 +48,12 @@ export const endpoints = {
   locationSuggestion: `${BASE_URL_NEW}/suggestions/locations`,
   designations: `${BASE_URL}/designation`,
   users: `${BASE_URL}/auth/users`,
+  trends: {
+    eventTrends: `${BASE_URL}/trend`,
+    predictedAttendance: `${BASE_URL}/trends/predicted-attendance`,
+    predictedEvents: `${BASE_URL}/trends/predicted-number-of-events`,
+    eventTypes: `${BASE_URL}/trends/event-types`,
+  },
   tracker: {
     suggestion:`${BASE_URL_NEW}/suggestions/companies`,
     commonUrl: `${BASE_URL_NEW}/trackers`,
@@ -106,6 +112,8 @@ export const endpoints = {
   },
   calendar: {
     getyearlyEvents: `${BASE_URL}/event?`,
+  calendar: {
+    getyearlyEvents: `${BASE_URL}/event?`,
   },
   configuration: {
     filterConfiguration: `${BASE_URL}/me/account/configuration/filter`,
@@ -113,4 +121,5 @@ export const endpoints = {
     outreachConfiguration: `${BASE_URL}/me/account/configuration/outreach`,
   },
   myprofile: `${BASE_URL}/auth/customer/profile`,
-};
+  }
+}

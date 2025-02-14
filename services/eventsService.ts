@@ -65,6 +65,15 @@ export const useEventsService = () => {
     );
   };
 
+  const getAlertPolygon = (eventId: string) => {
+    return api.request<AlertPolygonResponse>(
+      `${endpoints.event.events}/${eventId}/polygons`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
   // const getEventExhibitorDetails = (id: string, take: number, skip: number) => {
   //   return api.request<EventExhibitorDetailsResponse>(
   //     `${endpoints.event.eventDetailById}/exhibitor?id=${id}&take=${take}&skip=${skip}`,
@@ -112,13 +121,25 @@ export const useEventsService = () => {
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {
     const response = await api.request(
-      `${endpoints.event.events}/${searchParamsString}`,
+      `${endpoints.event.events}?${searchParamsString}`,
       {
         method: "GET",
       }
     );
     return response;
   };
+
+  const getRawEventsWithSearchParams = async (searchParamsString: string) => {
+    const params = new URLSearchParams(searchParamsString);
+    const adaptedParams = EventsAdapter.adaptRequestParams(params);
+    const response = await api.request(`${endpoints.event.events}`, {
+      method: "GET",
+      params: adaptedParams,
+    }, true);
+    
+    return TrackersAdapter.adaptTrackerMapEventData(response);
+  };
+
 
   const saveEvent = (eventId: string) => {
     return api.request(`${endpoints.event.savedEvents}`, {
@@ -169,7 +190,7 @@ export const useEventsService = () => {
   };
   const fetchEnabledFilters = async (source: String) => {
     const response = await api.request(
-      `${endpoints.event.enabledFilters}`,
+      `${endpoints.event.enabledFilters}?source=${source}`,
       {
         method: "GET",
       }
@@ -185,7 +206,7 @@ export const useEventsService = () => {
       }
     );
     return response;
-  };
+  }
   return {
     getEvents,
     saveEvent,
@@ -195,6 +216,7 @@ export const useEventsService = () => {
     bookmarkThisEvent,
     unBookmarkThisEvent,
     getIsEventBookMarked,
+    getRawEventsWithSearchParams,
     getEventDetailById,
     getEventPOCDetails,
     getEventEditionDetails,

@@ -86,6 +86,9 @@ interface Filters {
   onlyBranded?: string;
   onlySeries?: string;
   columns?: string;
+  activeCard?: string;
+  activeCardName?: string;
+  editTrend?: string;
   tags?: string;
   estimatedVisitorRangeTag?: string;
   estimatedVisitors?: string;
@@ -119,6 +122,7 @@ interface Filters {
   userName?: string;
   designation?: string;
   linkedinProfile?: string;
+  eventType?:string;
 }
 type Filter = {
   eventTypes: string;

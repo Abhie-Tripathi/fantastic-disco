@@ -26,6 +26,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 // import SideNav from "@/app/components/trackers/sideNav";
 import { useTrackerContext } from "@/context/tracker";
 import { Button } from "@/components/ui/button";
+import {Toggle} from "@/types/trackers"
 function CustomeTracker({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -52,24 +53,6 @@ interface CategoryData {
 interface Tracker {
   name: string;
   filterValue: any;
-}
-interface Toggle{
-  rating?:boolean;
-  exhibit?:boolean;
-  trust?:boolean;
-  maturity?: boolean;
-  brandedEvent?: boolean;
-  eventSeries?: boolean;
-  forecastedStatus?: boolean;
-  impactScore?: boolean;
-  inboundScore?: boolean;
-  internationalScore?: boolean;
-  eventRank?: boolean;
-  globalToggle?:boolean;
-  audienceZone?: boolean;
-  audienceSpread?: boolean;
-  eventFrequency?:boolean;
-  brandSeries?:boolean;
 }
 interface EditData {
   tracker: Tracker;

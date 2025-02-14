@@ -22,34 +22,49 @@ import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import { formattedDateRange } from "@/utils/date";
+import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerServices } from "@/services/trackerServices";
 
 export default function EventList({
   eventDate,
   onClose,
   source,
-  trackerId,
-  type,
+  trackerId
 }: {
   eventDate: Date;
   onClose: () => void;
-  source: string;
+  source?: string;
   trackerId?:string;
-  type?:string;
 }) {
+  const {
+    getFilterValue,
+  } = useFilterState();
   const [currentPage, setCurrentPage] = useState(1);
   const searchParams = useSearchParams();
   const eventService = useEventsService();
-  const {getCalendarViewEvents}=useTrackerServices();
+  const { getCalendarViewEvents } = useTrackerServices();
+  const active=getFilterValue("eventType");
+  
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.delete("view");
-  filteredParams.set("skip", String((currentPage - 1) * 10));
+  filteredParams.set("skip", String((currentPage - 1) * 20));
   filteredParams.set("active_lte", eventDate.toISOString());
   filteredParams.set("active_gte", eventDate.toISOString());
+  console.log(eventDate);
+  
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", filteredParams.toString()],
-    queryFn: () => 
-      source==="tracker"?getCalendarViewEvents(trackerId || "", `type=${type}&startDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&endDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&limit=10&offset=${(currentPage - 1) * 10 }`, true ):eventService.getEventsWithSearchParams(filteredParams.toString()),
+    queryFn: () =>
+      source!=="tracker"?eventService.getEventsWithSearchParams(filteredParams.toString()):getCalendarViewEvents(trackerId || "", `type=${
+        active === "activeEvent"
+          ? "active"
+          : active === "expiredEvent"
+          ? "expired"
+          : active === "newEvent"
+          ? "" : active === "savedEvent" ? "saved":
+           "active"
+      }&active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${(currentPage - 1) * 20 }`, true ),
   });
 
   const handlePageChange = (page: number) => {
@@ -62,7 +77,7 @@ export default function EventList({
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
   const count = isEventResponse(data) ? data.count : 0;
-  const totalPages = Math.ceil(count / 10) || 1;
+  const totalPages = Math.ceil(count / 20) || 1;
 
   const EventCard = ({ event }: { event: Event }) => {
     const address = event.venueLocation
@@ -89,7 +104,7 @@ export default function EventList({
         : `${formattedStartDate} - ${formattedEndDate} (${days} ${
             days === 1 ? "day" : "days"
           })`;
-          
+
     return (
       <Link href={`/internal/event/${event.id}`} target="_blank">
         <Card key={event.id} className="mb-4 relative">
@@ -106,7 +121,7 @@ export default function EventList({
               <span>{address}</span>
             </div>
             <div className="flex items-start text-xs text-[#666666]">
-              {formattedRange}
+            {formattedDateRange(event.startDateTime, event.endDateTime)}
             </div>
           </CardContent>
         </Card>
@@ -292,7 +307,7 @@ export default function EventList({
 
   return (
     <div
-      className={`h-[800px] w-[345px] mt-[54px] bg-[var(--primary-foreground)] rounded-l-lg border`}
+      className={`h-[800px] w-[345px] mt-[66px] bg-[var(--primary-foreground)] rounded-l-lg border`}
     >
       {renderContent()}
     </div>

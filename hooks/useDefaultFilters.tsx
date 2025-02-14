@@ -183,8 +183,6 @@ export function useDefaultFilters() {
             router.push(`${pathName}?${params.toString()}`, { scroll: false });
           }, 0);
         } else {
-          console.log(11111);
-          
           setMultipleLocalFilters(enabledFilterParams);
         }
         return;

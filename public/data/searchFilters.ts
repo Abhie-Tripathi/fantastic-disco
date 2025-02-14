@@ -352,6 +352,7 @@ export const searchFilters = {
 //   source: "research",
 //   data: {
 //     durations: {
+
 //       startDate: "2024-11-01,2025-04-30",
 //       endDate: "2024-11-01,2025-04-30",
 //     },
@@ -478,119 +479,134 @@ export const generateSearchFilters=(apiResponse: any)=> {
           isEnabled: data.eventCategory?.enabledValue?.some(
             (c: any) => c.id === category.id
           ) ?? true,
-        })),
-      },
-  
-      eventStatus: {
-        isEnabled: data.eventStatus?.enabledValue?.length > 0 ?? true,
-        options: searchFilters?.eventStatus?.options?.map((status) => ({
-          ...status,
-          isEnabled: data.eventStatus?.enabledValue?.includes(status.id.toUpperCase()) ?? true,
-        })),
-      },
-  
-      userRatings: {
-        isEnabled: data.eventRating?.isRatingEnabled ?? true,
-        isToggleEnabled: Boolean(data.eventRating?.enabledValue?.length),
-        options: searchFilters?.userRatings?.options?.map((rating) => ({
-          ...rating,
-          isEnabled: data.eventRating?.enabledValue?.includes(rating.id) ?? true,
-        })),
-      },
-  
-      eventEntries: {
-        isEnabled: data.eventEntry?.enabledValue?.length > 0 ?? true,
-        options: searchFilters?.eventEntries?.options?.map((entry) => ({
-          ...entry,
-          isEnabled: data.eventEntry?.enabledValue?.includes(entry.id.toUpperCase()) ?? true,
-        })),
-      },
-  
-      maturityLevels: {
-        isEnabled: data.maturity?.isMaturityEnabled ?? true,
-        isToggleEnabled: Boolean(data.maturity?.enabledValue?.length),
-        options: searchFilters?.maturityLevels?.options?.map((level) => ({
-          ...level,
-          isEnabled: data.maturity?.enabledValue?.includes(level.id) ?? true,
-        })),
-      },
-  
-      globalAndTourings: {
-        isEnabled: data.branded?.isBrandedEnabled ?? true,
-        isToggleEnabled: Boolean(data.branded?.enabledValue),
-        options: [
-          {
-            id: "BRANDED",
-            label: "Branded",
-            isEnabled: data.branded?.enabledValue?.eventBrand ?? true,
-          },
-          {
-            id: "SERIES",
-            label: "Series",
-            isEnabled: data.branded?.enabledValue?.eventSeries ?? true,
-          },
-        ],
-      },
-  
-      frequencies: {
-        isEnabled: data.eventFrequency?.isFreqEnabled ?? true,
-        isToggleEnabled: true,
-        options: searchFilters?.frequencies?.options?.map((format) => ({
-            ...format,
-            isEnabled: data.eventFrequency?.enabledValue?.includes(format.id) ?? true,
-          })),
-      },
-  
-      eventRanking: {
-        isEnabled: data.eventRanking?.isRanking ?? true,
-        isToggleEnabled: Boolean(data.eventRanking?.isRanking),
-        options: searchFilters.eventRanking.options,
-      },
-  
-      audienceZone: {
-        isEnabled: data.audienceZone?.isZoneEnabled ?? true,
-        isToggleEnabled: Boolean(data.audienceZone?.isZoneEnabled),
-      },
-  
-      estimatedExhibitor: {
-        isEnabled: data.estimatedExhibitScore?.isExhibitorsEnabled ?? true,
-        isToggleEnabled: Boolean(data.estimatedExhibitScore?.enabledValue?.length),
-        options: searchFilters.estimatedExhibitor.options.map((exhibitor) => ({
-          ...exhibitor,
-          isEnabled: data.estimatedExhibitScore?.enabledValue?.includes(exhibitor.id) ?? true,
-        })),
-      },
-  
-      estimatedVisitors: {
-        isEnabled: data.eventSize?.enabledValue?.length > 0 ?? true,
-        options: searchFilters.estimatedVisitors.options.map((visitor) => {
-          return {
-            ...visitor,
-            isEnabled: data.estimatedVisitorRangeTag
-            ?.enabledValue?.includes(visitor.id) ?? true,
-          };
-        }),
-      },
-      
-  
-      eventAnalytics: {
-        isEnabled: data.analytics?.isAnalyticsEnabled ?? true,
-        isToggleEnabled: Boolean(data.analytics?.isAnalyticsEnabled),
-      },
-  
-      forcastedStatus: {
-        isEnabled: data.isForecasted?.isForecastedEnabled  ?? true,
-        isToggleEnabled: true,
-      },
-      
-      audienceSpread:{
-        isEnabled: data.audienceSpread?.isAudienceEnabled  ?? true,
-      },
-    
-      audienceProfile:{
-        isEnabled:data.designation?.isProfileEnabled  ?? true,
-      }
-    };
-  }
+      })),
+    },
+
+    eventStatus: {
+      isEnabled: data.eventStatus?.enabledValue?.length > 0 ?? true,
+      options: searchFilters?.eventStatus?.options?.map((status) => ({
+        ...status,
+        isEnabled:
+          data.eventStatus?.enabledValue?.includes(status.id.toUpperCase()) ??
+          true,
+      })),
+    },
+
+    userRatings: {
+      isEnabled: data.eventRating?.isRatingEnabled ?? true,
+      isToggleEnabled: Boolean(data.eventRating?.enabledValue?.length),
+      options: searchFilters?.userRatings?.options?.map((rating) => ({
+        ...rating,
+        isEnabled: data.eventRating?.enabledValue?.includes(rating.id) ?? true,
+      })),
+    },
+
+    eventEntries: {
+      isEnabled: data.eventEntry?.enabledValue?.length > 0 ?? true,
+      options: searchFilters?.eventEntries?.options?.map((entry) => ({
+        ...entry,
+        isEnabled:
+          data.eventEntry?.enabledValue?.includes(entry.id.toUpperCase()) ??
+          true,
+      })),
+    },
+
+    maturityLevels: {
+      isEnabled: data.maturity?.isMaturityEnabled ?? true,
+      isToggleEnabled: Boolean(data.maturity?.enabledValue?.length),
+      options: searchFilters?.maturityLevels?.options?.map((level) => ({
+        ...level,
+        isEnabled: data.maturity?.enabledValue?.includes(level.id) ?? true,
+      })),
+    },
+
+    globalAndTourings: {
+      isEnabled: data.branded?.isBrandedEnabled ?? true,
+      isToggleEnabled: Boolean(data.branded?.enabledValue),
+      options: [
+        {
+          id: "BRANDED",
+          label: "Branded",
+          isEnabled: data.branded?.enabledValue?.eventBrand ?? true,
+        },
+        {
+          id: "SERIES",
+          label: "Series",
+          isEnabled: data.branded?.enabledValue?.eventSeries ?? true,
+        },
+      ],
+    },
+
+    frequencies: {
+      isEnabled: data.eventFrequency?.isFreqEnabled ?? true,
+      isToggleEnabled: true,
+      options: searchFilters?.frequencies?.options?.map((format) => ({
+        ...format,
+        isEnabled:
+          data.eventFrequency?.enabledValue?.includes(format.id) ?? true,
+      })),
+    },
+
+    eventRanking: {
+      isEnabled: data.eventRanking?.isRanking ?? true,
+      isToggleEnabled: Boolean(data.eventRanking?.isRanking),
+      options: searchFilters.eventRanking.options,
+    },
+
+    audienceZone: {
+      isEnabled: data.audienceZone?.isZoneEnabled ?? true,
+      isToggleEnabled: Boolean(data.audienceZone?.isZoneEnabled),
+    },
+
+    estimatedExhibitor: {
+      isEnabled: data.estimatedExhibitScore?.isExhibitorsEnabled ?? true,
+      isToggleEnabled: Boolean(
+        data.estimatedExhibitScore?.enabledValue?.length
+      ),
+      options: searchFilters.estimatedExhibitor.options.map((exhibitor) => ({
+        ...exhibitor,
+        isEnabled:
+          data.estimatedExhibitScore?.enabledValue?.includes(exhibitor.id) ??
+          true,
+      })),
+    },
+
+    estimatedVisitors: {
+      isEnabled: data.eventSize?.enabledValue?.length > 0 ?? true,
+      options: searchFilters.estimatedVisitors.options.map((visitor) => {
+        return {
+          ...visitor,
+          isEnabled:
+            data.estimatedVisitorRangeTag?.enabledValue?.includes(visitor.id) ??
+            true,
+        };
+      }),
+    },
+
+    eventAnalytics: {
+      isEnabled: data.analytics?.isAnalyticsEnabled ?? true,
+      isToggleEnabled: Boolean(data.analytics?.isAnalyticsEnabled),
+    },
+
+    forcastedStatus: {
+      isEnabled: data.isForecasted?.isForecastedEnabled ?? true,
+      isToggleEnabled: true,
+    },
+
+    audienceSpread: {
+      isEnabled: data.audienceSpread?.isAudienceEnabled ?? true,
+    },
+
+    audienceProfile: {
+      isEnabled: data.designation?.isProfileEnabled ?? true,
+    },
+
+    economicImpact: {
+      isEnabled: data.economicImpact?.isEconomicImpactEnabled ?? true,
+      isToggleEnabled: true,
+    },
+  };
+};
+
 
 // console.log(getUpdatedSearchFilters(apiResponse));
