@@ -238,7 +238,7 @@ const Sidebar = () => {
       </div>
       <nav className="flex-1 overflow-y-auto flex flex-col justify-between">
         <ul className="p-2 space-y-1">
-          { pathname.startsWith("/internal/prospect")
+          { (pathname.startsWith("/internal/prospect") || pathname.startsWith("/internal/company"))
               ? prospectLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive =

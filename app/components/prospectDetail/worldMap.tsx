@@ -21,14 +21,13 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
   // const [isListLoaded, setIsListLoaded] = useState<boolean>(true);
 
   const [totalAttentCount, setTotalAttentCount] = useState<number>(0);
-  const [mostAttendedCountry, setMostAttendedCountry] = useState<string>();
 
   const [viewport, setViewport] = useState<any>({
     latitude: countryPerPage?.[0]?.geoCordinates?.latitude ?? 22.1991660760527,
     longitude: countryPerPage?.[0]?.geoCordinates?.longitude ?? 78.476681027237,
     width: fullView ? "calc(100vw - 85px)" : "",
     height: fullView ? "90vh" : "350px",
-    zoom: 2,
+    zoom: 2.5,
     maxZoom: 20,
   });
 
@@ -90,32 +89,18 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
     fetchEventsData();
   }, []);
 
-  let worldviewFilter = ["in", "iso_3166_1", "IN", "CN", "US"];
-
-  const layerStyle = {
-    id: "country-layer",
-    type: "fill",
-    source: "country-source",
-    "source-layer": "country_boundaries",
-    filter: worldviewFilter,
-    paint: {
-      "fill-color": "#6750a4",
-      "fill-opacity": 0.4,
-    },
-  };
-
   const layers = Object.keys(countryEventCounts).map((country, index) => {
     const layerStyle: LayerProps = {
       id: `country-layer-${country}`,
       type: "fill",
       source: "country-source",
       "source-layer": "country_boundaries",
-      maxzoom: 8,
+      // maxzoom: 8,
       filter: ["==", "iso_3166_1", country],
       paint: {
-        "fill-color": "#E7D4E8",
-        "fill-opacity": getOpacityValue(country),
-        "fill-outline-color": "#6750a4",
+        "fill-color": index == 0 ? "#6750a4" : "#E7D4E8",
+        "fill-opacity": index == 0 ? 0.9 : getOpacityValue(country),
+        "fill-outline-color": "#FCCDE5",
       },
     };
     return <Layer {...layerStyle} key={country} />;
@@ -162,9 +147,10 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
                       : 0
                   }
                 >
-                  <span className="bg-white px-1 py-0.5 rounded-sm border">
+                  <span className="bg-white text-[#666666] px-1 py-0.5 rounded border border-[#EEEEF0] font-bold">
                     {event.eventCount}
                   </span>
+                  {/* <Badge variant="default" className="opacity-90 px-1">{event.eventCount}</Badge> */}
                 </Marker>
               </div>
             ))}

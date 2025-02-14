@@ -65,7 +65,7 @@ const companyFilters: ProspectFilters[] = [
     id: "item-3",
     label: "Product & Topics",
     enabled: true,
-    filterName: "companyProductIds",
+    filterName: "eventProductIds",
   },
   {
     id: "item-4",
@@ -295,7 +295,7 @@ const Prospect = () => {
                       >
                         {item.filterName === "companyCategoryIds" ? (
                           <Industry filterName={item.filterName} />
-                        ) : item.filterName === "companyProductIds" ? (
+                        ) : item.filterName === "eventProductIds" ? (
                           <ProductTopics />
                         ) : item.filterName === "eventParticipationType" ? (
                           <ParticipationType />

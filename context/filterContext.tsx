@@ -112,7 +112,7 @@ interface Filters {
   viewBy?: string;
   companyCategoryIds?: string;
   companyLocationIds?: string;
-  companyProductIds?: string;
+  eventProductIds?: string;
   communitySize?: string;
   companyType?: string;
   establishedYear?: string;

@@ -55,7 +55,7 @@ const CarouselComponent = ({ companyData }: CarouselProp) => {
             isSlidingEnabled ? "-ml-1" : "-ml-6"
           } max-xl:grid max-xl:grid-cols-2 max-xl:grid-rows-subgrid max-xl:gap-y-6 max-xl:justify-items-centers`}
         >
-          {companyData.stats.upcomingEvents > 0 && (
+          {companyData.stats.totalEvents > 0 && (
             <CarouselItem className="pl-6 basis-3/12 carousel-item">
               <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
                 <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
@@ -76,19 +76,6 @@ const CarouselComponent = ({ companyData }: CarouselProp) => {
                 </h1>
                 <span className="text-base font-semibold flex items-center gap-2">
                   {companyData.stats.upcomingEvents}
-                </span>
-              </div>
-            </CarouselItem>
-          )}
-
-          {companyData.followers < 100 && (
-            <CarouselItem className="pl-6 basis-3/12 carousel-item">
-              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
-                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                  Followers
-                </h1>
-                <span className="text-base font-semibold flex items-center gap-2">
-                  {companyData.followers}
                 </span>
               </div>
             </CarouselItem>
@@ -128,6 +115,19 @@ const CarouselComponent = ({ companyData }: CarouselProp) => {
                 </h1>
                 <span className="text-base font-semibold flex items-center gap-2">
                   {companyData.visitor}
+                </span>
+              </div>
+            </CarouselItem>
+          )}
+
+          {companyData.followers < 100 && (
+            <CarouselItem className="pl-6 basis-3/12 carousel-item">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
+                  Followers
+                </h1>
+                <span className="text-base font-semibold flex items-center gap-2">
+                  {companyData.followers}
                 </span>
               </div>
             </CarouselItem>
