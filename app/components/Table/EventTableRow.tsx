@@ -77,49 +77,47 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
-      <TableCell
-        className={`${styles.table_actionColumn}`}
-        style={{
-          left: "0",
-          textAlign: "left",
-          boxShadow: "10px 0 15px -5px rgba(0, 0, 0, 0.3)",
-        }}
-      >
-        <div className={styles.event_badge_container}>
+      <TableCell className="sticky left-0 bg-slate-50 dark:bg-slate-900 z-10 max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-slate-100 dark:group-hover:bg-slate-800">
+        <div className="flex gap-1 mb-1">
           {event.advance?.isBranded && (
-            <span className={`${styles.branded_tag} badge_success`}>Brand</span>
+            <span className="px-2 py-0.5 rounded text-xs bg-success-background text-success-text font-medium">
+              Brand
+            </span>
           )}
           {event.advance?.isSeries && (
-            <span className={`${styles.branded_tag} badge_info`}>Series</span>
+            <span className="px-2 py-0.5 rounded text-xs bg-info-background text-info-text font-medium">
+              Series
+            </span>
           )}
         </div>
-        <div className={styles.truncateText_1}>
-          <Link href={`/internal/event/${event.basic.id}`} target="_blank">
+        <div className="truncate font-medium">
+          <Link 
+            href={`/internal/event/${event.basic.id}`} 
+            target="_blank"
+            className="hover:text-primary transition-colors"
+          >
             {event.basic.name}
           </Link>
         </div>
-        <div className={styles.event_organizer}>
+        <div className="text-sm text-muted-foreground">
           {event.basic.organizer?.name}
         </div>
       </TableCell>
 
       {/* Date Column */}
       <TableCell>
-        {event.basic.status === "CANCELLED" ||
-        event.basic.status === "POSTPONED" ? (
-          <del data-toggle="tooltip" title={event.basic.status}>
+        {event.basic.status === "CANCELLED" || event.basic.status === "POSTPONED" ? (
+          <del className="text-muted-foreground" title={event.basic.status}>
             {formatDate(event.basic.startDateTime)}
             <br />
-            {formatDate(event.basic.startDateTime) !==
-              formatDate(event.basic.endDateTime) &&
+            {formatDate(event.basic.startDateTime) !== formatDate(event.basic.endDateTime) &&
               formatDate(event.basic.endDateTime)}
           </del>
         ) : (
-          <span style={{ whiteSpace: "nowrap" }}>
+          <span className="whitespace-nowrap">
             {formatDate(event.basic.startDateTime)}
             <br />
-            {formatDate(event.basic.startDateTime) !==
-              formatDate(event.basic.endDateTime) &&
+            {formatDate(event.basic.startDateTime) !== formatDate(event.basic.endDateTime) &&
               formatDate(event.basic.endDateTime)}
           </span>
         )}
@@ -128,10 +126,14 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       {/* Venue Column */}
       <TableCell>
         {event.basic.format === "HYBRID" && (
-          <div className={styles.hybridTag}>Hybrid</div>
+          <div className="inline-block px-2 py-0.5 rounded text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 mb-1">
+            Hybrid
+          </div>
         )}
-        {event.basic.eventLocation.venue?.displayName ||
-          (event.basic.format === "ONLINE" ? "Online" : "TBA")}
+        <div>
+          {event.basic.eventLocation.venue?.displayName ||
+            (event.basic.format === "ONLINE" ? "Online" : "TBA")}
+        </div>
       </TableCell>
 
       {/* City Column */}
@@ -170,14 +172,15 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       <TableCell>
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger>
-              {event.basic.categories[0]?.name}
-              {event.basic.categories.length > 1 && (
-                <span className="text-xs font-bold">
-                  {" "}
-                  +{event.basic.categories.length - 1}
-                </span>
-              )}
+            <TooltipTrigger className="text-left">
+              <span className="flex items-center gap-1">
+                {event.basic.categories[0]?.name}
+                {event.basic.categories.length > 1 && (
+                  <span className="text-xs font-bold text-muted-foreground">
+                    +{event.basic.categories.length - 1}
+                  </span>
+                )}
+              </span>
             </TooltipTrigger>
             <TooltipContent>
               {event.basic.categories.map((item) => item.name).join(" | ")}
@@ -216,13 +219,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
           (event.insights?.repeatSentiment > 1 ||
             event.insights?.repeatSentiment < -1) ? (
             event.insights?.repeatSentiment > 0 ? (
-              <div className={styles.text_green}>
-                {event.insights?.repeatSentiment}%{" "}
+              <div className="text-success-text flex items-center gap-1">
+                {event.insights?.repeatSentiment}%
                 <ArrowUp className="w-4 h-4" />
               </div>
             ) : (
-              <div className={styles.text_red}>
-                {event.insights?.repeatSentiment}%{" "}
+              <div className="text-danger-text flex items-center gap-1">
+                {event.insights?.repeatSentiment}%
                 <ArrowDown className="w-4 h-4" />
               </div>
             )
@@ -368,7 +371,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
                   ([key, { iso, name, count, percentage }]) => (
                     <span
                       key={key}
-                      className={styles.country_badge}
+                      className="inline-block rounded overflow-hidden"
                       title={name}
                     >
                       <Image
@@ -376,6 +379,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
                         alt="flag"
                         width={25}
                         height={18}
+                        className="object-cover"
                       />
                     </span>
                   )
@@ -385,9 +389,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
         </TableCell>
       )}
 
-      <TableCell
-        className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}
-      >
+      <TableCell className="sticky right-0 bg-background z-10">
         <ActionPopover
           interests={event.interests}
           onSubmit={handleActionSubmit}

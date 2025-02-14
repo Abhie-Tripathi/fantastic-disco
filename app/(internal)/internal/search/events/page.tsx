@@ -57,6 +57,7 @@ import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import SortDropdown from "@/components/search/sortDropdown";
+import EventCount from "@/components/search/eventCount";
 
 const Map = lazy(() => import("@/components/map"));
 
@@ -209,6 +210,20 @@ const Search = () => {
     setView(searchParams.get("view") || "");
   }, [searchParams]);
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+      console.log('Scrolled:', window.scrollY > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  console.log(isScrolled);
+
   return (
     <div className="p-6">
       {steps.length > 0 && (
@@ -308,12 +323,8 @@ const Search = () => {
         onValueChange={onTabsChange}
         className="mt-0"
       >
-        <div className="flex justify-between items-center py-6 sticky top-0 bg-background z-20 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)]">
-          {/* <div className="flex items-center gap-2">
-            <Badge className="bg-primary text-white">{count}</Badge>
-            <p className="text-primary font-semibold">Events Found</p>
-          </div> */}
-          <div className="w-[108px]"></div>
+        <div className={`flex justify-between items-center sticky top-0 bg-background z-20 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 ${isScrolled ? 'py-2' : 'py-6'}`}>
+          <EventCount />
           <div className="flex justify-center">
             <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
               <TabsTrigger
@@ -346,14 +357,16 @@ const Search = () => {
               </TabsTrigger>
             </TabsList>
           </div>
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-2">
             <Button
+              variant="outline"
+              className="flex items-center gap-2"
               disabled
-              variant="link"
-              className="text-primary hover:text-primary/90 hover:bg-purple-50"
             >
-              Export
-              <ArrowUpRight className="ml-2 h-4 w-4" />
+              <span className="flex items-center gap-1">
+                <ArrowUpRight className="h-4 w-4" />
+                Export
+              </span>
             </Button>
             <SortDropdown />
           </div>
@@ -389,7 +402,7 @@ const Search = () => {
           ) : error ? (
             <ZeroState text={(error as ApiError).message} />
           ) : ( */}
-            <Map searchParams={searchParams.toString()} />
+          <Map searchParams={searchParams.toString()} />
           {/* )} */}
         </TabsContent>
         <TabsContent value="calendar">

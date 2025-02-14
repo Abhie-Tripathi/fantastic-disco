@@ -53,20 +53,18 @@ const EventTable = () => {
   }
 
   return (
-    <div className={styles.table_container}>
-      <div
-        className={`${styles.table_wrapper} ${
-          theme === "light" ? styles.table_wrapper_light : ""
-        }`}
-      >
-        <Table className={styles.table}>
-          <EventTableHeader events={events} />
-          <TableBody className={styles.table_body}>
-            {events.map((event: Event) => (
-              <EventTableRow key={event.basic.id} event={event} />
-            ))}
-          </TableBody>
-        </Table>
+    <div className="w-full">
+      <div className="rounded-md border bg-background">
+        <div className="overflow-auto max-h-[calc(100vh-280px)]">
+          <Table>
+            <EventTableHeader events={events} />
+            <TableBody>
+              {events.map((event: Event) => (
+                <EventTableRow key={event.basic.id} event={event} />
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       {totalPages > 1 && (
