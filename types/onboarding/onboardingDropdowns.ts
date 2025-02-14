@@ -37,4 +37,9 @@ export interface SettingResearchData {
   position: number;
 }
 
+export interface SettingsInterestData {
+  data: SettingResearchData[];
+  source: string;
+}
+
 export interface SubIndustry extends Omit<Industry, "subIndustries"> {}

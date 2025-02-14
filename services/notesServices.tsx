@@ -21,19 +21,28 @@ export const useNotesServices =() =>{
       }
       const deleteNotes=(id:string)=>{
         return api.request(
-          `${endpoints.tracker.saveNotes}/${id}`,
+          `${endpoints.tracker.saveNotes}/${id}/upvote`,
           {
             method: "DELETE"
           }
         )
       }
       const likeNotes=(id: string, isLiked: boolean)=>{
+        if(!isLiked){
         return api.request(
-          `${endpoints.tracker.saveNotes}/${id}/interest`,
+          `${endpoints.tracker.saveNotes}/${id}/upvote`,
           {
-            method: "POST"
+            method: "POST",
           }
         )
+        }else{
+          return api.request(
+            `${endpoints.tracker.saveNotes}/${id}/upvote`,
+            {
+              method: "DELETE",
+            }
+          )
+        }
       }
       const getUsers=(params: string): Promise<{users: UserResponse[] }| undefined>=>{
         return api.request(

@@ -198,12 +198,12 @@ const formatCount = (count: number ) => {
       <Loading/>
       </div>
     } */}
-      {item?.tracker ? (
+      {item ? (
         <div className="flex flex-col w-full gap-2">
         <div className='card' style={{ width: "100%", height: "fit-content", padding:"16px" }}>
 
           <div className={styles.cardOne}>
-            <div className="font-semibold">{item?.tracker?.name}</div>
+            <div className="font-semibold">{item?.name}</div>
             {/* <div className={styles.heading}>one</div> */}
             {/* <Image src={GoTo} alt="goTo" /> */}
           </div>
@@ -229,7 +229,7 @@ const formatCount = (count: number ) => {
                 New
               </div> */}
                   <div>
-                    {formatCount(item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.new)}
+                    {formatCount(item?.groupedEventsCount?.new)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px" }}>
                     <Image src={Vectore6} alt="newVector" width={10} height={10}/>
@@ -242,7 +242,7 @@ const formatCount = (count: number ) => {
                 Active
               </div> */}
                   <div>
-                    {formatCount(item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.active)}
+                    {formatCount(item?.groupedEventsCount?.active)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px" }}>
                     <Image src={Vectore7} alt="lucide_timer" width={12} height={12}/>
@@ -252,7 +252,7 @@ const formatCount = (count: number ) => {
               <div className="flex gap-5">
                 <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
-                    {formatCount(item?.tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired)}
+                    {formatCount(item?.groupedEventsCount?.past)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                     <Image src={Vectore8} alt="expired" width={12} height={12} />
@@ -260,7 +260,7 @@ const formatCount = (count: number ) => {
                 </div>
                 <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
-                    {formatCount(item?.tracker?.savedEventTotalCount)}
+                    {formatCount(item?.savedEventTotalCount)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                   <Bookmark style={{color:"var(--primary-color)"}} width="12px" height="12px"/>

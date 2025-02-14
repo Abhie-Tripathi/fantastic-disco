@@ -1,22 +1,24 @@
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
 import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes } from '@/types/trackers';
-import { EventsAdapter } from "@/adapters/eventsAdapter";
+// import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
-import {CalendarWeekEventsResponse, EventCount, EventsResponse, MapEventsResponse} from "@/types/events";
+
+import {CalendarWeekEventsResponse, EventCount, MapEventsResponse} from "@/types/events";
 import { EventTableType } from '@/types/ListViewTable';
 import { useFilterState } from '@/hooks/useFilterState';
+import { usePathname } from 'next/navigation';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
 }
 type GetSavedEventsResponse =
+
   | { result: EventTableType[]; count: number }
   | { events: EventTableType[]; count: number }
   | { events: EventTableType[]; totalEvents: number }
   | CalendarWeekEventsResponse
   | MapEventsResponse
-  | EventsResponse;
 
 export const useTrackerServices = () => {
     const api = useApi();
@@ -122,23 +124,31 @@ export const useTrackerServices = () => {
         }
       )
     }
-    const getTrackerEvents = async(
-      trackerId:string, params:string, eventType:string,
-      abortSignal?: AbortSignal
+    const getTrackerEvents = async(query, trackerId
     ): Promise<GetSavedEventsResponse | undefined> => {
-      const response=await api.request<{ result: EventTableType[]; count: number }>(
-        `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&type=${eventType}` : ''}`,
-        {
-          method: "GET",
-          signal: abortSignal,
-        }
-      );
+      // console.log(pathname);
+      let active="active";
+      if(query.eventType==="newEvent") active="new";
+      else if(query.eventType==="expiredEvent") active="past";
+      else if(query.eventType==="activeEvent") active="active";
+      console.log(query);
+      
+      // const response=await api.request<{ result: EventTableType[]; count: number }>(
+      //   `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&type=${eventType}` : ''}`,
+      //   {
+      //     method: "GET",
+      //     signal: abortSignal,
+      //   }
+      // );
+      const response = await api.request(`https://api.dev.gtm.whr.ai/trackers/${trackerId}/events?limit=${query.take||"20"}&offset=${query.limit||"0"}&type=${active}`)
       // return response;
-      if(getFilterValue("view")==="table"){
-        return response;
-      }
-      const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
-      return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
+      console.log(response);
+      return response;
+      // if(getFilterValue("view")==="table"){
+      //   return response;
+      // }
+      // const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
+      // return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
     };
     const getTrackerMapEvents = async(
       trackerId:string, params:string, eventType:string,

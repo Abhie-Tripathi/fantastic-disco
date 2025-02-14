@@ -18,6 +18,7 @@ import {
 } from "@/public/data/searchFilters";
 import { useToast } from "@/components/ui/use-toast";
 import { RecentSearchItem } from "@/types/events/recentSearches";
+import { useConfigurationService } from "@/services/configurationService";
 interface EventFilterData {
   eventFormat?: { enabledValue?: string[] };
   eventStatus?: { enabledValue?: string[] };
@@ -160,6 +161,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
+  const { getFilterConfiguration } = useConfigurationService();
   const [morphedData, setMorphedData] = useState(searchFilters);
   const { searchParams } = useFilterState();
   const [localFilters, setLocalFilters] = useState<Filters>({});
@@ -185,11 +187,11 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const getEnabledFilters = async () => {
       try {
-        const data = await eventService.fetchEnabledFilters("research");
-        console.log(data);
-        
+        const data = await getFilterConfiguration();
         setEnabledFilters(data || {});
       } catch (e) {
+
+
         console.error("Error fetching filters:", e);
         setEnabledFilters({});
       }

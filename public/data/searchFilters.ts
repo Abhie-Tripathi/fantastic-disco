@@ -439,13 +439,13 @@ export const searchFilters = {
 // };
 
 export const generateSearchFilters=(apiResponse: any)=> {
-    const  data  = apiResponse.filter.data;
-    console.log(apiResponse.filter.data);
-    
+    // const  data  = apiResponse.filter.data;
+    // console.log(apiResponse.filter.data);
+    const  data  = apiResponse;
     return {
       eventTypes: {
         isEnabled: data.eventType?.enabledValue?.length > 0 ?? true,
-        // options:searchFilters?.eventTypes?.options
+        // options:searchFiltersg?.eventTypes?.options
         options: Object.fromEntries(
             Object.entries(searchFilters?.eventTypes?.options ?? {}).map(([key, group]) => {
               const updatedGroup = group.map((format) => ({

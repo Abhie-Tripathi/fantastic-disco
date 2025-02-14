@@ -4,4 +4,6 @@ export interface EventCount {
   name: string;
   latitude: string;
   longitude: string;
+  countryName: string;
+  countryAlias: string;
 }

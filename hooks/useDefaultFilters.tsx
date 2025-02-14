@@ -10,10 +10,11 @@ import { useEventsService } from "@/services/eventsService";
 import { RecentSearchItem } from "@/types/events/recentSearches";
 import { useFilterContext } from "@/context/filterContext";
 import { newCategories } from "@/data/categories";
-import { log } from "console";
+import { useConfigurationService } from "@/services/configurationService";
 
 export function useDefaultFilters() {
   const { user } = useAuthContext();
+  const { getFilterConfiguration } = useConfigurationService();
   const { getFilterValue, searchParams } = useFilterState();
   const { setMultipleLocalFilters } = useFilterContext();
   const pathName = usePathname();
@@ -95,7 +96,7 @@ export function useDefaultFilters() {
       recentSearch.eventEntry
         ?.split(",")
         .map((item: string) => item.toLowerCase())
-        ?.join(",") ?? "",  
+        ?.join(",") ?? "",
     ratings: recentSearch.eventRating ?? undefined,
     maturity: recentSearch.maturity ?? undefined,
     onlyBranded: recentSearch.eventBrand ? "true" : undefined,
@@ -109,11 +110,16 @@ export function useDefaultFilters() {
     impact_score_lte: recentSearch.eventImpactScore?.split("-")[1] ?? undefined,
     inbound_score_gte: recentSearch.inboundScore?.split("-")[0] ?? undefined,
     inbound_score_lte: recentSearch.inboundScore?.split("-")[1] ?? undefined,
-    international_score_gte: recentSearch.internationalScore?.split("-")[0] ?? undefined,
-    international_score_lte: recentSearch.internationalScore?.split("-")[1] ?? undefined,
+    international_score_gte:
+      recentSearch.internationalScore?.split("-")[0] ?? undefined,
+    international_score_lte:
+      recentSearch.internationalScore?.split("-")[1] ?? undefined,
     audienceSpread: recentSearch.audienceSpread ?? undefined,
     designations: recentSearch.designation ?? undefined,
-    top: recentSearch.eventRanking?.split(",").map((item)=> item.split("-")[1])[0] ?? undefined,
+    top:
+      recentSearch.eventRanking
+        ?.split(",")
+        .map((item) => item.split("-")[1])[0] ?? undefined,
     show: generateRecentSearchShowParam(recentSearch?.shows?.split(",") ?? []),
   });
 
@@ -150,28 +156,25 @@ export function useDefaultFilters() {
   const setInitialFilters = async () => {
     // Skip if we're in the editTracker path
     if (pathName.split("/").includes("editTracker")) {
-      
-      
       return;
     }
 
     const currentParams = Object.fromEntries(searchParams.entries());
-    const hasOnlyViewParam = 
+    const hasOnlyViewParam =
       Object.keys(currentParams).length === 1 && "view" in currentParams;
-    const isEmptySearch = Object.keys(currentParams).length === 0 || hasOnlyViewParam;
+    const isEmptySearch =
+      Object.keys(currentParams).length === 0 || hasOnlyViewParam;
 
     // Only proceed if we have empty params or just view param
-   
 
     try {
       // Try to use enabled filters first
-      const enabledFilters = await eventService.fetchEnabledFilters("research");
-      console.log(enabledFilters.filter.data);
-      
-      if (enabledFilters.filter.data) {
+      const enabledFilters = await getFilterConfiguration();
+      if (enabledFilters) {
         const params = new URLSearchParams(searchParams.toString());
-        const enabledFilterParams = mapEnabledFiltersToParams(enabledFilters.filter.data);
-        Object.entries(enabledFilters.filter.data).forEach(([key, value]) => {
+        const enabledFilterParams = mapEnabledFiltersToParams(enabledFilters);
+
+        Object.entries(enabledFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, value);
         });
 

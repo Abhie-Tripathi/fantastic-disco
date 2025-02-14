@@ -15,7 +15,7 @@ const Trackers = React.lazy(
 import { TrackersAdapter } from "@/adapters/trackerAdapter";
 import { useQuery } from "@tanstack/react-query";
 import List from "@/components/search/list";
-import Table from "@/app/components/Table";
+import Table from "@/app/components/Table/EventTable";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl} from "@/context";
@@ -75,6 +75,7 @@ const Page = ({ params }: { params: any }) => {
   const [trackerDetail, setTrackerDetail] = useState<any>([]);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const query = Object.fromEntries(searchParams.entries());
   const token = searchParams.get("token");
   const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
@@ -213,17 +214,7 @@ const Page = ({ params }: { params: any }) => {
         }
       else if (viewType === "list") {
         const trackerEventsResponse = await getTrackerEvents(
-          trackerId,
-          `offset=${skip}&limit=${take}`,
-          active === "Active Events"
-            ? "active"
-            : active === "Expired Events"
-            ? "expired"
-            : active === "New Events"
-            ? ""
-            : active === "Saved Events"
-            ? "saved"
-            : "active"
+          query, trackerId
         ) ;
         return trackerEventsResponse  as EventsResponse | undefined;
       }
@@ -422,6 +413,11 @@ const countryIds = trackerDetail?.filterValue?.locationIds?.country?.length > 0
 const stateIds = trackerDetail?.filterValue?.locationIds?.state?.length > 0 
   ? trackerDetail.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0]) 
   : [];
+  if(data?.locationIds){
+    const ids = Object?.keys(data?.locationIds);
+    console.log(ids);
+    
+  }
   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
 const activeVal =
  active ===
@@ -465,7 +461,7 @@ const activeVal =
                 <div className={styles.circle} style={{background: active==="Active Events"?"white":"", color: active==="Active Events"?"var(--primary-color)":""}}>
                   {loading ? (
                     formatCount(
-                      data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
+                      data?.groupedEventsCount?.active
                     )
                   ) : (
                     <div className={styles.loader}></div>
@@ -489,7 +485,7 @@ const activeVal =
                 <div className={styles.circle}>
                   {loading ? (
                     formatCount(
-                      data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.new
+                      data?.groupedEventsCount?.new
                     )
                   ) : (
                     <div className={styles.loader}></div>
@@ -518,7 +514,7 @@ const activeVal =
                 <div className={styles.circle}>
                   {loading ? (
                     formatCount(
-                      data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
+                      data?.groupedEventsCount?.past
                     )
                   ) : (
                     <div className={styles.loader}></div>
@@ -598,14 +594,15 @@ const activeVal =
         {(view === "table") && (
           <div className="flex-grow overflow-hidden">
             <Suspense fallback={<Loading />}>
-          <Table
+          {/* <Table
             savedEventCount={savedEventCount}
             setSavedEventCount={setSavedEventCount}
             showInsights={showInsights}
             eventType={active}
             setActiveValue={setActiveValue}
             source="trackers"
-          />
+          /> */}
+          <Table source="tracker" trackerId={trackerId}/>
           </Suspense>
           </div>
         )}

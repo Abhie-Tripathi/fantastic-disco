@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Event } from "@/types/events";
+import { Event, Ranking } from "@/types/events/events";
 import { differenceInDays, format } from "date-fns";
 import {
   Pagination,
@@ -35,13 +35,6 @@ import { ToastAction } from "../ui/toast";
 import { cn, lightenColor } from "@/lib/utils";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import { isEventeli } from "@/config";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { formatDateRange } from "@/utils/dateFormat";
 import { PaginationComponent } from "../pagination";
 import {
@@ -52,7 +45,7 @@ import {
 } from "../ui/tooltip";
 
 interface CircularProgressProps {
-  value: number;
+  value: number | null;
   label: string;
 }
 
@@ -73,13 +66,14 @@ interface rankTag {
 }
 
 const CircularProgress: React.FC<CircularProgressProps> = ({
-  value,
+  value = 0,
   label,
 }) => {
   const radius = 22;
   const circumference = 2 * Math.PI * radius;
 
-  const getColorByValue = (value: number): string => {
+  const getColorByValue = (value: number | null): string => {
+    if (value == null) return "text-[#398e4a]";
     if (value <= 25) return "text-[#398e4a]";
     if (value <= 50) return "text-[#FFD70A]";
     if (value <= 75) return "text-[#FF990A]";
@@ -105,7 +99,9 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
             className={className}
             strokeWidth="4"
             strokeDasharray={circumference}
-            strokeDashoffset={circumference - (value / 100) * circumference}
+            strokeDashoffset={
+              circumference - (value ? (value / 100) * circumference : 0)
+            }
             strokeLinecap="round"
             stroke="currentColor"
             fill="transparent"
@@ -166,7 +162,7 @@ export default function EventAccordion({
         <ul className="w-full space-y-6 list-none">
           {events?.map((event) => (
             <EventListItem
-              key={event.id}
+              key={event.basic.id}
               event={event}
               handleToggle={handleToggle}
             />
@@ -198,39 +194,38 @@ const EventListItem = ({
 }) => {
   const { saveEvent } = useEventsService();
   const { toast } = useToast();
-  const [isSaved, setIsSaved] = useState(event.isSaved);
-  function getLeastRank(response: RankingResponse) {
+  const [isSaved, setIsSaved] = useState(Boolean(event.insights?.rankings));
+  function getLeastRank(response: Ranking) {
     let minRank = {
       rank: Infinity,
+
       name: "",
+
       type: "",
     };
 
-    if (response?.globalRank !== null && response?.globalRank !== undefined) {
-      minRank.rank = response.globalRank;
+    if (response?.global !== null && response?.global !== undefined) {
+      minRank.rank = response.global;
       minRank.name = "";
       minRank.type = "Global";
-    } else if (
-      response?.countryRank !== null &&
-      response?.countryRank !== undefined
-    ) {
-      minRank.rank = response.countryRank as number;
+    } else if (response?.country !== null && response?.country !== undefined) {
+      minRank.rank = response.country.rank;
       minRank.name = "";
       minRank.type = "Country";
-    } else if (response?.categoryRank) {
-      const c_ranks = response.categoryRank;
+    } else if (response?.categories) {
+      const c_ranks = response.categories;
       for (const category in c_ranks) {
-        if (c_ranks[category] < minRank.rank) {
-          minRank.rank = c_ranks[category];
+        if (c_ranks[category].rank < minRank.rank) {
+          minRank.rank = c_ranks[category].rank;
           minRank.name = category;
           minRank.type = "Category";
         }
       }
-    } else if (response?.countryCategoryRank) {
-      const c_ranks = response.countryCategoryRank;
+    } else if (response?.category_country) {
+      const c_ranks = response.category_country;
       for (const category in c_ranks) {
-        if (c_ranks[category] < minRank.rank) {
-          minRank.rank = c_ranks[category];
+        if (c_ranks[category].rank < minRank.rank) {
+          minRank.rank = c_ranks[category].rank;
           minRank.name = category;
           minRank.type = "Country Category";
         }
@@ -260,40 +255,42 @@ const EventListItem = ({
       </>
     );
   }
-  const address = event.venueLocation ? (
-    event.venueLocation.city?.name === "Online" || event.format === "online" ? (
+  const address = event.basic.eventLocation ? (
+    event.basic.eventLocation.venue?.name === "Online" ||
+    event.basic.format === "online" ? (
       <span className="flex items-center">
         <Radio className="w-4 h-4 mr-1" /> Online
       </span>
-    ) : event.format === "hybrid" ? (
+    ) : event.basic.format === "hybrid" ? (
       <span className="flex items-center">
         <Radio className="w-4 h-4 mr-1" />
         <span>Hybrid&nbsp;-&nbsp;</span>
         {[
-          event.venueLocation?.venue?.name,
-          event.venueLocation?.city?.name,
-          event.venueLocation?.state?.name,
-          event.venueLocation?.country?.name,
+          event.basic.eventLocation.venue?.name || "TBA",
+          event.basic.eventLocation.city?.name,
+          event.basic.eventLocation.state?.name,
+          event.basic.eventLocation.country?.name,
         ]
           .filter(Boolean)
           .join(", ")}
       </span>
     ) : (
       [
-        event.venueLocation?.venue?.name,
-        event.venueLocation?.city?.name,
-        event.venueLocation?.state?.name,
-        event.venueLocation?.country?.name,
+        event.basic.eventLocation.venue?.name,
+        event.basic.eventLocation.city?.name,
+        event.basic.eventLocation.state?.name,
+        event.basic.eventLocation.country?.name,
       ]
         .filter(Boolean)
+
         .join(", ")
     )
   ) : (
     "Venue to be announced"
   );
 
-  const isCancelled = event.status === "cancelled";
-  const isPostponed = event.status === "postponed";
+  const isCancelled = event.basic.status === "cancelled";
+  const isPostponed = event.basic.status === "postponed";
 
   const handleSaveEvent = async (eventId: string) => {
     try {
@@ -330,12 +327,12 @@ const EventListItem = ({
 
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
-      <Link href={`/internal/event/${event.id}`} className="block">
+      <Link href={`/internal/event/${event.basic.id}`} className="block">
         <div className="absolute w-[6px] h-full left-0 top-0 rounded-lg bg-[#5055A3]"></div>
         <div className="p-6">
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-7 flex flex-col justify-between gap-3">
-              <h2 className="text-2xl font-semibold ">{event.name}</h2>
+              <h2 className="text-2xl font-semibold ">{event.basic.name}</h2>
               <div>
                 <p className="text-sm capitalize">{address}</p>
                 <div className="flex items-center gap-2">
@@ -345,7 +342,10 @@ const EventListItem = ({
                       isCancelled || isPostponed ? "line-through" : ""
                     )}
                   >
-                    {formatDateRange(event.startDateTime, event.endDateTime)}
+                    {formatDateRange(
+                      event.basic.startDateTime,
+                      event.basic.endDateTime
+                    )}
                   </p>
                   {isCancelled && (
                     <Badge
@@ -367,10 +367,14 @@ const EventListItem = ({
               </div>
               <div>
                 <div className="flex flex-wrap gap-2">
-                  {event.primaryEventType && (
+                  {event.basic.primaryEventType && (
                     <div className="flex items-center gap-2">
                       <span>
-                        {eventTypeIcons[event.primaryEventType || "festivals"]}
+                        {
+                          eventTypeIcons[
+                            event.basic.primaryEventType || "festivals"
+                          ]
+                        }
                       </span>
                       <TooltipProvider>
                         <Tooltip delayDuration={0}>
@@ -382,14 +386,18 @@ const EventListItem = ({
                               }
                               style={{
                                 color:
-                                  eventTypeColors[event.primaryEventType || ""],
+                                  eventTypeColors[
+                                    event.basic.primaryEventType || ""
+                                  ],
                                 backgroundColor: lightenColor(
-                                  eventTypeColors[event.primaryEventType || ""],
+                                  eventTypeColors[
+                                    event.basic.primaryEventType || ""
+                                  ],
                                   0.9
                                 ),
                               }}
                             >
-                              <span>{event.primaryEventType}</span>
+                              <span>{event.basic.primaryEventType}</span>
                             </Badge>
                           </TooltipTrigger>
                           <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -399,7 +407,7 @@ const EventListItem = ({
                       </TooltipProvider>
                     </div>
                   )}
-                  {event.categories?.slice(0, 1).map((tag, index) => (
+                  {event.basic.categories?.slice(0, 1).map((tag, index) => (
                     <TooltipProvider key={index}>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -416,7 +424,7 @@ const EventListItem = ({
                       </Tooltip>
                     </TooltipProvider>
                   ))}
-                  {event.rating && event.rating > 0 ? (
+                  {event.basic.rating && event.basic.rating > 0 ? (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -425,7 +433,7 @@ const EventListItem = ({
                             className="text-gray-600 capitalize rounded-sm"
                           >
                             <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
-                            <span>{event.rating}</span>
+                            <span>{event.basic.rating}</span>
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -436,7 +444,7 @@ const EventListItem = ({
                   ) : (
                     ""
                   )}
-                  {event.entryType == "free_and_paid" ? (
+                  {event.basic.entryType == "free_and_paid" ? (
                     <div className="flex items-center gap-2">
                       <TooltipProvider>
                         <Tooltip delayDuration={0}>
@@ -472,7 +480,7 @@ const EventListItem = ({
                         </Tooltip>
                       </TooltipProvider>
                     </div>
-                  ) : event.entryType == "paid" ? (
+                  ) : event.basic.entryType == "paid" ? (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -495,7 +503,7 @@ const EventListItem = ({
                 </div>
 
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {event.maturity && (
+                  {event.advance?.maturity && (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -503,7 +511,7 @@ const EventListItem = ({
                             variant="outline"
                             className="text-gray-600 capitalize rounded-sm"
                           >
-                            {event.maturity}
+                            {event.advance?.maturity}
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -512,7 +520,7 @@ const EventListItem = ({
                       </Tooltip>
                     </TooltipProvider>
                   )}
-                  {event.frequency && (
+                  {event.advance?.frequency && (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -520,7 +528,7 @@ const EventListItem = ({
                             variant="outline"
                             className="text-gray-600 capitalize rounded-sm"
                           >
-                            {event.frequency}
+                            {event.advance?.frequency}
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -529,7 +537,7 @@ const EventListItem = ({
                       </Tooltip>
                     </TooltipProvider>
                   )}
-                  {event.isBranded && (
+                  {event.advance?.isBranded && (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -546,7 +554,7 @@ const EventListItem = ({
                       </Tooltip>
                     </TooltipProvider>
                   )}
-                  {event.isSeries && (
+                  {event.advance?.isSeries && (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -563,7 +571,7 @@ const EventListItem = ({
                       </Tooltip>
                     </TooltipProvider>
                   )}
-                  {event.rehostDate && (
+                  {event.advance?.rehostDate && (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -572,7 +580,7 @@ const EventListItem = ({
                             className="text-gray-600 capitalize rounded-sm"
                           >
                             Forecasted for{" "}
-                            {format(event.rehostDate, "MMM yyyy")}
+                            {format(event.advance?.rehostDate, "MMM yyyy")}
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -581,7 +589,7 @@ const EventListItem = ({
                       </Tooltip>
                     </TooltipProvider>
                   )}
-                  {event.rankings && (
+                  {event.insights?.rankings && (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -589,7 +597,7 @@ const EventListItem = ({
                             variant="outline"
                             className="text-gray-600 capitalize rounded-sm"
                           >
-                            {getLeastRank(event.rankings)}
+                            {getLeastRank(event.insights?.rankings)}
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -599,7 +607,7 @@ const EventListItem = ({
                     </TooltipProvider>
                   )}
 
-                  {event.audienceZone && (
+                  {event.audience?.audienceZone && (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -607,7 +615,7 @@ const EventListItem = ({
                             variant="outline"
                             className="text-gray-600 capitalize"
                           >
-                            {event.audienceZone} Audience
+                            {event.audience.audienceZone} Audience
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -625,10 +633,10 @@ const EventListItem = ({
                 <div className="flex items-center justify-end">
                   <Button
                     variant="ghost"
-                    disabled={isSaved}
+                    disabled={Boolean(event.interests?.bookmark?.interestId)}
                     onClick={(e) => {
                       e.preventDefault();
-                      handleSaveEvent(event.id);
+                      handleSaveEvent(event.basic.id);
                     }}
                   >
                     {isSaved ? (
@@ -640,54 +648,58 @@ const EventListItem = ({
                 </div>
               )}
               <div className="flex items-center justify-end">
-                {event.scores ? (
+                {event.insights?.scores ? (
                   <div className="flex items-center justify-between w-full">
                     <div className="flex flex-col justify-end gap-4">
-                      {event.exhibitorsCount && (
+                      {event.insights?.exhibitorsCount && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
                             Estimated Exhibitors
                           </p>
                           <p className="text-lg font-semibold text-primary">
-                            {(event.exhibitorsCount || "0").toLocaleString()}
+                            {(
+                              event.insights?.exhibitorsCount || "0"
+                            ).toLocaleString()}
                           </p>
                         </div>
                       )}
-                      {event.estimatedAttendance && (
+                      {event.insights?.estimatedAttendance && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
                             Estimated Visitors
                           </p>
                           <p className="text-lg font-semibold text-primary">
-                            {event.estimatedAttendance || "--"}
+                            {event.insights?.estimatedAttendance || "--"}
                           </p>
                         </div>
                       )}
-                      {event.economicImpact && (
+                      {event.insights?.economicImpact && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
                             Economic Impact
                           </p>
                           <p className="text-lg font-semibold text-primary">
-                            {formatEstimatedSpend(event.economicImpact || "$0")}
+                            {formatEstimatedSpend(
+                              event.insights?.economicImpact || "$0"
+                            )}
                           </p>
                         </div>
                       )}
                     </div>
 
                     <div className="space-y-4">
-                      {event.scores && (
+                      {event.insights?.scores && (
                         <div className="grid grid-cols-3 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] dark:bg-[#171717] p-2 rounded">
                           <CircularProgress
-                            value={event.scores.impactScore}
+                            value={event.insights?.scores.impactScore}
                             label="EIS"
                           />
                           <CircularProgress
-                            value={event.scores.inboundScore}
+                            value={event.insights?.scores.inboundScore}
                             label="Inbound"
                           />
                           <CircularProgress
-                            value={event.scores.internationalScore}
+                            value={event.insights?.scores.internationalScore}
                             label="International"
                           />
                         </div>
@@ -696,33 +708,37 @@ const EventListItem = ({
                   </div>
                 ) : (
                   <div className="grid grid-row-2 items-end gap-4">
-                    {event.exhibitorsCount && (
+                    {event.insights?.exhibitorsCount && (
                       <div>
                         <p className="text-xs text-gray-600 font-medium">
                           Estimated Exhibitors
                         </p>
                         <p className="text-lg font-semibold text-primary">
-                          {(event.exhibitorsCount || "0").toLocaleString()}
+                          {(
+                            event.insights?.exhibitorsCount || "0"
+                          ).toLocaleString()}
                         </p>
                       </div>
                     )}
-                    {event.estimatedAttendance && (
+                    {event.insights?.estimatedAttendance && (
                       <div>
                         <p className="text-xs text-gray-600 font-medium">
                           Estimated Visitors
                         </p>
                         <p className="text-lg font-semibold text-primary">
-                          {event.estimatedAttendance || "--"}
+                          {event.insights?.estimatedAttendance || "--"}
                         </p>
                       </div>
                     )}
-                    {event.economicImpact && (
+                    {event.insights?.economicImpact && (
                       <div>
                         <p className="text-xs text-gray-600 font-medium">
                           Economic Impact
                         </p>
                         <p className="text-lg font-semibold text-primary">
-                          {formatEstimatedSpend(event.economicImpact || "$0")}
+                          {formatEstimatedSpend(
+                            event.insights?.economicImpact || "$0"
+                          )}
                         </p>
                       </div>
                     )}

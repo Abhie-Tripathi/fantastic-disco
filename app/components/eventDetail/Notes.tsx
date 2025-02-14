@@ -509,11 +509,11 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
     const updatedComments = notes.map((c: any) => {
       if (c.id === id) {
         return {
-          ...c, _count: {
-            ...c._count,
-            Commentlikes: c._count?.Commentlikes + (!isLiked ? 1 : -1),
-          }, userLiked: !isLiked
+          ...c,
+          totalLikes: (c.totalLikes || 0) + (!isLiked ? 1 : -1),
+          userUpvoted: !isLiked,
         };
+        
       }
       return c;
     });
@@ -1238,16 +1238,16 @@ console.log(comment.parentComment);
             {/* <ButtonView view={"upvoteBtn"} /> */}
             <div
               className={`${styles.likeSection} flex cursor-pointer gap-1 py-1 px-2 border-[0px] rounded-[20px] ml-[-10px]`}
-              onClick={() => handleLiked(comment.id, comment?.userLiked)}
+              onClick={() => handleLiked(comment.id, comment?.userUpvoted)}
             >
               <div className={styles.like}>
-                {comment?.userLiked ? (
+                {comment?.userUpvoted ? (
                   <Image src={LikeFill} alt="like" />
                 ) : (
                   <Image src={Like} alt="like" />
                 )}
               </div>
-              <div>{comment._count && comment?._count.Commentlikes}</div>
+              <div>{comment && comment?.totalLikes}</div>
             </div>
             <button
               onClick={() => handleReply(comment.id)}
