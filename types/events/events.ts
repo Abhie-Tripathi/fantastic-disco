@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 3e7d848119a404ad8874f360ded589e1f0107114
 import { z } from "zod";
 
 const LocationSchema = z.object({
@@ -209,6 +212,7 @@ const EventDataSchema = z.object({
   audience: AudienceSchema.optional(),
   interests: InterestSchema.optional(),
 });
+<<<<<<< HEAD
 =======
 import { Category } from "./category";
 
@@ -499,6 +503,8 @@ export interface OrganizerLocation {
   country: Country;
 }
 >>>>>>> c7210c8d73ebe86b682ef8e323d153293bdf8608
+=======
+>>>>>>> 3e7d848119a404ad8874f360ded589e1f0107114
 
 export interface EventResponse {
   count: number;
@@ -506,6 +512,9 @@ export interface EventResponse {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 3e7d848119a404ad8874f360ded589e1f0107114
 export type Location = z.infer<typeof LocationSchema>;
 export type State = z.infer<typeof StateSchema>;
 export type City = z.infer<typeof CitySchema>;
@@ -514,6 +523,7 @@ export type Venue = z.infer<typeof VenueSchema>;
 export type Event = z.infer<typeof EventDataSchema>;
 export type Ranking = z.infer<typeof RankingSchema>;
 export type Interest = z.infer<typeof InterestSchema>;
+<<<<<<< HEAD
 =======
 export interface GTMEventPOCDetails {
   id: number;
@@ -639,3 +649,5 @@ export interface countryCategoryRank extends rankingEvent {
 
 export type TTabs = "overview" | "insights" | "audience";
 >>>>>>> c7210c8d73ebe86b682ef8e323d153293bdf8608
+=======
+>>>>>>> 3e7d848119a404ad8874f360ded589e1f0107114

@@ -112,8 +112,6 @@ export const endpoints = {
   },
   calendar: {
     getyearlyEvents: `${BASE_URL}/event?`,
-  calendar: {
-    getyearlyEvents: `${BASE_URL}/event?`,
   },
   configuration: {
     filterConfiguration: `${BASE_URL}/me/account/configuration/filter`,
@@ -122,4 +120,4 @@ export const endpoints = {
   },
   myprofile: `${BASE_URL}/auth/customer/profile`,
   }
-}
+

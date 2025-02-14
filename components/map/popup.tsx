@@ -43,14 +43,14 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
   if (!popupInfo || popupInfo.events.length === 0) return null;
 
   const getAddress = (event: Event) => {
-    return event.venueLocation
-      ? event.venueLocation.city?.name === "Online"
+    return event.basic.eventLocation
+      ? event.basic.eventLocation.city?.name === "Online"
         ? "Online"
         : [
-            event.venueLocation?.venue?.name,
-            event.venueLocation?.city?.name,
-            event.venueLocation?.state?.name,
-            event.venueLocation?.country?.name,
+            event.basic.eventLocation?.venue?.name,
+            event.basic.eventLocation?.city?.name,
+            event.basic.eventLocation?.state?.name,
+            event.basic.eventLocation?.country?.name,
           ]
             .filter(Boolean)
             .join(", ")
@@ -76,47 +76,47 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
       >
         {popupInfo.events
           .sort((a, b) => {
-            const startA = new Date(a.startDateTime).getTime();
-            const startB = new Date(b.startDateTime).getTime();
+            const startA = new Date(a.basic.startDateTime).getTime();
+            const startB = new Date(b.basic.startDateTime).getTime();
             return (
               startA - startB ||
-              new Date(a.endDateTime).getTime() -
-                new Date(b.endDateTime).getTime()
+              new Date(a.basic.endDateTime).getTime() -
+                new Date(b.basic.endDateTime).getTime()
             );
           })
           .map((event, index) => (
-            <React.Fragment key={`${event.id}-${index}`}>
+            <React.Fragment key={`${event.basic.id}-${index}`}>
               <div className="relative pl-4 pr-2 py-2">
                 <div
                   className="absolute left-0 top-0 bottom-0 w-1 rounded-md"
                   style={{
                     backgroundColor:
-                      eventTypeColors[event.primaryEventType || ""],
+                      eventTypeColors[event.basic.primaryEventType || ""],
                   }}
                 />
                 <div className="flex items-center justify-between pb-2 border-b">
                   <div className="flex items-center gap-2">
                     <img
-                      src={iconUrls[event.primaryEventType || "festival"]}
-                      alt={event.primaryEventType || "Event"}
+                      src={iconUrls[event.basic.primaryEventType || "festival"]}
+                      alt={event.basic.primaryEventType || "Event"}
                       className="w-5 h-5"
                     />
                     <span className="text-primary font-medium text-xs">
-                      {event.primaryEventType?.toUpperCase() || "EVENT"}
+                      {event.basic.primaryEventType?.toUpperCase() || "EVENT"}
                     </span>
                   </div>
                   <Link
-                    href={`/internal/event/${event.id}`}
+                    href={`/internal/event/${event.basic.id}`}
                     className="text-primary text-xs py-0 h-5 pr-0"
                     target="_blank"
                   >
                     View Details
                   </Link>
                 </div>
-                <h3 className="font-medium text-sm my-2">{event.name}</h3>
+                <h3 className="font-medium text-sm my-2">{event.basic.name}</h3>
                 <p className="text-xs mb-2 font-medium">{getAddress(event)}</p>
                 <div className="flex items-start text-xs text-primary">
-                  {formattedDateRange(event.startDateTime, event.endDateTime)}
+                  {formattedDateRange(event.basic.startDateTime, event.basic.endDateTime)}
                 </div>
               </div>
               {index < popupInfo.events.length - 1 && (

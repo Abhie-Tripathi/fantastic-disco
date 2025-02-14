@@ -47,10 +47,9 @@ export const useCoordinateService = () => {
     searchParams,
   }: fnProp) => {
     const params = new URLSearchParams(searchParams);
-    const adaptedParams = MiscAdapter.adaptCoordinateRequestParam(params);
     return api.request<CoordinateListResponse>(`${endpoints.coordinate.enquiry}?offset=${offset}`, {
       method: "GET",
-      params: adaptedParams,
+      params: params,
     });
   };
 
