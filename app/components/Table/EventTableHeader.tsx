@@ -48,7 +48,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
           </TableHead>
         )}
         {hasField("advance.estimatedExhibitors") && (
-          <TableHead className="min-w-[120px] h-20">
+          <TableHead className="min-w-[130px] h-20">
             <div className="font-medium text-foreground ">Est. Exhibitors</div>
           </TableHead>
         )}

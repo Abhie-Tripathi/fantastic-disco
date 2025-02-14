@@ -239,22 +239,22 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       {event.insights?.reputationScore !== undefined && (
         <TableCell style={{ textAlign: "center" }}>
           {event.insights?.reputationScore > 0 ? (
-            <>
+            <div className="flex gap-1 items-center justify-evenly">
               {event.insights?.reputationScore > 10 && (
                 <span className="rounded-full bg-success-background p-1">
-                  <ArrowUp className="w-3.5 h-3.5 text-success-text inline mb-1.5" />
+                  <ArrowUp className="w-4 h-4 text-success-text inline" />
                 </span>
               )}
               {event.insights?.reputationScore < -10 && (
                 <span className="rounded-full bg-danger-background p-1">
-                  <ArrowDown className="w-3.5 h-3.5 text-danger-text inline mb-1.5" />
+                  <ArrowDown className="w-3.5 h-3.5 text-danger-text inline" />
                 </span>
               )}
-              &nbsp;
+              
               {getEventRating(event.insights?.reputationScore.toString())}
-              &nbsp;
+              
               <Star className="w-4 h-4 inline" />
-            </>
+            </div>
           ) : (
             "-"
           )}

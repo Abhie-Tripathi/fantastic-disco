@@ -642,15 +642,13 @@ const EventListItem = ({
                 {event.insights?.scores ? (
                   <div className="flex items-center justify-between w-full">
                     <div className="flex flex-col justify-end gap-4">
-                      {event.insights?.exhibitorsCount && (
+                      {event.insights?.exhibitorsCount !== undefined && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
                             Estimated Exhibitors
                           </p>
                           <p className="text-lg font-semibold text-primary">
-                            {(
-                              event.insights?.exhibitorsCount || "0"
-                            ).toLocaleString()}
+                            {event.insights?.exhibitorsCount === 0 ? "--" : event.insights?.exhibitorsCount.toLocaleString()}
                           </p>
                         </div>
                       )}
@@ -671,7 +669,7 @@ const EventListItem = ({
                           </p>
                           <p className="text-lg font-semibold text-primary">
                             {formatEstimatedSpend(
-                              event.insights?.economicImpact || "$0"
+                              event.insights?.economicImpact || "--"
                             )}
                           </p>
                         </div>
@@ -699,15 +697,13 @@ const EventListItem = ({
                   </div>
                 ) : (
                   <div className="grid grid-row-2 items-end gap-4">
-                    {event.insights?.exhibitorsCount && (
+                    {event.insights?.exhibitorsCount !== undefined && (
                       <div>
                         <p className="text-xs text-gray-600 font-medium">
                           Estimated Exhibitors
                         </p>
                         <p className="text-lg font-semibold text-primary">
-                          {(
-                            event.insights?.exhibitorsCount || "0"
-                          ).toLocaleString()}
+                          {event.insights?.exhibitorsCount === 0 ? "--" : event.insights?.exhibitorsCount.toLocaleString()}
                         </p>
                       </div>
                     )}
@@ -728,7 +724,7 @@ const EventListItem = ({
                         </p>
                         <p className="text-lg font-semibold text-primary">
                           {formatEstimatedSpend(
-                            event.insights?.economicImpact || "$0"
+                            event.insights?.economicImpact || "--"
                           )}
                         </p>
                       </div>
