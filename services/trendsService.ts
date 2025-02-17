@@ -33,7 +33,7 @@ export const useTrendsService = () => {
 
   const getSavedTrends = () => {
     return api.request<GetSaveTrendData>(
-      `${endpoints.tracker.commonUrl}?type=trends&limit=100`,
+      `${endpoints.tracker.getTrackers}`,
       {
         method: "GET",
       }
