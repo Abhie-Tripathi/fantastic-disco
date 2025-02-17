@@ -55,7 +55,7 @@ const EventTable = () => {
   return (
     <div className="w-full">
       <div className="rounded-md border bg-background">
-        <div className="overflow-auto max-h-[calc(100vh-280px)]">
+        <div className="overflow-auto max-h-[calc(100vh-264px)]">
           <Table>
             <EventTableHeader events={events} />
             <TableBody>

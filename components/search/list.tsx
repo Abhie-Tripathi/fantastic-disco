@@ -319,8 +319,22 @@ const EventListItem = ({
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
       <Link href={`/internal/event/${event.basic.id}`} className="block">
-        <div className="absolute w-[6px] h-full left-0 top-0 rounded-lg bg-[#5055A3]"></div>
-        <div className="p-6">
+        <div className="absolute left-0 top-0 h-full w-[60px] flex items-center justify-center border-r bg-[#5055A3]/5">
+          {event.basic.logoUrl ? (
+            <img 
+              src={event.basic.logoUrl} 
+              alt={`${event.basic.name} logo`}
+              className="w-10 h-10 object-contain"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-[#5055A3]/10 flex items-center justify-center">
+              <span className="text-[#5055A3] text-lg font-semibold">
+                {event.basic.name.charAt(0)}
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="pl-[76px] p-6">
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-7 flex flex-col justify-between gap-3">
               <h2 className="text-2xl font-semibold ">{event.basic.name}</h2>

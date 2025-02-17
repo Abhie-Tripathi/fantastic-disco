@@ -13,30 +13,21 @@ export const filterValueSchema = z.object({
   group: z.nativeEnum(FilterGroup),
 });
 
+const InterestSchema = z.object({
+  label: z.string(),
+  status: z.string(),
+});
 
-const InterestConfigurationSchema = z.array(
-  z.object({
-    label: z.string(),
-    source: z.string(),
-    status: z.string(),
-    position: z.number(),
-  })
-);
+const OutreachSchema = z.object({
+  label: z.string(),
+  status: z.string(),
+});
 
-const OutreachConfigurationSchema = z.array(
-  z.object({
-    label: z.string(),
-    source: z.string(),
-    status: z.string(),
-    position: z.number(),
-  })
-);
-
-const FilterConfigurationSchema = z.record(z.string(), filterValueSchema);
+const FilterConfigurationSchema = z.record(z.string(), z.any());
 
 export const AccountConfigSchema = z.strictObject({
-  interest: InterestConfigurationSchema,
-  outreach: OutreachConfigurationSchema,
+  interest: InterestSchema,
+  outreach: OutreachSchema,
   filter: FilterConfigurationSchema,
 });
 
@@ -120,9 +111,11 @@ export const accountConfig = {
   filter: {},
 };
 
+export interface InterestConfigurationResponse {
+  interest: InterestConfiguration[];
+}
 
-export type InterestConfiguration = z.infer<typeof InterestConfigurationSchema>;
-export type OutreachConfiguration = z.infer<typeof OutreachConfigurationSchema>;
+export type InterestConfiguration = z.infer<typeof InterestSchema>;
+export type OutreachConfiguration = z.infer<typeof OutreachSchema>;
 export type FilterConfiguration = z.infer<typeof FilterConfigurationSchema>;
 export type AccountConfig = z.infer<typeof AccountConfigSchema>;
-

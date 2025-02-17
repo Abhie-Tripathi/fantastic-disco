@@ -23,8 +23,13 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   return (
     <TableHeader>
       <TableRow className="bg-muted/50 hover:bg-muted/50">
-        <TableHead className="sticky left-0 bg-slate-50 dark:bg-slate-900 z-50 max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] h-20">
-          <div className="font-medium text-md text-foreground ">Event</div>
+        <TableHead 
+          className="sticky left-0 bg-slate-50 dark:bg-slate-900  max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] h-20 after:absolute after:inset-0 after:bg-slate-50 dark:after:bg-slate-900"
+          style={{ zIndex: 0 }}
+        >
+          <div className="font-medium text-md text-foreground relative z-[999]">
+            Event
+          </div>
         </TableHead>
         <TableHead className="min-w-[120px] h-20">
           <div className="font-medium text-foreground ">Date</div>
@@ -67,18 +72,24 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
             <div className="font-medium text-foreground ">Event Rating</div>
           </TableHead>
         )}
-        {hasField("insights.trustScore") && <TableHead className="min-w-[150px] text-center">
-          <div className="font-medium text-foreground ">Trust</div>
-          </TableHead>}
-        {hasField("advance.frequency") && <TableHead className="min-w-[150px] text-center">
-          <div className="font-medium text-foreground ">Frequency</div>
-          </TableHead>}
+        {hasField("insights.trustScore") && (
+          <TableHead className="min-w-[150px] text-center">
+            <div className="font-medium text-foreground ">Trust</div>
+          </TableHead>
+        )}
+        {hasField("advance.frequency") && (
+          <TableHead className="min-w-[150px] text-center">
+            <div className="font-medium text-foreground ">Frequency</div>
+          </TableHead>
+        )}
         <TableHead className="min-w-[150px] text-center">
           <div className="font-medium text-foreground ">Forecasted</div>
+        </TableHead>
+        {hasField("advance.maturity") && (
+          <TableHead className="min-w-[150px] text-center">
+            <div className="font-medium text-foreground ">Maturity</div>
           </TableHead>
-        {hasField("advance.maturity") && <TableHead className="min-w-[150px] text-center">
-          <div className="font-medium text-foreground ">Maturity</div>
-          </TableHead>}
+        )}
         {hasField("insights.scores.impactScore") && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Impact</div>
@@ -109,7 +120,10 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
             <div className="font-medium text-foreground ">Audience Spread</div>
           </TableHead>
         )}
-        <TableHead className="sticky right-0 bg-muted/50 z-40 h-12">
+        <TableHead
+          className="sticky right-0 bg-muted/50 z-40 h-12"
+          style={{ zIndex: 0 }}
+        >
           {/* Actions */}
         </TableHead>
       </TableRow>

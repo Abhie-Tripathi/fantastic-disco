@@ -214,11 +214,14 @@ const Search = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
-      console.log('Scrolled:', window.scrollY > 0);
+      const scrolled = window.scrollY > 0;
+      setIsScrolled(scrolled);
+      console.log('Scroll position:', window.scrollY, 'isScrolled:', scrolled);
     };
 
     window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -323,7 +326,7 @@ const Search = () => {
         onValueChange={onTabsChange}
         className="mt-0"
       >
-        <div className={`flex justify-between items-center sticky top-0 bg-background z-20 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 ${isScrolled ? 'py-2' : 'py-6'}`}>
+        <div className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 ${isScrolled ? 'py-2' : 'py-6'}`}>
           <EventCount />
           <div className="flex justify-center">
             <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">

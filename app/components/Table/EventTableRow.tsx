@@ -77,7 +77,10 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
-      <TableCell className="sticky left-0 bg-slate-50 dark:bg-slate-900 z-10 max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-slate-100 dark:group-hover:bg-slate-800">
+      <TableCell
+        className="sticky left-0 z-0 bg-slate-50 dark:bg-slate-900  max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-slate-100 dark:group-hover:bg-slate-800"
+        style={{ zIndex: 0 }}
+      >
         <div className="flex gap-1 mb-1">
           {event.advance?.isBranded && (
             <span className="px-2 py-0.5 rounded text-xs bg-success-background text-success-text font-medium">
@@ -91,8 +94,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
           )}
         </div>
         <div className="truncate font-medium">
-          <Link 
-            href={`/internal/event/${event.basic.id}`} 
+          <Link
+            href={`/internal/event/${event.basic.id}`}
             target="_blank"
             className="hover:text-primary transition-colors"
           >
@@ -106,18 +109,21 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
 
       {/* Date Column */}
       <TableCell>
-        {event.basic.status === "CANCELLED" || event.basic.status === "POSTPONED" ? (
+        {event.basic.status === "CANCELLED" ||
+        event.basic.status === "POSTPONED" ? (
           <del className="text-muted-foreground" title={event.basic.status}>
             {formatDate(event.basic.startDateTime)}
             <br />
-            {formatDate(event.basic.startDateTime) !== formatDate(event.basic.endDateTime) &&
+            {formatDate(event.basic.startDateTime) !==
+              formatDate(event.basic.endDateTime) &&
               formatDate(event.basic.endDateTime)}
           </del>
         ) : (
           <span className="whitespace-nowrap">
             {formatDate(event.basic.startDateTime)}
             <br />
-            {formatDate(event.basic.startDateTime) !== formatDate(event.basic.endDateTime) &&
+            {formatDate(event.basic.startDateTime) !==
+              formatDate(event.basic.endDateTime) &&
               formatDate(event.basic.endDateTime)}
           </span>
         )}
@@ -137,12 +143,12 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       </TableCell>
 
       {/* City Column */}
-      <TableCell>
+      <TableCell >
         {displayValue(event.basic.eventLocation.city?.name)}
       </TableCell>
 
       {/* Country Column */}
-      <TableCell>
+      <TableCell className="text-center">
         {displayValue(event.basic.eventLocation.country?.name)}
       </TableCell>
 
@@ -169,7 +175,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       )} */}
 
       {/* Category Column */}
-      <TableCell>
+      <TableCell className="text-center">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger className="text-left">
@@ -191,14 +197,14 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
 
       {/* Event Size Column */}
       {event.insights?.estimatedAttendance !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {displayValue(event.insights?.estimatedAttendance)}
         </TableCell>
       )}
 
       {/* Estimated Exhibitors Column */}
       {event.advance?.estimatedExhibitors !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {displayValue(event.advance?.estimatedExhibitors)}
         </TableCell>
       )}
@@ -214,7 +220,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
 
       {/* Reputation Column */}
       {event.insights?.repeatSentiment !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {event.insights?.repeatSentiment !== null &&
           (event.insights?.repeatSentiment > 1 ||
             event.insights?.repeatSentiment < -1) ? (
@@ -250,9 +256,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
                   <ArrowDown className="w-3.5 h-3.5 text-danger-text inline" />
                 </span>
               )}
-              
+
               {getEventRating(event.insights?.reputationScore.toString())}
-              
+
               <Star className="w-4 h-4 inline" />
             </div>
           ) : (
@@ -299,11 +305,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       )}
 
       {/* Forecasted Column */}
-      <TableCell>{getForecastedStatus(event.basic.startDateTime)}</TableCell>
+      <TableCell className="text-center">
+        {getForecastedStatus(event.basic.startDateTime)}
+      </TableCell>
 
       {/* Maturity Column */}
       {event.advance?.maturity !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {event.advance?.maturity ? (
             <span className="badge_primary capitalize">
               {event.advance?.maturity}
@@ -316,7 +324,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
 
       {/* Impact Score Column */}
       {event.insights?.scores?.impactScore !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {event.insights?.scores?.impactScore !== 0
             ? event.insights?.scores?.impactScore
             : "-"}
@@ -325,7 +333,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
 
       {/* Inbound Score Column */}
       {event.insights?.scores?.inboundScore !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {event.insights?.scores?.inboundScore !== 0
             ? event.insights?.scores?.inboundScore
             : "-"}
@@ -334,7 +342,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
 
       {/* International Score Column */}
       {event.insights?.scores?.internationalScore !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {event.insights?.scores?.internationalScore !== 0
             ? event.insights?.scores?.internationalScore
             : "-"}
@@ -350,7 +358,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
 
       {/* Audience Zone Column */}
       {event.audience?.audienceZone !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {event.audience?.audienceZone ? (
             <span className={styles.badge_primary}>
               {event.audience?.audienceZone}
@@ -363,7 +371,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
 
       {/* Audience Spread Column */}
       {event.audience?.audienceSpread !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           <div className="flex gap-2">
             {event.audience?.audienceSpread &&
             Object.entries(event.audience?.audienceSpread).length > 0
@@ -389,8 +397,12 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
         </TableCell>
       )}
 
-      <TableCell className="sticky right-0 bg-background z-10">
+      <TableCell
+        className="sticky right-0 bg-background z-0"
+        style={{ zIndex: 0 }}
+      >
         <ActionPopover
+          eventId={event.basic.id}
           interests={event.interests}
           onSubmit={handleActionSubmit}
         />

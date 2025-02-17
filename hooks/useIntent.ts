@@ -1,0 +1,26 @@
+import { useMutation } from "@tanstack/react-query";
+import { useIntentService } from "@/services/intentService";
+import { CreateUserEventInterest } from "@/types/intent";
+
+export const intentKeys = {
+  all: ["intent"] as const,
+  userEventInterest: () => [...intentKeys.all, "userEventInterest"] as const,
+};
+
+export const useIntent = {
+  createUserEventInterest: () => {
+    const intentService = useIntentService();
+    const mutation = useMutation({
+      mutationFn: (data: CreateUserEventInterest) => 
+        intentService.createUserEventInterest(data),
+    });
+
+    return {
+      createUserEventInterest: mutation.mutate,
+      isLoading: mutation.isPending,
+      error: mutation.error,
+      isSuccess: mutation.isSuccess,
+      reset: mutation.reset,
+    };
+  },
+};
