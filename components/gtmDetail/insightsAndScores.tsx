@@ -95,14 +95,14 @@ export const InsightsAndScores = ({
         <div className="flex flex-col gap-6">
           <div className="flex gap-6 max-xl:flex-col max-xl:h-auto">
             {((scores &&
-              Object.values(scores).every((value) => value !== null)) ||
+              Object.values(scores).some((value) => value !== null)) ||
               (trustScore !== null && trustScore > 0)) && (
               <div
                 className={`w-1/2 grid ${
                   economicImpact &&
                   economicImpact.trim() !== "" &&
                   Object.keys(economicImpactBreakdown).length > 0
-                    ? "w-1/2 grid-cols-2 grid-rows-2"
+                    ? "w-1/2 grid-cols-2 grid-rows-2 max-xl:grid-rows-subgrid"
                     : "w-full grid-rows-1 grid-cols-4 h-fit max-xl:grid-cols-2 max-xl:grid-rows-2"
                 }  gap-6 max-xl:w-full`}
               >
