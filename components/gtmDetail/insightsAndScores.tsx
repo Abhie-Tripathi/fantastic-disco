@@ -66,7 +66,6 @@ export const InsightsAndScores = ({
     below5CountryCategoryEvent: below5CountryCategoryEvent,
   };
   const { morphedData } = useFilterContext();
-  console.log(morphedData);
   const { eventAnalytics, eventRanking } = morphedData;
   const isAnalyticsEnabled = eventAnalytics && eventAnalytics.isEnabled;
   const isTrustScoreEnabled = eventRanking && eventRanking.isEnabled;
