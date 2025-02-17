@@ -73,7 +73,7 @@ const Sidebar = () => {
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
-      name: "Search Events",
+      name: "Search",
       href: "/internal/search/events",
       icon: MagnifyingGlass,
     },
@@ -82,7 +82,7 @@ const Sidebar = () => {
       href: "/internal/trackers?tab=allTrackers",
       icon: LineChart,
     },
-    { name: "Event Trends", href: "/internal/trends", icon: ChartBarRandom },
+    { name: "Trends", href: "/internal/trends", icon: ChartBarRandom },
     {
       name: "Coordinate",
       href: "/internal/coordinate",
