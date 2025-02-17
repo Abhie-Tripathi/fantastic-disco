@@ -326,6 +326,7 @@ const Trackers = ({ searchParams }: Search) => {
   }
   const fetchSavedEvent=async(id:string)=>{
     const result = await getSavedEvents(id, `limit=2&offset=0`) as { events: EventTableType[]; count: number }
+    console.log(result);
     
     if(result && result?.count>0){
       setSavedEvents(result);

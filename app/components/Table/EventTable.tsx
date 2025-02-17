@@ -65,7 +65,7 @@ const EventTable = ({source, trackerId}) => {
           <EventTableHeader events={events} />
           <TableBody className={styles.table_body}>
             {events.map((event: Event) => (
-              <EventTableRow key={event.basic.id} event={event} />
+              <EventTableRow key={event.basic.id} event={event} trackerId={trackerId} />
             ))}
           </TableBody>
         </Table>

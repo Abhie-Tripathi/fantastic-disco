@@ -388,21 +388,6 @@ const templates = [
   }
 ]
 
-const formatText = (val: string) => {
-  if(val) {
-    return val?.charAt(0).toUpperCase() + val?.substring(1).toLowerCase();
-  }
-}
-
-const formatCount = (count: number ) => {
-  if (count >= 1000) {
-    const value = count / 1000;
-    const decimalPart = value - Math.floor(value);
-      return `${Math.floor(value)}k`;
-  }
-  return count;
-};
-
 const Pages = () => {
   const {searchParams: search} = useDefaultFilters();
   const searchParams = useSearchParams();
@@ -410,195 +395,35 @@ const Pages = () => {
   const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
-  
-  interface SelectedLocation {
-    [id: string]: string;
-  }
-  const eventTypes = getLocalFilterValue("eventTypes")
-      .split(",")
-      .filter(Boolean);
-      
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const {getTrackerDetail,createTracker,editTracker, error}=useTrackerServices();
   const { theme } = useTheme();
   const type = searchParams.get('type');
   const defaultType="T_CUSTOM";
-  const [selectedLocationsData,setSelectedLocationsData]=useState<any>(enabledFilters?.locationIds?.enabledValue);
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [opend,setOpend]=useState(false);
   const pathName = usePathname().split("/");
   const last = pathName[pathName.length - 1];
-  const router = useRouter();
-  const [includeKeywords, setIncludeKeywords] = useState<string[] |undefined>([]);
-  const [excludeKeywords, setExcludeKeywords] = useState<string[] | undefined>([]);
-  // const [categorySlug, setCategorySlug] = useState([]);
-  const [showRecentSearches, setShowRecentSearches] = useState(false);
-  // const [selectedCategories, setSelectedCategories] = useState<string[]>(
-  //   enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
-  // );
+  const router = useRouter()
   const [hideSuggestion,setHideSuggestion]=useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
       enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
     );
-  const [selectedLocations, setSelectedLocations] = useState<string[]>(
-    searchParams.get("location")?.split(",") || []
-  );
-  const [selectedLabels, setSelectedLabels] = useState<string[]>(
-    searchParams.get("labels")?.split(",") || []
-  );
   const [eventSearchLoader,setEventSearchLoader]=useState(false);
-  const [selectedEventRank, setSelectedEventRank] = useState([0, 100]);
-  const [selectedLocalRank, setSelectedLocalRank] = useState([0, 100]);
-  const [selectedTrustScore, setSelectedTrustScore] = useState<any>([0, 100]);
-  const [selectedAviationRank, setSelectedAviationRank] = useState([0, 100]);
-  const [selectedDateRange, setSelectedDateRange] = useState<any[]>([]);
-  const [dateRange, setDateRange] = React.useState<{
-    from: Date | undefined;
-    to: Date | undefined;
-  }>({
-    from: enabledFilters?.durations?.startDate
-      ? new Date(enabledFilters.durations.startDate.split(",")[0])
-      : undefined,
-    to: enabledFilters?.durations?.startDate
-      ? new Date(enabledFilters.durations.startDate.split(",")[1])
-      : undefined,
-  });
-  const [selectedEventStatus, setSelectedEventStatus] = useState<string[]>(
-    enabledFilters?.eventStatus?.enabledValue?.map((item)=>item.toLowerCase()) || []
-  );
-  const [selectedEventAttendanceRange, setSelectedEventAttendanceRange] =
-    useState<string[]>([]);
-  const [selectedEventFrequency, setSelectedEventFrequency] = useState<
-    string[]
-  >(enabledFilters?.eventFrequency?.enabledValue?.map((item)=>item.toLowerCase())|| []);
-  const [freqToggle,setFreqToggle]=useState<boolean>(enabledFilters?.eventFrequency?.isFreqEnabled || false);
-  const [selectedEntry, setSelectedEntry] = useState<string[]>(
-    enabledFilters?.eventEntry?.enabledValue?.map((item)=>item.toLowerCase()) || []
-  );
-  const [selectedEventRanking, setSelectedEventRanking] = useState<string[]>(
-    searchParams.get("rank")?.split(",") || []
-  );
-  const [selectedEventFormat, setSelectedEventFormat] = useState<string[]>(
-    enabledFilters?.eventFormat?.enabledValue || []
-  );
-  const [selectedExhibitScore, setSelectedExhibitScore] = useState<string[]>(
-    enabledFilters?.estimatedExhibitScore?.enabledValue || []
-  );
-  const [selectedUserRatings, setSelectedUserRatings] = useState<string[]>(
-    enabledFilters?.eventRating?.enabledValue || []
-  );
-  const [rankToggles, setRankToggles] = useState({
-    isEventRank: false,
-    isLocalRank: false,
-    isAviationRank: false,
-    isTrustScore: false,
-  });
-  const [isPop,setIsPop]=useState({
-  rating:false,
-  exhibit:false,
-  audienceSpread: false,
-});
-  // const [showAdvanceFilter, setShowAdvanceFilter] = useState(true);
-  // const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
-  // const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(enabledFilters?.branded?.enabledValue?.eventBrand||false);
-  
-  // const [selectedEventSeries, setSelectedEventSeries] = useState(enabledFilters?.branded?.enabledValue?.eventSeries || false);
-  // const [selectedReptScore, setSelectedReptScore] = useState(0);
-  // const [selectedMaturity, setSelectedMaturity] = useState<string>(enabledFilters?.maturity?.enabledValue?.[0] || "");
-  // const [isMaturity,setIsMaturity]=useState<boolean>(enabledFilters?.maturity?.isMaturityEnabled||false);
-  // const [isBrand,setIsBrand]=useState<boolean>(enabledFilters?.branded?.isBrandedEnabled|| false);
-  // const [maturity, setMaturity] = useState<string | null>();
-  const [intScore, setIntScore] = useState<string | null>();
-  // const [selectedInboundScore, setSelectedInboundScore] = useState(0);
-  const [selectedEventKeywords, setSelectedEventKeywords] = useState<string[]>(
-    searchParams.get("eventKeywords")?.split(",") || []
-  );
   const [customData, setCustomData] = useState<any[]>([]);
   const [activeTab,setActiveTab]=useState("include");
-  const [selectedEventEdition, setSelectedEventEdition] = useState(0);
-  const [selectedINScore, setSelectedINScore] = useState(0);
-  const [add, setAdd] = useState(false);
-  const [forecastedStatus, setForecastedStatus] = useState(enabledFilters?.isForecasted?.isForecastedEnabled || false);
-
-  const [analyticsToggles, setAnalyticsToggles] = useState({
-    impactScore: false,
-    inboundScore: false,
-    internationalScore: false,
-    globalToggle: false
-  });
-
-  const [selectedImpactScore, setSelectedImpactScore] = useState<[number,number]>([0, 100]);
-  const [selectedInboundScore, setSelectedInboundScore] = useState<[number, number]>([0, 100]);
-  const [selectedInternationalScore, setSelectedInternationalScore] = useState<[number,number]>([0, 100]);
-
-  const [audienceZone, setAudienceZone] = useState<boolean>(enabledFilters?.audienceZone?.isZoneEnabled || false);
-  const [audienceSpread, setAudienceSpread] = useState<boolean>(false);
-  const [selectedRank, setSelectedRank] = useState<string>('');
-  const [selectedCountries, setSelectedCountries] = useState<any>([]);
-  const [selectedAudProfile, setSelectedAudProfile] = useState<string[]>([]);
   const [selectedAdvancedView, setSelectedAdvancedView] = useState("advancedDetails");
   const handleTabChange = (value: string) => {
     setSelectedAdvancedView(value);
   };
   const [trackerName, setTrackerName] = useState("");
   const [selectedPresetName, setSelectedPresetName] = useState<string>('');
-  // const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
-  const [categorySlug, setCategorySlug] = useState<string[]>(
-    searchParams.get("categories")?.split(",") || []
-  );
-  // const [editData, setEditData] = useState<EditData | null>(null);
-
   useEffect(() => {
     if (last === "editTracker") {
       const secondLast = pathName[pathName.length - 2];
       // fetchData(secondLast);
     }
   }, [last]);
-
-//   const fetchData = async (secondLast: string) => {
-//    // const url = `${baseUrl}/tracker/${secondLast}?edit=true`;
-//     try {
-//       // const { data, error } = await myFetch(url, {
-//       //   method: "GET",
-//       // });
-//       // const data= await getTrackerDetail(secondLast, "edit=true");
-
-// if (data) {
-//   // setEditData(data || null);
-//   console.log(data);
-  
-// }
-//       if (error) {
-//         console.error("Error fetching data:", error);
-//       }
-//     } catch (err) {
-//       console.error("Fetch failed:", err);
-//     }
-//   };
-  const [categories, setCategories] = useState(
-    searchParams.get("categories")?.split(",") || []
-  );
-  // useEffect(() => {
-  //   if (selectedMaturity > 0) {
-  //     // queryString.maturity = selectedMaturity;
-  //     if (selectedMaturity >= 1 && selectedMaturity <= 25) setMaturity("new");
-  //     else if (selectedMaturity >= 26 && selectedMaturity <= 50)
-  //       setMaturity("low");
-  //     else if (selectedMaturity >= 51 && selectedMaturity <= 75)
-  //       setMaturity("medium");
-  //     else setMaturity("High");
-  //   }
-  // }, [selectedMaturity]);
-  useEffect(() => {
-    if (selectedINScore > 0) {
-      if (selectedINScore > 0 && selectedINScore <= 33) setIntScore("Low");
-      else if (selectedINScore >= 33 && selectedINScore <= 66)
-        setIntScore("Medium");
-      // else if (selectedINScore >= 51 && selectedINScore <= 75)
-      //   setIntScore("Regional");
-      else setIntScore("High");
-    }
-  }, [selectedINScore]);
   const [websites, setWebsites] = useState("");
   const [org,setOrg]=useState("");
   const [speakerName, setSpeakerName] = useState("");
@@ -798,14 +623,6 @@ const Pages = () => {
     );
     if (isCreating) return;
     setIsCreating(true);
-    
-    const categorySlugs = selectedCategories;
-    const categoryIds = getLocalFilterValue("categories")
-    .split(",")
-    .filter(Boolean).map((slug) => {
-      const category = newCategories.find((cat) => cat.slug === slug);
-      return category ? category.id : slug;
-    });
     const filters = getLocalFilterValue("show").split(",");
     Object.entries(mapping).forEach(([key, value]) => {
       if (filters.includes(key)) {
@@ -847,34 +664,6 @@ const Pages = () => {
       filterValues.userOrgWebsite=userCompany;
     }
     // console.log(filterValues, showsData);
-    
-    const userType = {
-      ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
-      ...(getLocalFilterValue("show").split(",").includes("estimatedExhibitors") && { exhibit: true }),
-      ...(rankToggles.isTrustScore && {trust:true}),
-      ...(getLocalFilterValue("show").split(",").includes("maturity")&& {maturity:true}),
-      ...(getLocalFilterValue("onlyBranded")==="true" && {brandedEvent:true}),
-      ...(getLocalFilterValue("onlySeries")==="true" && {eventSeries:true}),
-      ...((getLocalFilterValue("show").split(",").includes("branded") && getLocalFilterValue("show").split(",").includes("series"))&& {brandSeries:true}),
-      ...((getLocalFilterValue("show").split(",").includes("forecasted")) && {forecastedStatus:true}),
-      ...(analyticsToggles.impactScore&& {impactScore:true}),
-      ...(analyticsToggles.inboundScore&& {inboundScore:true}),
-      ...(analyticsToggles.internationalScore&& {internationalScore:true}),
-      ...((getLocalFilterValue("show").split(",").includes("rankings"))&& {eventRank:true}),
-      ...(getLocalFilterValue("show").split(",").includes("scores") && {globalToggle: true}),
-      ...(getLocalFilterValue("show").split(",").includes("audienceZone") && {audienceZone:true}),
-      ...(audienceSpread && {audienceSpread:true}),
-      ...(getLocalFilterValue("show").split(",").includes("frequency") && {eventFrequency:true}),
-      ...(getLocalFilterValue("trust_score_gte") && {
-        trust: true
-      }),
-      ...(getLocalFilterValue("show").split(",").includes("economicImpact")&&{
-        economicImpact:true
-      })
-    }
-     const eventType1=getLocalFilterValue("eventTypes")
-      .split(",")
-      .filter(Boolean);
     const formData = {
       name: trackerName,
       ...(type && type.length > 0 && {
@@ -882,48 +671,6 @@ const Pages = () => {
       }),
       accessLevel: editData?.tracker?.accessLevel,
       filterValues
-      
-      // filterValues:{
-      //   ...(getLocalFilterValue("eventTypes")?.length>0 &&{
-      //     eventTypes: getLocalFilterValue("eventTypes")
-      //   }),
-      //   ...(getLocalFilterValue("categories")?.length>0 &&{
-      //     eventCategory: getLocalFilterValue("categories")
-      //   }),
-      //   ...(getLocalFilterValue("eventFormats")?.length > 0 && {
-      //     eventFormats: getLocalFilterValue("eventFormats"),
-      //   }),
-      //   ...(getLocalFilterValue("locationIds").length>0 && {
-      //     locationIds: getLocalFilterValue("locationIds")
-      //   }),
-      //   ...(getLocalFilterValue("active_gte") &&{
-      //       active_gte: getLocalFilterValue("active_gte")
-      //   }),
-      //   ...(getLocalFilterValue("active_lte") && {
-      //       active_lte: getLocalFilterValue("active_lte")
-      //   }),
-      //   ...(getLocalFilterValue("status")?.length>0 &&{
-      //       status: getLocalFilterValue("status")
-      //   }),
-      //   ...(getLocalFilterValue("entryType")?.length > 0 && {
-      //       entryType: getLocalFilterValue("entryType"),
-      //   }),
-      //   ...(getLocalFilterValue("ratings")?.length > 0 && {
-      //       ratings: getLocalFilterValue("ratings"),
-      //   }),
-      //   ...(getLocalFilterValue("maturity").length>0 && { 
-      //       maturity: getLocalFilterValue("maturity"),
-      //   }),
-      //   ...(getLocalFilterValue("onlyBranded")==="true" && {
-      //       onlyBranded: getLocalFilterValue("onlyBranded"),
-      //   }),
-      //   ...(getLocalFilterValue("onlySeries")==="true" &&{
-      //       onlySeries: getLocalFilterValue("onlySeries")
-      //   }),
-      //   ...(getLocalFilterValue("frequencies").length>0 &&{
-      //       frequencies: getLocalFilterValue("frequencies")
-      //   })
-      // }
     };
     console.log(formData, defaultType);
     
@@ -1019,26 +766,12 @@ const Pages = () => {
 
     }
   };
-  const extractLocations = (locations: Record<string, any> | undefined) => {
-    return locations
-      ? Object.entries(locations).map(([id, descriptionObj]) => {
-          const [locationId, description] = Object.entries(descriptionObj)[0];
-          return {
-            id: locationId,
-            description: description as string,
-          };
-        })
-      : [];
-  };
 
   useEffect(() => {
     if (editData && last === "editTracker") {
       console.log(editData);
       
       setTrackerName(editData?.name || "");
-      // if (editData.tracker.filterValue?.maturity == "low") {
-      //   setSelectedMaturity(25);
-      // }
       if (type === "T_COMPETITOR" || type == "T_CUSTOMER_ICP") {
         const orgNames = editData?.filterValues?.orgName?.
           split(',');
@@ -1071,12 +804,6 @@ const Pages = () => {
           "Company Name": speakerOrgs?.[index]?.trim()
         }));
         setCustomData(presentCustomData);
-        // setCustomData((prevData: any) => [
-        //   ...prevData,
-        //   ...newData?.map((item) => (
-        //     { companyUrl: item.trim() }
-        //   ))
-        // ]);
       }
       if (type === "T_PEOPLE_FINDER") {
         const speakerOrgs = editData?.filterValues?.userOrgWebsite?.
@@ -1089,26 +816,9 @@ const Pages = () => {
         }));
         setCustomData(presentCustomData);
       }
-      // if (editData.tracker.filterValue?.localRank?.length > 0 || editData.tracker.filterValue?.eventRank?.length > 0) {
-      //   const newToggles = { ...rankToggles };
-      //   if (editData?.tracker?.filterValue?.localRank?.length > 0) {
-      //     newToggles.isLocalRank = true;
-      //   }
-      //   if (editData?.tracker?.filterValue?.eventRank?.length > 0) {
-      //     newToggles.isEventRank = true;
-      //   }
-      //   setRankToggles(newToggles);
-      // }
-      // const filteredArr = newArr
-      //   .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
-      //   .map((item: any) => item.id);
-      // console.log(filteredArr);
       let toggleOpend: Toggle = {};
       Object?.entries(filterValueMapping)?.reduce((acc, [key, mappedKey]) => {
         const value = editData.filterValues[key];
-        // if(value && key!=="categories"){
-        //   setLocalFilter(mappedKey,value);
-        // }
         
         if (Array.isArray(value))
           setLocalFilter(key,value.join(','));
@@ -1117,18 +827,6 @@ const Pages = () => {
         }else if(typeof value === "number" || typeof value === "boolean"){
           setLocalFilter(key, value.toString());
         }
-        // if(value.length>0)
-        // setLocalFilter(key,value.join(","));
-      
-        // if (Array.isArray(value) && value.length > 0) {
-        //   acc[mappedKey] = value;
-        // } else if (typeof value === "string" && value === "true") {
-        //   acc[mappedKey] = value;
-        // } else if (value) {
-        //   acc[mappedKey] = value;
-        // }
-      
-        // return acc;
       }, {})
       Object?.entries(mapping)?.forEach(([key, value]) => {
         if (editData?.filterValues?.show?.includes(key)) {
@@ -1151,16 +849,6 @@ const Pages = () => {
       
       setLocalFilter("show", showsData.join(","))
       
-      const eventLocation = 
-    // Object.values(data?.filterValues?.locationIds || {}).map((location) => {
-    //   return location.displayName;
-    // });
-    // setLocalFilter("locationIds", )
-      // Object.entries(mapping).forEach(([key, value]) => {
-      //   if()
-      //     showsData.push(value);
-      // });
-      // setLocalFilter("show",showsData.join(','))
       console.log(editData);
       
      
@@ -1278,44 +966,11 @@ const Pages = () => {
     // console.log(itemIndex);
     const filteredData = customData.filter((item, index) => index !== itemIndex);
     setCustomData(filteredData);
-    // console.log(filteredData);
-
-    // setCustomData((prevData) => 
-    //   prevData.map((item, index) => {
-    //     if (index === itemIndex) {
-    //       const { [entryKey]: _, ...rest } = item;
-    //       return rest;
-    //     }
-    //     return item;
-    //   }).filter(item => Object.keys(item).length > 0)
-    // );
   };
-  useEffect(() => {
-    if (intScore === "low") setSelectedINScore(1);
-    if (intScore === "medium") setSelectedINScore(50);
-    if (intScore === "high") setSelectedINScore(100);
-  }, [intScore])
 useEffect(()=>{
   if(valid===false) setValid(true);
   if(isMandatory) setIsMandatory(false);
 },[inputValues])
-const dateShowFormatter = (selectedDateRange: string[]) => {
-  const [sdDay, sdMonth, sdYear] = convertToCustomFormat(
-    selectedDateRange[0]
-  ).split(" ");
-  const [edDay, edMonth, edYear] = convertToCustomFormat(
-    selectedDateRange[1]
-  ).split(" ");
-
-  if (sdMonth === edMonth && sdYear === edYear) {
-    return `${sdDay} - ${edDay} ${sdMonth} ${sdYear}`;
-  }
-  if (sdYear === edYear) {
-    return `${sdDay} ${sdMonth} - ${edDay} ${edMonth} ${sdYear}`;
-  }
-  return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
-};
-const abortControllerRef = useRef<AbortController | null>(null);
 const [selected,setSelected]=useState(false);
 const addCompany = (id:number,val: any) => {
   setSelected(true);
@@ -1735,9 +1390,6 @@ return (
           <UserRatingSelector/>
         </div>
       </div>
-      {showRecentSearches && (
-        <RecentSearches setShowRecentSearches={setShowRecentSearches} />
-      )}
 
       {/*   ADVANCE FILTER SECTION */}
 

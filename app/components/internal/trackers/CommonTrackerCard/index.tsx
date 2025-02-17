@@ -260,7 +260,7 @@ const formatCount = (count: number ) => {
                 </div>
                 <div className={`flex flex-col gap-1 items-center justify-center w-1/2 card`}>
                   <div>
-                    {formatCount(item?.savedEventTotalCount)}
+                    {formatCount(item?.savedEventsCount)}
                   </div>
                   <div className="flex gap-1 text-sm text-[var(--tertiary-text-color)]" style={{ borderBottom: "0px", alignItems: "center", justifyContent: "center" }}>
                   <Bookmark style={{color:"var(--primary-color)"}} width="12px" height="12px"/>

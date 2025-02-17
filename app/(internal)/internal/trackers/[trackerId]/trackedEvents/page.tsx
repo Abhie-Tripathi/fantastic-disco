@@ -524,7 +524,8 @@ const activeVal =
                 <div className={styles.circle} style={{background: active==="Saved Events"?"white":"", color: active==="Saved Events"?"var(--primary-color)":""}}>
                   {loading ? (
                     formatCount(
-                     savedEventCount
+                      data?.
+                      savedEventsCount                      
                     )
                   ) : (
                     <div className={styles.loader}></div>

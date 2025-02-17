@@ -11,12 +11,13 @@ import { usePathname } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/utils/showToast";
 import { GAEvent } from '@/utils/GAEvent';
+import { useQuery } from "@tanstack/react-query";
 import { useTrackerServices } from '@/services/trackerServices';
 // import SideNav from '@/app/components/trackers/sideNav';
 
 const Page = () => {
     const router = useRouter();
-    const {getShareAccess, error} = useTrackerServices();
+    const {getShareAccess} = useTrackerServices();
     const [currentUrl, setCurrentUrl] = useState('');
     const [accessdata, setAccessData] = useState([]);
     const [data, setData] = useState([]);
@@ -25,7 +26,8 @@ const Page = () => {
     const [filteredData, setFilteredData] = useState([]);
     const [filter, setFilter] = useState('');
     const [sendInvite,setSendInvite]=useState(false);
-    
+    const path = usePathname().split('/');
+    const trackerId = path?.[path.length - 2];
     useEffect(() => {
     if(!id)
       setDrop(true);
@@ -53,7 +55,7 @@ const Page = () => {
     }, []);
     
     const [share, setShare] = useState(false);
-    const path = usePathname().split('/');
+   
     const [drop,setDrop]=useState(true);
     const shareFunction = () => {
         if (!share) {
@@ -66,7 +68,16 @@ const Page = () => {
             closeShareModal();
         }
     };
-
+    const {
+        data: userAccessData,
+        error,
+        isLoading,
+      } = useQuery({
+        queryKey: ["accessData", trackerId], // Ensure unique caching per tracker
+        queryFn: () => getShareAccess(trackerId, "tracker"),
+        enabled: !!trackerId, // Prevents the query from running if trackerId is undefined
+        staleTime: 1000 * 60 * 5,
+      });
     const closeShareModal = () => {
       if(share===true)
         setShare(false);
@@ -77,31 +88,6 @@ const Page = () => {
         document.body.style.overflow = '';
         setFilter("");
     };
-    const fetchAccess=async()=>{
-        // const url = `${baseUrl}/tracker/access?accessEntity=TRACKER&accessEntityId=${path[path.length-2]}`;
-        // try {
-        //     const { data, error } = await myFetch(url, {
-        //         method: 'GET',
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //     });
-        //     if (error) {
-        //         console.error('Error fetching data:', error);
-        //     } else {
-        //         console.log('Data fetched:', data);
-        //         setUserAccessData(data);
-        //     }
-        // } catch (err) {
-        //     console.error('Fetch failed:', err);
-        // }
-        const result = await getShareAccess(`${path[path.length-2]}`, "tracker");
-        if(error){
-            console.error('Error fetching data:', error);
-        }else{
-            setUserAccessData(result);
-        }
-      }
     useEffect(() => {
         const handlePopState = (event: any) => {
             if (event.state && event.state.shareOpen) {
@@ -140,17 +126,43 @@ const Page = () => {
         setFilteredData([]);
         setDrop(false);
     }
-    const [userAccessData,setUserAccessData]=useState<any>();
-    useEffect(()=>{
+    // const [userAccessData,setUserAccessData]=useState<any>();
+    // useEffect(()=>{
       
-      fetchAccess();
-    },[])
+    //   fetchAccess();
+    // },[])
+    console.log(userAccessData);
+    
     // useEffect(() => {
     //     if (id && share) {
     //         shareInvite();
     //     }
     // }, [id]);
-    
+    const fetchAccess=async()=>{
+        // const url = `${baseUrl}/tracker/access?accessEntity=TRACKER&accessEntityId=${path[path.length-2]}`;
+        // try {
+        //     const { data, error } = await myFetch(url, {
+        //         method: 'GET',
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //         },
+        //     });
+        //     if (error) {
+        //         console.error('Error fetching data:', error);
+        //     } else {
+        //         console.log('Data fetched:', data);
+        //         setUserAccessData(data);
+        //     }
+        // } catch (err) {
+        //     console.error('Fetch failed:', err);
+        // }
+        const result = await getShareAccess(`${path[path.length-2]}`, "tracker");
+        if(error){
+            console.error('Error fetching data:', error);
+        }else{
+            // setUserAccessData(result);
+        }
+      }
     return (
         <div className="flex flex-col items-center gap-6">
             <div className="flex fixed w-[calc(100vw-134px)] mt-[54px] items-center justify-between bg-[var(--heading-background-color)] p-3" style={{zIndex:"5"}}>
@@ -175,10 +187,10 @@ const Page = () => {
             {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px] z-3'></div> */}
                 <div className="flex w-[40%] h-fit">
                     {/* <TrackerOwner adminData={userAccessData?.access?.admin}/> */}
-                    <TrackerUser userData={userAccessData?.access?.admin} type="admins" heading="Tracker Owners"/>
+                    <TrackerUser userData={userAccessData} type="admins" heading="Tracker Owners"/>
                 </div>
                 <div className="flex w-[60%]">
-                    <TrackerUser userData={userAccessData?.access?.other} fetchAccess={fetchAccess} setSendInvite={setSendInvite} type="others" heading="Tracker Users"/>
+                <TrackerUser userData={userAccessData} type="others" heading="Tracker Users"/>
                 </div>
             </div>
             {share && (

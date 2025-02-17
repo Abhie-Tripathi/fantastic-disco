@@ -57,15 +57,7 @@ export default function EventList({
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", sortBy, filteredParams.toString()],
     queryFn: () =>
-      source!=="tracker"?eventService.getEventsWithSearchParams(filteredParams.toString()):getCalendarViewEvents(trackerId || "", `type=${
-        active === "activeEvent"
-          ? "active"
-          : active === "expiredEvent"
-          ? "expired"
-          : active === "newEvent"
-          ? "" : active === "savedEvent" ? "saved":
-           "active"
-      }&active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${(currentPage - 1) * 20 }`, true ),
+      source!=="tracker"?eventService.getEventsWithSearchParams(filteredParams.toString()):getCalendarViewEvents(trackerId || "", `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${(currentPage - 1) * 20 }`, true ),
   });
 
   const handlePageChange = (page: number) => {

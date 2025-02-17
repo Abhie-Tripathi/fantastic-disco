@@ -85,21 +85,25 @@ const ShareModal: React.FC<ShareModalProps> = ({
             setId('');
         };
         const shareInvite = async () => {
-            const formData = {
-                accessEntity: "tracker",
-                accessEntityId: path[path.length - 2],
-                entityType: "employee",
-                entityId: id,
-                accessLevel: "EDIT",
-                expiry:"",
-                redirectUrl: `${currentUrl}`
-            };
+            // const formData = {
+            //     accessEntity: "tracker",
+            //     accessEntityId: path[path.length - 2],
+            //     entityType: "employee",
+            //     entityId: id,
+            //     accessLevel: "EDIT",
+            //     expiry:"",
+            //     redirectUrl: `${currentUrl}`
+            // };
+            const formData={
+                accessReceiverEmail: filter,
+                accessType: "admin"
+            }
             console.log(formData);
-            if(id){
+            // if(id){
               
             
             try {
-                const result= await shareTrackerInvite(formData);
+                const result= await shareTrackerInvite(formData, path[path.length - 2]);
 
                 GAEvent(
                                         "trackers",
@@ -127,7 +131,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                               if(shareFunction)
                               shareFunction();
             }
-            }
+            // }
         }
         const shareNewInvite=async()=>{
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -186,13 +190,13 @@ const ShareModal: React.FC<ShareModalProps> = ({
         }
         const shareInvites=()=>{
             setIsClicked(true);
-            if(id.length===0){
-                shareNewInvite();
-            }
+            // if(id.length===0){
+            //     shareNewInvite();
+            // }
         }
         useEffect(() => {
             
-            if (id && isClicked) {
+            if (isClicked) {
                 shareInvite();
                 if(closeShareModal)
                 closeShareModal();

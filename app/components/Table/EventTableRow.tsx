@@ -14,7 +14,10 @@ import styles from "./table.module.css";
 import { Event } from "@/types/events";
 import Image from "next/image";
 import { ActionPopover } from "./ActionPopover";
-
+import { useQuery } from "@tanstack/react-query";
+import { useTrackerServices } from "@/services/trackerServices";
+import { useMutation } from "@tanstack/react-query";
+import { useTrackerContext } from "@/context/tracker";
 export function getEventRank(prop: any) {
   let rankString = "";
   if (prop.rank == 1) rankString = "st";
@@ -40,6 +43,7 @@ export function getEventRank(prop: any) {
 
 interface EventTableRowProps {
   event: Event;
+  trackerId?: string;
 }
 
 function listProducts(data: string[]) {
@@ -68,12 +72,29 @@ function displayValue(value: any) {
   return value;
 }
 
-export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
-  const handleActionSubmit = (action: string) => {
+export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }) => {
+  const {saveIntent} = useTrackerServices();
+  const handleActionSubmit = async(action: string) => {
     // Handle the action submission
+    mutation.mutate(action); 
+    // const formData={
+    //     interest:action.toUpperCase(),
+    //     sourceId:trackerId,
+    //     eventId: event.basic.id,
+    //     sourceModule: "TRACKER",
+    // }
+    // const response = await saveIntent(formData)
     console.log(`Selected action: ${action} for event: ${event.basic.id}`);
   };
-
+  const mutation = useMutation({
+    mutationFn: (action: string) =>
+      saveIntent({
+        interest:action.toUpperCase(),
+        sourceId:trackerId,
+        eventId: event.basic.id,
+        sourceModule: "TRACKER"
+      }),
+  });
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}

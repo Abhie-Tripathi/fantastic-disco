@@ -28,6 +28,7 @@ type TrackerUserProps = {
 
 const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetchAccess, type, heading }) => {
   const path = usePathname().split('/');
+  const trackerId = path?.[path.length - 2];
   const {removeAccess,editAccess, error} = useTrackerServices();
   const [accessId, setAccessId] = useState<string | null>(null);
   const [drop, setDrop] = useState(false);
@@ -94,14 +95,14 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
     }
   };
 
-  const deleteEntry = async (id: string, accessEntry: string) => {
-    const formData = {
-      entityId: id,
-      published: false,
-    };
+  const deleteEntry = async (accessId: string) => {
+    // const formData = {
+    //   entityId: id,
+    //   published: false,
+    // };
 
     try {
-      const data = await removeAccess(accessEntry, formData);
+      const data = await removeAccess( accessId, trackerId);
       if (error) {
         console.error('Error fetching data:', error);
       } else {
@@ -114,7 +115,8 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
       console.error('Fetch failed:', err);
     }
   };
-
+  console.log(userData);
+  
   return (
     <div className="flex w-[100%] p-5 flex-col gap-3 border border-[var(--border-color)] rounded-[12px]">
       <div className="flex w-[100%] justify-between items-center">
@@ -127,7 +129,7 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
           <div key={index} className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               {type==="others" &&
-              <div className="w-[15px] flex items-center justify-center h-[15px] text-[var(--primary-color)] border border-[var(--primary-color)] cursor-pointer" onClick={() => deleteEntry(item.id, item.accessId)}>-</div>
+              <div className="w-[15px] flex items-center justify-center h-[15px] text-[var(--primary-color)] border border-[var(--primary-color)] cursor-pointer" onClick={() => deleteEntry(item.accessId)}>-</div>
               }       
               {item.profilePicture?<Image src={item.profilePicture} alt="profilePhoto" height={40} width={40} style={{borderRadius:"50%", height:"40px", width:"40px"}} />:
               <UserProfile name={item.name}/>
@@ -138,7 +140,7 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
                 {/* <div className={styles.email}>{item?.email}</div> */}
               </div>
             </div>
-            {type==="others"?
+            {type==="otherss"?
             <div
               className="text-[var(--primary-color)] text-sm font-medium"
               // ref={dropdownRef}

@@ -54,19 +54,19 @@ export const useTrackerServices = () => {
       signal?: AbortSignal
     ): Promise<GetSavedEventsResponse | undefined> => {
       const response = await api.request<{ result: EventTableType[]; count: number  }>(
-        `${endpoints.tracker.getSavedEvents}/${trackerId}/saved-events?${params}`,
+        `${endpoints.tracker.commonUrl}/${trackerId}/saved-events?${params}`,
         {
           method: "GET",
           signal: signal, // Pass the signal here
         }
       );
     
-      if (getFilterValue("view") === "table") {
+      // if (getFilterValue("view") === "table") {
         return response;
-      }
+      // }
     
-      const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
-      return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
+      // const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
+      // return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
     };
     
     const globalSavedEvents = async (
@@ -102,12 +102,12 @@ export const useTrackerServices = () => {
     }
     const getShareAccess=(trackerId: string, accessEntity: string)=>{
       return api.request(
-        `${endpoints.tracker.access}?accessEntity=${accessEntity}&accessEntityId=${trackerId}`,
+        `${endpoints.tracker.commonUrl}/${trackerId}/users`,
       );
     }
-    const shareTrackerInvite=(formData: ExistingAccess)=>{
+    const shareTrackerInvite=(formData: ExistingAccess, trackerId)=>{
         return api.request(
-          `${endpoints.tracker.shareAccess}`,
+          `${endpoints.tracker.commonUrl}/${trackerId}/access`,
           {
             method:"POST",
             data:formData,
@@ -132,12 +132,11 @@ export const useTrackerServices = () => {
         }
       )
     }
-    const removeAccess=(accessEntry:string, formData:Access)=>{
+    const removeAccess=( accessId:string, trackerId:string)=>{
       return api.request(
-        `${endpoints.tracker.shareAccess}/${accessEntry}`,
+        `${endpoints.tracker.commonUrl}/${trackerId}/access/${accessId}`,
         {
-          method:"PATCH",
-          data:formData,
+          method:"DELETE"
         }
       )
     }
@@ -148,8 +147,17 @@ export const useTrackerServices = () => {
       if(query.eventType==="newEvent") active="new";
       else if(query.eventType==="expiredEvent") active="past";
       else if(query.eventType==="activeEvent") active="active";
+
       console.log(query);
-      
+      if(query.eventType==="savedEvent")
+      {
+        return await api.request<{ result: EventTableType[]; count: number  }>(
+          `${endpoints.tracker.commonUrl}/${trackerId}/saved-events??limit=${query.take||"20"}&offset=${query.limit||"0"}`,
+          {
+            method: "GET"
+          }
+        );
+      }
       // const response=await api.request<{ result: EventTableType[]; count: number }>(
       //   `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&type=${eventType}` : ''}`,
       //   {
@@ -217,6 +225,17 @@ export const useTrackerServices = () => {
             data: formData
           }
         )
+    }
+    const saveIntent=(formData:any)=>{
+      console.log(formData);
+      
+      return api.request(
+        `https://api.dev.gtm.whr.ai/intents/user-event-interest`,
+        {
+          method:'POST',
+          data: formData
+        }
+      )
     }
     const deleteNewEvent=(formData:any)=>{
         return api.request(
@@ -303,6 +322,7 @@ export const useTrackerServices = () => {
       removeAccess,
       delTracker,
       getTrackers,
+      saveIntent,
       saveNewEvent,
       deleteNewEvent,
       getSavedEvents,
