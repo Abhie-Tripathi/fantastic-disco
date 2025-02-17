@@ -27,7 +27,7 @@ export const Heading = ({
                 color="#666666"
                 width="12px"
                 height="12px"
-                className="cursor-pointe"
+                className="cursor-pointer"
               />
             </span>
           </TooltipTrigger>
