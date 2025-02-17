@@ -14,6 +14,7 @@ import styles from "./table.module.css";
 import { Event } from "@/types/events";
 import Image from "next/image";
 import { ActionPopover } from "./ActionPopover";
+import { Show } from "@/types/events/dto/event-query.dto";
 
 export function getEventRank(prop: any) {
   let rankString = "";
@@ -40,11 +41,7 @@ export function getEventRank(prop: any) {
 
 interface EventTableRowProps {
   event: Event;
-}
-
-function listProducts(data: string[]) {
-  const formattedString = data.join(" | ");
-  return formattedString;
+  show: Show[];
 }
 
 function getForecastedStatus(data: any) {
@@ -68,12 +65,10 @@ function displayValue(value: any) {
   return value;
 }
 
-export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
-  const handleActionSubmit = (action: string) => {
-    // Handle the action submission
-    console.log(`Selected action: ${action} for event: ${event.basic.id}`);
-  };
-
+export const EventTableRow: React.FC<EventTableRowProps> = ({
+  event,
+  show,
+}) => {
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
@@ -82,12 +77,12 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
         style={{ zIndex: 0 }}
       >
         <div className="flex gap-1 mb-1">
-          {event.advance?.isBranded && (
+          {show.includes(Show.branded) && event.advance?.isBranded && (
             <span className="px-2 py-0.5 rounded text-xs bg-success-background text-success-text font-medium">
               Brand
             </span>
           )}
-          {event.advance?.isSeries && (
+          {show.includes(Show.series) && event.advance?.isSeries && (
             <span className="px-2 py-0.5 rounded text-xs bg-info-background text-info-text font-medium">
               Series
             </span>
@@ -143,7 +138,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       </TableCell>
 
       {/* City Column */}
-      <TableCell >
+      <TableCell>
         {displayValue(event.basic.eventLocation.city?.name)}
       </TableCell>
 
@@ -203,24 +198,27 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       )}
 
       {/* Estimated Exhibitors Column */}
-      {event.advance?.estimatedExhibitors !== undefined && (
-        <TableCell className="text-center">
-          {displayValue(event.advance?.estimatedExhibitors)}
-        </TableCell>
-      )}
+      {show.includes(Show.estimatedExhibitors) &&
+        event.advance?.estimatedExhibitors !== undefined && (
+          <TableCell className="text-center">
+            {displayValue(event.advance?.estimatedExhibitors)}
+          </TableCell>
+        )}
 
       {/* Event Rank Column */}
-      {event.insights?.rankings !== undefined && (
-        <TableCell style={{ textAlign: "center" }}>
-          {event.insights?.rankings
-            ? displayValue(getLeastRank(event.insights.rankings))
-            : "-"}
-        </TableCell>
-      )}
+      {show.includes(Show.rankings) &&
+        event.insights?.rankings !== undefined && (
+          <TableCell style={{ textAlign: "center" }}>
+            {event.insights?.rankings
+              ? displayValue(getLeastRank(event.insights.rankings))
+              : "-"}
+          </TableCell>
+        )}
 
       {/* Reputation Column */}
-      {event.insights?.repeatSentiment !== undefined && (
-        <TableCell className="text-center">
+      {show.includes(Show.scores) &&
+        event.insights?.repeatSentiment !== undefined && (
+          <TableCell className="text-center">
           {event.insights?.repeatSentiment !== null &&
           (event.insights?.repeatSentiment > 1 ||
             event.insights?.repeatSentiment < -1) ? (
@@ -242,9 +240,10 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       )}
 
       {/* Event Rating Column */}
-      {event.insights?.reputationScore !== undefined && (
-        <TableCell style={{ textAlign: "center" }}>
-          {event.insights?.reputationScore > 0 ? (
+      {show.includes(Show.rating) &&
+        event.insights?.reputationScore !== undefined && (
+          <TableCell style={{ textAlign: "center" }}>
+            {event.insights?.reputationScore > 0 ? (
             <div className="flex gap-1 items-center justify-evenly">
               {event.insights?.reputationScore > 10 && (
                 <span className="rounded-full bg-success-background p-1">
@@ -268,10 +267,11 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       )}
 
       {/* Trust Column */}
-      {event.insights?.trustScore !== undefined && (
-        <TableCell style={{ textAlign: "center" }}>
-          {event.insights?.trustScore ? (
-            <>
+      {show.includes(Show.trustScore) &&
+        event.insights?.trustScore !== undefined && (
+          <TableCell style={{ textAlign: "center" }}>
+            {event.insights?.trustScore ? (
+              <>
               {event.insights?.trustScore > 10 && (
                 <span className="rounded-full bg-success-background p-1">
                   <ArrowUp className="w-3.5 h-3.5 text-success-text inline mb-1.5" />
@@ -292,10 +292,11 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       )}
 
       {/* Frequency Column */}
-      {event.advance?.frequency !== undefined && (
-        <TableCell className="text-center">
-          {event.advance?.frequency ? (
-            <span className="badge_primary capitalize">
+      {show.includes(Show.frequency) &&
+        event.advance?.frequency !== undefined && (
+          <TableCell className="text-center">
+            {event.advance?.frequency ? (
+              <span className="badge_primary capitalize">
               {event.advance?.frequency}
             </span>
           ) : (
@@ -305,15 +306,18 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       )}
 
       {/* Forecasted Column */}
-      <TableCell className="text-center">
-        {getForecastedStatus(event.basic.startDateTime)}
-      </TableCell>
+      {show.includes(Show.forecasted) && (
+        <TableCell className="text-center">
+          {getForecastedStatus(event.basic.startDateTime)}
+        </TableCell>
+      )}
 
       {/* Maturity Column */}
-      {event.advance?.maturity !== undefined && (
-        <TableCell className="text-center">
-          {event.advance?.maturity ? (
-            <span className="badge_primary capitalize">
+      {show.includes(Show.maturity) &&
+        event.advance?.maturity !== undefined && (
+          <TableCell className="text-center">
+            {event.advance?.maturity ? (
+              <span className="badge_primary capitalize">
               {event.advance?.maturity}
             </span>
           ) : (
@@ -323,44 +327,49 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       )}
 
       {/* Impact Score Column */}
-      {event.insights?.scores?.impactScore !== undefined && (
-        <TableCell className="text-center">
-          {event.insights?.scores?.impactScore !== 0
+      {show.includes(Show.scores) &&
+        event.insights?.scores?.impactScore !== undefined && (
+          <TableCell className="text-center">
+            {event.insights?.scores?.impactScore !== 0
             ? event.insights?.scores?.impactScore
             : "-"}
         </TableCell>
       )}
 
       {/* Inbound Score Column */}
-      {event.insights?.scores?.inboundScore !== undefined && (
-        <TableCell className="text-center">
-          {event.insights?.scores?.inboundScore !== 0
-            ? event.insights?.scores?.inboundScore
-            : "-"}
-        </TableCell>
-      )}
+      {show.includes(Show.scores) &&
+        event.insights?.scores?.inboundScore !== undefined && (
+          <TableCell className="text-center">
+            {event.insights?.scores?.inboundScore !== 0
+              ? event.insights?.scores?.inboundScore
+              : "-"}
+          </TableCell>
+        )}
 
       {/* International Score Column */}
-      {event.insights?.scores?.internationalScore !== undefined && (
-        <TableCell className="text-center">
-          {event.insights?.scores?.internationalScore !== 0
-            ? event.insights?.scores?.internationalScore
-            : "-"}
-        </TableCell>
-      )}
+      {show.includes(Show.scores) &&
+        event.insights?.scores?.internationalScore !== undefined && (
+          <TableCell className="text-center">
+            {event.insights?.scores?.internationalScore !== 0
+              ? event.insights?.scores?.internationalScore
+              : "-"}
+          </TableCell>
+        )}
 
       {/* Economic Impact Column */}
-      {event.insights?.economicImpact !== undefined && (
-        <TableCell className="text-right">
-          {event.insights.economicImpact}
-        </TableCell>
-      )}
+      {show.includes(Show.economicImpact) &&
+        event.insights?.economicImpact !== undefined && (
+          <TableCell className="text-right">
+            {event.insights.economicImpact}
+          </TableCell>
+        )}
 
       {/* Audience Zone Column */}
-      {event.audience?.audienceZone !== undefined && (
-        <TableCell className="text-center">
-          {event.audience?.audienceZone ? (
-            <span className={styles.badge_primary}>
+      {show.includes(Show.audienceZone) &&
+        event.audience?.audienceZone !== undefined && (
+          <TableCell className="text-center">
+            {event.audience?.audienceZone ? (
+              <span className={styles.badge_primary}>
               {event.audience?.audienceZone}
             </span>
           ) : (
@@ -370,11 +379,12 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       )}
 
       {/* Audience Spread Column */}
-      {event.audience?.audienceSpread !== undefined && (
-        <TableCell className="text-center">
-          <div className="flex gap-2">
-            {event.audience?.audienceSpread &&
-            Object.entries(event.audience?.audienceSpread).length > 0
+      {show.includes(Show.audienceSpread) &&
+        event.audience?.audienceSpread !== undefined && (
+          <TableCell className="text-center">
+            <div className="flex gap-2">
+              {event.audience?.audienceSpread &&
+                Object.entries(event.audience?.audienceSpread).length > 0
               ? Object.entries(event.audience?.audienceSpread).map(
                   ([key, { iso, name, count, percentage }]) => (
                     <span
@@ -401,11 +411,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
         className="sticky right-0 bg-background z-0"
         style={{ zIndex: 0 }}
       >
-        <ActionPopover
-          eventId={event.basic.id}
-          interests={event.interests}
-          onSubmit={handleActionSubmit}
-        />
+        <ActionPopover eventId={event.basic.id} interests={event.interests} />
       </TableCell>
     </TableRow>
   );

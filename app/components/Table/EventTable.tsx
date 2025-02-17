@@ -1,19 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { Table, TableBody } from "@/components/ui/table";
 import { PaginationComponent } from "@/components/pagination";
-import { Event, Ranking } from "@/types/events";
-import styles from "./table.module.css";
+import { Event } from "@/types/events";
 import { EventTableRow } from "./EventTableRow";
 import { useEvents } from "@/hooks/useEvents";
-import { useTheme } from "@/context";
 import { EventTableHeader } from "./EventTableHeader";
 import { useFilterState } from "@/hooks/useFilterState";
 import Loading from "@/components/ui/Loading";
 import ZeroState from "@/components/zerostate";
 import { ApiError } from "@/types/api";
+import { Show } from "@/types/events/dto/event-query.dto";
 
 const EventTable = () => {
-  const { theme } = useTheme();
   const { searchParams, getFilterValue, setMultipleFilters } = useFilterState();
 
   const query = Object.fromEntries(searchParams.entries());
@@ -25,6 +23,10 @@ const EventTable = () => {
   const currentPage =
     Math.floor(parseInt(getFilterValue("skip") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
+  const showValues: Show[] = getFilterValue("show")
+    .split(",")
+    .filter(Boolean)
+    .map((show) => Show[show as keyof typeof Show]);
 
   const handlePageChange = (page: number) => {
     setMultipleFilters({
@@ -57,10 +59,14 @@ const EventTable = () => {
       <div className="rounded-md border bg-background">
         <div className="overflow-auto max-h-[calc(100vh-264px)]">
           <Table>
-            <EventTableHeader events={events} />
+            <EventTableHeader show={showValues} />
             <TableBody>
               {events.map((event: Event) => (
-                <EventTableRow key={event.basic.id} event={event} />
+                <EventTableRow
+                  key={event.basic.id}
+                  event={event}
+                  show={showValues}
+                />
               ))}
             </TableBody>
           </Table>

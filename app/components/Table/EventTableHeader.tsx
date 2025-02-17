@@ -1,29 +1,15 @@
 import type React from "react";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Event } from "@/types/events";
-
+import { Show } from "@/types/events/dto/event-query.dto";
 interface EventTableHeaderProps {
-  events: Event[];
+  show: Show[];
 }
 
-export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
-  events,
-}) => {
-  const hasField = (path: string) => {
-    return events.some((event) => {
-      const parts = path.split(".");
-      let value: any = event;
-      for (const part of parts) {
-        value = value?.[part];
-      }
-      return value !== undefined && value !== null;
-    });
-  };
-
+export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
   return (
     <TableHeader>
       <TableRow className="bg-muted/50 hover:bg-muted/50">
-        <TableHead 
+        <TableHead
           className="sticky left-0 bg-slate-50 dark:bg-slate-900  max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] h-20 after:absolute after:inset-0 after:bg-slate-50 dark:after:bg-slate-900"
           style={{ zIndex: 0 }}
         >
@@ -47,75 +33,77 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         <TableHead className="min-w-[150px] h-20">
           <div className="font-medium text-foreground ">Category</div>
         </TableHead>
-        {hasField("insights.estimatedAttendance") && (
-          <TableHead className="min-w-[120px] h-20">
-            <div className="font-medium text-foreground ">Event Size</div>
-          </TableHead>
-        )}
-        {hasField("advance.estimatedExhibitors") && (
+
+        <TableHead className="min-w-[120px] h-20">
+          <div className="font-medium text-foreground ">Event Size</div>
+        </TableHead>
+
+        {show.includes(Show.estimatedExhibitors) && (
           <TableHead className="min-w-[130px] h-20">
             <div className="font-medium text-foreground ">Est. Exhibitors</div>
           </TableHead>
         )}
-        {hasField("insights.rankings") && (
+        {show.includes(Show.rankings) && (
           <TableHead>
             <div className="font-medium text-foreground ">Rank</div>
           </TableHead>
         )}
-        {hasField("insights.repeatSentiment") && (
+        {show.includes(Show.scores) && (
           <TableHead>
             <div className="font-medium text-foreground ">Reputation</div>
           </TableHead>
         )}
-        {hasField("insights.reputationScore") && (
+        {show.includes(Show.rating) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Event Rating</div>
           </TableHead>
         )}
-        {hasField("insights.trustScore") && (
+        {show.includes(Show.trustScore) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Trust</div>
           </TableHead>
         )}
-        {hasField("advance.frequency") && (
+        {show.includes(Show.frequency) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Frequency</div>
           </TableHead>
         )}
-        <TableHead className="min-w-[150px] text-center">
-          <div className="font-medium text-foreground ">Forecasted</div>
-        </TableHead>
-        {hasField("advance.maturity") && (
+        {show.includes(Show.forecasted) && (
+          <TableHead className="min-w-[150px] text-center">
+            <div className="font-medium text-foreground ">Forecasted</div>
+          </TableHead>
+        )}
+        {show.includes(Show.maturity) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Maturity</div>
           </TableHead>
         )}
-        {hasField("insights.scores.impactScore") && (
+        {show.includes(Show.scores) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Impact</div>
           </TableHead>
         )}
-        {hasField("insights.scores.inboundScore") && (
+        {show.includes(Show.scores) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Inbound</div>
           </TableHead>
         )}
-        {hasField("insights.scores.internationalScore") && (
+        {show.includes(Show.scores) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">International</div>
           </TableHead>
         )}
-        {hasField("insights.economicImpact") && (
+        {show.includes(Show.economicImpact) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Economic Impact</div>
           </TableHead>
         )}
-        {hasField("audience.audienceZone") && (
+        {show.includes(Show.audienceZone) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Audience Zone</div>
           </TableHead>
         )}
-        {hasField("audience.audienceSpread") && (
+        {show.includes(Show.audienceSpread) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Audience Spread</div>
           </TableHead>

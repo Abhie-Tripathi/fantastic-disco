@@ -21,14 +21,9 @@ import { eventsKeys } from "@/hooks/useEvents";
 interface ActionPopoverProps {
   eventId: string;
   interests: Interest | undefined;
-  onSubmit: (value: string) => void;
 }
 
-export function ActionPopover({
-  eventId,
-  interests,
-  onSubmit,
-}: ActionPopoverProps) {
+export function ActionPopover({ eventId, interests }: ActionPopoverProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const {
@@ -55,7 +50,6 @@ export function ActionPopover({
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: eventsKeys.all });
 
-            onSubmit(selectedAction);
             setIsOpen(false);
             setSelectedAction(undefined);
             toast({
@@ -65,7 +59,6 @@ export function ActionPopover({
             });
           },
           onError: (error) => {
-            console.log("errors",error)
             toast({
               title: "Error",
               description: "Failed to record your interest. Please try again.",
