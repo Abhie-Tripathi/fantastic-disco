@@ -1,4 +1,3 @@
-
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "";
 const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
 
@@ -21,7 +20,7 @@ export const endpoints = {
     recentSearches: `${BASE_URL}/me/recent-searches`,
     poc: `${BASE_URL}/event-poc`,
     enabledFilters: `${BASE_URL}/configuration`,
-    recentSearch : `${BASE_URL}/event/recent`
+    recentSearch: `${BASE_URL}/event/recent`,
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
@@ -43,6 +42,12 @@ export const endpoints = {
   locationSuggestion: `${BASE_URL}/location/suggestion`,
   designations: `${BASE_URL}/designation`,
   users: `${BASE_URL}/auth/users`,
+  trends: {
+    eventTrends: `${BASE_URL}/trend`,
+    predictedAttendance: `${BASE_URL}/trends/predicted-attendance`,
+    predictedEvents: `${BASE_URL}/trends/predicted-number-of-events`,
+    eventTypes: `${BASE_URL}/trends/event-types`,
+  },
   tracker: {
     commonUrl: `${BASE_URL}/tracker`,
     access: `${BASE_URL}/tracker/access`,
@@ -83,7 +88,7 @@ export const endpoints = {
     deActiveWidget: `${BASE_URL}/widget?status=deactivate`,
     onlyDraftWidget: `${BASE_URL}/widget?status=draft`,
     widgetById: `${BASE_URL}/widget`,
-    widget: `${BASE_URL}/widget`
+    widget: `${BASE_URL}/widget`,
   },
   events: {
     getEvents: `${BASE_URL}/event?limit=2`,
@@ -95,7 +100,7 @@ export const endpoints = {
     addEvent: `${BASE_URL}/event`,
     addSpeakers: `${BASE_URL}/event/speaker`,
     addExhibitors: `${BASE_URL}/event/speaker`,
-    updateEvent: `${BASE_URL}/event`
+    updateEvent: `${BASE_URL}/event`,
   },
   intend: {
     getGuest: `${BASE_URL}/intend/users`,
@@ -107,9 +112,9 @@ export const endpoints = {
     getSuggestions: `${BASE_URL}/invite`,
     sendInvite: `${BASE_URL}/invite/send`,
   },
-  calendar:{
-    getyearlyEvents:`${BASE_URL}/event?`,
+  calendar: {
+    getyearlyEvents: `${BASE_URL}/event?`,
   },
   configuration: `${BASE_URL}/configuration`,
-  myprofile:`${BASE_URL}/auth/customer/profile`
+  myprofile: `${BASE_URL}/auth/customer/profile`,
 };

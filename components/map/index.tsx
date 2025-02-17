@@ -1,5 +1,4 @@
-//@ts-nocheck
-
+// @ts-nocheck
 "use client";
 
 import React, {
@@ -23,7 +22,6 @@ import { AlignLeft } from "lucide-react";
 import EventList from "./event-list";
 import Alerts from "./alerts";
 import mapboxgl from "mapbox-gl";
-import { useFilterState } from "@/hooks/useFilterState";
 import { Event, EventCount, MapEvents } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -35,11 +33,17 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useLocationService } from "@/services/locationService";
 import { useFilterContext } from "@/context/filterContext";
+import EventCountsLayer from "./layers/EventCountsLayer";
+import EventsLayer from "./layers/EventsLayer";
+import HoverTooltip from "./hoverTooltip";
+import AlertPolygonLayer from "./layers/AlertLayer";
 import { useTrackerContext } from "@/context/tracker";
 import Loading from "../ui/Loading";
 import { useTrackerServices } from "@/services/trackerServices";
 import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
+import { useFilterState } from "@/hooks/useFilterState";
+
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
@@ -88,7 +92,6 @@ export default function MapComponent({
 }: MapProps) {
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
-  const [location, setLocation] = useState();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
@@ -104,12 +107,17 @@ export default function MapComponent({
     padding: { top: 0, bottom: 0, left: 0, right: 0 },
   });
   const [events, setEvents] = useState<MapEvents[]>([]);
+  const [selectedAlert, setSelectedAlert] = useState<string>();
   const { getLocationDetails, getLocationBBox } = useLocationService();
   const [popupInfo, setPopupInfo] = useState<PopupInfo | null>(null);
   const [showEventList, setShowEventList] = useState("");
   const [currentZoomGroup, setCurrentZoomGroup] = useState<ZoomGroup>("city");
-  const { getEventsCount, getEventsWithSearchParams, getEventById } =
-    useEventsService();
+  const {
+    getEventsCount,
+    getEventsWithSearchParams,
+    getEventById,
+    getRawEventsWithSearchParams,
+  } = useEventsService();
   const [showUnattendedEvents, setShowUnattendedEvents] = useState(false);
   const [locationBBox, setLocationBBox] = useState<any | null>(null);
   const [hoverInfo, setHoverInfo] = useState<{
@@ -118,19 +126,6 @@ export default function MapComponent({
     feature: any;
     clusteredPoints?: { name: string; count: number }[];
   } | null>(null);
-  //   const cityIds = data?.tracker?.filterValue?.locationIds?.city?.length > 0
-  //   ? data?.tracker?.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0])
-  //   : [];
-
-  // const countryIds = data?.tracker?.filterValue?.locationIds?.country?.length > 0
-  //   ? data?.tracker?.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0])
-  //   : [];
-
-  // const stateIds = data?.tracker?.filterValue?.locationIds?.state?.length > 0
-  //   ? data?.tracker?.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0])
-  //   : [];
-  //   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
-
   const memoizedGetEventsCount = useCallback(getEventsCount, []);
   const memoizedGetEventsWithSearchParams = useCallback(
     getEventsWithSearchParams,
@@ -139,28 +134,31 @@ export default function MapComponent({
   const isHolidaySelected = getLocalFilterValue("eventTypes")
     .split(",")
     .includes("holiday");
+  const [highlightedEvent, setHighlightedEvent] = useState<Event | null>(null);
 
-  useEffect(() => {
+  const location = useMemo(() => {
     const geoCoordinates = getLocalFilterValue("geoCoordinates");
     const locationIds =
       source === "tracker"
         ? trackerLoc?.length > 0
           ? trackerLoc
           : "defaultLoc"
+        : getLocalFilterValue("locationIds").length === 0
+        ? "defaultLoc"
         : getLocalFilterValue("locationIds");
     if (locationIds === "defaultLoc")
       setViewport({
         ...viewport,
         zoom: 1,
       });
+
     if (geoCoordinates) {
-      setLocation({ type: "geoCoordinates", ...JSON.parse(geoCoordinates) });
-    } else if (locationIds?.length) {
-      setLocation({ type: "locationIds", locationIds });
-    } else {
-      setLocation(null);
+      return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
+    } else if (locationIds.length) {
+      return { type: "locationIds", locationIds };
     }
-  }, [searchParams, id]);
+    return null;
+  }, [searchParams]);
 
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey:
@@ -182,8 +180,6 @@ export default function MapComponent({
         return response || [];
       }
     },
-
-    enabled: location !== null,
   });
 
   const handleMapClick = async (e: any) => {
@@ -206,6 +202,7 @@ export default function MapComponent({
           const singleEventDetails = await getEventById(
             clickedFeature.properties.id
           );
+          console.log("Single event clicked:", clickedFeature.properties.id);
           if (singleEventDetails)
             setPopupInfo({
               events: [singleEventDetails.event],
@@ -259,7 +256,9 @@ export default function MapComponent({
           break;
 
         case "unclustered-counts-circle":
+          console.log("unclustered-counts-circle");
           const unclusteredFeature = e.features && e.features[0];
+          console.log(unclusteredFeature);
           if (unclusteredFeature) {
             mapRef.current?.easeTo({
               center: unclusteredFeature.geometry.coordinates as [
@@ -303,6 +302,7 @@ export default function MapComponent({
           break;
 
         default:
+          console.log("Clicked on an unexpected layer:", layerId);
           setPopupInfo(null);
       }
     } else {
@@ -334,10 +334,9 @@ export default function MapComponent({
           };
 
           try {
-            const modifiedSearchParams = searchParams.replace(
-              /locationIds=[^&]*&?/,
-              ""
-            );
+            const modifiedSearchParams = searchParams
+              ?.replace(/locationIds=[^&]*&?/, "")
+              .replace(/take=[^&]*&?/, "");
 
             const viewBoundString = encodeURIComponent(
               JSON.stringify(viewBound)
@@ -356,7 +355,8 @@ export default function MapComponent({
                 searchParams
               );
             } else {
-              eventsData = await memoizedGetEventsWithSearchParams(
+              console.log("eventsData", eventsData);
+              eventsData = await getRawEventsWithSearchParams(
                 finalSearchParams
               );
             }
@@ -373,20 +373,11 @@ export default function MapComponent({
     };
 
     fetchEvents();
-  }, [
-    currentZoomGroup,
-    searchParams,
-    memoizedGetEventsWithSearchParams,
-    location,
-  ]);
+  }, [currentZoomGroup, searchParams, location]);
 
   const onMove = useCallback(({ viewState }: { viewState: ViewState }) => {
     setViewport(viewState);
   }, []);
-  // useEffect(() => {
-
-  // }, [searchParams
-  // ]);
 
   const eventCountsGeoJSON = React.useMemo(() => {
     return {
@@ -403,7 +394,7 @@ export default function MapComponent({
             },
             properties: {
               count: count.count,
-              id: count.latitude,
+              id: count.cityId,
               name: count.name,
               type: currentZoomGroup, // "country" or "city"
             },
@@ -457,6 +448,8 @@ export default function MapComponent({
       return "city";
     }
   }, []);
+
+  console.log(currentZoomGroup);
 
   useEffect(() => {
     const newZoomGroup = determineZoomGroup(viewport.zoom);
@@ -514,22 +507,8 @@ export default function MapComponent({
     };
     fetchLocationDetails();
   }, [location, trackerId]);
-  // useEffect(() => {
-  //   console.log(trackerId);
 
-  //   setViewport({
-  //     latitude: 0,
-  //     longitude: 0,
-  //     zoom: 1,
-  //     bearing: 0,
-  //     pitch: 0,
-  //     padding: { top: 0, bottom: 0, left: 0, right: 0 },
-  //   });
-
-  // }, [trackerId]);
   useEffect(() => {
-    console.log(locationBBox);
-
     if (!mapRef.current) return;
     if (location?.type === "geoCoordinates") {
       const { latitude, longitude, radius } = location;
@@ -559,7 +538,6 @@ export default function MapComponent({
   const circleLayer: LayerProps | null = useMemo(() => {
     if (location?.type === "geoCoordinates") {
       const { latitude, longitude, radius } = location;
-      console.log(latitude, longitude, radius);
       const center = point([Number(longitude), Number(latitude)]);
       const circleGeoJSON = circle(center, radius, 50, "kilometers");
 
@@ -589,7 +567,15 @@ export default function MapComponent({
   }, []);
 
   const showEventCount = viewport.zoom < 12 && eventCountsQuery.isSuccess;
-  const showEvent = viewport.zoom >= 12 && events.length;
+  const showEvent = viewport.zoom >= 12;
+
+  const handleEventHover = (event: Event) => {
+    setHighlightedEvent(event);
+  };
+
+  const handleEventLeave = () => {
+    setHighlightedEvent(null);
+  };
 
   return (
     <div className="relative">
@@ -623,6 +609,7 @@ export default function MapComponent({
                     height: !isGlobal ? "calc(100vh - 178px)" : "300px",
                   }}
                   onMove={onMove}
+                
                   onLoad={onMapLoad}
                   onClick={handleMapClick}
                   onMouseMove={(e) => {
@@ -678,7 +665,7 @@ export default function MapComponent({
                   projection={{ name: "mercator" }}
                   mapStyle={MapStyle.Street}
                   mapboxAccessToken={MapboxToken}
-                  minZoom={0.8}
+                  minZoom={1.25}
                   interactiveLayerIds={[
                     "clustered-counts-circle",
                     "unclustered-counts-circle",
@@ -698,6 +685,7 @@ export default function MapComponent({
                       <span>Event List</span>
                     </Button>
                   )}
+
                   {isHolidaySelected && (
                     <div className="absolute top-4 left-4 bg-white rounded-sm shadow-sm flex items-center gap-2 p-2">
                       <Checkbox
@@ -710,7 +698,12 @@ export default function MapComponent({
                       </Label>
                     </div>
                   )}
-                  <Alerts />
+                  {selectedAlert && (
+                    <Alerts
+                      selectedAlert={selectedAlert}
+                      setSelectedAlert={setSelectedAlert}
+                    />
+                  )}
 
                   <EventList
                     source={source}
@@ -718,193 +711,26 @@ export default function MapComponent({
                     searchParam={searchParams}
                     showEventType={showEventList}
                     onClose={() => setShowEventList("")}
+                    mapRef={mapRef}
+                    onEventHover={handleEventHover}
+                    onEventLeave={handleEventLeave}
                   />
 
-                  <Source
-                    id="event-source"
-                    type="geojson"
-                    data={eventCountsGeoJSON}
-                    cluster={true}
-                    clusterMaxZoom={13}
-                    clusterRadius={50}
-                    clusterProperties={{
-                      sum: ["+", ["coalesce", ["get", "count"], 0]],
-                    }}
-                  >
-                    <Layer
-                      id="clustered-counts-circle"
-                      type="circle"
-                      filter={["has", "point_count"]}
-                      paint={{
-                        "circle-color": "#6f48ad",
-                        "circle-radius": [
-                          "step",
-                          ["get", "sum"],
-                          15,
-                          100,
-                          25,
-                          1000,
-                          35,
-                        ],
-                        "circle-stroke-width": 1,
-                        "circle-stroke-color": "#fff",
-                      }}
-                      layout={{
-                        visibility: showEventCount ? "visible" : "none",
-                      }}
-                    />
+                  <EventCountsLayer
+                    eventCounts={eventCountsQuery.data || []}
+                    currentZoomGroup={currentZoomGroup}
+                    showEventCount={showEventCount}
+                  />
 
-                    <Layer
-                      id="cluster-count"
-                      type="symbol"
-                      filter={["has", "point_count"]}
-                      layout={{
-                        "text-field": "{sum}",
-                        "text-font": [
-                          "DIN Offc Pro Medium",
-                          "Arial Unicode MS Bold",
-                        ],
-                        "text-size": 14,
-                        visibility: showEventCount ? "visible" : "none",
-                      }}
-                      paint={{
-                        "text-color": "#fff",
-                      }}
+                  {events && (
+                    <EventsLayer
+                      events={events}
+                      showEvent={showEvent}
+                      highlightedEventId={highlightedEvent?.id}
                     />
+                  )}
 
-                    <Layer
-                      id="unclustered-counts-circle"
-                      type="circle"
-                      filter={["!", ["has", "point_count"]]}
-                      layout={{
-                        visibility: showEventCount ? "visible" : "none",
-                      }}
-                      paint={{
-                        "circle-color": "#6f48ad",
-                        "circle-radius": [
-                          "interpolate",
-                          ["linear"],
-                          ["get", "count"],
-                          10,
-                          20,
-                          100,
-                          25,
-                          1000,
-                          35,
-                        ],
-                        "circle-stroke-width": 1,
-                        "circle-stroke-color": "#fff",
-                      }}
-                    />
-
-                    <Layer
-                      id="unclustered-point-label"
-                      type="symbol"
-                      filter={["!", ["has", "point_count"]]}
-                      layout={{
-                        "text-field": [
-                          "coalesce",
-                          ["to-string", ["get", "count"]],
-                          "0",
-                        ],
-                        "text-font": [
-                          "DIN Offc Pro Medium",
-                          "Arial Unicode MS Bold",
-                        ],
-                        "text-size": 12,
-                        visibility: showEventCount ? "visible" : "none",
-                      }}
-                      paint={{
-                        "text-color": "#fff",
-                      }}
-                    />
-                  </Source>
-
-                  <Source
-                    id="events-source"
-                    type="geojson"
-                    data={eventsGeoJSON}
-                    cluster={true}
-                    clusterMaxZoom={16}
-                    clusterRadius={50}
-                  >
-                    <Layer
-                      id="clustered-events-circle"
-                      type="circle"
-                      source="events-source"
-                      filter={["has", "point_count"]}
-                      layout={{ visibility: showEvent ? "visible" : "none" }}
-                      paint={{
-                        "circle-color": "#6f48ad",
-                        "circle-radius": [
-                          "step",
-                          ["get", "point_count"],
-                          15,
-                          15,
-                          20,
-                          50,
-                          30,
-                        ],
-                      }}
-                    />
-
-                    <Layer
-                      id="clustered-events-count"
-                      type="symbol"
-                      source="events-source"
-                      filter={["has", "point_count"]}
-                      layout={{
-                        "text-field": "{point_count_abbreviated}",
-                        "text-font": [
-                          "DIN Offc Pro Medium",
-                          "Arial Unicode MS Bold",
-                        ],
-                        "text-size": 12,
-                        visibility: showEvent ? "visible" : "none",
-                      }}
-                      paint={{ "text-color": "#fff" }}
-                    />
-
-                    <Layer
-                      id="unclustered-events-single"
-                      type="symbol"
-                      filter={[
-                        "all",
-                        ["!", ["has", "point_count"]],
-                        ["==", ["get", "eventCount"], 1],
-                      ]}
-                      layout={{
-                        "icon-image": ["get", "eventType"],
-                        "icon-size": 0.5,
-                        visibility: showEvent ? "visible" : "none",
-                      }}
-                    />
-
-                    <Layer
-                      id="unclustered-events-multiple"
-                      type="symbol"
-                      filter={[
-                        "all",
-                        ["!", ["has", "point_count"]],
-                        [">", ["get", "eventCount"], 1],
-                      ]}
-                      layout={{
-                        "icon-image": "multiple-events",
-                        "icon-size": 1,
-                        "text-field": "{eventCount}",
-                        "text-font": [
-                          "DIN Offc Pro Medium",
-                          "Arial Unicode MS Bold",
-                        ],
-                        "text-size": 12,
-                        "text-offset": [-0.1, -0.4],
-                        visibility: showEvent ? "visible" : "none",
-                      }}
-                      paint={{
-                        "text-color": "#ffffff",
-                      }}
-                    />
-                  </Source>
+                  <AlertPolygonLayer eventId={selectedAlert} mapRef={mapRef} />
 
                   {circleLayer && (
                     <Source
@@ -922,49 +748,8 @@ export default function MapComponent({
                       setPopupInfo={setPopupInfo}
                     />
                   )}
-                  {hoverInfo && (
-                    <div
-                      className="absolute z-10 bg-white p-2 rounded shadow max-w-xs max-h-60 overflow-y-auto"
-                      style={{
-                        left: hoverInfo.x,
-                        top: hoverInfo.y - 10,
-                        transform: "translate(-50%, -100%)",
-                      }}
-                    >
-                      {hoverInfo.clusteredPoints ? (
-                        <>
-                          {hoverInfo.clusteredPoints
-                            .sort((a, b) => b.count - a.count)
-                            .slice(0, 5)
-                            .map((point, index) => (
-                              <div
-                                key={index}
-                                className="mb-1 flex justify-between items-center"
-                              >
-                                <span className="font-semibold">
-                                  {point.name}
-                                </span>
-                                <span className="ml-2">{point.count}</span>
-                              </div>
-                            ))}
-                          {hoverInfo.clusteredPoints.length > 5 && (
-                            <div className="text-xs text-gray-500 italic mt-1">
-                              click to view more cities
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <div className="mb-1 flex justify-between items-center">
-                          <span className="font-semibold">
-                            {hoverInfo.feature.properties.name}
-                          </span>
-                          <span className="ml-2">
-                            {hoverInfo.feature.properties.count}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )}
+
+                  {hoverInfo && <HoverTooltip hoverInfo={hoverInfo} />}
                 </ReactMapGL>
               )}
             </>

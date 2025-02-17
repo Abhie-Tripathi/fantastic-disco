@@ -15,16 +15,15 @@ interface KeywordSelectorProps{
   type?:string;
   fetchAISuggestion?: (promptText: string) => Promise<any>;
   suggestions?:any;
-}
-interface keywordInterface{
-  isKeywordEnabled?:boolean;
-  positiveKeywords?: string[] | undefined;
-  negativeKeywords?: string[] | undefined;
+  hideSuggestion?: boolean;
+  setHideSuggestion?: (value: boolean) => void;
 }
 export default function KeywordFilter({
   type,
   fetchAISuggestion,
   suggestions,
+  hideSuggestion,
+  setHideSuggestion
 }:KeywordSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const {
@@ -45,25 +44,32 @@ export default function KeywordFilter({
   const [includeKeywords, setIncludeKeywords] = useState<string[]>([]);
 const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
 useEffect(()=>{
+  
   const includeKeywords = [
     ...getLocalFilterValue("includeKeywords")?.split(",").filter((keyword) => keyword.trim() !== "")
   ];
   const excludeKeywords=[
         ...getLocalFilterValue("excludeKeywords")?.split(",").filter((keyword) => keyword.trim() !== "")
       ];
-  if(includeKeywords.length>0 && type==="T_PRODUCT_KEYWORDS" && activeTab==="include")
+  if(includeKeywords.length>0 && type==="T_PRODUCT_KEYWORDS" && activeTab==="include" && !hideSuggestion)
   fetchAISuggestion?.(`List top 5 keywords similar to ${includeKeywords[includeKeywords.length-1]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`);
-  else if(excludeKeywords.length>0 && type==="T_PRODUCT_KEYWORDS" && activeTab==="exclude"){
+  else if(excludeKeywords.length>0 && type==="T_PRODUCT_KEYWORDS" && activeTab==="exclude" && !hideSuggestion){
   fetchAISuggestion?.(`List top 5 keywords similar to ${excludeKeywords[excludeKeywords.length-1]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`);
 }
 },[getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords")])
   useEffect(() => {
-    const savedIncludeKeywords = localFilters.includeKeywords;
-    const savedExcludeKeywords = localFilters.excludeKeywords;
-    if((savedIncludeKeywords ?? "").length > 0)
-    setIncludeKeywords?.(savedIncludeKeywords?.split(",") || []);
-    if((savedExcludeKeywords ?? "").length > 0)
-    setExcludeKeywords?.(savedExcludeKeywords?.split(",") || []);
+    const savedIncludeKeywords = localFilters?.includeKeywords;
+    const savedExcludeKeywords = localFilters?.excludeKeywords;
+    setIncludeKeywords(
+      savedIncludeKeywords
+      ?.split(",")
+      .filter(item => item.trim().length !== 0) || []
+      );
+    setExcludeKeywords(
+      savedExcludeKeywords
+      ?.split(",")
+      .filter(item => item.trim().length !== 0) || []
+      );
   }, [searchParams, localFilters]);
 
   const handleAddKeyword = (e: React.FormEvent) => {
@@ -78,6 +84,7 @@ useEffect(()=>{
     }
   };
   const addKeywords=(newKeywords:string[])=>{
+    setHideSuggestion?.(false);
     if (activeTab === "include") {
       const uniqueNewKeywords = newKeywords.filter(
         (k) => !includeKeywords.includes(k)
@@ -154,7 +161,6 @@ useEffect(()=>{
       {(activeTab && suggestions && suggestions.length > 0) &&
         (<div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full" >
           <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">
-            {/* <Image src={AiIcon} alt="AI" className={iconClass} width={14} height={14} /> */}
             AI SUGGESTIONS {" "}
             <span className={styles.experimental_tag}>Beta</span>
           </div>

@@ -15,6 +15,7 @@ import { SettingsGear, User } from 'geist-icons';
 import { useTrackerServices } from '@/services/trackerServices';
 import { useTrackerContext } from '@/context/tracker';
 import { Button } from "@/components/ui/button";
+import {TableIcon, ListIcon, CalendarIcon, Globe } from "lucide-react";
 const Index = () => {
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
@@ -112,12 +113,23 @@ const Index = () => {
           <div className='flex p-1 gap-2 justify-evenly bg-[var(--accent-color)] items-center border border-[var(--neutral-light-color)] rounded-md'>
             {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}`}> */}
             <div onClick={()=>handleClick("table")}>
-              <div className={`${styles.viewsTab} ${view === "table" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("table")}>Table</div></div>
+              <div className={`${styles.viewsTab} ${view === "table" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("table")}>
+              <TableIcon className="h-4 w-4" />
+                Table
+              </div>
+              </div>
             <div onClick={()=>handleClick("list")}>
-              <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("list")}>List</div></div>
+              <div className={`${styles.viewsTab} ${view === "list" ? styles.tabActive : ""} cursor-pointer`} onClick={()=>setView("list")}>
+              <ListIcon className="h-4 w-4" />
+                List
+                </div>
+              </div>
               {/* </Link> */}
               <div className="cursor-pointer">
-              <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>handleClick("map")}>Map</div>
+              <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>handleClick("map")}>
+              <Globe className="h-4 w-4" />
+                Map
+                </div>
               
               {/* <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
               <div className={styles.viewsTab}>
@@ -129,8 +141,9 @@ const Index = () => {
               <div className="cursor-pointer">
               {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>handleClick("calendar")}>Calendar</div> */}
               <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
-              {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>setView("calendar")}>Calendar</div> */}
+              {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>handleClick("calendar")}>Calendar</div> */}
               <div className={styles.viewsTab}>
+              <CalendarIcon className="h-4 w-4" />
               Calendar
               <span className={`${styles.tooltipText}`} style={{marginLeft:"-30%"}}>Coming Soon</span>
               </div>

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
+import { columnsDropdown } from "@/data/trends";
 
 type EventGroupType = "social" | "business";
 
@@ -90,36 +91,50 @@ export default function TrendsEventTypeSelector() {
 
   const handleApply = useCallback(() => {
     const allSelected = Object.values(selectedCategories).flat();
+    const columnsValue = columnsDropdown
+      .filter((dropdown) => dropdown.value !== "impactScore")
+      .map((filteredValue) => filteredValue.value)
+      .join(",");
     setLocalFilter("eventTypes", allSelected.join(","));
+    setLocalFilter("columns", columnsValue);
+    setLocalFilter("show", "alerts,scores,economicImpact");
     setIsOpen(false);
   }, [selectedCategories, setLocalFilter]);
 
   const renderCategoryGroup = useCallback(
     (type: EventGroupType) => (
-      <div key={type}>
-        <div className="flex items-center space-x-2 mb-2">
+      <div key={type} className="flex gap-2">
+        <div className="flex space-x-2">
           <Checkbox
             className="rounded-[2.5px]"
             id={`select-all-${type}`}
             checked={isCategorySelected(type)}
             onCheckedChange={() => handleCategoryToggle(type)}
           />
-          <label htmlFor={`select-all-${type}`} className="text-xs font-medium">
-            {type.toUpperCase()}
-          </label>
         </div>
-        <ul className="space-y-3">
-          {groupedEventTypes[type].map((category) => (
-            <li
-              key={category}
-              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+        <div>
+          <div className="flex items-center space-x-2 mb-2">
+            <label
+              htmlFor={`select-all-${type}`}
+              className="text-xs font-medium"
             >
-              {category
-                .replace(/-/g, " ")
-                .replace(/\b\w/g, (l) => l.toUpperCase())}
-            </li>
-          ))}
-        </ul>
+              {type.toUpperCase()}
+            </label>
+          </div>
+
+          <ul className="space-y-3">
+            {groupedEventTypes[type].map((category) => (
+              <li
+                key={category}
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+              >
+                {category
+                  .replace(/-/g, " ")
+                  .replace(/\b\w/g, (l) => l.toUpperCase())}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     ),
     [handleCategoryToggle, isCategorySelected]
@@ -164,7 +179,6 @@ export default function TrendsEventTypeSelector() {
         align="start"
       >
         <div className="p-4 grid grid-cols-2 gap-4">
-          {renderCategoryGroup("social")}
           {renderCategoryGroup("business")}
         </div>
       </PopoverContent>

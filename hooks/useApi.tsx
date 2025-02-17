@@ -36,7 +36,8 @@ export function useApi<T>() {
   const request = useCallback(
     async <R = T,>(
       url: string,
-      config?: AxiosRequestConfig
+      config?: AxiosRequestConfig,
+      skipDataCheck?: boolean
     ): Promise<R | undefined> => {
       setState((prev) => ({ ...prev, isLoading: true }));
 
@@ -44,6 +45,11 @@ export function useApi<T>() {
         url,
         ...config,
       });
+
+      if (skipDataCheck) {
+        setState({ data: undefined, error: null, isLoading: false });
+        return response.data as unknown as R;
+      }
 
       if ("data" in response.data) {
         setState({

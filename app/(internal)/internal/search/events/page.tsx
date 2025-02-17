@@ -25,8 +25,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
 import { ApiError } from "@/types/api";
 import {
-  CalendarEvent,
-  CalendarMonthEvent,
+  CalendarYearEventsResponse,
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
   Event,
@@ -35,9 +34,17 @@ import {
 } from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Filter, FilterX, Loader2, Plus } from "lucide-react";
+import { ArrowUpRight, Filter, FilterX, Loader2, Plus, TableIcon, ListIcon, MapIcon, CalendarIcon, Globe } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { toast } from "react-toastify";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
@@ -160,7 +167,9 @@ const Search = () => {
     }
   }, []);
 
-  const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
+  const adaptedParams = EventsAdapter.adaptRequestParams(
+    new URLSearchParams(searchParams.toString())
+  );
 
   const adaptedQueryString = (function () {
     if (!searchParams.toString()) return;
@@ -189,6 +198,7 @@ const Search = () => {
     reptSent: false,
     eventRating: adaptedParams.shows?.includes("eventRating"),
     estExhibit: adaptedParams.shows?.includes("estimatedExhibitScore"),
+    economicImpact: adaptedParams.shows?.includes("economicImpact"),
     repeatSent: adaptedParams.trustScore ? true : false,
     maturity: adaptedParams.shows?.includes("maturity"),
     impactScore: adaptedParams.shows?.includes("eventImpactScore"),
@@ -342,24 +352,24 @@ const Search = () => {
         className="mt-0"
       >
         <div className="flex justify-between items-center py-6 sticky top-0 bg-background z-20 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)]">
-          {/* <div className="flex items-center gap-2">
-            <Badge className="bg-primary text-white">{count}</Badge>
-            <p className="text-primary font-semibold">Events Found</p>
-          </div> */}
           <div className="w-[108px]"></div>
           <div className="flex justify-center">
-            <TabsList className="grid w-[450px] grid-cols-4 h-auto">
-              <TabsTrigger value="table" className="text-base">
-                Table
+            <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
+              <TabsTrigger value="table" className="flex items-center gap-2 py-2 px-4">
+                <TableIcon className="h-4 w-4" />
+                <span>Table</span>
               </TabsTrigger>
-              <TabsTrigger value="list" className="text-base">
-                List
+              <TabsTrigger value="list" className="flex items-center gap-2 py-2 px-4">
+                <ListIcon className="h-4 w-4" />
+                <span>List</span>
               </TabsTrigger>
-              <TabsTrigger value="map" className="text-base">
-                Map
+              <TabsTrigger value="map" className="flex items-center gap-2 py-2 px-4">
+                <Globe className="h-4 w-4" />
+                <span>Map</span>
               </TabsTrigger>
-              <TabsTrigger value="calendar" className=" text-base">
-                Calendar
+              <TabsTrigger value="calendar" className="flex items-center gap-2 py-2 px-4">
+                <CalendarIcon className="h-4 w-4" />
+                <span>Calendar</span>
               </TabsTrigger>
             </TabsList>
           </div>
@@ -423,18 +433,9 @@ const Search = () => {
           )}
         </TabsContent>
         <TabsContent value="calendar">
-          {isLoading ? (
-            <Loading />
-          ) : eventData?.count == 0 ? (
-            <ZeroState text="No events were found in the selected area." />
-          ) : error ? (
-            <ZeroState text={(error as ApiError).message} />
-          ) : (
-            <EventCalendar
-              source="search"
-              events={events as CalendarEvent[] | CalendarMonthEvent[]}
-            />
-          )}
+          <Suspense fallback={<Loading />}>
+            <EventCalendar />
+          </Suspense>
         </TabsContent>
       </Tabs>
 
