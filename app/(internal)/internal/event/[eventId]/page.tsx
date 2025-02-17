@@ -442,7 +442,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
                 <Text fontWeight="semibold" variant="noMargin">
                   {typeOfEvent.charAt(0).toUpperCase() + typeOfEvent.slice(1)}{" "}
-                  Event
                 </Text>
               ) : venueName ? (
                 <Text fontWeight="semibold" variant="noMargin">
