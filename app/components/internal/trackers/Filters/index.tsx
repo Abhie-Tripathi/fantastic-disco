@@ -673,7 +673,7 @@ const Pages = () => {
           isDomain || isURL
           ? `Do not include ${value.replace(/https?:\/\//, "")} in the response.`
           : `Also share the official working domain of ${value}.`
-          } Response should be in plain JSON format without any additional formatting or text: {"data": [ ${
+          } Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {"data": [ ${
           isDomain || isURL
           ? `"competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"`
             : `"company domain", "competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"`
