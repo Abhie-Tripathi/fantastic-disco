@@ -78,6 +78,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                   updatedData = eventSuggestion?.companies?.map((item: EventSuggestionItem, index: number) => ({
                     key: item.id,
                     name: item?.name || '',
+                    host: item?.host || '',
                     city: item?.location?.cityName || '',
                     country: item?.location?.countryName || ''
                   }));
@@ -95,12 +96,14 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
             }
       },[eventSuggestion])
       const selectedEventId=(id:any, name:string)=>{
+       console.log(name);
        
         handleSelect(id,name);
         setIsOpen(false);
         setPreviousInput(name); 
         setEventSearchLoader(false);
       }
+      console.log(restructureData);
       
   return (
         <>
@@ -108,7 +111,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
   <div ref={dropdownRef} className={styles.eventName_container2}>
     {restructureData  ? (
       restructureData.map((item) => (
-        <div key={item.key} className={styles.resultData_list} onClick={() => selectedEventId(item.key, item.name)}>
+        <div key={item.key} className={styles.resultData_list} onClick={() => selectedEventId(item.key, item.host)}>
           <div className={styles.event} >
   {item.name}
   {item.city || item.country ? ", " : null} 

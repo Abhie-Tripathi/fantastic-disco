@@ -95,7 +95,7 @@ export default function MapComponent({
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
-  console.log(trackerId);
+console.log(trackerLoc);
 
   const { data } = useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
@@ -146,6 +146,7 @@ export default function MapComponent({
 
   const location = useMemo(() => {
     const geoCoordinates = getLocalFilterValue("geoCoordinates");
+    
     const locationIds =
       source === "tracker"
         ? trackerLoc?.length > 0
@@ -166,14 +167,14 @@ export default function MapComponent({
       return { type: "locationIds", locationIds };
     }
     return null;
-  }, [searchParams]);
+  }, [searchParams, trackerLoc]);
 
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey:
       source === "tracker"
         ? ["eventCounts", trackerId, currentZoomGroup, searchParams]
         : source === "tracker_global"
-        ? [trackerId]
+        ? ["eventCounts", searchParams]
         : ["eventCounts", currentZoomGroup, searchParams],
 
     queryFn: async () => {

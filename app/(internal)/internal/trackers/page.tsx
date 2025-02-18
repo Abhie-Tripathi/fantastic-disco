@@ -414,7 +414,7 @@ const Trackers = ({ searchParams }: Search) => {
           </div>
     </div>
     <div >
-          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue}/>
+          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue} trackerId={singleTrackerData?.id || ""}/>
       </div>
   </div>
   <div className="w-1/2 p-5 h-[calc(100vh-67px)] bg-[var(--background-secondary-color)]" style={{padding:"20px 0px"}}>

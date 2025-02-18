@@ -16,7 +16,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
   const router= useRouter();
-  const {  setIsNewCall, setTrackerId, isLoading:load, setSkip } = useTrackerContext();
+  const {  setIsNewCall, setTrackerId, isLoading:load, setSkip, trackerId, skip, searchValue } = useTrackerContext();
   const {setFilter, getFilterValue, setMultipleFilters} = useFilterState();
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
@@ -111,6 +111,13 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   }
   const handleSingleClick=(item:any)=>{
     setSingleTrackerData(item)
+      setSingleTrackerData(item)
+     
+      setMultipleFilters({ 
+        skip: skip,
+        q: searchValue,
+         id: item.id,
+      })
   }
   return (
     <div className="card cursor-pointer h-[150px]" onClick={()=>handleSingleClick(item)}
