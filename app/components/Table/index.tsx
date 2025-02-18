@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./table.module.css";
 import ExpandAll from "/public/expandAll.svg";
@@ -1811,9 +1812,11 @@ const Table = ({
                           <>
                             <span
                               title={
-                                event?.peopleFinderPersonAssociation?.[0].split(
+                                `${event?.peopleFinderPersonAssociation?.[0].split(
                                   "_"
-                                )[1]
+                                )[1]} - ${event?.peopleFinderPersonAssociation?.[0].split(
+                                  "_"
+                                )[2]}`
                               }
                               className={styles.capitalizeText}
                             >
@@ -1838,12 +1841,8 @@ const Table = ({
                                   {event?.peopleFinderPersonAssociation.map(
                                     (item) => (
                                       <div key={item}>
-                                        {item}
-                                        {item.split("_")[1]}
-                                        <span className={styles.capitalizeText}>
-                                          {" "}
-                                          ({item.split("_")[1]})
-                                        </span>
+                                        {item.split("_")[1]} ({item.split("_")[0]}) -
+                                        <span className={styles.event_organizer}>{item.split("_")[2]}</span>
                                       </div>
                                     )
                                   )}
