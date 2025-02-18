@@ -2,17 +2,16 @@
 import { Inter } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import "./../globals.css";
-import { AuthContextProvider, ThemeProvider, useTheme } from "@/context";
+import { AuthContextProvider, ThemeProvider } from "@/context";
 import { Sora } from "next/font/google";
 import Navbar from "@/components/layout/navbar";
 import Sidebar from "@/components/layout/sidebar";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { GoogleTagManager } from "@next/third-parties/google";
 import Joyride from "react-joyride";
 import { Metadata } from "next";
 import { FilterProvider } from "@/context/filterContext";
 import ReactQueryProvider from "@/components/provider/reactQueryProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -37,7 +36,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.className}`}>
       <body>
-        <ToastContainer />
+        {/* <ToastContainer /> */}
+        <Toaster />
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
         <ReactQueryProvider>
           <AuthContextProvider>
@@ -47,7 +47,10 @@ export default function RootLayout({
                   <Sidebar />
                   <div className="flex-1 flex flex-col overflow-hidden lg:ml-16">
                     <Navbar />
-                    <main className="flex-1 overflow-x-hidden !overflow-y-auto bg-background">
+                    <main
+                      id="layout-main"
+                      className="flex-1 overflow-x-hidden !overflow-y-auto bg-background"
+                    >
                       {children}
                     </main>
                   </div>

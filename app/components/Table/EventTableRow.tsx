@@ -74,52 +74,39 @@ function displayValue(value: any) {
 
 export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }) => {
   const {saveIntent} = useTrackerServices();
-  const handleActionSubmit = async(action: string) => {
+  const handleActionSubmit = (action: string) => {
     // Handle the action submission
-    mutation.mutate(action); 
-    // const formData={
-    //     interest:action.toUpperCase(),
-    //     sourceId:trackerId,
-    //     eventId: event.basic.id,
-    //     sourceModule: "TRACKER",
-    // }
-    // const response = await saveIntent(formData)
     console.log(`Selected action: ${action} for event: ${event.basic.id}`);
   };
-  const mutation = useMutation({
-    mutationFn: (action: string) =>
-      saveIntent({
-        interest:action.toUpperCase(),
-        sourceId:trackerId,
-        eventId: event.basic.id,
-        sourceModule: "TRACKER"
-      }),
-  });
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
       <TableCell
-        className={`${styles.table_actionColumn}`}
-        style={{
-          left: "0",
-          textAlign: "left",
-          boxShadow: "10px 0 15px -5px rgba(0, 0, 0, 0.3)",
-        }}
+        className="sticky left-0 z-0 bg-slate-50 dark:bg-slate-900  max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-slate-100 dark:group-hover:bg-slate-800"
+        style={{ zIndex: 0 }}
       >
-        <div className={styles.event_badge_container}>
+        <div className="flex gap-1 mb-1">
           {event.advance?.isBranded && (
-            <span className={`${styles.branded_tag} badge_success`}>Brand</span>
+            <span className="px-2 py-0.5 rounded text-xs bg-success-background text-success-text font-medium">
+              Brand
+            </span>
           )}
           {event.advance?.isSeries && (
-            <span className={`${styles.branded_tag} badge_info`}>Series</span>
+            <span className="px-2 py-0.5 rounded text-xs bg-info-background text-info-text font-medium">
+              Series
+            </span>
           )}
         </div>
-        <div className={styles.truncateText_1}>
-          <Link href={`/internal/event/${event.basic.id}`} target="_blank">
+        <div className="truncate font-medium">
+          <Link
+            href={`/internal/event/${event.basic.id}`}
+            target="_blank"
+            className="hover:text-primary transition-colors"
+          >
             {event.basic.name}
           </Link>
         </div>
-        <div className={styles.event_organizer}>
+        <div className="text-sm text-muted-foreground">
           {event.basic.organizer?.name}
         </div>
       </TableCell>
@@ -128,7 +115,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
       <TableCell>
         {event.basic.status === "CANCELLED" ||
         event.basic.status === "POSTPONED" ? (
-          <del data-toggle="tooltip" title={event.basic.status}>
+          <del className="text-muted-foreground" title={event.basic.status}>
             {formatDate(event.basic.startDateTime)}
             <br />
             {formatDate(event.basic.startDateTime) !==
@@ -136,7 +123,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
               formatDate(event.basic.endDateTime)}
           </del>
         ) : (
-          <span style={{ whiteSpace: "nowrap" }}>
+          <span className="whitespace-nowrap">
             {formatDate(event.basic.startDateTime)}
             <br />
             {formatDate(event.basic.startDateTime) !==
@@ -149,19 +136,23 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
       {/* Venue Column */}
       <TableCell>
         {event.basic.format === "HYBRID" && (
-          <div className={styles.hybridTag}>Hybrid</div>
+          <div className="inline-block px-2 py-0.5 rounded text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 mb-1">
+            Hybrid
+          </div>
         )}
-        {event.basic.eventLocation.venue?.displayName ||
-          (event.basic.format === "ONLINE" ? "Online" : "TBA")}
+        <div>
+          {event.basic.eventLocation.venue?.displayName ||
+            (event.basic.format === "ONLINE" ? "Online" : "TBA")}
+        </div>
       </TableCell>
 
       {/* City Column */}
-      <TableCell>
+      <TableCell >
         {displayValue(event.basic.eventLocation.city?.name)}
       </TableCell>
 
       {/* Country Column */}
-      <TableCell>
+      <TableCell className="text-center">
         {displayValue(event.basic.eventLocation.country?.name)}
       </TableCell>
 
@@ -188,17 +179,18 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
       )} */}
 
       {/* Category Column */}
-      <TableCell>
+      <TableCell className="text-center">
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger>
-              {event.basic.categories[0]?.name}
-              {event.basic.categories.length > 1 && (
-                <span className="text-xs font-bold">
-                  {" "}
-                  +{event.basic.categories.length - 1}
-                </span>
-              )}
+            <TooltipTrigger className="text-left">
+              <span className="flex items-center gap-1">
+                {event.basic.categories[0]?.name}
+                {event.basic.categories.length > 1 && (
+                  <span className="text-xs font-bold text-muted-foreground">
+                    +{event.basic.categories.length - 1}
+                  </span>
+                )}
+              </span>
             </TooltipTrigger>
             <TooltipContent>
               {event.basic.categories.map((item) => item.name).join(" | ")}
@@ -209,14 +201,14 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
 
       {/* Event Size Column */}
       {event.insights?.estimatedAttendance !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {displayValue(event.insights?.estimatedAttendance)}
         </TableCell>
       )}
 
       {/* Estimated Exhibitors Column */}
       {event.advance?.estimatedExhibitors !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {displayValue(event.advance?.estimatedExhibitors)}
         </TableCell>
       )}
@@ -232,18 +224,18 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
 
       {/* Reputation Column */}
       {event.insights?.repeatSentiment !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {event.insights?.repeatSentiment !== null &&
           (event.insights?.repeatSentiment > 1 ||
             event.insights?.repeatSentiment < -1) ? (
             event.insights?.repeatSentiment > 0 ? (
-              <div className={styles.text_green}>
-                {event.insights?.repeatSentiment}%{" "}
+              <div className="text-success-text flex items-center gap-1">
+                {event.insights?.repeatSentiment}%
                 <ArrowUp className="w-4 h-4" />
               </div>
             ) : (
-              <div className={styles.text_red}>
-                {event.insights?.repeatSentiment}%{" "}
+              <div className="text-danger-text flex items-center gap-1">
+                {event.insights?.repeatSentiment}%
                 <ArrowDown className="w-4 h-4" />
               </div>
             )
@@ -257,22 +249,22 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
       {event.insights?.reputationScore !== undefined && (
         <TableCell style={{ textAlign: "center" }}>
           {event.insights?.reputationScore > 0 ? (
-            <>
+            <div className="flex gap-1 items-center justify-evenly">
               {event.insights?.reputationScore > 10 && (
                 <span className="rounded-full bg-success-background p-1">
-                  <ArrowUp className="w-3.5 h-3.5 text-success-text inline mb-1.5" />
+                  <ArrowUp className="w-4 h-4 text-success-text inline" />
                 </span>
               )}
               {event.insights?.reputationScore < -10 && (
                 <span className="rounded-full bg-danger-background p-1">
-                  <ArrowDown className="w-3.5 h-3.5 text-danger-text inline mb-1.5" />
+                  <ArrowDown className="w-3.5 h-3.5 text-danger-text inline" />
                 </span>
               )}
-              &nbsp;
+
               {getEventRating(event.insights?.reputationScore.toString())}
-              &nbsp;
+
               <Star className="w-4 h-4 inline" />
-            </>
+            </div>
           ) : (
             "-"
           )}
@@ -317,11 +309,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
       )}
 
       {/* Forecasted Column */}
-      <TableCell>{getForecastedStatus(event.basic.startDateTime)}</TableCell>
+      <TableCell className="text-center">
+        {getForecastedStatus(event.basic.startDateTime)}
+      </TableCell>
 
       {/* Maturity Column */}
       {event.advance?.maturity !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {event.advance?.maturity ? (
             <span className="badge_primary capitalize">
               {event.advance?.maturity}
@@ -334,7 +328,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
 
       {/* Impact Score Column */}
       {event.insights?.scores?.impactScore !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {event.insights?.scores?.impactScore !== 0
             ? event.insights?.scores?.impactScore
             : "-"}
@@ -343,7 +337,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
 
       {/* Inbound Score Column */}
       {event.insights?.scores?.inboundScore !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {event.insights?.scores?.inboundScore !== 0
             ? event.insights?.scores?.inboundScore
             : "-"}
@@ -352,7 +346,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
 
       {/* International Score Column */}
       {event.insights?.scores?.internationalScore !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {event.insights?.scores?.internationalScore !== 0
             ? event.insights?.scores?.internationalScore
             : "-"}
@@ -368,7 +362,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
 
       {/* Audience Zone Column */}
       {event.audience?.audienceZone !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {event.audience?.audienceZone ? (
             <span className={styles.badge_primary}>
               {event.audience?.audienceZone}
@@ -381,7 +375,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
 
       {/* Audience Spread Column */}
       {event.audience?.audienceSpread !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           <div className="flex gap-2">
             {event.audience?.audienceSpread &&
             Object.entries(event.audience?.audienceSpread).length > 0
@@ -389,7 +383,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
                   ([key, { iso, name, count, percentage }]) => (
                     <span
                       key={key}
-                      className={styles.country_badge}
+                      className="inline-block rounded overflow-hidden"
                       title={name}
                     >
                       <Image
@@ -397,6 +391,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
                         alt="flag"
                         width={25}
                         height={18}
+                        className="object-cover"
                       />
                     </span>
                   )
@@ -407,9 +402,12 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event, trackerId }
       )}
 
       <TableCell
-        className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}
+        className="sticky right-0 bg-background z-0"
+        style={{ zIndex: 0 }}
       >
         <ActionPopover
+          trackerId={trackerId}
+          eventId={event.basic.id}
           interests={event.interests}
           onSubmit={handleActionSubmit}
         />

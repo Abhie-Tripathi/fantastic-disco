@@ -122,7 +122,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   },[searchValue])
   const fetchData=async(isInetialRender:boolean)=>{
     setLoadOne(true);
-    const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${skip}&limit=${take}`);
+    const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${skip}&limit=${take}&refresh=true`);
     
     if(result){
       console.log(result);

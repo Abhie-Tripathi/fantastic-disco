@@ -383,23 +383,15 @@ const Page = ({ params }: { params: any }) => {
  const addQueryString = (value:string) => {
   setFilter('eventType', value);
 };
-const cityIds = trackerDetail?.filterValue?.locationIds?.city?.length > 0 
-  ? trackerDetail.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0]) 
-  : [];
-
-const countryIds = trackerDetail?.filterValue?.locationIds?.country?.length > 0 
-  ? trackerDetail.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0]) 
-  : [];
-
-const stateIds = trackerDetail?.filterValue?.locationIds?.state?.length > 0 
-  ? trackerDetail.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0]) 
-  : [];
-  if(data?.locationIds){
-    const ids = Object?.keys(data?.locationIds);
+  let trackerLoc=[];
+  
+  if(data?.filterValues?.locationIds){
+    const ids = Object?.keys(data?.filterValues?.locationIds);
     console.log(ids);
     
+    trackerLoc=ids;
   }
-  const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
+  
 const activeVal =
  active ===
   "Active Events"
@@ -632,7 +624,7 @@ const activeVal =
               </div>
                : 
                 <Map source="tracker" 
-                searchParams={`${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":active==="Saved Events"?"saved":"active"}`}
+                searchParams={`${active==="Active Events"? "active": active==="Expired Events"?"past":active==="New Events"?"":active==="Saved Events"?"saved":"active"}`}
                 trackerId={params.trackerId}
                 trackerLoc={trackerLoc.join(",")}
                 trackerType={trackerType}

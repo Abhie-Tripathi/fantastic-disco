@@ -10,6 +10,8 @@ import { EventTableHeader } from "./EventTableHeader";
 import { useFilterState } from "@/hooks/useFilterState";
 import Loading from "@/components/ui/Loading";
 import ZeroState from "@/components/zerostate";
+import NullState from "../trackers/nullState";
+import TrackerNullState from "@/public/trackerNullState.svg";
 import { ApiError } from "@/types/api";
 
 const EventTable = ({source, trackerId}) => {
@@ -50,25 +52,34 @@ const EventTable = ({source, trackerId}) => {
     return <ZeroState text={(error as ApiError).message} />;
   }
 
-  if (events.length === 0) {
+  if (events.length === 0) { 
+    if(source==="tracker"){
+      return( <NullState
+      image={TrackerNullState}
+      title="We couldn't find any events matching your tracker criteria at the moment."
+      text="Try adjusting your filters or checking back later, as new events are added frequently."
+      buttonText="Manage Configurations"
+      // buttonUrl={`/internal/trackers/${
+      //   path[path.length - 2]
+      // }/trackedConfiguration?type=${type}`}
+    />)
+    }else 
     return <ZeroState text="No events found" />;
   }
 
   return (
-    <div className={styles.table_container}>
-      <div
-        className={`${styles.table_wrapper} ${
-          theme === "light" ? styles.table_wrapper_light : ""
-        }`}
-      >
-        <Table className={styles.table}>
-          <EventTableHeader events={events} />
-          <TableBody className={styles.table_body}>
-            {events.map((event: Event) => (
-              <EventTableRow key={event.basic.id} event={event} trackerId={trackerId} />
-            ))}
-          </TableBody>
-        </Table>
+    <div className="w-full">
+      <div className="rounded-md border bg-background">
+        <div className="overflow-auto max-h-[calc(100vh-264px)]">
+          <Table>
+            <EventTableHeader events={events} />
+            <TableBody>
+              {events.map((event: Event) => (
+                <EventTableRow key={event.basic.id} event={event} trackerId={trackerId} />
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
 
       {totalPages > 1 && (

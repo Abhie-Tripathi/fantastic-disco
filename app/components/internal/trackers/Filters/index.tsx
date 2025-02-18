@@ -440,10 +440,10 @@ const Pages = () => {
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if(customData.length > 0 && Object.values(customData[0])[0]) {
         let placeholder = template?.inputAreas?.[0]?.placeholder || "";
-        const promptText=`List only name of top 5 companies similar to ${Object.values(customData[0])[0]}. Response should be in plain JSON format without any additional formatting or text: {"data": [ "company name 1" ,
-        "company name 2" , "company name 3" ,
-         "company name 4" ,
-        "company name 5" ]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
+        const promptText=`List only name of top 5 domains of companies similar to ${Object.values(customData[0])[0]}. Response should be in plain JSON format without any additional formatting or text: {"data": [ "company website 1" ,
+        "company website 2" , "company website 3" ,
+         "company website 4" ,
+        "company website 5" ]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
         if(!hideSuggestion)
           fetchAISuggestion(promptText);
       }

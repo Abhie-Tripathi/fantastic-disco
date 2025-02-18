@@ -75,6 +75,10 @@ export const endpoints = {
     pocUnmask: `${BASE_URL}/event-poc/unmask`,
     latestComment: `${BASE_URL}/dashboard/latest-comment`,
   },
+  intent: {
+    createUserEventInterest: `${BASE_URL_NEW}/intents/user-event-interest`,
+  },
+
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {
     getKit: `${BASE_URL}/kit`,
@@ -115,7 +119,7 @@ export const endpoints = {
   },
   configuration: {
     filterConfiguration: `${BASE_URL}/me/account/configuration/filter`,
-    interestConfiguration: `${BASE_URL}/me/account/configuration/interest`,
+    interestConfiguration: `${BASE_URL_NEW}/me/account/configuration/interest`,
     outreachConfiguration: `${BASE_URL}/me/account/configuration/outreach`,
   },
   myprofile: `${BASE_URL}/auth/customer/profile`,

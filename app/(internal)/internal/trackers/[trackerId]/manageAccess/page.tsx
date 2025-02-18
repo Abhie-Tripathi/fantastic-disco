@@ -187,10 +187,10 @@ const Page = () => {
             {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px] z-3'></div> */}
                 <div className="flex w-[40%] h-fit">
                     {/* <TrackerOwner adminData={userAccessData?.access?.admin}/> */}
-                    <TrackerUser userData={userAccessData} type="admins" heading="Tracker Owners"/>
+                    <TrackerUser userData={userAccessData?.other} type="admins" heading="Tracker Owners"/>
                 </div>
                 <div className="flex w-[60%]">
-                <TrackerUser userData={userAccessData} type="others" heading="Tracker Users"/>
+                <TrackerUser userData={userAccessData?.superAdmin} type="others" heading="Tracker Users"/>
                 </div>
             </div>
             {share && (

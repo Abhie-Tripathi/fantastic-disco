@@ -11,32 +11,73 @@ import { BookmarkIcon, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Interest } from "@/types/events";
+import { useConfiguration } from "@/hooks/useConfiguration";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useIntent } from "@/hooks/useIntent";
+import { useToast } from "@/components/ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import { eventsKeys } from "@/hooks/useEvents";
 
 interface ActionPopoverProps {
+  eventId: string;
   interests: Interest | undefined;
   onSubmit: (value: string) => void;
+  trackerId?:any;
 }
 
-const actions = [
-  { value: "hot", label: "Hot" },
-  { value: "warm", label: "Warm" },
-  { value: "cold", label: "Cold" },
-  { value: "bookmark", label: "Bookmark" },
-] as const;
-
-type ActionType = (typeof actions)[number]["value"];
-
-export function ActionPopover({ interests, onSubmit }: ActionPopoverProps) {
-  const [selectedAction, setSelectedAction] = useState<
-    ActionType | undefined
-  >();
+export function ActionPopover({
+  eventId,
+  interests,
+  onSubmit,
+  trackerId
+}: ActionPopoverProps) {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const {
+    interestConfiguration,
+    isLoading: isConfigLoading,
+    error,
+  } = useConfiguration.interest();
+  const { createUserEventInterest, isLoading: isSubmitting } =
+    useIntent.createUserEventInterest();
+  const [selectedAction, setSelectedAction] = useState<string>();
   const [isOpen, setIsOpen] = useState(false);
+
+  const actions = interestConfiguration?.interest || [];
 
   const handleSubmit = () => {
     if (selectedAction) {
-      onSubmit(selectedAction);
-      setIsOpen(false);
-      setSelectedAction(undefined);
+      createUserEventInterest(
+        {
+          eventId,
+          interest: selectedAction,
+          sourceModule: trackerId?"TRACKER":"RESEARCH",
+          ...(trackerId && { sourceId: trackerId }),
+        },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: trackerId });
+            console.log("onsuccess called");
+            
+            onSubmit(selectedAction);
+            setIsOpen(false);
+            setSelectedAction(undefined);
+            toast({
+              title: "Success",
+              description: "Your interest has been recorded",
+              variant: "default",
+            });
+          },
+          onError: (error) => {
+            console.log("errors",error)
+            toast({
+              title: "Error",
+              description: "Failed to record your interest. Please try again.",
+              variant: "destructive",
+            });
+          },
+        }
+      );
     }
   };
 
@@ -46,6 +87,14 @@ export function ActionPopover({ interests, onSubmit }: ActionPopoverProps) {
     interests?.sponsor ||
     interests?.attend ||
     interests?.exhibit;
+
+  // if (error) {
+  //   return <div>Error</div>;
+  // }
+
+  if (isConfigLoading) {
+    return <Skeleton className="w-4 h-4" />;
+  }
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -76,13 +125,13 @@ export function ActionPopover({ interests, onSubmit }: ActionPopoverProps) {
 
           <RadioGroup
             value={selectedAction}
-            onValueChange={(value: ActionType) => setSelectedAction(value)}
+            onValueChange={(value: string) => setSelectedAction(value)}
             className="space-y-3"
           >
             {actions.map((action) => (
-              <div key={action.value} className="flex items-center space-x-2">
-                <RadioGroupItem value={action.value} id={action.value} />
-                <Label htmlFor={action.value} className="text-sm font-normal">
+              <div key={action.label} className="flex items-center space-x-2">
+                <RadioGroupItem value={action.status} id={action.status} />
+                <Label htmlFor={action.status} className="text-sm font-normal">
                   {action.label}
                 </Label>
               </div>

@@ -152,7 +152,7 @@ export const useTrackerServices = () => {
       if(query.eventType==="savedEvent")
       {
         return await api.request<{ result: EventTableType[]; count: number  }>(
-          `${endpoints.tracker.commonUrl}/${trackerId}/saved-events??limit=${query.take||"20"}&offset=${query.limit||"0"}`,
+          `${endpoints.tracker.commonUrl}/${trackerId}/saved-events?limit=${query.limit||"10"}&offset=${query.skip||"0"}`,
           {
             method: "GET"
           }
@@ -179,27 +179,31 @@ export const useTrackerServices = () => {
       trackerId:string, params:string, eventType:string,
       abortSignal?: AbortSignal
     ) => {
+      console.log(eventType);
+      
       const setParams = new URLSearchParams(eventType);
-    const adaptedParams = EventsAdapter.adaptRequestParams(setParams);
+    // const adaptedParams = EventsAdapter.adaptRequestParams(setParams);
+    // console.log(adaptedParams);
+    
       const response:any= await api.request(
         setParams.get("type")==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events`,
         {
           method: "GET",
           signal: abortSignal,
-          params: adaptedParams,
+          params: setParams,
         }
       );
+      return response;
+      // const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
       
-      const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
-      
-      return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=Map"));
+      // return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=Map"));
     };
     const getSuggestion = async (endpoint, searchInput, abortSignal) => {
       console.log("Received AbortSignal:", abortSignal);
   
       try {
           const response: any = await api.request(
-              `${endpoints.tracker.suggestion}/${endpoint}?query=${searchInput}&offset=0&limit=5`,
+              `${endpoints.tracker.suggestion}?query=${searchInput}&offset=0&limit=5`,
               {
                   method: "GET",
                   signal: abortSignal,
@@ -247,17 +251,18 @@ export const useTrackerServices = () => {
         )
     }
     const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any)=>{
+      console.log(type);
       
       // const params = new URLSearchParams(new URL(type).search);
       // const t = params.get("type"); 
       // console.log(1111);
         const response = await api.request<EventCount[]>(
-          type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?limit=20&offset=0&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=20&offset=0&type=${type}&groupBy=${currentZoomGroup}`,
+          type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events/count?view=map&type=${type}&groupBy=${currentZoomGroup}`,
           {
             method: "GET",
           }
         );
-        return EventsAdapter.adaptEventCountResponse(response);
+        return response;
     }
     const getEventsLatLongData = async (trackerId:string,searchParams:string, type:string) => {
       const params = new URLSearchParams(searchParams);

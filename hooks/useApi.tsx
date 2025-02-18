@@ -40,45 +40,43 @@ export function useApi<T>() {
     ): Promise<R | undefined> => {
       setState((prev) => ({ ...prev, isLoading: true }));
 
-      const response = await axiosInstance.request<ApiResponse<R>>({
-        url,
-        ...config,
-      });
-      if ("error" in response) {
+      try {
+        const response = await axiosInstance.request<ApiResponse<R>>({
+          url,
+          ...config,
+        });
+        
+        if ("data" in response.data) {
+          setState({
+            data: response.data.data as unknown as T,
+            error: null,
+            isLoading: false,
+          });
+          return response.data.data;
+        } else if ("error" in response.data) {
+          const error = response.data.error;
+          setState({
+            data: undefined,
+            error,
+            isLoading: false,
+          });
+          throw error;
+        } else {
+          const unknownError = {
+            issues: [],
+            statusCode: 500,
+            message: "An unexpected error occurred",
+          };
+          setState({ data: undefined, error: unknownError, isLoading: false });
+          throw unknownError;
+        }
+      } catch (error) {
         setState({
           data: undefined,
-          error: response.error as {
-            issues: any[];
-            statusCode: number;
-            message: string;
-          },
+          error: error as any,
           isLoading: false,
         });
-      }
-      if ("data" in response.data) {
-        setState({
-          data: response.data.data as unknown as T,
-          error: null,
-          isLoading: false,
-        });
-        return response.data.data;
-      } 
-      else if ("error" in response.data) {
-        console.log("andar");
-        setState({
-          data: undefined,
-          error: response.data.error,
-          isLoading: false,
-        });
-        throw response.data.error;
-      } else {
-        const unknownError = {
-          issues: [],
-          statusCode: 500,
-          message: "An unexpected error occurred",
-        };
-        setState({ data: undefined, error: unknownError, isLoading: false });
-        throw unknownError;
+        throw error;
       }
     },
     []
