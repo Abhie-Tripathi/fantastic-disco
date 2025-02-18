@@ -1,45 +1,6 @@
+import { getEventRank } from "@/app/components/Table/EventTableRow";
 import { Ranking } from "@/types/events";
 
-export function getLeastRank(response: Ranking) {
-  let minRank = {
-    rank: Infinity,
-    name: "",
-    type: "",
-  };
-
-  if (response?.globalRank !== undefined) {
-    minRank.rank = response.globalRank;
-    minRank.name = "";
-    minRank.type = "Global";
-  } else if (response?.countryRank !== undefined) {
-    minRank.rank = response.countryRank;
-    minRank.name = "";
-    minRank.type = "Country";
-  } else if (response?.categoryRank) {
-    const c_ranks = response.categoryRank;
-    for (const category in c_ranks) {
-      if (c_ranks[category] < minRank.rank) {
-        minRank.rank = c_ranks[category];
-        minRank.name = category;
-        minRank.type = "Category";
-      }
-    }
-  } else if (response?.countryCategoryRank) {
-    const c_ranks = response.countryCategoryRank;
-    for (const category in c_ranks) {
-      if (c_ranks[category] < minRank.rank) {
-        minRank.rank = c_ranks[category];
-        minRank.name = category;
-        minRank.type = "Country Category";
-      }
-    }
-  }
-
-  if (minRank.type === "") {
-    return "-";
-  }
-  return getEventRank(minRank);
-}
 
 interface rankTag {
   rank: number;
