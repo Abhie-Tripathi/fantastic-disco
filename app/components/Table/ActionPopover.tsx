@@ -8,6 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Bookmark, BookmarkCheck, BookmarkIcon, X } from "lucide-react";
+import { useTrackerContext } from "@/context/tracker";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Interest } from "@/types/events";
@@ -38,6 +39,7 @@ export function ActionPopover({
     isLoading: isConfigLoading,
     error,
   } = useConfiguration.interest();
+  const{savedEventCount, setSavedEventCount} = useTrackerContext();
   const { createUserEventInterest, isLoading: isSubmitting } =
     useIntent.createUserEventInterest();
   const [selectedAction, setSelectedAction] = useState<string>();
@@ -58,7 +60,7 @@ export function ActionPopover({
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: trackerId });
             console.log("onsuccess called");
-            
+            setSavedEventCount(savedEventCount+1);
             onSubmit(selectedAction);
             setIsOpen(false);
             setSelectedAction(undefined);

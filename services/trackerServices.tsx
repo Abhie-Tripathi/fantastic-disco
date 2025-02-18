@@ -266,12 +266,14 @@ export const useTrackerServices = () => {
     }
     const getEventsLatLongData = async (trackerId:string,searchParams:string, type:string) => {
       const params = new URLSearchParams(searchParams);
-    const adaptedParams = EventsAdapter.adaptRequestParams(params);
+    // const adaptedParams = EventsAdapter.adaptRequestParams(params);
     
     const response = await api.request(type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${type}`, {
       method: "GET",
-      params: adaptedParams,
+      params: params
     },true);
+    console.log(response);
+    
     return  TrackersAdapter.adaptTrackerMapEventData(response)
     };
     const getCalendarViewEvents = async (trackerId:string, searchParams:string, isListing:boolean, viewType?:string)=>{

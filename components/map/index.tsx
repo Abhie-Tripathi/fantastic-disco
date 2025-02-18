@@ -180,7 +180,6 @@ console.log(trackerLoc);
     queryFn: async () => {
       if (source === "tracker" || source === "tracker_global") {
         const response = await getMapViewData(trackerId, "city", searchParams);
-
         return response || [];
       } else {
         const response = await getEventsCount({
@@ -367,8 +366,12 @@ console.log(trackerLoc);
                 `viewBound=${viewBoundString}`,
                 searchParams
               );
+              console.log(eventsData);
+              
             } else {
               eventsData = await getEventsWithSearchParams(finalSearchParams);
+              console.log(eventsData);
+              
             }
             setEvents((eventsData?.events as MapEvents[]) || []);
           } catch (error) {

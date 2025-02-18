@@ -126,6 +126,8 @@ export const useEventsService = () => {
         method: "GET",
       }
     );
+    console.log(response);
+    
     return response;
   };
 

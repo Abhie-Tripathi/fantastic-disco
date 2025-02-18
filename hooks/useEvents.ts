@@ -20,12 +20,11 @@ export const useEvents = {
       error,
     } = useTrackerServices();
     const EventQuery = useQuery({
-      queryKey: [JSON.stringify(query), trackerId],
+      queryKey: [JSON.stringify(query)],
       queryFn: () => 
         source === "tracker"
           ? getTrackerEvents(query, trackerId)
           : eventsService.getEvents(query),
-      staleTime: 5 * 60 * 1000,
     });
 
     return {

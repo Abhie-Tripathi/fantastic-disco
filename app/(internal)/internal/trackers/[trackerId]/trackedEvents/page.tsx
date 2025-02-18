@@ -66,6 +66,7 @@ const Page = ({ params }: { params: any }) => {
   
   const pathname = usePathname();
   const {getCalendarViewEvents,getTrackerEvents, getSavedEvents} = useTrackerServices();
+  const {savedEventCount}=useTrackerContext();
   const {adaptParams}=TrackersAdapter;
   const {getFilterValue, setFilter} = useFilterState();
   const [type, setType] = useState<string | undefined>();
@@ -76,7 +77,7 @@ const Page = ({ params }: { params: any }) => {
   const router = useRouter();
   const query = Object.fromEntries(searchParams.entries());
   const token = searchParams.get("token");
-  const [savedEventCount,setSavedEventCount]=useState<number>(0);
+  // const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
   const viewType=searchParams.get("view");
   const skip= getFilterValue("skip") || "0";
@@ -208,7 +209,7 @@ const Page = ({ params }: { params: any }) => {
   const events = displayData?.events || [];
   const count = displayData?.count || 0;
   useEffect(() => {
-    setSavedEventCount(data?.tracker?.savedEventTotalCount);
+    // setSavedEventCount(data?.tracker?.savedEventTotalCount);
     setTrackerDetail(data?.tracker);
     // createQueryString();
     setLoading(true);
@@ -516,8 +517,7 @@ const activeVal =
                 <div className={styles.circle} style={{background: active==="Saved Events"?"white":"", color: active==="Saved Events"?"var(--primary-color)":""}}>
                   {loading ? (
                     formatCount(
-                      data?.
-                      savedEventsCount                      
+                     savedEventCount                     
                     )
                   ) : (
                     <div className={styles.loader}></div>
