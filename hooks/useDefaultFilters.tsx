@@ -392,8 +392,6 @@ export function useDefaultFilters() {
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });
-        console.log(params.toString());
-
         const trendsParams = generateTrendsParams(params, recentFilterParams);
 
         if (
