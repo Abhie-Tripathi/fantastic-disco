@@ -1838,10 +1838,11 @@ const Table = ({
                                   {event?.peopleFinderPersonAssociation.map(
                                     (item) => (
                                       <div key={item}>
+                                        {item}
                                         {item.split("_")[1]}
                                         <span className={styles.capitalizeText}>
                                           {" "}
-                                          ({item.split("_")[0]})
+                                          ({item.split("_")[1]})
                                         </span>
                                       </div>
                                     )
