@@ -48,11 +48,6 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
             <div className="font-medium text-foreground ">Rank</div>
           </TableHead>
         )}
-        {show.includes(Show.scores) && (
-          <TableHead>
-            <div className="font-medium text-foreground ">Reputation</div>
-          </TableHead>
-        )}
         {show.includes(Show.rating) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Event Rating</div>

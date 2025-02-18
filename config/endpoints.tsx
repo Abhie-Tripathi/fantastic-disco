@@ -15,6 +15,12 @@ export const endpoints = {
     verifyOTP: `${BASE_URL}/auth/verify-otp`,
     logout: `${BASE_URL}/me/sign-out`,
   },
+
+  suggestions: {
+    location: `${BASE_URL}/suggestions/locations`,
+    designation: `${BASE_URL}/suggestions/designations`,
+    companies: `${BASE_URL}/suggestions/companies`,
+  },
   event: {
     count: `${BASE_URL}/events/count`,
     events: `${BASE_URL}/events`,

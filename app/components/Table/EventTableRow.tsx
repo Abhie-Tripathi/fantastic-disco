@@ -7,7 +7,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { formatDate, getLeastRank, getEventRating } from "@/utils/eventHelpers";
+import { formatDate, getEventRating } from "@/utils/eventHelpers";
 import Link from "next/link";
 import { ArrowUp, ArrowDown, Star } from "lucide-react";
 import styles from "./table.module.css";
@@ -15,6 +15,7 @@ import { Event } from "@/types/events";
 import Image from "next/image";
 import { ActionPopover } from "./ActionPopover";
 import { Show } from "@/types/events/dto/event-query.dto";
+import { Badge } from "@/components/ui/badge";
 
 export function getEventRank(prop: any) {
   let rankString = "";
@@ -63,6 +64,15 @@ function displayValue(value: any) {
     return "-";
   }
   return value;
+}
+
+function getOrdinalSuffix(number: number): string {
+  const j = number % 10;
+  const k = number % 100;
+  if (j === 1 && k !== 11) return "st";
+  if (j === 2 && k !== 12) return "nd";
+  if (j === 3 && k !== 13) return "rd";
+  return "th";
 }
 
 export const EventTableRow: React.FC<EventTableRowProps> = ({
@@ -209,87 +219,96 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.rankings) &&
         event.insights?.rankings !== undefined && (
           <TableCell style={{ textAlign: "center" }}>
-            {event.insights?.rankings
-              ? displayValue(getLeastRank(event.insights.rankings))
-              : "-"}
+            {event.insights?.rankings ? (
+              <span>
+                <div>
+                  {event.insights.rankings.rank}
+                  <sup>{getOrdinalSuffix(event.insights.rankings.rank)}</sup>
+                </div>
+                <Badge variant="outline" className="capitalize font-medium">
+                  {event.insights.rankings.rankType}
+                </Badge>
+              </span>
+            ) : (
+              "-"
+            )}
           </TableCell>
         )}
-
       {/* Reputation Column */}
       {show.includes(Show.scores) &&
         event.insights?.repeatSentiment !== undefined && (
           <TableCell className="text-center">
-          {event.insights?.repeatSentiment !== null &&
-          (event.insights?.repeatSentiment > 1 ||
-            event.insights?.repeatSentiment < -1) ? (
-            event.insights?.repeatSentiment > 0 ? (
-              <div className="text-success-text flex items-center gap-1">
-                {event.insights?.repeatSentiment}%
-                <ArrowUp className="w-4 h-4" />
-              </div>
+            {event.insights?.repeatSentiment !== null &&
+            (event.insights?.repeatSentiment > 1 ||
+              event.insights?.repeatSentiment < -1) ? (
+              event.insights?.repeatSentiment > 0 ? (
+                <div className="text-success-text flex items-center gap-1">
+                  {event.insights?.repeatSentiment}%
+                  <ArrowUp className="w-4 h-4" />
+                </div>
+              ) : (
+                <div className="text-danger-text flex items-center gap-1">
+                  {event.insights?.repeatSentiment}%
+                  <ArrowDown className="w-4 h-4" />
+                </div>
+              )
             ) : (
-              <div className="text-danger-text flex items-center gap-1">
-                {event.insights?.repeatSentiment}%
-                <ArrowDown className="w-4 h-4" />
-              </div>
-            )
-          ) : (
-            "-"
-          )}
-        </TableCell>
-      )}
+              "-"
+            )}
+          </TableCell>
+        )}
 
       {/* Event Rating Column */}
       {show.includes(Show.rating) &&
         event.insights?.reputationScore !== undefined && (
           <TableCell style={{ textAlign: "center" }}>
             {event.insights?.reputationScore > 0 ? (
-            <div className="flex gap-1 items-center justify-evenly">
-              {event.insights?.reputationScore > 10 && (
-                <span className="rounded-full bg-success-background p-1">
-                  <ArrowUp className="w-4 h-4 text-success-text inline" />
-                </span>
-              )}
-              {event.insights?.reputationScore < -10 && (
-                <span className="rounded-full bg-danger-background p-1">
-                  <ArrowDown className="w-3.5 h-3.5 text-danger-text inline" />
-                </span>
-              )}
+              <div className="flex gap-1 items-center justify-evenly">
+                {event.insights?.reputationScore > 10 && (
+                  <span className="rounded-full bg-success-background p-1">
+                    <ArrowUp className="w-4 h-4 text-success-text inline" />
+                  </span>
+                )}
+                {event.insights?.reputationScore < -10 && (
+                  <span className="rounded-full bg-danger-background p-1">
+                    <ArrowDown className="w-3.5 h-3.5 text-danger-text inline" />
+                  </span>
+                )}
 
-              {getEventRating(event.insights?.reputationScore.toString())}
+                {getEventRating(event.insights?.reputationScore.toString())}
 
-              <Star className="w-4 h-4 inline" />
-            </div>
-          ) : (
-            "-"
-          )}
-        </TableCell>
-      )}
+                <Star className="w-4 h-4 inline" />
+              </div>
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
 
       {/* Trust Column */}
       {show.includes(Show.trustScore) &&
-        event.insights?.trustScore !== undefined && (
+        event.insights?.repeatSentiment !== undefined && (
           <TableCell style={{ textAlign: "center" }}>
-            {event.insights?.trustScore ? (
+            {event.insights?.repeatSentiment ? (
               <>
-              {event.insights?.trustScore > 10 && (
-                <span className="rounded-full bg-success-background p-1">
-                  <ArrowUp className="w-3.5 h-3.5 text-success-text inline mb-1.5" />
-                </span>
-              )}
-              {event.insights?.trustScore < -10 && (
-                <span className="rounded-full bg-danger-background p-1">
-                  <ArrowDown className="w-3.5 h-3.5 text-danger-text inline mb-1.5" />
-                </span>
-              )}
-              &nbsp;
-              {event.insights?.trustScore}%
-            </>
-          ) : (
-            "-"
-          )}
-        </TableCell>
-      )}
+                {event.insights?.repeatSentiment > 10 && (
+                  <span className="rounded-full bg-success-background p-1">
+                    <ArrowUp className="w-3.5 h-3.5 text-success-text inline mb-1.5" />
+                  </span>
+                )}
+                {event.insights?.repeatSentiment < -10 && (
+                  <span className="rounded-full bg-danger-background p-1">
+                    <ArrowDown className="w-3.5 h-3.5 text-danger-text inline mb-1.5" />
+                  </span>
+                )}
+                &nbsp;
+                {event.insights?.repeatSentiment}%
+              </>
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
 
       {/* Frequency Column */}
       {show.includes(Show.frequency) &&
@@ -297,13 +316,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           <TableCell className="text-center">
             {event.advance?.frequency ? (
               <span className="badge_primary capitalize">
-              {event.advance?.frequency}
-            </span>
-          ) : (
-            "-"
-          )}
-        </TableCell>
-      )}
+                {event.advance?.frequency}
+              </span>
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
 
       {/* Forecasted Column */}
       {show.includes(Show.forecasted) && (
@@ -318,23 +337,23 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           <TableCell className="text-center">
             {event.advance?.maturity ? (
               <span className="badge_primary capitalize">
-              {event.advance?.maturity}
-            </span>
-          ) : (
-            "-"
-          )}
-        </TableCell>
-      )}
+                {event.advance?.maturity}
+              </span>
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
 
       {/* Impact Score Column */}
       {show.includes(Show.scores) &&
         event.insights?.scores?.impactScore !== undefined && (
           <TableCell className="text-center">
             {event.insights?.scores?.impactScore !== 0
-            ? event.insights?.scores?.impactScore
-            : "-"}
-        </TableCell>
-      )}
+              ? event.insights?.scores?.impactScore
+              : "-"}
+          </TableCell>
+        )}
 
       {/* Inbound Score Column */}
       {show.includes(Show.scores) &&
@@ -370,13 +389,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           <TableCell className="text-center">
             {event.audience?.audienceZone ? (
               <span className={styles.badge_primary}>
-              {event.audience?.audienceZone}
-            </span>
-          ) : (
-            "-"
-          )}
-        </TableCell>
-      )}
+                {event.audience?.audienceZone}
+              </span>
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
 
       {/* Audience Spread Column */}
       {show.includes(Show.audienceSpread) &&
@@ -384,28 +403,28 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           <TableCell className="text-center">
             <div className="flex gap-2">
               {event.audience?.audienceSpread &&
-                Object.entries(event.audience?.audienceSpread).length > 0
-              ? Object.entries(event.audience?.audienceSpread).map(
-                  ([key, { iso, name, count, percentage }]) => (
-                    <span
-                      key={key}
-                      className="inline-block rounded overflow-hidden"
-                      title={name}
-                    >
-                      <Image
-                        src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`}
-                        alt="flag"
-                        width={25}
-                        height={18}
-                        className="object-cover"
-                      />
-                    </span>
+              Object.entries(event.audience?.audienceSpread).length > 0
+                ? Object.entries(event.audience?.audienceSpread).map(
+                    ([key, { iso, name, count, percentage }]) => (
+                      <span
+                        key={key}
+                        className="inline-block rounded overflow-hidden"
+                        title={name}
+                      >
+                        <Image
+                          src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`}
+                          alt="flag"
+                          width={25}
+                          height={18}
+                          className="object-cover"
+                        />
+                      </span>
+                    )
                   )
-                )
-              : "-"}
-          </div>
-        </TableCell>
-      )}
+                : "-"}
+            </div>
+          </TableCell>
+        )}
 
       <TableCell
         className="sticky right-0 bg-background z-0"

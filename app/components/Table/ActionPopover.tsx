@@ -7,7 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { BookmarkIcon, X } from "lucide-react";
+import { Bookmark, BookmarkCheck, BookmarkIcon, X } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Interest } from "@/types/events";
@@ -89,11 +89,11 @@ export function ActionPopover({ eventId, interests }: ActionPopoverProps) {
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon">
-          <BookmarkIcon
-            className={isSaved ? "fill-primary" : "text-muted-foreground"}
-            width={16}
-            height={16}
-          />
+          {isSaved ? (
+            <BookmarkCheck className="w-5 h-5 text-primary" />
+          ) : (
+            <Bookmark className="w-5 h-5 text-primary" />
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[280px] p-0" align="end">

@@ -27,15 +27,15 @@ export const useMiscService = () => {
   //   };
 
   const getCountries = async () => {
-    const response = await api.request<any[]>(`${endpoints.locations}`, {
+    const response = await api.request<any[]>(`${endpoints.suggestions.location}`, {
       method: "GET",
-      params: { limit: 300, offset: 0 },
+      params: { limit: 300, type: "country" },
     });
     return response;
   };
   const getDesginationAutocomplete = async (input: string) => {
     const response = await api.request<any[] | undefined>(
-      `${endpoints.designations}`,
+      `${endpoints.suggestions.designation}`,
       {
         method: "GET",
         params: { name: input, take: 100 },
