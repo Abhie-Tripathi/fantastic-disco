@@ -893,6 +893,7 @@ export const EventsAdapter = {
           id: cat.id,
           name: cat.name,
           slug: cat.slug,
+          isGroup: cat.isGroup,
         })),
         eventTypes: response.event.type.map((type: string) => ({
           id: "",

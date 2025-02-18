@@ -16,6 +16,7 @@ import { Badge } from "../ui/badge";
 import Link from "next/link";
 import _ from "lodash";
 import { useFilterContext } from "@/context/filterContext";
+import { useRouter } from "next/navigation";
 interface Props {
   eventDetails: GTMEventDetail;
   scrollSection: string;
@@ -66,6 +67,8 @@ export const EventInfoAndMap = ({
   scrollSection,
   setActiveTab,
 }: Props) => {
+  const params = new URLSearchParams();
+  const router = useRouter();
   const { enabledFilters } = useFilterContext();
   const currentDate = new Date().toISOString().split("T")[0];
   const [isExpandDescription, setisExpandDescription] =
@@ -87,17 +90,52 @@ export const EventInfoAndMap = ({
     venueLocation,
     estimatedAttendance,
     tags,
+    format,
     // tickets,
     entryType,
     website,
   } = eventDetails;
 
-  // const enabledKeywords =
-  //   enabledFilters && enabledFilters.keywords
-  //     ? enabledFilters.keywords.positiveKeywords
-  //     : [];
-
   const filteredTags = tags;
+
+  const generateSearchEventsParams = (): string => {
+    const enabledCategories =
+      enabledFilters &&
+      enabledFilters.eventCategory &&
+      enabledFilters.eventCategory.enabledValue &&
+      enabledFilters.eventCategory.enabledValue.length > 0
+        ? enabledFilters.eventCategory.enabledValue
+            .map((category) => category.slug)
+            .join(",")
+        : categories && categories.length > 0
+        ? (() => {
+            const groupedCategories = categories.filter(
+              (category) => category.isGroup === true
+            );
+            return groupedCategories.length > 0
+              ? groupedCategories
+                  .slice(0, 2)
+                  .map((category) => category.slug)
+                  .join(",")
+              : null;
+          })()
+        : null;
+
+    const locationIds =
+      (format === "offline" || format === "hybrid") && venueLocation
+        ? venueLocation.country.id ||
+          venueLocation.state.id ||
+          venueLocation.city.id ||
+          venueLocation.venue.id ||
+          null
+        : null;
+
+    enabledCategories && params.set("categories", enabledCategories);
+    locationIds && params.set("locationIds", locationIds);
+
+    return params.toString();
+  };
+
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
       {/* <div className="flex gap-2 justify-center bg-[var(--negative-light-color)] border border-[#FDD8D8] p-2 rounded-sm text-sm">
@@ -123,41 +161,44 @@ export const EventInfoAndMap = ({
               <h1 className="text-[1rem] mb-2 font-medium">
                 Event Description
               </h1>
-              <Text variant="noMargin" color="secondary">
-                {isExpandDescription ? (
-                  description === null || description === undefined ? (
-                    <span className="text-[#666666] text-sm flex items-center gap-2">
-                      <CircleSlash width={15} height={15} />
-                      No data available
-                    </span>
-                  ) : (
-                    description
-                  )
-                ) : (
-                  `${
+              {description !== null && description !== undefined ? (
+                <Text variant="noMargin" color="secondary">
+                  {isExpandDescription ? (
                     description === null || description === undefined ? (
                       <span className="text-[#666666] text-sm flex items-center gap-2">
                         <CircleSlash width={15} height={15} />
                         No data available
                       </span>
                     ) : (
-                      description?.slice(0, 200)
+                      description
                     )
-                  }`
-                )}
-                <span
-                  className="font-semibold underline cursor-pointer ml-2"
-                  onClick={() => setisExpandDescription(!isExpandDescription)}
-                >
-                  {description !== null &&
-                  description !== undefined &&
-                  description.length > 200
-                    ? isExpandDescription
-                      ? "Show Less"
-                      : "Read More"
-                    : ""}
+                  ) : description === null || description === undefined ? (
+                    <span className="text-[#666666] text-sm flex items-center gap-2">
+                      <CircleSlash width={15} height={15} />
+                      No data available
+                    </span>
+                  ) : (
+                    description?.slice(0, 200)
+                  )}
+                  <span
+                    className="font-semibold underline cursor-pointer ml-2"
+                    onClick={() => setisExpandDescription(!isExpandDescription)}
+                  >
+                    {description !== null &&
+                    description !== undefined &&
+                    description.length > 200
+                      ? isExpandDescription
+                        ? "Show Less"
+                        : "Read More"
+                      : ""}
+                  </span>
+                </Text>
+              ) : (
+                <span className="text-[#666666] text-sm flex items-center gap-2">
+                  <CircleSlash width={15} height={15} />
+                  No data available
                 </span>
-              </Text>
+              )}
             </div>
           }
           {categories && categories.length > 0 && (
@@ -347,7 +388,14 @@ export const EventInfoAndMap = ({
             <Text variant="noMargin" color="primary">
               Start searching similar events
             </Text>
-            <Button className="cursor-not-allowed w-fit max-lg:bg-[#8F8F8F2E] max-lg:shadow-none max-lg:text-[#171717] max-lg:font-medium">
+            <Button
+              className="w-fit max-lg:shadow-none max-lg:font-medium"
+              onClick={() =>
+                router.push(
+                  `/internal/search/events?${generateSearchEventsParams()}`
+                )
+              }
+            >
               Search Events
             </Button>
           </div>

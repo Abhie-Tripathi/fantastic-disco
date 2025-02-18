@@ -93,12 +93,14 @@ export const AudienceIntel = ({
         (option.max === null || Number(maxExhibitorValue) <= option.max)
     );
 
-  const [minValue, maxValue] = stats.estimatedVisitor
-    .split("-")
-    .map((v) => Number(v.trim()));
+  const [minValue, maxValue] = (stats &&
+    stats.estimatedVisitor &&
+    stats.estimatedVisitor.split("-").map((v) => Number(v.trim()))) || [0, 0];
 
   const hasEstimatedVisitor =
     estimatedVisitors &&
+    minValue &&
+    maxValue &&
     estimatedVisitors.options.some(
       (option: { min: number; max: number | null; isEnabled: boolean }) =>
         option.min <= maxValue &&
@@ -166,12 +168,15 @@ export const AudienceIntel = ({
               </Tooltip>
             </TooltipProvider>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {stats.estimatedVisitor &&
-                (hasEstimatedVisitor ? (
-                  numberWithCommas(stats.estimatedVisitor || "--")
+              {stats.estimatedVisitor ? (
+                hasEstimatedVisitor ? (
+                  numberWithCommas(stats.estimatedVisitor)
                 ) : (
                   <Restriction />
-                ))}
+                )
+              ) : (
+                "--"
+              )}
             </p>
           </div>
           <div className="relative flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
@@ -195,10 +200,14 @@ export const AudienceIntel = ({
               </Tooltip>
             </TooltipProvider>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {isEstimatedExhibitorEnabled && stats.estimatedExhibitor ? (
-                stats.estimatedExhibitor ?? "--"
+              {stats.estimatedExhibitor ? (
+                isEstimatedExhibitorEnabled ? (
+                  stats.estimatedExhibitor
+                ) : (
+                  <Restriction />
+                )
               ) : (
-                <Restriction />
+                "--"
               )}
             </p>
           </div>
@@ -311,9 +320,9 @@ export const AudienceIntel = ({
                   </Badge>
                 )}
               </div>
-              {isDesignationEnabled ? (
-                <>
-                  {designationSpread && designationSpread.length > 0 && (
+              {designationSpread && designationSpread.length > 0 ? (
+                isDesignationEnabled ? (
+                  <>
                     <div className="flex flex-col gap-4 bg-[#FAFAFA] dark:bg-[#171717] border border-[#EBEBEB] dark:border-[#2E2E2E] rounded-md p-3">
                       <Text
                         color="primary"
@@ -349,18 +358,16 @@ export const AudienceIntel = ({
                         />
                       </div>
                     </div>
-                  )}
-                  <Text
-                    color="primary"
-                    fontWeight="medium"
-                    variant="noMargin"
-                    size="large"
-                  >
-                    Other designations
-                  </Text>
-                  <ul className="flex flex-col gap-4 h-64 overflow-y-auto pr-2">
-                    {designationSpread && designationSpread.length > 0 ? (
-                      designationSpread.map((designation, index) => (
+                    <Text
+                      color="primary"
+                      fontWeight="medium"
+                      variant="noMargin"
+                      size="large"
+                    >
+                      Other designations
+                    </Text>
+                    <ul className="flex flex-col gap-4 h-64 overflow-y-auto pr-2">
+                      {designationSpread.map((designation, index) => (
                         <li
                           key={`designation-${designation.designation}-${index}`}
                         >
@@ -377,17 +384,17 @@ export const AudienceIntel = ({
                             className="h-2"
                           />
                         </li>
-                      ))
-                    ) : (
-                      <span className="text-[#666666] text-sm flex items-center gap-2">
-                        <CircleSlash width={15} height={15} />
-                        No data available
-                      </span>
-                    )}
-                  </ul>
-                </>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <Restriction />
+                )
               ) : (
-                <Restriction />
+                <span className="text-[#666666] text-sm flex items-center gap-2">
+                  <CircleSlash width={15} height={15} />
+                  No data available
+                </span>
               )}
             </div>
           </div>
