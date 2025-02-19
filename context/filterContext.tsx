@@ -305,7 +305,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         });
 
         if (options.resetPage) {
-          params.delete("skip");
+          params.delete("offset");
           params.delete("page");
         }
 

@@ -32,56 +32,6 @@ export function convertToYYYYMMDD(dateStr: string) {
 
   return formattedDate;
 }
-
-export function formatDateRange(startISOString: any, endISOString: any) {
-  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-
-  const parseISOString = (isoString: any) => {
-    const date = new Date(isoString);
-    return {
-      day: days[date.getUTCDay()],
-      month: months[date.getUTCMonth()],
-      monthNo: date.getUTCMonth(),
-      dayOfMonth: date.getUTCDate(),
-      year: date.getUTCFullYear(),
-    };
-  };
-
-  const formatSingleDate = (date: any) => {
-    return `${date.day}, ${date.dayOfMonth} ${date.month} ${date.year}`;
-  };
-
-  const dateDiffInDays = (a: any, b: any) => {
-    const utc1 = Date.UTC(a.year, a.monthNo, a.dayOfMonth);
-    const utc2 = Date.UTC(b.year, b.monthNo, b.dayOfMonth);
-
-    return Math.floor((utc2 - utc1) / (1000 * 60 * 60 * 24));
-  };
-
-  const startDate = parseISOString(startISOString);
-  const endDate = parseISOString(endISOString);
-
-  const formattedStartDate = formatSingleDate(startDate);
-  const formattedEndDate = formatSingleDate(endDate);
-  const daysDiff = dateDiffInDays(startDate, endDate);
-
-  return `${formattedStartDate}`;
-}
-
 export function convertToISO(dateStr: any) {
   try {
     // Split the input date string into year, month, and day

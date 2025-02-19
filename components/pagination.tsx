@@ -118,9 +118,9 @@ export function PaginationComponent({
   return (
     <div className="flex justify-between items-center gap-4 px-2">
       {showEntriesCount && (
-        <span className="text-sm text-muted-foreground">
-          Showing {Math.min((currentPage - 1) * itemsPerPage + 1, count)} to{" "}
-          {Math.min(currentPage * itemsPerPage, count)} of {count} results
+        <span className="text-sm text-muted-foreground text-nowrap">
+          Showing {Math.min((currentPage - 1) * itemsPerPage + 1, count)} -{" "}
+          {Math.min(currentPage * itemsPerPage, count)} of {count}
         </span>
       )}
 
@@ -155,7 +155,7 @@ export function PaginationComponent({
       {showEntriesCount && (
         <div className="flex items-center space-x-2">
           <span className="text-sm text-muted-foreground">
-            Results per page:
+            Results/page 
           </span>
           <Select
             value={itemsPerPage.toString()}

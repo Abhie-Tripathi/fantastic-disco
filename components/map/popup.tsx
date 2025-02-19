@@ -2,10 +2,14 @@ import { Event } from "@/types/events";
 import React from "react";
 import { Popup } from "react-map-gl";
 import Link from "next/link";
-import { eventTypeColors } from "@/constants/eventTypes";
+import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { formattedDateRange } from "@/utils/date";
+import { Badge } from "@/components/ui/badge";
+import { lightenColor } from "@/lib/utils";
+import { Star } from "lucide-react";
+import { buttonVariants } from "../ui/button";
 
 const iconUrls: Record<string, string> = {
   "performing-arts": "/eventType/arts.png",
@@ -47,19 +51,19 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
       ? event.basic.eventLocation.city?.name === "Online"
         ? "Online"
         : [
-            event.basic.eventLocation?.venue?.name,
+            event.basic.eventLocation?.venue?.name || "TBA",
             event.basic.eventLocation?.city?.name,
             event.basic.eventLocation?.state?.name,
             event.basic.eventLocation?.country?.name,
           ]
             .filter(Boolean)
             .join(", ")
-      : "";
+      : "Venue to be announced";
   };
 
   return (
     <Popup
-      className="!max-w-[300px] !w-full bg-background rounded-md shadow-md"
+      className="!max-w-[310px] !w-full bg-background rounded-md shadow-md"
       longitude={parseFloat(popupInfo.coordinates.longitude)}
       latitude={parseFloat(popupInfo.coordinates.latitude)}
       anchor="bottom"
@@ -71,56 +75,100 @@ export default function MapPopup({ popupInfo, setPopupInfo }: PopupProps) {
     >
       <ScrollArea
         className={cn("w-full rounded-md", {
-          "h-[260px] p-2": popupInfo.events.length > 1,
+          "h-[260px]": popupInfo.events.length > 1,
         })}
       >
         {popupInfo.events
           .sort((a, b) => {
             const startA = new Date(a.basic.startDateTime).getTime();
             const startB = new Date(b.basic.startDateTime).getTime();
-            return (
-              startA - startB ||
-              new Date(a.basic.endDateTime).getTime() -
-                new Date(b.basic.endDateTime).getTime()
-            );
+            return startA - startB;
           })
           .map((event, index) => (
             <React.Fragment key={`${event.basic.id}-${index}`}>
-              <div className="relative pl-4 pr-2 py-2">
-                <div
-                  className="absolute left-0 top-0 bottom-0 w-1 rounded-md"
-                  style={{
-                    backgroundColor:
-                      eventTypeColors[event.basic.primaryEventType || ""],
-                  }}
-                />
-                <div className="flex items-center justify-between pb-2 border-b">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={iconUrls[event.basic.primaryEventType || "festival"]}
-                      alt={event.basic.primaryEventType || "Event"}
-                      className="w-5 h-5"
-                    />
-                    <span className="text-primary font-medium text-xs">
-                      {event.basic.primaryEventType?.toUpperCase() || "EVENT"}
-                    </span>
+              <div className="p-3">
+                <div className="flex items-start gap-3">
+                  {event.basic.logoUrl ? (
+                    <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100">
+                      <img
+                        src={event.basic.logoUrl}
+                        alt={`${event.basic.name} logo`}
+                        className="w-full h-full object-contain p-1"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center bg-gray-50 border border-gray-100">
+                      <span className="text-[#5055A3] text-2xl font-semibold">
+                        {event.basic.name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge
+                        variant="secondary"
+                        className="flex items-center gap-2 capitalize rounded-sm"
+                        style={{
+                          color:
+                            eventTypeColors[event.basic.primaryEventType || ""],
+                          backgroundColor: lightenColor(
+                            eventTypeColors[event.basic.primaryEventType || ""],
+                            0.9
+                          ),
+                        }}
+                      >
+                        <span>
+                          {
+                            eventTypeIcons[
+                              event.basic.primaryEventType || "festivals"
+                            ]
+                          }
+                        </span>
+                        <span>{event.basic.primaryEventType}</span>
+                      </Badge>
+                      {event.basic.rating && (
+                        <Badge
+                          variant="outline"
+                          className="text-gray-600 capitalize rounded-sm"
+                        >
+                          <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+                          <span>{event.basic.rating}</span>
+                        </Badge>
+                      )}
+                    </div>
+                    <h3 className="font-semibold text-sm mb-1.5 line-clamp-2">
+                      {event.basic.name}
+                    </h3>
+                    <div className="text-xs text-gray-600 mb-1">
+                      {getAddress(event)}
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="text-xs font-medium text-primary">
+                        {formattedDateRange(
+                          event.basic.startDateTime,
+                          event.basic.endDateTime
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <Link
+                        href={`/internal/event/${event.basic.id}`}
+                        className={buttonVariants({
+                          variant: "default",
+                          size: "xs",
+                          className: "mt-1 px-2 text-xs",
+                        })}
+                        target="_blank"
+                      >
+                        View Details
+                      </Link>
+                    </div>
                   </div>
-                  <Link
-                    href={`/internal/event/${event.basic.id}`}
-                    className="text-primary text-xs py-0 h-5 pr-0"
-                    target="_blank"
-                  >
-                    View Details
-                  </Link>
-                </div>
-                <h3 className="font-medium text-sm my-2">{event.basic.name}</h3>
-                <p className="text-xs mb-2 font-medium">{getAddress(event)}</p>
-                <div className="flex items-start text-xs text-primary">
-                  {formattedDateRange(event.basic.startDateTime, event.basic.endDateTime)}
                 </div>
               </div>
               {index < popupInfo.events.length - 1 && (
-                <div className="my-2 border-t border-border" />
+                <div className="mx-3 border-t border-border" />
               )}
             </React.Fragment>
           ))}

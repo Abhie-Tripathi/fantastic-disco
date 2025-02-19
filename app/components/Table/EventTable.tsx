@@ -21,7 +21,7 @@ const EventTable = () => {
 
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
-    Math.floor(parseInt(getFilterValue("skip") || "0") / itemsPerPage) + 1;
+    Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
   const showValues: Show[] = getFilterValue("show")
     .split(",")
@@ -30,14 +30,13 @@ const EventTable = () => {
 
   const handlePageChange = (page: number) => {
     setMultipleFilters({
-      skip: ((page - 1) * itemsPerPage).toString(),
+      offset: ((page - 1) * itemsPerPage).toString(),
       limit: itemsPerPage.toString(),
     });
   };
 
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
-      skip: "0",
       limit: newItemsPerPage,
     });
   };

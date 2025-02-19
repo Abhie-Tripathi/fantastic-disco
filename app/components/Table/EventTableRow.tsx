@@ -16,6 +16,7 @@ import Image from "next/image";
 import { ActionPopover } from "./ActionPopover";
 import { Show } from "@/types/events/dto/event-query.dto";
 import { Badge } from "@/components/ui/badge";
+import { formatEstimatedSpend } from "@/utils/formater";
 
 export function getEventRank(prop: any) {
   let rankString = "";
@@ -75,6 +76,19 @@ function getOrdinalSuffix(number: number): string {
   return "th";
 }
 
+function formatExhibitorCount(value: string | number | null): string {
+  if (value === null || value === undefined) return "--";
+  
+  const stringValue = String(value);
+  const values = stringValue.split('-');
+  
+  if (values.length === 2 && values[0] === values[1]) {
+    return Number(values[0]).toLocaleString();
+  }
+  
+  return stringValue.toLocaleString();
+}
+
 export const EventTableRow: React.FC<EventTableRowProps> = ({
   event,
   show,
@@ -83,32 +97,50 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
       <TableCell
-        className="sticky left-0 z-0 bg-slate-50 dark:bg-slate-900  max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-slate-100 dark:group-hover:bg-slate-800"
+        className="sticky left-0 z-0 bg-slate-50 dark:bg-slate-900 max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-slate-100 dark:group-hover:bg-slate-800"
         style={{ zIndex: 0 }}
       >
-        <div className="flex gap-1 mb-1">
-          {show.includes(Show.branded) && event.advance?.isBranded && (
-            <span className="px-2 py-0.5 rounded text-xs bg-success-background text-success-text font-medium">
-              Brand
-            </span>
-          )}
-          {show.includes(Show.series) && event.advance?.isSeries && (
-            <span className="px-2 py-0.5 rounded text-xs bg-info-background text-info-text font-medium">
-              Series
-            </span>
-          )}
-        </div>
-        <div className="truncate font-medium">
-          <Link
-            href={`/internal/event/${event.basic.id}`}
-            target="_blank"
-            className="hover:text-primary transition-colors"
-          >
-            {event.basic.name}
-          </Link>
-        </div>
-        <div className="text-sm text-muted-foreground">
-          {event.basic.organizer?.name}
+        <div className="flex gap-4">
+          {/* Logo Section */}
+          <div className="flex-shrink-0">
+            {event.basic.logoUrl ? (
+              <img
+                src={event.basic.logoUrl}
+                alt={`${event.basic.name} logo`}
+                className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
+              />
+            ) : (
+              <div className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+                <span className="text-[#5055A3] text-lg font-semibold">
+                  {event.basic.name.charAt(0)}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Content Section */}
+          <div className="flex-grow min-w-0">
+            <div className="flex gap-1 mb-1">
+              {show.includes(Show.branded) && event.advance?.isBranded && (
+                <Badge variant="outline">Brand</Badge>
+              )}
+              {show.includes(Show.series) && event.advance?.isSeries && (
+                <Badge variant="outline">Series</Badge>
+              )}
+            </div>
+            <div className="truncate font-medium">
+              <Link
+                href={`/internal/event/${event.basic.id}`}
+                target="_blank"
+                className="hover:text-primary transition-colors"
+              >
+                {event.basic.name}
+              </Link>
+            </div>
+            <div className="text-sm text-muted-foreground truncate">
+              {event.basic.organizer?.name}
+            </div>
+          </div>
         </div>
       </TableCell>
 
@@ -143,7 +175,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
         <div>
           {event.basic.eventLocation.venue?.displayName ||
-            (event.basic.format === "ONLINE" ? "Online" : "TBA")}
+            (event.basic.format === "online" ? "Online" : "TBA")}
         </div>
       </TableCell>
 
@@ -153,7 +185,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       </TableCell>
 
       {/* Country Column */}
-      <TableCell className="text-center">
+      <TableCell>
         {displayValue(event.basic.eventLocation.country?.name)}
       </TableCell>
 
@@ -183,7 +215,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       <TableCell className="text-center">
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger className="text-left">
+            <TooltipTrigger>
               <span className="flex items-center gap-1">
                 {event.basic.categories[0]?.name}
                 {event.basic.categories.length > 1 && (
@@ -211,7 +243,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.estimatedExhibitors) &&
         event.advance?.estimatedExhibitors !== undefined && (
           <TableCell className="text-center">
-            {displayValue(event.advance?.estimatedExhibitors)}
+            {formatExhibitorCount(event.advance?.estimatedExhibitors)}
           </TableCell>
         )}
 
@@ -234,48 +266,21 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             )}
           </TableCell>
         )}
-      {/* Reputation Column */}
-      {show.includes(Show.scores) &&
-        event.insights?.repeatSentiment !== undefined && (
-          <TableCell className="text-center">
-            {event.insights?.repeatSentiment !== null &&
-            (event.insights?.repeatSentiment > 1 ||
-              event.insights?.repeatSentiment < -1) ? (
-              event.insights?.repeatSentiment > 0 ? (
-                <div className="text-success-text flex items-center gap-1">
-                  {event.insights?.repeatSentiment}%
-                  <ArrowUp className="w-4 h-4" />
-                </div>
-              ) : (
-                <div className="text-danger-text flex items-center gap-1">
-                  {event.insights?.repeatSentiment}%
-                  <ArrowDown className="w-4 h-4" />
-                </div>
-              )
-            ) : (
-              "-"
-            )}
-          </TableCell>
-        )}
 
       {/* Event Rating Column */}
       {show.includes(Show.rating) &&
         event.insights?.reputationScore !== undefined && (
           <TableCell style={{ textAlign: "center" }}>
-            {event.insights?.reputationScore > 0 ? (
-              <div className="flex gap-1 items-center justify-evenly">
+            {event.insights?.reputationScore > 0 && event.basic.rating > 0 ? (
+              <div className="grid grid-cols-3 items-center justify-items-center">
                 {event.insights?.reputationScore > 10 && (
-                  <span className="rounded-full bg-success-background p-1">
                     <ArrowUp className="w-4 h-4 text-success-text inline" />
-                  </span>
                 )}
                 {event.insights?.reputationScore < -10 && (
-                  <span className="rounded-full bg-danger-background p-1">
-                    <ArrowDown className="w-3.5 h-3.5 text-danger-text inline" />
-                  </span>
+                  <ArrowDown className="w-4 h-4 text-danger-text inline" />
                 )}
 
-                {getEventRating(event.insights?.reputationScore.toString())}
+                <span className="col-start-2" >{event.basic.rating}</span>
 
                 <Star className="w-4 h-4 inline" />
               </div>
@@ -285,25 +290,24 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </TableCell>
         )}
 
-      {/* Trust Column */}
+      {/* Reputation Column */}
       {show.includes(Show.trustScore) &&
         event.insights?.repeatSentiment !== undefined && (
-          <TableCell style={{ textAlign: "center" }}>
-            {event.insights?.repeatSentiment ? (
-              <>
-                {event.insights?.repeatSentiment > 10 && (
-                  <span className="rounded-full bg-success-background p-1">
-                    <ArrowUp className="w-3.5 h-3.5 text-success-text inline mb-1.5" />
-                  </span>
-                )}
-                {event.insights?.repeatSentiment < -10 && (
-                  <span className="rounded-full bg-danger-background p-1">
-                    <ArrowDown className="w-3.5 h-3.5 text-danger-text inline mb-1.5" />
-                  </span>
-                )}
-                &nbsp;
-                {event.insights?.repeatSentiment}%
-              </>
+          <TableCell className="text-center">
+            {event.insights?.repeatSentiment !== null &&
+            (event.insights?.repeatSentiment > 1 ||
+              event.insights?.repeatSentiment < -1) ? (
+              event.insights?.repeatSentiment > 0 ? (
+                <div className="text-success-text flex items-center justify-center gap-1">
+                  {event.insights?.repeatSentiment}%
+                  <ArrowUp className="w-4 h-4" />
+                </div>
+              ) : (
+                <div className="text-danger-text flex items-center justify-center gap-1">
+                  {event.insights?.repeatSentiment}%
+                  <ArrowDown className="w-4 h-4" />
+                </div>
+              )
             ) : (
               "-"
             )}
@@ -379,7 +383,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.economicImpact) &&
         event.insights?.economicImpact !== undefined && (
           <TableCell className="text-right">
-            {event.insights.economicImpact}
+            {formatEstimatedSpend(event.insights.economicImpact)}
           </TableCell>
         )}
 
