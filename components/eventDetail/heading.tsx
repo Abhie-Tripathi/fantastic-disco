@@ -16,7 +16,7 @@ export const Heading = ({
 }) => {
   return (
     <div
-      className={`flex items-center gap-4 bg-[#FAFAFA] py-3 px-4 font-bold ${scrollSection}`}
+      className={`flex items-center gap-4 bg-[#FAFAFA] py-3 px-4 font-bold dark:bg-[#292929] ${scrollSection}`}
     >
       {heading}
       <TooltipProvider>

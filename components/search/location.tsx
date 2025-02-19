@@ -95,7 +95,28 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
 
   useEffect(() => {
     fetchUrlLocation();
-  }, [localFilters.locationIds]);
+  }, [localFilters]);
+
+  // Add new useEffect for trends page default location
+  useEffect(() => {
+    if (pathName === "/internal" && !localFilters.locationIds) {
+      replaceLocalFilter(
+        "geoCoordinates",
+        "locationIds",
+        "5dc0b154-e2d8-5160-9bd6-dd8175a58c47"
+      );
+    }
+  }, [pathName]);
+
+  // Add cleanup effect
+  useEffect(() => {
+    return () => {
+      if (pathName === "/internal" || pathName === "/internal/search") {
+        console.log("deleting locationIds and geoCoordinates");
+        replaceLocalFilter("geoCoordinates", "locationIds", "");
+      }
+    };
+  }, [pathName]);
 
   const applyHandler = () => {
     if (selectedLocation && !Array.isArray(selectedLocation)) {

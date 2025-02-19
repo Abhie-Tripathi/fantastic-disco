@@ -34,7 +34,7 @@ const MobileSidebar = () => {
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
-      name: "Search Events",
+      name: "Search",
       href: "/internal/search/events",
       icon: MagnifyingGlass,
     },
@@ -43,7 +43,7 @@ const MobileSidebar = () => {
       href: "/internal/trackers?tab=allTrackers",
       icon: LineChart,
     },
-    { name: "Event Trends", href: "/internal/trends", icon: ChartBarRandom },
+    { name: "Trends", href: "/internal/trends", icon: ChartBarRandom },
     {
       name: "Coordinate",
       href: "/internal/coordinate",
@@ -221,6 +221,7 @@ const MobileSidebar = () => {
         )}
         <span className="sr-only">Toggle theme</span>
       </Button>
+      <span className="text-xs text-muted-foreground px-4 mb-3">Version 1.0.0</span>
     </div>
   );
 };

@@ -73,7 +73,7 @@ const Sidebar = () => {
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
-      name: "Search Events",
+      name: "Search",
       href: "/internal/search/events",
       icon: MagnifyingGlass,
     },
@@ -82,7 +82,7 @@ const Sidebar = () => {
       href: "/internal/trackers?tab=allTrackers",
       icon: LineChart,
     },
-    { name: "Event Trends", href: "/internal/trends", icon: ChartBarRandom },
+    { name: "Trends", href: "/internal/trends", icon: ChartBarRandom },
     {
       name: "Coordinate",
       href: "/internal/coordinate",
@@ -347,17 +347,26 @@ const Sidebar = () => {
                 );
               })}
         </ul>
-        {!isEventeli && (
-          <Button className="ml-3 mb-3" variant="ghost" size="icon" onClick={() => toggleTheme()}>
-            {theme === "dark" ? (
-              <Sun className="h-5 w-5 transition-all" />
-            ) : (
-              <Moon className="h-5 w-5  transition-all" />
-            )}
-            <span className="sr-only">Toggle theme</span>
-          </Button>
-        )}
-
+        <div className="px-3 pb-3 flex flex-col gap-3 border-t pt-3">
+          {!isEventeli && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => toggleTheme()}
+              className="hover:bg-muted"
+            >
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5 transition-all" />
+              ) : (
+                <Moon className="h-5 w-5 transition-all" />
+              )}
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+          )}
+          <span className="text-xs text-muted-foreground px-1">
+            {isHovered ? "Version 1.0.0" : "v1.0.0"}
+          </span>
+        </div>
       </nav>
     </aside>
   );

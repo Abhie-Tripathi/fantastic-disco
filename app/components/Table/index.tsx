@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from "react";
 import styles from "./table.module.css";
 import ExpandAll from "/public/expandAll.svg";
@@ -1811,9 +1812,11 @@ const Table = ({
                           <>
                             <span
                               title={
-                                event?.peopleFinderPersonAssociation?.[0].split(
+                                `${event?.peopleFinderPersonAssociation?.[0]?.split(
                                   "_"
-                                )[1]
+                                )[1] || ''} - ${event?.peopleFinderPersonAssociation?.[0].split(
+                                  "_"
+                                )[2] || ''}`
                               }
                               className={styles.capitalizeText}
                             >
@@ -1835,15 +1838,15 @@ const Table = ({
                                 <Tooltip
                                   className={styles["react-aria-Tooltip"]}
                                 >
-                                  {event?.peopleFinderPersonAssociation.map(
+                                  {event?.peopleFinderPersonAssociation?.map(
                                     (item) => (
                                       <div key={item}>
-                                        {item.split("_")[1]}
+                                        {item.split("_")[1] || ""}, {item.split("_")[2] || ""} 
                                         <span className={styles.capitalizeText}>
-                                          {" "}
-                                          ({item.split("_")[0]})
+                                        {" "}({item.split("_")[0] || ""})
                                         </span>
                                       </div>
+
                                     )
                                   )}
                                 </Tooltip>

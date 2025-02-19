@@ -352,10 +352,6 @@ const Search = () => {
         className="mt-0"
       >
         <div className="flex justify-between items-center py-6 sticky top-0 bg-background z-20 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)]">
-          {/* <div className="flex items-center gap-2">
-            <Badge className="bg-primary text-white">{count}</Badge>
-            <p className="text-primary font-semibold">Events Found</p>
-          </div> */}
           <div className="w-[108px]"></div>
           <div className="flex justify-center">
             <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
