@@ -104,6 +104,18 @@ const Sidebar = () => {
     { name: "Widget", href: "/widget/list", icon: <WidgetIcon /> },
     { name: "Events", href: "/widget/events", icon: <EventsIcon /> },
   ];
+  const prospectLinks = [
+    {
+      name: "Search",
+      href: "/internal/prospect",
+      icon: MagnifyingGlass,
+    },
+    {
+      name: "Tracker",
+      href: "",
+      icon: LineChart,
+    },
+  ];
 
   const handleMouseEnter = useCallback(() => {
     setIsHovered(true);
@@ -226,7 +238,49 @@ const Sidebar = () => {
       </div>
       <nav className="flex-1 overflow-y-auto flex flex-col justify-between">
         <ul className="p-2 space-y-1">
-          {pathname.startsWith("/internal")
+          { (pathname.startsWith("/internal/prospect") || pathname.startsWith("/internal/company"))
+              ? prospectLinks.map((link) => {
+                const Icon = link.icon;
+                const isActive =
+                  pathname === link.href ||
+                  (link.name === "Tracker" &&
+                    pathname.startsWith("/internal/trackers"));
+                return (
+                  <li key={link.name}>
+                    <Link href={link.href} passHref legacyBehavior>
+                      <Button
+                        variant={isActive ? "secondary" : "ghost"}
+                        className={`w-full ${
+                          isHovered
+                            ? "justify-start px-3"
+                            : "justify-center px-0"
+                        } h-10 ${
+                          isActive
+                            ? "bg-primary text-white hover:bg-primary"
+                            : ""
+                        }`}
+                        asChild
+                      >
+                        <a className={link.name === "Tracker" ? "pointer-events-none" : ""}>
+                          <Icon
+                            color={theme == "dark" ? "#fff" : ""}
+                            className="flex-shrink-0"
+                          />
+                          {isHovered && (
+                            <>
+                              <span className="ml-2">{link.name}</span>
+                              {link.name === "Tracker" &&
+                                <div className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#fff0f0] text-[#e5484d] ml-3">Coming soon</div>
+                              }
+                            </>
+                          )}
+                        </a>
+                      </Button>
+                    </Link>
+                  </li>
+                );
+              })
+            : pathname.startsWith("/internal")
             ? gtmLinks.map((link) => {
                 const Icon = link.icon;
                 const isActive =

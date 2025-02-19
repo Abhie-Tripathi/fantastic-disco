@@ -1,10 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
-import { Check, ChevronDown, X } from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { LockClosedSmall } from "geist-icons";
 import {
   Command,
   CommandEmpty,
@@ -13,44 +11,17 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
-import { useMiscService } from "@/services/miscService";
-import { useQuery } from "@tanstack/react-query";
 import { useFilterContext } from "@/context/filterContext";
-import { Designations } from "@/types/misc";
+import designationsData from "@/public/data/productsTopics.json";
 
-const designationsData: Designations[] = [
-  {
-    id: "1",
-    name: "Education & Training",
-    slug: "Education & Training",
-  },
-  {
-    id: "2",
-    name: "Science & Research",
-    slug: "Science & Research",
-  },
-  {
-    id: "3",
-    name: "Business Services",
-    slug: "Business Services",
-  },
-  {
-    id: "4",
-    name: "Banking & Finance",
-    slug: "Banking & Finance",
-  },
-  {
-    id: "5",
-    name: "IT & Technology",
-    slug: "IT & Technology",
-  },
-];
+
+interface ProductTopics {
+  "id_10x": string;
+  "id": string;
+  "name": string;
+  "slug": string;
+}
 
 export default function ProductTopics() {
   const [open, setOpen] = useState(false);
@@ -58,36 +29,36 @@ export default function ProductTopics() {
   const { localFilters, setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
 
-  const designations: Designations[] = designationsData.filter((country) =>
+  const designations: ProductTopics[] = designationsData.filter((country) =>
     country.name.toLowerCase().includes(search.toLowerCase())
   );
   const enabled = morphedData.audienceProfile.isEnabled;
   const selectedLabels = useMemo(() => {
     const filterDesignations =
-      getLocalFilterValue("productTopic")?.split(",").filter(Boolean) || [];
-    return designations.filter((d: Designations) =>
+      getLocalFilterValue("eventProductIds")?.split(",").filter(Boolean) || [];
+    return designations.filter((d: ProductTopics) =>
       filterDesignations.includes(d.id)
     );
-  }, [localFilters.productTopic, designations]);
+  }, [localFilters.eventProductIds, designations]);
 
-  const handleSelect = (label: Designations) => {
+  const handleSelect = (label: ProductTopics) => {
     const currentDesignations =
-      localFilters.productTopic?.split(",").filter(Boolean) || [];
+      localFilters.eventProductIds?.split(",").filter(Boolean) || [];
     const isSelected = currentDesignations.includes(label.id);
 
     const newDesignations = isSelected
       ? currentDesignations.filter((id) => id !== label.id)
       : [...currentDesignations, label.id];
 
-    setLocalFilter("productTopic", newDesignations.join(","));
+    setLocalFilter("eventProductIds", newDesignations.join(","));
   };
 
   const handleRemoveLabel = (labelId: string) => {
-    const currentDesignations = localFilters.productTopic
+    const currentDesignations = localFilters.eventProductIds
       ?.split(",")
       .filter((id) => id !== labelId);
     if (currentDesignations)
-      setLocalFilter("productTopic", currentDesignations.join(","));
+      setLocalFilter("eventProductIds", currentDesignations.join(","));
   };
 
   return (
@@ -100,7 +71,7 @@ export default function ProductTopics() {
         <CommandEmpty>No label found.</CommandEmpty>
         <CommandGroup>
           <CommandList className="max-h-48">
-            {designations?.map((label: Designations) => (
+            {designations?.map((label: ProductTopics) => (
               <CommandItem key={label.id} onSelect={() => handleSelect(label)}>
                 <Check
                   className={cn(
