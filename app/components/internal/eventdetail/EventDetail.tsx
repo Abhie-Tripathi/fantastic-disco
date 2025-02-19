@@ -78,7 +78,7 @@ const EventDetail = ({
 
   useEffect(() => {
     if (urlPath === "outreach") setStage("OUTREACH");
-    else if (urlPath === "coordinate") setStage("INTERNAL");
+    else if (urlPath === "coordinate") setStage("COORDINATE");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -166,7 +166,7 @@ const EventDetail = ({
     const fetchPocData = async () => {
       const data = await coordinateService.getEventPOC(eventId);
       if (data) {
-        setPocData(data.eventPoc);
+        setPocData(data.eventPoCs);
       }
     };
     fetchPocData();
@@ -219,7 +219,7 @@ const EventDetail = ({
               organizerData={singleEventData?.basic?.organizer}
             />
             <EventPoc open={openPocDetails} eventId={eventId} setExpandedTab={setExpandedTab} pocData={pocData} unlockPoc={unlockPoc} />
-            <Follower eventId={eventId} enquiryId={enquiryId} myActivity={modalContent.myActivity.filter((users: any) => users.activityType === "FOLLOW")} />
+            <Follower eventId={eventId} enquiryId={enquiryId} myActivity={modalContent?.myActivity.filter((users: any) => users.activityType === "FOLLOW")} />
           </div>
           <div className={styles.containerRight} ref={rightContainerRef}>
             {singleEventData && 

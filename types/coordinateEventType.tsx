@@ -90,7 +90,7 @@ export interface pocDetail {
     state?: number,
 }
 export interface eventPocResponse {
-    eventPoc: pocDetail[]
+    eventPoCs: pocDetail[]
 }
 
 export interface PresetJsonData {
@@ -108,4 +108,10 @@ export interface PresetJsonData {
 export interface PresetList {
     totalCount: number;
     data: PresetJsonData[];
+}
+
+export interface enquiryCountResponse {
+    count: {
+        [item: string]: number,
+    }
 }

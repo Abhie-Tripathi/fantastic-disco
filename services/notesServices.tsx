@@ -7,12 +7,19 @@ export const useNotesServices =() =>{
     const api = useApi();
     const getNotesFromTracker=(trackerId?:string, params?:string): Promise<NotesResponse | undefined>=>{
         return api.request(
-          `${endpoints.tracker.getNotes}&entityId=${trackerId}&${params}`
+          `${endpoints.tracker.getNotes}/${trackerId}/comments?${params}`
         )
       }
+
+    const getCoordinateNotes=(enquiryId?:string, params?:string, source?: string): Promise<NotesResponse | undefined>=>{
+      return api.request(
+        `${endpoints.coordinate.enquiryDetail}/${enquiryId}/${source}/comments?${params}`
+      )
+    }
+
       const saveNotes=(formData:any, replyId:string | null): Promise<{data: Comment }| undefined>=>{
         return api.request(
-          `${endpoints.tracker.saveNotes}${replyId!==null ? '/reply':''}`,
+          `${endpoints.tracker.saveNotes}`,
           {
             method: 'POST',
             data: formData
@@ -21,19 +28,28 @@ export const useNotesServices =() =>{
       }
       const deleteNotes=(id:string)=>{
         return api.request(
-          `${endpoints.tracker.saveNotes}/${id}`,
+          `${endpoints.tracker.saveNotes}/${id}/upvote`,
           {
             method: "DELETE"
           }
         )
       }
       const likeNotes=(id: string, isLiked: boolean)=>{
+        if(!isLiked){
         return api.request(
-          `${endpoints.tracker.saveNotes}/${id}/interest`,
+          `${endpoints.tracker.saveNotes}/${id}/upvote`,
           {
-            method: "POST"
+            method: "POST",
           }
         )
+        }else{
+          return api.request(
+            `${endpoints.tracker.saveNotes}/${id}/upvote`,
+            {
+              method: "DELETE",
+            }
+          )
+        }
       }
       const getUsers=(params: string): Promise<{users: UserResponse[] }| undefined>=>{
         return api.request(
@@ -45,6 +61,7 @@ export const useNotesServices =() =>{
       }
     return{
         getNotesFromTracker,
+        getCoordinateNotes,
         saveNotes,
         deleteNotes,
         likeNotes,

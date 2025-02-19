@@ -49,37 +49,41 @@ export const MiscAdapter = {
 
   adaptCoordinateRequestParam: (params: URLSearchParams): Record<string, string> => {
     const adaptedParams: Record<string, string> = {
-      source: "internal",
+      // source: "internal",
       limit: "10",
     };
 
     const activeGte = params.get("active_gte");
     const activeLte = params.get("active_lte");
     if (activeGte && activeLte) {
-      const startDate = new Date(activeGte).toISOString().split("T")[0];
-      const endDate = new Date(activeLte).toISOString().split("T")[0];
-      adaptedParams.startDate = `${startDate},${endDate}`;
-      adaptedParams.endDate = `${startDate},${endDate}`;
+      // const startDate = new Date(activeGte).toISOString().split("T")[0];
+      // const endDate = new Date(activeLte).toISOString().split("T")[0];
+      // adaptedParams.startDate = `${startDate},${endDate}`;
+      // adaptedParams.endDate = `${startDate},${endDate}`;
+      adaptedParams.event_active_gte = activeGte;
+      adaptedParams.event_active_lte = activeLte;
     }
     else if (activeGte) {
-      const startDate = new Date(activeGte).toISOString().split("T")[0];
-      adaptedParams.startDate = `${startDate},${startDate}`;
+      // const startDate = new Date(activeGte).toISOString().split("T")[0];
+      // adaptedParams.startDate = `${startDate},${startDate}`;
+      adaptedParams.event_active_gte = activeGte;
     }
     else if (activeLte) {
-      const endDate = new Date(activeLte).toISOString().split("T")[0];
-      adaptedParams.endDate = `${endDate},${endDate}`;
+      // const endDate = new Date(activeLte).toISOString().split("T")[0];
+      // adaptedParams.endDate = `${endDate},${endDate}`;
+      adaptedParams.event_active_lte = activeLte;
     }
 
     if (params.get("eventId")) {
       adaptedParams.eventId = params.get("eventId")!;
     }
 
-    if (params.get("interest")) {
-      adaptedParams.interest = params.get("interest")!;
+    if (params.get("type")) {
+      adaptedParams.type = params.get("type")!;
     }
 
-    if (params.get("liked")) {
-      adaptedParams.liked = params.get("liked")!;
+    if (params.get("upvotedBy")) {
+      adaptedParams.upvotedBy = params.get("upvotedBy")!;
     }
 
     if(params.get('status')) {

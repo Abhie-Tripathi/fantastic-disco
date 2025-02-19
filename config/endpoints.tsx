@@ -58,11 +58,11 @@ export const endpoints = {
     getSavedEvents: `${BASE_URL}/tracker`,
     saveEvent: `${BASE_URL}/tracker/saved-events`,
     getNotes: `${BASE_URL}/comment?stage=INTERNAL&entityType=TRACKER`,
-    saveNotes: `${BASE_URL}/comment`,
+    saveNotes: `${BASE_URL_NEW}/comments`,
   },
   coordinate: {
     enquiry: `${BASE_URL_NEW}/me/account/enquiries`,
-    participent: `${BASE_URL}/userInterest/totalParticipent`,
+    participent: `${BASE_URL_NEW}/me/account/enquiries/count`,
     iterestedUsers: `${BASE_URL}/userInterest`,
     enquiryDetail: `${BASE_URL_NEW}/enquiries`,
     pocUnmask: `${BASE_URL}/event-poc/unmask`,

@@ -20,28 +20,14 @@ import NullState from "../trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg"
 import { Pencil } from "lucide-react";
 import { GAEvent } from "@/utils/GAEvent";
+import EventDetail from "./eventdetail/EventDetail";
+import ShortlistModal from "./eventdetail/shortlistModal";
 
 interface Props {
-  handleModal: (id: string, enquiryId: string) => void;
-  handleShortlistModal: (eventId: string, enquiryId: string) => void;
-  cardUpdated: boolean;
-  modalOpen: boolean;
-  setStatusChanged: (status: boolean) => void;
-  statusChanged?: boolean;
-  selectedId?: string;
-  setSelectedId: any;
   coordinateActions: any;
   pipelineConfig: any;
 }
 const Internal = ({
-  handleModal,
-  handleShortlistModal,
-  cardUpdated,
-  modalOpen,
-  setSelectedId,
-  setStatusChanged,
-  statusChanged,
-  selectedId,
   coordinateActions,
   pipelineConfig,
 }: Props) => {
@@ -56,13 +42,48 @@ const Internal = ({
   const divRef: RefObject<HTMLDivElement> = useRef(null);
   const [noMoreData, setNoMoreData] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [coordinateCount, setCoordinateCount] = useState<any>();
+  const [coordinateCount, setCoordinateCount] = useState<any>([]);
   const [searchInput, setSearchInput] = useState("");
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
 
   const [filtersChanged, setFiltersChanged] = useState<boolean>(false);
   const router = useRouter();
+  
+  const [selectedId,setSelectedId]=useState("");
+  const [statusChanged,setStatusChanged]=useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [shortlistModalOpen, setShortlistModalOpen] = useState(false);
+  const [shortlistModalData, setShortlistModalData] = useState({});
+  const [singleEventId, setSingleEventId] = useState<string>("");
+  const [enquiryId, setEnquiryId] = useState<string>("");
+
+  const handleModal = (eventId: string, enquiryId: string) => {
+    setModalOpen(!modalOpen);
+    setSingleEventId(eventId);
+    setEnquiryId(enquiryId);
+  };
+
+  const handleShortlistModal = (eventId: string, enquiryId: string = "") => {
+    setEnquiryId(enquiryId);
+    if (eventId && eventId != "") fetchInterestData(eventId, enquiryId);
+    else setShortlistModalOpen(!shortlistModalOpen);
+  };
+
+  const fetchInterestData = async (eventId: string, enquiryId: string) => {
+    try {
+      const apiData: any = await coordinateService.getInterestedUsers(eventId, enquiryId);
+      if (apiData) {
+        apiData.eventId = eventId;
+        apiData.enquiryId = enquiryId;
+        setShortlistModalData(apiData);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setShortlistModalOpen(!shortlistModalOpen);
+    }
+  };
 
   const { setFilter, deleteFilter } = useFilterState();
   const handleScrollEnd = () => {
@@ -75,23 +96,26 @@ const Internal = ({
     setSearchInput(event.target.value);
   };
 
+  const getCordinateList = async () => {
+    try {
+      const data = await coordinateService.getParticipentCount();
+      setCoordinateCount(coordinateActions.map((item: any) => {
+        const statusKey = item.status.toLowerCase();
+        return { ...item, count: data?.count[statusKey] };
+      }));
+    } catch (error) {
+      console.error("Error while fetching cordinate list:", error);
+    } finally {
+      // setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const getCordinateList = async () => {
-      try {
-        const data = await coordinateService.getParticipentCount();
-        setCoordinateCount(data);
-      } catch (error) {
-        console.error("Error while fetching cordinate list:", error);
-      } finally {
-        // setIsLoading(false);
-      }
-    };
-    getCordinateList();
-  }, []);
+    if (coordinateActions.length > 0)
+      getCordinateList();
+  }, [coordinateActions]);
 
   const fetchData = async () => {
-    // console.log("fetching data... page=", page);
-
     if (page > 0) {
       try {
         let offset: number = (page - 1) * 10;
@@ -120,11 +144,11 @@ const Internal = ({
     }
   };
 
-  useEffect(() => {
-    if (page == 1) fetchData();
-    else setPage(1);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cardUpdated]);
+  // useEffect(() => {
+  //   if (page == 1) fetchData();
+  //   else setPage(1);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [cardUpdated]);
   useInfiniteScroll(divRef, handleScrollEnd);
   useEffect(() => {
     if (statusChanged === true) {
@@ -193,43 +217,19 @@ const Internal = ({
         {/* <div className={styles.scrollContainer} ref={divRef} style={{height:popoverState?"auto":"calc(100vh - 80px)"}}> */}
         <div className={styles.container}>
           <div className={styles.countsContainer}>
-            {coordinateCount && coordinateCount.slice(1).map((item: any, index: number) => (
+            {coordinateCount && coordinateCount.map((item: any, index: number) => (
               <div className={`${styles.exhibitorCount}`} key={index}>
                 <div className={styles.count}>
                   {item?.count}
                 </div>
                 <div className="flex items-end cursor-pointer hover:underline relative group" onClick={handleEditAction}>
-                  {item.name}
+                  {item.label}
                     <div className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 p-1 rounded absolute -right-7" onClick={handleEditAction} title="Edit">
                       <Pencil width="14px" height="14px" />
                     </div>
                 </div>
               </div>
             ))}
-            {/* <div className={styles.exhibitorCount}>
-              <div className={styles.count}>
-                {coordinateCount && coordinateCount[1]?.count}
-              </div>
-              <div className={styles.countTitle}>Exhibit</div>
-            </div>
-            <div className={styles.exhibitorCount}>
-              <div className={styles.count}>
-                {coordinateCount && coordinateCount[2]?.count}
-              </div>
-              <div className={styles.countTitle}>Sponsor</div>
-            </div>
-            <div className={styles.exhibitorCount}>
-              <div className={styles.count}>
-                {coordinateCount && coordinateCount[3]?.count}
-              </div>
-              <div className={styles.countTitle}>Speak</div>
-            </div>
-            <div className={styles.exhibitorCount}>
-              <div className={styles.count}>
-                {coordinateCount && coordinateCount[4]?.count}
-              </div>
-              <div className={styles.countTitle}>Attend</div>
-            </div> */}
           </div>
           <div className={styles.filters}>
             <div className={styles.searchContainer}>
@@ -293,7 +293,6 @@ const Internal = ({
               // Update previous date
               prevDate = item.eventData.startDate;
               return (
-                <>
                   <div key={item.eventId} className={styles.timeline}>
                     <TimelineItem
                       eventDate={showDate ? item.eventData.startDate : null}
@@ -320,7 +319,6 @@ const Internal = ({
                       enquiryStatusUpdate={enquiryStatusUpdate}
                     />
                   </div>
-                </>
               );
             })}
           </div>
@@ -337,6 +335,39 @@ const Internal = ({
           )}
         </div>
       </div>
+
+      {modalOpen && (
+        <div
+          className={`${styles.modal} px-5`}
+        >
+          <EventDetail
+            openEventDetails={true}
+            openEventRequest={false}
+            openOrganiserDetails={false}
+            openPocDetails={false}
+            closeBtn={true}
+            handleModal={handleModal}
+            eventId={singleEventId}
+            enquiryId={enquiryId}
+            coordinateActions={coordinateActions}
+          />
+        </div>
+      )}
+
+      {shortlistModalOpen && (
+        <div>
+          <ShortlistModal
+            enquiryId={enquiryId}
+            setStatusChanged={setStatusChanged}
+            handleShortlistModal={handleShortlistModal}
+            shortlistModalData={shortlistModalData}
+            coordinateActions={coordinateActions}
+            // handleRefresh={handleRefresh}
+            pipelineConfig={pipelineConfig}
+          />
+        </div>
+      )}
+
     </>
   );
 };
