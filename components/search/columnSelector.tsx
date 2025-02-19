@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, CircleSlash } from "lucide-react";
 import { useCallback, useEffect } from "react";
 import {
   Popover,
@@ -78,9 +78,9 @@ export default function ColumnsSelector({
             setIsOpen(false);
           }}
         >
-          <div className="space-y-3 p-2">
-            {columnsDropdown &&
-              columnsDropdown.map(({ label, value }) => {
+          {columnsData && columnsData.length > 0 ? (
+            <div className="space-y-3 p-2">
+              {columnsDropdown.map(({ label, value }) => {
                 if (columnsData.includes(value)) {
                   return (
                     <div
@@ -111,7 +111,13 @@ export default function ColumnsSelector({
                   );
                 }
               })}
-          </div>
+            </div>
+          ) : (
+            <p className="text-[#666666] text-sm flex justify-between items-center gap-2">
+              <CircleSlash width={15} height={15} className="self-start mt-1"/>
+              <span className="w-36">Select an Event Type and click Apply</span>
+            </p>
+          )}
         </RadioGroup>
       </PopoverContent>
     </Popover>
