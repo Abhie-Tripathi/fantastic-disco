@@ -19,7 +19,7 @@ interface CompanyListResponse {
 }
 
 export const useCompanyService = () => {
-  const api = useApi<CompanyListResponse | undefined>();
+  const api = useApi<CompanyListResponse | undefined | any>();
 
   const getCompanyList = (searchParamsString: string) => {
     const params = new URLSearchParams(searchParamsString);

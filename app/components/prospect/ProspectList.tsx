@@ -190,15 +190,6 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
                   Events Visited: {companyDetail.stats.totalVisitor}
                 </Badge>
               )}
-              {(companyDetail?.stats?.lastLogin && calculateDateDifference(companyDetail?.stats?.lastLogin) <= 365) && (
-                <Badge
-                  variant="outline"
-                  className="text-gray-600 capitalize rounded-sm"
-                >
-                  Last Active:{" "}
-                  {convertToCustomFormat(companyDetail?.stats?.lastLogin)}
-                </Badge>
-              )}
             </div>
           </div>
         </div>
