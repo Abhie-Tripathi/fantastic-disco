@@ -9,33 +9,16 @@ const LocationSchema = z.object({
   longitude: z.string(),
 });
 
-const RankingSchema = z.object({
-  global: z.number().nullable(),
-  country: z
-    .object({
-      countryId: z.string(),
-      rank: z.number(),
-    })
-    .nullable(),
-
-  categories: z
-    .array(
-      z.object({
-        categoryId: z.string(),
-        rank: z.number(),
-      })
-    )
-    .nullable(),
-  category_country: z
-    .array(
-      z.object({
-        categoryId: z.string(),
-        countryId: z.string(),
-        rank: z.number(),
-      })
-    )
-    .nullable(),
-});
+const RankingSchema = z
+  .object({
+    rank: z.number(),
+    rankType: z.string(),
+    rankRange: z.string(),
+    categoryId: z.string().nullable(),
+    countryId: z.string().nullable(),
+  })
+  .nullable()
+  .optional();
 
 const AudienceSpreadSchema = z.record(
   z.string(),

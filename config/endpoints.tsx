@@ -15,6 +15,12 @@ export const endpoints = {
     verifyOTP: `${BASE_URL}/auth/verify-otp`,
     logout: `${BASE_URL}/me/sign-out`,
   },
+
+  suggestions: {
+    location: `${BASE_URL}/suggestions/locations`,
+    designation: `${BASE_URL}/suggestions/designations`,
+    companies: `${BASE_URL}/suggestions/companies`,
+  },
   event: {
     count: `${BASE_URL}/events/count`,
     events: `${BASE_URL}/events`,
@@ -72,6 +78,10 @@ export const endpoints = {
     pocUnmask: `${BASE_URL}/event-poc/unmask`,
     latestComment: `${BASE_URL}/dashboard/latest-comment`,
   },
+  intent: {
+    createUserEventInterest: `${BASE_URL}/intents/user-event-interest`,
+  },
+
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {
     getKit: `${BASE_URL}/kit`,

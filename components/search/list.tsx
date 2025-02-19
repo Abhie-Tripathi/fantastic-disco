@@ -4,29 +4,14 @@ import React, { useState } from "react";
 import {
   Bookmark,
   BookmarkCheck,
-  DollarSign,
-  List,
-  ListCheck,
-  ListPlus,
-  Plus,
   Star,
-  Tag,
   TicketPercent,
   Radio,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Event, Ranking } from "@/types/events/events";
-import { differenceInDays, format } from "date-fns";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { format } from "date-fns";
 import { useFilterState } from "@/hooks/useFilterState";
 import { Button } from "../ui/button";
 import { useEventsService } from "@/services/eventsService";
@@ -44,21 +29,11 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip";
 import { formatEstimatedSpend } from "@/utils/formater";
+import { ActionPopover } from "@/app/components/Table/ActionPopover";
 
 interface CircularProgressProps {
   value: number | null;
   label: string;
-}
-
-interface CategoryRank {
-  [key: string]: number;
-}
-
-interface RankingResponse {
-  countryRank?: number | undefined;
-  categoryRank?: any;
-  globalRank?: number | undefined;
-  countryCategoryRank?: any;
 }
 interface rankTag {
   rank: number;
@@ -196,49 +171,7 @@ const EventListItem = ({
   const { saveEvent } = useEventsService();
   const { toast } = useToast();
   const [isSaved, setIsSaved] = useState(Boolean(event.insights?.rankings));
-  function getLeastRank(response: Ranking) {
-    let minRank = {
-      rank: Infinity,
 
-      name: "",
-
-      type: "",
-    };
-
-    if (response?.global !== null && response?.global !== undefined) {
-      minRank.rank = response.global;
-      minRank.name = "";
-      minRank.type = "Global";
-    } else if (response?.country !== null && response?.country !== undefined) {
-      minRank.rank = response.country.rank;
-      minRank.name = "";
-      minRank.type = "Country";
-    } else if (response?.categories) {
-      const c_ranks = response.categories;
-      for (const category in c_ranks) {
-        if (c_ranks[category].rank < minRank.rank) {
-          minRank.rank = c_ranks[category].rank;
-          minRank.name = category;
-          minRank.type = "Category";
-        }
-      }
-    } else if (response?.category_country) {
-      const c_ranks = response.category_country;
-      for (const category in c_ranks) {
-        if (c_ranks[category].rank < minRank.rank) {
-          minRank.rank = c_ranks[category].rank;
-          minRank.name = category;
-          minRank.type = "Country Category";
-        }
-      }
-    }
-
-    if (minRank.type === "") {
-      return "";
-    }
-
-    return getEventRank(minRank);
-  }
   function getEventRank(prop: rankTag) {
     let rankString = "";
     if (prop.rank == 1) rankString = "st";
@@ -316,11 +249,34 @@ const EventListItem = ({
     }
   };
 
+  function getOrdinalSuffix(number: number): string {
+    const j = number % 10;
+    const k = number % 100;
+    if (j === 1 && k !== 11) return "st";
+    if (j === 2 && k !== 12) return "nd";
+    if (j === 3 && k !== 13) return "rd";
+    return "th";
+  }
+
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
       <Link href={`/internal/event/${event.basic.id}`} className="block">
-        <div className="absolute w-[6px] h-full left-0 top-0 rounded-lg bg-[#5055A3]"></div>
-        <div className="p-6">
+        <div className="absolute left-0 top-6 h-auto w-[140px] flex items-start justify-center">
+          {event.basic.logoUrl ? (
+            <img
+              src={event.basic.logoUrl}
+              alt={`${event.basic.name} logo`}
+              className="w-24 h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
+            />
+          ) : (
+            <div className="w-24 h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
+              <span className="text-[#5055A3] text-2xl font-semibold">
+                {event.basic.name.charAt(0)}
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="pl-[136px] p-6">
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-7 flex flex-col justify-between gap-3">
               <h2 className="text-2xl font-semibold ">{event.basic.name}</h2>
@@ -588,7 +544,11 @@ const EventListItem = ({
                             variant="outline"
                             className="text-gray-600 capitalize rounded-sm"
                           >
-                            {getLeastRank(event.insights?.rankings)}
+                            {event.insights?.rankings.rank}
+                            <sup>
+                              {getOrdinalSuffix(event.insights?.rankings.rank)}
+                            </sup>
+                            {event.insights?.rankings.rankType} Rank
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -615,42 +575,83 @@ const EventListItem = ({
                       </Tooltip>
                     </TooltipProvider>
                   )}
+
+                  {event.insights?.repeatSentiment && (
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize"
+                          >
+                            Trust Score: {event.insights?.repeatSentiment}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Trust Score</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+
+                  {event.insights?.reputationScore && (
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="text-gray-600 capitalize"
+                          >
+                            Reputation Score : {event.insights?.reputationScore}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Reputation Score</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+
+                  {/* {event.audience?.audienceSpread && (
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+    
+                            <Badge
+                              variant="outline"
+                              className="text-gray-600 capitalize"
+                            >
+                              {event.audience.(Object.keys(event.audience?.audienceSpread)[0])}
+                              Audience
+                            </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Audience Spread</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )} */}
                 </div>
               </div>
             </div>
 
             <div className="col-span-5 flex flex-col justify-between">
-              {isEventeli && (
-                <div className="flex items-center justify-end">
-                  <Button
-                    variant="ghost"
-                    disabled={Boolean(event.interests?.bookmark?.interestId)}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleSaveEvent(event.basic.id);
-                    }}
-                  >
-                    {isSaved ? (
-                      <BookmarkCheck className="w-5 h-5 text-primary" />
-                    ) : (
-                      <Bookmark className="w-5 h-5 text-primary" />
-                    )}
-                  </Button>
-                </div>
-              )}
+              <div className="flex items-center justify-end" onClick={(e) => e.preventDefault()}>
+                <ActionPopover eventId={event.basic.id} interests={event.interests} />
+              </div>
               <div className="flex items-center justify-end">
                 {event.insights?.scores ? (
                   <div className="flex items-center justify-between w-full">
                     <div className="flex flex-col justify-end gap-4">
-                      {event.insights?.exhibitorsCount && (
+                      {event.insights?.exhibitorsCount !== undefined && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
                             Estimated Exhibitors
                           </p>
                           <p className="text-lg font-semibold text-primary">
-                            {(
-                              event.insights?.exhibitorsCount || "0"
-                            ).toLocaleString()}
+                            {event.insights?.exhibitorsCount === 0
+                              ? "--"
+                              : event.insights?.exhibitorsCount.toLocaleString()}
                           </p>
                         </div>
                       )}
@@ -671,7 +672,7 @@ const EventListItem = ({
                           </p>
                           <p className="text-lg font-semibold text-primary">
                             {formatEstimatedSpend(
-                              event.insights?.economicImpact || "$0"
+                              event.insights?.economicImpact || "--"
                             )}
                           </p>
                         </div>
@@ -699,15 +700,15 @@ const EventListItem = ({
                   </div>
                 ) : (
                   <div className="grid grid-row-2 items-end gap-4">
-                    {event.insights?.exhibitorsCount && (
+                    {event.insights?.exhibitorsCount !== undefined && (
                       <div>
                         <p className="text-xs text-gray-600 font-medium">
                           Estimated Exhibitors
                         </p>
                         <p className="text-lg font-semibold text-primary">
-                          {(
-                            event.insights?.exhibitorsCount || "0"
-                          ).toLocaleString()}
+                          {event.insights?.exhibitorsCount === 0
+                            ? "--"
+                            : event.insights?.exhibitorsCount.toLocaleString()}
                         </p>
                       </div>
                     )}
@@ -728,7 +729,7 @@ const EventListItem = ({
                         </p>
                         <p className="text-lg font-semibold text-primary">
                           {formatEstimatedSpend(
-                            event.insights?.economicImpact || "$0"
+                            event.insights?.economicImpact || "--"
                           )}
                         </p>
                       </div>

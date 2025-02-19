@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import React from 'react'
+import React from "react";
 import {
   Pagination,
   PaginationContent,
@@ -9,23 +9,23 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 
 interface PaginationComponentProps {
-  currentPage: number
-  totalPages: number
-  itemsPerPage: number
-  count: number
-  onPageChange: (page: number) => void
-  onItemsPerPageChange?: (value: string) => void
-  showEntriesCount?:boolean;
+  currentPage: number;
+  totalPages: number;
+  itemsPerPage: number;
+  count: number;
+  onPageChange: (page: number) => void;
+  onItemsPerPageChange: (value: string) => void;
+  showEntriesCount?: boolean;
 }
 
 export function PaginationComponent({
@@ -35,12 +35,12 @@ export function PaginationComponent({
   count,
   onPageChange,
   onItemsPerPageChange,
-  showEntriesCount = true
+  showEntriesCount = true,
 }: PaginationComponentProps) {
   const renderPaginationItems = () => {
-    const items = []
-    const maxVisiblePages = 5
-    const ellipsis = <PaginationEllipsis />
+    const items = [];
+    const maxVisiblePages = 5;
+    const ellipsis = <PaginationEllipsis />;
 
     if (totalPages <= maxVisiblePages) {
       for (let i = 1; i <= totalPages; i++) {
@@ -54,7 +54,7 @@ export function PaginationComponent({
               {i}
             </PaginationLink>
           </PaginationItem>
-        )
+        );
       }
     } else {
       items.push(
@@ -67,12 +67,12 @@ export function PaginationComponent({
             1
           </PaginationLink>
         </PaginationItem>
-      )
+      );
 
       if (currentPage > 3) {
         items.push(
           <PaginationItem key="ellipsis-start">{ellipsis}</PaginationItem>
-        )
+        );
       }
 
       for (
@@ -90,13 +90,13 @@ export function PaginationComponent({
               {i}
             </PaginationLink>
           </PaginationItem>
-        )
+        );
       }
 
       if (currentPage < totalPages - 2) {
         items.push(
           <PaginationItem key="ellipsis-end">{ellipsis}</PaginationItem>
-        )
+        );
       }
 
       items.push(
@@ -109,22 +109,50 @@ export function PaginationComponent({
             {totalPages}
           </PaginationLink>
         </PaginationItem>
-      )
+      );
     }
 
-    return items
-  }
+    return items;
+  };
 
   return (
-    <div className="space-y-4">
-      {showEntriesCount &&
-      <div className="flex justify-between items-center px-2">
-        <div>
-          <span className="text-sm text-muted-foreground">
-            Showing {Math.min((currentPage - 1) * itemsPerPage + 1, count)} to{" "}
-            {Math.min(currentPage * itemsPerPage, count)} of {count} results
-          </span>
-        </div>
+    <div className="flex justify-between items-center gap-4 px-2">
+      {showEntriesCount && (
+        <span className="text-sm text-muted-foreground">
+          Showing {Math.min((currentPage - 1) * itemsPerPage + 1, count)} to{" "}
+          {Math.min(currentPage * itemsPerPage, count)} of {count} results
+        </span>
+      )}
+
+      <Pagination>
+        <PaginationContent className="flex-wrap justify-center">
+          <PaginationItem>
+            <PaginationPrevious
+              href="#"
+              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+              className={
+                currentPage === 1 ? "pointer-events-none opacity-50" : ""
+              }
+            />
+          </PaginationItem>
+          {renderPaginationItems()}
+          <PaginationItem>
+            <PaginationNext
+              href="#"
+              onClick={() =>
+                onPageChange(Math.min(totalPages, currentPage + 1))
+              }
+              className={
+                currentPage === totalPages
+                  ? "pointer-events-none opacity-50"
+                  : ""
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
+
+      {showEntriesCount && (
         <div className="flex items-center space-x-2">
           <span className="text-sm text-muted-foreground">
             Results per page:
@@ -142,31 +170,7 @@ export function PaginationComponent({
             </SelectContent>
           </Select>
         </div>
-      </div>
-      }
-      <Pagination>
-        <PaginationContent className="flex-wrap justify-center">
-          <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
-              className={
-                currentPage === 1 ? "pointer-events-none opacity-50" : ""
-              }
-            />
-          </PaginationItem>
-          {renderPaginationItems()}
-          <PaginationItem>
-            <PaginationNext
-              href="#"
-              onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
-              className={
-                currentPage === totalPages ? "pointer-events-none opacity-50" : ""
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+      )}
     </div>
-  )
+  );
 }

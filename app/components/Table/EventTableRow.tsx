@@ -7,13 +7,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { formatDate, getLeastRank, getEventRating } from "@/utils/eventHelpers";
+import { formatDate, getEventRating } from "@/utils/eventHelpers";
 import Link from "next/link";
 import { ArrowUp, ArrowDown, Star } from "lucide-react";
 import styles from "./table.module.css";
 import { Event } from "@/types/events";
 import Image from "next/image";
 import { ActionPopover } from "./ActionPopover";
+import { Show } from "@/types/events/dto/event-query.dto";
+import { Badge } from "@/components/ui/badge";
 
 export function getEventRank(prop: any) {
   let rankString = "";
@@ -40,11 +42,7 @@ export function getEventRank(prop: any) {
 
 interface EventTableRowProps {
   event: Event;
-}
-
-function listProducts(data: string[]) {
-  const formattedString = data.join(" | ");
-  return formattedString;
+  show: Show[];
 }
 
 function getForecastedStatus(data: any) {
@@ -68,37 +66,48 @@ function displayValue(value: any) {
   return value;
 }
 
-export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
-  const handleActionSubmit = (action: string) => {
-    // Handle the action submission
-    console.log(`Selected action: ${action} for event: ${event.basic.id}`);
-  };
+function getOrdinalSuffix(number: number): string {
+  const j = number % 10;
+  const k = number % 100;
+  if (j === 1 && k !== 11) return "st";
+  if (j === 2 && k !== 12) return "nd";
+  if (j === 3 && k !== 13) return "rd";
+  return "th";
+}
 
+export const EventTableRow: React.FC<EventTableRowProps> = ({
+  event,
+  show,
+}) => {
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
       <TableCell
-        className={`${styles.table_actionColumn}`}
-        style={{
-          left: "0",
-          textAlign: "left",
-          boxShadow: "10px 0 15px -5px rgba(0, 0, 0, 0.3)",
-        }}
+        className="sticky left-0 z-0 bg-slate-50 dark:bg-slate-900  max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-slate-100 dark:group-hover:bg-slate-800"
+        style={{ zIndex: 0 }}
       >
-        <div className={styles.event_badge_container}>
-          {event.advance?.isBranded && (
-            <span className={`${styles.branded_tag} badge_success`}>Brand</span>
+        <div className="flex gap-1 mb-1">
+          {show.includes(Show.branded) && event.advance?.isBranded && (
+            <span className="px-2 py-0.5 rounded text-xs bg-success-background text-success-text font-medium">
+              Brand
+            </span>
           )}
-          {event.advance?.isSeries && (
-            <span className={`${styles.branded_tag} badge_info`}>Series</span>
+          {show.includes(Show.series) && event.advance?.isSeries && (
+            <span className="px-2 py-0.5 rounded text-xs bg-info-background text-info-text font-medium">
+              Series
+            </span>
           )}
         </div>
-        <div className={styles.truncateText_1}>
-          <Link href={`/internal/event/${event.basic.id}`} target="_blank">
+        <div className="truncate font-medium">
+          <Link
+            href={`/internal/event/${event.basic.id}`}
+            target="_blank"
+            className="hover:text-primary transition-colors"
+          >
             {event.basic.name}
           </Link>
         </div>
-        <div className={styles.event_organizer}>
+        <div className="text-sm text-muted-foreground">
           {event.basic.organizer?.name}
         </div>
       </TableCell>
@@ -107,7 +116,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       <TableCell>
         {event.basic.status === "CANCELLED" ||
         event.basic.status === "POSTPONED" ? (
-          <del data-toggle="tooltip" title={event.basic.status}>
+          <del className="text-muted-foreground" title={event.basic.status}>
             {formatDate(event.basic.startDateTime)}
             <br />
             {formatDate(event.basic.startDateTime) !==
@@ -115,7 +124,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
               formatDate(event.basic.endDateTime)}
           </del>
         ) : (
-          <span style={{ whiteSpace: "nowrap" }}>
+          <span className="whitespace-nowrap">
             {formatDate(event.basic.startDateTime)}
             <br />
             {formatDate(event.basic.startDateTime) !==
@@ -128,10 +137,14 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       {/* Venue Column */}
       <TableCell>
         {event.basic.format === "HYBRID" && (
-          <div className={styles.hybridTag}>Hybrid</div>
+          <div className="inline-block px-2 py-0.5 rounded text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 mb-1">
+            Hybrid
+          </div>
         )}
-        {event.basic.eventLocation.venue?.displayName ||
-          (event.basic.format === "ONLINE" ? "Online" : "TBA")}
+        <div>
+          {event.basic.eventLocation.venue?.displayName ||
+            (event.basic.format === "ONLINE" ? "Online" : "TBA")}
+        </div>
       </TableCell>
 
       {/* City Column */}
@@ -140,7 +153,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       </TableCell>
 
       {/* Country Column */}
-      <TableCell>
+      <TableCell className="text-center">
         {displayValue(event.basic.eventLocation.country?.name)}
       </TableCell>
 
@@ -167,17 +180,18 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
       )} */}
 
       {/* Category Column */}
-      <TableCell>
+      <TableCell className="text-center">
         <TooltipProvider>
           <Tooltip>
-            <TooltipTrigger>
-              {event.basic.categories[0]?.name}
-              {event.basic.categories.length > 1 && (
-                <span className="text-xs font-bold">
-                  {" "}
-                  +{event.basic.categories.length - 1}
-                </span>
-              )}
+            <TooltipTrigger className="text-left">
+              <span className="flex items-center gap-1">
+                {event.basic.categories[0]?.name}
+                {event.basic.categories.length > 1 && (
+                  <span className="text-xs font-bold text-muted-foreground">
+                    +{event.basic.categories.length - 1}
+                  </span>
+                )}
+              </span>
             </TooltipTrigger>
             <TooltipContent>
               {event.basic.categories.map((item) => item.name).join(" | ")}
@@ -188,210 +202,235 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({ event }) => {
 
       {/* Event Size Column */}
       {event.insights?.estimatedAttendance !== undefined && (
-        <TableCell>
+        <TableCell className="text-center">
           {displayValue(event.insights?.estimatedAttendance)}
         </TableCell>
       )}
 
       {/* Estimated Exhibitors Column */}
-      {event.advance?.estimatedExhibitors !== undefined && (
-        <TableCell>
-          {displayValue(event.advance?.estimatedExhibitors)}
-        </TableCell>
-      )}
+      {show.includes(Show.estimatedExhibitors) &&
+        event.advance?.estimatedExhibitors !== undefined && (
+          <TableCell className="text-center">
+            {displayValue(event.advance?.estimatedExhibitors)}
+          </TableCell>
+        )}
 
       {/* Event Rank Column */}
-      {event.insights?.rankings !== undefined && (
-        <TableCell style={{ textAlign: "center" }}>
-          {event.insights?.rankings
-            ? displayValue(getLeastRank(event.insights.rankings))
-            : "-"}
-        </TableCell>
-      )}
-
-      {/* Reputation Column */}
-      {event.insights?.repeatSentiment !== undefined && (
-        <TableCell>
-          {event.insights?.repeatSentiment !== null &&
-          (event.insights?.repeatSentiment > 1 ||
-            event.insights?.repeatSentiment < -1) ? (
-            event.insights?.repeatSentiment > 0 ? (
-              <div className={styles.text_green}>
-                {event.insights?.repeatSentiment}%{" "}
-                <ArrowUp className="w-4 h-4" />
-              </div>
+      {show.includes(Show.rankings) &&
+        event.insights?.rankings !== undefined && (
+          <TableCell style={{ textAlign: "center" }}>
+            {event.insights?.rankings ? (
+              <span>
+                <div>
+                  {event.insights.rankings.rank}
+                  <sup>{getOrdinalSuffix(event.insights.rankings.rank)}</sup>
+                </div>
+                <Badge variant="outline" className="capitalize font-medium">
+                  {event.insights.rankings.rankType}
+                </Badge>
+              </span>
             ) : (
-              <div className={styles.text_red}>
-                {event.insights?.repeatSentiment}%{" "}
-                <ArrowDown className="w-4 h-4" />
-              </div>
-            )
-          ) : (
-            "-"
-          )}
-        </TableCell>
-      )}
+              "-"
+            )}
+          </TableCell>
+        )}
+      {/* Reputation Column */}
+      {show.includes(Show.scores) &&
+        event.insights?.repeatSentiment !== undefined && (
+          <TableCell className="text-center">
+            {event.insights?.repeatSentiment !== null &&
+            (event.insights?.repeatSentiment > 1 ||
+              event.insights?.repeatSentiment < -1) ? (
+              event.insights?.repeatSentiment > 0 ? (
+                <div className="text-success-text flex items-center gap-1">
+                  {event.insights?.repeatSentiment}%
+                  <ArrowUp className="w-4 h-4" />
+                </div>
+              ) : (
+                <div className="text-danger-text flex items-center gap-1">
+                  {event.insights?.repeatSentiment}%
+                  <ArrowDown className="w-4 h-4" />
+                </div>
+              )
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
 
       {/* Event Rating Column */}
-      {event.insights?.reputationScore !== undefined && (
-        <TableCell style={{ textAlign: "center" }}>
-          {event.insights?.reputationScore > 0 ? (
-            <>
-              {event.insights?.reputationScore > 10 && (
-                <span className="rounded-full bg-success-background p-1">
-                  <ArrowUp className="w-3.5 h-3.5 text-success-text inline mb-1.5" />
-                </span>
-              )}
-              {event.insights?.reputationScore < -10 && (
-                <span className="rounded-full bg-danger-background p-1">
-                  <ArrowDown className="w-3.5 h-3.5 text-danger-text inline mb-1.5" />
-                </span>
-              )}
-              &nbsp;
-              {getEventRating(event.insights?.reputationScore.toString())}
-              &nbsp;
-              <Star className="w-4 h-4 inline" />
-            </>
-          ) : (
-            "-"
-          )}
-        </TableCell>
-      )}
+      {show.includes(Show.rating) &&
+        event.insights?.reputationScore !== undefined && (
+          <TableCell style={{ textAlign: "center" }}>
+            {event.insights?.reputationScore > 0 ? (
+              <div className="flex gap-1 items-center justify-evenly">
+                {event.insights?.reputationScore > 10 && (
+                  <span className="rounded-full bg-success-background p-1">
+                    <ArrowUp className="w-4 h-4 text-success-text inline" />
+                  </span>
+                )}
+                {event.insights?.reputationScore < -10 && (
+                  <span className="rounded-full bg-danger-background p-1">
+                    <ArrowDown className="w-3.5 h-3.5 text-danger-text inline" />
+                  </span>
+                )}
+
+                {getEventRating(event.insights?.reputationScore.toString())}
+
+                <Star className="w-4 h-4 inline" />
+              </div>
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
 
       {/* Trust Column */}
-      {event.insights?.trustScore !== undefined && (
-        <TableCell style={{ textAlign: "center" }}>
-          {event.insights?.trustScore ? (
-            <>
-              {event.insights?.trustScore > 10 && (
-                <span className="rounded-full bg-success-background p-1">
-                  <ArrowUp className="w-3.5 h-3.5 text-success-text inline mb-1.5" />
-                </span>
-              )}
-              {event.insights?.trustScore < -10 && (
-                <span className="rounded-full bg-danger-background p-1">
-                  <ArrowDown className="w-3.5 h-3.5 text-danger-text inline mb-1.5" />
-                </span>
-              )}
-              &nbsp;
-              {event.insights?.trustScore}%
-            </>
-          ) : (
-            "-"
-          )}
-        </TableCell>
-      )}
+      {show.includes(Show.trustScore) &&
+        event.insights?.repeatSentiment !== undefined && (
+          <TableCell style={{ textAlign: "center" }}>
+            {event.insights?.repeatSentiment ? (
+              <>
+                {event.insights?.repeatSentiment > 10 && (
+                  <span className="rounded-full bg-success-background p-1">
+                    <ArrowUp className="w-3.5 h-3.5 text-success-text inline mb-1.5" />
+                  </span>
+                )}
+                {event.insights?.repeatSentiment < -10 && (
+                  <span className="rounded-full bg-danger-background p-1">
+                    <ArrowDown className="w-3.5 h-3.5 text-danger-text inline mb-1.5" />
+                  </span>
+                )}
+                &nbsp;
+                {event.insights?.repeatSentiment}%
+              </>
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
 
       {/* Frequency Column */}
-      {event.advance?.frequency !== undefined && (
-        <TableCell className="text-center">
-          {event.advance?.frequency ? (
-            <span className="badge_primary capitalize">
-              {event.advance?.frequency}
-            </span>
-          ) : (
-            "-"
-          )}
-        </TableCell>
-      )}
+      {show.includes(Show.frequency) &&
+        event.advance?.frequency !== undefined && (
+          <TableCell className="text-center">
+            {event.advance?.frequency ? (
+              <span className="badge_primary capitalize">
+                {event.advance?.frequency}
+              </span>
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
 
       {/* Forecasted Column */}
-      <TableCell>{getForecastedStatus(event.basic.startDateTime)}</TableCell>
+      {show.includes(Show.forecasted) && (
+        <TableCell className="text-center">
+          {getForecastedStatus(event.basic.startDateTime)}
+        </TableCell>
+      )}
 
       {/* Maturity Column */}
-      {event.advance?.maturity !== undefined && (
-        <TableCell>
-          {event.advance?.maturity ? (
-            <span className="badge_primary capitalize">
-              {event.advance?.maturity}
-            </span>
-          ) : (
-            "-"
-          )}
-        </TableCell>
-      )}
+      {show.includes(Show.maturity) &&
+        event.advance?.maturity !== undefined && (
+          <TableCell className="text-center">
+            {event.advance?.maturity ? (
+              <span className="badge_primary capitalize">
+                {event.advance?.maturity}
+              </span>
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
 
       {/* Impact Score Column */}
-      {event.insights?.scores?.impactScore !== undefined && (
-        <TableCell>
-          {event.insights?.scores?.impactScore !== 0
-            ? event.insights?.scores?.impactScore
-            : "-"}
-        </TableCell>
-      )}
+      {show.includes(Show.scores) &&
+        event.insights?.scores?.impactScore !== undefined && (
+          <TableCell className="text-center">
+            {event.insights?.scores?.impactScore !== 0
+              ? event.insights?.scores?.impactScore
+              : "-"}
+          </TableCell>
+        )}
 
       {/* Inbound Score Column */}
-      {event.insights?.scores?.inboundScore !== undefined && (
-        <TableCell>
-          {event.insights?.scores?.inboundScore !== 0
-            ? event.insights?.scores?.inboundScore
-            : "-"}
-        </TableCell>
-      )}
+      {show.includes(Show.scores) &&
+        event.insights?.scores?.inboundScore !== undefined && (
+          <TableCell className="text-center">
+            {event.insights?.scores?.inboundScore !== 0
+              ? event.insights?.scores?.inboundScore
+              : "-"}
+          </TableCell>
+        )}
 
       {/* International Score Column */}
-      {event.insights?.scores?.internationalScore !== undefined && (
-        <TableCell>
-          {event.insights?.scores?.internationalScore !== 0
-            ? event.insights?.scores?.internationalScore
-            : "-"}
-        </TableCell>
-      )}
+      {show.includes(Show.scores) &&
+        event.insights?.scores?.internationalScore !== undefined && (
+          <TableCell className="text-center">
+            {event.insights?.scores?.internationalScore !== 0
+              ? event.insights?.scores?.internationalScore
+              : "-"}
+          </TableCell>
+        )}
 
       {/* Economic Impact Column */}
-      {event.insights?.economicImpact !== undefined && (
-        <TableCell className="text-right">
-          {event.insights.economicImpact}
-        </TableCell>
-      )}
+      {show.includes(Show.economicImpact) &&
+        event.insights?.economicImpact !== undefined && (
+          <TableCell className="text-right">
+            {event.insights.economicImpact}
+          </TableCell>
+        )}
 
       {/* Audience Zone Column */}
-      {event.audience?.audienceZone !== undefined && (
-        <TableCell>
-          {event.audience?.audienceZone ? (
-            <span className={styles.badge_primary}>
-              {event.audience?.audienceZone}
-            </span>
-          ) : (
-            "-"
-          )}
-        </TableCell>
-      )}
+      {show.includes(Show.audienceZone) &&
+        event.audience?.audienceZone !== undefined && (
+          <TableCell className="text-center">
+            {event.audience?.audienceZone ? (
+              <span className={styles.badge_primary}>
+                {event.audience?.audienceZone}
+              </span>
+            ) : (
+              "-"
+            )}
+          </TableCell>
+        )}
 
       {/* Audience Spread Column */}
-      {event.audience?.audienceSpread !== undefined && (
-        <TableCell>
-          <div className="flex gap-2">
-            {event.audience?.audienceSpread &&
-            Object.entries(event.audience?.audienceSpread).length > 0
-              ? Object.entries(event.audience?.audienceSpread).map(
-                  ([key, { iso, name, count, percentage }]) => (
-                    <span
-                      key={key}
-                      className={styles.country_badge}
-                      title={name}
-                    >
-                      <Image
-                        src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`}
-                        alt="flag"
-                        width={25}
-                        height={18}
-                      />
-                    </span>
+      {show.includes(Show.audienceSpread) &&
+        event.audience?.audienceSpread !== undefined && (
+          <TableCell className="text-center">
+            <div className="flex gap-2">
+              {event.audience?.audienceSpread &&
+              Object.entries(event.audience?.audienceSpread).length > 0
+                ? Object.entries(event.audience?.audienceSpread).map(
+                    ([key, { iso, name, count, percentage }]) => (
+                      <span
+                        key={key}
+                        className="inline-block rounded overflow-hidden"
+                        title={name}
+                      >
+                        <Image
+                          src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`}
+                          alt="flag"
+                          width={25}
+                          height={18}
+                          className="object-cover"
+                        />
+                      </span>
+                    )
                   )
-                )
-              : "-"}
-          </div>
-        </TableCell>
-      )}
+                : "-"}
+            </div>
+          </TableCell>
+        )}
 
       <TableCell
-        className={`${styles.table_actionColumn} ${styles.bookmarkColumn}`}
+        className="sticky right-0 bg-background z-0"
+        style={{ zIndex: 0 }}
       >
-        <ActionPopover
-          interests={event.interests}
-          onSubmit={handleActionSubmit}
-        />
+        <ActionPopover eventId={event.basic.id} interests={event.interests} />
       </TableCell>
     </TableRow>
   );
