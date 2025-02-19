@@ -14,6 +14,7 @@ import {
   EventExhibitorDetailsResponse,
   EventSponsorDetailsResponse,
   EventResponse,
+  AlertPolygonResponse,
 } from "@/types/events";
 import { ApiError } from "@/types/api";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
@@ -237,9 +238,20 @@ export const useEventsService = () => {
     );
     return response;
   }
+
+  const getAlertPolygon = (eventId: string) => {
+    return api.request<AlertPolygonResponse>(
+      `${endpoints.event.events}/${eventId}/polygons`,
+      {
+        method: "GET",
+      }
+    );
+  };
+  
   return {
     getEvents,
     saveEvent,
+    getAlertPolygon,
     fetchEnabledFilters,
     getEventsCount,
     getRecentSearches,
