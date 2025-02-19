@@ -36,25 +36,32 @@ const EventTable = ({source, trackerId}) => {
     audienceZone: "audienceZone",
     rankings: "rankings,trustScore",
   }
-  let show=[];
+  let showsData=[];
   Object.entries(mapping).forEach(([key,value])=>{
     if(data?.filterValues?.show?.includes(key)){
-      show.push(value);
+      showsData.push(value);
       
     }
   })
-  setLocalFilter("show",show.join(","));
+  // console.log(show.join(","));
+  // if(showsData.length>0){
+  //   setLocalFilter("show",showsData?.join(","))
+  // setFilter("show",showsData?.join(","));
+  // }
   // console.log(data.filterValues.show);
   
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
-  const showValues: Show[] = getFilterValue("show")
+  let  showValues: Show[] = getFilterValue("show")
     .split(",")
     .filter(Boolean)
     .map((show) => Show[show as keyof typeof Show]);
-
+  if(source==="tracker"){
+    showValues = showsData.filter(Boolean)
+    .map((show) => Show[show as keyof typeof Show]);
+  }
   const handlePageChange = (page: number) => {
     setMultipleFilters({
       offset: ((page - 1) * itemsPerPage).toString(),
