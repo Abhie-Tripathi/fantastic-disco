@@ -87,11 +87,11 @@ export const endpoints = {
     getSortedEvents: `${BASE_URL_NEW}/promot-event`,
     getEventById: `${BASE_URL_NEW}/promot-event`,
     getEventByPublicAPI: `${BASE_URL_NEW}/public/event`,
-    deleteEvent: `${BASE_URL}/event`,
+    deleteEvent: `${BASE_URL_NEW}/promot-event`,
     addEvent: `${BASE_URL_NEW}/promot-event`,
     addSpeakers: `${BASE_URL}/event/speaker`,
     addExhibitors: `${BASE_URL}/event/speaker`,
-    updateEvent: `${BASE_URL}/event`,
+    updateEvent: `${BASE_URL_NEW}/promot-event`,
   },
   intend: {
     getGuest: `${BASE_URL}/intend/users`,

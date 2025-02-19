@@ -495,7 +495,7 @@ const Page = () => {
             cityName: event.data.location_city,
             countryName: event.data.location_country,
             startDate: event.data.start_date,
-            // logoUrl: event.data.logoUrl,
+            logoUrl: event.data.logoUrl,
             endDate: event.data.end_date,
             startTime: event.data.start_time,
             endTime: event.data.end_time,

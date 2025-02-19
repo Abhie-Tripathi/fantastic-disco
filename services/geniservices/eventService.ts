@@ -37,10 +37,11 @@ export const useEventServices = () => {
     );
   };
 
-  const deleteEvent = async (customizeData: any) => {
-    return api.request(`${endpoints.events.deleteEvent}`, {
-      method: "PATCH",
-      data: customizeData,
+  const deleteEvent = async (eventId:any) => {
+    console.log("delte_api",eventId,`${endpoints.events.deleteEvent}/${eventId}`)
+    return api.request(`${endpoints.events.deleteEvent}/${eventId}`, {
+      method: "DELETE",
+      // data: customizeData,
     });
   };
 
