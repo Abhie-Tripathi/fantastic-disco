@@ -1,4 +1,5 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "";
+import { BASE_URL } from "./index";
+
 export const endpoints = {
   //   auth: {
   //     me: `${BASE_URL}/me`,

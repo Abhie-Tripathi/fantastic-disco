@@ -35,7 +35,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
         </TableHead>
 
         <TableHead className="min-w-[120px] h-20">
-          <div className="font-medium text-foreground ">Event Size</div>
+          <div className="font-medium text-foreground ">Est. Visitors</div>
         </TableHead>
 
         {show.includes(Show.estimatedExhibitors) && (
@@ -44,7 +44,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
           </TableHead>
         )}
         {show.includes(Show.rankings) && (
-          <TableHead>
+          <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Rank</div>
           </TableHead>
         )}
@@ -90,7 +90,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
         )}
         {show.includes(Show.economicImpact) && (
           <TableHead className="min-w-[150px] text-center">
-            <div className="font-medium text-foreground ">Economic Impact</div>
+            <div className="font-medium text-foreground ">Est. Impact ($)</div>
           </TableHead>
         )}
         {show.includes(Show.audienceZone) && (
