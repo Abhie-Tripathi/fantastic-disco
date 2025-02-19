@@ -33,6 +33,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 import { TrackersAdapter } from "@/adapters/trackerAdapter";
 import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
+import { isEventeli } from "@/config";
 const localizer = momentLocalizer(moment);
 export interface CalendarMonthEventWithHeatmap {
   id: string;
@@ -69,7 +70,7 @@ export default function EventCalendar({
 }: EventCalendarProps) {
   const searchParams = useSearchParams();
   const { getLocalFilterValue } = useFilterContext();
-  const { getEventsWithSearchParams } = useEventsService();
+  const { getEventsWithSearchParams, getEvents } = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
   const [weekDateCounts, setWeekDateCounts] = useState<any>();
   const initialDate = () => {
@@ -86,7 +87,6 @@ export default function EventCalendar({
     if (activeGte) return new Date(activeGte);
     if (activeLte) return new Date(activeLte);
     return new Date();
-
   };
   const [currentDate, setCurrentDate] = useState(initialDate());
   const [filter, setFilter] = useState("all");
@@ -157,38 +157,33 @@ export default function EventCalendar({
   });
 
   useEffect(() => {
-    
     setCurrentDate(initialDate());
   }, [searchParams, trackerDate]);
 
-  // const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
-  //   queryKey: ["unattended-events", searchParams.toString()],
-  //   queryFn: async () => {
-  //     const alertSearchParams = new URLSearchParams(searchParams);
-  //     alertSearchParams.set("eventTypes", "alert");
+  const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
+    queryKey: ["unattended-events", searchParams.toString()],
+    queryFn: async () => {
+      const alertSearchParams = new URLSearchParams(searchParams);
+      alertSearchParams.set("eventTypes", "alert");
+      const query = Object.fromEntries(alertSearchParams.entries());
+      const alerts = await getEvents(query);
 
-  //     const alerts = await getEventsWithSearchParams(
-  //       alertSearchParams.toString()
-  //     );
+      let holidays: Event[] = [];
+      if (filteredParams.get("eventTypes")?.split(",").includes("holiday")) {
+        filteredParams.set("eventTypes", "holiday");
+        filteredParams.delete("view");
+        const query = Object.fromEntries(filteredParams.entries());
+        const holidayResponse = await getEvents(query);
+        holidays = (holidayResponse?.events as Event[]) || [];
+      }
 
-  //     let holidays: Event[] = [];
-  //     if (filteredParams.get("eventTypes")?.split(",").includes("holiday")) {
-  //       filteredParams.set("eventTypes", "holiday");
-  //       filteredParams.delete("view");
-  //       const holidayResponse = await getEventsWithSearchParams(
-  //         filteredParams.toString()
-  //       );
-  //       holidays = (holidayResponse?.events as Event[]) || [];
-  //     }
-
-  //     return {
-  //       holidays,
-  //       alerts: (alerts?.events as any[]) || [],
-  //     };
-  //   },
-  // });
-
-  const unAttendedEvents = { holidays: [], alerts: [] };
+      return {
+        holidays,
+        alerts: (alerts?.events as any[]) || [],
+      };
+    },
+    enabled: !!isEventeli,
+  });
 
   const processedEvents = procesEvents(
     view,
@@ -196,6 +191,8 @@ export default function EventCalendar({
     eventsData,
     filter
   );
+
+  console.log(processedEvents);
 
   const handleFilterChange = (newFilter: string) => {
     setFilter(newFilter);
@@ -419,7 +416,7 @@ export default function EventCalendar({
           <div className="px-10 py-5">
             <NullState
               image={TrackerNullState}
-              title="We couldn’t find any events matching your tracker criteria at the moment."
+              title="We couldn't find any events matching your tracker criteria at the moment."
               text="Try adjusting your filters or checking back later, as new events are added frequently."
               buttonText="Manage Configuration"
               buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration`}

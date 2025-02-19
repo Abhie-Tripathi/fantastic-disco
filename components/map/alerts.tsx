@@ -59,6 +59,7 @@ interface AlertsProps {
 }
 
 const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
+  console.log("selectedAlert", selectedAlert);
   const [open, setOpen] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const eventService = useEventsService();

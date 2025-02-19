@@ -62,7 +62,12 @@ const AdvancedFilters = ({ enabledFilters }: { enabledFilters: any }) => {
     >
       <div className="flex justify-center my-6">
         <div className="flex justify-center">
-          <TabsList className="w-[570px] grid grid-cols-3 h-auto">
+          <TabsList
+            className={cn(
+              "w-[570px] grid grid-cols-3 h-auto",
+              isEventeli ? "grid-cols-2 w-[386px]" : ""
+            )}
+          >
             <TabsTrigger value="advancedDetails" className="text-base">
               Advanced Details
               {advancedDetailsFiltersCount ? (

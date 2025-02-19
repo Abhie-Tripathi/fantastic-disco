@@ -1,7 +1,6 @@
 "use client";
 
 import Table from "@/app/components/Table/EventTable";
-import ZeroState from "@/app/components/zerostate";
 import EventCalendar from "@/components/eventCalendar";
 import AdvancedFilters from "@/components/search/advancedFilters";
 import UserRatingSelector from "@/components/search/userRatingSelector";
@@ -20,17 +19,7 @@ import List from "@/components/search/list";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFilterContext } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
-import { useEventsService } from "@/services/eventsService";
-import { ApiError } from "@/types/api";
-import {
-  CalendarYearEventsResponse,
-  CalendarMonthEventsResponse,
-  CalendarWeekEventsResponse,
-  Event,
-  MapEventsResponse,
-} from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
-import { useQuery } from "@tanstack/react-query";
 import {
   ArrowUpRight,
   CalendarIcon,
@@ -42,7 +31,6 @@ import {
   Plus,
   TableIcon,
 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
 import {
   lazy,
   Suspense,
@@ -58,66 +46,19 @@ import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import SortDropdown from "@/components/search/sortDropdown";
 import EventCount from "@/components/search/eventCount";
-
+import { isEventeli } from "@/config";
+import Alerts from "@/components/search/alerts";
 const Map = lazy(() => import("@/components/map"));
 
-interface GeoCoordinate {
-  type: "geoCoordinate";
-  lat: number;
-  lng: number;
-  radius: number;
-}
-
-interface LocationIds {
-  type: "locationIds";
-  id: string;
-}
-
-type LocationState = GeoCoordinate | LocationIds | null;
-
 const Search = () => {
-  const router = useRouter();
-  const { navigateWithParams, getFilterValue, setFilter, setMultipleFilters } =
-    useFilterState();
-
-  const { getLocalFilterValue } = useFilterContext();
+  const { getFilterValue, setFilter } = useFilterState();
   const { searchParams } = useDefaultFilters();
-  const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
   const { applyFilters, localFilters, clearLocalFilters, enabledFilters } =
     useFilterContext();
   const [view, setView] = useState<string>(searchParams.get("view") || "");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [tableLoading, setTableLoading] = useState(true);
-  const [validationError, setValidationError] = useState("");
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
-  const [customTrackerName, setCustomTrackerName] = useState<string>("");
-  const modifiedSearchParams = new URLSearchParams(searchParams.toString());
-  const {
-    data: eventData,
-    error,
-    isLoading,
-    refetch,
-  } = useQuery<
-    | CalendarMonthEventsResponse
-    | CalendarWeekEventsResponse
-    | MapEventsResponse
-    | undefined
-  >({
-    queryKey: ["events", searchParams.toString()],
-    queryFn: () =>
-      eventService.getEvents(
-        Object.fromEntries(modifiedSearchParams.entries())
-      ),
-    refetchOnWindowFocus: false,
-    gcTime: 0,
-    staleTime: 0,
-  });
-
-  const displayData = eventData;
-
-  const events = displayData?.events || [];
-  const count = displayData?.count;
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
@@ -216,16 +157,16 @@ const Search = () => {
     const handleScroll = () => {
       const scrolled = window.scrollY > 0;
       setIsScrolled(scrolled);
-      console.log('Scroll position:', window.scrollY, 'isScrolled:', scrolled);
+      console.log("Scroll position:", window.scrollY, "isScrolled:", scrolled);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
     handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  console.log(isScrolled);
+  const isLoading = false;
 
   return (
     <div className="p-6">
@@ -326,7 +267,11 @@ const Search = () => {
         onValueChange={onTabsChange}
         className="mt-0"
       >
-        <div className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 ${isScrolled ? 'py-2' : 'py-6'}`}>
+        <div
+          className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 ${
+            isScrolled ? "py-2" : "py-6"
+          }`}
+        >
           <EventCount />
           <div className="flex justify-center">
             <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
@@ -376,37 +321,15 @@ const Search = () => {
         </div>
 
         <TabsContent value="list" className="flex-grow overflow-hidden mt-0">
-          {/* {isLoading ? (
-            <Loading />
-          ) : error ? (
-            <ZeroState text={(error as ApiError).message} />
-          ) : count == 0 ? (
-            <ZeroState text="No events were found in the selected area." />
-          ) : count == undefined ? (
-            <div className="flex justify-center items-center">
-              <ZeroState text="Discover insights on business trends filtered by geography and category, all in one glance." />
-            </div>
-          ) : (
-            <> */}
-          {/* <Alerts /> */}
-          <List events={events as Event[]} count={count} />
-          {/* </> */}
-          {/* )} */}
+          {isEventeli && <Alerts />}
+          <List />
         </TabsContent>
-
         <TabsContent value="table" className="flex-grow overflow-hidden">
+          {isEventeli && <Alerts />}
           <Table />
         </TabsContent>
         <TabsContent value="map">
-          {/* {isLoading ? (
-            <Loading />
-          ) : eventData?.count == 0 ? (
-            <ZeroState text="No events were found in the selected area." />
-          ) : error ? (
-            <ZeroState text={(error as ApiError).message} />
-          ) : ( */}
-          <Map searchParams={searchParams.toString()} />
-          {/* )} */}
+          <Map />
         </TabsContent>
         <TabsContent value="calendar">
           <Suspense fallback={<Loading />}>

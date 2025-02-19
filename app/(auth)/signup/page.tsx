@@ -1,8 +1,8 @@
 import NewSignUpForm from "@/components/auth/NewSignUpForm";
 // import SignUpForm from "@/components/auth/SignUpForm";
-import { BaseURL } from "@/config";
+import { BASE_URL } from "@/config";
 
 export default function SignUpPage() {
-  const checkDev = BaseURL?.includes("dev");
+  const checkDev = BASE_URL?.includes("dev");
   return <NewSignUpForm />;
 }

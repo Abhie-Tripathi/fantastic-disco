@@ -11,7 +11,12 @@ import { useEventsService } from "@/services/eventsService";
 import { useToast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
 import { cn, lightenColor } from "@/lib/utils";
-import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import {
+  alertIcons,
+  eventTypeColors,
+  eventTypeIcons,
+  getAlertLevelBorderColor,
+} from "@/constants/eventTypes";
 import { PaginationComponent } from "../pagination";
 import {
   Tooltip,
@@ -22,6 +27,13 @@ import {
 import { formatEstimatedSpend } from "@/utils/formater";
 import { ActionPopover } from "@/app/components/Table/ActionPopover";
 import { formattedDateRange } from "@/utils/date";
+import { useEvents } from "@/hooks/useEvents";
+import { useSearchParams } from "next/navigation";
+import Loading from "../ui/Loading";
+import ZeroState from "@/app/components/zerostate";
+import { ApiError } from "@/types/api";
+import Image from "next/image";
+import holiday from "/public/eventType/holiday.svg";
 
 interface CircularProgressProps {
   value: number | null;
@@ -92,49 +104,49 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   );
 };
 
-export default function EventAccordion({
-  events,
-  count = 0,
-}: {
-  events: Event[];
-  count: number | undefined;
-}) {
+export default function EventAccordion() {
+  const searchParams = useSearchParams();
   const [openItem, setOpenItem] = useState<string | undefined>();
-  const { setFilter, getFilterValue } = useFilterState();
-  const [itemsPerPage, setItemsPerPage] = useState<number>(
-    Number(getFilterValue("limit")) || 20
-  );
+  const { getFilterValue, setMultipleFilters } = useFilterState();
+  const query = Object.fromEntries(searchParams.entries());
+  const { events, totalEvents, isLoading, error } = useEvents.list(query);
 
+  const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
-    Math.floor(Number(getFilterValue("offset") || "0") / itemsPerPage) + 1;
-  const totalPages = Math.ceil(count / itemsPerPage);
-
-  const handleToggle = (id: string) => {
-    if (openItem == id) setOpenItem(undefined);
-    else setOpenItem(id);
-  };
+    Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
+  const totalPages = Math.ceil(totalEvents / itemsPerPage);
 
   const handlePageChange = (page: number) => {
-    setFilter("offset", ((page - 1) * itemsPerPage).toString());
+    setMultipleFilters({
+      offset: ((page - 1) * itemsPerPage).toString(),
+      limit: itemsPerPage.toString(),
+    });
   };
 
-  const handleItemsPerPageChange = (value: string) => {
-    const newItemsPerPage = parseInt(value);
-    setItemsPerPage(newItemsPerPage);
-
-    setFilter("limit", newItemsPerPage.toString());
+  const handleItemsPerPageChange = (newItemsPerPage: string) => {
+    setMultipleFilters({
+      limit: newItemsPerPage,
+    });
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <ZeroState text={(error as ApiError).message} />;
+  }
+
+  if (events.length === 0) {
+    return <ZeroState text="No events found" />;
+  }
 
   return (
     <div className="flex flex-col h-full">
       <div className="flex-grow overflow-y-auto pb-6">
         <ul className="w-full space-y-6 list-none">
           {events?.map((event) => (
-            <EventListItem
-              key={event.basic.id}
-              event={event}
-              handleToggle={handleToggle}
-            />
+            <EventListItem key={event.basic.id} event={event} />
           ))}
         </ul>
       </div>
@@ -144,7 +156,7 @@ export default function EventAccordion({
             currentPage={currentPage}
             totalPages={totalPages}
             itemsPerPage={itemsPerPage}
-            count={count}
+            count={totalEvents}
             onPageChange={handlePageChange}
             onItemsPerPageChange={handleItemsPerPageChange}
           />
@@ -154,32 +166,11 @@ export default function EventAccordion({
   );
 }
 
-const EventListItem = ({
-  event,
-  handleToggle,
-}: {
-  event: Event;
-  handleToggle: (id: string) => void;
-}) => {
+const EventListItem = ({ event }: { event: Event }) => {
   const { saveEvent } = useEventsService();
   const { toast } = useToast();
   const [isSaved, setIsSaved] = useState(Boolean(event.insights?.rankings));
 
-  function getEventRank(prop: rankTag) {
-    let rankString = "";
-    if (prop.rank == 1) rankString = "st";
-    else if (prop.rank == 2) rankString = "nd";
-    else if (prop.rank == 3) rankString = "rd";
-    else rankString = "th";
-
-    return (
-      <>
-        {prop.rank}
-        <sup>{rankString}</sup>
-        <span className="pl-1">{` ${prop.type}`}</span>
-      </>
-    );
-  }
   const address = event.basic.eventLocation ? (
     event.basic.eventLocation.venue?.name === "Online" ||
     event.basic.format === "online" ? (
@@ -262,6 +253,10 @@ const EventListItem = ({
     }
 
     return stringValue.toLocaleString();
+  }
+
+  if (event.basic.primaryEventType == "holiday") {
+    return <UnplannedCard event={event} />;
   }
 
   return (
@@ -530,7 +525,7 @@ const EventListItem = ({
                             variant="outline"
                             className="text-gray-600 capitalize rounded-sm"
                           >
-                            Forecasted Next Edition : {" "}
+                            Forecasted Next Edition :{" "}
                             {format(event.advance?.rehostDate, "MMM yyyy")}
                           </Badge>
                         </TooltipTrigger>
@@ -765,6 +760,168 @@ const EventListItem = ({
           </div>
         </div>
       </Link>
+    </div>
+  );
+};
+
+const UnplannedCard = ({ event }: { event: Event }) => {
+  function formatAddress(eventLocation: any): string {
+    const addressParts: string[] = [];
+    if (Array.isArray(eventLocation?.city)) {
+      const cities = eventLocation.city.map((s: any) => s.name).join(", ");
+      addressParts.push(cities);
+    } else if (eventLocation?.city) {
+      addressParts.push(eventLocation.city.name);
+    }
+
+    if (Array.isArray(eventLocation?.state)) {
+      const states = eventLocation.state.map((s: any) => s.name).join(", ");
+      addressParts.push(states);
+    } else if (eventLocation?.state) {
+      addressParts.push(eventLocation.state.name);
+    }
+
+    if (Array.isArray(eventLocation?.country)) {
+      const countries = eventLocation.country
+        .map((s: any) => s.name)
+        .join(", ");
+      addressParts.push(countries);
+    } else if (eventLocation?.country) {
+      addressParts.push(eventLocation.country.name);
+    }
+    return addressParts.join(", ");
+  }
+
+  const eventTypes = event.basic.eventTypes
+    .filter((eventType) => {
+      return (
+        eventType.slug !== "general-holiday" && eventType.slug !== "holiday"
+      );
+    })
+    .map((eventType) => eventType.name);
+
+  return (
+    <div className="bg-white rounded-lg border border-[#EBEBEB] shadow-sm relative">
+      <div
+        className="absolute w-[6px] h-full left-0 top-0 rounded-lg"
+        style={{
+          backgroundColor: eventTypeColors.holiday,
+        }}
+      ></div>
+      <div className="p-6">
+        <div className="grid grid-cols-12 gap-4">
+          <div className="col-span-7 flex flex-col justify-between gap-3">
+            <h2 className="text-2xl font-semibold text-gray-900 ">
+              {event.basic.name}
+            </h2>
+
+            <div>
+              <p className="text-sm capitalize">
+                {formatAddress(event.basic.eventLocation)}
+              </p>
+              <p className={cn("text-sm text-gray-600 mt-2")}>
+                {formattedDateRange(
+                  event.basic.startDateTime,
+                  event.basic.endDateTime
+                )}
+              </p>
+            </div>
+            <div>
+              <div className="flex flex-wrap gap-2 mt-2 items-center">
+                <Image
+                  src={holiday || "/placeholder.svg"}
+                  alt="holiday"
+                  className="w-4 h-4"
+                />
+                <Badge
+                  variant="outline"
+                  className="text-gray-600 capitalize rounded-sm bg-gray-100"
+                >
+                  <span className="ml-1 uppercase">
+                    {event.basic.primaryEventType}
+                  </span>
+                </Badge>
+                {eventTypes.map((eventType) => (
+                  <Badge
+                    variant="outline"
+                    className="text-gray-600 capitalize rounded-sm"
+                    key={eventType}
+                  >
+                    <span className="ml-1">{eventType}</span>
+                  </Badge>
+                ))}
+              </div>
+              <div className="flex flex-wrap gap-2 mt-2">
+                <Badge
+                  variant="outline"
+                  className="text-gray-600 capitalize rounded-sm"
+                  key="National"
+                >
+                  <span className="ml-1">Regional Holiday</span>
+                </Badge>
+              </div>
+            </div>
+          </div>
+          <div className="col-span-5 flex flex-col justify-between">
+            <div className="flex items-center justify-end gap-2">
+              {event.basic.alerts?.map((alert) => (
+                <Badge
+                  key={alert.id}
+                  variant="outline"
+                  className={cn(
+                    "capitalize text-sm border-2",
+                    getAlertLevelBorderColor(alert.level)
+                  )}
+                >
+                  <span>{alertIcons[alert.type]}</span>
+                  <span className="ml-1 font-medium">
+                    {alert.name.toLowerCase()}
+                  </span>
+                </Badge>
+              ))}
+            </div>
+            <div className="flex items-center justify-end">
+              {event.insights?.scores ? (
+                <div className="flex items-center justify-end w-full">
+                  <div className="space-y-4">
+                    {event.insights?.scores && (
+                      <div className="grid grid-cols-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                        <CircularProgress value={-39} label="Business Score" />
+                        <CircularProgress value={80} label="Social Score" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-row-2 items-end gap-4">
+                  {event.insights?.estimatedAttendance !== undefined && (
+                    <div>
+                      <p className="text-xs text-gray-600 font-medium">
+                        Estimated Visitors
+                      </p>
+                      <p className="text-lg font-semibold text-primary">
+                        {event.insights?.estimatedAttendance == "0"
+                          ? "--"
+                          : event.insights?.estimatedAttendance}
+                      </p>
+                    </div>
+                  )}
+                  {/* {event.economicImpact !== undefined && (
+                      <div>
+                        <p className="text-xs text-gray-600 font-medium">
+                          Economic Impact
+                        </p>
+                        <p className="text-lg font-semibold text-primary">
+                          {formatEstimatedSpend(event.economicImpact)}
+                        </p>
+                      </div>
+                    )} */}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
