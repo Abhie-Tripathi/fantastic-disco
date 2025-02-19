@@ -109,6 +109,7 @@ interface Filters {
   economic_impact_gte?: string;
   total_attendance_gte?: string;
   total_attendance_lte?: string;
+  eventType?:string;
 
   // Coordinate Filters
   type?: string;
@@ -116,20 +117,20 @@ interface Filters {
   status?: string;
 
   // Prospect Filters
-  companyCategory?: string;
-  productTopic?: string;
+  viewBy?: string;
+  companyCategoryIds?: string;
+  companyLocationIds?: string;
+  eventProductIds?: string;
+  communitySize?: string;
   companyType?: string;
-  companySize?: string;
   establishedYear?: string;
+  eventLocationIds?: string;
+  eventCategoryIds?: string;
   eventFollowers?: string;
-  eventCategory?: string;
-  participationType?: string;
-  companyLocation?: string;
-  eventLocation?: string;
-  userName?: string;
-  designation?: string;
-  linkedinProfile?: string;
-  eventType?: string;
+  eventParticipationType?: string;
+  userNames?: string;
+  userJobTitle?: string;
+  userSocialLink?: string;
 }
 type Filter = {
   eventTypes: string;

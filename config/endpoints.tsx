@@ -77,6 +77,13 @@ export const endpoints = {
     users: `${BASE_URL_NEW}/me/account/users`,
     configuration: `${BASE_URL_NEW}/me/account/configuration`,
   },
+  company: {
+    list: `${BASE_URL}/company/search`,
+    unmaskUser: `${BASE_URL}/company/unmask`,
+    detail: `${BASE_URL}/company/search`,
+    events: `${BASE_URL}/company/event`,
+    pocList: `${BASE_URL}/company/poc`,
+  },
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {
     getKit: `${BASE_URL}/kit`,

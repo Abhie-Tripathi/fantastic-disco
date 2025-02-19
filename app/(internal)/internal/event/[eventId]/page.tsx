@@ -72,12 +72,15 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const currentDate = new Date().toISOString().split("T")[0];
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
   const [eventDates, setEventDates] = useState<EventDate[]>();
-  const [eventPOCDetails, setEventPOCDetails] = useState<GTMEventPOCDetails[]>([]);
-  const tabs = [
-    { tabName: "Overview", path: "overview" },
-    { tabName: "Insights", path: "insights" },
-    { tabName: "Audience", path: "audience" },
-  ];
+  const [eventPOCDetails, setEventPOCDetails] = useState<GTMEventPOCDetails[]>(
+    []
+  );
+  // const tabs = [
+  //   { tabName: "Overview", path: "overview" },
+  //   { tabName: "Insights", path: "insights" },
+  //   { tabName: "Audience", path: "audience" },
+  // ];
+
   const {
     getEventDetailById,
     getEventPOCDetails,
@@ -138,12 +141,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   });
 
   if (!event) return null;
-  const {
-    eventData,
-    eventEditionData,
-    eventExhibitorData,
-    eventSpeakerData,
-  } = event;
+  const { eventData, eventEditionData, eventExhibitorData, eventSpeakerData } =
+    event;
   const eventDetails: GTMEventDetail = eventData.event || {};
 
   if (!eventDetails) return null;
@@ -167,6 +166,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     above5CountryCategoryRankEvent,
     below5CountryCategoryEvent,
     repeatSentiment: trustScore,
+    audienceSpread,
+    designationSpread,
+    exhibitorsCount,
+    sponsorsCount,
+    speakersCount,
   } = eventDetails;
 
   const rankings: RankingDetail = {
@@ -182,6 +186,28 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     (scores && Object.values(scores).every((value) => value !== null)) ||
     (trustScore !== null && trustScore > 0) ||
     (rankings && Object.values(rankings).some((arr) => arr.length > 0));
+
+  const isInsightVisible =
+    (scores && Object.values(scores).every((value) => value !== null)) ||
+    (trustScore !== null && trustScore > 0) ||
+    (rankings && Object.values(rankings).some((arr) => arr.length > 0));
+
+  // const isInsightVisible = true;
+
+  const isAudienceVisible =
+    (audienceSpread && Object.keys(audienceSpread).length > 0) ||
+    (designationSpread !== null && designationSpread.length > 0) ||
+    (exhibitorsCount !== null && exhibitorsCount > 0) ||
+    (sponsorsCount !== null && sponsorsCount > 0) ||
+    (speakersCount !== null && speakersCount > 0);
+
+  const isOverviewVisible = true;
+
+  const tabs = [
+    { tabName: "Overview", path: "overview", isVisible: isOverviewVisible },
+    { tabName: "Insights", path: "insights", isVisible: isInsightVisible },
+    { tabName: "Audience", path: "audience", isVisible: isAudienceVisible },
+  ];
 
   const eventStartDate = startDateTime
     ? format(new Date(startDateTime), "dd MMM yyyy")
@@ -233,21 +259,24 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     }
   };
 
-  const unlockPoc = async(pocId: number) => {
+  const unlockPoc = async (pocId: number) => {
     try {
-      setEventPOCDetails(prevPocData => 
-        prevPocData.map(poc => 
-          poc.id === pocId
-            ? { ...poc, state: 1 }
-            : poc
+      setEventPOCDetails((prevPocData) =>
+        prevPocData.map((poc) =>
+          poc.id === pocId ? { ...poc, state: 1 } : poc
         )
       );
       const data = await coordinateService.unlockPocDetail(pocId, id);
       if (data) {
-        setEventPOCDetails(prevPocData => 
-          prevPocData.map(poc => 
+        setEventPOCDetails((prevPocData) =>
+          prevPocData.map((poc) =>
             poc.id === pocId
-              ? { ...poc, email: data.email, phoneNumber: data.phoneNumber, state: 2 }
+              ? {
+                  ...poc,
+                  email: data.email,
+                  phoneNumber: data.phoneNumber,
+                  state: 2,
+                }
               : poc
           )
         );
@@ -255,11 +284,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }
+  };
 
   return (
     <div className="p-6 pt-0">
-      <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
+      <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
         <Button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
           <span
@@ -402,7 +431,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         {(venueLocation || typeOfEvent) && (
           <div className="flex gap-2 items-center my-4">
-            <span className="border border-[#ebebeb] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
+            <span className="border border-[#ebebeb] dark:border-[var(--border-color)] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
                 <Radio width={20} height={20} />
               ) : (
@@ -413,7 +442,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
                 <Text fontWeight="semibold" variant="noMargin">
                   {typeOfEvent.charAt(0).toUpperCase() + typeOfEvent.slice(1)}{" "}
-                  Event
                 </Text>
               ) : venueName ? (
                 <Text fontWeight="semibold" variant="noMargin">
@@ -645,11 +673,17 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                         {(email || phoneNumber) && (
                           <div>
                             <ButtonUI
-                              disabled={(state && (state === 1 || state === 2) ) ? true : false}
-                              onClick={()=>unlockPoc(id)}
-                              variant={'outline'}
+                              disabled={
+                                state && (state === 1 || state === 2)
+                                  ? true
+                                  : false
+                              }
+                              onClick={() => unlockPoc(id)}
+                              variant={"outline"}
                               size={"sm"}
-                            >Show details</ButtonUI>
+                            >
+                              Show details
+                            </ButtonUI>
                           </div>
                         )}
                       </div>
@@ -682,7 +716,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         <ul className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white dark:bg-[var(--heading-background-color)] shadow-md pt-3 items-end w-full">
           <div className="flex gap-12">
             {tabs
-              .filter((tab) => !(tab.path === "insights" && !isValid))
+              .filter((tab) => tab.isVisible)
               .map((tab) => (
                 <div
                   key={tab.tabName}
@@ -742,18 +776,22 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             eventEditionData={eventEditionData}
             eventId={params.eventId}
           />
-          <InsightsAndScores
-            eventDetails={eventDetails}
-            scrollSection={tabs[1].path}
-            setActiveTab={setActiveTab}
-          />
-          <AudienceIntel
-            eventDetails={eventDetails}
-            eventExhibitorData={eventExhibitorData}
-            eventSpeakerData={eventSpeakerData}
-            scrollSection={tabs[2].path}
-            setActiveTab={setActiveTab}
-          />
+          {isInsightVisible && (
+            <InsightsAndScores
+              eventDetails={eventDetails}
+              scrollSection={tabs[1].path}
+              setActiveTab={setActiveTab}
+            />
+          )}
+          {isAudienceVisible && (
+            <AudienceIntel
+              eventDetails={eventDetails}
+              eventExhibitorData={eventExhibitorData}
+              eventSpeakerData={eventSpeakerData}
+              scrollSection={tabs[2].path}
+              setActiveTab={setActiveTab}
+            />
+          )}
         </section>
         {/* <section className="flex flex-col flex-1 h-full right-0  overflow-y-hidden"></section> */}
       </div>

@@ -91,9 +91,13 @@ export function useDefaultFilters() {
         ?.join(",") ?? "",
     active_gte: recentSearch.startDate
       ? new Date(recentSearch.startDate?.split(",")[0]).toISOString()
+      : recentSearch.endDate
+      ? ""
       : startOfMonth(new Date()).toISOString(),
     active_lte: recentSearch.endDate
       ? new Date(recentSearch.endDate?.split(",")[1]).toISOString()
+      : recentSearch.startDate
+      ? ""
       : endOfMonth(addMonths(new Date(), 3)).toISOString(),
     locationIds:
       recentSearch.locationIds?.city
@@ -187,6 +191,39 @@ export function useDefaultFilters() {
     const locationIdsParams = trendsParams.get("locationIds");
     const startDateParams = trendsParams.get("active_gte");
     const endDateParams = trendsParams.get("active_lte");
+    let startDate = "",
+      endDate = "";
+
+    if (startDateParams && endDateParams) {
+      // Determine start date based on priority.
+      startDate =
+        startDateParams ||
+        (recentFilterParams && recentFilterParams.active_gte);
+      // Determine end date based on priority.
+      endDate =
+        endDateParams || (recentFilterParams && recentFilterParams.active_lte);
+    }
+
+    if (!startDateParams && !endDateParams) {
+      // Determine start date based on priority.
+      startDate = defaultTrendsParams.active_gte;
+      // Determine end date based on priority.
+      endDate = defaultTrendsParams.active_lte;
+    }
+
+    if (startDateParams || endDateParams) {
+      if (startDateParams) {
+        // Determine start date based on priority.
+        startDate =
+          startDateParams ||
+          (recentFilterParams && recentFilterParams.active_gte);
+      } else {
+        // Determine end date based on priority.
+        endDate =
+          endDateParams ||
+          (recentFilterParams && recentFilterParams.active_lte);
+      }
+    }
 
     // Determine event types based on priority: URL params > recent filters > default.
     const eventTypes =
@@ -205,18 +242,6 @@ export function useDefaultFilters() {
         recentFilterParams.locationIds) ||
       defaultTrendsParams.locationIds;
 
-    // Determine start date based on priority.
-    const startDate =
-      startDateParams ||
-      (recentFilterParams && recentFilterParams.active_gte) ||
-      defaultTrendsParams.active_gte;
-
-    // Determine end date based on priority.
-    const endDate =
-      endDateParams ||
-      (recentFilterParams && recentFilterParams.active_lte) ||
-      defaultTrendsParams.active_lte;
-
     // Filter event types based on allowed types.
     const filteredEventTypes =
       eventTypes &&
@@ -228,13 +253,17 @@ export function useDefaultFilters() {
     const isEndDateFormatted = endDate && endDate.endsWith("T00:00:00.000Z");
 
     // Format the start and end dates if necessary.
-    const formattedStartDate = isStartDateFormatted
-      ? startDate
-      : new Date(`${startDate}T00:00:00.000Z`).toISOString();
+    const formattedStartDate = startDate
+      ? isStartDateFormatted
+        ? startDate
+        : new Date(`${startDate.split("T")[0]}T00:00:00.000Z`).toISOString()
+      : "";
 
-    const formattedEndDate = isEndDateFormatted
-      ? endDate
-      : new Date(`${endDate}T00:00:00.000Z`).toISOString();
+    const formattedEndDate = endDate
+      ? isEndDateFormatted
+        ? endDate
+        : new Date(`${endDate.split("T")[0]}T00:00:00.000Z`).toISOString()
+      : "";
 
     // Remove unnecessary parameters from the URL.
     const paramsToDelete = [
@@ -363,12 +392,12 @@ export function useDefaultFilters() {
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });
+        const trendsParams = generateTrendsParams(params, recentFilterParams);
 
         if (
           pathName.split("/").includes("search") ||
           pathName === "/internal/trends"
         ) {
-          const trendsParams = generateTrendsParams(params, recentFilterParams);
           setTimeout(() => {
             router.push(
               `${pathName}?${

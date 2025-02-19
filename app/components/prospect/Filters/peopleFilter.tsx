@@ -6,15 +6,13 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 interface Props {
-  filterName: "userName" | "linkedinProfile";
+  filterName: "userNames" | "userSocialLink";
 }
 export default function PeopleFilter({ filterName }: Props) {
   const placeholder =
-    filterName === "userName"
+    filterName === "userSocialLink"
       ? "Name"
-      : filterName === "linkedinProfile"
-      ? "LinkedIn Profile"
-      : "";
+      : "LinkedIn Profile";
   const { localFilters, setLocalFilter, getLocalFilterValue } =
     useFilterContext();
 

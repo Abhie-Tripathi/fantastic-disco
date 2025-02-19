@@ -137,6 +137,7 @@ export function PaginationComponent({
               <SelectValue>{itemsPerPage}</SelectValue>
             </SelectTrigger>
             <SelectContent align="end">
+              <SelectItem value="5">5</SelectItem>
               <SelectItem value="10">10</SelectItem>
               <SelectItem value="20">20</SelectItem>
             </SelectContent>

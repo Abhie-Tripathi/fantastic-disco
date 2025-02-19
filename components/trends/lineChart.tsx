@@ -203,6 +203,7 @@ const LineChartComponent = ({
     const locationIds = params.get("locationIds");
     const searchEventParams = new URLSearchParams({
       status: "active,cancelled,postponed",
+      sortBy: "estimatedVisitorMean",
     });
 
     if (date) {
@@ -222,6 +223,7 @@ const LineChartComponent = ({
   };
 
   const handleChartClick = (e: CategoricalChartState) => {
+    console.log(e);
     if (e.activeLabel) {
       const utcDate = new Date(e.activeLabel).toISOString();
       const link = setRedirectionLinkOnDate(utcDate);
@@ -245,8 +247,7 @@ const LineChartComponent = ({
     refetch,
   } = useQuery({
     queryKey: ["events", link],
-    queryFn: () =>
-      eventService.getEventsWithSearchParams(link + "&sortBy=estimatedVisitorMean"),
+    queryFn: () => eventService.getEventsWithSearchParams(link),
     enabled: !!link,
     refetchOnWindowFocus: false,
     gcTime: 0,
