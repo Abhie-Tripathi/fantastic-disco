@@ -2,15 +2,15 @@
 
 import { PaginationComponent } from "@/components/pagination";
 import { useFilterState } from "@/hooks/useFilterState";
-import { pocDetail } from "@/types/coordinateEventType";
-import Image from "next/image";
+// import { pocDetail } from "@/types/coordinateEventType";
+// import Image from "next/image";
 import { useState } from "react";
 import Text from "@/components/new-ui/Text";
 import { MailIcon, PhoneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCompanyService } from "@/services/companyService";
-import { Buildings, Location } from "geist-icons";
-import { number } from "zod";
+import { Location } from "geist-icons";
+// import { number } from "zod";
 import { Badge } from "@/components/ui/badge";
 
 interface userDetail {
@@ -128,16 +128,24 @@ const PeopleCardNew = ({
   poc: userDetail;
   unlockPoc: any;
 }) => {
+  const [imageSrc, setImageSrc] = useState(poc.user_profilePicture);
+
+  const handleError = (err: any) => {
+    setImageSrc("/usersIcon.svg");
+  };
+  
+
   return (
     <div className="bg-background rounded-xl border shadow-sm relative">
       <div className="p-4 flex gap-6">
-        {poc.user_profilePicture !== null && (
-          <Image
-            src={poc.user_profilePicture}
+        {imageSrc !== null && (
+          <img
+            src={imageSrc}
             alt="eventLogo"
-            className="flex h-16 w-16 rounded-lg shadow-lg"
+            className="flex h-16 w-16 rounded-lg shadow-lg border"
             width={200}
             height={200}
+            onError={handleError}
           />
         )}
         <div className="flex gap-2 flex-col w-full">
@@ -206,7 +214,7 @@ const PeopleCardNew = ({
                 </Badge>
               ))}
 
-            {poc?.speakingCount && poc?.speakingCount > 0 && (
+            {poc?.speakingCount !== null && poc?.speakingCount > 0 && (
               <Badge
                 variant="secondary"
                 className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
@@ -214,7 +222,7 @@ const PeopleCardNew = ({
                 Speaker ({poc?.speakingCount} events)
               </Badge>
             )}
-            {poc?.attendCount && poc?.attendCount > 0 && (
+            {poc?.attendCount !== null && poc?.attendCount > 0 && (
               <Badge
                 variant="secondary"
                 className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
