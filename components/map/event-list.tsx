@@ -232,11 +232,18 @@ function EventList({
       if (!bounds) return;
       const ne = bounds.getNorthEast();
       const sw = bounds.getSouthWest();
-      const radius = turf.distance(
-        turf.point([center.lng, center.lat]),
-        turf.point([ne.lng, ne.lat]),
-        { units: "kilometers" }
-      );
+      const radius = Math.max(
+        turf.distance(
+          turf.point([center.lng, center.lat]),
+          turf.point([ne.lng, center.lat]),  // East point
+          { units: "kilometers" }
+        ),
+        turf.distance(
+          turf.point([center.lng, center.lat]),
+          turf.point([center.lng, ne.lat]),  // North point
+          { units: "kilometers" }
+        )
+      ) * Math.sqrt(2);
 
       setMapCenter({ lat: center.lat, lng: center.lng });
       setMapRadius(radius);

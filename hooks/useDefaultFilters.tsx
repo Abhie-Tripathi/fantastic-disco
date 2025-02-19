@@ -42,10 +42,10 @@ export function useDefaultFilters() {
         .join(",") ?? "",
     active_gte: filters.durations?.startDate
       ? new Date(filters.durations.startDate.split(",")[0]).toISOString()
-      : "",
+      : startOfMonth(new Date()).toISOString(),
     active_lte: filters.durations?.endDate
       ? new Date(filters.durations.endDate.split(",")[1]).toISOString()
-      : "",
+      : endOfMonth(addMonths(new Date(), 3)).toISOString(),
     entryType:
       filters.eventEntry?.enabledValue
         ?.map((item: string) => item.toLowerCase())
@@ -79,8 +79,12 @@ export function useDefaultFilters() {
       recentSearch.eventType
         ?.map((item: string) => `${item.toLowerCase()}s`)
         ?.join(",") ?? "",
-    active_gte: recentSearch.startDate?.split(",")[0] ?? "",
-    active_lte: recentSearch.endDate?.split(",")[1] ?? "",
+    active_gte: recentSearch.startDate
+      ? new Date(recentSearch.startDate?.split(",")[0]).toISOString()
+      : startOfMonth(new Date()).toISOString(),
+    active_lte: recentSearch.endDate
+      ? new Date(recentSearch.endDate?.split(",")[1]).toISOString()
+      : endOfMonth(addMonths(new Date(), 3)).toISOString(),
     locationIds:
       recentSearch.locationIds?.city
         ?.map((city: any) => Object.keys(city)[0])
@@ -149,6 +153,8 @@ export function useDefaultFilters() {
     if (filters.eventFrequency?.isFreqEnabled) showItems.push("frequency");
     if (filters.estimatedExhibitScore?.isExhibitorsEnabled)
       showItems.push("estimatedExhibitors");
+    if (filters.economicImpact?.isEconomicImpactEnabled)
+      showItems.push("economicImpact");
     if (filters.analytics?.isAnalyticsEnabled) showItems.push("scores");
     return showItems.join(",");
   };

@@ -50,28 +50,32 @@ export default function CreateTrackerDialog({
     setTrackerName(newName);
     setError(validateName(newName));
   };
-  console.log(adaptedParams);
   const saveTrackerHandler = async () => {
     const validationError = validateName(trackerName);
     if (validationError) {
       setError(validationError);
       return;
     }
-    if("groupBy" in adaptedParams){
+    if ("groupBy" in adaptedParams) {
       delete adaptedParams.groupBy;
     }
     setIsLoading(true);
-    
+
     const userType = {
       ...(adaptedParams.shows?.includes("eventRating") && { rating: true }),
-      ...(adaptedParams.shows?.includes("estimatedExhibitScore") && { exhibit: true }),
+      ...(adaptedParams.shows?.includes("estimatedExhibitScore") && {
+        exhibit: true,
+      }),
       ...(adaptedParams.shows?.includes("trustScore") && { trust: true }),
       ...(adaptedParams.shows?.includes("maturity") && { maturity: true }),
-      ...(adaptedParams.shows?.includes("eventBrand") && adaptedParams.shows.includes("eventSeries") && {brandSeries: true}),
+      ...(adaptedParams.shows?.includes("eventBrand") &&
+        adaptedParams.shows.includes("eventSeries") && { brandSeries: true }),
       ...(adaptedParams.shows?.includes("eventBrand") && {
         brandedEvent: true,
       }),
-      ...(adaptedParams.shows?.includes("eventSeries") && { eventSeries: true }),
+      ...(adaptedParams.shows?.includes("eventSeries") && {
+        eventSeries: true,
+      }),
       ...(adaptedParams.shows?.includes("isforecasted") && {
         forecastedStatus: true,
       }),
@@ -79,9 +83,11 @@ export default function CreateTrackerDialog({
       // ...(adaptedParams.shows.includes("inboundScore") && {
       //   inboundScore: true,
       // }),
-      ...(adaptedParams.shows?.includes("eventImpactScore") && adaptedParams.shows.includes("inboundScore") && adaptedParams.shows.includes("internationalScore") && {
-        globalToggle: true,
-      }),
+      ...(adaptedParams.shows?.includes("eventImpactScore") &&
+        adaptedParams.shows.includes("inboundScore") &&
+        adaptedParams.shows.includes("internationalScore") && {
+          globalToggle: true,
+        }),
       ...(adaptedParams.shows?.includes("eventRank") && { eventRank: true }),
       ...(adaptedParams.shows?.includes("audienceZone") && {
         audienceZone: true,
@@ -93,11 +99,11 @@ export default function CreateTrackerDialog({
         eventFrequency: true,
       }),
       ...(getLocalFilterValue("trust_score_gte") && {
-        trust: true
+        trust: true,
       }),
       ...(getLocalFilterValue("show").split(",").includes("economicImpact") && {
-        economicImpact: true
-      })
+        economicImpact: true,
+      }),
     };
     const showsData: string[] = [];
 
@@ -112,11 +118,11 @@ export default function CreateTrackerDialog({
       branded: "eventBrand",
       series: "eventSeries",
       economicImpact: "economicImpact",
-      rankings: "eventRanking,trustScore"
+      rankings: "eventRanking,trustScore",
     };
-    
+
     const filters = getLocalFilterValue("show").split(",");
-    
+
     Object.entries(mapping).forEach(([key, value]) => {
       if (filters.includes(key)) {
         showsData.push(value);
@@ -127,10 +133,10 @@ export default function CreateTrackerDialog({
       filterValue: {
         userType: JSON.stringify(userType),
         ...adaptedParams,
-        ...{shows: showsData.join(",")}
+        ...{ shows: showsData.join(",") },
       },
     };
-    
+
     try {
       const { data, error } = await myFetch(`${BaseURL}/tracker`, {
         method: "POST",
@@ -139,12 +145,11 @@ export default function CreateTrackerDialog({
           "Content-Type": "application/json",
         },
       });
-      
-      if(error){
+
+      if (error) {
         toast.error(error.message);
       }
       if (data) {
-        
         toast.success(
           <div style={{ display: "flex", flexWrap: "wrap" }}>
             Tracker created successfully!{" "}

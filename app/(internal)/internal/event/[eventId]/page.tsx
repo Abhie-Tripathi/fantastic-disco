@@ -196,32 +196,32 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   } = organizer || {};
 
   const isInsightVisible =
-    (scores && Object.values(scores).every((value) => value !== null)) ||
-    (trustScore !== null && trustScore !== undefined && trustScore > 0) ||
-    (eventRankingDetails && Object.keys(eventRankingDetails).length > 0);
+  (scores && Object.values(scores).every((value) => value !== null)) ||
+  (trustScore !== null && trustScore !== undefined && trustScore > 0) ||
+  (eventRankingDetails && Object.keys(eventRankingDetails).length > 0);
 
-  const isAudienceVisible =
-    (audienceSpread && Object.keys(audienceSpread).length > 0) ||
-    (designationSpread !== null &&
-      designationSpread != undefined &&
-      designationSpread.length > 0) ||
-    (exhibitorsCount !== null &&
-      exhibitorsCount !== undefined &&
-      exhibitorsCount > 0) ||
-    (sponsorsCount !== null &&
-      sponsorsCount !== undefined &&
-      sponsorsCount > 0) ||
-    (speakersCount !== null &&
-      speakersCount !== undefined &&
-      speakersCount > 0);
+const isAudienceVisible =
+  (audienceSpread && Object.keys(audienceSpread).length > 0) ||
+  (designationSpread !== null &&
+    designationSpread != undefined &&
+    designationSpread.length > 0) ||
+  (exhibitorsCount !== null &&
+    exhibitorsCount !== undefined &&
+    exhibitorsCount > 0) ||
+  (sponsorsCount !== null &&
+    sponsorsCount !== undefined &&
+    sponsorsCount > 0) ||
+  (speakersCount !== null &&
+    speakersCount !== undefined &&
+    speakersCount > 0);
 
-  const isOverviewVisible = true;
+const isOverviewVisible = true;
 
-  const tabs = [
-    { tabName: "Overview", path: "overview", isVisible: isOverviewVisible },
-    { tabName: "Insights", path: "insights", isVisible: isInsightVisible },
-    { tabName: "Audience", path: "audience", isVisible: isAudienceVisible },
-  ];
+const tabs = [
+  { tabName: "Overview", path: "overview", isVisible: isOverviewVisible },
+  { tabName: "Insights", path: "insights", isVisible: isInsightVisible },
+  { tabName: "Audience", path: "audience", isVisible: isAudienceVisible },
+];
 
   const eventStartDate = startDateTime
     ? format(new Date(startDateTime), "dd MMM yyyy")
@@ -453,7 +453,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         {(eventLocation || typeOfEvent) && (
           <div className="flex gap-2 items-center my-4">
-            <span className="border border-[#ebebeb] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
+            <span className="border border-[#ebebeb] dark:border-[var(--border-color)] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
                 <Radio width={20} height={20} />
               ) : (
@@ -464,7 +464,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
                 <Text fontWeight="semibold" variant="noMargin">
                   {typeOfEvent.charAt(0).toUpperCase() + typeOfEvent.slice(1)}{" "}
-                  Event
                 </Text>
               ) : venueName ? (
                 <Text fontWeight="semibold" variant="noMargin">

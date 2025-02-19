@@ -204,11 +204,9 @@ export const AudienceIntel = ({
               </Tooltip>
             </TooltipProvider>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {isEstimatedExhibitorEnabled && estimatedExhibitor ? (
-                estimatedExhibitor ?? "--"
-              ) : (
-                <Restriction />
-              )}
+              {isEstimatedExhibitorEnabled && estimatedExhibitor
+                ? estimatedExhibitor ?? "--"
+                : "--"}
             </p>
           </div>
         </div>
