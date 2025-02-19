@@ -52,9 +52,9 @@ useEffect(()=>{
         ...getLocalFilterValue("excludeKeywords")?.split(",").filter((keyword) => keyword.trim() !== "")
       ];
   if(includeKeywords.length>0 && type==="T_PRODUCT_KEYWORDS" && activeTab==="include" && !hideSuggestion)
-  fetchAISuggestion?.(`List top 5 keywords similar to ${includeKeywords[includeKeywords.length-1]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format, avoid dummy data in any case: {\"data\": []}`);
+  fetchAISuggestion?.(`List top 5 keywords similar to ${includeKeywords[includeKeywords.length-1]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values and don't include ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"] in response. If no company name found then return in below format: {\"data\": []}`);
   else if(excludeKeywords.length>0 && type==="T_PRODUCT_KEYWORDS" && activeTab==="exclude" && !hideSuggestion){
-  fetchAISuggestion?.(`List top 5 keywords similar to ${excludeKeywords[excludeKeywords.length-1]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values. If no company name found then return in below format, avoid dummy data in any case: {\"data\": []}`);
+  fetchAISuggestion?.(`List top 5 keywords similar to ${excludeKeywords[excludeKeywords.length-1]}. Response should be in plain JSON format without any additional formatting or text: {"data": ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"]}. Do not show example values and don't include ["keyword 1","keyword 2","keyword 3","keyword 4","keyword 5"] in response. If no company name found then return in below format: {\"data\": []}`);
 }
 },[getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords")])
   useEffect(() => {

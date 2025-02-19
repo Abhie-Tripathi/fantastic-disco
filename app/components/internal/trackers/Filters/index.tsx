@@ -673,11 +673,13 @@ const Pages = () => {
           isDomain || isURL
           ? `Do not include ${value.replace(/https?:\/\//, "")} in the response.`
           : `Also share the official working domain of ${value}.`
-          } Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {"data": [ ${
+          } Response should be in plain JSON format without any additional formatting or text: {"data": [ ${
           isDomain || isURL
           ? `"competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"`
             : `"company domain", "competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"`
-          } ]}. Do not show example values. If no company name or competitor domains are found, return in this format: {"data": []}`;
+          } ]}. Do not show example values and don't include ${
+            isDomain || isURL
+            ?`{"competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"}`:`{"company domain", "competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"}`} in response. If no company name or competitor domains are found, return in this format: {"data": []}`;
 
           if (!hideSuggestion) {
           fetchAISuggestion(promptText);
@@ -708,7 +710,13 @@ const Pages = () => {
               [ "Speaker Name 4", "Company Name 4" ],
               [ "Speaker Name 5", "Company Name 5" ]
           ]
-      }. If no data is found, respond in this format: {\"data\": []}`; 
+      }.  Do not show example values and don't include [
+        [ "Speaker Name 1", "Company Name 1" ],
+        [ "Speaker Name 2", "Company Name 2" ],
+        [ "Speaker Name 3", "Company Name 3" ],
+        [ "Speaker Name 4", "Company Name 4" ],
+        [ "Speaker Name 5", "Company Name 5" ]
+      ] in response. If no data is found, respond in this format: {\"data\": []}`; 
         if(!hideSuggestion)
           fetchAISuggestion(promptText);
       }
@@ -729,7 +737,13 @@ const Pages = () => {
           [ "name 4", "company name 4" ],
           [ "name 5", "company name 5" ]
         ]
-      }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+      }. Do not show example values and don't include [
+        [ "name 1", "company name 1" ],
+        ["name 2", "company name 2" ],
+        ["name 3", "company name 3" ],
+        [ "name 4", "company name 4" ],
+        [ "name 5", "company name 5" ]
+      ] in response. If no data found then return in below format: {\"data\": []}`
       if(!hideSuggestion)
         fetchAISuggestion(promptText);
       }
@@ -746,7 +760,13 @@ const Pages = () => {
           [ "name 4", "company name 4" ],
           [ "name 5", "company name 5" ]
         ]
-      }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+      }. Do not show example values and don't include [
+        [ "name 1", "company name 1" ],
+        ["name 2", "company name 2" ],
+        ["name 3", "company name 3" ],
+        [ "name 4", "company name 4" ],
+        [ "name 5", "company name 5" ]
+      ] in response. If no data found then return in below format: {\"data\": []}`
       if(!hideSuggestion)
         fetchAISuggestion(promptText);
       }
