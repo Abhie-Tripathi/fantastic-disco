@@ -17,8 +17,8 @@ export function useFilterState() {
   const setFilter = useCallback(
     (key: string, value: string) => {
       const params = new URLSearchParams(searchParams);
-      if (key !== "skip") {
-        params.delete("skip"); // Remove 'skip' when any other filter changes
+      if (key !== "offset") {
+        params.delete("offset"); // Remove 'skip' when any other filter changes
       }
       if (value) {
         params.set(key, value);
@@ -34,8 +34,8 @@ export function useFilterState() {
     (key: string) => {
       const params = new URLSearchParams(searchParams);
       params.delete(key);
-      if (key !== "skip") {
-        params.delete("skip"); // Remove 'skip' when any other filter is deleted
+      if (key !== "offset") {
+        params.delete("offset"); // Remove 'skip' when any other filter is deleted
       }
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     },
@@ -48,8 +48,8 @@ export function useFilterState() {
       keys.forEach((key) => {
         params.delete(key);
       });
-      if (!keys.includes("skip")) {
-        params.delete("skip"); // Remove 'skip' if it's not in the list of keys to delete
+      if (!keys.includes("offset")) {
+        params.delete("offset"); // Remove 'skip' if it's not in the list of keys to delete
       }
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     },
@@ -63,8 +63,8 @@ export function useFilterState() {
       if (newValue) {
         params.set(newKey, newValue);
       }
-      if (oldKey !== "skip" && newKey !== "skip") {
-        params.delete("skip"); // Remove 'skip' when replacing any other filter
+      if (oldKey !== "offset" && newKey !== "offset") {
+        params.delete("offset"); // Remove 'skip' when replacing any other filter
       }
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     },
@@ -74,17 +74,17 @@ export function useFilterState() {
   const setMultipleFilters = useCallback(
     (filters: Record<string, string>) => {
       const params = new URLSearchParams(searchParams);
-      let skipChanged = false;
+      let offsetChanged = false;
       Object.entries(filters).forEach(([key, value]) => {
-        if (key === "skip") skipChanged = true;
+        if (key === "offset") offsetChanged = true;
         if (value) {
           params.set(key, value);
         } else {
           params.delete(key);
         }
       });
-      if (!skipChanged) {
-        params.delete("skip"); // Remove 'skip' if it wasn't explicitly set
+      if (!offsetChanged) {
+        params.delete("offset"); // Remove 'skip' if it wasn't explicitly set
       }
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     },

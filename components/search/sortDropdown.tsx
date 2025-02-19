@@ -49,7 +49,7 @@ const SortDropdown = ({ compact = false, value, onSort }: SortDropdownProps) => 
   const { getFilterValue, setFilter } = useFilterState();
   const [open, setOpen] = useState(false);
   
-  const sortParam = value || getFilterValue("sortBy") || "start";
+  const sortParam = value || getFilterValue("sortBy") || "score";
   const [sortField, setSortField] = useState(sortParam.replace("-", ""));
   const [sortOrder, setSortOrder] = useState(
     sortParam.startsWith("-") ? "desc" : "asc"
@@ -71,7 +71,7 @@ const SortDropdown = ({ compact = false, value, onSort }: SortDropdownProps) => 
   };
 
   useEffect(() => {
-    const newSortParam = value || getFilterValue("sortBy") || "start";
+    const newSortParam = value || getFilterValue("sortBy") || "score";
     setSortField(newSortParam.replace("-", ""));
     setSortOrder(newSortParam.startsWith("-") ? "desc" : "asc");
   }, [getFilterValue, value]);

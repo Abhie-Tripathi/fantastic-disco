@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "";
+const BASE_URL = "https://api.dev.gtm.whr.ai";
 const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
 export const endpoints = {
   //   auth: {
@@ -25,14 +25,13 @@ export const endpoints = {
   event: {
     count: `${BASE_URL}/events/count`,
     events: `${BASE_URL}/events`,
-    eventDetailById: `${BASE_URL}/event`,
+    eventDetailById: `${BASE_URL}/events`,
     eventEditionsDetailsById: `${BASE_URL}/event/editions`,
-    eventPOCDetailById: `${BASE_URL}/event-poc`,
     savedEvents: `${BASE_URL}/me/saved-events`,
     recentSearches: `${BASE_URL}/me/recent-searches`,
     poc: `${BASE_URL}/event-poc`,
-    enabledFilters: `${BASE_URL_NEW}/me/account/configuration/filter`,
-    recentSearch : `${BASE_URL}/event/recent`
+    enabledFilters: `${BASE_URL}/me/account/configuration`,
+    recentSearch: `${BASE_URL}/event/recent`,
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
@@ -55,7 +54,7 @@ export const endpoints = {
   designations: `${BASE_URL}/designation`,
   users: `${BASE_URL}/me/account/users`,
   trends: {
-    eventTrends: `${BASE_URL}/trend`,
+    eventTrends: `${BASE_URL}/events/trends`,
     predictedAttendance: `${BASE_URL}/trends/predicted-attendance`,
     predictedEvents: `${BASE_URL}/trends/predicted-number-of-events`,
     eventTypes: `${BASE_URL}/trends/event-types`,

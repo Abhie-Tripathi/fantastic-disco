@@ -1,7 +1,11 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 3e7d848119a404ad8874f360ded589e1f0107114
+=======
+import { X } from "lucide-react";
+>>>>>>> 37492b9a2b5226fc4acf4993868b76017db925f3
 import { z } from "zod";
 
 const LocationSchema = z.object({
@@ -67,6 +71,7 @@ const BasicEventSchema = z.object({
   bannerUrl: z.string().nullable(),
   timings: z.string().nullable(),
   lastVerifiedOn: z.string().nullable(),
+  eventPageUrl: z.string().nullable(),
   rating: z.number(),
   name: z.string(),
   website: z.string(),
@@ -151,8 +156,10 @@ const InsightsEventSchema = z.object({
   speakersCount: z.number(),
   exhibitorsCount: z.number(),
   economicImpact: z.string(),
+  economicImpactBreakdown: z.record(z.number()).nullable(),
   estimatedVisitorRangeTag: z.string().nullable(),
   repeatSentiment: z.number(),
+  trustScore: z.number().nullable(),
   reputationScore: z.number(),
   rehostScore: z.number(),
   estimatedAttendanceMean: z.number().nullable(),
@@ -504,6 +511,7 @@ export type Country = z.infer<typeof CountrySchema>;
 export type Venue = z.infer<typeof VenueSchema>;
 export type Event = z.infer<typeof EventDataSchema>;
 export type Ranking = z.infer<typeof RankingSchema>;
+export type TTabs = "overview" | "insights" | "audience";
 export type Interest = z.infer<typeof InterestSchema>;
 <<<<<<< HEAD
 =======

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, Loader2, X } from "lucide-react";
+import { AlertTriangle, Loader2, X, Star } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -26,6 +26,7 @@ import { formattedDateRange } from "@/utils/date";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerServices } from "@/services/trackerServices";
 import SortDropdown from "@/components/search/sortDropdown";
+import { lightenColor } from "@/lib/utils";
 
 export default function EventList({
   eventDate,
@@ -40,7 +41,7 @@ export default function EventList({
   trackerId?: string;
   onSort?: (sortValue: string) => void;
 }) {
-  const { getFilterValue, setFilter } = useFilterState();
+  const { getFilterValue } = useFilterState();
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState(getFilterValue("sortBy") || "start");
   const searchParams = useSearchParams();
@@ -50,7 +51,7 @@ export default function EventList({
 
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.delete("view");
-  filteredParams.set("skip", String((currentPage - 1) * 20));
+  filteredParams.set("offset", String((currentPage - 1) * 20));
   filteredParams.set("active_lte", eventDate.toISOString());
   filteredParams.set("active_gte", eventDate.toISOString());
   filteredParams.set("sortBy", sortBy);
@@ -81,7 +82,7 @@ export default function EventList({
       ? event.basic.eventLocation.city?.name === "Online"
         ? "Online"
         : [
-            event.basic.eventLocation?.venue?.name,
+            event.basic.eventLocation?.venue?.name || "TBA",
             event.basic.eventLocation?.city?.name,
             event.basic.eventLocation?.state?.name,
             event.basic.eventLocation?.country?.name,
@@ -90,39 +91,75 @@ export default function EventList({
             .join(", ")
       : "Venue to be announced";
 
-    const formattedStartDate = format(event.basic.startDateTime, "dd MMM yyyy");
-    const formattedEndDate = format(event.basic.endDateTime, "dd MMM yyyy");
-
-    const days =
-      differenceInDays(event.basic.endDateTime, event.basic.startDateTime) + 1;
-
-    const formattedRange =
-      formattedStartDate === formattedEndDate
-        ? formattedStartDate
-        : `${formattedStartDate} - ${formattedEndDate} (${days} ${
-            days === 1 ? "day" : "days"
-          })`;
-
     return (
       <Link href={`/internal/event/${event.basic.id}`} target="_blank">
-        <Card key={event.basic.id} className="mb-4 relative">
-          <div className="absolute left-0 top-0 bottom-0 w-1 rounded-md bg-[#5055A3]" />
-          <CardContent className="p-4">
-            <div className="flex items-center mb-2 pb-2 border-b">
-              {eventTypeIcons[event.basic.eventTypes[0].name || "festivals"]}
-              <span className="text-xs font-semibold text-primary capitalize ml-2">
-                {event.basic.eventTypes[0].name}
-              </span>
-            </div>
-            <h3 className="font-semibold mb-2 text-sm">{event.basic.name}</h3>
-            <div className="flex items-center text-xs mb-2">
-              <span>{address}</span>
-            </div>
-            <div className="flex items-start text-xs text-[#666666]">
-              {formattedDateRange(
-                event.basic.startDateTime,
-                event.basic.endDateTime
+        <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
+          <CardContent className="p-3">
+            <div className="flex items-start gap-3">
+              {event.basic.logoUrl ? (
+                <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100">
+                  <img
+                    src={event.basic.logoUrl}
+                    alt={`${event.basic.name} logo`}
+                    className="w-full h-full object-contain p-1"
+                  />
+                </div>
+              ) : (
+                <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center bg-gray-50 border border-gray-100">
+                  <span className="text-[#5055A3] text-2xl font-semibold">
+                    {event.basic.name.charAt(0)}
+                  </span>
+                </div>
               )}
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge
+                    variant="secondary"
+                    className="flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 capitalize rounded-sm"
+                    style={{
+                      color:
+                        eventTypeColors[event.basic.primaryEventType || ""],
+                      backgroundColor: lightenColor(
+                        eventTypeColors[event.basic.primaryEventType || ""],
+                        0.9
+                      ),
+                    }}
+                  >
+                    <span>
+                      {
+                        eventTypeIcons[
+                          event.basic.primaryEventType || "festivals"
+                        ]
+                      }
+                    </span>
+                    <span>{event.basic.primaryEventType}</span>
+                  </Badge>
+                  {event.basic.rating > 0 ? (
+                    <Badge
+                      variant="outline"
+                      className="text-gray-600 capitalize rounded-sm"
+                    >
+                      <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+                      <span>{event.basic.rating}</span>
+                    </Badge>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <h3 className="font-semibold text-sm line-clamp-2">
+                    {event.basic.name}
+                  </h3>
+                </div>
+                <div className="text-xs text-gray-600 mb-1">{address}</div>
+                <div className="text-xs font-medium text-primary">
+                  {formattedDateRange(
+                    event.basic.startDateTime,
+                    event.basic.endDateTime
+                  )}
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>

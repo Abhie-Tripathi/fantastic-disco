@@ -12,21 +12,43 @@ import NullState from "../trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
 import { ApiError } from "@/types/api";
 import { Show } from "@/types/events/dto/event-query.dto";
-
+import { useTrackerContext } from "@/context/tracker";
+import { useFilterContext } from "@/context/filterContext";
 const EventTable = ({source, trackerId}) => {
   // const { theme } = useTheme();
-  const { searchParams, getFilterValue, setMultipleFilters } = useFilterState();
-
+  const { searchParams, getFilterValue, setMultipleFilters, setFilter } = useFilterState();
+  const {setLocalFilter} = useFilterContext();
+  const {data} = useTrackerContext();
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   console.log(trackerId);
   
   const { events, totalEvents, isLoading, error } = useEvents.list(query, source, trackerId);
   console.log(isLoading);
+  const mapping = {
+    rating: "rating",
+    maturity: "maturity",
+    branded: "branded,series",
+    forecasted: "forecasted",
+    frequency: "frequency",
+    estimatedExhibitors: "estimatedExhibitors",
+    scores: "scores",
+    audienceZone: "audienceZone",
+    rankings: "rankings,trustScore",
+  }
+  let show=[];
+  Object.entries(mapping).forEach(([key,value])=>{
+    if(data?.filterValues?.show?.includes(key)){
+      show.push(value);
+      
+    }
+  })
+  setLocalFilter("show",show.join(","));
+  // console.log(data.filterValues.show);
   
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
-    Math.floor(parseInt(getFilterValue("skip") || "0") / itemsPerPage) + 1;
+    Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
   const showValues: Show[] = getFilterValue("show")
     .split(",")
@@ -35,14 +57,13 @@ const EventTable = ({source, trackerId}) => {
 
   const handlePageChange = (page: number) => {
     setMultipleFilters({
-      skip: ((page - 1) * itemsPerPage).toString(),
+      offset: ((page - 1) * itemsPerPage).toString(),
       limit: itemsPerPage.toString(),
     });
   };
 
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
-      skip: "0",
       limit: newItemsPerPage,
     });
   };

@@ -1,4 +1,4 @@
-import { GTMEventDetail, VenueLocation } from "@/types/events";
+import { Event } from "@/types/events";
 import { format } from "date-fns";
 import { type CarouselApi } from "@/components/ui/carousel";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -7,8 +7,8 @@ import { EventDate } from "@/types/events";
 import EventsListView from "../detailPageEventsList/eventsListView";
 import EventsMapView from "../detailPageEventsList/eventsMapView";
 interface Props {
-  eventDetails: GTMEventDetail;
-  venueLocation: VenueLocation | null;
+  eventDetails: Event["basic"];
+  venueLocation: Event["basic"]["eventLocation"] | null;
   startDateTime: string;
   endDateTime: string;
 }

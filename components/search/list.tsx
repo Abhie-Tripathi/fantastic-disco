@@ -1,26 +1,17 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Bookmark,
-  BookmarkCheck,
-  Star,
-  TicketPercent,
-  Radio,
-} from "lucide-react";
+import { Star, Radio, TicketPercent } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Event, Ranking } from "@/types/events/events";
+import { Event } from "@/types/events/events";
 import { format } from "date-fns";
 import { useFilterState } from "@/hooks/useFilterState";
-import { Button } from "../ui/button";
 import { useEventsService } from "@/services/eventsService";
 import { useToast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
 import { cn, lightenColor } from "@/lib/utils";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
-import { isEventeli } from "@/config";
-import { formatDateRange } from "@/utils/dateFormat";
 import { PaginationComponent } from "../pagination";
 import {
   Tooltip,
@@ -30,6 +21,7 @@ import {
 } from "../ui/tooltip";
 import { formatEstimatedSpend } from "@/utils/formater";
 import { ActionPopover } from "@/app/components/Table/ActionPopover";
+import { formattedDateRange } from "@/utils/date";
 
 interface CircularProgressProps {
   value: number | null;
@@ -110,10 +102,11 @@ export default function EventAccordion({
   const [openItem, setOpenItem] = useState<string | undefined>();
   const { setFilter, getFilterValue } = useFilterState();
   const [itemsPerPage, setItemsPerPage] = useState<number>(
-    Number(getFilterValue("take")) || 20
+    Number(getFilterValue("limit")) || 20
   );
+
   const currentPage =
-    Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
+    Math.floor(Number(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(count / itemsPerPage);
 
   const handleToggle = (id: string) => {
@@ -122,14 +115,14 @@ export default function EventAccordion({
   };
 
   const handlePageChange = (page: number) => {
-    setFilter("skip", ((page - 1) * itemsPerPage).toString());
+    setFilter("offset", ((page - 1) * itemsPerPage).toString());
   };
 
   const handleItemsPerPageChange = (value: string) => {
     const newItemsPerPage = parseInt(value);
     setItemsPerPage(newItemsPerPage);
 
-    setFilter("take", newItemsPerPage.toString());
+    setFilter("limit", newItemsPerPage.toString());
   };
 
   return (
@@ -258,6 +251,19 @@ const EventListItem = ({
     return "th";
   }
 
+  function formatExhibitorCount(value: string | number | null): string {
+    if (value === null || value === undefined) return "--";
+
+    const stringValue = String(value);
+    const values = stringValue.split("-");
+
+    if (values.length === 2 && values[0] === values[1]) {
+      return Number(values[0]).toLocaleString();
+    }
+
+    return stringValue.toLocaleString();
+  }
+
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
       <Link href={`/internal/event/${event.basic.id}`} className="block">
@@ -289,7 +295,7 @@ const EventListItem = ({
                       isCancelled || isPostponed ? "line-through" : ""
                     )}
                   >
-                    {formatDateRange(
+                    {formattedDateRange(
                       event.basic.startDateTime,
                       event.basic.endDateTime
                     )}
@@ -315,44 +321,42 @@ const EventListItem = ({
               <div>
                 <div className="flex flex-wrap gap-2">
                   {event.basic.primaryEventType && (
-                    <div className="flex items-center gap-2">
-                      <span>
-                        {
-                          eventTypeIcons[
-                            event.basic.primaryEventType || "festivals"
-                          ]
-                        }
-                      </span>
-                      <TooltipProvider>
-                        <Tooltip delayDuration={0}>
-                          <TooltipTrigger>
-                            <Badge
-                              variant="secondary"
-                              className={
-                                "bg-pink-100 text-pink-800 hover:bg-pink-100 uppercase rounded-sm"
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="secondary"
+                            className={
+                              "flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 uppercase rounded-sm"
+                            }
+                            style={{
+                              color:
+                                eventTypeColors[
+                                  event.basic.primaryEventType || ""
+                                ],
+                              backgroundColor: lightenColor(
+                                eventTypeColors[
+                                  event.basic.primaryEventType || ""
+                                ],
+                                0.9
+                              ),
+                            }}
+                          >
+                            <span>
+                              {
+                                eventTypeIcons[
+                                  event.basic.primaryEventType || "festivals"
+                                ]
                               }
-                              style={{
-                                color:
-                                  eventTypeColors[
-                                    event.basic.primaryEventType || ""
-                                  ],
-                                backgroundColor: lightenColor(
-                                  eventTypeColors[
-                                    event.basic.primaryEventType || ""
-                                  ],
-                                  0.9
-                                ),
-                              }}
-                            >
-                              <span>{event.basic.primaryEventType}</span>
-                            </Badge>
-                          </TooltipTrigger>
-                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                            <p>Event Type</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
+                            </span>
+                            <span>{event.basic.primaryEventType}</span>
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Event Type</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                   {event.basic.categories?.slice(0, 1).map((tag, index) => (
                     <TooltipProvider key={index}>
@@ -526,7 +530,7 @@ const EventListItem = ({
                             variant="outline"
                             className="text-gray-600 capitalize rounded-sm"
                           >
-                            Forecasted for{" "}
+                            Forecasted Next Edition : {" "}
                             {format(event.advance?.rehostDate, "MMM yyyy")}
                           </Badge>
                         </TooltipTrigger>
@@ -545,7 +549,7 @@ const EventListItem = ({
                             className="text-gray-600 capitalize rounded-sm"
                           >
                             {event.insights?.rankings.rank}
-                            <sup>
+                            <sup className="mr-1">
                               {getOrdinalSuffix(event.insights?.rankings.rank)}
                             </sup>
                             {event.insights?.rankings.rankType} Rank
@@ -576,7 +580,8 @@ const EventListItem = ({
                     </TooltipProvider>
                   )}
 
-                  {event.insights?.repeatSentiment && (
+                  {event.insights?.repeatSentiment &&
+                  event.insights?.repeatSentiment > 0 ? (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -592,6 +597,8 @@ const EventListItem = ({
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
+                  ) : (
+                    ""
                   )}
 
                   {event.insights?.reputationScore && (
@@ -635,23 +642,20 @@ const EventListItem = ({
               </div>
             </div>
 
-            <div className="col-span-5 flex flex-col justify-between">
-              <div className="flex items-center justify-end" onClick={(e) => e.preventDefault()}>
-                <ActionPopover eventId={event.basic.id} interests={event.interests} />
-              </div>
+            <div className="col-span-5">
               <div className="flex items-center justify-end">
                 {event.insights?.scores ? (
                   <div className="flex items-center justify-between w-full">
                     <div className="flex flex-col justify-end gap-4">
-                      {event.insights?.exhibitorsCount !== undefined && (
+                      {event.advance?.estimatedExhibitors !== undefined && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
                             Estimated Exhibitors
                           </p>
                           <p className="text-lg font-semibold text-primary">
-                            {event.insights?.exhibitorsCount === 0
-                              ? "--"
-                              : event.insights?.exhibitorsCount.toLocaleString()}
+                            {formatExhibitorCount(
+                              event.advance?.estimatedExhibitors
+                            )}
                           </p>
                         </div>
                       )}
@@ -679,7 +683,16 @@ const EventListItem = ({
                       )}
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="flex flex-col gap-4">
+                      <div
+                        className="flex items-center justify-end"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <ActionPopover
+                          eventId={event.basic.id}
+                          interests={event.interests}
+                        />
+                      </div>
                       {event.insights?.scores && (
                         <div className="grid grid-cols-3 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] dark:bg-[#171717] p-2 rounded">
                           <CircularProgress
@@ -700,40 +713,51 @@ const EventListItem = ({
                   </div>
                 ) : (
                   <div className="grid grid-row-2 items-end gap-4">
-                    {event.insights?.exhibitorsCount !== undefined && (
-                      <div>
-                        <p className="text-xs text-gray-600 font-medium">
-                          Estimated Exhibitors
-                        </p>
-                        <p className="text-lg font-semibold text-primary">
-                          {event.insights?.exhibitorsCount === 0
-                            ? "--"
-                            : event.insights?.exhibitorsCount.toLocaleString()}
-                        </p>
+                    <div className="flex flex-col gap-4">
+                      <div
+                        className="flex items-center justify-end"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <ActionPopover
+                          eventId={event.basic.id}
+                          interests={event.interests}
+                        />
                       </div>
-                    )}
-                    {event.insights?.estimatedAttendance && (
-                      <div>
-                        <p className="text-xs text-gray-600 font-medium">
-                          Estimated Visitors
-                        </p>
-                        <p className="text-lg font-semibold text-primary">
-                          {event.insights?.estimatedAttendance || "--"}
-                        </p>
-                      </div>
-                    )}
-                    {event.insights?.economicImpact && (
-                      <div>
-                        <p className="text-xs text-gray-600 font-medium">
-                          Economic Impact
-                        </p>
-                        <p className="text-lg font-semibold text-primary">
-                          {formatEstimatedSpend(
-                            event.insights?.economicImpact || "--"
-                          )}
-                        </p>
-                      </div>
-                    )}
+                      {event.insights?.exhibitorsCount !== undefined && (
+                        <div>
+                          <p className="text-xs text-gray-600 font-medium">
+                            Estimated Exhibitors
+                          </p>
+                          <p className="text-lg font-semibold text-primary">
+                            {formatExhibitorCount(
+                              event.insights?.exhibitorsCount
+                            )}
+                          </p>
+                        </div>
+                      )}
+                      {event.insights?.estimatedAttendance && (
+                        <div>
+                          <p className="text-xs text-gray-600 font-medium">
+                            Estimated Visitors
+                          </p>
+                          <p className="text-lg font-semibold text-primary">
+                            {event.insights?.estimatedAttendance || "--"}
+                          </p>
+                        </div>
+                      )}
+                      {event.insights?.economicImpact && (
+                        <div>
+                          <p className="text-xs text-gray-600 font-medium">
+                            Economic Impact
+                          </p>
+                          <p className="text-lg font-semibold text-primary">
+                            {formatEstimatedSpend(
+                              event.insights?.economicImpact || "--"
+                            )}
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
