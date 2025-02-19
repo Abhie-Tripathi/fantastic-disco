@@ -5,21 +5,31 @@ import {
   RecentSearchesResponse,
   RecentSearchItem,
   Event,
+  EventPOCDetailResponse,
+  OverallRankingsDetail,
+  EventSpeakerDetails,
+  EventExhibitorDetails,
+  EventEditionDetailResponse,
+  EventSpeakerDetailsResponse,
+  EventExhibitorDetailsResponse,
+  EventSponsorDetailsResponse,
   EventResponse,
 } from "@/types/events";
 import { ApiError } from "@/types/api";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
+import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
 
 export const useEventsService = () => {
   const api = useApi();
 
+  const { exhibitorAdapter, speakerAdapter, sponsorAdapter } =
+    EventParticpantAdapter();
+
   const getEvents = async (params?: EventQuery) => {
-    console.log("service called");
     const response = await api.request<EventResponse>(endpoints.event.events, {
       method: "GET",
       params,
     });
-    console.log(response);
     return response;
   };
 
@@ -38,7 +48,7 @@ export const useEventsService = () => {
 
   const getEventPOCDetails = (id: string) => {
     return api.request<EventPOCDetailResponse>(
-      `${endpoints.event.eventPOCDetailById}/${id}`,
+      `${endpoints.event.events}/${id}/pocs`,
       {
         method: "GET",
       }
@@ -47,9 +57,9 @@ export const useEventsService = () => {
 
   const getEventEditionDetails = (id: string, take: number, skip: number) => {
     return api.request<EventEditionDetailResponse>(
-      `${endpoints.event.eventEditionsDetailsById}/${id}${
-        take ? `?take=${take}` : ""
-      }${skip !== undefined && skip !== null ? `&skip=${skip}` : ""}`,
+      `${endpoints.event.events}/${id}/editions${take ? `?take=${take}` : ""}${
+        skip !== undefined && skip !== null ? `&skip=${skip}` : ""
+      }`,
       {
         method: "GET",
       }
@@ -65,9 +75,9 @@ export const useEventsService = () => {
     );
   };
 
-  const getAlertPolygon = (eventId: string) => {
-    return api.request<AlertPolygonResponse>(
-      `${endpoints.event.events}/${eventId}/polygons`,
+  const getEventsRankingDetailsById = (id: string) => {
+    return api.request<OverallRankingsDetail>(
+      `${endpoints.event.events}/${id}/rankings`,
       {
         method: "GET",
       }
@@ -88,8 +98,8 @@ export const useEventsService = () => {
     take: number,
     skip: number
   ) => {
-    const response = await api.request<EventExhibitorDetails[]>(
-      `${endpoints.event.eventDetailById}/exhibitor?id=${id}&take=${take}&skip=${skip}`,
+    const response = await api.request<EventExhibitorDetailsResponse>(
+      `${endpoints.event.eventDetailById}/${id}/exhibitors?take=${take}&skip=${skip}`,
       {
         method: "GET",
       }
@@ -106,8 +116,8 @@ export const useEventsService = () => {
     take: number,
     skip: number
   ) => {
-    const response = await api.request<EventSpeakerDetails[]>(
-      `${endpoints.event.eventDetailById}/speaker?id=${id}&take=${take}&skip=${skip}`,
+    const response = await api.request<EventSpeakerDetailsResponse>(
+      `${endpoints.event.eventDetailById}/${id}/speakers?take=${take}&skip=${skip}`,
       {
         method: "GET",
       }
@@ -117,6 +127,24 @@ export const useEventsService = () => {
     }
     const adaptedSpeakerData = speakerAdapter(response);
     return adaptedSpeakerData;
+  };
+
+  const getEventSponsorDetails = async (
+    id: string,
+    take: number,
+    skip: number
+  ) => {
+    const response = await api.request<EventSponsorDetailsResponse>(
+      `${endpoints.event.events}/${id}/sponsors?take=${take}&skip=${skip}`,
+      {
+        method: "GET",
+      }
+    );
+    if (!response) {
+      throw new Error("Failed to fetch exhibitor details");
+    }
+    const adaptedExhibitorData = sponsorAdapter(response);
+    return adaptedExhibitorData;
   };
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {
@@ -190,7 +218,7 @@ export const useEventsService = () => {
   };
   const fetchEnabledFilters = async (source: String) => {
     const response = await api.request(
-      `${endpoints.event.enabledFilters}?source=${source}`,
+      `${endpoints.event.enabledFilters}/${source}`,
       {
         method: "GET",
       }
@@ -222,8 +250,10 @@ export const useEventsService = () => {
     getEventEditionDetails,
     getEventExhibitorDetails,
     getEventSpeakerDetails,
+    getEventSponsorDetails,
     getEventsWithSearchParams,
     getEventCoOrganizerDetails,
+    getEventsRankingDetailsById,
     getRecentSearch,
     isLoading: api.isLoading,
     error: api.error as ApiError,

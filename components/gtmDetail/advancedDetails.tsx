@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/carousel";
 import { Card } from "../ui/card";
 import { useEffect, useState } from "react";
-import { GTMEventDetail } from "@/types/events";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import {
   Tooltip,
@@ -38,7 +37,7 @@ import { useFilterContext } from "@/context/filterContext";
 import Restriction from "../eventDetail/restriction";
 
 interface Props {
-  eventDetails: GTMEventDetail;
+  eventDetails: Event["advance"];
   eventEditionData: EventEditionDetailResponse;
   eventId: string;
 }
@@ -50,19 +49,21 @@ const CarouselComponent = ({
   eventId,
 }: {
   morphedData: any;
-  eventDetails: GTMEventDetail;
+  eventDetails: Event["advance"];
   eventEditionData: EventEditionDetailResponse;
   eventId: string;
 }) => {
-  const {
-    maturity,
-    frequency,
-    isEventBrand: isBranded,
-    isEventSeries: isSeries,
-    rehostDate,
-    futureExpectedEndDate,
-    futureExpectedStartDate,
-  } = eventDetails;
+  // const {
+  //   maturity,
+  //   frequency,
+  //   isEventBrand: isBranded,
+  //   isEventSeries: isSeries,
+  //   rehostDate,
+  //   futureExpectedEndDate,
+  //   futureExpectedStartDate,
+  // } = eventDetails || {};
+  const { maturity, frequency, isBranded, isSeries, rehostDate } =
+    eventDetails || {};
   const { maturityLevels, frequencies, forcastedStatus, globalAndTourings } =
     morphedData;
   const { count, editions } = eventEditionData;
@@ -215,13 +216,10 @@ const CarouselComponent = ({
                   <DetailDialog
                     titleColor="text-[var(--primary-text-color)]"
                     title={"No. of Editions"}
-                    triggerText={`${count} Edition${count > 1 ? "s" : ""}`}
+                    triggerText={`${count} Edition${count || 0 > 1 ? "s" : ""}`}
                     className="text-[#6750A4] bg-[#E6E6F9] dark:bg-[#2D2541] dark:border-[#8F80D4] flex items-center justify-center h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-full xl:w-fit text-center cursor-pointer"
                   >
-                    <PastEditions
-                      eventId={eventId}
-                      eventEditionData={eventEditionData}
-                    />
+                    <PastEditions eventId={eventId} />
                   </DetailDialog>
                 )}
               </div>
@@ -275,7 +273,7 @@ const CarouselComponent = ({
               </div>
             </CarouselItem>
           )}
-          {(futureExpectedStartDate || futureExpectedEndDate) && (
+          {rehostDate && (
             <CarouselItem
               className={`relative ${
                 isSlidingEnabled
@@ -304,7 +302,7 @@ const CarouselComponent = ({
                 </TooltipProvider>
                 {isForecastedEnabled ? (
                   <span className="text-[var(--primary-color-hover)] font-semibold text-md text-center">
-                    {format(futureExpectedStartDate, "MMM, yyyy")}
+                    {format(rehostDate || "", "MMM, yyyy")}
                   </span>
                 ) : (
                   <Restriction />
@@ -388,21 +386,23 @@ export const AdvancedDetails = ({
   eventId,
 }: Props) => {
   const { morphedData } = useFilterContext();
-  const {
-    maturity,
-    frequency,
-    futureExpectedStartDate,
-    isEventBrand: isBranded,
-    isEventSeries: isSeries,
-  } = eventDetails;
-  const { editions } = eventEditionData;
+  const { maturity, editions, frequency, isBranded, isSeries, rehostDate } =
+    eventDetails || {};
+  // const {
+  //   maturity,
+  //   frequency,
+  //   futureExpectedStartDate,
+  //   isEventBrand: isBranded,
+  //   isEventSeries: isSeries,
+  // } = eventDetails || {};
+  // const { editions } = eventEditionData;
   return (
     (maturity ||
       editions ||
       frequency ||
       isBranded ||
       isSeries ||
-      futureExpectedStartDate) && (
+      rehostDate) && (
       <div className="flex flex-col">
         <Heading
           heading="Advanced Details"

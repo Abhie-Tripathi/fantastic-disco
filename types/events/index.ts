@@ -1,5 +1,6 @@
 export * from "./category";
 export * from "./events";
+export * from "./eventDetail";
 export * from "./tag";
 export * from "./calendarWeekEvents";
 export * from "./calendarMonthEvents";

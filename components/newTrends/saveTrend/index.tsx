@@ -230,7 +230,7 @@ const SaveTrend = ({
     };
     const data: CreateSaveTrendData = {
       name: trackerName,
-      filterValue: FilterValue,
+      filterValues: FilterValue,
       type: "TR_CUSTOM",
     };
     saveTrendMutation.mutate(data);
@@ -265,7 +265,7 @@ const SaveTrend = ({
     };
     const data: EditSaveTrendData = {
       name: trackerName,
-      filterValue: FilterValue,
+      filterValues: FilterValue,
       type: "TR_CUSTOM",
       accessLevel: "ADMIN",
     };

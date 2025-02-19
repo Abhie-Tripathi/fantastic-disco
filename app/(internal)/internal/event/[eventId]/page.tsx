@@ -11,15 +11,7 @@ import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import Link from "next/link";
 import Disable from "/public/disable.svg";
-import {
-  categoryRank,
-  countryCategoryRank,
-  countryRank,
-  Editions,
-  Event,
-  GTMEventDetail,
-  TTabs,
-} from "@/types/events";
+import { Ranking, Event, TTabs } from "@/types/events";
 import {
   Accordion,
   AccordionContent,
@@ -39,7 +31,8 @@ import {
 } from "lucide-react";
 
 import { useEventsService } from "@/services/eventsService";
-import { GTMEventPOCDetails, EventDate } from "@/types/events";
+import { EventPOCDetails } from "@/types/events";
+import Loading from "@/components/ui/Loading";
 import { Badge } from "@/components/ui/badge";
 import { EventInfoAndMap } from "@/components/gtmDetail/eventInfoAndMap";
 import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
@@ -58,49 +51,49 @@ import { Button } from "react-aria-components";
 import { Button as ButtonUI } from "@/components/ui/button";
 import { useCoordinateService } from "@/services/coordinateService";
 
-export interface RankingDetail {
-  above5CountryEvent: countryRank[] | [];
-  below5CountryEvent: countryRank[] | [];
-  above5CategoryEvent: categoryRank[] | [];
-  below5CategoryEvent: categoryRank[] | [];
-  above5CountryCategoryRankEvent: countryCategoryRank[] | [];
-  below5CountryCategoryEvent: countryCategoryRank[] | [];
-}
+// export interface RankingDetail {
+//   above5CountryEvent: countryRank[] | [];
+//   below5CountryEvent: countryRank[] | [];
+//   above5CategoryEvent: categoryRank[] | [];
+//   below5CategoryEvent: categoryRank[] | [];
+//   above5CountryCategoryRankEvent: countryCategoryRank[] | [];
+//   below5CountryCategoryEvent: countryCategoryRank[] | [];
+// }
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
   const scrollableSectionRef = useRef<HTMLElement | null>(null);
   const currentDate = new Date().toISOString().split("T")[0];
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
-  const [eventDates, setEventDates] = useState<EventDate[]>();
-  const [eventPOCDetails, setEventPOCDetails] = useState<GTMEventPOCDetails[]>([]);
-  const tabs = [
-    { tabName: "Overview", path: "overview" },
-    { tabName: "Insights", path: "insights" },
-    { tabName: "Audience", path: "audience" },
-  ];
+  const [eventPOCDetails, setEventPOCDetails] = useState<EventPOCDetails[]>([]);
   const {
     getEventDetailById,
     getEventPOCDetails,
+    getEventsRankingDetailsById,
     getEventEditionDetails,
     getEventExhibitorDetails,
     getEventSpeakerDetails,
+    getEventSponsorDetails,
   } = useEventsService();
   const coordinateService = useCoordinateService();
-  const { data: event } = useQuery<any>({
+  const { data: event, isLoading } = useQuery<any>({
     queryKey: ["eventDetails"],
     queryFn: async () => {
       const [
         eventDataResult,
         eventPOCDataResult,
+        eventRankingDetailsResult,
         eventEditionDataResult,
         eventExhibitorDataResult,
         eventSpeakerDataResult,
+        eventSponsorDataResult,
       ] = await Promise.allSettled([
         getEventDetailById(params.eventId),
         getEventPOCDetails(params.eventId),
+        getEventsRankingDetailsById(params.eventId),
         getEventEditionDetails(params.eventId, 10, 0),
         getEventExhibitorDetails(params.eventId, 3, 0),
         getEventSpeakerDetails(params.eventId, 3, 0),
+        getEventSponsorDetails(params.eventId, 3, 0),
         // getEventCoOrganizerDetails(params.eventId),
       ]);
       const eventData =
@@ -109,7 +102,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventPOCDataResult.status === "fulfilled"
           ? eventPOCDataResult.value
           : null;
-      setEventPOCDetails(eventPOCData?.eventPoc || []);
+      setEventPOCDetails(eventPOCData?.eventPoCs || []);
       // const eventCoOrganizerData =
       //   eventCoOrganizerDataResult.status === "fulfilled"
       //     ? eventCoOrganizerDataResult.value
@@ -117,6 +110,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       const eventEditionData =
         eventEditionDataResult.status === "fulfilled"
           ? eventEditionDataResult.value
+          : null;
+      const eventRankingDetails =
+        eventRankingDetailsResult.status === "fulfilled"
+          ? eventRankingDetailsResult.value
           : null;
       const eventExhibitorData =
         eventExhibitorDataResult.status === "fulfilled"
@@ -126,27 +123,43 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventSpeakerDataResult.status === "fulfilled"
           ? eventSpeakerDataResult.value
           : null;
+
+      const eventSponsorData =
+        eventSponsorDataResult.status === "fulfilled"
+          ? eventSponsorDataResult.value
+          : null;
       return {
         eventData: eventData,
         eventPOCData: eventPOCData,
+        eventRankingDetails: eventRankingDetails,
         eventEditionData: eventEditionData,
         eventExhibitorData: eventExhibitorData,
         eventSpeakerData: eventSpeakerData,
+        eventSponsorData: eventSponsorData,
       };
     },
     refetchOnWindowFocus: false,
   });
 
-  if (!event) return null;
+  if (isLoading) {
+    return <Loading className="absolute right-1/2 top-1/2" />;
+  }
+
+  if (!event) {
+    return null;
+  }
+
   const {
     eventData,
+    eventPOCData,
+    eventRankingDetails,
     eventEditionData,
     eventExhibitorData,
     eventSpeakerData,
+    eventSponsorData,
   } = event;
-  const eventDetails: GTMEventDetail = eventData.event || {};
+  const { basic, advance, insights, audience }: Event = eventData || {};
 
-  if (!eventDetails) return null;
   const {
     id,
     name,
@@ -156,32 +169,59 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     organizer,
     website,
     format: typeOfEvent,
-    venueLocation,
-    stats,
+    eventLocation,
     status,
+    rating,
+    // above5CategoryEvent,
+    // below5CategoryEvent,
+    // above5CountryEvent,
+    // below5CountryEvent,
+    // above5CountryCategoryRankEvent,
+    // below5CountryCategoryEvent,
+  } = basic || {};
+
+  const {
     scores,
-    above5CategoryEvent,
-    below5CategoryEvent,
-    above5CountryEvent,
-    below5CountryEvent,
-    above5CountryCategoryRankEvent,
-    below5CountryCategoryEvent,
+    rankings,
     repeatSentiment: trustScore,
-  } = eventDetails;
+    exhibitorsCount,
+    speakersCount,
+    sponsorsCount,
+  } = insights || {};
+  const { audienceSpread, designationSpread } = audience || {};
+  const {
+    logoUrl,
+    location: organizerLocation,
+    name: organizerName,
+  } = organizer || {};
 
-  const rankings: RankingDetail = {
-    above5CategoryEvent: above5CategoryEvent,
-    below5CategoryEvent: below5CategoryEvent,
-    above5CountryEvent: above5CountryEvent,
-    below5CountryEvent: below5CountryEvent,
-    above5CountryCategoryRankEvent: above5CountryCategoryRankEvent,
-    below5CountryCategoryEvent: below5CountryCategoryEvent,
-  };
-
-  const isValid =
+  const isInsightVisible =
     (scores && Object.values(scores).every((value) => value !== null)) ||
-    (trustScore !== null && trustScore > 0) ||
-    (rankings && Object.values(rankings).some((arr) => arr.length > 0));
+    (trustScore !== null && trustScore !== undefined && trustScore > 0) ||
+    (eventRankingDetails && Object.keys(eventRankingDetails).length > 0);
+
+  const isAudienceVisible =
+    (audienceSpread && Object.keys(audienceSpread).length > 0) ||
+    (designationSpread !== null &&
+      designationSpread != undefined &&
+      designationSpread.length > 0) ||
+    (exhibitorsCount !== null &&
+      exhibitorsCount !== undefined &&
+      exhibitorsCount > 0) ||
+    (sponsorsCount !== null &&
+      sponsorsCount !== undefined &&
+      sponsorsCount > 0) ||
+    (speakersCount !== null &&
+      speakersCount !== undefined &&
+      speakersCount > 0);
+
+  const isOverviewVisible = true;
+
+  const tabs = [
+    { tabName: "Overview", path: "overview", isVisible: isOverviewVisible },
+    { tabName: "Insights", path: "insights", isVisible: isInsightVisible },
+    { tabName: "Audience", path: "audience", isVisible: isAudienceVisible },
+  ];
 
   const eventStartDate = startDateTime
     ? format(new Date(startDateTime), "dd MMM yyyy")
@@ -199,16 +239,26 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const isCancelled = status === "cancelled";
   const isPostponed = status === "postponed";
 
-  const venueName = venueLocation?.venue?.name;
+  const venueName = eventLocation?.venue?.name;
   const venueAddress =
-    venueLocation?.venue?.address ||
+    eventLocation?.venue?.address ||
     [
-      venueLocation?.city?.name !== "Online" && venueLocation?.city?.name,
-      venueLocation?.state?.name !== "Online" && venueLocation?.state?.name,
-      venueLocation?.country?.name !== "Online" && venueLocation?.country?.name,
+      eventLocation?.city?.name !== "Online" && eventLocation?.city?.name,
+      eventLocation?.state?.name !== "Online" && eventLocation?.state?.name,
+      eventLocation?.country?.name !== "Online" && eventLocation?.country?.name,
     ]
       .filter(Boolean)
       .join(", ");
+
+  const organizerAddress = (() => {
+    if (organizerLocation) {
+      const cityName = organizerLocation?.city?.name || "";
+      const countryName = organizerLocation?.country?.name || "";
+
+      return [cityName, countryName].filter(Boolean).join(", ");
+    }
+    return "";
+  })();
 
   const handleShare = () => {
     if (navigator.share) {
@@ -233,21 +283,24 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     }
   };
 
-  const unlockPoc = async(pocId: number) => {
+  const unlockPoc = async (pocId: number) => {
     try {
-      setEventPOCDetails(prevPocData => 
-        prevPocData.map(poc => 
-          poc.id === pocId
-            ? { ...poc, state: 1 }
-            : poc
+      setEventPOCDetails((prevPocData) =>
+        prevPocData.map((poc) =>
+          poc.id === pocId ? { ...poc, state: 1 } : poc
         )
       );
       const data = await coordinateService.unlockPocDetail(pocId, id);
       if (data) {
-        setEventPOCDetails(prevPocData => 
-          prevPocData.map(poc => 
+        setEventPOCDetails((prevPocData) =>
+          prevPocData.map((poc) =>
             poc.id === pocId
-              ? { ...poc, email: data.email, phoneNumber: data.phoneNumber, state: 2 }
+              ? {
+                  ...poc,
+                  email: data.email,
+                  phoneNumber: data.phoneNumber,
+                  state: 2,
+                }
               : poc
           )
         );
@@ -255,11 +308,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }
+  };
 
   return (
     <div className="p-6 pt-0">
-      <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
+      <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
         <Button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
           <span
@@ -281,13 +334,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center gap-1">
-            {stats && stats.rating !== null && stats.rating > 0 && (
+            {rating !== null && rating > 0 && (
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <span className="flex items-center gap-1 cursor-pointer">
                       <StarFill width="16px" height="16px" color="#FFB224" />
-                      <span>{stats.rating}</span>
+                      <span>{rating}</span>
                     </span>
                   </TooltipTrigger>
                   <TooltipContent
@@ -317,31 +370,29 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         </div>
 
         <div className="flex flex-row gap-3 flex-wrap">
-          {eventDetails &&
-            eventDetails.eventTypes &&
-            eventDetails.eventTypes.length > 0 && (
-              <ul className="flex flex-row flex-wrap gap-3">
-                {eventDetails.eventTypes.map((type: any) => (
-                  <TooltipProvider key={type.id}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <li className="text-[12px] font-semibold py-1 px-3 border-[#CCE6FF] border rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D] dark:border-[#0D3868] cursor-pointer">
-                          {type.name}
-                        </li>
-                      </TooltipTrigger>
-                      <TooltipContent
-                        align="center"
-                        className="tooltip-content-styles"
-                      >
-                        <p className="text-[var(--secondary-text-color)] font-medium">
-                          Event Type
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                ))}
-              </ul>
-            )}
+          {basic && basic.eventTypes && basic.eventTypes.length > 0 && (
+            <ul className="flex flex-row flex-wrap gap-3">
+              {basic.eventTypes.map((type: any) => (
+                <TooltipProvider key={type.id}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <li className="text-[12px] font-semibold py-1 px-3 border-[#CCE6FF] border rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D] dark:border-[#0D3868] cursor-pointer">
+                        {type.name}
+                      </li>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      align="center"
+                      className="tooltip-content-styles"
+                    >
+                      <p className="text-[var(--secondary-text-color)] font-medium">
+                        Event Type
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ))}
+            </ul>
+          )}
           {/* {isBranded && (
             <span className="text-[12px] font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-fit text-[#DF2670] bg-[#FEECF2]">
               Branded Event
@@ -378,10 +429,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               renderFormattedDates(eventStartDate, eventEndDate)}
           </Text>
           {/* {eventStartTime && eventEndTime && (
-              <Text variant="noMargin" color="secondary">
-                {`${eventStartTime} - ${eventEndTime} GMT+5:30`}
-              </Text>
-            )} */}
+            <Text variant="noMargin" color="secondary">
+              {`${eventStartTime} - ${eventEndTime} GMT+5:30`}
+            </Text>
+          )} */}
           {isCancelled && (
             <Badge
               variant="outline"
@@ -400,7 +451,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           )}
         </div>
 
-        {(venueLocation || typeOfEvent) && (
+        {(eventLocation || typeOfEvent) && (
           <div className="flex gap-2 items-center my-4">
             <span className="border border-[#ebebeb] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
@@ -461,41 +512,32 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             </AccordionTrigger>
             <AccordionContent className="h-fit">
               {organizer ? (
-                (() => {
-                  const { cityName, countryName, logo, name } = organizer;
-                  return (
-                    <div className="flex gap-4 p-2 mb-1">
-                      <img
-                        src={
-                          logo
-                            ? logo
-                            : `https://img.10times.com/userimages/${name
-                                .charAt(0)
-                                .toLowerCase()}.jpg`
-                        }
-                        className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10"
-                        alt="Organizer Logo"
-                      />
-                      <div className="flex flex-col">
-                        <Text fontWeight="medium" size="normal">
-                          {name}
+                <div className="flex gap-4 p-2 mb-1">
+                  <img
+                    src={
+                      logoUrl
+                        ? logoUrl
+                        : `https://img.10times.com/userimages/${name
+                            .charAt(0)
+                            .toLowerCase()}.jpg`
+                    }
+                    className="rounded-lg bg-[var(--primary-foreground)] aspect-square w-10 h-10"
+                    alt="Organizer Logo"
+                  />
+                  <div className="flex flex-col">
+                    <Text fontWeight="medium" size="normal">
+                      {name}
+                    </Text>
+                    {organizerAddress && (
+                      <div className="flex gap-2 items-center">
+                        <Location color="#666666" width="14px" height="14px" />
+                        <Text color="secondary" variant="noMargin">
+                          {organizerAddress}
                         </Text>
-                        {(cityName || countryName) && (
-                          <div className="flex gap-2 items-center">
-                            <Location
-                              color="#666666"
-                              width="14px"
-                              height="14px"
-                            />
-                            <Text color="secondary" variant="noMargin">{`${
-                              cityName ?? ""
-                            }, ${countryName ?? ""}`}</Text>
-                          </div>
-                        )}
                       </div>
-                    </div>
-                  );
-                })()
+                    )}
+                  </div>
+                </div>
               ) : (
                 <p className="text-[#666666] text-sm flex items-center gap-2">
                   <CircleSlash width={15} height={15} />
@@ -589,7 +631,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               } pb-1 overflow-x-hidden`}
             >
               {eventPOCDetails && eventPOCDetails.length > 0 ? (
-                eventPOCDetails.map((poc: GTMEventPOCDetails | null) => {
+                eventPOCDetails.map((poc: EventPOCDetails | null) => {
                   if (!poc) {
                     return <></>;
                   }
@@ -608,9 +650,9 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                         src={
                           profilePicture
                             ? profilePicture
-                            : `https://img.10times.com/userimages/${name
-                                .charAt(0)
-                                .toLowerCase()}.jpg`
+                            : `https://img.10times.com/userimages/${
+                                name || "".charAt(0).toLowerCase()
+                              }.jpg`
                         }
                         alt="POC Logo"
                         className="rounded-lg shadow-md h-10 w-10"
@@ -645,11 +687,17 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                         {(email || phoneNumber) && (
                           <div>
                             <ButtonUI
-                              disabled={(state && (state === 1 || state === 2) ) ? true : false}
-                              onClick={()=>unlockPoc(id)}
-                              variant={'outline'}
+                              disabled={
+                                state && (state === 1 || state === 2)
+                                  ? true
+                                  : false
+                              }
+                              onClick={() => unlockPoc(id)}
+                              variant={"outline"}
                               size={"sm"}
-                            >Show details</ButtonUI>
+                            >
+                              Show details
+                            </ButtonUI>
                           </div>
                         )}
                       </div>
@@ -682,35 +730,21 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         <ul className="flex flex-row gap-12 justify-between mb-4 z-10 bg-white dark:bg-[var(--heading-background-color)] shadow-md pt-3 items-end w-full">
           <div className="flex gap-12">
             {tabs
-              .filter((tab) => !(tab.path === "insights" && !isValid))
+              .filter((tab) => tab.isVisible)
               .map((tab) => (
-                <div
+                <li
                   key={tab.tabName}
                   onClick={() => {
                     handleScrollTo(tab.path);
                   }}
-                  className={`relative font-semibold cursor-pointer pb-3 ${
+                  className={`relative pb-2 font-semibold cursor-pointer ${
                     activeTab === tab.path
                       ? "text-[var(--primary-color)] border-b-2 border-b-[var(--primary-color)]"
                       : "text-[var(--tertiary-text-color)]"
                   }`}
                 >
                   {tab.tabName}
-                  {/* {tab.tabName === "Insights" && (
-                    <div className="absolute -top-1 -right-16 w-fit">
-                      <span className="bg-[#FEECF2] py-2 px-3 rounded-full text-sm text-[#DF2670] relative ml-2">
-                        NEW
-                        <Image
-                          className="absolute -right-[7px] -top-[7px]"
-                          width={20}
-                          height={20}
-                          src={Star}
-                          alt="Star"
-                        />
-                      </span>
-                    </div>
-                  )} */}
-                </div>
+                </li>
               ))}
           </div>
           {/* <div className="flex gap-4 pb-2 pr-2">
@@ -732,28 +766,34 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         <section className="flex flex-col gap-6 pb-6 h-[calc(100vh-180px)] mt-5 w-full pr-4 overflow-y-auto scroll-smooth">
           <EventInfoAndMap
-            eventDetails={eventDetails}
+            eventDetails={basic}
             scrollSection={tabs[0].path}
             setActiveTab={setActiveTab}
           />
           <hr className="h-[1px] border-t-1 bg-[#f2f2f2]" />
           <AdvancedDetails
-            eventDetails={eventDetails}
+            eventDetails={advance}
             eventEditionData={eventEditionData}
             eventId={params.eventId}
           />
-          <InsightsAndScores
-            eventDetails={eventDetails}
-            scrollSection={tabs[1].path}
-            setActiveTab={setActiveTab}
-          />
-          <AudienceIntel
-            eventDetails={eventDetails}
-            eventExhibitorData={eventExhibitorData}
-            eventSpeakerData={eventSpeakerData}
-            scrollSection={tabs[2].path}
-            setActiveTab={setActiveTab}
-          />
+          {isInsightVisible && (
+            <InsightsAndScores
+              eventDetails={eventData}
+              eventRankingDetails={eventRankingDetails}
+              scrollSection={tabs[1].path}
+              setActiveTab={setActiveTab}
+            />
+          )}
+          {isAudienceVisible && (
+            <AudienceIntel
+              eventDetails={eventData}
+              eventExhibitorData={eventExhibitorData}
+              eventSpeakerData={eventSpeakerData}
+              eventSponsorData={eventSponsorData}
+              scrollSection={tabs[2].path}
+              setActiveTab={setActiveTab}
+            />
+          )}
         </section>
         {/* <section className="flex flex-col flex-1 h-full right-0  overflow-y-hidden"></section> */}
       </div>

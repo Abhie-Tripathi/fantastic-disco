@@ -341,7 +341,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const signUpActions = async (redirectTo: string | undefined) => {
     localStorage.removeItem("walkthroughCompleted");
     const restrictedData: any = await eventService.fetchEnabledFilters(
-      "research"
+      "filter"
     );
     const restrictedUrl = getRestrictedUrl(redirectTo || "", restrictedData);
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
