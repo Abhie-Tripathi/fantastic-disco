@@ -99,7 +99,7 @@ export const EventInfoAndMap = ({
     // tickets,
     entryType,
     website,
-  } = eventDetails;
+  } = eventDetails || {};
 
   const filteredTags = tags;
 
@@ -127,11 +127,11 @@ export const EventInfoAndMap = ({
         : null;
 
     const locationIds =
-      (format === "offline" || format === "hybrid") && venueLocation
-        ? venueLocation.country.id ||
-          venueLocation.state.id ||
-          venueLocation.city.id ||
-          venueLocation.venue.id ||
+      (format === "offline" || format === "hybrid") && eventLocation
+        ? eventLocation?.country?.id ||
+          eventLocation?.state?.id ||
+          eventLocation?.city?.id ||
+          eventLocation?.venue?.id ||
           null
         : null;
 
