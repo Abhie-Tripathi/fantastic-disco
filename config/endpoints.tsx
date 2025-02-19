@@ -53,7 +53,7 @@ export const endpoints = {
   locations: `${BASE_URL}/location/country`,
   locationSuggestion: `${BASE_URL_NEW}/suggestions/locations`,
   designations: `${BASE_URL}/designation`,
-  users: `${BASE_URL}/auth/users`,
+  users: `${BASE_URL}/me/account/users`,
   trends: {
     eventTrends: `${BASE_URL}/trend`,
     predictedAttendance: `${BASE_URL}/trends/predicted-attendance`,

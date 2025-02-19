@@ -226,9 +226,8 @@ export const AddComment = ({
         const lastAtIndex = note.lastIndexOf("@");
         if(alluser[focusedIndex]){
       newNote = note.substring(0, lastAtIndex + 1)  + alluser[focusedIndex].substring(1) + " ";
-      const selectedUser = apiUserData?.find((user:any) => `${user.firstname}${user.lastname}` ===  alluser[focusedIndex].substring(1));
+      const selectedUser = apiUserData?.find((user:any) => `${user.name}` ===  alluser[focusedIndex].substring(1));
         console.log(selectedUser);
-        
        setSuggest(selectedUser?.id);
         }else newNote=note
       if(note.includes("wants to recommend")){
@@ -335,7 +334,7 @@ export const AddComment = ({
         setNote((prevNote) => prevNote.replace(/@\w*$/, `${name} `));
         showTypes(false);
         setShowUser(false);
-        const selectedUser = apiUserData?.find((user:any) => `@${user.firstname}${user.lastname}` === name);
+        const selectedUser = apiUserData?.find((user:any) => `@${user.name}` === name);
         console.log(apiUserData);
         
        setSuggest(selectedUser?.id);
@@ -353,8 +352,7 @@ export const AddComment = ({
   const handleSelectAttend = () => {
     setNote(
       "@" +
-        userDetail?.firstname +
-        userDetail?.lastname.toLowerCase() +
+        userDetail?.name  +
         " wants to #Attend"
     );
     setType("INTEREST");
@@ -365,8 +363,7 @@ export const AddComment = ({
     // setNote(note.substring(0,note.length-6)+"@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to #Speak");
     setNote(
       "@" +
-        userDetail?.firstname +
-        userDetail?.lastname.toLowerCase() +
+        userDetail?.name  +
         " wants to #Speak"
     );
     setType("INTEREST");

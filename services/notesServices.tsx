@@ -21,7 +21,7 @@ export const useNotesServices =() =>{
       }
       const deleteNotes=(id:string)=>{
         return api.request(
-          `${endpoints.tracker.saveNotes}/${id}/upvote`,
+          `${endpoints.tracker.saveNotes}/${id}`,
           {
             method: "DELETE"
           }

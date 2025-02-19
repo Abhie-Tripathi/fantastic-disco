@@ -28,6 +28,7 @@ import { GAEvent } from "@/utils/GAEvent";
 interface UserDetail {
   firstname: string;
   email: string;
+  name: string;
   lastname: string;
 }
 interface Props {
@@ -49,7 +50,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
   const { theme } = useTheme();
   const urlPath = usePathname().split('/')[2]
   const pageSource = urlPath.charAt(0).toUpperCase() + urlPath.slice(1);
-  const {getNotesFromTracker, saveNotes, deleteNotes, likeNotes, getUsers, error}=useNotesServices();
+  const {getNotesFromTracker, saveNotes, deleteNotes, likeNotes, getUsers, error, getCoordinateNotes}=useNotesServices();
   const path=usePathname().split('/');
   const { user, signOut } = useAuthContext();
   // const searchParams = useSearchParams();
@@ -132,23 +133,20 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
         
       }
     }else{
-    const url =
-      `${baseUrl}/comment?eventId=${eventId}&stage=${stage}&offset=${page}&limit=10`;
-
-    const { data, error } = await myFetch(url);
-    
-      // setNotes([]);
-
-      console.log(data);
-      // setNotes(data.comments.reverse());
-      if (data?.comments?.length > 0){
-        setZeroState(false);
-        setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
+      try{
+        const data = await getCoordinateNotes(enquiryId, `offset=${page}&limit=10`, path[2]);
+        if (data && data.comments) {
+          if (data.comments && data.comments?.length > 0){
+            setZeroState(false);
+            setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
+          }
+          if(data.comments.length===0&& page===0){
+            setZeroState(true);
+          }
         }
-        if(data.comments.length===0 && page===0){
-          setZeroState(true);
-        }
-    // else setNotes(CommentsData );
+      }catch(error){
+        console.log(error);
+      }
   }
   }
   
@@ -288,25 +286,20 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
       }else
       {
         const dataToSend = {
-        "eventId": eventId,
-        "stage": stage,
-        "type": type,
-        "content": note,
-        "source": "GTM",
-        "entityType":"ENQUIRY",
-        ...(enquiryId && {
-          "entityId": enquiryId
-        }),
-        ...(type !== 'TEXT' && { "interestType": interestType }),
-        ...(type === "RECOMMEND" && {
-          "recommendUserId": suggest
-        }),
-        ...(replyId !== null && {
-          "parentCommentId": replyId
-        })
-      };
-      postNote(dataToSend);
-    }
+          "commentType": type,
+          "content": note,
+          "sourceModule": stage,
+          "sourceId": enquiryId,
+          ...(replyId !== null && {
+            "parentCommentId": replyId
+          }),
+          ...(type !== 'TEXT' && { "interest": interestType }),
+          ...(type === "RECOMMEND" && {
+            "interestedUserId": suggest
+          }),
+        };
+        postNote(dataToSend);
+      }
       // console.log(dataToSend.files);
 
       // setNotes(updatedNotes);
@@ -348,17 +341,12 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
     });
     try{
         const data = await saveNotes(formData, replyId);
-        console.log(data);
-        
         if (data) {
-          console.log(11111);
-          
-          // if (replyId) {
-          //   GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Reply`);
-          // } else
-          //   GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Message Send`);
+          if (replyId) {
+            GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Reply`);
+          } else
+            GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Message Send`);
             // const newData = transformData(data);
-            console.log(data);
             
             setNotes(prevNotes => [...prevNotes, data]);
             createRealtimeAction('add', data.data.id);
@@ -372,8 +360,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
     setType("TEXT")
   }
   const transformData = (data: any) => {
-    console.log(data);
-    
+
     const transformedCommentFiles = data.CommentFiles.map((file: any) => ({
       ...file,
       Attachment: [file.Attachment],
@@ -706,10 +693,10 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
     // }
     try{
       const result= await getUsers('limit=100')
-      console.log(result?.users);
+      console.log(result);
       if(result){
-      setUsers(result?.users);
-      const newItems = result?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
+      setUsers(result);
+      const newItems = result?.map((item: UserDetail) => "@" + item.name);
       setUserArr(prevArr => [...prevArr, ...newItems]);
       }else{
         console.log(error);
@@ -905,7 +892,6 @@ const Comment = ({
 
   useEffect(() => {
     setUserDetail(user);
-    
   }, [user]);
   const d = `@${userDetail?.firstname}${userDetail?.lastname?.toLowerCase()}`;
   const handleReply = (id: string) => {
@@ -937,7 +923,6 @@ const Comment = ({
     console.log(comment?.CommentFiles);
   }, 5000)
 
-console.log(comment.parentComment);
 
   const { theme } = useTheme();
   return (

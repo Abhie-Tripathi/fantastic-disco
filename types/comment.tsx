@@ -15,7 +15,11 @@ export interface Comment {
   _count:{
     Commentlikes:number;
   }
-  parentCommentId?:any,
+  userUpvoted:boolean,
+  totalLikes:number;
+  commentType:string;
+  parentComment?:Comment,
+  parentCommentId?:string,
   upvote:number;
   isLiked?:boolean;
   likes:number;
