@@ -271,7 +271,7 @@ const NewSignUpForm = () => {
           By signing up, you agree to our
           <Link
             target="_blank"
-            href={"https://10times.com/terms-of-service"}
+            href={"https://whr.ai/terms-of-service"}
             className="text-[#6750a4] font-medium ml-1"
           >
             Terms{" "}
@@ -279,7 +279,7 @@ const NewSignUpForm = () => {
           and
           <Link
             target="_blank"
-            href={"https://10times.com/privacy-policy"}
+            href={"https://whr.ai/privacy-policy"}
             className="text-[#6750a4] font-medium ml-1"
           >
             Privacy Policy
