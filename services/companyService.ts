@@ -14,11 +14,12 @@ interface fnProp {
 
 interface CompanyListResponse {
   totalCount: number;
-  data: any[];
+  companyData?: any[];
+  userData?: any[];
 }
 
 export const useCompanyService = () => {
-  const api = useApi<CompanyListResponse | undefined | any>();
+  const api = useApi<CompanyListResponse | undefined>();
 
   const getCompanyList = (searchParamsString: string) => {
     const params = new URLSearchParams(searchParamsString);

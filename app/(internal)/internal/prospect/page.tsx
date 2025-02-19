@@ -36,7 +36,8 @@ import { useFilterState } from "@/hooks/useFilterState";
 
 interface CompanyListResponse {
   totalCount: number;
-  data: any[];
+  companyData?: any[];
+  userData?: any[];
 }
 
 interface ProspectFilters {
@@ -155,15 +156,15 @@ const Prospect = () => {
     data: companyData,
     error,
     isLoading,
-  } = useQuery<CompanyListResponse | undefined | any>({
+  } = useQuery<CompanyListResponse | undefined>({
     queryKey: ["prospect", searchParams.toString()],
     queryFn: () => companyService.getCompanyList(searchParams.toString()),
     // enabled:
     //   !!searchParams.toString() &&
     //   !(Array.from(searchParams.values()).length == 0),
     refetchOnWindowFocus: false,
-    gcTime: 120000,
-    staleTime: 120000,
+    gcTime: 0,
+    staleTime: 0,
   });
 
   const companies = companyData?.companyData || [];
