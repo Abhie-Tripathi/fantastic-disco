@@ -200,6 +200,7 @@ const PeopleCardNew = ({
                 <Badge
                   variant="secondary"
                   className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                  key={index}
                 >
                   {item.key}
                 </Badge>
