@@ -247,7 +247,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
                 }
             }
 
-            formData.append("sourceId", widgetId)
+            // formData.append("sourceId", widgetId)
 
             // remove
             // const { data, error } = await myFetch(`${baseUrl}/event`, {
@@ -455,7 +455,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
 
         // formData.append("interest", participationType.toUpperCase())
         // formData.append("source", "eventgeni/widget/event")
-        formData.append("sourceId", widgetId)
+        // formData.append("sourceId", widgetId)
 
         // const { data, error } = await myFetch(`${baseUrl}/event`, {
         //     method: 'POST',
@@ -590,7 +590,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
         formData.append("id", eventId);
         formData.append("name", eventState.eventName);
         formData.append("data", JSON.stringify(eventData));
-        formData.append("sourceId", widgetId);
+        // formData.append("sourceId", widgetId);
         formData.append("maxCapacity", eventState?.capacity + "")
 
         // Check if the banner has been updated

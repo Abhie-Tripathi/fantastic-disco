@@ -33,7 +33,7 @@ export const useEventServices = () => {
 
   const getEventByPublicAPI = async (eventId: string) => {
     return api.request(
-      `${endpoints.events.getEventByPublicAPI}/${eventId}/event`
+      `${endpoints.events.getEventByPublicAPI}/${eventId}`
     );
   };
 

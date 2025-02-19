@@ -1,4 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "";
+const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
 
 export const endpoints = {
   //   auth: {
@@ -69,8 +70,8 @@ export const endpoints = {
   },
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {
-    getKit: `${BASE_URL}/kit`,
-    create: `${BASE_URL}/kit`,
+    getKit: `${BASE_URL_NEW}/kit`,
+    create: `${BASE_URL_NEW}/kit`,
   },
   widget: {
     draftWidget: `${BASE_URL}/widget`,
@@ -82,12 +83,12 @@ export const endpoints = {
   },
   events: {
     getEvents: `${BASE_URL}/event?limit=2`,
-    getEventsByWidgetId: `${BASE_URL}/event`,
-    getSortedEvents: `${BASE_URL}/event`,
-    getEventById: `${BASE_URL}/event`,
-    getEventByPublicAPI: `${BASE_URL}/public/widget`,
+    getEventsByWidgetId: `${BASE_URL_NEW}/promot-event`,
+    getSortedEvents: `${BASE_URL_NEW}/promot-event`,
+    getEventById: `${BASE_URL_NEW}/promot-event`,
+    getEventByPublicAPI: `${BASE_URL_NEW}/public/event`,
     deleteEvent: `${BASE_URL}/event`,
-    addEvent: `${BASE_URL}/event`,
+    addEvent: `${BASE_URL_NEW}/promot-event`,
     addSpeakers: `${BASE_URL}/event/speaker`,
     addExhibitors: `${BASE_URL}/event/speaker`,
     updateEvent: `${BASE_URL}/event`,

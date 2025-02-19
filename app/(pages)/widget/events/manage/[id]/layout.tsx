@@ -74,7 +74,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             }
             const eventData = data?.data;
             // if (!eventData) return null;
-            console.log("fetchedd", data)
             const eventObject: EventsType = {
                 eventId: eventId, // Use eventId from the URL param
                 name: data?.name || "",

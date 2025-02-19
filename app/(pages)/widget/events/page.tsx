@@ -488,14 +488,14 @@ const Page = () => {
     try {
       const data: any = await getUpcomingEvents(page);
       if (data) {
-        const transformedEvents = data.data.map((event: any) => ({
+        const transformedEvents = data.map((event: any) => ({
           mainEvent: {
             eventId: event.id,
             name: event.name,
             cityName: event.data.location_city,
             countryName: event.data.location_country,
             startDate: event.data.start_date,
-            logoUrl: event.data.logoUrl,
+            // logoUrl: event.data.logoUrl,
             endDate: event.data.end_date,
             startTime: event.data.start_time,
             endTime: event.data.end_time,
@@ -584,7 +584,7 @@ const Page = () => {
     try {
       const data: any = await getPastEvents(page);
       if (data) {
-        const transformedEvents = data.data.map((event: any) => ({
+        const transformedEvents = data.map((event: any) => ({
           mainEvent: {
             eventId: event.id,
             name: event.name,
