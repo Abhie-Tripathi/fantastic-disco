@@ -78,7 +78,7 @@ export const endpoints = {
     iterestedUsers: `${BASE_URL}/userInterest`,
     enquiryDetail: `${BASE_URL}/enquiries`,
     pocUnmask: `${BASE_URL}/event-poc/unmask`,
-    latestComment: `${BASE_URL}/dashboard/latest-comment`,
+    latestComment: `${BASE_URL}/me/account/latest-comment`,
     createIntent: `${BASE_URL}/intents/user-event-interest`,
     eventDetail: `${BASE_URL}/events`,
   },
@@ -112,7 +112,7 @@ export const endpoints = {
   events: {
     getEvents: `${BASE_URL}/event?limit=2`,
     getEventsByWidgetId: `${BASE_URL}/event`,
-    getSortedEvents: `${BASE_URL}/event`,
+    getSortedEvents: `${BASE_URL}/promot-event`,
     getEventById: `${BASE_URL}/event`,
     getEventByPublicAPI: `${BASE_URL}/public/widget`,
     deleteEvent: `${BASE_URL}/event`,
@@ -139,5 +139,5 @@ export const endpoints = {
     interestConfiguration: `${BASE_URL}/me/account/configuration/interest`,
     outreachConfiguration: `${BASE_URL}/me/account/configuration/outreach`,
   },
-  myprofile: `${BASE_URL}/auth/customer/profile`,
+  myprofile: `${BASE_URL}/me`,
 };
