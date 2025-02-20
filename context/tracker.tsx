@@ -8,9 +8,9 @@ type trackerType = {
   };
   const trackerValues: any = {
   };
-  interface Data {
-    tracker: Tracker;
-  }
+  // interface Data {
+  //   tracker: Tracker;
+  // }
 export const TrackerContext = createContext<any>(
     trackerValues
   );
@@ -19,7 +19,7 @@ export const TrackerContext = createContext<any>(
     const {getTrackerDetail, error, isLoading}=useTrackerServices();
     const {getFilterValue}=useFilterState();
     const [savedEventCount, setSavedEventCount]=useState(0);
-    const [data,setData]=useState<Data | null>();
+    const [data,setData]=useState<Tracker | null>();
     const pathName = usePathname().split('/');
     const [isNewCall,setIsNewCall]=useState(false);
     const [editTrue, setEditTrue]=useState(false);
@@ -46,8 +46,10 @@ export const TrackerContext = createContext<any>(
         console.log(trackerId);
         const data = await getTrackerDetail(trackerId);
         if (data) {
+          console.log(data);
+          
           setData(data);
-          setSavedEventCount(data.tracker.savedEventsCount || 0)
+          setSavedEventCount(data.savedEventsCount || 0)
           console.log(data);
           setIsNewCall(false);
           setEditTrue(false);
