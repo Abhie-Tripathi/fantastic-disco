@@ -40,8 +40,10 @@ export function ActionPopover({
     error,
   } = useConfiguration.interest();
   const{savedEventCount, setSavedEventCount} = useTrackerContext();
-  const { createUserEventInterest, isLoading: isSubmitting } =
+  const { createUserEventInterest, isLoading: isSubmitting} =
     useIntent.createUserEventInterest();
+  const { deleteUserEventInterest, isLoading: isSubmitting1} =
+    useIntent.deleteUserEventInterest();
   const [selectedAction, setSelectedAction] = useState<string>();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -49,37 +51,68 @@ export function ActionPopover({
 
   const handleSubmit = () => {
     if (selectedAction) {
-      createUserEventInterest(
-        {
-          eventId,
-          interest: selectedAction,
-          sourceModule: trackerId?"TRACKER":"RESEARCH",
-          ...(trackerId && { sourceId: trackerId }),
-        },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: trackerId });
-            console.log("onsuccess called");
-            setSavedEventCount(savedEventCount+1);
-            onSubmit(selectedAction);
-            setIsOpen(false);
-            setSelectedAction(undefined);
-            toast({
-              title: "Success",
-              description: "Your interest has been recorded",
-              variant: "default",
-            });
-          },
-          onError: (error) => {
-            toast({
-              title: "Error",
-              description: "Failed to record your interest. Please try again.",
-              variant: "destructive",
-            });
-          },
-        }
+      console.log(interests?.[selectedAction.toLowerCase()]);
+      
+      if (!interests?.[selectedAction.toLowerCase()]) {
+          // Create user event interest
+          createUserEventInterest(
+              {
+                  eventId,
+                  interest: selectedAction,
+                  sourceModule: trackerId ? "TRACKER" : "RESEARCH",
+                  ...(trackerId && { sourceId: trackerId }),
+              },
+              {
+                  onSuccess: () => {
+                      queryClient.invalidateQueries({ queryKey: trackerId });
+                      console.log("onsuccess called");
+                      setSavedEventCount(savedEventCount + 1);
+                      onSubmit(selectedAction);
+                      setIsOpen(false);
+                      setSelectedAction(undefined);
+                      toast({
+                          title: "Success",
+                          description: "Your interest has been recorded",
+                          variant: "default",
+                      });
+                  },
+                  onError: (error) => {
+                      toast({
+                          title: "Error",
+                          description: "Failed to record your interest. Please try again.",
+                          variant: "destructive",
+                      });
+                  },
+              }
+          );
+      } else {
+          // Delete user event interest
+          deleteUserEventInterest(interests?.[selectedAction.toLowerCase()]?.interestId ,
+          {
+              onSuccess: () => {
+                  queryClient.invalidateQueries({ queryKey: trackerId });
+                  console.log("onsuccess called");
+                  setSavedEventCount(savedEventCount + 1);
+                  onSubmit(selectedAction);
+                  setIsOpen(false);
+                  setSelectedAction(undefined);
+                  toast({
+                      title: "Success",
+                      description: "Your interest has been recorded",
+                      variant: "default",
+                  });
+              },
+              onError: (error) => {
+                  toast({
+                      title: "Error",
+                      description: "Failed to record your interest. Please try again.",
+                      variant: "destructive",
+                  });
+              },
+          }
       );
-    }
+      }
+  }
   };
 
   const isSaved =
@@ -96,7 +129,8 @@ export function ActionPopover({
   if (isConfigLoading) {
     return <Skeleton className="w-4 h-4" />;
   }
-
+  console.log(interests?.bookmark);
+  
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>

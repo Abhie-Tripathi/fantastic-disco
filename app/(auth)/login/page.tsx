@@ -43,7 +43,7 @@ export default function Page({ searchParams }) {
         const setCookieHeader = response.headers.get("Set-Cookie");
       console.log("Set-Cookie Header:", setCookieHeader);
         // Redirect using Next.js router
-        // router.push("/internal/trackers?tab=allTrackers&skip=0");
+        router.push("/internal/trackers?tab=allTrackers&skip=0");
       }
 
       setData(result);

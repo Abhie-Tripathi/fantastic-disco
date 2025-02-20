@@ -76,7 +76,7 @@ const Page = () => {
         queryKey: ["accessData", trackerId], // Ensure unique caching per tracker
         queryFn: () => getShareAccess(trackerId, "tracker"),
         enabled: !!trackerId, // Prevents the query from running if trackerId is undefined
-        staleTime: 1000 * 60 * 5,
+        // staleTime: 1000 * 60 * 5,
       });
     const closeShareModal = () => {
       if(share===true)
@@ -187,10 +187,10 @@ const Page = () => {
             {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px] z-3'></div> */}
                 <div className="flex w-[40%] h-fit">
                     {/* <TrackerOwner adminData={userAccessData?.access?.admin}/> */}
-                    <TrackerUser userData={userAccessData?.other} type="admins" heading="Tracker Owners"/>
+                    <TrackerUser userData={userAccessData?.superAdmin} type="admins" heading="Tracker Owners"/>
                 </div>
                 <div className="flex w-[60%]">
-                <TrackerUser userData={userAccessData?.superAdmin} type="others" heading="Tracker Users"/>
+                <TrackerUser userData={userAccessData?.others} type="others" heading="Tracker Users"/>
                 </div>
             </div>
             {share && (

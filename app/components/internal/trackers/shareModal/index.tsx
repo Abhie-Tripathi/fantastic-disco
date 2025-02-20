@@ -96,7 +96,8 @@ const ShareModal: React.FC<ShareModalProps> = ({
             // };
             const formData={
                 accessReceiverEmail: filter,
-                accessType: "admin"
+                accessType: "admin",
+                redirectDomain: `http://localhost:3000`
             }
             console.log(formData);
             // if(id){

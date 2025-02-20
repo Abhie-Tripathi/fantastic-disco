@@ -14,7 +14,6 @@ export const useIntent = {
       mutationFn: (data: CreateUserEventInterest) => 
         intentService.createUserEventInterest(data),
     });
-
     return {
       createUserEventInterest: mutation.mutate,
       isLoading: mutation.isPending,
@@ -23,4 +22,18 @@ export const useIntent = {
       reset: mutation.reset,
     };
   },
+  deleteUserEventInterest:()=>{
+    const intentService = useIntentService();
+    const mutation = useMutation({
+      mutationFn: (id:string) => 
+        intentService.deleteUserEventInterest(id),
+    });
+    return {
+      deleteUserEventInterest: mutation.mutate,
+      isLoading: mutation.isPending,
+      error: mutation.error,
+      isSuccess: mutation.isSuccess,
+      reset: mutation.reset,
+    };
+  }
 };

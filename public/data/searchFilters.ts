@@ -442,7 +442,9 @@ export const searchFilters = {
 export const generateSearchFilters=(apiResponse: any)=> {
     // const  data  = apiResponse.filter.data;
     // console.log(apiResponse.filter.data);
-    const  data  = apiResponse;
+    const  data  = apiResponse.filter;
+    console.log(apiResponse.filter);
+    
     return {
       eventTypes: {
         isEnabled: data.eventType?.enabledValue?.length > 0 ?? true,

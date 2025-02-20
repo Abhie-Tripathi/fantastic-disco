@@ -14,8 +14,13 @@ export const useIntentService = () => {
       }
     );
   };
-
+  const deleteUserEventInterest = async (id: string) => {
+    return fetch(`${endpoints.intent.createUserEventInterest}/${id}`, {
+        method: "DELETE",
+    });
+};
   return {
     createUserEventInterest,
+    deleteUserEventInterest
   };
 };
