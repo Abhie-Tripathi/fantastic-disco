@@ -5,8 +5,8 @@ import styles from "./locationForm.module.css";
 import HeroLogoText from "/public/heroLogoText.svg";
 import SearchIcon from "/public/search.svg";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import {
-  Button,
   ComboBox,
   Input,
   Key,
@@ -44,6 +44,7 @@ import {
   GeoLocation as GEO_LOCATION,
   LocationItem as LOCATION_ITEM,
 } from "@/components/search/location";
+import { EventQuery } from "@/types/events/dto/event-query.dto";
 
 type GeoLocationType = "city" | "center" | "";
 interface PinPointLocation {
@@ -96,7 +97,7 @@ const LocationForm = () => {
   const searchParamsOnboarding = useSearchParams();
   const [loading, setLoading] = React.useState(false);
   const queryClient = useQueryClient();
-  const { saveLocation } = useLocationService();
+  // const { saveLocation } = useLocationService();
   const [useCurrentLocation, setUseCurrentLocation] = React.useState(false);
   const [currentCity, setCurrenCity] = React.useState<string>();
   const [locationType, setLocationType] = React.useState<GeoLocationType>("");
@@ -138,43 +139,45 @@ const LocationForm = () => {
 
   const { data: eventCount } = useQuery({
     queryKey: ["mapEventCount", searchParams],
-    queryFn: () => getEventsCount(searchParams ?? ""),
+    queryFn: () => getEventsCount((searchParams as EventQuery) ?? ""),
     enabled: locationType === "center",
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
   });
 
-  const saveLocationMutation = useMutation({
-    mutationFn: (values: SaveLocationDTO[]) => saveLocation(values),
-    onSuccess: () => {
-      router.push(`/search/events?${searchParams}`);
-      queryClient.invalidateQueries({ queryKey: ["locations"] });
-    },
-    onError: (error: any) => {
-      toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "There was a problem saving your location",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      });
-    },
-  });
+  console.log(eventCount)
 
-  useEffect(() => {
-    if (eventCount) {
-      if (Array.isArray(eventCount)) {
-        const count = eventCount.length;
-        console.log("EventCount array length:", count);
-      } else if ("count" in eventCount) {
-        const count = eventCount.count;
-        if (count === 0) {
-          console.log("count");
-          setRadius((prev) => prev + 30);
-        }
-      }
-    }
-  }, [eventCount]);
+  // const saveLocationMutation = useMutation({
+  //   mutationFn: (values: SaveLocationDTO[]) => saveLocation(values),
+  //   onSuccess: () => {
+  //     router.push(`/search/events?${searchParams}`);
+  //     queryClient.invalidateQueries({ queryKey: ["locations"] });
+  //   },
+  //   onError: (error: any) => {
+  //     toast({
+  //       variant: "destructive",
+  //       title: "Uh oh! Something went wrong.",
+  //       description: "There was a problem saving your location",
+  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //     });
+  //   },
+  // });
+
+  // useEffect(() => {
+  //   if (eventCount) {
+  //     if (Array.isArray(eventCount)) {
+  //       const count = eventCount.length;
+  //       console.log("EventCount array length:", count);
+  //     } else if ("count" in eventCount) {
+  //       const count = eventCount.count;
+  //       if (count === 0) {
+  //         console.log("count");
+  //         setRadius((prev) => prev + 30);
+  //       }
+  //     }
+  //   }
+  // }, [eventCount]);
 
   useEffect(() => {
     if (
@@ -313,7 +316,7 @@ const LocationForm = () => {
     if (locationType === "city") {
       setSelectedLocation([defaultLocation]);
       saveLastSearchedLocation([defaultLocation] as LOCATION_ITEM[]);
-      defaultLocation && saveLocationMutation.mutate(defaultSavedLocationDTO);
+      // defaultLocation && saveLocationMutation.mutate(defaultSavedLocationDTO);
       setDefaultParamsValue([defaultLocation]);
     } else {
       setLocation({ latitude: 40.7127281, longitude: -74.0060152 });
@@ -361,7 +364,7 @@ const LocationForm = () => {
             },
           ])
         : null;
-      savedLocationDTOData && saveLocationMutation.mutate(savedLocationDTOData);
+      // savedLocationDTOData && saveLocationMutation.mutate(savedLocationDTOData);
     }
   };
 
@@ -412,7 +415,7 @@ const LocationForm = () => {
 
   return (
     <div className={styles.container}>
-      <h3>Choose a location to get started !</h3>
+      {/* <h3>Choose a location to get started !</h3>
       <section className="w-96">
         <div className={styles.tab_container}>
           <button className={locationType == "city" ? styles.active : ""}>
@@ -515,10 +518,11 @@ const LocationForm = () => {
       </section>
 
       <Button
+        type="submit"
         className="w-80 self-center"
-        // disabled={loading}
+        disabled={loading}
         // loading={loading}
-        onPress={handleSubmit}
+        onClick={handleSubmit}
         // onSubmit={() => handleSubmit()}
       >
         View Location Insights
@@ -526,7 +530,7 @@ const LocationForm = () => {
 
       <p className={styles.skip_button} onClick={handleSkip}>
         Skip for now
-      </p>
+      </p> */}
     </div>
   );
 };
