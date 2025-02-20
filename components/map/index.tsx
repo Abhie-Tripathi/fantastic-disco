@@ -721,7 +721,7 @@ console.log(trackerLoc);
                     />
                   )}
 
-                  {/* <EventList
+                  <EventList
                     source={source}
                     trackerId={trackerId}
                     searchParam={searchParams}
@@ -730,7 +730,7 @@ console.log(trackerLoc);
                     mapRef={mapRef}
                     onEventHover={handleEventHover}
                     onEventLeave={handleEventLeave}
-                  /> */}
+                  />
 
                   <EventCountsLayer
                     eventCounts={eventCountsQuery.data || []}

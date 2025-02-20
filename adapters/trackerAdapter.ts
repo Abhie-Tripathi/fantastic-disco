@@ -32,10 +32,10 @@ interface OriginalResponse {
         eventImpactScore: null,
         latitude:
           item.basic.eventLocation
-          .city.latitude,
+          .venue.latitude,
         longitude:
         item.basic.eventLocation
-        .city.longitude,
+        .venue.longitude,
         eventType: determineEventType(item.basic.
           primaryEventType),
       }));

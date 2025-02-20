@@ -12,7 +12,7 @@ export interface Tracker {
       }
 
     }
-    savedEventsCount?:string;
+    savedEventsCount?:number;
   }
   type LocationObject = { [id: string]: string };
   export interface FilterValue {

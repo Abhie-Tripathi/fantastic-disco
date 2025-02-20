@@ -271,17 +271,21 @@ export const useTrackerServices = () => {
         );
         return response;
     }
-    const getEventsLatLongData = async (trackerId:string,searchParams:string, type:string) => {
+    const getEventsLatLongData = async (trackerId:string,searchParams:string, type:any) => {
       const params = new URLSearchParams(searchParams);
     // const adaptedParams = EventsAdapter.adaptRequestParams(params);
+    let active="active";
+      if(type.get("newEvent")) active="new";
+      else if(type.get("expiredEvent")) active="past";
+      else if(type.get("activeEvent")) active="active";
     
-    const response = await api.request(type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${type}`, {
+    const response = await api.request(type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${active}&view=map`, {
       method: "GET",
       params: params
     },true);
     console.log(response);
     
-    return  TrackersAdapter.adaptTrackerMapEventData(response)
+    return response;
     };
     const getCalendarViewEvents = async (trackerId:string, searchParams:string, isListing:boolean, viewType?:string)=>{
       // console.log(type);
