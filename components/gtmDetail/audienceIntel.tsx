@@ -96,9 +96,8 @@ export const AudienceIntel = ({
         (option.max === null || Number(maxExhibitorValue) <= option.max)
     );
 
-  const [minValue, maxValue] = (stats &&
-    stats.estimatedVisitor &&
-    stats.estimatedVisitor.split("-").map((v) => Number(v.trim()))) || [0, 0];
+  const [minValue, maxValue] = (estimatedAttendance &&
+    estimatedAttendance.split("-").map((v) => Number(v.trim()))) || [0, 0];
 
   const hasEstimatedVisitor =
     estimatedVisitors &&
@@ -176,15 +175,12 @@ export const AudienceIntel = ({
               </Tooltip>
             </TooltipProvider>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {stats.estimatedVisitor ? (
-                hasEstimatedVisitor ? (
-                  numberWithCommas(stats.estimatedVisitor)
+              {estimatedAttendance &&
+                (hasEstimatedVisitor ? (
+                  numberWithCommas(estimatedAttendance || "--")
                 ) : (
                   <Restriction />
-                )
-              ) : (
-                "--"
-              )}
+                ))}
             </p>
           </div>
           <div className="relative flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
@@ -208,15 +204,9 @@ export const AudienceIntel = ({
               </Tooltip>
             </TooltipProvider>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {stats.estimatedExhibitor ? (
-                isEstimatedExhibitorEnabled ? (
-                  stats.estimatedExhibitor
-                ) : (
-                  <Restriction />
-                )
-              ) : (
-                "--"
-              )}
+              {isEstimatedExhibitorEnabled && estimatedExhibitor
+                ? estimatedExhibitor ?? "--"
+                : "--"}
             </p>
           </div>
         </div>

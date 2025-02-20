@@ -11,6 +11,7 @@ export const endpoints = {
   //   },
 
   auth: {
+    me: `${BASE_URL}/me`,
     signUp: `${BASE_URL}/auth/sign-up`,
     signIn: `${BASE_URL}/auth/sign-in`,
     verifyOTP: `${BASE_URL}/auth/verify-otp`,

@@ -14,6 +14,7 @@ import { useConfigurationService } from "@/services/configurationService";
 
 export function useDefaultFilters() {
   const { user } = useAuthContext();
+  const now = new Date();
   const { getFilterConfiguration } = useConfigurationService();
   const { getFilterValue, searchParams } = useFilterState();
   const { setMultipleLocalFilters } = useFilterContext();
@@ -21,6 +22,17 @@ export function useDefaultFilters() {
   const router = useRouter();
   const { getLastSearchedLocation } = sessionService();
   const eventService = useEventsService();
+  const allowedEventTypes = ["tradeshows", "conferences", "workshops"];
+  const defaultTrendsParams = {
+    locationIds: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef", //New York, United States
+    active_gte: new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0)
+    ).toISOString(), // Starting date of current month going on.
+    active_lte: new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 0, 0, 0, 0)
+    ).toISOString(), // Ending date of current month going on.
+    eventTypes: allowedEventTypes, // All three tradeshows, conferences, workshops
+  };
 
   const mapEnabledFiltersToParams = (filters: any) => ({
     eventFormats: filters.eventFormat?.enabledValue?.join(",") ?? "",

@@ -1,8 +1,7 @@
-import NewSignUpForm from "@/components/auth/NewSignUpForm";
-// import SignUpForm from "@/components/auth/SignUpForm";
-import { BASE_URL } from "@/config";
+import GtmSignUpForm from "@/components/auth/Gtm/GtmSignUpForm";
+import TeliSignUpForm from "@/components/auth/Teli/TeliSignUpForm";
+import { isEventeli } from "@/config";
 
 export default function SignUpPage() {
-  const checkDev = BASE_URL?.includes("dev");
-  return <NewSignUpForm />;
+  return isEventeli ? <TeliSignUpForm /> : <GtmSignUpForm />;
 }

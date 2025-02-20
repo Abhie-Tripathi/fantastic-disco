@@ -1,7 +1,7 @@
 // "use client";
 
 // import React, { useMemo } from "react";
-// import { Event, GTMEventDetail } from "@/types/events/events";
+// import { Event } from "@/types/events/events";
 // import { useQuery } from "@tanstack/react-query";
 // import { useEventsService } from "@/services/eventsService";
 // import Text from "../new-ui/Text";
@@ -12,7 +12,7 @@
 // interface MapProps {
 //   startDate: string;
 //   endDate: string;
-//   event: GTMEventDetail;
+//   event: Event["basic"];
 // }
 
 // const EventsListView: React.FC<MapProps> = ({
@@ -26,12 +26,12 @@
 //     startDateTime,
 //     endDateTime,
 //     primaryEventType,
-//     venueLocation,
+//     eventLocation,
 //     categories,
 //     format: typeOfEvent,
 //   } = event;
 //   const eventId = id;
-//   const { getEventsWithSearchParams, getEventById } = useEventsService();
+//   const { getEventsWithSearchParams } = useEventsService();
 
 //   const iconUrls: Record<string, string> = {
 //     "performing-arts": "/eventType/arts.png",
@@ -45,13 +45,13 @@
 //   };
 
 //   const latitude =
-//     event.venueLocation?.venue?.latitude ??
-//     event.venueLocation?.city?.latitude ??
-//     event.venueLocation?.state?.latitude;
+//     eventLocation?.venue?.latitude ??
+//     eventLocation?.city?.latitude ??
+//     eventLocation?.state?.latitude;
 //   const longitude =
-//     event.venueLocation?.venue?.longitude ??
-//     event.venueLocation?.city?.longitude ??
-//     event.venueLocation?.state?.longitude;
+//     eventLocation?.venue?.longitude ??
+//     eventLocation?.city?.longitude ??
+//     eventLocation?.state?.longitude;
 
 //   const viewBound = {
 //     boundType: "point",
@@ -74,7 +74,7 @@
 //     searchParams.set("active_gte", new Date(startDate).toISOString());
 //     searchParams.set("view", "list");
 //     !latitude && !longitude
-//       ? searchParams.set("locationIds", venueLocation?.city.id || "")
+//       ? searchParams.set("locationIds", eventLocation?.city?.id || "")
 //       : searchParams.set("viewBound", viewBoundString);
 //     typeOfEvent &&
 //       (typeOfEvent === "online" || typeOfEvent === "hybrid") &&
@@ -113,7 +113,7 @@
 //                 format: typeOfEvent,
 //                 startDateTime,
 //                 endDateTime,
-//               } = event;
+//               } = event.basic || {};
 //               return (
 //                 <li
 //                   key={id}
@@ -155,6 +155,7 @@
 //       </div>
 //     );
 //   };
+//   console.log(eventsData.events);
 
 //   return (
 //     <ListView

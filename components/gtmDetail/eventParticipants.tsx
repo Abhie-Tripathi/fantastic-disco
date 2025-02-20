@@ -120,6 +120,8 @@ const ParticipantContainer = ({
       </div>
       <ul className="flex flex-col gap-2 items-center h-full">
         {count !== null && count > 0 ? (
+          participantData &&
+          participantData.length > 0 &&
           participantData
             .slice(0, count)
             .map((participant: EventParticipantsDetails, index: number) => (

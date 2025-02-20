@@ -32,8 +32,8 @@
 //   const [isLoading, setIsLoading] = useState(false);
 //   const router = useRouter();
 //   const searchParams = useSearchParams();
-//   const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
-//   const { getLocalFilterValue } = useFilterContext();
+//   // const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
+//   const { getLocalFilterValue} = useFilterContext();
 //   const validateName = (name: string) => {
 //     if (name.trim().length === 0) {
 //       return "Tracker name cannot be empty";
@@ -49,10 +49,7 @@
 //     setTrackerName(newName);
 //     setError(validateName(newName));
 //   };
-// <<<<<<< HEAD
 //   const adaptedParams = searchParams;
-// =======
-// >>>>>>> 7a8f5f2c54d5f0db59d37ce43149320be4f074a8
 //   const saveTrackerHandler = async () => {
 //     const validationError = validateName(trackerName);
 //     if (validationError) {

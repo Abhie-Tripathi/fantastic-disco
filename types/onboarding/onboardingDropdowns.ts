@@ -9,6 +9,16 @@ export interface Industry {
   subCategory: boolean;
 }
 
+export interface TeliIndustry {
+  name: string;
+  slug: string;
+  image?: StaticImageData;
+  radius?: number;
+  unit?: "miles" | "kilometers";
+  type: "center" | "city";
+  subIndustries?: SubIndustry[];
+}
+
 export interface OnboardingSelection {
   email: string;
   industry: Industry;
@@ -42,4 +52,4 @@ export interface SettingsInterestData {
   source: string;
 }
 
-export interface SubIndustry extends Omit<Industry, "subIndustries"> {}
+export interface SubIndustry extends Omit<TeliIndustry, "subIndustries"> {}
