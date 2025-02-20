@@ -53,7 +53,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
             <div className="font-medium text-foreground ">Event Rating</div>
           </TableHead>
         )}
-        {show.includes(Show.trustScore) && (
+        {show.includes(Show.rankings) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Trust</div>
           </TableHead>

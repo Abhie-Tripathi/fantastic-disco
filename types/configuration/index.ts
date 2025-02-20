@@ -23,7 +23,10 @@ const OutreachSchema = z.object({
   status: z.string(),
 });
 
-const FilterConfigurationSchema = z.record(z.string(), z.any());
+const FilterConfigurationSchema = z.object({
+  data: z.record(z.string(), z.any()),
+  source: z.string(),
+});
 
 export const AccountConfigSchema = z.strictObject({
   interest: InterestSchema,

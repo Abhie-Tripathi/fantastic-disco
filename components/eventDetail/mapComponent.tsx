@@ -183,11 +183,11 @@ export default function EventDetailMapComponent({ searchParams }: MapProps) {
 
           const viewBound = {
             boundType: "point",
-            coordinates: JSON.stringify({
+            coordinates: {
               latitude: center.lat,
               longitude: center.lng,
               radius: radius,
-            }),
+            },
           };
 
           try {

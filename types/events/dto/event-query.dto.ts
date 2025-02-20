@@ -187,20 +187,8 @@ export const viewBound = z
   });
 
 export const QueryFilter = z.object({
-  eventIds: z
-    .string()
-    .transform((data) => {
-      return data?.split(",").map((item) => item.trim());
-    })
-    .optional(),
-  query: z
-    .string()
-    .transform((data) => {
-      if (!data) return undefined;
-
-      return data;
-    })
-    .optional(),
+  eventIds: z.string().optional(),
+  query: z.string().optional(),
   locationIds: z
     .string()
     .transform((data) => {

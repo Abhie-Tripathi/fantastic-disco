@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { BaseURL } from "@/config";
+import { BASE_URL } from "@/config";
 import { myFetch } from "@/utils/myFetch";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
@@ -33,7 +33,6 @@ export default function CreateTrackerDialog({
   const router = useRouter();
   const searchParams = useSearchParams();
   // const adaptedParams = EventsAdapter.adaptRequestParams(searchParams);
-  const adaptedParams = searchParams;
   const { getLocalFilterValue} = useFilterContext();
   const validateName = (name: string) => {
     if (name.trim().length === 0) {
@@ -50,6 +49,7 @@ export default function CreateTrackerDialog({
     setTrackerName(newName);
     setError(validateName(newName));
   };
+  const adaptedParams = searchParams;
   const saveTrackerHandler = async () => {
     const validationError = validateName(trackerName);
     if (validationError) {

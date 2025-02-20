@@ -55,11 +55,11 @@ const EventsListView: React.FC<MapProps> = ({
 
   const viewBound = {
     boundType: "point",
-    coordinates: JSON.stringify({
+    coordinates: {
       latitude: Number(latitude),
       longitude: Number(longitude),
       radius: 10,
-    }),
+    },
   };
   const viewBoundString = JSON.stringify(viewBound);
 

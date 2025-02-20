@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 "use client";
 
 import React, {
@@ -15,7 +17,7 @@ import ReactMapGL, {
   ViewState,
   MapLayerMouseEvent,
 } from "react-map-gl";
-import { MapboxToken } from "@/config";
+import { isEventeli, MapboxToken } from "@/config";
 import { Button } from "@/components/ui/button";
 import { AlignLeft } from "lucide-react";
 import EventList from "./event-list";
@@ -225,9 +227,9 @@ export default function MapComponent({
         case "unclustered-events-multiple":
           const eventIds = JSON.parse(clickedFeature.properties.eventIds);
           const multipleEventDetails = await Promise.all(
-            eventIds.map((id: string) =>
+            eventIds.map((id: any) =>
               getEvents({
-                eventIds: [id],
+                eventIds: id,
               }).then((data) => data?.events[0])
             )
           );
@@ -709,7 +711,7 @@ export default function MapComponent({
                       </Label>
                     </div>
                   )}
-                  {selectedAlert && (
+                  {isEventeli && (
                     <Alerts
                       selectedAlert={selectedAlert}
                       setSelectedAlert={setSelectedAlert}
@@ -741,7 +743,12 @@ export default function MapComponent({
                     />
                   )}
 
-                  <AlertPolygonLayer eventId={selectedAlert} mapRef={mapRef} />
+                  {isEventeli && (
+                    <AlertPolygonLayer
+                      eventId={selectedAlert}
+                      mapRef={mapRef}
+                    />
+                  )}
 
                   {circleLayer && (
                     <Source

@@ -33,7 +33,19 @@ export function ActionPopover({ eventId, interests }: ActionPopoverProps) {
   } = useConfiguration.interest();
   const { createUserEventInterest, isLoading: isSubmitting } =
     useIntent.createUserEventInterest();
-  const [selectedAction, setSelectedAction] = useState<string>();
+  const [selectedAction, setSelectedAction] = useState<string | undefined>(
+    interests?.bookmark
+      ? "BOOKMARK"
+      : interests?.speak
+      ? "SPEAK"
+      : interests?.sponsor
+      ? "SPONSOR"
+      : interests?.attend
+      ? "ATTEND"
+      : interests?.exhibit
+      ? "EXHIBIT"
+      : undefined
+  );
   const [isOpen, setIsOpen] = useState(false);
 
   const actions = interestConfiguration?.interest || [];
@@ -51,7 +63,6 @@ export function ActionPopover({ eventId, interests }: ActionPopoverProps) {
             queryClient.invalidateQueries({ queryKey: eventsKeys.all });
 
             setIsOpen(false);
-            setSelectedAction(undefined);
             toast({
               title: "Success",
               description: "Your interest has been recorded",

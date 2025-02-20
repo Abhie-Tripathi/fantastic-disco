@@ -10,36 +10,12 @@ import {
 import { formatDate, getEventRating } from "@/utils/eventHelpers";
 import Link from "next/link";
 import { ArrowUp, ArrowDown, Star } from "lucide-react";
-import styles from "./table.module.css";
 import { Event } from "@/types/events";
 import Image from "next/image";
 import { ActionPopover } from "./ActionPopover";
 import { Show } from "@/types/events/dto/event-query.dto";
 import { Badge } from "@/components/ui/badge";
 import { formatEstimatedSpend } from "@/utils/formater";
-
-export function getEventRank(prop: any) {
-  let rankString = "";
-  if (prop.rank == 1) rankString = "st";
-  else if (prop.rank == 2) rankString = "nd";
-  else if (prop.rank == 3) rankString = "rd";
-  else rankString = "th";
-  return (
-    <>
-      <div style={{ textAlign: "center", fontWeight: "500" }}>
-        {prop.rank}
-        <sup>{rankString}</sup>
-      </div>
-      <span
-        title={prop.name}
-        className={`${styles.truncateText_1} badge_warning`}
-        style={{ textTransform: "capitalize", padding: "1px 10px" }}
-      >
-        {prop.type}
-      </span>
-    </>
-  );
-}
 
 interface EventTableRowProps {
   event: Event;
@@ -78,14 +54,14 @@ function getOrdinalSuffix(number: number): string {
 
 function formatExhibitorCount(value: string | number | null): string {
   if (value === null || value === undefined) return "--";
-  
+
   const stringValue = String(value);
-  const values = stringValue.split('-');
-  
+  const values = stringValue.split("-");
+
   if (values.length === 2 && values[0] === values[1]) {
     return Number(values[0]).toLocaleString();
   }
-  
+
   return stringValue.toLocaleString();
 }
 
@@ -274,13 +250,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             {event.insights?.reputationScore > 0 && event.basic.rating > 0 ? (
               <div className="grid grid-cols-3 items-center justify-items-center">
                 {event.insights?.reputationScore > 10 && (
-                    <ArrowUp className="w-4 h-4 text-success-text inline" />
+                  <ArrowUp className="w-4 h-4 text-success-text inline" />
                 )}
                 {event.insights?.reputationScore < -10 && (
                   <ArrowDown className="w-4 h-4 text-danger-text inline" />
                 )}
 
-                <span className="col-start-2" >{event.basic.rating}</span>
+                <span className="col-start-2">{event.basic.rating}</span>
 
                 <Star className="w-4 h-4 inline" />
               </div>
@@ -291,7 +267,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
 
       {/* Reputation Column */}
-      {show.includes(Show.trustScore) &&
+      {show.includes(Show.rankings) &&
         event.insights?.repeatSentiment !== undefined && (
           <TableCell className="text-center">
             {event.insights?.repeatSentiment !== null &&
@@ -392,7 +368,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         event.audience?.audienceZone !== undefined && (
           <TableCell className="text-center">
             {event.audience?.audienceZone ? (
-              <span className={styles.badge_primary}>
+              <span className="badge_primary capitalize">
                 {event.audience?.audienceZone}
               </span>
             ) : (

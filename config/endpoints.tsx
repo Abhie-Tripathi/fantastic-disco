@@ -32,7 +32,7 @@ export const endpoints = {
     recentSearches: `${BASE_URL}/me/recent-searches`,
     poc: `${BASE_URL}/event-poc`,
     enabledFilters: `${BASE_URL}/me/account/configuration`,
-    recentSearch: `${BASE_URL}/event/recent`,
+    recentSearch: `${BASE_URL}/me/recent-searches`,
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
@@ -81,7 +81,7 @@ export const endpoints = {
     latestComment: `${BASE_URL}/dashboard/latest-comment`,
   },
   intent: {
-    createUserEventInterest: `${BASE_URL}/intents/user-event-interest`,
+    userEventInterest: `${BASE_URL}/intents/user-event-interest`,
   },
 
   // ---------------------------GENI ENDPOINTS--------------------
