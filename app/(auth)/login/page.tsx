@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Page({ searchParams }) {
+export default function Page({ searchParams}:any) {
   const { email, otp, target, targetId } = searchParams;
   const [data, setData] = useState(null);
   const router = useRouter();
@@ -54,8 +54,8 @@ export default function Page({ searchParams }) {
 
   return (
     <div>
-      <h2>API Response:</h2>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      {/* <h2>API Response:</h2>
+      <pre>{JSON.stringify(data, null, 2)}</pre> */}
     </div>
   );
 }

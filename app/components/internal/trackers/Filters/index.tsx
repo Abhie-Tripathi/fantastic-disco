@@ -629,19 +629,24 @@ const Pages = () => {
         showsData.push(value);
       }
     });
-    const filterValues = Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
-      const value = getLocalFilterValue(key);
+    const filterValues = Object.entries(filterValueMapping as Record<keyof Filters, string>).reduce(
+      (acc, [key, mappedKey]) => {
+        const value = getLocalFilterValue(key as any);
     
-      if (Array.isArray(value) && value.length > 0) {
-        acc[mappedKey] = value;
-      } else if (typeof value === "string" && value === "true") {
-        acc[mappedKey] = value;
-      } else if (value) {
-        acc[mappedKey] = value;
-      }
+        if (Array.isArray(value) && value.length > 0) {
+          acc[mappedKey] = value;
+        } else if (typeof value === "string" && value === "true") {
+          acc[mappedKey] = value;
+        } else if (value) {
+          acc[mappedKey] = value;
+        }
     
-      return acc;
-    }, {});
+        return acc;
+      },
+      {} as Record<string, any>
+    );
+    
+    
     if(websites.length>0){
       filterValues.orgWebsite=websites;
     }
@@ -817,17 +822,19 @@ const Pages = () => {
         setCustomData(presentCustomData);
       }
       let toggleOpend: Toggle = {};
-      Object?.entries(filterValueMapping)?.reduce((acc, [key, mappedKey]) => {
+      Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
         const value = editData.filterValues[key];
-        
-        if (Array.isArray(value))
-          setLocalFilter(key,value.join(','));
-        else if (typeof value === "string") {
-          setLocalFilter(key, value);
-        }else if(typeof value === "number" || typeof value === "boolean"){
-          setLocalFilter(key, value.toString());
+      
+        if (Array.isArray(value)) {
+          setLocalFilter(key as any, value.join(','));
+        } else if (typeof value === "string") {
+          setLocalFilter(key as any, value);
+        } else if (typeof value === "number" || typeof value === "boolean") {
+          setLocalFilter(key as any, value.toString());
         }
-      }, {})
+      
+        return acc;
+      }, {});      
       Object?.entries(mapping)?.forEach(([key, value]) => {
         if (editData?.filterValues?.show?.includes(key)) {
           showsData.push(value);
@@ -835,10 +842,10 @@ const Pages = () => {
         // console.log(editData?.filterValues?.shows);
         
       });
-      const eventTypes = 
-    Object?.values(editData?.filterValues?.eventTypes || {}).map((eventType) => {
-      return eventType.slug;
-    });
+      const eventTypes = Object.values(editData?.filterValues?.eventTypes || {}).map((eventType) => {
+        return (eventType as { slug: string })?.slug;
+      });
+      
     
     setLocalFilter("eventTypes",eventTypes.join(","))
     if(editData?.filterValues?.locationIds){

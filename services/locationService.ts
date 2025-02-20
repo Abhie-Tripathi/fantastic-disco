@@ -90,15 +90,14 @@ export const useLocationService = () => {
   //   });
   // };
 
-  const getDatabaseLocationAutocomplete = async (input: string) => {
-    const response = await api.request<LocationResponse>(
-      `${endpoints.locationSuggestion}`,
-      {
-        method: "GET",
-        params: { query: input },
-      }
-    );
-    return response;
+  const getDatabaseLocationAutocomplete = (
+    input: string,
+    locationType?: string
+  ) => {
+    return api.request<SearchLocationResponse>(`${endpoints.suggestions.location}`, {
+      method: "GET",
+      params: { query: input, type: locationType },
+    });
   };
 
   const getLocationDetails = async (id: string) => {

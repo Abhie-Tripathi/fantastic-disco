@@ -3,7 +3,7 @@ export interface Tracker {
     id?: string;
     type?:string;
     accessLevel?:string;
-    filterValue?: FilterValue;
+    filterValues?: FilterValue;
     groupedEventsCountByStatus?:{
       groupedEventsByStatus?:{
         expired?:string;
@@ -12,6 +12,7 @@ export interface Tracker {
       }
 
     }
+    savedEventsCount?:string;
   }
   type LocationObject = { [id: string]: string };
   export interface FilterValue {
@@ -103,13 +104,9 @@ export interface Tracker {
     email:string;
    }
     export interface ExistingAccess{
-        accessEntity: string;
-        accessEntityId: string;
-        entityType: string;
-        entityId: string;
-        accessLevel: string;
-        expiry:string;
-        redirectUrl: string;
+      accessReceiverEmail:string,
+      accessType:string,
+      redirectDomain:string,
     }
     export interface EditAccess{
         entityId: string | null;

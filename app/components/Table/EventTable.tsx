@@ -4,6 +4,7 @@ import { PaginationComponent } from "@/components/pagination";
 import { Event } from "@/types/events";
 import { EventTableRow } from "./EventTableRow";
 import { useEvents } from "@/hooks/useEvents";
+import {useTrackerEvents} from "@/hooks/useTrackerEvents";
 import { EventTableHeader } from "./EventTableHeader";
 import { useFilterState } from "@/hooks/useFilterState";
 import Loading from "@/components/ui/Loading";
@@ -14,7 +15,11 @@ import { ApiError } from "@/types/api";
 import { Show } from "@/types/events/dto/event-query.dto";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterContext } from "@/context/filterContext";
-const EventTable = ({source, trackerId}) => {
+interface EventTableProps {
+  trackerId?: string;
+  source?: string;
+}
+const EventTable = ({source, trackerId}:EventTableProps) => {
   // const { theme } = useTheme();
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } = useFilterState();
   const {setLocalFilter} = useFilterContext();
@@ -22,9 +27,14 @@ const EventTable = ({source, trackerId}) => {
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   console.log(trackerId);
-  
-  const { events, totalEvents, isLoading, error } = useEvents.list(query, source, trackerId);
-  console.log(isLoading);
+  let events, totalEvents, isLoading, error;
+
+  if (source === "tracker") {
+  ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId));
+  } else {
+  ({ events, totalEvents, isLoading, error } = useEvents.list(query));
+  }
+  // console.log(isLoading);
   const mapping = {
     rating: "rating",
     maturity: "maturity",
@@ -36,7 +46,7 @@ const EventTable = ({source, trackerId}) => {
     audienceZone: "audienceZone",
     rankings: "rankings,trustScore",
   }
-  let showsData=[];
+  let showsData:string[] =[];
   Object.entries(mapping).forEach(([key,value])=>{
     if(data?.filterValues?.show?.includes(key)){
       showsData.push(value);

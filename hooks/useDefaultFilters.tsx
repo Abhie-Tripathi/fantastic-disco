@@ -169,7 +169,8 @@ export function useDefaultFilters() {
 
     try {
       // Try to use enabled filters first
-      const enabledFilters = await getFilterConfiguration();
+      const response = await getFilterConfiguration();
+      const enabledFilters = response && "filter" in response ? response : { filter: {} };
       console.log(enabledFilters);
       
       if (enabledFilters) {

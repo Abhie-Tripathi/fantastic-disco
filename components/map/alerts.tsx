@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -68,17 +66,18 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
   filteredParams.set("view", "list");
   if (filteredParams.get("geoCoordinates")) {
     const geoCoordinates = JSON.parse(
-      filteredParams.get("geoCoordinates")?.toString() || "{}");
+      filteredParams.get("geoCoordinates")?.toString() || "{}"
+    );
     filteredParams.delete("geoCoordinates");
     filteredParams.set(
       "viewBound",
       JSON.stringify({
         boundType: "point",
-        coordinates: JSON.stringify({
+        coordinates: {
           latitude: geoCoordinates.latitude,
           longitude: geoCoordinates.longitude,
           radius: geoCoordinates.radius,
-        }),
+        },
       })
     );
   }

@@ -99,8 +99,6 @@ const ShareModal: React.FC<ShareModalProps> = ({
                 accessType: "admin",
                 redirectDomain: `http://localhost:3000`
             }
-            console.log(formData);
-            // if(id){
               
             
             try {
@@ -133,55 +131,6 @@ const ShareModal: React.FC<ShareModalProps> = ({
                               shareFunction();
             }
             // }
-        }
-        const shareNewInvite=async()=>{
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          const formData = 
-            {
-              firstname:filter.substring(0,filter.lastIndexOf('@')),
-            lastname:"",
-                email: filter
-          };
-        if(emailRegex.test(filter)){
-            
-        // try{
-        //     const result= await createNewAccess(formData);
-        // }catch(error){
-
-        // }
-        const result= await createNewAccess(formData);
-        if(result){
-            setId(result.user.id);
-        }
-        
-        // try {
-        //     const { data, error } = await myFetch(url, {
-        //         method: 'POST',
-        //         body: JSON.stringify(formData),
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //     });
-        //     if (error) {
-        //         console.error('Error fetching data:', error);
-        //         showToast('error',error.message.charAt(0).toUpperCase() + error.message.substring(1));
-        //         setFilter("");
-        //     } else {
-        //         console.log(data.user.id);
-        //         setId(data.user.id);
-        //         // setData(data);
-        //     }
-        // } catch (err) {
-        //     console.error('Fetch failed:', err);
-        // }
-        } else {
-            showToast("error", "Enter Valid Name or Email");
-            setFilter('');
-            setIsClicked(false);
-            
-        }
-
-        // setId("");
         }
         const saveShareInvite = (id: string, name: string, email:string) => {
             setId(id);

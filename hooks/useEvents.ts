@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEventsService } from "@/services/eventsService";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
-import { useTrackerServices } from "@/services/trackerServices";
 
 export const eventsKeys = {
   all: ["events"] as const,
@@ -9,22 +8,12 @@ export const eventsKeys = {
 };
 
 export const useEvents = {
-  list: (query: EventQuery, source?:string, trackerId?:string) => {
+  list: (query: EventQuery) => {
     const eventsService = useEventsService();
-    console.log(trackerId);
-    const {
-      getTrackerEvents,
-      getSavedEvents,
-      saveNewEvent,
-      deleteNewEvent,
-      error,
-    } = useTrackerServices();
     const EventQuery = useQuery({
-      queryKey: [JSON.stringify(query)],
-      queryFn: () => 
-        source === "tracker"
-          ? getTrackerEvents(query, trackerId)
-          : eventsService.getEvents(query),
+      queryKey: eventsKeys.list(query),
+      queryFn: () => eventsService.getEvents(query),
+      staleTime: 5 * 60 * 1000,
     });
 
     return {

@@ -229,7 +229,7 @@ const Trackers = ({ searchParams }: Search) => {
       const data= await getTrackers(`offset=0&limit=0`);
       
       if (data) setIsLoading(false)
-      if (data.count) {
+      if (data?.count) {
         // setHideTemplate(false);
         setIsData(true)
       }

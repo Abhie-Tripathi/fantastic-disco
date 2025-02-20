@@ -27,7 +27,6 @@ import {
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
   Event,
-  EventsResponse,
   MapEventsResponse,
 } from "@/types/events";
 import Link from "next/link";
@@ -169,45 +168,45 @@ const Page = ({ params }: { params: any }) => {
   //     setFilter("skip","0")
   //     setFilter("take","10")
   // }, [active])
-  const {
-    data: eventData,
-    error,
-    isLoading,
-    refetch,
-  } = useQuery<
-    | CalendarMonthEventsResponse
-    | CalendarWeekEventsResponse
-    | EventsResponse
-    | MapEventsResponse
-    | undefined
-  >({
-    queryKey: ["events", params, searchParams.toString()],
-    queryFn: async () => {
-       if(active==="Saved Events"){
-        const savedEventsResponse = await getSavedEvents(
-          trackerId, 
-          `offset=${skip}&max=${take}`
-        );
+  // const {
+  //   data: eventData,
+  //   error,
+  //   isLoading,
+  //   refetch,
+  // } = useQuery<
+  //   | CalendarMonthEventsResponse
+  //   | CalendarWeekEventsResponse
+  //   | Event
+  //   | MapEventsResponse
+  //   | undefined
+  // >({
+  //   queryKey: ["events", params, searchParams.toString()],
+  //   queryFn: async () => {
+  //      if(active==="Saved Events"){
+  //       const savedEventsResponse = await getSavedEvents(
+  //         trackerId, 
+  //         `offset=${skip}&max=${take}`
+  //       );
       
-        return savedEventsResponse as EventsResponse | undefined;
-        }
-      else if (viewType === "list") {
-        const trackerEventsResponse = await getTrackerEvents(
-          query, trackerId
-        ) ;
-        return trackerEventsResponse  as EventsResponse | undefined;
-      }
+  //       return savedEventsResponse as Event | undefined;
+  //       }
+  //     else if (viewType === "list") {
+  //       const trackerEventsResponse = await getTrackerEvents(
+  //         query, trackerId
+  //       ) ;
+  //       return trackerEventsResponse  as Event | undefined;
+  //     }
       
-      return undefined; 
-    },
-    refetchOnWindowFocus: false,
-    staleTime: 0,
-  });
-  const displayData = eventData;
-  console.log(displayData);
+  //     return undefined; 
+  //   },
+  //   refetchOnWindowFocus: false,
+  //   staleTime: 0,
+  // });
+  // const displayData = eventData;
+  // console.log(displayData);
 
-  const events = displayData?.events || [];
-  const count = displayData?.count || 0;
+  // const events = (displayData?.events as Event[]) ?? [];
+  // const count = (displayData?.count as number) ?? 0;
   useEffect(() => {
     // setSavedEventCount(data?.tracker?.savedEventTotalCount);
     setTrackerDetail(data?.tracker);
@@ -384,7 +383,7 @@ const Page = ({ params }: { params: any }) => {
  const addQueryString = (value:string) => {
   setFilter('eventType', value);
 };
-  let trackerLoc=[];
+  let trackerLoc: string[]=[];
   
   if(data?.filterValues?.locationIds){
     const ids = Object?.keys(data?.filterValues?.locationIds);
@@ -582,7 +581,7 @@ const activeVal =
         )}
         {view === "list" && (
   <div className="flex-grow overflow-hidden">
-    {isLoading ? (
+    {/* {isLoading ? (
       <div className="px-10 py-5">
       <Loading />
       </div>
@@ -606,12 +605,12 @@ const activeVal =
           buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration?type=${trackerType}`}
         />
       )
-    ) : (
+    ) : ( */}
       <>
         {/* <Alerts /> */}
-        <List events={events as Event[]} count={count} />
+        <List source="tracker" trackerId={params.trackerId}/>
       </>
-    )}
+    {/* )} */}
   </div>
 )}
 

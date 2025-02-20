@@ -31,7 +31,7 @@ export const endpoints = {
     recentSearches: `${BASE_URL}/me/recent-searches`,
     poc: `${BASE_URL}/event-poc`,
     enabledFilters: `${BASE_URL}/me/account/configuration`,
-    recentSearch: `${BASE_URL}/event/recent`,
+    recentSearch: `${BASE_URL}/me/recent-searches`,
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
@@ -50,7 +50,7 @@ export const endpoints = {
   //     eventTypes: `${BASE_URL}/trends/event-types`,
   //   },
   locations: `${BASE_URL}/location/country`,
-  locationSuggestion: `${BASE_URL_NEW}/suggestions/locations`,
+  locationSuggestion: `${BASE_URL}/suggestions/locations`,
   designations: `${BASE_URL}/designation`,
   users: `${BASE_URL}/me/account/users`,
   trends: {
@@ -60,17 +60,17 @@ export const endpoints = {
     eventTypes: `${BASE_URL}/trends/event-types`,
   },
   tracker: {
-    suggestion:`${BASE_URL_NEW}/suggestions/companies`,
-    commonUrl: `${BASE_URL_NEW}/trackers`,
+    suggestion:`${BASE_URL}/suggestions/companies`,
+    commonUrl: `${BASE_URL}/trackers`,
     access: `${BASE_URL}/tracker/access`,
     shareAccess: `${BASE_URL}/access`,
     createNewAccess: `${BASE_URL}/tracker/invite`,
-    create: `${BASE_URL_NEW}/trackers`,
-    getTrackers: `${BASE_URL_NEW}/me/trackers`,
+    create: `${BASE_URL}/trackers`,
+    getTrackers: `${BASE_URL}/me/trackers`,
     getSavedEvents: `${BASE_URL}/tracker`,
     saveEvent: `${BASE_URL}/tracker/saved-events`,
-    getNotes: `${BASE_URL_NEW}/trackers`,
-    saveNotes: `${BASE_URL_NEW}/comments`,
+    getNotes: `${BASE_URL}/trackers`,
+    saveNotes: `${BASE_URL}/comments`,
   },
   coordinate: {
     enquiry: `${BASE_URL}/userInterest/enquiry`,
@@ -81,7 +81,7 @@ export const endpoints = {
     latestComment: `${BASE_URL}/dashboard/latest-comment`,
   },
   intent: {
-    createUserEventInterest: `${BASE_URL_NEW}/intents/user-event-interest`,
+    userEventInterest: `${BASE_URL}/intents/user-event-interest`,
   },
 
   // ---------------------------GENI ENDPOINTS--------------------
@@ -124,7 +124,7 @@ export const endpoints = {
   },
   configuration: {
     filterConfiguration: `${BASE_URL}/me/account/configuration/filter`,
-    interestConfiguration: `${BASE_URL_NEW}/me/account/configuration/interest`,
+    interestConfiguration: `${BASE_URL}/me/account/configuration/interest`,
     outreachConfiguration: `${BASE_URL}/me/account/configuration/outreach`,
   },
   myprofile: `${BASE_URL}/auth/customer/profile`,

@@ -3,14 +3,26 @@ import { endpoints } from "@/config/endpoints";
 import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes } from '@/types/trackers';
 // import { EventsAdapter } from "@/adapters/eventsAdapter";
 import {TrackersAdapter } from '@/adapters/trackerAdapter';
-
-import {CalendarWeekEventsResponse, EventCount, MapEventsResponse} from "@/types/events";
+import {CalendarWeekEventsResponse, EventCount, MapEventsResponse, EventResponse} from "@/types/events";
 import { EventTableType } from '@/types/ListViewTable';
 import { useFilterState } from '@/hooks/useFilterState';
 import { usePathname } from 'next/navigation';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
+}
+interface UserAccess {
+  id: string;
+  name: string;
+  email: string;
+  imageUrl: string;
+  accessType: string;
+  accessId: string;
+}
+
+interface UserAccessData {
+  superAdmin: UserAccess[];
+  others: UserAccess[];
 }
 type GetSavedEventsResponse =
 
@@ -42,7 +54,7 @@ export const useTrackerServices = () => {
         }
       ); 
     }
-    const getTrackers = (params: string):Promise<{trackerData: AllTrackerTypes[], totalCount: number} | undefined>=>{
+    const getTrackers = (params: string):Promise<{trackerData: AllTrackerTypes[], count: number} | undefined>=>{
 
       return api.request(
         `${endpoints.tracker.getTrackers}?${params}`,
@@ -84,7 +96,7 @@ export const useTrackerServices = () => {
       }
     
       const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
-      return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
+      // return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
     };
     
     const getTrackerDetail=(trackerId:string, params?:string):Promise<{tracker: Tracker }| undefined>=>{
@@ -100,12 +112,18 @@ export const useTrackerServices = () => {
         }
       );
     }
-    const getShareAccess=(trackerId: string, accessEntity: string)=>{
-      return api.request(
-        `${endpoints.tracker.commonUrl}/${trackerId}/users`,
-      );
-    }
-    const shareTrackerInvite=(formData: ExistingAccess, trackerId)=>{
+    const getShareAccess = async (trackerId: string, accessEntity: string): Promise<UserAccessData> => {
+      const response = await api.request<UserAccessData>(`${endpoints.tracker.commonUrl}/${trackerId}/users`);
+      
+      if (!response) {
+        throw new Error("UserAccessData is undefined");
+      }
+      
+      return response;
+    };    
+    
+    
+    const shareTrackerInvite=(formData: ExistingAccess, trackerId:string)=>{
         return api.request(
           `${endpoints.tracker.commonUrl}/${trackerId}/access`,
           {
@@ -140,8 +158,8 @@ export const useTrackerServices = () => {
         }
       )
     }
-    const getTrackerEvents = async(query, trackerId
-    ): Promise<GetSavedEventsResponse | undefined> => {
+    const getTrackerEvents = async(query:any, trackerId:string
+    )=> {
       // console.log(pathname);
       let active="active";
       if(query.eventType==="newEvent") active="new";
@@ -151,29 +169,15 @@ export const useTrackerServices = () => {
       console.log(query);
       if(query.eventType==="savedEvent")
       {
-        return await api.request<{ result: EventTableType[]; count: number  }>(
+        return await api.request<EventResponse>(
           `${endpoints.tracker.commonUrl}/${trackerId}/saved-events?limit=${query.limit||"10"}&offset=${query.skip||"0"}`,
           {
             method: "GET"
           }
         );
       }
-      // const response=await api.request<{ result: EventTableType[]; count: number }>(
-      //   `${endpoints.tracker.commonUrl}/${trackerId}/events?${params}${eventType.length !== 0 ? `&type=${eventType}` : ''}`,
-      //   {
-      //     method: "GET",
-      //     signal: abortSignal,
-      //   }
-      // );
-      const response = await api.request(`https://api.dev.gtm.whr.ai/trackers/${trackerId}/events?limit=${query.take||"20"}&offset=${query.limit||"0"}&type=${active}`)
-      // return response;
-      console.log(response);
+      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=${query.take||"20"}&offset=${query.limit||"0"}&type=${active}`)
       return response;
-      // if(getFilterValue("view")==="table"){
-      //   return response;
-      // }
-      // const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
-      // return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
     };
     const getTrackerMapEvents = async(
       trackerId:string, params:string, eventType:string,
@@ -198,7 +202,7 @@ export const useTrackerServices = () => {
       
       // return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=Map"));
     };
-    const getSuggestion = async (endpoint, searchInput, abortSignal) => {
+    const getSuggestion = async (endpoint:string, searchInput:string, abortSignal:any) => {
       console.log("Received AbortSignal:", abortSignal);
   
       try {
@@ -234,7 +238,7 @@ export const useTrackerServices = () => {
       console.log(formData);
       
       return api.request(
-        `https://api.dev.gtm.whr.ai/intents/user-event-interest`,
+        `${endpoints.intent.userEventInterest}`,
         {
           method:'POST',
           data: formData

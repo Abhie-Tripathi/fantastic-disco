@@ -4,7 +4,6 @@ import React,{useState, useEffect, useRef} from 'react'
 import styles from './searchBar.style.module.css'
 import Image from 'next/image';
 import SearchIcon from "/public/search.svg";
-import { useTrackerServices } from "@/services/trackerServices";
 import DropdownRef from '../../employee/listView/DropdownRef';
 interface EventSuggestionItem {
   key: string | number;
@@ -16,6 +15,7 @@ interface EventSuggestionItem {
   };
   city?: string;
   country?: string;
+  host?: string;
 }
 
   interface SearchBarProps {
@@ -27,35 +27,48 @@ interface EventSuggestionItem {
   }
 const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, type}:SearchBarProps) => {
     const { theme } = useTheme();
-    const {getSuggestion} = useTrackerServices();
     const { isOpen, toggleDropdown, dropdownRef, setIsOpen } = DropdownRef();
     const abortControllerRef = useRef<AbortController | null>(null);
     const [restructureData, setRestructureData] = useState<EventSuggestionItem[]>([]);
     const [eventSuggestion,setEventSuggestion]=useState([]);
     const [previousInput, setPreviousInput] = useState<string>(""); 
     const fetchSearchSuggestion = async () => {
-      if (abortControllerRef.current) {
-          abortControllerRef.current.abort();
-      }
-  
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
-  
-      console.log("AbortController Signal:", controller.signal);
-  
-      try {
-          const response = await getSuggestion(endpoint, searchInput, controller.signal);
-          setEventSuggestion(response);
-      } catch (error: any) {
-          if (error.name === "AbortError") {
-              console.log("Request was aborted");
-          } else {
-              console.error("Error in fetchSearchSuggestion:", error);
+      
+      if(searchInput!==previousInput){
+        let url = `${baseUrl}/${endpoint}?q=${searchInput}&limit=5&offset=0`;
+        
+        if (abortControllerRef.current) {
+            abortControllerRef.current.abort();
           }
-      }finally {
-        setEventSearchLoader(false);
+    
+          const controller = new AbortController();
+          abortControllerRef.current = controller;
+      
+        try {
+          const { data, error } = await myFetch(url, {
+            method: 'GET',
+            signal: controller.signal,
+          })
+          if (!controller.signal.aborted) {
+            if (data) {
+              if(type==="T_COMPETITOR"){
+                
+                setEventSuggestion(data.company);
+              }else
+              setEventSuggestion(data.events); 
+            } else {
+              console.error('Fetch error:', error); 
+            }
+        }
+        } catch (error: any) {
+          if (error.name !== 'AbortError') {
+            console.error('Error fetching suggestion data:', error);
+          }
+        }finally {
+            setEventSearchLoader(false);
+          }
       }
-  };
+      };
       
       useEffect(() => {
        if(searchInput.length>0){
@@ -68,19 +81,16 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
           }else setEventSuggestion([]);
       }, [searchInput]);
       useEffect(()=>{
-        console.log("suggestion called");
-        
-            if(eventSuggestion){  
+            if(eventSuggestion?.length>0){  
                 setIsOpen(true);
                 let updatedData;
-                if (type === "T_COMPETITOR" || type==="T_CUSTOMER_ICP") {
-                  console.log(eventSuggestion);
-                  updatedData = eventSuggestion?.companies?.map((item: EventSuggestionItem, index: number) => ({
+                if (type === "T_COMPETITOR") {
+                  updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
                     key: item.id,
                     name: item?.name || '',
-                    host: item?.host || '',
                     city: item?.location?.cityName || '',
-                    country: item?.location?.countryName || ''
+                    country: item?.location?.countryName || '',
+                    host: item?.host? item.host:item.name
                   }));
                 } else {
                   updatedData = eventSuggestion.map((item: EventSuggestionItem, index: number) => ({
@@ -90,28 +100,25 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                     country: item?.country || ''
                   }));
                 }
-                console.log(updatedData);
-                
+            
                 setRestructureData(updatedData);
             }
       },[eventSuggestion])
       const selectedEventId=(id:any, name:string)=>{
-       console.log(name);
        
         handleSelect(id,name);
         setIsOpen(false);
         setPreviousInput(name); 
         setEventSearchLoader(false);
       }
-      console.log(restructureData);
       
   return (
         <>
          {searchInput.length > 0 && isOpen && (
   <div ref={dropdownRef} className={styles.eventName_container2}>
-    {restructureData  ? (
+    {restructureData && restructureData.length > 0  ? (
       restructureData.map((item) => (
-        <div key={item.key} className={styles.resultData_list} onClick={() => selectedEventId(item.key, item.host)}>
+        <div key={item.key} className={styles.resultData_list} onClick={() => selectedEventId(item.key, item.host??"")}>
           <div className={styles.event} >
   {item.name}
   {item.city || item.country ? ", " : null} 

@@ -14,6 +14,19 @@ import { GAEvent } from '@/utils/GAEvent';
 import { useQuery } from "@tanstack/react-query";
 import { useTrackerServices } from '@/services/trackerServices';
 // import SideNav from '@/app/components/trackers/sideNav';
+interface UserAccess {
+    id: string;
+    name: string;
+    email: string;
+    imageUrl: string;
+    accessType: string;
+    accessId: string;
+}
+
+interface UserAccessData {
+    superAdmin: UserAccess[];
+    others: UserAccess[];
+}
 
 const Page = () => {
     const router = useRouter();
@@ -72,11 +85,10 @@ const Page = () => {
         data: userAccessData,
         error,
         isLoading,
-      } = useQuery({
-        queryKey: ["accessData", trackerId], // Ensure unique caching per tracker
+      } = useQuery<UserAccessData>({
+        queryKey: ["accessData", trackerId],
         queryFn: () => getShareAccess(trackerId, "tracker"),
-        enabled: !!trackerId, // Prevents the query from running if trackerId is undefined
-        // staleTime: 1000 * 60 * 5,
+        enabled: !!trackerId,
       });
     const closeShareModal = () => {
       if(share===true)
@@ -187,10 +199,10 @@ const Page = () => {
             {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px] z-3'></div> */}
                 <div className="flex w-[40%] h-fit">
                     {/* <TrackerOwner adminData={userAccessData?.access?.admin}/> */}
-                    <TrackerUser userData={userAccessData?.superAdmin} type="admins" heading="Tracker Owners"/>
+                    <TrackerUser userData={userAccessData?.superAdmin || [] } type="admins" heading="Tracker Owners"/>
                 </div>
                 <div className="flex w-[60%]">
-                <TrackerUser userData={userAccessData?.others} type="others" heading="Tracker Users"/>
+                <TrackerUser userData={userAccessData?.others || []} type="others" heading="Tracker Users"/>
                 </div>
             </div>
             {share && (

@@ -25,6 +25,7 @@ import { useNotesServices } from "@/services/notesServices";
 import NullState from "../trackers/nullState";
 import NotesNullState from '@/public/notesNullState.svg'
 import { GAEvent } from "@/utils/GAEvent";
+import { UserResponse } from "@/types/user";
 interface UserDetail {
   firstname: string;
   email: string;
@@ -53,6 +54,8 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
   const {getNotesFromTracker, saveNotes, deleteNotes, likeNotes, getUsers, error, getCoordinateNotes}=useNotesServices();
   const path=usePathname().split('/');
   const { user, signOut } = useAuthContext();
+  console.log(user);
+  
   // const searchParams = useSearchParams();
   const [suggest, setSuggest] = useState();
   const [zeroState,setZeroState]=useState(false);
@@ -62,7 +65,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
   const [drop, setDrop] = useState(false);
   const [type, setType] = useState("TEXT");
   // const [stage,setStage]=useState("");
-  const [userDetail, setUserDetail] = useState<UserDetail | null>(
+  const [userDetail, setUserDetail] = useState<UserResponse | null>(
     user ? user : null
   );
   const [interestType, setInterestType] = useState("");
@@ -696,8 +699,9 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
       console.log(result);
       if(result){
       setUsers(result);
-      const newItems = result?.map((item: UserDetail) => "@" + item.name);
+      const newItems = (result?.users || []).map((item: UserResponse) => "@" + item?.firstname);
       setUserArr(prevArr => [...prevArr, ...newItems]);
+
       }else{
         console.log(error);
         
@@ -886,7 +890,7 @@ const Comment = ({
     window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
   };
   const { user, signOut } = useAuthContext();
-  const [userDetail, setUserDetail] = useState<UserDetail | null>(
+  const [userDetail, setUserDetail] = useState<UserResponse | null>(
     user ? user : null
   );
 

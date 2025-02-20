@@ -269,7 +269,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
 
       {/* Reputation Column */}
-      {show.includes(Show.trustScore) &&
+      {show.includes(Show.rankings) &&
         event.insights?.repeatSentiment !== undefined && (
           <TableCell className="text-center">
             {event.insights?.repeatSentiment !== null &&

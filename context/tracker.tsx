@@ -47,7 +47,7 @@ export const TrackerContext = createContext<any>(
         const data = await getTrackerDetail(trackerId);
         if (data) {
           setData(data);
-          setSavedEventCount(data.savedEventsCount)
+          setSavedEventCount(data?.savedEventsCount)
           console.log(data);
           setIsNewCall(false);
           setEditTrue(false);
