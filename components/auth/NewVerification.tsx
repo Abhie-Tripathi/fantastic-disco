@@ -28,6 +28,7 @@ import { endOfMonth, startOfMonth } from "date-fns";
 import { GAEvent } from "@/utils/GAEvent";
 import { VerifyOTP } from "@/types/auth/user";
 import { SettingsInterestData } from "@/types/onboarding";
+import { isEventeli } from "@/config";
 
 const otpSchema = z.object({
   otpCode: z
@@ -41,8 +42,7 @@ export default function NewVerificationForm() {
   const router = useRouter();
   const [time, setTime] = useState(30);
   const [resendLoading, setResendLoading] = useState(false);
-  const { verifyOtp, verifyLoginOTP, error, generateOTP, signin, setError } =
-    useAuthContext();
+  const { verifyOtp, error, generateOTP, signin, setError } = useAuthContext();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const { getFilterValue } = useFilterState();
@@ -50,6 +50,8 @@ export default function NewVerificationForm() {
     (sessionStorage && sessionStorage.getItem("categories")) || "";
   const email = (sessionStorage && sessionStorage.getItem("userEmail")) || "";
   const industry = (sessionStorage && sessionStorage.getItem("industry")) || "";
+  const subIndustry =
+    (sessionStorage && sessionStorage.getItem("subIndustry")) || "";
   const flow = (sessionStorage && sessionStorage.getItem("flow")) || "";
 
   const categories = sessionCategories && JSON.parse(sessionCategories);
@@ -78,11 +80,17 @@ export default function NewVerificationForm() {
 
   const redirectTo = useMemo(() => {
     if (flow && flow === "signUp") {
-      const isCategoryMapped = industryData.find(
-        (industryItem) => industryItem.slug === industry
-      )?.subCategory;
-      if (isCategoryMapped) {
-        return `/internal/search/events?${urlParams}`;
+      if (isEventeli) {
+        return `/location${industry ? `?industry=${industry}` : ""}${
+          subIndustry ? `&subIndustry=${subIndustry}` : ""
+        }`;
+      } else {
+        const isCategoryMapped = industryData.find(
+          (industryItem) => industryItem.slug === industry
+        )?.subCategory;
+        if (isCategoryMapped) {
+          return `/internal/search/events?${urlParams}`;
+        }
       }
     }
     return "/";

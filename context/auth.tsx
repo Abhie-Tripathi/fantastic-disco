@@ -23,8 +23,15 @@ import { useEventsService } from "@/services/eventsService";
 import { getRestrictedUrl } from "@/utils/generateUrl";
 import { GAEvent } from "@/utils/GAEvent";
 import { endpoints } from "@/config/endpoints";
-import { AuthFlow, VerifyOTP } from "@/types/auth/user";
+import {
+  AuthFlow,
+  PrimaryLocation,
+  UserLocation,
+  VerifyOTP,
+} from "@/types/auth/user";
 import { sessionKeys } from "@/data/onboarding";
+import { useLocationService } from "@/services/locationService";
+import { isEventeli } from "@/config";
 
 type authContextType = {
   user: UserResponse | null;
@@ -69,7 +76,6 @@ type authContextType = {
     redirectTo?: string,
     settingsInterestData?: SettingsInterestData
   ) => Promise<any>;
-  verifyLoginOTP: (user: any, redirectTo?: string) => Promise<any>;
   setIsProfileUpdated: Dispatch<SetStateAction<boolean>>;
   setProfilePic: any;
 };
@@ -107,7 +113,6 @@ const authContextDefaultValues: authContextType = {
   signOut: () => {},
   generateOTP: () => Promise.resolve(null),
   verifyOtp: () => Promise.resolve(null),
-  verifyLoginOTP: () => Promise.resolve(null),
   setIsProfileUpdated: () => {},
   setProfilePic: () => {},
 };
@@ -120,8 +125,9 @@ export const AuthContextProvider = ({ children }: any) => {
   const router = useRouter();
   const pathName = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
-  const [user, setUser] = useState<UserResponse | null>(null);
+  const [user, setUser] = useState<UserResponse | null>();
   const [loginError, setLoginError] = useState<string>("");
+  const { getLocationName } = useLocationService();
   const { request, error, isLoading, setError } = useApi<any>();
   const [profilePic, setProfilePic] = useState<string | null>(null);
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
@@ -132,6 +138,56 @@ export const AuthContextProvider = ({ children }: any) => {
   const searchParams = useSearchParams();
 
   const token = searchParams.get("token");
+
+  const fetchUserData = async () => {
+    try {
+      const userData = await request<UserResponse>(endpoints.auth.me);
+      return userData;
+    } catch (error) {
+      console.log("Error and setting user undefined");
+      return undefined;
+    }
+  };
+
+  const fetchUserLocation = async (primaryLocation: PrimaryLocation) => {
+    try {
+      if (
+        primaryLocation &&
+        primaryLocation.locationType === "LOCATION_ID" &&
+        primaryLocation.locationId
+      ) {
+        const userLocation = await request<{
+          formattedLocations: Location[] | undefined;
+        }>(`${endpoints.locations}?locationIds=${primaryLocation.locationId}`);
+        return userLocation?.formattedLocations?.[0];
+      }
+
+      if (
+        primaryLocation &&
+        primaryLocation.locationType === "GEO_JSON" &&
+        primaryLocation.geoJson
+      ) {
+        const coordinates = primaryLocation.geoJson.geometry?.coordinates || [];
+        const lat = coordinates[0];
+        const lng = coordinates[1];
+        const userLocation = await getLocationName(lat, lng);
+        return userLocation;
+      }
+    } catch (error) {
+      console.error("Error fetching user location:", error);
+      return undefined;
+    }
+  };
+
+  const newcheckAuth = useCallback(async () => {
+    const userData = await fetchUserData();
+    if (!userData) {
+      setUser(undefined);
+      return;
+    }
+    const userLocation = await fetchUserLocation(userData?.primaryLocation);
+    setUser({ ...userData, userLocation: userLocation as UserLocation });
+  }, [request]);
 
   const generateOTP = async (
     email: string,
@@ -383,60 +439,14 @@ export const AuthContextProvider = ({ children }: any) => {
               "Sign Up",
               "Verify OTP | Valid Submitted"
             );
-            setUser(result.user);
+            // setUser(result.user);
+            await newcheckAuth();
             setLocalStorage(result.user);
             handleFlowAction(flow, redirectTo);
           }
         }
       } catch (err) {
         console.error("OTP verification error:", err);
-      }
-    },
-    [request, router]
-  );
-
-  const verifyLoginOTP = useCallback(
-    async (dataToSend: VerifyOTP, redirectTo?: string) => {
-      try {
-        const url = baseUrl + "/auth/customer/verify-otp";
-        const result = await request<{ user: UserResponse }>(url, {
-          method: "POST",
-          data: dataToSend,
-        });
-        if (result) {
-          if (!result.user.isVerified) {
-            GAEvent(
-              "Onboarding",
-              "Onboarding",
-              "Sign In",
-              "Verify OTP | Invalid Submitted"
-            );
-          }
-          if (result.user.isVerified) {
-            GAEvent(
-              "Onboarding",
-              "Onboarding",
-              "Sign In",
-              "Verify OTP | Valid Submitted"
-            );
-            setUser(result.user);
-            setLocalStorage(result.user);
-            localStorage.setItem(
-              "walkthroughCompleted",
-              JSON.stringify(["research"])
-            );
-            router.push(redirectTo || "/internal");
-            return result.user;
-          }
-        }
-      } catch (err) {
-        console.log("OTP verification error:", err);
-        GAEvent(
-          "Onboarding",
-          "Onboarding",
-          "Sign In",
-          "Verify OTP | Invalid Submitted"
-        );
       }
     },
     [request, router]
@@ -479,7 +489,6 @@ export const AuthContextProvider = ({ children }: any) => {
     setUser,
     generateOTP,
     verifyOtp,
-    verifyLoginOTP,
     isProfileUpdated,
     setIsProfileUpdated,
     setProfilePic: (profilePic: string | null) => {

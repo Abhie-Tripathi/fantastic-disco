@@ -1,5 +1,7 @@
-import NewSignUpForm from "@/components/auth/NewSignUpForm";
+import GtmSignUpForm from "@/components/auth/Gtm/GtmSignUpForm";
+import TeliSignUpForm from "@/components/auth/Teli/TeliSignUpForm";
+import { isEventeli } from "@/config";
 
 export default function SignUpPage() {
-  return <NewSignUpForm />;
+  return isEventeli ? <TeliSignUpForm /> : <GtmSignUpForm />;
 }
