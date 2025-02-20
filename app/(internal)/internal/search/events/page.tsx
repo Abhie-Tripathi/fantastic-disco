@@ -5,7 +5,7 @@ import EventCalendar from "@/components/eventCalendar";
 import AdvancedFilters from "@/components/search/advancedFilters";
 import UserRatingSelector from "@/components/search/userRatingSelector";
 import CategorySelector from "@/components/search/categorySelector";
-import CreateTrackerDialog from "@/components/search/createTrackerDialog";
+// import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 import DateRangeSelector from "@/components/search/dateRange";
 import EventEntrySelector from "@/components/search/eventEntry";
 import EventFormatSelector from "@/components/search/eventFormat";
@@ -338,10 +338,10 @@ const Search = () => {
         </TabsContent>
       </Tabs>
 
-      <CreateTrackerDialog
+      {/* <CreateTrackerDialog
         open={trackerModalOpen}
         onOpenChange={setTrackerModalOpen}
-      />
+      /> */}
     </div>
   );
 };
