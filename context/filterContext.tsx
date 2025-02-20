@@ -18,7 +18,6 @@ import {
 } from "@/public/data/searchFilters";
 import { useToast } from "@/components/ui/use-toast";
 import { RecentSearchItem } from "@/types/events/recentSearches";
-import { useConfigurationService } from "@/services/configurationService";
 import { endOfMonth } from "date-fns";
 import { addMonths } from "date-fns";
 import { startOfMonth } from "date-fns";
@@ -64,12 +63,12 @@ interface EventFilterData {
   };
 }
 interface Filters {
-  interest?: string;
+  // interest?: string;
   show?: string;
-  liked?: string;
+  // liked?: string;
   eventTypes?: string;
   categories?: string;
-  status?: string;
+  // status?: string;
   top?: string;
   locationIds?: string;
   geoCoordinates?: string;
@@ -110,22 +109,28 @@ interface Filters {
   economic_impact_gte?: string;
   total_attendance_gte?: string;
   total_attendance_lte?: string;
+  eventType?:string;
+
+  // Coordinate Filters
+  type?: string;
+  upvotedBy?: string;
+  status?: string;
 
   // Prospect Filters
-  companyCategory?: string;
-  productTopic?: string;
+  viewBy?: string;
+  companyCategoryIds?: string;
+  companyLocationIds?: string;
+  eventProductIds?: string;
+  communitySize?: string;
   companyType?: string;
-  companySize?: string;
   establishedYear?: string;
+  eventLocationIds?: string;
+  eventCategoryIds?: string;
   eventFollowers?: string;
-  eventCategory?: string;
-  participationType?: string;
-  companyLocation?: string;
-  eventLocation?: string;
-  userName?: string;
-  designation?: string;
-  linkedinProfile?: string;
-  eventType?: string;
+  eventParticipationType?: string;
+  userNames?: string;
+  userJobTitle?: string;
+  userSocialLink?: string;
 }
 type Filter = {
   eventTypes: string;

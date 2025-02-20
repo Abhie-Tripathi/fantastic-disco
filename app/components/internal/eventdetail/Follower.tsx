@@ -12,38 +12,38 @@ import downArrowIcon from "/public/arrow_down.svg";
 import UserProfile from "../../userProfile/UserProfile";
 import { UserPlus } from "lucide-react";
 import { GAEvent } from "@/utils/GAEvent";
+import { useCoordinateService } from "@/services/coordinateService";
+import { Button } from "@/components/ui/button";
 
 const Follower = ({
   eventId,
   enquiryId,
+  myActivity,
 }: {
   eventId: string;
   enquiryId: string;
+  myActivity: any;
 }) => {
+  console.log('myActivity', myActivity);
+  
   const { user } = useAuthContext();
   const [followerData, setFollowerData] = useState([]);
   const [accordianToggle, setAccordianToggle] = useState(false);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [followStatus, setFollowStatus] = useState(false);
+
+  const coordinateService = useCoordinateService();
+
   const fetchData = async () => {
-    const { data, error } = await myFetch(
-      `${baseUrl}/event-follow/${enquiryId}`
-    );
+    const data: any = await coordinateService.getEnquiryFollowers(enquiryId);
 
     if (data) {
-      console.log("FollowerData", data);
-      setFollowerData(data.users);
-      const isFollowing = data.users.some(
+      setFollowerData(data.followers);
+      const isFollowing = data.followers.some(
         (followUser: any) => followUser.id === user!.id
       );
       setFollowStatus(isFollowing);
-    }
-
-    if (error) {
-      console.log(error);
-      showToast("error", error.message);
-      return;
     }
   };
 
@@ -52,23 +52,16 @@ const Follower = ({
   }, [eventId]);
 
   const handleFollow = async () => {
-    const { data, error } = await myFetch(
-      `${baseUrl}/event-follow/${enquiryId}`,
-      {
-        method: "POST",
+    try {
+      if(followStatus && myActivity?.[0]?.id) {
+        const deleteIntent: any = await coordinateService.deleteEnquiryActivityIntent(myActivity?.[0]?.id);
+      } else {
+        const createIntent: any = await coordinateService.setEnquiryFollowers(enquiryId);
       }
-    );
-
-    if (data) {
-      console.log(enquiryId);
-      console.log("FollowerData", data);
+    } catch (err) {
+      console.log(err);
+    } finally {
       fetchData();
-    }
-
-    if (error) {
-      console.log(error);
-      showToast("error", error.message);
-      return;
     }
   };
 
@@ -104,11 +97,11 @@ const Follower = ({
               followerData.map((follower: any) => (
                 <div className={styles.followerContainer} key={follower.id}>
                   
-                  {follower.profilePicture === null ?
+                  {follower.profileImage === null ?
                   <UserProfile name={follower.name} width={60} height={60} borderRadius="50%"/>:
                   <Image
                   src={
-                     follower.profilePicture
+                     follower.profileImage
                   }
                   alt="banner"
                   width={60}
@@ -137,9 +130,16 @@ const Follower = ({
                 marginTop: "10px",
               }}
             >
-              <span className={styles.addFollow_action} onClick={handleFollow}>
+              {/* <span className={styles.addFollow_action} onClick={handleFollow}>
                 {followStatus ? "Unfollow" : "Follow"}
-              </span>
+              </span> */}
+              <Button
+                onClick={handleFollow}
+                variant={"outline"}
+                size={"sm"}
+              >
+                {followStatus ? "Unfollow" : "Follow"}
+              </Button>
             </div>
           </div>
         )}
