@@ -63,24 +63,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const scrollableSectionRef = useRef<HTMLElement | null>(null);
   const currentDate = new Date().toISOString().split("T")[0];
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
-<<<<<<< HEAD
   const [eventPOCDetails, setEventPOCDetails] = useState<EventPOCDetails[]>([]);
-=======
-<<<<<<< HEAD
-  const [eventPOCDetails, setEventPOCDetails] = useState<EventPOCDetails[]>([]);
-=======
-  const [eventDates, setEventDates] = useState<EventDate[]>();
-  const [eventPOCDetails, setEventPOCDetails] = useState<GTMEventPOCDetails[]>(
-    []
-  );
-  // const tabs = [
-  //   { tabName: "Overview", path: "overview" },
-  //   { tabName: "Insights", path: "insights" },
-  //   { tabName: "Audience", path: "audience" },
-  // ];
-
->>>>>>> 7a8f5f2c54d5f0db59d37ce43149320be4f074a8
->>>>>>> commonAPI
   const {
     getEventDetailById,
     getEventPOCDetails,
@@ -98,12 +81,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       const [
         eventDataResult,
         eventPOCDataResult,
-        eventCoOrganizerDataResult,
         eventRankingDetailsResult,
         eventEditionDataResult,
         eventExhibitorDataResult,
         eventSpeakerDataResult,
         eventSponsorDataResult,
+        eventCoOrganizerDataResult,
       ] = await Promise.allSettled([
         getEventDetailById(params.eventId),
         getEventPOCDetails(params.eventId),
@@ -160,10 +143,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     refetchOnWindowFocus: false,
   });
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> commonAPI
   if (isLoading) {
     return <Loading className="absolute right-1/2 top-1/2" />;
   }
@@ -183,15 +162,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     eventSponsorData,
   } = event;
   const { basic, advance, insights, audience }: Event = eventData || {};
-<<<<<<< HEAD
-=======
-=======
-  if (!event) return null;
-  const { eventData, eventEditionData, eventExhibitorData, eventSpeakerData } =
-    event;
-  const eventDetails: GTMEventDetail = eventData.event || {};
->>>>>>> 7a8f5f2c54d5f0db59d37ce43149320be4f074a8
->>>>>>> commonAPI
 
   const {
     id,
@@ -217,10 +187,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     scores,
     rankings,
     repeatSentiment: trustScore,
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> commonAPI
     exhibitorsCount,
     speakersCount,
     sponsorsCount,
@@ -231,17 +197,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     location: organizerLocation,
     name: organizerName,
   } = organizer || {};
-<<<<<<< HEAD
-=======
-=======
-    audienceSpread,
-    designationSpread,
-    exhibitorsCount,
-    sponsorsCount,
-    speakersCount,
-  } = eventDetails;
->>>>>>> 7a8f5f2c54d5f0db59d37ce43149320be4f074a8
->>>>>>> commonAPI
 
   const isInsightVisible =
     (scores && Object.values(scores).every((value) => value !== null)) ||
@@ -825,39 +780,18 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           />
           {isInsightVisible && (
             <InsightsAndScores
-<<<<<<< HEAD
               eventDetails={eventData}
               eventRankingDetails={eventRankingDetails}
-=======
-<<<<<<< HEAD
-              eventDetails={eventData}
-              eventRankingDetails={eventRankingDetails}
-=======
-              eventDetails={eventDetails}
->>>>>>> 7a8f5f2c54d5f0db59d37ce43149320be4f074a8
->>>>>>> commonAPI
               scrollSection={tabs[1].path}
               setActiveTab={setActiveTab}
             />
           )}
           {isAudienceVisible && (
             <AudienceIntel
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> commonAPI
               eventDetails={eventData}
               eventExhibitorData={eventExhibitorData}
               eventSpeakerData={eventSpeakerData}
               eventSponsorData={eventSponsorData}
-<<<<<<< HEAD
-=======
-=======
-              eventDetails={eventDetails}
-              eventExhibitorData={eventExhibitorData}
-              eventSpeakerData={eventSpeakerData}
->>>>>>> 7a8f5f2c54d5f0db59d37ce43149320be4f074a8
->>>>>>> commonAPI
               scrollSection={tabs[2].path}
               setActiveTab={setActiveTab}
             />

@@ -383,12 +383,12 @@ export const EventInfoAndMap = ({
             </div>
           </div>
 
-          <DetailMapComponent
+          {/* <DetailMapComponent
             eventDetails={eventDetails}
             venueLocation={eventLocation}
             startDateTime={startDateTime}
             endDateTime={endDateTime}
-          />
+          /> */}
           <div className="flex items-center justify-between bg-[#F6F6FF] dark:bg-[#2E2E2E] border border-[#E6E6F9] dark:border-[#2E2E2E] px-4 py-2 rounded-sm">
             <Text variant="noMargin" color="primary">
               Start searching similar events
