@@ -99,7 +99,7 @@ export const EventInfoAndMap = ({
     // tickets,
     entryType,
     website,
-  } = eventDetails;
+  } = eventDetails || {};
 
   const filteredTags = tags;
 
@@ -127,11 +127,11 @@ export const EventInfoAndMap = ({
         : null;
 
     const locationIds =
-      (format === "offline" || format === "hybrid") && venueLocation
-        ? venueLocation.country.id ||
-          venueLocation.state.id ||
-          venueLocation.city.id ||
-          venueLocation.venue.id ||
+      (format === "offline" || format === "hybrid") && eventLocation
+        ? eventLocation?.country?.id ||
+          eventLocation?.state?.id ||
+          eventLocation?.city?.id ||
+          eventLocation?.venue?.id ||
           null
         : null;
 
@@ -383,12 +383,12 @@ export const EventInfoAndMap = ({
             </div>
           </div>
 
-          <DetailMapComponent
+          {/* <DetailMapComponent
             eventDetails={eventDetails}
             venueLocation={eventLocation}
             startDateTime={startDateTime}
             endDateTime={endDateTime}
-          />
+          /> */}
           <div className="flex items-center justify-between bg-[#F6F6FF] dark:bg-[#2E2E2E] border border-[#E6E6F9] dark:border-[#2E2E2E] px-4 py-2 rounded-sm">
             <Text variant="noMargin" color="primary">
               Start searching similar events

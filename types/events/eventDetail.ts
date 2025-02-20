@@ -7,6 +7,10 @@ export interface EventEditionDetailResponse {
   editions: Editions[] | [];
 }
 
+export interface EventCoOrganizerDetailResponse {
+  coorganizers: [];
+}
+
 export interface EventExhibitorDetailsResponse {
   count: number | null;
   eventExhibitors: EventExhibitorDetails[];

@@ -14,14 +14,14 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AlertTriangle, Loader2 } from "lucide-react";
-import { Alert, AlertDescription } from "../ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import IndustryCards from "./IndustryCards";
 import CategoryCards from "./CategoryCards";
 import { GAEvent } from "@/utils/GAEvent";
 
 type FormData = z.infer<typeof SignUpFormSchema>;
 
-const NewSignUpForm = () => {
+const GtmSignUpForm = () => {
   const { signup, error, setError } = useAuthContext();
   const { getFilterValue, deleteFilter } = useFilterState();
   const [email, setEmail] = useState("");
@@ -303,4 +303,4 @@ const NewSignUpForm = () => {
   );
 };
 
-export default NewSignUpForm;
+export default GtmSignUpForm;

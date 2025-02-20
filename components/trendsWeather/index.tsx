@@ -4,8 +4,9 @@ import { type CarouselApi } from "@/components/ui/carousel";
 import { useEffect, useMemo, useRef, useState } from "react";
 import React from "react";
 import { EventDate } from "@/types/events";
-import EventsListView from "../detailPageEventsList/eventsListView";
-import EventsMapView from "../detailPageEventsList/eventsMapView";
+// import EventsListView from "../detailPageEventsList/eventsListView";
+// import EventsMapView from "../detailPageEventsList/eventsMapView";
+import { isEventeli } from "@/config";
 interface Props {
   eventDetails: Event["basic"];
   venueLocation: Event["basic"]["eventLocation"] | null;
@@ -121,16 +122,24 @@ export const DetailMapComponent = ({
         <div className="flex flex-col gap-4 max-xl:justify-around h-auto">
           <div className="flex flex-col gap-4">
             <div className="flex-1 bg-[#EBEBEB] h-[450px]">
-              <EventsMapView
-                event={eventDetails}
-                startDate={eventDateRange.startDate}
-                endDate={eventDateRange.endDate}
-                zoom={10}
-                style={{
-                  width: "100%",
-                  height: "308px",
-                }}
-              />
+              {isEventeli && venueLocation && typeOfEvent === "online" ? (
+                <EventsListView
+                  startDate={eventDateRange.startDate}
+                  endDate={eventDateRange.endDate}
+                  event={eventDetails}
+                />
+              ) : (
+                <EventsMapView
+                  event={eventDetails}
+                  startDate={eventDateRange.startDate}
+                  endDate={eventDateRange.endDate}
+                  zoom={10}
+                  style={{
+                    width: "100%",
+                    height: "308px",
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>

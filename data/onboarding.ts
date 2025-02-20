@@ -82,4 +82,4 @@ export const industryData: Industry[] = [
   },
 ];
 
-export const sessionKeys = ["userEmail", "flow", "categories"];
+export const sessionKeys = ["userEmail", "flow", "categories", "subIndustry", "industry"];

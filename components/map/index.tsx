@@ -84,14 +84,13 @@ interface PopupInfo {
 type ZoomGroup = "country" | "state" | "city" | "event" | null;
 
 export default function MapComponent({
-  searchParams,
   source,
   trackerId,
   isGlobal,
   trackerLoc,
   trackerType,
 }: MapProps) {
-  const searchparams = useSearchParams();
+  const searchParams = useSearchParams();
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
   const { getFilterValue } = useFilterState();
@@ -185,7 +184,7 @@ export default function MapComponent({
         return response || [];
       } else {
         const response = await getEventsCount({
-          ...Object.fromEntries(searchparams.entries()),
+          ...Object.fromEntries(searchParams.entries()),
           groupBy: "city",
         });
         console.log("response", response);
@@ -347,7 +346,7 @@ export default function MapComponent({
           };
 
           try {
-            const modifiedSearchParams = searchParams?.replace(
+            const modifiedSearchParams = searchParams?.toString().replace(
               /locationIds=[^&]*&?/,
               ""
             );
@@ -718,7 +717,7 @@ export default function MapComponent({
                     />
                   )}
 
-                  <EventList
+                  {/* <EventList
                     source={source}
                     trackerId={trackerId}
                     searchParam={searchParams}
@@ -727,7 +726,7 @@ export default function MapComponent({
                     mapRef={mapRef}
                     onEventHover={handleEventHover}
                     onEventLeave={handleEventLeave}
-                  />
+                  /> */}
 
                   <EventCountsLayer
                     eventCounts={eventCountsQuery.data || []}

@@ -14,6 +14,7 @@ import {
   EventExhibitorDetailsResponse,
   EventSponsorDetailsResponse,
   EventResponse,
+  EventCoOrganizerDetailResponse,
   AlertPolygonResponse,
 } from "@/types/events";
 import { ApiError } from "@/types/api";
@@ -198,16 +199,6 @@ export const useEventsService = () => {
     return response;
   };
 
-  const getIsEventBookMarked = async (id: string): Promise<boolean> => {
-    const response = await api.request<EventBookmarkResponse>(
-      `${endpoints.tracker.saveEvent}?eventId=${id}`,
-      {
-        method: "GET",
-      }
-    );
-    return response?.savedEvent.bookmark ?? false;
-  };
-
   const unBookmarkThisEvent = async (id: string) => {
     const response = await api.request(`${endpoints.tracker.saveEvent}`, {
       method: "DELETE",
@@ -255,7 +246,6 @@ export const useEventsService = () => {
     getRecentSearches,
     bookmarkThisEvent,
     unBookmarkThisEvent,
-    getIsEventBookMarked,
     getRawEventsWithSearchParams,
     getEventDetailById,
     getEventPOCDetails,
