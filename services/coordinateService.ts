@@ -65,6 +65,12 @@ export const useCoordinateService = () => {
     });
   };
 
+  const getEnquiryStatusCount = () => {
+    return api.request<enquiryCountResponse>(`${endpoints.coordinate.participent}?type=status`, {
+      method: "GET",
+    });
+  };
+
   const getInterestedUsers = (eventId: string, enquiryId: string) => {
     return api.request(`${endpoints.coordinate.enquiryDetail}/${enquiryId}/interested-users`, {
       method: "GET",
@@ -234,6 +240,7 @@ export const useCoordinateService = () => {
   return {
     getEventsWithSearchParams,
     getParticipentCount,
+    getEnquiryStatusCount,
     getInterestedUsers,
     upVote,
     getEventDetailById,

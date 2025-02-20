@@ -154,12 +154,13 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
   }
   
   const generateFbPath = (): string => {
-    if(urlPath === "trackers")
-      return `eventgeni/${user?.companyId}/notes/${urlPath}/${path[path.length-2]}`;
-    else if(urlPath === "coordinate" || urlPath === "outreach")
-      return `eventgeni/${user?.companyId}/notes/${urlPath}/${eventId}`;
-    else
-      return `eventgeni/${user?.companyId}/notes/general`;
+    // if(urlPath === "trackers")
+    //   return `eventgeni/${user?.companyId}/notes/${urlPath}/${path[path.length-2]}`;
+    // else if(urlPath === "coordinate" || urlPath === "outreach")
+    //   return `eventgeni/${user?.companyId}/notes/${urlPath}/${eventId}`;
+    // else
+    //   return `eventgeni/${user?.companyId}/notes/general`;
+    return "xyz";
   }
 
   // const isInitialMount = useRef(true);

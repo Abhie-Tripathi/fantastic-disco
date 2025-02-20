@@ -54,7 +54,7 @@ export const useTrackerServices = () => {
         }
       ); 
     }
-    const getTrackers = (params: string):Promise<{trackerData: AllTrackerTypes[], count: number} | undefined>=>{
+    const getTrackers = (params: string):Promise<{trackers: AllTrackerTypes[], count: number} | undefined>=>{
 
       return api.request(
         `${endpoints.tracker.getTrackers}?${params}`,
@@ -255,13 +255,16 @@ export const useTrackerServices = () => {
         )
     }
     const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any)=>{
-      console.log(type);
-      
+      console.log(type.toString());
+      let active="active";
+      if(type.get("newEvent")) active="new";
+      else if(type.get("expiredEvent")) active="past";
+      else if(type.get("activeEvent")) active="active";
       // const params = new URLSearchParams(new URL(type).search);
       // const t = params.get("type"); 
       // console.log(1111);
         const response = await api.request<EventCount[]>(
-          type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events/count?view=map&type=${type}&groupBy=${currentZoomGroup}`,
+          type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events/count?view=map&type=${active}&groupBy=${currentZoomGroup}`,
           {
             method: "GET",
           }

@@ -22,6 +22,7 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { Select } from "react-aria-components";
 import { usePathname } from "next/navigation";
+import { UserResponse } from "@/types/user";
 interface Props {
   replyId?:string|undefined|null,
   setType : any,
@@ -95,7 +96,7 @@ export const AddComment = ({
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [boxSpace,setBoxSpace]=useState(0);
-  const [userDetail, setUserDetail] = useState<UserDetail | null>(
+  const [userDetail, setUserDetail] = useState<UserResponse | null>(
     user ? user : null
   );
   const [types, showTypes] = useState<boolean>(false);
@@ -352,7 +353,7 @@ export const AddComment = ({
   const handleSelectAttend = () => {
     setNote(
       "@" +
-        userDetail?.name  +
+        `${userDetail?.firstname}${userDetail?.lastname}`  +
         " wants to #Attend"
     );
     setType("INTEREST");
@@ -363,7 +364,7 @@ export const AddComment = ({
     // setNote(note.substring(0,note.length-6)+"@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to #Speak");
     setNote(
       "@" +
-        userDetail?.name  +
+      `${userDetail?.firstname}${userDetail?.lastname}`  +
         " wants to #Speak"
     );
     setType("INTEREST");
@@ -388,7 +389,7 @@ export const AddComment = ({
       note.substring(0, note.lastIndexOf("/")) +
         `@${
           userDetail?.firstname
-        }${userDetail?.lastname.toLowerCase()} wants to recommend @`
+        } wants to recommend @`
     );
     // if (alluser.some(type => note?.includes(type)) && textareaRef.current) {
     //   textareaRef.current.focus();
