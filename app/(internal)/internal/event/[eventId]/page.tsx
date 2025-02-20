@@ -39,7 +39,6 @@ import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
 import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
 import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { renderFormattedDates } from "@/utils/dateFormat";
-import SaveThisEvent from "@/components/gtmDetail/saveThisEvent";
 // import { TooltipTrigger, Button, Tooltip } from "react-aria-components";
 import {
   Tooltip,
@@ -73,6 +72,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     getEventExhibitorDetails,
     getEventSpeakerDetails,
     getEventSponsorDetails,
+    getEventCoOrganizerDetails,
   } = useEventsService();
   const coordinateService = useCoordinateService();
   const { data: event, isLoading } = useQuery<any>({
@@ -86,6 +86,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventExhibitorDataResult,
         eventSpeakerDataResult,
         eventSponsorDataResult,
+        eventCoOrganizerDataResult,
       ] = await Promise.allSettled([
         getEventDetailById(params.eventId),
         getEventPOCDetails(params.eventId),
@@ -94,7 +95,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         getEventExhibitorDetails(params.eventId, 3, 0),
         getEventSpeakerDetails(params.eventId, 3, 0),
         getEventSponsorDetails(params.eventId, 3, 0),
-        // getEventCoOrganizerDetails(params.eventId),
+        getEventCoOrganizerDetails(params.eventId),
       ]);
       const eventData =
         eventDataResult.status === "fulfilled" ? eventDataResult.value : null;
@@ -103,10 +104,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           ? eventPOCDataResult.value
           : null;
       setEventPOCDetails(eventPOCData?.eventPoCs || []);
-      // const eventCoOrganizerData =
-      //   eventCoOrganizerDataResult.status === "fulfilled"
-      //     ? eventCoOrganizerDataResult.value
-      //     : null;
+      const eventCoOrganizerData =
+        eventCoOrganizerDataResult.status === "fulfilled"
+          ? eventCoOrganizerDataResult.value
+          : null;
       const eventEditionData =
         eventEditionDataResult.status === "fulfilled"
           ? eventEditionDataResult.value
@@ -131,6 +132,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
       return {
         eventData: eventData,
         eventPOCData: eventPOCData,
+        eventCoOrganizerDetails: eventCoOrganizerData,
         eventRankingDetails: eventRankingDetails,
         eventEditionData: eventEditionData,
         eventExhibitorData: eventExhibitorData,
@@ -153,6 +155,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     eventData,
     eventPOCData,
     eventRankingDetails,
+    eventCoOrganizerDetails,
     eventEditionData,
     eventExhibitorData,
     eventSpeakerData,
@@ -453,7 +456,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         {(eventLocation || typeOfEvent) && (
           <div className="flex gap-2 items-center my-4">
-            <span className="border border-[#ebebeb] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
+            <span className="border border-[#ebebeb] dark:border-[var(--border-color)] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
                 <Radio width={20} height={20} />
               ) : (
@@ -464,7 +467,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
                 <Text fontWeight="semibold" variant="noMargin">
                   {typeOfEvent.charAt(0).toUpperCase() + typeOfEvent.slice(1)}{" "}
-                  Event
                 </Text>
               ) : venueName ? (
                 <Text fontWeight="semibold" variant="noMargin">
@@ -544,8 +546,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   No organizer found
                 </p>
               )}
-              {/* {eventCoOrganizerDetails.length > 0 ? (
-                <div className="flex items-center gap-2 border-t-[1px] py-2">
+              {eventCoOrganizerDetails.length > 0 ? (
+                <div className="flex items-center gap-2 border-t-[1px] p-2">
                   <Text fontWeight="medium" color="secondary">
                     Co-organizer
                   </Text>
@@ -558,13 +560,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 </div>
               ) : (
                 organizer && (
-                  <p className="text-[#666666] text-sm flex items-center gap-2 border-t-[1px] py-2">
+                  <p className="text-[#666666] text-sm flex items-center gap-2 border-t-[1px] p-2">
                     <Image src={Disable} alt="Disable" width={15} height={15} />
                     No Co-organizers found
                   </p>
                 )
-              )} */}
-              {/* {eventCoOrganizerDetails.length > 0 &&
+              )}
+              {eventCoOrganizerDetails.length > 0 &&
                 eventCoOrganizerDetails.map((coOrganizer: any) => (
                   <div
                     key={coOrganizer.id}
@@ -585,7 +587,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                       {coOrganizer.name}
                     </Text>
                   </div>
-                ))} */}
+                ))}
             </AccordionContent>
           </AccordionItem>
         </Accordion>

@@ -82,13 +82,25 @@ const formatDateRange = (from: Date | undefined, to: Date | undefined) => {
 //   >;
 // }
 
-export default function DateRangeSelector({ type, source }: { type?: string, source?:string }) {
+export default function DateRangeSelector({
+  type,
+  source,
+}: {
+  type?: string;
+  source?: string;
+}) {
   const pathName = usePathname();
   const [isOpen, setIsOpen] = React.useState(false);
   const [calendarDate, setCalendarDate] = React.useState<Date>(new Date());
   const [selectedPreset, setSelectedPreset] = React.useState("");
   const [compareEnabled, setCompareEnabled] = React.useState(false);
-  const { setMultipleLocalFilters, searchParams, getLocalFilterValue, deleteMultipleLocalFilters, applyFilters } = useFilterContext();
+  const {
+    setMultipleLocalFilters,
+    searchParams,
+    getLocalFilterValue,
+    deleteMultipleLocalFilters,
+    applyFilters,
+  } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const [selectedComparison, setSelectedComparison] = React.useState(
     comparisonOptions[0]
@@ -239,7 +251,11 @@ export default function DateRangeSelector({ type, source }: { type?: string, sou
   };
 
   const onOpenChange = (open: boolean) => {
+    if (selectedPreset === "custom" && (!dateRange.from || !dateRange.to)) {
+      handlePresetChange("3-months");
+    }
     setIsOpen(open);
+
     // Auto apply date filter in case of coordinate
     if (!open && source === "coordinate") {
       applyFilters();
@@ -251,74 +267,80 @@ export default function DateRangeSelector({ type, source }: { type?: string, sou
     }
   }, [type, isOpen]);
 
-  useEffect(() => {    
-    if ( source === "coordinate" && searchParams.get('active_gte') )
-      GAEvent("Coordinate", "Filter", "Coordinate", "Coordinate | Dates | Auto Applied");
-  }, [searchParams.get('active_gte')]);
+  useEffect(() => {
+    if (source === "coordinate" && searchParams.get("active_gte"))
+      GAEvent(
+        "Coordinate",
+        "Filter",
+        "Coordinate",
+        "Coordinate | Dates | Auto Applied"
+      );
+  }, [searchParams.get("active_gte")]);
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
-      {type!=="T_LOCATION_DATE" &&
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            isOpen ? "border-primary" : "border-input"
-          }`}
-          onClick={() => setIsOpen(!isOpen)}
-          aria-expanded={isOpen}
-          aria-haspopup="true"
-        >
-          <div className="flex items-center truncate">
-            <span className="mr-2">Dates</span>
-            {(dateRange.from || dateRange.to) && (
-              <span className="text-xs text-primary truncate">
-                {formatDateRange(dateRange.from, dateRange.to)}
-              </span>
-            )}
-          </div>
-          <ChevronDown
-            className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
-              isOpen ? "rotate-180 transform" : ""
+      {type !== "T_LOCATION_DATE" && (
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            className={`w-full justify-between px-3 py-5 text-base font-normal ${
+              isOpen ? "border-primary" : "border-input"
             }`}
-          />
-        </Button>
-      </PopoverTrigger>
-      }
-      {type==="T_LOCATION_DATE"?
-      <DateRangePopup
-      type={type}
-      presets={presets}
-      handlePresetChange={handlePresetChange}
-      selectedPreset={selectedPreset}
-      dateRange={dateRange}
-      handleDateSelect={handleDateSelect}
-      calendarDate={calendarDate}
-      setCalendarDate={setCalendarDate}
-      enableCompareOptions={true}
-      compareEnabled={compareEnabled}
-      setCompareEnabled={setCompareEnabled}
-      comparisonOptions={comparisonOptions}
-      setSelectedComparison={setSelectedComparison}
-      selectedComparison={selectedComparison}
-    /> :
-      <PopoverContent className="w-auto p-0" align="start">
+            onClick={() => setIsOpen(!isOpen)}
+            aria-expanded={isOpen}
+            aria-haspopup="true"
+          >
+            <div className="flex items-center truncate">
+              <span className="mr-2">Dates</span>
+              {(dateRange.from || dateRange.to) && (
+                <span className="text-xs text-primary truncate">
+                  {formatDateRange(dateRange.from, dateRange.to)}
+                </span>
+              )}
+            </div>
+            <ChevronDown
+              className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
+                isOpen ? "rotate-180 transform" : ""
+              }`}
+            />
+          </Button>
+        </PopoverTrigger>
+      )}
+      {type === "T_LOCATION_DATE" ? (
         <DateRangePopup
-      presets={presets}
-      handlePresetChange={handlePresetChange}
-      selectedPreset={selectedPreset}
-      dateRange={dateRange}
-      handleDateSelect={handleDateSelect}
-      calendarDate={calendarDate}
-      setCalendarDate={setCalendarDate}
-      enableCompareOptions={false}
-      compareEnabled={false}
-      setCompareEnabled={setCompareEnabled}
-      comparisonOptions={comparisonOptions}
-      setSelectedComparison={setSelectedComparison}
-      selectedComparison={selectedComparison}
-    /> 
-      </PopoverContent>
-}
+          type={type}
+          presets={presets}
+          handlePresetChange={handlePresetChange}
+          selectedPreset={selectedPreset}
+          dateRange={dateRange}
+          handleDateSelect={handleDateSelect}
+          calendarDate={calendarDate}
+          setCalendarDate={setCalendarDate}
+          enableCompareOptions={true}
+          compareEnabled={compareEnabled}
+          setCompareEnabled={setCompareEnabled}
+          comparisonOptions={comparisonOptions}
+          setSelectedComparison={setSelectedComparison}
+          selectedComparison={selectedComparison}
+        />
+      ) : (
+        <PopoverContent className="w-auto p-0" align="start">
+          <DateRangePopup
+            presets={presets}
+            handlePresetChange={handlePresetChange}
+            selectedPreset={selectedPreset}
+            dateRange={dateRange}
+            handleDateSelect={handleDateSelect}
+            calendarDate={calendarDate}
+            setCalendarDate={setCalendarDate}
+            enableCompareOptions={false}
+            compareEnabled={false}
+            setCompareEnabled={setCompareEnabled}
+            comparisonOptions={comparisonOptions}
+            setSelectedComparison={setSelectedComparison}
+            selectedComparison={selectedComparison}
+          />
+        </PopoverContent>
+      )}
     </Popover>
   );
 }

@@ -14,6 +14,7 @@ import { useConfigurationService } from "@/services/configurationService";
 
 export function useDefaultFilters() {
   const { user } = useAuthContext();
+  const now = new Date();
   const { getFilterConfiguration } = useConfigurationService();
   const { getFilterValue, searchParams } = useFilterState();
   const { setMultipleLocalFilters } = useFilterContext();
@@ -21,6 +22,17 @@ export function useDefaultFilters() {
   const router = useRouter();
   const { getLastSearchedLocation } = sessionService();
   const eventService = useEventsService();
+  const allowedEventTypes = ["tradeshows", "conferences", "workshops"];
+  const defaultTrendsParams = {
+    locationIds: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef", //New York, United States
+    active_gte: new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1, 0, 0, 0, 0)
+    ).toISOString(), // Starting date of current month going on.
+    active_lte: new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 0, 0, 0, 0, 0)
+    ).toISOString(), // Ending date of current month going on.
+    eventTypes: allowedEventTypes, // All three tradeshows, conferences, workshops
+  };
 
   const mapEnabledFiltersToParams = (filters: any) => ({
     eventFormats: filters.eventFormat?.enabledValue?.join(",") ?? "",
@@ -42,10 +54,10 @@ export function useDefaultFilters() {
         .join(",") ?? "",
     active_gte: filters.durations?.startDate
       ? new Date(filters.durations.startDate.split(",")[0]).toISOString()
-      : "",
+      : startOfMonth(new Date()).toISOString(),
     active_lte: filters.durations?.endDate
       ? new Date(filters.durations.endDate.split(",")[1]).toISOString()
-      : "",
+      : endOfMonth(addMonths(new Date(), 3)).toISOString(),
     entryType:
       filters.eventEntry?.enabledValue
         ?.map((item: string) => item.toLowerCase())
@@ -79,8 +91,16 @@ export function useDefaultFilters() {
       recentSearch.eventType
         ?.map((item: string) => `${item.toLowerCase()}s`)
         ?.join(",") ?? "",
-    active_gte: recentSearch.startDate?.split(",")[0] ?? "",
-    active_lte: recentSearch.endDate?.split(",")[1] ?? "",
+    active_gte: recentSearch.startDate
+      ? new Date(recentSearch.startDate?.split(",")[0]).toISOString()
+      : recentSearch.endDate
+      ? ""
+      : startOfMonth(new Date()).toISOString(),
+    active_lte: recentSearch.endDate
+      ? new Date(recentSearch.endDate?.split(",")[1]).toISOString()
+      : recentSearch.startDate
+      ? ""
+      : endOfMonth(addMonths(new Date(), 3)).toISOString(),
     locationIds:
       recentSearch.locationIds?.city
         ?.map((city: any) => Object.keys(city)[0])
@@ -149,8 +169,149 @@ export function useDefaultFilters() {
     if (filters.eventFrequency?.isFreqEnabled) showItems.push("frequency");
     if (filters.estimatedExhibitScore?.isExhibitorsEnabled)
       showItems.push("estimatedExhibitors");
+    if (filters.economicImpact?.isEconomicImpactEnabled)
+      showItems.push("economicImpact");
     if (filters.analytics?.isAnalyticsEnabled) showItems.push("scores");
     return showItems.join(",");
+  };
+
+  /**
+   * This function generates and returns URL search parameters for event trends.
+   * The parameters are set using the following priority:
+   *
+   * 1. **Enabled Filters:** First, it checks if the parameters exist in the provided URL and applies them.
+   * 2. **Recent Search Filters:** If not found in the URL, it checks recent search filters and applies them if they exist.
+   * 3. **Default Filters:** If parameters are not found in recent search filters, it falls back to default filters.
+   */
+  const generateTrendsParams = (
+    params: URLSearchParams,
+    recentFilterParams?: any
+  ) => {
+    const trendsParams = new URLSearchParams(params);
+    const eventTypesParams = trendsParams.get("eventTypes");
+    const locationIdsParams = trendsParams.get("locationIds");
+    const startDateParams = trendsParams.get("active_gte");
+    const endDateParams = trendsParams.get("active_lte");
+    let startDate = "",
+      endDate = "";
+
+    if (startDateParams && endDateParams) {
+      // Determine start date based on priority.
+      startDate =
+        startDateParams ||
+        (recentFilterParams && recentFilterParams.active_gte);
+      // Determine end date based on priority.
+      endDate =
+        endDateParams || (recentFilterParams && recentFilterParams.active_lte);
+    }
+
+    if (!startDateParams && !endDateParams) {
+      // Determine start date based on priority.
+      startDate = defaultTrendsParams.active_gte;
+      // Determine end date based on priority.
+      endDate = defaultTrendsParams.active_lte;
+    }
+
+    if (startDateParams || endDateParams) {
+      if (startDateParams) {
+        // Determine start date based on priority.
+        startDate =
+          startDateParams ||
+          (recentFilterParams && recentFilterParams.active_gte);
+      } else {
+        // Determine end date based on priority.
+        endDate =
+          endDateParams ||
+          (recentFilterParams && recentFilterParams.active_lte);
+      }
+    }
+
+    // Determine event types based on priority: URL params > recent filters > default.
+    const eventTypes =
+      (eventTypesParams && eventTypesParams.split(",")) ||
+      (recentFilterParams &&
+        recentFilterParams.eventTypes &&
+        recentFilterParams.eventTypes.split(",")) ||
+      defaultTrendsParams.eventTypes;
+
+    // Determine location IDs based on priority.
+    const locationIds =
+      locationIdsParams ||
+      (recentFilterParams &&
+        recentFilterParams.locationIds &&
+        recentFilterParams.locationIds !== "" &&
+        recentFilterParams.locationIds) ||
+      defaultTrendsParams.locationIds;
+
+    // Filter event types based on allowed types.
+    const filteredEventTypes =
+      eventTypes &&
+      eventTypes.filter((type: string) => allowedEventTypes.includes(type));
+
+    // Check if the dates are already formatted correctly.
+    const isStartDateFormatted =
+      startDate && startDate.endsWith("T00:00:00.000Z");
+    const isEndDateFormatted = endDate && endDate.endsWith("T00:00:00.000Z");
+
+    // Format the start and end dates if necessary.
+    const formattedStartDate = startDate
+      ? isStartDateFormatted
+        ? startDate
+        : new Date(`${startDate.split("T")[0]}T00:00:00.000Z`).toISOString()
+      : "";
+
+    const formattedEndDate = endDate
+      ? isEndDateFormatted
+        ? endDate
+        : new Date(`${endDate.split("T")[0]}T00:00:00.000Z`).toISOString()
+      : "";
+
+    // Remove unnecessary parameters from the URL.
+    const paramsToDelete = [
+      "eventFormats",
+      "status",
+      "categories",
+      "entryType",
+      "ratings",
+      "maturity",
+      "onlySeries",
+      "frequencies",
+      "includeKeywords",
+      "excludeKeywords",
+      "estimatedVisitorRangeTag",
+      "estimatedExhibitors",
+      "show",
+    ];
+
+    paramsToDelete.forEach((param) => trendsParams.delete(param));
+
+    // Set columns by filtering out specific values.
+    trendsParams.set(
+      "columns",
+      columnsDropdown
+        .filter(
+          (column) =>
+            column.value !== "impactScore" && column.value !== "economicImpact"
+        )
+        .map((column) => column.value)
+        .join(",")
+    );
+
+    // Set fixed and filtered parameters.
+    trendsParams.set("show", "alerts,scores,economicImpact");
+    if (filteredEventTypes && filteredEventTypes.length > 0) {
+      trendsParams.set("eventTypes", filteredEventTypes.join(","));
+    }
+    if (formattedStartDate) {
+      trendsParams.set("active_gte", formattedStartDate);
+    }
+    if (formattedEndDate) {
+      trendsParams.set("active_lte", formattedEndDate);
+    }
+    if (locationIds) {
+      trendsParams.set("locationIds", locationIds);
+    }
+    return trendsParams;
   };
 
   const setInitialFilters = async () => {
@@ -204,8 +365,12 @@ export function useDefaultFilters() {
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });
+        const trendsParams = generateTrendsParams(params, recentFilterParams);
 
-        if (pathName.split("/").includes("search")) {
+        if (
+          pathName.split("/").includes("search") ||
+          pathName === "/internal/trends"
+        ) {
           setTimeout(() => {
             router.push(`${pathName}?${params.toString()}`, { scroll: false });
           }, 0);

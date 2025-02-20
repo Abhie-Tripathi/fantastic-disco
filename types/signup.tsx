@@ -40,6 +40,7 @@ export type TSignUpFormSchema = z.infer<typeof SignUpFormSchema>;
 export interface SignUpDTO {
   email: string;
   industry?: string | undefined;
-  categories?: string | undefined;
+  subIndustry?: string | undefined;
+  category?: string | undefined;
 }
 // Temp

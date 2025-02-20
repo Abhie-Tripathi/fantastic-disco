@@ -16,7 +16,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Event, EventsResponse } from "@/types/events";
+import { Event } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
@@ -275,11 +275,18 @@ function EventList({
       if (!bounds) return;
       const ne = bounds.getNorthEast();
       const sw = bounds.getSouthWest();
-      const radius = turf.distance(
-        turf.point([center.lng, center.lat]),
-        turf.point([ne.lng, ne.lat]),
-        { units: "kilometers" }
-      );
+      const radius = Math.max(
+        turf.distance(
+          turf.point([center.lng, center.lat]),
+          turf.point([ne.lng, center.lat]),  // East point
+          { units: "kilometers" }
+        ),
+        turf.distance(
+          turf.point([center.lng, center.lat]),
+          turf.point([center.lng, ne.lat]),  // North point
+          { units: "kilometers" }
+        )
+      ) * Math.sqrt(2);
 
       setMapCenter({ lat: center.lat, lng: center.lng });
       setMapRadius(radius);
@@ -345,7 +352,7 @@ function EventList({
     setCurrentPage(page);
   };
 
-  function isEventResponse(data: any): data is EventsResponse {
+  function isEventResponse(data: any): data is any {
     return data && "events" in data && Array.isArray(data.events);
   }
 

@@ -88,14 +88,14 @@ const CardTask: React.FC<CardTaskProps> = ({
             <div className={`text-[#A099E0] bg-white/10 font-medium text-xs py-1 px-3 border rounded`}>Attend</div>
           )}
         </div>
-        { (task?.owner && task?.owner?.firstName) &&
-          <Badge className="bg-[var(--primary-color)] w-fit p-[6px] rounded-full self-end absolute bottom-[15px]" >
+        { (task?.owner && task?.owner?.name) &&
+          <Badge className="bg-[var(--primary-color)] w-7 h-7 p-[6px] rounded-full self-end absolute bottom-[15px] justify-center" >
             {(task?.owner?.firstName && task?.owner?.lastname) ?
               (<span title={"Onwer: " + task?.owner?.firstName + " " + task?.owner?.lastname} >
                 {getInetial(task?.owner?.firstName + " " + task?.owner?.lastname)}
               </span>) :
-              (<span title={task?.owner?.firstName}>
-                {getInetial(task?.owner?.firstName)}
+              (<span title={task?.owner?.name}>
+                {getInetial(task?.owner?.name)}
               </span>)
             }
           </Badge>

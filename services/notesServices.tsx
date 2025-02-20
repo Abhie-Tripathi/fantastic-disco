@@ -10,6 +10,13 @@ export const useNotesServices =() =>{
           `${endpoints.tracker.getNotes}/${trackerId}/comments?${params}`
         )
       }
+
+    const getCoordinateNotes=(enquiryId?:string, params?:string, source?: string): Promise<NotesResponse | undefined>=>{
+      return api.request(
+        `${endpoints.coordinate.enquiryDetail}/${enquiryId}/${source}/comments?${params}`
+      )
+    }
+
       const saveNotes=(formData:any, replyId:string | null): Promise<{data: Comment }| undefined>=>{
         return api.request(
           `${endpoints.tracker.saveNotes}`,
@@ -21,7 +28,7 @@ export const useNotesServices =() =>{
       }
       const deleteNotes=(id:string)=>{
         return api.request(
-          `${endpoints.tracker.saveNotes}/${id}`,
+          `${endpoints.tracker.saveNotes}/${id}/upvote`,
           {
             method: "DELETE"
           }
@@ -54,6 +61,7 @@ export const useNotesServices =() =>{
       }
     return{
         getNotesFromTracker,
+        getCoordinateNotes,
         saveNotes,
         deleteNotes,
         likeNotes,

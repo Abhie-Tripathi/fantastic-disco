@@ -7,10 +7,10 @@ import { useFilterContext } from "@/context/filterContext";
 import { EventType } from "@/public/data/searchFilters";
 
 const filterData = [
-    { id: "organiser", label: "Organiser", isEnabled: true },
+    { id: "organizer", label: "Organizer", isEnabled: true },
     { id: "exhibitor", label: "Exhibitor", isEnabled: true },
     { id: "sponsor", label: "Sponsor", isEnabled: true },
-    { id: "speaker", label: "Speaker", isEnabled: true },
+    { id: "visitor", label: "Attendee", isEnabled: true },
   ];
 
 export default function ParticipationType() {
@@ -21,7 +21,7 @@ export default function ParticipationType() {
   // const enabled = morphedData?.estimatedVisitors?.isEnabled;
 
   const selectedRanges = useMemo(
-    () => getLocalFilterValue("participationType").split(",").filter(Boolean),
+    () => getLocalFilterValue("eventParticipationType").split(",").filter(Boolean),
     [getLocalFilterValue]
   );
 
@@ -30,7 +30,7 @@ export default function ParticipationType() {
       ? selectedRanges.filter((id) => id !== rangeId)
       : [...selectedRanges, rangeId];
 
-    setLocalFilter("participationType", newRanges.join(","));
+    setLocalFilter("eventParticipationType", newRanges.join(","));
   };
 
   return (

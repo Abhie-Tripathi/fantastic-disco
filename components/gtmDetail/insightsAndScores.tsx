@@ -295,11 +295,11 @@ export const InsightsAndScores = ({
               </div>
             )}
         </div>
-        <EventRank
+        {/* <EventRank
           rankings={rankings}
           eventDetails={eventDetails}
           eventRankingDetails={eventRankingDetails}
-        />
+        /> */}
       </div>
     </div>
   );

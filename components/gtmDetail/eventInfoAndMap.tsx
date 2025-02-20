@@ -6,8 +6,8 @@ import { CircleSlash, TriangleAlert } from "lucide-react";
 import Text from "../new-ui/Text";
 import { differenceInDays } from "date-fns";
 import { capitalize } from "lodash";
-import TicketDetails from "../eventDetail/tickets";
-import DetailDialog from "../eventDetail/modal";
+// import TicketDetails from "../eventDetail/tickets";
+// import DetailDialog from "../eventDetail/modal";
 import { Button } from "@/components/ui/button";
 import { numberWithCommas } from "@/utils/formater";
 import { useInView } from "react-intersection-observer";
@@ -16,6 +16,7 @@ import { Badge } from "../ui/badge";
 import Link from "next/link";
 import _ from "lodash";
 import { useFilterContext } from "@/context/filterContext";
+import { useRouter } from "next/navigation";
 interface Props {
   eventDetails: Event["basic"];
   scrollSection: string;
@@ -72,6 +73,8 @@ export const EventInfoAndMap = ({
   scrollSection,
   setActiveTab,
 }: Props) => {
+  const params = new URLSearchParams();
+  const router = useRouter();
   const { enabledFilters } = useFilterContext();
   const currentDate = new Date().toISOString().split("T")[0];
   const [isExpandDescription, setisExpandDescription] =
@@ -92,17 +95,52 @@ export const EventInfoAndMap = ({
     endDateTime,
     eventLocation,
     tags,
+    format,
     // tickets,
     entryType,
     website,
-  } = eventDetails;
-
-  // const enabledKeywords =
-  //   enabledFilters && enabledFilters.keywords
-  //     ? enabledFilters.keywords.positiveKeywords
-  //     : [];
+  } = eventDetails || {};
 
   const filteredTags = tags;
+
+  const generateSearchEventsParams = (): string => {
+    const enabledCategories =
+      enabledFilters &&
+      enabledFilters.eventCategory &&
+      enabledFilters.eventCategory.enabledValue &&
+      enabledFilters.eventCategory.enabledValue.length > 0
+        ? enabledFilters.eventCategory.enabledValue
+            .map((category) => category.slug)
+            .join(",")
+        : categories && categories.length > 0
+        ? (() => {
+            const groupedCategories = categories.filter(
+              (category) => category.isGroup === true
+            );
+            return groupedCategories.length > 0
+              ? groupedCategories
+                  .slice(0, 2)
+                  .map((category) => category.slug)
+                  .join(",")
+              : null;
+          })()
+        : null;
+
+    const locationIds =
+      (format === "offline" || format === "hybrid") && eventLocation
+        ? eventLocation?.country?.id ||
+          eventLocation?.state?.id ||
+          eventLocation?.city?.id ||
+          eventLocation?.venue?.id ||
+          null
+        : null;
+
+    enabledCategories && params.set("categories", enabledCategories);
+    locationIds && params.set("locationIds", locationIds);
+
+    return params.toString();
+  };
+
   return (
     <div className={`flex flex-col gap-6 ${scrollSection}`} ref={ref}>
       {/* <div className="flex gap-2 justify-center bg-[var(--negative-light-color)] border border-[#FDD8D8] p-2 rounded-sm text-sm">
@@ -345,17 +383,24 @@ export const EventInfoAndMap = ({
             </div>
           </div>
 
-          <DetailMapComponent
+          {/* <DetailMapComponent
             eventDetails={eventDetails}
             venueLocation={eventLocation}
             startDateTime={startDateTime}
             endDateTime={endDateTime}
-          />
+          /> */}
           <div className="flex items-center justify-between bg-[#F6F6FF] dark:bg-[#2E2E2E] border border-[#E6E6F9] dark:border-[#2E2E2E] px-4 py-2 rounded-sm">
             <Text variant="noMargin" color="primary">
               Start searching similar events
             </Text>
-            <Button className="cursor-not-allowed w-fit max-lg:bg-[#8F8F8F2E] max-lg:shadow-none max-lg:text-[#171717] max-lg:font-medium">
+            <Button
+              className="w-fit max-lg:shadow-none max-lg:font-medium"
+              onClick={() =>
+                router.push(
+                  `/internal/search/events?${generateSearchEventsParams()}`
+                )
+              }
+            >
               Search Events
             </Button>
           </div>

@@ -120,7 +120,7 @@ const Dashboard = () => {
   const fetchOutreachData = async () => {
     const data: any = await getPipelineConfig()
     // const outreachArray: { name: string, value: number }[] = []
-    const outreachStages = data.outreach_stage.slice(1, data.outreach_stage.length - 1);
+    const outreachStages = data.outreach.slice(1, data.outreach.length - 1);
     const promises = outreachStages.map(async (value: any) => {
       const singleValueCount = await fetchOutreachValue(value.status);
       return { name: value.label, value: singleValueCount };
@@ -132,7 +132,7 @@ const Dashboard = () => {
   // This function is to get specific count from the array values
   const fetchOutreachValue = async (status: string) => {
     const data = await getOutreachSingleEvent({ offset: 0, status })
-    return data?.totalCount;
+    return data?.count;
   }
 
   const fetchOutreachMessage = async () => {

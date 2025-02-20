@@ -162,7 +162,7 @@ export default function EventCalendar({
   const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
     queryKey: ["unattended-events", searchParams.toString()],
     queryFn: async () => {
-      const alertSearchParams = new URLSearchParams(searchParams);
+      const alertSearchParams = new URLSearchParams(searchParams.toString());
       alertSearchParams.set("eventTypes", "alert");
       const query = Object.fromEntries(alertSearchParams.entries());
       const alerts = await getEvents(query);

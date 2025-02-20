@@ -68,7 +68,7 @@ const EventDescription = ({
             >
               {/* <Image src={CalendarIcon} alt="date" className={iconClass} height={18} width={18} /> */}
               <Calendar height={'16px'} width={'16px'} color="var(--primary-text-color)" />
-              <div className={styles.date}>{formatEventDates(eventDetail.startDate, eventDetail.endDate)}</div>
+              <div className={styles.date}>{formatEventDates(eventDetail.startDateTime, eventDetail.endDateTime)}</div>
             </div>
             {shortlist && (
               <div className={styles.statusContainer}>
@@ -82,9 +82,9 @@ const EventDescription = ({
               {/* <Image src={LocationIcon} alt="location" className={iconClass} height={18} width={18} /> */}
               <Location height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
               <div className={styles.location}>
-                {(eventDetail.location?.cityName && eventDetail.location?.countryName) ?
-                  (eventDetail.location.cityName!==eventDetail.location?.countryName ?eventDetail.location.cityName +', '+eventDetail.location?.countryName: eventDetail.location.countryName) :
-                  eventDetail.location.countryName
+                {(eventDetail.eventLocation?.city?.name && eventDetail.eventLocation?.country?.name) ?
+                  (eventDetail.eventLocation.city.name !== eventDetail.eventLocation?.country.name ?eventDetail.eventLocation.city.name +', '+eventDetail.eventLocation?.country.name: eventDetail.eventLocation.country.name) :
+                  eventDetail.eventLocation.country.name
                 }
               </div>
             </div>

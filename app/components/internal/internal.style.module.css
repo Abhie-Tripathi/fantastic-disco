@@ -7,8 +7,18 @@
     padding-right: 40px; */
     padding: 20px 40px;
 }
-.timelineContainer{
-    /* margin-top: 100px; */
+
+.modal {
+    /* border: 1px solid red; */
+    position: absolute;
+    /* padding: 20px; */
+    /* padding-top: 0; */
+    top: 67px;
+    z-index: 1;
+    background-color: var(--primary-foreground);
+    color: var(--primary-text-color);
+    width: calc(100vw - 64px);
+    /* width: 100%; */
 }
 
 .scrollContainer {
@@ -230,3 +240,9 @@
         font-size: var(--font-size-xs);
     }
 }
+
+@media screen and (max-width:1024px) {
+    .modal {
+      width: 100%;
+    }
+  }

@@ -66,7 +66,7 @@ const YearView = ({
   const getMonthHolidays = (month: string) => {
     const monthIndex = months.indexOf(month);
     return unattendedEvents.holidays?.filter(
-      (event) => moment(event.startDateTime).month() === monthIndex
+      (event) => moment((event as any).startDateTime).month() === monthIndex
     );
   };
 
@@ -143,7 +143,7 @@ const YearView = ({
                       );
 
                       const dayHolidays = monthHolidays?.filter((event) =>
-                        moment(event.startDateTime).isSame(currentDate, "day")
+                        moment((event as any).startDateTime).isSame(currentDate, "day")
                       );
                       const dayTotalEvents = dayEvents.reduce(
                         (sum, event) => sum + (event?.count || 0),

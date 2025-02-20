@@ -16,7 +16,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Event, EventsResponse } from "@/types/events";
+import { Event } from "@/types/events";
 import { differenceInDays, format } from "date-fns";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
@@ -69,7 +69,7 @@ export default function EventList({
     setSortBy(newSortValue);
   };
 
-  function isEventResponse(data: any): data is EventsResponse {
+  function isEventResponse(data: any): data is any {
     return data && "events" in data && Array.isArray(data.events);
   }
 

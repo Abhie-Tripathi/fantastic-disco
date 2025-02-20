@@ -22,11 +22,11 @@ export default function UpvoteSelector() {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
   useEffect(() => {
-    if (localFilters?.liked)
+    if (localFilters?.upvotedBy)
       GAEvent("Coordinate", "Filter", "Coordinate", "Coordinate | Upvote | Auto Applied");
 
-    setSelectedStatuses(localFilters?.liked?.split(",") || []);
-  }, [localFilters.liked]);
+    setSelectedStatuses(localFilters?.upvotedBy?.split(",") || []);
+  }, [localFilters.upvotedBy]);
 
   const selectedStatus = selectedStatuses.length;
 
@@ -45,7 +45,7 @@ export default function UpvoteSelector() {
   };
 
   const handleApply = () => {
-    setLocalFilter("liked", selectedStatuses.join(","));
+    setLocalFilter("upvotedBy", selectedStatuses.join(","));
     setIsOpen(false);
     applyFilters();
   };

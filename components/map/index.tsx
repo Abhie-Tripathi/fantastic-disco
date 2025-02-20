@@ -84,14 +84,13 @@ interface PopupInfo {
 type ZoomGroup = "country" | "state" | "city" | "event" | null;
 
 export default function MapComponent({
-  searchParams,
   source,
   trackerId,
   isGlobal,
   trackerLoc,
   trackerType,
 }: MapProps) {
-  const searchparams = useSearchParams();
+  const searchParams = useSearchParams();
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
   const { getFilterValue } = useFilterState();
@@ -185,7 +184,7 @@ console.log(trackerLoc);
         return response || [];
       } else {
         const response = await getEventsCount({
-          ...Object.fromEntries(searchparams.entries()),
+          ...Object.fromEntries(searchParams.entries()),
           groupBy: "city",
         });
         console.log("response", response);
@@ -347,7 +346,7 @@ console.log(trackerLoc);
           };
 
           try {
-            const modifiedSearchParams = searchParams?.replace(
+            const modifiedSearchParams = searchParams?.toString().replace(
               /locationIds=[^&]*&?/,
               ""
             );
@@ -626,6 +625,7 @@ console.log(trackerLoc);
                     height: !isGlobal ? "calc(100vh - 178px)" : "300px",
                   }}
                   onMove={onMove}
+                
                   onLoad={onMapLoad}
                   onClick={handleMapClick}
                   onMouseMove={(e) => {
@@ -681,7 +681,7 @@ console.log(trackerLoc);
                   projection={{ name: "mercator" }}
                   mapStyle={MapStyle.Street}
                   mapboxAccessToken={MapboxToken}
-                  minZoom={0.8}
+                  minZoom={1.25}
                   interactiveLayerIds={[
                     "clustered-counts-circle",
                     "unclustered-counts-circle",
@@ -721,7 +721,7 @@ console.log(trackerLoc);
                     />
                   )}
 
-                  <EventList
+                  {/* <EventList
                     source={source}
                     trackerId={trackerId}
                     searchParam={searchParams}
@@ -730,7 +730,7 @@ console.log(trackerLoc);
                     mapRef={mapRef}
                     onEventHover={handleEventHover}
                     onEventLeave={handleEventLeave}
-                  />
+                  /> */}
 
                   <EventCountsLayer
                     eventCounts={eventCountsQuery.data || []}

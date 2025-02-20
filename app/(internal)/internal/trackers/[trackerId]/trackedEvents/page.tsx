@@ -27,6 +27,7 @@ import {
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
   Event,
+  // EventsResponse,
   MapEventsResponse,
 } from "@/types/events";
 import Link from "next/link";

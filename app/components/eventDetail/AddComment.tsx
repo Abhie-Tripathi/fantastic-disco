@@ -237,8 +237,8 @@ export const AddComment = ({
       }
       else{ 
         newNote = note + type[focusedIndex] + " ";
-        if(type[focusedIndex]==="attend") setInterestType("ATTENDEE");
-        else setInterestType("SPEAKER");
+        if(type[focusedIndex]==="attend") setInterestType("ATTEND");
+        else setInterestType("SPEAK");
       }
       setNote(newNote);
       // setRec(true);
@@ -341,7 +341,7 @@ export const AddComment = ({
         
         
           
-        setType("RECOMMEND");
+        setType("RECOMMENDATION");
         // setMention("");
         setRec(true);
         
@@ -356,7 +356,7 @@ export const AddComment = ({
         " wants to #Attend"
     );
     setType("INTEREST");
-    setInterestType("ATTENDEE");
+    setInterestType("ATTEND");
     setShowUser(false);
   };
   const handleSelectSpeak = () => {
@@ -367,7 +367,7 @@ export const AddComment = ({
         " wants to #Speak"
     );
     setType("INTEREST");
-    setInterestType("SPEAKER");
+    setInterestType("SPEAK");
     setShowUser(false);
   };
   const handleRecommend = (event: any) => {
@@ -395,7 +395,7 @@ export const AddComment = ({
     // }
     if (textareaRef?.current) textareaRef.current.focus();
     setShowUser(true);
-    setType("RECOMMEND");
+    setType("RECOMMENDATION");
 
   };
   useEffect(() => {
@@ -467,8 +467,8 @@ export const AddComment = ({
   const handleSelectType = (event: any, ele: string) => {
     console.log(ele);
     if (type.includes(ele)) {
-      if(ele==="Speak") setInterestType("SPEAKER");
-      else setInterestType("ATTENDEE")
+      if(ele==="Speak") setInterestType("SPEAK");
+      else setInterestType("ATTEND")
       setNote((prev) => prev + ele);
       // handleKeyDown1(event);
       showTypes(false);

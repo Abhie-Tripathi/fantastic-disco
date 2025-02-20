@@ -311,6 +311,7 @@ export const EventRank = ({
   eventRankingDetails: OverallRankingsDetail;
 }) => {
   const { morphedData } = useFilterContext();
+  console.log(eventRankingDetails)
 
   const { categories, eventLocation } =
     (eventDetails && eventDetails.basic) || {};
@@ -333,8 +334,9 @@ export const EventRank = ({
     minCategory &&
     Object.assign(minCategory, {
       rank: minCategory.rank,
-      category: categories?.find((category) => category.id === minCategory.categoryId)
-        ?.name,
+      category: categories?.find(
+        (category) => category.id === minCategory.categoryId
+      )?.name,
     });
 
   const countryRank = rankings &&
