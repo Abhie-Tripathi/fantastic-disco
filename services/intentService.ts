@@ -7,7 +7,7 @@ export const useIntentService = () => {
 
   const createUserEventInterest = async (data: CreateUserEventInterest) => {
     return api.request<CreateUserEventInterest>(
-      endpoints.intent.createUserEventInterest,
+      endpoints.intent.userEventInterest,
       {
         method: "POST",
         data,
@@ -15,7 +15,25 @@ export const useIntentService = () => {
     );
   };
 
+  const updateUserEventInterest = async (
+    id: string,
+    data: Partial<CreateUserEventInterest>
+  ) => {
+    return api.request(`${endpoints.intent.userEventInterest}/${id}`, {
+      method: "PATCH",
+      data,
+    });
+  };
+
+  const deleteUserEventInterest = async (id: string) => {
+    return api.request(`${endpoints.intent.userEventInterest}/${id}`, {
+      method: "DELETE",
+    });
+  };
+
   return {
     createUserEventInterest,
+    updateUserEventInterest,
+    deleteUserEventInterest,
   };
 };

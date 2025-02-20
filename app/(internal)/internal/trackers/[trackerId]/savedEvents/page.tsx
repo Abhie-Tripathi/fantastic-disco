@@ -301,7 +301,7 @@ const Page = ({ params }: { params: any }) => {
       {/* <div className={styles.innerLeft}><Trackers /></div>  */}
       <div className={styles.innerRight}>
         <div className='dummyDiv' style={{height:"120px"}}></div>
-   <Table  showInsights={showInsights}/>
+   {/* <Table  showInsights={showInsights}/> */}
    </div>
    </div>
     </div>

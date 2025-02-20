@@ -170,7 +170,7 @@ export function useDefaultFilters() {
     try {
       // Try to use enabled filters first
       const enabledFilters = await getFilterConfiguration();
-      if (enabledFilters) {
+      if (enabledFilters?.data && Object.keys(enabledFilters.data).length > 0) {
         const params = new URLSearchParams(searchParams.toString());
         const enabledFilterParams = mapEnabledFiltersToParams(enabledFilters);
 

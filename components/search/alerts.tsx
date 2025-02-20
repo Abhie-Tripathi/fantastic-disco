@@ -38,11 +38,11 @@ export default function Alerts() {
           "viewBound",
           JSON.stringify({
             boundType: "point",
-            coordinates: JSON.stringify({
+            coordinates: {
               latitude: geoCoordinates.latitude,
               longitude: geoCoordinates.longitude,
               radius: geoCoordinates.radius,
-            }),
+            },
           })
         );
       }

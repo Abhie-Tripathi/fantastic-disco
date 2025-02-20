@@ -24,6 +24,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { Show } from "@/types/events/dto/event-query.dto";
 import { formatEstimatedSpend } from "@/utils/formater";
 import { ActionPopover } from "@/app/components/Table/ActionPopover";
 import { formattedDateRange } from "@/utils/date";
@@ -106,7 +107,6 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
 
 export default function EventAccordion() {
   const searchParams = useSearchParams();
-  const [openItem, setOpenItem] = useState<string | undefined>();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const query = Object.fromEntries(searchParams.entries());
   const { events, totalEvents, isLoading, error } = useEvents.list(query);
@@ -115,6 +115,11 @@ export default function EventAccordion() {
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
+
+  const showValues: Show[] = getFilterValue("show")
+    .split(",")
+    .filter(Boolean)
+    .map((show) => Show[show as keyof typeof Show]);
 
   const handlePageChange = (page: number) => {
     setMultipleFilters({
@@ -146,7 +151,11 @@ export default function EventAccordion() {
       <div className="flex-grow overflow-y-auto pb-6">
         <ul className="w-full space-y-6 list-none">
           {events?.map((event) => (
-            <EventListItem key={event.basic.id} event={event} />
+            <EventListItem
+              key={event.basic.id}
+              event={event}
+              showValues={showValues}
+            />
           ))}
         </ul>
       </div>
@@ -166,7 +175,13 @@ export default function EventAccordion() {
   );
 }
 
-const EventListItem = ({ event }: { event: Event }) => {
+const EventListItem = ({
+  event,
+  showValues,
+}: {
+  event: Event;
+  showValues: Show[];
+}) => {
   const { saveEvent } = useEventsService();
   const { toast } = useToast();
   const [isSaved, setIsSaved] = useState(Boolean(event.insights?.rankings));
@@ -370,7 +385,9 @@ const EventListItem = ({ event }: { event: Event }) => {
                       </Tooltip>
                     </TooltipProvider>
                   ))}
-                  {event.basic.rating && event.basic.rating > 0 ? (
+                  {showValues.includes(Show.rating) &&
+                  event.basic.rating &&
+                  event.basic.rating > 0 ? (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -390,7 +407,8 @@ const EventListItem = ({ event }: { event: Event }) => {
                   ) : (
                     ""
                   )}
-                  {event.basic.entryType == "free_and_paid" ? (
+                  {showValues.includes(Show.entryType) &&
+                  event.basic.entryType == "free_and_paid" ? (
                     <div className="flex items-center gap-2">
                       <TooltipProvider>
                         <Tooltip delayDuration={0}>
@@ -449,133 +467,143 @@ const EventListItem = ({ event }: { event: Event }) => {
                 </div>
 
                 <div className="flex flex-wrap gap-2 mt-2">
-                  {event.advance?.maturity && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="text-gray-600 capitalize rounded-sm"
-                          >
-                            {event.advance?.maturity}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Maturity</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {event.advance?.frequency && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="text-gray-600 capitalize rounded-sm"
-                          >
-                            {event.advance?.frequency}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Frequency</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {event.advance?.isBranded && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="text-[#DF2670] border-[#F9D7E2] bg-[#FEECF2] capitalize rounded-sm"
-                          >
-                            Branded
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Brand</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {event.advance?.isSeries && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="text-[#0D8C7D] border-[#BEF4EB] bg-[#E5FAF6]  capitalize rounded-sm"
-                          >
-                            Series
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Brand</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {event.advance?.rehostDate && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="text-gray-600 capitalize rounded-sm"
-                          >
-                            Forecasted Next Edition :{" "}
-                            {format(event.advance?.rehostDate, "MMM yyyy")}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Forecasted Status</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
-                  {event.insights?.rankings && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="text-gray-600 capitalize rounded-sm"
-                          >
-                            {event.insights?.rankings.rank}
-                            <sup className="mr-1">
-                              {getOrdinalSuffix(event.insights?.rankings.rank)}
-                            </sup>
-                            {event.insights?.rankings.rankType} Rank
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Event Ranking</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
+                  {showValues.includes(Show.maturity) &&
+                    event.advance?.maturity && (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="text-gray-600 capitalize rounded-sm"
+                            >
+                              {event.advance?.maturity}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Maturity</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  {showValues.includes(Show.frequency) &&
+                    event.advance?.frequency && (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="text-gray-600 capitalize rounded-sm"
+                            >
+                              {event.advance?.frequency}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Frequency</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  {showValues.includes(Show.branded) &&
+                    event.advance?.isBranded && (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="text-[#DF2670] border-[#F9D7E2] bg-[#FEECF2] capitalize rounded-sm"
+                            >
+                              Branded
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Brand</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  {showValues.includes(Show.series) &&
+                    event.advance?.isSeries && (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="text-[#0D8C7D] border-[#BEF4EB] bg-[#E5FAF6]  capitalize rounded-sm"
+                            >
+                              Series
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Brand</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  {showValues.includes(Show.forecasted) &&
+                    event.advance?.rehostDate && (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="text-gray-600 capitalize rounded-sm"
+                            >
+                              Forecasted Next Edition :{" "}
+                              {format(event.advance?.rehostDate, "MMM yyyy")}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Forecasted Status</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
+                  {showValues.includes(Show.rankings) &&
+                    event.insights?.rankings && (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="text-gray-600 capitalize rounded-sm"
+                            >
+                              {event.insights?.rankings.rank}
+                              <sup className="mr-1">
+                                {getOrdinalSuffix(
+                                  event.insights?.rankings.rank
+                                )}
+                              </sup>
+                              {event.insights?.rankings.rankType} Rank
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Event Ranking</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
 
-                  {event.audience?.audienceZone && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="text-gray-600 capitalize"
-                          >
-                            {event.audience.audienceZone} Audience
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Audience Zone</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
+                  {showValues.includes(Show.audienceZone) &&
+                    event.audience?.audienceZone && (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="text-gray-600 capitalize"
+                            >
+                              {event.audience.audienceZone} Audience
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Audience Zone</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
 
-                  {event.insights?.repeatSentiment &&
+                  {showValues.includes(Show.rankings) &&
+                  event.insights?.repeatSentiment &&
                   event.insights?.repeatSentiment > 0 ? (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
@@ -596,23 +624,25 @@ const EventListItem = ({ event }: { event: Event }) => {
                     ""
                   )}
 
-                  {event.insights?.reputationScore && (
-                    <TooltipProvider>
-                      <Tooltip delayDuration={0}>
-                        <TooltipTrigger>
-                          <Badge
-                            variant="outline"
-                            className="text-gray-600 capitalize"
-                          >
-                            Reputation Score : {event.insights?.reputationScore}
-                          </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Reputation Score</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  )}
+                  {showValues.includes(Show.rating) &&
+                    event.insights?.reputationScore && (
+                      <TooltipProvider>
+                        <Tooltip delayDuration={0}>
+                          <TooltipTrigger>
+                            <Badge
+                              variant="outline"
+                              className="text-gray-600 capitalize"
+                            >
+                              Reputation Score :{" "}
+                              {event.insights?.reputationScore}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                            <p>Reputation Score</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    )}
 
                   {/* {event.audience?.audienceSpread && (
                     <TooltipProvider>
@@ -639,21 +669,22 @@ const EventListItem = ({ event }: { event: Event }) => {
 
             <div className="col-span-5">
               <div className="flex items-center justify-end">
-                {event.insights?.scores ? (
+                {showValues.includes(Show.scores) && event.insights?.scores ? (
                   <div className="flex items-center justify-between w-full">
                     <div className="flex flex-col justify-end gap-4">
-                      {event.advance?.estimatedExhibitors !== undefined && (
-                        <div>
-                          <p className="text-xs text-gray-600 font-medium">
-                            Estimated Exhibitors
-                          </p>
-                          <p className="text-lg font-semibold text-primary">
-                            {formatExhibitorCount(
-                              event.advance?.estimatedExhibitors
-                            )}
-                          </p>
-                        </div>
-                      )}
+                      {showValues.includes(Show.estimatedExhibitors) &&
+                        event.advance?.estimatedExhibitors !== undefined && (
+                          <div>
+                            <p className="text-xs text-gray-600 font-medium">
+                              Estimated Exhibitors
+                            </p>
+                            <p className="text-lg font-semibold text-primary">
+                              {formatExhibitorCount(
+                                event.advance?.estimatedExhibitors
+                              )}
+                            </p>
+                          </div>
+                        )}
                       {event.insights?.estimatedAttendance && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
@@ -664,18 +695,19 @@ const EventListItem = ({ event }: { event: Event }) => {
                           </p>
                         </div>
                       )}
-                      {event.insights?.economicImpact && (
-                        <div>
-                          <p className="text-xs text-gray-600 font-medium">
-                            Est. Economic Impact
-                          </p>
-                          <p className="text-lg font-semibold text-primary">
-                            {formatEstimatedSpend(
-                              event.insights?.economicImpact || "--"
-                            )}
-                          </p>
-                        </div>
-                      )}
+                      {showValues.includes(Show.economicImpact) &&
+                        event.insights?.economicImpact && (
+                          <div>
+                            <p className="text-xs text-gray-600 font-medium">
+                              Est. Economic Impact
+                            </p>
+                            <p className="text-lg font-semibold text-primary">
+                              {formatEstimatedSpend(
+                                event.insights?.economicImpact || "--"
+                              )}
+                            </p>
+                          </div>
+                        )}
                     </div>
 
                     <div className="flex flex-col gap-4">
@@ -688,22 +720,23 @@ const EventListItem = ({ event }: { event: Event }) => {
                           interests={event.interests}
                         />
                       </div>
-                      {event.insights?.scores && (
-                        <div className="grid grid-cols-3 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] dark:bg-[#171717] p-2 rounded">
-                          <CircularProgress
-                            value={event.insights?.scores.impactScore}
-                            label="EIS"
-                          />
-                          <CircularProgress
-                            value={event.insights?.scores.inboundScore}
-                            label="Inbound"
-                          />
-                          <CircularProgress
-                            value={event.insights?.scores.internationalScore}
-                            label="International"
-                          />
-                        </div>
-                      )}
+                      {showValues.includes(Show.scores) &&
+                        event.insights?.scores && (
+                          <div className="grid grid-cols-3 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] dark:bg-[#171717] p-2 rounded">
+                            <CircularProgress
+                              value={event.insights?.scores.impactScore}
+                              label="EIS"
+                            />
+                            <CircularProgress
+                              value={event.insights?.scores.inboundScore}
+                              label="Inbound"
+                            />
+                            <CircularProgress
+                              value={event.insights?.scores.internationalScore}
+                              label="International"
+                            />
+                          </div>
+                        )}
                     </div>
                   </div>
                 ) : (
@@ -718,18 +751,19 @@ const EventListItem = ({ event }: { event: Event }) => {
                           interests={event.interests}
                         />
                       </div>
-                      {event.insights?.exhibitorsCount !== undefined && (
-                        <div>
-                          <p className="text-xs text-gray-600 font-medium">
-                            Estimated Exhibitors
-                          </p>
-                          <p className="text-lg font-semibold text-primary">
-                            {formatExhibitorCount(
-                              event.insights?.exhibitorsCount
-                            )}
-                          </p>
-                        </div>
-                      )}
+                      {showValues.includes(Show.estimatedExhibitors) &&
+                        event.insights?.exhibitorsCount !== undefined && (
+                          <div>
+                            <p className="text-xs text-gray-600 font-medium">
+                              Estimated Exhibitors
+                            </p>
+                            <p className="text-lg font-semibold text-primary">
+                              {formatExhibitorCount(
+                                event.insights?.exhibitorsCount
+                              )}
+                            </p>
+                          </div>
+                        )}
                       {event.insights?.estimatedAttendance && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
@@ -740,18 +774,19 @@ const EventListItem = ({ event }: { event: Event }) => {
                           </p>
                         </div>
                       )}
-                      {event.insights?.economicImpact && (
-                        <div>
-                          <p className="text-xs text-gray-600 font-medium">
-                            Economic Impact
-                          </p>
-                          <p className="text-lg font-semibold text-primary">
-                            {formatEstimatedSpend(
-                              event.insights?.economicImpact || "--"
-                            )}
-                          </p>
-                        </div>
-                      )}
+                      {showValues.includes(Show.economicImpact) &&
+                        event.insights?.economicImpact && (
+                          <div>
+                            <p className="text-xs text-gray-600 font-medium">
+                              Economic Impact
+                            </p>
+                            <p className="text-lg font-semibold text-primary">
+                              {formatEstimatedSpend(
+                                event.insights?.economicImpact || "--"
+                              )}
+                            </p>
+                          </div>
+                        )}
                     </div>
                   </div>
                 )}
@@ -864,7 +899,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
           </div>
           <div className="col-span-5 flex flex-col justify-between">
             <div className="flex items-center justify-end gap-2">
-              {event.basic.alerts?.map((alert) => (
+              {/* {event.basic.alerts?.map((alert) => (
                 <Badge
                   key={alert.id}
                   variant="outline"
@@ -878,7 +913,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                     {alert.name.toLowerCase()}
                   </span>
                 </Badge>
-              ))}
+              ))} */}
             </div>
             <div className="flex items-center justify-end">
               {event.insights?.scores ? (

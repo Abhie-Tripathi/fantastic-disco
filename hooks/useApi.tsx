@@ -48,7 +48,7 @@ export function useApi<T>() {
         
         if ("data" in response.data) {
           setState({
-            data: response.data.data as unknown as T,
+            data: response.data as unknown as T,
             error: null,
             isLoading: false,
           });
@@ -57,7 +57,7 @@ export function useApi<T>() {
           const error = response.data.error;
           setState({
             data: undefined,
-            error,
+            error: response.data.error,
             isLoading: false,
           });
           throw error;
