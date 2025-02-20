@@ -204,7 +204,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             >
               {totalCount!==0 &&
               <div className="sticky bottom-0 bg-background py-4">
-              <PaginationComponent currentPage={page} totalPages={totalPage} itemsPerPage={trackerPerPage} onPageChange={handlePageChange} count={totalCount} showEntriesCount={false}/>
+              {/* <PaginationComponent currentPage={page} totalPages={totalPage} itemsPerPage={trackerPerPage} onPageChange={handlePageChange} count={totalCount} showEntriesCount={false}/> */}
               </div>
               }
             </div>

@@ -27,7 +27,7 @@ import {
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
   Event,
-  EventsResponse,
+  // EventsResponse,
   MapEventsResponse,
 } from "@/types/events";
 import Link from "next/link";
@@ -175,7 +175,7 @@ const Page = ({ params }: { params: any }) => {
   } = useQuery<
     | CalendarMonthEventsResponse
     | CalendarWeekEventsResponse
-    | EventsResponse
+    // | EventsResponse
     | MapEventsResponse
     | undefined
   >({
@@ -187,7 +187,7 @@ const Page = ({ params }: { params: any }) => {
           `offset=${skip}&max=${take}`
         );
       
-        return savedEventsResponse as EventsResponse | undefined;
+        return savedEventsResponse as  undefined;
         }
       else if (viewType === "list") {
         const trackerEventsResponse = await getTrackerEvents(
@@ -203,7 +203,7 @@ const Page = ({ params }: { params: any }) => {
             ? "saved"
             : "active"
         ) ;
-        return trackerEventsResponse  as EventsResponse | undefined;
+        return trackerEventsResponse  as  undefined;
       }
       
       return undefined; 
@@ -579,14 +579,14 @@ const activeVal =
         {(view === "table") && (
           <div className="flex-grow overflow-hidden">
             <Suspense fallback={<Loading />}>
-          <Table
+          {/* <Table
             savedEventCount={savedEventCount}
             setSavedEventCount={setSavedEventCount}
             showInsights={showInsights}
             eventType={active}
             setActiveValue={setActiveValue}
             source="trackers"
-          />
+          /> */}
           </Suspense>
           </div>
         )}
@@ -619,7 +619,7 @@ const activeVal =
     ) : (
       <>
         {/* <Alerts /> */}
-        <List events={events as Event[]} count={count} />
+        {/* <List events={events as Event[]} count={count} /> */}
       </>
     )}
   </div>
