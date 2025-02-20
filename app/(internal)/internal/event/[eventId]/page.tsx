@@ -64,7 +64,20 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const scrollableSectionRef = useRef<HTMLElement | null>(null);
   const currentDate = new Date().toISOString().split("T")[0];
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
+<<<<<<< HEAD
   const [eventPOCDetails, setEventPOCDetails] = useState<EventPOCDetails[]>([]);
+=======
+  const [eventDates, setEventDates] = useState<EventDate[]>();
+  const [eventPOCDetails, setEventPOCDetails] = useState<GTMEventPOCDetails[]>(
+    []
+  );
+  // const tabs = [
+  //   { tabName: "Overview", path: "overview" },
+  //   { tabName: "Insights", path: "insights" },
+  //   { tabName: "Audience", path: "audience" },
+  // ];
+
+>>>>>>> 7a8f5f2c54d5f0db59d37ce43149320be4f074a8
   const {
     getEventDetailById,
     getEventPOCDetails,
@@ -141,6 +154,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     refetchOnWindowFocus: false,
   });
 
+<<<<<<< HEAD
   if (isLoading) {
     return <Loading className="absolute right-1/2 top-1/2" />;
   }
@@ -159,6 +173,12 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     eventSponsorData,
   } = event;
   const { basic, advance, insights, audience }: Event = eventData || {};
+=======
+  if (!event) return null;
+  const { eventData, eventEditionData, eventExhibitorData, eventSpeakerData } =
+    event;
+  const eventDetails: GTMEventDetail = eventData.event || {};
+>>>>>>> 7a8f5f2c54d5f0db59d37ce43149320be4f074a8
 
   const {
     id,
@@ -184,6 +204,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     scores,
     rankings,
     repeatSentiment: trustScore,
+<<<<<<< HEAD
     exhibitorsCount,
     speakersCount,
     sponsorsCount,
@@ -194,6 +215,14 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     location: organizerLocation,
     name: organizerName,
   } = organizer || {};
+=======
+    audienceSpread,
+    designationSpread,
+    exhibitorsCount,
+    sponsorsCount,
+    speakersCount,
+  } = eventDetails;
+>>>>>>> 7a8f5f2c54d5f0db59d37ce43149320be4f074a8
 
   const isInsightVisible =
     (scores && Object.values(scores).every((value) => value !== null)) ||
@@ -214,6 +243,28 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     (speakersCount !== null &&
       speakersCount !== undefined &&
       speakersCount > 0);
+
+  const isOverviewVisible = true;
+
+  const tabs = [
+    { tabName: "Overview", path: "overview", isVisible: isOverviewVisible },
+    { tabName: "Insights", path: "insights", isVisible: isInsightVisible },
+    { tabName: "Audience", path: "audience", isVisible: isAudienceVisible },
+  ];
+
+  const isInsightVisible =
+    (scores && Object.values(scores).every((value) => value !== null)) ||
+    (trustScore !== null && trustScore > 0) ||
+    (rankings && Object.values(rankings).some((arr) => arr.length > 0));
+
+  // const isInsightVisible = true;
+
+  const isAudienceVisible =
+    (audienceSpread && Object.keys(audienceSpread).length > 0) ||
+    (designationSpread !== null && designationSpread.length > 0) ||
+    (exhibitorsCount !== null && exhibitorsCount > 0) ||
+    (sponsorsCount !== null && sponsorsCount > 0) ||
+    (speakersCount !== null && speakersCount > 0);
 
   const isOverviewVisible = true;
 
@@ -453,7 +504,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
         {(eventLocation || typeOfEvent) && (
           <div className="flex gap-2 items-center my-4">
-            <span className="border border-[#ebebeb] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
+            <span className="border border-[#ebebeb] dark:border-[var(--border-color)] text-[#666666] rounded-lg flex items-center self-start justify-center text-md font-bold w-10 h-10 aspect-square">
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
                 <Radio width={20} height={20} />
               ) : (
@@ -464,7 +515,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               {typeOfEvent === "online" || typeOfEvent === "hybrid" ? (
                 <Text fontWeight="semibold" variant="noMargin">
                   {typeOfEvent.charAt(0).toUpperCase() + typeOfEvent.slice(1)}{" "}
-                  Event
                 </Text>
               ) : venueName ? (
                 <Text fontWeight="semibold" variant="noMargin">
@@ -778,18 +828,28 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           />
           {isInsightVisible && (
             <InsightsAndScores
+<<<<<<< HEAD
               eventDetails={eventData}
               eventRankingDetails={eventRankingDetails}
+=======
+              eventDetails={eventDetails}
+>>>>>>> 7a8f5f2c54d5f0db59d37ce43149320be4f074a8
               scrollSection={tabs[1].path}
               setActiveTab={setActiveTab}
             />
           )}
           {isAudienceVisible && (
             <AudienceIntel
+<<<<<<< HEAD
               eventDetails={eventData}
               eventExhibitorData={eventExhibitorData}
               eventSpeakerData={eventSpeakerData}
               eventSponsorData={eventSponsorData}
+=======
+              eventDetails={eventDetails}
+              eventExhibitorData={eventExhibitorData}
+              eventSpeakerData={eventSpeakerData}
+>>>>>>> 7a8f5f2c54d5f0db59d37ce43149320be4f074a8
               scrollSection={tabs[2].path}
               setActiveTab={setActiveTab}
             />

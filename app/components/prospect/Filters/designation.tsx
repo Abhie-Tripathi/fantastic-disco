@@ -42,30 +42,30 @@ export default function Designation() {
 
   const selectedLabels = useMemo(() => {
     const filterDesignations =
-      getLocalFilterValue("designation")?.split(",").filter(Boolean) || [];
+      getLocalFilterValue("userJobTitle")?.split(",").filter(Boolean) || [];
     return designations.filter((d: any) =>
       filterDesignations.includes(d.id)
     );
-  }, [localFilters.designation, designations]);
+  }, [localFilters.userJobTitle, designations]);
 
   const handleSelect = (label: any) => {
     const currentDesignations =
-      localFilters.designation?.split(",").filter(Boolean) || [];
+      localFilters.userJobTitle?.split(",").filter(Boolean) || [];
     const isSelected = currentDesignations.includes(label.id);
 
     const newDesignations = isSelected
       ? currentDesignations.filter((id) => id !== label.id)
       : [...currentDesignations, label.id];
 
-    setLocalFilter("designation", newDesignations.join(","));
+    setLocalFilter("userJobTitle", newDesignations.join(","));
   };
 
   const handleRemoveLabel = (labelId: string) => {
-    const currentDesignations = localFilters.designation
+    const currentDesignations = localFilters.userJobTitle
       ?.split(",")
       .filter((id) => id !== labelId);
     if (currentDesignations)
-      setLocalFilter("designation", currentDesignations.join(","));
+      setLocalFilter("userJobTitle", currentDesignations.join(","));
   };
 
   return (

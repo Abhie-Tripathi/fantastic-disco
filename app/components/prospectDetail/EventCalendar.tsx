@@ -1,13 +1,56 @@
 import Text from "@/components/new-ui/Text";
-// import { CircleSlash } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Buildings, Location, Plus, Users } from "geist-icons";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import MapChart from "@/public/internal/MapChart.png";
 import { CircleSlash } from "lucide-react";
+import { formatEventDates } from "@/utils/dateFormat";
+import WorldMap from "./worldMap";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
-export const EventCalendar = () => {
+interface Props {
+  companyId: string;
+  upcomingEvents: any;
+  upcomingEventsCount: number;
+  pastEvents: any;
+  pastEventsCount: number;
+  loadMoreEvents: any;
+}
+
+const getMonthFromDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const monthIndex = date.getMonth();
+  return months[monthIndex];
+};
+
+function getDayFromDate(dateString: string) {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  return day < 10 ? `0${day}` : `${day}`;
+}
+
+export const EventCalendar = ({
+  companyId,
+  upcomingEvents,
+  upcomingEventsCount,
+  pastEvents,
+  pastEventsCount,
+  loadMoreEvents,
+}: Props) => {
   return (
     <div className="flex gap-6 max-xl:flex-col">
       <div className="flex flex-1 flex-col gap-4 border border-[#EBEBEB] dark:bg-transparent dark:border-[var(--border-color)] rounded-md p-4 w-full">
@@ -43,7 +86,7 @@ export const EventCalendar = () => {
                 <TabsTrigger
                   value="past"
                   className="text-xs flex gap-2 items-center p-2"
-                  disabled={true}
+                  // disabled={true}
                 >
                   <Users color="#666666" width="12px" height="12px" />
                   Past
@@ -51,99 +94,184 @@ export const EventCalendar = () => {
               </TabsList>
             </div>
 
-            <TabsContent value="upcoming" className="">
-              <div className="flex flex-row gap-6 p-2 my-4">
-                <div className="flex flex-col rounded-lg shadow-md h-14 w-14 border border-[var(--border-color)]">
-                  <span className="bg-[var(--primary-light-color)] text-xs font-semibold text-primary text-center py-1 rounded-tl-md rounded-tr-md">
-                    DEC
-                  </span>
-                  <span className="text-xs font-semibold text-center py-2">
-                    12
-                  </span>
-                </div>
-                <div className="flex flex-col gap-2 flex-1 flex-wrap">
-                  <Text fontWeight="medium" variant="noMargin">
-                    Clerkenwell Design Conference
-                  </Text>
-                  <p className="flex items-center gap-2 text-[12px] font-medium">
-                    <Location color="var(--muted-foreground)" width="12px" height="12px" />
-                    <span>London, UK</span>
-                  </p>
-
-                  <p className="text-[#666666] text-[12px]">
-                    <span>May 01, Wednesday</span>
-                  </p>
-
-                  <p className="flex items-center gap-2 text-[12px] text-[#666666]">
-                    <Plus
-                      width="12px"
-                      height="12px"
-                      color="var(--muted-foreground)"
-                    />
-                    <span className="underline underline-offset-2">
-                      Add to my calendar
+            <TabsContent
+              value="upcoming"
+              className="max-h-80 overflow-y-auto w-full"
+            >
+              {upcomingEvents.map((event: any) => (
+                <div className="flex flex-row gap-6 p-2 my-4" key={event.id}>
+                  <div className="flex flex-col rounded-lg shadow-md h-14 w-14 border border-[var(--border-color)]">
+                    <span className="bg-[var(--primary-light-color)] text-xs font-semibold text-primary text-center py-1 rounded-tl-md rounded-tr-md">
+                      {getMonthFromDate(event?.startDate)}
                     </span>
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex flex-row gap-6 p-2 my-4">
-                <div className="flex flex-col rounded-lg shadow-md h-14 w-14 border border-[var(--border-color)]">
-                  <span className="bg-[var(--primary-light-color)] text-xs font-semibold text-primary text-center py-1 rounded-tl-md rounded-tr-md">
-                    DEC
-                  </span>
-                  <span className="text-xs font-semibold text-center py-2">
-                    12
-                  </span>
-                </div>
-                <div className="flex flex-col gap-2 flex-1 flex-wrap">
-                  <Text fontWeight="medium" variant="noMargin">
-                    Clerkenwell Design Conference
-                  </Text>
-                  <p className="flex items-center gap-2 text-[12px] font-medium">
-                    <Location color="var(--muted-foreground)" width="12px" height="12px" />
-                    <span>London, UK</span>
-                  </p>
-
-                  <p className="text-[#666666] text-[12px]">
-                    <span>May 01, Wednesday</span>
-                  </p>
-
-                  <p className="flex items-center gap-2 text-[12px] text-[#666666]">
-                    <Plus
-                      width="12px"
-                      height="12px"
-                      color="var(--muted-foreground)"
-                    />
-                    <span className="underline underline-offset-2">
-                      Add to my calendar
+                    <span className="text-xs font-semibold text-center py-2">
+                      {getDayFromDate(event?.startDate)}
                     </span>
-                  </p>
+                  </div>
+                  <div className="flex flex-col gap-2 flex-1 flex-wrap">
+                    <Link href={`/internal/event/${event.id}`} target="_blank">
+                      <Text fontWeight="medium" variant="noMargin">
+                        {event?.name}
+                      </Text>
+                    </Link>
+                    <p className="flex items-center gap-2 text-[12px]">
+                      <Location
+                        color="var(--muted-foreground)"
+                        width="12px"
+                        height="12px"
+                      />
+                      <span>
+                        {(event.location?.cityName === event.location?.countryName) ?
+                          event.location?.cityName :
+                          [event.location?.cityName, event.location?.countryName]
+                          .filter(Boolean)
+                          .join(", ")
+                        }
+                      </span>
+                    </p>
+
+                    <p className="flex gap-2 items-center text-[#666666] text-[12px]">
+                      <span className={`${event?.status === "POSTPONED" || event.status === "CANCELLED" ? "line-through" : ""}`} >
+                        {formatEventDates(event?.startDate, event?.endDate)}
+                      </span>
+                      {event?.status === "CANCELLED" && (
+                        <Badge
+                          variant="outline"
+                          className="border-destructive text-destructive px-1"
+                        >
+                          Cancelled
+                        </Badge>
+                      )}
+                      {event?.status === "POSTPONED" && (
+                        <Badge
+                          variant="outline"
+                          className="border-[#FF990A] text-[#FF990A]"
+                        >
+                          Postponed
+                        </Badge>
+                      )}
+                    </p>
+
+                    {/* <p className="flex items-center gap-2 text-[12px] text-[#666666]">
+                      <Plus
+                        width="12px"
+                        height="12px"
+                        color="var(--muted-foreground)"
+                      />
+                      <span className="underline underline-offset-2">
+                        Add to my calendar
+                      </span>
+                    </p> */}
+                  </div>
                 </div>
-              </div>
+              ))}
 
-              {/* <span className="text-[#666666] text-sm flex items-center gap-2 my-4">
-                <CircleSlash width={15} height={15} />
-                No data available
-              </span> */}
+              {upcomingEventsCount > upcomingEvents.length && (
+                <Button
+                  variant="outline"
+                  onClick={() => loadMoreEvents("upcoming")}
+                  className="w-full text-primary my-2"
+                >
+                  See {upcomingEventsCount - upcomingEvents.length} more events
+                </Button>
+              )}
 
-              <Button variant="outline" className="w-full text-primary my-2">
-                See 4 more events
-              </Button>
+              {upcomingEvents.length === 0 && (
+                <span className="text-[#666666] text-sm flex items-center gap-2 my-4">
+                  <CircleSlash width={15} height={15} />
+                  No data available
+                </span>
+              )}
             </TabsContent>
 
-            <TabsContent value="past" className="flex-grow overflow-hidden">
-              <div className="px-4 py-2"></div>
+            <TabsContent value="past" className="max-h-80 overflow-y-auto w-full">
+              {pastEvents.map((event: any) => (
+                <div className="flex flex-row gap-6 p-2 my-4" key={event.id}>
+                  <div className="flex flex-col rounded-lg shadow-md h-14 w-14 border border-[var(--border-color)]">
+                    <span className="bg-[var(--primary-light-color)] text-xs font-semibold text-primary text-center py-1 rounded-tl-md rounded-tr-md">
+                      {getMonthFromDate(event?.startDate)}
+                    </span>
+                    <span className="text-xs font-semibold text-center py-2">
+                      {getDayFromDate(event?.startDate)}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-2 flex-1 flex-wrap">
+                    <Link href={`/internal/event/${event.id}`} target="_blank">
+                      <Text fontWeight="medium" variant="noMargin">
+                        {event?.name}
+                      </Text>
+                    </Link>
+                    <p className="flex items-center gap-2 text-[12px]">
+                      <Location
+                        color="var(--muted-foreground)"
+                        width="12px"
+                        height="12px"
+                      />
+                      <span>
+                        {(event.location?.cityName === event.location?.countryName) ?
+                          event.location?.cityName :
+                          [event.location?.cityName, event.location?.countryName]
+                          .filter(Boolean)
+                          .join(", ")
+                        }
+                      </span>
+                    </p>
+
+                    <p className="flex gap-2 items-center text-[#666666] text-[12px]">
+                      <span className={`${event?.status === "POSTPONED" || event.status === "CANCELLED" ? "line-through" : ""}`} >
+                        {formatEventDates(event?.startDate, event?.endDate)}
+                      </span>
+                      {event?.status === "CANCELLED" && (
+                        <Badge
+                          variant="outline"
+                          className="border-destructive text-destructive px-1"
+                        >
+                          Cancelled
+                        </Badge>
+                      )}
+                      {event?.status === "POSTPONED" && (
+                        <Badge
+                          variant="outline"
+                          className="border-[#FF990A] text-[#FF990A]"
+                        >
+                          Postponed
+                        </Badge>
+                      )}
+                    </p>
+
+                    {/* <p className="flex items-center gap-2 text-[12px] text-[#666666]">
+                      <Plus
+                        width="12px"
+                        height="12px"
+                        color="var(--muted-foreground)"
+                      />
+                      <span className="underline underline-offset-2">
+                        Add to my calendar
+                      </span>
+                    </p> */}
+                  </div>
+                </div>
+              ))}
+
+              {pastEventsCount > pastEvents.length && (
+                <Button
+                  variant="outline"
+                  onClick={() => loadMoreEvents("past")}
+                  className="w-full text-primary my-2"
+                >
+                  See {pastEventsCount - pastEvents.length} more events
+                </Button>
+              )}
+
+              {pastEvents.length === 0 && (
+                <span className="text-[#666666] text-sm flex items-center gap-2 my-4">
+                  <CircleSlash width={15} height={15} />
+                  No data available
+                </span>
+              )}
             </TabsContent>
           </Tabs>
         </div>
-
-        {/* <ul className="h-80">
-          <span className="text-[#666666] text-sm flex items-center gap-2">
-            <CircleSlash width={15} height={15} />
-            No data available
-          </span>
-        </ul> */}
       </div>
 
       <div className="flex flex-1 flex-col gap-6 border border-[#EBEBEB] dark:bg-transparent dark:border-[var(--border-color)] rounded-md p-4 h-auto w-full">
@@ -158,33 +286,7 @@ export const EventCalendar = () => {
           </Text>
         </div>
 
-        {/* Map Component */}
-        <Image
-          src={MapChart}
-          alt="map"
-          width={420}
-          height={280}
-          className="max-h-[300px] w-fill rounded-lg"
-        />
-
-        <div className="grid grid-cols-3 gap-4">
-          <div className="flex flex-col justify-center bg-white dark:bg-transparent dark:border-[var(--border-color)] shadow-md border border-[var(--neutral-light-color)] p-2 rounded-md gap-2 w-auto h-full">
-            <span className="text-[#6E6F89] text-xs">Events Attended</span>
-            <span className="text-base font-bold">35</span>
-          </div>
-
-          <div className="flex flex-col justify-center bg-white dark:bg-transparent dark:border-[var(--border-color)] shadow-md border border-[var(--neutral-light-color)] p-2 rounded-md gap-2 w-auto h-full">
-            <span className="text-[#6E6F89] text-xs">Most Attended in</span>
-            <span className="text-base font-bold">Brazil</span>
-          </div>
-
-          <div className="flex flex-col justify-center bg-white dark:bg-transparent dark:border-[var(--border-color)] shadow-md border border-[var(--neutral-light-color)] p-2 rounded-md gap-2 w-auto h-full">
-            <span className="text-[#6E6F89] text-xs">Other Countries..</span>
-            <span className="text-base font-bold line-clamp-1">
-              USA, China, India, South Africa
-            </span>
-          </div>
-        </div>
+        <WorldMap companyId={companyId} />
 
         {/* <div className="flex justify-between">
           <Text

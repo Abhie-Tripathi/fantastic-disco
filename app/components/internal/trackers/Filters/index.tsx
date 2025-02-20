@@ -662,13 +662,29 @@ const Pages = () => {
   useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if(customData.length > 0 && Object.values(customData[0])[0]) {
-        let placeholder = template?.inputAreas?.[0]?.placeholder || "";
-        const promptText=`List only name of top 5 companies similar to ${Object.values(customData[0])[0]}. Response should be in plain JSON format without any additional formatting or text: {"data": [ "company name 1" ,
-        "company name 2" , "company name 3" ,
-         "company name 4" ,
-        "company name 5" ]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
-        if(!hideSuggestion)
+        // let placeholder = template?.inputAreas?.[0]?.placeholder || "";
+        const value = Object?.values(customData[0])[0];
+
+        if (typeof value === "string") {
+          const isDomain = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+          const isURL = /^(https?:\/\/)/.test(value);
+
+          const promptText = `List only top 5 official working domains of companies similar to ${value}. ${
+          isDomain || isURL
+          ? `Do not include ${value.replace(/https?:\/\//, "")} in the response.`
+          : `Also share the official working domain of ${value}.`
+          } Response should be in plain JSON format without any additional formatting or text: {"data": [ ${
+          isDomain || isURL
+          ? `"competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"`
+            : `"company domain", "competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"`
+          } ]}. Do not show example values and don't include ${
+            isDomain || isURL
+            ?`{"competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"}`:`{"company domain", "competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"}`} in response. If no company name or competitor domains are found, return in this format: {"data": []}`;
+
+          if (!hideSuggestion) {
           fetchAISuggestion(promptText);
+          }
+        } 
       }
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       const urls = customData
@@ -686,7 +702,7 @@ const Pages = () => {
     }
     else if (type === "T_SPEAKING_OPPORTUNITY") {
       if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
-        const promptText = `List the top 5 speakers with similar experience to ${Object.values(customData[0])[0]} (${Object.values(customData[0])[1]}). Not necessarily they have the same designation; instead, they must have spoken recently on the same topics. Response should be in plain JSON format without any additional formatting or text: {
+        const promptText = `List the top 5 speakers with similar experience to ${Object.values(customData[0])[0]} (${Object.values(customData[0])[1]}). Not necessarily they have the same designation; instead, they must have spoken recently on the same topics. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
           "data": [
               [ "Speaker Name 1", "Company Name 1" ],
               [ "Speaker Name 2", "Company Name 2" ],
@@ -694,7 +710,13 @@ const Pages = () => {
               [ "Speaker Name 4", "Company Name 4" ],
               [ "Speaker Name 5", "Company Name 5" ]
           ]
-      }. If no data is found, respond in this format: {\"data\": []}`; 
+      }.  Do not show example values and don't include [
+        [ "Speaker Name 1", "Company Name 1" ],
+        [ "Speaker Name 2", "Company Name 2" ],
+        [ "Speaker Name 3", "Company Name 3" ],
+        [ "Speaker Name 4", "Company Name 4" ],
+        [ "Speaker Name 5", "Company Name 5" ]
+      ] in response. If no data is found, respond in this format: {\"data\": []}`; 
         if(!hideSuggestion)
           fetchAISuggestion(promptText);
       }
@@ -707,7 +729,7 @@ const Pages = () => {
     }
     else if (type === "T_PEOPLE_FINDER") {
       if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
-        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
         "data": [
           [ "name 1", "company name 1" ],
           ["name 2", "company name 2" ],
@@ -715,7 +737,13 @@ const Pages = () => {
           [ "name 4", "company name 4" ],
           [ "name 5", "company name 5" ]
         ]
-      }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+      }. Do not show example values and don't include [
+        [ "name 1", "company name 1" ],
+        ["name 2", "company name 2" ],
+        ["name 3", "company name 3" ],
+        [ "name 4", "company name 4" ],
+        [ "name 5", "company name 5" ]
+      ] in response. If no data found then return in below format: {\"data\": []}`
       if(!hideSuggestion)
         fetchAISuggestion(promptText);
       }
@@ -724,7 +752,7 @@ const Pages = () => {
       setUserName(userName)
       setUserCompany(userCompany)
       if(userName.length>0 && userCompany.length>0){
-        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
         "data": [
           [ "name 1", "company name 1" ],
           ["name 2", "company name 2" ],
@@ -732,7 +760,13 @@ const Pages = () => {
           [ "name 4", "company name 4" ],
           [ "name 5", "company name 5" ]
         ]
-      }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+      }. Do not show example values and don't include [
+        [ "name 1", "company name 1" ],
+        ["name 2", "company name 2" ],
+        ["name 3", "company name 3" ],
+        [ "name 4", "company name 4" ],
+        [ "name 5", "company name 5" ]
+      ] in response. If no data found then return in below format: {\"data\": []}`
       if(!hideSuggestion)
         fetchAISuggestion(promptText);
       }

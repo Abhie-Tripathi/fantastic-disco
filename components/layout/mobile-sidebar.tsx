@@ -34,7 +34,7 @@ const MobileSidebar = () => {
   const gtmLinks = [
     { name: "Dashboard", href: "/internal", icon: GridMasonry },
     {
-      name: "Search Events",
+      name: "Search",
       href: "/internal/search/events",
       icon: MagnifyingGlass,
     },
@@ -43,7 +43,7 @@ const MobileSidebar = () => {
       href: "/internal/trackers?tab=allTrackers",
       icon: LineChart,
     },
-    { name: "Event Trends", href: "/internal/trends", icon: ChartBarRandom },
+    { name: "Trends", href: "/internal/trends", icon: ChartBarRandom },
     {
       name: "Coordinate",
       href: "/internal/coordinate",
@@ -58,6 +58,18 @@ const MobileSidebar = () => {
     { name: "Brandkit", href: "/widget/brandkit", icon: <BrandkitIcon /> },
     { name: "Widget", href: "/widget/list", icon: <WidgetIcon /> },
     { name: "Events", href: "/widget/events", icon: <EventsIcon /> },
+  ];
+  const prospectLinks = [
+    {
+      name: "Search",
+      href: "/internal/prospect",
+      icon: MagnifyingGlass,
+    },
+    {
+      name: "Tracker",
+      href: "",
+      icon: LineChart,
+    },
   ];
 
   return (
@@ -74,7 +86,36 @@ const MobileSidebar = () => {
       </div>
       <nav className="flex-1">
         <ul className="p-2 space-y-1">
-          {pathname.startsWith("/internal") ? (
+          { (pathname.startsWith("/internal/prospect") || pathname.startsWith("/internal/company"))
+              ? prospectLinks.map((link) => {
+                  const Icon = link.icon;
+                  const isActive =
+                    pathname === link.href ||
+                    (link.name === "Tracker" && pathname.startsWith("/internal/trackers"));
+                  return (
+                    <li key={link.name}>
+                      <SheetClose asChild>
+                        <Link href={link.href} className={link.name === "Tracker" ? "pointer-events-none" : ""}>
+                          <Button
+                            variant={isActive ? "secondary" : "ghost"}
+                            className={`w-full justify-start px-3 h-10 ${isActive ? "bg-primary text-white hover:bg-primary" : ""
+                              }`}
+                          >
+                            <Icon
+                              className="flex-shrink-0 mr-2"
+                              color={theme === "dark" ? "#fff" : ""}
+                            />
+                            <span>{link.name}</span>
+                            {link.name === "Tracker" &&
+                                <div className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#fff0f0] text-[#e5484d] ml-3">Coming soon</div>
+                              }
+                          </Button>
+                        </Link>
+                      </SheetClose>
+                    </li>
+                  );
+              })
+            : pathname.startsWith("/internal") ? (
             gtmLinks.map((link) => {
               const Icon = link.icon;
               const isActive =
@@ -180,6 +221,7 @@ const MobileSidebar = () => {
         )}
         <span className="sr-only">Toggle theme</span>
       </Button>
+      <span className="text-xs text-muted-foreground px-4 mb-3">Version 1.0.0</span>
     </div>
   );
 };

@@ -622,6 +622,7 @@ export default function MapComponent({
                     height: !isGlobal ? "calc(100vh - 178px)" : "300px",
                   }}
                   onMove={onMove}
+                
                   onLoad={onMapLoad}
                   onClick={handleMapClick}
                   onMouseMove={(e) => {
@@ -677,7 +678,7 @@ export default function MapComponent({
                   projection={{ name: "mercator" }}
                   mapStyle={MapStyle.Street}
                   mapboxAccessToken={MapboxToken}
-                  minZoom={0.8}
+                  minZoom={1.25}
                   interactiveLayerIds={[
                     "clustered-counts-circle",
                     "unclustered-counts-circle",

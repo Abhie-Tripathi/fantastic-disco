@@ -1,0 +1,602 @@
+[
+    {
+        "id_10x": "10",
+        "id": "2cfcbc58-41ab-5cb6-b073-ed65f1d81f0a",
+        "name": "Computer & Gadgets",
+        "slug": "computer"
+    },
+    {
+        "id_10x": "14",
+        "id": "05b47507-b137-58ab-aa9c-7a8a39ba3fec",
+        "name": "Industrial Products",
+        "slug": "industrial-products"
+    },
+    {
+        "id_10x": "364",
+        "id": "5ff24060-e4b4-5ad9-afd7-3476b6acbfa8",
+        "name": "Instrumentation",
+        "slug": "instrumentation"
+    },
+    {
+        "id_10x": "121",
+        "id": "26888e09-4167-59bb-a705-82065b3bcce1",
+        "name": "Consumer Fair",
+        "slug": "consumer-fairs"
+    },
+    {
+        "id_10x": "379",
+        "id": "d8bbf905-a116-5fe2-8b33-9fad05694054",
+        "name": "Investment",
+        "slug": "investment"
+    },
+    {
+        "id_10x": "103",
+        "id": "a4c2d6b4-b468-594b-b19e-6463aff3b8e6",
+        "name": "Renewable Energy",
+        "slug": "renewable-energy"
+    },
+    {
+        "id_10x": "40",
+        "id": "27b63a66-0b0f-5c4c-91ca-8d09983a1719",
+        "name": "Scientific Instruments",
+        "slug": "scientific-instruments"
+    },
+    {
+        "id_10x": "36",
+        "id": "d1d00ef8-c4e9-56cd-bad5-03970d4bc1bf",
+        "name": "Sports & Sporting",
+        "slug": "sports-goods"
+    },
+    {
+        "id_10x": "233",
+        "id": "cc792f15-bf5e-57d8-938f-128afe43fa52",
+        "name": "Marketing",
+        "slug": "marketing"
+    },
+    {
+        "id_10x": "232",
+        "id": "4b9cc337-2154-5135-98da-a3d7ff4f7bd7",
+        "name": "Law & Government",
+        "slug": "law-government"
+    },
+    {
+        "id_10x": "301",
+        "id": "6e4e7097-7899-5838-a963-97a2df876b6d",
+        "name": "Economics",
+        "slug": "economics"
+    },
+    {
+        "id_10x": "49",
+        "id": "854f623f-dff7-52d4-88af-d74f1255cd05",
+        "name": "Advertising",
+        "slug": "media-advertising"
+    },
+    {
+        "id_10x": "56",
+        "id": "b8c01f46-14d5-5b2c-8090-bbfc6afa7db8",
+        "name": "Architecture & Designing",
+        "slug": "architecture"
+    },
+    {
+        "id_10x": "238",
+        "id": "11b90bbf-c573-585c-b78f-e5eb0525721b",
+        "name": "Insurance",
+        "slug": "insurance"
+    },
+    {
+        "id_10x": "311",
+        "id": "00e58395-65b9-5a0e-ab66-a0c11cbac6f1",
+        "name": "Infectious Diseases",
+        "slug": "infectious-diseases"
+    },
+    {
+        "id_10x": "163",
+        "id": "396c3431-5052-5f12-8d48-ba291feb5578",
+        "name": "Artificial Intelligence",
+        "slug": "artificial-intelligence"
+    },
+    {
+        "id_10x": "109",
+        "id": "fcb54ddb-b143-5e36-9b66-9085dc8483ee",
+        "name": "Wedding & Bridal",
+        "slug": "wedding-bridal"
+    },
+    {
+        "id_10x": "68",
+        "id": "d551d92e-eba9-57ee-8d70-80b6ab409248",
+        "name": "HR, Jobs & Career",
+        "slug": "hr-placement"
+    },
+    {
+        "id_10x": "167",
+        "id": "342144bd-3d53-5742-a940-acdcd241e992",
+        "name": "Nursing",
+        "slug": "nursing"
+    },
+    {
+        "id_10x": "29",
+        "id": "3226c1bf-a782-59ec-9fcd-7ba2f03540ed",
+        "name": "Minerals, Metals & Ores",
+        "slug": "metals-minerals"
+    },
+    {
+        "id_10x": "231",
+        "id": "d0b76371-4d33-5109-90e1-8b2e29097258",
+        "name": "Supply Chain",
+        "slug": "supplychain"
+    },
+    {
+        "id_10x": "324",
+        "id": "7ff817fc-a594-514e-9f5e-f2fba9632669",
+        "name": "Mathematics",
+        "slug": "mathematics"
+    },
+    {
+        "id_10x": "58",
+        "id": "d51633b6-b66c-5657-b777-2806d4e77807",
+        "name": "Real Estate & Property",
+        "slug": "real-estate"
+    },
+    {
+        "id_10x": "131",
+        "id": "a1356aaf-26bb-58c0-8986-6dcae5ebce4d",
+        "name": "Biotechnology",
+        "slug": "biotechnology"
+    },
+    {
+        "id_10x": "220",
+        "id": "f55a65ce-01e2-50d9-9408-b4018b7876c8",
+        "name": "Social Sciences",
+        "slug": "social-sciences"
+    },
+    {
+        "id_10x": "217",
+        "id": "26b2476a-47da-5f5f-ace3-c74bb344d708",
+        "name": "eLearning",
+        "slug": "elearning"
+    },
+    {
+        "id_10x": "382",
+        "id": "eec25f55-d12a-50f5-8686-1be9fc376180",
+        "name": "Social Media",
+        "slug": "social-media"
+    },
+    {
+        "id_10x": "204",
+        "id": "272bdec7-ee36-55cb-a841-588fa616096c",
+        "name": "Big Data",
+        "slug": "big-data"
+    },
+    {
+        "id_10x": "170",
+        "id": "f7628853-94fb-54c2-9685-31b4be6c23fd",
+        "name": "Psychology",
+        "slug": "psychology"
+    },
+    {
+        "id_10x": "417",
+        "id": "757023b5-2972-5091-bce4-fb2baeda6f71",
+        "name": "Risk Management",
+        "slug": "risk-management"
+    },
+    {
+        "id_10x": "166",
+        "id": "a7019490-0220-5535-9d11-8d5784c600e6",
+        "name": "Cancer & Oncology",
+        "slug": "oncology"
+    },
+    {
+        "id_10x": "18",
+        "id": "d1a04024-2e64-513d-b1b7-940ab8e17eb6",
+        "name": "Gems & Jewelry",
+        "slug": "gems-jewelry"
+    },
+    {
+        "id_10x": "424",
+        "id": "ee43f914-4b2c-5cf3-b21c-c99d078d2bd8",
+        "name": "Computer Science",
+        "slug": "computer-science"
+    },
+    {
+        "id_10x": "367",
+        "id": "62963d83-d02f-5f2d-8854-bab1817edf8e",
+        "name": "Analytics & Statistics",
+        "slug": "analytics-statistics"
+    },
+    {
+        "id_10x": "104",
+        "id": "1daadf2a-c27b-50e3-93e2-d22c75993f1e",
+        "name": "Marine & Boat",
+        "slug": "marine-boat"
+    },
+    {
+        "id_10x": "132",
+        "id": "726d8cfa-8688-5f2e-8eed-3800bb232885",
+        "name": "Drugs & Medicines",
+        "slug": "drugs-medicines"
+    },
+    {
+        "id_10x": "11",
+        "id": "b223fe90-6b67-5d64-82f3-8c952b693485",
+        "name": "Cosmetics",
+        "slug": "cosmetics"
+    },
+    {
+        "id_10x": "136",
+        "id": "62443402-9dc9-5b16-a86c-815d2246fe7b",
+        "name": "Startups & Entrepreneurship",
+        "slug": "startups"
+    },
+    {
+        "id_10x": "171",
+        "id": "232dcfc0-d8e7-58c0-8c3a-79c17cd65b44",
+        "name": "Public Health",
+        "slug": "public-health"
+    },
+    {
+        "id_10x": "8",
+        "id": "314b51b4-822d-5feb-8ca2-37d8390dfdf7",
+        "name": "Chemicals & Dyes",
+        "slug": "chemicals"
+    },
+    {
+        "id_10x": "38",
+        "id": "a76efce3-e192-58d6-bf05-62c76b9092cc",
+        "name": "Textile, Fabrics & Yarns",
+        "slug": "textiles-fabrics"
+    },
+    {
+        "id_10x": "45",
+        "id": "577584cd-693d-5642-8438-548a7c81e97b",
+        "name": "Railway & Roadways",
+        "slug": "transport"
+    },
+    {
+        "id_10x": "76",
+        "id": "03826434-c8b8-52cf-bb4f-6073a2914cf8",
+        "name": "Music & Sound",
+        "slug": "musical-instruments"
+    },
+    {
+        "id_10x": "119",
+        "id": "86ca6ab7-0edb-57e6-8ce2-83394092163c",
+        "name": "Wine & Spirits",
+        "slug": "wine-spirits"
+    },
+    {
+        "id_10x": "149",
+        "id": "9d320000-f5d2-5522-80a4-15447c3a1174",
+        "name": "Toys & Games",
+        "slug": "toys-games"
+    },
+    {
+        "id_10x": "93",
+        "id": "ca760bad-2891-5f7b-ad30-5031b63b7323",
+        "name": "Furniture",
+        "slug": "furniture-shows"
+    },
+    {
+        "id_10x": "151",
+        "id": "0ebe49a3-9b2c-5438-a46f-8fbfd6ae3363",
+        "name": "Aerospace",
+        "slug": "aerospace"
+    },
+    {
+        "id_10x": "397",
+        "id": "b3a787c2-c8f7-5620-8e66-a1be4c107bb3",
+        "name": "Primary Care",
+        "slug": "primary-care"
+    },
+    {
+        "id_10x": "117",
+        "id": "f74f9633-646f-5fe0-8be9-0b789ca460b7",
+        "name": "Veterinary",
+        "slug": "pets-veterinary"
+    },
+    {
+        "id_10x": "219",
+        "id": "e0b8799e-583e-5897-9493-538fb34f931c",
+        "name": "Philosophy",
+        "slug": "philosophy"
+    },
+    {
+        "id_10x": "46",
+        "id": "6632478b-55da-5313-971d-f8feccf8bbed",
+        "name": "Furnishings & Decor",
+        "slug": "home-textiles"
+    },
+    {
+        "id_10x": "9",
+        "id": "7b4e049d-0132-52d9-8621-e2f2423d4024",
+        "name": "Stationery",
+        "slug": "office-supplies"
+    },
+    {
+        "id_10x": "247",
+        "id": "17e387da-b735-51d8-9d6b-dacc12129418",
+        "name": "Accounting & Auditing",
+        "slug": "accounting"
+    },
+    {
+        "id_10x": "152",
+        "id": "40b7b96b-0f11-5086-82e3-3ccb2d2e7ec6",
+        "name": "Auto Shows",
+        "slug": "auto-shows"
+    },
+    {
+        "id_10x": "42",
+        "id": "b159313a-2872-5b0e-9fa0-cc76b34376b3",
+        "name": "Plastic & Polymers",
+        "slug": "plastic"
+    },
+    {
+        "id_10x": "134",
+        "id": "9145b0ef-22e4-5733-ab04-3da0056ba239",
+        "name": "Automation & Robotics",
+        "slug": "automation-robotics"
+    },
+    {
+        "id_10x": "133",
+        "id": "8ebe271c-2007-5d11-9c4f-07e4b542ed83",
+        "name": "Hospitals & Surgical",
+        "slug": "hospital-medical-equipments"
+    },
+    {
+        "id_10x": "81",
+        "id": "0b276fb4-9240-5ef0-a9b2-469e7048578f",
+        "name": "Fabrications",
+        "slug": "fabrication"
+    },
+    {
+        "id_10x": "198",
+        "id": "ba52e828-3a0f-54c8-8072-eb1e3fa53dae",
+        "name": "Cyber Security",
+        "slug": "cyber-security"
+    },
+    {
+        "id_10x": "173",
+        "id": "57bea83f-5882-5573-b0a0-834dd2a0b070",
+        "name": "Nanotechnology",
+        "slug": "nanotechnology"
+    },
+    {
+        "id_10x": "312",
+        "id": "b6d2b6b8-a155-5a49-857e-e50d4bf36e49",
+        "name": "Immunology",
+        "slug": "immunology"
+    },
+    {
+        "id_10x": "25",
+        "id": "c651147d-c4b4-559f-adef-98e46557a254",
+        "name": "Tools & Equipments",
+        "slug": "tools"
+    },
+    {
+        "id_10x": "573",
+        "id": "16deb574-70c1-5c39-b675-04e20e1b0063",
+        "name": "Job Fair",
+        "slug": "job-fairs"
+    },
+    {
+        "id_10x": "140",
+        "id": "2494166f-5c6d-5c9e-95d8-fae568e9f756",
+        "name": "Air & Water Management",
+        "slug": "air-water"
+    },
+    {
+        "id_10x": "129",
+        "id": "eaddd5d1-7928-596d-a2c0-231c06a9170e",
+        "name": "Petroleum, Oil & Gas",
+        "slug": "oil-gas"
+    },
+    {
+        "id_10x": "175",
+        "id": "65beb9ac-d43f-5dd4-a5da-02b25517550f",
+        "name": "Dentistry",
+        "slug": "dentistry"
+    },
+    {
+        "id_10x": "105",
+        "id": "b61703ef-34d6-57c2-8e31-c4cec1e8f057",
+        "name": "Meat, Poultry & Seafood",
+        "slug": "meat-seafood"
+    },
+    {
+        "id_10x": "32",
+        "id": "f73101b3-d3ab-59e7-8434-c737c13cdb92",
+        "name": "Print & Printing",
+        "slug": "printing"
+    },
+    {
+        "id_10x": "252",
+        "id": "db7ec6db-4b7c-5141-a9ee-c6c9ec44cfad",
+        "name": "Optics",
+        "slug": "laser-optics"
+    },
+    {
+        "id_10x": "418",
+        "id": "cce6e922-b4fc-5cad-a241-c05956eabe7d",
+        "name": "Dance",
+        "slug": "dance"
+    },
+    {
+        "id_10x": "529",
+        "id": "60a216d4-ba44-5565-b4f8-1c85132e057b",
+        "name": "Machine Learning",
+        "slug": "machinelearning"
+    },
+    {
+        "id_10x": "321",
+        "id": "2434f8cd-5065-516c-a756-8f9515864886",
+        "name": "Neuroscience",
+        "slug": "neuroscience"
+    },
+    {
+        "id_10x": "164",
+        "id": "3ead84ce-3075-511f-922e-9c822664363c",
+        "name": "Linguistics",
+        "slug": "linguistics"
+    },
+    {
+        "id_10x": "162",
+        "id": "c3a5280e-9d05-52a2-bd6d-15bdbb0360a7",
+        "name": "Blockchain",
+        "slug": "blockchain"
+    },
+    {
+        "id_10x": "287",
+        "id": "9ab523b2-bd87-59b2-8614-b5075faec254",
+        "name": "Rehabilitation",
+        "slug": "care-rehabilitation"
+    },
+    {
+        "id_10x": "153",
+        "id": "5449ce00-bc01-5fed-9536-5bac792a457d",
+        "name": "Air, Aviation & Airports",
+        "slug": "aviation"
+    },
+    {
+        "id_10x": "169",
+        "id": "2c6cb43b-923c-5d3e-8997-b80f626eadcc",
+        "name": "Diabetes",
+        "slug": "diabetes"
+    },
+    {
+        "id_10x": "281",
+        "id": "ce9300b4-f889-5305-8093-554f64020da2",
+        "name": "Public Infrastructure",
+        "slug": "public-infrastructure"
+    },
+    {
+        "id_10x": "307",
+        "id": "1668c05d-901f-55f9-9365-e0dbafbad457",
+        "name": "Pharmacology",
+        "slug": "pharmacology"
+    },
+    {
+        "id_10x": "110",
+        "id": "f5951509-924f-58e6-ac33-3a5308b8f550",
+        "name": "Horticulture & Floriculture",
+        "slug": "horti-flora"
+    },
+    {
+        "id_10x": "525",
+        "id": "0b92112d-e105-53ea-ae91-9e1727d7eaab",
+        "name": "Quality Management",
+        "slug": "quality-management"
+    },
+    {
+        "id_10x": "116",
+        "id": "66b28828-c53e-58e9-92c4-5b3b910a7818",
+        "name": "Natural & Organic",
+        "slug": "natural-organic"
+    },
+    {
+        "id_10x": "178",
+        "id": "e78f1374-d5b4-5f7d-86d2-ee9b6df765be",
+        "name": "Genetics",
+        "slug": "genetics"
+    },
+    {
+        "id_10x": "304",
+        "id": "90c18d88-b674-560e-9818-4bab9361b9c5",
+        "name": "Civil Engineering",
+        "slug": "civil-engineering"
+    },
+    {
+        "id_10x": "422",
+        "id": "7e155924-8194-56f6-8d96-8f53cae9e132",
+        "name": "Software Engineering",
+        "slug": "software-engineering"
+    },
+    {
+        "id_10x": "208",
+        "id": "20487d41-8e9c-5754-97c4-be988c217bb5",
+        "name": "Ecology",
+        "slug": "ecology"
+    },
+    {
+        "id_10x": "286",
+        "id": "44302036-7fdf-5c87-9a47-5cec2cc33875",
+        "name": "Battery",
+        "slug": "battery"
+    },
+    {
+        "id_10x": "122",
+        "id": "4a4446f1-7745-56b0-a54e-ca661cfc73e7",
+        "name": "Antiques & Philately",
+        "slug": "antiques-philately"
+    },
+    {
+        "id_10x": "74",
+        "id": "2d1ecd75-bb77-550a-a08f-75acbc3ce0fa",
+        "name": "Household Consumables",
+        "slug": "home-supplies"
+    },
+    {
+        "id_10x": "84",
+        "id": "bdd9dc77-493c-5f86-958f-77f7d63a8048",
+        "name": "Ayurveda & Herbal",
+        "slug": "ayurveda-herbal"
+    },
+    {
+        "id_10x": "237",
+        "id": "77d007ba-3dea-5bc3-a935-af521a16f2ab",
+        "name": "Fintech",
+        "slug": "fintech"
+    },
+    {
+        "id_10x": "177",
+        "id": "06b3f323-e0af-5ed7-8fdf-7a36219b9fe8",
+        "name": "Neurology",
+        "slug": "neurology"
+    },
+    {
+        "id_10x": "250",
+        "id": "0939ab7b-1f2a-5247-98f4-7de8615460b3",
+        "name": "Nutrition & Food Security",
+        "slug": "food-nutrition"
+    },
+    {
+        "id_10x": "460",
+        "id": "30be6abe-fd6a-5611-a6e5-f8edd7564eba",
+        "name": "Mental Healthcare",
+        "slug": "mental-healthcare"
+    },
+    {
+        "id_10x": "373",
+        "id": "86b08778-5432-5593-b32b-97e38afcc8f1",
+        "name": "Microbiology",
+        "slug": "microbiology"
+    },
+    {
+        "id_10x": "495",
+        "id": "1d7e7282-554b-5fb5-8372-414a18e154a2",
+        "name": "Patient Care",
+        "slug": "patient-care"
+    },
+    {
+        "id_10x": "174",
+        "id": "1bc7cf27-a37e-5897-ad34-379c41a87b2f",
+        "name": "Psychiatry",
+        "slug": "psychiatry"
+    },
+    {
+        "id_10x": "225",
+        "id": "fa25072e-53aa-5a17-9868-78e1c6178b59",
+        "name": "Nuclear Energy",
+        "slug": "nuclear-atomic"
+    },
+    {
+        "id_10x": "182",
+        "id": "75e32068-c48c-5652-b7fc-d0a50af2f014",
+        "name": "Pathology",
+        "slug": "pathology"
+    },
+    {
+        "id_10x": "376",
+        "id": "113528ab-e2ce-50fb-ad1c-550027b018c8",
+        "name": "E-Mobility",
+        "slug": "electromobility"
+    }
+]

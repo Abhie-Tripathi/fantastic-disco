@@ -79,10 +79,13 @@ export const endpoints = {
     pocUnmask: `${BASE_URL}/event-poc/unmask`,
     latestComment: `${BASE_URL}/dashboard/latest-comment`,
   },
-  intent: {
-    userEventInterest: `${BASE_URL}/intents/user-event-interest`,
+  company: {
+    list: `${BASE_URL}/company/search`,
+    unmaskUser: `${BASE_URL}/company/unmask`,
+    detail: `${BASE_URL}/company/search`,
+    events: `${BASE_URL}/company/event`,
+    pocList: `${BASE_URL}/company/poc`,
   },
-
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {
     getKit: `${BASE_URL}/kit`,

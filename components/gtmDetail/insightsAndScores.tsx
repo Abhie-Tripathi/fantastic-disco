@@ -56,7 +56,7 @@ export const InsightsAndScores = ({
   //   below5CountryCategoryEvent: below5CountryCategoryEvent,
   // };
   const { morphedData } = useFilterContext();
-  const { eventAnalytics, eventRanking } = morphedData || {};
+  const { eventAnalytics, eventRanking } = morphedData;
   const isAnalyticsEnabled = eventAnalytics && eventAnalytics.isEnabled;
   const isTrustScoreEnabled = eventRanking && eventRanking.isEnabled;
   const economicImpactEnabled =
@@ -74,57 +74,55 @@ export const InsightsAndScores = ({
     }
   }, [inView]);
   return (
-    <div className={`flex flex-col gap-6`} ref={ref}>
-      <Heading
-        heading="Insights and Scores"
-        scrollSection={scrollSection}
-        tooltipDescription="Shows the event’s influence, visitor appeal, and economic impact."
-      />
-      <div className="flex flex-col gap-6">
-        <div className="flex gap-6 max-xl:flex-col max-xl:h-auto">
-          {((scores &&
-            Object.values(scores).every((value) => value !== null)) ||
-            (trustScore !== null && trustScore != null && trustScore > 0)) && (
-            <div
-              className={`w-1/2 grid ${
-                economicImpact &&
-                economicImpact.trim() !== "" &&
-                economicImpactBreakdown &&
-                Object.keys(economicImpactBreakdown).length > 0
-                  ? "w-1/2 grid-cols-2 grid-rows-2"
-                  : "w-full grid-rows-1 grid-cols-4 h-fit max-xl:grid-cols-2 max-xl:grid-rows-2"
-              }  gap-6 max-xl:w-full`}
-            >
-              <>
-                {scores &&
-                  scores.impactScore !== 0 &&
-                  scores.impactScore !== null && (
-                    <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
-                              Impact Score
-                            </h1>
-                          </TooltipTrigger>
-                          <TooltipContent className="w-56 tooltip-content-styles">
-                            <p className="text-[var(--secondary-text-color)] font-medium">
-                              Quantifies the significance of an event within a
-                              specific location.
-                            </p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      {isAnalyticsEnabled ? (
-                        <CircularProgressBar value={scores.impactScore} />
-                      ) : (
-                        <Restriction />
-                      )}
-                    </div>
-                  )}
-                {trustScore !== null &&
-                  trustScore !== undefined &&
-                  trustScore > 0 && (
+    isValid && (
+      <div className={`flex flex-col gap-6`} ref={ref}>
+        <Heading
+          heading="Insights and Scores"
+          scrollSection={scrollSection}
+          tooltipDescription="Shows the event’s influence, visitor appeal, and economic impact."
+        />
+        <div className="flex flex-col gap-6">
+          <div className="flex gap-6 max-xl:flex-col max-xl:h-auto">
+            {((scores &&
+              Object.values(scores).some((value) => value !== null)) ||
+              (trustScore !== null && trustScore > 0)) && (
+              <div
+                className={`w-1/2 grid ${
+                  economicImpact &&
+                  economicImpact.trim() !== "" &&
+                  Object.keys(economicImpactBreakdown).length > 0
+                    ? "w-1/2 grid-cols-2 grid-rows-2 max-xl:grid-rows-subgrid"
+                    : "w-full grid-rows-1 grid-cols-4 h-fit max-xl:grid-cols-2 max-xl:grid-rows-2"
+                }  gap-6 max-xl:w-full`}
+              >
+                <>
+                  {scores &&
+                    scores.impactScore !== 0 &&
+                    scores.impactScore !== null && (
+                      <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                                Impact Score
+                              </h1>
+                            </TooltipTrigger>
+                            <TooltipContent className="w-56 tooltip-content-styles">
+                              <p className="text-[var(--secondary-text-color)] font-medium">
+                                Quantifies the significance of an event within a
+                                specific location.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        {isAnalyticsEnabled ? (
+                          <CircularProgressBar value={scores.impactScore} />
+                        ) : (
+                          <Restriction />
+                        )}
+                      </div>
+                    )}
+                  {trustScore !== null && trustScore > 0 && (
                     <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
                       <TooltipProvider>
                         <Tooltip>
@@ -151,10 +149,78 @@ export const InsightsAndScores = ({
                       )}
                     </div>
                   )}
-                {scores &&
-                  scores.inboundScore !== null &&
-                  scores.inboundScore > 0 && (
-                    <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                  {scores &&
+                    scores.inboundScore !== null &&
+                    scores.inboundScore > 0 && (
+                      <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                                Inbound Score
+                              </h1>
+                            </TooltipTrigger>
+                            <TooltipContent className="w-56 tooltip-content-styles">
+                              <p className="text-[var(--secondary-text-color)] font-medium">
+                                The number of attendees traveling to the event
+                                from other cities within the host country.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        {isAnalyticsEnabled ? (
+                          <CircularProgressBar value={scores.inboundScore} />
+                        ) : (
+                          <Restriction />
+                        )}
+                      </div>
+                    )}
+                  {scores &&
+                    scores.internationalScore !== null &&
+                    scores.internationalScore > 0 && (
+                      <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full cursor-pointer">
+                                International Score
+                              </h1>
+                            </TooltipTrigger>
+                            <TooltipContent className="w-56 tooltip-content-styles">
+                              <p className="text-[var(--secondary-text-color)] font-medium">
+                                The number of attendees traveling to the event
+                                from outside the host country.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        {isAnalyticsEnabled ? (
+                          <CircularProgressBar
+                            value={scores.internationalScore}
+                          />
+                        ) : (
+                          <Restriction />
+                        )}
+                      </div>
+                    )}
+                </>
+              </div>
+            )}
+
+            {economicImpact &&
+              economicImpact.trim() !== "" &&
+              Object.keys(economicImpactBreakdown).length > 0 && (
+                <div
+                  className={`${
+                    (scores &&
+                      Object.values(scores).some((value) => value !== null)) ||
+                    (trustScore !== null && trustScore > 0)
+                      ? "w-1/2"
+                      : "w-fill"
+                  } border border-[#EBEBEB] relative rounded-md p-4 h-full max-h-96 overflow-y-auto scrollbar max-xl:w-full`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-4">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
