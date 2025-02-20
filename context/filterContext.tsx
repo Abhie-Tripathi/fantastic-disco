@@ -63,12 +63,12 @@ interface EventFilterData {
   };
 }
 interface Filters {
-  interest?: string;
+  // interest?: string;
   show?: string;
-  liked?: string;
+  // liked?: string;
   eventTypes?: string;
   categories?: string;
-  status?: string;
+  // status?: string;
   top?: string;
   locationIds?: string;
   geoCoordinates?: string;
@@ -110,6 +110,11 @@ interface Filters {
   total_attendance_gte?: string;
   total_attendance_lte?: string;
   eventType?:string;
+
+  // Coordinate Filters
+  type?: string;
+  upvotedBy?: string;
+  status?: string;
 
   // Prospect Filters
   viewBy?: string;

@@ -1,16 +1,15 @@
 import Image from 'next/image';
 import React from 'react'
 import styles from './singleevent.style.module.css'
-import WorkIcon from '/public/work.svg'
+// import WorkIcon from '/public/work.svg'
 import { useTheme } from '@/context';
 // import Link from 'next/link';
 
 interface EventData {
     id: string;
-    imageUrl: string;
     name: string;
     description: string;
-    logoUrl?:string;
+    logoUrl?: string | null;
 }
 const SingleEvent = (props: EventData) => {
     const {theme} = useTheme();

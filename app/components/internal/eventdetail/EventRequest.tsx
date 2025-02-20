@@ -10,10 +10,14 @@ import { GAEvent } from "@/utils/GAEvent";
 interface DetailsProps {
   open: boolean;
   participentData: any;
+  coordinateActions: any;
 }
 
-const EventRequest = ({ open, participentData }: DetailsProps) => {
-  console.log("openene", open);
+const EventRequest = ({
+  open,
+  participentData,
+  coordinateActions,
+}: DetailsProps) => {
   const [accordianToggle, setAccordianToggle] = useState(open);
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
@@ -23,7 +27,8 @@ const EventRequest = ({ open, participentData }: DetailsProps) => {
         className={styles.header}
         onClick={() => {
           setAccordianToggle(!accordianToggle);
-          !accordianToggle && GAEvent("Coordinate", "Enquiry Detail", "Team Request", "Expanded");
+          !accordianToggle &&
+            GAEvent("Coordinate", "Enquiry Detail", "Team Request", "Expanded");
         }}
       >
         <Image src={PeopleIcon} alt="page" className={iconClass} />
@@ -37,11 +42,20 @@ const EventRequest = ({ open, participentData }: DetailsProps) => {
       {accordianToggle && (
         <div className={styles.accordian}>
           <div className={styles.main_section}>
-            {Object.entries(participentData).map(([key, value], index: number) => (
-              (participentData[key].length > 0) ? (
-                <AttendeeCard key={index} cardType={key} userList={participentData[key]} /> )
-                : <></>
-            ))}
+            {coordinateActions.map(
+              (item: any) =>
+                participentData.filter(
+                  (users: any) => users.interest === item.status
+                ).length > 0 && (
+                  <AttendeeCard
+                    key={item.status}
+                    cardType={item.label}
+                    userList={participentData.filter(
+                      (users: any) => users.interest === item.status
+                    )}
+                  />
+                )
+            )}
           </div>
         </div>
       )}

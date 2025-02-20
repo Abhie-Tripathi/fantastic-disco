@@ -69,15 +69,24 @@ export const endpoints = {
     getSavedEvents: `${BASE_URL}/tracker`,
     saveEvent: `${BASE_URL}/tracker/saved-events`,
     getNotes: `${BASE_URL}/comment?stage=INTERNAL&entityType=TRACKER`,
-    saveNotes: `${BASE_URL}/comment`,
+    saveNotes: `${BASE_URL}/comments`,
   },
   coordinate: {
-    enquiry: `${BASE_URL}/userInterest/enquiry`,
-    participent: `${BASE_URL}/userInterest/totalParticipent`,
+    enquiry: `${BASE_URL}/me/account/enquiries`,
+    participent: `${BASE_URL}/me/account/enquiries/count`,
     iterestedUsers: `${BASE_URL}/userInterest`,
-    enquiryDetail: `${BASE_URL}/enquiry`,
+    enquiryDetail: `${BASE_URL}/enquiries`,
     pocUnmask: `${BASE_URL}/event-poc/unmask`,
     latestComment: `${BASE_URL}/dashboard/latest-comment`,
+    createIntent: `${BASE_URL}/intents/user-event-interest`,
+    eventDetail: `${BASE_URL}/events`,
+  },
+  intent: {
+    enquiryActivity: `${BASE_URL}/intents/enquiry-activity`,
+  },
+  account: {
+    users: `${BASE_URL}/me/account/users`,
+    configuration: `${BASE_URL}/me/account/configuration`,
   },
   company: {
     list: `${BASE_URL}/company/search`,

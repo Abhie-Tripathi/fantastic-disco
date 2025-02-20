@@ -9,9 +9,11 @@ import { useTheme } from '@/context';
 
 interface voteProps {
   type: string,
-  status?: string,
+  status: string,
+  label: string,
+  myActivityId: string | null,
   userList: [{name: string}]
-  handleVoteClick: (item: string)=> void,
+  handleVoteClick: (myActivityId: string | null, item: string) => void,
 }
 
 function getInitials(name: string) {
@@ -23,13 +25,13 @@ function getInitials(name: string) {
   return initials;
 }
 
-const UpVoteTag: React.FC<voteProps> = ({type, status, userList, handleVoteClick}) => {
+const UpVoteTag: React.FC<voteProps> = ({type, status, label, myActivityId, userList, handleVoteClick}) => {
 
   const {theme} = useTheme();
   const iconClass = theme === 'light' ? 'icons_light' : 'icon';
 
   const upVote = () =>{
-    handleVoteClick(type);
+    handleVoteClick(myActivityId, type);
   }
   const formatTag=(tag:string)=>{
     if(tag==="Exhibiting") return "Exhibit";
@@ -61,7 +63,7 @@ const UpVoteTag: React.FC<voteProps> = ({type, status, userList, handleVoteClick
         <Image src={upArrow} alt="up" width={16} height={16} className='icons_light'/>
         }
         
-        {type}
+        {label}
       </div>
     </div>
   )

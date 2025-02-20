@@ -19,9 +19,9 @@ interface PropType {
 }
 interface UserType {
   id: string;
-  firstname: string;
-  lastname: string;
-  profilePicture: string;
+  name: string;
+  // lastname: string;
+  imageUrl: string;
 }
 const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,17 +42,19 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
   };
 
   const fetchData = async () => {
-    const { data, error } = await myFetch(`${baseUrl}/auth/users?limit=100`);
+    // const { data, error } = await myFetch(`${baseUrl}/auth/users?limit=100`);
+
+    const data: any = await coordinateService.getAllUsers();
 
     if (data) {
-      setUserList(data.users);
+      setUserList(data);
     }
 
-    if (error) {
-      console.log(error);
-      showToast("error", error.message);
-      return;
-    }
+    // if (error) {
+    //   console.log(error);
+    //   showToast("error", error.message);
+    //   return;
+    // }
   };
   useEffect(() => {
     fetchData();
@@ -62,7 +64,7 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
     setIsOpen(false);
     const dataToSend = {
       enquiryId: enquiryId,
-      userId: userId,
+      ownerId: userId,
     };
     const data: any = await coordinateService.setEnquiryOwner(dataToSend);
     if (data) {
@@ -72,10 +74,18 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
   };
 
   const getOwnerDetails = async () => {
-    const data: any = await coordinateService.getEnquiryOwner(enquiryId);
-    if (data) {
-      setOwner(data.user);
+    try {
+      const data: any = await coordinateService.getEnquiryOwner(enquiryId);
+      if (data) {
+        setOwner(data?.owner);
+      }
+    } catch (error: any) {
+      if(error?.statusCode === 404) {
+        setOwner(null);
+      }
     }
+    
+    
   };
 
   useEffect(() => {
@@ -93,31 +103,33 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
             className={styles.dropdown_value}
             style={{ display: "flex", marginRight: "1rem" }}
           >
-  {owner && owner?.id === null ? (
-    <Image
-        src={ProfileIcon}
-        alt="user"
-        className={`${styles["owner_img"]} h-[48px] w-[48px]`}
-        width={48}
-        height={48}
-        referrerPolicy="no-referrer"
-    />
-) : owner?.profilePicture === null ? (
-    <UserProfile 
-        name={owner.aliasName} 
-        width={48} 
-        height={48}
-        borderRadius="50%" 
-    />
-) : (
-    <Image
-        src={owner?.profilePicture}
-        alt="banner"
-        width={48}
-        height={48}
-        className={`${styles.followerProfilePhoto} h-[48px] w-[48px]`}
-    />
-)}
+            {owner ? (
+              owner?.profileImage === null ? (
+                <UserProfile
+                  name={owner.name}
+                  width={48}
+                  height={48}
+                  borderRadius="50%"
+                />
+              ) : (
+                <Image
+                  src={owner?.profileImage}
+                  alt="banner"
+                  width={48}
+                  height={48}
+                  className={`${styles.followerProfilePhoto} h-[48px] w-[48px]`}
+                />
+              )
+            ) : (
+              <Image
+                src={ProfileIcon}
+                alt="user"
+                className={`${styles["owner_img"]} h-[48px] w-[48px]`}
+                width={48}
+                height={48}
+                referrerPolicy="no-referrer"
+              />
+            )}
             
             <div>
               <span
@@ -127,7 +139,7 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
                   marginRight: "0.5rem",
                 }}
               >
-                {owner && (owner.id === null ? "Assign Owner" : owner.name)}
+                {owner ? owner.name : "Assign Owner"}
                 &nbsp;
               </span>
               <br />
@@ -152,11 +164,11 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
                 onClick={() => handleChangeOwner(user.id)}
                 key={user.id}
               >
-                { user.profilePicture === null ? 
-                <UserProfile name={`${user.firstname} ${user.lastname}`} width={48} height={48} borderRadius="50%"/>:
+                { user.imageUrl === null ? 
+                <UserProfile name={`${user.name}`} width={48} height={48} borderRadius="50%"/>:
                 <Image
                   src={
-                   user.profilePicture
+                   user.imageUrl
                   }
                   alt="user"
                   className={`${styles["owner_img"]} h-[48px] w-[48px]`}
@@ -173,7 +185,7 @@ const OwnerList: React.FC<PropType> = ({ enquiryId }) => {
                     marginRight: "0.5rem",
                   }}
                 >
-                  {user.firstname} {user.lastname}
+                  {user.name}
                 </span>
               </div>
             ))}
