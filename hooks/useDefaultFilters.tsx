@@ -330,10 +330,13 @@ export function useDefaultFilters() {
 
     try {
       // Try to use enabled filters first
-      const enabledFilters = await getFilterConfiguration();
-      if (enabledFilters?.data && Object.keys(enabledFilters.data).length > 0) {
+      const response = await getFilterConfiguration();
+      const enabledFilters = response && "filter" in response ? response : { filter: {} };
+      console.log(enabledFilters);
+      
+      if (enabledFilters) {
         const params = new URLSearchParams(searchParams.toString());
-        const enabledFilterParams = mapEnabledFiltersToParams(enabledFilters);
+        const enabledFilterParams = mapEnabledFiltersToParams(enabledFilters.filter);
 
         Object.entries(enabledFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, value);

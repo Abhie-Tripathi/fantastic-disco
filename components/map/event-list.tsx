@@ -340,8 +340,8 @@ function EventList({
       source === "tracker"
         ? getTrackerMapEvents(
             trackerId ?? "",
-            `max=20&offset=${(currentPage - 1) * 20}`,
-            `type=${searchParam}&viewBound=${filteredParams}&stats=list&limit=20&skip=${
+            `${searchParams.get("eventType")}`,
+            `viewBound=${filteredParams}&stats=list&limit=20&offset=${
               (currentPage - 1) * 20
             }`
           )

@@ -25,18 +25,22 @@ interface OriginalResponse {
   
     adaptTrackerMapEventData(data: any) {
       const eventKey = data.events ? "events" : "result";
-
+      console.log(data);
+      
       const eventData = data[eventKey].map((item: any) => ({
-        id: item.id,
+        id: item.basic.id,
         eventImpactScore: null,
         latitude:
-          item.latitude,
+          item.basic.eventLocation
+          .venue.latitude,
         longitude:
-          item.longitude,
-        eventType: determineEventType(item.eventType),
+        item.basic.eventLocation
+        .venue.longitude,
+        eventType: determineEventType(item.basic.
+          primaryEventType),
       }));
       return {
-        count: data?.totalEvents || 0,
+        count: data?.count || 0,
         events: eventData || [],
       };
     },

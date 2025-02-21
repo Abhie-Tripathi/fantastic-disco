@@ -26,7 +26,7 @@ import { useTrackerServices } from "@/services/trackerServices";
 // import SideNav from "@/app/components/trackers/sideNav";
 import { useTrackerContext } from "@/context/tracker";
 import { Button } from "@/components/ui/button";
-import {Toggle} from "@/types/trackers"
+import { Toggle } from "@/types/trackers"
 function CustomeTracker({ fillColor }: { fillColor: string }) {
   return (
     <svg
@@ -59,10 +59,10 @@ interface EditData {
 }
 const Page = () => {
   const pathName = usePathname().split('/');
-  const {data, setIsNewCall, editTrue}=useTrackerContext();
+  const { data, setIsNewCall, editTrue } = useTrackerContext();
   const router = useRouter();
-  const {delTracker, getTrackerDetail, error, isLoading}=useTrackerServices();
-  const [type,setType]=useState("Custom");
+  const { delTracker, getTrackerDetail, error, isLoading } = useTrackerServices();
+  const [type, setType] = useState("Custom");
   const last = pathName[pathName.length - 2];
   const searchParams = useSearchParams()
   const typeVal = searchParams.get('type')
@@ -82,35 +82,37 @@ const Page = () => {
 
   //   fetchData();
   // }, []);
-  useEffect(()=>{
-    if(editTrue)
-    setIsNewCall(true);
-  },[editTrue])
-  function formatDate(dateString:Date) {
+  console.log(data);
+
+  useEffect(() => {
+    if (editTrue)
+      setIsNewCall(true);
+  }, [editTrue])
+  function formatDate(dateString: Date) {
     const date = new Date(dateString);
-    
+
     // Get day
     const day = date.getDate();
-    
+
     // Get month and convert it to short format
     const month = date.toLocaleString('default', { month: 'short' });
-    
+
     // Get year
     const year = date.getFullYear();
-    
+
     // Format the date
     const formattedDate = `${day} ${month}, ${year}`;
-    
+
     return formattedDate;
-}
-  useEffect(()=>{
-    if(typeVal === "T_COMPETITOR") setType("Competitor");
-    else if(typeVal === "T_SPEAKING_OPPORTUNITY") setType("Speaking Opportunity")
-    else if(typeVal === "T_PRODUCT_KEYWORDS") setType("Product and Topics")
-    else if(typeVal === "T_PEOPLE_FINDER") setType("People Finder")
-    else if(typeVal === "T_RECRUITMENT") setType("Recruitment")
-    else if(typeVal === "T_CUSTOMER_ICP") setType("Customer ICP")
-  },[])
+  }
+  useEffect(() => {
+    if (typeVal === "T_COMPETITOR") setType("Competitor");
+    else if (typeVal === "T_SPEAKING_OPPORTUNITY") setType("Speaking Opportunity")
+    else if (typeVal === "T_PRODUCT_KEYWORDS") setType("Product and Topics")
+    else if (typeVal === "T_PEOPLE_FINDER") setType("People Finder")
+    else if (typeVal === "T_RECRUITMENT") setType("Recruitment")
+    else if (typeVal === "T_CUSTOMER_ICP") setType("Customer ICP")
+  }, [])
 
   // useEffect(() => {
   //   const newArr: string[] = [
@@ -131,9 +133,9 @@ const Page = () => {
   //   console.log(arr);
   // }, [arr]);
   const deleteTracker = async () => {
-    const result=await delTracker(`${pathName[pathName.length - 2]}`)
-    if(result){
-       showToast("success", "Tracker deleted successfully")
+    const result = await delTracker(`${pathName[pathName.length - 2]}`)
+    if (result) {
+      showToast("success", "Tracker deleted successfully")
       GAEvent(
         "trackers",
         "Tracker Detail",
@@ -151,392 +153,395 @@ const Page = () => {
     document.body.style.overflow = '';
   };
   useEffect(() => {
-    const eventCountry = data?.tracker?.filterValue?.eventCountry?.map((countryObj: any) => Object.values(countryObj)[0]) || [];
-    const eventCity = data?.tracker?.filterValue?.eventCity?.map((cityObj: any) => Object.values(cityObj)[0]) || [];
-    const eventZone = data?.tracker?.filterValue?.eventRegion?.split(",") || [];
-    const eventState = data?.tracker?.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
-    setLocations([...eventCountry, ...eventCity, ...eventZone, ...eventState]);
+    // const eventLocations = data?.filterValues?.locationIds?.map((countryObj: any) => Object.values(countryObj)[0]) || [];
+    // const eventCity = data?.tracker?.filterValue?.eventCity?.map((cityObj: any) => Object.values(cityObj)[0]) || [];
+    // const eventZone = data?.tracker?.filterValue?.eventRegion?.split(",") || [];
+    // const eventState = data?.tracker?.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
+    // setLocations([...eventCountry, ...eventCity, ...eventZone, ...eventState]);
+    const eventLocation =
+      Object.values(data?.filterValues?.locationIds || {}).map((location: any) => {
+        return location?.displayName;
+      });
+
+    setLocations(eventLocation);
+
   }, [data]);
-const eventType=data?.tracker?.filterValue?.eventType?
-data?.tracker?.filterValue?.eventType
-  :[];
-  const eventEntry=data?.tracker?.filterValue?.eventEntry ?
-  data?.tracker?.filterValue?.eventEntry?.split(','):[];
-  const eventSize=data?.tracker?.filterValue?.estimatedVisitorRangeTag ?
-  data?.tracker?.filterValue?.estimatedVisitorRangeTag?.split(','):[];
-const format=data?.tracker?.filterValue?.eventFormat?.info?.length !== 0 ? data?.tracker?.filterValue?.eventFormat?.split(','):[];
-const endDateValue = data?.tracker?.filterValue?.endDate;
-const startDate = endDateValue ? endDateValue.split(",")[0] : null;
-const endDate = endDateValue ? endDateValue.split(",")[1] : null;
-const eventStatus = data?.tracker?.filterValue?.eventStatus?.length >0 ? data?.tracker?.filterValue?.eventStatus?.split(','):[]
-const userRating=
-  data?.tracker?.filterValue?.eventRating?.length>0
-    ? data?.tracker?.filterValue?.eventRating.split(",")
-    : []
-   const allKeywords=data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : [];
-   const includeKeywords =
-  data?.tracker?.filterValue?.includeKeywords &&
-  data.tracker.filterValue.includeKeywords.split(",").length > 0
-    ? data.tracker.filterValue.includeKeywords
-        .split(",")
-        .filter(Boolean)
-        .map((keyword: string) => keyword.replaceAll("_", "  "))
+  const eventType = data?.filterValues?.eventType ?
+    data?.filterValues?.eventType
     : [];
-    const excludeKeywords =
-  data?.tracker?.filterValue?.excludeKeywords &&
-  data.tracker.filterValue.excludeKeywords.split(",").length > 0
-    ? data.tracker.filterValue.excludeKeywords
-        .split(",")
-        .filter(Boolean)
+  const eventEntry = data?.filterValues?.entryType ?
+    data?.filterValues?.entryType : [];
+  const eventSize = data?.filterValues?.estimatedVisitors ?
+    data?.filterValues?.estimatedVisitors : [];
+  const format = data?.filterValues?.eventFormats?.length !== 0 ? data?.filterValues?.eventFormats : [];
+  const endDateValue = data?.filterValues?.endDate;
+  const startDate = data?.filterValues?.active_gte?.split("T")[0];
+  const endDate = data?.filterValues?.active_lte?.split("T")[0];
+  const eventStatus = data?.filterValues?.status?.length > 0 ? data?.filterValues?.status : []
+  const userRating =
+    data?.filterValues?.ratings?.length > 0
+      ? data?.filterValues?.ratings
+      : []
+  const allKeywords = data?.tracker?.filterValue?.eventKeywords?.length !== 0 ? data?.tracker?.filterValue?.eventKeywords?.split('+') : [];
+  const includeKeywords =
+    data?.filterValues?.includeKeywords &&
+      data?.filterValues.includeKeywords?.length > 0
+      ? data?.filterValues.includeKeywords?.filter(Boolean)
         .map((keyword: string) => keyword.replaceAll("_", "  "))
-    : [];
-   let toggleOpend: Toggle={};
-  if(data?.tracker?.filterValue?.userType)
-  toggleOpend=JSON.parse(data?.tracker?.filterValue?.userType);
-  const commonClasses={
-    filter:`flex flex-col gap-[var(--spacing-sm)] p-3 border border-[var(--border-color)] rounded-[var(--border-radius-sm)]`,
-    filterHeading:`text-[var(--primary-color)] font-medium`,
-    data:`text-xs text-[var(--secondary-text-color)] p-1`,
+      : [];
+  const excludeKeywords =
+    data?.filterValues?.excludeKeywords &&
+      data?.filterValues?.excludeKeywords?.length > 0
+      ? data?.filterValues?.excludeKeywords?.filter(Boolean)
+        .map((keyword: string) => keyword.replaceAll("_", "  "))
+      : [];
+  let toggleOpend: string[] = [];
+  if (data?.filterValues?.show)
+    toggleOpend = data?.filterValues?.show;
+  const commonClasses = {
+    filter: `flex flex-col gap-[var(--spacing-sm)] p-3 border border-[var(--border-color)] rounded-[var(--border-radius-sm)]`,
+    filterHeading: `text-[var(--primary-color)] font-medium`,
+    data: `text-xs text-[var(--secondary-text-color)] p-1`,
     allValues: `flex gap-3`
   }
-  
+
   return (
     <>
-    {isLoading ? <Loading/> :
-    <div className='flex w-[calc(100vw-134px)] flex-col gap-6 text-sm' >
-      {/* <SideNav/> */}
-      <div className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[36px] pt-4 bg-[var(--primary-foreground)]">
-      <div className="flex first-line items-center justify-between w-[100%] bg-[var(--heading-background-color)] p-3">
-      <div className="flex items-center gap-2">
-        <div>
-          <CustomeTracker fillColor="#6750a4" />
-        </div>
-        <div className="flex flex-col">
-          <div className="text-[var(--primary-color)] font-bold text-lg">{type} Tracker</div>
-          <div className="text-sm text-[var(--secondary-text-color)]">
-            Select from the available data filters to create a tracker
-          </div>
-        </div>
-      </div>
-      <div className="flex gap-2">
-        <div className={styles.containerTopRightTwo} >
-          <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
-        </div>
-        {/* {data?.tracker?.accessLevel!=="READ" && */}
-        <div className={styles.containerTopRight}>
-        <Link href={`/internal/trackers/${last}/editTracker?type=${typeVal}`}>
-          <Button className="text-white w-[100px]"
-            onClick={() =>
-              GAEvent(
-                "trackers",
-                "Tracker Detail",
-                "Edit",
-                "Edit"
-              )
-            }
-          >
-            Edit
-          </Button>
-        </Link>
-      </div>
-        {/* } */}
-        
+      {isLoading ? <Loading /> :
+        <div className='flex w-[calc(100vw-134px)] flex-col gap-6 text-sm' >
+          {/* <SideNav/> */}
+          <div className="flex fixed z-[5] w-[calc(100vw-134px)] mt-[36px] pt-4 bg-[var(--primary-foreground)]">
+            <div className="flex first-line items-center justify-between w-[100%] bg-[var(--heading-background-color)] p-3">
+              <div className="flex items-center gap-2">
+                <div>
+                  <CustomeTracker fillColor="#6750a4" />
+                </div>
+                <div className="flex flex-col">
+                  <div className="text-[var(--primary-color)] font-bold text-lg">{type} Tracker</div>
+                  <div className="text-sm text-[var(--secondary-text-color)]">
+                    Select from the available data filters to create a tracker
+                  </div>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <div className={styles.containerTopRightTwo} >
+                  <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
+                </div>
+                {/* {data?.tracker?.accessLevel!=="READ" && */}
+                <div className={styles.containerTopRight}>
+                  <Link href={`/internal/trackers/${last}/editTracker?type=${typeVal}`}>
+                    <Button className="text-white w-[100px]"
+                      onClick={() =>
+                        GAEvent(
+                          "trackers",
+                          "Tracker Detail",
+                          "Edit",
+                          "Edit"
+                        )
+                      }
+                    >
+                      Edit
+                    </Button>
+                  </Link>
+                </div>
+                {/* } */}
 
-      </div>
-      </div>
-    </div>
-    <div className="flex flex-col mt-[140px] gap-6">
-      {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{zIndex:"3"}}></div> */}
-    <div className="px-[27px] py-[4px] border-[0.5px] border-[var(--border-color)] rounded-lg h-[55px] flex items-center font-medium">{data?.tracker?.name}</div>
-    {data?.tracker && data.tracker.type === "T_PRODUCT_KEYWORDS" &&
-      <>
-        <div className={styles.innerContainer}>
-          <div
-            style={{ paddingLeft: "20px" }}
-          >
-            <div className={styles.advanceHead}>Product and Topics</div>
-            <div className={styles.customContent}>
-              {/* <div className={styles.urlDiv}>
+
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col mt-[140px] gap-6">
+            {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{zIndex:"3"}}></div> */}
+            <div className="px-[27px] py-[4px] border-[0.5px] border-[var(--border-color)] rounded-lg h-[55px] flex items-center font-medium">{data?.name}</div>
+            {data && data.type === "T_PRODUCT_KEYWORDS" &&
+              <>
+                <div className={styles.innerContainer}>
+                  <div
+                    style={{ paddingLeft: "20px" }}
+                  >
+                    <div className={styles.advanceHead}>Product and Topics</div>
+                    <div className={styles.customContent}>
+                      {/* <div className={styles.urlDiv}>
                 <Image src={Url} alt="url" className="icons" />
                 URL
                 </div> */}
-               List all the events which belongs to given industry or associated with keywords.
-            </div>
-          </div>
-          <div className={styles.innerContainerRight}>
-          <div className={keyStyles.allCat1}>
-                   {includeKeywords?.map((item: string, id: number) => (
+                      List all the events which belongs to given industry or associated with keywords.
+                    </div>
+                  </div>
+                  <div className={styles.innerContainerRight}>
+                    <div className={keyStyles.allCat1}>
+                      {includeKeywords?.map((item: string, id: number) => (
                         (
-                           <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.key}`}>{item}
-                           <span className={keyStyles.tooltipText}>Included Keyword</span>
-                           </div>
-                       )
-                   ))}
-                   {excludeKeywords?.map((item: string, id: number) => (
+                          <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.key}`}>{item}
+                            <span className={keyStyles.tooltipText}>Included Keyword</span>
+                          </div>
+                        )
+                      ))}
+                      {excludeKeywords?.map((item: string, id: number) => (
                         (
                           <div key={id} className={`${keyStyles.tooltipContainer} ${keyStyles.keyNegative}`}>{item}
-                          <span className={keyStyles.tooltipText}>Excluded Keyword</span>
+                            <span className={keyStyles.tooltipText}>Excluded Keyword</span>
                           </div>
-                       )
-                   ))}
-               </div>
-          </div>
-        </div>
-        <div className={styles.line}></div>
-      </>
-    }
-    {data?.tracker && data.tracker.type === "T_COMPETITOR" &&
-      <>
-        <div className={styles.innerContainer}>
-          <div
-            className={styles.innerContainerLeft}
-            style={{ paddingLeft: "20px" }}
-          >
-            <div className={styles.advanceHead}>Competitor&apos;s Name / Website</div>
-            <div className={styles.customContent}>
-              {/* <div className={styles.urlDiv}>
-                <Image src={Url} alt="url" className="icons" />
-                URL
-                </div> */}
-               Track your competitor experts, influencers and where they might be participating in events
-            </div>
-          </div>
-          <div className={styles.innerContainerRight}>
-          <div className={styles.allInputBox}>
-          {data?.tracker?.filterValue?.orgName?.split(',')?.map((item: string, ind: number) => (
-                  <div className={styles.singleUrl} key={ind}>
-                  {/* <Image src={ <div className={styles.line}></div>Url} alt="url_icon"/> */}
-                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
+                        )
+                      ))}
+                    </div>
                   </div>
-                ))}
-                {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
-                  <div className={styles.singleUrl} key={ind}>
-                  {/* <Image src={Url} alt="url_icon"/> */}
-                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
-                  </div>
-                ))}
-              </div>
-          </div>
-        </div>
-        <div className={styles.line}></div>
-      </>
-    }
-    {data?.tracker && data.tracker.type === "T_SPEAKING_OPPORTUNITY" &&
-      <>
-        <div className={styles.innerContainer}>
-          <div
-            className={styles.innerContainerLeft}
-            style={{ paddingLeft: "20px" }}
-          >
-            <div className={styles.advanceHead}>Speaking Opportunity</div>
-            <div className={styles.customContent}>
-              {/* <div className={styles.urlDiv}>
-                <Image src={Url} alt="url" className="icons" />
-                URL
-                </div> */}
-               Team members and their details to keep track of the events with speaking opportunities.
-            </div>
-          </div>
-          <div className={styles.innerContainerRight} style={{flexDirection:"row"}}>
-          <div className={styles.speakerAllInputBox}>
-          <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
-                  {/* <Image src={Name} alt="url_icon" className="icons" width={10}/> */}
-                  <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)"}}>Speaker&apos;s Name</div>
-          </div>
-                {data?.tracker?.filterValue?.speakerName?.split(',')?.map((item: string, ind: number) => (
-                  <div className={styles.singleUrl} key={ind}>
-                  <Image src={Name} alt="url_icon" className="icons" width={10}/>
-                  <div key={ind} className={styles.singleInputBox}>{item}</div>
-                  </div>
-                ))}
-          </div>
-          <div className={styles.speakerAllInputBox}>
-          <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
-                  {/* <Image src={Company} alt="url_icon" className="icons" width={10}/> */}
-                  <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)", padding:"0"}}>Company Name</div>
-                  </div>
-                {data?.tracker?.filterValue?.speakerOrg?.split(',')?.map((item: string, ind: number) => (
-                  <div className={styles.singleUrl} key={ind}>
-                  <Image src={Company} alt="url_icon" className="icons" width={10}/>
-                  <div key={ind} className={styles.singleInputBox}>{item}</div>
-                  </div>
-                ))}
-          </div>
-          </div>
-        </div>
-        <div className={styles.line}></div>
-      </>
-    }
-    {data?.tracker && data.tracker.type === "T_PEOPLE_FINDER" &&
-      <>
-        <div className={styles.innerContainer}>
-          <div
-            className={styles.innerContainerLeft}
-            style={{ paddingLeft: "20px" }}
-          >
-            <div className={styles.advanceHead}>People Finder</div>
-            <div className={styles.customContent}>
-              Track experts, influencers and where they might be participating in various events
-            </div>
-          </div>
-          <div className={styles.innerContainerRight} style={{flexDirection:"row"}}>
-          <div className={styles.speakerAllInputBox}>
-          <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
-                  {/* <Image src={Name} alt="url_icon" className="icons" width={10}/> */}
-                  <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)"}}>Name</div>
-          </div>
-                {data?.tracker?.filterValue?.userName?.split(',')?.map((item: string, ind: number) => (
-                  <div className={styles.singleUrl} key={ind}>
-                  <Image src={Name} alt="url_icon" className="icons" width={10}/>
-                  <div key={ind} className={styles.singleInputBox}>{item}</div>
-                  </div>
-                ))}
-          </div>
-          <div className={styles.speakerAllInputBox}>
-          <div className={styles.singleUrl} style={{border:"0px", padding:"0"}}>
-                  {/* <Image src={Company} alt="url_icon" className="icons" width={10}/> */}
-                  <div className={styles.singleInputBox} style={{fontWeight:"var(--font-weight-semibold)", padding:"0"}}>Company Name</div>
-                  </div>
-                {data?.tracker?.filterValue?.speakerOrg?.split(',')?.map((item: string, ind: number) => (
-                  <div className={styles.singleUrl} key={ind}>
-                  <Image src={Company} alt="url_icon" className="icons" width={10}/>
-                  <div key={ind} className={styles.singleInputBox}>{item}</div>
-                  </div>
-                ))}
-          </div>
-          </div>
-        </div>
-        <div className={styles.line}></div>
-      </>
-    }
-    {data?.tracker && data.tracker.type === "T_RECRUITMENT" &&
-      <>
-        <div className={styles.innerContainer}>
-          <div
-            className={styles.innerContainerLeft}
-            style={{ paddingLeft: "20px" }}
-          >
-            <div className={styles.advanceHead}>Recruitment</div>
-            <div className={styles.customContent}>
-              Input designations and upload job descriptions to identify relevant events effortlessly
-            </div>
-          </div>
-          <div className={styles.innerContainerRight}>
-            <div className={styles.allInputBox}>
-              {data?.tracker?.filterValue?.designation?.map((item: any, ind: number) => (
-                <div className={styles.singleUrl} key={ind}>
-                {/* <Image src={ <div className={styles.line}></div>Url} alt="url_icon"/> */}
-                <div key={ind} title={item.name} className={styles.singleInputBox}>{item.name}</div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className={styles.line}></div>
-      </>
-    }
-    {data?.tracker && data.tracker.type === "T_CUSTOMER_ICP" &&
-      <>
-        <div className={styles.innerContainer}>
-          <div
-            className={styles.innerContainerLeft}
-            style={{ paddingLeft: "20px" }}
-          >
-            <div className={styles.advanceHead}>Company Name / Website</div>
-            <div className={styles.customContent}>
-              Input ideal customer profile details like company, location or websites to track their interests
-            </div>
-          </div>
-          <div className={styles.innerContainerRight}>
-          <div className={styles.allInputBox}>
-          {data?.tracker?.filterValue?.orgName?.split(',')?.map((item: string, ind: number) => (
-                  <div className={styles.singleUrl} key={ind}>
-                  {/* <Image src={ <div className={styles.line}></div>Url} alt="url_icon"/> */}
-                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
-                  </div>
-                ))}
-                {data?.tracker?.filterValue?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
-                  <div className={styles.singleUrl} key={ind}>
-                  {/* <Image src={Url} alt="url_icon"/> */}
-                  <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
-                  </div>
-                ))}
-              </div>
-          </div>
-        </div>
-        <div className={styles.line}></div>
-      </>
-    }
-    
-    <div className={styles.innerContainer}>
-      <div
-        className="border rounded-[var(--border-radius-sm)]" 
-        style={{ border: "1px solid var(--border-color)" }}
-      >
-        {data && (
-          <BasicFilter
-            category={
-              data?.tracker?.filterValue?.eventCategory?.length > 0
-                ? data?.tracker?.filterValue?.eventCategory
-                : []
+                <div className={styles.line}></div>
+              </>
             }
-          />
-        )}
-      </div>
-      <div className={styles.innerContainerRight}>
-      <div className={styles.formatFreq}>
-      <div className={commonClasses.filter}>
+            {data && data.type === "T_COMPETITOR" &&
+              <>
+                <div className={styles.innerContainer}>
+                  <div
+                    className={styles.innerContainerLeft}
+                    style={{ paddingLeft: "20px" }}
+                  >
+                    <div className={styles.advanceHead}>Competitor&apos;s Name / Website</div>
+                    <div className={styles.customContent}>
+                      {/* <div className={styles.urlDiv}>
+                <Image src={Url} alt="url" className="icons" />
+                URL
+                </div> */}
+                      Track your competitor experts, influencers and where they might be participating in events
+                    </div>
+                  </div>
+                  <div className={styles.innerContainerRight}>
+                    <div className={styles.allInputBox}>
+                      {data?.filterValues?.orgName?.split(',')?.map((item: string, ind: number) => (
+                        <div className={styles.singleUrl} key={ind}>
+                          {/* <Image src={ <div className={styles.line}></div>Url} alt="url_icon"/> */}
+                          <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
+                        </div>
+                      ))}
+                      {data?.filterValues?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
+                        <div className={styles.singleUrl} key={ind}>
+                          {/* <Image src={Url} alt="url_icon"/> */}
+                          <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.line}></div>
+              </>
+            }
+            {data && data.type === "T_SPEAKING_OPPORTUNITY" &&
+              <>
+                <div className={styles.innerContainer}>
+                  <div
+                    className={styles.innerContainerLeft}
+                    style={{ paddingLeft: "20px" }}
+                  >
+                    <div className={styles.advanceHead}>Speaking Opportunity</div>
+                    <div className={styles.customContent}>
+                      {/* <div className={styles.urlDiv}>
+                <Image src={Url} alt="url" className="icons" />
+                URL
+                </div> */}
+                      Team members and their details to keep track of the events with speaking opportunities.
+                    </div>
+                  </div>
+                  <div className={styles.innerContainerRight} style={{ flexDirection: "row" }}>
+                    <div className={styles.speakerAllInputBox}>
+                      <div className={styles.singleUrl} style={{ border: "0px", padding: "0" }}>
+                        {/* <Image src={Name} alt="url_icon" className="icons" width={10}/> */}
+                        <div className={styles.singleInputBox} style={{ fontWeight: "var(--font-weight-semibold)" }}>Speaker&apos;s Name</div>
+                      </div>
+                      {data?.filterValues?.userName?.split(',')?.map((item: string, ind: number) => (
+                        <div className={styles.singleUrl} key={ind}>
+                          <Image src={Name} alt="url_icon" className="icons" width={10} />
+                          <div key={ind} className={styles.singleInputBox}>{item}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className={styles.speakerAllInputBox}>
+                      <div className={styles.singleUrl} style={{ border: "0px", padding: "0" }}>
+                        {/* <Image src={Company} alt="url_icon" className="icons" width={10}/> */}
+                        <div className={styles.singleInputBox} style={{ fontWeight: "var(--font-weight-semibold)", padding: "0" }}>Company Name</div>
+                      </div>
+                      {data?.filterValues?.userOrgWebsite?.split(',')?.map((item: string, ind: number) => (
+                        <div className={styles.singleUrl} key={ind}>
+                          <Image src={Company} alt="url_icon" className="icons" width={10} />
+                          <div key={ind} className={styles.singleInputBox}>{item}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.line}></div>
+              </>
+            }
+            {data && data.type === "T_PEOPLE_FINDER" &&
+              <>
+                <div className={styles.innerContainer}>
+                  <div
+                    className={styles.innerContainerLeft}
+                    style={{ paddingLeft: "20px" }}
+                  >
+                    <div className={styles.advanceHead}>People Finder</div>
+                    <div className={styles.customContent}>
+                      Track experts, influencers and where they might be participating in various events
+                    </div>
+                  </div>
+                  <div className={styles.innerContainerRight} style={{ flexDirection: "row" }}>
+                    <div className={styles.speakerAllInputBox}>
+                      <div className={styles.singleUrl} style={{ border: "0px", padding: "0" }}>
+                        {/* <Image src={Name} alt="url_icon" className="icons" width={10}/> */}
+                        <div className={styles.singleInputBox} style={{ fontWeight: "var(--font-weight-semibold)" }}>Name</div>
+                      </div>
+                      {data?.filterValues?.userName?.split(',')?.map((item: string, ind: number) => (
+                        <div className={styles.singleUrl} key={ind}>
+                          <Image src={Name} alt="url_icon" className="icons" width={10} />
+                          <div key={ind} className={styles.singleInputBox}>{item}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className={styles.speakerAllInputBox}>
+                      <div className={styles.singleUrl} style={{ border: "0px", padding: "0" }}>
+                        {/* <Image src={Company} alt="url_icon" className="icons" width={10}/> */}
+                        <div className={styles.singleInputBox} style={{ fontWeight: "var(--font-weight-semibold)", padding: "0" }}>Company Name</div>
+                      </div>
+                      {data?.filterValues?.userOrgWebsite?.split(',')?.map((item: string, ind: number) => (
+                        <div className={styles.singleUrl} key={ind}>
+                          <Image src={Company} alt="url_icon" className="icons" width={10} />
+                          <div key={ind} className={styles.singleInputBox}>{item}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.line}></div>
+              </>
+            }
+            {data?.tracker && data.tracker.type === "T_RECRUITMENT" &&
+              <>
+                <div className={styles.innerContainer}>
+                  <div
+                    className={styles.innerContainerLeft}
+                    style={{ paddingLeft: "20px" }}
+                  >
+                    <div className={styles.advanceHead}>Recruitment</div>
+                    <div className={styles.customContent}>
+                      Input designations and upload job descriptions to identify relevant events effortlessly
+                    </div>
+                  </div>
+                  <div className={styles.innerContainerRight}>
+                    <div className={styles.allInputBox}>
+                      {data?.tracker?.filterValue?.designation?.map((item: any, ind: number) => (
+                        <div className={styles.singleUrl} key={ind}>
+                          {/* <Image src={ <div className={styles.line}></div>Url} alt="url_icon"/> */}
+                          <div key={ind} title={item.name} className={styles.singleInputBox}>{item.name}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.line}></div>
+              </>
+            }
+            {data && data.type === "T_CUSTOMER_ICP" &&
+              <>
+                <div className={styles.innerContainer}>
+                  <div
+                    className={styles.innerContainerLeft}
+                    style={{ paddingLeft: "20px" }}
+                  >
+                    <div className={styles.advanceHead}>Company Name / Website</div>
+                    <div className={styles.customContent}>
+                      Input ideal customer profile details like company, location or websites to track their interests
+                    </div>
+                  </div>
+                  <div className={styles.innerContainerRight}>
+                    <div className={styles.allInputBox}>
+                      {data?.filterValueS?.orgName?.split(',')?.map((item: string, ind: number) => (
+                        <div className={styles.singleUrl} key={ind}>
+                          {/* <Image src={ <div className={styles.line}></div>Url} alt="url_icon"/> */}
+                          <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
+                        </div>
+                      ))}
+                      {data?.filterValues?.orgWebsite?.split(',')?.map((item: string, ind: number) => (
+                        <div className={styles.singleUrl} key={ind}>
+                          {/* <Image src={Url} alt="url_icon"/> */}
+                          <div key={ind} title={item} className={styles.singleInputBox}>{item}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.line}></div>
+              </>
+            }
+
+            <div className={styles.innerContainer}>
+              <div
+                className="border rounded-[var(--border-radius-sm)]"
+                style={{ border: "1px solid var(--border-color)" }}
+              >
+                {data && (
+                  <BasicFilter
+                    category={
+                      data?.filterValue?.categories?.length > 0
+                        ? data?.filterValue?.categories
+                        : []
+                    }
+                  />
+                )}
+              </div>
+              <div className={styles.innerContainerRight}>
+                <div className={styles.formatFreq}>
+                  <div className={commonClasses.filter}>
                     <div className={commonClasses.filterHeading}>Location</div>
                     <div className="flex flex-col">
-                        {locations?.map((item: string, id: number) => (
-                            <>
-                                <span className="text-xs text-[var(--secondary-text-color)]">{item}</span>
-                            </>
-                        ))}
+                      {locations?.map((item: string, id: number) => (
+                        <>
+                          <span className="text-xs text-[var(--secondary-text-color)]">{item}</span>
+                        </>
+                      ))}
                     </div>
-                </div>
-      <div className={commonClasses.filter}>
+                  </div>
+                  <div className={commonClasses.filter}>
                     <div className={commonClasses.filterHeading}>Event Type</div>
                     <div className={commonClasses.allValues}>
-                        {eventType?.map((item: string, id: number) => (
-                            <>
-                                <label style={{ display: "flex" }} >
-                                    <input
+                      {eventType?.map((item: string, id: number) => (
+                        <>
+                          <label style={{ display: "flex" }} >
+                            <input
 
-                                        className={styles.text}
-                                        type="checkbox"
-                                        // onChange={() => onChange()}
-                                        checked={true}
-                                        disabled
-                                    />
-                                    <span className={commonClasses.data}>{item}</span>
-                                </label>
-                            </>
-                        ))}
+                              className={styles.text}
+                              type="checkbox"
+                              // onChange={() => onChange()}
+                              checked={true}
+                              disabled
+                            />
+                            <span className={commonClasses.data}>{item}</span>
+                          </label>
+                        </>
+                      ))}
                     </div>
-                </div>
+                  </div>
 
-      <div className={commonClasses.filter}>
+                  <div className={commonClasses.filter}>
                     <div className={commonClasses.filterHeading}>Event Format</div>
                     <div className={commonClasses.allValues}>
-                        {format?.map((item: string, id: number) => (
-                            <>
-                                <label style={{ display: "flex" }} >
-                                    <input
+                      {format?.map((item: string, id: number) => (
+                        <>
+                          <label style={{ display: "flex" }} >
+                            <input
 
-                                        className={styles.text}
-                                        type="checkbox"
-                                        // onChange={() => onChange()}
-                                        checked={true}
-                                        disabled
-                                    />
-                                    <span className={commonClasses.data}>{item.charAt(0).toUpperCase()}{item.substring(1)}</span>
-                                </label>
-                            </>
-                        ))}
+                              className={styles.text}
+                              type="checkbox"
+                              // onChange={() => onChange()}
+                              checked={true}
+                              disabled
+                            />
+                            <span className={commonClasses.data}>{item.charAt(0).toUpperCase()}{item.substring(1)}</span>
+                          </label>
+                        </>
+                      ))}
                     </div>
-                </div>
-                {/* <div className={styles.format}>
+                  </div>
+                  {/* <div className={styles.format}>
                     <div className={styles.formatHead}>Location</div>
                     <div className={styles.allCat}>
                         {locations?.map((item: string, id: number) => (
@@ -546,58 +551,58 @@ const userRating=
                         ))}
                     </div>
                 </div> */}
-      <div className={commonClasses.filter}>
+                  <div className={commonClasses.filter}>
                     <div className={commonClasses.filterHeading}>Date</div>
                     <div className={commonClasses.allValues}>
-                    <div className={commonClasses.data}>
-                    {startDate?.length>0&&formatDate(startDate)}{"-"}{endDate?.length>0&&formatDate(endDate)}
+                      <div className={commonClasses.data}>
+                        {startDate?.length > 0 && formatDate(startDate)}{"-"}{endDate?.length > 0 && formatDate(endDate)}
+                      </div>
                     </div>
-                    </div>
-                </div>
-                <div className={commonClasses.filter}>
+                  </div>
+                  <div className={commonClasses.filter}>
                     <div className={commonClasses.filterHeading}>Event Status</div>
                     <div className={commonClasses.allValues}>
-                        {eventStatus?.map((item: string, id: number) => (
-                            <>
-                                <label style={{ display: "flex" }} >
-                                    <input
+                      {eventStatus?.map((item: string, id: number) => (
+                        <>
+                          <label style={{ display: "flex" }} >
+                            <input
 
-                                        className={styles.text}
-                                        type="checkbox"
-                                        // onChange={() => onChange()}
-                                        checked={true}
-                                        disabled
-                                    />
-                                    <span className={commonClasses.data}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
-                                </label>
-                            </>
-                        ))}
+                              className={styles.text}
+                              type="checkbox"
+                              // onChange={() => onChange()}
+                              checked={true}
+                              disabled
+                            />
+                            <span className={commonClasses.data}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
+                          </label>
+                        </>
+                      ))}
                     </div>
-                </div>
-                <div className={commonClasses.filter}>
+                  </div>
+                  <div className={commonClasses.filter}>
                     <div className={commonClasses.filterHeading}>Event Entry</div>
                     <div className={commonClasses.allValues}>
-                        {eventEntry?.map((item: string, id: number) => (
-                            <>
-                                <label style={{ display: "flex" }} >
-                                    <input
+                      {eventEntry?.map((item: string, id: number) => (
+                        <>
+                          <label style={{ display: "flex" }} >
+                            <input
 
-                                        className={styles.text}
-                                        type="checkbox"
-                                        // onChange={() => onChange()}
-                                        checked={true}
-                                        disabled
-                                    />
-                                    <span className={commonClasses.data}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
-                                </label>
-                            </>
-                        ))}
+                              className={styles.text}
+                              type="checkbox"
+                              // onChange={() => onChange()}
+                              checked={true}
+                              disabled
+                            />
+                            <span className={commonClasses.data}>{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
+                          </label>
+                        </>
+                      ))}
                     </div>
-                </div>
-                <div className={commonClasses.filter}>
-                    <div className={commonClasses.filterHeading} style={{display:"flex",justifyContent:"space-between"}}>User Ratings
-                    <div className={keyStyles.toggle_container}>
-            {/* <span>
+                  </div>
+                  <div className={commonClasses.filter}>
+                    <div className={commonClasses.filterHeading} style={{ display: "flex", justifyContent: "space-between" }}>User Ratings
+                      <div className={keyStyles.toggle_container}>
+                        {/* <span>
               <label className={keyStyles.switch}>
                 <input
                   type="checkbox"
@@ -609,29 +614,29 @@ const userRating=
                 <span className={`${toggleOpend?.rating ? keyStyles.sliderBranded : keyStyles.slider}`}></span>
               </label>
             </span> */}
-            <ToggleBtn isTrue={toggleOpend?.rating === true}/>
-          </div>
+                        <ToggleBtn isTrue={toggleOpend?.includes('rating')} />
+                      </div>
                     </div>
                     <div className={commonClasses.allValues}>
-                        {userRating?.map((item: string, id: number) => (
-                            <>
-                                <label style={{ display: "flex" }} >
-                                    <input
+                      {userRating?.map((item: string, id: number) => (
+                        <>
+                          <label style={{ display: "flex" }} >
+                            <input
 
-                                        className={styles.text}
-                                        type="checkbox"
-                                        // onChange={() => onChange()}
-                                        checked={true}
-                                        disabled
-                                    />
-                                    <span className="text-xs text-[var(--secondary-text-color)] p-1">{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
-                                </label>
-                            </>
-                        ))}
+                              className={styles.text}
+                              type="checkbox"
+                              // onChange={() => onChange()}
+                              checked={true}
+                              disabled
+                            />
+                            <span className="text-xs text-[var(--secondary-text-color)] p-1">{item.charAt(0)}{item.substring(1).toLowerCase()}</span>
+                          </label>
+                        </>
+                      ))}
                     </div>
+                  </div>
                 </div>
-        </div>
-        {/* {data && (
+                {/* {data && (
           <LocationFilter
             start={
               data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]
@@ -644,7 +649,7 @@ const userRating=
             locations={locations}
           />
         )} */}
-        {/* {data && (
+                {/* {data && (
           <Labels
             labels={
               data?.tracker?.filterValue?.labels
@@ -653,143 +658,142 @@ const userRating=
             }
           />
         )} */}
-      </div>
-    </div>
-    <div className={styles.line}></div>
-    <div className={styles.innerContainer}>
-      <div
-        style={{ paddingLeft: "20px" }}
-      >
-        <div className={styles.advanceHead}>Advanced Detail</div>
-        <div className={styles.advanceContent}>
-          Advanced and more detailed event filter criteria for precise and
-          personalized event tracking.
-        </div>
-      </div>
-      <div className={styles.innerContainerRight}>
-        <AdvanceFilter includeKeywords={includeKeywords} 
-        excludeKeywords={excludeKeywords}
-         freq={data?.tracker?.filterValue?.eventFrequency?.length !== 0 ? data?.tracker?.filterValue?.eventFrequency?.split(',') : []} 
-         isFreqToggle={toggleOpend?.eventFrequency}
-          isBranded={data?.tracker?.filterValue?.eventBrand}
-          brandSeries={toggleOpend?.brandSeries==true}
-          eventEdition={data?.tracker?.filterValue?.editionRange}
-          type={type}
-          isMaturity={toggleOpend?.maturity===true}
-          eventSeries={data?.tracker?.filterValue?.eventSeries}
-          forecastedStatus={toggleOpend?.forecastedStatus===true}
-          maturity={data?.tracker?.filterValue?.maturity}
-        />
-      </div>
-    </div>
-    <div className={styles.line}></div>
-    <div className={styles.innerContainer}>
-      <div
-        style={{ paddingLeft: "20px" }}
-      >
-        <div className={styles.advanceHead}>Insights &#x26; Score</div>
-        <div className={styles.advanceContent}>
-          Refine your event tracking with precise filters tailored to your
-          needs with accurate scores and insights on event data.
-        </div>
-      </div>
-      <div className={styles.innerContainerRight}>
-        <Insights
-        globalToggle={toggleOpend?.globalToggle===true}
-            exhibitScore={
-              data?.tracker?.filterValue?.estimatedExhibitScore
-                ? data?.tracker?.filterValue?.estimatedExhibitScore?.split(",")
-                : []
-            }
-            isEconomicOpen={toggleOpend?.economicImpact}
-            isExhibitOpen={toggleOpend?.exhibit===true}
-            internationalScore={data?.tracker?.filterValue?.internationalScore}
-            isTrustOpen={toggleOpend?.trust===true}
-            isRankOpen={toggleOpend?.eventRank===true}
-            trustScore={data?.tracker?.filterValue?.trustScore}
-           reputation={data?.tracker?.filterValue?.reputationScore}
-            inboundScore={data?.tracker?.filterValue?.inboundScore}
-            eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
-            localRank={
-              data?.tracker?.filterValue?.localRank?.length > 0 ? data?.tracker?.filterValue?.localRank.split(',') : []
-            }
-            start={
-              data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]
-            }
-            end={
-              data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]
-            }
-            eventSize={eventSize}
-            eventImpactScore={data?.tracker?.filterValue?.eventImpactScore}
-            eventRankToggle={data?.tracker?.filterValue?.eventRanking}
-        />
-      </div>
-    </div>
-    <div className={styles.line}></div>
-    <div className={styles.innerContainer} style={{paddingBottom:"24px"}}>
-      <div
-        style={{ paddingLeft: "20px" }}
-      >
-        <div className={styles.advanceHead}>Audience Intel</div>
-        <div className={styles.advanceContent}>
-          Track your events based on the audience intel and insights to gain
-          more visibility and active participants
-        </div>
-      </div>
-      <div className={styles.innerContainerRight}>
-        <Intel
-          type={type}
-        //  trustScore={data?.tracker?.filterValue?.trustScore}
-        //  reputation={data?.tracker?.filterValue?.reputationScore}
-          inboundScore={data?.tracker?.filterValue?.inboundScore}
-          // userRating={
-          //   data?.tracker?.filterValue?.eventRating
-          //     ? data?.tracker?.filterValue?.eventRating.split(",")
-          //     : []
-          // }
-          exhibitScore={
-            data?.tracker?.filterValue?.eventSize
-              ? data?.tracker?.filterValue?.eventSize?.split(",")
-              : []
-          }
-          audienceZone={toggleOpend?.audienceZone}
-          audienceSpread={toggleOpend?.audienceSpread}
-          audienceSpreadCount={data?.tracker?.filterValue?.audienceSpread?.split(',').length}
-          audienceProfile={data?.tracker?.filterValue?.designation}
-        />
-      </div>
-    </div>
-    </div>
-    {del &&
-      (
-        <div className={styles.shareModal} >
-          <div className={`${styles.innerModal} text-base`}>
-            <div className="font-medium text-[var(--primary-color)]">Delete Tracker</div>
-            {/* <div className={styles.bar}></div> */}
-            <div className={styles.linkCopy}>
-
-              <div className={styles.inviteAccess}>
-
-                All events tracked by tracker will be lost. Do you wish to delete tracker permanently?
-
               </div>
             </div>
-
-            <div className={styles.buttons}>
-
-              {/* <button className={styles.send} onClick={deleteTracker}>Delete</button> */}
-              <Button className="text-white" onClick={deleteTracker}>Delete</Button>
-              {/* <button className={styles.cancel} onClick={closeShareModal}>Cancel</button> */}
-              <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]" onClick={closeShareModal}>Cancel</Button>
+            <div className={styles.line}></div>
+            <div className={styles.innerContainer}>
+              <div
+                style={{ paddingLeft: "20px" }}
+              >
+                <div className={styles.advanceHead}>Advanced Detail</div>
+                <div className={styles.advanceContent}>
+                  Advanced and more detailed event filter criteria for precise and
+                  personalized event tracking.
+                </div>
+              </div>
+              <div className={styles.innerContainerRight}>
+                <AdvanceFilter includeKeywords={includeKeywords}
+                  excludeKeywords={excludeKeywords}
+                  freq={data?.filterValues?.frequencies?.length !== 0 ? data?.filterValues?.frequencies : []}
+                  isFreqToggle={toggleOpend?.includes("frequency")}
+                  isBranded={data?.filterValues?.onlyBranded}
+                  brandSeries={toggleOpend?.includes("branded") || toggleOpend?.includes("series")}
+                  eventEdition={data?.tracker?.filterValue?.editionRange}
+                  type={type}
+                  isMaturity={toggleOpend?.includes("maturity")}
+                  eventSeries={data?.filterValues?.onlySeries}
+                  forecastedStatus={toggleOpend?.includes("forecasted")}
+                  maturity={data?.tracker?.filterValue?.maturity}
+                />
+              </div>
+            </div>
+            <div className={styles.line}></div>
+            <div className={styles.innerContainer}>
+              <div
+                style={{ paddingLeft: "20px" }}
+              >
+                <div className={styles.advanceHead}>Insights &#x26; Score</div>
+                <div className={styles.advanceContent}>
+                  Refine your event tracking with precise filters tailored to your
+                  needs with accurate scores and insights on event data.
+                </div>
+              </div>
+              <div className={styles.innerContainerRight}>
+                <Insights
+                  globalToggle={toggleOpend?.includes("scores")}
+                  exhibitScore={
+                    data?.filterValues?.estimatedExhibitors
+                      ? data?.filterValues?.estimatedExhibitors
+                      : []
+                  }
+                  isExhibitOpen={toggleOpend?.includes("estimatedExhibitors")}
+                  internationalScore={data?.tracker?.filterValue?.internationalScore}
+                  isTrustOpen={toggleOpend?.includes("trustScore")}
+                  isRankOpen={toggleOpend?.includes("rankings")}
+                  trustScore={data?.tracker?.filterValue?.trustScore}
+                  reputation={data?.tracker?.filterValue?.reputationScore}
+                  inboundScore={data?.tracker?.filterValue?.inboundScore}
+                  eventRank={data?.tracker?.filterValue?.eventRank?.length > 0 ? data?.tracker?.filterValue?.eventRank.split(',') : []}
+                  localRank={
+                    data?.tracker?.filterValue?.localRank?.length > 0 ? data?.tracker?.filterValue?.localRank.split(',') : []
+                  }
+                  start={
+                    data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[0]
+                  }
+                  end={
+                    data?.tracker?.filterValue?.eventAttendanceRange?.split(",")[1]
+                  }
+                  eventSize={eventSize}
+                  eventImpactScore={data?.tracker?.filterValue?.eventImpactScore}
+                  eventRankToggle={data?.tracker?.filterValue?.eventRanking}
+                />
+              </div>
+            </div>
+            <div className={styles.line}></div>
+            <div className={styles.innerContainer} style={{ paddingBottom: "24px" }}>
+              <div
+                style={{ paddingLeft: "20px" }}
+              >
+                <div className={styles.advanceHead}>Audience Intel</div>
+                <div className={styles.advanceContent}>
+                  Track your events based on the audience intel and insights to gain
+                  more visibility and active participants
+                </div>
+              </div>
+              <div className={styles.innerContainerRight}>
+                <Intel
+                  type={type}
+                  //  trustScore={data?.tracker?.filterValue?.trustScore}
+                  //  reputation={data?.tracker?.filterValue?.reputationScore}
+                  inboundScore={data?.tracker?.filterValue?.inboundScore}
+                  // userRating={
+                  //   data?.tracker?.filterValue?.eventRating
+                  //     ? data?.tracker?.filterValue?.eventRating.split(",")
+                  //     : []
+                  // }
+                  exhibitScore={
+                    data?.filterValues?.estimatedExhibitors
+                      ? data?.filterValues?.estimatedExhibitors
+                      : []
+                  }
+                  audienceZone={toggleOpend?.includes('audienceZone')}
+                  // audienceSpread={toggleOpend?.audienceSpread}
+                  audienceSpreadCount={data?.filterValues?.audienceSpread?.length}
+                  audienceProfile={data?.tracker?.filterValue?.designation}
+                />
+              </div>
             </div>
           </div>
+          {del &&
+            (
+              <div className={styles.shareModal} >
+                <div className={`${styles.innerModal} text-base`}>
+                  <div className="font-medium text-[var(--primary-color)]">Delete Tracker</div>
+                  {/* <div className={styles.bar}></div> */}
+                  <div className={styles.linkCopy}>
+
+                    <div className={styles.inviteAccess}>
+
+                      All events tracked by tracker will be lost. Do you wish to delete tracker permanently?
+
+                    </div>
+                  </div>
+
+                  <div className={styles.buttons}>
+
+                    {/* <button className={styles.send} onClick={deleteTracker}>Delete</button> */}
+                    <Button className="text-white" onClick={deleteTracker}>Delete</Button>
+                    {/* <button className={styles.cancel} onClick={closeShareModal}>Cancel</button> */}
+                    <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]" onClick={closeShareModal}>Cancel</Button>
+                  </div>
+                </div>
+              </div>
+
+
+            )}
+
         </div>
-
-
-      )}
-
-  </div>
-    }
+      }
     </>
   );
 };

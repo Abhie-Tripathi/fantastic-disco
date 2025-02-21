@@ -3,7 +3,7 @@ import React from "react";
 import { UserSearch } from "lucide-react";
 import { useState } from "react";
 import SendInvite from "../../../../../components/ui/SendInvite";
-import { Avatar } from "../../../../../components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import { Button } from "../../../../../components/ui/button";
 import { Input } from "../../../../../components/ui/input";
 import {

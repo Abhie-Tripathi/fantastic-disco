@@ -115,5 +115,6 @@ export const useCompanyService = () => {
     getEventCountByCountry,
     checkCompanyLogo,
     isLoading: api.isLoading,
+    // error: api.error as ApiError,
   };
 };

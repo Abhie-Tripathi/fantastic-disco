@@ -310,14 +310,14 @@ export const AuthContextProvider = ({ children }: any) => {
   );
 
   const signOut = useCallback(async () => {
-    setUser(null);
-    deleteLocalStorage();
-    localStorage.removeItem("walkthroughCompleted");
-    sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-    await request(endpoints.auth.logout, {
-      method: "POST",
-    });
-    router.push("/signin");
+    // setUser(null);
+    // deleteLocalStorage();
+    // localStorage.removeItem("walkthroughCompleted");
+    // sessionKeys.forEach((key) => sessionStorage.removeItem(key));
+    // await request(endpoints.auth.logout, {
+    //   method: "POST",
+    // });
+    // router.push("/signin");
   }, [request, router]);
 
   useEffect(() => {
@@ -391,7 +391,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const signInActions = (redirectTo: string | undefined) => {
     localStorage.setItem("walkthroughCompleted", JSON.stringify(["research"]));
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-    router.push(redirectTo || "/internal");
+    // router.push(redirectTo || "/internal");
   };
 
   const signUpActions = async (redirectTo: string | undefined) => {

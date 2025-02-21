@@ -53,7 +53,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                   </div>
             </div>
         </div> */}
-        {isVerifiedToken===false? <Loading/>:
+        {/* {isVerifiedToken===false? <Loading/>: */}
         <div className={styles.containerBottom}>
         <div className={styles.containerLeft}>
           <SideNav/>
@@ -64,7 +64,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </Suspense>
         </div>
       </div>
-        }
+        {/* } */}
         
       
     </div>

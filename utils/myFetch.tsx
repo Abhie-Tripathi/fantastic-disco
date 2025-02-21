@@ -12,14 +12,14 @@ export const myFetch = async (
   // console.log(JSON.stringify(response.headers));
   // const route=useRouter();
   const { error, data } = result;
-  if(result.message==="Incorrect or Expired Cookies") redirectToSignin();
+  // if(result.message==="Incorrect or Expired Cookies") redirectToSignin();
   if (
     error &&
     error.status === 401 &&
     error.message === "Incorrect or Expired Cookies"
   ) {
     console.log('Token expired, redirecting to signin');
-    redirectToSignin();
+    // redirectToSignin();
   }
   return {
     error: result.error ? error : null,

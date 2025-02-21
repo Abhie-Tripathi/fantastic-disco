@@ -101,8 +101,8 @@ const Index = () => {
             
           </Link>
           <div className={styles.tooltipContainer} style={{ cursor: data?.tracker?.name?.length > 20 ? "pointer" : "default" }}>
-            {data?.tracker?.name?.length > 20 ? data?.tracker?.name?.substring(0, 20) + '...' : data?.tracker?.name}
-            {data?.tracker?.name?.length > 20 && <span className={styles.tooltipText}>{data?.tracker?.name}</span>}
+            {data?.name?.length > 20 ? data?.name?.substring(0, 20) + '...' : data?.name}
+            {data?.name?.length > 20 && <span className={styles.tooltipText}>{data?.name}</span>}
 
           </div>
           {/* </Button> */}
@@ -140,14 +140,16 @@ const Index = () => {
               </div>
               <div className="cursor-pointer">
               {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>handleClick("calendar")}>Calendar</div> */}
-              <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}>
-              {/* <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>handleClick("calendar")}>Calendar</div> */}
-              <div className={styles.viewsTab}>
+              {/* <div className={`relative cursor-not-allowed disabled ${styles.tooltipContainer}`}> */}
+              <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>handleClick("calendar")}>
+              <CalendarIcon className="h-4 w-4" />
+                Calendar</div>
+              {/* <div className={styles.viewsTab}>
               <CalendarIcon className="h-4 w-4" />
               Calendar
               <span className={`${styles.tooltipText}`} style={{marginLeft:"-30%"}}>Coming Soon</span>
               </div>
-              </div>
+              </div> */}
 
               </div>
             </div>

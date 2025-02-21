@@ -2,6 +2,7 @@ import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
 import { CoordinateListResponse, PresetList, UserInterestResponse, enquiryCountResponse, eventPocResponse, pocDetail } from "@/types/coordinateEventType";
 import { ApiError } from "@/types/api";
+// import { MiscAdapter } from "@/adapters/miscAdapter";
 import externalAxios from "@/lib/externalAxios";
 
 interface fnProp {
@@ -60,6 +61,12 @@ export const useCoordinateService = () => {
 
   const getParticipentCount = () => {
     return api.request<enquiryCountResponse>(`${endpoints.coordinate.participent}?type=interests`, {
+      method: "GET",
+    });
+  };
+
+  const getEnquiryStatusCount = () => {
+    return api.request<enquiryCountResponse>(`${endpoints.coordinate.participent}?type=status`, {
       method: "GET",
     });
   };
@@ -233,6 +240,7 @@ export const useCoordinateService = () => {
   return {
     getEventsWithSearchParams,
     getParticipentCount,
+    getEnquiryStatusCount,
     getInterestedUsers,
     upVote,
     getEventDetailById,
@@ -254,5 +262,6 @@ export const useCoordinateService = () => {
     setEnquiryFollowers,
     deleteEnquiryActivityIntent,
     isLoading: api.isLoading,
+    // error: api.error as ApiError,
   };
 };
