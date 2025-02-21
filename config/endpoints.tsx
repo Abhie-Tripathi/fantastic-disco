@@ -1,5 +1,5 @@
-import { BASE_URL } from "./index";
-
+const BASE_URL = "https://api.dev.gtm.whr.ai";
+const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
 export const endpoints = {
   //   auth: {
   //     me: `${BASE_URL}/me`,
@@ -53,7 +53,7 @@ export const endpoints = {
   locations: `${BASE_URL}/location/country`,
   locationSuggestion: `${BASE_URL}/suggestions/locations`,
   designations: `${BASE_URL}/designation`,
-  users: `${BASE_URL}/auth/users`,
+  users: `${BASE_URL}/me/account/users`,
   trends: {
     eventTrends: `${BASE_URL}/events/trends`,
     predictedAttendance: `${BASE_URL}/trends/predicted-attendance`,
@@ -61,15 +61,16 @@ export const endpoints = {
     eventTypes: `${BASE_URL}/trends/event-types`,
   },
   tracker: {
+    suggestion:`${BASE_URL}/suggestions/companies`,
     commonUrl: `${BASE_URL}/trackers`,
     access: `${BASE_URL}/tracker/access`,
     shareAccess: `${BASE_URL}/access`,
     createNewAccess: `${BASE_URL}/tracker/invite`,
-    create: `${BASE_URL}/tracker`,
+    create: `${BASE_URL}/trackers`,
     getTrackers: `${BASE_URL}/me/trackers`,
     getSavedEvents: `${BASE_URL}/tracker`,
     saveEvent: `${BASE_URL}/tracker/saved-events`,
-    getNotes: `${BASE_URL}/comment?stage=INTERNAL&entityType=TRACKER`,
+    getNotes: `${BASE_URL}/trackers`,
     saveNotes: `${BASE_URL}/comments`,
   },
   coordinate: {
@@ -78,12 +79,14 @@ export const endpoints = {
     iterestedUsers: `${BASE_URL}/userInterest`,
     enquiryDetail: `${BASE_URL}/enquiries`,
     pocUnmask: `${BASE_URL}/event-poc/unmask`,
-    latestComment: `${BASE_URL}/dashboard/latest-comment`,
+    latestComment: `${BASE_URL}/me/account/latest-comment`,
     createIntent: `${BASE_URL}/intents/user-event-interest`,
     eventDetail: `${BASE_URL}/events`,
   },
   intent: {
+    userEventInterest: `${BASE_URL}/intents/user-event-interest`,
     enquiryActivity: `${BASE_URL}/intents/enquiry-activity`,
+    userEventInterest:`${BASE_URL}/intents/user-event-interest`,
   },
   account: {
     users: `${BASE_URL}/me/account/users`,
@@ -112,7 +115,7 @@ export const endpoints = {
   events: {
     getEvents: `${BASE_URL}/event?limit=2`,
     getEventsByWidgetId: `${BASE_URL}/event`,
-    getSortedEvents: `${BASE_URL}/event`,
+    getSortedEvents: `${BASE_URL}/promot-event`,
     getEventById: `${BASE_URL}/event`,
     getEventByPublicAPI: `${BASE_URL}/public/widget`,
     deleteEvent: `${BASE_URL}/event`,
@@ -139,5 +142,5 @@ export const endpoints = {
     interestConfiguration: `${BASE_URL}/me/account/configuration/interest`,
     outreachConfiguration: `${BASE_URL}/me/account/configuration/outreach`,
   },
-  myprofile: `${BASE_URL}/auth/customer/profile`,
+  myprofile: `${BASE_URL}/me`,
 };

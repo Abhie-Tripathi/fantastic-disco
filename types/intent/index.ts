@@ -19,7 +19,7 @@ const CreateUserEventInterestSchema = z.object({
 // });
 
 const UpdateUserEventInterestHttpSchema = z.object({
-  status: z.nativeEnum(InterestStatus).optional(),
+  status: z.string().optional(),
   note: z.string().min(3).max(255).optional(),
 });
 
@@ -37,9 +37,9 @@ const GetUserEventInterestSchema = z.object({
   recommendedBy: z.string().uuid().optional(),
   approvedBy: z.string().uuid().optional(),
   interestedUserId: z.string().uuid().optional(),
-  interest: z.array(z.nativeEnum(Interest)).optional(),
-  status: z.nativeEnum(InterestStatus).optional(),
-  sourceModule: z.nativeEnum(InterestSourceModule).optional(),
+  interest: z.array(z.string()).optional(),
+  status: z.string().optional(),
+  sourceModule: z.string().optional(),
   sourceId: z.string().uuid().optional(),
   accountId: z.string().uuid().optional(),
   ownerId: z.string().uuid().optional(),

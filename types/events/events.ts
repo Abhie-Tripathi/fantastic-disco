@@ -64,6 +64,8 @@ const CitySchema = LocationSchema.extend({
 
 const CountrySchema = LocationSchema.extend({
   regions: z.array(z.string()),
+  iso: z.string(),
+  displayName: z.string(),
 });
 
 const VenueSchema = LocationSchema.extend({

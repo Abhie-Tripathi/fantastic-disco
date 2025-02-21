@@ -65,7 +65,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const { theme } = useTheme()
-  const { getParticipentCount, getPipelineConfig, getOutreachSingleEvent, getLatestComment } = useCoordinateService()
+  const { getParticipentCount, getPipelineConfig, getOutreachSingleEvent, getLatestComment, getInterestConfig, getEnquiryStatusCount } = useCoordinateService()
   const { getActiveWidget, getOnlyDraftWidget } = useWidgetServices()
   const { getUpcomingEvents } = useEventServices()
   const { getRecentSearch } = useEventsService()
@@ -75,13 +75,13 @@ const Dashboard = () => {
   const { user } = useAuthContext()
    
   const fetchCoordinateData = async () => {
+    const apiData: any = await getInterestConfig();
+    const coordinateActions =  apiData?.interest?.slice(1);
     const data: any = await getParticipentCount()
-    const formattedData = data.filter((item: any) => item.name !== undefined && item.count !== undefined)
-      .map((item: any) => ({
-        heading: item.name,
-        value: item.count,
-      }));
-
+    const formattedData = coordinateActions.map((item: any) => {
+      const statusKey = item.status.toLowerCase();
+      return { value: data?.count[statusKey], heading: item.label };
+    });
     setCoordinateData(formattedData);
   }
 
@@ -93,21 +93,17 @@ const Dashboard = () => {
     const formattedData = [
       { name: "Widgets", value: activeData.totalCount },
       { name: "Drafts", value: draftData.totalCount },
-      { name: "Events", value: eventData.totalCount },
+      { name: "Events", value: eventData?.totalCount || 0 },
     ];
     setPromoteData(formattedData)
   }
 
   const fetchTrackerData = async () => {
-    const trackerData: any = await getTrackers(`limit=4&offset=0`)
+    const trackerData: any = await getTrackers(`limit=4&offset=0&refresh=true`)
     const fetchedTrackers: TrackerData[] = [];
-    trackerData.trackerData.map((tracker: any, key: any) => {
-      const eventCountry = tracker.filterValue?.eventCountry?.map((countryObj: {}) => Object.values(countryObj)[0]) || [];
-      const eventCity = tracker.filterValue?.eventCity?.map((cityObj: {}) => Object.values(cityObj)[0]) || [];
-      const eventState = tracker.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
-      const eventZone = tracker.filterValue?.eventRegion?.split(",") || [];
-      const locations = [...eventCountry, ...eventCity, ...eventZone, ...eventState]
-      const value: TrackerData = { id: tracker.id, name: tracker.name, newCount: tracker.groupedEventsCountByStatus.groupedEventsByStatus.new, activeCount: tracker.groupedEventsCountByStatus.groupedEventsByStatus.active, expiredCount: tracker.groupedEventsCountByStatus.groupedEventsByStatus.expired, location: locations, type: tracker.type }
+    trackerData.trackers.map((tracker: any, key: any) => {
+      const locations = Object.values(tracker.filterValues?.locationIds).map((item: any) => item.displayName);
+      const value: TrackerData = { id: tracker.id, name: tracker.name, newCount: tracker.groupedEventsCount.new, activeCount: tracker.groupedEventsCount.active, expiredCount: tracker.groupedEventsCount.past, location: locations, type: tracker.type }
       fetchedTrackers.push(value)
     })
     setTrackerData(fetchedTrackers)
@@ -118,21 +114,14 @@ const Dashboard = () => {
 
   // This function is to fetch the whole array
   const fetchOutreachData = async () => {
-    const data: any = await getPipelineConfig()
-    // const outreachArray: { name: string, value: number }[] = []
-    const outreachStages = data.outreach.slice(1, data.outreach.length - 1);
-    const promises = outreachStages.map(async (value: any) => {
-      const singleValueCount = await fetchOutreachValue(value.status);
-      return { name: value.label, value: singleValueCount };
-    });
-
-    const outreachArray = await Promise.all(promises);
-    setOutreachData(outreachArray);
-  }
-  // This function is to get specific count from the array values
-  const fetchOutreachValue = async (status: string) => {
-    const data = await getOutreachSingleEvent({ offset: 0, status })
-    return data?.count;
+    const apiData: any = await getPipelineConfig();
+    const outreachStages =  apiData?.outreach.slice(1, apiData.outreach.length - 1);
+    const data: any = await getEnquiryStatusCount();
+    const formattedData = outreachStages.map((item: any) => {
+      const statusKey = item.status.toLowerCase();
+      return { value: data?.count[statusKey], name: item.label };
+    });    
+    setOutreachData(formattedData);
   }
 
   const fetchOutreachMessage = async () => {
@@ -184,7 +173,7 @@ const Dashboard = () => {
   const fetchProfileData = async () => {
     const data: any = await getMyProfileData();
     const profileObject: ProfileData =
-      { name: data.user.firstname, email: data.user.email, phoneNumber: data.user.phoneNumber, profilePicture: data.user.profilePicture, department: data.user.department }
+      { name: data.firstname ? data.firstname : data.email.split('@')[0], email: data.email, phoneNumber: data.phoneNumber, profilePicture: data.profilePicture, department: data.department }
     setProfileData(profileObject)
     // console.log("user", user)
   }

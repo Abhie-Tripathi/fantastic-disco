@@ -16,7 +16,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Event, EventsResponse } from "@/types/events";
+import { Event } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
@@ -340,8 +340,8 @@ function EventList({
       source === "tracker"
         ? getTrackerMapEvents(
             trackerId ?? "",
-            `max=20&offset=${(currentPage - 1) * 20}`,
-            `type=${searchParam}&viewBound=${filteredParams}&stats=list&limit=20&skip=${
+            `${searchParams.get("eventType")}`,
+            `viewBound=${filteredParams}&stats=list&limit=20&offset=${
               (currentPage - 1) * 20
             }`
           )
@@ -352,7 +352,7 @@ function EventList({
     setCurrentPage(page);
   };
 
-  function isEventResponse(data: any): data is EventsResponse {
+  function isEventResponse(data: any): data is any {
     return data && "events" in data && Array.isArray(data.events);
   }
 

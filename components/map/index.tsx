@@ -84,20 +84,19 @@ interface PopupInfo {
 type ZoomGroup = "country" | "state" | "city" | "event" | null;
 
 export default function MapComponent({
-  searchParams,
   source,
   trackerId,
   isGlobal,
   trackerLoc,
   trackerType,
 }: MapProps) {
-  const searchparams = useSearchParams();
+  const searchParams = useSearchParams();
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
-  console.log(trackerId);
+console.log(trackerLoc);
 
   const { data } = useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
@@ -148,6 +147,7 @@ export default function MapComponent({
 
   const location = useMemo(() => {
     const geoCoordinates = getLocalFilterValue("geoCoordinates");
+    
     const locationIds =
       source === "tracker"
         ? trackerLoc?.length > 0
@@ -168,24 +168,23 @@ export default function MapComponent({
       return { type: "locationIds", locationIds };
     }
     return null;
-  }, [searchParams]);
+  }, [searchParams, trackerLoc]);
 
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey:
       source === "tracker"
         ? ["eventCounts", trackerId, currentZoomGroup, searchParams]
         : source === "tracker_global"
-        ? [trackerId]
+        ? ["eventCounts", searchParams]
         : ["eventCounts", currentZoomGroup, searchParams],
 
     queryFn: async () => {
       if (source === "tracker" || source === "tracker_global") {
         const response = await getMapViewData(trackerId, "city", searchParams);
-
         return response || [];
       } else {
         const response = await getEventsCount({
-          ...Object.fromEntries(searchparams.entries()),
+          ...Object.fromEntries(searchParams.entries()),
           groupBy: "city",
         });
         console.log("response", response);
@@ -347,7 +346,7 @@ export default function MapComponent({
           };
 
           try {
-            const modifiedSearchParams = searchParams?.replace(
+            const modifiedSearchParams = searchParams?.toString().replace(
               /locationIds=[^&]*&?/,
               ""
             );
@@ -368,8 +367,12 @@ export default function MapComponent({
                 `viewBound=${viewBoundString}`,
                 searchParams
               );
+              console.log(eventsData);
+              
             } else {
               eventsData = await getEventsWithSearchParams(finalSearchParams);
+              console.log(eventsData);
+              
             }
             setEvents((eventsData?.events as MapEvents[]) || []);
           } catch (error) {

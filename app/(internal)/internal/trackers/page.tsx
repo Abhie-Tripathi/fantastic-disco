@@ -136,6 +136,7 @@ const Trackers = ({ searchParams }: Search) => {
   const {tab}=searchParams;
   const {  setIsNewCall, setTrackerId, isLoading:load, skip, setSkip,setSearchValue, searchValue } = useTrackerContext();
   const router=useRouter();
+  const {getTrackers, getSavedEvents}=useTrackerServices();
   const [type, setType] = useState("");
   const {setFilter, getFilterValue, deleteFilter, setMultipleFilters} = useFilterState();
   useEffect(()=>{
@@ -179,7 +180,6 @@ const Trackers = ({ searchParams }: Search) => {
   const [singleTrackerData,setSingleTrackerData]=useState<Tracker | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [currentUrl, setCurrentUrl] = useState('');
-  const {getSavedEvents}=useTrackerServices();
   const {getNotesFromTracker}=useNotesServices();
   const handleShowMore = () => {
     setOffset((prevOffset) => prevOffset + 5);
@@ -226,11 +226,10 @@ const Trackers = ({ searchParams }: Search) => {
   const [isData, setIsData] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await myFetch(
-        `${baseUrl}/tracker/exist`
-      );
+      const data= await getTrackers(`offset=0&limit=0`);
+      
       if (data) setIsLoading(false)
-      if (data.trackerExists) {
+      if (data?.count) {
         // setHideTemplate(false);
         setIsData(true)
       }
@@ -301,12 +300,16 @@ const Trackers = ({ searchParams }: Search) => {
       setSavedEvents(undefined);
     }
     else{
-    const eventCountry = singleTrackerData?.filterValue?.eventCountry?.map((countryObj:{}) => Object.keys(countryObj)[0])||[];
-    const eventState = singleTrackerData?.filterValue?.eventState?.map((stateObj:{}) => Object.keys(stateObj)[0])||[];
-    const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.keys(cityObj)[0])||[];
-    const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
-    const flattenedLocations = [...eventCountry, ...eventCity, ...eventZone, ...eventState];
-    setLocations(flattenedLocations);
+    // const eventCountry = singleTrackerData?.filterValue?.eventCountry?.map((countryObj:{}) => Object.keys(countryObj)[0])||[];
+    // const eventState = singleTrackerData?.filterValue?.eventState?.map((stateObj:{}) => Object.keys(stateObj)[0])||[];
+    // const eventCity = singleTrackerData?.filterValue?.eventCity?.map((cityObj:{}) => Object.keys(cityObj)[0])||[];
+    // const eventZone=singleTrackerData?.filterValue?.eventRegion?.split(",")||[];
+    if(singleTrackerData?.filterValues?.locationIds){
+      const ids = Object?.keys(singleTrackerData?.filterValues?.locationIds);
+      setLocations(ids);
+      // setLocalFilter("locationIds", ids.join(","))
+      // console.log(ids);
+    }
     if(singleTrackerData.id){
     fetchNote(singleTrackerData?.id)
   fetchSavedEvent(singleTrackerData?.id)
@@ -326,6 +329,7 @@ const Trackers = ({ searchParams }: Search) => {
   }
   const fetchSavedEvent=async(id:string)=>{
     const result = await getSavedEvents(id, `limit=2&offset=0`) as { events: EventTableType[]; count: number }
+    console.log(result);
     
     if(result && result?.count>0){
       setSavedEvents(result);
@@ -410,7 +414,7 @@ const Trackers = ({ searchParams }: Search) => {
           </div>
     </div>
     <div >
-          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue}/>
+          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue} trackerId={singleTrackerData?.id || ""}/>
       </div>
   </div>
   <div className="w-1/2 p-5 h-[calc(100vh-67px)] bg-[var(--background-secondary-color)]" style={{padding:"20px 0px"}}>
@@ -575,7 +579,7 @@ const Trackers = ({ searchParams }: Search) => {
               <div className={styles.innerContainerOne}>
                 <Image src={Add} alt="add" />
                 <Link
-                  href="/internal/trackers/create?type=CUSTOM"
+                  href="/internal/trackers/create?type=T_CUSTOM"
                   className={styles.createUrl}
                 >
                   <Button

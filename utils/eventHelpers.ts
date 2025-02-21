@@ -1,5 +1,3 @@
-import { getEventRank } from "@/app/components/Table/EventTableRow";
-import { Ranking } from "@/types/events";
 
 
 interface rankTag {

@@ -54,7 +54,7 @@ export type CalendarEventType = {
   start: Date;
   end: Date;
   eventType: string;
-  alertLevel?: string;
+  alertLevel?: any;
 };
 interface EventCalendarProps {
   source?: string;
@@ -127,9 +127,8 @@ export default function EventCalendar({
       updatedParams.set("active_lte", moment(end).toISOString());
       // updatedParams.set("view", view);
       // console.log(moment(start).toISOString(), trackerDate);
-      const trackerDate = `${moment(start).toISOString()},${moment(
-        end
-      ).toISOString()}`;
+      const trackerStartDate = `${moment(start).toISOString()}`;
+      const trackerEndDate =`${moment(end).toISOString()}`;
       const response =
         source !== "tracker"
           ? await getEventsWithSearchParams(updatedParams.toString())
@@ -139,13 +138,13 @@ export default function EventCalendar({
                 active === "activeEvent"
                   ? "active"
                   : active === "expiredEvent"
-                  ? "expired"
+                  ? "past"
                   : active === "newEvent"
-                  ? ""
+                  ? "new"
                   : active === "savedEvent"
                   ? "saved"
                   : "active"
-              }&groupBy=${trackerDate}`,
+              }&active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&view=calendar&calendar_type=${view}`,
               false,
               view
             );
@@ -163,7 +162,7 @@ export default function EventCalendar({
   const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
     queryKey: ["unattended-events", searchParams.toString()],
     queryFn: async () => {
-      const alertSearchParams = new URLSearchParams(searchParams);
+      const alertSearchParams = new URLSearchParams(searchParams.toString());
       alertSearchParams.set("eventTypes", "alert");
       const query = Object.fromEntries(alertSearchParams.entries());
       const alerts = await getEvents(query);

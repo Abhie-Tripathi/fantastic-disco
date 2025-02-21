@@ -9,25 +9,26 @@ import { showToast } from '@/utils/showToast';
 import UserProfile from '../../userProfile/UserProfile';
 import { useTrackerServices } from '@/services/trackerServices';
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  accessLevel: string;
-  accessId: string;
-  profilePicture?:string
-};
+interface UserAccess {
+    id: string;
+    name: string;
+    email: string;
+    imageUrl: string;
+    accessType: string;
+    accessId: string;
+}
 
 type TrackerUserProps = {
   setSendInvite?: (value: boolean) => void;
   fetchAccess?: ()=>void;
-  userData: User[];
+  userData: UserAccess[];
   type:string;
   heading:string;
 };
 
 const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetchAccess, type, heading }) => {
   const path = usePathname().split('/');
+  const trackerId = path?.[path.length - 2];
   const {removeAccess,editAccess, error} = useTrackerServices();
   const [accessId, setAccessId] = useState<string | null>(null);
   const [drop, setDrop] = useState(false);
@@ -94,14 +95,14 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
     }
   };
 
-  const deleteEntry = async (id: string, accessEntry: string) => {
-    const formData = {
-      entityId: id,
-      published: false,
-    };
+  const deleteEntry = async (accessId: string) => {
+    // const formData = {
+    //   entityId: id,
+    //   published: false,
+    // };
 
     try {
-      const data = await removeAccess(accessEntry, formData);
+      const data = await removeAccess( accessId, trackerId);
       if (error) {
         console.error('Error fetching data:', error);
       } else {
@@ -114,7 +115,8 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
       console.error('Fetch failed:', err);
     }
   };
-
+  console.log(userData);
+  
   return (
     <div className="flex w-[100%] p-5 flex-col gap-3 border border-[var(--border-color)] rounded-[12px]">
       <div className="flex w-[100%] justify-between items-center">
@@ -127,9 +129,9 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
           <div key={index} className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               {type==="others" &&
-              <div className="w-[15px] flex items-center justify-center h-[15px] text-[var(--primary-color)] border border-[var(--primary-color)] cursor-pointer" onClick={() => deleteEntry(item.id, item.accessId)}>-</div>
+              <div className="w-[15px] flex items-center justify-center h-[15px] text-[var(--primary-color)] border border-[var(--primary-color)] cursor-pointer" onClick={() => deleteEntry(item.accessId)}>-</div>
               }       
-              {item.profilePicture?<Image src={item.profilePicture} alt="profilePhoto" height={40} width={40} style={{borderRadius:"50%", height:"40px", width:"40px"}} />:
+              {item.imageUrl?<Image src={item.imageUrl} alt="profilePhoto" height={40} width={40} style={{borderRadius:"50%", height:"40px", width:"40px"}} />:
               <UserProfile name={item.name}/>
               }
               <div>
@@ -138,19 +140,19 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
                 {/* <div className={styles.email}>{item?.email}</div> */}
               </div>
             </div>
-            {type==="others"?
+            {type==="otherss"?
             <div
               className="text-[var(--primary-color)] text-sm font-medium"
               // ref={dropdownRef}
               style={{ textDecoration: "none", position: "relative", cursor: "pointer" }}
               onClick={() => toggleDropdown(item.id)}
             >
-              {item.accessLevel.charAt(0).toUpperCase()}{item.accessLevel.substring(1).toLowerCase()}
+              {item.accessType.charAt(0).toUpperCase()}{item.accessType.substring(1).toLowerCase()}
               {drop && item.id === accessId && (
                 <div className="absolute top-full left-0" style={{boxShadow:"0 2px 10px rgba(0, 0, 0, 0.1"}}>
                   <div className={styles.dropdown}>
-                    <div className={styles.edit} onClick={() => changeAccess(item.accessId, "EDIT", item.accessLevel )}>Edit</div>
-                    <div className={styles.read} onClick={() => changeAccess(item.accessId, "READ", item.accessLevel)}>Read</div>
+                    <div className={styles.edit} onClick={() => changeAccess(item.accessId, "EDIT", item.accessType )}>Edit</div>
+                    <div className={styles.read} onClick={() => changeAccess(item.accessId, "READ", item.accessType)}>Read</div>
                   </div>
                   {/* <div onClick={() => changeAccess(item.accessId, "ADMIN")}>Admin</div> */}
                 </div>

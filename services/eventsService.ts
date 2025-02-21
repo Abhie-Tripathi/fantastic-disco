@@ -156,6 +156,8 @@ export const useEventsService = () => {
         method: "GET",
       }
     );
+    console.log(response);
+    
     return response;
   };
 
@@ -258,6 +260,6 @@ export const useEventsService = () => {
     getEventsRankingDetailsById,
     getRecentSearch,
     isLoading: api.isLoading,
-    error: api.error as ApiError,
+    // error: api.error as ApiError,
   };
 };

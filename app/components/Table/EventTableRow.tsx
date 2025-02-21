@@ -19,6 +19,7 @@ import { formatEstimatedSpend } from "@/utils/formater";
 
 interface EventTableRowProps {
   event: Event;
+  trackerId?: string;
   show: Show[];
 }
 
@@ -68,6 +69,7 @@ function formatExhibitorCount(value: string | number | null): string {
 export const EventTableRow: React.FC<EventTableRowProps> = ({
   event,
   show,
+  trackerId
 }) => {
   return (
     <TableRow key={event.basic.id}>
@@ -410,7 +412,11 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         className="sticky right-0 bg-background z-0"
         style={{ zIndex: 0 }}
       >
-        <ActionPopover eventId={event.basic.id} interests={event.interests} />
+        <ActionPopover
+          trackerId={trackerId}
+          eventId={event.basic.id}
+          interests={event.interests}
+        />
       </TableCell>
     </TableRow>
   );

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Event } from "@/types/events/events";
 import { format } from "date-fns";
 import { useFilterState } from "@/hooks/useFilterState";
+import {useTrackerEvents} from "@/hooks/useTrackerEvents";
 import { useEventsService } from "@/services/eventsService";
 import { useToast } from "../ui/use-toast";
 import { ToastAction } from "../ui/toast";
@@ -104,12 +105,22 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
     </div>
   );
 };
+interface EventListProps {
+  trackerId?: string;
+  source?: string;
+}
 
-export default function EventAccordion() {
+export default function EventAccordion({source, trackerId}:EventListProps) {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const query = Object.fromEntries(searchParams.entries());
-  const { events, totalEvents, isLoading, error } = useEvents.list(query);
+  let events, totalEvents, isLoading, error;
+
+  if (source === "tracker") {
+    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId));
+  } else {
+    ({ events, totalEvents, isLoading, error } = useEvents.list(query));
+  }
 
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =

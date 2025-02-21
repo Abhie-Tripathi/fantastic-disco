@@ -21,9 +21,14 @@ import { eventsKeys } from "@/hooks/useEvents";
 interface ActionPopoverProps {
   eventId: string;
   interests: Interest | undefined;
+  trackerId?:string;
 }
 
-export function ActionPopover({ eventId, interests }: ActionPopoverProps) {
+export function ActionPopover({
+  eventId,
+  interests,
+  trackerId
+}: ActionPopoverProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const {
@@ -56,7 +61,8 @@ export function ActionPopover({ eventId, interests }: ActionPopoverProps) {
         {
           eventId,
           interest: selectedAction,
-          sourceModule: "RESEARCH",
+          sourceModule: trackerId ? "TRACKER" : "RESEARCH",
+          ...(trackerId && { sourceId: trackerId }),
         },
         {
           onSuccess: () => {
