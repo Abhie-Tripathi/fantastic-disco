@@ -71,7 +71,6 @@ const AllEvents = ({
   const router = useRouter();
   const [selectedOptions, setSelectedOptions] = useState<any>({});
   useEffect(() => {
-    // console.log("fetchedAddedEvents",fetchedAddedEvents,fetchedAllEvents)
     const handleOtherDataFetch = async () => {
       try {
         const newPromotedEvents: string[] = [];
@@ -879,14 +878,13 @@ const AllEvents = ({
     const customizedFormData = new FormData();
     customizedFormData.append("widgetId", widgetId);
     customizedFormData.append("eventId", eventIds);
-    customizedFormData.append("otherdata", JSON.stringify(otherData));
+    customizedFormData.append("otherData", JSON.stringify(otherData));
     customizedFormData.append("status", "active");
 
     // const { data, error } = await myFetch(`${baseUrl}/widget`, {
     //   method: "POST",
     //   body: customizedFormData,
     // });
-
     const data: any = await updateWidgetData(customizedFormData)
     if (data) {
       showToast("success", "Event successfully added to the widget");
@@ -912,7 +910,7 @@ const AllEvents = ({
     };
     // const updatedIds = eventIds.join(',')
     customizedFormData.append("widgetId", widgetId);
-    customizedFormData.append("otherdata", JSON.stringify(otherData));
+    customizedFormData.append("otherData", JSON.stringify(otherData));
 
     // const { data, error } = await myFetch(`${baseUrl}/widget`, {
     //   method: "POST",
@@ -952,7 +950,6 @@ const AllEvents = ({
     setSelectedOption(option);
   };
 
-  console.log("fetchedAllEvents", fetchedAllEvents);
   return (
     <div className={styles.body} ref={scrollableDivRef}>
       <div className={styles.headerContainer}>
@@ -1140,7 +1137,7 @@ const AllEvents = ({
 
                   </div>
                   <div className={styles.tags}>
-                    {event.mainEvent.eventType === "MAIN" ? (
+                    {event.mainEvent.eventType === "PARENT" ? (
                       <span className={styles.mainEventTag}>Main Event</span>
                     ) : (
                       <span className={styles.subEventTag}>Side Event</span>

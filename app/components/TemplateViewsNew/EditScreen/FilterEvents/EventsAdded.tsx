@@ -367,7 +367,7 @@ const EventsAdded = ({
     const eventIds = newEventList.map((event) => event.id).join(",");
 
     customizedFormData.append("widgetId", widgetId);
-    customizedFormData.append("otherdata", JSON.stringify(otherData));
+    customizedFormData.append("otherData", JSON.stringify(otherData));
     customizedFormData.append("eventId", eventIds);
 
     // const { data, error } = await myFetch(`${baseUrl}/widget`, {
@@ -429,7 +429,7 @@ const EventsAdded = ({
 
     // const updatedIds = eventIds.join(',')
     customizedFormData.append("widgetId", widgetId);
-    customizedFormData.append("otherdata", JSON.stringify(otherData));
+    customizedFormData.append("otherData", JSON.stringify(otherData));
 
     // const { data, error } = await myFetch(`${baseUrl}/widget`, {
     //   method: "POST",
@@ -552,7 +552,7 @@ const EventsAdded = ({
     const customizedFormData = new FormData();
     customizedFormData.append("widgetId", widgetId);
     customizedFormData.append("eventId", eventIds);
-    customizedFormData.append("otherdata", JSON.stringify(otherData));
+    customizedFormData.append("otherData", JSON.stringify(otherData));
     customizedFormData.append("status", "active");
 
     // const { data, error } = await myFetch(`${baseUrl}/widget`, {
@@ -649,7 +649,6 @@ const EventsAdded = ({
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
   };
-  console.log("fetchedAddedOtherData____", fetchedAddedOtherData)
   return (
     <div className={styles.body}>
       <div className={styles.headerContainer}>

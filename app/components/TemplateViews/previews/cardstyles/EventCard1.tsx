@@ -83,7 +83,7 @@ const EventCard1 = ({
                     <span className={styles.month} style={{ fontSize: fontSettings.heading.fontSize }}>{month}</span></div> */}
                 <div className={styles.dateContainer}>
                     {
-                        fetchedEvent?.eventType === "SUB" ? <><Image src={POP} alt='' /></> : fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type === "Tradeshow" ? <Image src={TradeshowIcon} alt='' /> : fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type === "Conference" ? <Image src={ConferenceIcon} alt='' /> : fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type === "Workshop" ? <Image src={WorkShopIcon} alt='' /> : <Image src={DefaultIcon} alt='' />
+                        fetchedEvent?.eventType === "CHILD" ? <><Image src={POP} alt='' /></> : fetchedEvent?.eventType === "PARENT" && fetchedEvent.event_type === "Tradeshow" ? <Image src={TradeshowIcon} alt='' /> : fetchedEvent?.eventType === "PARENT" && fetchedEvent.event_type === "Conference" ? <Image src={ConferenceIcon} alt='' /> : fetchedEvent?.eventType === "PARENT" && fetchedEvent.event_type === "Workshop" ? <Image src={WorkShopIcon} alt='' /> : <Image src={DefaultIcon} alt='' />
                     }
                 </div>
                 <div className={styles.line}></div>

@@ -47,7 +47,6 @@ const SubEventCard = ({
   demoLocation,
   fetchedAddedOtherData,
 }: any) => {
-  console.log("sdasdasd", fetchedAddedOtherData);
   function formatEventDates(startDate: string, endDate: string) {
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -238,13 +237,13 @@ const SubEventCard = ({
                 <>
                   <Image src={POP} alt="" />
                 </>
-              ) : fetchedAddedOtherData![0]?.eventType === "MAIN" &&
+              ) : fetchedAddedOtherData![0]?.eventType === "PARENT" &&
                 fetchedAddedOtherData![0].event_type === "Tradeshow" ? (
                 <Image src={TradeshowIcon} alt="" />
-              ) : fetchedAddedOtherData![0]?.eventType === "MAIN" &&
+              ) : fetchedAddedOtherData![0]?.eventType === "PARENT" &&
                 fetchedAddedOtherData![0].event_type === "Conference" ? (
                 <Image src={ConferenceIcon} alt="" />
-              ) : fetchedAddedOtherData![0]?.eventType === "MAIN" &&
+              ) : fetchedAddedOtherData![0]?.eventType === "PARENT" &&
                 fetchedAddedOtherData![0].event_type === "Workshop" ? (
                 <Image src={WorkShopIcon} alt="" />
               ) : (
@@ -254,7 +253,7 @@ const SubEventCard = ({
                 className={`${styles.pill} ${styles.type1}`}
                 style={{ fontSize: fontSettings?.body.fontSize }}
               >
-                {fetchedEvent?.eventType === "MAIN"
+                {fetchedEvent?.eventType === "PARENT"
                   ? fetchedEvent.event_type
                   : fetchedEvent?.eventType === "SUB"
                   ? fetchedEvent.participationType === "Brunch/Lunch/Dinner"
@@ -266,7 +265,7 @@ const SubEventCard = ({
                 className={`${styles.pill} ${styles.type2}`}
                 style={{ fontSize: fontSettings?.body.fontSize }}
               >
-                {fetchedAddedOtherData![0]?.eventType === "MAIN"
+                {fetchedAddedOtherData![0]?.eventType === "PARENT"
                   ? fetchedAddedOtherData![0].eventFormat
                   : fetchedAddedOtherData![0]?.eventType === "SUB"
                   ? fetchedAddedOtherData![0].eventFormat

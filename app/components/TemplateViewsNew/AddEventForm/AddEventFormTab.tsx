@@ -233,7 +233,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
             const formData = new FormData()
             formData.append("name", mainEventState.eventName)
             formData.append("data", JSON.stringify(eventData))
-            formData.append("type", "MAIN")
+            formData.append("type", "PARENT")
             formData.append("capacity", mainEventState?.capacity + "")
             formData.append("approval", mainEventState?.approval + "")
             formData.append("waitlisting", mainEventState?.waitlisting + "")
@@ -432,7 +432,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
         const formData = new FormData()
         formData.append("name", subEventState.eventName)
         formData.append("data", JSON.stringify(eventData))
-        formData.append("type", "SUB")
+        formData.append("type", "CHILD")
         if (eventId) {
             formData.append('eventId', eventId)
         }
@@ -488,7 +488,6 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
     const handleSaveEvent = async (eventId: string) => {
         // Use the eventFlow variable to decide which state to use
         const eventState = eventFlow === "main" ? mainEventState : subEventState;
-        console.log("eventState",eventState)
         // Perform the necessary validation checks with the selected state
         if (!eventState.eventName || eventState.eventName === "") {
             handleMaineventChanges('isEventNameEmpty', true);

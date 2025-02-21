@@ -98,7 +98,7 @@ const Page = ({snowTheme,event_type,type, venue, latitude, eventFont, longitude,
 const fetchData = async (eventId: string) => {
     try {
         // Manually fetching data instead of using the myFetch hook
-        const response = await fetch(`${baseUrl}/public/widget/${eventId}/event?ts=${Date.now()}`, {
+        const response = await fetch(`https://api.dev.gtm.whr.ai/public/event/${eventId}`, {
             headers: {
                 'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
             },

@@ -488,7 +488,7 @@ const Page = () => {
     try {
       const data: any = await getUpcomingEvents(page);
       if (data) {
-        const transformedEvents = data.map((event: any) => ({
+        const transformedEvents = data?.data?.map((event: any) => ({
           mainEvent: {
             eventId: event.id,
             name: event.name,
@@ -584,7 +584,7 @@ const Page = () => {
     try {
       const data: any = await getPastEvents(page);
       if (data) {
-        const transformedEvents = data.map((event: any) => ({
+        const transformedEvents = data?.data?.map((event: any) => ({
           mainEvent: {
             eventId: event.id,
             name: event.name,
@@ -686,7 +686,7 @@ const Page = () => {
     // setPrefilledGlobalEvent(undefined)
     setPrefilledEvent(event);
     setIsEventFormModal(true);
-    if (event.eventType === "MAIN") {
+    if (event.eventType === "PARENT") {
       setEventFlow("main");
     } else setEventFlow("side");
   };
@@ -746,6 +746,7 @@ const Page = () => {
         {/* <div className={styles.eventsContainer}> */}
           {activeTab === "upcoming" && filteredUpcomingEvents.length > 0 ? (
             filteredUpcomingEvents.map((event, index) => {
+              console.log("asd2120000000000000000000",event)
               const showDate = event.mainEvent.startDate !== prevDate;
               prevDate = event.mainEvent.startDate;
 
@@ -756,7 +757,7 @@ const Page = () => {
                       eventDate={showDate ? event.mainEvent.startDate : null}
                     />
                   )}
-                  {event.mainEvent.eventType === "MAIN" ? (
+                  {event.mainEvent.eventType === "PARENT" ? (
                     <DashboardEventCard
                       setSelectedEventType={setSelectedEventType}
                       handlePrefillSubEvent={handlePrefillSubEvent}
@@ -788,7 +789,7 @@ const Page = () => {
                       eventDate={showDate ? event.mainEvent.startDate : null}
                     />
                   )}
-                  {event.mainEvent.eventType === "MAIN" ? (
+                  {event.mainEvent.eventType === "PARENT" ? (
                     <DashboardEventCard
                       setSelectedEventType={setSelectedEventType}
                       handlePrefillSubEvent={handlePrefillSubEvent}

@@ -243,7 +243,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
                     </div>
                 </div>
                 {addEventModal && <div className={styles.addEventModal}>
-                    <AddEvent fetchedSubEvents={fetchedSubEvents} fetchEventData={fetchEventData} eventFlow={fetchedEvent?.eventType === "MAIN" ? "main" : "side"} widgetId='22323' prefilledEvent={fetchedEvent} setIsAddEventModalOpen={setAddEventModal} addedEventIds={[""]} />
+                    <AddEvent fetchedSubEvents={fetchedSubEvents} fetchEventData={fetchEventData} eventFlow={fetchedEvent?.eventType === "PARENT" ? "main" : "side"} widgetId='22323' prefilledEvent={fetchedEvent} setIsAddEventModalOpen={setAddEventModal} addedEventIds={[""]} />
                 </div>}
                 {deleteModal && <div className={styles.deleteModal}>
                     <div className={styles.deleteHeading}>Are you sure you want to delete this event?...</div>
