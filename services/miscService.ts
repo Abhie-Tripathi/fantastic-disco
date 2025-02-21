@@ -8,6 +8,9 @@ import { Weather } from "@/types";
 // import { Designations } from "@/types/misc/designations";
 // import externalAxios from "@/lib/externalAxios";
 
+
+const apiKey = process.env.NEXT_PUBLIC_WEATHER_KEY
+
 export const useMiscService = () => {
   const api = useApi();
 

@@ -32,7 +32,7 @@ export default function MultiSelectSearchBar() {
   const [searchResults, setSearchResults] = useState<Event[]>([]);
   const [selectedItems, setSelectedItems] = useState<Event[]>([]);
   const searchBarRef = useRef<HTMLDivElement>(null);
-  const { getEvents, isLoading, error } = useEventsService();
+  const { getEvents, isLoading } = useEventsService();
 
   useEffect(() => {
     const fetchEventDetails = async (eventIds: string[]) => {
@@ -192,9 +192,9 @@ export default function MultiSelectSearchBar() {
               <CommandEmpty>
                 {isLoading ? "Searching..." : "No results found."}
               </CommandEmpty>
-              {error && (
+              {/* {error && (
                 <div className="p-2 text-red-500">Error: {error.message}</div>
-              )}
+              )} */}
               <CommandGroup>
                 <CommandList>
                   {searchResults.map((event, index) => (

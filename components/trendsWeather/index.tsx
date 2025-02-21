@@ -233,6 +233,7 @@ export const DetailMapComponent = ({
     queryFn: async () =>
       getWeatherData(latitude, longitude, weatherActiveDate ?? ""),
     refetchOnWindowFocus: false,
+    enabled: isEventeli,
     gcTime: 0,
     staleTime: 0,
   });

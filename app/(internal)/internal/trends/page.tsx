@@ -48,7 +48,7 @@ import { useEventsService } from "@/services/eventsService";
 import { useToast } from "@/components/ui/use-toast";
 import TestPeriodicAnalytics from "@/components/newTrends/table-view/TestPeriodicAnalytics";
 import D3AreaChart from "@/components/newTrends/D3newTrends";
-import TrendsNotification from "@/components/newTrends/notification";
+// import TrendsNotification from "@/components/newTrends/notification";
 import { Switch } from "@/components/ui/switch";
 import CILSearch from "/public/cil_search.svg";
 import GoToIcon from "/public/go_to.svg";
