@@ -260,6 +260,6 @@ export const useEventsService = () => {
     getEventsRankingDetailsById,
     getRecentSearch,
     isLoading: api.isLoading,
-    error: api.error as ApiError,
+    // error: api.error as ApiError,
   };
 };
