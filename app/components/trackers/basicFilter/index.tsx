@@ -57,7 +57,7 @@ const BasicFilter = ({category}:any) => {
          checked={true}
          disabled
        />
-       <span className={styles.item}>{item.name}</span>
+       <span className={styles.item}>{item}</span>
      </label>
       </div>
      ))}
