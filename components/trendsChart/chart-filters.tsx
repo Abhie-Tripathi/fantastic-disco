@@ -28,59 +28,34 @@ export function ChartFilters({ type }: ChartFiltersProps) {
       <AccordionItem value="time">
         <AccordionTrigger>Time Period</AccordionTrigger>
         <AccordionContent>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>Duration</Label>
-              <Select defaultValue="month">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select time period" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="day">Day</SelectItem>
-                  <SelectItem value="week">Week</SelectItem>
-                  <SelectItem value="month">Month</SelectItem>
-                  <SelectItem value="year">Year</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-
-      <AccordionItem value="location">
-        <AccordionTrigger>Location</AccordionTrigger>
-        <AccordionContent>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label>Region</Label>
-              <Select defaultValue="all">
-                <SelectTrigger>
-                  <SelectValue placeholder="Select location" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Locations</SelectItem>
-                  <SelectItem value="country">By Country</SelectItem>
-                  <SelectItem value="city">By City</SelectItem>
-                  <SelectItem value="region">By Region</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="space-y-2">
+            <Label>Duration</Label>
+            <Select defaultValue="month">
+              <SelectTrigger>
+                <SelectValue placeholder="Select time period" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="day">Last 24 Hours</SelectItem>
+                <SelectItem value="week">Last 7 Days</SelectItem>
+                <SelectItem value="month">Last 30 Days</SelectItem>
+                <SelectItem value="year">Last 12 Months</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </AccordionContent>
       </AccordionItem>
 
       <AccordionItem value="event">
-        <AccordionTrigger>Event Details</AccordionTrigger>
+        <AccordionTrigger>Event Type</AccordionTrigger>
         <AccordionContent>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Event Type</Label>
-              <Select defaultValue="all">
+              <Label>Primary Type</Label>
+              <Select defaultValue="business">
                 <SelectTrigger>
                   <SelectValue placeholder="Select event type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Events</SelectItem>
                   <SelectItem value="business">Business</SelectItem>
                   <SelectItem value="non-business">Non-Business</SelectItem>
                   <SelectItem value="not-planned">Not Planned</SelectItem>
@@ -90,15 +65,17 @@ export function ChartFilters({ type }: ChartFiltersProps) {
 
             <div className="space-y-2">
               <Label>Category</Label>
-              <Select defaultValue="all">
+              <Select defaultValue="tradeshow">
                 <SelectTrigger>
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
                   <SelectItem value="tradeshow">Tradeshows</SelectItem>
                   <SelectItem value="conference">Conferences</SelectItem>
                   <SelectItem value="meetup">Meetups</SelectItem>
+                  <SelectItem value="concert">Concerts</SelectItem>
+                  <SelectItem value="festival">Festivals</SelectItem>
+                  <SelectItem value="sports">Sports</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -106,8 +83,45 @@ export function ChartFilters({ type }: ChartFiltersProps) {
         </AccordionContent>
       </AccordionItem>
 
-      <AccordionItem value="additional">
-        <AccordionTrigger>Additional Filters</AccordionTrigger>
+      <AccordionItem value="audience">
+        <AccordionTrigger>Audience Details</AccordionTrigger>
+        <AccordionContent>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label>Designation</Label>
+              <Select defaultValue="all">
+                <SelectTrigger>
+                  <SelectValue placeholder="Select job function" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Designations</SelectItem>
+                  <SelectItem value="executive">Executives</SelectItem>
+                  <SelectItem value="manager">Managers</SelectItem>
+                  <SelectItem value="professional">Professionals</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Event Size</Label>
+              <Select defaultValue="all">
+                <SelectTrigger>
+                  <SelectValue placeholder="Select event size" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Sizes</SelectItem>
+                  <SelectItem value="small">Small (500)</SelectItem>
+                  <SelectItem value="medium">Medium (500-2000)</SelectItem>
+                  <SelectItem value="large">Large (2000)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+
+      <AccordionItem value="metrics">
+        <AccordionTrigger>Additional Metrics</AccordionTrigger>
         <AccordionContent>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -115,16 +129,16 @@ export function ChartFilters({ type }: ChartFiltersProps) {
               <Switch id="maturity" />
             </div>
             <div className="flex items-center justify-between">
-              <Label htmlFor="size">Include Event Size</Label>
-              <Switch id="size" />
-            </div>
-            <div className="flex items-center justify-between">
-              <Label htmlFor="audience">Show Audience Zone</Label>
-              <Switch id="audience" />
-            </div>
-            <div className="flex items-center justify-between">
               <Label htmlFor="economic">Include Economic Impact</Label>
               <Switch id="economic" />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="inbound">Show Country Inbound</Label>
+              <Switch id="inbound" />
+            </div>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="outbound">Show Country Outbound</Label>
+              <Switch id="outbound" />
             </div>
           </div>
         </AccordionContent>
