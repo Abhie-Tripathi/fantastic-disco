@@ -86,7 +86,7 @@ const chartTemplates = [
 export default function ChartTemplatesPage() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-background/10 to-background">
-      <div className="container mx-auto p-6">
+      <div className="mx-auto p-6">
         {/* <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Data Visualization Templates</h1>
           <p className="mt-2 text-gray-600">Choose a template to visualize and compare your data</p>

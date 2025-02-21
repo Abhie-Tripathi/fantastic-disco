@@ -132,7 +132,7 @@ export function ChartFilters({ type }: ChartFiltersProps) {
 
       <Separator className="my-4" />
 
-      <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={handleApply} disabled={isApplying}>
+      <Button onClick={handleApply} disabled={isApplying}>
         {isApplying ? "Applying..." : "Apply Filters"}
       </Button>
     </Accordion>
