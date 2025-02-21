@@ -16,10 +16,10 @@ const SearchEventsCTAButton = ({
   eventLocation,
 }: Props) => {
   const router = useRouter();
+  const { enabledFilters } = useFilterContext();
   const params = new URLSearchParams();
 
   const generateSearchEventsParams = (): string => {
-    const { enabledFilters } = useFilterContext();
     const enabledCategories =
       enabledFilters &&
       enabledFilters.eventCategory &&

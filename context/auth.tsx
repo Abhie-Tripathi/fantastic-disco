@@ -31,17 +31,11 @@ import {
 } from "@/types/auth/user";
 import { sessionKeys } from "@/data/onboarding";
 import { useLocationService } from "@/services/locationService";
-import { isEventeli } from "@/config";
 
 type authContextType = {
   user: UserResponse | null;
   error:
-    | {
-        response: string;
-        status: number;
-        message: string;
-        name: string;
-      }
+    | { issues: any[]; statusCode: number; message: string }
     | null
     | undefined;
   isVerifiedToken: boolean;
@@ -51,15 +45,7 @@ type authContextType = {
   setUser: Dispatch<SetStateAction<UserResponse | null>>;
   setError: (
     error:
-      | (
-          | {
-              response: string;
-              status: number;
-              message: string;
-              name: string;
-            }
-          | undefined
-        )
+      | ({ issues: any[]; statusCode: number; message: string } | undefined)
       | null
   ) => void;
   signOut: () => void;
@@ -98,15 +84,7 @@ const authContextDefaultValues: authContextType = {
   signin: () => Promise.resolve(null),
   setError: (
     error:
-      | (
-          | {
-              response: string;
-              status: number;
-              message: string;
-              name: string;
-            }
-          | undefined
-        )
+      | ({ issues: any[]; statusCode: number; message: string } | undefined)
       | null
   ) => {},
   setUser: () => {},
@@ -125,7 +103,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const router = useRouter();
   const pathName = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<Boolean>(false);
-  const [user, setUser] = useState<UserResponse | null>();
+  const [user, setUser] = useState<UserResponse | null>(null);
   const [loginError, setLoginError] = useState<string>("");
   const { getLocationName } = useLocationService();
   const { request, error, isLoading, setError } = useApi<any>();
@@ -182,7 +160,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const newcheckAuth = useCallback(async () => {
     const userData = await fetchUserData();
     if (!userData) {
-      setUser(undefined);
+      setUser(null);
       return;
     }
     const userLocation = await fetchUserLocation(userData?.primaryLocation);
