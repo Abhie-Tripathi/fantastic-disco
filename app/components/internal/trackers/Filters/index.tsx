@@ -887,7 +887,12 @@ const Pages = () => {
       setLocalFilter("locationIds", ids.join(","))
       console.log(ids);
     }
-      
+    if(editData?.filterValues?.categories){
+      const categories = Object.values(editData?.filterValues?.categories || {}).map((category: any) => {
+        return category.slug;
+      })||[]
+      setLocalFilter("categories", categories.join(","))
+    }
       setLocalFilter("show", showsData.join(","))
       
       console.log(editData);

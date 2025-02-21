@@ -166,9 +166,12 @@ const Page = () => {
     setLocations(eventLocation);
 
   }, [data]);
-  const eventType = data?.filterValues?.eventType ?
-    data?.filterValues?.eventType
-    : [];
+  const eventType = Object.values(data?.filterValues?.eventTypes || {}).map((eventType: any) => {
+    return eventType.name;
+  })||[];
+  const categories = Object.values(data?.filterValues?.categories || {}).map((category: any) => {
+    return category.name;
+  })||[];
   const eventEntry = data?.filterValues?.entryType ?
     data?.filterValues?.entryType : [];
   const eventSize = data?.filterValues?.estimatedVisitors ?
@@ -481,9 +484,7 @@ const Page = () => {
                 {data && (
                   <BasicFilter
                     category={
-                      data?.filterValue?.categories?.length > 0
-                        ? data?.filterValue?.categories
-                        : []
+                      categories
                     }
                   />
                 )}

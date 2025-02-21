@@ -92,11 +92,11 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   };
   useEffect(() => {
     
-    const eventCountry = item?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
-    const eventCity = item?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
-    const eventState = item?.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
-    const eventZone=item?.filterValue?.eventRegion?.split(",")||[];
-    setLocations([...eventCountry, ...eventCity, ...eventZone, ...eventState]);
+    const eventLocation =
+      Object.values(item?.filterValues?.locationIds || {}).map((location: any) => {
+        return location?.displayName;
+      });
+    setLocations(eventLocation);
   }, [item]);
   const formatType=(type:string)=>{
     if(type==="CUSTOM") return "Custom"
