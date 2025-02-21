@@ -44,10 +44,10 @@ export default function Component() {
       try {
         const countriesResponse = await getCountries();
 
-        setCountries(countriesResponse?.formattedLocations || []);
+        setCountries((countriesResponse as any)?.formattedLocations || []);
 
         const regionsResponse = await getRegions();
-        setRegions(regionsResponse?.regions || []);
+        setRegions((regionsResponse as any)?.regions || []);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

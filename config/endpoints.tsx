@@ -83,6 +83,7 @@ export const endpoints = {
     eventDetail: `${BASE_URL}/events`,
   },
   intent: {
+    userEventInterest: `${BASE_URL}/intents/user-event-interest`,
     enquiryActivity: `${BASE_URL}/intents/enquiry-activity`,
   },
   account: {

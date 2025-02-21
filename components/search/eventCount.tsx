@@ -37,7 +37,7 @@ const EventCount = () => {
           {new Intl.NumberFormat("en", {
             notation: "compact",
             maximumFractionDigits: 1,
-          }).format(data?.count || 0)}
+          }).format((data as any)?.count || 0)}
         </Badge>
       )}
       <p className="text-primary font-semibold">Events Found</p>

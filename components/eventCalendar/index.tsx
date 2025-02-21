@@ -54,7 +54,7 @@ export type CalendarEventType = {
   start: Date;
   end: Date;
   eventType: string;
-  alertLevel?: string;
+  alertLevel?: any;
 };
 interface EventCalendarProps {
   source?: string;

@@ -122,7 +122,7 @@ export const DetailMapComponent = ({
         <div className="flex flex-col gap-4 max-xl:justify-around h-auto">
           <div className="flex flex-col gap-4">
             <div className="flex-1 bg-[#EBEBEB] h-[450px]">
-              {isEventeli && venueLocation && typeOfEvent === "online" ? (
+              {/* {isEventeli && venueLocation && typeOfEvent === "online" ? (
                 <EventsListView
                   startDate={eventDateRange.startDate}
                   endDate={eventDateRange.endDate}
@@ -139,7 +139,7 @@ export const DetailMapComponent = ({
                     height: "308px",
                   }}
                 />
-              )}
+              )} */}
             </div>
           </div>
         </div>

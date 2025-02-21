@@ -254,6 +254,5 @@ export const useCoordinateService = () => {
     setEnquiryFollowers,
     deleteEnquiryActivityIntent,
     isLoading: api.isLoading,
-    error: api.error as ApiError,
   };
 };

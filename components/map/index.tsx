@@ -717,7 +717,7 @@ export default function MapComponent({
                     />
                   )}
 
-                  {/* <EventList
+                  <EventList
                     source={source}
                     trackerId={trackerId}
                     searchParam={searchParams}
@@ -726,7 +726,7 @@ export default function MapComponent({
                     mapRef={mapRef}
                     onEventHover={handleEventHover}
                     onEventLeave={handleEventLeave}
-                  /> */}
+                  />
 
                   <EventCountsLayer
                     eventCounts={eventCountsQuery.data || []}
