@@ -369,7 +369,7 @@ export const AuthContextProvider = ({ children }: any) => {
   const signInActions = (redirectTo: string | undefined) => {
     localStorage.setItem("walkthroughCompleted", JSON.stringify(["research"]));
     sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-    // router.push(redirectTo || "/internal");
+    router.push(redirectTo || "/internal");
   };
 
   const signUpActions = async (redirectTo: string | undefined) => {
