@@ -34,7 +34,7 @@ import { useEventsService } from "@/services/eventsService";
 import { EventPOCDetails } from "@/types/events";
 import Loading from "@/components/ui/Loading";
 import { Badge } from "@/components/ui/badge";
-import { EventInfoAndMap } from "@/components/gtmDetail/eventInfoAndMap";
+import { Overview } from "@/components/gtmDetail/overview";
 import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
 import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
 import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
@@ -546,7 +546,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   No organizer found
                 </p>
               )}
-              {eventCoOrganizerDetails.length > 0 ? (
+              {eventCoOrganizerDetails && eventCoOrganizerDetails.length > 0 ? (
                 <div className="flex items-center gap-2 border-t-[1px] p-2">
                   <Text fontWeight="medium" color="secondary">
                     Co-organizer
@@ -767,8 +767,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         </ul>
 
         <section className="flex flex-col gap-6 pb-6 h-[calc(100vh-180px)] mt-5 w-full pr-4 overflow-y-auto scroll-smooth">
-          <EventInfoAndMap
-            eventDetails={basic}
+          <Overview
+            eventDetails={eventData}
             scrollSection={tabs[0].path}
             setActiveTab={setActiveTab}
           />

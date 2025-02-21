@@ -20,6 +20,29 @@ const RankingSchema = z
   .nullable()
   .optional();
 
+const DetailRankingSchema = z.object({
+  global: z.number(),
+  country: z.object({
+    id: z.string(),
+    rank: z.number(),
+  }),
+  categories: z.array(
+    z.object({
+      id: z.string(),
+      rank: z.number(),
+    })
+  ),
+  category_country: z.array(
+    z.object({
+      categoryId: z.string(),
+      countryId: z.string(),
+      rank: z.number(),
+    })
+  ),
+});
+
+const RankingsSchema = z.union([RankingSchema, DetailRankingSchema]);
+
 const AudienceSpreadSchema = z.record(
   z.string(),
   z.object({
@@ -157,7 +180,7 @@ const InsightsEventSchema = z.object({
   rehostScore: z.number(),
   estimatedAttendanceMean: z.number().nullable(),
   estimatedAttendance: z.string().nullable(),
-  rankings: RankingSchema,
+  rankings: RankingsSchema,
   scores: z
     .object({
       impactScore: z.number().nullable(),
@@ -187,12 +210,26 @@ const InterestSchema = z.record(
   })
 );
 
+const AlertSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  type: z.string(),
+  level: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+  originLatitude: z.string(),
+  originLongitude: z.string(),
+  lastModified: z.string(),
+});
+
 const EventDataSchema = z.object({
   basic: BasicEventSchema,
   advance: AdvanceEventSchema.optional(),
   insights: InsightsEventSchema.optional(),
   audience: AudienceSchema.optional(),
   interests: InterestSchema.optional(),
+  alerts: z.array(AlertSchema).optional(),
 });
 
 export interface EventResponse {
@@ -208,4 +245,5 @@ export type Venue = z.infer<typeof VenueSchema>;
 export type Event = z.infer<typeof EventDataSchema>;
 export type Ranking = z.infer<typeof RankingSchema>;
 export type TTabs = "overview" | "insights" | "audience";
+export type DetailRanking = z.infer<typeof DetailRankingSchema>;
 export type Interest = z.infer<typeof InterestSchema>;
