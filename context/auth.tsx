@@ -288,14 +288,14 @@ export const AuthContextProvider = ({ children }: any) => {
   );
 
   const signOut = useCallback(async () => {
-    // setUser(null);
-    // deleteLocalStorage();
-    // localStorage.removeItem("walkthroughCompleted");
-    // sessionKeys.forEach((key) => sessionStorage.removeItem(key));
-    // await request(endpoints.auth.logout, {
-    //   method: "POST",
-    // });
-    // router.push("/signin");
+    setUser(null);
+    deleteLocalStorage();
+    localStorage.removeItem("walkthroughCompleted");
+    sessionKeys.forEach((key) => sessionStorage.removeItem(key));
+    await request(endpoints.auth.logout, {
+      method: "POST",
+    });
+    router.push("/signin");
   }, [request, router]);
 
   useEffect(() => {

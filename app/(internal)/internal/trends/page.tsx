@@ -44,7 +44,7 @@ import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import TrendsEventTypeSelector from "@/components/search/trendsEventType";
 import { table } from "console";
 import { useEventsService } from "@/services/eventsService";
-// import { EventsResponse } from "@/types";
+import { EventResponse } from "@/types/events";
 import { useToast } from "@/components/ui/use-toast";
 import TestPeriodicAnalytics from "@/components/newTrends/table-view/TestPeriodicAnalytics";
 import D3AreaChart from "@/components/newTrends/D3newTrends";
@@ -61,6 +61,7 @@ import EventTypeSelector from "@/components/search/eventType";
 import ColumnsSelector from "@/components/search/columnSelector";
 import { useFilterContext } from "@/context/filterContext";
 import { useTrendsService } from "@/services/trendsService";
+import { isEventeli } from "@/config";
 
 const EventTrends = () => {
   const { searchParams } = useDefaultFilters();
@@ -142,6 +143,15 @@ const EventTrends = () => {
     staleTime: 0,
   });
 
+  const { data: holdiayData } = useQuery({
+    queryKey: ["holiday", updatedParams],
+    queryFn: async () => await getEventsWithSearchParams(updatedParams),
+    enabled: isEventeli,
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
   const { data: savedTrendsList } = useQuery<GetSaveTrendData>({
     queryKey: ["getSavedTrends"],
     queryFn: async () => {
@@ -151,18 +161,23 @@ const EventTrends = () => {
     },
   });
 
-  // const groupedData = (holdiayData as EventsResponse)?.events.reduce<
-  //   Record<string, TableGroupedHoliday>
-  // >((acc, { startDateTime, name }) => {
-  //   if (!acc[startDateTime]) {
-  //     acc[startDateTime] = { date: startDateTime, count: 0, holidays: [] };
-  //   }
-  //   acc[startDateTime].count++;
-  //   acc[startDateTime].holidays.push(name);
-  //   return acc;
-  // }, {});
+  const groupedData = (holdiayData as EventResponse)?.events.reduce<
+    Record<string, TableGroupedHoliday>
+  >((acc, { basic }) => {
+    const { startDateTime, name } = basic;
+    if (!acc[startDateTime]) {
+      acc[startDateTime] = { date: startDateTime, count: 0, holidays: [] };
+    }
+    acc[startDateTime].count++;
+    acc[startDateTime].holidays.push(name);
+    return acc;
+  }, {});
 
-  // const holidaysByDate = groupedData && Object.values(groupedData);
+  const holidaysByDate =
+    (groupedData &&
+      Object.values(groupedData).length > 0 &&
+      Object.values(groupedData)) ||
+    [];
 
   useEffect(() => {
     if (trendsData !== undefined) {
@@ -357,6 +372,7 @@ const EventTrends = () => {
               <LineChartComponent
                 predictedData={graphData}
                 selectedEventType={selectedEventType}
+                holidayByDates={holidaysByDate}
                 threshold={
                   (eventTrendsData &&
                     eventTrendsData.thresholds[selectedEventType]) ??
@@ -374,6 +390,7 @@ const EventTrends = () => {
                   setSmartInsightState={setSmartInsightState}
                   data={tableData && tableData.length > 0 ? tableData : []}
                   tableColumns={tableColumns || []}
+                  holidayByDates={holidaysByDate}
                 />
               </div>
             </div>
