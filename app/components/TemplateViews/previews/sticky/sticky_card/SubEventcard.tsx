@@ -233,7 +233,7 @@ const SubEventCard = ({
           <div className={styles.button_And_tags_container}>
             <div className={styles.icon_tags_container}>
               {fetchedAddedOtherData &&
-              fetchedAddedOtherData![0]?.eventType === "SUB" ? (
+              fetchedAddedOtherData![0]?.eventType === "CHILD" ? (
                 <>
                   <Image src={POP} alt="" />
                 </>
@@ -255,7 +255,7 @@ const SubEventCard = ({
               >
                 {fetchedEvent?.eventType === "PARENT"
                   ? fetchedEvent.event_type
-                  : fetchedEvent?.eventType === "SUB"
+                  : fetchedEvent?.eventType === "CHILD"
                   ? fetchedEvent.participationType === "Brunch/Lunch/Dinner"
                     ? "Bru../Lun../Din.."
                     : fetchedEvent.participationType
@@ -267,7 +267,7 @@ const SubEventCard = ({
               >
                 {fetchedAddedOtherData![0]?.eventType === "PARENT"
                   ? fetchedAddedOtherData![0].eventFormat
-                  : fetchedAddedOtherData![0]?.eventType === "SUB"
+                  : fetchedAddedOtherData![0]?.eventType === "CHILD"
                   ? fetchedAddedOtherData![0].eventFormat
                   : "Attending"}
               </div>

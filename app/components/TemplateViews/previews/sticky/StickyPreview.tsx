@@ -129,7 +129,7 @@ const StickyPreview = ({
             />
           </div>
         </div>
-      ) : eventType === "SUB" ? (
+      ) : eventType === "CHILD" ? (
         // <div className={styles.preview}>
           <div
             className={type === "top" ? styles.stickyTop : styles.stickyFooter}
