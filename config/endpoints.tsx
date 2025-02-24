@@ -1,6 +1,4 @@
-// const BASE_URL = "https://api.dev.gtm.whr.ai";
-// export const BASE_URL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
-export const BASE_URL = process.env.NEXT_PUBLIC_EVENTELI_URL;
+import { BASE_URL } from ".";
 const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
 export const endpoints = {
   //   auth: {
