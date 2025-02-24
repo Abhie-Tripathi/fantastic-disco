@@ -61,7 +61,9 @@ const StatusModal = ({setStatusModal, fetchGuests, statusValue, setStatusValue, 
                         statusValue === "WAITLISTING" ? styles.waitlist :
                             statusValue === "FOLLOWING" ? styles.following : styles.notgoing
                     }`}>
-                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Not Going"}
+                    {/* {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Not Going"} */} 
+                     {/* check later */}
+                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" :statusValue === "INVITATION" ? "Invited" : "Not Going"}
                 </div>
             </div>
             <div className={styles.mail}>{mail}</div>
@@ -70,7 +72,8 @@ const StatusModal = ({setStatusModal, fetchGuests, statusValue, setStatusValue, 
                     Change status to:
                 </div>
                 <div className={styles.statusInputContainer} onClick={() => setStatusDropdown(!statusDropdown)}>
-                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Not Going"}
+                    {/* {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Not Going"} */}
+                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" :statusValue === "INVITATION" ? "Invited" : "Not Going"}
                     <DownArrow />
                 </div>
                 {statusDropdown && <div className={styles.statusDropdown} ref={statusModalRef}>

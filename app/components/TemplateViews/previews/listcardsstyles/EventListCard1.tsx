@@ -74,10 +74,10 @@ const EventListCard1 = ({
         <div className={`${styles.date_location_nameContainer} ${smallCard ? styles.smalldate_location_nameContainer : ""}`}>
           <div className={`${styles.dateContainer} ${smallCard ? styles.smalldateContainer : ""}`}>
             {
-              fetchedEvent?.eventType === "SUB" ? <>
-              <Image src={POP} alt=''/></> : fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type === "Tradeshow" ? 
-              <Image src={TradeshowIcon} alt='' /> : fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type === "Conference" ? 
-              <Image src={ConferenceIcon} alt='' /> : fetchedEvent?.eventType === "MAIN" && fetchedEvent.event_type === "Workshop" ? 
+              fetchedEvent?.eventType === "CHILD" ? <>
+              <Image src={POP} alt=''/></> : fetchedEvent?.eventType === "PARENT" && fetchedEvent.event_type === "Tradeshow" ? 
+              <Image src={TradeshowIcon} alt='' /> : fetchedEvent?.eventType === "PARENT" && fetchedEvent.event_type === "Conference" ? 
+              <Image src={ConferenceIcon} alt='' /> : fetchedEvent?.eventType === "PARENT" && fetchedEvent.event_type === "Workshop" ? 
               <Image src={WorkShopIcon} alt='' /> : 
               <Image src={DefaultIcon} alt='' />
             }
@@ -125,8 +125,8 @@ const EventListCard1 = ({
         <div className={styles.description} style={{ fontSize: fontSettings.body.fontSize, color: fontSettings.body.fontColor, fontFamily: fontSettings.body.fontFamily, fontWeight: fontSettings.body.fontWeight }} dangerouslySetInnerHTML={{ __html: truncatedDescription }}></div>
         <div className={styles.dateRange_typeContainer}>
           <div className={`${styles.pill} ${smallCard ? styles.smallPill : ""} ${styles.dateRange}`} style={{ fontSize:smallCard? 10 : fontSettings.body.fontSize }}>{fetchedEvent ? formatDate(fetchedEvent.startDate) + " - " + formatDate(fetchedEvent.endDate) : demoDate}</div>
-          <div className={`${styles.pill} ${smallCard ? styles.smallPill : ""} ${styles.type1}`} style={{ fontSize:smallCard? 10 : fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN" ? fetchedEvent.event_type : fetchedEvent?.eventType === "SUB" ? fetchedEvent.participationType === "Brunch/Lunch/Dinner" ? "Bru../Lun../Din.." : fetchedEvent.participationType : "Tradeshow"}</div>
-          <div className={`${styles.pill} ${smallCard ? styles.smallPill : ""} ${styles.type2}`} style={{ fontSize:smallCard? 10 : fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN" ? fetchedEvent.eventFormat : fetchedEvent?.eventType === "SUB" ? fetchedEvent.eventFormat : "Attending"}</div>
+          <div className={`${styles.pill} ${smallCard ? styles.smallPill : ""} ${styles.type1}`} style={{ fontSize:smallCard? 10 : fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "PARENT" ? fetchedEvent.event_type : fetchedEvent?.eventType === "CHILD" ? fetchedEvent.participationType === "Brunch/Lunch/Dinner" ? "Bru../Lun../Din.." : fetchedEvent.participationType : "Tradeshow"}</div>
+          <div className={`${styles.pill} ${smallCard ? styles.smallPill : ""} ${styles.type2}`} style={{ fontSize:smallCard? 10 : fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "PARENT" ? fetchedEvent.eventFormat : fetchedEvent?.eventType === "CHILD" ? fetchedEvent.eventFormat : "Attending"}</div>
         </div>
       </div>
     </div>

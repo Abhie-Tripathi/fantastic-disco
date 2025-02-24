@@ -1,5 +1,4 @@
 const BASE_URL = "https://api.dev.gtm.whr.ai";
-const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
 export const endpoints = {
   //   auth: {
   //     me: `${BASE_URL}/me`,
@@ -109,19 +108,20 @@ export const endpoints = {
     deActiveWidget: `${BASE_URL}/widget?status=deactivate`,
     onlyDraftWidget: `${BASE_URL}/widget?status=draft`,
     widgetById: `${BASE_URL}/widget`,
-    widget: `${BASE_URL}/widget`,
+    // widget: `${BASE_URL}/widget`,
+    widget: `${BASE_URL}/widget?status=active`,
   },
   events: {
-    getEvents: `${BASE_URL}/event?limit=2`,
-    getEventsByWidgetId: `${BASE_URL}/event`,
+    getEvents: `${BASE_URL}/promot-event?limit=2`,
+    getEventsByWidgetId: `${BASE_URL}/promot-event`,// ?widgetId=abc
     getSortedEvents: `${BASE_URL}/promot-event`,
-    getEventById: `${BASE_URL}/event`,
-    getEventByPublicAPI: `${BASE_URL}/public/widget`,
-    deleteEvent: `${BASE_URL}/event`,
-    addEvent: `${BASE_URL}/event`,
+    getEventById: `${BASE_URL}/promot-event`,
+    getEventByPublicAPI: `${BASE_URL}/public/event`,
+    deleteEvent: `${BASE_URL}/promot-event`,
+    addEvent: `${BASE_URL}/promot-event`,
     addSpeakers: `${BASE_URL}/event/speaker`,
     addExhibitors: `${BASE_URL}/event/speaker`,
-    updateEvent: `${BASE_URL}/event`,
+    updateEvent: `${BASE_URL}/promot-event`,
   },
   intend: {
     getGuest: `${BASE_URL}/intend/users`,
@@ -131,7 +131,7 @@ export const endpoints = {
   invite: {
     getInviteCount: `${BASE_URL}/invite?invites=true`,
     getSuggestions: `${BASE_URL}/invite`,
-    sendInvite: `${BASE_URL}/invite/send`,
+    sendInvite: `${BASE_URL}/invite`,
   },
   calendar: {
     getyearlyEvents: `${BASE_URL}/event?`,
