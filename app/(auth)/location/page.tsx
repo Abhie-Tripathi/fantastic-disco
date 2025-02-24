@@ -17,13 +17,9 @@ import { endOfMonth, startOfMonth } from "date-fns";
 import AutocompleteInput from "@/components/search/AutocompleteInput";
 import { useLocationService } from "@/services/locationService";
 import { useEventsService } from "@/services/eventsService";
-import {
-  industryData,
-} from "@/data/onboardingDropdownsData";
+import { industryData } from "@/data/onboardingDropdownsData";
 import { sessionService } from "@/services/sessionService";
-import {
-  LocationItem as LOCATION_ITEM,
-} from "@/components/search/location";
+import { LocationItem as LOCATION_ITEM } from "@/components/search/location";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { useTrackerServices } from "@/services/trackerServices";
 import {
@@ -99,12 +95,6 @@ const radiusOption = {
 
 const LocationForm = () => {
   const router = useRouter();
-
-  if (!isEventeli) {
-    notFound();
-    return;
-  }
-
   const searchParamsOnboarding = useSearchParams();
   const [loading, setLoading] = React.useState(false);
   const queryClient = useQueryClient();
@@ -442,6 +432,10 @@ const LocationForm = () => {
         : null;
     }
   };
+
+  if (!isEventeli) {
+    notFound();
+  }
 
   return (
     <div className={styles.container}>
