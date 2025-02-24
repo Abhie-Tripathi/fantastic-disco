@@ -43,6 +43,7 @@ const Internal = ({
   const [noMoreData, setNoMoreData] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [coordinateCount, setCoordinateCount] = useState<any>([]);
+  const [totalCount, setTotalCount] = useState<number>();
   const [searchInput, setSearchInput] = useState("");
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [eventSearchLoader, setEventSearchLoader] = useState<boolean>(false);
@@ -103,6 +104,7 @@ const Internal = ({
         const statusKey = item.status.toLowerCase();
         return { ...item, count: data?.count[statusKey] };
       }));
+      setTotalCount(data?.count?.totalEnquiries);
     } catch (error) {
       console.error("Error while fetching cordinate list:", error);
     } finally {
@@ -111,7 +113,7 @@ const Internal = ({
   };
 
   useEffect(() => {
-    if (coordinateActions.length > 0)
+    if (coordinateActions?.length > 0)
       getCordinateList();
   }, [coordinateActions]);
 
@@ -173,6 +175,18 @@ const Internal = ({
     setEventData1(updatedData);
   }
 
+  const handleSelect = (id: number, name: string) => {
+    setSearchInput(name);
+    setShowSuggestion(true);
+    setFilter("eventId", id.toString());
+    GAEvent("Coordinate", "Filter", "Coordinate", "Coordinate | Event | Auto Applied");
+  };
+
+  const handleEditAction = () => {
+    GAEvent("Coordinate", "Customize Action", "Coordinate", "Coordinate | Top Card | Edit Icon");
+    router.push("/internal/settings/product");
+  }
+
   useEffect(() => {
     setPage(1);
     setFiltersChanged((prev) => !prev);
@@ -187,28 +201,15 @@ const Internal = ({
   }, [page, filtersChanged]);
   if (!isLoaded) {
     return (
-      <div style={{ padding: "50px" }}>
-        <Loading />
-      </div>
+      <Loading className="p-12" />
     );
   } 
-  // else if (isLoaded && coordinateCount[0]?.totalEvent === 0) {
-  //   return (
-  //     <div className="p-20">
-  //       <NullState image={coordinateNullState}  title="You haven't shortlisted any events yet." text="Browse through our upcoming events and shortlist here for easy access and internal coordination later." buttonText="Search Events" buttonUrl={`/internal/search/events`} />
-  //     </div>
-  //   );
-  // }
-  const handleSelect = (id: number, name: string) => {
-    setSearchInput(name);
-    setShowSuggestion(true);
-    setFilter("eventId", id.toString());    
-    GAEvent("Coordinate", "Filter", "Coordinate", "Coordinate | Event | Auto Applied");
-  };
-
-  const handleEditAction = () => {
-    GAEvent("Coordinate", "Customize Action", "Coordinate", "Coordinate | Top Card | Edit Icon");
-    router.push("/internal/settings/product");
+  else if (isLoaded && totalCount === 0) {
+    return (
+      <div className="p-20">
+        <NullState image={coordinateNullState}  title="You haven't shortlisted any events yet." text="Browse through our upcoming events and shortlist here for easy access and internal coordination later." buttonText="Search Events" buttonUrl={`/internal/search/events`} />
+      </div>
+    );
   }
 
   return (

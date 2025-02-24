@@ -53,6 +53,19 @@ export const useCoordinateService = () => {
     searchParams,
   }: fnProp) => {
     const params = new URLSearchParams(searchParams);
+    const activeGte = params.get("active_gte");
+    const activeLte = params.get("active_lte");
+    if (activeGte && activeLte) {
+      params.set("event_active_gte", activeGte);
+      params.set("event_active_lte", activeLte);
+    } else if (activeGte) {
+      params.set("event_active_gte", activeGte);
+    } else if (activeLte) {
+      params.set("event_active_lte", activeLte);
+    }
+    params.delete("active_gte");
+    params.delete("active_lte");
+
     return api.request<CoordinateListResponse>(`${endpoints.coordinate.enquiry}?offset=${offset}`, {
       method: "GET",
       params: params,

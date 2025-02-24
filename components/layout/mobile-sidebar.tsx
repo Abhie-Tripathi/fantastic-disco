@@ -25,6 +25,7 @@ import { SheetClose } from "@/components/ui/sheet";
 import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
 import { useAuthContext } from "@/context/auth";
 import { useTheme } from "@/context";
+import { isEventeli } from "@/config";
 
 const MobileSidebar = () => {
   const pathname = usePathname();
@@ -49,7 +50,7 @@ const MobileSidebar = () => {
       href: "/internal/coordinate",
       icon: Coordinate,
     },
-    { name: "Outreach", href: "/internal/outreach", icon: Outreach },
+    ...(!isEventeli ? [{ name: "Outreach", href: "/internal/outreach", icon: Outreach }] : []),
   ];
   const geniLinks = [
     {
