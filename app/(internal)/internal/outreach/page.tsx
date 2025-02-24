@@ -11,6 +11,8 @@ import PipelineCol from "@/app/components/outreach/pipelineCol";
 import { useSearchParams } from "next/navigation";
 import { GAEvent } from "@/utils/GAEvent";
 import Loading from "@/app/components/UI/Loading";
+import NotFound from "@/app/not-found";
+import { isEventeli } from "@/config";
 
 interface taskDetailType {
   [task: string]: {
@@ -186,7 +188,7 @@ const Page: React.FC = () => {
       status: status,
     });
 
-    console.log('fetchPipelineData', status, label, page);
+    // console.log('fetchPipelineData', status, label, page);
     
     if (shortlistApiData && shortlistApiData !== undefined) {
       setTaskDetail(prevState => ({
@@ -326,6 +328,12 @@ const Page: React.FC = () => {
     } as any;
     handleDrop2(mockEvent, target, 'Status Pipeline');
   };
+
+  if (isEventeli) {
+    return (
+      <NotFound />
+    );
+  }
 
   if ( configData?.length == 0 || (Object.values(taskDetail).length > 0 && Object.values(taskDetail).every((value) => (value.dataLoaded === true && value.count === 0))) ) {
     return (

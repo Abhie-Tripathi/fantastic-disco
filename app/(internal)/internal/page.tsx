@@ -21,6 +21,7 @@ import { useFilterContext } from '@/context/filterContext';
 import Pricing from "@/app/components/internal/Dashboard/Pricing";
 import Loading from "@/components/ui/Loading";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
+import { useConfigurationService } from "@/services/configurationService";
 
 interface TrackerData {
   id: string;
@@ -65,18 +66,19 @@ const Dashboard = () => {
   const [loading, setLoading] = useState<boolean>(true);
 
   const { theme } = useTheme()
-  const { getParticipentCount, getPipelineConfig, getOutreachSingleEvent, getLatestComment, getInterestConfig, getEnquiryStatusCount } = useCoordinateService()
+  const { getParticipentCount, getLatestComment, getEnquiryStatusCount } = useCoordinateService()
   const { getActiveWidget, getOnlyDraftWidget } = useWidgetServices()
   const { getUpcomingEvents } = useEventServices()
   const { getRecentSearch } = useEventsService()
   const { getTrackers } = useTrackerServices()
   const { getMyProfileData } = useProfileServices()
   const { setLocalFilter } = useFilterContext();
+  const { getOutreachConfiguration, getInterestConfiguration } = useConfigurationService();
   const { user } = useAuthContext()
    
   const fetchCoordinateData = async () => {
-    const apiData: any = await getInterestConfig();
-    const coordinateActions =  apiData?.interest?.slice(1);
+    const apiData: any = await getInterestConfiguration();
+    const coordinateActions =  apiData?.interest;
     const data: any = await getParticipentCount()
     const formattedData = coordinateActions.map((item: any) => {
       const statusKey = item.status.toLowerCase();
@@ -114,7 +116,7 @@ const Dashboard = () => {
 
   // This function is to fetch the whole array
   const fetchOutreachData = async () => {
-    const apiData: any = await getPipelineConfig();
+    const apiData: any = await getOutreachConfiguration();
     const outreachStages =  apiData?.outreach.slice(1, apiData.outreach.length - 1);
     const data: any = await getEnquiryStatusCount();
     const formattedData = outreachStages.map((item: any) => {
