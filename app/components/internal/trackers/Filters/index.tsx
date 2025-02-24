@@ -72,10 +72,12 @@ import { suggestionGenerator } from "@/utils/openAI";
 import {Tracker, Toggle} from '@/types/trackers'
 import ExhibitorQualitySelector from "@/components/advancedFilters/exhibitorQualityScore";
 import { useTrackerContext } from "@/context/tracker";
+import LocationTemplate from '@/components/search/locationTemplate'
 import { Designations } from "@/types/misc";
 import { useFilterContext } from "@/context/filterContext";
 import { categories, newCategories } from "@/data/categories";
 import Presets from "./Presets";
+import TeliTemplates from "./teliTemplates";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -385,6 +387,18 @@ const templates = [
     //   }
     // ]
     isUploadEnable: true,
+  },
+  {
+    name: "T_VENUE",
+    templateName: "Venue",
+  },
+  {
+    name: "T_LOCATION",
+    templateName: "Location",
+  },
+  {
+    name: "T_LOCATION_DATE",
+    templateName:"Geo-Time"
   }
 ]
 
@@ -1076,6 +1090,8 @@ useEffect(()=>{
       setIncludeKeyword(updatedData);
   }
 },[getLocalFilterValue("includeKeywords")])
+console.log(type);
+
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -1134,8 +1150,7 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
-
-    
+    <TeliTemplates type={type}/>
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
     <div style={{display: 'flex', gap: '25px'}}>
       <div className={`card ${styles.competitor}`}>
@@ -1446,7 +1461,10 @@ return (
           >
             <div className="flex justify-center my-6">
             <div className="flex justify-center">
-                <TabsList className="w-[570px] grid grid-cols-3 h-auto">
+                <TabsList  className={cn(
+              "w-[570px] grid grid-cols-3 h-auto",
+              isEventeli ? "grid-cols-2 w-[386px]" : ""
+            )}>
                   <TabsTrigger value="advancedDetails" className="text-base">
                               Advanced Details
                               {/* {advancedDetailsFiltersCount ? (

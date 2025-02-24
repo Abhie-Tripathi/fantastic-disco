@@ -115,17 +115,14 @@ function Bookmark({ fillColor }: { fillColor: string }) {
 import { GAEvent } from "@/utils/GAEvent";
 import { useTheme } from "@/context";
 import { Step } from "react-joyride";
-import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import ShareWidget from "@/app/components/internal/trackers/ShareWidget";
-import AnalyticWidget from "@/app/components/internal/trackers/AnalyticWidget";
-import ShareModal from "@/app/components/internal/trackers/shareModal";
+import { useRouter, useSearchParams } from "next/navigation";
 import CardWidgitConfig from "@/app/components/internal/trackers/CardWidgitConfig";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useNotesServices } from "@/services/notesServices";
 import { Tracker } from "@/types/trackers";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterState } from "@/hooks/useFilterState";
+import { isEventeli } from "@/config";
 
 interface Search {
   searchParams: {
@@ -425,7 +422,7 @@ const Trackers = ({ searchParams }: Search) => {
           </span>
           {dataPresent ? (
             <Link
-            href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=activeEvent`}
+            href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=${isEventeli? "business" :"active"}`}
             onClick={() => setContextData(singleTrackerData?.id)}
             >
             <Button className="text-white">View Detail</Button>
@@ -487,7 +484,7 @@ const Trackers = ({ searchParams }: Search) => {
   <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
     <SavedEventWidget savedEvents={savedEvents} redirectUrl={singleTrackerData 
-    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=savedEvent`:""}/>
+    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=bookmarked`:""}/>
   </div>
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
   <NotesDiscussionWidget 

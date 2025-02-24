@@ -1,4 +1,4 @@
-const BASE_URL = "https://api.dev.gtm.whr.ai";
+const BASE_URL = "https://api.dev.teli.whr.ai";
 const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
 export const endpoints = {
   //   auth: {
@@ -86,7 +86,6 @@ export const endpoints = {
   intent: {
     userEventInterest: `${BASE_URL}/intents/user-event-interest`,
     enquiryActivity: `${BASE_URL}/intents/enquiry-activity`,
-    userEventInterest:`${BASE_URL}/intents/user-event-interest`,
   },
   account: {
     users: `${BASE_URL}/me/account/users`,

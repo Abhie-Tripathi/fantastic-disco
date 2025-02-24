@@ -18,8 +18,9 @@ import { useFilterContext } from "@/context/filterContext";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
+  eventType?:string;
 }
-const EventTable = ({source, trackerId}:EventTableProps) => {
+const EventTable = ({source, trackerId, eventType}:EventTableProps) => {
   // const { theme } = useTheme();
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } = useFilterState();
   const {setLocalFilter} = useFilterContext();
@@ -30,7 +31,7 @@ const EventTable = ({source, trackerId}:EventTableProps) => {
   let events, totalEvents, isLoading, error;
 
   if (source === "tracker") {
-  ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId));
+  ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId,eventType));
   } else {
   ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
@@ -107,6 +108,7 @@ const EventTable = ({source, trackerId}:EventTableProps) => {
     }else 
     return <ZeroState text="No events found" />;
   }
+console.log(isLoading);
 
   return (
     <div className="w-full">
