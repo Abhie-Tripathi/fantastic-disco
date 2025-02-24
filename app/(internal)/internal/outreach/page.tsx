@@ -252,7 +252,7 @@ const Page: React.FC = () => {
       const apiData: any = await getOutreachConfiguration();
       const outreachPipeLine1 = apiData?.outreach?.slice(1, apiData.outreach.length - 1) || [];
   
-      setConfigData(outreachPipeLine1); // Set the configuration data
+      // setConfigData(outreachPipeLine1); // Set the configuration data
 
       const apiData2: any = await getInterestConfiguration();
       setCoordinateActions(apiData2?.interest);
@@ -270,6 +270,7 @@ const Page: React.FC = () => {
         };
       });
       setTaskDetail(temp);
+      setConfigData(outreachPipeLine1); // Set the configuration data
     } catch (error) {
       console.error("Error fetching data:", error);
     }

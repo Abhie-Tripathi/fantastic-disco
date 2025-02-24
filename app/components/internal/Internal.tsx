@@ -8,7 +8,8 @@ import { useTheme } from "@/context";
 import { enquiryType, eventDataType } from "../../../types/coordinateEventType";
 import Loading from "../UI/Loading";
 import useInfiniteScroll from "@/utils/useInfiniteScroll";
-import SearchBar from "./searchBar/SearchBar";
+// import SearchBar from "./searchBar/SearchBar";
+import SearchBar from "@/components/coordinate/enquirySearchBar";
 import DateRangeSelector from "@/components/search/dateRange";
 import UpvoteSelector from "@/components/coordinate/upvote";
 import InterestStatusSelector from "@/components/coordinate/interestStatus";
@@ -22,6 +23,7 @@ import { Pencil } from "lucide-react";
 import { GAEvent } from "@/utils/GAEvent";
 import EventDetail from "./eventdetail/EventDetail";
 import ShortlistModal from "./eventdetail/shortlistModal";
+import { endpoints } from "@/config/endpoints";
 
 interface Props {
   coordinateActions: any;
@@ -233,7 +235,7 @@ const Internal = ({
             ))}
           </div>
           <div className={styles.filters}>
-            <div className={styles.searchContainer}>
+            {/* <div className={styles.searchContainer}>
               <div className={styles.searchbar}>
                 <input
                   type="text"
@@ -265,9 +267,13 @@ const Internal = ({
                   searchInput={searchInput}
                   setEventSearchLoader={setEventSearchLoader}
                   handleSelect={handleSelect}
-                  endpoint={"userInterest/enquiry/suggestion"}
+                  endpoint={endpoints.coordinate.enquiry}
                 />
               }
+            </div> */}
+
+            <div className="w-1/2">
+              <SearchBar selectedData={eventData1[0]} />
             </div>
 
             <div style={{ width: "15%" }} className={styles.outerDiv}>
