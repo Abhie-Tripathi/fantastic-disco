@@ -1,5 +1,4 @@
 import { BASE_URL } from ".";
-const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
 export const endpoints = {
   //   auth: {
   //     me: `${BASE_URL}/me`,
@@ -101,39 +100,39 @@ export const endpoints = {
   },
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {
-    getKit: `${BASE_URL_NEW}/kit`,
-    create: `${BASE_URL_NEW}/kit`,
+    getKit: `${BASE_URL}/kit`,
+    create: `${BASE_URL}/kit`,
   },
   widget: {
-    draftWidget: `${BASE_URL_NEW}/widget`,
-    activeWidget: `${BASE_URL_NEW}/widget?status=active`,
-    deActiveWidget: `${BASE_URL_NEW}/widget?status=deactivate`,
-    onlyDraftWidget: `${BASE_URL_NEW}/widget?status=draft`,
-    widgetById: `${BASE_URL_NEW}/widget`,
-    // widget: `${BASE_URL_NEW}/widget`,
-    widget: `${BASE_URL_NEW}/widget?status=active`,
+    draftWidget: `${BASE_URL}/widget`,
+    activeWidget: `${BASE_URL}/widget?status=active`,
+    deActiveWidget: `${BASE_URL}/widget?status=deactivate`,
+    onlyDraftWidget: `${BASE_URL}/widget?status=draft`,
+    widgetById: `${BASE_URL}/widget`,
+    // widget: `${BASE_URL}/widget`,
+    widget: `${BASE_URL}/widget?status=active`,
   },
   events: {
-    getEvents: `${BASE_URL_NEW}/promot-event?limit=2`,
-    getEventsByWidgetId: `${BASE_URL_NEW}/promot-event`,// ?widgetId=abc
-    getSortedEvents: `${BASE_URL_NEW}/promot-event`,
-    getEventById: `${BASE_URL_NEW}/promot-event`,
-    getEventByPublicAPI: `${BASE_URL_NEW}/public/event`,
-    deleteEvent: `${BASE_URL_NEW}/promot-event`,
-    addEvent: `${BASE_URL_NEW}/promot-event`,
-    addSpeakers: `${BASE_URL_NEW}/event/speaker`,
-    addExhibitors: `${BASE_URL_NEW}/event/speaker`,
-    updateEvent: `${BASE_URL_NEW}/promot-event`,
+    getEvents: `${BASE_URL}/promot-event?limit=2`,
+    getEventsByWidgetId: `${BASE_URL}/promot-event`,// ?widgetId=abc
+    getSortedEvents: `${BASE_URL}/promot-event`,
+    getEventById: `${BASE_URL}/promot-event`,
+    getEventByPublicAPI: `${BASE_URL}/public/event`,
+    deleteEvent: `${BASE_URL}/promot-event`,
+    addEvent: `${BASE_URL}/promot-event`,
+    addSpeakers: `${BASE_URL}/event/speaker`,
+    addExhibitors: `${BASE_URL}/event/speaker`,
+    updateEvent: `${BASE_URL}/promot-event`,
   },
   intend: {
-    getGuest: `${BASE_URL_NEW}/intend/users`,
-    updateStatus: `${BASE_URL_NEW}/intend`,
-    addIntend: `${BASE_URL_NEW}/intend`,
+    getGuest: `${BASE_URL}/intend/users`,
+    updateStatus: `${BASE_URL}/intend`,
+    addIntend: `${BASE_URL}/intend`,
   },
   invite: {
-    getInviteCount: `${BASE_URL_NEW}/invite?invites=true`,
-    getSuggestions: `${BASE_URL_NEW}/invite`,
-    sendInvite: `${BASE_URL_NEW}/invite`,
+    getInviteCount: `${BASE_URL}/invite?invites=true`,
+    getSuggestions: `${BASE_URL}/invite`,
+    sendInvite: `${BASE_URL}/invite`,
   },
   calendar: {
     getyearlyEvents: `${BASE_URL}/event?`,
