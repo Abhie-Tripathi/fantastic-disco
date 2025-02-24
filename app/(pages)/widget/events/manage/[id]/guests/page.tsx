@@ -46,7 +46,6 @@ const Page = () => {
   useEffect(() => {
     setRegisterValue(fetchedEvent?.registration && fetchedEvent?.registration === true ? true : false)
     // console.log("data", fetchedEvent)
-    console.log("register value ", fetchedEvent?.registration)
     fetchCounts()
   }, [fetchedEvent])
 

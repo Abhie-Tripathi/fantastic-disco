@@ -68,7 +68,7 @@ const EventListCard3 = ({
       {smallCard ? <Image width={271} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={styles.smallBanner} />: <Image width={271} height={124} src={fetchedEvent ? fetchedEvent.bannerUrl : demoBanner} alt='placeholder' className={`${styles.banner} shadow-md`} />}
 
 
-        <div className={`${styles.pill} ${smallCard ? styles.smallPill : ""} ${styles.type1}`} style={{ fontSize:smallCard? 10 : fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "MAIN" ? "Main Event" : fetchedEvent?.eventType === "SUB" ? "Side Event" : "Main Event"}</div>
+        <div className={`${styles.pill} ${smallCard ? styles.smallPill : ""} ${styles.type1}`} style={{ fontSize:smallCard? 10 : fontSettings.body.fontSize }}>{fetchedEvent?.eventType === "PARENT" ? "Main Event" : fetchedEvent?.eventType === "CHILD" ? "Side Event" : "Main Event"}</div>
         <div className={`${styles.pill} ${smallCard ? styles.smallPill : ""} ${styles.type2}`} style={{ fontSize:smallCard? 10 : fontSettings.body.fontSize }}>{fetchedEvent ? fetchedEvent?.event_type : "Tradeshow"}</div></div>
 
       <div className={styles.eventDetails}>

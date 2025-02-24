@@ -24,8 +24,8 @@ const DashboardEvents = () => {
     const fetchEvents = async () => {
         // const { data, error } = await myFetch(`${baseUrl}/event?sortBy=start_date&sortType=asc&limit=2`)
         const data: any = await getEvents()
-        if (data.data[0]?.createdAt) {
-            const date = new Date(data.data[0]?.createdAt);
+        if (data[0]?.createdAt) {
+            const date = new Date(data[0]?.createdAt);
             const formattedDate = new Intl.DateTimeFormat("en-GB", {
                 day: "numeric",
                 month: "short",
@@ -34,7 +34,7 @@ const DashboardEvents = () => {
             setCreatedDate(formattedDate)
         }
         if (data) {
-            const events = data.data.map((event: any) => ({
+            const events = data?.data.map((event: any) => ({
                 mainEvent: {
                     eventId: event.id,
                     name: event.name,

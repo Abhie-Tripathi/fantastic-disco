@@ -191,7 +191,7 @@ const PreviewWindow = ({ selectedTemplate, selectedCard, setIsFullScreen, isFull
         customizeData.append('type', tempSelectedWidget);
         customizeData.append('status', 'draft');
         customizeData.append('domain', storedDomain); // replace with actual domain
-        customizeData.append('otherdata', JSON.stringify(otherdata))
+        customizeData.append('otherData', JSON.stringify(otherdata))
         const customizationData = {
             fontSettings,
             buttonSettings,
