@@ -31,6 +31,7 @@ import {
 } from "@/types/auth/user";
 import { sessionKeys } from "@/data/onboarding";
 import { useLocationService } from "@/services/locationService";
+import { isEventeli } from "@/config";
 
 type authContextType = {
   user: UserResponse | null;
@@ -248,7 +249,7 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: { ...userDto },
         });
-        router.push("/verify-otp");
+        router.push(`/verify-otp?email=${userDto.email}`);
       } catch (err: any) {
         console.error("Sign up error:", err);
         if (err?.status === 406) {
@@ -278,7 +279,7 @@ export const AuthContextProvider = ({ children }: any) => {
           method: "POST",
           data: { ...userDto },
         });
-        router.push("/verify-otp");
+        router.push(`/verify-otp?email=${userDto.email}`);
         // await generateOTP(userDto.email);
       } catch (err) {
         console.error("Sign in error:", err);
@@ -378,7 +379,14 @@ export const AuthContextProvider = ({ children }: any) => {
       "filter"
     );
     const restrictedUrl = getRestrictedUrl(redirectTo || "", restrictedData);
-    sessionKeys.forEach((key) => sessionStorage.removeItem(key));
+    const duplicateSessionKeys = sessionKeys.filter(
+      (key) => key !== "industry" && key !== "subIndustry"
+    );
+    if (isEventeli) {
+      duplicateSessionKeys.forEach((key) => sessionStorage.removeItem(key));
+    } else {
+      sessionKeys.forEach((key) => sessionStorage.removeItem(key));
+    }
     router.push(restrictedUrl || "/");
   };
 

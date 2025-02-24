@@ -1,4 +1,6 @@
-const BASE_URL = "https://api.dev.gtm.whr.ai";
+// const BASE_URL = "https://api.dev.gtm.whr.ai";
+// export const BASE_URL = process.env.NEXT_PUBLIC_EVENTGENI_URL;
+export const BASE_URL = process.env.NEXT_PUBLIC_EVENTELI_URL;
 const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
 export const endpoints = {
   //   auth: {
@@ -51,6 +53,7 @@ export const endpoints = {
   //     eventTypes: `${BASE_URL}/trends/event-types`,
   //   },
   locations: `${BASE_URL}/location/country`,
+  savedLocations: `${BASE_URL}/me/saved-locations`,
   locationSuggestion: `${BASE_URL}/suggestions/locations`,
   designations: `${BASE_URL}/designation`,
   users: `${BASE_URL}/me/account/users`,
@@ -61,7 +64,7 @@ export const endpoints = {
     eventTypes: `${BASE_URL}/trends/event-types`,
   },
   tracker: {
-    suggestion:`${BASE_URL}/suggestions/companies`,
+    suggestion: `${BASE_URL}/suggestions/companies`,
     commonUrl: `${BASE_URL}/trackers`,
     access: `${BASE_URL}/tracker/access`,
     shareAccess: `${BASE_URL}/access`,

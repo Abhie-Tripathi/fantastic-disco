@@ -44,7 +44,9 @@ import {
   GeoLocation as GEO_LOCATION,
   LocationItem as LOCATION_ITEM,
 } from "@/components/search/location";
-import { EventQuery } from "@/types/events/dto/event-query.dto";
+import { EventQuery, viewBound } from "@/types/events/dto/event-query.dto";
+import { useTrackerServices } from "@/services/trackerServices";
+import { get } from "http";
 
 type GeoLocationType = "city" | "center" | "";
 interface PinPointLocation {
@@ -75,29 +77,65 @@ const defaultLocation: LocationItem = {
   description: "New York, United States",
 };
 
-const defaultGeoLocation: GeoLocation = {
-  lat: 40.7127281,
-  lng: -74.0060152,
-  radius: 20,
-  description:
-    "New York City Hall, 260, Broadway, Lower Manhattan, Manhattan, New York County, New York, 10000, United States",
+const getDefaultDates = (): { startDate: string; endDate: string } => {
+  const currentDate = new Date();
+  const currentYear = currentDate.getUTCFullYear();
+  const currentMonth = currentDate.getUTCMonth();
+
+  const startDate = new Date(
+    Date.UTC(currentYear, currentMonth, 1, 0, 0, 0, 0)
+  );
+  const endDate = new Date(
+    Date.UTC(currentYear, currentMonth + 3, 1, 0, 0, 0, 0)
+  );
+  return {
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString(),
+  };
 };
 
-const defaultSavedLocationDTO = [
-  {
-    locationType: "LOCATION_ID",
-    locationName: "New York, United States",
-    locationId: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef",
-  },
-];
+const getViewBoundString = (
+  lat: string,
+  long: string,
+  radius: number
+): string => {
+  const viewBound = {
+    boundType: "point",
+    coordinates: {
+      latitude: Number(lat),
+      longitude: Number(long),
+      radius: radius,
+    },
+  };
+  return JSON.stringify(viewBound);
+};
 
-// const defaultSavedGeoLocation =
+const defaultGeoLocation: GeoLocation | any = {
+  name: "New York City Hall, 260, Broadway, Lower Manhattan, Manhattan, New York County, New York, 10000, United States",
+  type: "T_CUSTOM",
+  filterValues: {
+    active_gte: getDefaultDates().startDate,
+    active_lte: getDefaultDates().endDate,
+    viewBound: getViewBoundString("40.7127281", "-74.0060152", 20),
+  },
+};
+
+const defaultSavedLocationDTO = {
+  name: defaultLocation.description,
+  type: "T_CUSTOM",
+  filterValues: {
+    active_gte: getDefaultDates().startDate,
+    active_lte: getDefaultDates().endDate,
+    locationIds: defaultLocation.id,
+  },
+};
 
 const LocationForm = () => {
   const searchParamsOnboarding = useSearchParams();
   const [loading, setLoading] = React.useState(false);
   const queryClient = useQueryClient();
   // const { saveLocation } = useLocationService();
+  const { createTracker } = useTrackerServices();
   const [useCurrentLocation, setUseCurrentLocation] = React.useState(false);
   const [currentCity, setCurrenCity] = React.useState<string>();
   const [locationType, setLocationType] = React.useState<GeoLocationType>("");
@@ -146,23 +184,21 @@ const LocationForm = () => {
     staleTime: 0,
   });
 
-  console.log(eventCount)
-
-  // const saveLocationMutation = useMutation({
-  //   mutationFn: (values: SaveLocationDTO[]) => saveLocation(values),
-  //   onSuccess: () => {
-  //     router.push(`/search/events?${searchParams}`);
-  //     queryClient.invalidateQueries({ queryKey: ["locations"] });
-  //   },
-  //   onError: (error: any) => {
-  //     toast({
-  //       variant: "destructive",
-  //       title: "Uh oh! Something went wrong.",
-  //       description: "There was a problem saving your location",
-  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
-  //     });
-  //   },
-  // });
+  const saveLocationMutation = useMutation({
+    mutationFn: (values: any) => createTracker(values),
+    onSuccess: () => {
+      router.push(`internal/search/events?${searchParams}`);
+      queryClient.invalidateQueries({ queryKey: ["locations"] });
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem saving your location",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+    },
+  });
 
   // useEffect(() => {
   //   if (eventCount) {
@@ -211,7 +247,6 @@ const LocationForm = () => {
         radius: radius || 20,
         description: centrePointAndRadiusData || "New York, United States",
       };
-      console.log(updatedSelectedLocation);
       setSelectedLocation(updatedSelectedLocation);
     }
   }, [centrePointAndRadiusData, isCenterLoading]);
@@ -221,11 +256,13 @@ const LocationForm = () => {
     const data = await response.json();
     setCurrenCity(data.city);
   };
-  console.log(selectedLocation);
 
   useEffect(() => {
-    const industrySlug = searchParamsOnboarding.get("industry");
-    const subIndustrySlug = searchParamsOnboarding.get("subIndustry");
+    // const industrySlug = searchParamsOnboarding.get("industry");
+    // const subIndustrySlug = searchParamsOnboarding.get("subIndustry");
+    const industrySlug = sessionStorage && sessionStorage.getItem("industry");
+    const subIndustrySlug =
+      sessionStorage && sessionStorage.getItem("subIndustry");
     const selectedIndustry = industryData.find(
       (industry) => industry.slug === industrySlug
     );
@@ -316,7 +353,7 @@ const LocationForm = () => {
     if (locationType === "city") {
       setSelectedLocation([defaultLocation]);
       saveLastSearchedLocation([defaultLocation] as LOCATION_ITEM[]);
-      // defaultLocation && saveLocationMutation.mutate(defaultSavedLocationDTO);
+      defaultLocation && saveLocationMutation.mutate(defaultSavedLocationDTO);
       setDefaultParamsValue([defaultLocation]);
     } else {
       setLocation({ latitude: 40.7127281, longitude: -74.0060152 });
@@ -329,8 +366,8 @@ const LocationForm = () => {
   const saveOnboardingLocation = (
     defaultLocation?: GeoLocation | LocationItem[]
   ) => {
-    console.log(selectedLocation);
     const locationToUse = defaultLocation || selectedLocation;
+    console.log(locationToUse)
     if (locationToUse) {
       let savedLocationDTOData: SaveLocationDTO[] | [] = [];
       Array.isArray(locationToUse) && locationType === "city"
@@ -364,7 +401,7 @@ const LocationForm = () => {
             },
           ])
         : null;
-      // savedLocationDTOData && saveLocationMutation.mutate(savedLocationDTOData);
+      savedLocationDTOData && saveLocationMutation.mutate(savedLocationDTOData);
     }
   };
 
@@ -415,7 +452,7 @@ const LocationForm = () => {
 
   return (
     <div className={styles.container}>
-      {/* <h3>Choose a location to get started !</h3>
+      <h3>Choose a location to get started !</h3>
       <section className="w-96">
         <div className={styles.tab_container}>
           <button className={locationType == "city" ? styles.active : ""}>
@@ -530,7 +567,7 @@ const LocationForm = () => {
 
       <p className={styles.skip_button} onClick={handleSkip}>
         Skip for now
-      </p> */}
+      </p>
     </div>
   );
 };
