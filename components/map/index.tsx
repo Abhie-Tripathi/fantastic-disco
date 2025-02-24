@@ -393,8 +393,6 @@ console.log(trackerLoc);
     setViewport(viewState);
   }, []);
 
-  console.log("eventCountsQuery", eventCountsQuery.data);
-
   const eventCountsGeoJSON = React.useMemo(() => {
     return {
       type: "FeatureCollection",
