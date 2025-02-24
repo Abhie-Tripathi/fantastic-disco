@@ -18,7 +18,7 @@ const config = {
           'oaidalleapiprodscus.blob.core.windows.net',
           'img.10times.com',
           'login.10times.com',
-          'api.dev.gtm.whr.ai'
+          'api.dev.gtm.whr.ai',
           'im.gifbt.com',
         ],
   },
