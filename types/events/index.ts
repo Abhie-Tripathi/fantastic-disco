@@ -1,5 +1,6 @@
 export * from "./category";
 export * from "./events";
+export * from "./eventDetail";
 export * from "./tag";
 export * from "./calendarWeekEvents";
 export * from "./calendarMonthEvents";
@@ -9,3 +10,4 @@ export * from "./recentSearches";
 export * from "./eventCount";
 export * from "./calendarYearEvents";
 export * from "./alerts";
+export * from "./oldEvents";

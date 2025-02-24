@@ -1,7 +1,8 @@
 import Text from "../new-ui/Text";
 import Image from "next/image";
 import Link from "next/link";
-import { EventParticipantsDetails, GTMEventDetail } from "@/types/events";
+import { Event, EventParticipantsDetails } from "@/types/events";
+import _ from "lodash";
 import { Badge } from "../ui/badge";
 
 const sponsorsData = [
@@ -49,22 +50,18 @@ const ListCard = ({
             className="aspect-square rounded-sm w-12 h-12"
           />
           <div className="flex flex-col justify-between">
-            <Text color="primary" className="line-clamp-2">
+            <p className="text-sm line-clamp-2 text-[var(--primary-text-color)] mb-1">
               {participant.name || ""}
-            </Text>
-            <Text variant="noMargin" color="secondary" className="line-clamp-2">
-              {participant.details}
-            </Text>
+            </p>
+            <p className="text-sm line-clamp-2 text-[var(--secondary-text-color)]">
+              {participant.type === "exhibitor"
+                ? participant.details
+                  ? `Stand - ${participant.details}`
+                  : ""
+                : participant.details}
+            </p>
           </div>
         </div>
-        {participant.type === "sponsor" && (
-          <Badge
-            variant={"outline"}
-            className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
-          >
-            Demo
-          </Badge>
-        )}
       </div>
     </li>
   );
@@ -117,10 +114,14 @@ const ParticipantContainer = ({
         <Text variant="noMargin" fontWeight="medium">
           {heading}
         </Text>
-        {count !== null && count !== 0 && <BadgeCount value={count} />}
+        {count !== null && count !== 0 && (
+          <BadgeCount value={_.padStart(String(count), 2, "0")} />
+        )}
       </div>
       <ul className="flex flex-col gap-2 items-center h-full">
         {count !== null && count > 0 ? (
+          participantData &&
+          participantData.length > 0 &&
           participantData
             .slice(0, count)
             .map((participant: EventParticipantsDetails, index: number) => (
@@ -148,17 +149,18 @@ export const EventParticipants = ({
   eventDetails,
   eventExhibitorData,
   eventSpeakerData,
+  eventSponsorData,
 }: {
-  eventDetails: GTMEventDetail;
+  eventDetails: Event;
   eventExhibitorData: EventParticipantsDetails[];
   eventSpeakerData: EventParticipantsDetails[];
+  eventSponsorData: EventParticipantsDetails[];
 }) => {
-  const {
-    exhibitorsCount,
-    speakersCount,
-    sponsorsCount,
-    "10TimesUrl": websiteUrl,
-  } = eventDetails;
+  const { exhibitorsCount, speakersCount, sponsorsCount } =
+    (eventDetails && eventDetails.insights) || {};
+  const { eventPageUrl } = (eventDetails && eventDetails.basic) || {};
+
+  // const showParticipantBasedOnEventType = 
   const participantData = [
     {
       heading: "Exhibitors",
@@ -168,7 +170,7 @@ export const EventParticipants = ({
         logo: "/exhibitorsIcon.svg",
         text: "No Exhibitor mapped to this event. Are you interested to Exhibit ?",
         linkText: "Exhibit Request",
-        redirectLink: `https://10times.com/${websiteUrl}`,
+        redirectLink: `https://10times.com/${eventPageUrl || ""}`,
       },
     },
     {
@@ -179,36 +181,40 @@ export const EventParticipants = ({
         logo: "/speakersIcon.svg",
         text: "No Speakers mapped to this event. Are you interested to attend as a speaker?",
         linkText: "Speaker Request",
-        redirectLink: `https://10times.com/${websiteUrl}`,
+        redirectLink: `https://10times.com/${eventPageUrl || ""}`,
       },
     },
     {
       heading: "Sponsors",
       count: sponsorsCount,
-      data: sponsorsData,
+      data: eventSponsorData,
       nullState: {
         logo: "/sponsorsIcon.svg",
         text: "No Sponsors mapped to this event. Interested in sponsoring this event?",
         linkText: "Sponsor Request",
-        redirectLink: `https://10times.com/${websiteUrl}`,
+        redirectLink: `https://10times.com/${eventPageUrl || ""}`,
       },
     },
   ];
   return (
-    <div className="flex flex-row gap-6 max-xl:flex-col h-96 max-xl:h-full">
-      {participantData.map((participant) => {
-        const { count, data, heading, nullState } = participant;
-        return (
-          <ParticipantContainer
-            key={heading}
-            count={count}
-            heading={heading}
-            participantData={data}
-            eventPageUrl={websiteUrl}
-            nullState={nullState}
-          />
-        );
-      })}
-    </div>
+    ((exhibitorsCount ?? 0) > 0 ||
+      (speakersCount ?? 0) > 0 ||
+      (sponsorsCount ?? 0) > 0) && (
+      <div className="flex flex-row gap-6 max-xl:flex-col h-96 max-xl:h-full">
+        {participantData.map((participant) => {
+          const { count, data, heading, nullState } = participant;
+          return (
+            <ParticipantContainer
+              key={heading}
+              count={count || 0}
+              heading={heading}
+              participantData={data}
+              eventPageUrl={eventPageUrl}
+              nullState={nullState}
+            />
+          );
+        })}
+      </div>
+    )
   );
 };

@@ -44,11 +44,11 @@ import { useDefaultFilters } from "@/hooks/useDefaultFilters";
 import TrendsEventTypeSelector from "@/components/search/trendsEventType";
 import { table } from "console";
 import { useEventsService } from "@/services/eventsService";
-// import { EventsResponse } from "@/types";
+import { EventResponse } from "@/types/events";
 import { useToast } from "@/components/ui/use-toast";
 import TestPeriodicAnalytics from "@/components/newTrends/table-view/TestPeriodicAnalytics";
 import D3AreaChart from "@/components/newTrends/D3newTrends";
-import TrendsNotification from "@/components/newTrends/notification";
+// import TrendsNotification from "@/components/newTrends/notification";
 import { Switch } from "@/components/ui/switch";
 import CILSearch from "/public/cil_search.svg";
 import GoToIcon from "/public/go_to.svg";
@@ -56,11 +56,12 @@ import { ToastAction } from "@/components/ui/toast";
 import SavedTrendsList from "@/components/newTrends/savedTrendsList";
 import SaveTrend from "@/components/newTrends/saveTrend";
 // import ColumnsSelector from "@/components/search/columnSelector";
-// import EventTypeSelector from "@/components/eventType";
+// import EventTypeSelectorhttps://faphouse.com/videos/unique-gift-birthday-omU2PB from "@/components/eventType";
 import EventTypeSelector from "@/components/search/eventType";
 import ColumnsSelector from "@/components/search/columnSelector";
 import { useFilterContext } from "@/context/filterContext";
 import { useTrendsService } from "@/services/trendsService";
+import { isEventeli } from "@/config";
 
 const EventTrends = () => {
   const { searchParams } = useDefaultFilters();
@@ -111,20 +112,13 @@ const EventTrends = () => {
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
 
   const apiParams = useMemo(() => {
-    const params = new URLSearchParams(stringParams);
-    const eventTypes = params.get("eventTypes") || "";
-    const capitalizedEventTypes = eventTypes
-      .split(",")
-      .map((eventType) => {
-        const trimmedEventType = eventType.endsWith("s")
-          ? eventType.slice(0, -1)
-          : eventType;
-        return (
-          trimmedEventType.charAt(0).toUpperCase() + trimmedEventType.slice(1)
-        );
-      })
-      .join(",");
-    params.set("eventTypes", capitalizedEventTypes);
+    const params = new URLSearchParams({
+      groupBy: "date",
+      dateView: "day",
+    });
+    searchParams.forEach((value, key) => {
+      params.append(key, value);
+    });
     return params.toString();
   }, [stringParams]);
 
@@ -149,27 +143,41 @@ const EventTrends = () => {
     staleTime: 0,
   });
 
-  // const { data: savedTrendsList } = useQuery<GetSaveTrendData>({
-  //   queryKey: ["getSavedTrends"],
-  //   queryFn: async () => {
-  //     const result = await getSavedTrends();
-  //     if (!result) throw new Error("Failed to fetch saved trends");
-  //     return result;
-  //   },
-  // });
+  const { data: holdiayData } = useQuery({
+    queryKey: ["holiday", updatedParams],
+    queryFn: async () => await getEventsWithSearchParams(updatedParams),
+    enabled: isEventeli,
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
 
-  // const groupedData = (holdiayData as EventsResponse)?.events.reduce<
-  //   Record<string, TableGroupedHoliday>
-  // >((acc, { startDateTime, name }) => {
-  //   if (!acc[startDateTime]) {
-  //     acc[startDateTime] = { date: startDateTime, count: 0, holidays: [] };
-  //   }
-  //   acc[startDateTime].count++;
-  //   acc[startDateTime].holidays.push(name);
-  //   return acc;
-  // }, {});
+  const { data: savedTrendsList } = useQuery<GetSaveTrendData>({
+    queryKey: ["getSavedTrends"],
+    queryFn: async () => {
+      const result = await getSavedTrends();
+      if (!result) throw new Error("Failed to fetch saved trends");
+      return result;
+    },
+  });
 
-  // const holidaysByDate = groupedData && Object.values(groupedData);
+  const groupedData = (holdiayData as EventResponse)?.events.reduce<
+    Record<string, TableGroupedHoliday>
+  >((acc, { basic }) => {
+    const { startDateTime, name } = basic;
+    if (!acc[startDateTime]) {
+      acc[startDateTime] = { date: startDateTime, count: 0, holidays: [] };
+    }
+    acc[startDateTime].count++;
+    acc[startDateTime].holidays.push(name);
+    return acc;
+  }, {});
+
+  const holidaysByDate =
+    (groupedData &&
+      Object.values(groupedData).length > 0 &&
+      Object.values(groupedData)) ||
+    [];
 
   useEffect(() => {
     if (trendsData !== undefined) {
@@ -289,6 +297,7 @@ const EventTrends = () => {
     // deleteMultipleLocalFilters(["activeCard"]);
     if (getLocalFilterValue("eventTypes").length > 0) {
       setLocalFilter("columns", columnsValue);
+      setLocalFilter("status", "active,cancelled,postponed");
       setLocalFilter("show", "alerts,scores,economicImpact");
     }
     applyFilters({ resetPage: true });
@@ -300,9 +309,9 @@ const EventTrends = () => {
 
   return (
     <div className="flex flex-col p-4">
-      {/* {savedTrendsList && savedTrendsList?.trackerData.length > 0 && (
-        <SavedTrendsList savedTrendsList={savedTrendsList?.trackerData || []} />
-      )} */}
+      {savedTrendsList && savedTrendsList?.trackers.length > 0 && (
+        <SavedTrendsList savedTrendsList={savedTrendsList?.trackers || []} />
+      )}
       <div>
         <div className="grid grid-cols-5 max-lg:grid-cols-2 gap-4 pt-4 pb-6 border-b items-end">
           <EventTypeSelector />
@@ -318,7 +327,7 @@ const EventTrends = () => {
               handleSelectChange={handleSelectChange}
             />
           </div>
-          <div className="grid grid-cols-1 max-lg:col-end-3  w-full gap-4">
+          <div className="grid grid-cols-2 max-lg:col-end-3 w-full gap-4">
             <Button
               className="flex-1 py-5"
               onClick={applyHandler}
@@ -334,11 +343,11 @@ const EventTrends = () => {
               )}
             </Button>
             {/* <Button className="flex-1 py-5">Save</Button> */}
-            {/* <SaveTrend
+            <SaveTrend
               searchParams={searchParams}
               isLoading={isLoading}
               setShowNotificationForm={setShowNotificationForm}
-            /> */}
+            />
           </div>
         </div>
         {graphData && graphData.length > 0 && !isLoading ? (
@@ -363,6 +372,7 @@ const EventTrends = () => {
               <LineChartComponent
                 predictedData={graphData}
                 selectedEventType={selectedEventType}
+                holidayByDates={holidaysByDate}
                 threshold={
                   (eventTrendsData &&
                     eventTrendsData.thresholds[selectedEventType]) ??
@@ -380,6 +390,7 @@ const EventTrends = () => {
                   setSmartInsightState={setSmartInsightState}
                   data={tableData && tableData.length > 0 ? tableData : []}
                   tableColumns={tableColumns || []}
+                  holidayByDates={holidaysByDate}
                 />
               </div>
             </div>

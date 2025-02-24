@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import NestedCircularProgress from "./circularProgress";
 import { heatmapColors } from "./constants";
-import { Event } from "@/types/events";
-import { formatDateRange } from "@/utils/dateFormat";
+import { Alert, Event } from "@/types/events";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
+import { cn } from "@/lib/utils";
+import { formattedDateRange } from "@/utils/date";
 
 interface CustomDayHeaderProps {
   date: Date;
@@ -40,7 +42,7 @@ export const CustomDayHeader = ({
         {moment(date).format("D MMM")}
       </div>
 
-      {/* {alertsForDay && alertsForDay.length > 0 && (
+      {alertsForDay && alertsForDay.length > 0 && (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger
             className="text-xs text-red-500"
@@ -70,13 +72,13 @@ export const CustomDayHeader = ({
                   {alertForDay.name || `New ${alertForDay.type} alert`}
                 </p>
                 <time className="text-xs text-muted-foreground">
-                  {formatDateRange(alertForDay.startDate, alertForDay.endDate)}
+                  {formattedDateRange(alertForDay.startDate, alertForDay.endDate)}
                 </time>
               </div>
             ))}
           </PopoverContent>
         </Popover>
-      )} */}
+      )}
     </div>
   );
 };
@@ -125,12 +127,12 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
   );
   const holidayEventForDay = unAttended.holidays?.filter(
     (event) =>
-      moment(event.startDateTime).format("YYYY-MM-DD") === formattedDate
+      moment(event.basic.startDateTime).format("YYYY-MM-DD") === formattedDate
   );
-  // const alertEventsForDay = unAttended.alerts?.filter(
-  //   (event: Alert) =>
-  //     moment(event.startDate).format("YYYY-MM-DD") === formattedDate
-  // );
+  const alertEventsForDay = unAttended.alerts?.filter(
+    (event: Alert) =>
+      moment(event.startDate).format("YYYY-MM-DD") === formattedDate
+  );
 
   const businessEvents =
     eventsForDay.find((event) => event.eventType === "business")?.count || 0;
@@ -158,6 +160,8 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
     setOpen(false);
   };
 
+  console.log("hell",holidayEventForDay);
+
   return (
     <div
       className={`relative p-2 h-36 flex flex-col justify-between ${hasEvents ? 'cursor-pointer' : ''} border-r-[0.5px] border-l-[0.5px]`}
@@ -182,11 +186,11 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
       {holidayEventForDay && holidayEventForDay[0] && (
         <div className="relative mt-2 bg-white border rounded-tr-md rounded-br-md text-center text-[#7d7d7d] text-sm font-medium shadow-sm truncate px-4">
           <div className="absolute left-0 top-0 bg-[#7d7d7d] w-1 h-full"></div>
-          {holidayEventForDay[0].name.replace(/\s*\(.*?\)\s*/g, "")}
+          {holidayEventForDay[0].basic.name.replace(/\s*\(.*?\)\s*/g, "")}
         </div>
       )}
 
-      {/* {alertEventsForDay && alertEventsForDay[0] && (
+      {alertEventsForDay && alertEventsForDay[0] && (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger
             onMouseEnter={handleMouseEnter}
@@ -223,7 +227,7 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
                   `New ${alertEventsForDay[0].type} alert`}
               </p>
               <time className="text-xs text-muted-foreground">
-                {formatDateRange(
+                {formattedDateRange(
                   alertEventsForDay[0].startDate,
                   alertEventsForDay[0].endDate
                 )}
@@ -231,7 +235,7 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
             </div>
           </PopoverContent>
         </Popover>
-      )} */}
+      )}
     </div>
   );
 };

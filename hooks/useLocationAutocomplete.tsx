@@ -1,5 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocationService } from "@/services/locationService";
+import { useDebounce } from "./useDebounce";
+
+const DEBOUNCE_DELAY = 300;
 
 export const useNominatimAutocomplete = (input: string) => {
   const { getNominatimAutocomplete } = useLocationService();
@@ -31,12 +34,14 @@ export const useNominatimAutocomplete = (input: string) => {
 //   };
 // };
 
-export const useDatabaseLocationcomplete = (input: string) => {
+export const useDatabaseLocationcomplete = (input: string, locationType?: string) => {
+  const debouncedInput = useDebounce(input, DEBOUNCE_DELAY);
   const { getDatabaseLocationAutocomplete } = useLocationService();
   const { data, error, isLoading } = useQuery({
-    queryKey: ["databaseLocationAutocomplete", input],
-    queryFn: () => getDatabaseLocationAutocomplete(input),
-    enabled: !!input,
+    queryKey: ["databaseLocationAutocomplete", debouncedInput],
+    queryFn: () =>
+      getDatabaseLocationAutocomplete(debouncedInput, locationType),
+    enabled: !!debouncedInput,
   });
 
   return {

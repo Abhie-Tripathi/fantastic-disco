@@ -1,14 +1,27 @@
-import { GTMEventDetail, VenueLocation } from "@/types/events";
+import { Event } from "@/types/events";
+import { Weather } from "@/types";
+import Text from "@/components/new-ui/Text";
 import { format } from "date-fns";
+import { Card, CardContent } from "@/components/ui/card";
 import { type CarouselApi } from "@/components/ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 import { useEffect, useMemo, useRef, useState } from "react";
 import React from "react";
-import { EventDate } from "@/types/events";
+import { useMiscService } from "@/services/miscService";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import { EventDate } from "@/types/events/eventDetail";
 import EventsListView from "../detailPageEventsList/eventsListView";
 import EventsMapView from "../detailPageEventsList/eventsMapView";
+import { isEventeli } from "@/config";
 interface Props {
-  eventDetails: GTMEventDetail;
-  venueLocation: VenueLocation | null;
+  eventDetails: Event;
+  venueLocation: Event["basic"]["eventLocation"] | null;
   startDateTime: string;
   endDateTime: string;
 }
@@ -18,7 +31,7 @@ export const DetailMapComponent = ({
   startDateTime,
   endDateTime,
 }: Props) => {
-  const { format: typeOfEvent } = eventDetails;
+  const { format: typeOfEvent } = eventDetails.basic || {};
   const currentDate = new Date().toISOString().split("T")[0];
   const isFirstRender = useRef(true);
   const [api, setApi] = useState<CarouselApi>();
@@ -32,9 +45,9 @@ export const DetailMapComponent = ({
       : startDateTime;
   });
   const [dates, setDates] = useState<EventDate[]>();
-  // const [weatherInfo, setWeatherInfo] = useState<Weather>();
+  const [weatherInfo, setWeatherInfo] = useState<Weather>();
   const [activeIndex, setActiveIndex] = useState<number>(0);
-  // const { getDateRangeWeatherData, getWeatherData } = useMiscService();
+  const { getWeatherData } = useMiscService();
   const [eventDateRange, setEventDateRange] = useState<{
     startDate: string;
     endDate: string;
@@ -50,6 +63,84 @@ export const DetailMapComponent = ({
     venueLocation?.state?.longitude ??
     "";
 
+  const weatherIconMap: Record<string, string> = {
+    mist: "/weather/mist.svg",
+    fog: "/weather/fog.svg",
+    light_rain_showers: "/weather/light_rain_showers.svg",
+    heavy_rain_showers: "/weather/heavy_rain_showers.svg",
+    light_snow_showers: "/weather/light_snow_showers.svg",
+    heavy_snow_showers: "/weather/heavy_snow_showers.svg",
+    sleet_showers: "/weather/sleet_showers.svg",
+    thunder_showers: "/weather/thunder_showers.svg",
+    cloudy: "/weatherIcons/cloudy.svg",
+    snowfall: "/weatherIcons/snowfall.svg",
+    rainfall: "/weatherIcons/rainfall.svg",
+    // cloudy_with_heavy_rain: "/weather/cloudy_with_heavy_rain.svg",
+    // cloudy_with_heavy_snow: "/weather/cloudy_with_heavy_snow.svg",
+    cloudy_with_heavy_rain: "/weatherIcons/cloudy_rainfall.svg",
+    cloudy_with_heavy_snow: "/weatherIcons/cloudy_snowfall.svg",
+    cloudy_with_light_snow: "/weather/cloudy_with_light_snow.svg",
+    // thunderstorms: "/weather/thunderstorms.svg",
+    thunderstorms: "/weatherIcons/thunderstorms.svg",
+    // sunny: "/weather/sunny.svg",
+    sunny: "/weatherIcons/sunny.svg",
+    // sunny_intervals: "/weather/sunny_intervals.svg",
+    sunny_intervals: "/weatherIcons/sunny_intervals.svg",
+  };
+  const determineWeatherCondition = (data: Weather) => {
+    const { cloud_cover, precipitation, temperature } = data;
+
+    if (precipitation.total > 100000) {
+      if (temperature.afternoon < 273.15) {
+        return "cloudy_with_heavy_snow";
+      } else {
+        return "cloudy_with_heavy_rain";
+      }
+    } else if (precipitation.total > 0) {
+      if (temperature.afternoon < 273.15) {
+        return "light_snow_showers";
+      } else {
+        return "light_rain_showers";
+      }
+    } else if (cloud_cover.afternoon > 50) {
+      return "sunny_intervals";
+    } else {
+      return "sunny";
+    }
+  };
+
+  const calculateRainChance = (
+    cloudCover: number,
+    precipitation: number,
+    humidity: number
+  ) => {
+    let rainChance = 0;
+    let alpha = 0.6,
+      beta = 0.3,
+      gamma = 10;
+
+    if (humidity < 30) {
+      humidity *= 0.5;
+    }
+
+    rainChance = alpha * cloudCover + beta * humidity + gamma * precipitation;
+    return Math.min(Math.round(rainChance), 100);
+  };
+
+  const convertWindSpeedToKmh = (windSpeedMps: number) => {
+    return windSpeedMps * 3.6;
+  };
+
+  // useEffect(() => {
+  //   if (startDateTime && endDateTime) {
+  //     const activeDate =
+  //       currentDate >= startDateTime && currentDate <= endDateTime
+  //         ? currentDate
+  //         : startDateTime;
+  //     setActiveDate(activeDate);
+  //   }
+  // }, []);
+
   useMemo(() => {
     const generateEventDates = (
       startDate: string | null,
@@ -57,6 +148,8 @@ export const DetailMapComponent = ({
     ): void => {
       const start = new Date(startDate || "");
       const end = new Date(endDate || "");
+
+      // Adjust startDateTime to three day before and endDateTime to three day after
       const adjustedStartDateTime = new Date(start);
       adjustedStartDateTime.setDate(adjustedStartDateTime.getDate() - 1);
 
@@ -115,26 +208,196 @@ export const DetailMapComponent = ({
     }
     api.scrollTo(activeIndex, false);
   }, [api]);
-  return (
-    <>
-      {venueLocation && typeOfEvent !== "online" && (
-        <div className="flex flex-col gap-4 max-xl:justify-around h-auto">
-          <div className="flex flex-col gap-4">
-            <div className="flex-1 bg-[#EBEBEB] h-[450px]">
+
+  // const {
+  //   data: weather,
+  //   isLoading,
+  //   error,
+  // } = useQuery<OpenMeteoWeatherResponse | undefined>({
+  //   queryKey: ["activeDate", eventDateRange],
+  //   queryFn: async () =>
+  //     await getDateRangeWeatherData(
+  //       latitude ?? "",
+  //       longitude ?? "",
+  //       eventDateRange.startDate,
+  //       eventDateRange.endDate
+  //     ),
+  // });
+
+  const {
+    data: weatherData,
+    error,
+    isLoading,
+  } = useQuery<Weather | undefined>({
+    queryKey: [weatherActiveDate],
+    queryFn: async () =>
+      getWeatherData(latitude, longitude, weatherActiveDate ?? ""),
+    refetchOnWindowFocus: false,
+    enabled: isEventeli,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
+  // const {
+  //   data: weatherData,
+  //   error,
+  //   isLoading,
+  // } = useQuery<Weather | undefined>({
+  //   queryKey: [activeDate],
+  //   queryFn: async () => getWeatherData(latitude, longitude, activeDate ?? ""),
+  //   refetchOnWindowFocus: false,
+  //   gcTime: 0,
+  //   staleTime: 0,
+  // });
+
+  // const weatherQueries = useQueries(
+  //   eventDates.map((date) => ({
+  //     queryKey: ["weather", date],
+  //     queryFn: async () =>
+  //       await getWeatherData(latitude, longitude, date),
+  //   }))
+  // );
+
+  useEffect(() => {
+    if (weatherData) {
+      setWeatherInfo(weatherData);
+    }
+  }, [weatherData]);
+
+  // const maxTempArray = weatherInfo && weatherInfo.daily.temperature_2m_max;
+  // const minTempArray = weatherInfo && weatherInfo.daily.temperature_2m_min;
+  const minTemp =
+    weatherData &&
+    weatherData.temperature.min &&
+    Math.floor(weatherData.temperature.min);
+  const maxTemp =
+    weatherData &&
+    weatherData.temperature.max &&
+    Math.ceil(weatherData.temperature.max);
+  return !isEventeli && typeOfEvent !== "online" ? (
+    <div className="flex flex-col gap-4 max-xl:justify-around h-auto">
+      <div className="flex flex-col gap-4">
+        <div className="flex-1 bg-[#EBEBEB] h-[450px]">
+          {typeOfEvent !== "online" && (
+            <EventsMapView
+              event={eventDetails.basic || {}}
+              startDate={eventDateRange.startDate}
+              endDate={eventDateRange.endDate}
+              // activeDate={activeDate ?? ""}
+              zoom={10}
+              style={{
+                width: "100%",
+                height: "308px",
+              }}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  ) : (
+    isEventeli && (
+      <div className="flex flex-col gap-4 max-xl:justify-around h-auto">
+        {isEventeli
+          ? typeOfEvent !== "online" && (
+              <div className="flex justify-center items-center w-full max-[1756px]:w-80 self-center">
+                <Carousel
+                  setApi={setApi}
+                  className="w-full max-w-sm px-4 cursor-pointer"
+                >
+                  <CarouselContent className="-ml-1">
+                    {dates &&
+                      dates.length > 0 &&
+                      dates.map((date) => (
+                        <CarouselItem
+                          key={date.formattedDate}
+                          className="pl-2 basis-[18%] carousel-item"
+                        >
+                          <div className="p-1 text-center">
+                            <span className="text-sm">{date.month}</span>
+                            <Card
+                              className={`rounded-sm ${
+                                date.formattedDate === activeDate
+                                  ? "bg-[#6750A4] text-[#fff]"
+                                  : date.isEventDay
+                                  ? `bg-[#E6E6F9] dark:bg-[#A099E0] text-[#000] dark:text-white border border-[#A099E0]`
+                                  : `bg-[#fff] dark:bg-[var(--primary-foreground)] text-[#000] dark:text-white`
+                              }`}
+                              onClick={() => {
+                                setActiveDate(date.formattedDate);
+                                setWeatherActiveDate(date.formattedDate);
+                              }}
+                            >
+                              <CardContent className="flex aspect-square items-center justify-center p-0">
+                                <span className="text-sm font-medium">
+                                  {date.date}
+                                </span>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </CarouselItem>
+                      ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="bg-[#F2F2F2] dark:bg-[#292929] rounded-sm border-[var(--neutral-light-color)] w-12 h-12  my-[0.8rem] max-[1756px]:w-9 max-[1756px]:h-9 max-[1756px]:absolute max-[1756px]:-left-4" />
+                  <CarouselNext className="bg-[#F2F2F2] dark:bg-[#292929] rounded-sm border-[var(--neutral-light-color)] w-12 h-12 my-[0.8rem] max-[1756px]:w-9 max-[1756px]:h-9 max-[1756px]:absolute max-[1756px]:-right-4" />
+                </Carousel>
+              </div>
+            )
+          : null}
+        {isEventeli
+          ? typeOfEvent !== "online" && (
+              <div className="flex justify-between border-t-2 pt-4">
+                <Text color="secondary">
+                  {[
+                    venueLocation?.city?.name,
+                    venueLocation?.state?.name,
+                    venueLocation?.country?.name,
+                  ]
+                    .filter(Boolean)
+                    .join(", ")}
+                </Text>
+                <Text color="primary" size="large" fontWeight="bold">
+                  {minTemp && (
+                    <span className="mr-1">
+                      {minTemp} <sup>°C</sup>
+                    </span>
+                  )}
+                  {minTemp && maxTemp && <span>{"-"}</span>}
+                  {maxTemp && (
+                    <span className="ml-1">
+                      {maxTemp} <sup>°C</sup>
+                    </span>
+                  )}
+                </Text>
+              </div>
+            )
+          : null}
+        <div className="flex flex-col gap-4">
+          <div className="flex-1 bg-[#EBEBEB] h-[450px]">
+            {isEventeli
+              ? typeOfEvent === "online" && (
+                  <EventsListView
+                    startDate={eventDateRange.startDate}
+                    endDate={eventDateRange.endDate}
+                    event={eventDetails.basic || {}}
+                  />
+                )
+              : null}
+            {typeOfEvent !== "online" && (
               <EventsMapView
-                event={eventDetails}
+                event={eventDetails.basic || {}}
                 startDate={eventDateRange.startDate}
                 endDate={eventDateRange.endDate}
+                // activeDate={activeDate ?? ""}
                 zoom={10}
                 style={{
                   width: "100%",
-                  height: "308px",
+                  height: isEventeli ? "430px" : "308px",
                 }}
               />
-            </div>
+            )}
           </div>
         </div>
-      )}
-    </>
+      </div>
+    )
   );
 };

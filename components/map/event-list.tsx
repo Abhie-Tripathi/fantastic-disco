@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, Loader2, Focus } from "lucide-react";
+import { AlertTriangle, Loader2, Focus, X, Star } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -16,7 +16,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Event, EventsResponse } from "@/types/events";
+import { Event } from "@/types/events";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
@@ -27,6 +27,9 @@ import MapPopup from "@/components/map/popup";
 import { getEventLatLong } from "@/utils/formater";
 import * as turf from "@turf/turf";
 import { useTrackerServices } from "@/services/trackerServices";
+import SortDropdown from "@/components/search/sortDropdown";
+import { lightenColor } from "@/lib/utils";
+
 const EventCard = memo(
   ({
     event,
@@ -50,14 +53,14 @@ const EventCard = memo(
       }
     }, [mapRef]);
 
-    const address = event.venueLocation
-      ? event.venueLocation.city?.name === "Online"
+    const address = event.basic.eventLocation
+      ? event.basic.eventLocation.city?.name === "Online"
         ? "Online"
         : [
-            event.venueLocation?.venue?.name || "TBA",
-            event.venueLocation?.city?.name,
-            event.venueLocation?.state?.name,
-            event.venueLocation?.country?.name,
+            event.basic.eventLocation?.venue?.name || "TBA",
+            event.basic.eventLocation?.city?.name,
+            event.basic.eventLocation?.state?.name,
+            event.basic.eventLocation?.country?.name,
           ]
             .filter(Boolean)
             .join(", ")
@@ -65,7 +68,7 @@ const EventCard = memo(
 
     const handleZoomToLocation = (e: React.MouseEvent) => {
       e.preventDefault();
-      if (mapRef.current && event.venueLocation) {
+      if (mapRef.current && event.basic.eventLocation) {
         const { lat, lon } = getEventLatLong(event);
         mapRef.current.flyTo({
           center: [lon, lat],
@@ -78,39 +81,85 @@ const EventCard = memo(
     };
 
     return (
-      <Link href={`/internal/event/${event.id}`}>
-        <Card className="mb-4 relative hover:shadow-md transition-shadow">
-          <div
-            className="absolute left-0 top-0 bottom-0 w-1 rounded-md"
-            style={{
-              backgroundColor: eventTypeColors[event.primaryEventType || ""],
-            }}
-          />
-          <CardContent className="p-4">
-            <div className="flex items-center mb-2 pb-2 border-b">
-              {eventTypeIcons[event.primaryEventType || "festivals"]}
-              <span className="text-xs font-semibold text-primary capitalize ml-2">
-                {event.primaryEventType}
-              </span>
-            </div>
-            <h3 className="font-semibold mb-2 text-sm">{event.name}</h3>
-            <div className="flex items-center text-xs mb-2">
-              <span>{address}</span>
-            </div>
-            <div className="flex items-start justify-between mt-2 pt-2 border-t">
-              <div className="text-xs text-[#666666]">
-                {formattedDateRange(event.startDateTime, event.endDateTime)}
+      <Link href={`/internal/event/${event.basic.id}`}>
+        <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
+          <CardContent className="p-3">
+            <div className="flex items-start gap-3">
+              {event.basic.logoUrl ? (
+                <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100">
+                  <img
+                    src={event.basic.logoUrl}
+                    alt={`${event.basic.name} logo`}
+                    className="w-full h-full object-contain p-1"
+                  />
+                </div>
+              ) : (
+                <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center bg-gray-50 border border-gray-100">
+                  <span className="text-[#5055A3] text-2xl font-semibold">
+                    {event.basic.name.charAt(0)}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge
+                    variant="secondary"
+                    className={
+                      "flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 capitalize rounded-sm"
+                    }
+                    style={{
+                      color:
+                        eventTypeColors[event.basic.primaryEventType || ""],
+                      backgroundColor: lightenColor(
+                        eventTypeColors[event.basic.primaryEventType || ""],
+                        0.9
+                      ),
+                    }}
+                  >
+                    <span>
+                      {
+                        eventTypeIcons[
+                          event.basic.primaryEventType || "festivals"
+                        ]
+                      }
+                    </span>
+                    <span>{event.basic.primaryEventType}</span>
+                  </Badge>
+                  {event.basic.rating && (
+                    <Badge
+                      variant="outline"
+                      className="text-gray-600 capitalize rounded-sm"
+                    >
+                      <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+                      <span>{event.basic.rating}</span>
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <h3 className="font-semibold text-sm line-clamp-2">
+                    {event.basic.name}
+                  </h3>
+                </div>
+                <div className="text-xs text-gray-600 mb-1">{address}</div>
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-medium text-primary">
+                    {formattedDateRange(
+                      event.basic.startDateTime,
+                      event.basic.endDateTime
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 px-2 text-xs text-primary"
+                    onClick={handleZoomToLocation}
+                  >
+                    <Focus className="w-3 h-3 mr-1" />
+                    Zoom
+                  </Button>
+                </div>
               </div>
-              {/* Show button always if zoom is less than 16 */}
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 text-xs text-primary hover:text-primary/80"
-                onClick={handleZoomToLocation}
-              >
-                <Focus className="w-3 h-3 mr-1" />
-                Zoom to location
-              </Button>
             </div>
           </CardContent>
         </Card>
@@ -154,21 +203,26 @@ const UnplannedCard = memo(
           />
           <CardContent className="p-4">
             <div className="flex items-center mb-2 pb-2 border-b">
-              {eventTypeIcons[event.primaryEventType || "festivals"]}
+              {eventTypeIcons[event.basic.primaryEventType || "festivals"]}
               <span
                 className="text-xs font-semibold text-primary capitalize ml-2"
-                style={{ color: eventTypeColors[event.primaryEventType || ""] }}
+                style={{
+                  color: eventTypeColors[event.basic.primaryEventType || ""],
+                }}
               >
-                {event.primaryEventType}
+                {event.basic.primaryEventType}
               </span>
             </div>
-            <h3 className="font-semibold mb-2 text-sm">{event.name}</h3>
+            <h3 className="font-semibold mb-2 text-sm">{event.basic.name}</h3>
             <div className="flex items-center text-xs mb-2">
-              <span>{formatAddress(event.venueLocation)}</span>
+              <span>{formatAddress(event.basic.eventLocation)}</span>
             </div>
             <div className="flex items-start justify-between mt-2 pt-2 border-t">
               <div className="text-xs text-[#666666]">
-                {formattedDateRange(event.startDateTime, event.endDateTime)}
+                {formattedDateRange(
+                  event.basic.startDateTime,
+                  event.basic.endDateTime
+                )}
               </div>
             </div>
           </CardContent>
@@ -207,6 +261,7 @@ function EventList({
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
+  const [sortBy, setSortBy] = useState("start");
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -259,35 +314,34 @@ function EventList({
     const params = new URLSearchParams(searchParams.toString());
     params.delete("view");
     params.set("skip", String((currentPage - 1) * 20));
-    params.set("stats", "list");
-    params.set("sortBy", "distance");
-    params.set("shortType", "asc")
+
     if (showEventType == "unAttended") params.set("eventTypes", "holiday");
 
     if (mapCenter && mapRadius) {
       const viewBound = {
         boundType: "point",
-        coordinates: JSON.stringify({
+        coordinates: {
           latitude: mapCenter.lat,
           longitude: mapCenter.lng,
           radius: mapRadius,
-        }),
+        },
       };
       if (source === "tracker") return JSON.stringify(viewBound).toString();
       params.set("viewBound", JSON.stringify(viewBound));
+      params.set("sortBy", sortBy);
     }
 
     return params;
-  }, [searchParams, currentPage, showEventType, mapCenter, mapRadius]);
+  }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString(), currentPage],
+    queryKey: ["events", filteredParams.toString(), currentPage, sortBy],
     queryFn: () =>
       source === "tracker"
         ? getTrackerMapEvents(
             trackerId ?? "",
-            `max=20&offset=${(currentPage - 1) * 20}`,
-            `type=${searchParam}&viewBound=${filteredParams}&stats=list&limit=20&skip=${
+            `${searchParams.get("eventType")}`,
+            `viewBound=${filteredParams}&stats=list&limit=20&offset=${
               (currentPage - 1) * 20
             }`
           )
@@ -298,13 +352,17 @@ function EventList({
     setCurrentPage(page);
   };
 
-  function isEventResponse(data: any): data is EventsResponse {
+  function isEventResponse(data: any): data is any {
     return data && "events" in data && Array.isArray(data.events);
   }
 
   const events: Event[] = isEventResponse(data) ? data.events : [];
   const count = isEventResponse(data) ? data.count : 0;
   const totalPages = Math.ceil(count / 20) || 1;
+
+  const handleSort = (newSortValue: string) => {
+    setSortBy(newSortValue);
+  };
 
   const renderPaginationItems = () => {
     const items = [];
@@ -382,7 +440,7 @@ function EventList({
 
   const handleEventHover = (event: Event) => {
     onEventHover(event);
-    if (event.venueLocation) {
+    if (event.basic.eventLocation) {
       const { lat, lon } = getEventLatLong(event);
       setHoveredPopupInfo({
         events: [event],
@@ -428,39 +486,40 @@ function EventList({
         </div>
       );
     }
-console.log(currentPage);
+    console.log(currentPage);
 
     return (
       <>
         <div className="p-4 rounded-t-lg">
           <div className="flex justify-between items-center border-b">
-            <div className="flex space-x-2 my-2">
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="text-white bg-primary">
-                  {count}
-                </Badge>
-                <span className="text-xs font-semibold text-primary">
-                  Events Found
-                </span>
-              </div>
+            <div className="flex items-center gap-2 my-2">
+              <Badge variant="secondary" className="text-white bg-primary">
+                {count}
+              </Badge>
+              <span className="text-xs font-semibold text-primary">
+                Events Found
+              </span>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-lg"
-              onClick={onClose}
-            >
-              &times;
-            </Button>
+            <div className="flex items-center gap-2">
+              <SortDropdown compact={true} value={sortBy} onSort={handleSort} />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 w-7 p-0"
+                onClick={onClose}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">
           {events.map((event: Event) => {
-            if (event.primaryEventType == "holiday")
+            if (event.basic.primaryEventType == "holiday")
               return (
                 <UnplannedCard
                   event={event}
-                  key={event.id}
+                  key={event.basic.id}
                   mapRef={mapRef}
                   onHover={() => handleEventHover(event)}
                   onLeave={handleEventLeave}
@@ -468,7 +527,7 @@ console.log(currentPage);
               );
             return (
               <EventCard
-                key={event.id}
+                key={event.basic.id}
                 event={event}
                 mapRef={mapRef}
                 onHover={() => handleEventHover(event)}

@@ -51,7 +51,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 263 41% 48%;
+    --primary: 256,34%,48%;
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -80,7 +80,7 @@
     --card-foreground: 210 40% 98%;
     --popover: 0, 0%, 7.5%;
     --popover-foreground: 210 40% 98%;
-    --primary: 263 41% 48%;
+    --primary: 256,34%,48%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0, 0%, 10%;
     --secondary-foreground: 210 40% 98%;
@@ -215,6 +215,7 @@
   --primary-text-color: #171717;
   --secondary-text-color: #666666;
   --tertiary-text-color: #7d7d7d;
+  --highlight-text-color: #df2670;
   /* --heading-color: #ffffff; */
   /* --paragraph-color: #b7b7bb; */
   --danger-text-color: #e5484d;
@@ -757,4 +758,16 @@ button {
 .trendBelowAvgColor {
   background: #398e4a1a;
   color: #398e4a;
+}
+
+
+.sticky {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.table-container {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }

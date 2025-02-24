@@ -10,7 +10,7 @@ import {
   SavedLocationInsightsByIdResponse,
 } from "@/types/locations";
 import { FeatureCollection, Polygon, MultiPolygon, Point, BBox } from "geojson";
-import { LocationAdapter } from "@/adapters/locationAdapter";
+import { LocationResponse } from "@/types/suggestion";
 
 export const useLocationService = () => {
   const api = useApi();
@@ -23,7 +23,7 @@ export const useLocationService = () => {
 
   const getCoordinates = async (placeId: string) => {
     const data = await externalAxios.get(
-      "https://nominatim.openstreetmap.org/details",  
+      "https://nominatim.openstreetmap.org/details",
       {
         params: { place_id: placeId, format: "json" },
       }
@@ -90,15 +90,14 @@ export const useLocationService = () => {
   //   });
   // };
 
-  const getDatabaseLocationAutocomplete = async (input: string) => {
-    const response = await api.request<SearchLocationResponse>(
-      `${endpoints.locationSuggestion}`,
-      {
-        method: "GET",
-        params: { q: input },
-      }
-    );
-    return LocationAdapter.adaptDatabaseLocationAutocomplete(response);
+  const getDatabaseLocationAutocomplete = (
+    input: string,
+    locationType?: string
+  ) => {
+    return api.request<SearchLocationResponse>(`${endpoints.suggestions.location}`, {
+      method: "GET",
+      params: { query: input, type: locationType },
+    });
   };
 
   const getLocationDetails = async (id: string) => {
@@ -106,10 +105,10 @@ export const useLocationService = () => {
       `${endpoints.locationSuggestion}`,
       {
         method: "GET",
-        params: { locationIds: id },
+        params: { ids: id },
       }
     );
-    return LocationAdapter.adaptDatabaseLocationAutocomplete(response);
+    return response;
   };
 
   const getLocationBoundary = async (

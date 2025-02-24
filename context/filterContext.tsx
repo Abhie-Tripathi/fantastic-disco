@@ -21,6 +21,7 @@ import { RecentSearchItem } from "@/types/events/recentSearches";
 import { endOfMonth } from "date-fns";
 import { addMonths } from "date-fns";
 import { startOfMonth } from "date-fns";
+import { useConfigurationService } from "@/services/configurationService";
 interface EventFilterData {
   eventFormat?: { enabledValue?: string[] };
   eventStatus?: { enabledValue?: string[] };
@@ -63,12 +64,12 @@ interface EventFilterData {
   };
 }
 interface Filters {
-  interest?: string;
+  // interest?: string;
   show?: string;
-  liked?: string;
+  // liked?: string;
   eventTypes?: string;
   categories?: string;
-  status?: string;
+  // status?: string;
   top?: string;
   locationIds?: string;
   geoCoordinates?: string;
@@ -109,22 +110,28 @@ interface Filters {
   economic_impact_gte?: string;
   total_attendance_gte?: string;
   total_attendance_lte?: string;
+  eventType?:string;
+
+  // Coordinate Filters
+  type?: string;
+  upvotedBy?: string;
+  status?: string;
 
   // Prospect Filters
-  companyCategory?: string;
-  productTopic?: string;
+  viewBy?: string;
+  companyCategoryIds?: string;
+  companyLocationIds?: string;
+  eventProductIds?: string;
+  communitySize?: string;
   companyType?: string;
-  companySize?: string;
   establishedYear?: string;
+  eventLocationIds?: string;
+  eventCategoryIds?: string;
   eventFollowers?: string;
-  eventCategory?: string;
-  participationType?: string;
-  companyLocation?: string;
-  eventLocation?: string;
-  userName?: string;
-  designation?: string;
-  linkedinProfile?: string;
-  eventType?: string;
+  eventParticipationType?: string;
+  userNames?: string;
+  userJobTitle?: string;
+  userSocialLink?: string;
 }
 type Filter = {
   eventTypes: string;
@@ -167,6 +174,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
+  const { getFilterConfiguration } = useConfigurationService();
   const [morphedData, setMorphedData] = useState(searchFilters);
   const { searchParams } = useFilterState();
   const [localFilters, setLocalFilters] = useState<Filters>({});
@@ -192,9 +200,11 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const getEnabledFilters = async () => {
       try {
-        const data = await eventService.fetchEnabledFilters("research");
+        const data = await getFilterConfiguration();
         setEnabledFilters(data || {});
       } catch (e) {
+
+
         console.error("Error fetching filters:", e);
         setEnabledFilters({});
       }
@@ -207,15 +217,17 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     if (enabledFilters) {
       // console.log("Enabled Filters:", enabledFilters);
       setMorphedData(generateSearchFilters(enabledFilters) as any);
+      console.log(generateSearchFilters(enabledFilters));
+      
     }
   }, [enabledFilters]);
-
+  
   const setLocalFilter = useCallback(
     (key: keyof Filters, value: string) => {
       // console.log(key);
 
       const mapping: Record<keyof Filter, string> = {
-        eventTypes: "eventType",
+        eventTypes: "eventTypes",
         status: "eventStatus",
         categories: "eventCategory",
         eventFormats: "eventFormat",
@@ -227,13 +239,13 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         estimatedExhibitors: "estimatedExhibitScore",
         estimatedVisitorRangeTag: "estimatedVisitorRangeTag",
       };
-      // console.log(enabledFilters);
+      console.log(enabledFilters);
       const selected = mapping[key as keyof Filter];
       setLocalFilters((prev) => {
         // console.log(prev);
 
         if (
-          enabledFilters?.[selected] &&
+          enabledFilters?.filter?.data?.[selected] &&
           ((selected === "maturity" && value?.length === 0) ||
             (selected !== "maturity" &&
               typeof prev?.[key as keyof Filter] === "string" &&
@@ -255,6 +267,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         } else {
           newFilters[key] = value;
         }
+        
         return newFilters;
       });
     },
@@ -309,7 +322,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         });
 
         if (options.resetPage) {
-          params.delete("skip");
+          params.delete("offset");
           params.delete("page");
         }
 
@@ -361,6 +374,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
+  console.log(localFilters);
+  
   const contextValue = useMemo(
     () => ({
       localFilters,

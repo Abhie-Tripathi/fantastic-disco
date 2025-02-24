@@ -1,87 +1,56 @@
 import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
 import {
-  CalendarMonthEventsResponse,
-  CalendarWeekEventsResponse,
-  CalendarYearEventsResponse,
-  EventBookmarkResponse,
-  EventCoOrganizerDetailResponse,
   EventCount,
-  EventDetailResponse,
-  EventEditionDetailResponse,
-  EventExhibitorDetails,
-  EventExhibitorDetailsResponse,
-  EventPOCDetailResponse,
-  EventSpeakerDetails,
-  EventsResponse,
-  MapEventsResponse,
   RecentSearchesResponse,
   RecentSearchItem,
+  Event,
+  EventPOCDetailResponse,
+  OverallRankingsDetail,
+  EventSpeakerDetails,
+  EventExhibitorDetails,
+  EventEditionDetailResponse,
+  EventSpeakerDetailsResponse,
+  EventExhibitorDetailsResponse,
+  EventSponsorDetailsResponse,
+  EventResponse,
+  EventCoOrganizerDetailResponse,
+  AlertPolygonResponse,
 } from "@/types/events";
-import { EventSearchParams } from "@/types/events";
-import { EventsAdapter } from "@/adapters/eventsAdapter";
-import { myFetch } from "@/utils/myFetch";
-import { ReadonlyURLSearchParams } from "next/navigation";
-import { BaseURL } from "@/config";
 import { ApiError } from "@/types/api";
+import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
-import { AlertPolygonResponse } from "@/types/events/alert";
-import { TrackersAdapter } from "@/adapters/trackerAdapter";
-
-export const searchEvents = async (searchParams: ReadonlyURLSearchParams) => {
-  return myFetch(
-    `${BaseURL}/event/all?${searchParams.toString().replace(/%2C/g, ",")}`
-  );
-};
-
-export const searchEventId = async (id: string) => {
-  return myFetch(`${BaseURL}/event/all?id=${id}`);
-};
 
 export const useEventsService = () => {
-  const api = useApi<
-    | CalendarMonthEventsResponse
-    | CalendarWeekEventsResponse
-    | CalendarYearEventsResponse
-    | MapEventsResponse
-    | EventsResponse
-  >();
+  const api = useApi();
 
-  const { exhibitorAdapter, speakerAdapter } = EventParticpantAdapter();
+  const { exhibitorAdapter, speakerAdapter, sponsorAdapter } =
+    EventParticpantAdapter();
 
-  const getEvents = (params?: EventSearchParams) => {
-    return api.request(endpoints.event.events, {
+  const getEvents = async (params?: EventQuery) => {
+    const response = await api.request<EventResponse>(endpoints.event.events, {
+      method: "GET",
+      params,
+    });
+    return response;
+  };
+
+  const getEventDetailById = async (id: string) => {
+    return api.request<Event>(`${endpoints.event.eventDetailById}/${id}`, {
+      method: "GET",
+    });
+  };
+
+  const getEventsCount = async (params?: EventQuery) => {
+    return await api.request<EventCount[]>(`${endpoints.event.count}`, {
       method: "GET",
       params,
     });
   };
 
-  const getEventById = async (id: string) => {
-    const response = await api.request<EventDetailResponse>(
-      `${endpoints.event.events}`,
-      {
-        method: "GET",
-        params: {
-          eventId: id,
-        },
-      }
-    );
-    return EventsAdapter.adaptEventByIdResponse(response);
-  };
-
-  const getEventDetailById = async (id: string) => {
-    const response = await api.request<EventDetailResponse>(
-      `${endpoints.event.eventDetailById}/${id}`,
-      {
-        method: "GET",
-      }
-    );
-    return EventsAdapter.adaptEventDetailByIdResponse(response);
-  };
-
   const getEventPOCDetails = (id: string) => {
     return api.request<EventPOCDetailResponse>(
-      `${endpoints.event.eventPOCDetailById}/${id}`,
+      `${endpoints.event.events}/${id}/pocs`,
       {
         method: "GET",
       }
@@ -90,9 +59,9 @@ export const useEventsService = () => {
 
   const getEventEditionDetails = (id: string, take: number, skip: number) => {
     return api.request<EventEditionDetailResponse>(
-      `${endpoints.event.eventEditionsDetailsById}/${id}${
-        take ? `?take=${take}` : ""
-      }${skip !== undefined && skip !== null ? `&skip=${skip}` : ""}`,
+      `${endpoints.event.events}/${id}/editions${take ? `?take=${take}` : ""}${
+        skip !== undefined && skip !== null ? `&skip=${skip}` : ""
+      }`,
       {
         method: "GET",
       }
@@ -108,9 +77,9 @@ export const useEventsService = () => {
     );
   };
 
-  const getAlertPolygon = (eventId: string) => {
-    return api.request<AlertPolygonResponse>(
-      `${endpoints.event.events}/${eventId}/polygons`,
+  const getEventsRankingDetailsById = (id: string) => {
+    return api.request<OverallRankingsDetail>(
+      `${endpoints.event.events}/${id}/rankings`,
       {
         method: "GET",
       }
@@ -131,8 +100,8 @@ export const useEventsService = () => {
     take: number,
     skip: number
   ) => {
-    const response = await api.request<EventExhibitorDetails[]>(
-      `${endpoints.event.eventDetailById}/exhibitor?id=${id}&take=${take}&skip=${skip}`,
+    const response = await api.request<EventExhibitorDetailsResponse>(
+      `${endpoints.event.eventDetailById}/${id}/exhibitors?take=${take}&skip=${skip}`,
       {
         method: "GET",
       }
@@ -149,8 +118,8 @@ export const useEventsService = () => {
     take: number,
     skip: number
   ) => {
-    const response = await api.request<EventSpeakerDetails[]>(
-      `${endpoints.event.eventDetailById}/speaker?id=${id}&take=${take}&skip=${skip}`,
+    const response = await api.request<EventSpeakerDetailsResponse>(
+      `${endpoints.event.eventDetailById}/${id}/speakers?take=${take}&skip=${skip}`,
       {
         method: "GET",
       }
@@ -162,26 +131,46 @@ export const useEventsService = () => {
     return adaptedSpeakerData;
   };
 
-  const getEventsWithSearchParams = async (searchParamsString: string) => {
-    const params = new URLSearchParams(searchParamsString);
-    const adaptedParams = EventsAdapter.adaptRequestParams(params);
-    const response = await api.request(`${endpoints.event.events}`, {
-      method: "GET",
-      params: adaptedParams,
-    });
-    return EventsAdapter.adaptResponse(response, params);
+  const getEventSponsorDetails = async (
+    id: string,
+    take: number,
+    skip: number
+  ) => {
+    const response = await api.request<EventSponsorDetailsResponse>(
+      `${endpoints.event.events}/${id}/sponsors?take=${take}&skip=${skip}`,
+      {
+        method: "GET",
+      }
+    );
+    if (!response) {
+      throw new Error("Failed to fetch exhibitor details");
+    }
+    const adaptedExhibitorData = sponsorAdapter(response);
+    return adaptedExhibitorData;
   };
 
-  const getRawEventsWithSearchParams = async (searchParamsString: string) => {
-    const params = new URLSearchParams(searchParamsString);
-    const adaptedParams = EventsAdapter.adaptRequestParams(params);
-    const response = await api.request(`${endpoints.event.events}`, {
-      method: "GET",
-      params: adaptedParams,
-    }, true);
+  const getEventsWithSearchParams = async (searchParamsString: string) => {
+    const response = await api.request(
+      `${endpoints.event.events}?${searchParamsString}`,
+      {
+        method: "GET",
+      }
+    );
+    console.log(response);
     
-    return TrackersAdapter.adaptTrackerMapEventData(response);
+    return response;
   };
+
+  // const getRawEventsWithSearchParams = async (searchParamsString: string) => {
+  //   const params = new URLSearchParams(searchParamsString);
+  //   const adaptedParams = EventsAdapter.adaptRequestParams(params);
+  //   const response = await api.request(`${endpoints.event.events}`, {
+  //     method: "GET",
+  //     params: adaptedParams,
+  //   }, true);
+    
+  //   return TrackersAdapter.adaptTrackerMapEventData(response);
+  // };
 
 
   const saveEvent = (eventId: string) => {
@@ -202,19 +191,6 @@ export const useEventsService = () => {
     });
   };
 
-  const getEventsCount = async (searchParams: string) => {
-    const params = new URLSearchParams(searchParams);
-    const adaptedParams = EventsAdapter.adaptEventCountRequestParam(params);
-    const response = await api.request<EventCount[]>(
-      `${endpoints.event.count}`,
-      {
-        method: "GET",
-        params: adaptedParams,
-      }
-    );
-    return EventsAdapter.adaptEventCountResponse(response);
-  };
-
   const bookmarkThisEvent = async (id: string) => {
     const response = await api.request(`${endpoints.tracker.saveEvent}`, {
       method: "POST",
@@ -223,16 +199,6 @@ export const useEventsService = () => {
       },
     });
     return response;
-  };
-
-  const getIsEventBookMarked = async (id: string): Promise<boolean> => {
-    const response = await api.request<EventBookmarkResponse>(
-      `${endpoints.tracker.saveEvent}?eventId=${id}`,
-      {
-        method: "GET",
-      }
-    );
-    return response?.savedEvent.bookmark ?? false;
   };
 
   const unBookmarkThisEvent = async (id: string) => {
@@ -246,7 +212,7 @@ export const useEventsService = () => {
   };
   const fetchEnabledFilters = async (source: String) => {
     const response = await api.request(
-      `${endpoints.event.enabledFilters}?source=${source}`,
+      `${endpoints.event.enabledFilters}/${source}`,
       {
         method: "GET",
       }
@@ -263,27 +229,37 @@ export const useEventsService = () => {
     );
     return response;
   }
+
+  const getAlertPolygon = (eventId: string) => {
+    return api.request<AlertPolygonResponse>(
+      `${endpoints.event.events}/${eventId}/polygons`,
+      {
+        method: "GET",
+      }
+    );
+  };
+  
   return {
     getEvents,
     saveEvent,
-    getEventById,
     getAlertPolygon,
     fetchEnabledFilters,
     getEventsCount,
     getRecentSearches,
     bookmarkThisEvent,
     unBookmarkThisEvent,
-    getIsEventBookMarked,
-    getRawEventsWithSearchParams,
+    // getRawEventsWithSearchParams,
     getEventDetailById,
     getEventPOCDetails,
     getEventEditionDetails,
     getEventExhibitorDetails,
     getEventSpeakerDetails,
+    getEventSponsorDetails,
     getEventsWithSearchParams,
     getEventCoOrganizerDetails,
+    getEventsRankingDetailsById,
     getRecentSearch,
     isLoading: api.isLoading,
-    error: api.error as ApiError,
+    // error: api.error as ApiError,
   };
 };

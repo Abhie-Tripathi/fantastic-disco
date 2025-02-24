@@ -22,6 +22,7 @@ import { myFetch } from "@/utils/myFetch";
 import { baseUrl } from "@/constants";
 import { Select } from "react-aria-components";
 import { usePathname } from "next/navigation";
+import { UserResponse } from "@/types/user";
 interface Props {
   replyId?:string|undefined|null,
   setType : any,
@@ -95,7 +96,7 @@ export const AddComment = ({
   const { theme } = useTheme();
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [boxSpace,setBoxSpace]=useState(0);
-  const [userDetail, setUserDetail] = useState<UserDetail | null>(
+  const [userDetail, setUserDetail] = useState<UserResponse | null>(
     user ? user : null
   );
   const [types, showTypes] = useState<boolean>(false);
@@ -226,9 +227,8 @@ export const AddComment = ({
         const lastAtIndex = note.lastIndexOf("@");
         if(alluser[focusedIndex]){
       newNote = note.substring(0, lastAtIndex + 1)  + alluser[focusedIndex].substring(1) + " ";
-      const selectedUser = apiUserData?.find((user:any) => `${user.firstname}${user.lastname}` ===  alluser[focusedIndex].substring(1));
+      const selectedUser = apiUserData?.find((user:any) => `${user.name}` ===  alluser[focusedIndex].substring(1));
         console.log(selectedUser);
-        
        setSuggest(selectedUser?.id);
         }else newNote=note
       if(note.includes("wants to recommend")){
@@ -238,8 +238,8 @@ export const AddComment = ({
       }
       else{ 
         newNote = note + type[focusedIndex] + " ";
-        if(type[focusedIndex]==="attend") setInterestType("ATTENDEE");
-        else setInterestType("SPEAKER");
+        if(type[focusedIndex]==="attend") setInterestType("ATTEND");
+        else setInterestType("SPEAK");
       }
       setNote(newNote);
       // setRec(true);
@@ -335,14 +335,14 @@ export const AddComment = ({
         setNote((prevNote) => prevNote.replace(/@\w*$/, `${name} `));
         showTypes(false);
         setShowUser(false);
-        const selectedUser = apiUserData?.find((user:any) => `@${user.firstname}${user.lastname}` === name);
+        const selectedUser = apiUserData?.find((user:any) => `@${user.name}` === name);
         console.log(apiUserData);
         
        setSuggest(selectedUser?.id);
         
         
           
-        setType("RECOMMEND");
+        setType("RECOMMENDATION");
         // setMention("");
         setRec(true);
         
@@ -353,24 +353,22 @@ export const AddComment = ({
   const handleSelectAttend = () => {
     setNote(
       "@" +
-        userDetail?.firstname +
-        userDetail?.lastname.toLowerCase() +
+        `${userDetail?.firstname}${userDetail?.lastname}`  +
         " wants to #Attend"
     );
     setType("INTEREST");
-    setInterestType("ATTENDEE");
+    setInterestType("ATTEND");
     setShowUser(false);
   };
   const handleSelectSpeak = () => {
     // setNote(note.substring(0,note.length-6)+"@"+userDetail?.firstname+userDetail?.lastname.toLowerCase()+" wants to #Speak");
     setNote(
       "@" +
-        userDetail?.firstname +
-        userDetail?.lastname.toLowerCase() +
+      `${userDetail?.firstname}${userDetail?.lastname}`  +
         " wants to #Speak"
     );
     setType("INTEREST");
-    setInterestType("SPEAKER");
+    setInterestType("SPEAK");
     setShowUser(false);
   };
   const handleRecommend = (event: any) => {
@@ -391,14 +389,14 @@ export const AddComment = ({
       note.substring(0, note.lastIndexOf("/")) +
         `@${
           userDetail?.firstname
-        }${userDetail?.lastname.toLowerCase()} wants to recommend @`
+        } wants to recommend @`
     );
     // if (alluser.some(type => note?.includes(type)) && textareaRef.current) {
     //   textareaRef.current.focus();
     // }
     if (textareaRef?.current) textareaRef.current.focus();
     setShowUser(true);
-    setType("RECOMMEND");
+    setType("RECOMMENDATION");
 
   };
   useEffect(() => {
@@ -470,8 +468,8 @@ export const AddComment = ({
   const handleSelectType = (event: any, ele: string) => {
     console.log(ele);
     if (type.includes(ele)) {
-      if(ele==="Speak") setInterestType("SPEAKER");
-      else setInterestType("ATTENDEE")
+      if(ele==="Speak") setInterestType("SPEAK");
+      else setInterestType("ATTEND")
       setNote((prev) => prev + ele);
       // handleKeyDown1(event);
       showTypes(false);

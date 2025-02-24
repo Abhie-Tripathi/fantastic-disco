@@ -388,21 +388,6 @@ const templates = [
   }
 ]
 
-const formatText = (val: string) => {
-  if(val) {
-    return val?.charAt(0).toUpperCase() + val?.substring(1).toLowerCase();
-  }
-}
-
-const formatCount = (count: number ) => {
-  if (count >= 1000) {
-    const value = count / 1000;
-    const decimalPart = value - Math.floor(value);
-      return `${Math.floor(value)}k`;
-  }
-  return count;
-};
-
 const Pages = () => {
   const {searchParams: search} = useDefaultFilters();
   const searchParams = useSearchParams();
@@ -410,243 +395,35 @@ const Pages = () => {
   const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
-  
-  interface SelectedLocation {
-    [id: string]: string;
-  }
-  const eventTypes = getLocalFilterValue("eventTypes")
-      .split(",")
-      .filter(Boolean);
-      
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const {getTrackerDetail,createTracker,editTracker, error}=useTrackerServices();
   const { theme } = useTheme();
   const type = searchParams.get('type');
-  const [selectedLocationsData,setSelectedLocationsData]=useState<any>(enabledFilters?.locationIds?.enabledValue);
+  const defaultType="T_CUSTOM";
   const iconClass = theme === "light" ? "icons_light" : "icon";
   const [opend,setOpend]=useState(false);
   const pathName = usePathname().split("/");
   const last = pathName[pathName.length - 1];
-  const router = useRouter();
-  const [includeKeywords, setIncludeKeywords] = useState<string[] |undefined>([]);
-  const [excludeKeywords, setExcludeKeywords] = useState<string[] | undefined>([]);
-  // const [categorySlug, setCategorySlug] = useState([]);
-  const [showRecentSearches, setShowRecentSearches] = useState(false);
-  // const [selectedCategories, setSelectedCategories] = useState<string[]>(
-  //   enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
-  // );
+  const router = useRouter()
   const [hideSuggestion,setHideSuggestion]=useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(
       enabledFilters?.eventCategory?.enabledValue?.map((item) => item.slug) || []
     );
-  const [selectedLocations, setSelectedLocations] = useState<string[]>(
-    searchParams.get("location")?.split(",") || []
-  );
-  const [selectedLabels, setSelectedLabels] = useState<string[]>(
-    searchParams.get("labels")?.split(",") || []
-  );
   const [eventSearchLoader,setEventSearchLoader]=useState(false);
-  const [selectedEventRank, setSelectedEventRank] = useState([0, 100]);
-  const [selectedLocalRank, setSelectedLocalRank] = useState([0, 100]);
-  const [selectedTrustScore, setSelectedTrustScore] = useState<any>([0, 100]);
-  const [selectedAviationRank, setSelectedAviationRank] = useState([0, 100]);
-  const [selectedDateRange, setSelectedDateRange] = useState<any[]>([]);
-  const [dateRange, setDateRange] = React.useState<{
-    from: Date | undefined;
-    to: Date | undefined;
-  }>({
-    from: enabledFilters?.durations?.startDate
-      ? new Date(enabledFilters.durations.startDate.split(",")[0])
-      : undefined,
-    to: enabledFilters?.durations?.startDate
-      ? new Date(enabledFilters.durations.startDate.split(",")[1])
-      : undefined,
-  });
-  const [selectedEventStatus, setSelectedEventStatus] = useState<string[]>(
-    enabledFilters?.eventStatus?.enabledValue?.map((item)=>item.toLowerCase()) || []
-  );
-  const [selectedEventAttendanceRange, setSelectedEventAttendanceRange] =
-    useState<string[]>([]);
-  const [selectedEventFrequency, setSelectedEventFrequency] = useState<
-    string[]
-  >(enabledFilters?.eventFrequency?.enabledValue?.map((item)=>item.toLowerCase())|| []);
-  const [freqToggle,setFreqToggle]=useState<boolean>(enabledFilters?.eventFrequency?.isFreqEnabled || false);
-  const [selectedEntry, setSelectedEntry] = useState<string[]>(
-    enabledFilters?.eventEntry?.enabledValue?.map((item)=>item.toLowerCase()) || []
-  );
-  const [selectedEventRanking, setSelectedEventRanking] = useState<string[]>(
-    searchParams.get("rank")?.split(",") || []
-  );
-  const [selectedEventFormat, setSelectedEventFormat] = useState<string[]>(
-    enabledFilters?.eventFormat?.enabledValue || []
-  );
-  const [selectedExhibitScore, setSelectedExhibitScore] = useState<string[]>(
-    enabledFilters?.estimatedExhibitScore?.enabledValue || []
-  );
-  const [selectedUserRatings, setSelectedUserRatings] = useState<string[]>(
-    enabledFilters?.eventRating?.enabledValue || []
-  );
-  const [rankToggles, setRankToggles] = useState({
-    isEventRank: false,
-    isLocalRank: false,
-    isAviationRank: false,
-    isTrustScore: false,
-  });
-  const [isPop,setIsPop]=useState({
-  rating:false,
-  exhibit:false,
-  audienceSpread: false,
-});
-  // const [showAdvanceFilter, setShowAdvanceFilter] = useState(true);
-  // const [selectedAdvFilter, setSelectedAdvFilter] = useState("AP");
-  // const [selectedBrandedEvent, setSelectedBrandedEvent] = useState(enabledFilters?.branded?.enabledValue?.eventBrand||false);
-  
-  // const [selectedEventSeries, setSelectedEventSeries] = useState(enabledFilters?.branded?.enabledValue?.eventSeries || false);
-  // const [selectedReptScore, setSelectedReptScore] = useState(0);
-  // const [selectedMaturity, setSelectedMaturity] = useState<string>(enabledFilters?.maturity?.enabledValue?.[0] || "");
-  // const [isMaturity,setIsMaturity]=useState<boolean>(enabledFilters?.maturity?.isMaturityEnabled||false);
-  // const [isBrand,setIsBrand]=useState<boolean>(enabledFilters?.branded?.isBrandedEnabled|| false);
-  // const [maturity, setMaturity] = useState<string | null>();
-  const [intScore, setIntScore] = useState<string | null>();
-  // const [selectedInboundScore, setSelectedInboundScore] = useState(0);
-  const [selectedEventKeywords, setSelectedEventKeywords] = useState<string[]>(
-    searchParams.get("eventKeywords")?.split(",") || []
-  );
   const [customData, setCustomData] = useState<any[]>([]);
   const [activeTab,setActiveTab]=useState("include");
-  const [selectedEventEdition, setSelectedEventEdition] = useState(0);
-  const [selectedINScore, setSelectedINScore] = useState(0);
-  const [add, setAdd] = useState(false);
-  const [forecastedStatus, setForecastedStatus] = useState(enabledFilters?.isForecasted?.isForecastedEnabled || false);
-
-  const [analyticsToggles, setAnalyticsToggles] = useState({
-    impactScore: false,
-    inboundScore: false,
-    internationalScore: false,
-    globalToggle: false
-  });
-
-  const [selectedImpactScore, setSelectedImpactScore] = useState<[number,number]>([0, 100]);
-  const [selectedInboundScore, setSelectedInboundScore] = useState<[number, number]>([0, 100]);
-  const [selectedInternationalScore, setSelectedInternationalScore] = useState<[number,number]>([0, 100]);
-
-  const [audienceZone, setAudienceZone] = useState<boolean>(enabledFilters?.audienceZone?.isZoneEnabled || false);
-  const [audienceSpread, setAudienceSpread] = useState<boolean>(false);
-  const [selectedRank, setSelectedRank] = useState<string>('');
-  const [selectedCountries, setSelectedCountries] = useState<any>([]);
-  const [selectedAudProfile, setSelectedAudProfile] = useState<string[]>([]);
   const [selectedAdvancedView, setSelectedAdvancedView] = useState("advancedDetails");
   const handleTabChange = (value: string) => {
     setSelectedAdvancedView(value);
   };
-  const createTrackerHandler = () => {
-    const params = new URLSearchParams(searchParams);
-    if (selectedCategories.length > 0) {
-      params.set("category", selectedCategories.join(","));
-    }
-    if (selectedLocations.length > 0) {
-      params.set("locations", selectedLocations?.join(","));
-    }
-    if (selectedEventStatus.length > 0) {
-      params.set("status", selectedEventStatus?.join(","));
-    }
-    if (selectedLabels.length > 0) {
-      params.set("labels", selectedLabels?.join(","));
-    }
-    if (selectedDateRange[0] !== null) {
-      params.set("active_gte", convertToYYYYMMDD(selectedDateRange[0]));
-      params.set("active_lte", convertToYYYYMMDD(selectedDateRange[1]));
-    }
-    if (selectedEventAttendanceRange.length > 0) {
-      params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
-      params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
-    }
-    router.push(`/trackers/create?${params.toString()}`);
-  };
-
-  const searchHandler = () => {
-    const params = new URLSearchParams(searchParams);
-    if (selectedCategories.length > 0) {
-      params.set("category", selectedCategories.join(","));
-    }
-    if (selectedLocations.length > 0) {
-      params.set("city", selectedLocations?.join(","));
-    }
-    if (selectedEventStatus.length > 0) {
-      params.set("status", selectedEventStatus?.join(","));
-    }
-    if (selectedLabels.length > 0) {
-      params.set("labels", selectedLabels?.join(","));
-    }
-    if (selectedDateRange[0] !== null) {
-      params.set("active_gte", selectedDateRange[0]);
-      params.set("active_lte", selectedDateRange[1]);
-    }
-    if (selectedEventAttendanceRange.length > 0) {
-      params.set("event_attendance_gte", selectedEventAttendanceRange[0]);
-      params.set("event_attendance_lte", selectedEventAttendanceRange[1]);
-    }
-    router.push(`/search/events?${params.toString()}`);
-  };
   const [trackerName, setTrackerName] = useState("");
   const [selectedPresetName, setSelectedPresetName] = useState<string>('');
-  // const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
-  const [categorySlug, setCategorySlug] = useState<string[]>(
-    searchParams.get("categories")?.split(",") || []
-  );
-  // const [editData, setEditData] = useState<EditData | null>(null);
-
   useEffect(() => {
     if (last === "editTracker") {
       const secondLast = pathName[pathName.length - 2];
       // fetchData(secondLast);
     }
   }, [last]);
-
-//   const fetchData = async (secondLast: string) => {
-//    // const url = `${baseUrl}/tracker/${secondLast}?edit=true`;
-//     try {
-//       // const { data, error } = await myFetch(url, {
-//       //   method: "GET",
-//       // });
-//       // const data= await getTrackerDetail(secondLast, "edit=true");
-
-// if (data) {
-//   // setEditData(data || null);
-//   console.log(data);
-  
-// }
-//       if (error) {
-//         console.error("Error fetching data:", error);
-//       }
-//     } catch (err) {
-//       console.error("Fetch failed:", err);
-//     }
-//   };
-  const [categories, setCategories] = useState(
-    searchParams.get("categories")?.split(",") || []
-  );
-  // useEffect(() => {
-  //   if (selectedMaturity > 0) {
-  //     // queryString.maturity = selectedMaturity;
-  //     if (selectedMaturity >= 1 && selectedMaturity <= 25) setMaturity("new");
-  //     else if (selectedMaturity >= 26 && selectedMaturity <= 50)
-  //       setMaturity("low");
-  //     else if (selectedMaturity >= 51 && selectedMaturity <= 75)
-  //       setMaturity("medium");
-  //     else setMaturity("High");
-  //   }
-  // }, [selectedMaturity]);
-  useEffect(() => {
-    if (selectedINScore > 0) {
-      if (selectedINScore > 0 && selectedINScore <= 33) setIntScore("Low");
-      else if (selectedINScore >= 33 && selectedINScore <= 66)
-        setIntScore("Medium");
-      // else if (selectedINScore >= 51 && selectedINScore <= 75)
-      //   setIntScore("Regional");
-      else setIntScore("High");
-    }
-  }, [selectedINScore]);
   const [websites, setWebsites] = useState("");
   const [org,setOrg]=useState("");
   const [speakerName, setSpeakerName] = useState("");
@@ -662,13 +439,29 @@ const Pages = () => {
   useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
       if(customData.length > 0 && Object.values(customData[0])[0]) {
-        let placeholder = template?.inputAreas?.[0]?.placeholder || "";
-        const promptText=`List only name of top 5 companies similar to ${Object.values(customData[0])[0]}. Response should be in plain JSON format without any additional formatting or text: {"data": [ "company name 1" ,
-        "company name 2" , "company name 3" ,
-         "company name 4" ,
-        "company name 5" ]}. Do not show example values. If no company name found then return in below format: {\"data\": []}`
-        if(!hideSuggestion)
+        // let placeholder = template?.inputAreas?.[0]?.placeholder || "";
+        const value = Object?.values(customData[0])[0];
+
+        if (typeof value === "string") {
+          const isDomain = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value);
+          const isURL = /^(https?:\/\/)/.test(value);
+
+          const promptText = `List only top 5 official working domains of companies similar to ${value}. ${
+          isDomain || isURL
+          ? `Do not include ${value.replace(/https?:\/\//, "")} in the response.`
+          : `Also share the official working domain of ${value}.`
+          } Response should be in plain JSON format without any additional formatting or text: {"data": [ ${
+          isDomain || isURL
+          ? `"competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"`
+            : `"company domain", "competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"`
+          } ]}. Do not show example values and don't include ${
+            isDomain || isURL
+            ?`{"competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"}`:`{"company domain", "competitor domain 1", "competitor domain 2", "competitor domain 3", "competitor domain 4", "competitor domain 5"}`} in response. If no company name or competitor domains are found, return in this format: {"data": []}`;
+
+          if (!hideSuggestion) {
           fetchAISuggestion(promptText);
+          }
+        } 
       }
       const regex = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
       const urls = customData
@@ -686,7 +479,7 @@ const Pages = () => {
     }
     else if (type === "T_SPEAKING_OPPORTUNITY") {
       if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
-        const promptText = `List the top 5 speakers with similar experience to ${Object.values(customData[0])[0]} (${Object.values(customData[0])[1]}). Not necessarily they have the same designation; instead, they must have spoken recently on the same topics. Response should be in plain JSON format without any additional formatting or text: {
+        const promptText = `List the top 5 speakers with similar experience to ${Object.values(customData[0])[0]} (${Object.values(customData[0])[1]}). Not necessarily they have the same designation; instead, they must have spoken recently on the same topics. Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
           "data": [
               [ "Speaker Name 1", "Company Name 1" ],
               [ "Speaker Name 2", "Company Name 2" ],
@@ -694,7 +487,13 @@ const Pages = () => {
               [ "Speaker Name 4", "Company Name 4" ],
               [ "Speaker Name 5", "Company Name 5" ]
           ]
-      }. If no data is found, respond in this format: {\"data\": []}`; 
+      }.  Do not show example values and don't include [
+        [ "Speaker Name 1", "Company Name 1" ],
+        [ "Speaker Name 2", "Company Name 2" ],
+        [ "Speaker Name 3", "Company Name 3" ],
+        [ "Speaker Name 4", "Company Name 4" ],
+        [ "Speaker Name 5", "Company Name 5" ]
+      ] in response. If no data is found, respond in this format: {\"data\": []}`; 
         if(!hideSuggestion)
           fetchAISuggestion(promptText);
       }
@@ -707,7 +506,7 @@ const Pages = () => {
     }
     else if (type === "T_PEOPLE_FINDER") {
       if(customData.length>0 && Object.values(customData[0])[0] && Object.values(customData[0])[1]){
-        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
         "data": [
           [ "name 1", "company name 1" ],
           ["name 2", "company name 2" ],
@@ -715,7 +514,13 @@ const Pages = () => {
           [ "name 4", "company name 4" ],
           [ "name 5", "company name 5" ]
         ]
-      }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+      }. Do not show example values and don't include [
+        [ "name 1", "company name 1" ],
+        ["name 2", "company name 2" ],
+        ["name 3", "company name 3" ],
+        [ "name 4", "company name 4" ],
+        [ "name 5", "company name 5" ]
+      ] in response. If no data found then return in below format: {\"data\": []}`
       if(!hideSuggestion)
         fetchAISuggestion(promptText);
       }
@@ -724,7 +529,7 @@ const Pages = () => {
       setUserName(userName)
       setUserCompany(userCompany)
       if(userName.length>0 && userCompany.length>0){
-        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text: {
+        const promptText = `List the top 5 people similar to ${Object.values(customData[0])[0]}(${Object.values(customData[0])[1]}). Response should be in plain JSON format without any additional formatting or text, avoid dummy data in any case: {
         "data": [
           [ "name 1", "company name 1" ],
           ["name 2", "company name 2" ],
@@ -732,7 +537,13 @@ const Pages = () => {
           [ "name 4", "company name 4" ],
           [ "name 5", "company name 5" ]
         ]
-      }. Do not show example values. If no data found then return in below format: {\"data\": []}`
+      }. Do not show example values and don't include [
+        [ "name 1", "company name 1" ],
+        ["name 2", "company name 2" ],
+        ["name 3", "company name 3" ],
+        [ "name 4", "company name 4" ],
+        [ "name 5", "company name 5" ]
+      ] in response. If no data found then return in below format: {\"data\": []}`
       if(!hideSuggestion)
         fetchAISuggestion(promptText);
       }
@@ -792,6 +603,46 @@ const Pages = () => {
       scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
+  const filterValueMapping={
+    eventTypes:"eventTypes",
+    categories: "categories",
+    eventFormats: "eventFormats",
+    locationIds: "locationIds",
+    active_gte: "active_gte",
+    active_lte: "active_lte",
+    status: "status",
+    entryType: "entryType",
+    ratings: "ratings",
+    maturity: "maturity",
+    onlyBranded: "onlyBranded",
+    onlySeries: "onlySeries",
+    frequencies: "frequencies",
+    includeKeywords: "includeKeywords",
+    excludeKeywords: "excludeKeywords",
+    estimatedVisitorRangeTag:"estimatedVisitorRangeTag",
+    estimatedExhibitors:"estimatedExhibitors",
+    impact_score_gte:"impact_score_gte",
+    impact_score_lte:"impact_score_lte",
+    inbound_score_gte:"inbound_score_gte",
+    inbound_score_lte:"inbound_score_lte",
+    international_score_gte:"international_score_gte",
+    international_score_lte:"international_score_lte",
+    top:"top",
+    designations:"designations",
+    audienceSpread:"audienceSpread",
+  }
+  const showsData: string[] = [];
+  const mapping = {
+    rating: "rating",
+    maturity: "maturity",
+    branded: "branded,series",
+    forecasted: "forecasted",
+    frequency: "frequency",
+    estimatedExhibitors: "estimatedExhibitors",
+    scores: "scores",
+    audienceZone: "audienceZone",
+    rankings: "rankings,trustScore",
+  };
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
     setEditTrue(true);
@@ -806,273 +657,61 @@ const Pages = () => {
     );
     if (isCreating) return;
     setIsCreating(true);
-    
-    const categorySlugs = selectedCategories;
-    const categoryIds = getLocalFilterValue("categories")
-    .split(",")
-    .filter(Boolean).map((slug) => {
-      const category = newCategories.find((cat) => cat.slug === slug);
-      return category ? category.id : slug;
-    });
-    const showsData: string[] = [];
-
-    const mapping = {
-      rating: "eventRating",
-      maturity: "maturity",
-      forecasted: "isforecasted",
-      frequency: "eventFrequency",
-      estimatedExhibitors: "estimatedExhibitScore",
-      scores: "eventImpactScore,inboundScore,internationalScore",
-      audienceZone: "audienceSpread",
-      branded: "eventBrand",
-      series: "eventSeries",
-      economicImpact: "economicImpact",
-      rankings: "eventRanking,trustScore"
-    };
-    
     const filters = getLocalFilterValue("show").split(",");
     Object.entries(mapping).forEach(([key, value]) => {
       if (filters.includes(key)) {
         showsData.push(value);
       }
     });
+    const filterValues = Object.entries(filterValueMapping as Record<keyof Filters, string>).reduce(
+      (acc, [key, mappedKey]) => {
+        const value = getLocalFilterValue(key as any);
     
-    const userType = {
-      ...(getLocalFilterValue("show").split(",").includes("rating") && { rating: true }),
-      ...(getLocalFilterValue("show").split(",").includes("estimatedExhibitors") && { exhibit: true }),
-      ...(rankToggles.isTrustScore && {trust:true}),
-      ...(getLocalFilterValue("show").split(",").includes("maturity")&& {maturity:true}),
-      ...(getLocalFilterValue("onlyBranded")==="true" && {brandedEvent:true}),
-      ...(getLocalFilterValue("onlySeries")==="true" && {eventSeries:true}),
-      ...((getLocalFilterValue("show").split(",").includes("branded") && getLocalFilterValue("show").split(",").includes("series"))&& {brandSeries:true}),
-      ...((getLocalFilterValue("show").split(",").includes("forecasted")) && {forecastedStatus:true}),
-      ...(analyticsToggles.impactScore&& {impactScore:true}),
-      ...(analyticsToggles.inboundScore&& {inboundScore:true}),
-      ...(analyticsToggles.internationalScore&& {internationalScore:true}),
-      ...((getLocalFilterValue("show").split(",").includes("rankings"))&& {eventRank:true}),
-      ...(getLocalFilterValue("show").split(",").includes("scores") && {globalToggle: true}),
-      ...(getLocalFilterValue("show").split(",").includes("audienceZone") && {audienceZone:true}),
-      ...(audienceSpread && {audienceSpread:true}),
-      ...(getLocalFilterValue("show").split(",").includes("frequency") && {eventFrequency:true}),
-      ...(getLocalFilterValue("trust_score_gte") && {
-        trust: true
-      }),
-      ...(getLocalFilterValue("show").split(",").includes("economicImpact")&&{
-        economicImpact:true
-      })
+        if (Array.isArray(value) && value.length > 0) {
+          acc[mappedKey] = value;
+        } else if (typeof value === "string" && value === "true") {
+          acc[mappedKey] = value;
+        } else if (value) {
+          acc[mappedKey] = value;
+        }
+    
+        return acc;
+      },
+      {} as Record<string, any>
+    );
+    
+    
+    if(websites.length>0){
+      filterValues.orgWebsite=websites;
     }
-     const eventType1=getLocalFilterValue("eventTypes")
-      .split(",")
-      .filter(Boolean);
+    if(org.length>0){
+      filterValues.orgName=org;
+    }
+    if(showsData.length>0){
+      filterValues.show=showsData.join(",");
+    }
+    if(speakerName.length>0){
+      filterValues.userName = speakerName;
+    }
+    if(speakerCompany.length > 0) {
+      filterValues.userOrgWebsite = speakerCompany;
+    }
+    if(userName.length>0){
+      filterValues.userName=userName;
+    }
+    if(userCompany.length>0 ){
+      filterValues.userOrgWebsite=userCompany;
+    }
+    // console.log(filterValues, showsData);
     const formData = {
       name: trackerName,
       ...(type && type.length > 0 && {
         type: type.toUpperCase()
       }),
       accessLevel: editData?.tracker?.accessLevel,
-      filterValue: {
-          ...(userType &&{
-           userType:JSON.stringify(userType)
-          }),
-        ...(selectedLabels?.length > 0 && {
-          labels: selectedLabels.join(","),
-        }),
-        // ...(selectedEventType?.length > 0 && {
-        //   eventType: selectedEventTypeName
-        // }),
-        ...(websites.length > 0 && {
-          orgWebsite: websites,
-        }),
-        ...(org.length > 0 && {
-          orgName : org,
-        }),
-        ...(designations.length > 0 && {
-          userDesignation: designations,
-        }),
-        ...(speakerName.length > 0 && {
-          speakerName: speakerName,
-        }),
-        ...(speakerCompany.length > 0 && {
-          speakerOrg: speakerCompany,
-        }),
-        ...(getLocalFilterValue("eventTypes")?.length > 0 && {
-          eventType: eventType1
-            .map(eventType => eventType.charAt(0).toUpperCase() + eventType.slice(1).replace(/s$/, ""))
-            .join(","),
-        }),
-        ...(userName.length > 0 && {
-          userName: userName,
-        }),
-        ...(userCompany.length > 0 && {
-          speakerOrg: userCompany,
-        }),
-        ...(selectedEventEdition > 0 && {
-          editionRange: selectedEventEdition.toString(),
-        }),
-        // ...(
-        //   type === "competitor" && customData.length > 0
-        //     ? { orgWebsite: customData.map(item => item.companyUrl).join(', ') }
-        //     : {}
-        // )
-        // ...(selectedEventKeywords.length > 0 && {
-        //   eventKeywords: selectedEventKeywords.join("+"),
-        // }),
-        ...(getLocalFilterValue("includeKeywords").length > 0 && {
-          includeKeywords: getLocalFilterValue("includeKeywords")
-            .split(",")
-            .map((keyword) => keyword.replaceAll(" ", "_")).join(",")
-        }),
-        ...(getLocalFilterValue("excludeKeywords").length > 0 && {
-          excludeKeywords: getLocalFilterValue("excludeKeywords")
-            .split(",")
-            .map((keyword) => keyword.replaceAll(" ", "_")).join(",")
-        }),
-        ...(getLocalFilterValue("estimatedVisitorRangeTag")?.length>0 && {
-          estimatedVisitorRangeTag: getLocalFilterValue("estimatedVisitorRangeTag")
-         }),
-         ...(getLocalFilterValue("estimatedExhibitors")?.length>0 && {estimatedExhibitScore:getLocalFilterValue("estimatedExhibitors")}),
-        // ...(selectedZone?.length > 0 && {
-        //   eventRegion: selectedZone.join(',')
-        // }),
-        // brandedEvent: selectedBrandedEvent?.toString(),
-        // labels:selectedLabels.join(','),
-        // eventKeywords:selectedEventKeywords.join(','),
-        // ...(Object.entries(selectedCountry).length > 0 && {
-        //   eventCountry: Object.keys(selectedCountry).join(","),
-        // }),
-        // ...(Object.entries(selectedCity).length > 0 && {
-        //   eventCity: Object.keys(selectedCity).join(","),
-        // }),
-        ...(selectedLabels?.length > 0 && {
-          labels: selectedLabels.join(","),
-        }),
-        ...(getLocalFilterValue("categories")?.length>0 &&{
-          eventCategory: categoryIds.join(",")
-        }),
-        ...(getLocalFilterValue("eventFormats")?.length > 0 && {
-          eventFormat: getLocalFilterValue("eventFormats"),
-        }),
-        ...(getLocalFilterValue("onlySeries")==="true" && {eventSeries: getLocalFilterValue("onlySeries")}),
-        ...(getLocalFilterValue("status")?.length > 0 && {
-          eventStatus: getLocalFilterValue("status").split(',').map((item)=>item.toUpperCase()).join(","),
-        }),
-        ...(getLocalFilterValue("entryType")?.length > 0 && {
-          eventEntry: getLocalFilterValue("entryType"),
-        }),
-        ...(getLocalFilterValue("trust_score_gte") && {
-          trustScore: getLocalFilterValue("trust_score_gte"),
-        }),
-        ...(getLocalFilterValue("frequencies")?.length > 0 && {
-          eventFrequency: getLocalFilterValue("frequencies").split(",").map((item)=>item[0].toUpperCase()+item.slice(1)).join(","),
-        }),
-        // ...(selectedMaturity > 0 && { maturity: selectedMaturity.toString() }),
-        // ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
-        //   startDate: [
-        //     new Date(selectedDateRange[0]).toISOString().split("T")[0],
-        //     new Date(selectedDateRange[1]).toISOString().split("T")[0],
-        //   ].join(","),
-        // }),
-        ...(getLocalFilterValue("active_gte") && getLocalFilterValue("active_lte") && {
-          startDate: [
-            getLocalFilterValue("active_gte"),
-            getLocalFilterValue("active_lte"),
-          ].join(","),
-        }),
-        ...(getLocalFilterValue("active_gte") && getLocalFilterValue("active_lte") &&{
-          endDate: [
-            getLocalFilterValue("active_gte"),
-            getLocalFilterValue("active_lte"),
-          ].join(","),
-        }),
-        // ...(selectedDateRange?.length === 2 && selectedDateRange[0]!==null && selectedDateRange[1]!==null && {
-        //   endDate: [
-        //     new Date(selectedDateRange[0]).toISOString().split("T")[0],
-        //     new Date(selectedDateRange[1]).toISOString().split("T")[0],
-        //   ].join(","),
-        // }),
-        ...(selectedLocationsData && selectedLocationsData?.length > 0
-    ? { locationIds: selectedLocationsData.map((item:LocationItem) => item.id).join(',') }
-    : {}),
-          ...(getLocalFilterValue("locationIds").length>0 && {
-            locationIds: getLocalFilterValue("locationIds")
-          }),
-        ...(getLocalFilterValue("ratings")?.length > 0 && {
-          eventRating: getLocalFilterValue("ratings"),
-        }),
-        // ...(rankToggles?.isEventRank === true && {
-        //   eventRank: selectedEventRank.join(",")
-        // }),
-        ...(rankToggles?.isLocalRank === true && {
-          localRank: selectedLocalRank.join(',')
-        }),
-        ...(selectedINScore > 0 && { internationalScore: intScore?.toLowerCase() }),
-        // ...(selectedInboundScore > 0 && {
-        //   inboundScore: selectedInboundScore.toString(),
-        // }),
-        ...(selectedEventAttendanceRange?.length === 2 && {
-          eventAttendanceRange: [
-            +selectedEventAttendanceRange[0],
-            +selectedEventAttendanceRange[1],
-          ].join(","),
-        }),
-        ...(getLocalFilterValue("maturity").length>0 && { maturity: getLocalFilterValue("maturity") }),
-        ...(getLocalFilterValue("show").split(",").includes("scores") && {
-          eventImpactScore: `${getLocalFilterValue("impact_score_gte")|| 0}-${getLocalFilterValue("impact_score_lte")|| 100}`,
-          inboundScore: `${getLocalFilterValue("inbound_score_gte")|| 0}-${getLocalFilterValue("inbound_score_lte")|| 100}`,
-          internationalScore: `${getLocalFilterValue("international_score_gte")||0}-${getLocalFilterValue("international_score_lte")|| 100}`,
-        }),
-        ...(forecastedStatus && {
-          isforecasted: forecastedStatus.toString()
-        }),
-        ...(getLocalFilterValue("onlyBranded")==="true" && {eventBrand:getLocalFilterValue("onlyBranded").toString()}),
-        ...(getLocalFilterValue("top") && {
-          // globalRanking: selectedRank,
-          // categoryRanking: selectedRank,
-          // countryRanking: selectedRank,
-          eventRanking: `0-${getLocalFilterValue("top")}`,
-        }),
-        ...(getLocalFilterValue("audienceSpread") && {
-          audienceSpread: getLocalFilterValue("audienceSpread")
-         }),
-         ...(getLocalFilterValue("designations") && {
-          designation: getLocalFilterValue("designations"),
-        }),
-        ...{
-          
-        },
-        ...{shows: showsData.join(",")}
-        // ...{shows: ['eventBrand', 'eventSeries', 'maturity', 'eventImpactScore', 'inboundScore', 'internationalScore', 'isforecasted', 'trustScore', 'eventRating', 'estimatedExhibitScore', 'audienceSpread', 'eventFrequency'].join()}
-        // info: {
-        //   name: trackerName,
-        //   location:selectedLocations,
-        //   keywords:selectedEventKeywords.join(','),
-        //   labels: selectedLabels.join(','),
-        //   startDate: selectedDateRange[0],
-        //   endDate: selectedDateRange[1],
-        //   eventFormat: selectedEventFormat.join(','),
-        //   category: categorySlug.join(','),
-        //   eventStatus: selectedEventStatus.join(','),
-        //   eventFrequency: selectedEventFrequency.join(','),
-        //   eventEntry: selectedEntry.join(','),
-        //   eventEdition: selectedEventEdition.toString(),
-        //   eventKeywords: selectedLabels.join(','),
-        //   eventRanking: selectedEventRanking.join(','),
-        //   brandedEvent: selectedBrandedEvent,
-        //   trustScore: selectedTrustScore.toString(),
-        //   eventSeries: selectedEventSeries,
-        //   reputationScore: selectedReptScore.toString(),
-        //   maturity: selectedMaturity.toString(),
-        //   internationalScore: selectedINScore.toString(),
-        //   inboundScore: selectedInboundScore.toString(),
-        //   userRating: selectedUserRatings.join(','),
-        //   exhibitScore: selectedExhibitScore.join(','),
-        //   total_attendance_gte: selectedEventAttendanceRange[0],
-        //   total_attendance_lte:
-        //     selectedEventAttendanceRange[1] === "Unlimited" ? 1000000 : selectedEventAttendanceRange[1],
-        // }
-      },
+      filterValues
     };
-    // console.log(formData);
+    console.log(formData, defaultType);
     
 
       const secondLast = pathName[pathName.length - 2];
@@ -1083,12 +722,12 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
+      else if (type !== defaultType && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      else if (type === "CUSTOM" && ( 
+      else if (type === defaultType && ( 
         !getLocalFilterValue("locationIds") || 
         getLocalFilterValue("locationIds").length === 0 || 
         trackerName.trim().length === 0 
@@ -1129,13 +768,13 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type !== "CUSTOM" && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
+      else if (type !== defaultType && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      else if (type === "CUSTOM" && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)){
+      else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)){
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
@@ -1166,29 +805,16 @@ const Pages = () => {
 
     }
   };
-  const extractLocations = (locations: Record<string, any> | undefined) => {
-    return locations
-      ? Object.entries(locations).map(([id, descriptionObj]) => {
-          const [locationId, description] = Object.entries(descriptionObj)[0];
-          return {
-            id: locationId,
-            description: description as string,
-          };
-        })
-      : [];
-  };
 
   useEffect(() => {
-    if (editData && editData?.tracker && last === "editTracker") {
-
+    if (editData && last === "editTracker") {
+      console.log(editData);
       
-      // if (editData.tracker.filterValue?.maturity == "low") {
-      //   setSelectedMaturity(25);
-      // }
+      setTrackerName(editData?.name || "");
       if (type === "T_COMPETITOR" || type == "T_CUSTOMER_ICP") {
-        const orgNames = editData?.tracker?.filterValue?.orgName?.
+        const orgNames = editData?.filterValues?.orgName?.
           split(',');
-        const orgWebsites = editData?.tracker?.filterValue?.orgWebsite?.
+        const orgWebsites = editData?.filterValues?.orgWebsite?.
           split(',');
         if (Array.isArray(orgNames)) {
           setCustomData((prevData: any) => [
@@ -1208,26 +834,20 @@ const Pages = () => {
         }
       }
       if (type === "T_SPEAKING_OPPORTUNITY") {
-        const speakerOrgs = editData?.tracker?.filterValue?.speakerOrg?.
+        const speakerOrgs = editData?.filterValues?.userOrgWebsite?.
           split(',');
-        const speakerNames = editData?.tracker?.filterValue?.speakerName?.
+        const speakerNames = editData?.filterValues?.userName?.
           split(',');
         const presentCustomData = (speakerNames ?? []).map((speakerName: string, index: number) => ({
           "Speaker's Name": speakerName.trim(),
           "Company Name": speakerOrgs?.[index]?.trim()
         }));
         setCustomData(presentCustomData);
-        // setCustomData((prevData: any) => [
-        //   ...prevData,
-        //   ...newData?.map((item) => (
-        //     { companyUrl: item.trim() }
-        //   ))
-        // ]);
       }
       if (type === "T_PEOPLE_FINDER") {
-        const speakerOrgs = editData?.tracker?.filterValue?.speakerOrg?.
+        const speakerOrgs = editData?.filterValues?.userOrgWebsite?.
           split(',');
-        const speakerNames = editData?.tracker?.filterValue?.userName?.
+        const speakerNames = editData?.filterValues?.userName?.
           split(',');
         const presentCustomData = speakerNames.map((speakerName: string, index: number) => ({
           "Name": speakerName.trim(),
@@ -1235,333 +855,52 @@ const Pages = () => {
         }));
         setCustomData(presentCustomData);
       }
-      if (editData.tracker.filterValue?.localRank?.length > 0 || editData.tracker.filterValue?.eventRank?.length > 0) {
-        const newToggles = { ...rankToggles };
-        if (editData?.tracker?.filterValue?.localRank?.length > 0) {
-          newToggles.isLocalRank = true;
-        }
-        if (editData?.tracker?.filterValue?.eventRank?.length > 0) {
-          newToggles.isEventRank = true;
-        }
-        setRankToggles(newToggles);
-      }
-      // const filteredArr = newArr
-      //   .filter((item: any) => editData.tracker.filterValue?.eventCategory?.split(',').includes(item.id))
-      //   .map((item: any) => item.id);
-      // console.log(filteredArr);
       let toggleOpend: Toggle = {};
+      Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
+        const value = editData.filterValues[key];
+      
+        if (Array.isArray(value)) {
+          setLocalFilter(key as any, value.join(','));
+        } else if (typeof value === "string") {
+          setLocalFilter(key as any, value);
+        } else if (typeof value === "number" || typeof value === "boolean") {
+          setLocalFilter(key as any, value.toString());
+        }
+      
+        return acc;
+      }, {});      
+      Object?.entries(mapping)?.forEach(([key, value]) => {
+        if (editData?.filterValues?.show?.includes(key)) {
+          showsData.push(value);
+        }
+        // console.log(editData?.filterValues?.shows);
+        
+      });
+      const eventTypes = Object.values(editData?.filterValues?.eventTypes || {}).map((eventType) => {
+        return (eventType as { slug: string })?.slug;
+      });
+      
+    
+    setLocalFilter("eventTypes",eventTypes.join(","))
+    if(editData?.filterValues?.locationIds){
+      const ids = Object?.keys(editData?.filterValues?.locationIds);
+      setLocalFilter("locationIds", ids.join(","))
+      console.log(ids);
+    }
+    if(editData?.filterValues?.categories){
+      const categories = Object.values(editData?.filterValues?.categories || {}).map((category: any) => {
+        return category.slug;
+      })||[]
+      setLocalFilter("categories", categories.join(","))
+    }
+      setLocalFilter("show", showsData.join(","))
+      
+      console.log(editData);
       
      
       if (typeof editData?.tracker?.filterValue?.userType === 'string') {
           toggleOpend = JSON.parse(editData.tracker.filterValue.userType) as Toggle;
       }
-      const value = getLocalFilterValue("shows" as any);
-      const showFilters = value ? [...value.split(",")] : [];
-      if (toggleOpend?.rating) {
-        
-        showFilters.push("rating");
-      }
-      if (toggleOpend?.maturity) {
-        showFilters.push("maturity");
-      }
-      if (toggleOpend?.brandSeries) {
-        showFilters.push("branded");
-        showFilters.push("series");
-      }
-      if(toggleOpend?.forecastedStatus){
-        showFilters.push("forecasted");
-      }
-      if(toggleOpend?.eventFrequency){
-        showFilters.push("frequency");
-      }
-      if(toggleOpend?.exhibit){
-        showFilters.push("estimatedExhibitors");
-      }
-      if(toggleOpend?.globalToggle){
-        showFilters.push("scores")
-      }
-      if(toggleOpend?.eventRank){
-        showFilters.push("rankings")
-      }
-      if(toggleOpend?.audienceZone){
-        showFilters.push("audienceZone")
-      }
-      if(toggleOpend?.economicImpact){
-        showFilters.push("economicImpact")
-      }
-      setLocalFilter("show",showFilters.join(","));
-      setRankToggles({
-        ...rankToggles,
-        isTrustScore : toggleOpend?.trust?true:false,
-        isEventRank: toggleOpend?.eventRank ? true : false,
-      })
-      setForecastedStatus(toggleOpend?.forecastedStatus ? true : false);
-      setFreqToggle(toggleOpend?.eventFrequency ? true : false);
-      setAnalyticsToggles({
-        ...analyticsToggles,
-        impactScore: (toggleOpend?.impactScore ? true : false),
-        inboundScore: (toggleOpend?.inboundScore ? true : false),
-        internationalScore: (toggleOpend?.internationalScore ? true : false),
-        globalToggle: toggleOpend?.globalToggle? true: false,
-      });
-      
-      if(editData?.tracker?.filterValue?.inboundScore && editData?.tracker?.filterValue?.inboundScore !== "")
-        setSelectedInboundScore(editData?.tracker?.filterValue?.inboundScore?.split("-"));
-      if(editData?.tracker?.filterValue?.trustScore){
-      setLocalFilter("trust_score_gte",editData?.tracker?.filterValue?.trustScore )
-      setLocalFilter("trust_score_lte","100")
-      }
-      if(toggleOpend.globalToggle){
-        setLocalFilter("impact_score_gte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[0])?.toString() || "0")
-        setLocalFilter("impact_score_lte", (editData?.tracker?.filterValue?.eventImpactScore?.split("-")[1])?.toString() || "100")
-        setLocalFilter("inbound_score_gte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[0])?.toString() || "0")
-        setLocalFilter("inbound_score_lte", (editData?.tracker?.filterValue?.inboundScore?.split("-")[1])?.toString() || "100")
-        setLocalFilter("international_score_gte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[0])?.toString() || "0")
-        setLocalFilter("international_score_lte", (editData?.tracker?.filterValue?.internationalScore?.split("-")[1])?.toString() || "100")
-      }
-      if(editData?.tracker?.filterValue?.estimatedVisitorRangeTag && editData?.tracker?.filterValue?.estimatedVisitorRangeTag !== ""){
-        setLocalFilter("estimatedVisitorRangeTag", editData?.tracker?.filterValue?.estimatedVisitorRangeTag)
-      }
-      if(editData?.tracker?.filterValue?.eventImpactScore && editData?.tracker?.filterValue?.eventImpactScore !== "")
-        setSelectedImpactScore(editData?.tracker?.filterValue?.eventImpactScore?.split("-"));
-
-      if(editData?.tracker?.filterValue?.internationalScore && editData?.tracker?.filterValue?.internationalScore !== "")
-        setSelectedInternationalScore(editData?.tracker?.filterValue?.internationalScore?.split("-"));
-
-      if(editData?.tracker?.filterValue?.maturity && editData?.tracker?.filterValue?.maturity !== ''){
-        setLocalFilter("maturity",editData?.tracker?.filterValue?.maturity)
-      }
-      if(editData?.tracker?.filterValue?.eventBrand){
-        setLocalFilter("onlyBranded","true")
-      }
-      if(editData?.tracker?.filterValue?.eventSeries){
-        setLocalFilter("onlySeries","true")
-      }
-      if(editData?.tracker?.filterValue?.eventRanking && editData?.tracker?.filterValue?.eventRanking !== '')
-        setLocalFilter("top",editData?.tracker?.filterValue?.eventRanking?.split("-")[1]?.toString())
-      
-      setAudienceZone(toggleOpend?.audienceZone ? true : false);
-      setAudienceSpread(toggleOpend?.audienceSpread ? true : false);
-
-      setSelectedCountries(editData.tracker.filterValue?.audienceSpread ? editData.tracker.filterValue?.audienceSpread?.split(",") : []);
-      setLocalFilter("audienceSpread",editData.tracker.filterValue?.audienceSpread);
-      if (Array.isArray(editData.tracker.filterValue.designation)) {
-        const designationIds = editData.tracker.filterValue.designation
-            .filter((item: Designations) => item.id !== undefined)
-            .map((item: Designations) => item.id)
-            .join(",");
-    
-        setLocalFilter("designations", designationIds);
-    }
-      setSelectedAudProfile(
-        editData.tracker.filterValue?.designation
-          ? editData.tracker.filterValue.designation
-              .filter((item: Designations) => item.id !== undefined)
-              .map((item: Designations) => item.id)
-          : []
-      );
-
-      setSelectedEventKeywords(
-        editData?.tracker?.filterValue?.eventKeywords?.length > 0
-          ? editData?.tracker?.filterValue?.eventKeywords?.split("+")
-          : []
-      );
-      setTrackerName(editData?.tracker?.name || "");
-      setSelectedLabels(editData?.tracker?.filterValue?.labels && 
-        editData?.tracker?.filterValue?.labels?.length > 0
-          ? editData?.tracker?.filterValue?.labels?.split(",")
-          : []
-      );
-      if(editData?.tracker?.filterValue?.eventCategory?.length > 0) {
-        const categories = editData?.tracker?.filterValue?.eventCategory;
-        const categorySlugs = categories.map((item: any) => {
-          const category = newCategories.find((cat) => cat.id === item.id);
-          return category ? category.slug : item.id;
-        });
-        
-        setLocalFilter("categories", categorySlugs.join(","));
-      }
-      // setSelectedCategories(
-      //   editData?.tracker?.filterValue?.eventCategory?.length > 0
-      //     ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all').map(
-      //       (cat: Cat) => cat.id
-      //     )
-      //     : []
-      // );
-      setSelectedEventFormat(
-        editData?.tracker?.filterValue?.eventFormat &&
-        editData?.tracker?.filterValue?.eventFormat?.length > 0
-          ? editData?.tracker?.filterValue?.eventFormat?.split(",")
-          : []
-      );
-      setLocalFilter("eventFormats", editData?.tracker?.filterValue?.eventFormat);
-
-      setIntScore(
-        editData?.tracker?.filterValue?.internationalScore?.length > 0
-          ? editData?.tracker?.filterValue?.internationalScore
-          : ""
-      );
-      setSelectedEventStatus(
-        editData?.tracker?.filterValue?.eventStatus &&
-          editData?.tracker?.filterValue?.eventStatus?.length !== 0
-          ? editData?.tracker?.filterValue?.eventStatus?.split(",").map((item:string) => item.toLowerCase())
-          : []
-      );
-      setLocalFilter(
-        "status",
-        editData?.tracker?.filterValue?.eventStatus?.split(",")?.map((item: string) => item.toLowerCase()).join(",")
-      );
-      setLocalFilter("active_gte",editData?.tracker?.filterValue?.startDate?.split(",")[0]);
-      setLocalFilter("active_lte",editData?.tracker?.filterValue?.startDate?.split(",")[1]);
-      setDateRange({
-        to: editData?.tracker?.filterValue?.startDate
-          ? new Date(editData.tracker.filterValue.startDate.split(",")[1])
-          : undefined,
-        from: editData?.tracker?.filterValue?.startDate
-          ? new Date(editData.tracker.filterValue.startDate.split(",")[0])
-          : undefined
-      });
-      // setMultipleLocalFilters({
-      //   active_gte: new Date(enabledFilters?.durations?.startDate?.split(",")[0]?.trim())?.toISOString(),
-      //   active_lte: new Date(enabledFilters?.durations?.endDate?.split(",")[0]?.trim())?.toISOString(),
-      // });
-      // setDateRange({
-      //   ...dateRange,
-      //   to: editData?.tracker?.filterValue?.startDate
-      //     ? new Date(editData.tracker.filterValue.startDate.split(",")[1])
-      //     : undefined
-      // });
-      // setSelectedDateRange(
-      //   editData?.tracker?.filterValue?.startDate && 
-      //   editData?.tracker?.filterValue?.startDate?.length > 0
-      //     ? [
-      //       editData?.tracker?.filterValue?.startDate?.split(",")[0],
-      //       editData?.tracker?.filterValue?.startDate?.split(",")[1],
-      //     ]
-      //     : []
-      // );
-      setCategorySlug(
-        editData?.tracker?.filterValue?.eventCategory?.length > 0
-          ? editData?.tracker?.filterValue?.eventCategory?.filter((cat: Cat) => cat.id !== 'all')?.map(
-            (cat: Cat) => cat.name
-          )
-          : []
-      );
-      const selectedCountrie = 
-      typeof editData?.tracker?.filterValue?.locationIds === 'object'
-        ? extractLocations(editData.tracker.filterValue.locationIds.country)
-        : [];
-    
-    // const selectedZone = 
-    //   typeof editData?.tracker?.filterValue?.locationIds === 'object'
-    //     ? extractLocations(editData.tracker.filterValue.locationIds.zone)
-    //     : [];
-    
-    const selectedCity = 
-      typeof editData?.tracker?.filterValue?.locationIds === 'object'
-        ? extractLocations(editData.tracker.filterValue.locationIds.city)
-        : [];
-    const selectedState = 
-      typeof editData?.tracker?.filterValue?.locationIds === 'object'
-        ? extractLocations(editData.tracker.filterValue.locationIds.state)
-        : [];
-    setSelectedLocationsData([...selectedCountrie,...selectedCity,...selectedState]);
-    const ids = [
-      ...(editData?.tracker?.filterValue?.locationIds?.city || []),
-      ...(editData?.tracker?.filterValue?.locationIds?.state || []),
-      ...(editData?.tracker?.filterValue?.locationIds?.country || []),
-    ]
-      .flatMap((location) => Object.keys(location));
-      // console.log(selectedLocations);
-      setLocalFilter("locationIds", ids.join(","));
-      const eventCountry =
-        editData?.tracker?.filterValue?.eventCountry?.map(
-          (countryObj: {}) => Object.values(countryObj)[0]
-        ) || [];
-      const eventCity =
-        editData?.tracker?.filterValue?.eventCity?.map(
-          (cityObj: {}) => Object.values(cityObj)[0]
-        ) || [];
-
-      setSelectedLocations([...eventCountry, ...eventCity]);
-      setSelectedEventFrequency(
-        editData?.tracker?.filterValue?.eventFrequency && 
-        editData?.tracker?.filterValue?.eventFrequency?.length > 0
-          ? editData?.tracker?.filterValue?.eventFrequency?.split(",").map((item:string)=>item[0].toLowerCase()+item.slice(1))
-          : []
-      );
-      setLocalFilter("frequencies",editData?.tracker?.filterValue?.eventFrequency)
-      setSelectedEntry(
-        editData.tracker.filterValue?.eventEntry &&
-          editData.tracker.filterValue?.eventEntry?.length !== 0
-          ? editData.tracker.filterValue?.eventEntry?.split(",")
-          : []
-      );
-      if (editData?.tracker?.filterValue?.eventType !== undefined) {
-        const eventTypes = editData.tracker.filterValue.eventType.map((type:string) => {
-          return type.charAt(0).toLowerCase() + type.slice(1)+"s";
-        });
-        console.log("");
-        
-         setLocalFilter("eventTypes",eventTypes.join(","))
-    }
-
-
-
-      // setSelectedINScore(
-      //   editData.tracker.filterValue?.internationalScore.length > 0
-      //     ? editData.tracker.filterValue?.internationalScore
-      //     : ""
-      // );
-      // setSelectedInboundScore(
-      //   editData.tracker.filterValue?.inboundScore > 0
-      //     ? editData.tracker.filterValue?.inboundScore
-      //     : 0
-      // );
-      setSelectedUserRatings(
-        editData.tracker.filterValue?.eventRating &&
-          editData.tracker.filterValue?.eventRating?.length !== 0
-          ? editData.tracker.filterValue?.eventRating?.split(",")
-          : []
-      );
-      setLocalFilter("ratings", editData.tracker.filterValue?.eventRating);
-      setLocalFilter("estimatedVisitors",editData.tracker.filterValue?.eventSize);
-      setLocalFilter("estimatedExhibitors",editData.tracker.filterValue?.estimatedExhibitScore);
-      if(editData.tracker.filterValue?.trustScore){
-        setLocalFilter("trust_score_gte", editData.tracker.filterValue?.trustScore)
-        setLocalFilter("trust_score_lte","100")
-      }
-      const updatedTrustScore=[...selectedTrustScore]
-      updatedTrustScore[0]=
-        editData.tracker.filterValue?.trustScore > 0
-          ? editData.tracker.filterValue?.trustScore
-          : 0;
-        setSelectedTrustScore(updatedTrustScore)
-      // setCategorySlug(editData.tracker.filterValue?.category?.split(',') || [])
-      // setSelectedLocations(editData.tracker.filterValue?.location);
-    setLocalFilter("includeKeywords",editData.tracker.filterValue?.includeKeywords
-    ?.split(",")
-    .map((keyword:string) => keyword.replaceAll("_", " "))
-    .join(","));
-    setLocalFilter("excludeKeywords",editData.tracker.filterValue?.excludeKeywords
-    ?.split(",")
-    .map((keyword:string) => keyword.replaceAll("_", " "))
-    .join(","));
-      setSelectedEventAttendanceRange((prevArray) => {
-        const gte =
-          editData.tracker.filterValue?.eventAttendanceRange?.split(",")[0];
-        const lte =
-          editData.tracker.filterValue?.eventAttendanceRange?.split(",")[1];
-
-        if (!isNaN(gte) && !isNaN(lte)) {
-          const newArray = [...prevArray];
-          newArray[0] = gte;
-          newArray[1] = lte;
-          return newArray;
-        } else {
-          return prevArray;
-        }
-      });
     }
     
   }, [editData, searchParams]);
@@ -1673,44 +1012,11 @@ const Pages = () => {
     // console.log(itemIndex);
     const filteredData = customData.filter((item, index) => index !== itemIndex);
     setCustomData(filteredData);
-    // console.log(filteredData);
-
-    // setCustomData((prevData) => 
-    //   prevData.map((item, index) => {
-    //     if (index === itemIndex) {
-    //       const { [entryKey]: _, ...rest } = item;
-    //       return rest;
-    //     }
-    //     return item;
-    //   }).filter(item => Object.keys(item).length > 0)
-    // );
   };
-  useEffect(() => {
-    if (intScore === "low") setSelectedINScore(1);
-    if (intScore === "medium") setSelectedINScore(50);
-    if (intScore === "high") setSelectedINScore(100);
-  }, [intScore])
 useEffect(()=>{
   if(valid===false) setValid(true);
   if(isMandatory) setIsMandatory(false);
 },[inputValues])
-const dateShowFormatter = (selectedDateRange: string[]) => {
-  const [sdDay, sdMonth, sdYear] = convertToCustomFormat(
-    selectedDateRange[0]
-  ).split(" ");
-  const [edDay, edMonth, edYear] = convertToCustomFormat(
-    selectedDateRange[1]
-  ).split(" ");
-
-  if (sdMonth === edMonth && sdYear === edYear) {
-    return `${sdDay} - ${edDay} ${sdMonth} ${sdYear}`;
-  }
-  if (sdYear === edYear) {
-    return `${sdDay} ${sdMonth} - ${edDay} ${edMonth} ${sdYear}`;
-  }
-  return `${sdDay} ${sdMonth} ${sdYear} - ${edDay} ${edMonth} ${edYear}`;
-};
-const abortControllerRef = useRef<AbortController | null>(null);
 const [selected,setSelected]=useState(false);
 const addCompany = (id:number,val: any) => {
   setSelected(true);
@@ -1894,7 +1200,7 @@ return (
                             </div>
                           } */}
         {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") && inputValues[0]?.length > 0  &&
-         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={'company/suggestion'} type={type}/>
+         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={'suggestions/companies'} type={type}/>
         }
                         </div>
 
@@ -2104,8 +1410,8 @@ return (
     </div>
     }
    {
-   <div className={`${type !== "CUSTOM" ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} >
-    {type !== "CUSTOM" &&
+   <div className={`${type !== defaultType ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} >
+    {type !== "T_CUSTOM" &&
     <div className={`${styles.hiddenFilters}`} onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
     <div className={styles.hiddenFiltersInnerDiv}>
     {/* <Plus style={{width:"16px", height:"16px"}} className="icons"/> */}
@@ -2114,7 +1420,7 @@ return (
     <div><ChevronDown className="icons"/></div>
     </div>
     }
-  {(type==="CUSTOM" || opend )&&
+  {(type=== defaultType || opend )&&
     <Suspense fallback={<Loading />}>
     <div className={styles.container}>
       <div className={styles.sub_container}>
@@ -2130,9 +1436,6 @@ return (
           <UserRatingSelector/>
         </div>
       </div>
-      {showRecentSearches && (
-        <RecentSearches setShowRecentSearches={setShowRecentSearches} />
-      )}
 
       {/*   ADVANCE FILTER SECTION */}
 

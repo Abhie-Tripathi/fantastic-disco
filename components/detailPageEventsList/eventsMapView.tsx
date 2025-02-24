@@ -5,7 +5,7 @@ import styles from "./map.module.css";
 import { Map, Marker } from "react-map-gl";
 import MapPointer from "/public/Marker.svg";
 import Image from "next/image";
-import { Event, EventsResponse, GTMEventDetail } from "@/types/events/events";
+import { Event } from "@/types/events/events";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useQuery } from "@tanstack/react-query";
 import { useEventsService } from "@/services/eventsService";
@@ -14,17 +14,20 @@ import { MapEvents } from "@/types/events";
 import { Loader2 } from "lucide-react";
 import { useMiscService } from "@/services/miscService";
 import MapPopup from "../map/popup";
+import { EventStatus } from "@/types/events/dto/event-query.dto";
+import { isEventeli } from "@/config";
+import { useTheme } from "@/context";
 
 interface MapProps {
   startDate: string;
   endDate: string;
   style: React.CSSProperties;
-  event: GTMEventDetail;
+  event: Event["basic"];
   zoom?: number;
 }
 interface updatedEvent {
   coordinates: {
-    latitude: string; 
+    latitude: string;
     longitude: string;
   };
   events: Event[];
@@ -42,14 +45,15 @@ const EventsMapView: React.FC<MapProps> = ({
     startDateTime,
     endDateTime,
     primaryEventType,
-    venueLocation,
+    eventLocation,
   } = event;
+  const { theme } = useTheme();
   const [selectedPlace, setSelectedPlace] = useState<any | null>();
   const [eventDateRange, setEventDateRange] = useState<{
     startDate: string;
     endDate: string;
   }>({ startDate: startDateTime, endDate: endDateTime });
-  const { getEventsWithSearchParams, getEventById } = useEventsService();
+  const { getEvents, getEventDetailById } = useEventsService();
   const [events, setEvents] = useState<MapEvents[]>([]);
   const [popupInfo, setPopupInfo] = useState<updatedEvent | null>(null);
 
@@ -65,29 +69,22 @@ const EventsMapView: React.FC<MapProps> = ({
   };
 
   const latitude =
-    event.venueLocation?.venue?.latitude ??
-    event.venueLocation?.city?.latitude ??
-    event.venueLocation?.state?.latitude;
+    eventLocation?.venue?.latitude ??
+    eventLocation?.city?.latitude ??
+    eventLocation?.state?.latitude;
   const longitude =
-    event.venueLocation?.venue?.longitude ??
-    event.venueLocation?.city?.longitude ??
-    event.venueLocation?.state?.longitude;
+    eventLocation?.venue?.longitude ??
+    eventLocation?.city?.longitude ??
+    eventLocation?.state?.longitude;
 
   const viewBound = {
     boundType: "point",
-    coordinates: JSON.stringify({
+    coordinates: {
       latitude: Number(latitude),
       longitude: Number(longitude),
       radius: 10,
-    }),
+    },
   };
-  const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
-
-  const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
-    startDate
-  ).toISOString()}&active_lte=${new Date(endDate).toISOString()}&view=map${
-    !latitude && !longitude ? `&locationIds=${venueLocation?.city.id}` : ""
-  }&viewBound=${viewBoundString}`;
 
   const {
     data: eventsData,
@@ -95,57 +92,67 @@ const EventsMapView: React.FC<MapProps> = ({
     error,
   } = useQuery({
     queryKey: ["eventDetail", startDate, endDate],
-    queryFn: async () => await getEventsWithSearchParams(params.toString()),
+    queryFn: async () =>
+      await getEvents({
+        status: "active,cancelled,postponed",
+        ...(isEventeli
+          ? {
+              eventTypes:
+                "community,concert,performing-arts,sport,festival,workshops,tradeshows,conferences",
+            }
+          : { eventTypes: "workshops,tradeshows,conferences" }),
+        view: "map",
+        ...(startDate && { active_gte: new Date(startDate).toISOString() }),
+        ...(endDate && { active_lte: new Date(endDate).toISOString() }),
+        ...(eventLocation?.city?.id && {
+          locationIds: eventLocation?.city?.id || "",
+        }),
+        ...(latitude && longitude && { viewBound: JSON.stringify(viewBound) }),
+      }),
     refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
     if (eventsData) {
-      setEvents((eventsData?.events as MapEvents[]) || []);
+      setEvents((eventsData.events as unknown as MapEvents[]) || []);
     }
   }, [eventsData]);
 
-  // useEffect(() => {
-  //   if (activeDate !== "" && activeDate !== null) {
-  //     setEventDateRange((prev) => ({
-  //       ...prev,
-  //       startDate: activeDate,
-  //       endDate: activeDate,
-  //     }));
-  //   }
-  // }, [activeDate]);
-
   const handleMarkerClick = async (eventData: MapEvents) => {
     try {
-      const eventDetails = await getEventById(eventData.id);
-      const result={
-        coordinates:{
-              latitude: parseFloat(
-                eventDetails?.event.venueLocation?.venue?.latitude ||
-                eventDetails?.event.venueLocation?.city?.latitude ||
-                eventDetails?.event.venueLocation?.state?.latitude ||
-                  "0"
-              ).toString(), 
-              longitude: parseFloat(
-                eventDetails?.event.venueLocation?.venue?.longitude ||
-                eventDetails?.event.venueLocation?.city?.longitude ||
-                eventDetails?.event.venueLocation?.state?.longitude ||
-                  "0"
-              ).toString()
+      const eventDetails = await getEventDetailById(eventData.id);
+      const { eventLocation } = (eventDetails && eventDetails.basic) || {};
+      const result = {
+        coordinates: {
+          latitude: parseFloat(
+            eventLocation?.venue?.latitude ||
+              eventLocation?.city?.latitude ||
+              eventLocation?.state?.latitude ||
+              "0"
+          ).toString(),
+          longitude: parseFloat(
+            eventLocation?.venue?.longitude ||
+              eventLocation?.city?.longitude ||
+              eventLocation?.state?.longitude ||
+              "0"
+          ).toString(),
         },
-        events:[eventDetails?.event]
-      }
+        events: [eventDetails],
+      };
       setPopupInfo(result as updatedEvent | null);
     } catch (error) {
       console.error("Error fetching event details:", error);
     }
   };
-  // console.log(eventDetails?.event);
   return (
     <div className="relative">
       <Map
         style={style}
-        mapStyle="mapbox://styles/mapbox/streets-v12"
+        mapStyle={
+          theme === "light"
+            ? "mapbox://styles/mapbox/streets-v12"
+            : "mapbox://styles/mapbox/dark-v11"
+        }
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         initialViewState={{
           longitude: Number(longitude),

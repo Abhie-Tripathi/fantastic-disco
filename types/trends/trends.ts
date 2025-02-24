@@ -104,8 +104,8 @@ export interface CreateFilterValue extends BaseFilterValue {
 
 export interface CreateSaveTrendData {
   name: string;
-  filterValue: CreateFilterValue;
-  type: "TR_CUSTOM";
+  filterValues: CreateFilterValue;
+  type: "TR_CUSTOM" | "CUSTOM";
 }
 
 export interface EditSaveTrendData extends CreateSaveTrendData {
@@ -134,11 +134,11 @@ export interface TrackerData {
   id: string;
   name: string;
   type: "TR_CUSTOM";
-  filterValue: GetFilterValue;
+  filterValues: GetFilterValue;
   created: string;
 }
 
 export interface GetSaveTrendData {
-  trackerData: TrackerData[];
-  totalCount: number;
+  trackers: TrackerData[];
+  count: number;
 }

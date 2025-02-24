@@ -39,7 +39,7 @@ const SavedTrendCard = ({
 }) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { name, filterValue, id } = data;
+  const { name, filterValues, id } = data;
   const [open, setOpen] = useState<boolean>(false);
   const { searchParams } = useFilterState();
   const editTrend = Boolean(queryParams.get("editTrend") || "");
@@ -51,11 +51,11 @@ const SavedTrendCard = ({
   } = useFilterContext();
   const { deleteSavedTrend } = useTrendsService();
   const { getLastSearchedLocation } = sessionService();
-  const { locationIds, viewBound } = filterValue;
+  const { locationIds, viewBound } = filterValues;
   const locationDetail = locationIds && Object.values(locationIds);
   const viewBoundDetail: ViewBound = viewBound && JSON.parse(viewBound);
   const displayName =
-    (locationDetail && locationDetail[0].displayName) ||
+    (locationDetail && locationDetail[0].name) ||
     (viewBoundDetail &&
       viewBoundDetail.properties &&
       viewBoundDetail.properties.name) ||
@@ -83,8 +83,8 @@ const SavedTrendCard = ({
       active_gte: active_gte || "",
       active_lte: active_lte || "",
     };
-    const extractCoordinates = data.filterValue.viewBound
-      ? (JSON.parse(data.filterValue.viewBound) as ViewBound).coordinates
+    const extractCoordinates = data.filterValues.viewBound
+      ? (JSON.parse(data.filterValues.viewBound) as ViewBound).coordinates
       : null;
     const normalizedViewBound = extractCoordinates
       ? JSON.stringify({
@@ -109,13 +109,13 @@ const SavedTrendCard = ({
       ...(viewBound && JSON.parse(FilterValue.viewBound || "")),
     };
     const normalizedPropsData = {
-      ...data.filterValue,
-      columns: (data.filterValue.columns || []).sort(),
-      eventTypes: Object.values(data.filterValue.eventTypes || {})
+      ...data.filterValues,
+      columns: (data.filterValues.columns || []).sort(),
+      eventTypes: Object.values(data.filterValues.eventTypes || {})
         .map((type) => type.slug)
         .sort(),
       ...(locationIds && {
-        locationIds: Object.keys(data.filterValue.locationIds || {}).join(","),
+        locationIds: Object.keys(data.filterValues.locationIds || {}).join(","),
       }),
       ...(normalizedViewBound && {
         viewBound: normalizedViewBound,
@@ -159,7 +159,7 @@ const SavedTrendCard = ({
   });
 
   const applyFilterOnTrend = (data: TrackerData) => {
-    const { filterValue, id } = data;
+    const { filterValues, id } = data;
     const {
       active_gte,
       active_lte,
@@ -167,7 +167,7 @@ const SavedTrendCard = ({
       eventTypes,
       locationIds,
       viewBound,
-    } = filterValue;
+    } = filterValues;
 
     const parsedViewBoundData: ViewBound | null = viewBound
       ? JSON.parse(viewBound)
@@ -312,7 +312,7 @@ const SwiperCarousel = ({
   activeCard,
 }: {
   initialSlideIndex: number;
-  savedTrendsList: GetSaveTrendData["trackerData"];
+  savedTrendsList: GetSaveTrendData["trackers"];
   queryParams: ReadonlyURLSearchParams;
   activeCard: string;
 }) => {
@@ -367,7 +367,7 @@ const SwiperCarousel = ({
 const SavedTrendsList = ({
   savedTrendsList,
 }: {
-  savedTrendsList: GetSaveTrendData["trackerData"];
+  savedTrendsList: GetSaveTrendData["trackers"];
 }) => {
   const queryParams = useSearchParams();
   const activeCard = queryParams.get("activeCard") || "";

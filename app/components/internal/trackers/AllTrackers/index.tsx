@@ -16,7 +16,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
   const router= useRouter();
-  const {  setIsNewCall, setTrackerId, isLoading:load, setSkip } = useTrackerContext();
+  const {  setIsNewCall, setTrackerId, isLoading:load, setSkip, trackerId, skip, searchValue } = useTrackerContext();
   const {setFilter, getFilterValue, setMultipleFilters} = useFilterState();
   const lineData = {
     labels: ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
@@ -92,11 +92,11 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   };
   useEffect(() => {
     
-    const eventCountry = item?.filterValue?.eventCountry?.map((countryObj:{}) => Object.values(countryObj)[0])||[];
-    const eventCity = item?.filterValue?.eventCity?.map((cityObj:{}) => Object.values(cityObj)[0])||[];
-    const eventState = item?.filterValue?.eventState?.map((stateObj: any) => Object.values(stateObj)[0]) || [];
-    const eventZone=item?.filterValue?.eventRegion?.split(",")||[];
-    setLocations([...eventCountry, ...eventCity, ...eventZone, ...eventState]);
+    const eventLocation =
+      Object.values(item?.filterValues?.locationIds || {}).map((location: any) => {
+        return location?.displayName;
+      });
+    setLocations(eventLocation);
   }, [item]);
   const formatType=(type:string)=>{
     if(type==="CUSTOM") return "Custom"
@@ -111,6 +111,13 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   }
   const handleSingleClick=(item:any)=>{
     setSingleTrackerData(item)
+      setSingleTrackerData(item)
+     
+      setMultipleFilters({ 
+        skip: skip,
+        q: searchValue,
+         id: item.id,
+      })
   }
   return (
     <div className="card cursor-pointer h-[150px]" onClick={()=>handleSingleClick(item)}
@@ -156,7 +163,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
                 
               </div>
               <div className={styles.numberOfEvents}>
-                {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.new)}
+                {formatCount(item?.groupedEventsCount?.new)}
                 {/* <div className="badge_success">
                 <ChartTrendingUp width="12px" height="12px" style={{color:"var(--success-text-color)"}}/>
                 <span className="text-[10px]">
@@ -173,7 +180,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
                 Active
               </div>
               <div className={styles.numberOfEvents}>
-              {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.active)}
+              {formatCount(item?.groupedEventsCount?.active)}
               </div>
               <div className={styles.events}>Events</div>
             </div>
@@ -183,7 +190,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
                 Past
               </div>
               <div className={styles.numberOfEvents}>
-                {formatCount(item?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired)}
+                {formatCount(item?.groupedEventsCount?.past)}
               </div>
               <div className={styles.events}>Events</div>
             </div>

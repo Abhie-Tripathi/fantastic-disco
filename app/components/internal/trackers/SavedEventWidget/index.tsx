@@ -12,7 +12,7 @@ interface SavedEventWidgetProps{
     redirectUrl:string
 }
 const SavedEventWidget = ({ savedEvents, redirectUrl }: SavedEventWidgetProps) => {
-
+  console.log(savedEvents);
   return (
     redirectUrl.length > 0 ? (
       <Link 
@@ -52,16 +52,16 @@ const EventContent = ({ savedEvents }: { savedEvents: { events: EventTableType[]
         >
           <div className='flex justify-between items-center w-[100%]'>
             <div className='text-[12px] font-semibold'>
-              {item?.name?.length > 61 ? `${item.name.substring(0, 61)}...` : item?.name}
+              {item?.basic?.name?.length > 61 ? `${item.basic.name.substring(0, 61)}...` : item?.basic?.name}
             </div>
             <ArrowUpRight width="16px" height='16px' color='var(--primary-color)' />
           </div>
           <div className="text-[12px]" style={{ color: "var(--secondary-text-color)" }}>
-            {(item.venueLocation?.city.name && item.venueLocation?.country.name) ?
-              (item.venueLocation.city.name !== item.venueLocation?.country.name ?
-                item.venueLocation.city.name + ', ' + item.venueLocation?.country.name :
-                item.venueLocation.country.name) :
-              item.venueLocation.country.name}
+            {(item.basic.eventLocation?.city.name && item.basic.eventLocation?.country.name) ?
+              (item.basic?.eventLocation.city.name !== item.basic?.eventLocation?.country.name ?
+                item.basic.eventLocation.city.name + ', ' + item.basic.eventLocation?.country.name :
+                item.basic.eventLocation.country.name) :
+              item.basic.eventLocation.country.name}
           </div>
         </div>
       ))

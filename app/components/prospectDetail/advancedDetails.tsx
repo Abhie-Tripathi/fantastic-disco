@@ -7,15 +7,38 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import {
+  calculateDateDifference,
+  convertToCustomFormat,
+} from "@/utils/dateFormat";
 import { useEffect, useState } from "react";
-import { GTMEventDetail } from "@/types/events";
 
+interface stats {
+  upcomingEvents: number;
+  totalEvents: number;
+  lastLogin: string;
+}
 interface Props {
-  // eventDetails: GTMEventDetail;
-  eventId: string;
+  companyData: {
+    stats: stats;
+    followers: number;
+    eventSponsored: number;
+    eventExhibited: number;
+    visitor: number;
+  };
 }
 
-const CarouselComponent = () => {
+interface CarouselProp {
+  companyData: {
+    stats: stats;
+    followers: number;
+    eventSponsored: number;
+    eventExhibited: number;
+    visitor: number;
+  };
+}
+
+const CarouselComponent = ({ companyData }: CarouselProp) => {
   const [api, setApi] = useState<CarouselApi>();
   const [isSlidingEnabled, setIsSlidingEnabled] = useState<boolean>();
   useEffect(() => {
@@ -35,18 +58,85 @@ const CarouselComponent = () => {
             isSlidingEnabled ? "-ml-1" : "-ml-6"
           } max-xl:grid max-xl:grid-cols-2 max-xl:grid-rows-subgrid max-xl:gap-y-6 max-xl:justify-items-centers`}
         >
-          <CarouselItem className="pl-6 basis-3/12 carousel-item">
-            <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
-              <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
-                Company Size
-              </h1>
-              <span className="text-base font-semibold flex items-center gap-2">
-                100
-              </span>
-            </div>
-          </CarouselItem>
+          {companyData.stats.totalEvents > 0 && (
+            <CarouselItem className="pl-6 basis-3/12 carousel-item">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
+                  Total Events
+                </h1>
+                <span className="text-base font-semibold flex items-center gap-2">
+                  {companyData.stats.totalEvents}
+                </span>
+              </div>
+            </CarouselItem>
+          )}
 
-          <CarouselItem className="pl-6 basis-3/12 carousel-item">
+          {companyData.stats.upcomingEvents > 0 && (
+            <CarouselItem className="pl-6 basis-3/12 carousel-item">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
+                  Upcoming Events
+                </h1>
+                <span className="text-base font-semibold flex items-center gap-2">
+                  {companyData.stats.upcomingEvents}
+                </span>
+              </div>
+            </CarouselItem>
+          )}
+
+          {companyData.eventExhibited > 0 && (
+            <CarouselItem className="pl-6 basis-3/12 carousel-item">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
+                  Exhibited Events
+                </h1>
+                <span className="text-base font-semibold flex items-center gap-2">
+                  {companyData.eventExhibited}
+                </span>
+              </div>
+            </CarouselItem>
+          )}
+
+          {companyData.eventSponsored > 0 && (
+            <CarouselItem className="pl-6 basis-3/12 carousel-item">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
+                  Sponsored Events
+                </h1>
+                <span className="text-base font-semibold flex items-center gap-2">
+                  {companyData.eventSponsored}
+                </span>
+              </div>
+            </CarouselItem>
+          )}
+
+          {companyData.visitor > 0 && (
+            <CarouselItem className="pl-6 basis-3/12 carousel-item">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
+                  Visited Events
+                </h1>
+                <span className="text-base font-semibold flex items-center gap-2">
+                  {companyData.visitor}
+                </span>
+              </div>
+            </CarouselItem>
+          )}
+
+          {companyData.followers > 100 && (
+            <CarouselItem className="pl-6 basis-3/12 carousel-item">
+              <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
+                <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
+                  Followers
+                </h1>
+                <span className="text-base font-semibold flex items-center gap-2">
+                  {companyData.followers}
+                </span>
+              </div>
+            </CarouselItem>
+          )}
+
+          {/* <CarouselItem className="pl-6 basis-3/12 carousel-item">
             <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
               <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                 Company Type
@@ -55,9 +145,9 @@ const CarouselComponent = () => {
                 Private
               </span>
             </div>
-          </CarouselItem>
+          </CarouselItem> */}
 
-          <CarouselItem className="pl-6 basis-3/12 carousel-item">
+          {/* <CarouselItem className="pl-6 basis-3/12 carousel-item">
             <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
               <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                 Followers
@@ -66,9 +156,9 @@ const CarouselComponent = () => {
                 1.8M
               </span>
             </div>
-          </CarouselItem>
+          </CarouselItem> */}
 
-          <CarouselItem className="pl-6 basis-3/12 carousel-item">
+          {/* <CarouselItem className="pl-6 basis-3/12 carousel-item">
             <div className="flex flex-col bg-white dark:bg-transparent dark:border-[var(--border-color)] items-center shadow-sm border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-auto h-full">
               <h1 className="text-[1rem] font-medium text-center border-b pb-2 w-full">
                 Group
@@ -77,7 +167,7 @@ const CarouselComponent = () => {
                 FORTUNE
               </span>
             </div>
-          </CarouselItem>
+          </CarouselItem> */}
         </CarouselContent>
         {isSlidingEnabled && (
           <>
@@ -90,15 +180,12 @@ const CarouselComponent = () => {
   );
 };
 
-export const AdvancedDetails = ({
-  // eventDetails,
-  eventId,
-}: Props) => {
+export const AdvancedDetails = ({ companyData }: Props) => {
   return (
     <>
-    <div className="flex flex-col gap-6">
-      <CarouselComponent />
-    </div>
+      <div className="flex flex-col gap-6">
+        <CarouselComponent companyData={companyData} />
+      </div>
     </>
   );
 };

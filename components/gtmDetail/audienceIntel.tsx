@@ -8,21 +8,10 @@ import Text from "../new-ui/Text";
 import * as Flags from "country-flag-icons/react/3x2";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import {
-  DesignationSpread,
-  Event,
-  EventExhibitorDetails,
-  EventParticipantsDetails,
-  TTabs,
-} from "@/types/events";
+import { Event, EventParticipantsDetails, TTabs } from "@/types/events";
 import { CircularProgressBar } from "../eventDetail/circularProgressBar";
 import { useInView } from "react-intersection-observer";
 import { Heading } from "../eventDetail/heading";
-import { GTMEventDetail } from "@/types/events";
-import {
-  audienceSpreadDummyData,
-  designationsDummyData as designations,
-} from "@/data/dummyDataEventDetail";
 import { numberWithCommas } from "@/utils/formater";
 import { Badge } from "../ui/badge";
 import {
@@ -36,9 +25,10 @@ import Restriction from "../eventDetail/restriction";
 
 // type TTabs = "Department Type" | "Designation Type";
 interface Props {
-  eventDetails: GTMEventDetail;
+  eventDetails: Event;
   eventExhibitorData: EventParticipantsDetails[];
   eventSpeakerData: EventParticipantsDetails[];
+  eventSponsorData: EventParticipantsDetails[];
   scrollSection: string;
   setActiveTab: Dispatch<SetStateAction<TTabs>>;
 }
@@ -47,6 +37,7 @@ export const AudienceIntel = ({
   eventDetails,
   eventExhibitorData,
   eventSpeakerData,
+  eventSponsorData,
   scrollSection,
   setActiveTab,
 }: Props) => {
@@ -58,23 +49,31 @@ export const AudienceIntel = ({
     audienceProfile,
   } = morphedData;
 
-  const { audienceSpread, stats, designation, designationSpread } =
-    eventDetails;
+  const { audienceSpread, designationSpread } =
+    (eventDetails && eventDetails.audience) || {};
 
-  const parseEstimatedExhibitor = (value: string | number) => {
-    if (typeof value === "string" && value.includes("-")) {
-      const [minExhibitorValue, maxExhibitorValue] = value
-        .split("-")
-        .map((v) => Number(v.trim()));
-      return { minExhibitorValue, maxExhibitorValue };
-    } else {
-      return { minExhibitorValue: value, maxExhibitorValue: value };
+  const { estimatedAttendance } = (eventDetails && eventDetails.insights) || {};
+
+  const { estimatedExhibitors } = (eventDetails && eventDetails.advance) || {};
+
+  const parseEstimatedExhibitor = (
+    value: string | number | undefined | null
+  ) => {
+    if (value) {
+      if (typeof value === "string" && value.includes("-")) {
+        const [minExhibitorValue, maxExhibitorValue] = value
+          .split("-")
+          .map((v) => Number(v.trim()));
+        return { minExhibitorValue, maxExhibitorValue };
+      } else {
+        return { minExhibitorValue: value, maxExhibitorValue: value };
+      }
     }
   };
 
   const { minExhibitorValue, maxExhibitorValue } = parseEstimatedExhibitor(
-    stats.estimatedExhibitor
-  );
+    estimatedExhibitor
+  ) || { minExhibitorValue: 0, maxExhibitorValue: 0 };
 
   // const hasEstimatedExhibitor =
   //   estimatedExhibitor &&
@@ -93,12 +92,13 @@ export const AudienceIntel = ({
         (option.max === null || Number(maxExhibitorValue) <= option.max)
     );
 
-  const [minValue, maxValue] = stats.estimatedVisitor
-    .split("-")
-    .map((v) => Number(v.trim()));
+  const [minValue, maxValue] = (estimatedAttendance &&
+    estimatedAttendance.split("-").map((v) => Number(v.trim()))) || [0, 0];
 
   const hasEstimatedVisitor =
     estimatedVisitors &&
+    minValue &&
+    maxValue &&
     estimatedVisitors.options.some(
       (option: { min: number; max: number | null; isEnabled: boolean }) =>
         option.min <= maxValue &&
@@ -125,7 +125,12 @@ export const AudienceIntel = ({
       setActiveTab(scrollSection as TTabs);
     }
   }, [inView]);
-  const getMaxCountObject = (designationSpread: DesignationSpread[]) => {
+  const getMaxCountObject = (
+    designationSpread:
+      | NonNullable<Event["audience"]>["designationSpread"]
+      | undefined
+      | null
+  ) => {
     if (!designationSpread || designationSpread.length === 0) return null;
 
     return designationSpread.reduce((maxObj, currentObj) => {
@@ -166,9 +171,9 @@ export const AudienceIntel = ({
               </Tooltip>
             </TooltipProvider>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {stats.estimatedVisitor &&
+              {estimatedAttendance &&
                 (hasEstimatedVisitor ? (
-                  numberWithCommas(stats.estimatedVisitor || "--")
+                  numberWithCommas(estimatedAttendance || "--")
                 ) : (
                   <Restriction />
                 ))}
@@ -195,11 +200,9 @@ export const AudienceIntel = ({
               </Tooltip>
             </TooltipProvider>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {isEstimatedExhibitorEnabled && stats.estimatedExhibitor ? (
-                stats.estimatedExhibitor ?? "--"
-              ) : (
-                <Restriction />
-              )}
+              {isEstimatedExhibitorEnabled && estimatedExhibitor
+                ? estimatedExhibitor ?? "--"
+                : "--"}
             </p>
           </div>
         </div>
@@ -226,14 +229,6 @@ export const AudienceIntel = ({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                {!audienceSpread && (
-                  <Badge
-                    variant={"outline"}
-                    className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none h-fit"
-                  >
-                    Demo
-                  </Badge>
-                )}
               </div>
               {!isAudienceSpreadEnabled && <Restriction />}
               {isAudienceSpreadEnabled && (
@@ -302,18 +297,10 @@ export const AudienceIntel = ({
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                {!designation && (
-                  <Badge
-                    variant={"outline"}
-                    className="rounded-full bg-[#fff0f0] text-[#e5484d] shadow-none border-none"
-                  >
-                    Demo
-                  </Badge>
-                )}
               </div>
-              {isDesignationEnabled ? (
-                <>
-                  {designationSpread && designationSpread.length > 0 && (
+              {designationSpread && designationSpread.length > 0 ? (
+                isDesignationEnabled ? (
+                  <>
                     <div className="flex flex-col gap-4 bg-[#FAFAFA] dark:bg-[#171717] border border-[#EBEBEB] dark:border-[#2E2E2E] rounded-md p-3">
                       <Text
                         color="primary"
@@ -349,18 +336,16 @@ export const AudienceIntel = ({
                         />
                       </div>
                     </div>
-                  )}
-                  <Text
-                    color="primary"
-                    fontWeight="medium"
-                    variant="noMargin"
-                    size="large"
-                  >
-                    Other designations
-                  </Text>
-                  <ul className="flex flex-col gap-4 h-64 overflow-y-auto pr-2">
-                    {designationSpread && designationSpread.length > 0 ? (
-                      designationSpread.map((designation, index) => (
+                    <Text
+                      color="primary"
+                      fontWeight="medium"
+                      variant="noMargin"
+                      size="large"
+                    >
+                      Other designations
+                    </Text>
+                    <ul className="flex flex-col gap-4 h-64 overflow-y-auto pr-2">
+                      {designationSpread.map((designation, index) => (
                         <li
                           key={`designation-${designation.designation}-${index}`}
                         >
@@ -377,17 +362,17 @@ export const AudienceIntel = ({
                             className="h-2"
                           />
                         </li>
-                      ))
-                    ) : (
-                      <span className="text-[#666666] text-sm flex items-center gap-2">
-                        <CircleSlash width={15} height={15} />
-                        No data available
-                      </span>
-                    )}
-                  </ul>
-                </>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <Restriction />
+                )
               ) : (
-                <Restriction />
+                <span className="text-[#666666] text-sm flex items-center gap-2">
+                  <CircleSlash width={15} height={15} />
+                  No data available
+                </span>
               )}
             </div>
           </div>
@@ -396,6 +381,7 @@ export const AudienceIntel = ({
           eventDetails={eventDetails}
           eventExhibitorData={eventExhibitorData}
           eventSpeakerData={eventSpeakerData}
+          eventSponsorData={eventSponsorData}
         />
       </div>
     </div>

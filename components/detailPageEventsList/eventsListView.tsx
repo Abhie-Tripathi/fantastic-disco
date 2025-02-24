@@ -1,18 +1,19 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { Event, GTMEventDetail } from "@/types/events/events";
+import { Event } from "@/types/events/events";
 import { useQuery } from "@tanstack/react-query";
 import { useEventsService } from "@/services/eventsService";
 import Text from "../new-ui/Text";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { format } from "date-fns";
+import { eventType } from "@/data/onboardingDropdownsData";
 
 interface MapProps {
   startDate: string;
   endDate: string;
-  event: GTMEventDetail;
+  event: Event["basic"];
 }
 
 const EventsListView: React.FC<MapProps> = ({
@@ -26,12 +27,12 @@ const EventsListView: React.FC<MapProps> = ({
     startDateTime,
     endDateTime,
     primaryEventType,
-    venueLocation,
+    eventLocation,
     categories,
     format: typeOfEvent,
   } = event;
   const eventId = id;
-  const { getEventsWithSearchParams, getEventById } = useEventsService();
+  const { getEvents } = useEventsService();
 
   const iconUrls: Record<string, string> = {
     "performing-arts": "/eventType/arts.png",
@@ -45,43 +46,28 @@ const EventsListView: React.FC<MapProps> = ({
   };
 
   const latitude =
-    event.venueLocation?.venue?.latitude ??
-    event.venueLocation?.city?.latitude ??
-    event.venueLocation?.state?.latitude;
+    eventLocation?.venue?.latitude ??
+    eventLocation?.city?.latitude ??
+    eventLocation?.state?.latitude;
   const longitude =
-    event.venueLocation?.venue?.longitude ??
-    event.venueLocation?.city?.longitude ??
-    event.venueLocation?.state?.longitude;
+    eventLocation?.venue?.longitude ??
+    eventLocation?.city?.longitude ??
+    eventLocation?.state?.longitude;
 
   const viewBound = {
     boundType: "point",
-    coordinates: JSON.stringify({
+    coordinates: {
       latitude: Number(latitude),
       longitude: Number(longitude),
       radius: 10,
-    }),
+    },
   };
   const viewBoundString = JSON.stringify(viewBound);
-
-  const params = useMemo(() => {
-    const searchParams = new URLSearchParams();
-    const categorySlugs = categories?.map((category) => category.slug);
-    searchParams.set("status", "active,cancelled,postponed,predicted");
-    searchParams.set(
-      "eventTypes",
-      "community,concert,performing-arts,sport,festival,workshops,tradeshows,conferences"
-    );
-    searchParams.set("active_gte", new Date(startDate).toISOString());
-    searchParams.set("view", "list");
-    !latitude && !longitude
-      ? searchParams.set("locationIds", venueLocation?.city.id || "")
-      : searchParams.set("viewBound", viewBoundString);
-    typeOfEvent &&
-      (typeOfEvent === "online" || typeOfEvent === "hybrid") &&
-      (searchParams.set("eventFormats", typeOfEvent),
-      searchParams.set("categories", categorySlugs?.join(",") || ""));
-    return searchParams;
-  }, [startDate, endDate]);
+  const categorySlugs =
+    (categories &&
+      categories.length > 0 &&
+      categories?.map((category) => category.slug)) ||
+    [];
 
   const {
     data: eventsData,
@@ -89,7 +75,19 @@ const EventsListView: React.FC<MapProps> = ({
     error,
   } = useQuery({
     queryKey: ["eventDetail", startDate, endDate],
-    queryFn: async () => await getEventsWithSearchParams(params.toString()),
+    queryFn: async () =>
+      await getEvents({
+        view: "list",
+        status: "active,cancelled,postponed",
+        eventTypes:
+          "community,concert,performing-arts,sport,festival,workshops,tradeshows,conferences",
+        ...(startDate && { active_gte: new Date(startDate).toISOString() }),
+        ...((typeOfEvent === "online" || typeOfEvent === "hybrid") && {
+          eventFormats: typeOfEvent,
+        }),
+        ...(categorySlugs &&
+          categorySlugs.length > 0 && { categories: categorySlugs.join(",") }),
+      }),
     refetchOnWindowFocus: false,
   });
 
@@ -101,11 +99,14 @@ const EventsListView: React.FC<MapProps> = ({
     isLoading: boolean;
   }) => {
     return (
-      <div className="flex w-full h-fill justify-center rounded-md bg-white">
+      <div className="flex flex-col w-full h-fill gap-8 rounded-md bg-white">
+        <h1 className="font-medium">
+          Other online events in the same industry
+        </h1>
         {isLoading ? (
-          <Loader2 className="w-8 h-8 animate-spin text-black" />
+          <Loader2 className="w-8 h-8 animate-spin text-black self-center" />
         ) : eventsData && eventsData.length > 0 ? (
-          <ul className="flex flex-col gap-4 h-[300px] overflow-y-auto pr-2 scrollbar max-xl:h-80">
+          <ul className="flex flex-col gap-4 max-h-[520px] overflow-y-auto pr-2 scrollbar max-xl:h-80">
             {eventsData.map((event) => {
               const {
                 id,
@@ -113,7 +114,7 @@ const EventsListView: React.FC<MapProps> = ({
                 format: typeOfEvent,
                 startDateTime,
                 endDateTime,
-              } = event;
+              } = event.basic || {};
               return (
                 <li
                   key={id}

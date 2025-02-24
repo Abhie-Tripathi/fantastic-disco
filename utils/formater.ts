@@ -55,17 +55,17 @@ export const formatEstimatedSpend = (spend: string | null) => {
 
 export const getEventLatLong = (event: Event) => {
   const lat = parseFloat(
-    event.venueLocation?.venue?.latitude ||
-      event.venueLocation?.city?.latitude ||
-      event.venueLocation?.state?.latitude ||
-      event.venueLocation?.country?.latitude ||
+    event.basic.eventLocation?.venue?.latitude ||
+      event.basic.eventLocation?.city?.latitude ||
+      event.basic.eventLocation?.state?.latitude ||
+      event.basic.eventLocation?.country?.latitude ||
       ""
   );
   const lon = parseFloat(
-    event.venueLocation?.venue?.longitude ||
-      event.venueLocation?.city?.longitude ||
-      event.venueLocation?.state?.longitude ||
-      event.venueLocation?.country?.longitude ||
+    event.basic.eventLocation?.venue?.longitude ||
+      event.basic.eventLocation?.city?.longitude ||
+      event.basic.eventLocation?.state?.longitude ||
+      event.basic.eventLocation?.country?.longitude ||
       ""
   );
   return { lat, lon };

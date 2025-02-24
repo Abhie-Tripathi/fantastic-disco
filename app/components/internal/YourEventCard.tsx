@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styles from "./yourEventCard.style.module.css";
 import Image from "next/image";
-import upArrowLight from '/public/internal/up_arrow_light.svg'
+import upArrowLight from "/public/internal/up_arrow_light.svg";
 import { formatEventDates } from "@/utils/dateFormat";
-import ClockIcon from "/public/clock.svg";
 import StatusChangeDropdown from "@/app/components/internal/eventdetail/statusDropdown";
 import upArrow from "/public/internal/up_arrow.svg";
 import { useTheme } from "@/context";
 import UpVoteTag from "@/app/components/internal/coordinate/upVoteTag";
 import { Calendar, Location } from "geist-icons";
-import { AllEventsType } from "@/types/alleventtype";
 import { useCoordinateService } from "@/services/coordinateService";
 import { GAEvent } from "@/utils/GAEvent";
 
@@ -18,43 +16,24 @@ interface YourEventCardProps {
   isDateSame?: boolean;
   enquiryId: string;
   eventName?: string;
-  eventCountry?: string;
-  eventLocation?: string;
-  eventImage?: string;
+  eventCountry?: string | null;
+  eventLocation?: string | null;
+  eventImage?: string | null;
   eventStartDate?: string;
   eventEndDate?: string;
   eventCompany?: string;
   currentEnquiryStatus: string;
   upvote?: any;
   enquiryActivity?: any;
-  coordinateActions: { [status: string]: string}[];
+  coordinateActions: { [status: string]: string }[];
   pipelineConfig: any;
   handleModal?: (id: string, enquiryId: string) => void;
   handleShortlistModal?: (eventId: string, enquiryId: string) => void;
-  setSelectedId?:(status:string)=>void;
-  geniEvent?: AllEventsType;
-  handlePrefillEvent?: (value: AllEventsType) => void
-  handleDeleteModal?: (id: string, name: string) => void;
+  setSelectedId?: (status: string) => void;
   enquiryStatusUpdate: (eventId: string, status: string) => void;
 }
 interface VoteStatus {
-  [name: string]: boolean;
-}
-interface enquiry {
-  for: string;
-  like: number;
-}
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  const options: {} = { day: "numeric", month: "short", year: "numeric" };
-  return date.toLocaleDateString("en-GB", options);
-};
-
-const voteIdMapping: {[id :string]: string} = {
-  "SPEAKER": "SPEAKING",
-  "ATTENDEE": "ATTENDING",
-  "EXHIBITOR": "EXHIBITING",
-  "SPONSOR": "SPONSORING",
+  [name: string]: string | null;
 }
 
 const YourEventCard: React.FC<YourEventCardProps> = ({
@@ -74,66 +53,60 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   pipelineConfig,
   handleModal,
   handleShortlistModal,
-  geniEvent,
-  handlePrefillEvent,
   isDateSame,
-  handleDeleteModal,
   setSelectedId,
   enquiryStatusUpdate,
-  
 }) => {
-  if (eventStartDate) {
-    const formattedDate = formatDate(eventStartDate);
-  }
   // const [value,setValue]=useState("");
   const { theme } = useTheme();
   const [votesCount, setVotesCount] = useState(0);
   const [voteStatus, setVoteStatus] = useState<VoteStatus>({});
-  
-  const [interestedUsers, setInterestedUsers] = useState<any>({})
+
+  const [interestedUsers, setInterestedUsers] = useState<any>([]);
 
   const coordinateService = useCoordinateService();
 
-  const statusLabel = pipelineConfig?.filter((item: any)=>(
-    item.status === currentEnquiryStatus
-  ))?.[0]?.label;  
+  const statusLabel = pipelineConfig?.filter(
+    (item: any) => item.status === currentEnquiryStatus
+  )?.[0]?.label;
 
-  const handleVoteClick = async (item: string) => {
-    let voteType = coordinateActions.find((obj: any) => obj.label === item);
-    if (voteType?.status) {
+  const handleVoteClick = async (myActivityId: string | null, item: string) => {
+    if (item && myActivityId === null) {
       let payloadData = {
         enquiryId: enquiryId,
-        like: !voteStatus[item] ? 1 : 0,
-        type: voteIdMapping[voteType.status],
+        activityType: "UPVOTE",
+        activitySubType: item,
       };
 
       try {
-        const apiData: any = await coordinateService.upVote(payloadData);
+        const createUpvote: any = await coordinateService.upVote(payloadData);
+
         setVoteStatus((prevState) => ({
           ...prevState,
-          [item]: !prevState[item],
+          [item]: createUpvote?.id,
         }));
-        setVotesCount(apiData?.upvote?.like);
-  
+        setVotesCount((prev) => prev + 1);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
+    } else if (item && myActivityId !== null) {
+      const deleteIntent: any =
+        await coordinateService.deleteEnquiryActivityIntent(myActivityId);
+
+      if (deleteIntent) {
+        setVoteStatus((prevState) => ({
+          ...prevState,
+          [item]: null,
+        }));
+        setVotesCount((prev) => prev - 1);
+      }
     }
   };
-  const handleDeleteEvent = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
-    if (handleDeleteModal && geniEvent) {
-      // handleDeleteModal(geniEvent.eventId, geniEvent.name)
-    }
-  }
+
   const handleModalOpen = () => {
     if (enquiryId && eventId && handleModal) {
       handleModal(eventId, enquiryId);
     }
-    else if (geniEvent && handlePrefillEvent) {
-      handlePrefillEvent(geniEvent)
-    }
-
   };
 
   const handleClickEvent = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -141,45 +114,58 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
   };
 
   useEffect(() => {
-    if(Object.keys(interestedUsers).length === 0)
-      fetchInterestedUsers();
-    
-    setVotesCount(upvote && upvote[0].like);
+    if (interestedUsers.length === 0) fetchInterestedUsers();
 
-    setVoteStatus(enquiryActivity.reduce((acc: any, item: any) => {
-      acc[item.for] = item.like == 1 ? true : false;
-      return acc;
-    }, {}));
+    setVotesCount(upvote?.total || 0);
+
+    setVoteStatus(
+      coordinateActions.reduce((acc: any, item: any) => {
+        const temp = enquiryActivity.filter(
+          (myActivity: any) =>
+            myActivity.activityType === "UPVOTE" &&
+            myActivity.activitySubType === item.status
+        );
+        acc[item.status] = temp.length > 0 ? temp[0].id : null;
+        return acc;
+      }, {})
+    );
   }, []);
-  
+
   const fetchInterestedUsers = async () => {
     try {
-      const apiData = await coordinateService.getInterestedUsers(eventId, enquiryId);
+      const apiData: any = await coordinateService.getInterestedUsers(
+        eventId,
+        enquiryId
+      );
       if (apiData) {
-        setInterestedUsers(apiData.participent);
+        setInterestedUsers(apiData.interestedUsers);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
   return (
-
-    <div className={styles.outerDiv} >
+    <div className={styles.outerDiv}>
       <div
         className={`${styles.card} card`}
         onClick={() => {
           handleModalOpen();
-          GAEvent("Coordinate", "Coordinate", "Enquiry", "Card Clicked | View Detail");
+          GAEvent(
+            "Coordinate",
+            "Coordinate",
+            "Enquiry",
+            "Card Clicked | View Detail"
+          );
         }}
-        style={{ marginTop: !isDateSame && !geniEvent ? "0px" : "25px" }}
+        style={{ marginTop: !isDateSame ? "0px" : "25px" }}
       >
         {/* <div className={styles.cardBefore}></div> */}
         <div className={styles.topContainer} style={{ display: "flex" }}>
-          {eventImage &&
+          {eventImage && (
             <div className={styles.leftContainer}>
               <div className="tablet_view mobile_view">
                 <StatusChangeDropdown
-                 setSelectedId={setSelectedId}
+                  setSelectedId={setSelectedId}
                   label={statusLabel}
                   eventId={eventId}
                   enquiryId={enquiryId}
@@ -190,7 +176,9 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 />
               </div>
 
-              <div style={{ display: 'flex', boxShadow: "var(--shadow-large)" }}>
+              <div
+                style={{ display: "flex", boxShadow: "var(--shadow-large)" }}
+              >
                 <Image
                   src={eventImage}
                   alt="eventImage"
@@ -199,18 +187,17 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                   className={styles.cardImg}
                 />
               </div>
-
             </div>
-          }
+          )}
           <div className={styles.cardDetails}>
             <div className={styles.eventNameComp}>
               <div>
                 <div className={styles.eventName}>{eventName}</div>
                 <div className={styles.company}>{eventCompany}</div>
               </div>
-              {!geniEvent && <div className="desktop_view">
+              <div className="desktop_view">
                 <StatusChangeDropdown
-                setSelectedId={setSelectedId}
+                  setSelectedId={setSelectedId}
                   label={statusLabel}
                   eventId={eventId}
                   enquiryId={enquiryId}
@@ -219,74 +206,47 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                   pipelineConfig={pipelineConfig}
                   enquiryStatusUpdate={enquiryStatusUpdate}
                 />
-              </div>}
+              </div>
             </div>
             <div className={styles.locationAndDateContainer}>
-              {(eventLocation || geniEvent) && (
+              {eventLocation && (
                 <div className={styles.eventLocation}>
                   <div>
-                    {/* <Image
-                      src={place}
-                      alt="locationIcon"
-                      width={24}
-                      height={24}
-                      style={{ marginRight: "3px" }}
-                      className="icons"
-                    /> */}
-                    <Location height={'12px'} width={'12px'} color="var(--primary-text-color)" style={{display:"flex"}}/>
+                    <Location
+                      height={"12px"}
+                      width={"12px"}
+                      color="var(--primary-text-color)"
+                      style={{ display: "flex" }}
+                    />
                   </div>
                   <div>
                     {eventLocation
                       ? eventLocation === eventCountry
                         ? eventCountry
                         : `${eventLocation}, ${eventCountry}`
-                      :""
-                      //  `${geniEvent?.cityName}, ${geniEvent?.countryName}`
-                      }
+                      : ""}
                   </div>
                 </div>
               )}
 
               <div className={styles.eventDate}>
-                {/* <Image
-                  src={calendarIcon}
-                  alt="calendarIcon"
-                  width={14}
-                  height={14}
-                  className='icons'
-                /> */}
-                <Calendar height={'12px'} width={'12px'} color="var(--primary-text-color)"/>
+                <Calendar
+                  height={"12px"}
+                  width={"12px"}
+                  color="var(--primary-text-color)"
+                />
                 <div>
-                  {(eventStartDate && eventEndDate) && formatEventDates(eventStartDate, eventEndDate)}
-                  {/* {geniEvent && formatEventDates(geniEvent.startDate, geniEvent.endDate)} */}
+                  {eventStartDate &&
+                    eventEndDate &&
+                    formatEventDates(eventStartDate, eventEndDate)}
                 </div>
               </div>
-              {geniEvent && <div className={styles.eventTime}>
-                <Image
-                  src={ClockIcon}
-                  alt="clockIcon"
-                  width={14}
-                  height={14}
-                  className='icons'
-                />
-                {/* <div>{geniEvent.startTime}{" - "}{geniEvent.endTime}{", "}{geniEvent.gmtZone}</div> */}
-              </div>}
             </div>
-            {geniEvent && <div className={styles.description}>
-              {/* {geniEvent.description.substring(0, 100)}{geniEvent.description.length > 100 && "..."} */}
-            </div>}
-            {geniEvent && <div className={styles.tags_deleteContainer}>
-              <div className={styles.tags}>
-                <div className={styles.tag1}>Tradeshow</div>
-                <div className={styles.tag2}>In-Person</div>
-              </div>
-              <button className={styles.deleteBtn} onClick={(e) => handleDeleteEvent(e)}>Delete</button>
-            </div>}
 
-            {!geniEvent && <div className="tablet_view mobile_view">
+            <div className="tablet_view mobile_view">
               <div>
                 <div className={styles.total_upvotes}>
-                  {upvote && upvote[0].like}
+                  {upvote && votesCount}
                   <div style={{ display: "flex", paddingTop: "5px" }}>
                     <Image
                       src={theme === "light" ? upArrowLight : upArrow}
@@ -298,14 +258,19 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                   </div>
                 </div>
               </div>
-            </div>}
-            {!geniEvent && <div className="desktop_view">
+            </div>
+            <div className="desktop_view">
               <div
                 className={styles.allTagsOuterContainer}
                 onClick={handleClickEvent}
               >
-                <div className={styles.allTags} style={{cursor: 'default'}}>
-                  <div className={styles.total_upvotes} title={`Total upvotes count of ${coordinateActions.map(item => item.label).join(', ')}`}>
+                <div className={styles.allTags} style={{ cursor: "default" }}>
+                  <div
+                    className={styles.total_upvotes}
+                    title={`Total upvotes count of ${coordinateActions
+                      .map((item) => item.label)
+                      .join(", ")}`}
+                  >
                     {upvote && votesCount}
                     <div style={{ display: "flex", paddingTop: "10px" }}>
                       <Image
@@ -318,114 +283,53 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                       &nbsp;Upvotes
                     </div>
                   </div>
-                  {Object.entries(upvote[1]).map(([key, value], index: number) => (
+
+                  {coordinateActions.map((item: any) => (
                     <UpVoteTag
-                      key={index}
-                      type={key}
-                      status={voteStatus[key] ? "voted" : ""}
+                      key={item.status}
+                      type={item.status}
+                      label={item.label}
+                      status={voteStatus[item.status] ? "voted" : ""}
+                      myActivityId={voteStatus[item.status]}
                       handleVoteClick={handleVoteClick}
-                      userList={interestedUsers?.[key]}
+                      userList={interestedUsers?.filter(
+                        (users: any) => users.interest === item.status
+                      )}
                     />
                   ))}
-                  {/* <UpVoteTag
-                    type="Attending"
-                    status={voteStatus.Attending ? "voted" : ""}
-                    handleVoteClick={handleVoteClick}
-                    userList={interestedUsers.attendee}
-                  />
-                  <UpVoteTag
-                    type="Speaking"
-                    status={voteStatus.Speaking ? "voted" : ""}
-                    handleVoteClick={handleVoteClick}
-                    userList={interestedUsers.speakers}
-                  />
-                  <UpVoteTag
-                    type="Sponsoring"
-                    status={voteStatus.Sponsoring ? "voted" : ""}
-                    handleVoteClick={handleVoteClick}
-                    userList={interestedUsers.sponsors}
-                  />
-                  <UpVoteTag
-                    type="Exhibiting"
-                    status={voteStatus.Exhibiting ? "voted" : ""}
-                    handleVoteClick={handleVoteClick}
-                    userList={interestedUsers.exhibitors}
-                  /> */}
                 </div>
                 <div className={styles.viewCtas}>
-                  {/* <button className={styles.notesBtn} onClick={handleModalOpen}>Notes</button> */}
-                  <button className={styles.notesBtn} style={{ color: "var(--coordinate-primary-color)" }}
+                  <button
+                    className={styles.notesBtn}
+                    style={{ color: "var(--coordinate-primary-color)" }}
                     onClick={() => {
                       handleModalOpen();
-                      GAEvent("Coordinate", "Coordinate", "Enquiry", "View Detail");
+                      GAEvent(
+                        "Coordinate",
+                        "Coordinate",
+                        "Enquiry",
+                        "View Detail"
+                      );
                     }}
-                  >View Details</button>
+                  >
+                    View Details
+                  </button>
                 </div>
               </div>
-            </div>}
-            {/* 
-        <div className={styles.circles}>
-          <div className={styles.circle} data-name="John Doe">
-            <Image className={styles.image} src={person1} alt="person1" />
-          </div>
-          <div className={styles.circle} style={{ marginLeft: "-15px", width: "45px", height: "45px" }} data-name="Ravi Tripathi">
-            RT
-          </div>
-          <div className={styles.circle} style={{ marginLeft: "-15px" }} data-name="Jane Smith">
-            <Image className={styles.image} src={person2} alt="person2" />
-          </div>
-        </div>
-        <div className={styles.eventDetails}>
-          <div className={styles.detailContainer}>
-            <Image src={UserIcon} alt="user" width={50} height={24} />
-            <div>I&apos;m Interested</div>
-          </div>
-        </div>
-         */}
-          </div>
-        </div>
-        {!geniEvent && <div className={styles.bottomContainer}>
-          <div className="tablet_view mobile_view">
-            <div
-              style={{ display: "flex", gap: "6px", paddingTop: "20px", justifyContent: "center" }}
-              onClick={handleClickEvent}
-            >
-              {Object.entries(upvote[1]).map(([key, value], index: number) => (
-                <UpVoteTag
-                  key={index}
-                  type={key}
-                  status={voteStatus[key] ? "voted" : ""}
-                  handleVoteClick={handleVoteClick}
-                  userList={interestedUsers?.[key]}
-                />
-              ))}
-              {/* <UpVoteTag
-                type="Attending"
-                status={voteStatus.Attending ? "voted" : ""}
-                handleVoteClick={handleVoteClick}
-                userList={interestedUsers.attendee}
-              />
-              <UpVoteTag
-                type="Speaking"
-                status={voteStatus.Speaking ? "voted" : ""}
-                handleVoteClick={handleVoteClick}
-                userList={interestedUsers.speakers}
-              />
-              <UpVoteTag
-                type="Sponsoring"
-                status={voteStatus.Sponsoring ? "voted" : ""}
-                handleVoteClick={handleVoteClick}
-                userList={interestedUsers.sponsors}
-              />
-              <UpVoteTag
-                type="Exhibiting"
-                status={voteStatus.Exhibiting ? "voted" : ""}
-                handleVoteClick={handleVoteClick}
-                userList={interestedUsers.exhibitors}
-              /> */}
             </div>
           </div>
-        </div>}
+        </div>
+        <div className="tablet_view mobile_view">
+          <div
+            style={{
+              display: "flex",
+              gap: "6px",
+              paddingTop: "20px",
+              justifyContent: "center",
+            }}
+            onClick={handleClickEvent}
+          ></div>
+        </div>
       </div>
     </div>
   );

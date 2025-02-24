@@ -1,6 +1,5 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? "";
+const BASE_URL = "https://api.dev.gtm.whr.ai";
 const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
-
 export const endpoints = {
   //   auth: {
   //     me: `${BASE_URL}/me`,
@@ -10,17 +9,30 @@ export const endpoints = {
   //     verifyOtp: `${BASE_URL}/auth/customer/verify`,
   //     generateOtp: `${BASE_URL}/auth/customer/verify/generate`,
   //   },
+
+  auth: {
+    me: `${BASE_URL}/me`,
+    signUp: `${BASE_URL}/auth/sign-up`,
+    signIn: `${BASE_URL}/auth/sign-in`,
+    verifyOTP: `${BASE_URL}/auth/verify-otp`,
+    logout: `${BASE_URL}/me/sign-out`,
+  },
+
+  suggestions: {
+    location: `${BASE_URL}/suggestions/locations`,
+    designation: `${BASE_URL}/suggestions/designations`,
+    companies: `${BASE_URL}/suggestions/companies`,
+  },
   event: {
-    count: `${BASE_URL}/event/search`,
-    events: `${BASE_URL}/event/search`,
-    eventDetailById: `${BASE_URL}/event`,
+    count: `${BASE_URL}/events/count`,
+    events: `${BASE_URL}/events`,
+    eventDetailById: `${BASE_URL}/events`,
     eventEditionsDetailsById: `${BASE_URL}/event/editions`,
-    eventPOCDetailById: `${BASE_URL}/event-poc`,
     savedEvents: `${BASE_URL}/me/saved-events`,
     recentSearches: `${BASE_URL}/me/recent-searches`,
     poc: `${BASE_URL}/event-poc`,
-    enabledFilters: `${BASE_URL}/configuration`,
-    recentSearch: `${BASE_URL}/event/recent`,
+    enabledFilters: `${BASE_URL}/me/account/configuration`,
+    recentSearch: `${BASE_URL}/me/recent-searches`,
   },
   //   designations: `${BASE_URL}/designations`,
   //   categories: `${BASE_URL}/categories`,
@@ -39,34 +51,52 @@ export const endpoints = {
   //     eventTypes: `${BASE_URL}/trends/event-types`,
   //   },
   locations: `${BASE_URL}/location/country`,
-  locationSuggestion: `${BASE_URL}/location/suggestion`,
+  locationSuggestion: `${BASE_URL}/suggestions/locations`,
   designations: `${BASE_URL}/designation`,
-  users: `${BASE_URL}/auth/users`,
+  users: `${BASE_URL}/me/account/users`,
   trends: {
-    eventTrends: `${BASE_URL}/trend`,
+    eventTrends: `${BASE_URL}/events/trends`,
     predictedAttendance: `${BASE_URL}/trends/predicted-attendance`,
     predictedEvents: `${BASE_URL}/trends/predicted-number-of-events`,
     eventTypes: `${BASE_URL}/trends/event-types`,
   },
   tracker: {
-    commonUrl: `${BASE_URL}/tracker`,
+    suggestion:`${BASE_URL}/suggestions/companies`,
+    commonUrl: `${BASE_URL}/trackers`,
     access: `${BASE_URL}/tracker/access`,
     shareAccess: `${BASE_URL}/access`,
     createNewAccess: `${BASE_URL}/tracker/invite`,
-    create: `${BASE_URL}/tracker`,
-    getTrackers: `${BASE_URL}/tracker`,
+    create: `${BASE_URL}/trackers`,
+    getTrackers: `${BASE_URL}/me/trackers`,
     getSavedEvents: `${BASE_URL}/tracker`,
     saveEvent: `${BASE_URL}/tracker/saved-events`,
-    getNotes: `${BASE_URL}/comment?stage=INTERNAL&entityType=TRACKER`,
-    saveNotes: `${BASE_URL}/comment`,
+    getNotes: `${BASE_URL}/trackers`,
+    saveNotes: `${BASE_URL}/comments`,
   },
   coordinate: {
-    enquiry: `${BASE_URL}/userInterest/enquiry`,
-    participent: `${BASE_URL}/userInterest/totalParticipent`,
+    enquiry: `${BASE_URL}/me/account/enquiries`,
+    participent: `${BASE_URL}/me/account/enquiries/count`,
     iterestedUsers: `${BASE_URL}/userInterest`,
-    enquiryDetail: `${BASE_URL}/enquiry`,
+    enquiryDetail: `${BASE_URL}/enquiries`,
     pocUnmask: `${BASE_URL}/event-poc/unmask`,
-    latestComment: `${BASE_URL}/dashboard/latest-comment`,
+    latestComment: `${BASE_URL}/me/account/latest-comment`,
+    createIntent: `${BASE_URL}/intents/user-event-interest`,
+    eventDetail: `${BASE_URL}/events`,
+  },
+  intent: {
+    userEventInterest: `${BASE_URL}/intents/user-event-interest`,
+    enquiryActivity: `${BASE_URL}/intents/enquiry-activity`,
+  },
+  account: {
+    users: `${BASE_URL}/me/account/users`,
+    configuration: `${BASE_URL}/me/account/configuration`,
+  },
+  company: {
+    list: `${BASE_URL}/company/search`,
+    unmaskUser: `${BASE_URL}/company/unmask`,
+    detail: `${BASE_URL}/company/search`,
+    events: `${BASE_URL}/company/event`,
+    pocList: `${BASE_URL}/company/poc`,
   },
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {
@@ -107,6 +137,10 @@ export const endpoints = {
   calendar: {
     getyearlyEvents: `${BASE_URL}/event?`,
   },
-  configuration: `${BASE_URL}/configuration`,
-  myprofile: `${BASE_URL}/auth/customer/profile`,
+  configuration: {
+    filterConfiguration: `${BASE_URL}/me/account/configuration/filter`,
+    interestConfiguration: `${BASE_URL}/me/account/configuration/interest`,
+    outreachConfiguration: `${BASE_URL}/me/account/configuration/outreach`,
+  },
+  myprofile: `${BASE_URL}/me`,
 };

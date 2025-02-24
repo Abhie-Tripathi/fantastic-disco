@@ -1,0 +1,64 @@
+import { z } from "zod";
+
+const CreateUserEventInterestSchema = z.object({
+  eventId: z.string().uuid(),
+  sourceModule: z.string(),
+  sourceId: z.string().uuid().optional(),
+  interest: z.string(),
+});
+
+// const CreateUserEventInterestSchema = CreateUserEventInterestHttpSchema.extend({
+//   eventId: z.string().uuid().optional(),
+//   accountId: z.string().uuid(),
+//   interestedUserId: z.string().uuid(),
+//   recommendedBy: z.string().uuid().optional(),
+//   sourceModule: z.nativeEnum(InterestSourceModule),
+//   interest: z.nativeEnum(Interest),
+//   enquiryId: z.string().uuid().optional(),
+//   sourceId: z.string().uuid().optional(),
+// });
+
+const UpdateUserEventInterestHttpSchema = z.object({
+  status: z.string().optional(),
+  note: z.string().min(3).max(255).optional(),
+});
+
+const UpdateUserEventInterestSchema = UpdateUserEventInterestHttpSchema.extend({
+  id: z.string().uuid().optional(),
+  approvedBy: z.string().uuid().optional(),
+  deleted: z.boolean().optional(),
+  modifiedBy: z.string().uuid().optional(),
+});
+
+const GetUserEventInterestSchema = z.object({
+  id: z.string().uuid().optional(),
+  eventId: z.string().uuid().optional(),
+  enquiryId: z.string().uuid().optional(),
+  recommendedBy: z.string().uuid().optional(),
+  approvedBy: z.string().uuid().optional(),
+  interestedUserId: z.string().uuid().optional(),
+  interest: z.array(z.string()).optional(),
+  status: z.string().optional(),
+  sourceModule: z.string().optional(),
+  sourceId: z.string().uuid().optional(),
+  accountId: z.string().uuid().optional(),
+  ownerId: z.string().uuid().optional(),
+  show: z.enum(["user", "enquiry"]).optional(),
+});
+
+export enum UserInterestsGroupBy {
+  interests = "interests",
+  status = "status",
+}
+
+const GetUserEventInterestCountSchema = GetUserEventInterestSchema.extend({
+  groupBy: z.nativeEnum(UserInterestsGroupBy).optional(),
+});
+
+export type CreateUserEventInterest = z.infer<
+  typeof CreateUserEventInterestSchema
+>;
+export type UpdateUserEventInterest = z.infer<
+  typeof UpdateUserEventInterestSchema
+>;
+export type GetUserEventInterest = z.infer<typeof GetUserEventInterestSchema>;

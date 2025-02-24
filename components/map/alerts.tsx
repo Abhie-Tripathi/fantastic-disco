@@ -1,5 +1,4 @@
-
-
+//@ts-nocheck
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -59,6 +58,7 @@ interface AlertsProps {
 }
 
 const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
+  console.log("selectedAlert", selectedAlert);
   const [open, setOpen] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const eventService = useEventsService();
@@ -67,17 +67,18 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
   filteredParams.set("view", "list");
   if (filteredParams.get("geoCoordinates")) {
     const geoCoordinates = JSON.parse(
-      filteredParams.get("geoCoordinates")?.toString() || "{}");
+      filteredParams.get("geoCoordinates")?.toString() || "{}"
+    );
     filteredParams.delete("geoCoordinates");
     filteredParams.set(
       "viewBound",
       JSON.stringify({
         boundType: "point",
-        coordinates: JSON.stringify({
+        coordinates: {
           latitude: geoCoordinates.latitude,
           longitude: geoCoordinates.longitude,
           radius: geoCoordinates.radius,
-        }),
+        },
       })
     );
   }

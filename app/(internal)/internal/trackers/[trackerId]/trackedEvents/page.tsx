@@ -15,7 +15,7 @@ const Trackers = React.lazy(
 import { TrackersAdapter } from "@/adapters/trackerAdapter";
 import { useQuery } from "@tanstack/react-query";
 import List from "@/components/search/list";
-import Table from "@/app/components/Table";
+import Table from "@/app/components/Table/EventTable";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl} from "@/context";
@@ -27,7 +27,7 @@ import {
   CalendarMonthEventsResponse,
   CalendarWeekEventsResponse,
   Event,
-  EventsResponse,
+  // EventsResponse,
   MapEventsResponse,
 } from "@/types/events";
 import Link from "next/link";
@@ -66,6 +66,7 @@ const Page = ({ params }: { params: any }) => {
   
   const pathname = usePathname();
   const {getCalendarViewEvents,getTrackerEvents, getSavedEvents} = useTrackerServices();
+  const {savedEventCount}=useTrackerContext();
   const {adaptParams}=TrackersAdapter;
   const {getFilterValue, setFilter} = useFilterState();
   const [type, setType] = useState<string | undefined>();
@@ -74,8 +75,9 @@ const Page = ({ params }: { params: any }) => {
   const [trackerDetail, setTrackerDetail] = useState<any>([]);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const query = Object.fromEntries(searchParams.entries());
   const token = searchParams.get("token");
-  const [savedEventCount,setSavedEventCount]=useState<number>(0);
+  // const [savedEventCount,setSavedEventCount]=useState<number>(0);
   const { trackerId } = params;
   const viewType=searchParams.get("view");
   const skip= getFilterValue("skip") || "0";
@@ -167,57 +169,47 @@ const Page = ({ params }: { params: any }) => {
   //     setFilter("skip","0")
   //     setFilter("take","10")
   // }, [active])
-  const {
-    data: eventData,
-    error,
-    isLoading,
-    refetch,
-  } = useQuery<
-    | CalendarMonthEventsResponse
-    | CalendarWeekEventsResponse
-    | EventsResponse
-    | MapEventsResponse
-    | undefined
-  >({
-    queryKey: ["events", params, searchParams.toString()],
-    queryFn: async () => {
-       if(active==="Saved Events"){
-        const savedEventsResponse = await getSavedEvents(
-          trackerId, 
-          `offset=${skip}&max=${take}`
-        );
+  // const {
+  //   data: eventData,
+  //   error,
+  //   isLoading,
+  //   refetch,
+  // } = useQuery<
+  //   | CalendarMonthEventsResponse
+  //   | CalendarWeekEventsResponse
+  //   | Event
+  //   | MapEventsResponse
+  //   | undefined
+  // >({
+  //   queryKey: ["events", params, searchParams.toString()],
+  //   queryFn: async () => {
+  //      if(active==="Saved Events"){
+  //       const savedEventsResponse = await getSavedEvents(
+  //         trackerId, 
+  //         `offset=${skip}&max=${take}`
+  //       );
       
-        return savedEventsResponse as EventsResponse | undefined;
-        }
-      else if (viewType === "list") {
-        const trackerEventsResponse = await getTrackerEvents(
-          trackerId,
-          `offset=${skip}&limit=${take}`,
-          active === "Active Events"
-            ? "active"
-            : active === "Expired Events"
-            ? "expired"
-            : active === "New Events"
-            ? ""
-            : active === "Saved Events"
-            ? "saved"
-            : "active"
-        ) ;
-        return trackerEventsResponse  as EventsResponse | undefined;
-      }
+  //       return savedEventsResponse as Event | undefined;
+  //       }
+  //     else if (viewType === "list") {
+  //       const trackerEventsResponse = await getTrackerEvents(
+  //         query, trackerId
+  //       ) ;
+  //       return trackerEventsResponse  as Event | undefined;
+  //     }
       
-      return undefined; 
-    },
-    refetchOnWindowFocus: false,
-    staleTime: 0,
-  });
-  const displayData = eventData;
-  console.log(displayData);
+  //     return undefined; 
+  //   },
+  //   refetchOnWindowFocus: false,
+  //   staleTime: 0,
+  // });
+  // const displayData = eventData;
+  // console.log(displayData);
 
-  const events = displayData?.events || [];
-  const count = displayData?.count || 0;
+  // const events = (displayData?.events as Event[]) ?? [];
+  // const count = (displayData?.count as number) ?? 0;
   useEffect(() => {
-    setSavedEventCount(data?.tracker?.savedEventTotalCount);
+    // setSavedEventCount(data?.tracker?.savedEventTotalCount);
     setTrackerDetail(data?.tracker);
     // createQueryString();
     setLoading(true);
@@ -392,18 +384,15 @@ const Page = ({ params }: { params: any }) => {
  const addQueryString = (value:string) => {
   setFilter('eventType', value);
 };
-const cityIds = trackerDetail?.filterValue?.locationIds?.city?.length > 0 
-  ? trackerDetail.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0]) 
-  : [];
-
-const countryIds = trackerDetail?.filterValue?.locationIds?.country?.length > 0 
-  ? trackerDetail.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0]) 
-  : [];
-
-const stateIds = trackerDetail?.filterValue?.locationIds?.state?.length > 0 
-  ? trackerDetail.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0]) 
-  : [];
-  const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
+  let trackerLoc: string[]=[];
+  
+  if(data?.filterValues?.locationIds){
+    const ids = Object?.keys(data?.filterValues?.locationIds);
+    console.log(ids);
+    
+    trackerLoc=ids;
+  }
+  
 const activeVal =
  active ===
   "Active Events"
@@ -446,7 +435,7 @@ const activeVal =
                 <div className={styles.circle} style={{background: active==="Active Events"?"white":"", color: active==="Active Events"?"var(--primary-color)":""}}>
                   {loading ? (
                     formatCount(
-                      data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.active
+                      data?.groupedEventsCount?.active
                     )
                   ) : (
                     <div className={styles.loader}></div>
@@ -470,7 +459,7 @@ const activeVal =
                 <div className={styles.circle}>
                   {loading ? (
                     formatCount(
-                      data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.new
+                      data?.groupedEventsCount?.new
                     )
                   ) : (
                     <div className={styles.loader}></div>
@@ -499,7 +488,7 @@ const activeVal =
                 <div className={styles.circle}>
                   {loading ? (
                     formatCount(
-                      data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
+                      data?.groupedEventsCount?.past
                     )
                   ) : (
                     <div className={styles.loader}></div>
@@ -528,7 +517,7 @@ const activeVal =
                 <div className={styles.circle} style={{background: active==="Saved Events"?"white":"", color: active==="Saved Events"?"var(--primary-color)":""}}>
                   {loading ? (
                     formatCount(
-                     savedEventCount
+                     savedEventCount                     
                     )
                   ) : (
                     <div className={styles.loader}></div>
@@ -579,20 +568,21 @@ const activeVal =
         {(view === "table") && (
           <div className="flex-grow overflow-hidden">
             <Suspense fallback={<Loading />}>
-          <Table
+          {/* <Table
             savedEventCount={savedEventCount}
             setSavedEventCount={setSavedEventCount}
             showInsights={showInsights}
             eventType={active}
             setActiveValue={setActiveValue}
             source="trackers"
-          />
+          /> */}
+          <Table source="tracker" trackerId={trackerId}/>
           </Suspense>
           </div>
         )}
         {view === "list" && (
   <div className="flex-grow overflow-hidden">
-    {isLoading ? (
+    {/* {isLoading ? (
       <div className="px-10 py-5">
       <Loading />
       </div>
@@ -616,12 +606,12 @@ const activeVal =
           buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration?type=${trackerType}`}
         />
       )
-    ) : (
+    ) : ( */}
       <>
         {/* <Alerts /> */}
-        <List events={events as Event[]} count={count} />
+        <List source="tracker" trackerId={params.trackerId}/>
       </>
-    )}
+    {/* )} */}
   </div>
 )}
 
@@ -634,7 +624,7 @@ const activeVal =
               </div>
                : 
                 <Map source="tracker" 
-                searchParams={`${active==="Active Events"? "active": active==="Expired Events"?"expired":active==="New Events"?"":active==="Saved Events"?"saved":"active"}`}
+                searchParams={`${active==="Active Events"? "active": active==="Expired Events"?"past":active==="New Events"?"":active==="Saved Events"?"saved":"active"}`}
                 trackerId={params.trackerId}
                 trackerLoc={trackerLoc.join(",")}
                 trackerType={trackerType}

@@ -62,8 +62,9 @@ export default function AutocompleteInput({
   const databaseLocationResult = useDatabaseLocationcomplete(
     type == "LocationId" ? inputValue : ""
   );
-  const nominatimResult = useNominatimAutocomplete(
-    type == "GeoCoordinate" ? inputValue : ""
+  const nominatimResult = useDatabaseLocationcomplete(
+    type == "GeoCoordinate" ? inputValue : "",
+    "VENUE"
   );
 
   const { predictions, isLoading, isError } =

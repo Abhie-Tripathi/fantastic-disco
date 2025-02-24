@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./page.style.module.css";
 import EventDetail from "@/app/components/internal/eventdetail/EventDetail";
 import { useTheme } from "@/context";
-import { enquiryType } from "@/types/outreachEnquiryTypes";
+import { enquiryType } from "@/types/coordinateEventType";
 import { useCoordinateService } from "@/services/coordinateService";
 import NullState from "@/app/components/trackers/nullState";
 import coordinateNullState from "/public/coordinateNullState.svg";
@@ -33,6 +33,9 @@ const Page: React.FC = () => {
   const [singleEventId, setSingleEventId] = useState<string>("");
   const [currentEnquiryStatus, setCurrentEnquiryStatus] = useState<string>("");
   const [statusChanged, setStatusChanged] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState<any>();
+
+  const [coordinateActions, setCoordinateActions] = useState<any>([]);
 
   const coordinateService = useCoordinateService();
 
@@ -78,7 +81,7 @@ const Page: React.FC = () => {
 
     // To prevent adding the task into the same container
     if (target !== source) {
-      taskName.enquiryStatus = target;
+      taskName.status = target;
 
       // Remove from source container
       setTaskDetail(prevState => ({
@@ -100,7 +103,7 @@ const Page: React.FC = () => {
           count: prevState[target].count + 1,
         },
       }));
-      changeEnquiryStatus(target, taskName.enquiryId, source, initiator);
+      changeEnquiryStatus(target, taskName.id, source, initiator);
     }
   };
 
@@ -115,7 +118,7 @@ const Page: React.FC = () => {
           ...prevState,
           [source]: {
             ...prevState[source],
-            data: [...prevState[source].data, ...apiData.enquiryData],
+            data: [...prevState[source].data, ...apiData.enquiries],
           },
         }));
       }
@@ -132,6 +135,7 @@ const Page: React.FC = () => {
       setEnquiryId(enquiryId ? enquiryId : "");
       setSingleEventId(eventId);
       setCurrentEnquiryStatus(enquiryStatus ? enquiryStatus : "");
+      setModalContent(task);
     }
     setData(task);
     setModalOpen(!modalOpen);
@@ -182,16 +186,18 @@ const Page: React.FC = () => {
       status: status,
     });
 
+    console.log('fetchPipelineData', status, label, page);
+    
     if (shortlistApiData && shortlistApiData !== undefined) {
       setTaskDetail(prevState => ({
         ...prevState,
         [status]: {
           ...prevState[status],
           label: label,
-          data: [...prevState[status].data, ...shortlistApiData.enquiryData],
-          count: shortlistApiData.totalCount,
+          data: [...prevState[status].data, ...shortlistApiData.enquiries],
+          count: shortlistApiData.count,
           dataLoaded: true,
-          noMoreData: (shortlistApiData.enquiryData.length < 10 ) ? true : false,
+          noMoreData: (shortlistApiData.enquiries.length < 10 ) ? true : false,
           page: page,
         },
       }));
@@ -239,9 +245,12 @@ const Page: React.FC = () => {
   const getOutreachConfig = async () => {
     try {
       const apiData: any = await coordinateService.getPipelineConfig();
-      const outreachPipeLine1 = apiData?.outreach_stage?.slice(1, apiData.outreach_stage.length - 1) || [];
+      const outreachPipeLine1 = apiData?.outreach?.slice(1, apiData.outreach.length - 1) || [];
   
       setConfigData(outreachPipeLine1); // Set the configuration data
+
+      const apiData2: any = await coordinateService.getInterestConfig();
+      setCoordinateActions(apiData2?.interest?.slice(1));
   
       // Prepare taskDetail object
       let temp: taskDetailType = {};
@@ -382,7 +391,7 @@ const Page: React.FC = () => {
         <div
           className={`${styles.modal} ${
             theme === "light" ? styles.modal_light : ""
-          }`}
+          } lg:w-[calc(100vw - 70px)]`}
         >
           <EventDetail
             openEventDetails={false}
@@ -399,6 +408,8 @@ const Page: React.FC = () => {
             }
             openEventRequest={false}
             configData={configData}
+            coordinateActions={coordinateActions}
+            modalContent={modalContent}
           />
         </div>
       )}

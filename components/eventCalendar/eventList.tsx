@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, Loader2 } from "lucide-react";
+import { AlertTriangle, Loader2, X, Star } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -16,7 +16,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Event, EventsResponse } from "@/types/events";
+import { Event } from "@/types/events";
 import { differenceInDays, format } from "date-fns";
 import { useEventsService } from "@/services/eventsService";
 import { useQuery } from "@tanstack/react-query";
@@ -25,51 +25,51 @@ import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import { formattedDateRange } from "@/utils/date";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerServices } from "@/services/trackerServices";
+import SortDropdown from "@/components/search/sortDropdown";
+import { lightenColor } from "@/lib/utils";
 
 export default function EventList({
   eventDate,
   onClose,
   source,
-  trackerId
+  trackerId,
+  onSort,
 }: {
   eventDate: Date;
   onClose: () => void;
   source?: string;
-  trackerId?:string;
+  trackerId?: string;
+  onSort?: (sortValue: string) => void;
 }) {
-  const {
-    getFilterValue,
-  } = useFilterState();
+  const { getFilterValue } = useFilterState();
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState(getFilterValue("sortBy") || "start");
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const { getCalendarViewEvents } = useTrackerServices();
-  const active=getFilterValue("eventType");
-  
+  const active = getFilterValue("eventType");
+
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.delete("view");
-  filteredParams.set("skip", String((currentPage - 1) * 20));
+  filteredParams.set("offset", String((currentPage - 1) * 20));
   filteredParams.set("active_lte", eventDate.toISOString());
   filteredParams.set("active_gte", eventDate.toISOString());
+  filteredParams.set("sortBy", sortBy);
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString()],
+    queryKey: ["events", sortBy, filteredParams.toString()],
     queryFn: () =>
-      source!=="tracker"?eventService.getEventsWithSearchParams(filteredParams.toString()):getCalendarViewEvents(trackerId || "", `type=${
-        active === "activeEvent"
-          ? "active"
-          : active === "expiredEvent"
-          ? "expired"
-          : active === "newEvent"
-          ? "" : active === "savedEvent" ? "saved":
-           "active"
-      }&startDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&endDate=${eventDate.toISOString().split('T')[0]},${eventDate.toISOString().split('T')[0]}&limit=20&offset=${(currentPage - 1) * 20 }`, true ),
+      source!=="tracker"?eventService.getEventsWithSearchParams(filteredParams.toString()):getCalendarViewEvents(trackerId || "", `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${(currentPage - 1) * 20 }`, true ),
   });
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  function isEventResponse(data: any): data is EventsResponse {
+  const handleSort = (newSortValue: string) => {
+    setSortBy(newSortValue);
+  };
+
+  function isEventResponse(data: any): data is any {
     return data && "events" in data && Array.isArray(data.events);
   }
 
@@ -78,48 +78,88 @@ export default function EventList({
   const totalPages = Math.ceil(count / 20) || 1;
 
   const EventCard = ({ event }: { event: Event }) => {
-    const address = event.venueLocation
-      ? event.venueLocation.city?.name === "Online"
+    const address = event.basic.eventLocation
+      ? event.basic.eventLocation.city?.name === "Online"
         ? "Online"
         : [
-            event.venueLocation?.venue?.name,
-            event.venueLocation?.city?.name,
-            event.venueLocation?.state?.name,
-            event.venueLocation?.country?.name,
+            event.basic.eventLocation?.venue?.name || "TBA",
+            event.basic.eventLocation?.city?.name,
+            event.basic.eventLocation?.state?.name,
+            event.basic.eventLocation?.country?.name,
           ]
             .filter(Boolean)
             .join(", ")
       : "Venue to be announced";
 
-    const formattedStartDate = format(event.startDateTime, "dd MMM yyyy");
-    const formattedEndDate = format(event.endDateTime, "dd MMM yyyy");
-
-    const days = differenceInDays(event.endDateTime, event.startDateTime) + 1;
-
-    const formattedRange =
-      formattedStartDate === formattedEndDate
-        ? formattedStartDate
-        : `${formattedStartDate} - ${formattedEndDate} (${days} ${
-            days === 1 ? "day" : "days"
-          })`;
-
     return (
-      <Link href={`/internal/event/${event.id}`} target="_blank">
-        <Card key={event.id} className="mb-4 relative">
-          <div className="absolute left-0 top-0 bottom-0 w-1 rounded-md bg-[#5055A3]" />
-          <CardContent className="p-4">
-            <div className="flex items-center mb-2 pb-2 border-b">
-              {eventTypeIcons[event.primaryEventType || "festivals"]}
-              <span className="text-xs font-semibold text-primary capitalize ml-2">
-                {event.primaryEventType}
-              </span>
-            </div>
-            <h3 className="font-semibold mb-2 text-sm">{event.name}</h3>
-            <div className="flex items-center text-xs mb-2">
-              <span>{address}</span>
-            </div>
-            <div className="flex items-start text-xs text-[#666666]">
-            {formattedDateRange(event.startDateTime, event.endDateTime)}
+      <Link href={`/internal/event/${event.basic.id}`} target="_blank">
+        <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
+          <CardContent className="p-3">
+            <div className="flex items-start gap-3">
+              {event.basic.logoUrl ? (
+                <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100">
+                  <img
+                    src={event.basic.logoUrl}
+                    alt={`${event.basic.name} logo`}
+                    className="w-full h-full object-contain p-1"
+                  />
+                </div>
+              ) : (
+                <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center bg-gray-50 border border-gray-100">
+                  <span className="text-[#5055A3] text-2xl font-semibold">
+                    {event.basic.name.charAt(0)}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge
+                    variant="secondary"
+                    className="flex items-center gap-2 bg-pink-100 text-pink-800 hover:bg-pink-100 capitalize rounded-sm"
+                    style={{
+                      color:
+                        eventTypeColors[event.basic.primaryEventType || ""],
+                      backgroundColor: lightenColor(
+                        eventTypeColors[event.basic.primaryEventType || ""],
+                        0.9
+                      ),
+                    }}
+                  >
+                    <span>
+                      {
+                        eventTypeIcons[
+                          event.basic.primaryEventType || "festivals"
+                        ]
+                      }
+                    </span>
+                    <span>{event.basic.primaryEventType}</span>
+                  </Badge>
+                  {event.basic.rating > 0 ? (
+                    <Badge
+                      variant="outline"
+                      className="text-gray-600 capitalize rounded-sm"
+                    >
+                      <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+                      <span>{event.basic.rating}</span>
+                    </Badge>
+                  ) : (
+                    ""
+                  )}
+                </div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <h3 className="font-semibold text-sm line-clamp-2">
+                    {event.basic.name}
+                  </h3>
+                </div>
+                <div className="text-xs text-gray-600 mb-1">{address}</div>
+                <div className="text-xs font-medium text-primary">
+                  {formattedDateRange(
+                    event.basic.startDateTime,
+                    event.basic.endDateTime
+                  )}
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -245,14 +285,14 @@ export default function EventList({
             <Button
               variant="ghost"
               size="sm"
-              className="text-lg"
+              className="h-7 w-7 p-0"
               onClick={onClose}
             >
-              &times;
+              <X className="w-4 h-4" />
             </Button>
           </div>
 
-          <div className="flex space-x-2 mt-4">
+          <div className="flex justify-between items-center mt-4">
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="text-white bg-primary">
                 {count}
@@ -261,11 +301,12 @@ export default function EventList({
                 Events Found
               </span>
             </div>
+            <SortDropdown compact={true} value={sortBy} onSort={handleSort} />
           </div>
         </div>
         <ScrollArea className="h-[calc(100%-7rem)] p-4 pt-0">
           {events.map((event: Event) => (
-            <EventCard key={event.id} event={event} />
+            <EventCard key={event.basic.id} event={event} />
           ))}
           {events.length > 0 && (
             <Pagination>

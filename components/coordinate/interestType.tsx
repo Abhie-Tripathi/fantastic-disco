@@ -30,11 +30,11 @@ export default function InterestTypeSelector( { coordinateActions }: Props ) {
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
 
   useEffect(() => {
-    if (localFilters?.interest)
+    if (localFilters?.type)
       GAEvent("Coordinate", "Filter", "Coordinate", "Coordinate | Type | Auto Applied");
 
-    setSelectedStatuses(localFilters?.interest?.split(",") || []);
-  }, [localFilters?.interest]);
+    setSelectedStatuses(localFilters?.type?.split(",") || []);
+  }, [localFilters?.type]);
 
   const selectedStatus = selectedStatuses.length;
 
@@ -53,7 +53,7 @@ export default function InterestTypeSelector( { coordinateActions }: Props ) {
   // };
 
   const handleApply = () => {
-    setLocalFilter("interest", selectedStatuses.join(","));
+    setLocalFilter("type", selectedStatuses.join(","));
     setIsOpen(false);
     applyFilters();
   };

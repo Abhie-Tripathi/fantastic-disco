@@ -33,7 +33,7 @@ export default function FrequencySelector() {
     const newFrequencies = selectedFrequencies.includes(frequencyId)
       ? selectedFrequencies.filter((id) => id !== frequencyId)
       : [...selectedFrequencies, frequencyId];
-
+    
     setLocalFilter("frequencies", newFrequencies.join(","));
   };
 

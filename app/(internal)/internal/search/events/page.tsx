@@ -1,13 +1,11 @@
 "use client";
 
-import { EventsAdapter } from "@/adapters/eventsAdapter";
-import Table from "@/app/components/Table";
-import ZeroState from "@/app/components/zerostate";
+import Table from "@/app/components/Table/EventTable";
 import EventCalendar from "@/components/eventCalendar";
 import AdvancedFilters from "@/components/search/advancedFilters";
 import UserRatingSelector from "@/components/search/userRatingSelector";
 import CategorySelector from "@/components/search/categorySelector";
-import CreateTrackerDialog from "@/components/search/createTrackerDialog";
+// import CreateTrackerDialog from "@/components/search/createTrackerDialog";
 import DateRangeSelector from "@/components/search/dateRange";
 import EventEntrySelector from "@/components/search/eventEntry";
 import EventFormatSelector from "@/components/search/eventFormat";
@@ -18,24 +16,21 @@ import StatusSelector from "@/components/search/status";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
 import List from "@/components/search/list";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useFilterContext } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
-import { useEventsService } from "@/services/eventsService";
-import { ApiError } from "@/types/api";
-import {
-  CalendarYearEventsResponse,
-  CalendarMonthEventsResponse,
-  CalendarWeekEventsResponse,
-  Event,
-  EventsResponse,
-  MapEventsResponse,
-} from "@/types/events";
 import { GAEvent } from "@/utils/GAEvent";
-import { useQuery } from "@tanstack/react-query";
-import { ArrowUpRight, Filter, FilterX, Loader2, Plus, TableIcon, ListIcon, MapIcon, CalendarIcon, Globe } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import {
+  ArrowUpRight,
+  CalendarIcon,
+  Filter,
+  FilterX,
+  Globe,
+  ListIcon,
+  Loader2,
+  Plus,
+  TableIcon,
+} from "lucide-react";
 import {
   lazy,
   Suspense,
@@ -49,72 +44,21 @@ import { toast } from "react-toastify";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import Tooltip from "@/app/components/internal/walkthrough/Tooltip";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
-
+import SortDropdown from "@/components/search/sortDropdown";
+import EventCount from "@/components/search/eventCount";
+import { isEventeli } from "@/config";
+import Alerts from "@/components/search/alerts";
 const Map = lazy(() => import("@/components/map"));
 
-interface GeoCoordinate {
-  type: "geoCoordinate";
-  lat: number;
-  lng: number;
-  radius: number;
-}
-
-interface LocationIds {
-  type: "locationIds";
-  id: string;
-}
-
-type LocationState = GeoCoordinate | LocationIds | null;
-
 const Search = () => {
-  const router = useRouter();
-  const { navigateWithParams, getFilterValue, setFilter, setMultipleFilters } =
-    useFilterState();
+  const { getFilterValue, setFilter } = useFilterState();
   const { searchParams } = useDefaultFilters();
-  const eventService = useEventsService();
   const selectedView = getFilterValue("view") || "list";
   const { applyFilters, localFilters, clearLocalFilters, enabledFilters } =
     useFilterContext();
   const [view, setView] = useState<string>(searchParams.get("view") || "");
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
-  const [tableLoading, setTableLoading] = useState(true);
-  const [validationError, setValidationError] = useState("");
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
-  const [customTrackerName, setCustomTrackerName] = useState<string>("");
-  const {
-    data: eventData,
-    error,
-    isLoading,
-    refetch,
-  } = useQuery<
-    | CalendarMonthEventsResponse
-    | CalendarWeekEventsResponse
-    | EventsResponse
-    | MapEventsResponse
-    | undefined
-  >({
-    queryKey: ["events", searchParams.toString()],
-    queryFn: () =>
-      eventService.getEventsWithSearchParams(searchParams.toString()),
-    enabled:
-      !!searchParams.toString() &&
-      !(selectedView == "table" || selectedView == "") &&
-      !(
-        Array.from(searchParams.values()).length == 0 ||
-        (Array.from(searchParams.values()).length == 1 &&
-          (Array.from(searchParams.values())[0] == "list" ||
-            Array.from(searchParams.values())[0] == "calendar" ||
-            Array.from(searchParams.values())[0] == "map"))
-      ),
-    refetchOnWindowFocus: false,
-    gcTime: 0,
-    staleTime: 0,
-  });
-
-  const displayData = eventData;
-
-  const events = displayData?.events || [];
-  const count = displayData?.count;
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
@@ -167,53 +111,8 @@ const Search = () => {
     }
   }, []);
 
-  const adaptedParams = EventsAdapter.adaptRequestParams(
-    new URLSearchParams(searchParams.toString())
-  );
-
-  const adaptedQueryString = (function () {
-    if (!searchParams.toString()) return;
-    if (adaptedParams.offset == "0") {
-      delete adaptedParams.offset;
-    }
-    delete adaptedParams.max;
-    delete adaptedParams.sortBy;
-    delete adaptedParams.sortType;
-    return new URLSearchParams(adaptedParams).toString();
-  })();
-
   const onTabsChange = (value: string) => {
     setFilter("view", value);
-  };
-
-  const selectedInsights = {
-    eventSize: true,
-    eventKeywords: true,
-    eventRank: adaptedParams.shows?.includes("eventRanking"),
-    matchScore: adaptedParams.keywords ? true : false,
-    growth: false,
-    eventSeries: adaptedParams.shows?.includes("eventSeries"),
-    brandedEvent: adaptedParams.shows?.includes("eventBrand"),
-    global: false,
-    reptSent: false,
-    eventRating: adaptedParams.shows?.includes("eventRating"),
-    estExhibit: adaptedParams.shows?.includes("estimatedExhibitScore"),
-    economicImpact: adaptedParams.shows?.includes("economicImpact"),
-    repeatSent: adaptedParams.trustScore ? true : false,
-    maturity: adaptedParams.shows?.includes("maturity"),
-    impactScore: adaptedParams.shows?.includes("eventImpactScore"),
-    inboundScore: adaptedParams.shows?.includes("inboundScore"),
-    internationalScore: adaptedParams.shows?.includes("internationalScore"),
-    forecasted: adaptedParams.shows?.includes("isforecasted"),
-    audienceZone: adaptedParams.shows?.includes("audienceZone"),
-    audienceSpread: adaptedParams.audienceSpread ? true : false,
-    eventFrequency: adaptedParams.shows?.includes("eventFrequency"),
-    includeKeywords: adaptedParams.includeKeywords
-      ? adaptedParams.includeKeywords
-      : "",
-    excludeKeywords: adaptedParams.excludeKeywords
-      ? adaptedParams.excludeKeywords
-      : "",
   };
 
   // console.log(adaptedQueryString);
@@ -251,6 +150,23 @@ const Search = () => {
   useEffect(() => {
     setView(searchParams.get("view") || "");
   }, [searchParams]);
+
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 0;
+      setIsScrolled(scrolled);
+      console.log("Scroll position:", window.scrollY, "isScrolled:", scrolled);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const isLoading = false;
 
   return (
     <div className="p-6">
@@ -351,86 +267,69 @@ const Search = () => {
         onValueChange={onTabsChange}
         className="mt-0"
       >
-        <div className="flex justify-between items-center py-6 sticky top-0 bg-background z-20 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)]">
-          <div className="w-[108px]"></div>
+        <div
+          className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 ${
+            isScrolled ? "py-2" : "py-6"
+          }`}
+        >
+          <EventCount />
           <div className="flex justify-center">
             <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
-              <TabsTrigger value="table" className="flex items-center gap-2 py-2 px-4">
+              <TabsTrigger
+                value="table"
+                className="flex items-center gap-2 py-2 px-4"
+              >
                 <TableIcon className="h-4 w-4" />
                 <span>Table</span>
               </TabsTrigger>
-              <TabsTrigger value="list" className="flex items-center gap-2 py-2 px-4">
+              <TabsTrigger
+                value="list"
+                className="flex items-center gap-2 py-2 px-4"
+              >
                 <ListIcon className="h-4 w-4" />
                 <span>List</span>
               </TabsTrigger>
-              <TabsTrigger value="map" className="flex items-center gap-2 py-2 px-4">
+              <TabsTrigger
+                value="map"
+                className="flex items-center gap-2 py-2 px-4"
+              >
                 <Globe className="h-4 w-4" />
                 <span>Map</span>
               </TabsTrigger>
-              <TabsTrigger value="calendar" className="flex items-center gap-2 py-2 px-4">
+              <TabsTrigger
+                value="calendar"
+                className="flex items-center gap-2 py-2 px-4"
+              >
                 <CalendarIcon className="h-4 w-4" />
                 <span>Calendar</span>
               </TabsTrigger>
             </TabsList>
           </div>
-          <div className="flex justify-end">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  disabled
-                  variant="link"
-                  className="text-primary hover:text-primary/90 hover:bg-purple-50"
-                >
-                  Export
-                  <ArrowUpRight className="ml-2 h-4 w-4" />
-                </Button>
-              </DialogTrigger>
-              <DialogContent> </DialogContent>
-            </Dialog>
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              className="flex items-center gap-2"
+              disabled
+            >
+              <span className="flex items-center gap-1">
+                <ArrowUpRight className="h-4 w-4" />
+                Export
+              </span>
+            </Button>
+            <SortDropdown />
           </div>
         </div>
 
         <TabsContent value="list" className="flex-grow overflow-hidden mt-0">
-          {isLoading ? (
-            <Loading />
-          ) : error ? (
-            <ZeroState text={(error as ApiError).message} />
-          ) : count == 0 ? (
-            <ZeroState text="No events were found in the selected area." />
-          ) : count == undefined ? (
-            <div className="flex justify-center items-center">
-              <ZeroState text="Discover insights on business trends filtered by geography and category, all in one glance." />
-            </div>
-          ) : (
-            <>
-              {/* <Alerts /> */}
-              <List events={events as Event[]} count={count} />
-            </>
-          )}
+          {isEventeli && <Alerts />}
+          <List />
         </TabsContent>
-
         <TabsContent value="table" className="flex-grow overflow-hidden">
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <Table
-              showInsights={selectedInsights}
-              queryString={adaptedQueryString}
-              setRequestExhausted={() => {}}
-              handleButtonLoading={() => setTableLoading}
-            />
-          )}
+          {isEventeli && <Alerts />}
+          <Table />
         </TabsContent>
         <TabsContent value="map">
-          {isLoading ? (
-            <Loading />
-          ) : eventData?.count == 0 ? (
-            <ZeroState text="No events were found in the selected area." />
-          ) : error ? (
-            <ZeroState text={(error as ApiError).message} />
-          ) : (
-            <Map searchParams={searchParams.toString()} />
-          )}
+          <Map />
         </TabsContent>
         <TabsContent value="calendar">
           <Suspense fallback={<Loading />}>
@@ -439,10 +338,10 @@ const Search = () => {
         </TabsContent>
       </Tabs>
 
-      <CreateTrackerDialog
+      {/* <CreateTrackerDialog
         open={trackerModalOpen}
         onOpenChange={setTrackerModalOpen}
-      />
+      /> */}
     </div>
   );
 };

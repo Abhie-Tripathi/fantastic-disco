@@ -43,6 +43,8 @@ export default function SignInForm() {
 
   const onSubmit = async (data: SignInData) => {
     try {
+      sessionStorage.setItem("userEmail", data.email);
+      sessionStorage.setItem("flow", "signIn");
       await signin(data);
     } catch (error) {
       console.error("Sign in error:", error);
@@ -81,6 +83,7 @@ export default function SignInForm() {
                 type="email"
                 {...field}
                 placeholder="Email"
+                value={field.value || ""}
                 onChange={(e) => {
                   field.onChange(e);
                   setError(null);
@@ -91,7 +94,7 @@ export default function SignInForm() {
               )}
               {error && (
                 <Alert variant="destructive" className="w-fit p-0 border-none">
-                  <AlertDescription className="capitalize flex items-center">
+                  <AlertDescription className="capitalize flex items-start">
                     <AlertTriangle className="h-4 w-4 mr-2" />
                     {error.message}
                   </AlertDescription>

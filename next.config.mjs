@@ -19,6 +19,7 @@ const config = {
           'img.10times.com',
           'login.10times.com',
           'api.dev.gtm.whr.ai'
+          'im.gifbt.com',
         ],
   },
   experimental: {

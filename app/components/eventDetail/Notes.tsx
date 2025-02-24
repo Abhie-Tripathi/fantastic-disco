@@ -25,9 +25,11 @@ import { useNotesServices } from "@/services/notesServices";
 import NullState from "../trackers/nullState";
 import NotesNullState from '@/public/notesNullState.svg'
 import { GAEvent } from "@/utils/GAEvent";
+import { UserResponse } from "@/types/user";
 interface UserDetail {
   firstname: string;
   email: string;
+  name: string;
   lastname: string;
 }
 interface Props {
@@ -49,9 +51,11 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
   const { theme } = useTheme();
   const urlPath = usePathname().split('/')[2]
   const pageSource = urlPath.charAt(0).toUpperCase() + urlPath.slice(1);
-  const {getNotesFromTracker, saveNotes, deleteNotes, likeNotes, getUsers, error}=useNotesServices();
+  const {getNotesFromTracker, saveNotes, deleteNotes, likeNotes, getUsers, error, getCoordinateNotes}=useNotesServices();
   const path=usePathname().split('/');
   const { user, signOut } = useAuthContext();
+  console.log(user);
+  
   // const searchParams = useSearchParams();
   const [suggest, setSuggest] = useState();
   const [zeroState,setZeroState]=useState(false);
@@ -59,9 +63,9 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
 
   const [isDraggingOver, setIsDraggingOver] = useState(true);
   const [drop, setDrop] = useState(false);
-  const [type, setType] = useState("MESSAGE");
+  const [type, setType] = useState("TEXT");
   // const [stage,setStage]=useState("");
-  const [userDetail, setUserDetail] = useState<UserDetail | null>(
+  const [userDetail, setUserDetail] = useState<UserResponse | null>(
     user ? user : null
   );
   const [interestType, setInterestType] = useState("");
@@ -132,23 +136,20 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
         
       }
     }else{
-    const url =
-      `${baseUrl}/comment?eventId=${eventId}&stage=${stage}&offset=${page}&limit=10`;
-
-    const { data, error } = await myFetch(url);
-    
-      // setNotes([]);
-
-      console.log(data);
-      // setNotes(data.comments.reverse());
-      if (data?.comments?.length > 0){
-        setZeroState(false);
-        setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
+      try{
+        const data = await getCoordinateNotes(enquiryId, `offset=${page}&limit=10`, path[2]);
+        if (data && data.comments) {
+          if (data.comments && data.comments?.length > 0){
+            setZeroState(false);
+            setNotes(prevNotes => [...data.comments.reverse(), ...prevNotes]);
+          }
+          if(data.comments.length===0&& page===0){
+            setZeroState(true);
+          }
         }
-        if(data.comments.length===0 && page===0){
-          setZeroState(true);
-        }
-    // else setNotes(CommentsData );
+      }catch(error){
+        console.log(error);
+      }
   }
   }
   
@@ -159,6 +160,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
       return `eventgeni/${user?.companyId}/notes/${urlPath}/${eventId}`;
     else
       return `eventgeni/${user?.companyId}/notes/general`;
+    // return "xyz";
   }
 
   // const isInitialMount = useRef(true);
@@ -275,12 +277,11 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
       console.log(replyName);
       if(path[path.length-1]==="notesDiscussion"){
         const dataToSend = {
-          "stage": "INTERNAL",
-          "type": "MESSAGE",
+          "commentType": "TEXT",
           "content": note,
-          "source": "GTM",
-          "entityType": "TRACKER",
-          "entityId":path[path.length-2],
+          // "source": "GTM",
+          "sourceModule": "TRACKER",
+          "sourceId":path[path.length-2],
           ...(replyId !== null && {
             "parentCommentId": replyId
           })
@@ -289,25 +290,20 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
       }else
       {
         const dataToSend = {
-        "eventId": eventId,
-        "stage": stage,
-        "type": type,
-        "content": note,
-        "source": "GTM",
-        "entityType":"ENQUIRY",
-        ...(enquiryId && {
-          "entityId": enquiryId
-        }),
-        ...(type !== 'MESSAGE' && { "interestType": interestType }),
-        ...(type === "RECOMMEND" && {
-          "recommendUserId": suggest
-        }),
-        ...(replyId !== null && {
-          "parentCommentId": replyId
-        })
-      };
-      postNote(dataToSend);
-    }
+          "commentType": type,
+          "content": note,
+          "sourceModule": stage,
+          "sourceId": enquiryId,
+          ...(replyId !== null && {
+            "parentCommentId": replyId
+          }),
+          ...(type !== 'TEXT' && { "interest": interestType }),
+          ...(type === "RECOMMEND" && {
+            "interestedUserId": suggest
+          }),
+        };
+        postNote(dataToSend);
+      }
       // console.log(dataToSend.files);
 
       // setNotes(updatedNotes);
@@ -354,9 +350,9 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
             GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Reply`);
           } else
             GAEvent("Notes", "Notes", `${pageSource} | Enquiry Detail`, `${pageSource} | Enquiry Detail | Message Send`);
-            const newData = transformData(data.data);
+            // const newData = transformData(data);
             
-            setNotes(prevNotes => [...prevNotes, data.data]);
+            setNotes(prevNotes => [...prevNotes, data]);
             createRealtimeAction('add', data.data.id);
             setScrolling(false);
             setZeroState(false);
@@ -365,7 +361,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
         console.log(error);
         
     }
-    setType("MESSAGE")
+    setType("TEXT")
   }
   const transformData = (data: any) => {
 
@@ -494,7 +490,7 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
   useEffect(() => {
     const reply: Reply = notes?.find((comment) => comment.id == replyId);
     // console.log("reply is: " + reply?.text);
-    setReplyName(reply?.user.firstname + " " + reply?.user.lastname);
+    setReplyName((reply?.user.firstname|| "User") + " " + (reply?.user.lastname || ""));
     setReplyText(reply?.content);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [replyId]);
@@ -504,11 +500,11 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
     const updatedComments = notes.map((c: any) => {
       if (c.id === id) {
         return {
-          ...c, _count: {
-            ...c._count,
-            Commentlikes: c._count?.Commentlikes + (!isLiked ? 1 : -1),
-          }, userLiked: !isLiked
+          ...c,
+          totalLikes: (c.totalLikes || 0) + (!isLiked ? 1 : -1),
+          userUpvoted: !isLiked,
         };
+        
       }
       return c;
     });
@@ -701,11 +697,12 @@ export const Notes = ({ eventId, enquiryId, comments, productId, stage }: Props)
     // }
     try{
       const result= await getUsers('limit=100')
-      console.log(result?.users);
+      console.log(result);
       if(result){
-      setUsers(result?.users);
-      const newItems = result?.users?.map((item: UserDetail) => "@" + item.firstname + item.lastname);
+      setUsers(result);
+      const newItems = (result?.users || []).map((item: UserResponse) => "@" + item?.firstname);
       setUserArr(prevArr => [...prevArr, ...newItems]);
+
       }else{
         console.log(error);
         
@@ -894,7 +891,7 @@ const Comment = ({
     window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
   };
   const { user, signOut } = useAuthContext();
-  const [userDetail, setUserDetail] = useState<UserDetail | null>(
+  const [userDetail, setUserDetail] = useState<UserResponse | null>(
     user ? user : null
   );
 
@@ -936,7 +933,7 @@ const Comment = ({
   return (
     <>
       {
-        comment.type === "MESSAGE" ? (
+        comment.commentType === "TEXT" ? (
         <>
           <div className={styles.comment__user}>
             <header className="flex flex-row justify-start gap-2 h-fit">
@@ -948,7 +945,7 @@ const Comment = ({
                   src={person1}
                   alt=""
                 /> */}
-                <UserProfile name={comment.user?.firstname + " " + comment.user?.lastname} height={50} width={50} />
+                <UserProfile name={(comment?.user?.firstname || "user") + " " + (comment?.user?.lastname || "")} height={50} width={50} />
               </span>
               <div
                 // className={`${styles.comment_name} ${theme === "light" && styles.comment_name_light
@@ -956,13 +953,16 @@ const Comment = ({
                 className="flex flex-col"
               >
                 <span className="font-medium">
-                  {comment.user?.firstname} {comment.user?.lastname}
+                  {comment?.user?.firstname || "User"} {comment?.user?.lastname || ""}
                   <span className="text-[var(--tertiary-text-color)]">
                     {" "}
                     @
-                    {`${comment.user.firstname}${comment.user.lastname
-                      .charAt(0)
-                      .toLowerCase()}${comment.user.lastname.slice(1)}`}
+                    {`${comment?.user?.firstname ? comment.user.firstname : "User"}${
+                comment?.user?.lastname
+                  ? comment.user.lastname.charAt(0).toLowerCase() + comment.user.lastname.slice(1)
+                       : ""
+                  }`}
+
                   </span>
                 </span>
 
@@ -982,7 +982,7 @@ const Comment = ({
           <div
             className="flex flex-col gap-1 ml-[58px]"
             style={{
-              background: comment?.parentCommentId
+              background: comment?.parentComment
                 ? "var(--background-secondary-color)"
                   
                 : "none",
@@ -990,25 +990,25 @@ const Comment = ({
           >
             <div className="block">
               <span>{userName}</span>{" "}
-              {comment?.parentCommentId && (
+              {comment?.parentComment && (
                 <div
                   // className={
                   //   theme === "light" ? styles.replyDivLight : styles.replyDiv
                   // }
                   className="p-[10px] text-left flex gap-2 w-full justify-between flex-col cursor-pointer"
-                  onClick={(e) => getCommentPos(e, comment.parentCommentId)}
+                  onClick={(e) => getCommentPos(e, comment?.parentComment?.id)}
                 >
                   <div className="py-5 px-2.5 bg-black bg-opacity-20 w-full rounded-2xl flex justify-between">
                     <div className="overflow-hidden relative m-0">
                       <div className="absolute bg-[var(--primary-color)] w-1 h-full"></div>
-                      {comment.parentCommentId !== null ?
-                        <div className="pl-4 pb-2 text-[var(--primary-color)]">{comment.parent && comment?.parent?.user?.firstname}{" "}{comment.parent && comment?.parent?.user?.lastname}</div>
+                      {comment.parentComment !== null ?
+                        <div className="pl-4 pb-2 text-[var(--primary-color)]">{comment.parentComment && (comment?.parentComment?.user?.firstname || "User")}{" "}{comment.parentComment && (comment?.parentComment?.user?.lastname||"")}</div>
                         :
                         <div className="pl-4 pb-2 text-[var(--primary-color)]">{comment?.replyName}</div>
                       }
 
-                      <div className={styles.replyText1} id={comment.parent?.id}>
-                        {comment?.parent?.content}
+                      <div className={styles.replyText1} id={comment.parentComment?.id}>
+                        {comment?.parentComment?.content}
                       </div>
                     </div>
                   </div>
@@ -1087,7 +1087,7 @@ const Comment = ({
                       // If line is not empty, return the line wrapped in a <p> tag
                       return (
                         <>
-                          {comment?.parentCommentId ? (
+                          {comment?.parentComment ? (
                             <>
                               {/* <div className={styles.replyDiv}>
 
@@ -1228,16 +1228,16 @@ const Comment = ({
             {/* <ButtonView view={"upvoteBtn"} /> */}
             <div
               className={`${styles.likeSection} flex cursor-pointer gap-1 py-1 px-2 border-[0px] rounded-[20px] ml-[-10px]`}
-              onClick={() => handleLiked(comment.id, comment?.userLiked)}
+              onClick={() => handleLiked(comment.id, comment?.userUpvoted)}
             >
               <div className={styles.like}>
-                {comment?.userLiked ? (
+                {comment?.userUpvoted ? (
                   <Image src={LikeFill} alt="like" />
                 ) : (
                   <Image src={Like} alt="like" />
                 )}
               </div>
-              <div>{comment._count && comment?._count.Commentlikes}</div>
+              <div>{comment && comment?.totalLikes}</div>
             </div>
             <button
               onClick={() => handleReply(comment.id)}
@@ -1246,9 +1246,9 @@ const Comment = ({
               Reply
             </button>
             {/* <ButtonView view={"replyBtn"} /> */}
-            {comment?.created ? (
+            {comment?.createdAt ? (
               <p className="font-medium">
-                {new Date(comment.created).toLocaleDateString("en-US", {
+                {new Date(comment.createdAt).toLocaleDateString("en-US", {
                   month: "short",
                   day: "2-digit",
                   year: "numeric",
@@ -1257,7 +1257,7 @@ const Comment = ({
             ) : (
               <p>Mar 20,2024</p>
             )}
-            {userDetail?.firstname === comment.user.firstname && userDetail?.lastname === comment.user.lastname &&
+            {/* {userDetail?.firstname === comment.user.firstname && userDetail?.lastname === comment.user.lastname && */}
               <button
                 className={styles.deleteBtn}
                 onClick={() => handleDelete(comment.id)}
@@ -1265,7 +1265,7 @@ const Comment = ({
                 {/* Delete */}
                 <Trash style={{marginBottom: '4px'}} color="var(--tertiary-text-color)" height="15px" />
               </button>
-            }
+            {/* } */}
 
             {/* <ButtonView
         view={"editDeleteButton"}
@@ -1382,7 +1382,7 @@ const Comment = ({
                             );
                           } else {
                             return (
-                              <React.Fragment key={idx}>{word} </React.Fragment>
+                              <React.Fragment key={idx}>{word}1 </React.Fragment>
                             );
                           }
                         } else if (word.startsWith("#")) {

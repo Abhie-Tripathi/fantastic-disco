@@ -1,22 +1,26 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { BaseURL } from "@/config";
+import { BASE_URL } from "@/config";
 
 const axiosInstance = axios.create({
-  baseURL: BaseURL,
+  baseURL: BASE_URL,
   timeout: 120000,
   withCredentials: true,
 });
 
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => response,
-  (error: AxiosError) => {
+  (
+    error: AxiosError<{
+      issues: any[];
+      statusCode: number;
+      message: string;
+    }>
+  ) => {
     if (error.response?.status === 401) {
       // Redirect to login page or refresh token
       window.location.href = "/signin";
     }
-    return Promise.reject(
-      (error.response && error.response.data) || "Something went wrong"
-    );
+    return error.response;
   }
 );
 

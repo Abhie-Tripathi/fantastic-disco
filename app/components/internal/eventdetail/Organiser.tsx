@@ -3,13 +3,9 @@ import React, { useState } from "react";
 import styles from "./eventdesc.style.module.css";
 import Image from "next/image";
 import OrganiserIcon from "/public/organiser.svg";
-import ClockIcon from "/public/clock.svg";
-import LocationIcon from "/public/location.svg";
 import {Location} from 'geist-icons';
-import Placehodler from "/public/placeholder.png";
 import { useTheme } from "@/context";
 import downArrowIcon from "/public/arrow_down.svg";
-import rightDirectIcon from "/public/right_direction.svg";
 import { GAEvent } from "@/utils/GAEvent";
 
 interface Props {
@@ -57,10 +53,15 @@ const Organiser = ({ open, organizerData }: Props) => {
           </div>
           <div className={`${styles.locationContainer}`}>
             <div className={styles.locationContainer_location}>
-              {organizerData?.countryName &&
+              {organizerData?.location?.country?.name &&
                 <>
                   <Location height={'16px'} width={'16px'} color="var(--primary-text-color)" style={{display:"flex"}} />
-                  <div className={styles.location}>{organizerData.countryName}</div>
+                  <div className={styles.location}>
+                    {(organizerData?.location?.city?.name && organizerData?.location?.country?.name) ?
+                    (organizerData?.location.city.name !== organizerData?.location?.country.name ? organizerData?.location.city.name +', '+organizerData?.location?.country.name: organizerData?.location.country.name) :
+                    organizerData?.location.country.name
+                    }
+                  </div>
                 </>
               }
             </div>

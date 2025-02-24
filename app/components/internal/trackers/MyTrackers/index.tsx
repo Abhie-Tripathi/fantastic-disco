@@ -70,8 +70,9 @@ interface MyTrackersProps {
   singleTrackerData: Tracker | undefined;
   setSingleTrackerData: React.Dispatch<React.SetStateAction<Tracker | undefined>>;
   isData: boolean;
+  trackerId: string;
 }
-const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData}:MyTrackersProps) => {
+const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singleTrackerData, trackerId}:MyTrackersProps) => {
   const [trackerType, setTrackerType] = useState("All Trackers");
   const [isInetialRender,setIsInetialRender]=useState(false);
   const [allTracker, setAllTracker] = useState<AllTrackerTypes[]>([]);
@@ -103,10 +104,12 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
     // setFilter("skip", ((page-1) * trackerPerPage).toString());
   };
   useEffect(() => {
-        setAllTracker([]);
-        setIsInetialRender(true); 
-        fetchData(true);  
-  }, [searchParams]);
+      if(searchValue.length === 0 || searchValue.length >= 3){
+             setAllTracker([]);
+             setIsInetialRender(true); 
+             fetchData(true);  
+             }
+    }, [skip, take, searchValue]);
   useEffect(()=>{
     // if(!isInetialRender)
     if(searchValue.length >= 3 || searchValue.length === 0){
@@ -114,24 +117,32 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
           setSkip('0');
           setPage(1);
       }
-    setMultipleFilters({
-      skip: !isInetialRender? ((page-1) * trackerPerPage).toString(): "",
-      q: searchValue
-    })
+      setMultipleFilters({
+        skip: !isInetialRender? ((page-1) * trackerPerPage).toString(): "",
+        q: searchValue,
+        id: trackerId,
+      })
   }
   },[searchValue])
   const fetchData=async(isInetialRender:boolean)=>{
     setLoadOne(true);
-    const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${skip}&limit=${take}`);
+    const result= await getTrackers(`${searchValue && `name=${searchValue}`}&offset=${skip}&limit=${take}&refresh=true`);
     
     if(result){
-        setAllTracker(result?.trackerData);   
+      console.log(result);
+      
+        setAllTracker(result?.trackers);   
             
-      setSingleTrackerData(result.trackerData[0]);
-    setTotalPage(Math.ceil(result.totalCount / trackerPerPage));
-    setTotalCount(result.totalCount)
-    if(result.totalCount===0){
-      console.log(result.totalCount);
+      setSingleTrackerData(result.trackers[0]);
+      setMultipleFilters({ 
+          skip: skip,
+          q: searchValue,
+          id: result.trackers[0].id,
+        })
+    setTotalPage(Math.ceil(result.count / trackerPerPage));
+    setTotalCount(result.count)
+    if(result.count===0){
+      console.log(result.count);
       
       setSingleTrackerData(undefined);
        setDataPresent(false);
@@ -204,7 +215,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             >
               {totalCount!==0 &&
               <div className="sticky bottom-0 bg-background py-4">
-              <PaginationComponent currentPage={page} totalPages={totalPage} itemsPerPage={trackerPerPage} onPageChange={handlePageChange} count={totalCount} showEntriesCount={false}/>
+              {/* <PaginationComponent currentPage={page} totalPages={totalPage} itemsPerPage={trackerPerPage} onPageChange={handlePageChange} count={totalCount} showEntriesCount={false}/> */}
               </div>
               }
             </div>

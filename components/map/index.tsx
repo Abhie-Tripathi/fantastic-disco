@@ -1,4 +1,5 @@
-// @ts-nocheck
+//@ts-nocheck
+
 "use client";
 
 import React, {
@@ -16,7 +17,7 @@ import ReactMapGL, {
   ViewState,
   MapLayerMouseEvent,
 } from "react-map-gl";
-import { MapboxToken } from "@/config";
+import { isEventeli, MapboxToken } from "@/config";
 import { Button } from "@/components/ui/button";
 import { AlignLeft } from "lucide-react";
 import EventList from "./event-list";
@@ -42,8 +43,8 @@ import Loading from "../ui/Loading";
 import { useTrackerServices } from "@/services/trackerServices";
 import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
+import { useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
-
 const MapStyle = {
   Street: "mapbox://styles/mapbox/streets-v12",
   Dark: "mapbox://styles/mapbox/dark-v11",
@@ -83,19 +84,19 @@ interface PopupInfo {
 type ZoomGroup = "country" | "state" | "city" | "event" | null;
 
 export default function MapComponent({
-  searchParams,
   source,
   trackerId,
   isGlobal,
   trackerLoc,
   trackerType,
 }: MapProps) {
+  const searchParams = useSearchParams();
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
-  console.log(trackerId);
+console.log(trackerLoc);
 
   const { data } = useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
@@ -114,8 +115,8 @@ export default function MapComponent({
   const [currentZoomGroup, setCurrentZoomGroup] = useState<ZoomGroup>("city");
   const {
     getEventsCount,
+    getEvents,
     getEventsWithSearchParams,
-    getEventById,
     getRawEventsWithSearchParams,
   } = useEventsService();
   const [showUnattendedEvents, setShowUnattendedEvents] = useState(false);
@@ -126,11 +127,19 @@ export default function MapComponent({
     feature: any;
     clusteredPoints?: { name: string; count: number }[];
   } | null>(null);
-  const memoizedGetEventsCount = useCallback(getEventsCount, []);
-  const memoizedGetEventsWithSearchParams = useCallback(
-    getEventsWithSearchParams,
-    []
-  );
+  //   const cityIds = data?.tracker?.filterValue?.locationIds?.city?.length > 0
+  //   ? data?.tracker?.filterValue.locationIds.city.map((city:LocationObject) => Object.keys(city)[0])
+  //   : [];
+
+  // const countryIds = data?.tracker?.filterValue?.locationIds?.country?.length > 0
+  //   ? data?.tracker?.filterValue.locationIds.country.map((country:LocationObject) => Object.keys(country)[0])
+  //   : [];
+
+  // const stateIds = data?.tracker?.filterValue?.locationIds?.state?.length > 0
+  //   ? data?.tracker?.filterValue.locationIds.state.map((state:LocationObject) => Object.keys(state)[0])
+  //   : [];
+  //   const trackerLoc=[...countryIds, ...stateIds, ...cityIds];
+
   const isHolidaySelected = getLocalFilterValue("eventTypes")
     .split(",")
     .includes("holiday");
@@ -138,6 +147,7 @@ export default function MapComponent({
 
   const location = useMemo(() => {
     const geoCoordinates = getLocalFilterValue("geoCoordinates");
+    
     const locationIds =
       source === "tracker"
         ? trackerLoc?.length > 0
@@ -158,25 +168,26 @@ export default function MapComponent({
       return { type: "locationIds", locationIds };
     }
     return null;
-  }, [searchParams]);
+  }, [searchParams, trackerLoc]);
 
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey:
       source === "tracker"
         ? ["eventCounts", trackerId, currentZoomGroup, searchParams]
         : source === "tracker_global"
-        ? [trackerId]
+        ? ["eventCounts", searchParams]
         : ["eventCounts", currentZoomGroup, searchParams],
 
     queryFn: async () => {
       if (source === "tracker" || source === "tracker_global") {
         const response = await getMapViewData(trackerId, "city", searchParams);
-
         return response || [];
       } else {
-        const response = await memoizedGetEventsCount(
-          `${searchParams}&groupBy=city`
-        );
+        const response = await getEventsCount({
+          ...Object.fromEntries(searchParams.entries()),
+          groupBy: "city",
+        });
+        console.log("response", response);
         return response || [];
       }
     },
@@ -199,13 +210,12 @@ export default function MapComponent({
 
       switch (layerId) {
         case "unclustered-events-single":
-          const singleEventDetails = await getEventById(
-            clickedFeature.properties.id
-          );
-          console.log("Single event clicked:", clickedFeature.properties.id);
+          const singleEventDetails = await getEvents({
+            eventIds: clickedFeature.properties.id,
+          });
           if (singleEventDetails)
             setPopupInfo({
-              events: [singleEventDetails.event],
+              events: [singleEventDetails.events[0]],
               coordinates: {
                 latitude: clickedFeature.geometry.coordinates[1],
                 longitude: clickedFeature.geometry.coordinates[0],
@@ -216,8 +226,10 @@ export default function MapComponent({
         case "unclustered-events-multiple":
           const eventIds = JSON.parse(clickedFeature.properties.eventIds);
           const multipleEventDetails = await Promise.all(
-            eventIds.map((id: string) =>
-              getEventById(id).then((data) => data?.event)
+            eventIds.map((id: any) =>
+              getEvents({
+                eventIds: id,
+              }).then((data) => data?.events[0])
             )
           );
           setPopupInfo({
@@ -326,17 +338,18 @@ export default function MapComponent({
 
           const viewBound = {
             boundType: "point",
-            coordinates: JSON.stringify({
+            coordinates: {
               latitude: center.lat,
               longitude: center.lng,
               radius: radius,
-            }),
+            },
           };
 
           try {
-            const modifiedSearchParams = searchParams
-              ?.replace(/locationIds=[^&]*&?/, "")
-              .replace(/take=[^&]*&?/, "");
+            const modifiedSearchParams = searchParams?.toString().replace(
+              /locationIds=[^&]*&?/,
+              ""
+            );
 
             const viewBoundString = encodeURIComponent(
               JSON.stringify(viewBound)
@@ -354,11 +367,12 @@ export default function MapComponent({
                 `viewBound=${viewBoundString}`,
                 searchParams
               );
+              console.log(eventsData);
+              
             } else {
-              console.log("eventsData", eventsData);
-              eventsData = await getRawEventsWithSearchParams(
-                finalSearchParams
-              );
+              eventsData = await getEventsWithSearchParams(finalSearchParams);
+              console.log(eventsData);
+              
             }
             setEvents((eventsData?.events as MapEvents[]) || []);
           } catch (error) {
@@ -378,6 +392,8 @@ export default function MapComponent({
   const onMove = useCallback(({ viewState }: { viewState: ViewState }) => {
     setViewport(viewState);
   }, []);
+
+  console.log("eventCountsQuery", eventCountsQuery.data);
 
   const eventCountsGeoJSON = React.useMemo(() => {
     return {
@@ -600,7 +616,7 @@ export default function MapComponent({
             />
           ) : (
             <>
-              {!location ? (
+              {false ? (
                 <ZeroState text="Please select a country, state, or city to view events. (Multiple Allowed)" />
               ) : (
                 <ReactMapGL
@@ -698,7 +714,7 @@ export default function MapComponent({
                       </Label>
                     </div>
                   )}
-                  {selectedAlert && (
+                  {isEventeli && (
                     <Alerts
                       selectedAlert={selectedAlert}
                       setSelectedAlert={setSelectedAlert}
@@ -730,7 +746,12 @@ export default function MapComponent({
                     />
                   )}
 
-                  <AlertPolygonLayer eventId={selectedAlert} mapRef={mapRef} />
+                  {isEventeli && (
+                    <AlertPolygonLayer
+                      eventId={selectedAlert}
+                      mapRef={mapRef}
+                    />
+                  )}
 
                   {circleLayer && (
                     <Source

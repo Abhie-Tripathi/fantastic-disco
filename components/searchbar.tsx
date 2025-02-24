@@ -21,6 +21,7 @@ import { useEventsService } from "@/services/eventsService";
 import { Event } from "@/types/events";
 import { useFilterContext } from "@/context/filterContext";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEvents } from "@/hooks/useEvents";
 
 export default function MultiSelectSearchBar() {
   const router = useRouter();
@@ -31,13 +32,12 @@ export default function MultiSelectSearchBar() {
   const [searchResults, setSearchResults] = useState<Event[]>([]);
   const [selectedItems, setSelectedItems] = useState<Event[]>([]);
   const searchBarRef = useRef<HTMLDivElement>(null);
-  const { getEventsWithSearchParams, getEventById, isLoading, error } =
-    useEventsService();
+  const { getEvents, isLoading } = useEventsService();
 
   useEffect(() => {
     const fetchEventDetails = async (eventIds: string[]) => {
       const eventPromises = eventIds.map((id) =>
-        getEventById(id).then((response) => response?.event)
+        getEvents({eventIds: id}).then((response) => response?.events[0])
       );
       try {
         const events = await Promise.all(eventPromises);
@@ -59,12 +59,10 @@ export default function MultiSelectSearchBar() {
     debounce(async (value: string) => {
       if (value) {
         try {
-          const response = await getEventsWithSearchParams(
-            `query=${encodeURIComponent(value)}`
-          );
+          const response = await getEvents({query: value});
           const filteredResults =
             (response?.events as Event[])?.filter(
-              (event) => !selectedItems.some((item) => item.id === event.id)
+              (event) => !selectedItems.some((item) => item.basic.id === event.basic.id)
             ) || [];
           setSearchResults(filteredResults);
         } catch (err) {
@@ -100,7 +98,7 @@ export default function MultiSelectSearchBar() {
     (item: Event) => {
       setSelectedItems((prev) => {
         const newSelectedItems = [...prev, item];
-        const eventIds = newSelectedItems.map((event) => event.id).join(",");
+        const eventIds = newSelectedItems.map((event) => event.basic.id).join(",");
 
         const newParams = new URLSearchParams();
         if (eventIds) {
@@ -121,9 +119,9 @@ export default function MultiSelectSearchBar() {
     (itemToRemove: Event) => {
       setSelectedItems((prev) => {
         const newSelectedItems = prev.filter(
-          (item) => item.id !== itemToRemove.id
+          (item) => item.basic.id !== itemToRemove.basic.id
         );
-        const eventIds = newSelectedItems.map((event) => event.id).join(",");
+        const eventIds = newSelectedItems.map((event) => event.basic.id).join(",");
 
         // Create a new URLSearchParams object
         const newParams = new URLSearchParams();
@@ -155,10 +153,10 @@ export default function MultiSelectSearchBar() {
               <Search className="ml-2 text-gray-400" />
               {selectedItems.map((item) => (
                 <div
-                  key={item.id}
+                  key={item.basic.id}
                   className="flex items-center bg-gray-200 rounded-full px-3 py-1 m-1"
                 >
-                  <span className="text-sm">{item.name}</span>
+                  <span className="text-sm">{item.basic.name}</span>
                   <button
                     type="button"
                     onClick={(e) => {
@@ -194,17 +192,17 @@ export default function MultiSelectSearchBar() {
               <CommandEmpty>
                 {isLoading ? "Searching..." : "No results found."}
               </CommandEmpty>
-              {error && (
+              {/* {error && (
                 <div className="p-2 text-red-500">Error: {error.message}</div>
-              )}
+              )} */}
               <CommandGroup>
                 <CommandList>
                   {searchResults.map((event, index) => (
                     <CommandItem
-                      key={event.id || index}
+                      key={event.basic.id || index}
                       onSelect={() => handleItemSelect(event)}
                     >
-                      {event.name}
+                      {event.basic.name}
                     </CommandItem>
                   ))}
                 </CommandList>
