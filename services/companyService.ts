@@ -1,61 +1,78 @@
 import { useApi } from "@/hooks/useApi";
 // import { endpoints } from "@/config/endpoints";
 // import { CoordinateListResponse, UserInterestResponse, eventPocResponse } from "@/types/coordinateEventType";
-import { ApiError } from "@/types/api";
-import companyData from "@/public/data/companyData.json";
+// import { ApiError } from "@/types/api";
+// import companyData from "@/public/data/companyData.json";
 import { endpoints } from "@/config/endpoints";
 import { pocDetail } from "@/types/coordinateEventType";
 import externalAxios from "@/lib/externalAxios";
+import { CompanyDetailResponse, CompanyListResponse } from "@/types/prospect";
 
 interface fnProp {
   offset: number;
   searchParams: URLSearchParams;
 }
 
-interface CompanyListResponse {
-  totalCount: number;
-  companyData?: any[];
-  userData?: any[];
-}
-
 export const useCompanyService = () => {
-  const api = useApi<CompanyListResponse | undefined | any>();
+  const api = useApi<
+    CompanyListResponse | CompanyDetailResponse | undefined | any
+  >();
 
   const getCompanyList = (searchParamsString: string) => {
     const params = new URLSearchParams(searchParamsString);
-    if (params.get("viewBy") === null) params.set("viewBy", "company");
+    const url =
+      params.get("viewBy") === "user"
+        ? endpoints.prospect.users.list
+        : endpoints.prospect.company.list;
 
     params.set("limit", params.get("take") || "10");
     params.set("offset", params.get("skip") || "0");
     params.delete("skip");
     params.delete("take");
+    params.delete("viewBy");
 
-    return api.request(`${endpoints.company.list}?viewAs=list&${params}`, {
+    return api.request(url, {
       method: "GET",
+      params: params,
     });
   };
 
-  const unlockUserDetail = (pocId: number) => {
+  const unlockUserDetail = (userId: number | string) => {
     const payload: any = {
-      pocId: pocId,
-      unlockValue: "email,phone",
+      unmask: "email,phone",
+      source: "prospectUserPage",
+      target: "USER",
     };
 
-    return api.request<pocDetail>(`${endpoints.company.unmaskUser}`, {
-      method: "GET",
-      params: payload,
-    });
+    return api.request<pocDetail>(
+      `${endpoints.prospect.users.detail}/${userId}`,
+      {
+        method: "GET",
+        params: payload,
+      }
+    );
   };
 
   const unlockPocDetail = (pocId: number, companyId: string) => {
-    return api.request<pocDetail>(`${endpoints.coordinate.pocUnmask}?pocId=${pocId}&companyId=${companyId}&unlockValue=email,phone`, {
-      method: "GET",
-    });
-  }
+    const payload: any = {
+      unmask: "email,phone",
+      source: "companyPage",
+      target: "COMPANY",
+      targetId: companyId,
+    };
+
+    return api.request<pocDetail>(
+      `${endpoints.prospect.users.detail}/${pocId}`,
+      {
+        method: "GET",
+        params: payload,
+      }
+    );
+  };
 
   const getCompanyDetailById = (companyId: string | number) => {
-    return api.request(
-      `${endpoints.company.detail}?viewBy=company&viewAs=detail&companyId=${companyId}`,
+    return api.request<CompanyDetailResponse>(
+      `${endpoints.prospect.company.detail}/${companyId}`,
       {
         method: "GET",
       }
@@ -68,7 +85,7 @@ export const useCompanyService = () => {
     offset: number = 0
   ) => {
     return api.request(
-      `${endpoints.company.events}/${companyId}?eventOf=${eventType}&limit=10&offset=${offset}`,
+      `${endpoints.prospect.company.detail}/${companyId}/events?eventOf=${eventType}&limit=10&offset=${offset}`,
       {
         method: "GET",
       }
@@ -76,14 +93,17 @@ export const useCompanyService = () => {
   };
 
   const getCompanyPOC = (companyId: string | number) => {
-    return api.request(`${endpoints.company.pocList}/${companyId}`, {
-      method: "GET",
-    });
+    return api.request(
+      `${endpoints.prospect.company.detail}/${companyId}/pocs`,
+      {
+        method: "GET",
+      }
+    );
   };
 
   const getEventCountByCountry = (companyId: string | number) => {
     return api.request(
-      `${endpoints.company.events}/${companyId}?groupBy=country`,
+      `${endpoints.prospect.company.detail}/${companyId}/events?groupBy=country`,
       {
         method: "GET",
       }
