@@ -593,13 +593,13 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
         formData.append("maxCapacity", eventState?.capacity + "")
 
         // Check if the banner has been updated
-        if (eventState.banner.placeHolder.includes("eventgeni") === false) {
-            if (eventState.banner.file) {
-                // formData.append("file", eventState.banner.file); // Use the file field if uploaded by the user
-            } else {
-                formData.append("logoUrl", eventState.banner.placeHolder); // Use logoUrl if the banner is AI-generated
-            }
-        }
+        // if (eventState.banner.placeHolder.includes("eventgeni") === false) {
+        //     if (eventState.banner.file) {
+        //         // formData.append("file", eventState.banner.file); // Use the file field if uploaded by the user
+        //     } else {
+        //         formData.append("logoUrl", eventState.banner.placeHolder); // Use logoUrl if the banner is AI-generated
+        //     }
+        // }
 
         // Make the PATCH request
         // const { data, error } = await myFetch(`${baseUrl}/event`, {
