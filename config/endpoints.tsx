@@ -91,6 +91,10 @@ export const endpoints = {
     users: `${BASE_URL}/me/account/users`,
     configuration: `${BASE_URL}/me/account/configuration`,
   },
+  membership: {
+    getMembership: `${BASE_URL}/me/account/configuration/membership`,
+    updateMembership: `${BASE_URL}/me/account/membership`,
+  },
   company: {
     list: `${BASE_URL}/company/search`,
     unmaskUser: `${BASE_URL}/company/unmask`,
@@ -114,7 +118,7 @@ export const endpoints = {
   },
   events: {
     getEvents: `${BASE_URL}/promot-event?limit=2`,
-    getEventsByWidgetId: `${BASE_URL}/promot-event`,// ?widgetId=abc
+    getEventsByWidgetId: `${BASE_URL}/promot-event`, // ?widgetId=abc
     getSortedEvents: `${BASE_URL}/promot-event`,
     getEventById: `${BASE_URL}/promot-event`,
     getEventByPublicAPI: `${BASE_URL}/public/event`,
