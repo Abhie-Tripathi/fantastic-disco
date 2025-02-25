@@ -469,14 +469,15 @@ const Trackers = ({ searchParams }: Search) => {
     {(!singleTrackerData &&  searchValue.length<3) ? (
         <Loading />
     ) : !singleTrackerData?<NullState image={TrackerNullState}  title="No tracker selected."/> : (
-      <Map
-        isGlobal={true}
-        source="tracker"
-        searchParams="active"
-        trackerId={singleTrackerData?.id || ""}
-        trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
-        trackerType={singleTrackerData?.type || ""}
-      />
+      "No events"
+      // <Map
+      //   isGlobal={true}
+      //   source="tracker"
+      //   searchParams="active"
+      //   trackerId={singleTrackerData?.id || ""}
+      //   trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
+      //   trackerType={singleTrackerData?.type || ""}
+      // />
     )}
   </div>
 </Suspense>
