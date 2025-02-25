@@ -5,7 +5,7 @@ export const useProductSettingServices = () => {
 
   const getResearchData = async () => {
     const response = await api.request(
-      `${endpoints.configuration}?source=interest`
+      `${endpoints.configuration.interestConfiguration}`
     );
     if (!response) {
       throw new Error("Failed to get data.");
@@ -16,7 +16,7 @@ export const useProductSettingServices = () => {
 
   const getOutreachData = async () => {
     const response = await api.request(
-      `${endpoints.configuration}?source=outreach`
+      `${endpoints.configuration.outreachConfiguration}`
     );
     if (!response) {
       throw new Error("Failed to get outreach data.");
@@ -27,16 +27,16 @@ export const useProductSettingServices = () => {
 
   const updateResearchData = async ({ formData }: any) => {
     console.log("form_data",formData)
-    return api.request(`${endpoints.configuration}`, {
-      method: "PATCH",
+    return api.request(`${endpoints.configuration.updateResearch}`, {
+      method: "PUT",
       data: formData,
     });
   };
 
   const updateOutreachData = async ({ formData }: any) => {
     // console.log("form_data",formData)
-    return api.request(`${endpoints.configuration}`, {
-      method: "PATCH",
+    return api.request(`${endpoints.configuration.updateOutreach}`, {
+      method: "PUT",
       data: formData,
     });
   };

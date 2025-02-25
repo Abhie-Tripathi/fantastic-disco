@@ -85,13 +85,13 @@ const Profile = () => {
     }
 
     if (data) {
-      setProfileData(data.user);
-      setName(data.user.firstname + " " + data.user.lastname);
-      setMobileNo(data.user.phoneNumber || "");
-      setDept(data.user.department || "");
-      setRole(data.user.designation || "");
-      setProfilePicture(data.user.profilePicture || null);
-      setProfilePic(data.user.profilePicture || null);
+      setProfileData(data);
+      setName(data.firstname + " " + data.lastname);
+      setMobileNo(data.phoneNumber || "");
+      setDept(data.department || "");
+      setRole(data.designation || "");
+      setProfilePicture(data.profilePicture || null);
+      setProfilePic(data.profilePicture || null);
     }
   };
 
@@ -429,7 +429,7 @@ const Profile = () => {
                   className={`inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-1 focus:ring-ring ${
                     !isProfileInfoChange || isSaving
                       ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "bg-primary text-primary-foreground hover:bg-primary"
                   }`}
                   disabled={!isProfileInfoChange || isSaving}
                 >
