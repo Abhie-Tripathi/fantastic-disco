@@ -234,6 +234,7 @@ const UnplannedCard = memo(
 UnplannedCard.displayName = "UnplannedCard";
 
 function EventList({
+  eventType,
   showEventType,
   onClose,
   source,
@@ -243,6 +244,7 @@ function EventList({
   onEventLeave,
   searchParam,
 }: {
+  eventType?:string;
   showEventType: string;
   onClose: () => void;
   mapRef: React.RefObject<MapRef>;
@@ -335,12 +337,12 @@ function EventList({
   }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", filteredParams.toString(), currentPage, sortBy],
+    queryKey: ["events", source==="tracker"?eventType:filteredParams.toString(), currentPage, sortBy],
     queryFn: () =>
       source === "tracker"
         ? getTrackerMapEvents(
             trackerId ?? "",
-            `${searchParams.get("eventType")}`,
+            `${eventType}`,
             `viewBound=${filteredParams}&stats=list&limit=20&offset=${
               (currentPage - 1) * 20
             }&sortBy=${sortBy}`

@@ -135,6 +135,7 @@ const Trackers = ({ searchParams }: Search) => {
   const router=useRouter();
   const {getTrackers, getSavedEvents}=useTrackerServices();
   const [type, setType] = useState("");
+  const [activeType, setActiveType]=useState("");
   const {setFilter, getFilterValue, deleteFilter, setMultipleFilters} = useFilterState();
   useEffect(()=>{
     if(tab==="savedEvents") setType("Saved Events")
@@ -361,6 +362,21 @@ const Trackers = ({ searchParams }: Search) => {
   useEffect(()=>{
     setHideTemplate(!getFilterValue("showTemplates"))
   },[searchParam])
+  useEffect(()=>{
+    if(isEventeli){
+      if((singleTrackerData?.groupedEventsCount?.business?.total??0)>0) setActiveType("business");
+      else setActiveType("social");
+    }else{
+      if((singleTrackerData?.groupedEventsCount?.active??0)>0){
+        console.log(singleTrackerData?.groupedEventsCount?.active);
+        
+        setActiveType("active");
+      }else {
+        setActiveType("past");
+      }
+    }
+  },[singleTrackerData])
+  console.log(singleTrackerData);
   
   return (
     // <div className={styles.body}>
@@ -466,8 +482,10 @@ const Trackers = ({ searchParams }: Search) => {
     {(!singleTrackerData &&  searchValue.length<3) ? (
         <Loading />
     ) : !singleTrackerData?<NullState image={TrackerNullState}  title="No tracker selected."/> : (
+      // "xyz"
       <Map
         isGlobal={true}
+        eventType={activeType}
         source="tracker"
         searchParams="active"
         trackerId={singleTrackerData?.id || ""}

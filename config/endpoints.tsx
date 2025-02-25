@@ -1,4 +1,4 @@
-const BASE_URL = "https://api.dev.teli.whr.ai";
+const BASE_URL = "https://api.dev.gtm.whr.ai";
 const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
 export const endpoints = {
   //   auth: {

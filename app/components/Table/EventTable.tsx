@@ -101,9 +101,9 @@ const EventTable = ({source, trackerId, eventType}:EventTableProps) => {
       title="We couldn't find any events matching your tracker criteria at the moment."
       text="Try adjusting your filters or checking back later, as new events are added frequently."
       buttonText="Manage Configurations"
-      // buttonUrl={`/internal/trackers/${
-      //   path[path.length - 2]
-      // }/trackedConfiguration?type=${type}`}
+      buttonUrl={`/internal/trackers/${
+        trackerId
+      }/editTracker?type=${query.type}`}
     />)
     }else 
     return <ZeroState text="No events found" />;

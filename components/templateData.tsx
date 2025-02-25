@@ -15,7 +15,7 @@ const data = isEventeli ?
   [
     {
       type: "template",
-    //   domain: "Market Research",
+      domain: "",
       img: Location,
       url: "T_LOCATION",
       trackerName: "Location Tracker",
@@ -24,7 +24,7 @@ const data = isEventeli ?
     },
     {
       type: "template",
-    //   domain: "Market Research",
+      domain: "",
       img: Venue,
       url:"T_VENUE",
       trackerName: "Venue Tracker",
@@ -33,7 +33,7 @@ const data = isEventeli ?
     },
     {
       type: "template",
-    //   domain: "Networking & Outreach",
+      domain: "",
       img: LocationDate,
       url: "T_LOCATION_DATE",
       trackerName: "Location and Date Tracker",

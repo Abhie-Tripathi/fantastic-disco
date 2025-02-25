@@ -16,13 +16,14 @@ import { useTrackerServices } from '@/services/trackerServices';
 import { useTrackerContext } from '@/context/tracker';
 import { Button } from "@/components/ui/button";
 import {TableIcon, ListIcon, CalendarIcon, Globe } from "lucide-react";
+import { isEventeli } from '@/config';
 const Index = () => {
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
   const type  = searchParams.get('type');
   const typeOfView  = searchParams.get('view');
-  const typeOfEvent = searchParams.get('eventType')
+  const typeOfEvent = searchParams.get('eventType')?searchParams.get('eventType'):isEventeli?"business":"active"
   const [view,setView]=useState(typeOfEvent==="table"?"table":typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"table");
   const secondLast = pathName[pathName.length - 2];
   const router = useRouter()
@@ -199,7 +200,7 @@ const Index = () => {
 
           </div>
           <div className={styles.configAccess}>
-            <Link href={`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`}
+            <Link href={`/internal/trackers/${secondLast}/editTracker?type=${type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",

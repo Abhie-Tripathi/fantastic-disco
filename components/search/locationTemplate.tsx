@@ -58,7 +58,49 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   const [selectedLocation, setSelectedLocation] = useState<Location | null>();
   const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
     useFilterContext();
-
+    const fetchUrlLocation = async () => {
+      const geoCoordinate = JSON.parse(localFilters.viewBound || "null");
+      console.log(geoCoordinate);
+      
+      const ids = localFilters?.locationIds?.length
+        ? localFilters.locationIds.split(",")
+        : [];
+      const locationIds = ids;
+  
+      if (geoCoordinate) {
+        const locationName = await getLocationName(
+          geoCoordinate.coordinates.latitude,
+          geoCoordinate.coordinates.longitude
+        );
+        console.log(locationName);
+        
+        setSelectedLocation?.({
+          locationType: "GeoJSON",
+          lat: geoCoordinate.coordinates.latitude,
+          lng: geoCoordinate.coordinates.longitude,
+          radius: geoCoordinate.coordinates.radius,
+          description: locationName,
+        });
+      } else if (locationIds) {
+        const locations = await Promise.all(
+          locationIds.map(async (id) => {
+            const location = await getLocationDetails(id);
+            return {
+              locationType: "LocationID",
+              id,
+              description: location?.formattedLocations[0]?.displayName,
+            };
+          })
+        );
+        setSelectedLocation?.(locations as LocationItem[]);
+      } else {
+        setSelectedLocation?.(null);
+      }
+    };
+  
+    useEffect(() => {
+      fetchUrlLocation();
+    }, [localFilters.locationIds || localFilters.viewBound]);
   const applyHandler = () => {
     if (selectedLocation && !Array.isArray(selectedLocation)) {
       const geoLocation = selectedLocation as GeoLocation;
@@ -94,7 +136,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   };
  useEffect(()=>{
   console.log(selectedLocation);
-  if (selectedLocation && Array.isArray(selectedLocation))
+  if (selectedLocation && (Array.isArray(selectedLocation) || typeof selectedLocation === "object"))
   applyHandler();
 //   if (selectedLocation && Array.isArray(selectedLocation)){
 //     console.log(selectedLocation);

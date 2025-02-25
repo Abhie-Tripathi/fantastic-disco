@@ -496,10 +496,10 @@ export const generateSearchFilters=(apiResponse: any)=> {
 
     userRatings: {
       isEnabled: data?.eventRating?.isRatingEnabled ?? true,
-      isToggleEnabled: Boolean(data.eventRating?.enabledValue?.length),
+      isToggleEnabled: Boolean(data?.eventRating?.enabledValue?.length),
       options: searchFilters?.userRatings?.options?.map((rating) => ({
         ...rating,
-        isEnabled: data.eventRating?.enabledValue?.includes(rating.id) ?? true,
+        isEnabled: data?.eventRating?.enabledValue?.includes(rating.id) ?? true,
       })),
     },
 

@@ -2,6 +2,7 @@
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { showToast } from '@/utils/showToast';
 import { cn } from "@/lib/utils";
 import { isEventeli } from "@/config";
 import { ApiError } from "@/types/api";
@@ -78,6 +79,7 @@ import { useFilterContext } from "@/context/filterContext";
 import { categories, newCategories } from "@/data/categories";
 import Presets from "./Presets";
 import TeliTemplates from "./teliTemplates";
+import { viewBound } from "@/types/events/dto/event-query.dto";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -410,7 +412,7 @@ const Pages = () => {
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
-  const {getTrackerDetail,createTracker,editTracker, error}=useTrackerServices();
+  const {getTrackerDetail,createTracker,editTracker, error, delTracker}=useTrackerServices();
   const { theme } = useTheme();
   const type = searchParams.get('type');
   const defaultType="T_CUSTOM";
@@ -617,6 +619,7 @@ const Pages = () => {
       scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
+  
   const filterValueMapping={
     eventTypes:"eventTypes",
     categories: "categories",
@@ -642,6 +645,7 @@ const Pages = () => {
     international_score_gte:"international_score_gte",
     international_score_lte:"international_score_lte",
     top:"top",
+    viewBound: "viewBound",
     designations:"designations",
     audienceSpread:"audienceSpread",
   }
@@ -655,7 +659,7 @@ const Pages = () => {
     estimatedExhibitors: "estimatedExhibitors",
     scores: "scores",
     audienceZone: "audienceZone",
-    rankings: "rankings,trustScore",
+    rankings: "rankings,trustScore"
   };
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
@@ -742,10 +746,15 @@ const Pages = () => {
         setIsMandatory(true);
         return;
        }
+       else if(type==="T_VENUE" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+       }
        else if (
         type !== defaultType && 
         type !== "T_PRODUCT_KEYWORDS" && 
-        type !== "T_LOCATION" &&
+        type !== "T_LOCATION" && type !== "T_VENUE" &&
         (trackerName.length === 0 || customData.length === 0)
       ) {
         console.log("Please, Fill all the details");
@@ -801,7 +810,7 @@ const Pages = () => {
       else if (
         type !== defaultType && 
         type !== "T_PRODUCT_KEYWORDS" && 
-        type !== "T_LOCATION" &&
+        type !== "T_LOCATION" && type !== "T_VENUE" &&
         (trackerName.length === 0 || customData.length === 0)
       ) {
         console.log("Please, Fill all the details");
@@ -893,7 +902,10 @@ const Pages = () => {
       let toggleOpend: Toggle = {};
       Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
         const value = editData.filterValues[key];
-      
+      console.log(value);
+        if(typeof value==="object"){
+          setLocalFilter(key as any, JSON.stringify(value));
+        }
         if (Array.isArray(value)) {
           setLocalFilter(key as any, value.join(','));
         } else if (typeof value === "string") {
@@ -1112,7 +1124,26 @@ useEffect(()=>{
   }
 },[getLocalFilterValue("includeKeywords")])
 console.log(type);
-
+const [del, setDel] = useState(false);
+const closeShareModal = () => {
+  setDel(false);
+  document.body.style.height = '';
+  document.body.style.width = '';
+  document.body.style.overflow = '';
+};
+const deleteTracker = async () => {
+  const result = await delTracker(`${pathName[pathName.length - 2]}`)
+  if (result) {
+    showToast("success", "Tracker deleted successfully")
+    GAEvent(
+      "trackers",
+      "Tracker Detail",
+      "Delete",
+      "Delete"
+    );
+    router.replace(`/internal/trackers`);
+  }
+}
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -1135,7 +1166,7 @@ return (
     </div>
 
     <div className="flex gap-3">
-      <Link
+      {/* <Link
         href={
           last === "create"
             ? "/internal/trackers?showTemplates=true"
@@ -1144,12 +1175,15 @@ return (
         }
         style={{ display: "flex" }}
       >
-        {/* <button className={styles.cancel}>Cancel</button> */}
+        <button className={styles.cancel}>Cancel</button>
         <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">Cancel</Button>
-      </Link>
+      </Link> */}
       {/* <button className={styles.save} onClick={saveTrackerHandler}>
         Save Tracker
       </button> */}
+      <div className={styles.containerTopRightTwo} >
+                  <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
+                </div>
       <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
     </div>
     </div>
@@ -1559,7 +1593,33 @@ return (
   </div>
   </>
   }</div>
-  
+  {del &&
+            (
+              <div className={styles.shareModal} >
+                <div className={`${styles.innerModal} text-base`}>
+                  <div className="font-medium text-[var(--primary-color)]">Delete Tracker</div>
+                  {/* <div className={styles.bar}></div> */}
+                  <div className={styles.linkCopy}>
+
+                    <div className={styles.inviteAccess}>
+
+                      All events tracked by tracker will be lost. Do you wish to delete tracker permanently?
+
+                    </div>
+                  </div>
+
+                  <div className={styles.buttons}>
+
+                    {/* <button className={styles.send} onClick={deleteTracker}>Delete</button> */}
+                    <Button className="text-white" onClick={deleteTracker}>Delete</Button>
+                    {/* <button className={styles.cancel} onClick={closeShareModal}>Cancel</button> */}
+                    <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]" onClick={closeShareModal}>Cancel</Button>
+                  </div>
+                </div>
+              </div>
+
+
+            )}
   </>
 );
 };

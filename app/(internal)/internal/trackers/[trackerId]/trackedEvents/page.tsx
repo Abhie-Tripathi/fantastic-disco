@@ -97,7 +97,7 @@ const Page = ({ params }: { params: any }) => {
   const [view, setView] = useState<string | null>(
     ["table", "list", "map", "calendar"].includes(viewType || "") ? viewType : "table"
   );
-  const [eventCount,setEventCount]=useState();
+  const [eventCount, setEventCount] = useState<{ type: string; totalCount: number; newCount: number }[]>([]);
   const [urlQueryString, setUrlQueryString] = useState<string>("");
   const trackerType: string = searchParams.get("type") || "";
   const [showInsights,setShowInsights] = useState({
@@ -220,42 +220,38 @@ const Page = ({ params }: { params: any }) => {
     console.log(data);
     
     // createQueryString();
-    if(isEventeli){
+    if (isEventeli) {
       const transformedData = Object.keys(data?.groupedEventsCount || {}).map((key) => ({
         type: key.charAt(0).toUpperCase() + key.slice(1),
-        totalCount: data?.groupedEventsCount?.[key]?.total || 0,
-        newCount: data?.groupedEventsCount?.[key]?.new || 0,
+        totalCount: (data?.groupedEventsCount?.[key]?.total as number) || 0,
+        newCount: (data?.groupedEventsCount?.[key]?.new as number) || 0,
       }));
-      
+    
       transformedData.push({
         type: "Bookmarked",
-        totalCount: savedEventCount || 0,
+        totalCount: (savedEventCount as number) || 0,
         newCount: 0,
       });
-      
+    
       setEventCount(transformedData);
-      
-      // setEventCount({
-      //   transformedData,
-      //   savedEventCount: data?.tracker?.savedEventCount || 0,
-      // });
-    }else{
-      const transformedData = Object.entries(data?.groupedEventsCount || {}).map(([key, value]) => {
-        console.log(value); // Logging the value before returning
-      
-        return {
-          type: key.charAt(0).toUpperCase() + key.slice(1),
-          totalCount: value,
-          newCount: key === "new" ? value : 0,
-        };
-      });
+    } else {
+      const groupedEventsCount = data?.groupedEventsCount as Record<string, number> || {};
+    
+      const transformedData = Object.entries(groupedEventsCount).map(([key, value]) => ({
+        type: key.charAt(0).toUpperCase() + key.slice(1),
+        totalCount: value || 0,
+        newCount: (key === "new" ? value : 0) || 0, 
+      }));
+    
       transformedData.push({
         type: "Bookmarked",
-        totalCount: savedEventCount,
+        totalCount: (savedEventCount as number) || 0,
         newCount: 0,
       });
+    
       setEventCount(transformedData);
     }
+    
     setLoading(true);
   }, [data]);
   // useEffect(()=>{
@@ -657,7 +653,7 @@ const activeVal =
             setActiveValue={setActiveValue}
             source="trackers"
           /> */}
-          <Table source="tracker" trackerId={trackerId} eventType={active}/>
+          <Table source="tracker" trackerId={trackerId} eventType={active || ""}/>
           </Suspense>
           </div>
         )}
@@ -709,6 +705,7 @@ const activeVal =
                 trackerId={params.trackerId}
                 trackerLoc={trackerLoc.join(",")}
                 trackerType={trackerType}
+                eventType={active || ""}
                  />
                 } 
                 {/* <Map/> */}
