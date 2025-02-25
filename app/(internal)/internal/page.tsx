@@ -51,7 +51,6 @@ interface ProfileData {
   department: string;
 }
 const Dashboard = () => {
-  console.log("Dashboard");
 
   let role = "sa";
   let outreach = role === "sa";
