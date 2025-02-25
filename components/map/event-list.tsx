@@ -343,7 +343,7 @@ function EventList({
             `${searchParams.get("eventType")}`,
             `viewBound=${filteredParams}&stats=list&limit=20&offset=${
               (currentPage - 1) * 20
-            }`
+            }&sortBy=${sortBy}`
           )
         : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });

@@ -43,8 +43,10 @@ export interface LocationProps {
   isMandatory?: boolean;
 }
 export default function LocationSelector({ type, isMandatory }: LocationProps) {
+  console.log("called multiple time");
+  
   const pathName = usePathname();
-  const { localFilters } = useFilterContext();
+  const { localFilters, setLocalFilter } = useFilterContext();
   const { saveLastSearchedLocation, clearLastSearchedLocation } =
     sessionService();
   const { getLocationName, getLocationDetails } = useLocationService();
@@ -57,67 +59,6 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
     useFilterContext();
 
-  const fetchUrlLocation = async () => {
-    const geoCoordinate = JSON.parse(localFilters.geoCoordinates || "null");
-    const ids = localFilters?.locationIds?.length
-      ? localFilters.locationIds.split(",")
-      : [];
-    const locationIds = ids;
-
-    if (geoCoordinate) {
-      const locationName = await getLocationName(
-        geoCoordinate.latitude,
-        geoCoordinate.longitude
-      );
-      setSelectedLocation?.({
-        locationType: "GeoJSON",
-        lat: geoCoordinate.latitude,
-        lng: geoCoordinate.longitude,
-        radius: geoCoordinate.radius,
-        description: locationName,
-      });
-    } else if (locationIds) {
-      const locations = await Promise.all(
-        locationIds.map(async (id) => {
-          const location = await getLocationDetails(id);
-          return {
-            locationType: "LocationID",
-            id,
-            description: location?.formattedLocations[0]?.displayName,
-          };
-        })
-      );
-      setSelectedLocation?.(locations as LocationItem[]);
-    } else {
-      setSelectedLocation?.(null);
-    }
-  };
-
-  useEffect(() => {
-    fetchUrlLocation();
-  }, [localFilters]);
-
-  // Add new useEffect for trends page default location
-  useEffect(() => {
-    if (pathName === "/internal" && !localFilters.locationIds) {
-      replaceLocalFilter(
-        "geoCoordinates",
-        "locationIds",
-        "5dc0b154-e2d8-5160-9bd6-dd8175a58c47"
-      );
-    }
-  }, [pathName]);
-
-  // Add cleanup effect
-  useEffect(() => {
-    return () => {
-      if (pathName === "/internal" || pathName === "/internal/search") {
-        console.log("deleting locationIds and geoCoordinates");
-        replaceLocalFilter("geoCoordinates", "locationIds", "");
-      }
-    };
-  }, [pathName]);
-
   const applyHandler = () => {
     if (selectedLocation && !Array.isArray(selectedLocation)) {
       const geoLocation = selectedLocation as GeoLocation;
@@ -125,14 +66,17 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
         radiusUnit === "mi" ? geoLocation.radius * 1.60934 : geoLocation.radius;
       replaceLocalFilter(
         "locationIds",
-        "geoCoordinates",
+        "viewBound",
         JSON.stringify({
+          boundType:"point",
+          coordinates:{
           latitude: geoLocation.lat,
           longitude: geoLocation.lng,
           radius: radiusInKm,
+          }
         })
       );
-      saveLastSearchedLocation(geoLocation);
+      return;
     } else if (
       selectedLocation &&
       Array.isArray(selectedLocation) &&
@@ -143,21 +87,25 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
         "locationIds",
         (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
       );
-      saveLastSearchedLocation(selectedLocation);
-    } else {
-      deleteMultipleLocalFilters(["locationIds", "geoCoordinates"]);
-      clearLastSearchedLocation();
-    }
+      return;
+      // saveLastSearchedLocation(selectedLocation);
+    } 
     setIsOpen(false);
   };
+ useEffect(()=>{
+  console.log(selectedLocation);
+  if (selectedLocation && Array.isArray(selectedLocation))
+  applyHandler();
+//   if (selectedLocation && Array.isArray(selectedLocation)){
+//     console.log(selectedLocation);
+//     setLocalFilter(
+//       "locationIds",
+//       (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
+//     )
+//     }
+ },[selectedLocation])
+console.log(selectedLocation);
 
-  const onOpenChange = (open: boolean) => {
-    if (!open) {
-      applyHandler();
-    }
-    setIsOpen(open);
-  };
-  console.log(activeTab);
   
   return (
    <>
@@ -185,13 +133,13 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
           /> */}
         <div className="flex justify-between items-center p-4 py-2 border-b h-[41px]">
           <span className="font-medium">Location</span>
-          <Button
+          {/* <Button
             variant="link"
             className="text-primary pr-0"
             onClick={applyHandler}
-          >
+          > */}
             {/* Apply */}
-          </Button>
+          {/* </Button> */}
         </div>
 
         {isEventeli ? (
@@ -206,7 +154,6 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
             </TabsList>
             <TabsContent value="city" className="p-4">
               <AutocompleteInput
-                multiple
                 type="LocationId"
                 placeholder="E.g. Bangalore, Karnataka"
                 onSelect={setSelectedLocation}

@@ -447,7 +447,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
     
     return {
       eventTypes: {
-        isEnabled: data.eventType?.enabledValue?.length > 0 ?? true,
+        isEnabled: data?.eventType?.enabledValue?.length > 0 ?? true,
         // options:searchFiltersg?.eventTypes?.options
         options: Object.fromEntries(
             Object.entries(searchFilters?.eventTypes?.options ?? {}).map(([key, group]) => {
@@ -455,7 +455,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
                 ...format,
                 isEnabled:
                   key === "business" // Update only the "business" group
-                    ? data.eventType?.enabledValue?.includes(
+                    ? data?.eventType?.enabledValue?.includes(
                         format.id.charAt(0).toUpperCase() + format.id.substring(1, format.id.length - 1)
                       ) ?? true
                     : format.isEnabled, // Keep `isEnabled` unchanged for other groups
@@ -470,32 +470,32 @@ export const generateSearchFilters=(apiResponse: any)=> {
         isEnabled: true,
         options: searchFilters?.eventFormats?.options?.map((format) => ({
           ...format,
-          isEnabled: data.eventFormat?.enabledValue?.includes(format.id) ?? true,
+          isEnabled: data?.eventFormat?.enabledValue?.includes(format.id) ?? true,
         })),
       },
   
       categories: {
-        isEnabled: data.eventCategory?.enabledValue?.length > 0 ?? true,
+        isEnabled: data?.eventCategory?.enabledValue?.length > 0 ?? true,
         options: searchFilters?.categories?.options?.map((category) => ({
           ...category,
-          isEnabled: data.eventCategory?.enabledValue?.some(
+          isEnabled: data?.eventCategory?.enabledValue?.some(
             (c: any) => c.id === category.id
           ) ?? true,
       })),
     },
 
     eventStatus: {
-      isEnabled: data.eventStatus?.enabledValue?.length > 0 ?? true,
+      isEnabled: data?.eventStatus?.enabledValue?.length > 0 ?? true,
       options: searchFilters?.eventStatus?.options?.map((status) => ({
         ...status,
         isEnabled:
-          data.eventStatus?.enabledValue?.includes(status.id.toUpperCase()) ??
+          data?.eventStatus?.enabledValue?.includes(status.id.toUpperCase()) ??
           true,
       })),
     },
 
     userRatings: {
-      isEnabled: data.eventRating?.isRatingEnabled ?? true,
+      isEnabled: data?.eventRating?.isRatingEnabled ?? true,
       isToggleEnabled: Boolean(data.eventRating?.enabledValue?.length),
       options: searchFilters?.userRatings?.options?.map((rating) => ({
         ...rating,

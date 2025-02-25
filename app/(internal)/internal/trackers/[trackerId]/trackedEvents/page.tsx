@@ -3,6 +3,7 @@
 import React, { lazy, Suspense, useEffect, useState} from "react";
 import Expand from "/public/expand_more.svg";
 import Notes from "@/public/notes.svg"
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import ExportModal from "@/app/components/Search/ExportModal";
 import styles from "./trackedEvents.style.module.css";
@@ -41,6 +42,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 import EventCalendar from "@/components/eventCalendar";
 import { isEventeli } from "@/config";
 import SortDropdown from "@/components/search/sortDropdown";
+import { NotebookPen, Share2 } from "lucide-react";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
@@ -65,8 +67,8 @@ const Map = lazy(() => import("@/components/map"));
 interface LocationObject  { [id: string]: string };
 const Page = ({ params }: { params: any }) => {
   const {data, savedEventCount}=useTrackerContext();
-  console.log(data);
-  
+  // console.log(data);
+  const [share,setShare]=useState(false);
   const pathname = usePathname();
   const {getCalendarViewEvents,getTrackerEvents, getSavedEvents} = useTrackerServices();
   const {adaptParams}=TrackersAdapter;
@@ -219,19 +221,20 @@ const Page = ({ params }: { params: any }) => {
     
     // createQueryString();
     if(isEventeli){
-      const transformedData = Object?.keys(data?.groupedEventsCount).map((key) => ({
+      const transformedData = Object.keys(data?.groupedEventsCount || {}).map((key) => ({
         type: key.charAt(0).toUpperCase() + key.slice(1),
-        totalCount: data?.groupedEventsCount[key].total,
-        newCount: data?.groupedEventsCount[key].new,
+        totalCount: data?.groupedEventsCount?.[key]?.total || 0,
+        newCount: data?.groupedEventsCount?.[key]?.new || 0,
       }));
+      
       transformedData.push({
         type: "Bookmarked",
-        totalCount: savedEventCount,
+        totalCount: savedEventCount || 0,
         newCount: 0,
       });
-      console.log(data?.groupedEventsCount);
       
-      setEventCount(transformedData)
+      setEventCount(transformedData);
+      
       // setEventCount({
       //   transformedData,
       //   savedEventCount: data?.tracker?.savedEventCount || 0,
@@ -447,7 +450,7 @@ const activeVal =
       "Expired Events"
     ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
     : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
-  console.log(active);
+  console.log(data);
   
   return (
     <div className="flex w-[calc(100vw-134px)]">
@@ -596,7 +599,11 @@ const activeVal =
               </button>
             ))}
           </div>
-          <SortDropdown />
+          <div className="flex gap-2">
+          <Button variant="outline" className="flex gap-1" onClick={()=>setShare(!share)}>
+          <Share2 width={16} height={16}/>
+          Share 
+          </Button>
           <Link href={`/internal/trackers/${trackerId}/notesDiscussion?type=${data?.tracker?.type}`}
             onClick={() => {
               GAEvent(
@@ -606,10 +613,11 @@ const activeVal =
                 "Notes and Discussion"
               )
             }}
+            className="flex items-center"
           >
-          <div className="flex text-[var(--secondary-text-color)] text-sm font-medium cursor-pointer gap-1">
-          <Image src={Notes} alt="Notes"/>
-          Notes and Discussion
+          <Button variant="outline" className="flex gap-1">
+          <NotebookPen width={16} height={16}/>
+          Notes 
             {/* <ListUnordered
               height="16px"
               width="16px"
@@ -632,8 +640,10 @@ const activeVal =
               }
               onClick={() => setView("calendar")}
             /> */}
-          </div>
+          </Button>
           </Link>
+          <SortDropdown />
+          </div>
         </div>
 
         {(view === "table") && (
@@ -733,6 +743,7 @@ const activeVal =
           </div>
         )}
       </div>
+      
     </Suspense>
   </div>
   );

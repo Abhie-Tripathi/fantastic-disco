@@ -6,6 +6,7 @@ import Text from "@/components/new-ui/Text";
 import cityStateCountry from "/public/entireCityCountry.svg";
 import streetAddressRadius from "/public/streetAddressRadius.svg";
 const TeliTemplates = ({type}:any) => {
+  console.log("called multiple time");
   return (
     <div>
        {type==="T_LOCATION" &&
@@ -13,7 +14,7 @@ const TeliTemplates = ({type}:any) => {
     <div className="flex gap-2 flex-col border w-[500px]">
       <LocationTemplate type={type} />
       </div>
-      <span
+      {/* <span
             className="border-2 border-[#ebebeb] rounded-2xl p-3 flex gap-2 flex-col h-[200px]"
           >
        <Image src={cityStateCountry} alt="GEO_JSON" />
@@ -21,7 +22,7 @@ const TeliTemplates = ({type}:any) => {
             <Text size="small" color="secondary">
               Eg: Bangalore, Karnataka or India
             </Text>
-      </span>
+      </span> */}
       </div>
     }
     {type==="T_VENUE" &&
@@ -29,7 +30,7 @@ const TeliTemplates = ({type}:any) => {
     <div className="flex gap-2 flex-col border w-[500px]">
       <LocationTemplate type={type} />
     </div>
-     <span
+     {/* <span
      className="border-2 border-[#ebebeb] rounded-2xl p-3 flex gap-2 flex-col items-start h-[200px]"
        
      >
@@ -38,7 +39,7 @@ const TeliTemplates = ({type}:any) => {
        <Text size="small" color="secondary">
          Eg: Stores, Hotels, Restaurants or Office
        </Text>
-     </span>
+     </span> */}
      </div>
     }
     {type==="T_LOCATION_DATE" &&
@@ -52,7 +53,7 @@ const TeliTemplates = ({type}:any) => {
         <DateRangeSelector type={type}/>
       </div>
       </div>
-      <span
+      {/* <span
      className="border-2 border-[#ebebeb] rounded-2xl p-3 flex gap-2 flex-col items-start h-[200px]"
        
      >
@@ -61,7 +62,7 @@ const TeliTemplates = ({type}:any) => {
        <Text size="small" color="secondary">
          Eg: Stores, Hotels, Restaurants or Office
        </Text>
-     </span>
+     </span> */}
     </div>
 
     }

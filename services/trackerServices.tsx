@@ -177,7 +177,7 @@ export const useTrackerServices = () => {
           }
         );
       }
-      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=${query.take||"20"}&offset=${query.limit||"0"}&type=${query.eventType}`)
+      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=${query.take||"20"}&offset=${query.limit||"0"}&type=${query.eventType}&sortBy=${query.sortBy || 'score'}`)
       return response;
     };
     const getTrackerMapEvents = async(
@@ -193,7 +193,7 @@ export const useTrackerServices = () => {
     // console.log(adaptedParams);
       
       const response:any= await api.request(
-        params==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${params || isEventeli?"active":"business"}`,
+        params==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${params || !isEventeli?"active":"business"}`,
         {
           method: "GET",
           signal: abortSignal,
@@ -264,7 +264,7 @@ export const useTrackerServices = () => {
       else if(type.get("eventType")==="expiredEvent") active="past";
       else if(type.get("eventType")==="activeEvent") active="active";
         const response = await api.request<EventCount[]>(
-          type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events/count?view=map&type=${type.get("eventType") || isEventeli?"active":"business"}&groupBy=${currentZoomGroup}`,
+          type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events/count?view=map&type=${type.get("eventType") || !isEventeli?"active":"business"}&groupBy=${currentZoomGroup}`,
           {
             method: "GET",
           }
@@ -276,7 +276,7 @@ export const useTrackerServices = () => {
     // const adaptedParams = EventsAdapter.adaptRequestParams(params);
     console.log(type.get("eventType"));
     
-    const response = await api.request(type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${type.get("eventType") || isEventeli?"active":"business"}&view=map`, {
+    const response = await api.request(type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${type.get("eventType") || !isEventeli?"active":"business"}&view=map`, {
       method: "GET",
       params: params
     },true);

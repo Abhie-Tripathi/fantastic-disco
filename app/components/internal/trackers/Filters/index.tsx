@@ -732,15 +732,28 @@ const Pages = () => {
      
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
         // console.log(getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords"));
+        console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      else if (type !== defaultType && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
+      else if (type === "T_LOCATION" && (trackerName.length === 0 || getLocalFilterValue("locationIds").length === 0)) {
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+       }
+       else if (
+        type !== defaultType && 
+        type !== "T_PRODUCT_KEYWORDS" && 
+        type !== "T_LOCATION" &&
+        (trackerName.length === 0 || customData.length === 0)
+      ) {
+        console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
+      
       else if (type === defaultType && ( 
         !getLocalFilterValue("locationIds") || 
         getLocalFilterValue("locationIds").length === 0 || 
@@ -782,7 +795,15 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type !== defaultType && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
+      // else if (type !== defaultType && type==="T_LOCATION" &&(trackerName.length === 0 || location.length === 0 )){
+
+      // }
+      else if (
+        type !== defaultType && 
+        type !== "T_PRODUCT_KEYWORDS" && 
+        type !== "T_LOCATION" &&
+        (trackerName.length === 0 || customData.length === 0)
+      ) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
