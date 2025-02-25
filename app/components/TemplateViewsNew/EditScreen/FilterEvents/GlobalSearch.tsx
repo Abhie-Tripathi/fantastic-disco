@@ -73,7 +73,7 @@ const GlobalSearch = ({ widgetId, handlePrefillGlobalEvent, handleChange }: Prop
   const handleSearchInput = async (text: string) => {
     if (text) {
       const { data, error } = await myFetch(
-        `${baseUrl}/event/suggestion?name=${text}`
+        `${baseUrl}/promot-event?views=suggestion&name=${text}`
       );
       if (error) {
         console.log(error);

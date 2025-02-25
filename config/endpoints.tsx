@@ -140,6 +140,8 @@ export const endpoints = {
     filterConfiguration: `${BASE_URL}/me/account/configuration/filter`,
     interestConfiguration: `${BASE_URL}/me/account/configuration/interest`,
     outreachConfiguration: `${BASE_URL}/me/account/configuration/outreach`,
+    updateResearch: `${BASE_URL}/me/account/configuration/interest`,
+    updateOutreach: `${BASE_URL}/me/account/configuration/outreach`
   },
   myprofile: `${BASE_URL}/me`,
 };
