@@ -41,7 +41,7 @@ const DateRangePopup: React.FC<DateRangePopupProps> = ({
     <div className="flex flex-col border rounded-md">
       {type === "T_LOCATION_DATE" && (
         <div className="flex justify-between items-center p-4 py-2 border-b">
-          <span className="font-medium">Dates</span>
+          <span className="font-medium">Duration</span>
         </div>
       )}
       <div className="flex space-x-4 rounded-md p-4">

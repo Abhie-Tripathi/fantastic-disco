@@ -14,7 +14,7 @@ import "echarts/lib/component/grid";
 
 import { Button } from "@/components/ui/button";
 import { ChartFilters } from "@/components/trendsChart/chart-filters";
-import { getChartOptions } from "@/utils/chart-options";
+import { getChartOptions, HierarchyLevel } from "@/utils/chart-options";
 import { ArrowLeft, Loader2 } from "lucide-react";
 
 export default function VisualizePage() {
@@ -23,149 +23,65 @@ export default function VisualizePage() {
   const chartRef = useRef<HTMLDivElement>(null);
   const chartInstance = useRef<echarts.ECharts | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentLevel, setCurrentLevel] = useState(0);
+  const [hierarchyLevels, setHierarchyLevels] = useState<HierarchyLevel[]>([]);
 
-  const getLevelOption = () => {
-    return [
-      {
-        itemStyle: {
-          borderWidth: 0,
-          gapWidth: 5
-        }
-      },
-      {
-        itemStyle: {
-          gapWidth: 1
-        }
-      },
-      {
-        colorSaturation: [0.35, 0.5],
-        itemStyle: {
-          gapWidth: 1,
-          borderColorSaturation: 0.6
-        }
+  const handleChartClick = (params: any) => {
+    if (chartInstance.current && params.treePathInfo) {
+      // Only allow drill down if there are more levels to show
+      if (currentLevel < hierarchyLevels.length - 1) {
+        setCurrentLevel(currentLevel + 1);
       }
-    ];
+    }
+  };
+
+  const handleBreadcrumbClick = (params: any) => {
+    if (chartInstance.current) {
+      setCurrentLevel(params.nodeIndex);
+    }
+  };
+
+  const handleFiltersChange = (filters: any) => {
+    if (chartInstance.current) {
+      setCurrentLevel(0);
+      setHierarchyLevels(filters.hierarchyLevels);
+      const options = getChartOptions(params.type as string, filters.hierarchyLevels);
+      chartInstance.current.setOption(options);
+    }
   };
 
   useEffect(() => {
-    const cleanup = () => {
-      if (chartInstance.current) {
-        chartInstance.current.dispose();
-        chartInstance.current = null;
-      }
-    };
-
     const initChart = async () => {
       if (!chartRef.current) return;
 
       try {
-        cleanup();
-
-        // Make sure container is visible and has dimensions
-        chartRef.current.style.display = "block";
-        chartRef.current.style.height = "600px";
-        chartRef.current.style.width = "100%";
-
-        // Initialize new chart
-        chartInstance.current = echarts.init(chartRef.current);
-        
-        // Show loading state
-        chartInstance.current.showLoading();
-
-        // If it's a treemap, use the special configuration
-        if (params.type === 'visitor-flow') {
-          const options = {
-            title: {
-              text: 'Visitor Distribution',
-              left: 'center'
-            },
-            tooltip: {
-              formatter: function (info: any) {
-                const value = info.value;
-                const treePathInfo = info.treePathInfo;
-                const treePath = [];
-
-                for (let i = 1; i < treePathInfo.length; i++) {
-                  treePath.push(treePathInfo[i].name);
-                }
-
-                return [
-                  '<div class="tooltip-title">' +
-                    echarts.format.encodeHTML(treePath.join('/')) +
-                    '</div>',
-                  'Visitors: ' + echarts.format.addCommas(value)
-                ].join('');
-              }
-            },
-            series: [
-              {
-                name: 'Visitor Distribution',
-                type: 'treemap',
-                visibleMin: 300,
-                label: {
-                  show: true,
-                  formatter: '{b}'
-                },
-                itemStyle: {
-                  borderColor: '#fff'
-                },
-                levels: getLevelOption(),
-                data: [
-                  {
-                    name: 'International',
-                    value: 1000,
-                    children: [
-                      { name: 'Europe', value: 400 },
-                      { name: 'Asia', value: 300 },
-                      { name: 'Americas', value: 200 },
-                      { name: 'Others', value: 100 }
-                    ]
-                  },
-                  {
-                    name: 'Domestic',
-                    value: 800,
-                    children: [
-                      { name: 'Local', value: 500 },
-                      { name: 'Regional', value: 300 }
-                    ]
-                  }
-                ]
-              }
-            ]
-          };
-          chartInstance.current.setOption(options);
-        } else {
-          // For other chart types, use the default options
-          const options = getChartOptions(params.type as string);
-          chartInstance.current.setOption(options);
+        if (chartInstance.current) {
+          chartInstance.current.dispose();
         }
 
-        // Hide loading state
-        chartInstance.current.hideLoading();
-
-        // Handle resize
-        const handleResize = () => {
-          chartInstance.current?.resize();
-        };
-
-        window.addEventListener("resize", handleResize);
-        handleResize();
+        chartRef.current.style.height = "600px";
+        chartInstance.current = echarts.init(chartRef.current);
+        
+        const options = getChartOptions(params.type as string);
+        chartInstance.current.setOption(options);
+        
+        // Add click event handlers
+        chartInstance.current.on('click', handleChartClick);
+        chartInstance.current.on('breadcrumbclick', handleBreadcrumbClick);
+        
         setIsLoading(false);
-
-        return () => {
-          window.removeEventListener("resize", handleResize);
-        };
       } catch (error) {
         console.error("Error initializing chart:", error);
         setIsLoading(false);
       }
     };
 
-    const timer = setTimeout(initChart, 100);
+    initChart();
 
     return () => {
-      clearTimeout(timer);
-      cleanup();
+      if (chartInstance.current) {
+        chartInstance.current.dispose();
+      }
     };
   }, [params.type]);
 
@@ -179,19 +95,14 @@ export default function VisualizePage() {
 
         <div className="grid lg:grid-cols-[350px,1fr] gap-6">
           <div className="bg-white p-6 rounded-lg shadow-sm border">
-            <ChartFilters type={params.type as string} />
+            <ChartFilters 
+              type={params.type as string} 
+              onFiltersChange={handleFiltersChange}
+            />
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border relative w-full">
-            <div
-              ref={chartRef}
-              className="w-full"
-              style={{
-                height: "600px",
-                visibility: isLoading ? "hidden" : "visible",
-                position: "relative",
-              }}
-            />
+          <div className="bg-white p-6 rounded-lg shadow-sm border relative">
+            <div ref={chartRef} className="w-full" />
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <Loader2 className="animate-spin text-primary h-8 w-8" />

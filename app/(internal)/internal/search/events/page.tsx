@@ -316,7 +316,7 @@ const Search = () => {
                 Export
               </span>
             </Button>
-            <SortDropdown />
+            {(view === "table" || view === "list" || view == "") && <SortDropdown />}
           </div>
         </div>
 
