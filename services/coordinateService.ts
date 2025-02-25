@@ -208,10 +208,21 @@ export const useCoordinateService = () => {
   }
 
   const unlockPocDetail = (pocId: number, eventId: string) => {
-    return api.request<pocDetail>(`${endpoints.coordinate.eventDetail}/${eventId}/pocs/${pocId}?unlockValue=EMAIL,PHONE`, {
-      method: "GET",
-    });
-  }
+    const payload: any = {
+      unmask: "email,phone",
+      source: "eventPage",
+      target: "EVENT",
+      targetId: eventId,
+    };
+
+    return api.request<pocDetail>(
+      `${endpoints.prospect.users.detail}/${pocId}`,
+      {
+        method: "GET",
+        params: payload,
+      }
+    );
+  };
 
   const getPresetJson = async(type: string, page: number) => {
     const data = await externalAxios.get<PresetList>(`/data/presetJson/${type}/${page}.json`, {
