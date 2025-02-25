@@ -159,6 +159,8 @@ export const EventParticipants = ({
   const { exhibitorsCount, speakersCount, sponsorsCount } =
     (eventDetails && eventDetails.insights) || {};
   const { eventPageUrl } = (eventDetails && eventDetails.basic) || {};
+
+  // const showParticipantBasedOnEventType = 
   const participantData = [
     {
       heading: "Exhibitors",

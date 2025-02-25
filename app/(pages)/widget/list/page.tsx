@@ -123,7 +123,7 @@ const Widget = () => {
         templateId: asciiToString(widget.templatePublicId),
         widgetType: widget.type,
         widgetId: widget.id,
-        eventSize: widget.otherdata.event.length,
+        eventSize: widget.otherData?.event?.length,
         widgetStatus: "Draft",
       }));
       setDraftWidgets(filteredWidgets);
@@ -149,7 +149,7 @@ const Widget = () => {
           templateId: asciiToString(widget.templatePublicId),
           widgetType: widget.type,
           widgetId: widget.id,
-          eventSize: widget.otherdata.event.length,
+          eventSize: widget.otherData?.event?.length,
           widgetStatus: "Active",
         }))
       : [];
@@ -160,7 +160,7 @@ const Widget = () => {
             templateId: asciiToString(widget.templatePublicId),
             widgetType: widget.type,
             widgetId: widget.id,
-            eventSize: widget.otherdata.event.length,
+            eventSize: widget.otherData?.event?.length,
             widgetStatus: "Inactive",
           }))
         : [];
@@ -200,7 +200,7 @@ const Widget = () => {
       setCardStyle(data.customizationData.selectedCard);
       setSelectedBtn(data.customizationData.selectedBtn);
       setSelectedTemplate(asciiToString(data.templatePublicId));
-      const events = data.otherdata?.event;
+      const events = data.otherData?.event;
       setfetchedAddedEvents(events);
     }
   };

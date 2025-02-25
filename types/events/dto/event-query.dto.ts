@@ -189,13 +189,7 @@ export const viewBound = z
 export const QueryFilter = z.object({
   eventIds: z.string().optional(),
   query: z.string().optional(),
-  locationIds: z
-    .string()
-    .transform((data) => {
-      if (!data) return [];
-      return data?.split(",").map((item) => item.trim());
-    })
-    .optional(),
+  locationIds: z.string().optional(),
   geoCoordinates: z
     .string()
     // .refine(
@@ -215,25 +209,10 @@ export const QueryFilter = z.object({
       return data ? geoCoordinatesSchema.parse(JSON.parse(data)) : undefined;
     })
     .optional(),
-  viewBound: z
-    .string()
-    .transform((data) => {
-      return data ? viewBound.parse(JSON.parse(data)) : undefined;
-    })
-    .optional(),
-  eventTypes: z
-    .string()
-    .transform((data) => {
-      if (!data) return [];
-      return data?.split(",").map((item) => item.trim());
-    })
-    .optional(),
+  viewBound: z.string().optional(),
+  eventTypes: z.string().optional(),
   categories: z
     .string()
-    .transform((data) => {
-      if (!data) return [];
-      return data?.split(",").map((item) => item.trim());
-    })
     .optional(),
   designations: z
     .string()
@@ -345,11 +324,6 @@ export const QueryFilter = z.object({
         },
       }
     )
-    .transform((data) => {
-      return data
-        .split(",")
-        .map((item) => item.trim().toUpperCase()) as unknown as EventStatus[];
-    })
     .optional(),
   maturity: z
     .string()
@@ -400,7 +374,6 @@ export const QueryFilter = z.object({
   eventFormats: z
     .string()
     .refine((val) => val.split(",").every((item) => item in EventFormat))
-    .transform((val) => val.split(","))
     .optional(),
   entryType: z
     .string()

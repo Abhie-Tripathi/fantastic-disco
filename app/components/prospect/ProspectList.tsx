@@ -4,47 +4,32 @@ import { PaginationComponent } from "@/components/pagination";
 import { Badge } from "@/components/ui/badge";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useCompanyService } from "@/services/companyService";
-import { convertToCustomFormat, calculateDateDifference } from "@/utils/dateFormat";
+import { companyListData } from "@/types/prospect";
 import { Buildings, Location } from "geist-icons";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-interface companyDetail {
-  name: string;
-  profile: string;
-  url: string;
-  city: string;
-  country: string;
-  cdn_url: string;
-  industries: string[];
-  eventCount?: number;
-  companyType?: string;
+const excludedTags = [
+  "Core CRM",
+  "All Paid",
+  "Billing Company",
+  "FLOOR Clients",
+  "Complimentary Services",
+  "Dead Account",
+  "core-crm",
+  "all-paid",
+  "billing-company",
+  "floor-clients",
+  "complimentary-services",
+  "dead-account",
+];
 
-  id: number | string;
-  description: string;
-  location: {
-    cityName: string;
-    countryName: string;
-    state: string;
-  };
-  logo: string | null;
-  event_categoryName: string[];
-  stats: {
-    totalEvents: number;
-    upcomingEvents: number;
-    totalExhibit: number;
-    totalVisitor: number;
-    totalSponsor: number;
-    lastLogin: string;
-  };
-  company_tag: string[];
-  website: string | null;
-}
-
-const excludedTags = ["Core CRM", "All Paid", "Billing Company", "FLOOR Clients", "Complimentary Services", "Dead Account", "core-crm", "all-paid", "billing-company", "floor-clients", "complimentary-services", "dead-account"];
-
-const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
+const ProspectCard = ({
+  companyDetail,
+}: {
+  companyDetail: companyListData;
+}) => {
   const { checkCompanyLogo } = useCompanyService();
   const [compLogo, setCompLogo] = useState<string | null>(null);
 
@@ -124,7 +109,7 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
 
                 {companyDetail?.company_tag.length > 0 &&
                   companyDetail?.company_tag
-                    ?.filter(item => !excludedTags.includes(item))
+                    ?.filter((item) => !excludedTags.includes(item))
                     ?.filter(Boolean)
                     .slice(0, 2)
                     ?.map((item: any, index: number) => (
@@ -150,46 +135,51 @@ const ProspectCard = ({ companyDetail }: { companyDetail: companyDetail }) => {
             </div>
 
             <div className="flex flex-wrap gap-2 items-center w-fit">
-              {companyDetail.stats?.totalEvents > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
-                >
-                  Total Events: {companyDetail.stats.totalEvents}
-                </Badge>
-              )}
-              {companyDetail.stats?.upcomingEvents > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
-                >
-                  Upcoming Events: {companyDetail.stats.upcomingEvents}
-                </Badge>
-              )}
-              {companyDetail.stats?.totalExhibit > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
-                >
-                  Events Exhibited: {companyDetail.stats.totalExhibit}
-                </Badge>
-              )}
-              {companyDetail.stats?.totalSponsor > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
-                >
-                  Events Sponsored: {companyDetail.stats.totalSponsor}
-                </Badge>
-              )}
-              {companyDetail.stats?.totalVisitor > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
-                >
-                  Events Visited: {companyDetail.stats.totalVisitor}
-                </Badge>
-              )}
+              {companyDetail.stats?.totalEvents !== null &&
+                companyDetail.stats?.totalEvents > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                  >
+                    Total Events: {companyDetail.stats.totalEvents}
+                  </Badge>
+                )}
+              {companyDetail.stats?.upcomingEvents !== null &&
+                companyDetail.stats?.upcomingEvents > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                  >
+                    Upcoming Events: {companyDetail.stats.upcomingEvents}
+                  </Badge>
+                )}
+              {companyDetail.stats?.totalExhibit !== null &&
+                companyDetail.stats?.totalExhibit > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                  >
+                    Events Exhibited: {companyDetail.stats.totalExhibit}
+                  </Badge>
+                )}
+              {companyDetail.stats?.totalSponsor !== null &&
+                companyDetail.stats?.totalSponsor > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                  >
+                    Events Sponsored: {companyDetail.stats.totalSponsor}
+                  </Badge>
+                )}
+              {companyDetail.stats?.totalVisitor !== null &&
+                companyDetail.stats?.totalVisitor > 0 && (
+                  <Badge
+                    variant="secondary"
+                    className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                  >
+                    Events Visited: {companyDetail.stats.totalVisitor}
+                  </Badge>
+                )}
             </div>
           </div>
         </div>
@@ -202,11 +192,13 @@ export const ProspectList = ({
   companies,
   count = 0,
 }: {
-  companies: any[];
+  companies: companyListData[];
   count: number | undefined;
 }) => {
   const { setFilter, getFilterValue } = useFilterState();
-  const [itemsPerPage, setItemsPerPage] = useState<number>(Number(getFilterValue("take")) || 10);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(
+    Number(getFilterValue("take")) || 10
+  );
   const currentPage =
     Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(count / itemsPerPage);
@@ -223,7 +215,7 @@ export const ProspectList = ({
   };
   return (
     <div className="flex gap-3 flex-col">
-      {companies?.map((item: companyDetail, index: number) => (
+      {companies?.map((item, index) => (
         <ProspectCard companyDetail={item} key={index} />
       ))}
       <div className="sticky bg-background py-2 border-t">

@@ -35,7 +35,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const fetchSearchSuggestion = async () => {
       
       if(searchInput!==previousInput){
-        let url = `${baseUrl}/${endpoint}?q=${searchInput}&limit=5&offset=0`;
+        let url = `${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
         
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();

@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/input-otp";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, Loader2, TriangleAlert } from "lucide-react";
-import { useFilterState } from "@/hooks/useFilterState";
 import { useSearchParams } from "next/navigation";
 import { Input } from "../ui/input";
 import { industryData, settingResearchData } from "@/data/onboarding";
@@ -41,19 +40,13 @@ type OTPData = z.infer<typeof otpSchema>;
 export default function NewVerificationForm() {
   const router = useRouter();
   const [time, setTime] = useState(30);
-  const [resendLoading, setResendLoading] = useState(false);
-  const { verifyOtp, error, generateOTP, signin, setError } = useAuthContext();
+  const { verifyOtp, error, signin, setError, isLoading } = useAuthContext();
   const searchParams = useSearchParams();
-  const [isLoading, setIsLoading] = useState(false);
-  const { getFilterValue } = useFilterState();
   const sessionCategories =
     (sessionStorage && sessionStorage.getItem("categories")) || "";
-  const email = (sessionStorage && sessionStorage.getItem("userEmail")) || "";
+  const email = (searchParams && searchParams.get("email")) || "";
   const industry = (sessionStorage && sessionStorage.getItem("industry")) || "";
-  const subIndustry =
-    (sessionStorage && sessionStorage.getItem("subIndustry")) || "";
   const flow = (sessionStorage && sessionStorage.getItem("flow")) || "";
-
   const categories = sessionCategories && JSON.parse(sessionCategories);
 
   const urlParams = useMemo(() => {
@@ -81,9 +74,7 @@ export default function NewVerificationForm() {
   const redirectTo = useMemo(() => {
     if (flow && flow === "signUp") {
       if (isEventeli) {
-        return `/location${industry ? `?industry=${industry}` : ""}${
-          subIndustry ? `&subIndustry=${subIndustry}` : ""
-        }`;
+        return "/location";
       } else {
         const isCategoryMapped = industryData.find(
           (industryItem) => industryItem.slug === industry
@@ -128,7 +119,6 @@ export default function NewVerificationForm() {
         );
       } else {
         await verifyOtp(verifyOtpDTO, "signIn", redirectTo);
-        // await verifyLoginOTP({ email, otpCode: data.otpCode }, redirectTo);
       }
     } catch (error) {
       console.error("OTP verification error:", error);
@@ -138,7 +128,6 @@ export default function NewVerificationForm() {
   const resendOTP = async (email: string) => {
     setTime(30);
     await signin({ email });
-    // generateOTP(email, industry, categories, flow, "resend");
   };
 
   const handleBack = () => {

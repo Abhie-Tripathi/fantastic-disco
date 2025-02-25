@@ -233,7 +233,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
             const formData = new FormData()
             formData.append("name", mainEventState.eventName)
             formData.append("data", JSON.stringify(eventData))
-            formData.append("type", "MAIN")
+            formData.append("type", "PARENT")
             formData.append("capacity", mainEventState?.capacity + "")
             formData.append("approval", mainEventState?.approval + "")
             formData.append("waitlisting", mainEventState?.waitlisting + "")
@@ -247,7 +247,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
                 }
             }
 
-            formData.append("sourceId", widgetId)
+            // formData.append("sourceId", widgetId)
 
             // remove
             // const { data, error } = await myFetch(`${baseUrl}/event`, {
@@ -432,7 +432,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
         const formData = new FormData()
         formData.append("name", subEventState.eventName)
         formData.append("data", JSON.stringify(eventData))
-        formData.append("type", "SUB")
+        formData.append("type", "CHILD")
         if (eventId) {
             formData.append('eventId', eventId)
         }
@@ -455,7 +455,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
 
         // formData.append("interest", participationType.toUpperCase())
         // formData.append("source", "eventgeni/widget/event")
-        formData.append("sourceId", widgetId)
+        // formData.append("sourceId", widgetId)
 
         // const { data, error } = await myFetch(`${baseUrl}/event`, {
         //     method: 'POST',
@@ -488,7 +488,6 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
     const handleSaveEvent = async (eventId: string) => {
         // Use the eventFlow variable to decide which state to use
         const eventState = eventFlow === "main" ? mainEventState : subEventState;
-        console.log("eventState",eventState)
         // Perform the necessary validation checks with the selected state
         if (!eventState.eventName || eventState.eventName === "") {
             handleMaineventChanges('isEventNameEmpty', true);
@@ -590,17 +589,17 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
         formData.append("id", eventId);
         formData.append("name", eventState.eventName);
         formData.append("data", JSON.stringify(eventData));
-        formData.append("sourceId", widgetId);
+        // formData.append("sourceId", widgetId);
         formData.append("maxCapacity", eventState?.capacity + "")
 
         // Check if the banner has been updated
-        if (eventState.banner.placeHolder.includes("eventgeni") === false) {
-            if (eventState.banner.file) {
-                // formData.append("file", eventState.banner.file); // Use the file field if uploaded by the user
-            } else {
-                formData.append("logoUrl", eventState.banner.placeHolder); // Use logoUrl if the banner is AI-generated
-            }
-        }
+        // if (eventState.banner.placeHolder.includes("eventgeni") === false) {
+        //     if (eventState.banner.file) {
+        //         // formData.append("file", eventState.banner.file); // Use the file field if uploaded by the user
+        //     } else {
+        //         formData.append("logoUrl", eventState.banner.placeHolder); // Use logoUrl if the banner is AI-generated
+        //     }
+        // }
 
         // Make the PATCH request
         // const { data, error } = await myFetch(`${baseUrl}/event`, {

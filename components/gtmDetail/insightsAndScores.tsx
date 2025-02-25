@@ -1,5 +1,10 @@
 "use client";
-import { Event, OverallRankingsDetail, TTabs } from "@/types/events";
+import {
+  DetailRanking,
+  Event,
+  OverallRankingsDetail,
+  TTabs,
+} from "@/types/events";
 import { EventRank } from "./eventRank";
 import { InformationFill } from "geist-icons";
 import Text from "../new-ui/Text";
@@ -99,7 +104,7 @@ export const InsightsAndScores = ({
                 {scores &&
                   scores.impactScore !== 0 &&
                   scores.impactScore !== null && (
-                    <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                    <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -125,7 +130,7 @@ export const InsightsAndScores = ({
                 {trustScore !== null &&
                   trustScore !== undefined &&
                   trustScore > 0 && (
-                    <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                    <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -154,7 +159,7 @@ export const InsightsAndScores = ({
                 {scores &&
                   scores.inboundScore !== null &&
                   scores.inboundScore > 0 && (
-                    <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                    <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -180,7 +185,7 @@ export const InsightsAndScores = ({
                 {scores &&
                   scores.internationalScore !== null &&
                   scores.internationalScore > 0 && (
-                    <div className="flex flex-col bg-[#FAFAFA] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
+                    <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -222,7 +227,7 @@ export const InsightsAndScores = ({
                     trustScore > 0)
                     ? "w-1/2"
                     : "w-fill"
-                } border border-[#EBEBEB] relative rounded-md p-4 h-full max-h-96 overflow-y-auto scrollbar max-xl:w-full`}
+                } border border-[#EBEBEB] dark:border-[var(--border-color)] relative rounded-md p-4 h-full max-h-96 overflow-y-auto scrollbar max-xl:w-full`}
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-4">
@@ -254,7 +259,7 @@ export const InsightsAndScores = ({
                 </div>
                 {economicImpactEnabled && (
                   <div className="mt-8">
-                    <div className="pb-2 border-b border-[#EBEBEB] flex justify-between ">
+                    <div className="pb-2 border-b border-[#EBEBEB] flex justify-between dark:border-[var(--border-color)]">
                       <Text
                         variant="noMargin"
                         size="small"
@@ -295,11 +300,11 @@ export const InsightsAndScores = ({
               </div>
             )}
         </div>
-        {/* <EventRank
-          rankings={rankings}
+        <EventRank
+          rankings={rankings as DetailRanking}
           eventDetails={eventDetails}
           eventRankingDetails={eventRankingDetails}
-        /> */}
+        />
       </div>
     </div>
   );

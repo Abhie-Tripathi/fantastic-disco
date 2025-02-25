@@ -161,16 +161,16 @@ export const useEventsService = () => {
     return response;
   };
 
-  const getRawEventsWithSearchParams = async (searchParamsString: string) => {
-    const params = new URLSearchParams(searchParamsString);
-    const adaptedParams = EventsAdapter.adaptRequestParams(params);
-    const response = await api.request(`${endpoints.event.events}`, {
-      method: "GET",
-      params: adaptedParams,
-    }, true);
+  // const getRawEventsWithSearchParams = async (searchParamsString: string) => {
+  //   const params = new URLSearchParams(searchParamsString);
+  //   const adaptedParams = EventsAdapter.adaptRequestParams(params);
+  //   const response = await api.request(`${endpoints.event.events}`, {
+  //     method: "GET",
+  //     params: adaptedParams,
+  //   }, true);
     
-    return TrackersAdapter.adaptTrackerMapEventData(response);
-  };
+  //   return TrackersAdapter.adaptTrackerMapEventData(response);
+  // };
 
 
   const saveEvent = (eventId: string) => {
@@ -248,7 +248,7 @@ export const useEventsService = () => {
     getRecentSearches,
     bookmarkThisEvent,
     unBookmarkThisEvent,
-    getRawEventsWithSearchParams,
+    // getRawEventsWithSearchParams,
     getEventDetailById,
     getEventPOCDetails,
     getEventEditionDetails,

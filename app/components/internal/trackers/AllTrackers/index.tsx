@@ -13,6 +13,7 @@ import { ChartTrendingUp, Location } from "geist-icons";
 import { useRouter } from "next/navigation";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterState } from "@/hooks/useFilterState";
+import { isEventeli } from "@/config";
 // import { useTheme } from '@/context/theme';
 const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => {
   const router= useRouter();
@@ -105,7 +106,7 @@ const AllTrackers = ({ item, setSingleTrackerData, singleTrackerData }: any) => 
   const handleDoubleClick=(item:any)=>{
     
       setSingleTrackerData(item)
-      router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=activeEvent`)
+      router.push(`/internal/trackers/${item.id}/trackedEvents?type=${item.type}&view=table&eventType=${isEventeli?"business":"active"}`)
       setIsNewCall(true); 
       setTrackerId(item.id);
   }

@@ -70,10 +70,6 @@ export default function TeliSignUpForm() {
         sessionStorage.setItem("subIndustry", signUpData.subIndustry);
       }
 
-      if (signUpData && signUpData.email) {
-        sessionStorage.setItem("userEmail", signUpData.email);
-      }
-
       sessionStorage.setItem("flow", "signUp");
       await signup(signUpData);
     } catch (error) {
@@ -99,14 +95,6 @@ export default function TeliSignUpForm() {
 
   return (
     <div className="flex flex-col justify-center items-center w-full space-y-1">
-      {error && (
-        <Alert variant="destructive" className="w-fit">
-          <AlertDescription className="capitalize flex items-center">
-            <AlertTriangle className="h-4 w-4 mr-2" />
-            {error.message}
-          </AlertDescription>
-        </Alert>
-      )}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full"
@@ -127,10 +115,25 @@ export default function TeliSignUpForm() {
                 id="email"
                 type="email"
                 {...field}
+                onChange={(e) => {
+                  field.onChange(e);
+                  setError(null);
+                }}
                 placeholder="Email"
               />
               {errors.email && (
                 <p className="text-red-500 text-sm">{errors.email.message}</p>
+              )}
+              {error && (
+                <Alert
+                  variant="destructive"
+                  className="w-fit self-center border-none p-0"
+                >
+                  <AlertDescription className="capitalize flex items-center">
+                    <AlertTriangle className="h-4 w-4 mr-2" />
+                    {error.message}
+                  </AlertDescription>
+                </Alert>
               )}
             </div>
           )}

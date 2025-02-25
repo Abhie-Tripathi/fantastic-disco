@@ -69,7 +69,7 @@ function formatExhibitorCount(value: string | number | null): string {
 export const EventTableRow: React.FC<EventTableRowProps> = ({
   event,
   show,
-  trackerId
+  trackerId,
 }) => {
   return (
     <TableRow key={event.basic.id}>
@@ -232,11 +232,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             {event.insights?.rankings ? (
               <span>
                 <div>
-                  {event.insights.rankings.rank}
-                  <sup>{getOrdinalSuffix(event.insights.rankings.rank)}</sup>
+                  {(event.insights.rankings as any).rank}
+                  <sup>
+                    {getOrdinalSuffix((event.insights.rankings as any).rank)}
+                  </sup>
                 </div>
                 <Badge variant="outline" className="capitalize font-medium">
-                  {event.insights.rankings.rankType}
+                  {(event.insights.rankings as any).rankType}
                 </Badge>
               </span>
             ) : (

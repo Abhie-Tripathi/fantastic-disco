@@ -12,10 +12,6 @@ import { Event, EventParticipantsDetails, TTabs } from "@/types/events";
 import { CircularProgressBar } from "../eventDetail/circularProgressBar";
 import { useInView } from "react-intersection-observer";
 import { Heading } from "../eventDetail/heading";
-import {
-  audienceSpreadDummyData,
-  designationsDummyData as designations,
-} from "@/data/dummyDataEventDetail";
 import { numberWithCommas } from "@/utils/formater";
 import { Badge } from "../ui/badge";
 import {

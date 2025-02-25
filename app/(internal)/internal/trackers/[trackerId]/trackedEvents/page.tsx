@@ -570,6 +570,7 @@ const activeVal =
             </button> */}
             {eventCount?.map((item,index)=>(
                <button
+               key={index}
                className={`${styles.eventStatusBtn} ${
                 item.type.toLowerCase()===active ? styles.active : ""
               }`}
@@ -600,7 +601,7 @@ const activeVal =
           <Share2 width={16} height={16}/>
           Share 
           </Button>
-          <Link href={`/internal/trackers/${trackerId}/notesDiscussion?type=${data?.tracker?.type}`}
+          <Link href={`/internal/trackers/${trackerId}/notesDiscussion?type=${data?.type}`}
             onClick={() => {
               GAEvent(
                 "trackers",

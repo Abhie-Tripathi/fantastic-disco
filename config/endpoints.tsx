@@ -1,5 +1,4 @@
-const BASE_URL = "https://api.dev.gtm.whr.ai";
-const BASE_URL_NEW = "https://api.dev.gtm.whr.ai";
+import { BASE_URL } from ".";
 export const endpoints = {
   //   auth: {
   //     me: `${BASE_URL}/me`,
@@ -51,6 +50,7 @@ export const endpoints = {
   //     eventTypes: `${BASE_URL}/trends/event-types`,
   //   },
   locations: `${BASE_URL}/location/country`,
+  savedLocations: `${BASE_URL}/me/saved-locations`,
   locationSuggestion: `${BASE_URL}/suggestions/locations`,
   designations: `${BASE_URL}/designation`,
   users: `${BASE_URL}/me/account/users`,
@@ -61,7 +61,7 @@ export const endpoints = {
     eventTypes: `${BASE_URL}/trends/event-types`,
   },
   tracker: {
-    suggestion:`${BASE_URL}/suggestions/companies`,
+    suggestion: `${BASE_URL}/suggestions/companies`,
     commonUrl: `${BASE_URL}/trackers`,
     access: `${BASE_URL}/tracker/access`,
     shareAccess: `${BASE_URL}/access`,
@@ -91,12 +91,19 @@ export const endpoints = {
     users: `${BASE_URL}/me/account/users`,
     configuration: `${BASE_URL}/me/account/configuration`,
   },
-  company: {
-    list: `${BASE_URL}/company/search`,
-    unmaskUser: `${BASE_URL}/company/unmask`,
-    detail: `${BASE_URL}/company/search`,
-    events: `${BASE_URL}/company/event`,
-    pocList: `${BASE_URL}/company/poc`,
+  prospect: {
+    users: {
+      list: `${BASE_URL}/users/search`,
+      detail: `${BASE_URL}/users`,
+    },
+    company: {
+      list: `${BASE_URL}/companies/search`,
+      detail: `${BASE_URL}/companies`,
+      unmaskUser: `${BASE_URL}/company/unmask`,
+      // detail: `${BASE_URL}/company/search`,
+      events: `${BASE_URL}/company/event`,
+      pocList: `${BASE_URL}/company/poc`,
+    },
   },
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {
@@ -109,19 +116,20 @@ export const endpoints = {
     deActiveWidget: `${BASE_URL}/widget?status=deactivate`,
     onlyDraftWidget: `${BASE_URL}/widget?status=draft`,
     widgetById: `${BASE_URL}/widget`,
-    widget: `${BASE_URL}/widget`,
+    // widget: `${BASE_URL}/widget`,
+    widget: `${BASE_URL}/widget?status=active`,
   },
   events: {
-    getEvents: `${BASE_URL}/event?limit=2`,
-    getEventsByWidgetId: `${BASE_URL}/event`,
+    getEvents: `${BASE_URL}/promot-event?limit=2`,
+    getEventsByWidgetId: `${BASE_URL}/promot-event`,// ?widgetId=abc
     getSortedEvents: `${BASE_URL}/promot-event`,
-    getEventById: `${BASE_URL}/event`,
-    getEventByPublicAPI: `${BASE_URL}/public/widget`,
-    deleteEvent: `${BASE_URL}/event`,
-    addEvent: `${BASE_URL}/event`,
+    getEventById: `${BASE_URL}/promot-event`,
+    getEventByPublicAPI: `${BASE_URL}/public/event`,
+    deleteEvent: `${BASE_URL}/promot-event`,
+    addEvent: `${BASE_URL}/promot-event`,
     addSpeakers: `${BASE_URL}/event/speaker`,
     addExhibitors: `${BASE_URL}/event/speaker`,
-    updateEvent: `${BASE_URL}/event`,
+    updateEvent: `${BASE_URL}/promot-event`,
   },
   intend: {
     getGuest: `${BASE_URL}/intend/users`,
@@ -131,7 +139,7 @@ export const endpoints = {
   invite: {
     getInviteCount: `${BASE_URL}/invite?invites=true`,
     getSuggestions: `${BASE_URL}/invite`,
-    sendInvite: `${BASE_URL}/invite/send`,
+    sendInvite: `${BASE_URL}/invite`,
   },
   calendar: {
     getyearlyEvents: `${BASE_URL}/event?`,
@@ -140,6 +148,8 @@ export const endpoints = {
     filterConfiguration: `${BASE_URL}/me/account/configuration/filter`,
     interestConfiguration: `${BASE_URL}/me/account/configuration/interest`,
     outreachConfiguration: `${BASE_URL}/me/account/configuration/outreach`,
+    updateResearch: `${BASE_URL}/me/account/configuration/interest`,
+    updateOutreach: `${BASE_URL}/me/account/configuration/outreach`
   },
   myprofile: `${BASE_URL}/me`,
 };

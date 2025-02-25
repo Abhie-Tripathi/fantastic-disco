@@ -1,5 +1,4 @@
 import React from "react";
-import styles from "./circularprogress.style.module.css";
 
 interface CircularProgressProps {
   percentages: number[];
@@ -62,7 +61,10 @@ const CircularProgress = ({
           );
         })}
       </svg>
-      <span className={styles.circleVal} aria-hidden="true">
+      <span
+        className="absolute flex justify-center items-center font-bold text-[var(--primary-color)] border border-[var(--border-color)] rounded-full p-[10px] top-[40%] left-[40%] w-[40px] h-[40px]"
+        aria-hidden="true"
+      >
         {relevanceScore ? relevanceScore : "--"}
       </span>
     </div>

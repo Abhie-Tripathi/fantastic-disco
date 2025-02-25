@@ -53,10 +53,36 @@ export const useCoordinateService = () => {
     searchParams,
   }: fnProp) => {
     const params = new URLSearchParams(searchParams);
+    const activeGte = params.get("active_gte");
+    const activeLte = params.get("active_lte");
+    if (activeGte && activeLte) {
+      params.set("event_active_gte", activeGte);
+      params.set("event_active_lte", activeLte);
+    } else if (activeGte) {
+      params.set("event_active_gte", activeGte);
+    } else if (activeLte) {
+      params.set("event_active_lte", activeLte);
+    }
+    params.delete("active_gte");
+    params.delete("active_lte");
+
     return api.request<CoordinateListResponse>(`${endpoints.coordinate.enquiry}?offset=${offset}`, {
       method: "GET",
       params: params,
     });
+  };
+
+  const getEvents = async (q: string) => {
+    const params = {
+      offset: 0,
+      limit: 5,
+      name: q
+    }
+    const response = await api.request<CoordinateListResponse>(endpoints.coordinate.enquiry, {
+      method: "GET",
+      params: params,
+    });
+    return response;
   };
 
   const getParticipentCount = () => {
@@ -182,10 +208,21 @@ export const useCoordinateService = () => {
   }
 
   const unlockPocDetail = (pocId: number, eventId: string) => {
-    return api.request<pocDetail>(`${endpoints.coordinate.eventDetail}/${eventId}/pocs/${pocId}?unlockValue=EMAIL,PHONE`, {
-      method: "GET",
-    });
-  }
+    const payload: any = {
+      unmask: "email,phone",
+      source: "eventPage",
+      target: "EVENT",
+      targetId: eventId,
+    };
+
+    return api.request<pocDetail>(
+      `${endpoints.prospect.users.detail}/${pocId}`,
+      {
+        method: "GET",
+        params: payload,
+      }
+    );
+  };
 
   const getPresetJson = async(type: string, page: number) => {
     const data = await externalAxios.get<PresetList>(`/data/presetJson/${type}/${page}.json`, {
@@ -239,6 +276,7 @@ export const useCoordinateService = () => {
 
   return {
     getEventsWithSearchParams,
+    getEvents,
     getParticipentCount,
     getEnquiryStatusCount,
     getInterestedUsers,

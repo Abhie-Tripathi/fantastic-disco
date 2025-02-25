@@ -88,7 +88,7 @@ const Sidebar = () => {
       href: "/internal/coordinate",
       icon: Coordinate,
     },
-    { name: "Outreach", href: "/internal/outreach", icon: Outreach },
+    ...(!isEventeli ? [{ name: "Outreach", href: "/internal/outreach", icon: Outreach }] : []),
     // { name: "API Tools", href: "/clients", icon: Wrench },
     // {
     //   name: "Documentation",

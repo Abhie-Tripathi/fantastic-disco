@@ -145,7 +145,7 @@ const AddEvent = ({ setIsAddEventModalOpen, widgetId, fetchEvents, addedEventIds
   };
   const eventType = prefilledEvent?.eventType
   const [mainEventState, setMainEventState] = useState<FormState>(initialFormState);
-  const [subeventState, setSubeventState] = useState<FormState>((prefilledEvent?.name && eventType === "MAIN") ? emptyFormState: initialFormState);
+  const [subeventState, setSubeventState] = useState<FormState>((prefilledEvent?.name && eventType === "PARENT") ? emptyFormState: initialFormState);
   // const [subeventState, setSubeventState] = useState<FormState>(initialFormState);
 
   const handleMaineventChanges = (field: keyof FormState, value: any) => {

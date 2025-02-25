@@ -114,6 +114,7 @@ interface Filters {
   eventType?:string;
 
   // Coordinate Filters
+  eventId?: string;
   type?: string;
   upvotedBy?: string;
   status?: string;

@@ -398,31 +398,29 @@ console.log(eventType);
     setViewport(viewState);
   }, []);
 
-  console.log("eventCountsQuery", eventCountsQuery.data);
-
-  // const eventCountsGeoJSON = React.useMemo(() => {
-  //   return {
-  //     type: "FeatureCollection",
-  //     features: eventCountsQuery.data
-  //       ? eventCountsQuery.data.map((count: EventCount) => ({
-  //           type: "Feature",
-  //           geometry: {
-  //             type: "Point",
-  //             coordinates: [
-  //               parseFloat(count.longitude),
-  //               parseFloat(count.latitude),
-  //             ],
-  //           },
-  //           properties: {
-  //             count: count.count,
-  //             id: count.cityId,
-  //             name: count.name,
-  //             type: currentZoomGroup, // "country" or "city"
-  //           },
-  //         }))
-  //       : [],
-  //   };
-  // }, [eventCountsQuery.data, currentZoomGroup]);
+  const eventCountsGeoJSON = React.useMemo(() => {
+    return {
+      type: "FeatureCollection",
+      features: eventCountsQuery.data
+        ? eventCountsQuery.data.map((count: EventCount) => ({
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: [
+                parseFloat(count.longitude),
+                parseFloat(count.latitude),
+              ],
+            },
+            properties: {
+              count: count.count,
+              id: count.cityId,
+              name: count.name,
+              type: currentZoomGroup, // "country" or "city"
+            },
+          }))
+        : [],
+    };
+  }, [eventCountsQuery.data, currentZoomGroup]);
 
   const eventsGeoJSON = React.useMemo(() => {
     const locationInfo: { [key: string]: any } = {};
@@ -596,9 +594,7 @@ console.log(eventType);
 
   const handleEventLeave = () => {
     setHighlightedEvent(null);
-  };
-  console.log(eventCountsQuery.data);
-  
+  };  
   return (
     <div className="relative">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (

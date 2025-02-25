@@ -443,7 +443,6 @@ export const generateSearchFilters=(apiResponse: any)=> {
     // const  data  = apiResponse.filter.data;
     // console.log(apiResponse.filter.data);
     const  data  = apiResponse.filter;
-    console.log(apiResponse.filter);
     
     return {
       eventTypes: {
@@ -504,107 +503,107 @@ export const generateSearchFilters=(apiResponse: any)=> {
     },
 
     eventEntries: {
-      isEnabled: data.eventEntry?.enabledValue?.length > 0 ?? true,
+      isEnabled: data?.eventEntry?.enabledValue?.length > 0 ?? true,
       options: searchFilters?.eventEntries?.options?.map((entry) => ({
         ...entry,
         isEnabled:
-          data.eventEntry?.enabledValue?.includes(entry.id.toUpperCase()) ??
+          data?.eventEntry?.enabledValue?.includes(entry.id.toUpperCase()) ??
           true,
       })),
     },
 
     maturityLevels: {
-      isEnabled: data.maturity?.isMaturityEnabled ?? true,
-      isToggleEnabled: Boolean(data.maturity?.enabledValue?.length),
+      isEnabled: data?.maturity?.isMaturityEnabled ?? true,
+      isToggleEnabled: Boolean(data?.maturity?.enabledValue?.length),
       options: searchFilters?.maturityLevels?.options?.map((level) => ({
         ...level,
-        isEnabled: data.maturity?.enabledValue?.includes(level.id) ?? true,
+        isEnabled: data?.maturity?.enabledValue?.includes(level.id) ?? true,
       })),
     },
 
     globalAndTourings: {
-      isEnabled: data.branded?.isBrandedEnabled ?? true,
-      isToggleEnabled: Boolean(data.branded?.enabledValue),
+      isEnabled: data?.branded?.isBrandedEnabled ?? true,
+      isToggleEnabled: Boolean(data?.branded?.enabledValue),
       options: [
         {
           id: "BRANDED",
           label: "Branded",
-          isEnabled: data.branded?.enabledValue?.eventBrand ?? true,
+          isEnabled: data?.branded?.enabledValue?.eventBrand ?? true,
         },
         {
           id: "SERIES",
           label: "Series",
-          isEnabled: data.branded?.enabledValue?.eventSeries ?? true,
+          isEnabled: data?.branded?.enabledValue?.eventSeries ?? true,
         },
       ],
     },
 
     frequencies: {
-      isEnabled: data.eventFrequency?.isFreqEnabled ?? true,
+      isEnabled: data?.eventFrequency?.isFreqEnabled ?? true,
       isToggleEnabled: true,
       options: searchFilters?.frequencies?.options?.map((format) => ({
         ...format,
         isEnabled:
-          data.eventFrequency?.enabledValue?.includes(format.id) ?? true,
+          data?.eventFrequency?.enabledValue?.includes(format.id) ?? true,
       })),
     },
 
     eventRanking: {
-      isEnabled: data.eventRanking?.isRanking ?? true,
-      isToggleEnabled: Boolean(data.eventRanking?.isRanking),
+      isEnabled: data?.eventRanking?.isRanking ?? true,
+      isToggleEnabled: Boolean(data?.eventRanking?.isRanking),
       options: searchFilters.eventRanking.options,
     },
 
     audienceZone: {
-      isEnabled: data.audienceZone?.isZoneEnabled ?? true,
-      isToggleEnabled: Boolean(data.audienceZone?.isZoneEnabled),
+      isEnabled: data?.audienceZone?.isZoneEnabled ?? true,
+      isToggleEnabled: Boolean(data?.audienceZone?.isZoneEnabled),
     },
 
     estimatedExhibitor: {
-      isEnabled: data.estimatedExhibitScore?.isExhibitorsEnabled ?? true,
+      isEnabled: data?.estimatedExhibitScore?.isExhibitorsEnabled ?? true,
       isToggleEnabled: Boolean(
-        data.estimatedExhibitScore?.enabledValue?.length
+        data?.estimatedExhibitScore?.enabledValue?.length
       ),
       options: searchFilters.estimatedExhibitor.options.map((exhibitor) => ({
         ...exhibitor,
         isEnabled:
-          data.estimatedExhibitScore?.enabledValue?.includes(exhibitor.id) ??
+          data?.estimatedExhibitScore?.enabledValue?.includes(exhibitor.id) ??
           true,
       })),
     },
 
     estimatedVisitors: {
-      isEnabled: data.eventSize?.enabledValue?.length > 0 ?? true,
+      isEnabled: data?.eventSize?.enabledValue?.length > 0 ?? true,
       options: searchFilters.estimatedVisitors.options.map((visitor) => {
         return {
           ...visitor,
           isEnabled:
-            data.estimatedVisitorRangeTag?.enabledValue?.includes(visitor.id) ??
+            data?.estimatedVisitorRangeTag?.enabledValue?.includes(visitor.id) ??
             true,
         };
       }),
     },
 
     eventAnalytics: {
-      isEnabled: data.analytics?.isAnalyticsEnabled ?? true,
-      isToggleEnabled: Boolean(data.analytics?.isAnalyticsEnabled),
+      isEnabled: data?.analytics?.isAnalyticsEnabled ?? true,
+      isToggleEnabled: Boolean(data?.analytics?.isAnalyticsEnabled),
     },
 
     forcastedStatus: {
-      isEnabled: data.isForecasted?.isForecastedEnabled ?? true,
+      isEnabled: data?.isForecasted?.isForecastedEnabled ?? true,
       isToggleEnabled: true,
     },
 
     audienceSpread: {
-      isEnabled: data.audienceSpread?.isAudienceEnabled ?? true,
+      isEnabled: data?.audienceSpread?.isAudienceEnabled ?? true,
     },
 
     audienceProfile: {
-      isEnabled: data.designation?.isProfileEnabled ?? true,
+      isEnabled: data?.designation?.isProfileEnabled ?? true,
     },
 
     economicImpact: {
-      isEnabled: data.economicImpact?.isEconomicImpactEnabled ?? true,
+      isEnabled: data?.economicImpact?.isEconomicImpactEnabled ?? true,
       isToggleEnabled: true,
     },
   };
