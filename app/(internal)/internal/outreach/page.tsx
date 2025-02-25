@@ -11,6 +11,9 @@ import PipelineCol from "@/app/components/outreach/pipelineCol";
 import { useSearchParams } from "next/navigation";
 import { GAEvent } from "@/utils/GAEvent";
 import Loading from "@/app/components/UI/Loading";
+import NotFound from "@/app/not-found";
+import { isEventeli } from "@/config";
+import { useConfigurationService } from "@/services/configurationService";
 
 interface taskDetailType {
   [task: string]: {
@@ -38,6 +41,8 @@ const Page: React.FC = () => {
   const [coordinateActions, setCoordinateActions] = useState<any>([]);
 
   const coordinateService = useCoordinateService();
+
+  const { getOutreachConfiguration, getInterestConfiguration } = useConfigurationService();
 
   const searchParams = useSearchParams()
 
@@ -186,7 +191,7 @@ const Page: React.FC = () => {
       status: status,
     });
 
-    console.log('fetchPipelineData', status, label, page);
+    // console.log('fetchPipelineData', status, label, page);
     
     if (shortlistApiData && shortlistApiData !== undefined) {
       setTaskDetail(prevState => ({
@@ -194,7 +199,7 @@ const Page: React.FC = () => {
         [status]: {
           ...prevState[status],
           label: label,
-          data: [...prevState[status].data, ...shortlistApiData.enquiries],
+          data: [...prevState[status]?.data, ...shortlistApiData.enquiries],
           count: shortlistApiData.count,
           dataLoaded: true,
           noMoreData: (shortlistApiData.enquiries.length < 10 ) ? true : false,
@@ -244,13 +249,13 @@ const Page: React.FC = () => {
   // }, []);
   const getOutreachConfig = async () => {
     try {
-      const apiData: any = await coordinateService.getPipelineConfig();
+      const apiData: any = await getOutreachConfiguration();
       const outreachPipeLine1 = apiData?.outreach?.slice(1, apiData.outreach.length - 1) || [];
   
-      setConfigData(outreachPipeLine1); // Set the configuration data
+      // setConfigData(outreachPipeLine1); // Set the configuration data
 
-      const apiData2: any = await coordinateService.getInterestConfig();
-      setCoordinateActions(apiData2?.interest?.slice(1));
+      const apiData2: any = await getInterestConfiguration();
+      setCoordinateActions(apiData2?.interest);
   
       // Prepare taskDetail object
       let temp: taskDetailType = {};
@@ -265,6 +270,7 @@ const Page: React.FC = () => {
         };
       });
       setTaskDetail(temp);
+      setConfigData(outreachPipeLine1); // Set the configuration data
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -326,6 +332,12 @@ const Page: React.FC = () => {
     } as any;
     handleDrop2(mockEvent, target, 'Status Pipeline');
   };
+
+  if (isEventeli) {
+    return (
+      <NotFound />
+    );
+  }
 
   if ( configData?.length == 0 || (Object.values(taskDetail).length > 0 && Object.values(taskDetail).every((value) => (value.dataLoaded === true && value.count === 0))) ) {
     return (

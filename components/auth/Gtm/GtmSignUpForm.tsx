@@ -27,7 +27,6 @@ const GtmSignUpForm = () => {
   const [email, setEmail] = useState("");
   const [industry, setIndustry] = useState("");
   const [categories, setCategories] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const {
     control,
     handleSubmit,
@@ -62,9 +61,6 @@ const GtmSignUpForm = () => {
     }
     if (signUpDTOData && signUpDTOData.industry) {
       sessionStorage.setItem("industry", signUpDTOData.industry);
-    }
-    if (signUpDTOData && signUpDTOData.email) {
-      sessionStorage.setItem("userEmail", signUpDTOData.email);
     }
     sessionStorage.setItem("flow", "signUp");
 
@@ -255,10 +251,10 @@ const GtmSignUpForm = () => {
         <Button
           type="submit"
           className="w-80 self-center"
-          disabled={isLoading}
+          disabled={isSubmitting}
           onClick={() => clearErrors()}
         >
-          {isLoading ? (
+          {isSubmitting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Signing up...
