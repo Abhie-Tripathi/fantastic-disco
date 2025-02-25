@@ -469,7 +469,7 @@ const Trackers = ({ searchParams }: Search) => {
     {(!singleTrackerData &&  searchValue.length<3) ? (
         <Loading />
     ) : !singleTrackerData?<NullState image={TrackerNullState}  title="No tracker selected."/> : (
-      "No events"
+      <NullState image={TrackerNullState}  title="Some issue with map view."/>
       // <Map
       //   isGlobal={true}
       //   source="tracker"
