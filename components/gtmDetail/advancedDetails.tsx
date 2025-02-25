@@ -73,13 +73,13 @@ const CarouselComponent = ({
   const hasMaturityOption =
     maturityLevels &&
     maturityLevels.options.find(
-      (option: { label: string }) => option.label === maturity
+      (option: { id: string }) => option.id === maturity
     );
 
   const hasFrequencyOption =
     frequencies &&
     frequencies.options.find(
-      (option: { label: string }) => option.label === frequency
+      (option: { id: string }) => option.id === frequency
     );
 
   const hasSeriesEvent =
@@ -159,7 +159,7 @@ const CarouselComponent = ({
                 </TooltipProvider>
                 {isMaturityEnabled ? (
                   maturity ? (
-                    <span className="text-[#0062D1] dark:bg-[#10233D] dark:border-[#0D3868] bg-[#EBF5FF] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border-[#CCE6FF] border rounded-md w-full xl:w-24 text-center">
+                    <span className="text-[#0062D1] dark:bg-[#10233D] dark:border-[#0D3868] bg-[#EBF5FF] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border-[#CCE6FF] border rounded-md w-24 text-center">
                       {maturity.charAt(0).toUpperCase() +
                         maturity.slice(1, maturity.length)}
                     </span>
@@ -217,7 +217,7 @@ const CarouselComponent = ({
                     titleColor="text-[var(--primary-text-color)]"
                     title={"No. of Editions"}
                     triggerText={`${count} Edition${count || 0 > 1 ? "s" : ""}`}
-                    className="text-[#6750A4] bg-[#E6E6F9] dark:bg-[#2D2541] dark:border-[#8F80D4] flex items-center justify-center h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-full xl:w-fit text-center cursor-pointer"
+                    className="text-[#6750A4] bg-[#E6E6F9] dark:bg-[#2D2541] dark:border-[#8F80D4] flex items-center justify-center h-fit font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit text-center cursor-pointer"
                   >
                     <PastEditions eventId={eventId} />
                   </DetailDialog>

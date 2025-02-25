@@ -1,9 +1,17 @@
 import { useApi } from "@/hooks/useApi";
 import { endpoints } from "@/config/endpoints";
-import { CoordinateListResponse, PresetList, UserInterestResponse, enquiryCountResponse, eventPocResponse, pocDetail } from "@/types/coordinateEventType";
+import {
+  CoordinateListResponse,
+  PresetList,
+  UserInterestResponse,
+  enquiryCountResponse,
+  eventPocResponse,
+  pocDetail,
+} from "@/types/coordinateEventType";
 import { ApiError } from "@/types/api";
 // import { MiscAdapter } from "@/adapters/miscAdapter";
 import externalAxios from "@/lib/externalAxios";
+import { Target, Unmask, UnmaskPocApiParamType, Source } from "@/types/events";
 
 interface fnProp {
   offset: number;
@@ -11,32 +19,32 @@ interface fnProp {
 }
 
 interface upVoteProp {
-  enquiryId: string,
-  activityType: string,
-  activitySubType: string,
+  enquiryId: string;
+  activityType: string;
+  activitySubType: string;
 }
 
 interface setOwnerProp {
-  enquiryId: string,
-  ownerId: string,
+  enquiryId: string;
+  ownerId: string;
 }
 
 interface updateEnquiryStatusProp {
-  enquiryId: string,
-  enquiryStatus: string,
+  enquiryId: string;
+  enquiryStatus: string;
 }
 
 interface shortlistProp {
-  entityId: string,
-  status: string,
-  id: string,
-  modifiedBy: string,
-  enquiryStatus: string,
+  entityId: string;
+  status: string;
+  id: string;
+  modifiedBy: string;
+  enquiryStatus: string;
 }
 
 interface outreachListProp {
-  offset: number,
-  status: string,
+  offset: number;
+  status: string;
 }
 
 interface createIntentProp {
@@ -46,7 +54,9 @@ interface createIntentProp {
 }
 
 export const useCoordinateService = () => {
-  const api = useApi<CoordinateListResponse | UserInterestResponse | eventPocResponse | undefined>();
+  const api = useApi<
+    CoordinateListResponse | UserInterestResponse | eventPocResponse | undefined
+  >();
 
   const getEventsWithSearchParams = async ({
     offset,
@@ -66,35 +76,43 @@ export const useCoordinateService = () => {
     params.delete("active_gte");
     params.delete("active_lte");
 
-    return api.request<CoordinateListResponse>(`${endpoints.coordinate.enquiry}?offset=${offset}`, {
-      method: "GET",
-      params: params,
-    });
+    return api.request<CoordinateListResponse>(
+      `${endpoints.coordinate.enquiry}?offset=${offset}`,
+      {
+        method: "GET",
+        params: params,
+      }
+    );
   };
 
   const getParticipentCount = () => {
-    return api.request<enquiryCountResponse>(`${endpoints.coordinate.participent}?type=interests`, {
-      method: "GET",
-    });
+    return api.request<enquiryCountResponse>(
+      `${endpoints.coordinate.participent}?type=interests`,
+      {
+        method: "GET",
+      }
+    );
   };
 
   const getEnquiryStatusCount = () => {
-    return api.request<enquiryCountResponse>(`${endpoints.coordinate.participent}?type=status`, {
-      method: "GET",
-    });
+    return api.request<enquiryCountResponse>(
+      `${endpoints.coordinate.participent}?type=status`,
+      {
+        method: "GET",
+      }
+    );
   };
 
   const getInterestedUsers = (eventId: string, enquiryId: string) => {
-    return api.request(`${endpoints.coordinate.enquiryDetail}/${enquiryId}/interested-users`, {
-      method: "GET",
-    });
+    return api.request(
+      `${endpoints.coordinate.enquiryDetail}/${enquiryId}/interested-users`,
+      {
+        method: "GET",
+      }
+    );
   };
 
-  const upVote = ({
-    enquiryId,
-    activityType,
-    activitySubType
-  }: upVoteProp) => {
+  const upVote = ({ enquiryId, activityType, activitySubType }: upVoteProp) => {
     return api.request(`${endpoints.intent.enquiryActivity}`, {
       method: "POST",
       data: {
@@ -103,7 +121,7 @@ export const useCoordinateService = () => {
         activitySubType: activitySubType,
       },
     });
-  }
+  };
 
   const getEventDetailById = (eventId: string) => {
     return api.request(`${endpoints.coordinate.eventDetail}/${eventId}`, {
@@ -112,110 +130,153 @@ export const useCoordinateService = () => {
   };
 
   const getEventPOC = (eventId: string) => {
-    return api.request<eventPocResponse>(`${endpoints.coordinate.eventDetail}/${eventId}/pocs`, {
-      method: "GET",
-    });
-  }
+    return api.request<eventPocResponse>(
+      `${endpoints.coordinate.eventDetail}/${eventId}/pocs`,
+      {
+        method: "GET",
+      }
+    );
+  };
 
   const getEnquiryOwner = (enquiryId: string) => {
-    return api.request(`${endpoints.coordinate.enquiryDetail}/${enquiryId}/owner`, {
-      method: "GET",
-    });
-  }
+    return api.request(
+      `${endpoints.coordinate.enquiryDetail}/${enquiryId}/owner`,
+      {
+        method: "GET",
+      }
+    );
+  };
 
-  const setEnquiryOwner = async ({
-    enquiryId,
-    ownerId,
-  }: setOwnerProp) => {
-    const response = await api.request(`${endpoints.coordinate.enquiryDetail}/${enquiryId}/owner`, {
-      method: "POST",
-      data: {
-        ownerId: ownerId,
-      },
-    });
+  const setEnquiryOwner = async ({ enquiryId, ownerId }: setOwnerProp) => {
+    const response = await api.request(
+      `${endpoints.coordinate.enquiryDetail}/${enquiryId}/owner`,
+      {
+        method: "POST",
+        data: {
+          ownerId: ownerId,
+        },
+      }
+    );
     return response;
-  }
+  };
 
   const setEnquiryStatus = async ({
     enquiryId,
     enquiryStatus,
   }: updateEnquiryStatusProp) => {
-    const response = await api.request(`${endpoints.coordinate.enquiryDetail}/${enquiryId}`, {
-      method: "PATCH",
-      data: {
-        // enquiryId: enquiryId,
-        status: enquiryStatus,
-      },
-    });
+    const response = await api.request(
+      `${endpoints.coordinate.enquiryDetail}/${enquiryId}`,
+      {
+        method: "PATCH",
+        data: {
+          // enquiryId: enquiryId,
+          status: enquiryStatus,
+        },
+      }
+    );
     return response;
-  }
+  };
 
   const shortlistUsers = async ({
     entityId,
     status,
     id,
     modifiedBy,
-    enquiryStatus
+    enquiryStatus,
   }: shortlistProp) => {
-    const response = await api.request(`${endpoints.coordinate.iterestedUsers}`, {
-      method: "PATCH",
-      data: {
-        entityId: entityId,
-        status: status,
-        id: id,
-        modifiedBy: modifiedBy,
-        enquiryStatus: enquiryStatus,
-      },
-    });
+    const response = await api.request(
+      `${endpoints.coordinate.iterestedUsers}`,
+      {
+        method: "PATCH",
+        data: {
+          entityId: entityId,
+          status: status,
+          id: id,
+          modifiedBy: modifiedBy,
+          enquiryStatus: enquiryStatus,
+        },
+      }
+    );
     return response;
-  }
+  };
 
-  const getOutreachEventList = ({offset, status}: outreachListProp) => {
-    return api.request<CoordinateListResponse>(`${endpoints.coordinate.enquiry}?limit=10&offset=${offset}&status=${status}`, {
-      method: "GET",
-    });
-  }
+  const getOutreachEventList = ({ offset, status }: outreachListProp) => {
+    return api.request<CoordinateListResponse>(
+      `${endpoints.coordinate.enquiry}?limit=10&offset=${offset}&status=${status}`,
+      {
+        method: "GET",
+      }
+    );
+  };
 
-  const getOutreachSingleEvent = ({offset, status}: outreachListProp) => {
-    return api.request<CoordinateListResponse>(`${endpoints.coordinate.enquiry}?limit=1&offset=${offset}&status=${status}`, {
-      method: "GET",
-    });
-  }
+  const getOutreachSingleEvent = ({ offset, status }: outreachListProp) => {
+    return api.request<CoordinateListResponse>(
+      `${endpoints.coordinate.enquiry}?limit=1&offset=${offset}&status=${status}`,
+      {
+        method: "GET",
+      }
+    );
+  };
 
   const getInterestConfig = () => {
     return api.request(`${endpoints.account.configuration}/interest`, {
       method: "GET",
     });
-  }
+  };
 
-  const getPipelineConfig = async() => {
+  const getPipelineConfig = async () => {
     return api.request(`${endpoints.account.configuration}/outreach`, {
       method: "GET",
     });
-  }
+  };
 
-  const unlockPocDetail = (pocId: number, eventId: string) => {
-    return api.request<pocDetail>(`${endpoints.coordinate.eventDetail}/${eventId}/pocs/${pocId}?unlockValue=EMAIL,PHONE`, {
+  /**
+   * Unlocks POC (Point of Contact) details based on the provided parameters.
+   *
+   * @param {UnmaskPocApiParamType} param0 - The parameters for the request.
+   * @param {number} param0.pocId - The unique identifier of the POC (Point of Contact).
+   * @param {Unmask} [param0.unmask] - Optional parameter specifying which details to unmask. See {@link Unmask}.
+   * @param {Target} param0.target - The target entity type (USER, EVENT, COMPANY). See {@link Target}.
+   * @param {Source} param0.source - The source of the request (eventPage, companyPage, prospectUserPage). See {@link Source}.
+   * @param {string} [param0.targetId] - Optional target identifier for the request. It can be eventId | companyId
+   * @returns {Promise<pocDetail>} A promise resolving to the POC details.
+   */
+  const unlockPocDetail = ({
+    pocId,
+    unmask,
+    target,
+    source,
+    targetId,
+  }: UnmaskPocApiParamType): Promise<pocDetail | undefined> => {
+    const queryParams = new URLSearchParams({
+      ...(unmask && { unmask }),
+      ...(target && { target }),
+      ...(source && { source }),
+      ...(targetId && { targetId }),
+    });
+    const url = `/users/${pocId}?${queryParams.toString()}`;
+    return api.request<pocDetail>(url, {
       method: "GET",
     });
-  }
+  };
 
-  const getPresetJson = async(type: string, page: number) => {
-    const data = await externalAxios.get<PresetList>(`/data/presetJson/${type}/${page}.json`, {
-      method: "GET",
-    });
+  const getPresetJson = async (type: string, page: number) => {
+    const data = await externalAxios.get<PresetList>(
+      `/data/presetJson/${type}/${page}.json`,
+      {
+        method: "GET",
+      }
+    );
     return data.data;
-  }
+  };
 
   const getLatestComment = () => {
     return api.request<any>(`${endpoints.coordinate.latestComment}`, {
       method: "GET",
     });
-  }
+  };
 
   const createUserIntent = (payload: createIntentProp) => {
-    console.log('endpoint..',`${endpoints.coordinate.createIntent}`);
-    
     return api.request<any>(`${endpoints.coordinate.createIntent}`, {
       method: "POST",
       data: payload,
@@ -226,29 +287,32 @@ export const useCoordinateService = () => {
     return api.request<any>(`${endpoints.account.users}`, {
       method: "GET",
     });
-  }
+  };
 
   const getEnquiryFollowers = (enquiryId: string) => {
-    return api.request(`${endpoints.coordinate.enquiryDetail}/${enquiryId}/followers`, {
-      method: "GET",
-    });
-  }
+    return api.request(
+      `${endpoints.coordinate.enquiryDetail}/${enquiryId}/followers`,
+      {
+        method: "GET",
+      }
+    );
+  };
 
   const setEnquiryFollowers = (enquiryId: string) => {
     return api.request(`${endpoints.intent.enquiryActivity}`, {
       method: "POST",
       data: {
-        activityType: 'FOLLOW',
+        activityType: "FOLLOW",
         enquiryId: enquiryId,
       },
     });
-  }
+  };
 
   const deleteEnquiryActivityIntent = (intentId: string) => {
     return api.request<any>(`${endpoints.intent.enquiryActivity}/${intentId}`, {
       method: "DELETE",
     });
-  }
+  };
 
   return {
     getEventsWithSearchParams,
