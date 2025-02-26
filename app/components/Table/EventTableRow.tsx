@@ -16,6 +16,8 @@ import { ActionPopover } from "./ActionPopover";
 import { Show } from "@/types/events/dto/event-query.dto";
 import { Badge } from "@/components/ui/badge";
 import { formatEstimatedSpend } from "@/utils/formater";
+import { lightenColor } from "@/lib/utils";
+import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 
 interface EventTableRowProps {
   event: Event;
@@ -129,6 +131,22 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           {/* Content Section */}
           <div className="flex-grow min-w-0">
             <div className="flex gap-1 mb-1">
+              {event.basic.primaryEventType && (
+                <Badge
+                  variant="secondary"
+                  className="flex items-center gap-2 capitalize rounded-sm"
+                  style={{
+                    color: eventTypeColors[event.basic.primaryEventType],
+                    backgroundColor: lightenColor(
+                      eventTypeColors[event.basic.primaryEventType],
+                      0.9
+                    ),
+                  }}
+                >
+                  <span>{eventTypeIcons[event.basic.primaryEventType || "festivals"]}</span>
+                  <span>{event.basic.primaryEventType}</span>
+                </Badge>
+              )}
               {show.includes(Show.branded) && event.advance?.isBranded && (
                 <Badge variant="outline">Brand</Badge>
               )}
@@ -175,7 +193,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
       {/* Venue Column */}
       <TableCell>
-        {event.basic.format === "HYBRID" && (
+        {event.basic.format === "hybrid" && (
           <div className="inline-block px-2 py-0.5 rounded text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 mb-1">
             Hybrid
           </div>
@@ -223,7 +241,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center text-left gap-1">
                 {event.basic.categories[0]?.name}
                 {event.basic.categories.length > 1 && (
                   <span className="text-xs font-bold text-muted-foreground">
