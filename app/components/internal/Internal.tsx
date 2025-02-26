@@ -158,7 +158,7 @@ const Internal = ({
     if (statusChanged === true) {
       const updatedData = eventData1.map((item) => {
         return item.eventId === selectedId
-          ? { ...item, enquiryStatus: pipelineConfig?.[1]?.status }
+          ? { ...item, status: pipelineConfig?.[1]?.status }
           : item;
       });
 

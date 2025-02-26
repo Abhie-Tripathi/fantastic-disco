@@ -195,23 +195,24 @@ export const ProspectList = ({
   companies: companyListData[];
   count: number | undefined;
 }) => {
-  const { setFilter, getFilterValue } = useFilterState();
-  const [itemsPerPage, setItemsPerPage] = useState<number>(
-    Number(getFilterValue("take")) || 10
-  );
+  const { getFilterValue, setMultipleFilters } = useFilterState();
+
+  const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
-    Math.floor(Number(getFilterValue("skip") || "0") / itemsPerPage) + 1;
+    Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(count / itemsPerPage);
 
   const handlePageChange = (page: number) => {
-    setFilter("skip", ((page - 1) * itemsPerPage).toString());
+    setMultipleFilters({
+      offset: ((page - 1) * itemsPerPage).toString(),
+      limit: itemsPerPage.toString(),
+    });
   };
 
-  const handleItemsPerPageChange = (value: string) => {
-    const newItemsPerPage = parseInt(value);
-    setItemsPerPage(newItemsPerPage);
-
-    setFilter("take", newItemsPerPage.toString());
+  const handleItemsPerPageChange = (newItemsPerPage: string) => {
+    setMultipleFilters({
+      limit: newItemsPerPage,
+    });
   };
   return (
     <div className="flex gap-3 flex-col">
@@ -226,6 +227,7 @@ export const ProspectList = ({
           count={count}
           onPageChange={handlePageChange}
           onItemsPerPageChange={handleItemsPerPageChange}
+          paginationItems={["5", "10"]}
         />
       </div>
     </div>

@@ -460,38 +460,45 @@ const Prospect = () => {
           </div>
 
           <div className="col-span-2 h-full overflow-y-auto pt-4 pl-3">
-            <TabsContent value="company" className="mt-0 overflow-y-auto h-full pr-6">
+            <TabsContent
+              value="company"
+              className="mt-0 overflow-y-auto h-full pr-6"
+            >
               {isLoading ? (
-                <div className="p-8"><Loading /></div>
-              ) : companies.length == 0 ? (
-                  <NullState
-                    image={coordinateNullState}
-                    title="No Results Found"
-                    text="Try adjusting the filter criteria to refine your search"
-                  />
+                <div className="p-8">
+                  <Loading />
+                </div>
               ) : error ? (
                 <NullState
                   image={coordinateNullState}
                   title={(error as ApiError).message}
+                />
+              ) : companies.length == 0 ? (
+                <NullState
+                  image={coordinateNullState}
+                  title="No Results Found"
+                  text="Try adjusting the filter criteria to refine your search"
                 />
               ) : (
                 <ProspectList companies={companies} count={count} />
               )}
             </TabsContent>
 
-            <TabsContent value="user" className="mt-0 h-full pr-6" >
+            <TabsContent value="user" className="mt-0 h-full pr-6">
               {isLoading ? (
-                <div className="p-8"><Loading /></div>
+                <div className="p-8">
+                  <Loading />
+                </div>
+              ) : error ? (
+                <NullState
+                  image={coordinateNullState}
+                  title={(error as ApiError).message}
+                />
               ) : peopleData.length == 0 ? (
                 <NullState
                   image={coordinateNullState}
                   title="No Results Found"
                   text="Try adjusting the filter criteria to refine your search"
-                />
-              ) : error ? (
-                <NullState
-                  image={coordinateNullState}
-                  title={(error as ApiError).message}
                 />
               ) : (
                 <PeopleList people={peopleData} count={count} />
