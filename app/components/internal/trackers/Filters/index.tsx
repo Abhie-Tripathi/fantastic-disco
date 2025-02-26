@@ -399,7 +399,7 @@ const templates = [
     templateName: "Location",
   },
   {
-    name: "T_LOCATION_DATE",
+    name: "T_GEOTIME",
     templateName:"Geo-Time"
   }
 ]
@@ -408,7 +408,7 @@ const Pages = () => {
   const {searchParams: search} = useDefaultFilters();
   const searchParams = useSearchParams();
   
-  const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
+  const {data: editData, setEditTrue, setData: setEditData, setIsNewCall} = useTrackerContext();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
@@ -741,7 +741,7 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type === "T_LOCATION" && (trackerName.length === 0 || getLocalFilterValue("locationIds").length === 0)) {
+      else if (type === "T_LOCATION" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -751,10 +751,15 @@ const Pages = () => {
         setIsMandatory(true);
         return;
        }
+       else if(type==="T_GEOTIME" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))&&(getLocalFilterValue("active_gte").length === 0 && getLocalFilterValue("active_lte").length===0)){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+       }
        else if (
         type !== defaultType && 
         type !== "T_PRODUCT_KEYWORDS" && 
-        type !== "T_LOCATION" && type !== "T_VENUE" &&
+        type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
         (trackerName.length === 0 || customData.length === 0)
       ) {
         console.log("Please, Fill all the details");
@@ -786,7 +791,8 @@ const Pages = () => {
             setIsCreating(false);
             return;
           }else{
-          router.replace(`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`);
+            setIsNewCall(true);
+          router.replace(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table`);
           }
         } else {
           // console.log(error);
@@ -804,13 +810,20 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      // else if (type !== defaultType && type==="T_LOCATION" &&(trackerName.length === 0 || location.length === 0 )){
-
-      // }
-      else if (
+      else if (type === "T_LOCATION" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+       }
+       else if(type==="T_GEOTIME" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))&&(getLocalFilterValue("active_gte").length === 0 && getLocalFilterValue("active_lte").length===0)){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+       }
+       else if (
         type !== defaultType && 
         type !== "T_PRODUCT_KEYWORDS" && 
-        type !== "T_LOCATION" && type !== "T_VENUE" &&
+        type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
         (trackerName.length === 0 || customData.length === 0)
       ) {
         console.log("Please, Fill all the details");
@@ -1181,9 +1194,22 @@ return (
       {/* <button className={styles.save} onClick={saveTrackerHandler}>
         Save Tracker
       </button> */}
+      {last==="create"?
+      <Link
+      href={
+        last === "create"
+          ? "/internal/trackers?showTemplates=true"
+          : `/internal/trackers/${pathName[pathName.length - 2]
+          }/trackedConfiguration?type=${type}`
+      }
+      style={{ display: "flex" }}
+    >
+      <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">Cancel</Button>
+      </Link>:
       <div className={styles.containerTopRightTwo} >
-                  <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
-                </div>
+      <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
+        </div>
+      }
       <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
     </div>
     </div>

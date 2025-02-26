@@ -42,7 +42,7 @@ const TeliTemplates = ({type}:any) => {
      </span> */}
      </div>
     }
-    {type==="T_LOCATION_DATE" &&
+    {type==="T_GEOTIME" &&
 
         <div className='flex justify-between w-[100%] gap-2'>
         <div className='flex gap-2 w-[80%]'>

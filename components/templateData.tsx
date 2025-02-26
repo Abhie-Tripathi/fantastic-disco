@@ -35,7 +35,7 @@ const data = isEventeli ?
       type: "template",
       domain: "",
       img: LocationDate,
-      url: "T_LOCATION_DATE",
+      url: "T_GEOTIME",
       trackerName: "Location and Date Tracker",
       content:
         "Track events happening at a specific location over a defined date range to analyze both geographical and temporal trends.",
