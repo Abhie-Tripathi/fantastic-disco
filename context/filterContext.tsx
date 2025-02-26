@@ -219,8 +219,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     if (enabledFilters) {
       // console.log("Enabled Filters:", enabledFilters);
       setMorphedData(generateSearchFilters(enabledFilters) as any);
-      console.log(generateSearchFilters(enabledFilters));
-      
     }
   }, [enabledFilters]);
   
@@ -376,7 +374,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-  console.log(localFilters);
   
   const contextValue = useMemo(
     () => ({

@@ -1,27 +1,12 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "./locationForm.module.css";
-import HeroLogoText from "/public/heroLogoText.svg";
-import SearchIcon from "/public/search.svg";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import {
-  ComboBox,
-  Input,
-  Key,
-  ListBox,
-  ListBoxItem,
-  Popover,
-  Selection,
-  Switch,
-} from "react-aria-components";
-import DropdownIcon from "/public/Dropdown_Arrow.svg";
 import RemoveIcon from "/public/remove.svg";
 import AddIcon from "/public/plus_radius.svg";
-import { useRouter, useSearchParams } from "next/navigation";
-import SwitchButton from "@/components/ui/SwitchButton";
-import { myFetch } from "@/utils/myFetch";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { SaveLocationDTO } from "@/types/locations";
 import { EventCount } from "@/types/events";
 import { Plus } from "lucide-react";
@@ -32,28 +17,20 @@ import { endOfMonth, startOfMonth } from "date-fns";
 import AutocompleteInput from "@/components/search/AutocompleteInput";
 import { useLocationService } from "@/services/locationService";
 import { useEventsService } from "@/services/eventsService";
-import {
-  industryData,
-  eventStatus,
-  eventType,
-} from "@/data/onboardingDropdownsData";
+import { industryData } from "@/data/onboardingDropdownsData";
 import { sessionService } from "@/services/sessionService";
-import {
-  GeoLocation as GEO_LOCATION,
-  LocationItem as LOCATION_ITEM,
-} from "@/components/search/location";
-import { EventQuery, viewBound } from "@/types/events/dto/event-query.dto";
+import { LocationItem as LOCATION_ITEM } from "@/components/search/location";
+import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { useTrackerServices } from "@/services/trackerServices";
-import { get } from "http";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { isEventeli } from "@/config";
 
 type GeoLocationType = "city" | "center" | "";
 interface PinPointLocation {
@@ -117,12 +94,11 @@ const radiusOption = {
 };
 
 const LocationForm = () => {
+  const router = useRouter();
   const searchParamsOnboarding = useSearchParams();
   const [loading, setLoading] = React.useState(false);
   const queryClient = useQueryClient();
-  // const { saveLocation } = useLocationService();
   const { createTracker } = useTrackerServices();
-  const [useCurrentLocation, setUseCurrentLocation] = React.useState(false);
   const [currentCity, setCurrenCity] = React.useState<string>();
   const [locationType, setLocationType] = React.useState<GeoLocationType>("");
   const { toast } = useToast();
@@ -130,7 +106,6 @@ const LocationForm = () => {
   const [location, setLocation] = useState<PinPointLocation | undefined>();
   const [radius, setRadius] = React.useState<number>(2);
   const [radiusUnit, setRadiusUnit] = useState<string>("miles");
-  const router = useRouter();
   const { saveLastSearchedLocation } = sessionService();
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(
     null
@@ -458,6 +433,10 @@ const LocationForm = () => {
     }
   };
 
+  if (!isEventeli) {
+    notFound();
+  }
+
   return (
     <div className={styles.container}>
       <h3>Choose a location to get started !</h3>
@@ -545,13 +524,6 @@ const LocationForm = () => {
           >
             <Plus className="w-4 h-4" /> Add Multiple Location
           </p>
-        )}
-
-        {useCurrentLocation && (
-          <div className={styles.currentLocation}>
-            <h4>{currentCity}</h4>
-            <p>{`${currentCity}, ${currentCity} (2 mi Radius)`}</p>
-          </div>
         )}
       </section>
 
