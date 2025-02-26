@@ -112,7 +112,6 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   useEffect(() => {
     return () => {
       if (pathName === "/internal" || pathName === "/internal/search") {
-        console.log("deleting locationIds and geoCoordinates");
         replaceLocalFilter("geoCoordinates", "locationIds", "");
       }
     };

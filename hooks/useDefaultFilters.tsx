@@ -1,11 +1,10 @@
-import { useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import { useAuthContext } from "@/context/auth";
 import { useFilterState } from "@/hooks/useFilterState";
 import { usePathname, useRouter } from "next/navigation";
 import { endOfMonth, startOfMonth, addMonths } from "date-fns";
 import { columnsDropdown } from "@/data/trends";
 import { sessionService } from "@/services/sessionService";
-import { GEO_JSON } from "@/types/auth/user";
 import { useEventsService } from "@/services/eventsService";
 import { RecentSearchItem } from "@/types/events/recentSearches";
 import { useFilterContext } from "@/context/filterContext";
@@ -285,14 +284,11 @@ export function useDefaultFilters() {
 
     paramsToDelete.forEach((param) => trendsParams.delete(param));
 
-    // Set columns by filtering out specific values.
+    // Set columns by filtering out column which are enabled.
     trendsParams.set(
       "columns",
       columnsDropdown
-        .filter(
-          (column) =>
-            column.value !== "impactScore" && column.value !== "economicImpact"
-        )
+        .filter((column) => column.enable)
         .map((column) => column.value)
         .join(",")
     );
