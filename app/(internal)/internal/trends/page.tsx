@@ -2,21 +2,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styles from "./trends.module.css";
 import Image from "next/image";
-import { useSearchParams, useRouter } from "next/navigation";
 import ZeroStateIcon from "/public/zero_state.svg";
 import ZeroStateDataIcon from "/public/zero_state_data.svg";
 import { Button } from "@/components/ui/button";
 import Text from "@/components/new-ui/Text";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-} from "@/components/ui/select";
-import {
-  aggregateAttendanceData,
-  generateDatesArray,
   generateTrendsTableColumnHeaders,
   morphToGraphData,
   morphToSmartInsightsData,
@@ -28,35 +18,20 @@ import {
   TableGroupedHoliday,
   TEventColumnType,
 } from "@/types/trends/trends";
-// import { useTrendsService } from "@/services/trendsService";
 import { EventTrendsResponse } from "@/types/trends/trends";
 import LocationSelector from "@/components/search/location";
 import DateRangeSelector from "@/components/search/dateRange";
-// import TrendsSelector from "@/components/search/trendsSelector";
-import CategorySelector from "@/components/search/eventType";
 import { columnsDropdown } from "@/data/trends";
 import { NewColumn } from "@/data/trendsTableColHead";
 import LineChartComponent from "@/components/trends/lineChart";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useDefaultFilters } from "@/hooks/useDefaultFilters";
-// import { useFilterContext } from "@/contexts/filterContext";
-import TrendsEventTypeSelector from "@/components/search/trendsEventType";
-import { table } from "console";
 import { useEventsService } from "@/services/eventsService";
 import { EventResponse } from "@/types/events";
-import { useToast } from "@/components/ui/use-toast";
 import TestPeriodicAnalytics from "@/components/newTrends/table-view/TestPeriodicAnalytics";
-import D3AreaChart from "@/components/newTrends/D3newTrends";
-// import TrendsNotification from "@/components/newTrends/notification";
-import { Switch } from "@/components/ui/switch";
-import CILSearch from "/public/cil_search.svg";
-import GoToIcon from "/public/go_to.svg";
-import { ToastAction } from "@/components/ui/toast";
 import SavedTrendsList from "@/components/newTrends/savedTrendsList";
 import SaveTrend from "@/components/newTrends/saveTrend";
-// import ColumnsSelector from "@/components/search/columnSelector";
-// import EventTypeSelectorhttps://faphouse.com/videos/unique-gift-birthday-omU2PB from "@/components/eventType";
 import EventTypeSelector from "@/components/search/eventType";
 import ColumnsSelector from "@/components/search/columnSelector";
 import { useFilterContext } from "@/context/filterContext";
@@ -70,7 +45,6 @@ const EventTrends = () => {
     applyFilters,
     setLocalFilter,
     getLocalFilterValue,
-    localFilters,
     deleteMultipleLocalFilters,
   } = useFilterContext();
   const columns = searchParams.get("columns");
@@ -78,8 +52,6 @@ const EventTrends = () => {
   const enableEditTrend = editTrend ? Boolean(editTrend) : false;
   const columnsData = (columns && columns.split(",")) || [];
   const [isSmartInsightsEnabled, setIsSmartInsightsEnabled] =
-    useState<boolean>(false);
-  const [isNotificationEnabled, setIsNotificationEnabled] =
     useState<boolean>(false);
   const [smartInsightState, setSmartInsightState] = useState<{
     [key: string]: boolean;
@@ -107,8 +79,6 @@ const EventTrends = () => {
   const [showNotificationForm, setShowNotificationForm] =
     useState<boolean>(false);
 
-  const params = `groupBy=date&dateView=day&${searchParams.toString()}`;
-
   const stringParams = `groupBy=date&dateView=day&${searchParams.toString()}`;
 
   const apiParams = useMemo(() => {
@@ -133,7 +103,6 @@ const EventTrends = () => {
     data: trendsData,
     error,
     isLoading,
-    refetch,
   } = useQuery<EventTrendsResponse | undefined>({
     queryKey: ["trends", apiParams.toString()],
     queryFn: () => getEventTrends(apiParams.toString()),
@@ -182,25 +151,11 @@ const EventTrends = () => {
   useEffect(() => {
     if (trendsData !== undefined) {
       setEventTrendsData(trendsData);
-      // setIsSmartInsightsEnabled(false);
       setSelectedEventType(() => {
         return columnsData[0] as TEventColumnType;
       });
-      // setSmartInsightState((prev) => {
-      //   const updatedState = columnsData.reduce((acc, key) => {
-      //     acc[key] = false;
-      //     return acc;
-      //   }, {} as { [key: string]: boolean });
-
-      //   return updatedState;
-      // });
     }
   }, [trendsData]);
-
-  // useEffect(() => {
-  //   const isEditTrue = Boolean(getLocalFilterValue("editTrend"));
-  //   isEditTrue && setIsDisabled(isEditTrue);
-  // }, [getLocalFilterValue]);
 
   useEffect(() => {
     const skip = searchParams.get("skip");
@@ -251,9 +206,8 @@ const EventTrends = () => {
   }, [isSmartInsightsEnabled]);
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams);
-    const eventTypes = params.get("eventTypes")?.split(",") || [];
-    const columns = params.get("columns")?.split(",") || [];
+    const eventTypes = searchParams.get("eventTypes")?.split(",") || [];
+    const columns = searchParams.get("columns")?.split(",") || [];
     if (eventTrendsData && eventTrendsData.groupedData) {
       const tableColumns = generateTrendsTableColumnHeaders(
         eventTypes,
@@ -294,7 +248,6 @@ const EventTrends = () => {
       )
       .map((filteredValue) => filteredValue.value)
       .join(",");
-    // deleteMultipleLocalFilters(["activeCard"]);
     if (getLocalFilterValue("eventTypes").length > 0) {
       setLocalFilter("columns", columnsValue);
       setLocalFilter("status", "active,cancelled,postponed");
@@ -342,7 +295,6 @@ const EventTrends = () => {
                 "Apply"
               )}
             </Button>
-            {/* <Button className="flex-1 py-5">Save</Button> */}
             <SaveTrend
               searchParams={searchParams}
               isLoading={isLoading}
@@ -352,22 +304,6 @@ const EventTrends = () => {
         </div>
         {graphData && graphData.length > 0 && !isLoading ? (
           <div className="pt-8">
-            {/* <div className="flex justify-between ">
-              <TrendsNotification
-                thresholds={
-                  (eventTrendsData && eventTrendsData.thresholds) || {}
-                }
-                threshold={
-                  (eventTrendsData &&
-                    eventTrendsData.thresholds[selectedEventType]) ??
-                  0
-                }
-                activeColumn={selectedEventType}
-                showNotificationForm={showNotificationForm}
-                setShowNotificationForm={setShowNotificationForm}
-              />
-            </div> */}
-
             <div className={styles.predictedAttendence_container}>
               <LineChartComponent
                 predictedData={graphData}

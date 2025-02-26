@@ -15,7 +15,7 @@ import {
 } from "@/types";
 import { useTrendsService } from "@/services/trendsService";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";

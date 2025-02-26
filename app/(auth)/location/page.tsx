@@ -10,7 +10,7 @@ import { notFound, useRouter, useSearchParams } from "next/navigation";
 import { SaveLocationDTO } from "@/types/locations";
 import { EventCount } from "@/types/events";
 import { Plus } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { endOfMonth, startOfMonth } from "date-fns";

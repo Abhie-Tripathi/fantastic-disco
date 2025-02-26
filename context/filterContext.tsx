@@ -16,7 +16,6 @@ import {
   generateSearchFilters,
   searchFilters,
 } from "@/public/data/searchFilters";
-import { useToast } from "@/components/ui/use-toast";
 import { RecentSearchItem } from "@/types/events/recentSearches";
 import { endOfMonth } from "date-fns";
 import { addMonths } from "date-fns";

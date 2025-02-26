@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { ToastAction } from "@/components/ui/toast";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useFilterContext } from "@/context/filterContext";
 import { sessionService } from "@/services/sessionService";
 import { useTrendsService } from "@/services/trendsService";
@@ -122,7 +122,6 @@ const SaveTrendModal = ({
           <Input
             id="name"
             type="text"
-            // maxLength={maxLength}
             placeholder="Save trends as..."
             value={trackerName}
             onChange={handleNameChange}
@@ -169,7 +168,6 @@ const SaveTrend = ({
     deleteMultipleLocalFilters,
     setLocalFilter,
     applyFilters,
-    getLocalFilterValue,
   } = useFilterContext();
 
   const editSavedTrendMutation = useMutation({
@@ -296,7 +294,6 @@ const SaveTrend = ({
 
   const isDisabled = useMemo(() => {
     const eventTypes = searchParams.get("eventTypes");
-    const locations = searchParams.get("locationIds");
     const startDate = searchParams.get("active_gte");
     const endDate = searchParams.get("active_lte");
     if (!eventTypes && !(startDate || endDate)) {
@@ -311,7 +308,6 @@ const SaveTrend = ({
         variant: "destructive",
         title: "Cannot Save Trend",
         description: "Please select at least one event type and date range.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
     }
   }, [isDisabled]);

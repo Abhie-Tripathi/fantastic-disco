@@ -14,7 +14,7 @@ import { Interest } from "@/types/events";
 import { useConfiguration } from "@/hooks/useConfiguration";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIntent } from "@/hooks/useIntent";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { eventsKeys } from "@/hooks/useEvents";
 

@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { useEventsService } from "@/services/eventsService";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "../ui/toast";
 import { cn, lightenColor } from "@/lib/utils";
 import {
