@@ -1,32 +1,31 @@
-import { Cross, Edit, EllipsisVerticalIcon, Trash, X } from "lucide-react";
-import CILSearch from "/public/cil_search.svg";
-import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ToastAction } from "@/components/ui/toast";
+import { useFilterContext } from "@/context/filterContext";
+import { useToast } from "@/hooks/use-toast";
+import { useFilterState } from "@/hooks/useFilterState";
+import { sessionService } from "@/services/sessionService";
+import { useTrendsService } from "@/services/trendsService";
 import {
+  BaseFilterValue,
   CreateFilterValue,
   GetSaveTrendData,
   TrackerData,
   ViewBound,
-  BaseFilterValue,
 } from "@/types";
-import { useTrendsService } from "@/services/trendsService";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useToast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast";
+import { Edit, EllipsisVerticalIcon, Trash, X } from "lucide-react";
+import Image from "next/image";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
-import { useFilterState } from "@/hooks/useFilterState";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useFilterContext } from "@/context/filterContext";
-import { sessionService } from "@/services/sessionService";
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-import { Pagination, Autoplay, Navigation } from "swiper/modules";
-import { GeoLocation } from "@/components/search/location";
+import { Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import CILSearch from "/public/cil_search.svg";
 
 const SavedTrendCard = ({
   activeCard,

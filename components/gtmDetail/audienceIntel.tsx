@@ -1,19 +1,5 @@
 "use client";
-import { InformationFill } from "geist-icons";
-import { EventParticipants } from "./eventParticipants";
 import { Progress } from "@/components/ui/progress";
-import Indicator from "/public/indicator.svg";
-import { CircleSlash } from "lucide-react";
-import Text from "../new-ui/Text";
-import * as Flags from "country-flag-icons/react/3x2";
-import Image from "next/image";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { Event, EventParticipantsDetails, TTabs } from "@/types/events";
-import { CircularProgressBar } from "../eventDetail/circularProgressBar";
-import { useInView } from "react-intersection-observer";
-import { Heading } from "../eventDetail/heading";
-import { numberWithCommas } from "@/utils/formater";
-import { Badge } from "../ui/badge";
 import {
   Tooltip,
   TooltipContent,
@@ -21,9 +7,19 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useFilterContext } from "@/context/filterContext";
+import { Event, EventParticipantsDetails, TTabs } from "@/types/events";
+import { numberWithCommas } from "@/utils/formater";
+import * as Flags from "country-flag-icons/react/3x2";
+import { CircleSlash } from "lucide-react";
+import Image from "next/image";
+import { Dispatch, SetStateAction, useMemo } from "react";
+import { useInView } from "react-intersection-observer";
+import { Heading } from "../eventDetail/heading";
 import Restriction from "../eventDetail/restriction";
+import Text from "../new-ui/Text";
+import { EventParticipants } from "./eventParticipants";
+import Indicator from "/public/indicator.svg";
 
-// type TTabs = "Department Type" | "Designation Type";
 interface Props {
   eventDetails: Event;
   eventExhibitorData: EventParticipantsDetails[];
@@ -75,14 +71,6 @@ export const AudienceIntel = ({
     estimatedExhibitors
   ) || { minExhibitorValue: 0, maxExhibitorValue: 0 };
 
-  // const hasEstimatedExhibitor =
-  //   estimatedExhibitor &&
-  //   estimatedExhibitor.options.find(
-  //     (option: { min: number; max: number | null; isEnabled: boolean }) =>
-  //       Number(stats.estimatedExhibitor) >= option.min &&
-  //       (option.max === null || Number(stats.estimatedExhibitor) <= option.max)
-  //   )?.isEnabled === true;
-
   const hasEstimatedExhibitor =
     estimatedExhibitor &&
     estimatedExhibitor.options.some(
@@ -111,10 +99,6 @@ export const AudienceIntel = ({
   const isAudienceSpreadEnabled =
     audienceSpreadRestriction && audienceSpreadRestriction.isEnabled;
   const isDesignationEnabled = audienceProfile && audienceProfile.isEnabled;
-  const tabs = [
-    { tabName: "Department Type", path: "department" },
-    { tabName: "Designation Type", path: "designation" },
-  ];
 
   const [ref, inView] = useInView({
     threshold: 0.2,
@@ -140,7 +124,6 @@ export const AudienceIntel = ({
     }, designationSpread[0]);
   };
   const maxCountObject = getMaxCountObject(designationSpread);
-  // const [activeTab, setActiveTab] = useState<TTabs>("Department Type");
   return (
     <div className={`flex flex-col gap-6`} ref={ref}>
       <Heading
@@ -171,12 +154,15 @@ export const AudienceIntel = ({
               </Tooltip>
             </TooltipProvider>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {estimatedAttendance &&
-                (hasEstimatedVisitor ? (
-                  numberWithCommas(estimatedAttendance || "--")
+              {estimatedAttendance ? (
+                hasEstimatedVisitor ? (
+                  numberWithCommas(estimatedAttendance)
                 ) : (
                   <Restriction />
-                ))}
+                )
+              ) : (
+                "--"
+              )}
             </p>
           </div>
           <div className="relative flex flex-col bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] border border-[var(--neutral-light-color)] p-4 rounded-sm gap-4 w-full h-auto">
@@ -326,7 +312,6 @@ export const AudienceIntel = ({
                               height={10}
                               alt="Indicator"
                             />
-                            {/* {Math.max(...designationSpread.map())} */}
                             {maxCountObject?.designation}
                           </Text>
                           <span className="text-[var(--primary-color)] font-medium">

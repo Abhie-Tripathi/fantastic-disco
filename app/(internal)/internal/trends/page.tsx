@@ -1,42 +1,42 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
-import styles from "./trends.module.css";
-import Image from "next/image";
-import ZeroStateIcon from "/public/zero_state.svg";
-import ZeroStateDataIcon from "/public/zero_state_data.svg";
-import { Button } from "@/components/ui/button";
 import Text from "@/components/new-ui/Text";
+import SavedTrendsList from "@/components/newTrends/savedTrendsList";
+import SaveTrend from "@/components/newTrends/saveTrend";
+import TestPeriodicAnalytics from "@/components/newTrends/table-view/TestPeriodicAnalytics";
+import ColumnsSelector from "@/components/search/columnSelector";
+import DateRangeSelector from "@/components/search/dateRange";
+import EventTypeSelector from "@/components/search/eventType";
+import LocationSelector from "@/components/search/location";
+import LineChartComponent from "@/components/trends/lineChart";
+import { Button } from "@/components/ui/button";
+import { isEventeli } from "@/config";
+import { useFilterContext } from "@/context/filterContext";
+import { columnsDropdown } from "@/data/trends";
+import { NewColumn } from "@/data/trendsTableColHead";
+import { useDefaultFilters } from "@/hooks/useDefaultFilters";
+import { useEventsService } from "@/services/eventsService";
+import { useTrendsService } from "@/services/trendsService";
+import { EventResponse } from "@/types/events";
+import {
+  EventTrendsResponse,
+  GetSaveTrendData,
+  TableData,
+  TableGroupedHoliday,
+  TEventColumnType,
+} from "@/types/trends/trends";
 import {
   generateTrendsTableColumnHeaders,
   morphToGraphData,
   morphToSmartInsightsData,
   morphToTrendsTableData,
 } from "@/utils/lineChart";
-import {
-  GetSaveTrendData,
-  TableData,
-  TableGroupedHoliday,
-  TEventColumnType,
-} from "@/types/trends/trends";
-import { EventTrendsResponse } from "@/types/trends/trends";
-import LocationSelector from "@/components/search/location";
-import DateRangeSelector from "@/components/search/dateRange";
-import { columnsDropdown } from "@/data/trends";
-import { NewColumn } from "@/data/trendsTableColHead";
-import LineChartComponent from "@/components/trends/lineChart";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useDefaultFilters } from "@/hooks/useDefaultFilters";
-import { useEventsService } from "@/services/eventsService";
-import { EventResponse } from "@/types/events";
-import TestPeriodicAnalytics from "@/components/newTrends/table-view/TestPeriodicAnalytics";
-import SavedTrendsList from "@/components/newTrends/savedTrendsList";
-import SaveTrend from "@/components/newTrends/saveTrend";
-import EventTypeSelector from "@/components/search/eventType";
-import ColumnsSelector from "@/components/search/columnSelector";
-import { useFilterContext } from "@/context/filterContext";
-import { useTrendsService } from "@/services/trendsService";
-import { isEventeli } from "@/config";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import styles from "./trends.module.css";
+import ZeroStateIcon from "/public/zero_state.svg";
+import ZeroStateDataIcon from "/public/zero_state_data.svg";
 
 const EventTrends = () => {
   const { searchParams } = useDefaultFilters();
@@ -45,7 +45,6 @@ const EventTrends = () => {
     applyFilters,
     setLocalFilter,
     getLocalFilterValue,
-    deleteMultipleLocalFilters,
   } = useFilterContext();
   const columns = searchParams.get("columns");
   const editTrend = searchParams.get("editTrend");
@@ -67,7 +66,6 @@ const EventTrends = () => {
     EventTrendsResponse | undefined
   >();
   const [graphData, setGraphData] = useState<any>();
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [tableData, setTableData] = useState<TableData[] | []>();
   const [tableColumns, setTableColumns] = useState<NewColumn[]>();
   const { getEventsWithSearchParams } = useEventsService();
@@ -284,7 +282,7 @@ const EventTrends = () => {
             <Button
               className="flex-1 py-5"
               onClick={applyHandler}
-              disabled={isLoading || isDisabled || enableEditTrend}
+              disabled={isLoading || enableEditTrend}
             >
               {isLoading ? (
                 <>

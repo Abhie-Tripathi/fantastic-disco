@@ -1,35 +1,4 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ReferenceLine,
-  ResponsiveContainer,
-  ReferenceArea,
-  CartesianGrid,
-  Rectangle,
-  Legend,
-  LegendProps,
-} from "recharts";
-import { addDays, isAfter } from "date-fns";
-import { format, parse, differenceInDays } from "date-fns";
-import Text from "../new-ui/Text";
-import { TooltipProps } from "recharts";
-import Link from "next/link";
-import { ArrowUpRight, Loader2 } from "lucide-react";
-import { columnsDropdown } from "@/data/trends";
-import { CategoricalChartState } from "recharts/types/chart/types";
-import { useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { useEventsService } from "@/services/eventsService";
-import Disable from "/public/disable.svg";
-import Image from "next/image";
-import { generateDatesArray, toMidnightISOString } from "@/utils/lineChart";
-import { TableGroupedHoliday } from "@/types";
-import HolidayIcon from "/public/eventType/holiday.svg";
 import {
   Tooltip as ShadcnTooltip,
   TooltipContent,
@@ -37,6 +6,34 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { isEventeli } from "@/config";
+import { columnsDropdown } from "@/data/trends";
+import { useEventsService } from "@/services/eventsService";
+import { TableGroupedHoliday } from "@/types";
+import { generateDatesArray, toMidnightISOString } from "@/utils/lineChart";
+import { useQuery } from "@tanstack/react-query";
+import { addDays, differenceInDays, format, isAfter } from "date-fns";
+import { ArrowUpRight, Loader2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Legend,
+  LegendProps,
+  ReferenceArea,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  TooltipProps,
+  XAxis,
+  YAxis
+} from "recharts";
+import { CategoricalChartState } from "recharts/types/chart/types";
+import Text from "../new-ui/Text";
+import Disable from "/public/disable.svg";
 
 interface IProps {
   predictedData: any;
@@ -61,7 +58,6 @@ const LineChartComponent = ({
 }: IProps) => {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
-  const locationIds = searchParams.get("locationIds");
   const eventTypes = searchParams.get("eventTypes");
   const [link, setLink] = useState("");
   const eventService = useEventsService();

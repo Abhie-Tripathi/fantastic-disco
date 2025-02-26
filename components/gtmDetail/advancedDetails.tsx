@@ -1,21 +1,4 @@
 "use client";
-import { InformationFill } from "geist-icons";
-import {
-  ChevronLeftCircle,
-  CircleChevronLeft,
-  CircleChevronRight,
-  CircleSlash,
-} from "lucide-react";
-import DetailDialog from "../eventDetail/modal";
-import PastEditions from "../eventDetail/pastEditions";
-import { capitalize } from "lodash";
-import { Event, EventEditionDetailResponse } from "@/types/events";
-import { Heading } from "../eventDetail/heading";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/navigation";
-import { Navigation } from "swiper/modules";
-import { format } from "date-fns";
 import {
   Carousel,
   CarouselApi,
@@ -24,9 +7,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Card } from "../ui/card";
-import { useEffect, useState } from "react";
-import { renderFormattedDates } from "@/utils/dateFormat";
 import {
   Tooltip,
   TooltipContent,
@@ -34,6 +14,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useFilterContext } from "@/context/filterContext";
+import { Event, EventEditionDetailResponse } from "@/types/events";
+import { format } from "date-fns";
+import { capitalize } from "lodash";
+import { CircleSlash } from "lucide-react";
+import { useEffect, useState } from "react";
+import "swiper/css";
+import "swiper/css/navigation";
+import { Heading } from "../eventDetail/heading";
+import DetailDialog from "../eventDetail/modal";
+import PastEditions from "../eventDetail/pastEditions";
 import Restriction from "../eventDetail/restriction";
 
 interface Props {
@@ -53,15 +43,6 @@ const CarouselComponent = ({
   eventEditionData: EventEditionDetailResponse;
   eventId: string;
 }) => {
-  // const {
-  //   maturity,
-  //   frequency,
-  //   isEventBrand: isBranded,
-  //   isEventSeries: isSeries,
-  //   rehostDate,
-  //   futureExpectedEndDate,
-  //   futureExpectedStartDate,
-  // } = eventDetails || {};
   const { maturity, frequency, isBranded, isSeries, rehostDate } =
     eventDetails || {};
   const { maturityLevels, frequencies, forcastedStatus, globalAndTourings } =
@@ -208,11 +189,6 @@ const CarouselComponent = ({
                   </Tooltip>
                 </TooltipProvider>
                 {editions && (
-                  // <span className="text-[#6750A4] bg-[#E6E6F9] flex items-center h-7 font-semibold text-sm py-1 px-4 border-[#B8B7EA] border rounded-md w-fit text-center cursor-not-allowed">
-                  //   {`${editions} Edition${
-                  //     editions && editions > 1 ? "s" : ""
-                  //   }`}
-                  // </span>
                   <DetailDialog
                     titleColor="text-[var(--primary-text-color)]"
                     title={"No. of Editions"}
@@ -388,14 +364,6 @@ export const AdvancedDetails = ({
   const { morphedData } = useFilterContext();
   const { maturity, editions, frequency, isBranded, isSeries, rehostDate } =
     eventDetails || {};
-  // const {
-  //   maturity,
-  //   frequency,
-  //   futureExpectedStartDate,
-  //   isEventBrand: isBranded,
-  //   isEventSeries: isSeries,
-  // } = eventDetails || {};
-  // const { editions } = eventEditionData;
   return (
     (maturity ||
       editions ||
