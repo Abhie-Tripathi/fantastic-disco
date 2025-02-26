@@ -23,17 +23,28 @@ import {
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Error from "next/error";
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 const SaveTrendModal = ({
+  isDisabled,
   searchParams,
   handleEditTrend,
   handleSaveTrend,
+  handleSaveTrendDisabled,
   isLoading,
 }: {
+  isDisabled: boolean;
   searchParams: ReadonlyURLSearchParams;
   handleEditTrend: (trackerName: string, id: string) => void;
   handleSaveTrend: (trackerName: string) => void;
+  handleSaveTrendDisabled: () => void;
   isLoading: boolean;
 }) => {
   const [trackerName, setTrackerName] = useState("");
@@ -42,6 +53,7 @@ const SaveTrendModal = ({
   const enableEdit = searchParams.get("editTrend");
   const activeCardId = searchParams.get("activeCard");
   const activeCardName = searchParams.get("activeCardName");
+  const { toast } = useToast();
   const maxLength = 20;
 
   useEffect(() => {
@@ -76,6 +88,9 @@ const SaveTrendModal = ({
   };
 
   const handleOpenChange = () => {
+    if (isDisabled) {
+      return;
+    }
     if (!enableEdit) {
       setTrackerName("");
     }
@@ -83,7 +98,13 @@ const SaveTrendModal = ({
     setError("");
   };
   return (
-    <Dialog open={open} onOpenChange={() => handleOpenChange()}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        handleOpenChange();
+        handleSaveTrendDisabled();
+      }}
+    >
       <DialogTrigger asChild>
         <Button
           disabled={isLoading}
@@ -148,6 +169,7 @@ const SaveTrend = ({
     deleteMultipleLocalFilters,
     setLocalFilter,
     applyFilters,
+    getLocalFilterValue,
   } = useFilterContext();
 
   const editSavedTrendMutation = useMutation({
@@ -271,11 +293,35 @@ const SaveTrend = ({
     };
     editSavedTrendMutation.mutate({ id: id, data: data });
   };
+
+  const isDisabled = useMemo(() => {
+    const eventTypes = searchParams.get("eventTypes");
+    const locations = searchParams.get("locationIds");
+    const startDate = searchParams.get("active_gte");
+    const endDate = searchParams.get("active_lte");
+    if (!eventTypes && !(startDate || endDate)) {
+      return true;
+    }
+    return false;
+  }, [searchParams]);
+
+  const handleSaveTrendDisabled = useCallback(() => {
+    if (isDisabled) {
+      toast({
+        variant: "destructive",
+        title: "Cannot Save Trend",
+        description: "Please select at least one event type and date range.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+    }
+  }, [isDisabled]);
   return (
     <SaveTrendModal
+      isDisabled={isDisabled}
       searchParams={searchParams}
       handleEditTrend={handleEditTrend}
       handleSaveTrend={handleSaveTrend}
+      handleSaveTrendDisabled={handleSaveTrendDisabled}
       isLoading={saveTrendMutation.isPending || isLoading}
     />
   );
