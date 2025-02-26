@@ -11,7 +11,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ArrowUpDown, ChevronDown, Info } from "lucide-react";
+import {
+  ArrowUp,
+  ArrowDown,
+  ArrowUpDown,
+  ChevronDown,
+  Info,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { useFilterState } from "@/hooks/useFilterState";
 
@@ -36,7 +42,7 @@ const sortOptions: SortOption[] = [
   { value: "internationalEstimate", label: "International Estimate" },
   { value: "distance", label: "Distance" },
   { value: "status", label: "Status" },
-  { value: "score", label: "Score" },
+  { value: "score", label: "Popularity" },
 ];
 
 interface SortDropdownProps {
@@ -45,10 +51,14 @@ interface SortDropdownProps {
   onSort?: (value: string) => void;
 }
 
-const SortDropdown = ({ compact = false, value, onSort }: SortDropdownProps) => {
+const SortDropdown = ({
+  compact = false,
+  value,
+  onSort,
+}: SortDropdownProps) => {
   const { getFilterValue, setFilter } = useFilterState();
   const [open, setOpen] = useState(false);
-  
+
   const sortParam = value || getFilterValue("sortBy") || "score";
   const [sortField, setSortField] = useState(sortParam.replace("-", ""));
   const [sortOrder, setSortOrder] = useState(
@@ -80,17 +90,21 @@ const SortDropdown = ({ compact = false, value, onSort }: SortDropdownProps) => 
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         {compact ? (
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="h-7 w-7 p-0"
-          >
-            <ArrowUpDown className="h-4 w-4 text-primary" />
+          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+            {sortOrder === "asc" ? (
+              <ArrowUp className="h-4 w-4" />
+            ) : (
+              <ArrowDown className="h-4 w-4" />
+            )}
           </Button>
         ) : (
           <Button variant="outline" className="flex items-center gap-2">
             <span className="flex items-center gap-1">
-              <ArrowUpDown className="h-4 w-4" />
+              {sortOrder === "asc" ? (
+                <ArrowUp className="h-4 w-4" />
+              ) : (
+                <ArrowDown className="h-4 w-4" />
+              )}
               {getCurrentSortLabel()}
               <ChevronDown className="h-4 w-4" />
             </span>
@@ -99,7 +113,9 @@ const SortDropdown = ({ compact = false, value, onSort }: SortDropdownProps) => 
       </PopoverTrigger>
       <PopoverContent className="w-[240px] p-4" align="end">
         <div className="flex flex-col gap-3">
-            <span className="text-sm font-medium text-secondary-foreground">Sort by</span>
+          <span className="text-sm font-medium text-secondary-foreground">
+            Sort by
+          </span>
 
           <Select value={sortField} onValueChange={setSortField}>
             <SelectTrigger>

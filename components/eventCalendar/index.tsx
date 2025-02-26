@@ -311,10 +311,12 @@ export default function EventCalendar({
     [getLocalFilterValue, trackerDate]
   );
   const handleNavigate = (date: Date) => {
+    setShowEventList(false);
     setCurrentDate(date);
   };
 
   const handleViewChange = (newView: string) => {
+    setShowEventList(false);
     setView(newView);
   };
 

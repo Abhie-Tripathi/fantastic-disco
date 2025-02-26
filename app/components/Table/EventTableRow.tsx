@@ -75,7 +75,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
       <TableCell
-        className="sticky left-0 z-0 bg-slate-50 dark:bg-slate-900 max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-slate-100 dark:group-hover:bg-slate-800"
+        className="sticky left-0 z-0 bg-slate-50 dark:bg-[#171717] max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-slate-100 dark:group-hover:bg-[#171717]"
         style={{ zIndex: 0 }}
       >
         <div className="flex gap-4">
@@ -87,6 +87,36 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 alt={`${event.basic.name} logo`}
                 className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
               />
+            ) : event.basic.website ? (
+              <div className="w-12 h-12 relative">
+                <img
+                  src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+                  alt={`${event.basic.name} website favicon`}
+                  className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    // This will trigger the fallback div to show
+                    e.currentTarget.dataset.error = 'true';
+                  }}
+                />
+                {/* Fallback that shows when image errors */}
+                <div 
+                  className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+                  style={{ display: 'none' }}
+                  ref={(el) => {
+                    if (el) {
+                      const img = el.previousSibling as HTMLImageElement;
+                      if (img && img.dataset.error === 'true') {
+                        el.style.display = 'flex';
+                      }
+                    }
+                  }}
+                >
+                  <span className="text-[#5055A3] text-lg font-semibold">
+                    {event.basic.name.charAt(0)}
+                  </span>
+                </div>
+              </div>
             ) : (
               <div className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
                 <span className="text-[#5055A3] text-lg font-semibold">
@@ -109,7 +139,6 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             <div className="truncate font-medium">
               <Link
                 href={`/internal/event/${event.basic.id}`}
-                target="_blank"
                 className="hover:text-primary transition-colors"
               >
                 {event.basic.name}

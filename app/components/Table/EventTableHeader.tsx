@@ -10,36 +10,36 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
     <TableHeader>
       <TableRow className="bg-muted/50 hover:bg-muted/50">
         <TableHead
-          className="sticky left-0 bg-slate-50 dark:bg-slate-900  max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] h-20 after:absolute after:inset-0 after:bg-slate-50 dark:after:bg-slate-900"
+          className="sticky left-0 bg-slate-50 dark:bg-[#171717]  max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] h-10 after:absolute after:inset-0 after:bg-slate-50 dark:after:bg-[#171717]"
           style={{ zIndex: 0 }}
         >
           <div className="font-medium text-md text-foreground relative z-[999]">
             Event
           </div>
         </TableHead>
-        <TableHead className="min-w-[120px] h-20">
+        <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Date</div>
         </TableHead>
-        <TableHead className="min-w-[150px] h-20">
+        <TableHead className="min-w-[150px] h-10">
           <div className="font-medium text-foreground ">Venue</div>
         </TableHead>
-        <TableHead className="min-w-[120px] h-20">
+        <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">City</div>
         </TableHead>
-        <TableHead className="min-w-[120px] h-20">
+        <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Country</div>
         </TableHead>
         {/* {hasField("insights.keywords") && <TableHead>Keywords</TableHead>} */}
-        <TableHead className="min-w-[150px] h-20">
+        <TableHead className="min-w-[150px] h-10">
           <div className="font-medium text-foreground ">Category</div>
         </TableHead>
 
-        <TableHead className="min-w-[120px] h-20">
+        <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Est. Visitors</div>
         </TableHead>
 
         {show.includes(Show.estimatedExhibitors) && (
-          <TableHead className="min-w-[130px] h-20">
+          <TableHead className="min-w-[130px] h-10">
             <div className="font-medium text-foreground ">Est. Exhibitors</div>
           </TableHead>
         )}

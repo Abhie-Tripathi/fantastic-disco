@@ -3,7 +3,7 @@ import moment from "moment";
 import { heatmapColors } from "./constants";
 import { CalendarMonthEventWithHeatmap } from ".";
 import { Alert, Event } from "@/types/events";
-import { Badge } from "../ui/badge";
+import { useTheme } from "@/context/theme";
 import { useFilterState } from "@/hooks/useFilterState";
 
 const YearView = ({
@@ -20,6 +20,7 @@ const YearView = ({
 }) => {
   const { getFilterValue } = useFilterState();
   const months = moment.months();
+  const { theme } = useTheme();
 
   const startingMonth = (function () {
     const active_gte = getFilterValue("active_gte");
@@ -113,7 +114,7 @@ const YearView = ({
                     (day) => (
                       <th
                         key={day}
-                        className="border font-medium text-[#666666] h-12 w-[calc(100%/7)] text-xs bg-[#FAFAFA]"
+                        className="border font-medium text-[#666666] h-12 w-[calc(100%/7)] text-xs bg-[#FAFAFA] dark:bg-[#171717]"
                       >
                         {day}
                       </th>
@@ -161,7 +162,7 @@ const YearView = ({
                       const backgroundColor =
                         dayTotalEvents > 0
                           ? getHeatmapColor(heatmapCategory)
-                          : "white";
+                          : theme === "dark" ? "#171717" : "#FAFAFA";
 
                       return (
                         <td
