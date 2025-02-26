@@ -25,10 +25,10 @@ export const useCompanyService = () => {
         ? endpoints.prospect.users.list
         : endpoints.prospect.company.list;
 
-    params.set("limit", params.get("take") || "10");
-    params.set("offset", params.get("skip") || "0");
-    params.delete("skip");
-    params.delete("take");
+    // params.set("limit", params.get("take") || "10");
+    // params.set("offset", params.get("skip") || "0");
+    // params.delete("skip");
+    // params.delete("take");
     params.delete("viewBy");
 
     return api.request(url, {
