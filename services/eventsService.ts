@@ -3,7 +3,6 @@ import { endpoints } from "@/config/endpoints";
 import {
   EventCount,
   RecentSearchesResponse,
-  RecentSearchItem,
   Event,
   EventPOCDetailResponse,
   OverallRankingsDetail,
@@ -218,7 +217,7 @@ export const useEventsService = () => {
   };
 
   const getRecentSearch = async () => {
-    const response = await api.request<RecentSearchItem[]>(
+    const response = await api.request<RecentSearchesResponse>(
       `${endpoints.event.recentSearch}`,
       {
         method: "GET",

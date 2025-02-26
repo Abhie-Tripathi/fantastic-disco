@@ -6,9 +6,8 @@ import { endOfMonth, startOfMonth, addMonths } from "date-fns";
 import { columnsDropdown } from "@/data/trends";
 import { sessionService } from "@/services/sessionService";
 import { useEventsService } from "@/services/eventsService";
-import { RecentSearchItem } from "@/types/events/recentSearches";
+import { RecentSearch } from "@/types/events/recentSearches";
 import { useFilterContext } from "@/context/filterContext";
-import { newCategories } from "@/data/categories";
 import { useConfigurationService } from "@/services/configurationService";
 
 export function useDefaultFilters() {
@@ -75,90 +74,59 @@ export function useDefaultFilters() {
     show: generateShowParam(filters),
   });
 
-  const mapRecentSearchToParams = (recentSearch: RecentSearchItem) => ({
-    eventFormats: recentSearch.eventFormat ?? "",
-    status: recentSearch.eventStatus?.toLowerCase() ?? "",
-    categories:
-      recentSearch.eventCategory
-        ?.map((item) => {
-          const category = newCategories.find((cat) => cat.name === item.name);
-          return category?.slug || "";
-        })
-        .filter(Boolean)
-        .join(",") ?? "",
-    eventTypes:
-      recentSearch.eventType
-        ?.map((item: string) => `${item.toLowerCase()}s`)
-        ?.join(",") ?? "",
-    active_gte: recentSearch.startDate
-      ? new Date(recentSearch.startDate?.split(",")[0]).toISOString()
-      : recentSearch.endDate
-      ? ""
+  const mapRecentSearchToParams = (recentSearch: RecentSearch) => ({
+    eventFormats:
+      recentSearch.filterValues.eventFormats?.join(",") ?? undefined,
+    status: recentSearch.filterValues.status?.join(",") ?? undefined,
+    categories: recentSearch.filterValues.categories?.join(",") ?? undefined,
+    eventTypes: recentSearch.filterValues.eventTypes?.join(",") ?? undefined,
+    active_gte: recentSearch.filterValues.active_gte
+      ? recentSearch.filterValues.active_gte
       : startOfMonth(new Date()).toISOString(),
-    active_lte: recentSearch.endDate
-      ? new Date(recentSearch.endDate?.split(",")[1]).toISOString()
-      : recentSearch.startDate
-      ? ""
+    active_lte: recentSearch.filterValues.active_lte
+      ? recentSearch.filterValues.active_lte
       : endOfMonth(addMonths(new Date(), 3)).toISOString(),
-    locationIds:
-      recentSearch.locationIds?.city
-        ?.map((city: any) => Object.keys(city)[0])
-        .join(",") ||
-      recentSearch.locationIds?.state
-        ?.map((state: any) => Object.keys(state)[0])
-        .join(",") ||
-      recentSearch.locationIds?.country
-        ?.map((country: any) => Object.keys(country)[0])
-        .join(",") ||
-      "",
-    entryType:
-      recentSearch.eventEntry
-        ?.split(",")
-        .map((item: string) => item.toLowerCase())
-        ?.join(",") ?? "",
-    ratings: recentSearch.eventRating ?? undefined,
-    maturity: recentSearch.maturity ?? undefined,
-    onlyBranded: recentSearch.eventBrand ? "true" : undefined,
-    onlySeries: recentSearch.eventSeries ? "true" : undefined,
-    frequencies: recentSearch.eventFrequency ?? undefined,
-    includeKeywords: recentSearch.includeKeywords ?? undefined,
-    excludeKeywords: recentSearch.excludeKeywords ?? undefined,
-    estimatedVisitorRangeTag: recentSearch.estimatedVisitorRangeTag ?? "",
-    estimatedExhibitors: recentSearch.estimatedExhibitScore ?? undefined,
-    impact_score_gte: recentSearch.eventImpactScore?.split("-")[0] ?? undefined,
-    impact_score_lte: recentSearch.eventImpactScore?.split("-")[1] ?? undefined,
-    inbound_score_gte: recentSearch.inboundScore?.split("-")[0] ?? undefined,
-    inbound_score_lte: recentSearch.inboundScore?.split("-")[1] ?? undefined,
-    international_score_gte:
-      recentSearch.internationalScore?.split("-")[0] ?? undefined,
-    international_score_lte:
-      recentSearch.internationalScore?.split("-")[1] ?? undefined,
-    audienceSpread: recentSearch.audienceSpread ?? undefined,
-    designations: recentSearch.designation ?? undefined,
-    top:
-      recentSearch.eventRanking
-        ?.split(",")
-        .map((item) => item.split("-")[1])[0] ?? undefined,
-    show: generateRecentSearchShowParam(recentSearch?.shows?.split(",") ?? []),
+    locationIds: recentSearch.filterValues.locationIds?.join(",") ?? undefined,
+    entryType: recentSearch.filterValues.entryType?.join(",") ?? undefined,
+    ratings: recentSearch.filterValues.ratings?.join(",") ?? undefined,
+    maturity: recentSearch.filterValues.maturity?.join(",") ?? undefined,
+    onlyBranded: recentSearch.filterValues.onlyBranded ? "true" : undefined,
+    onlySeries: recentSearch.filterValues.onlySeries ? "true" : undefined,
+    frequencies: recentSearch.filterValues.frequencies?.join(",") ?? undefined,
+    includeKeywords:
+      recentSearch.filterValues.includeKeywords?.join(",") ?? undefined,
+    excludeKeywords:
+      recentSearch.filterValues.excludeKeywords?.join(",") ?? undefined,
+    estimatedVisitorRangeTag:
+      recentSearch.filterValues.estimatedVisitorRangeTag?.join(",") ??
+      undefined,
+    estimatedExhibitors:
+      recentSearch.filterValues.estimatedExhibitors?.join(",") ?? undefined,
+    impact_score_gte: recentSearch.filterValues.impact_score_gte
+      ? String(recentSearch.filterValues.impact_score_gte)
+      : undefined,
+    impact_score_lte: recentSearch.filterValues.impact_score_lte
+      ? String(recentSearch.filterValues.impact_score_lte)
+      : undefined,
+    inbound_score_gte: recentSearch.filterValues.inbound_score_gte
+      ? String(recentSearch.filterValues.inbound_score_gte)
+      : undefined,
+    inbound_score_lte: recentSearch.filterValues.inbound_score_lte
+      ? String(recentSearch.filterValues.inbound_score_lte)
+      : undefined,
+    international_score_gte: recentSearch.filterValues.international_score_gte
+      ? String(recentSearch.filterValues.international_score_gte)
+      : undefined,
+    international_score_lte: recentSearch.filterValues.international_score_lte
+      ? String(recentSearch.filterValues.international_score_lte)
+      : undefined,
+    audienceSpread:
+      recentSearch.filterValues.audienceSpread?.join(",") ?? undefined,
+    designations:
+      recentSearch.filterValues.designations?.join(",") ?? undefined,
+    top: recentSearch.filterValues.top ? String(recentSearch.filterValues.top) : undefined,
+    show: recentSearch.filterValues.show?.join(",") ?? undefined,
   });
-
-  const generateRecentSearchShowParam = (shows: string[]) => {
-    const showItems = [];
-    if (shows.includes("eventRating")) showItems.push("rating");
-    if (shows.includes("maturity")) showItems.push("maturity");
-    if (shows.includes("eventBrand")) showItems.push("branded");
-    if (shows.includes("eventSeries")) showItems.push("series");
-    if (shows.includes("eventFrequency")) showItems.push("frequency");
-    if (shows.includes("estimatedExhibitScore"))
-      showItems.push("estimatedExhibitors");
-    if (shows.includes("analytics")) showItems.push("scores");
-    if (shows.includes("isforecasted")) showItems.push("forecasted");
-    if (shows.includes("eventImpactScore")) showItems.push("scores");
-    if (shows.includes("eventRanking")) showItems.push("rankings");
-    if (shows.includes("audienceZone")) showItems.push("audienceZone");
-
-    return showItems.join(",");
-  };
 
   const generateShowParam = (filters: any): string => {
     const showItems = [];
@@ -327,14 +295,11 @@ export function useDefaultFilters() {
     try {
       // Try to use enabled filters first
       const response = await getFilterConfiguration();
-      const enabledFilters =
-        response && "filter" in response ? response : { filter: {} };
+      const enabledFilters = response?.filter.data;
 
-      if (enabledFilters) {
+      if (enabledFilters && Object.keys(enabledFilters).length > 0) {
         const params = new URLSearchParams(searchParams.toString());
-        const enabledFilterParams = mapEnabledFiltersToParams(
-          enabledFilters.filter
-        );
+        const enabledFilterParams = mapEnabledFiltersToParams(enabledFilters);
 
         Object.entries(enabledFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, value);
@@ -365,15 +330,20 @@ export function useDefaultFilters() {
       }
       // Fall back to recent search if no enabled filters
       const recentSearchResponse = await eventService.getRecentSearch();
-      if (recentSearchResponse?.[0]) {
+      if (
+        recentSearchResponse &&
+        recentSearchResponse.recentSearches[0].filterValues
+      ) {
         const params = new URLSearchParams(searchParams.toString());
         const recentFilterParams = mapRecentSearchToParams(
-          recentSearchResponse[0]
+          recentSearchResponse.recentSearches[0]
         );
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });
         const trendsParams = generateTrendsParams(params, recentFilterParams);
+
+        console.log(recentFilterParams);
 
         if (
           pathName.split("/").includes("search") ||

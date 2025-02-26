@@ -2,6 +2,7 @@
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { showToast } from '@/utils/showToast';
 import { cn } from "@/lib/utils";
 import { isEventeli } from "@/config";
 import { ApiError } from "@/types/api";
@@ -72,10 +73,13 @@ import { suggestionGenerator } from "@/utils/openAI";
 import {Tracker, Toggle} from '@/types/trackers'
 import ExhibitorQualitySelector from "@/components/advancedFilters/exhibitorQualityScore";
 import { useTrackerContext } from "@/context/tracker";
+import LocationTemplate from '@/components/search/locationTemplate'
 import { Designations } from "@/types/misc";
 import { useFilterContext } from "@/context/filterContext";
 import { categories, newCategories } from "@/data/categories";
 import Presets from "./Presets";
+import TeliTemplates from "./teliTemplates";
+import { viewBound } from "@/types/events/dto/event-query.dto";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -385,6 +389,18 @@ const templates = [
     //   }
     // ]
     isUploadEnable: true,
+  },
+  {
+    name: "T_VENUE",
+    templateName: "Venue",
+  },
+  {
+    name: "T_LOCATION",
+    templateName: "Location",
+  },
+  {
+    name: "T_GEOTIME",
+    templateName:"Geo-Time"
   }
 ]
 
@@ -392,11 +408,11 @@ const Pages = () => {
   const {searchParams: search} = useDefaultFilters();
   const searchParams = useSearchParams();
   
-  const {data: editData, setEditTrue, setData: setEditData} = useTrackerContext();
+  const {data: editData, setEditTrue, setData: setEditData, setIsNewCall} = useTrackerContext();
   const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
-  const {getTrackerDetail,createTracker,editTracker, error}=useTrackerServices();
+  const {getTrackerDetail,createTracker,editTracker, error, delTracker}=useTrackerServices();
   const { theme } = useTheme();
   const type = searchParams.get('type');
   const defaultType="T_CUSTOM";
@@ -603,6 +619,7 @@ const Pages = () => {
       scrollableDivRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
+  
   const filterValueMapping={
     eventTypes:"eventTypes",
     categories: "categories",
@@ -628,6 +645,7 @@ const Pages = () => {
     international_score_gte:"international_score_gte",
     international_score_lte:"international_score_lte",
     top:"top",
+    viewBound: "viewBound",
     designations:"designations",
     audienceSpread:"audienceSpread",
   }
@@ -641,7 +659,7 @@ const Pages = () => {
     estimatedExhibitors: "estimatedExhibitors",
     scores: "scores",
     audienceZone: "audienceZone",
-    rankings: "rankings,trustScore",
+    rankings: "rankings,trustScore"
   };
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
@@ -718,15 +736,38 @@ const Pages = () => {
      
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
         // console.log(getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords"));
+        console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
-      else if (type !== defaultType && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
+      else if (type === "T_LOCATION" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+       }
+       else if(type==="T_VENUE" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+       }
+       else if(type==="T_GEOTIME" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))&&(getLocalFilterValue("active_gte").length === 0 && getLocalFilterValue("active_lte").length===0)){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+       }
+       else if (
+        type !== defaultType && 
+        type !== "T_PRODUCT_KEYWORDS" && 
+        type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
+        (trackerName.length === 0 || customData.length === 0)
+      ) {
+        console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
+      
       else if (type === defaultType && ( 
         !getLocalFilterValue("locationIds") || 
         getLocalFilterValue("locationIds").length === 0 || 
@@ -750,7 +791,8 @@ const Pages = () => {
             setIsCreating(false);
             return;
           }else{
-          router.replace(`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`);
+            setIsNewCall(true);
+          router.replace(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table`);
           }
         } else {
           // console.log(error);
@@ -768,7 +810,22 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      else if (type !== defaultType && type!=="T_PRODUCT_KEYWORDS" &&(trackerName.length === 0 || customData.length === 0 )) {
+      else if (type === "T_LOCATION" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+       }
+       else if(type==="T_GEOTIME" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))&&(getLocalFilterValue("active_gte").length === 0 && getLocalFilterValue("active_lte").length===0)){
+        setIsCreating(false);
+        setIsMandatory(true);
+        return;
+       }
+       else if (
+        type !== defaultType && 
+        type !== "T_PRODUCT_KEYWORDS" && 
+        type !== "T_LOCATION" && type !== "T_VENUE" && type !=="T_GEOTIME" &&
+        (trackerName.length === 0 || customData.length === 0)
+      ) {
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
@@ -858,7 +915,10 @@ const Pages = () => {
       let toggleOpend: Toggle = {};
       Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
         const value = editData.filterValues[key];
-      
+      console.log(value);
+        if(typeof value==="object"){
+          setLocalFilter(key as any, JSON.stringify(value));
+        }
         if (Array.isArray(value)) {
           setLocalFilter(key as any, value.join(','));
         } else if (typeof value === "string") {
@@ -1076,6 +1136,27 @@ useEffect(()=>{
       setIncludeKeyword(updatedData);
   }
 },[getLocalFilterValue("includeKeywords")])
+console.log(type);
+const [del, setDel] = useState(false);
+const closeShareModal = () => {
+  setDel(false);
+  document.body.style.height = '';
+  document.body.style.width = '';
+  document.body.style.overflow = '';
+};
+const deleteTracker = async () => {
+  const result = await delTracker(`${pathName[pathName.length - 2]}`)
+  if (result) {
+    showToast("success", "Tracker deleted successfully")
+    GAEvent(
+      "trackers",
+      "Tracker Detail",
+      "Delete",
+      "Delete"
+    );
+    router.replace(`/internal/trackers`);
+  }
+}
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -1098,7 +1179,7 @@ return (
     </div>
 
     <div className="flex gap-3">
-      <Link
+      {/* <Link
         href={
           last === "create"
             ? "/internal/trackers?showTemplates=true"
@@ -1107,12 +1188,28 @@ return (
         }
         style={{ display: "flex" }}
       >
-        {/* <button className={styles.cancel}>Cancel</button> */}
+        <button className={styles.cancel}>Cancel</button>
         <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">Cancel</Button>
-      </Link>
+      </Link> */}
       {/* <button className={styles.save} onClick={saveTrackerHandler}>
         Save Tracker
       </button> */}
+      {last==="create"?
+      <Link
+      href={
+        last === "create"
+          ? "/internal/trackers?showTemplates=true"
+          : `/internal/trackers/${pathName[pathName.length - 2]
+          }/trackedConfiguration?type=${type}`
+      }
+      style={{ display: "flex" }}
+    >
+      <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]">Cancel</Button>
+      </Link>:
+      <div className={styles.containerTopRightTwo} >
+      <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)] w-[100px]" onClick={() => setDel(true)}>Delete</Button>
+        </div>
+      }
       <Button className="text-white w-[100px]" onClick={saveTrackerHandler}>Save</Button>
     </div>
     </div>
@@ -1134,8 +1231,7 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
-
-    
+    <TeliTemplates type={type}/>
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
     <div style={{display: 'flex', gap: '25px'}}>
       <div className={`card ${styles.competitor}`}>
@@ -1446,7 +1542,10 @@ return (
           >
             <div className="flex justify-center my-6">
             <div className="flex justify-center">
-                <TabsList className="w-[570px] grid grid-cols-3 h-auto">
+                <TabsList  className={cn(
+              "w-[570px] grid grid-cols-3 h-auto",
+              isEventeli ? "grid-cols-2 w-[386px]" : ""
+            )}>
                   <TabsTrigger value="advancedDetails" className="text-base">
                               Advanced Details
                               {/* {advancedDetailsFiltersCount ? (
@@ -1520,7 +1619,33 @@ return (
   </div>
   </>
   }</div>
-  
+  {del &&
+            (
+              <div className={styles.shareModal} >
+                <div className={`${styles.innerModal} text-base`}>
+                  <div className="font-medium text-[var(--primary-color)]">Delete Tracker</div>
+                  {/* <div className={styles.bar}></div> */}
+                  <div className={styles.linkCopy}>
+
+                    <div className={styles.inviteAccess}>
+
+                      All events tracked by tracker will be lost. Do you wish to delete tracker permanently?
+
+                    </div>
+                  </div>
+
+                  <div className={styles.buttons}>
+
+                    {/* <button className={styles.send} onClick={deleteTracker}>Delete</button> */}
+                    <Button className="text-white" onClick={deleteTracker}>Delete</Button>
+                    {/* <button className={styles.cancel} onClick={closeShareModal}>Cancel</button> */}
+                    <Button variant="outline" className="text-[var(--primary-color)] hover:text-[var(--primary-color)]" onClick={closeShareModal}>Cancel</Button>
+                  </div>
+                </div>
+              </div>
+
+
+            )}
   </>
 );
 };

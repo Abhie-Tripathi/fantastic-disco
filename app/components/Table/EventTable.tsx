@@ -18,8 +18,9 @@ import { useFilterContext } from "@/context/filterContext";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
+  eventType?:string;
 }
-const EventTable = ({source, trackerId}:EventTableProps) => {
+const EventTable = ({source, trackerId, eventType}:EventTableProps) => {
   // const { theme } = useTheme();
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } = useFilterState();
   const {setLocalFilter} = useFilterContext();
@@ -30,7 +31,7 @@ const EventTable = ({source, trackerId}:EventTableProps) => {
   let events, totalEvents, isLoading, error;
 
   if (source === "tracker") {
-  ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId));
+  ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId,eventType));
   } else {
   ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
@@ -100,13 +101,14 @@ const EventTable = ({source, trackerId}:EventTableProps) => {
       title="We couldn't find any events matching your tracker criteria at the moment."
       text="Try adjusting your filters or checking back later, as new events are added frequently."
       buttonText="Manage Configurations"
-      // buttonUrl={`/internal/trackers/${
-      //   path[path.length - 2]
-      // }/trackedConfiguration?type=${type}`}
+      buttonUrl={`/internal/trackers/${
+        trackerId
+      }/editTracker?type=${query.type}`}
     />)
     }else 
     return <ZeroState text="No events found" />;
   }
+console.log(isLoading);
 
   return (
     <div className="w-full">
@@ -128,7 +130,7 @@ const EventTable = ({source, trackerId}:EventTableProps) => {
       </div>
 
       {totalPages > 1 && (
-        <div className="sticky bottom-0 bg-background py-4">
+        <div className="sticky bottom-0 bg-background py-3">
           <PaginationComponent
             currentPage={currentPage}
             totalPages={totalPages}

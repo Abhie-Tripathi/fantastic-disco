@@ -162,7 +162,7 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-grow overflow-y-auto pb-6">
+      <div className="flex-grow overflow-y-auto">
         <ul className="w-full space-y-6 list-none">
           {events?.map((event) => (
             <EventListItem
@@ -174,7 +174,7 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
         </ul>
       </div>
       {totalPages > 1 && (
-        <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
+        <div className="sticky bottom-0 bg-background py-3">
           <PaginationComponent
             currentPage={currentPage}
             totalPages={totalPages}
@@ -213,8 +213,10 @@ const EventListItem = ({
         {[
           event.basic.eventLocation.venue?.name || "TBA",
           event.basic.eventLocation.city?.name,
-          event.basic.eventLocation.state?.name,
-          event.basic.eventLocation.country?.name,
+          event.basic.eventLocation.state?.name !== event.basic.eventLocation.city?.name ? 
+            event.basic.eventLocation.state?.name : null,
+          event.basic.eventLocation.country?.name !== event.basic.eventLocation.city?.name ? 
+            event.basic.eventLocation.country?.name : null,
         ]
           .filter(Boolean)
           .join(", ")}
@@ -223,11 +225,12 @@ const EventListItem = ({
       [
         event.basic.eventLocation.venue?.name,
         event.basic.eventLocation.city?.name,
-        event.basic.eventLocation.state?.name,
-        event.basic.eventLocation.country?.name,
+        event.basic.eventLocation.state?.name !== event.basic.eventLocation.city?.name ? 
+          event.basic.eventLocation.state?.name : null,
+        event.basic.eventLocation.country?.name !== event.basic.eventLocation.city?.name ? 
+          event.basic.eventLocation.country?.name : null,
       ]
         .filter(Boolean)
-
         .join(", ")
     )
   ) : (
@@ -298,6 +301,36 @@ const EventListItem = ({
               alt={`${event.basic.name} logo`}
               className="w-24 h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
             />
+          ) : event.basic.website ? (
+            <div className="w-24 h-24 relative">
+              <img
+                src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+                alt={`${event.basic.name} website favicon`}
+                className="w-24 h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  // This will trigger the fallback div to show
+                  e.currentTarget.dataset.error = 'true';
+                }}
+              />
+              {/* Fallback that shows when image errors */}
+              <div 
+                className="w-24 h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+                style={{ display: 'none' }}
+                ref={(el) => {
+                  if (el) {
+                    const img = el.previousSibling as HTMLImageElement;
+                    if (img && img.dataset.error === 'true') {
+                      el.style.display = 'flex';
+                    }
+                  }
+                }}
+              >
+                <span className="text-[#5055A3] text-2xl font-semibold">
+                  {event.basic.name.charAt(0)}
+                </span>
+              </div>
+            </div>
           ) : (
             <div className="w-24 h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
               <span className="text-[#5055A3] text-2xl font-semibold">
@@ -382,7 +415,7 @@ const EventListItem = ({
                       </Tooltip>
                     </TooltipProvider>
                   )}
-                  {event.basic.categories?.slice(0, 1).map((tag, index) => (
+                  {event.basic.categories?.map((tag, index) => (
                     <TooltipProvider key={index}>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>

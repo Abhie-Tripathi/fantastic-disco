@@ -3,6 +3,7 @@
 import React, { lazy, Suspense, useEffect, useState} from "react";
 import Expand from "/public/expand_more.svg";
 import Notes from "@/public/notes.svg"
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import ExportModal from "@/app/components/Search/ExportModal";
 import styles from "./trackedEvents.style.module.css";
@@ -39,6 +40,9 @@ import ZeroState from "@/components/zerostate";
 import { ApiError } from "@/types/api";
 import { useFilterState } from "@/hooks/useFilterState";
 import EventCalendar from "@/components/eventCalendar";
+import { isEventeli } from "@/config";
+import SortDropdown from "@/components/search/sortDropdown";
+import { NotebookPen, Share2 } from "lucide-react";
 const CalendarContainer = lazy(
   () => import("@/app/components/employee/calendarcontainer/CalendarContainer")
 );
@@ -62,11 +66,11 @@ const Map = lazy(() => import("@/components/map"));
 // }
 interface LocationObject  { [id: string]: string };
 const Page = ({ params }: { params: any }) => {
-  const {data}=useTrackerContext();
-  
+  const {data, savedEventCount}=useTrackerContext();
+  // console.log(data);
+  const [share,setShare]=useState(false);
   const pathname = usePathname();
   const {getCalendarViewEvents,getTrackerEvents, getSavedEvents} = useTrackerServices();
-  const {savedEventCount}=useTrackerContext();
   const {adaptParams}=TrackersAdapter;
   const {getFilterValue, setFilter} = useFilterState();
   const [type, setType] = useState<string | undefined>();
@@ -83,7 +87,8 @@ const Page = ({ params }: { params: any }) => {
   const skip= getFilterValue("skip") || "0";
   const take = getFilterValue("take") || "20";
   const typeOfEvent=searchParams.get("eventType");
-  const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
+  // const [active, setActive] = useState(typeOfEvent==="savedEvent"?"Saved Events": typeOfEvent==="activeEvent"?"Active Events": typeOfEvent==="newEvent"?"New Events":typeOfEvent==="expiredEvent"?"Expired Events":"Active Events");
+  const [active, setActive] = useState(typeOfEvent);
   // const id = pathName[pathName.length - 2];
   // console.log(active);
   // const [data, setData] = useState<any>();
@@ -92,6 +97,7 @@ const Page = ({ params }: { params: any }) => {
   const [view, setView] = useState<string | null>(
     ["table", "list", "map", "calendar"].includes(viewType || "") ? viewType : "table"
   );
+  const [eventCount, setEventCount] = useState<{ type: string; totalCount: number; newCount: number }[]>([]);
   const [urlQueryString, setUrlQueryString] = useState<string>("");
   const trackerType: string = searchParams.get("type") || "";
   const [showInsights,setShowInsights] = useState({
@@ -211,7 +217,41 @@ const Page = ({ params }: { params: any }) => {
   useEffect(() => {
     // setSavedEventCount(data?.tracker?.savedEventTotalCount);
     setTrackerDetail(data?.tracker);
+    console.log(data);
+    
     // createQueryString();
+    if (isEventeli) {
+      const transformedData = Object.keys(data?.groupedEventsCount || {}).map((key) => ({
+        type: key.charAt(0).toUpperCase() + key.slice(1),
+        totalCount: (data?.groupedEventsCount?.[key]?.total as number) || 0,
+        newCount: (data?.groupedEventsCount?.[key]?.new as number) || 0,
+      }));
+    
+      transformedData.push({
+        type: "Bookmarked",
+        totalCount: (savedEventCount as number) || 0,
+        newCount: 0,
+      });
+    
+      setEventCount(transformedData);
+    } else {
+      const groupedEventsCount = data?.groupedEventsCount as Record<string, number> || {};
+    
+      const transformedData = Object.entries(groupedEventsCount).map(([key, value]) => ({
+        type: key.charAt(0).toUpperCase() + key.slice(1),
+        totalCount: value || 0,
+        newCount: (key === "new" ? value : 0) || 0, 
+      }));
+    
+      transformedData.push({
+        type: "Bookmarked",
+        totalCount: (savedEventCount as number) || 0,
+        newCount: 0,
+      });
+    
+      setEventCount(transformedData);
+    }
+    
     setLoading(true);
   }, [data]);
   // useEffect(()=>{
@@ -256,6 +296,8 @@ const Page = ({ params }: { params: any }) => {
   useEffect(() => {
     setOpen(true);
   }, []);
+  console.log(data);
+  
   const [exp, setExp] = useState(false);
   const exportData = async () => {
     let dataToSend = {};
@@ -382,7 +424,7 @@ const Page = ({ params }: { params: any }) => {
     }
  },[trackerDetail])
  const addQueryString = (value:string) => {
-  setFilter('eventType', value);
+  setFilter('eventType', value.toLowerCase());
 };
   let trackerLoc: string[]=[];
   
@@ -404,6 +446,7 @@ const activeVal =
       "Expired Events"
     ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
     : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
+  console.log(data);
   
   return (
     <div className="flex w-[calc(100vw-134px)]">
@@ -414,7 +457,7 @@ const activeVal =
         <div className="flex bg-[var(--heading-background-color)] width-[100%] h-[65px] rounded-[12px] items-center justify-between px-[10px] py-[5px]">
         {/* <div className={styles.new}></div> */}
           <div className="flex gap-2">
-            <button
+            {/* <button
                className={`${styles.eventStatusBtn} ${
                 active === "Active Events" ? styles.active : ""
               }`}
@@ -524,9 +567,41 @@ const activeVal =
                   )}
                 </div>
               }
-            </button>
+            </button> */}
+            {eventCount?.map((item,index)=>(
+               <button
+               key={index}
+               className={`${styles.eventStatusBtn} ${
+                item.type.toLowerCase()===active ? styles.active : ""
+              }`}
+                onClick={() => {
+                  GAEvent("trackers", "Tracker Detail", "View", "New Events");
+                  // deleteFilter("skip")
+                  setActive(item.type.toLowerCase());
+                  addQueryString(item.type);
+                }}
+              >
+               {item.type} Events
+                {
+                  <div className={styles.circle}>
+                    {loading ? (
+                      formatCount(
+                        item.totalCount
+                      )
+                    ) : (
+                      <div className={styles.loader}></div>
+                    )}
+                  </div>
+                }
+              </button>
+            ))}
           </div>
-          <Link href={`/internal/trackers/${trackerId}/notesDiscussion?type=${data?.tracker?.type}`}
+          <div className="flex gap-2">
+          {/* <Button variant="outline" className="flex gap-1" onClick={()=>setShare(!share)}>
+          <Share2 width={16} height={16}/>
+          Share 
+          </Button> */}
+          <Link href={`/internal/trackers/${trackerId}/notesDiscussion?type=${data?.type}`}
             onClick={() => {
               GAEvent(
                 "trackers",
@@ -535,10 +610,11 @@ const activeVal =
                 "Notes and Discussion"
               )
             }}
+            className="flex items-center"
           >
-          <div className="flex text-[var(--secondary-text-color)] text-sm font-medium cursor-pointer gap-1">
-          <Image src={Notes} alt="Notes"/>
-          Notes and Discussion
+          <Button variant="outline" className="flex gap-1">
+          <NotebookPen width={16} height={16}/>
+          Notes 
             {/* <ListUnordered
               height="16px"
               width="16px"
@@ -561,8 +637,10 @@ const activeVal =
               }
               onClick={() => setView("calendar")}
             /> */}
-          </div>
+          </Button>
           </Link>
+          <SortDropdown />
+          </div>
         </div>
 
         {(view === "table") && (
@@ -576,7 +654,7 @@ const activeVal =
             setActiveValue={setActiveValue}
             source="trackers"
           /> */}
-          <Table source="tracker" trackerId={trackerId}/>
+          <Table source="tracker" trackerId={trackerId} eventType={active || ""}/>
           </Suspense>
           </div>
         )}
@@ -628,6 +706,7 @@ const activeVal =
                 trackerId={params.trackerId}
                 trackerLoc={trackerLoc.join(",")}
                 trackerType={trackerType}
+                eventType={active || ""}
                  />
                 } 
                 {/* <Map/> */}
@@ -662,6 +741,7 @@ const activeVal =
           </div>
         )}
       </div>
+      
     </Suspense>
   </div>
   );

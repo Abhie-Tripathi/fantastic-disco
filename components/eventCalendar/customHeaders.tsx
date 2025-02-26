@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
 import { cn } from "@/lib/utils";
 import { formattedDateRange } from "@/utils/date";
+import { useTheme } from "@/context/theme";
 
 interface CustomDayHeaderProps {
   date: Date;
@@ -36,7 +37,7 @@ export const CustomDayHeader = ({
 
   return (
     <div
-      className={`h-16 text-center w-full flex items-center justify-center flex-col border bg-[#FAFAFA] relative`}
+      className={`h-16 text-center w-full flex items-center justify-center flex-col border bg-[#FAFAFA] dark:bg-[#171717] relative`}
     >
       <div className={`text-sm font-semibold`}>
         {moment(date).format("D MMM")}
@@ -72,7 +73,10 @@ export const CustomDayHeader = ({
                   {alertForDay.name || `New ${alertForDay.type} alert`}
                 </p>
                 <time className="text-xs text-muted-foreground">
-                  {formattedDateRange(alertForDay.startDate, alertForDay.endDate)}
+                  {formattedDateRange(
+                    alertForDay.startDate,
+                    alertForDay.endDate
+                  )}
                 </time>
               </div>
             ))}
@@ -89,7 +93,7 @@ interface CustomMonthHeaderProps {
 }
 
 export const CustomMonthHeader = ({ date, label }: CustomMonthHeaderProps) => (
-  <div className="h-16 text-center w-full flex items-center justify-center flex-col border bg-[#FAFAFA]">
+  <div className="h-16 text-center w-full flex items-center justify-center flex-col border bg-[#FAFAFA] dark:bg-[#171717]">
     <div className="text-sm font-semibold">{moment(date).format("ddd")}</div>
   </div>
 );
@@ -121,6 +125,7 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const currentDate = moment(date);
+  const { theme } = useTheme();
   const formattedDate = currentDate.format("YYYY-MM-DD");
   const eventsForDay = monthEvents.filter(
     (event) => moment(event.start).format("YYYY-MM-DD") === formattedDate
@@ -150,7 +155,7 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
   const heatmapCategory = hasEvents ? eventsForDay[0]?.heatmapCategory : null;
   const backgroundColor = hasEvents
     ? heatmapColors.find((color) => color.name === heatmapCategory)?.color
-    : "white";
+    : theme === "dark" ? "#171717" : "#FAFAFA";
 
   const handleMouseEnter = () => {
     setOpen(true);
@@ -160,11 +165,11 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
     setOpen(false);
   };
 
-  console.log("hell",holidayEventForDay);
-
   return (
     <div
-      className={`relative p-2 h-36 flex flex-col justify-between ${hasEvents ? 'cursor-pointer' : ''} border-r-[0.5px] border-l-[0.5px]`}
+      className={`relative p-2 h-36 flex flex-col justify-between ${
+        hasEvents ? "cursor-pointer" : ""
+      } border-r-[0.5px] border-l-[0.5px]`}
       style={{ backgroundColor }}
       onClick={hasEvents ? () => onDateClick(date) : undefined}
     >
@@ -184,7 +189,7 @@ export const CustomDateHeader: React.FC<CustomDateEventProps> = ({
       )}
 
       {holidayEventForDay && holidayEventForDay[0] && (
-        <div className="relative mt-2 bg-white border rounded-tr-md rounded-br-md text-center text-[#7d7d7d] text-sm font-medium shadow-sm truncate px-4">
+        <div className="relative mt-2 bg-background border rounded-tr-md rounded-br-md text-center text-[#7d7d7d] text-sm font-medium shadow-sm truncate px-4">
           <div className="absolute left-0 top-0 bg-[#7d7d7d] w-1 h-full"></div>
           {holidayEventForDay[0].basic.name.replace(/\s*\(.*?\)\s*/g, "")}
         </div>

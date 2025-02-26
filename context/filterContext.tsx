@@ -16,7 +16,6 @@ import {
   generateSearchFilters,
   searchFilters,
 } from "@/public/data/searchFilters";
-import { RecentSearchItem } from "@/types/events/recentSearches";
 import { endOfMonth } from "date-fns";
 import { addMonths } from "date-fns";
 import { startOfMonth } from "date-fns";
@@ -72,6 +71,7 @@ interface Filters {
   top?: string;
   locationIds?: string;
   geoCoordinates?: string;
+  viewBound?: string;
   view?: string;
   calendar_type?: string;
   active_lte?: string;
@@ -109,7 +109,7 @@ interface Filters {
   economic_impact_gte?: string;
   total_attendance_gte?: string;
   total_attendance_lte?: string;
-  eventType?:string;
+  eventType?: string;
 
   // Coordinate Filters
   eventId?: string;
@@ -203,8 +203,6 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         const data = await getFilterConfiguration();
         setEnabledFilters(data || {});
       } catch (e) {
-
-
         console.error("Error fetching filters:", e);
         setEnabledFilters({});
       }
@@ -219,7 +217,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       setMorphedData(generateSearchFilters(enabledFilters) as any);
     }
   }, [enabledFilters]);
-  
+
   const setLocalFilter = useCallback(
     (key: keyof Filters, value: string) => {
       // console.log(key);
@@ -265,7 +263,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         } else {
           newFilters[key] = value;
         }
-        
+
         return newFilters;
       });
     },
@@ -372,7 +370,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-  
+
   const contextValue = useMemo(
     () => ({
       localFilters,
