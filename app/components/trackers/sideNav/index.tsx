@@ -16,13 +16,14 @@ import { useTrackerServices } from '@/services/trackerServices';
 import { useTrackerContext } from '@/context/tracker';
 import { Button } from "@/components/ui/button";
 import {TableIcon, ListIcon, CalendarIcon, Globe } from "lucide-react";
+import { isEventeli } from '@/config';
 const Index = () => {
   const pathName = usePathname().split('/');
   const last = pathName[pathName.length - 1];
   const searchParams = useSearchParams();
   const type  = searchParams.get('type');
   const typeOfView  = searchParams.get('view');
-  const typeOfEvent = searchParams.get('eventType')
+  const typeOfEvent = searchParams.get('eventType')?searchParams.get('eventType'):isEventeli?"social":"active"
   const [view,setView]=useState(typeOfEvent==="table"?"table":typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"table");
   const secondLast = pathName[pathName.length - 2];
   const router = useRouter()
@@ -86,11 +87,7 @@ const Index = () => {
       <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[67px] w-[calc(100vw-63px)] bg-[var(--primary-foreground)] z-10 text-h6 left-[63px]">
         <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link className={styles.bottom} href={
-             last === "editTracker"
-              ? (last === "editTracker"
-                ? `/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`
-                : `/internal/trackers/${secondLast}/trackedEvents?type=${type}`)
-              : `/internal/trackers?skip=${skip}${searchValue.length > 0 ? `&q=${encodeURIComponent(searchValue)}` : ""}`
+              `/internal/trackers?skip=${skip}${searchValue.length > 0 ? `&q=${encodeURIComponent(searchValue)}` : ""}`
           } >
           {/* <Button
           variant="link"
@@ -199,7 +196,7 @@ const Index = () => {
 
           </div>
           <div className={styles.configAccess}>
-            <Link href={`/internal/trackers/${secondLast}/trackedConfiguration?type=${type}`}
+            <Link href={`/internal/trackers/${secondLast}/editTracker?type=${type}`}
               onClick={() => {
                 GAEvent(
                   "trackers",

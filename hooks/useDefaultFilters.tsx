@@ -331,20 +331,33 @@ export function useDefaultFilters() {
     try {
       // Try to use enabled filters first
       const response = await getFilterConfiguration();
-      const enabledFilters = response && "filter" in response ? response : { filter: {} };
-      console.log(enabledFilters);
-      
+      const enabledFilters =
+        response && "filter" in response ? response : { filter: {} };
+
       if (enabledFilters) {
         const params = new URLSearchParams(searchParams.toString());
-        const enabledFilterParams = mapEnabledFiltersToParams(enabledFilters.filter);
+        const enabledFilterParams = mapEnabledFiltersToParams(
+          enabledFilters.filter
+        );
 
         Object.entries(enabledFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, value);
         });
+        const trendsParams = generateTrendsParams(params);
 
-        if (pathName.split("/").includes("search")) {
+        if (
+          pathName.split("/").includes("search") ||
+          pathName === "/internal/trends"
+        ) {
           setTimeout(() => {
-            router.push(`${pathName}?${params.toString()}`, { scroll: false });
+            router.push(
+              `${pathName}?${
+                pathName === "/internal/trends"
+                  ? trendsParams.toString()
+                  : params.toString()
+              }`,
+              { scroll: false }
+            );
           }, 0);
         } else {
           setMultipleLocalFilters(enabledFilterParams);
@@ -361,7 +374,6 @@ export function useDefaultFilters() {
         const recentFilterParams = mapRecentSearchToParams(
           recentSearchResponse[0]
         );
-        console.log("recentFilterParams", recentFilterParams);
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });
@@ -372,7 +384,14 @@ export function useDefaultFilters() {
           pathName === "/internal/trends"
         ) {
           setTimeout(() => {
-            router.push(`${pathName}?${params.toString()}`, { scroll: false });
+            router.push(
+              `${pathName}?${
+                pathName === "/internal/trends"
+                  ? trendsParams.toString()
+                  : params.toString()
+              }`,
+              { scroll: false }
+            );
           }, 0);
         } else {
           // Set local filters using the context

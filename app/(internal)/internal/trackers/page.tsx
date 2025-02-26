@@ -115,17 +115,14 @@ function Bookmark({ fillColor }: { fillColor: string }) {
 import { GAEvent } from "@/utils/GAEvent";
 import { useTheme } from "@/context";
 import { Step } from "react-joyride";
-import JoyRideCustom from "@/app/components/internal/walkthrough/JoyRideCustom";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import ShareWidget from "@/app/components/internal/trackers/ShareWidget";
-import AnalyticWidget from "@/app/components/internal/trackers/AnalyticWidget";
-import ShareModal from "@/app/components/internal/trackers/shareModal";
+import { useRouter, useSearchParams } from "next/navigation";
 import CardWidgitConfig from "@/app/components/internal/trackers/CardWidgitConfig";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useNotesServices } from "@/services/notesServices";
 import { Tracker } from "@/types/trackers";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterState } from "@/hooks/useFilterState";
+import { isEventeli } from "@/config";
 
 interface Search {
   searchParams: {
@@ -138,6 +135,7 @@ const Trackers = ({ searchParams }: Search) => {
   const router=useRouter();
   const {getTrackers, getSavedEvents}=useTrackerServices();
   const [type, setType] = useState("");
+  const [activeType, setActiveType]=useState("");
   const {setFilter, getFilterValue, deleteFilter, setMultipleFilters} = useFilterState();
   useEffect(()=>{
     if(tab==="savedEvents") setType("Saved Events")
@@ -364,6 +362,21 @@ const Trackers = ({ searchParams }: Search) => {
   useEffect(()=>{
     setHideTemplate(!getFilterValue("showTemplates"))
   },[searchParam])
+  useEffect(()=>{
+    if(isEventeli){
+      if((singleTrackerData?.groupedEventsCount?.business?.total??0)>0) setActiveType("business");
+      else setActiveType("social");
+    }else{
+      if((singleTrackerData?.groupedEventsCount?.active??0)>0){
+        console.log(singleTrackerData?.groupedEventsCount?.active);
+        
+        setActiveType("active");
+      }else {
+        setActiveType("past");
+      }
+    }
+  },[singleTrackerData])
+  console.log(singleTrackerData);
   
   return (
     // <div className={styles.body}>
@@ -425,7 +438,7 @@ const Trackers = ({ searchParams }: Search) => {
           </span>
           {dataPresent ? (
             <Link
-            href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=activeEvent`}
+            href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=${isEventeli? "social" :"active"}`}
             onClick={() => setContextData(singleTrackerData?.id)}
             >
             <Button className="text-white">View Detail</Button>
@@ -473,6 +486,7 @@ const Trackers = ({ searchParams }: Search) => {
       // <Map
       //   isGlobal={true}
       //   source="tracker"
+      // eventType={activeType}
       //   searchParams="active"
       //   trackerId={singleTrackerData?.id || ""}
       //   trackerLoc={(locations?.length > 0 && locations?.join(",")) || ""}
@@ -488,7 +502,7 @@ const Trackers = ({ searchParams }: Search) => {
   <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
     <SavedEventWidget savedEvents={savedEvents} redirectUrl={singleTrackerData 
-    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=savedEvent`:""}/>
+    ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=bookmarked`:""}/>
   </div>
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
   <NotesDiscussionWidget 

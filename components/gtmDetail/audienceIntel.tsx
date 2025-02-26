@@ -72,7 +72,7 @@ export const AudienceIntel = ({
   };
 
   const { minExhibitorValue, maxExhibitorValue } = parseEstimatedExhibitor(
-    estimatedExhibitor
+    estimatedExhibitors
   ) || { minExhibitorValue: 0, maxExhibitorValue: 0 };
 
   // const hasEstimatedExhibitor =
@@ -200,9 +200,15 @@ export const AudienceIntel = ({
               </Tooltip>
             </TooltipProvider>
             <p className={`text-[#6750A4] font-semibold text-lg `}>
-              {isEstimatedExhibitorEnabled && estimatedExhibitor
-                ? estimatedExhibitor ?? "--"
-                : "--"}
+              {isEstimatedExhibitorEnabled ? (
+                estimatedExhibitors ? (
+                  estimatedExhibitors
+                ) : (
+                  "--"
+                )
+              ) : (
+                <Restriction />
+              )}
             </p>
           </div>
         </div>
@@ -258,9 +264,6 @@ export const AudienceIntel = ({
                               </Text>
                             </div>
                             <div className="flex items-center gap-4">
-                              <span className="text-[var(--primary-color)]">
-                                {value.count}
-                              </span>
                               <span className="bg-[#FEECF2] dark:bg-[#3A1726] border border-[#F9D7E2] dark:border-[#551B33] text-sm font-medium text-[#df2670] py-1 px-3 rounded-full">
                                 {value.percentage}%
                               </span>
