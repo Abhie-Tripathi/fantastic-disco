@@ -87,11 +87,11 @@ export default function ProductsPage() {
   ];
 
   const researchCarbonArr = [
-    { label: "Bookmark", source: "research", status: "BOOKMARK", position: 0 },
-    { label: "Hot Lead", source: "research", status: "ATTENDEE", position: 0 },
-    { label: "Warm Lead", source: "research", status: "SPEAKER", position: 0 },
-    { label: "Cold Lead", source: "research", status: "SPONSOR", position: 0 },
-    { label: "Intent", source: "research", status: "EXHIBITOR", position: 0 },
+    // { label: "Bookmark", source: "research", status: "BOOKMARK", position: 0 },
+    { label: "Hot Lead", status: "ATTEND" },
+    { label: "Warm Lead", status: "SPEAK" },
+    { label: "Cold Lead", status: "SPONSOR" },
+    { label: "Intent", status: "EXHIBIT" },
   ];
 
   // const MAX_BOXES = 4;
@@ -135,13 +135,7 @@ export default function ProductsPage() {
       }
     }
     setFilteredOutreachScreenboxes(updatedScreenboxes);
-    const formData = {
-      source: "outreach",
-      data: {
-        outreach_stage: updatedScreenboxes,
-      },
-    };
-
+    const formData = updatedScreenboxes;
     try {
       await updateOutreachData({ formData });
       setOutreachScreenEditingBoxId(null);
@@ -155,6 +149,7 @@ export default function ProductsPage() {
       showToast("error", "Input cannot be more than 20 characters!");
       return;
     }
+    console.log("temp_val232", value);
     setResearchTempValue(value);
   };
   const handleChangeOutreachScreenBoxes = (id: string, value: string) => {
@@ -206,24 +201,15 @@ export default function ProductsPage() {
     //     getResearchResponse();
     //   } catch (error) {
     //     console.error("Error updating data:", error);
-    //   }   
+    //   }
     // }
 
-
     const updatedBoxes = filteredResearchScreenboxes.map((box) =>
-      box.status === data.status
-        ? { ...box, label: researchTempValue }
-        : box
+      box.status === data.status ? { ...box, label: researchTempValue } : box
     );
-  
-    setFilteredResearchScreenboxes(updatedBoxes);
-  
-    const formData = {
-      source: "interest",
-      data: updatedBoxes,
 
-    };
-  
+    setFilteredResearchScreenboxes(updatedBoxes);
+    const formData = updatedBoxes;
     try {
       await updateResearchData({ formData });
       setResearchScreenEditingBoxId(null);
@@ -232,39 +218,39 @@ export default function ProductsPage() {
     }
   };
 
-  const addResearchScreenBox = async () => {
-    const MAX_BOXES = 5;
-    if (filteredResearchScreenboxes.length >= MAX_BOXES) {
-      showToast("error", "Cannot create more than 4 input");
-      return;
-    }
+  // const addResearchScreenBox = async () => {
+  //   const MAX_BOXES = 5;
+  //   if (filteredResearchScreenboxes.length >= MAX_BOXES) {
+  //     showToast("error", "Cannot create more than 4 input");
+  //     return;
+  //   }
 
-    const availableBox = researchCarbonArr.find(
-      (box: any) =>
-        !filteredResearchScreenboxes.some(
-          (shownBox: any) => shownBox.status === box.status
-        )
-    );
+  //   const availableBox = researchCarbonArr.find(
+  //     (box: any) =>
+  //       !filteredResearchScreenboxes.some(
+  //         (shownBox: any) => shownBox.status === box.status
+  //       )
+  //   );
 
-    availableBox!.position = filteredResearchScreenboxes.length;
+  //   availableBox!.position = filteredResearchScreenboxes.length;
 
-    if (!availableBox) {
-      showToast("info", "No more boxes to add");
-      return;
-    }
+  //   if (!availableBox) {
+  //     showToast("info", "No more boxes to add");
+  //     return;
+  //   }
 
-    setFilteredResearchScreenboxes((prevBoxes) => [...prevBoxes, availableBox]);
-    const formData = {
-      source: "interest",
-      data: [...filteredResearchScreenboxes, availableBox],
-    };
+  //   setFilteredResearchScreenboxes((prevBoxes) => [...prevBoxes, availableBox]);
+  //   const formData = {
+  //     source: "interest",
+  //     data: [...filteredResearchScreenboxes, availableBox],
+  //   };
 
-    try {
-      await updateResearchData({ formData });
-    } catch (error) {
-      console.error("Error updating data:", error);
-    }
-  };
+  //   try {
+  //     await updateResearchData({ formData });
+  //   } catch (error) {
+  //     console.error("Error updating data:", error);
+  //   }
+  // };
 
   const addOutreachScreenBox = async () => {
     const MAX_BOXES = 7;
@@ -306,21 +292,23 @@ export default function ProductsPage() {
 
   const getResearchResponse = async () => {
     const data: any = await getResearchData();
-    setResearchScreenBoxes(data);
+    // console.log("research123",data)
+    setResearchScreenBoxes(data?.interest);
     setFilteredResearchScreenboxes(
       // (data as any).filter((value: any) => !["BOOKMARK"].includes(value.status))
-      data
+      data?.interest
     );
   };
   const getOutreachResponse = async () => {
     const data: any = await getOutreachData();
-    setOutreachScreenBoxes(data?.outreach_stage);
+    console.log("research123", data?.outreach);
+    setOutreachScreenBoxes(data?.outreach);
     setFilteredOutreachScreenboxes(
       // (data?.outreach_stage as any).filter(
       //   (value: any) =>
       //     !["PENDING", "CANCELLED", "REJECTED"].includes(value.status)
       // )
-      data?.outreach_stage
+      data?.outreach
     );
   };
   useEffect(() => {
@@ -364,20 +352,11 @@ export default function ProductsPage() {
     //   }
     // }
     const updatedBoxes = filteredOutreachScreenboxes.map((box) =>
-      box.status === data.status
-        ? { ...box, label: outreachTempValue }
-        : box
+      box.status === data.status ? { ...box, label: outreachTempValue } : box
     );
-  
+
     setFilteredOutreachScreenboxes(updatedBoxes);
-  
-    const formData = {
-      source: "outreach",
-      data: {
-        outreach_stage: updatedBoxes,
-      },
-    };
-  
+    const formData = updatedBoxes;
     try {
       await updateOutreachData({ formData });
       setOutreachScreenEditingBoxId(null);
@@ -401,6 +380,26 @@ export default function ProductsPage() {
     e.preventDefault();
   };
 
+  // const handleDropResearchScreen = async (
+  //   e: React.DragEvent,
+  //   dropIndex: number
+  // ) => {
+  //   e.preventDefault();
+  //   if (draggedItemIndex === null) return;
+
+  //   const newOrder = [...filteredResearchScreenboxes];
+  //   const [movedItem] = newOrder.splice(draggedItemIndex, 1);
+  //   newOrder.splice(dropIndex, 0, movedItem);
+
+  //   // Update positions after reordering
+  //   const updatedBoxes = updatePositions(newOrder);
+  //   const formData =  updatedBoxes;
+
+  //   await updateResearchData({ formData });
+  //   setFilteredResearchScreenboxes(updatedBoxes);
+  //   setDraggedItemIndex(null); // Reset after drop
+  // };
+
   const handleDropResearchScreen = async (
     e: React.DragEvent,
     dropIndex: number
@@ -409,18 +408,18 @@ export default function ProductsPage() {
     if (draggedItemIndex === null) return;
 
     const newOrder = [...filteredResearchScreenboxes];
+
+    // Ensure draggedItemIndex is valid
+    if (draggedItemIndex < 0 || draggedItemIndex >= newOrder.length) return;
+
+    // Remove and insert item at new index
     const [movedItem] = newOrder.splice(draggedItemIndex, 1);
     newOrder.splice(dropIndex, 0, movedItem);
 
-    // Update positions after reordering
-    const updatedBoxes = updatePositions(newOrder);
-    const formData = {
-      source: "interest",
-      data: updatedBoxes,
-    };
+    // Update state with the new order
+    setFilteredResearchScreenboxes(newOrder);
+    await updateResearchData({ formData: newOrder });
 
-    await updateResearchData({ formData });
-    setFilteredResearchScreenboxes(updatedBoxes);
     setDraggedItemIndex(null); // Reset after drop
   };
 
@@ -445,6 +444,26 @@ export default function ProductsPage() {
     e.preventDefault();
   };
 
+  // const handleDropOutreachScreen = async (
+  //   e: React.DragEvent,
+  //   dropIndex: number
+  // ) => {
+  //   e.preventDefault();
+  //   if (draggedItemIndex === null) return;
+
+  //   const newOrder = [...filteredOutreachScreenboxes];
+  //   const [movedItem] = newOrder.splice(draggedItemIndex, 1);
+  //   newOrder.splice(dropIndex, 0, movedItem);
+
+  //   // Update positions after reordering
+  //   const updatedBoxes = updateOutreachPositions(newOrder);
+
+  //   const formData = updatedBoxes;
+  //   await updateOutreachData({ formData });
+  //   setFilteredOutreachScreenboxes(updatedBoxes);
+  //   setDraggedItemIndex(null); // Reset after drop
+  // };
+
   const handleDropOutreachScreen = async (
     e: React.DragEvent,
     dropIndex: number
@@ -453,21 +472,18 @@ export default function ProductsPage() {
     if (draggedItemIndex === null) return;
 
     const newOrder = [...filteredOutreachScreenboxes];
+
+    // Ensure draggedItemIndex is valid
+    if (draggedItemIndex < 0 || draggedItemIndex >= newOrder.length) return;
+
+    // Remove and insert item at new index
     const [movedItem] = newOrder.splice(draggedItemIndex, 1);
     newOrder.splice(dropIndex, 0, movedItem);
 
-    // Update positions after reordering
-    const updatedBoxes = updateOutreachPositions(newOrder);
+    // Update state with the new order
+    setFilteredOutreachScreenboxes(newOrder);
+    await updateOutreachData({ formData: newOrder });
 
-    const formData = {
-      source: "outreach",
-      data: {
-        outreach_stage: updatedBoxes,
-      },
-    };
-
-    await updateOutreachData({ formData });
-    setFilteredOutreachScreenboxes(updatedBoxes);
     setDraggedItemIndex(null); // Reset after drop
   };
 
@@ -478,7 +494,10 @@ export default function ProductsPage() {
   return (
     <div className="grid place-items-center min-h-screen gap-y-10 p-6">
       <div className="grid place-items-center max-w-5xl">
-        <div className="flex gap-2 justify-start" style={{ marginLeft: "-130px" }}>
+        <div
+          className="flex gap-2 justify-start"
+          style={{ marginLeft: "-130px" }}
+        >
           <div className="px-3 py-1 rounded-sm bg-muted border-border flex items-center justify-center">
             <SettingIcon className={`${iconClass}`} />
           </div>
@@ -512,66 +531,62 @@ export default function ProductsPage() {
               </div>
 
               <div className="flex flex-col gap-2">
-                {filteredResearchScreenboxes
-                  .slice(1)
-                  .map((box: any, index: any) => (
-                    <div
-                      key={box.status}
-                      className="flex items-center gap-1 relative"
-                      draggable
-                      onDragStart={(e) =>
-                        handleDragStartResearchScreen(e, index + 1)
-                      }
-                      onDragOver={handleDragOverResearchScreen}
-                      onDrop={(e) => handleDropResearchScreen(e, index + 1)}
-                      onDragEnd={handleDragEndResearchScreen}
-                    >
-                      <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
-                        <DragIcon />
-                      </div>
-                      <div className="flex items-center max-w-full h-10 rounded border overflow-hidden focus-within:border-blue-500">
-                        <input
-                          type="text"
-                          value={
-                            editingResearchScreenBoxId === box.status
-                              ? researchTempValue
-                              : box?.label
+                {filteredResearchScreenboxes.map((box: any, index: any) => (
+                  <div
+                    key={box.status}
+                    className="flex items-center gap-1 relative"
+                    draggable
+                    onDragStart={(e) => handleDragStartResearchScreen(e, index)}
+                    onDragOver={handleDragOverResearchScreen}
+                    onDrop={(e) => handleDropResearchScreen(e, index)}
+                    onDragEnd={handleDragEndResearchScreen}
+                  >
+                    <div className="flex justify-center items-center w-5 h-10 text-gray-500 cursor-grab">
+                      <DragIcon />
+                    </div>
+                    <div className="flex items-center max-w-full h-10 rounded border overflow-hidden focus-within:border-blue-500">
+                      <input
+                        type="text"
+                        value={
+                          editingResearchScreenBoxId === box.status
+                            ? researchTempValue
+                            : box?.label
+                        }
+                        onChange={(e) =>
+                          handleChangeResearchScreenBoxes(
+                            box.status,
+                            e.target.value
+                          )
+                        }
+                        className="p-2 h-full w-full outline-none bg-muted focus:bg-background"
+                        onClick={() =>
+                          handleResearchScreenEdit(box.status, box.label)
+                        }
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            handleResearchScreenSave(box);
                           }
-                          onChange={(e) =>
-                            handleChangeResearchScreenBoxes(
-                              box.status,
-                              e.target.value
-                            )
-                          }
-                          className="p-2 h-full w-full outline-none bg-muted focus:bg-background"
-                          onClick={() =>
-                            handleResearchScreenEdit(box.status, box.label)
-                          }
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              handleResearchScreenSave(box);
-                            }
-                          }}
-                        />
-                      </div>
-                      {editingResearchScreenBoxId === box.status && (
-                        <div className="flex items-center gap-2 ml-2">
-                          <button
-                            className="flex items-center justify-center border rounded w-10 h-10 text-base"
-                            onClick={() => handleResearchScreenSave(box)}
-                          >
-                            <CheckIcon />
-                          </button>
-                          {/* <button
+                        }}
+                      />
+                    </div>
+                    {editingResearchScreenBoxId === box.status && (
+                      <div className="flex items-center gap-2 ml-2">
+                        <button
+                          className="flex items-center justify-center border rounded w-10 h-10 text-base"
+                          onClick={() => handleResearchScreenSave(box)}
+                        >
+                          <CheckIcon />
+                        </button>
+                        {/* <button
                             className="flex items-center justify-center border rounded w-10 h-10 text-base"
                             onClick={() => removeResearchScreenBox(box)}
                           >
                             <CrossIcon />
                           </button> */}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
                 {/* <button
                   className="flex items-center justify-center border rounded-md w-10 h-10 text-base"
                   onClick={addResearchScreenBox}

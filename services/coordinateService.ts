@@ -85,6 +85,22 @@ export const useCoordinateService = () => {
     );
   };
 
+  const getEvents = async (q: string) => {
+    const params = {
+      offset: 0,
+      limit: 5,
+      name: q,
+    };
+    const response = await api.request<CoordinateListResponse>(
+      endpoints.coordinate.enquiry,
+      {
+        method: "GET",
+        params: params,
+      }
+    );
+    return response;
+  };
+
   const getParticipentCount = () => {
     return api.request<enquiryCountResponse>(
       `${endpoints.coordinate.participent}?type=interests`,
@@ -316,6 +332,7 @@ export const useCoordinateService = () => {
 
   return {
     getEventsWithSearchParams,
+    getEvents,
     getParticipentCount,
     getEnquiryStatusCount,
     getInterestedUsers,

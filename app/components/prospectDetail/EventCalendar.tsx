@@ -7,12 +7,13 @@ import { formatEventDates } from "@/utils/dateFormat";
 import WorldMap from "./worldMap";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { Event } from "@/types/events";
 
 interface Props {
   companyId: string;
-  upcomingEvents: any;
+  upcomingEvents: Event[];
   upcomingEventsCount: number;
-  pastEvents: any;
+  pastEvents: Event[];
   pastEventsCount: number;
   loadMoreEvents: any;
 }
@@ -98,20 +99,20 @@ export const EventCalendar = ({
               value="upcoming"
               className="max-h-80 overflow-y-auto w-full"
             >
-              {upcomingEvents.map((event: any) => (
-                <div className="flex flex-row gap-6 p-2 my-4" key={event.id}>
+              {upcomingEvents.map(event => (
+                <div className="flex flex-row gap-6 p-2 my-4" key={event.basic.id}>
                   <div className="flex flex-col rounded-lg shadow-md h-14 w-14 border border-[var(--border-color)]">
                     <span className="bg-[var(--primary-light-color)] text-xs font-semibold text-primary text-center py-1 rounded-tl-md rounded-tr-md">
-                      {getMonthFromDate(event?.startDate)}
+                      {getMonthFromDate(event.basic.startDateTime)}
                     </span>
                     <span className="text-xs font-semibold text-center py-2">
-                      {getDayFromDate(event?.startDate)}
+                      {getDayFromDate(event.basic.startDateTime)}
                     </span>
                   </div>
                   <div className="flex flex-col gap-2 flex-1 flex-wrap">
-                    <Link href={`/internal/event/${event.id}`} target="_blank">
+                    <Link href={`/internal/event/${event.basic.id}`} target="_blank">
                       <Text fontWeight="medium" variant="noMargin">
-                        {event?.name}
+                        {event.basic.name}
                       </Text>
                     </Link>
                     <p className="flex items-center gap-2 text-[12px]">
@@ -121,9 +122,9 @@ export const EventCalendar = ({
                         height="12px"
                       />
                       <span>
-                        {(event.location?.cityName === event.location?.countryName) ?
-                          event.location?.cityName :
-                          [event.location?.cityName, event.location?.countryName]
+                        {(event.basic.eventLocation.city?.name === event.basic.eventLocation.country?.name) ?
+                          event.basic.eventLocation.city?.name :
+                          [event.basic.eventLocation.city?.name, event.basic.eventLocation.country?.name]
                           .filter(Boolean)
                           .join(", ")
                         }
@@ -131,10 +132,10 @@ export const EventCalendar = ({
                     </p>
 
                     <p className="flex gap-2 items-center text-[#666666] text-[12px]">
-                      <span className={`${event?.status === "POSTPONED" || event.status === "CANCELLED" ? "line-through" : ""}`} >
-                        {formatEventDates(event?.startDate, event?.endDate)}
+                      <span className={`${event.basic.status === "POSTPONED" || event.basic.status === "CANCELLED" ? "line-through" : ""}`} >
+                        {formatEventDates(event.basic.startDateTime, event.basic.endDateTime)}
                       </span>
-                      {event?.status === "CANCELLED" && (
+                      {event.basic.status === "CANCELLED" && (
                         <Badge
                           variant="outline"
                           className="border-destructive text-destructive px-1"
@@ -142,7 +143,7 @@ export const EventCalendar = ({
                           Cancelled
                         </Badge>
                       )}
-                      {event?.status === "POSTPONED" && (
+                      {event.basic.status === "POSTPONED" && (
                         <Badge
                           variant="outline"
                           className="border-[#FF990A] text-[#FF990A]"
@@ -185,20 +186,20 @@ export const EventCalendar = ({
             </TabsContent>
 
             <TabsContent value="past" className="max-h-80 overflow-y-auto w-full">
-              {pastEvents.map((event: any) => (
-                <div className="flex flex-row gap-6 p-2 my-4" key={event.id}>
+              {pastEvents.map(event => (
+                <div className="flex flex-row gap-6 p-2 my-4" key={event.basic.id}>
                   <div className="flex flex-col rounded-lg shadow-md h-14 w-14 border border-[var(--border-color)]">
                     <span className="bg-[var(--primary-light-color)] text-xs font-semibold text-primary text-center py-1 rounded-tl-md rounded-tr-md">
-                      {getMonthFromDate(event?.startDate)}
+                      {getMonthFromDate(event.basic.startDateTime)}
                     </span>
                     <span className="text-xs font-semibold text-center py-2">
-                      {getDayFromDate(event?.startDate)}
+                      {getMonthFromDate(event.basic.startDateTime)}
                     </span>
                   </div>
                   <div className="flex flex-col gap-2 flex-1 flex-wrap">
-                    <Link href={`/internal/event/${event.id}`} target="_blank">
+                    <Link href={`/internal/event/${event.basic.id}`} target="_blank">
                       <Text fontWeight="medium" variant="noMargin">
-                        {event?.name}
+                        {event.basic.name}
                       </Text>
                     </Link>
                     <p className="flex items-center gap-2 text-[12px]">
@@ -208,9 +209,9 @@ export const EventCalendar = ({
                         height="12px"
                       />
                       <span>
-                        {(event.location?.cityName === event.location?.countryName) ?
-                          event.location?.cityName :
-                          [event.location?.cityName, event.location?.countryName]
+                        {(event.basic.eventLocation.city?.name === event.basic.eventLocation.country?.name) ?
+                          event.basic.eventLocation.city?.name :
+                          [event.basic.eventLocation.city?.name, event.basic.eventLocation.country?.name]
                           .filter(Boolean)
                           .join(", ")
                         }
@@ -218,10 +219,10 @@ export const EventCalendar = ({
                     </p>
 
                     <p className="flex gap-2 items-center text-[#666666] text-[12px]">
-                      <span className={`${event?.status === "POSTPONED" || event.status === "CANCELLED" ? "line-through" : ""}`} >
-                        {formatEventDates(event?.startDate, event?.endDate)}
+                      <span className={`${event.basic.status === "POSTPONED" || event.basic.status === "CANCELLED" ? "line-through" : ""}`} >
+                        {formatEventDates(event.basic.startDateTime, event.basic.endDateTime)}
                       </span>
-                      {event?.status === "CANCELLED" && (
+                      {event.basic.status === "CANCELLED" && (
                         <Badge
                           variant="outline"
                           className="border-destructive text-destructive px-1"
@@ -229,7 +230,7 @@ export const EventCalendar = ({
                           Cancelled
                         </Badge>
                       )}
-                      {event?.status === "POSTPONED" && (
+                      {event.basic.status === "POSTPONED" && (
                         <Badge
                           variant="outline"
                           className="border-[#FF990A] text-[#FF990A]"

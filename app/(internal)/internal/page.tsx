@@ -127,22 +127,12 @@ const Dashboard = () => {
     const trackerData: any = await getTrackers(`limit=4&offset=0&refresh=true`);
     const fetchedTrackers: TrackerData[] = [];
     trackerData.trackers.map((tracker: any, key: any) => {
-      const locations = Object.values(tracker.filterValues?.locationIds).map(
-        (item: any) => item.displayName
-      );
-      const value: TrackerData = {
-        id: tracker.id,
-        name: tracker.name,
-        newCount: tracker.groupedEventsCount.new,
-        activeCount: tracker.groupedEventsCount.active,
-        expiredCount: tracker.groupedEventsCount.past,
-        location: locations,
-        type: tracker.type,
-      };
-      fetchedTrackers.push(value);
-    });
-    setTrackerData(fetchedTrackers);
-  };
+      const locations = Object.values(tracker.filterValues?.locationIds || {}).map((item: any) => item.displayName);
+      const value: TrackerData = { id: tracker.id, name: tracker.name, newCount: tracker.groupedEventsCount.new, activeCount: tracker.groupedEventsCount.active, expiredCount: tracker.groupedEventsCount.past, location: locations, type: tracker.type }
+      fetchedTrackers.push(value)
+    })
+    setTrackerData(fetchedTrackers)
+  }
   // useEffect(()=>{
   //   console.log("tracker data," , trackerData)
   // },[trackerData])
