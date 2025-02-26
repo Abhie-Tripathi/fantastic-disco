@@ -11,7 +11,7 @@ export const useConfigurationService = () => {
   const api = useApi();
 
   const getFilterConfiguration = async () => {
-    return api.request<FilterConfiguration>(
+    return api.request<{ filter: FilterConfiguration }>(
       endpoints.configuration.filterConfiguration
     );
   };

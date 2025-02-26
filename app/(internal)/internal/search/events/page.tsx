@@ -169,7 +169,7 @@ const Search = () => {
   const isLoading = false;
 
   return (
-    <div className="p-6">
+    <div className="px-6 pt-6">
       {steps.length > 0 && (
         <Joyride
           tooltipComponent={(props) => (
@@ -268,9 +268,7 @@ const Search = () => {
         className="mt-0"
       >
         <div
-          className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 ${
-            isScrolled ? "py-2" : "py-6"
-          }`}
+          className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3`}
         >
           <EventCount />
           <div className="flex justify-center">

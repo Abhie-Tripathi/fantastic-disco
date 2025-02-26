@@ -130,7 +130,7 @@ console.log(isLoading);
       </div>
 
       {totalPages > 1 && (
-        <div className="sticky bottom-0 bg-background py-4">
+        <div className="sticky bottom-0 bg-background py-3">
           <PaginationComponent
             currentPage={currentPage}
             totalPages={totalPages}
