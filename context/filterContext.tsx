@@ -73,6 +73,7 @@ interface Filters {
   top?: string;
   locationIds?: string;
   geoCoordinates?: string;
+  viewBound?:string;
   view?: string;
   calendar_type?: string;
   active_lte?: string;

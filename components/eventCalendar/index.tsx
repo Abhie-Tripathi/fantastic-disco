@@ -135,15 +135,7 @@ export default function EventCalendar({
           : await getCalendarViewEvents(
               trackerId || "",
               `type=${
-                active === "activeEvent"
-                  ? "active"
-                  : active === "expiredEvent"
-                  ? "past"
-                  : active === "newEvent"
-                  ? "new"
-                  : active === "savedEvent"
-                  ? "saved"
-                  : "active"
+                active
               }&active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&view=calendar&calendar_type=${view}`,
               false,
               view

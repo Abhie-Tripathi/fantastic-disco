@@ -8,15 +8,18 @@ export const eventsKeys = {
 };
 
 export const useTrackerEvents = {
-  list: (query: EventQuery, trackerId?:string) => {
+  list: (query: EventQuery, trackerId?:string, eventType?:string) => {
     const trackerService=useTrackerServices();
     const EventQuery = useQuery({
-      queryKey: [JSON.stringify(query)],
+      queryKey: [query],
       queryFn: () => 
-        trackerService.getTrackerEvents(query, trackerId||"")
+        trackerService.getTrackerEvents(query, trackerId||""),
+      staleTime: 0, // Always refetch when queryKey changes
+      refetchOnMount: true, // Ensure refetch on mount
+
           
     });
-    console.log(EventQuery);
+    console.log(query);
     
     return {
       events: EventQuery?.data?.events  || [],

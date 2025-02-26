@@ -7,6 +7,7 @@ import {CalendarWeekEventsResponse, EventCount, MapEventsResponse, EventResponse
 import { EventTableType } from '@/types/ListViewTable';
 import { useFilterState } from '@/hooks/useFilterState';
 import { usePathname } from 'next/navigation';
+import { isEventeli } from '@/config';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
@@ -161,13 +162,13 @@ export const useTrackerServices = () => {
     const getTrackerEvents = async(query:any, trackerId:string
     )=> {
       // console.log(pathname);
-      let active="active";
-      if(query.eventType==="newEvent") active="new";
-      else if(query.eventType==="expiredEvent") active="past";
-      else if(query.eventType==="activeEvent") active="active";
+      // let active="active";
+      // if(query.eventType==="newEvent") active="new";
+      // else if(query.eventType==="expiredEvent") active="past";
+      // else if(query.eventType==="activeEvent") active="active";
 
       console.log(query);
-      if(query.eventType==="savedEvent")
+      if(query.eventType==="bookmarked")
       {
         return await api.request<EventResponse>(
           `${endpoints.tracker.commonUrl}/${trackerId}/saved-events?limit=${query.limit||"10"}&offset=${query.skip||"0"}`,
@@ -176,13 +177,15 @@ export const useTrackerServices = () => {
           }
         );
       }
-      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=${query.take||"20"}&offset=${query.limit||"0"}&type=${active}`)
+      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=${query.take||"20"}&offset=${query.limit||"0"}&type=${query.eventType}&sortBy=${query.sortBy || 'score'}`)
       return response;
     };
     const getTrackerMapEvents = async(
       trackerId:string, params:string, eventType:string,
       abortSignal?: AbortSignal
     ) => {
+      console.log(params);
+      
       let active="active";
       if(params==="newEvent") active="new";
       else if(params==="expiredEvent") active="past";
@@ -190,9 +193,9 @@ export const useTrackerServices = () => {
       const setParams = new URLSearchParams(eventType);
     // const adaptedParams = EventsAdapter.adaptRequestParams(setParams);
     // console.log(adaptedParams);
-      
+      const activeTab= !params?isEventeli?"business":"active":params;
       const response:any= await api.request(
-        params==="savedEvent"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${active}`,
+        params==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${activeTab}`,
         {
           method: "GET",
           signal: abortSignal,
@@ -258,13 +261,10 @@ export const useTrackerServices = () => {
     }
     const getMapViewData=async(trackerId:string, currentZoomGroup:string, type:any)=>{
       console.log(type.toString());
-      let active="active";
-      if(type.get("eventType")==="newEvent") active="new";
-      else if(type.get("eventType")==="expiredEvent") active="past";
-      else if(type.get("eventType")==="activeEvent") active="active";
-      
+      const eventType = type;
+      const eventTypeParam = eventType !== null ? eventType : (!isEventeli ? "active" : "business");
         const response = await api.request<EventCount[]>(
-          type.get("eventType")==="savedEvent"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events/count?view=map&type=${active}&groupBy=${currentZoomGroup}`,
+          type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events/count?view=map&groupBy=${currentZoomGroup}`:`${endpoints.tracker.commonUrl}/${trackerId}/events/count?view=map&type=${eventTypeParam}&groupBy=${currentZoomGroup}`,
           {
             method: "GET",
           }
@@ -274,12 +274,10 @@ export const useTrackerServices = () => {
     const getEventsLatLongData = async (trackerId:string,searchParams:string, type:any) => {
       const params = new URLSearchParams(searchParams);
     // const adaptedParams = EventsAdapter.adaptRequestParams(params);
-    let active="active";
-      if(type.get("newEvent")) active="new";
-      else if(type.get("expiredEvent")) active="past";
-      else if(type.get("activeEvent")) active="active";
-    
-    const response = await api.request(type.get("savedEvent")?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${active}&view=map`, {
+    // console.log(type.get("eventType"));
+    const eventType = type.get("eventType");
+      const eventTypeParam = eventType !== null ? eventType : (!isEventeli ? "active" : "business");
+    const response = await api.request(type.get("eventType")==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?view=map`:`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${eventTypeParam}&view=map`, {
       method: "GET",
       params: params
     },true);
@@ -296,9 +294,8 @@ export const useTrackerServices = () => {
       const result = entries
       .map(([key, value]) => `${key}=${value}`)
       .join("&");
-      
       // console.log(`${endpoints.tracker.commonUrl}/${trackerId}/events?type=${type}&groupBy=${searchParams}`);
-      const response: OriginalResponse | undefined = await api.request(type==="saved"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?${result}`:`${endpoints.tracker.commonUrl}/${trackerId}/events?${searchParams}`, {
+      const response: OriginalResponse | undefined = await api.request(type==="bookmarked"?`${endpoints.tracker.commonUrl}/${trackerId}/saved-events?${result}`:`${endpoints.tracker.commonUrl}/${trackerId}/events?${searchParams}`, {
         method: "GET",
       });
       
