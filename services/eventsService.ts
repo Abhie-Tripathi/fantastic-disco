@@ -156,8 +156,6 @@ export const useEventsService = () => {
         method: "GET",
       }
     );
-    console.log(response);
-    
     return response;
   };
 
@@ -168,10 +166,9 @@ export const useEventsService = () => {
   //     method: "GET",
   //     params: adaptedParams,
   //   }, true);
-    
+
   //   return TrackersAdapter.adaptTrackerMapEventData(response);
   // };
-
 
   const saveEvent = (eventId: string) => {
     return api.request(`${endpoints.event.savedEvents}`, {
@@ -228,7 +225,7 @@ export const useEventsService = () => {
       }
     );
     return response;
-  }
+  };
 
   const getAlertPolygon = (eventId: string) => {
     return api.request<AlertPolygonResponse>(
@@ -238,7 +235,7 @@ export const useEventsService = () => {
       }
     );
   };
-  
+
   return {
     getEvents,
     saveEvent,
