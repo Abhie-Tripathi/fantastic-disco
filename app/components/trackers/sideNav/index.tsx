@@ -23,7 +23,7 @@ const Index = () => {
   const searchParams = useSearchParams();
   const type  = searchParams.get('type');
   const typeOfView  = searchParams.get('view');
-  const typeOfEvent = searchParams.get('eventType')?searchParams.get('eventType'):isEventeli?"business":"active"
+  const typeOfEvent = searchParams.get('eventType')?searchParams.get('eventType'):isEventeli?"social":"active"
   const [view,setView]=useState(typeOfEvent==="table"?"table":typeOfView==="list" ?"list":typeOfView==="map"?"map":typeOfView==="calendar"?"calendar":"table");
   const secondLast = pathName[pathName.length - 2];
   const router = useRouter()

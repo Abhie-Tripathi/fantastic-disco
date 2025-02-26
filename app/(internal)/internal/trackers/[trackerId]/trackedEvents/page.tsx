@@ -597,10 +597,10 @@ const activeVal =
             ))}
           </div>
           <div className="flex gap-2">
-          <Button variant="outline" className="flex gap-1" onClick={()=>setShare(!share)}>
+          {/* <Button variant="outline" className="flex gap-1" onClick={()=>setShare(!share)}>
           <Share2 width={16} height={16}/>
           Share 
-          </Button>
+          </Button> */}
           <Link href={`/internal/trackers/${trackerId}/notesDiscussion?type=${data?.type}`}
             onClick={() => {
               GAEvent(

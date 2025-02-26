@@ -438,7 +438,7 @@ const Trackers = ({ searchParams }: Search) => {
           </span>
           {dataPresent ? (
             <Link
-            href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=${isEventeli? "business" :"active"}`}
+            href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=${isEventeli? "social" :"active"}`}
             onClick={() => setContextData(singleTrackerData?.id)}
             >
             <Button className="text-white">View Detail</Button>
