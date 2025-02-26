@@ -91,12 +91,23 @@ export const endpoints = {
     users: `${BASE_URL}/me/account/users`,
     configuration: `${BASE_URL}/me/account/configuration`,
   },
-  company: {
-    list: `${BASE_URL}/company/search`,
-    unmaskUser: `${BASE_URL}/company/unmask`,
-    detail: `${BASE_URL}/company/search`,
-    events: `${BASE_URL}/company/event`,
-    pocList: `${BASE_URL}/company/poc`,
+  membership: {
+    getMembership: `${BASE_URL}/me/account/configuration/membership`,
+    updateMembership: `${BASE_URL}/me/account/membership`,
+  },
+  prospect: {
+    users: {
+      list: `${BASE_URL}/users/search`,
+      detail: `${BASE_URL}/users`,
+    },
+    company: {
+      list: `${BASE_URL}/companies/search`,
+      detail: `${BASE_URL}/companies`,
+      unmaskUser: `${BASE_URL}/company/unmask`,
+      // detail: `${BASE_URL}/company/search`,
+      events: `${BASE_URL}/company/event`,
+      pocList: `${BASE_URL}/company/poc`,
+    },
   },
   // ---------------------------GENI ENDPOINTS--------------------
   brandkit: {
@@ -114,7 +125,7 @@ export const endpoints = {
   },
   events: {
     getEvents: `${BASE_URL}/promot-event?limit=2`,
-    getEventsByWidgetId: `${BASE_URL}/promot-event`,// ?widgetId=abc
+    getEventsByWidgetId: `${BASE_URL}/promot-event`, // ?widgetId=abc
     getSortedEvents: `${BASE_URL}/promot-event`,
     getEventById: `${BASE_URL}/promot-event`,
     getEventByPublicAPI: `${BASE_URL}/public/event`,
@@ -141,6 +152,8 @@ export const endpoints = {
     filterConfiguration: `${BASE_URL}/me/account/configuration/filter`,
     interestConfiguration: `${BASE_URL}/me/account/configuration/interest`,
     outreachConfiguration: `${BASE_URL}/me/account/configuration/outreach`,
+    updateResearch: `${BASE_URL}/me/account/configuration/interest`,
+    updateOutreach: `${BASE_URL}/me/account/configuration/outreach`,
   },
   myprofile: `${BASE_URL}/me`,
 };

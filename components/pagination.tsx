@@ -24,7 +24,7 @@ interface PaginationComponentProps {
   itemsPerPage: number;
   count: number;
   onPageChange: (page: number) => void;
-  onItemsPerPageChange: (value: string) => void;
+  onItemsPerPageChange?: (value: string) => void;
   showEntriesCount?: boolean;
 }
 

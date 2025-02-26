@@ -33,12 +33,7 @@ import LocationSelector from "@/app/components/prospect/Filters/location";
 import PeopleFilter from "@/app/components/prospect/Filters/peopleFilter";
 import { PeopleList } from "@/app/components/prospect/PeopleList";
 import { useFilterState } from "@/hooks/useFilterState";
-
-interface CompanyListResponse {
-  totalCount: number;
-  companyData?: any[];
-  userData?: any[];
-}
+import { CompanyListResponse } from "@/types/prospect";
 
 interface ProspectFilters {
   id: string;

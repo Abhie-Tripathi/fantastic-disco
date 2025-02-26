@@ -589,8 +589,7 @@ console.log(trackerLoc);
 
   const handleEventLeave = () => {
     setHighlightedEvent(null);
-  };
-
+  };  
   return (
     <div className="relative">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (

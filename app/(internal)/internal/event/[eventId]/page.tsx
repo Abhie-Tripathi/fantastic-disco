@@ -167,6 +167,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     id,
     name,
     bannerUrl,
+    logoUrl: eventLogoUrl,
     startDateTime,
     endDateTime,
     organizer,
@@ -193,7 +194,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   } = insights || {};
   const { audienceSpread, designationSpread } = audience || {};
   const {
-    logoUrl,
+    logoUrl: organizerLogoUrl,
     location: organizerLocation,
     name: organizerName,
   } = organizer || {};
@@ -293,7 +294,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           poc.id === pocId ? { ...poc, state: 1 } : poc
         )
       );
-      const data = await coordinateService.unlockPocDetail(pocId, id);
+      const data = await coordinateService.unlockPocDetail({
+        pocId,
+        unmask: "email,phone",
+        target: "EVENT",
+        source: "eventPage",
+        targetId: id,
+      });
       if (data) {
         setEventPOCDetails((prevPocData) =>
           prevPocData.map((poc) =>
@@ -327,11 +334,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         </Button>
         {bannerUrl && (
           <Image
-            src={bannerUrl ?? "/eventDetailFallback.png"}
+            src={bannerUrl ?? eventLogoUrl ?? "/eventDetailFallback.png"}
             alt="eventDetails"
-            width={420}
-            height={280}
-            className="max-h-[300px] w-fill rounded-lg"
+            width={100}
+            height={100}
+            className="h-32 w-full rounded-lg"
           />
         )}
 
@@ -517,8 +524,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 <div className="flex gap-4 p-2 mb-1">
                   <img
                     src={
-                      logoUrl
-                        ? logoUrl
+                      organizerLogoUrl
+                        ? organizerLogoUrl
                         : `https://img.10times.com/userimages/${name
                             .charAt(0)
                             .toLowerCase()}.jpg`
