@@ -45,7 +45,7 @@ const EventTable = ({source, trackerId, eventType}:EventTableProps) => {
     estimatedExhibitors: "estimatedExhibitors",
     scores: "scores",
     audienceZone: "audienceZone",
-    rankings: "rankings,trustScore",
+    rankings: "rankings",
   }
   let showsData:string[] =[];
   Object.entries(mapping).forEach(([key,value])=>{

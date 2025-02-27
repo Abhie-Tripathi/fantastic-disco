@@ -13,7 +13,7 @@ interface ShareModalProps {
     fetchAccess?: any;
   closeShareModal?: () => void;
  
-  id: string;
+  id?: string;
   setId?: any;
   shareFunction?: () => void;
   share?: boolean;
@@ -82,7 +82,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
         }, []);
         const handleFilterChange = (e: any) => {
             setFilter(e.target.value);
-            setId('');
+            setId?.('');
         };
         const shareInvite = async () => {
             // const formData = {
@@ -124,7 +124,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
             } catch (error:any) {
                 console.error('Error fetching data:', error);
                             showToast("error",error.response);
-                            fetchAccess();
+                            fetchAccess?.();
                               setFilter('');
                               setIsClicked(false);
                               if(shareFunction)
