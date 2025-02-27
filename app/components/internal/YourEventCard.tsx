@@ -176,17 +176,13 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
                 />
               </div>
 
-              <div
-                style={{ display: "flex", boxShadow: "var(--shadow-large)" }}
-              >
                 <Image
                   src={eventImage}
                   alt="eventImage"
                   width={238}
                   height={192}
-                  className={styles.cardImg}
+                  className={`${styles.cardImg} object-contain p-2 border rounded-md bg-white shadow-sm`}
                 />
-              </div>
             </div>
           )}
           <div className={styles.cardDetails}>
@@ -321,14 +317,23 @@ const YourEventCard: React.FC<YourEventCardProps> = ({
         </div>
         <div className="tablet_view mobile_view">
           <div
-            style={{
-              display: "flex",
-              gap: "6px",
-              paddingTop: "20px",
-              justifyContent: "center",
-            }}
+          className="pt-3 flex gap-3"
             onClick={handleClickEvent}
-          ></div>
+          >
+            {coordinateActions.map((item: any) => (
+              <UpVoteTag
+                key={item.status}
+                type={item.status}
+                label={item.label}
+                status={voteStatus[item.status] ? "voted" : ""}
+                myActivityId={voteStatus[item.status]}
+                handleVoteClick={handleVoteClick}
+                userList={interestedUsers?.filter(
+                  (users: any) => users.interest === item.status
+                )}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
