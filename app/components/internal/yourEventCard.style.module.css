@@ -69,7 +69,7 @@
 .locationAndDateContainer {
     display: flex;
     height: 20px;
-    align-items: center;
+    /* align-items: center; */
     gap: var(--spacing-xs);
 }
 
@@ -149,9 +149,9 @@
     color: var(--tertiary-text-color);
     font-weight: var(--font-weight-semibold);
 }
-.cardImg {
+/* .cardImg {
     border-radius: var(--border-radius-sm);
-}
+} */
 
 .circles {
     padding-top: 20px;
@@ -246,7 +246,7 @@
         justify-content: start;
     }
     .locationAndDateContainer {
-      flex-direction: column-reverse;
+      flex-direction: column;
       gap: 4px;
       padding: 0;
       color: var(--primary-text-color);
