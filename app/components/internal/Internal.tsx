@@ -171,7 +171,7 @@ const Internal = ({
   const enquiryStatusUpdate = (eventId: string, status: string) => {    
     const updatedData = eventData1.map((item) => {
       return item.eventId === eventId
-        ? { ...item, enquiryStatus: status }
+        ? { ...item, status: status }
         : item;
     });
     setEventData1(updatedData);
