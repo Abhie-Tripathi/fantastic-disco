@@ -5,6 +5,9 @@ import Link from "next/link";
 import { Suspense, lazy } from "react";
 import MoreIcon from "/public/dots.svg";
 import Back from "/public/back.svg";
+import Text from "@/components/new-ui/Text";
+import PredictedAttendance from '@/public/predictedAttendanceBg.svg'
+import PredictedSpend from "@/public/icons_money.svg";
 import BookmarkBackground from '@/public/BookmarkBackground.svg'
 import NotesBackground from "@/public/NotesBackground.svg"
 import AccessBackground from '@/public/AccessBackground.svg'
@@ -123,6 +126,7 @@ import { Tracker } from "@/types/trackers";
 import { useTrackerContext } from "@/context/tracker";
 import { useFilterState } from "@/hooks/useFilterState";
 import { isEventeli } from "@/config";
+import { MoveUpRight } from "lucide-react";
 
 interface Search {
   searchParams: {
@@ -407,7 +411,7 @@ const Trackers = ({ searchParams }: Search) => {
         Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
       </div>
       <div>
-      <Button className="text-white w-[100px]" onClick={()=>hideTemplates(false)}>Create</Button>
+      {/* <Button className="text-white w-[100px]" onClick={()=>hideTemplates(false)}>Create</Button> */}
       </div>
       {/* <button
         className="w-[160px] text-white font-bold py-2 px-4 rounded text-sm"
@@ -415,8 +419,12 @@ const Trackers = ({ searchParams }: Search) => {
       >
         Create Tracker
       </button> */}
-      {/* <hr/> */}
-      <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
+      <div className="rounded-lg border relative hover:shadow-md transition-all duration-200 group overflow-hidden flex justify-between p-3 items-center bg-[var(--background-secondary-color)]">
+        Saved Events 
+        <MoveUpRight width={16} height={16}/>
+      </div>
+      <hr/>
+      {/* <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
               className="outline-none w-full bg-[var(--primary-foreground)]"
@@ -424,10 +432,10 @@ const Trackers = ({ searchParams }: Search) => {
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
-          </div>
+          </div> */}
     </div>
     <div >
-          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue} trackerId={singleTrackerData?.id || ""}/>
+          <MyTracker setDataPresent={setDataPresent} dataPresent={dataPresent} isData={isData} setSingleTrackerData={setSingleTrackerData} singleTrackerData={singleTrackerData} searchValue={searchValue} trackerId={singleTrackerData?.id || ""} hideTemplates={hideTemplates} setSearchValue={setSearchValue}/>
       </div>
   </div>
   <div className="w-1/2 p-5 h-[calc(100vh-67px)] bg-[var(--background-secondary-color)]" style={{padding:"20px 0px"}}>
@@ -500,6 +508,40 @@ const Trackers = ({ searchParams }: Search) => {
 
   </div>
   <div className="flex flex-row gap-3">
+  
+ 
+        <div className="flex w-1/2 items-stretch flex-col gap-2 border rounded-[12px] p-4 border-[var(--border-color)] bg-[var(--primary-foreground)]">
+          <div className="flex h-[100%] justify-between">
+          <div className="flex flex-col gap-2">
+            <div className="text-[var(--primary-color)] font-medium">
+              Predicted Attendance
+            </div>
+            <div className="font-semibold text-[var(--secondary-text-color)]">
+              123
+            </div>
+          </div>
+          <div className="flex items-center max-w-20">
+          <Image src={PredictedAttendance} alt="predictedAttendance" />
+          </div>
+        </div>
+        </div>
+        <div className="flex w-1/2 items-stretch flex-col gap-2 border rounded-[12px] p-4 border-[var(--border-color)] bg-[var(--primary-foreground)]">
+          <div className="flex h-[100%] justify-between">
+          <div className="flex flex-col gap-2">
+            <div className="text-[var(--primary-color)] font-medium">
+              Predicted Spend
+            </div>
+            <div className="font-semibold text-[var(--secondary-text-color)]">
+              123
+            </div>
+          </div>
+          <div className="flex items-center max-w-20">
+          <Image src={PredictedSpend} alt="predictedSpend" />
+          </div>
+        </div>
+        </div>
+  </div>
+  <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
     <SavedEventWidget savedEvents={savedEvents} redirectUrl={singleTrackerData 
     ?`${currentUrl}/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=bookmarked`:""}/>
@@ -513,7 +555,7 @@ const Trackers = ({ searchParams }: Search) => {
   />
   </div>
         </div>
-        <div className="flex flex-row gap-3 mb-8">
+        <div className="flex flex-row gap-3">
           <div className="flex w-1/2 items-stretch">
             <NotificationWidget/>
           </div>
@@ -521,8 +563,45 @@ const Trackers = ({ searchParams }: Search) => {
           <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground} redirectUrl={singleTrackerData?`${currentUrl}/${singleTrackerData?.id}/manageAccess?type=${singleTrackerData?.type}`:""}/>
           </div>
         </div>
+        <div className="flex flex-col gap-2 border border-[#EBEBEB] bg-[var(--primary-foreground)] p-4 mb-8">
+        <Text>Want to know more about your location insights?</Text>
+        <span className="flex items-center gap-2">
+          <InformationFill width="14px" height="14px" />
+          <Text color="secondary" variant="noMargin">
+            Check out the event trends or search for events happening in your
+            location to know more
+          </Text>
+        </span>
+        <span className="flex gap-2">
+        <Link 
+         href={`/internal/trackers/${singleTrackerData?.id}/trackedEvents?type=${singleTrackerData?.type}&view=table&eventType=${isEventeli ? "social" : "active"}`}
+          onClick={() => setContextData(singleTrackerData?.id)}
+        >
+        <Button variant="secondary">
+          View Detail
+        </Button>
+        </Link>
+        <Link 
+         href={`/internal/trends`}
+          >
+          <Button
+            variant="secondary"
+            // href={genLocationQuery(location, "/trends")}
+          >
+            Explore Trends
+          </Button>
+          </Link>
+          {/* <Button
+                variant="secondary"
+                href={genLocationQuery(selectedLocation, "/trackers/create")}
+              >
+                Set Tracker
+              </Button> */}
+        </span>
+      </div>
         </div>
        
+
         {/* <div className="flex gap-4">
         <div className="flex w-1/2 items-stretch">
         <CardWidgitNote heading={"Saved Event"} content={"136 Events"} updatedDate={"3 Sep 2024 5:30 pm IST"} imgUrl={BookmarkBackground} redirectUrl={`${currentUrl}/${singleTrackerData?.id}/savedEvents?type=${singleTrackerData?.type}`}/>

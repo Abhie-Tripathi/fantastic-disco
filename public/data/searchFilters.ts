@@ -498,7 +498,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
       isToggleEnabled: Boolean(data?.eventRating?.enabledValue?.length),
       options: searchFilters?.userRatings?.options?.map((rating) => ({
         ...rating,
-        isEnabled: data?.eventRating?.enabledValue?.includes(rating.id) ?? true,
+        isEnabled: data?.ratings?.enabledValue?.includes(rating.id) ?? true,
       })),
     },
 

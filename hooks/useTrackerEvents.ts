@@ -11,7 +11,7 @@ export const useTrackerEvents = {
   list: (query: EventQuery, trackerId?:string, eventType?:string) => {
     const trackerService=useTrackerServices();
     const EventQuery = useQuery({
-      queryKey: [query],
+      queryKey: eventsKeys.list(query),
       queryFn: () => 
         trackerService.getTrackerEvents(query, trackerId||""),
       staleTime: 0, // Always refetch when queryKey changes

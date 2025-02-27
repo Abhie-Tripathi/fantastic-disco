@@ -30,7 +30,7 @@ interface UserAccessData {
 
 const Page = () => {
     const router = useRouter();
-    const {getShareAccess} = useTrackerServices();
+    const {getShareAccess, error} = useTrackerServices();
     const [currentUrl, setCurrentUrl] = useState('');
     const [accessdata, setAccessData] = useState([]);
     const [data, setData] = useState([]);
@@ -81,15 +81,15 @@ const Page = () => {
             closeShareModal();
         }
     };
-    const {
-        data: userAccessData,
-        error,
-        isLoading,
-      } = useQuery<UserAccessData>({
-        queryKey: ["accessData", trackerId],
-        queryFn: () => getShareAccess(trackerId, "tracker"),
-        enabled: !!trackerId,
-      });
+    // const {
+    //     data: userAccessData,
+    //     error,
+    //     isLoading,
+    //   } = useQuery<UserAccessData>({
+    //     queryKey: ["accessData", trackerId],
+    //     queryFn: () => getShareAccess(trackerId, "tracker"),
+    //     enabled: !!trackerId,
+    //   });
     const closeShareModal = () => {
       if(share===true)
         setShare(false);
@@ -138,11 +138,11 @@ const Page = () => {
         setFilteredData([]);
         setDrop(false);
     }
-    // const [userAccessData,setUserAccessData]=useState<any>();
-    // useEffect(()=>{
+    const [userAccessData,setUserAccessData]=useState<any>();
+    useEffect(()=>{
       
-    //   fetchAccess();
-    // },[])
+      fetchAccess();
+    },[])
     console.log(userAccessData);
     
     // useEffect(() => {
@@ -168,11 +168,11 @@ const Page = () => {
         // } catch (err) {
         //     console.error('Fetch failed:', err);
         // }
-        const result = await getShareAccess(`${path[path.length-2]}`, "tracker");
+        const result = await getShareAccess(trackerId, "tracker");
         if(error){
             console.error('Error fetching data:', error);
         }else{
-            // setUserAccessData(result);
+            setUserAccessData(result);
         }
       }
     return (
@@ -202,7 +202,7 @@ const Page = () => {
                     <TrackerUser userData={userAccessData?.superAdmin || [] } type="admins" heading="Tracker Owners"/>
                 </div>
                 <div className="flex w-[60%]">
-                <TrackerUser userData={userAccessData?.others || []} type="others" heading="Tracker Users"/>
+                <TrackerUser userData={userAccessData?.others || []} type="others" heading="Tracker Users" fetchAccess={fetchAccess}/>
                 </div>
             </div>
             {share && (

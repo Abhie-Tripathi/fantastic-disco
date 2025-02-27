@@ -13,7 +13,7 @@ interface ShareModalProps {
     fetchAccess?: any;
   closeShareModal?: () => void;
  
-  id: string;
+  id?: string;
   setId?: any;
   shareFunction?: () => void;
   share?: boolean;
@@ -75,14 +75,14 @@ const ShareModal: React.FC<ShareModalProps> = ({
         }, [filter, data]);
         useEffect(() => {
             if (typeof window !== 'undefined') {
-                const url = window.location.href;
+                const url = window.location.origin;
                 const baseUrl = url.substring(0, url.lastIndexOf('/'));
-                setCurrentUrl(`${baseUrl}/trackedEvents?type=${type}`);
+                setCurrentUrl(`${url}`);
             }
         }, []);
         const handleFilterChange = (e: any) => {
             setFilter(e.target.value);
-            setId('');
+            setId?.('');
         };
         const shareInvite = async () => {
             // const formData = {
@@ -97,7 +97,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
             const formData={
                 accessReceiverEmail: filter,
                 accessType: "admin",
-                redirectDomain: `http://localhost:3000`
+                redirectDomain: currentUrl
             }
               
             
@@ -124,7 +124,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
             } catch (error:any) {
                 console.error('Error fetching data:', error);
                             showToast("error",error.response);
-                            fetchAccess();
+                            fetchAccess?.();
                               setFilter('');
                               setIsClicked(false);
                               if(shareFunction)

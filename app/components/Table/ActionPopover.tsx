@@ -55,10 +55,19 @@ export function ActionPopover({
   );
   const [isOpen, setIsOpen] = useState(false);
 
-  const actions = interestConfiguration?.interest || [];
-
-  const handleSubmit = () => {
+  const actions = [
+    ...interestConfiguration?.interest || [],
+    ...(!interests?.bookmark ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
+  ];
+  const handleSubmit = async() => {
     if (selectedAction) {
+      if(selectedAction==="UN-BOOKMARK"){
+        const response = await fetch(
+          `https://api.dev.gtm.whr.ai/intents/user-event-interest/${eventId}`,
+          {
+            method: "DELETE",
+          })
+      }else{
       createUserEventInterest(
         {
           eventId,
@@ -68,7 +77,7 @@ export function ActionPopover({
         },
         {
           onSuccess: () => {
-            console.log('success ho gaya');
+            console.log(eventsKeys);
             
             queryClient.invalidateQueries({ queryKey: eventsKeys.all });
             setSavedEventCount(savedEventCount+1);
@@ -88,6 +97,7 @@ export function ActionPopover({
           },
         }
       );
+    }
     }
   };
 

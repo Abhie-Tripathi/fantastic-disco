@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import ExportModal from "@/app/components/Search/ExportModal";
 import styles from "./trackedEvents.style.module.css";
+import modalstyles from "@/app/components/internal/trackers/AllTrackers/allTrackers.style.module.css";
 import "chart.js/auto";
 import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from '@/public/trackerNullState.svg';
@@ -31,6 +32,7 @@ import {
   // EventsResponse,
   MapEventsResponse,
 } from "@/types/events";
+import ShareModal from '@/app/components/internal/trackers/shareModal'
 import Link from "next/link";
 import { useTrackerServices } from "@/services/trackerServices";
 import {Toggle} from "@/types/trackers"
@@ -100,6 +102,7 @@ const Page = ({ params }: { params: any }) => {
   const [eventCount, setEventCount] = useState<{ type: string; totalCount: number; newCount: number }[]>([]);
   const [urlQueryString, setUrlQueryString] = useState<string>("");
   const trackerType: string = searchParams.get("type") || "";
+  const [sendInvite,setSendInvite]=useState(false);
   const [showInsights,setShowInsights] = useState({
     eventSize: true,
     eventKeywords: true,
@@ -179,7 +182,7 @@ const Page = ({ params }: { params: any }) => {
   //   data: eventData,
   //   error,
   //   isLoading,
-  //   refetch,
+  //   refetch,const [sendInvite,setSendInvite]=useState(false);
   // } = useQuery<
   //   | CalendarMonthEventsResponse
   //   | CalendarWeekEventsResponse
@@ -447,7 +450,47 @@ const activeVal =
     ? data?.tracker?.groupedEventsCountByStatus?.groupedEventsByStatus?.expired
     : active==="Saved Events"? data?.tracker?.savedEventTotalCount:0;
   console.log(data);
-  
+  useEffect(() => {
+    const handlePopState = (event: any) => {
+        if (event.state && event.state.shareOpen) {
+            closeShareModal();
+        } else if (share) {
+            closeShareModal();
+        }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+        window.removeEventListener('popstate', handlePopState);
+    };
+}, [share, sendInvite]);
+const closeShareModal = () => {
+if(share===true)
+  setShare(false);
+
+else if(sendInvite) setSendInvite(false);
+  document.body.style.height = '';
+  document.body.style.width = '';
+  document.body.style.overflow = '';
+};
+const closeModal = (e: any) => {
+const targetElement = e.target;
+if (targetElement.classList.contains(styles.shareModal)) {
+    closeShareModal();
+}
+};
+const shareFunction = () => {
+if (!share) {
+  window.history.pushState({ shareOpen: true }, '');
+  setShare(true);
+  document.body.style.height = '100vh';
+  document.body.style.width = '100%';
+  document.body.style.overflow = 'hidden';
+} else {
+  closeShareModal();
+}
+};
   return (
     <div className="flex w-[calc(100vw-134px)]">
     {/* <SideNav/> */}
@@ -597,10 +640,10 @@ const activeVal =
             ))}
           </div>
           <div className="flex gap-2">
-          {/* <Button variant="outline" className="flex gap-1" onClick={()=>setShare(!share)}>
+          <Button variant="outline" className="flex gap-1" onClick={()=>setShare(!share)}>
           <Share2 width={16} height={16}/>
           Share 
-          </Button> */}
+          </Button>
           <Link href={`/internal/trackers/${trackerId}/notesDiscussion?type=${data?.type}`}
             onClick={() => {
               GAEvent(
@@ -743,6 +786,15 @@ const activeVal =
       </div>
       
     </Suspense>
+    {share && (
+                <div className={modalstyles.shareModal} onClick={closeModal}>
+                    {share && 
+        <div className={modalstyles.shareModal} onClick={closeModal}>
+          <ShareModal closeShareModal={closeShareModal} share={share} setShare={setShare} shareFunction={shareFunction}/>
+        </div>
+        }
+                </div>
+            )}
   </div>
   );
 };
