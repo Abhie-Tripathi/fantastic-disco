@@ -53,7 +53,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
             if (data) {
               if(type==="T_COMPETITOR"){
                 
-                setEventSuggestion(data.company);
+                setEventSuggestion(data.companies);
               }else
               setEventSuggestion(data.events); 
             } else {
@@ -100,12 +100,10 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                     country: item?.country || ''
                   }));
                 }
-            
                 setRestructureData(updatedData);
             }
       },[eventSuggestion])
       const selectedEventId=(id:any, name:string)=>{
-       
         handleSelect(id,name);
         setIsOpen(false);
         setPreviousInput(name); 
