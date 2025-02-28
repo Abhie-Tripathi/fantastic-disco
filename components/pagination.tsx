@@ -24,8 +24,9 @@ interface PaginationComponentProps {
   itemsPerPage: number;
   count: number;
   onPageChange: (page: number) => void;
-  onItemsPerPageChange: (value: string) => void;
+  onItemsPerPageChange?: (value: string) => void;
   showEntriesCount?: boolean;
+  paginationItems?: string[];
 }
 
 export function PaginationComponent({
@@ -36,6 +37,7 @@ export function PaginationComponent({
   onPageChange,
   onItemsPerPageChange,
   showEntriesCount = true,
+  paginationItems = ["10", "20"],
 }: PaginationComponentProps) {
   const renderPaginationItems = () => {
     const items = [];
@@ -165,8 +167,11 @@ export function PaginationComponent({
               <SelectValue>{itemsPerPage}</SelectValue>
             </SelectTrigger>
             <SelectContent align="end">
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="20">20</SelectItem>
+              {paginationItems.map(item =>
+                <SelectItem value={item} key={item}>{item}</SelectItem>
+              )}
+              {/* <SelectItem value="10">10</SelectItem>
+              <SelectItem value="20">20</SelectItem> */}
             </SelectContent>
           </Select>
         </div>

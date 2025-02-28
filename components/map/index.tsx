@@ -69,6 +69,7 @@ interface MapProps {
   isGlobal?: boolean;
   trackerLoc?: string;
   trackerType?: string;
+  eventType?:string;
 }
 
 interface Coordinates {
@@ -89,7 +90,10 @@ export default function MapComponent({
   isGlobal,
   trackerLoc,
   trackerType,
+  eventType
 }: MapProps) {
+  console.log(eventType);
+  
   const searchParams = useSearchParams();
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
@@ -169,18 +173,19 @@ console.log(trackerLoc);
     }
     return null;
   }, [searchParams, trackerLoc]);
+console.log(eventType);
 
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey:
       source === "tracker"
-        ? ["eventCounts", trackerId, currentZoomGroup, searchParams]
+        ? ["eventCounts", trackerId, currentZoomGroup, eventType]
         : source === "tracker_global"
         ? ["eventCounts", searchParams]
         : ["eventCounts", currentZoomGroup, searchParams],
 
     queryFn: async () => {
       if (source === "tracker" || source === "tracker_global") {
-        const response = await getMapViewData(trackerId, "city", searchParams);
+        const response = await getMapViewData(trackerId, "city", eventType);
         return response || [];
       } else {
         const response = await getEventsCount({
@@ -387,7 +392,7 @@ console.log(trackerLoc);
     };
 
     fetchEvents();
-  }, [currentZoomGroup, searchParams, location]);
+  }, [currentZoomGroup, searchParams, location, eventType]);
 
   const onMove = useCallback(({ viewState }: { viewState: ViewState }) => {
     setViewport(viewState);
@@ -589,8 +594,7 @@ console.log(trackerLoc);
 
   const handleEventLeave = () => {
     setHighlightedEvent(null);
-  };
-
+  };  
   return (
     <div className="relative">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
@@ -610,7 +614,7 @@ console.log(trackerLoc);
               title="We couldn’t find any events matching your tracker criteria at the moment."
               text="Try adjusting your filters or checking back later, as new events are added frequently."
               buttonText="Manage Configuration"
-              buttonUrl={`/internal/trackers/${trackerId}/trackedConfiguration?type=${trackerType}`}
+              buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${trackerType}`}
             />
           ) : (
             <>
@@ -720,6 +724,7 @@ console.log(trackerLoc);
                   )}
 
                   <EventList
+                  eventType={eventType}
                     source={source}
                     trackerId={trackerId}
                     searchParam={searchParams}

@@ -141,3 +141,17 @@ export interface EventDate {
   formattedDate: string;
   isEventDay: boolean;
 }
+
+export interface UnmaskPocApiParamType {
+  pocId: number;
+  unmask: Unmask;
+  target: Target;
+  source: Source;
+  targetId?: string;
+}
+
+export type Unmask = "email" | "phone" | "email,phone" | "";
+
+export type Target = "USER" | "EVENT" | "COMPANY";
+
+export type Source = "eventPage" | "companyPage" | "prospectUserPage";

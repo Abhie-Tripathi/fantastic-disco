@@ -27,7 +27,7 @@ import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerServices } from "@/services/trackerServices";
 import SortDropdown from "@/components/search/sortDropdown";
 import { lightenColor } from "@/lib/utils";
-
+import { isEventeli } from "@/config";
 export default function EventList({
   eventDate,
   onClose,
@@ -58,7 +58,12 @@ export default function EventList({
   const { data, error, isLoading } = useQuery({
     queryKey: ["events", sortBy, filteredParams.toString()],
     queryFn: () =>
-      source!=="tracker"?eventService.getEventsWithSearchParams(filteredParams.toString()):getCalendarViewEvents(trackerId || "", `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${(currentPage - 1) * 20 }`, true ),
+      source!=="tracker"?eventService.getEventsWithSearchParams(filteredParams.toString()):getCalendarViewEvents(
+        trackerId || "", 
+        `active_gte=${eventDate.toISOString()}&active_lte=${eventDate.toISOString()}&limit=20&offset=${(currentPage - 1) * 20}&sortBy=${sortBy}`
+        + (isEventeli ? `&type=${active}` : ''),
+        true
+      ),
   });
 
   const handlePageChange = (page: number) => {

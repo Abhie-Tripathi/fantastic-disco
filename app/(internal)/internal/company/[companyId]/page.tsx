@@ -30,6 +30,7 @@ import { Button as ButtonUI } from "@/components/ui/button";
 import { useCompanyService } from "@/services/companyService";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/ui/Loading";
+import { CompanyDetailResponse } from "@/types/prospect";
 
 const excludedTags = ["Core CRM", "All Paid", "Billing Company", "FLOOR Clients", "Complimentary Services", "Dead Account", "core-crm", "all-paid", "billing-company", "floor-clients", "complimentary-services", "dead-account"];
 
@@ -53,6 +54,7 @@ const getCompanyIndustries = (asOrganizer: any[], asExhibitor: any[]) => {
 };
 
 const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
+  const referrer = document.referrer;
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
   const tabs = [
@@ -110,10 +112,10 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
       setEventPOCDetails(eventPOCData?.companyPoc || []);
       setUpcomingEvents(upcomingEventRes.events || []);
       setPastEvents(pastEventRes.events || []);
-      if (companyResponse.companyData.logo !== null) {
+      if (companyResponse && companyResponse?.companyData.logo !== null) {
         setCompLogo(companyResponse.companyData.logo);
       } else if (
-        companyResponse.companyData.logo === null &&
+        companyResponse?.companyData.logo === null &&
         companyResponse.companyData.website !== null
       ) {
         const tempLogo = await checkCompanyLogo(
@@ -126,9 +128,9 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
         }
       }
       return {
-        companyDetails: companyResponse.companyData,
-        upcomingEventsCount: upcomingEventRes.stats.totalEvents,
-        pastEventsCount: pastEventRes.stats.totalEvents,
+        companyDetails: companyResponse?.companyData,
+        upcomingEventsCount: upcomingEventRes.count,
+        pastEventsCount: pastEventRes.count,
       };
     },
     refetchOnWindowFocus: false,
@@ -204,7 +206,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
         <button
           className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
-          onClick={() => router.back()}
+          onClick={() => referrer ? router.push(referrer) : router.back()}
         >
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
           <span className="text-[var(--primary-color)] font-medium">

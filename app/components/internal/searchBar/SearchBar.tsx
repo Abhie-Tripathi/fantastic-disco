@@ -35,7 +35,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
     const fetchSearchSuggestion = async () => {
       
       if(searchInput!==previousInput){
-        let url = `${baseUrl}/${endpoint}?q=${searchInput}&limit=5&offset=0`;
+        let url = `${baseUrl}/${endpoint}?query=${searchInput}&limit=5&offset=0`;
         
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
@@ -53,7 +53,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
             if (data) {
               if(type==="T_COMPETITOR"){
                 
-                setEventSuggestion(data.company);
+                setEventSuggestion(data.companies);
               }else
               setEventSuggestion(data.events); 
             } else {
@@ -100,12 +100,10 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                     country: item?.country || ''
                   }));
                 }
-            
                 setRestructureData(updatedData);
             }
       },[eventSuggestion])
       const selectedEventId=(id:any, name:string)=>{
-       
         handleSelect(id,name);
         setIsOpen(false);
         setPreviousInput(name); 

@@ -3,7 +3,6 @@ import { endpoints } from "@/config/endpoints";
 import {
   EventCount,
   RecentSearchesResponse,
-  RecentSearchItem,
   Event,
   EventPOCDetailResponse,
   OverallRankingsDetail,
@@ -156,8 +155,6 @@ export const useEventsService = () => {
         method: "GET",
       }
     );
-    console.log(response);
-    
     return response;
   };
 
@@ -168,10 +165,9 @@ export const useEventsService = () => {
   //     method: "GET",
   //     params: adaptedParams,
   //   }, true);
-    
+
   //   return TrackersAdapter.adaptTrackerMapEventData(response);
   // };
-
 
   const saveEvent = (eventId: string) => {
     return api.request(`${endpoints.event.savedEvents}`, {
@@ -221,14 +217,14 @@ export const useEventsService = () => {
   };
 
   const getRecentSearch = async () => {
-    const response = await api.request<RecentSearchItem[]>(
+    const response = await api.request<RecentSearchesResponse>(
       `${endpoints.event.recentSearch}`,
       {
         method: "GET",
       }
     );
     return response;
-  }
+  };
 
   const getAlertPolygon = (eventId: string) => {
     return api.request<AlertPolygonResponse>(
@@ -238,7 +234,7 @@ export const useEventsService = () => {
       }
     );
   };
-  
+
   return {
     getEvents,
     saveEvent,

@@ -14,9 +14,10 @@ import { Interest } from "@/types/events";
 import { useConfiguration } from "@/hooks/useConfiguration";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useIntent } from "@/hooks/useIntent";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { eventsKeys } from "@/hooks/useEvents";
+import { useTrackerContext } from "@/context/tracker";
 
 interface ActionPopoverProps {
   eventId: string;
@@ -31,6 +32,7 @@ export function ActionPopover({
 }: ActionPopoverProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const {setSavedEventCount, savedEventCount}=useTrackerContext(); 
   const {
     interestConfiguration,
     isLoading: isConfigLoading,
@@ -66,8 +68,10 @@ export function ActionPopover({
         },
         {
           onSuccess: () => {
+            console.log('success ho gaya');
+            
             queryClient.invalidateQueries({ queryKey: eventsKeys.all });
-
+            setSavedEventCount(savedEventCount+1);
             setIsOpen(false);
             toast({
               title: "Success",

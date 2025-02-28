@@ -7,11 +7,11 @@ import { Sora } from "next/font/google";
 import Navbar from "@/components/layout/navbar";
 import Sidebar from "@/components/layout/sidebar";
 import { GoogleTagManager } from "@next/third-parties/google";
-import Joyride from "react-joyride";
 import { Metadata } from "next";
 import { FilterProvider } from "@/context/filterContext";
 import ReactQueryProvider from "@/components/provider/reactQueryProvider";
 import { Toaster } from "@/components/ui/toaster";
+import { Toast, ToastProvider } from "@/components/ui/toast";
 
 const sora = Sora({
   subsets: ["latin"],
@@ -36,8 +36,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${GeistSans.className}`}>
       <body>
-        {/* <ToastContainer /> */}
-        <Toaster />
         <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || ""} />
         <ReactQueryProvider>
           <AuthContextProvider>
@@ -51,6 +49,7 @@ export default function RootLayout({
                       id="layout-main"
                       className="flex-1 overflow-x-hidden !overflow-y-auto bg-background"
                     >
+                      <Toaster />
                       {children}
                     </main>
                   </div>

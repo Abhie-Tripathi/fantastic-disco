@@ -9,7 +9,7 @@ import { format } from "date-fns";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { useEventsService } from "@/services/eventsService";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "../ui/toast";
 import { cn, lightenColor } from "@/lib/utils";
 import {
@@ -36,6 +36,7 @@ import ZeroState from "@/app/components/zerostate";
 import { ApiError } from "@/types/api";
 import Image from "next/image";
 import holiday from "/public/eventType/holiday.svg";
+import { useTrackerContext } from "@/context/tracker";
 
 interface CircularProgressProps {
   value: number | null;
@@ -115,7 +116,7 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const query = Object.fromEntries(searchParams.entries());
   let events, totalEvents, isLoading, error;
-
+  const {data} = useTrackerContext();
   if (source === "tracker") {
     ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
       query,
@@ -124,16 +125,37 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
-
+  const mapping = {
+    rating: "rating",
+    maturity: "maturity",
+    branded: "branded,series",
+    forecasted: "forecasted",
+    frequency: "frequency",
+    estimatedExhibitors: "estimatedExhibitors",
+    scores: "scores",
+    audienceZone: "audienceZone",
+    rankings: "rankings",
+  }
+  let showsData:string[] =[];
+  Object.entries(mapping).forEach(([key,value])=>{
+    if(data?.filterValues?.show?.includes(key)){
+      showsData.push(value);
+      
+    }
+  })
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
 
-  const showValues: Show[] = getFilterValue("show")
+  let  showValues: Show[] = getFilterValue("show")
     .split(",")
     .filter(Boolean)
     .map((show) => Show[show as keyof typeof Show]);
+  if(source==="tracker"){
+    showValues = showsData.filter(Boolean)
+    .map((show) => Show[show as keyof typeof Show]);
+  }
 
   const handlePageChange = (page: number) => {
     setMultipleFilters({
@@ -147,7 +169,8 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
       limit: newItemsPerPage,
     });
   };
-
+  console.log(data?.filterValues?.show);
+  
   if (isLoading) {
     return <Loading />;
   }
@@ -162,7 +185,7 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-grow overflow-y-auto pb-6">
+      <div className="flex-grow overflow-y-auto">
         <ul className="w-full space-y-6 list-none">
           {events?.map((event) => (
             <EventListItem
@@ -174,7 +197,7 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
         </ul>
       </div>
       {totalPages > 1 && (
-        <div className="mt-4 sticky bottom-0 bg-background py-4 border-t">
+        <div className="sticky bottom-0 bg-background py-3">
           <PaginationComponent
             currentPage={currentPage}
             totalPages={totalPages}
@@ -213,8 +236,10 @@ const EventListItem = ({
         {[
           event.basic.eventLocation.venue?.name || "TBA",
           event.basic.eventLocation.city?.name,
-          event.basic.eventLocation.state?.name,
-          event.basic.eventLocation.country?.name,
+          event.basic.eventLocation.state?.name !== event.basic.eventLocation.city?.name ? 
+            event.basic.eventLocation.state?.name : null,
+          event.basic.eventLocation.country?.name !== event.basic.eventLocation.city?.name ? 
+            event.basic.eventLocation.country?.name : null,
         ]
           .filter(Boolean)
           .join(", ")}
@@ -223,11 +248,12 @@ const EventListItem = ({
       [
         event.basic.eventLocation.venue?.name,
         event.basic.eventLocation.city?.name,
-        event.basic.eventLocation.state?.name,
-        event.basic.eventLocation.country?.name,
+        event.basic.eventLocation.state?.name !== event.basic.eventLocation.city?.name ? 
+          event.basic.eventLocation.state?.name : null,
+        event.basic.eventLocation.country?.name !== event.basic.eventLocation.city?.name ? 
+          event.basic.eventLocation.country?.name : null,
       ]
         .filter(Boolean)
-
         .join(", ")
     )
   ) : (
@@ -298,6 +324,36 @@ const EventListItem = ({
               alt={`${event.basic.name} logo`}
               className="w-24 h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
             />
+          ) : event.basic.website ? (
+            <div className="w-24 h-24 relative">
+              <img
+                src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+                alt={`${event.basic.name} website favicon`}
+                className="w-24 h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  // This will trigger the fallback div to show
+                  e.currentTarget.dataset.error = 'true';
+                }}
+              />
+              {/* Fallback that shows when image errors */}
+              <div 
+                className="w-24 h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+                style={{ display: 'none' }}
+                ref={(el) => {
+                  if (el) {
+                    const img = el.previousSibling as HTMLImageElement;
+                    if (img && img.dataset.error === 'true') {
+                      el.style.display = 'flex';
+                    }
+                  }
+                }}
+              >
+                <span className="text-[#5055A3] text-2xl font-semibold">
+                  {event.basic.name.charAt(0)}
+                </span>
+              </div>
+            </div>
           ) : (
             <div className="w-24 h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
               <span className="text-[#5055A3] text-2xl font-semibold">
@@ -382,7 +438,7 @@ const EventListItem = ({
                       </Tooltip>
                     </TooltipProvider>
                   )}
-                  {event.basic.categories?.slice(0, 1).map((tag, index) => (
+                  {event.basic.categories?.map((tag, index) => (
                     <TooltipProvider key={index}>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>

@@ -262,7 +262,7 @@ export default function DateRangeSelector({
     }
   };
   useEffect(() => {
-    if (type === "T_LOCATION_DATE" && !isOpen) {
+    if (type === "T_GEOTIME" && !isOpen) {
       onOpenChange(true);
     }
   }, [type, isOpen]);
@@ -278,7 +278,7 @@ export default function DateRangeSelector({
   }, [searchParams.get("active_gte")]);
   return (
     <Popover open={isOpen} onOpenChange={onOpenChange}>
-      {type !== "T_LOCATION_DATE" && (
+      {type !== "T_GEOTIME" && (
         <PopoverTrigger asChild>
           <Button
             variant="outline"
@@ -305,7 +305,7 @@ export default function DateRangeSelector({
           </Button>
         </PopoverTrigger>
       )}
-      {type === "T_LOCATION_DATE" ? (
+      {type === "T_GEOTIME" ? (
         <DateRangePopup
           type={type}
           presets={presets}

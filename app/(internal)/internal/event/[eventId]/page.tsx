@@ -1,67 +1,52 @@
 "use client";
-import React, { useRef, useState } from "react";
-import { ArrowLeft, Globe, Share, Location, StarFill } from "geist-icons";
-import { Phone } from "geist-icons";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Heading from "@/components/new-ui/Heading";
 import Text from "@/components/new-ui/Text";
-import "react-circular-progressbar/dist/styles.css";
-import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
-import Link from "next/link";
-import Disable from "/public/disable.svg";
-import { Ranking, Event, TTabs } from "@/types/events";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Event, TTabs } from "@/types/events";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { ArrowLeft, Globe, Location, StarFill } from "geist-icons";
 import {
-  Bookmark,
   CalendarDays,
   CircleSlash,
-  Forward,
   MailIcon,
   MapPin,
   PhoneIcon,
   Radio,
   Share2,
 } from "lucide-react";
-
-import { useEventsService } from "@/services/eventsService";
-import { EventPOCDetails } from "@/types/events";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import "react-circular-progressbar/dist/styles.css";
+import Disable from "/public/disable.svg";
+import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
+import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
+import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
+import { Overview } from "@/components/gtmDetail/overview";
 import Loading from "@/components/ui/Loading";
 import { Badge } from "@/components/ui/badge";
-import { Overview } from "@/components/gtmDetail/overview";
-import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
-import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
-import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
+import { useEventsService } from "@/services/eventsService";
+import { EventPOCDetails } from "@/types/events";
 import { renderFormattedDates } from "@/utils/dateFormat";
-// import { TooltipTrigger, Button, Tooltip } from "react-aria-components";
+import { Button as ButtonUI } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Button } from "react-aria-components";
-import { Button as ButtonUI } from "@/components/ui/button";
 import { useCoordinateService } from "@/services/coordinateService";
+import { Button } from "react-aria-components";
 
-// export interface RankingDetail {
-//   above5CountryEvent: countryRank[] | [];
-//   below5CountryEvent: countryRank[] | [];
-//   above5CategoryEvent: categoryRank[] | [];
-//   below5CategoryEvent: categoryRank[] | [];
-//   above5CountryCategoryRankEvent: countryCategoryRank[] | [];
-//   below5CountryCategoryEvent: countryCategoryRank[] | [];
-// }
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
-  const scrollableSectionRef = useRef<HTMLElement | null>(null);
-  const currentDate = new Date().toISOString().split("T")[0];
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
   const [eventPOCDetails, setEventPOCDetails] = useState<EventPOCDetails[]>([]);
   const {
@@ -153,7 +138,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
   const {
     eventData,
-    eventPOCData,
     eventRankingDetails,
     eventCoOrganizerDetails,
     eventEditionData,
@@ -167,6 +151,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     id,
     name,
     bannerUrl,
+    logoUrl: eventLogoUrl,
     startDateTime,
     endDateTime,
     organizer,
@@ -175,17 +160,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     eventLocation,
     status,
     rating,
-    // above5CategoryEvent,
-    // below5CategoryEvent,
-    // above5CountryEvent,
-    // below5CountryEvent,
-    // above5CountryCategoryRankEvent,
-    // below5CountryCategoryEvent,
   } = basic || {};
 
   const {
     scores,
-    rankings,
     repeatSentiment: trustScore,
     exhibitorsCount,
     speakersCount,
@@ -193,7 +171,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   } = insights || {};
   const { audienceSpread, designationSpread } = audience || {};
   const {
-    logoUrl,
+    logoUrl: organizerLogoUrl,
     location: organizerLocation,
     name: organizerName,
   } = organizer || {};
@@ -293,7 +271,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           poc.id === pocId ? { ...poc, state: 1 } : poc
         )
       );
-      const data = await coordinateService.unlockPocDetail(pocId, id);
+      const data = await coordinateService.unlockPocDetail({
+        pocId,
+        unmask: "email,phone",
+        target: "EVENT",
+        source: "eventPage",
+        targetId: id,
+      });
       if (data) {
         setEventPOCDetails((prevPocData) =>
           prevPocData.map((poc) =>
@@ -327,11 +311,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         </Button>
         {bannerUrl && (
           <Image
-            src={bannerUrl ?? "/eventDetailFallback.png"}
+            src={bannerUrl ?? eventLogoUrl ?? "/eventDetailFallback.png"}
             alt="eventDetails"
-            width={420}
-            height={280}
-            className="max-h-[300px] w-fill rounded-lg"
+            width={100}
+            height={100}
+            className="h-32 w-full rounded-lg"
           />
         )}
 
@@ -476,13 +460,13 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <p className="text-sm text-[var(--primary-text-color)] cursor-pointer font-semibold">
+                      <p className="text-sm text-[var(--primary-text-color)] w-fit cursor-pointer font-semibold">
                         TBA
                       </p>
                     </TooltipTrigger>
-                    <TooltipContent className="tooltip-content-styles">
+                    <TooltipContent align="start" alignOffset={-60} className="tooltip-content-styles">
                       <p className="text-[var(--secondary-text-color)]">
-                        To be announced
+                        Venue to be announced
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -517,8 +501,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 <div className="flex gap-4 p-2 mb-1">
                   <img
                     src={
-                      logoUrl
-                        ? logoUrl
+                      organizerLogoUrl
+                        ? organizerLogoUrl
                         : `https://img.10times.com/userimages/${name
                             .charAt(0)
                             .toLowerCase()}.jpg`
@@ -797,9 +781,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             />
           )}
         </section>
-        {/* <section className="flex flex-col flex-1 h-full right-0  overflow-y-hidden"></section> */}
       </div>
-      {/* <div className="flex flex-row h-screen gap-10 relative"></div> */}
     </div>
   );
 };

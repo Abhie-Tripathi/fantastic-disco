@@ -135,15 +135,7 @@ export default function EventCalendar({
           : await getCalendarViewEvents(
               trackerId || "",
               `type=${
-                active === "activeEvent"
-                  ? "active"
-                  : active === "expiredEvent"
-                  ? "past"
-                  : active === "newEvent"
-                  ? "new"
-                  : active === "savedEvent"
-                  ? "saved"
-                  : "active"
+                active
               }&active_gte=${trackerStartDate}&active_lte=${trackerEndDate}&view=calendar&calendar_type=${view}`,
               false,
               view
@@ -311,10 +303,12 @@ export default function EventCalendar({
     [getLocalFilterValue, trackerDate]
   );
   const handleNavigate = (date: Date) => {
+    setShowEventList(false);
     setCurrentDate(date);
   };
 
   const handleViewChange = (newView: string) => {
+    setShowEventList(false);
     setView(newView);
   };
 

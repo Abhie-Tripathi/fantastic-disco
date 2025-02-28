@@ -4,13 +4,22 @@ export interface Tracker {
     type?:string;
     accessLevel?:string;
     filterValues?: FilterValue;
-    groupedEventsCountByStatus?:{
-      groupedEventsByStatus?:{
-        expired?:string;
-        new?:string;
-        active?:string;
-      }
-
+    groupedEventsCount?:{
+        expired?:number;
+        new?:number;
+        active?:number;
+        business?:{
+          total?:number;
+          new?:number;
+        };
+        social?:{
+          total?:number;
+          new?:number;
+        };
+        unattended?:{
+          total?:number;
+          new?:number;
+        }
     }
     savedEventsCount?:number;
   }

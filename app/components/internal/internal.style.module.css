@@ -212,15 +212,12 @@
     border-radius: 100%;
     vertical-align: middle;
   }
-@media screen and (max-width:1200px) {
-    .container{
-        padding-left: 60px;
-        padding-right: 40px;
-    }
-}
 
 @media screen and (max-width:768px) {
     .countsContainer{
+        margin: 0;
+    }
+    .filters {
         margin: 0;
     }
     .exhibitorCount{

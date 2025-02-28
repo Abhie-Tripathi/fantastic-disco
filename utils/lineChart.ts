@@ -1,15 +1,14 @@
 // @ts-nocheck
+import { columnsDropdown, subCategories } from "@/data/trends";
+import { NewColumn, SubColumn } from "@/data/trendsTableColHead";
 import {
-  EventTrendsResponse,
   EventTypeData,
   GroupedDataByDate,
   TableData,
   TEventColumnType,
-  Thresholds,
+  Thresholds
 } from "@/types/trends/trends";
 import { format, parseISO } from "date-fns";
-import { columnsDropdown, subCategories } from "@/data/trends";
-import { NewColumn, SubColumn } from "@/data/trendsTableColHead";
 
 /**
  *
