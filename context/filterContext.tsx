@@ -12,11 +12,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
 import { toast } from "react-toastify";
+import { useToast } from "@/components/ui/use-toast";
 import {
   generateSearchFilters,
   searchFilters,
 } from "@/public/data/searchFilters";
-import { useToast } from "@/components/ui/use-toast";
 import { RecentSearchItem } from "@/types/events/recentSearches";
 import { endOfMonth } from "date-fns";
 import { addMonths } from "date-fns";
@@ -176,6 +176,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const router = useRouter();
+   const { toast } = useToast();
   const { getFilterConfiguration } = useConfigurationService();
   const [morphedData, setMorphedData] = useState(searchFilters);
   const { searchParams } = useFilterState();
@@ -228,15 +229,15 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
 
       const mapping: Record<keyof Filter, string> = {
         eventTypes: "eventTypes",
-        status: "eventStatus",
-        categories: "eventCategory",
-        eventFormats: "eventFormat",
-        entryType: "eventEntry",
-        ratings: "eventRating",
+        status: "status",
+        categories: "categories",
+        eventFormats: "eventFormats",
+        entryType: "entryType",
+        ratings: "ratings",
         maturity: "maturity",
-        frequencies: "eventFrequency",
-        estimatedVisitors: "eventSize",
-        estimatedExhibitors: "estimatedExhibitScore",
+        frequencies: "frequencies",
+        estimatedVisitors: "estimatedVisitors",
+        estimatedExhibitors: "estimatedExhibitors",
         estimatedVisitorRangeTag: "estimatedVisitorRangeTag",
       };
       console.log(enabledFilters);
@@ -245,7 +246,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         // console.log(prev);
 
         if (
-          enabledFilters?.filter?.data?.[selected] &&
+          enabledFilters?.filter?.[selected] &&
           ((selected === "maturity" && value?.length === 0) ||
             (selected !== "maturity" &&
               typeof prev?.[key as keyof Filter] === "string" &&
@@ -253,10 +254,10 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
               typeof value === "string" &&
               value.split(",").length <= 1))
         ) {
-          toast.error("At least one filter must be selected", {
-            position: "bottom-right",
-            autoClose: 2000,
-            hideProgressBar: true,
+          toast({
+            title: "error",
+            description: "At least one filter must be selected",
+            variant: "default",
           });
           return prev;
         }
@@ -374,6 +375,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
+  console.log(morphedData);
   
   const contextValue = useMemo(
     () => ({

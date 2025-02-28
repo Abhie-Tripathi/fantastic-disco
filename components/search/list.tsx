@@ -108,19 +108,17 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
 interface EventListProps {
   trackerId?: string;
   source?: string;
+  view?:string;
 }
 
-export default function EventAccordion({ source, trackerId }: EventListProps) {
+export default function EventAccordion({ source, trackerId, view }: EventListProps) {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const query = Object.fromEntries(searchParams.entries());
   let events, totalEvents, isLoading, error;
 
   if (source === "tracker") {
-    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
-      query,
-      trackerId
-    ));
+    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId, view));
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }

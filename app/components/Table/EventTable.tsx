@@ -19,8 +19,9 @@ interface EventTableProps {
   trackerId?: string;
   source?: string;
   eventType?:string;
+  view?:string;
 }
-const EventTable = ({source, trackerId, eventType}:EventTableProps) => {
+const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
   // const { theme } = useTheme();
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } = useFilterState();
   const {setLocalFilter} = useFilterContext();
@@ -31,7 +32,7 @@ const EventTable = ({source, trackerId, eventType}:EventTableProps) => {
   let events, totalEvents, isLoading, error;
 
   if (source === "tracker") {
-  ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId,eventType));
+  ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId, view));
   } else {
   ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
@@ -113,7 +114,8 @@ console.log(isLoading);
   return (
     <div className="w-full">
       <div className="rounded-md border bg-background">
-        <div className="overflow-auto max-h-[calc(100vh-264px)]">
+      <div className={`overflow-auto ${view === "global" ? "h-[calc(100vh-165px)]" : "max-h-[calc(100vh-264px)]"}`}>
+
           <Table>
             <EventTableHeader show={showValues} />
             <TableBody>

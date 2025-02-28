@@ -85,18 +85,16 @@ export const useTrackerServices = () => {
     const globalSavedEvents = async (
       params: string
     ): Promise<GetSavedEventsResponse | undefined> => {
+      console.log(params);
+      
       const response = await api.request<{ result: EventTableType[]; count: number  }>(
-        `${endpoints.tracker.getSavedEvents}/saved-events?${params}`,
+        `https://api.dev.gtm.whr.ai/me/account/saved-events`,
         {
           method: "GET"
         }
       );
     
-      if (getFilterValue("view") === "table") {
         return response;
-      }
-    
-      const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
       // return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
     };
     

@@ -8,14 +8,16 @@ export const eventsKeys = {
 };
 
 export const useTrackerEvents = {
-  list: (query: EventQuery, trackerId?:string, eventType?:string) => {
+  list: (query: EventQuery, trackerId?:string, view?:string) => {
     const trackerService=useTrackerServices();
     const EventQuery = useQuery({
       queryKey: eventsKeys.list(query),
       queryFn: () => 
-        trackerService.getTrackerEvents(query, trackerId||""),
-      staleTime: 0, // Always refetch when queryKey changes
-      refetchOnMount: true, // Ensure refetch on mount
+        view === "global"
+      ? trackerService.globalSavedEvents(query)
+      : trackerService.getTrackerEvents(query, trackerId || ""),
+      staleTime: 0, 
+      refetchOnMount: false, 
 
           
     });

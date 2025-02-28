@@ -446,7 +446,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
     
     return {
       eventTypes: {
-        isEnabled: data?.eventType?.enabledValue?.length > 0 ?? true,
+        isEnabled: data?.eventTypes?.enabledValue?.length > 0 ?? true,
         // options:searchFiltersg?.eventTypes?.options
         options: Object.fromEntries(
             Object.entries(searchFilters?.eventTypes?.options ?? {}).map(([key, group]) => {
@@ -454,8 +454,8 @@ export const generateSearchFilters=(apiResponse: any)=> {
                 ...format,
                 isEnabled:
                   key === "business" // Update only the "business" group
-                    ? data?.eventType?.enabledValue?.includes(
-                        format.id.charAt(0).toUpperCase() + format.id.substring(1, format.id.length - 1)
+                    ? data?.eventTypes?.enabledValue?.includes(
+                        format.id
                       ) ?? true
                     : format.isEnabled, // Keep `isEnabled` unchanged for other groups
               }));
@@ -469,33 +469,33 @@ export const generateSearchFilters=(apiResponse: any)=> {
         isEnabled: true,
         options: searchFilters?.eventFormats?.options?.map((format) => ({
           ...format,
-          isEnabled: data?.eventFormat?.enabledValue?.includes(format.id) ?? true,
+          isEnabled: data?.eventFormats?.enabledValue?.includes(format.id) ?? true,
         })),
       },
   
       categories: {
-        isEnabled: data?.eventCategory?.enabledValue?.length > 0 ?? true,
+        isEnabled: data?.categories?.enabledValue?.length > 0 ?? true,
         options: searchFilters?.categories?.options?.map((category) => ({
           ...category,
-          isEnabled: data?.eventCategory?.enabledValue?.some(
+          isEnabled: data?.categories?.enabledValue?.some(
             (c: any) => c.id === category.id
           ) ?? true,
       })),
     },
 
     eventStatus: {
-      isEnabled: data?.eventStatus?.enabledValue?.length > 0 ?? true,
+      isEnabled: data?.status?.enabledValue?.length > 0 ?? true,
       options: searchFilters?.eventStatus?.options?.map((status) => ({
         ...status,
         isEnabled:
-          data?.eventStatus?.enabledValue?.includes(status.id.toUpperCase()) ??
+          data?.status?.enabledValue?.includes(status.id.toUpperCase()) ??
           true,
       })),
     },
 
     userRatings: {
-      isEnabled: data?.eventRating?.isRatingEnabled ?? true,
-      isToggleEnabled: Boolean(data?.eventRating?.enabledValue?.length),
+      isEnabled: data?.ratings?.isRatingEnabled ?? true,
+      isToggleEnabled: Boolean(data?.ratings?.enabledValue?.length),
       options: searchFilters?.userRatings?.options?.map((rating) => ({
         ...rating,
         isEnabled: data?.ratings?.enabledValue?.includes(rating.id) ?? true,
@@ -503,11 +503,11 @@ export const generateSearchFilters=(apiResponse: any)=> {
     },
 
     eventEntries: {
-      isEnabled: data?.eventEntry?.enabledValue?.length > 0 ?? true,
+      isEnabled: data?.entryType?.enabledValue?.length > 0 ?? true,
       options: searchFilters?.eventEntries?.options?.map((entry) => ({
         ...entry,
         isEnabled:
-          data?.eventEntry?.enabledValue?.includes(entry.id.toUpperCase()) ??
+          data?.entryType?.enabledValue?.includes(entry.id.toUpperCase()) ??
           true,
       })),
     },
@@ -539,12 +539,12 @@ export const generateSearchFilters=(apiResponse: any)=> {
     },
 
     frequencies: {
-      isEnabled: data?.eventFrequency?.isFreqEnabled ?? true,
+      isEnabled: data?.frequencies?.isFreqEnabled ?? true,
       isToggleEnabled: true,
       options: searchFilters?.frequencies?.options?.map((format) => ({
         ...format,
         isEnabled:
-          data?.eventFrequency?.enabledValue?.includes(format.id) ?? true,
+          data?.frequencies?.enabledValue?.includes(format.id) ?? true,
       })),
     },
 
@@ -560,14 +560,14 @@ export const generateSearchFilters=(apiResponse: any)=> {
     },
 
     estimatedExhibitor: {
-      isEnabled: data?.estimatedExhibitScore?.isExhibitorsEnabled ?? true,
+      isEnabled: data?.estimatedExhibitors?.isExhibitorsEnabled ?? true,
       isToggleEnabled: Boolean(
-        data?.estimatedExhibitScore?.enabledValue?.length
+        data?.estimatedExhibitors?.enabledValue?.length
       ),
       options: searchFilters.estimatedExhibitor.options.map((exhibitor) => ({
         ...exhibitor,
         isEnabled:
-          data?.estimatedExhibitScore?.enabledValue?.includes(exhibitor.id) ??
+          data?.estimatedExhibitors?.enabledValue?.includes(exhibitor.id) ??
           true,
       })),
     },

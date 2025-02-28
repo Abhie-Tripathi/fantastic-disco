@@ -35,18 +35,18 @@ export function useDefaultFilters() {
   };
 
   const mapEnabledFiltersToParams = (filters: any) => ({
-    eventFormats: filters.eventFormat?.enabledValue?.join(",") ?? "",
+    eventFormats: filters.eventFormats?.enabledValue?.join(",") ?? "",
     status:
-      filters.eventStatus?.enabledValue
+      filters.status?.enabledValue
         ?.map((item: string) => item.toLowerCase())
         ?.join(",") ?? "",
     categories:
-      filters.eventCategory?.enabledValue
+      filters.categories?.enabledValue
         ?.map((item: any) => item.slug)
         .join(",") ?? "",
     eventTypes:
-      filters.eventType?.enabledValue
-        ?.map((item: string) => `${item.toLowerCase()}s`)
+      filters.eventTypes?.enabledValue
+        ?.map((item: string) => `${item.toLowerCase()}`)
         ?.join(",") ?? "",
     locationIds:
       filters.locationIds?.enabledValue
@@ -59,20 +59,20 @@ export function useDefaultFilters() {
       ? new Date(filters.durations.endDate.split(",")[1]).toISOString()
       : endOfMonth(addMonths(new Date(), 3)).toISOString(),
     entryType:
-      filters.eventEntry?.enabledValue
+      filters.entryType?.enabledValue
         ?.map((item: string) => item.toLowerCase())
         ?.join(",") ?? "",
-    ratings: filters.eventRating?.enabledValue?.join(",") ?? "",
+    ratings: filters.ratings?.enabledValue?.join(",") ?? "",
     maturity: filters.maturity?.enabledValue?.[0] ?? "",
     onlyBranded: filters.branded?.enabledValue?.eventBrand ? "true" : "",
     onlySeries: filters.branded?.enabledValue?.eventSeries ? "true" : "",
-    frequencies: filters.eventFrequency?.enabledValue?.join(",") ?? "",
-    includeKeywords: filters.keywords?.positiveKeywords?.join(",") ?? "",
-    excludeKeywords: filters.keywords?.negativeKeywords?.join(",") ?? "",
+    frequencies: filters.frequencies?.enabledValue?.join(",") ?? "",
+    includeKeywords: filters.keywords?.includeKeywords?.join(",") ?? "",
+    excludeKeywords: filters.keywords?.excludeKeywords?.join(",") ?? "",
     estimatedVisitorRangeTag:
       filters.estimatedVisitorRangeTag?.enabledValue?.join(",") ?? "",
     estimatedExhibitors:
-      filters.estimatedExhibitScore?.enabledValue?.join(",") ?? "",
+      filters.estimatedExhibitors?.enabledValue?.join(",") ?? "",
     show: generateShowParam(filters),
   });
 
@@ -163,15 +163,18 @@ export function useDefaultFilters() {
 
   const generateShowParam = (filters: any): string => {
     const showItems = [];
-    if (filters.eventRating?.isRatingEnabled) showItems.push("rating");
+    if (filters.ratings?.isRatingEnabled) showItems.push("rating");
     if (filters.maturity?.isMaturityEnabled) showItems.push("maturity");
     if (filters.branded?.isBrandedEnabled) showItems.push("branded,series");
-    if (filters.eventFrequency?.isFreqEnabled) showItems.push("frequency");
-    if (filters.estimatedExhibitScore?.isExhibitorsEnabled)
+    if (filters.frequencies?.isFreqEnabled) showItems.push("frequency");
+    if (filters.frequencies?.isFreqEnabled) showItems.push("forecasted");
+    if (filters.estimatedExhibitors?.isExhibitorsEnabled)
       showItems.push("estimatedExhibitors");
     if (filters.economicImpact?.isEconomicImpactEnabled)
       showItems.push("economicImpact");
     if (filters.analytics?.isAnalyticsEnabled) showItems.push("scores");
+    if (filters.audienceZone?.isZoneEnabled) showItems.push("audienceZone");
+    if (filters.eventRanking?.isRanking) showItems.push("rankings");
     return showItems.join(",");
   };
 
