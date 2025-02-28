@@ -149,13 +149,16 @@ const Popup2: React.FC<Props> = ({
         <div className={styles.locationContainer}>
           <LocationIcon color={fontSettings?.subheading.fontColor || "black"} iconSize={fontSettings?.subheading.fontSize || 14} />
           <div
-            className={styles.location}
+            className={`${styles.location}`}
             style={{
               fontSize: smallCard ? 12 : fontSettings?.subheading.fontSize,
               color: fontSettings.subheading.fontColor,
               fontFamily: fontSettings.subheading.fontFamily,
               fontWeight: fontSettings.subheading.fontWeight,
             }}
+            data-name={
+              fetchedAddedEvents![0]&&`${fetchedAddedEvents![0]?.cityName || ""}${fetchedAddedEvents![0]?.cityName && fetchedAddedEvents![0]?.countryName ? ", " : ""}${fetchedAddedEvents![0]?.countryName || ""}`
+            }
           >
             {fetchedAddedEvents && fetchedAddedEvents.length > 0
               ? (

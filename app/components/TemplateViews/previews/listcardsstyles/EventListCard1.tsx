@@ -95,6 +95,7 @@ const EventListCard1 = ({
                   fontFamily: fontSettings.subheading.fontFamily,
                   fontWeight: fontSettings.subheading.fontWeight,
                 }}
+                data-name={fetchedEvent&&fetchedEvent?.cityName + `${fetchedEvent?.cityName ? "," : ""}` + fetchedEvent?.countryName}
               >
                 {fetchedEvent?.eventFormat === "Virtual"
                   ? "Virtual"
