@@ -56,6 +56,8 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
       setFilterStatus("CONFIRMED")
     } else if (filter === "Not Going") {
       setFilterStatus("REJECTED")
+    } else if (filter === "Rejected") {
+      setFilterStatus("CANCELLED")
     } else if (filter === "Waitlist") {
       setFilterStatus("WAITLISTING")
     } else if (filter === "Pending") {
@@ -72,6 +74,9 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
     }
     else if (filterStatus === "REJECTED") {
       setActiveFilterBtn("Not Going")
+    }
+    else if (filterStatus === "CANCELLED") {
+      setActiveFilterBtn("Rejected")
     }
     else if (filterStatus === "WAITLISTING") {
       setActiveFilterBtn("Waitlist")
@@ -195,6 +200,7 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
             <li onClick={() => handleFilterBy("Pending")}>{activeFilterBtn === "Pending" && <TickIcon />}Pending </li>
             <li onClick={() => handleFilterBy("Waitlist")}>{activeFilterBtn === "Waitlist" && <TickIcon />}Waitlist</li>
             <li onClick={() => handleFilterBy("Not Going")}>{activeFilterBtn === "Not Going" && <TickIcon />}Not Going</li>
+            <li onClick={() => handleFilterBy("Rejected")}>{activeFilterBtn === "Rejected" && <TickIcon />}Rejected</li>
             <li onClick={() => handleFilterBy("Following")}>{activeFilterBtn === "Following" && <TickIcon />}Following</li>
           </div>}
         </div>
@@ -223,7 +229,7 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
                         guest.status === "REJECTED" || guest.status === "CANCELLED" ? styles.notgoing : styles.invited
                 }
             `}>
-                {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" : guest.status === "REJECTED" || guest.status === "CANCELLED" ? "Not Going" : "Invited"}
+                {guest.status === "PENDING" ? "Pending" : guest.status === "CONFIRMED" ? "Going" : guest.status === "WAITLISTING" ? "Waitlist" : guest.status === "FOLLOWING" ? "Following" : guest.status === "REJECTED" ? "Not Going" : guest.status === "CANCELLED" ? "Rejected" : "Invited"}
               </div>
               <div className={styles.date}>{guest.date}</div>
             </div>

@@ -6,13 +6,14 @@ interface Props {
   goingGuests: number
   notgoingGuests: number
   pendingGuests: number
+  rejectedGuests : number
   followingGuests: number
   waitlistGuest: number
   capacity?: number;
   setFilterStatus:(value: string) => void
 }
 
-const GuestBar = ({invitedGuests, goingGuests, notgoingGuests, pendingGuests, followingGuests, waitlistGuest, capacity, setFilterStatus }: Props) => {
+const GuestBar = ({invitedGuests, goingGuests, notgoingGuests, pendingGuests, followingGuests, waitlistGuest, capacity, setFilterStatus, rejectedGuests }: Props) => {
 
   const totalGuests = goingGuests + notgoingGuests + pendingGuests + followingGuests + waitlistGuest;
   const effectiveCapacity = Math.max(capacity || 0, totalGuests);
@@ -23,11 +24,13 @@ const GuestBar = ({invitedGuests, goingGuests, notgoingGuests, pendingGuests, fo
   const waitlistGuestsPercentage = effectiveCapacity > 0 ? (waitlistGuest / effectiveCapacity) * 100 : 0;
   const followingGuestsPercentage = effectiveCapacity > 0 ? (followingGuests / effectiveCapacity) * 100 : 0;
   const invitedGuestsPercentage = effectiveCapacity > 0 ? (invitedGuests / effectiveCapacity) * 100 : 0;
+  const rejectedGuestsPercentage = effectiveCapacity > 0 ? (rejectedGuests / effectiveCapacity) * 100 : 0;
 
   const guestTypes = [
     { className: styles.goingBar, percentage: goingGuestsPercentage },
     { className: styles.otherBar, percentage: pendingGuestsPercentage },
     { className: styles.otherBar, percentage: notgoingGuestsPercentage },
+    { className: styles.otherBar, percentage: rejectedGuestsPercentage },
     { className: styles.otherBar, percentage: waitlistGuestsPercentage },
     { className: styles.otherBar, percentage: followingGuestsPercentage },
     { className: styles.otherBar, percentage: invitedGuestsPercentage },
@@ -58,6 +61,7 @@ const GuestBar = ({invitedGuests, goingGuests, notgoingGuests, pendingGuests, fo
         {waitlistGuest > 0 && <div onClick={()=>setFilterStatus("WAITLISTING")}><span></span>{waitlistGuest} Waitlist</div>}
         {followingGuests > 0 && <div onClick={()=>setFilterStatus("FOLLOWING")}><span></span>{followingGuests} Following</div>}
         {invitedGuests > 0 && <div onClick={()=>setFilterStatus("INVITATION")}><span></span>{invitedGuests} Invited</div>}
+        {rejectedGuests > 0 && <div onClick={()=>setFilterStatus("CANCELLED")}><span></span>{rejectedGuests} Rejected</div>}
         
       </div>
     </div>
