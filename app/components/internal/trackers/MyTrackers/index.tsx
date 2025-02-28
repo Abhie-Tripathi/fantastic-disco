@@ -144,7 +144,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
         <div>
         <div className="flex items-center justify-between pr-6">
             <div className="flex items-center gap-2 pt-4 pl-6 pb-4">
-              <div className="text-sm font-medium">Trackers</div>
+              <div className="font-medium">Trackers</div>
               <span className="bg-[#E6E6F9] rounded-full font-medium w-7 h-7 flex items-center justify-center text-sm" style={{ color: "var(--primary-color)" }}>
                {totalCount}
               </span>

@@ -419,10 +419,12 @@ const Trackers = ({ searchParams }: Search) => {
       >
         Create Tracker
       </button> */}
+      <Link href={`/internal/trackers/savedevents?view=table`}>
       <div className="rounded-lg border relative hover:shadow-md transition-all duration-200 group overflow-hidden flex justify-between p-3 items-center bg-[var(--background-secondary-color)]">
         Saved Events 
         <MoveUpRight width={16} height={16}/>
       </div>
+      </Link>
       <hr/>
       {/* <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
