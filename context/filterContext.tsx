@@ -11,13 +11,11 @@ import React, {
 import { usePathname, useRouter } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
-import { toast } from "react-toastify";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import {
   generateSearchFilters,
   searchFilters,
 } from "@/public/data/searchFilters";
-import { RecentSearchItem } from "@/types/events/recentSearches";
 import { endOfMonth } from "date-fns";
 import { addMonths } from "date-fns";
 import { startOfMonth } from "date-fns";
@@ -253,9 +251,9 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
               value.split(",").length <= 1))
         ) {
           toast({
-            title: "error",
+            title: "Error",
             description: "At least one filter must be selected",
-            variant: "default",
+            variant: "destructive",
           });
           return prev;
         }
