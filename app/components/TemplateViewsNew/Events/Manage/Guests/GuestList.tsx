@@ -154,6 +154,9 @@ const GuestList = ({ eventId, statusModal, setStatusModal, setSortBy, setFilterS
     XLSX.writeFile(workbook, "GuestList.xlsx");
   };
 
+  useEffect(() =>{
+    console.log("fsdfsdfsdf",guests)
+  },[])
   const getStatusLabel = (status: string) => {
     return status === "PENDING"
       ? "Pending"
