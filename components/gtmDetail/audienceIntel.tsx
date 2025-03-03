@@ -1,5 +1,4 @@
 "use client";
-import { Progress } from "@/components/ui/progress";
 import {
   Tooltip,
   TooltipContent,
@@ -48,7 +47,8 @@ export const AudienceIntel = ({
   const { audienceSpread, designationSpread } =
     (eventDetails && eventDetails.audience) || {};
 
-  const { estimatedAttendance, estimatedExhibitors } = (eventDetails && eventDetails.insights) || {};
+  const { estimatedAttendance, estimatedExhibitors } =
+    (eventDetails && eventDetails.insights) || {};
 
   const parseEstimatedExhibitor = (
     value: string | number | undefined | null
@@ -315,13 +315,11 @@ export const AudienceIntel = ({
                             {maxCountObject?.designation}
                           </Text>
                           <span className="text-[var(--primary-color)] font-medium">
-                            {maxCountObject?.count}
+                            {maxCountObject &&
+                              Math.ceil(maxCountObject.percentage)}
+                            %
                           </span>
                         </p>
-                        <Progress
-                          value={maxCountObject?.percentage}
-                          className="h-2"
-                        />
                       </div>
                     </div>
                     <Text
@@ -342,13 +340,12 @@ export const AudienceIntel = ({
                               {designation.designation}
                             </Text>
                             <span className="text-[var(--primary-color)] font-medium">
-                              {designation.count}
+                              {designation &&
+                                designation.percentage &&
+                                Math.ceil(designation.percentage)}
+                              %
                             </span>
                           </p>
-                          <Progress
-                            value={designation.percentage}
-                            className="h-2"
-                          />
                         </li>
                       ))}
                     </ul>
