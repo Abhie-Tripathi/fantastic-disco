@@ -14,7 +14,7 @@ interface LoadMoreProps {
   setEventEditionDetails: Dispatch<SetStateAction<Editions[] | undefined>>;
 }
 const take = 10;
-Event
+
 const LoadMore = ({ eventId, setEventEditionDetails }: LoadMoreProps) => {
   const { getEventEditionDetails } = useEventsService();
   const [ref, inView] = useInView();
