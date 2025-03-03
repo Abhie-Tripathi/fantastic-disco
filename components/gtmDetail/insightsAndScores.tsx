@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/tooltip";
 import { useFilterContext } from "@/context/filterContext";
 import {
-  DetailRanking,
   Event,
   OverallRankingsDetail,
   TTabs,
@@ -34,7 +33,6 @@ export const InsightsAndScores = ({
   const {
     scores,
     economicImpact,
-    rankings,
     economicImpactBreakdown,
     trustScore,
   } = (eventDetails && eventDetails.insights) || {};
@@ -284,7 +282,6 @@ export const InsightsAndScores = ({
             )}
         </div>
         <EventRank
-          rankings={rankings as DetailRanking}
           eventDetails={eventDetails}
           eventRankingDetails={eventRankingDetails}
         />
