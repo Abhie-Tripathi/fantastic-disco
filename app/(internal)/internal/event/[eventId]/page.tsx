@@ -1,13 +1,29 @@
 "use client";
+import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
+import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
+import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
+import { Overview } from "@/components/gtmDetail/overview";
 import Heading from "@/components/new-ui/Heading";
 import Text from "@/components/new-ui/Text";
+import Loading from "@/components/ui/Loading";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Event, TTabs } from "@/types/events";
+import { Badge } from "@/components/ui/badge";
+import { Button as ButtonUI } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useCoordinateService } from "@/services/coordinateService";
+import { useEventsService } from "@/services/eventsService";
+import { Event, EventPOCDetails, TTabs } from "@/types/events";
+import { renderFormattedDates } from "@/utils/dateFormat";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ArrowLeft, Globe, Location, StarFill } from "geist-icons";
@@ -23,27 +39,10 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { Button } from "react-aria-components";
 import "react-circular-progressbar/dist/styles.css";
 import Disable from "/public/disable.svg";
-import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
-import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
-import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
-import { Overview } from "@/components/gtmDetail/overview";
-import Loading from "@/components/ui/Loading";
-import { Badge } from "@/components/ui/badge";
-import { useEventsService } from "@/services/eventsService";
-import { EventPOCDetails } from "@/types/events";
-import { renderFormattedDates } from "@/utils/dateFormat";
-import { Button as ButtonUI } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useCoordinateService } from "@/services/coordinateService";
-import { Button } from "react-aria-components";
 
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
@@ -241,6 +240,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     return "";
   })();
 
+  const eventImageSrc =
+    bannerUrl ??
+    eventLogoUrl ??
+    `https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${basic.website}&size=64`;
+
   const handleShare = () => {
     if (navigator.share) {
       navigator
@@ -309,16 +313,15 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             Back to Search
           </span>
         </Button>
-        {bannerUrl && (
+        {(bannerUrl || eventLogoUrl) && (
           <Image
-            src={bannerUrl ?? eventLogoUrl ?? "/eventDetailFallback.png"}
+            src={eventImageSrc}
             alt="eventDetails"
             width={100}
             height={100}
-            className="h-32 w-full rounded-lg"
+            className="h-1/4 w-full rounded-lg aspect-auto border object-contain"
           />
         )}
-
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center gap-1">
             {rating !== null && rating > 0 && (
@@ -464,7 +467,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                         TBA
                       </p>
                     </TooltipTrigger>
-                    <TooltipContent align="start" alignOffset={-60} className="tooltip-content-styles">
+                    <TooltipContent
+                      align="start"
+                      alignOffset={-60}
+                      className="tooltip-content-styles"
+                    >
                       <p className="text-[var(--secondary-text-color)]">
                         Venue to be announced
                       </p>
