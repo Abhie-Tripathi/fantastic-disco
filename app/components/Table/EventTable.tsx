@@ -45,7 +45,7 @@ const EventTable = ({source, trackerId, eventType}:EventTableProps) => {
     estimatedExhibitors: "estimatedExhibitors",
     scores: "scores",
     audienceZone: "audienceZone",
-    rankings: "rankings,trustScore",
+    rankings: "rankings",
   }
   let showsData:string[] =[];
   Object.entries(mapping).forEach(([key,value])=>{
@@ -113,7 +113,7 @@ console.log(isLoading);
   return (
     <div className="w-full">
       <div className="rounded-md border bg-background">
-        <div className="overflow-auto max-h-[calc(100vh-264px)]">
+        <div className="overflow-auto max-h-[calc(100vh-198px)]">
           <Table>
             <EventTableHeader show={showValues} />
             <TableBody>

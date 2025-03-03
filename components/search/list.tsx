@@ -36,6 +36,7 @@ import ZeroState from "@/app/components/zerostate";
 import { ApiError } from "@/types/api";
 import Image from "next/image";
 import holiday from "/public/eventType/holiday.svg";
+import { useTrackerContext } from "@/context/tracker";
 
 interface CircularProgressProps {
   value: number | null;
@@ -115,7 +116,7 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const query = Object.fromEntries(searchParams.entries());
   let events, totalEvents, isLoading, error;
-
+  const {data} = useTrackerContext();
   if (source === "tracker") {
     ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
       query,
@@ -124,16 +125,37 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
-
+  const mapping = {
+    rating: "rating",
+    maturity: "maturity",
+    branded: "branded,series",
+    forecasted: "forecasted",
+    frequency: "frequency",
+    estimatedExhibitors: "estimatedExhibitors",
+    scores: "scores",
+    audienceZone: "audienceZone",
+    rankings: "rankings",
+  }
+  let showsData:string[] =[];
+  Object.entries(mapping).forEach(([key,value])=>{
+    if(data?.filterValues?.show?.includes(key)){
+      showsData.push(value);
+      
+    }
+  })
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
 
-  const showValues: Show[] = getFilterValue("show")
+  let  showValues: Show[] = getFilterValue("show")
     .split(",")
     .filter(Boolean)
     .map((show) => Show[show as keyof typeof Show]);
+  if(source==="tracker"){
+    showValues = showsData.filter(Boolean)
+    .map((show) => Show[show as keyof typeof Show]);
+  }
 
   const handlePageChange = (page: number) => {
     setMultipleFilters({
@@ -147,7 +169,8 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
       limit: newItemsPerPage,
     });
   };
-
+  console.log(data?.filterValues?.show);
+  
   if (isLoading) {
     return <Loading />;
   }

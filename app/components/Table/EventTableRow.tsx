@@ -56,7 +56,7 @@ function getOrdinalSuffix(number: number): string {
 }
 
 function formatExhibitorCount(value: string | number | null): string {
-  if (value === null || value === undefined) return "--";
+  if (value === null || value === undefined) return "-";
 
   const stringValue = String(value);
   const values = stringValue.split("-");
@@ -73,6 +73,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   show,
   trackerId,
 }) => {
+  console.log(event.insights?.scores?.impactScore);
+  
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
@@ -96,20 +98,19 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                   alt={`${event.basic.name} website favicon`}
                   className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
                   onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    // This will trigger the fallback div to show
-                    e.currentTarget.dataset.error = 'true';
+                    e.currentTarget.style.display = "none";
+                    e.currentTarget.dataset.error = "true";
                   }}
                 />
                 {/* Fallback that shows when image errors */}
-                <div 
+                <div
                   className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
-                  style={{ display: 'none' }}
+                  style={{ display: "none" }}
                   ref={(el) => {
                     if (el) {
                       const img = el.previousSibling as HTMLImageElement;
-                      if (img && img.dataset.error === 'true') {
-                        el.style.display = 'flex';
+                      if (img && img.dataset.error === "true") {
+                        el.style.display = "flex";
                       }
                     }
                   }}
@@ -143,7 +144,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                     ),
                   }}
                 >
-                  <span>{eventTypeIcons[event.basic.primaryEventType || "festivals"]}</span>
+                  <span>
+                    {
+                      eventTypeIcons[
+                        event.basic.primaryEventType || "festivals"
+                      ]
+                    }
+                  </span>
                   <span>{event.basic.primaryEventType}</span>
                 </Badge>
               )}
@@ -237,24 +244,24 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       )} */}
 
       {/* Category Column */}
-      <TableCell className="text-center">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <span className="flex items-center text-left gap-1">
-                {event.basic.categories[0]?.name}
-                {event.basic.categories.length > 1 && (
-                  <span className="text-xs font-bold text-muted-foreground">
+      <TableCell>
+        <span>
+          {event.basic.categories[0]?.name}
+          {event.basic.categories.length > 1 && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <span className="text-xs font-bold text-muted-foreground ml-1">
                     +{event.basic.categories.length - 1}
                   </span>
-                )}
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              {event.basic.categories.map((item) => item.name).join(" | ")}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {event.basic.categories.map((item) => item.name).join(" | ")}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+        </span>
       </TableCell>
 
       {/* Event Size Column */}
@@ -266,9 +273,11 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
       {/* Estimated Exhibitors Column */}
       {show.includes(Show.estimatedExhibitors) &&
-        event.advance?.estimatedExhibitors !== undefined && (
+        event.insights?.estimatedExhibitors !== undefined && (
           <TableCell className="text-center">
-            {formatExhibitorCount(event.advance?.estimatedExhibitors)}
+            {event.insights?.estimatedExhibitors === null
+              ? "-"
+              : formatExhibitorCount(event.insights?.estimatedExhibitors)}
           </TableCell>
         )}
 
@@ -380,7 +389,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.scores) &&
         event.insights?.scores?.impactScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.scores?.impactScore !== 0
+            {(event.insights?.scores?.impactScore !== 0 && event.insights?.scores?.impactScore!==null)
               ? event.insights?.scores?.impactScore
               : "-"}
           </TableCell>
@@ -390,7 +399,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.scores) &&
         event.insights?.scores?.inboundScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.scores?.inboundScore !== 0
+            {(event.insights?.scores?.inboundScore !== 0 && event.insights?.scores?.inboundScore!==null)
               ? event.insights?.scores?.inboundScore
               : "-"}
           </TableCell>
@@ -400,7 +409,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.scores) &&
         event.insights?.scores?.internationalScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.scores?.internationalScore !== 0
+            {(event.insights?.scores?.internationalScore !== 0 && event.insights?.scores?.internationalScore!==null)
               ? event.insights?.scores?.internationalScore
               : "-"}
           </TableCell>
@@ -428,34 +437,33 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </TableCell>
         )}
 
-      {/* Audience Spread Column */}
       {show.includes(Show.audienceSpread) &&
         event.audience?.audienceSpread !== undefined && (
           <TableCell className="text-center">
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center justify-center">
               {event.audience?.audienceSpread &&
-              Object.entries(event.audience?.audienceSpread).length > 0
-                ? Object.entries(event.audience?.audienceSpread).map(
-                    ([key, { iso, name, count, percentage }]) => (
-                      <span
-                        key={key}
-                        className="inline-block rounded overflow-hidden"
-                        title={name}
-                      >
-                        <Image
-                          src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`}
-                          alt="flag"
-                          width={25}
-                          height={18}
-                          className="object-cover"
-                        />
-                      </span>
-                    )
+            Object.entries(event.audience?.audienceSpread).length > 0
+              ? Object.entries(event.audience?.audienceSpread).map(
+                  ([key, { iso, name, count, percentage }]) => (
+                    <span
+                      key={key}
+                      className="inline-block rounded overflow-hidden"
+                      title={name}
+                    >
+                      <Image
+                        src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`}
+                        alt="flag"
+                        width={25}
+                        height={18}
+                        className="object-cover"
+                      />
+                    </span>
                   )
-                : "-"}
-            </div>
-          </TableCell>
-        )}
+                )
+              : "-"}
+          </div>
+        </TableCell>
+      )}
 
       <TableCell
         className="sticky right-0 bg-background z-0"
