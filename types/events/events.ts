@@ -173,7 +173,6 @@ const InsightsEventSchema = z.object({
   sponsorsCount: z.number(),
   speakersCount: z.number(),
   exhibitorsCount: z.number(),
-  estimatedExhibitors: z.string(),
   economicImpact: z.string(),
   economicImpactBreakdown: z.record(z.number()).nullable(),
   estimatedVisitorRangeTag: z.string().nullable(),

@@ -48,9 +48,7 @@ export const AudienceIntel = ({
   const { audienceSpread, designationSpread } =
     (eventDetails && eventDetails.audience) || {};
 
-  const { estimatedAttendance } = (eventDetails && eventDetails.insights) || {};
-
-  const { estimatedExhibitors } = (eventDetails && eventDetails.advance) || {};
+  const { estimatedAttendance, estimatedExhibitors } = (eventDetails && eventDetails.insights) || {};
 
   const parseEstimatedExhibitor = (
     value: string | number | undefined | null
