@@ -54,8 +54,9 @@ const RegisterForm = ({
   const [prefilledEmail, setPrefilledEmail] = useState("");
   const [event_Id, setEventId] = useState("");
   const [status, setStatus] = useState("");
+  const [Following, setFollowing] = useState("");
   const {updateStatus, addIntend,error} = useIntendServices();
-  console.log("value_s", start_time, end_time, start_date);
+  console.log("value_s", start_time, end_time, start_date,status);
   // Function to convert hex to RGB
   const hexToRgb = (hex: string) => {
     const cleanHex = hex.replace("#", "");
@@ -132,7 +133,12 @@ const RegisterForm = ({
         firstname: firstName,
         lastname: lastName,
         id: event_Id,
-        status: status === "yes" ? "CONFIRMED" : "CANCELLED",
+        // status: status === "yes" ? "CONFIRMED" : "CANCELLED",
+        status: status === "yes" && Following === "follow"
+        ? "FOLLOWING"
+        : status === "yes"
+        ? "CONFIRMED"
+        : "CANCELLED",
         redirectUrl: `${console_url}/detailpage/${eventId}`,
       };
       try {
@@ -296,7 +302,11 @@ const RegisterForm = ({
     // Call the function to set the state
     calculateIsPastEvent();
   }, []);
-
+  useEffect(() => {
+    if (!isEventEnded && !registration) {
+      setFollowing("follow");
+    }
+  }, [isEventEnded, registration]); 
   return (
     <div className={styles.registerContainer}>
       {!isEventEnded &&
@@ -306,7 +316,7 @@ const RegisterForm = ({
         waitlisting && (
           <div className={styles.customMsg_container}>
             <div className={styles.detail_text}>
-              <div>Join us at the event..</div>
+              <div>Join us at the event.</div>
             </div>
             <div className={styles.customMessage}>{registerMessage}</div>
           </div>
