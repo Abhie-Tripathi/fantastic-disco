@@ -121,6 +121,7 @@ export default function EventCalendar({
         ? ["events", view, currentDate, searchParams.toString()]
         : [currentDate, active, view],
     queryFn: async () => {
+      setShowEventList(false)
       const { start, end } = getVisibleDateRange(view, currentDate);
       const updatedParams = new URLSearchParams(searchParams.toString());
       updatedParams.set("active_gte", moment(start).toISOString());

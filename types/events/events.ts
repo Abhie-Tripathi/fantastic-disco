@@ -162,7 +162,6 @@ const AdvanceEventSchema = z.object({
   editions: z.number(),
   isBranded: z.boolean(),
   isSeries: z.boolean(),
-  estimatedExhibitors: z.string(),
   rehostDate: z.string(),
   maturity: z.string().nullable(),
   frequency: z.string().nullable(),
@@ -170,6 +169,7 @@ const AdvanceEventSchema = z.object({
 
 const InsightsEventSchema = z.object({
   yoyGrowth: z.number().nullable(),
+  estimatedExhibitors: z.string(),
   sponsorsCount: z.number(),
   speakersCount: z.number(),
   exhibitorsCount: z.number(),
