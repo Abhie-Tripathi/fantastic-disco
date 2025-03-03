@@ -1,35 +1,4 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ReferenceLine,
-  ResponsiveContainer,
-  ReferenceArea,
-  CartesianGrid,
-  Rectangle,
-  Legend,
-  LegendProps,
-} from "recharts";
-import { addDays, isAfter } from "date-fns";
-import { format, parse, differenceInDays } from "date-fns";
-import Text from "../new-ui/Text";
-import { TooltipProps } from "recharts";
-import Link from "next/link";
-import { ArrowUpRight, Loader2 } from "lucide-react";
-import { columnsDropdown } from "@/data/trends";
-import { CategoricalChartState } from "recharts/types/chart/types";
-import { useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { useEventsService } from "@/services/eventsService";
-import Disable from "/public/disable.svg";
-import Image from "next/image";
-import { generateDatesArray, toMidnightISOString } from "@/utils/lineChart";
-import { TableGroupedHoliday } from "@/types";
-import HolidayIcon from "/public/eventType/holiday.svg";
 import {
   Tooltip as ShadcnTooltip,
   TooltipContent,
@@ -37,6 +6,34 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { isEventeli } from "@/config";
+import { columnsDropdown } from "@/data/trends";
+import { useEventsService } from "@/services/eventsService";
+import { TableGroupedHoliday } from "@/types";
+import { generateDatesArray, toMidnightISOString } from "@/utils/lineChart";
+import { useQuery } from "@tanstack/react-query";
+import { addDays, differenceInDays, format, isAfter } from "date-fns";
+import { ArrowUpRight, Loader2 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  Legend,
+  LegendProps,
+  ReferenceArea,
+  ReferenceLine,
+  ResponsiveContainer,
+  Tooltip,
+  TooltipProps,
+  XAxis,
+  YAxis
+} from "recharts";
+import { CategoricalChartState } from "recharts/types/chart/types";
+import Text from "../new-ui/Text";
+import Disable from "/public/disable.svg";
 
 interface IProps {
   predictedData: any;
@@ -61,7 +58,6 @@ const LineChartComponent = ({
 }: IProps) => {
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams);
-  const locationIds = searchParams.get("locationIds");
   const eventTypes = searchParams.get("eventTypes");
   const [link, setLink] = useState("");
   const eventService = useEventsService();
@@ -293,7 +289,7 @@ const LineChartComponent = ({
     const locationIds = params.get("locationIds");
     const searchEventParams = new URLSearchParams({
       status: "active,cancelled,postponed",
-      sortBy: "estimatedVisitorMean",
+      sortBy: "-visitors",
     });
 
     if (date) {
@@ -328,6 +324,12 @@ const LineChartComponent = ({
       setTooltipVisible(false);
     }
   };
+
+  const generateViewAllEventsParams = useMemo(() => {
+    const params = new URLSearchParams(link);
+    params && params.delete("sortBy");
+    return params;
+  }, [link]);
 
   const {
     data: eventData,
@@ -499,20 +501,22 @@ const LineChartComponent = ({
             ) : eventData && (eventData as any).events.length > 0 ? (
               (eventData as any).events
                 .slice(0, 4)
-                .map((event: any, index: number) => (
-                  <li key={event.id} className="flex gap-4">
-                    <div className="flex flex-col items-center">
-                      <span className="text-[12px] font-semibold">
-                        {/* {event.} */}
-                        {index + 1}.
-                      </span>
-                      {/* <span className="text-[12px] text-[#79747E]">EIS</span> */}
-                    </div>
-                    <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
-                      {event.name}
-                    </p>
-                  </li>
-                ))
+                .map((event: any, index: number) => {
+                  const { basic } = event || {};
+                  const { name } = basic || {};
+                  return (
+                    <li key={event.id} className="flex gap-4">
+                      <div className="flex flex-col items-center">
+                        <span className="text-[12px] font-semibold">
+                          {index + 1}.
+                        </span>
+                      </div>
+                      <p className="text-[#79747E] text-[12px] truncate whitespace-nowrap">
+                        {name}
+                      </p>
+                    </li>
+                  );
+                })
             ) : (
               <p className="text-[#666666] text-sm flex items-center gap-2">
                 <Image src={Disable} alt="Disable" width={15} height={15} />
@@ -522,7 +526,7 @@ const LineChartComponent = ({
           </ul>
         </div>
         <Link
-          href={`/internal/search/events?${link}`}
+          href={`/internal/search/events?${generateViewAllEventsParams.toString()}`}
           className="px-4 py-2 flex items-center gap-2 text-sm font-semibold text-[var(--primary-color)] cursor-pointer"
         >
           VIEW ALL

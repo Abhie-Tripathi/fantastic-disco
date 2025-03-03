@@ -40,7 +40,7 @@ const ShortlistModal = ({
     try {
       let payloadData = {
         enquiryId: enquiryId,
-        enquiryStatus: "SHORTLISTED",
+        enquiryStatus: pipelineConfig?.[1]?.status,
       };
 
       const apiData = await coordinateService.setEnquiryStatus(payloadData);

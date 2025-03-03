@@ -1,3 +1,4 @@
+
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
 import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes } from '@/types/trackers';
@@ -171,13 +172,13 @@ export const useTrackerServices = () => {
       if(query.eventType==="bookmarked")
       {
         return await api.request<EventResponse>(
-          `${endpoints.tracker.commonUrl}/${trackerId}/saved-events?limit=${query.limit||"10"}&offset=${query.skip||"0"}`,
+          `${endpoints.tracker.commonUrl}/${trackerId}/saved-events?limit=${query.limit||"10"}&offset=${query.offset||"0"}`,
           {
             method: "GET"
           }
         );
       }
-      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=${query.take||"20"}&offset=${query.limit||"0"}&type=${query.eventType}&sortBy=${query.sortBy || 'score'}`)
+      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=${query.limit||"10"}&offset=${query.offset||"0"}&type=${query.eventType}&sortBy=${query.sortBy || 'score'}`)
       return response;
     };
     const getTrackerMapEvents = async(

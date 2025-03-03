@@ -56,7 +56,7 @@ function getOrdinalSuffix(number: number): string {
 }
 
 function formatExhibitorCount(value: string | number | null): string {
-  if (value === null || value === undefined) return "--";
+  if (value === null || value === undefined) return "-";
 
   const stringValue = String(value);
   const values = stringValue.split("-");
@@ -73,6 +73,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   show,
   trackerId,
 }) => {
+  console.log(event.insights?.scores?.impactScore);
+  
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
@@ -387,7 +389,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.scores) &&
         event.insights?.scores?.impactScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.scores?.impactScore !== 0
+            {(event.insights?.scores?.impactScore !== 0 && event.insights?.scores?.impactScore!==null)
               ? event.insights?.scores?.impactScore
               : "-"}
           </TableCell>
@@ -397,7 +399,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.scores) &&
         event.insights?.scores?.inboundScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.scores?.inboundScore !== 0
+            {(event.insights?.scores?.inboundScore !== 0 && event.insights?.scores?.inboundScore!==null)
               ? event.insights?.scores?.inboundScore
               : "-"}
           </TableCell>
@@ -407,7 +409,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.scores) &&
         event.insights?.scores?.internationalScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.scores?.internationalScore !== 0
+            {(event.insights?.scores?.internationalScore !== 0 && event.insights?.scores?.internationalScore!==null)
               ? event.insights?.scores?.internationalScore
               : "-"}
           </TableCell>

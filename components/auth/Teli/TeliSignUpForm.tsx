@@ -1,19 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuthContext } from "@/context/auth";
-import { AlertTriangle, Loader2 } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { SignUpDTO } from "@/types";
-import { industryData } from "@/data/onboardingDropdownsData";
-import Link from "next/link";
-import IndustryCards from "./IndustryCards";
 import { sessionKeys } from "@/data/onboarding";
+import { industryData } from "@/data/onboardingDropdownsData";
+import { SignUpDTO } from "@/types";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { AlertTriangle, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import * as z from "zod";
+import IndustryCards from "./IndustryCards";
 
 const signUpSchema = z.object({
   email: z

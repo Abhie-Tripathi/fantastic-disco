@@ -1,26 +1,17 @@
 "use client";
-import { Event, TTabs } from "@/types/events";
-import { DetailMapComponent } from "../trendsWeather";
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
-import { CircleSlash, TriangleAlert } from "lucide-react";
-import Text from "../new-ui/Text";
-import { differenceInDays } from "date-fns";
-import { capitalize } from "lodash";
-// import TicketDetails from "../eventDetail/tickets";
-// import DetailDialog from "../eventDetail/modal";
-import { Button } from "@/components/ui/button";
-import { numberWithCommas } from "@/utils/formater";
-import { useInView } from "react-intersection-observer";
-import CircularProgress from "../eventDetail/relevanceScoreCircularProgress";
-import { Badge } from "../ui/badge";
-import Link from "next/link";
-import _ from "lodash";
-import { useFilterContext } from "@/context/filterContext";
-import { useRouter } from "next/navigation";
-import TrackerRelevanceScore from "./trackerRelevanceScore";
-import SearchEventsCTAButton from "./searchEventsCTAButton";
 import { isEventeli } from "@/config";
+import { Event, TTabs } from "@/types/events";
+import { differenceInDays } from "date-fns";
+import _, { capitalize } from "lodash";
+import { CircleSlash } from "lucide-react";
+import Link from "next/link";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import Text from "../new-ui/Text";
+import { DetailMapComponent } from "../trendsWeather";
 import AlertList from "./alertsList";
+import SearchEventsCTAButton from "./searchEventsCTAButton";
+import TrackerRelevanceScore from "./trackerRelevanceScore";
 
 interface Props {
   eventDetails: Event;
@@ -78,10 +69,6 @@ export const Overview = ({
   scrollSection,
   setActiveTab,
 }: Props) => {
-  const params = new URLSearchParams();
-  const router = useRouter();
-  const { enabledFilters } = useFilterContext();
-  const currentDate = new Date().toISOString().split("T")[0];
   const [isExpandDescription, setisExpandDescription] =
     useState<boolean>(false);
   const [ref, inView] = useInView({
@@ -102,7 +89,6 @@ export const Overview = ({
     eventLocation,
     tags,
     format,
-    // tickets,
     entryType,
     website,
   } = eventDetails.basic || {};
@@ -217,7 +203,6 @@ export const Overview = ({
                   <TicketDetails tickets={tickets ?? []} />
                 </DetailDialog>
               )} */}
-
               {/* <span className="text-xs text-[#666666] pt-2 underline cursor-not-allowed">
                 View details
               </span> */}

@@ -1,39 +1,30 @@
 "use client";
 import {
-  DetailRanking,
-  Event,
-  OverallRankingsDetail,
-  TTabs,
-} from "@/types/events";
-import { EventRank } from "./eventRank";
-import { InformationFill } from "geist-icons";
-import Text from "../new-ui/Text";
-import { CircularProgressBar } from "../eventDetail/circularProgressBar";
-import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
-import { useInView } from "react-intersection-observer";
-import { Heading } from "../eventDetail/heading";
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useFilterContext } from "@/context/filterContext";
+import {
+  DetailRanking,
+  Event,
+  OverallRankingsDetail,
+  TTabs,
+} from "@/types/events";
+import { Dispatch, SetStateAction, useMemo } from "react";
+import { useInView } from "react-intersection-observer";
+import { CircularProgressBar } from "../eventDetail/circularProgressBar";
+import { Heading } from "../eventDetail/heading";
 import Restriction from "../eventDetail/restriction";
+import Text from "../new-ui/Text";
+import { EventRank } from "./eventRank";
 interface Props {
   eventDetails: Event;
   eventRankingDetails: OverallRankingsDetail;
   scrollSection: string;
   setActiveTab: Dispatch<SetStateAction<TTabs>>;
 }
-// export interface RankingDetail {
-//   above5CountryEvent: countryRank[] | [];
-//   below5CountryEvent: countryRank[] | [];
-//   above5CategoryEvent: categoryRank[] | [];
-//   below5CategoryEvent: categoryRank[] | [];
-//   above5CountryCategoryRankEvent: countryCategoryRank[] | [];
-//   below5CountryCategoryEvent: countryCategoryRank[] | [];
-// }
 export const InsightsAndScores = ({
   eventDetails,
   eventRankingDetails,
@@ -52,14 +43,6 @@ export const InsightsAndScores = ({
   );
   const roundedEstimatedEconomicImpact =
     estimatedEconomicImpact && Math.ceil(estimatedEconomicImpact);
-  // const rankings: RankingDetail = {
-  //   above5CategoryEvent: above5CategoryEvent,
-  //   below5CategoryEvent: below5CategoryEvent,
-  //   above5CountryEvent: above5CountryEvent,
-  //   below5CountryEvent: below5CountryEvent,
-  //   above5CountryCategoryRankEvent: above5CountryCategoryRankEvent,
-  //   below5CountryCategoryEvent: below5CountryCategoryEvent,
-  // };
   const { morphedData } = useFilterContext();
   const { eventAnalytics, eventRanking } = morphedData || {};
   const isAnalyticsEnabled = eventAnalytics && eventAnalytics.isEnabled;
@@ -69,7 +52,7 @@ export const InsightsAndScores = ({
       morphedData.economicImpact &&
       morphedData.economicImpact.isEnabled) ||
     true;
-  const [ref, inView, entry, rootMargin] = useInView({
+  const [ref, inView] = useInView({
     threshold: 0.2,
     triggerOnce: false,
   });

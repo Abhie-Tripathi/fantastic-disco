@@ -659,7 +659,7 @@ const Pages = () => {
     estimatedExhibitors: "estimatedExhibitors",
     scores: "scores",
     audienceZone: "audienceZone",
-    rankings: "rankings,trustScore"
+    rankings: "rankings"
   };
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
