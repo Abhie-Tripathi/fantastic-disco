@@ -21,6 +21,7 @@ interface EventTableRowProps {
   event: Event;
   trackerId?: string;
   show: Show[];
+  type?: stirng;
 }
 
 function getForecastedStatus(data: any) {
@@ -43,6 +44,27 @@ function displayValue(value: any) {
   }
   return value;
 }
+function getTrackerAssociation(trackerMatchInfo, info) {
+  if (info === "peopleFinderPersonAssociationPercentage") {
+    return [trackerMatchInfo?.peopleFinderPersonAssociationPercentage];
+  }
+  if(info==="competitorPercentage"){
+    if(trackerMatchInfo?.[info]==="") return "-"
+    else return [trackerMatchInfo?.[info]];
+  }
+  if(info==="speakerPersonAssociationPercentage") 
+    if(trackerMatchInfo?.[info]==="") return "-"
+    else return [trackerMatchInfo?.[info]];
+  const result = trackerMatchInfo?.[info]?.map((item) => 
+    item
+      .split("_")
+      .map((i) => `${i.charAt(0).toUpperCase()}${i.slice(1)}`).join("_")
+  );
+
+  console.log(result);
+  return result;
+}
+
 
 function getOrdinalSuffix(number: number): string {
   const j = number % 10;
@@ -52,6 +74,7 @@ function getOrdinalSuffix(number: number): string {
   if (j === 3 && k !== 13) return "rd";
   return "th";
 }
+
 
 function formatExhibitorCount(value: string | number | null): string {
   if (value === null || value === undefined) return "--";
@@ -66,10 +89,25 @@ function formatExhibitorCount(value: string | number | null): string {
   return stringValue.toLocaleString();
 }
 
+function getAssociationColor(value: string) {
+  switch (value.toLowerCase()) {
+    case "high":
+      return "flex items-center justify-center text-green-500 bg-[var(--success-background-color)] px-6 py-2 rounded-[var(--border-radius-lg)]";
+    case "medium":
+      return "flex items-center justify-center text-blue-500 bg-[#eeeaf9] px-6 py-2 rounded-[var(--border-radius-lg)]";
+    case "low":
+      return "flex items-center justify-center text-red-500 bg-[var(--danger-background-color)] px-6 py-2 rounded-[var(--border-radius-lg)]";
+    default:
+      return "text-gray-500";
+  }
+}
+
+
 export const EventTableRow: React.FC<EventTableRowProps> = ({
   event,
   show,
   trackerId,
+  type,
 }) => {
   return (
     <TableRow key={event.basic.id}>
@@ -409,9 +447,129 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             </div>
           </TableCell>
         )}
+      {type==="T_PEOPLE_FINDER" &&
+      <>
+      <TableCell
+        className="sticky right-20 bg-background z-0"
+        style={{ zIndex: 0 }}
+      >
+        <TooltipProvider>
+          <Tooltip>
+          <TooltipTrigger>
+  {getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociation")[0].split("_")[0]}
+</TooltipTrigger>
+            <TooltipContent>
+            {getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociation")[0].split("_").join(" ")}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </TableCell>
+      <TableCell
+        className="sticky right-10 bg-background z-0"
+        style={{ zIndex: 0 }}
+      >
+        <span className={getAssociationColor(getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociationPercentage")[0])}>
+       {getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociationPercentage")[0]}
+       </span>
+      </TableCell>
+      </>
+      }
+      {type==="T_SPEAKING_OPPORTUNITY" &&
+      <>
+      <TableCell
+        className="sticky right-20 bg-background z-0"
+        style={{ zIndex: 0 }}
+      >
+        <TooltipProvider>
+          <Tooltip>
+          <TooltipTrigger>
+  {getTrackerAssociation(event.trackerMatchInfo, "speakerPersonAssociation")[0].split("_")[0]}
+</TooltipTrigger>
+            <TooltipContent>
+            {getTrackerAssociation(event.trackerMatchInfo, "speakerPersonAssociation")[0].split("_").join(" ")}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </TableCell>
+      <TableCell
+        className="sticky right-10 bg-background z-0"
+        style={{ zIndex: 0 }}
+      >
+        <span className={getAssociationColor(getTrackerAssociation(event.trackerMatchInfo, "speakerPersonAssociationPercentage")[0])}>
+       {getTrackerAssociation(event.trackerMatchInfo, "speakerPersonAssociationPercentage")[0] ?? "-"}
+       </span>
+      </TableCell>
+      </>
+      }
+      {type==="T_COMPETITOR" &&
+      <>
+      <TableCell
+        className="sticky right-20 bg-background z-0"
+        style={{ zIndex: 0 }}
+      >
+        <TooltipProvider>
+          <Tooltip>
+          <TooltipTrigger>
+  {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName")[0].split("_")[0]}
+  </TooltipTrigger>
+            <TooltipContent>
+            {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName").map((item)=>(
+              <div>
+                {item.split("_")[1].toLowerCase()} ({item.split("_")[0]})
+              </div>
+            ))}
+            {/* {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName")[0].split("_")[1].toLowerCase()} */}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </TableCell>
+      <TableCell
+        className="sticky right-10 bg-background z-0"
+        style={{ zIndex: 0 }}
+      >
+        <span className={getAssociationColor(getTrackerAssociation(event.trackerMatchInfo, "competitorPercentage")[0])}>
+       {getTrackerAssociation(event.trackerMatchInfo, "competitorPercentage")[0] ?? "-"}
+       </span>
+      </TableCell>
+      </>
+      }
+      {type==="T_PRODUCT_KEYWORDS"&&
+      <>
+      <TableCell className="sticky right-20 bg-background z-0" style={{ zIndex: 0 }}>
+  <TooltipProvider>
+    <Tooltip>
+      <TooltipTrigger>
+        {event?.basic?.matchedKeywords?.[0]}  {/* Fixed variable name */}
+      </TooltipTrigger>
+      <TooltipContent>
+      {event?.basic?.matchedKeywords.map((item) => item).join(" | ")}
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+</TableCell>
 
       <TableCell
-        className="sticky right-0 bg-background z-0"
+        className="sticky right-10 bg-background z-0"
+        style={{ zIndex: 0 }}
+      >
+       {event.basic.matchedKeywordsPercentage > 20 ? (
+                              <span className={getAssociationColor("high")}>High</span>
+                            ) : event.basic.matchedKeywordsPercentage >= 10 &&
+                            event.basic.matchedKeywordsPercentage <= 20 ? (
+                              <span className={getAssociationColor("medium")}>
+                                Medium
+                              </span>
+                            ) : event.basic.matchedKeywordsPercentage > 0 &&
+                            event.basic.matchedKeywordsPercentage < 10 ? (
+                              <span className={getAssociationColor("low")}>Low</span>
+                            ) : (
+                              "-"
+                            )}
+      </TableCell>
+      </>
+      }
+      <TableCell
+        className="sticky right-0 bg-background z-0 w-[68px]"
         style={{ zIndex: 0 }}
       >
         <ActionPopover

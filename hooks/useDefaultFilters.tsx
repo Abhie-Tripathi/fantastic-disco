@@ -38,7 +38,7 @@ export function useDefaultFilters() {
     eventFormats: filters.eventFormats?.enabledValue?.join(",") ?? "",
     status:
       filters.status?.enabledValue
-        ?.map((item: string) => item.toLowerCase())
+        ?.map((item: string) => item)
         ?.join(",") ?? "",
     categories:
       filters.categories?.enabledValue

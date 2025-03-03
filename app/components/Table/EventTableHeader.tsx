@@ -3,9 +3,10 @@ import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Show } from "@/types/events/dto/event-query.dto";
 interface EventTableHeaderProps {
   show: Show[];
+  type?: string;
 }
 
-export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
+export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show, type }) => {
   return (
     <TableHeader>
       <TableRow className="bg-muted/50 hover:bg-muted/50">
@@ -103,12 +104,23 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
             <div className="font-medium text-foreground ">Audience Spread</div>
           </TableHead>
         )}
+        {(type && type!=="T_CUSTOM") &&
+        <>
+         <TableHead className="sticky right-[130px] z-40 h-12 bg-muted" style={{ zIndex: 0}}>
+           <div className="font-medium text-foreground text-center">Matched</div>
+          </TableHead>
+
+        <TableHead className="sticky right-[32px] z-40 h-12 w-[150px] bg-muted" style={{ zIndex: 0 }}>
+        <div className="font-medium text-foreground text-center">Score</div>
+        </TableHead>
         <TableHead
           className="sticky right-0 bg-muted/50 z-40 h-12"
           style={{ zIndex: 0 }}
         >
           {/* Actions */}
         </TableHead>
+        </>
+          }
       </TableRow>
     </TableHeader>
   );

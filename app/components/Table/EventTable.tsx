@@ -117,10 +117,11 @@ console.log(isLoading);
       <div className={`overflow-auto ${view === "global" ? "h-[calc(100vh-165px)]" : "max-h-[calc(100vh-264px)]"}`}>
 
           <Table>
-            <EventTableHeader show={showValues} />
+            <EventTableHeader show={showValues} type={query.type}/>
             <TableBody>
               {events.map((event: Event) => (
                 <EventTableRow
+                  type={query.type}
                   key={event.basic.id}
                   event={event}
                   show={showValues}

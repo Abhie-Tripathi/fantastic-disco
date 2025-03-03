@@ -29,6 +29,7 @@ export default function StatusSelector() {
   const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
   const eventStatuses = morphedData.eventStatus.options;
   const enabled = morphedData.eventStatus.isEnabled;
+  
   const selectedStatuses = getLocalFilterValue("status")
     .split(",")
     .filter(Boolean);
