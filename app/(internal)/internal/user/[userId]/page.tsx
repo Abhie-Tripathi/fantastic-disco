@@ -117,7 +117,7 @@ const UserDetail = ({ params }: { params: { userId: string } }) => {
         setPastEvents(pastEventRes?.events || []);
 
       return {
-        userDetails: userResponse,
+        userDetails: userResponse?.userData,
         upcomingEventsCount: upcomingEventRes?.count,
         pastEventsCount: pastEventRes?.count,
       };
@@ -145,6 +145,24 @@ const UserDetail = ({ params }: { params: { userId: string } }) => {
     const element = document.querySelector(`.${section}`);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const loadMoreEvents = async (type: string) => {
+    if (type === "past") {
+      const moreEvents = await getUserEvents(
+        params.userId,
+        "past",
+        pastEvents.length
+      );
+      setPastEvents((prev) => [...prev, ...moreEvents?.events]);
+    } else if (type === "upcoming") {
+      const moreEvents = await getUserEvents(
+        params.userId,
+        "upcomming",
+        upcomingEvents.length
+      );
+      setUpcomingEvents((prev) => [...prev, ...moreEvents?.events]);
     }
   };
 
@@ -329,7 +347,7 @@ const UserDetail = ({ params }: { params: { userId: string } }) => {
             upcomingEventsCount={upcomingEventsCount}
             pastEvents={pastEvents}
             pastEventsCount={pastEventsCount}
-            // loadMoreEvents={loadMoreEvents}
+            loadMoreEvents={loadMoreEvents}
           />
         </section>
       </div>
