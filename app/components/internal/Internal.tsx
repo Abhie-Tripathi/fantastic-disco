@@ -24,6 +24,7 @@ import { GAEvent } from "@/utils/GAEvent";
 import EventDetail from "./eventdetail/EventDetail";
 import ShortlistModal from "./eventdetail/shortlistModal";
 import { endpoints } from "@/config/endpoints";
+import AddEventModal from "@/components/coordinate/addEvent";
 
 interface Props {
   coordinateActions: any;
@@ -291,6 +292,8 @@ const Internal = ({
             <div style={{ width: "15%" }} className={styles.outerDiv}>
               <UpvoteSelector />
             </div>
+
+            <AddEventModal />
           </div>
 
           <div className={styles.timelineContainer}>
