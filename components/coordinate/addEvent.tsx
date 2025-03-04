@@ -81,9 +81,12 @@ export default function AddEventModal() {
     <div>
       <Button onClick={() => setIsOpen(true)}>+ Add Event</Button>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[825px]">
+        <DialogContent className="sm:max-w-full h-full">
           <DialogHeader>
-            <DialogTitle className="tracking-normal">Add Event</DialogTitle>
+            <div className="flex justify-between">
+                <DialogTitle className="tracking-normal">Add Event</DialogTitle>
+                <Button className="mr-8">Bulk Import</Button>
+            </div>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="flex justify-between">
