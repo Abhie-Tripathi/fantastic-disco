@@ -62,7 +62,7 @@ export const AudienceSpread = ({ restrictedData, audienceSpread }: Props) => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          {isEnabled
+          {/* {isEnabled
             ? audienceSpread &&
               Object.keys(audienceSpread).length > 0 && (
                 <Tabs defaultValue={audienceSpreadView} className="w-44">
@@ -84,7 +84,7 @@ export const AudienceSpread = ({ restrictedData, audienceSpread }: Props) => {
                   </TabsList>
                 </Tabs>
               )
-            : null}
+            : null} */}
         </div>
         {!isEnabled && <Restriction />}
         {isEnabled && (
