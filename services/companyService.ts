@@ -103,9 +103,9 @@ export const useCompanyService = () => {
     );
   };
 
-  const getEventCountByCountry = (companyId: string | number) => {
+  const getEventCountByCountry = (companyId: string | number, source: string) => {
     return api.request(
-      `${endpoints.prospect.company.detail}/${companyId}/events?groupBy=country`,
+      `${source === "userDetail" ? endpoints.prospect.users.detail : endpoints.prospect.company.detail}/${companyId}/events?groupBy=country`,
       {
         method: "GET",
       }
@@ -128,16 +128,25 @@ export const useCompanyService = () => {
   };
 
   const getUserDetailById = (userId: string | number) => {
-    const filteredData = prospectUserData.data.userData.filter((user: any) => user.user_id === userId);
-    return filteredData[0];
+    return api.request<any>(
+      `${endpoints.prospect.users.detail}/${userId}`,
+      {
+        method: "GET",
+      }
+    );
   };
 
   const getUserEvents = (
-    companyId: string | number,
+    userId: string | number,
     eventType: string,
     offset: number = 0
   ) => {
-    return eventData
+    return api.request(
+      `${endpoints.prospect.users.detail}/${userId}/events?eventOf=${eventType}&limit=10&offset=${offset}`,
+      {
+        method: "GET",
+      }
+    );
   };
 
   return {

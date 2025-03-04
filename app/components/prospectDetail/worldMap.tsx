@@ -15,7 +15,7 @@ import { CircleSlash } from "lucide-react";
 import Loading from "@/components/ui/Loading";
 
 
-const WorldMap = ({ companyId }: { companyId: string }) => {
+const WorldMap = ({ companyId, source }: { companyId: string, source: string }) => {
   const [fullView, setFullView] = useState(true);
   // const [zonePerPage, setZonePerPage] = useState<any[]>([]);
   const [countryPerPage, setCountryPerPage] = useState<any[]>([]);
@@ -59,7 +59,7 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
   const fetchEventsData = async () => {
     setIsLoading(true);
     try {
-      const countryData = await getEventCountByCountry(companyId);
+      const countryData = await getEventCountByCountry(companyId, source);
       if (countryData && countryData.length > 0) {
         const sortedData = countryData.sort((a: any, b: any) => b.count - a.count);
         setViewport((prevViewport: any) => ({
