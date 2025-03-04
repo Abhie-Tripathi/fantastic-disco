@@ -37,6 +37,8 @@ import { ApiError } from "@/types/api";
 import Image from "next/image";
 import holiday from "/public/eventType/holiday.svg";
 import { useTrackerContext } from "@/context/tracker";
+import { isEventeli } from "@/config";
+import { Button } from "../ui/button";
 
 interface CircularProgressProps {
   value: number | null;
@@ -139,7 +141,7 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
   };
   let showsData: string[] = [];
   Object.entries(mapping).forEach(([key, value]) => {
-    if (data?.filterValues?.show?.includes(key)) {
+    if ((data?.filterValues as any)?.show?.includes(key)) {
       showsData.push(value);
     }
   });
@@ -219,10 +221,6 @@ const EventListItem = ({
   event: Event;
   showValues: Show[];
 }) => {
-  const { saveEvent } = useEventsService();
-  const { toast } = useToast();
-  const [isSaved, setIsSaved] = useState(Boolean(event.insights?.rankings));
-
   const address = event.basic.eventLocation ? (
     event.basic.eventLocation.venue?.name === "Online" ||
     event.basic.format === "online" ? (
@@ -270,31 +268,6 @@ const EventListItem = ({
 
   const isCancelled = event.basic.status === "cancelled";
   const isPostponed = event.basic.status === "postponed";
-
-  const handleSaveEvent = async (eventId: string) => {
-    try {
-      await saveEvent(eventId);
-      setIsSaved(true);
-      toast({
-        title: "Event saved",
-        description: "Event has been added to your saved events",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error saving event",
-        description: error.message,
-        variant: "destructive",
-        action: (
-          <ToastAction
-            onClick={() => handleSaveEvent(eventId)}
-            altText="Try again"
-          >
-            Try again
-          </ToastAction>
-        ),
-      });
-    }
-  };
 
   function getOrdinalSuffix(number: number): string {
     const j = number % 10;
@@ -745,66 +718,196 @@ const EventListItem = ({
               </div>
             </div>
 
-            <div className="col-span-5">
-              <div className="flex items-center justify-end">
-                {showValues.includes(Show.scores) && event.insights?.scores ? (
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex flex-col justify-end gap-4">
-                      {showValues.includes(Show.estimatedExhibitors) &&
-                        event.insights?.estimatedExhibitors !== undefined && (
+            {!isEventeli ? (
+              <div className="col-span-5">
+                <div className="flex items-center justify-end">
+                  {showValues.includes(Show.scores) &&
+                  event.insights?.scores ? (
+                    <div className="flex items-center justify-between w-full">
+                      <div className="flex flex-col justify-end gap-4">
+                        {showValues.includes(Show.estimatedExhibitors) &&
+                          event.insights?.estimatedExhibitors !== undefined && (
+                            <div>
+                              <p className="text-xs text-gray-600 font-medium">
+                                Estimated Exhibitors
+                              </p>
+                              <p className="text-lg font-semibold text-primary">
+                                {formatExhibitorCount(
+                                  event.insights?.estimatedExhibitors
+                                )}
+                              </p>
+                            </div>
+                          )}
+                        {event.insights?.estimatedAttendance && (
                           <div>
                             <p className="text-xs text-gray-600 font-medium">
-                              Estimated Exhibitors
+                              Estimated Visitors
                             </p>
                             <p className="text-lg font-semibold text-primary">
-                              {formatExhibitorCount(
-                                event.insights?.estimatedExhibitors
-                              )}
+                              {event.insights?.estimatedAttendance || "--"}
                             </p>
                           </div>
                         )}
-                      {event.insights?.estimatedAttendance && (
-                        <div>
-                          <p className="text-xs text-gray-600 font-medium">
-                            Estimated Visitors
-                          </p>
-                          <p className="text-lg font-semibold text-primary">
-                            {event.insights?.estimatedAttendance || "--"}
-                          </p>
+                        {showValues.includes(Show.economicImpact) &&
+                          event.insights?.economicImpact && (
+                            <div>
+                              <p className="text-xs text-gray-600 font-medium">
+                                Est. Economic Impact
+                              </p>
+                              <p className="text-lg font-semibold text-primary">
+                                {formatEstimatedSpend(
+                                  event.insights?.economicImpact || "--"
+                                )}
+                              </p>
+                            </div>
+                          )}
+                      </div>
+
+                      <div className="flex flex-col gap-4">
+                        <div
+                          className="flex items-center justify-end"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <ActionPopover
+                            eventId={event.basic.id}
+                            interests={event.interests}
+                          />
                         </div>
-                      )}
-                      {showValues.includes(Show.economicImpact) &&
-                        event.insights?.economicImpact && (
+                        {showValues.includes(Show.scores) &&
+                          event.insights?.scores && (
+                            <div className="grid grid-cols-3 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] dark:bg-[#171717] p-2 rounded">
+                              <CircularProgress
+                                value={event.insights?.scores.impactScore}
+                                label="EIS"
+                              />
+                              <CircularProgress
+                                value={event.insights?.scores.inboundScore}
+                                label="Inbound"
+                              />
+                              <CircularProgress
+                                value={
+                                  event.insights?.scores.internationalScore
+                                }
+                                label="International"
+                              />
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="grid grid-row-2 items-end gap-4">
+                      <div className="flex flex-col gap-4">
+                        <div
+                          className="flex items-center justify-end"
+                          onClick={(e) => e.preventDefault()}
+                        >
+                          <ActionPopover
+                            eventId={event.basic.id}
+                            interests={event.interests}
+                          />
+                        </div>
+                        {showValues.includes(Show.estimatedExhibitors) &&
+                          event.insights?.exhibitorsCount !== undefined && (
+                            <div>
+                              <p className="text-xs text-gray-600 font-medium">
+                                Estimated Exhibitors
+                              </p>
+                              <p className="text-lg font-semibold text-primary">
+                                {formatExhibitorCount(
+                                  event.insights?.exhibitorsCount
+                                )}
+                              </p>
+                            </div>
+                          )}
+                        {event.insights?.estimatedAttendance && (
                           <div>
                             <p className="text-xs text-gray-600 font-medium">
-                              Est. Economic Impact
+                              Estimated Visitors
+                            </p>
+                            <p className="text-lg font-semibold text-primary">
+                              {event.insights?.estimatedAttendance || "--"}
+                            </p>
+                          </div>
+                        )}
+                        {showValues.includes(Show.economicImpact) &&
+                          event.insights?.economicImpact && (
+                            <div>
+                              <p className="text-xs text-gray-600 font-medium">
+                                Economic Impact
+                              </p>
+                              <p className="text-lg font-semibold text-primary">
+                                {formatEstimatedSpend(
+                                  event.insights?.economicImpact || "--"
+                                )}
+                              </p>
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="col-span-5 flex flex-col gap-2 justify-between">
+                {event.alerts && event.alerts?.length > 0 && (
+                  <div className="flex items-center justify-end gap-2">
+                    {event.alerts?.map((alert) => (
+                      <Badge
+                        key={alert.id}
+                        variant="outline"
+                        className={cn(
+                          "capitalize text-sm border-2",
+                          getAlertLevelBorderColor(alert.level)
+                        )}
+                      >
+                        <span>{alertIcons[alert.type]}</span>
+                        <span className="ml-1 font-medium">
+                          {alert.name.toLowerCase()}
+                        </span>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                <div className="flex items-center justify-end h-full">
+                  {event.insights?.scores &&
+                  (event.insights?.scores.inboundScore !== null ||
+                    event.insights?.scores.internationalScore !== null) ? (
+                    <div className="flex justify-end gap-6 w-full">
+                      <div className="flex flex-col gap-4">
+                        {event.insights?.estimatedAttendance !== undefined && (
+                          <div>
+                            <p className="text-xs text-gray-600 font-medium">
+                              Estimated Visitors
+                            </p>
+                            <p className="text-lg font-semibold text-primary">
+                              {event.insights?.estimatedAttendance == "0"
+                                ? "--"
+                                : event.insights?.estimatedAttendance}
+                            </p>
+                          </div>
+                        )}
+                        {event.insights?.economicImpact !== undefined && (
+                          <div>
+                            <p className="text-xs text-gray-600 font-medium">
+                              Economic Impact
                             </p>
                             <p className="text-lg font-semibold text-primary">
                               {formatEstimatedSpend(
-                                event.insights?.economicImpact || "--"
+                                event.insights?.economicImpact
                               )}
                             </p>
                           </div>
                         )}
-                    </div>
-
-                    <div className="flex flex-col gap-4">
-                      <div
-                        className="flex items-center justify-end"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <ActionPopover
-                          eventId={event.basic.id}
-                          interests={event.interests}
-                        />
                       </div>
-                      {showValues.includes(Show.scores) &&
-                        event.insights?.scores && (
-                          <div className="grid grid-cols-3 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] dark:bg-[#171717] p-2 rounded">
-                            <CircularProgress
-                              value={event.insights?.scores.impactScore}
-                              label="EIS"
-                            />
+
+                      <div className="space-y-4">
+                        {event.insights?.scores && (
+                          <div className="grid grid-rows-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                            {/* <CircularProgress
+                        value={event.scores.impactScore}
+                        label="EIS"
+                      /> */}
                             <CircularProgress
                               value={event.insights?.scores.inboundScore}
                               label="Inbound"
@@ -815,61 +918,49 @@ const EventListItem = ({
                             />
                           </div>
                         )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="grid grid-row-2 items-end gap-4">
-                    <div className="flex flex-col gap-4">
-                      <div
-                        className="flex items-center justify-end"
-                        onClick={(e) => e.preventDefault()}
-                      >
+                      </div>
+
+                      <div className="flex items-start justify-end">
                         <ActionPopover
                           eventId={event.basic.id}
                           interests={event.interests}
                         />
                       </div>
-                      {showValues.includes(Show.estimatedExhibitors) &&
-                        event.insights?.exhibitorsCount !== undefined && (
+                    </div>
+                  ) : (
+                    <div className="flex justify-end w-full">
+                      <div className="grid grid-row-2 items-end gap-4">
+                        {event.insights?.estimatedAttendance !== undefined && (
                           <div>
                             <p className="text-xs text-gray-600 font-medium">
-                              Estimated Exhibitors
+                              Estimated Visitors
                             </p>
                             <p className="text-lg font-semibold text-primary">
-                              {formatExhibitorCount(
-                                event.insights?.exhibitorsCount
-                              )}
+                              {event.insights?.estimatedAttendance == "0" ||
+                              event.insights?.estimatedAttendance == null
+                                ? "--"
+                                : event.insights?.estimatedAttendance}
                             </p>
                           </div>
                         )}
-                      {event.insights?.estimatedAttendance && (
-                        <div>
-                          <p className="text-xs text-gray-600 font-medium">
-                            Estimated Visitors
-                          </p>
-                          <p className="text-lg font-semibold text-primary">
-                            {event.insights?.estimatedAttendance || "--"}
-                          </p>
-                        </div>
-                      )}
-                      {showValues.includes(Show.economicImpact) &&
-                        event.insights?.economicImpact && (
+                        {event.insights?.economicImpact !== undefined && (
                           <div>
                             <p className="text-xs text-gray-600 font-medium">
                               Economic Impact
                             </p>
                             <p className="text-lg font-semibold text-primary">
                               {formatEstimatedSpend(
-                                event.insights?.economicImpact || "--"
+                                event.insights?.economicImpact
                               )}
                             </p>
                           </div>
                         )}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </Link>
@@ -975,9 +1066,9 @@ const UnplannedCard = ({ event }: { event: Event }) => {
               </div>
             </div>
           </div>
-          <div className="col-span-5 flex flex-col justify-between">
-            <div className="flex items-center justify-end gap-2">
-              {/* {event.basic.alerts?.map((alert) => (
+            <div className="col-span-5 flex flex-col justify-between">
+              <div className="flex items-center justify-end gap-2">
+                {/* {event.basic.alerts?.map((alert) => (
                 <Badge
                   key={alert.id}
                   variant="outline"
@@ -992,34 +1083,37 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                   </span>
                 </Badge>
               ))} */}
-            </div>
-            <div className="flex items-center justify-end">
-              {event.insights?.scores ? (
-                <div className="flex items-center justify-end w-full">
-                  <div className="space-y-4">
-                    {event.insights?.scores && (
-                      <div className="grid grid-cols-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
-                        <CircularProgress value={-39} label="Business Score" />
-                        <CircularProgress value={80} label="Social Score" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="grid grid-row-2 items-end gap-4">
-                  {event.insights?.estimatedAttendance !== undefined && (
-                    <div>
-                      <p className="text-xs text-gray-600 font-medium">
-                        Estimated Visitors
-                      </p>
-                      <p className="text-lg font-semibold text-primary">
-                        {event.insights?.estimatedAttendance == "0"
-                          ? "--"
-                          : event.insights?.estimatedAttendance}
-                      </p>
+              </div>
+              <div className="flex items-center justify-end">
+                {/* {event.insights?.scores ? (
+                  <div className="flex items-center justify-end w-full">
+                    <div className="space-y-4">
+                      {event.insights?.scores && (
+                        <div className="grid grid-cols-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                          <CircularProgress
+                            value={-39}
+                            label="Business Score"
+                          />
+                          <CircularProgress value={80} label="Social Score" />
+                        </div>
+                      )}
                     </div>
-                  )}
-                  {/* {event.economicImpact !== undefined && (
+                  </div>
+                ) : ( */}
+                  <div className="grid grid-row-2 items-end gap-4">
+                    {/* {event.insights?.estimatedAttendance !== undefined && (
+                      <div>
+                        <p className="text-xs text-gray-600 font-medium">
+                          Estimated Visitors
+                        </p>
+                        <p className="text-lg font-semibold text-primary">
+                          {event.insights?.estimatedAttendance == "0"
+                            ? "--"
+                            : event.insights?.estimatedAttendance}
+                        </p>
+                      </div>
+                    )} */}
+                    {/* {event.economicImpact !== undefined && (
                       <div>
                         <p className="text-xs text-gray-600 font-medium">
                           Economic Impact
@@ -1029,10 +1123,10 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                         </p>
                       </div>
                     )} */}
-                </div>
-              )}
+                  </div>
+                {/* )} */}
+              </div>
             </div>
-          </div>
         </div>
       </div>
     </div>
