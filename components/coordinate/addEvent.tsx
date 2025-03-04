@@ -12,6 +12,8 @@ import SpeakerIcon from "/public/widgetimages/speakerIcon.svg";
 import ExhibitorIcon from "/public/widgetimages/exhibitorIcon.svg";
 import OrganiserIcon from "/public/widgetimages/organiserIcon.svg";
 import Image from "next/image";
+import DateTimeContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/DateTimeContainer";
+import { FormState } from "@/types/Formstate";
 
 export default function AddEventModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,6 +26,56 @@ export default function AddEventModal() {
   ];
 
   const saveEventHandler = () => {};
+
+  const handleChange = () => {};
+  const dateState: FormState = {
+    descriptionModal: false,
+    speakerModal: false,
+    registerModal: false,
+    eventName: "",
+    cityName: "",
+    participationType: "",
+    description: "",
+    textValue: "",
+    speaker: [],
+    registerMessage: "",
+    registerBtnText: "",
+    registerBtnColor: "",
+    countryName: "",
+    timeZone: "",
+    timeZoneKey: 0,
+    startDate: new Date().toISOString().split("T")[0],
+    endDate: new Date().toISOString().split("T")[0],
+    startTime: "12:00 A.M",
+    endTime: "12:00 A.M",
+    eventFormat: "",
+    boothNumber: "",
+    participationMessage: "",
+    banner: undefined,
+    venue: "",
+    latitude: 0,
+    longitude: 0,
+    hashtags: [],
+    query: "",
+    isEventNameEmpty: false,
+    isEventFormatEmpty: false,
+    isEventDescriptionEmpty: false,
+    isEventParticipationEmpty: false,
+    isParticipationMessageEmpty: false,
+    isTextValueMessageEmpty: false,
+    errorMessage: "",
+    parentData: "",
+    capacity: 0,
+    registration: false,
+    approval: false,
+    waitlisting: false,
+    capacityModal: false,
+    virtualLink: "",
+    exhibitorModal: false,
+    exhibitor: [],
+    event_type: "",
+    isEventTypeEmpty: false,
+  };
 
   return (
     <div>
@@ -87,6 +139,13 @@ export default function AddEventModal() {
                 placeholder="Event Name"
               />
             </div>
+
+            {/* Date & time */}
+            <DateTimeContainer
+              formTheme={""}
+              handleChange={handleChange}
+              formState={dateState}
+            />
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={() => setIsOpen(false)}>
