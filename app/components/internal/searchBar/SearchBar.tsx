@@ -57,7 +57,7 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
               }
               else if(type==="T_COMPETITOR"){
                 
-                setEventSuggestion(data.company);
+                setEventSuggestion(data.companies);
               }else
               setEventSuggestion(data.events); 
             } else {
@@ -117,7 +117,6 @@ const SearchBar = ({searchInput, setEventSearchLoader, handleSelect, endpoint, t
                     country: item?.country || ''
                   }));
                 }
-            
                 setRestructureData(updatedData);
             }
       },[eventSuggestion])

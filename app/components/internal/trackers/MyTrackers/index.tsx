@@ -154,7 +154,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             <Button variant="outline" onClick={()=>setOpenSearchBar(!openSearchBar)}>
             <Search width={16} height={16} />
             </Button>
-            <SortDropdown/>
+            {/* <SortDropdown/> */}
             </div>
           </div>
           {openSearchBar &&

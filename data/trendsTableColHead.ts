@@ -33,6 +33,13 @@ export interface NewColumn {
   subHeading?: SubColumn[];
 }
 
+export interface ColumnDropdown {
+  label: string;
+  value: string;
+  tooltipDescription: string;
+  enable: boolean;
+}
+
 export interface SubColumn extends Omit<NewColumn, "columnName"> {
   subColumnName: string;
 }

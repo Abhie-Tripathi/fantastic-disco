@@ -180,18 +180,20 @@ const WorldMap = ({ companyId }: { companyId: string }) => {
           <span className="text-base font-bold">{countryPerPage[0]?.name}</span>
         </div>
 
-        <div className="flex flex-col justify-center bg-white dark:bg-transparent dark:border-[var(--border-color)] shadow-md border border-[var(--neutral-light-color)] p-2 rounded-md gap-2 w-auto h-full">
-          <span className="text-[#6E6F89] text-xs">Other Countries</span>
-          <span
-            className="text-base font-bold line-clamp-1"
-            title={countryPerPage.map((item) => item.name).join(", ")}
-          >
-            {countryPerPage
-              .slice(1, 5)
-              .map((item) => item.name)
-              .join(", ")}
-          </span>
-        </div>
+        {countryPerPage.length > 1 &&
+          <div className="flex flex-col justify-center bg-white dark:bg-transparent dark:border-[var(--border-color)] shadow-md border border-[var(--neutral-light-color)] p-2 rounded-md gap-2 w-auto h-full">
+            <span className="text-[#6E6F89] text-xs">Other Countries</span>
+            <span
+              className="text-base font-bold line-clamp-1"
+              title={countryPerPage.map((item) => item.name).join(", ")}
+            >
+              {countryPerPage
+                .slice(1, 5)
+                .map((item) => item.name)
+                .join(", ")}
+            </span>
+          </div>
+        }
       </div>
     </div> ) : (
       <span className="text-[#666666] text-sm flex items-center gap-2 my-4">

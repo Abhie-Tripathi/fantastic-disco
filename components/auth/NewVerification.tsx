@@ -1,10 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuthContext } from "@/context";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,16 +13,20 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, Loader2, TriangleAlert } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { Input } from "../ui/input";
+import { isEventeli } from "@/config";
+import { useAuthContext } from "@/context";
 import { industryData, settingResearchData } from "@/data/onboarding";
-import { endOfMonth, startOfMonth } from "date-fns";
-import { GAEvent } from "@/utils/GAEvent";
 import { VerifyOTP } from "@/types/auth/user";
 import { SettingsInterestData } from "@/types/onboarding";
-import { isEventeli } from "@/config";
+import { GAEvent } from "@/utils/GAEvent";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { endOfMonth, startOfMonth } from "date-fns";
+import { ArrowLeft, Loader2, TriangleAlert } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Input } from "../ui/input";
 
 const otpSchema = z.object({
   otpCode: z

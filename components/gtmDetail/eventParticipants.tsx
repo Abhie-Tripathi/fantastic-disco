@@ -1,33 +1,8 @@
-import Text from "../new-ui/Text";
-import Image from "next/image";
-import Link from "next/link";
 import { Event, EventParticipantsDetails } from "@/types/events";
 import _ from "lodash";
-import { Badge } from "../ui/badge";
-
-const sponsorsData = [
-  {
-    id: "516cba2c-169f-46a5-a198-59e17564548f",
-    name: "@ Home Accommodation Services Ltd",
-    logo: "/gtmDetailIcons/home.png",
-    details: "",
-    type: "sponsor",
-  },
-  {
-    id: "51b8de39-81dc-402e-81da-7440c391b50c",
-    name: "RSS EXPRESS LTD T/A Ledbury Fuel Service Station",
-    logo: "/gtmDetailIcons/rss.png",
-    details: "",
-    type: "sponsor",
-  },
-  {
-    id: "2eb8bc9c-29af-4083-96ec-4cd239c6e99d",
-    name: "Women's Association United",
-    logo: "/gtmDetailIcons/women.png",
-    details: "",
-    type: "sponsor",
-  },
-];
+import Image from "next/image";
+import Link from "next/link";
+import Text from "../new-ui/Text";
 
 const ListCard = ({
   participant,
@@ -160,7 +135,6 @@ export const EventParticipants = ({
     (eventDetails && eventDetails.insights) || {};
   const { eventPageUrl } = (eventDetails && eventDetails.basic) || {};
 
-  // const showParticipantBasedOnEventType = 
   const participantData = [
     {
       heading: "Exhibitors",

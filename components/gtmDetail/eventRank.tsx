@@ -1,22 +1,22 @@
 "use client";
-import { ArrowDown, ArrowUp } from "lucide-react";
-import Text from "../new-ui/Text";
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/pagination";
-import { EffectCoverflow, Pagination, Navigation } from "swiper/modules";
-import { useRef, useState } from "react";
+import { useFilterContext } from "@/context/filterContext";
 import {
   DetailRanking,
   Event,
   OverallRankingsDetail,
   RankingData,
 } from "@/types/events";
-import { format, formatDate } from "date-fns";
+import { format } from "date-fns";
+import { ArrowDown, ArrowUp } from "lucide-react";
 import Link from "next/link";
-import { useFilterContext } from "@/context/filterContext";
+import { useRef, useState } from "react";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
+import { EffectCoverflow, Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import Restriction from "../eventDetail/restriction";
+import Text from "../new-ui/Text";
 
 interface EventRank {
   id?: string;
@@ -32,7 +32,6 @@ const EventRankCarousel = ({
   rankData,
   rankType,
   rankSlug,
-  eventDetails,
   enableEventRank,
 }: {
   id: number;

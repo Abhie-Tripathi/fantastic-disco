@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect, useState} from "react";
 import { Table, TableBody } from "@/components/ui/table";
 import { PaginationComponent } from "@/components/pagination";
 import { Event } from "@/types/events";
@@ -9,7 +9,7 @@ import { EventTableHeader } from "./EventTableHeader";
 import { useFilterState } from "@/hooks/useFilterState";
 import Loading from "@/components/ui/Loading";
 import ZeroState from "@/components/zerostate";
-import NullState from "../trackers/nullState";
+import NullState from "@/app/components/trackers/nullState";
 import TrackerNullState from "@/public/trackerNullState.svg";
 import { ApiError } from "@/types/api";
 import { Show } from "@/types/events/dto/event-query.dto";
@@ -26,6 +26,8 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } = useFilterState();
   const {setLocalFilter} = useFilterContext();
   const {data} = useTrackerContext();
+  const [interest, setInterest]=useState();
+  const [eventId, setEventId] = useState();
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
   console.log(trackerId);
@@ -46,7 +48,7 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
     estimatedExhibitors: "estimatedExhibitors",
     scores: "scores",
     audienceZone: "audienceZone",
-    rankings: "rankings,trustScore",
+    rankings: "rankings",
   }
   let showsData:string[] =[];
   Object.entries(mapping).forEach(([key,value])=>{
@@ -80,7 +82,43 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
       limit: itemsPerPage.toString(),
     });
   };
+  const [updatedEvents, setUpdatedEvents] = useState<Event[]>(events);
+console.log(eventType);
 
+useEffect(() => {
+  if (!events) return;
+
+  let newEvents = events;
+
+  if (query.eventType === "bookmarked") {
+    newEvents = events.filter((event: Event) => event.basic.id !== eventId);
+  } else {
+    newEvents = events.map((event: Event) => {
+      if (event.basic.id === eventId) {
+        return {
+          ...event,
+          interests: {
+            ...event.interests,
+            ...(interest
+              ? Object.keys(interest).reduce((acc, key) => {
+                  if (!event.interests?.hasOwnProperty(key)) {
+                    acc[key] = interest[key];
+                  }
+                  return acc;
+                }, {} as Record<string, any>)
+              : {}),
+          },
+        };
+      }
+      return event;
+    });
+  }
+
+  setUpdatedEvents(newEvents);
+}, [eventId, interest, events]);
+  
+  console.log(updatedEvents); // Now it will print correctly
+  
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
       limit: newItemsPerPage,
@@ -92,11 +130,23 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
   }
 
   if (error) {
+    if(source==="tracker"){
+      return( <NullState
+        image={TrackerNullState}
+        title={(error as ApiError).message}
+      />)
+    }else 
     return <ZeroState text={(error as ApiError).message} />;
   }
 
   if (events.length === 0) { 
     if(source==="tracker"){
+      if(query.eventType==="bookmarked"){
+        return( <NullState
+          image={TrackerNullState}
+          title="No events saved yet! Start saving events to easily track and revisit them here."
+        />)
+      }else
       return( <NullState
       image={TrackerNullState}
       title="We couldn't find any events matching your tracker criteria at the moment."
@@ -109,7 +159,7 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
     }else 
     return <ZeroState text="No events found" />;
   }
-console.log(isLoading);
+console.log(events);
 
   return (
     <div className="w-full">
@@ -117,10 +167,13 @@ console.log(isLoading);
       <div className={`overflow-auto ${view === "global" ? "h-[calc(100vh-165px)]" : "max-h-[calc(100vh-264px)]"}`}>
 
           <Table>
-            <EventTableHeader show={showValues} type={query.type}/>
+            <EventTableHeader show={showValues} type={query.type} view={query.eventType}/>
             <TableBody>
-              {events.map((event: Event) => (
+              {updatedEvents.map((event: Event) => (
                 <EventTableRow
+                  view={query.eventType}
+                  setEventId={setEventId}
+                  setInterest={setInterest}
                   type={query.type}
                   key={event.basic.id}
                   event={event}
@@ -133,7 +186,7 @@ console.log(isLoading);
       </div>
 
       {totalPages > 1 && (
-        <div className="sticky bottom-0 bg-background py-4">
+        <div className="sticky bottom-0 bg-background py-3">
           <PaginationComponent
             currentPage={currentPage}
             totalPages={totalPages}

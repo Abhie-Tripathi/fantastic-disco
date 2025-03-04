@@ -214,39 +214,6 @@ const Page = () => {
         }
                 </div>
             )}
-            {/* {sendInvite && (
-              <div className={styles.shareModal} onClick={closeModal}>
-              <div className={styles.innerModal}>
-                  <div className={styles.shareHead}>Invite People</div>
-                  <div className={styles.inviteAccess}>
-                  <div className={styles.accountImg}>
-                      <Image src={Account} alt="account" />
-                      </div>
-                      <div className={styles.inputArea}>
-                          <input type="text" 
-                          value={filter}
-                          placeholder='Invite others by name' onChange={handleFilterChange} />
-                      </div>
-                      <div className={styles.buttons}>
-                      <button className={styles.send} onClick={shareInvite}>Send Invite</button>
-                  </div>
-                  </div>
-                 
-                         {filter?.length > 0 && filteredData?.length > 0 && drop &&
-                      <div className={styles.dropdown}>
-                          <div className={styles.dropdownContent}>
-                              {filteredData.map((item: any) => (
-                                  <div key={item?.id} className={styles.dropdownItem} onClick={() => saveShareInvite(item?.id, item?.aliasName)}>
-                                      {item?.aliasName}
-                                  </div>
-                              ))}
-                          </div>
-                      </div>}
-                      
-                  
-              </div>
-          </div>
-            )} */}
         </div>
     );
 }

@@ -153,7 +153,7 @@ const Popup3: React.FC<Props> = ({
             fontFamily: fontSettings.heading.fontFamily,
             fontWeight: fontSettings.heading.fontWeight,
           }}
-          data-name={fetchedAddedEvents![0] ? fetchedAddedEvents![0].name : demoEventName}
+          data-name={fetchedAddedEvents![0]&&fetchedAddedEvents![0] ? fetchedAddedEvents![0].name : demoEventName}
         >
           {fetchedAddedEvents && fetchedAddedEvents.length > 0
             ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""
@@ -172,6 +172,9 @@ const Popup3: React.FC<Props> = ({
               fontFamily: fontSettings.subheading.fontFamily,
               fontWeight: fontSettings.subheading.fontWeight,
             }}
+            data-name={
+              fetchedAddedEvents![0]&&`${fetchedAddedEvents![0]?.cityName || ""}${fetchedAddedEvents![0]?.cityName && fetchedAddedEvents![0]?.countryName ? ", " : ""}${fetchedAddedEvents![0]?.countryName || ""}`
+            }
           >
             {fetchedAddedEvents && fetchedAddedEvents.length > 0
               ? fetchedAddedEvents[0].eventFormat === "Virtual" ? "Virtual" : (

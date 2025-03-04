@@ -661,7 +661,7 @@ const Pages = () => {
     estimatedExhibitors: "estimatedExhibitors",
     scores: "scores",
     audienceZone: "audienceZone",
-    rankings: "rankings,trustScore"
+    rankings: "rankings"
   };
   const saveTrackerHandler = async () => {
     // console.log(new Date(selectedDateRange[0]).toISOString().split('T')[0]);
@@ -737,18 +737,11 @@ const Pages = () => {
       const secondLast = pathName[pathName.length - 2];
      
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
-        // console.log(getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords"));
-        console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
       else if (type === "T_LOCATION" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-       }
-       else if(type==="T_VENUE" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -769,12 +762,7 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      
-      else if (type === defaultType && ( 
-        !getLocalFilterValue("locationIds") || 
-        getLocalFilterValue("locationIds").length === 0 || 
-        trackerName.trim().length === 0 
-      )) {
+      else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)){
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
@@ -793,8 +781,9 @@ const Pages = () => {
             setIsCreating(false);
             return;
           }else{
-            setIsNewCall(true);
           router.replace(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table`);
+          
+         // setIsNewCall(true);
           }
         } else {
           // console.log(error);

@@ -1,3 +1,4 @@
+
 import { useApi } from '@/hooks/useApi';
 import { endpoints } from "@/config/endpoints";
 import { Tracker, Access, NewAccess, ExistingAccess, EditAccess, AllTrackerTypes } from '@/types/trackers';
@@ -20,7 +21,10 @@ interface UserAccess {
   accessType: string;
   accessId: string;
 }
-
+interface BookmarkResponse {
+  interest: string;
+  id: string;
+}
 interface UserAccessData {
   superAdmin: UserAccess[];
   others: UserAccess[];
@@ -97,7 +101,7 @@ export const useTrackerServices = () => {
         return response;
       // return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
     };
-    
+   
     const getTrackerDetail=(trackerId:string, params?:string):Promise<Tracker| undefined>=>{
       return api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}${params ? `?${params}` : ''}?refresh=true`,
@@ -111,6 +115,11 @@ export const useTrackerServices = () => {
         }
       );
     }
+    const removeBookmark = async (id: string): Promise<BookmarkResponse | undefined> => {
+      return api.request(`${endpoints.intent.userEventInterest}/${id}`, {
+        method: "DELETE",
+      });
+    };
     const getShareAccess = async (trackerId: string, accessEntity: string): Promise<UserAccessData> => {
       const response = await api.request<UserAccessData>(`${endpoints.tracker.commonUrl}/${trackerId}/users`);
       
@@ -169,13 +178,13 @@ export const useTrackerServices = () => {
       if(query.eventType==="bookmarked")
       {
         return await api.request<EventResponse>(
-          `${endpoints.tracker.commonUrl}/${trackerId}/saved-events?limit=${query.limit||10}&offset=${query.offset||0}`,
+          `${endpoints.tracker.commonUrl}/${trackerId}/saved-events?limit=${query.limit||"10"}&offset=${query.offset||"0"}`,
           {
             method: "GET"
           }
         );
       }
-      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=${query.limit||10}&offset=${query.offset||0}&type=${query.eventType}&sortBy=${query.sortBy || 'score'}`)
+      const response = await api.request<EventResponse>(`${endpoints.tracker.commonUrl}/${trackerId}/events?limit=${query.limit||"10"}&offset=${query.offset||"0"}&type=${query.eventType}&sortBy=${query.sortBy || 'score'}`)
       return response;
     };
     const getTrackerMapEvents = async(
@@ -320,6 +329,7 @@ export const useTrackerServices = () => {
     //   return EventsAdapter.adaptEventCountResponse(response);
     // };
     return {
+      removeBookmark,
       createTracker,
       globalSavedEvents,
       getMapViewData,

@@ -88,7 +88,7 @@ const EventCard1 = ({
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.name_locationContainer}>
-                    <div className={styles.locationContainer}>
+                    <div style={{display:"flex"}} className={`${styles.locationContainer} ${styles.eventName}`} data-name={ fetchedEvent && `${fetchedEvent?.cityName} ${fetchedEvent?.cityName && ","} ${fetchedEvent?.countryName}`}>
                         {/* <Image src={locationIcon} alt='location' /> */}
                         <LocationIcon color={fontSettings.subheading.fontColor} iconSize={fontSettings?.subheading.fontSize || 14}/>
                         <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>

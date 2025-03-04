@@ -77,16 +77,13 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
         description: locationName,
       });
     } else if (locationIds) {
-      const locations = await Promise.all(
-        locationIds.map(async (id) => {
-          const location = await getLocationDetails(id);
-          return {
-            locationType: "LocationID",
-            id,
-            description: location?.formattedLocations[0]?.displayName,
-          };
-        })
-      );
+      const location = await getLocationDetails(locationIds.join(","));
+      const locations = locationIds.map((id) => ({
+        locationType: "LocationID",
+        id,
+        description: location?.formattedLocations.find((loc) => loc.id === id)
+          ?.displayName,
+      }));
       setSelectedLocation?.(locations as LocationItem[]);
     } else {
       setSelectedLocation?.(null);
@@ -112,7 +109,6 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   useEffect(() => {
     return () => {
       if (pathName === "/internal" || pathName === "/internal/search") {
-        console.log("deleting locationIds and geoCoordinates");
         replaceLocalFilter("geoCoordinates", "locationIds", "");
       }
     };

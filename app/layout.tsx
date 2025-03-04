@@ -1,4 +1,4 @@
-import '@/app/globals.css'
+import "@/app/globals.css";
 
 export default function RootLayout({
   children,
@@ -10,4 +10,4 @@ export default function RootLayout({
       <body className="min-h-screen">{children}</body>
     </html>
   );
-} 
+}

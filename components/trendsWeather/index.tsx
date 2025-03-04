@@ -1,24 +1,23 @@
-import { Event } from "@/types/events";
-import { Weather } from "@/types";
 import Text from "@/components/new-ui/Text";
-import { format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
-import { type CarouselApi } from "@/components/ui/carousel";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  type CarouselApi,
 } from "@/components/ui/carousel";
-import { useEffect, useMemo, useRef, useState } from "react";
-import React from "react";
+import { isEventeli } from "@/config";
 import { useMiscService } from "@/services/miscService";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import { Weather } from "@/types";
+import { Event } from "@/types/events";
 import { EventDate } from "@/types/events/eventDetail";
+import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { useEffect, useMemo, useRef, useState } from "react";
 import EventsListView from "../detailPageEventsList/eventsListView";
 import EventsMapView from "../detailPageEventsList/eventsMapView";
-import { isEventeli } from "@/config";
 interface Props {
   eventDetails: Event;
   venueLocation: Event["basic"]["eventLocation"] | null;
@@ -62,84 +61,6 @@ export const DetailMapComponent = ({
     venueLocation?.city?.longitude ??
     venueLocation?.state?.longitude ??
     "";
-
-  const weatherIconMap: Record<string, string> = {
-    mist: "/weather/mist.svg",
-    fog: "/weather/fog.svg",
-    light_rain_showers: "/weather/light_rain_showers.svg",
-    heavy_rain_showers: "/weather/heavy_rain_showers.svg",
-    light_snow_showers: "/weather/light_snow_showers.svg",
-    heavy_snow_showers: "/weather/heavy_snow_showers.svg",
-    sleet_showers: "/weather/sleet_showers.svg",
-    thunder_showers: "/weather/thunder_showers.svg",
-    cloudy: "/weatherIcons/cloudy.svg",
-    snowfall: "/weatherIcons/snowfall.svg",
-    rainfall: "/weatherIcons/rainfall.svg",
-    // cloudy_with_heavy_rain: "/weather/cloudy_with_heavy_rain.svg",
-    // cloudy_with_heavy_snow: "/weather/cloudy_with_heavy_snow.svg",
-    cloudy_with_heavy_rain: "/weatherIcons/cloudy_rainfall.svg",
-    cloudy_with_heavy_snow: "/weatherIcons/cloudy_snowfall.svg",
-    cloudy_with_light_snow: "/weather/cloudy_with_light_snow.svg",
-    // thunderstorms: "/weather/thunderstorms.svg",
-    thunderstorms: "/weatherIcons/thunderstorms.svg",
-    // sunny: "/weather/sunny.svg",
-    sunny: "/weatherIcons/sunny.svg",
-    // sunny_intervals: "/weather/sunny_intervals.svg",
-    sunny_intervals: "/weatherIcons/sunny_intervals.svg",
-  };
-  const determineWeatherCondition = (data: Weather) => {
-    const { cloud_cover, precipitation, temperature } = data;
-
-    if (precipitation.total > 100000) {
-      if (temperature.afternoon < 273.15) {
-        return "cloudy_with_heavy_snow";
-      } else {
-        return "cloudy_with_heavy_rain";
-      }
-    } else if (precipitation.total > 0) {
-      if (temperature.afternoon < 273.15) {
-        return "light_snow_showers";
-      } else {
-        return "light_rain_showers";
-      }
-    } else if (cloud_cover.afternoon > 50) {
-      return "sunny_intervals";
-    } else {
-      return "sunny";
-    }
-  };
-
-  const calculateRainChance = (
-    cloudCover: number,
-    precipitation: number,
-    humidity: number
-  ) => {
-    let rainChance = 0;
-    let alpha = 0.6,
-      beta = 0.3,
-      gamma = 10;
-
-    if (humidity < 30) {
-      humidity *= 0.5;
-    }
-
-    rainChance = alpha * cloudCover + beta * humidity + gamma * precipitation;
-    return Math.min(Math.round(rainChance), 100);
-  };
-
-  const convertWindSpeedToKmh = (windSpeedMps: number) => {
-    return windSpeedMps * 3.6;
-  };
-
-  // useEffect(() => {
-  //   if (startDateTime && endDateTime) {
-  //     const activeDate =
-  //       currentDate >= startDateTime && currentDate <= endDateTime
-  //         ? currentDate
-  //         : startDateTime;
-  //     setActiveDate(activeDate);
-  //   }
-  // }, []);
 
   useMemo(() => {
     const generateEventDates = (
@@ -209,26 +130,7 @@ export const DetailMapComponent = ({
     api.scrollTo(activeIndex, false);
   }, [api]);
 
-  // const {
-  //   data: weather,
-  //   isLoading,
-  //   error,
-  // } = useQuery<OpenMeteoWeatherResponse | undefined>({
-  //   queryKey: ["activeDate", eventDateRange],
-  //   queryFn: async () =>
-  //     await getDateRangeWeatherData(
-  //       latitude ?? "",
-  //       longitude ?? "",
-  //       eventDateRange.startDate,
-  //       eventDateRange.endDate
-  //     ),
-  // });
-
-  const {
-    data: weatherData,
-    error,
-    isLoading,
-  } = useQuery<Weather | undefined>({
+  const { data: weatherData } = useQuery<Weather | undefined>({
     queryKey: [weatherActiveDate],
     queryFn: async () =>
       getWeatherData(latitude, longitude, weatherActiveDate ?? ""),
@@ -238,34 +140,12 @@ export const DetailMapComponent = ({
     staleTime: 0,
   });
 
-  // const {
-  //   data: weatherData,
-  //   error,
-  //   isLoading,
-  // } = useQuery<Weather | undefined>({
-  //   queryKey: [activeDate],
-  //   queryFn: async () => getWeatherData(latitude, longitude, activeDate ?? ""),
-  //   refetchOnWindowFocus: false,
-  //   gcTime: 0,
-  //   staleTime: 0,
-  // });
-
-  // const weatherQueries = useQueries(
-  //   eventDates.map((date) => ({
-  //     queryKey: ["weather", date],
-  //     queryFn: async () =>
-  //       await getWeatherData(latitude, longitude, date),
-  //   }))
-  // );
-
   useEffect(() => {
     if (weatherData) {
       setWeatherInfo(weatherData);
     }
   }, [weatherData]);
 
-  // const maxTempArray = weatherInfo && weatherInfo.daily.temperature_2m_max;
-  // const minTempArray = weatherInfo && weatherInfo.daily.temperature_2m_min;
   const minTemp =
     weatherData &&
     weatherData.temperature.min &&
@@ -283,7 +163,6 @@ export const DetailMapComponent = ({
               event={eventDetails.basic || {}}
               startDate={eventDateRange.startDate}
               endDate={eventDateRange.endDate}
-              // activeDate={activeDate ?? ""}
               zoom={10}
               style={{
                 width: "100%",
@@ -387,7 +266,6 @@ export const DetailMapComponent = ({
                 event={eventDetails.basic || {}}
                 startDate={eventDateRange.startDate}
                 endDate={eventDateRange.endDate}
-                // activeDate={activeDate ?? ""}
                 zoom={10}
                 style={{
                   width: "100%",

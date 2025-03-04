@@ -509,7 +509,7 @@ const Trackers = ({ searchParams }: Search) => {
     {/* )} */}
 
   </div>
-  <div className="flex flex-row gap-3">
+  {/* <div className="flex flex-row gap-3">
   
  
         <div className="flex w-1/2 items-stretch flex-col gap-2 border rounded-[12px] p-4 border-[var(--border-color)] bg-[var(--primary-foreground)]">
@@ -542,7 +542,7 @@ const Trackers = ({ searchParams }: Search) => {
           </div>
         </div>
         </div>
-  </div>
+  </div> */}
   <div className="flex flex-row gap-3">
   <div className="flex w-1/2 items-stretch" onClick={()=>setContextData(singleTrackerData?.id)}>
     <SavedEventWidget savedEvents={savedEvents} redirectUrl={singleTrackerData 
@@ -565,7 +565,7 @@ const Trackers = ({ searchParams }: Search) => {
           <CardWidgitConfig heading={"Manage Access"} content={"Manage access to your event tracker with customizable permissions and controls to view and edit."} imgUrl={AccessBackground} redirectUrl={singleTrackerData?`${currentUrl}/${singleTrackerData?.id}/manageAccess?type=${singleTrackerData?.type}`:""}/>
           </div>
         </div>
-        <div className="flex flex-col gap-2 border border-[#EBEBEB] bg-[var(--primary-foreground)] p-4 mb-8">
+        {/* <div className="flex flex-col gap-2 border border-[#EBEBEB] bg-[var(--primary-foreground)] p-4 mb-8">
         <Text>Want to know more about your location insights?</Text>
         <span className="flex items-center gap-2">
           <InformationFill width="14px" height="14px" />
@@ -593,14 +593,9 @@ const Trackers = ({ searchParams }: Search) => {
             Explore Trends
           </Button>
           </Link>
-          {/* <Button
-                variant="secondary"
-                href={genLocationQuery(selectedLocation, "/trackers/create")}
-              >
-                Set Tracker
-              </Button> */}
+          
         </span>
-      </div>
+      </div> */}
         </div>
        
 

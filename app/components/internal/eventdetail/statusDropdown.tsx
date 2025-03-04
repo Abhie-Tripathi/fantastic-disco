@@ -42,7 +42,7 @@ const StatusChangeDropdown: React.FC<PropType> = (props:PropType) => {
   ))?.[0]?.label;
 
   const openDropDownHandler = (e: React.MouseEvent<HTMLDivElement>) => {
-    if( ["PENDING", "SHORTLISTED", "REJECTED"].includes(props?.currentEnquiryStatus) )
+    if( ["PENDING", props.pipelineConfig?.[1]?.status, "REJECTED"].includes(props?.currentEnquiryStatus) )
       setIsOpen((prev) => !prev);
     else 
       showToast('error',"Status already updated")

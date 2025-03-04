@@ -63,7 +63,7 @@ const StatusModal = ({setStatusModal, fetchGuests, statusValue, setStatusValue, 
                     }`}>
                     {/* {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" : "Not Going"} */} 
                      {/* check later */}
-                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" :statusValue === "INVITATION" ? "Invited" : "Not Going"}
+                    {statusValue === "PENDING" ? "Pending" : statusValue === "CONFIRMED" ? "Going" : statusValue === "WAITLISTING" ? "Waitlist" : statusValue === "FOLLOWING" ? "Following" :statusValue === "INVITATION" ? "Invited" : statusValue === "REJECTED" ? "Not Going" : "Rejected"}
                 </div>
             </div>
             <div className={styles.mail}>{mail}</div>

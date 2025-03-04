@@ -42,11 +42,11 @@ const Pricing = ({ membershipData }: Props) => {
           <div className="w-full mt-auto">
             {membershipPlan === MembershipPlan[0] ? (
               <Button
-                variant="default"
-                className="py-2 text-xs w-full"
+                variant="outline"
+                className="py-2 text-xs w-full mx-auto border-primary text-primary hover:bg-white"
                 onClick={() => router.push("https://whr.ai/demo")}
               >
-                To Upgrade, Contact Us
+                Upgrade Plan
               </Button>
             ) : (
               <div className="flex justify-between w-full">

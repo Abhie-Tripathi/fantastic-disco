@@ -121,6 +121,7 @@ export default function EventCalendar({
         ? ["events", view, currentDate, searchParams.toString()]
         : [currentDate, active, view],
     queryFn: async () => {
+      setShowEventList(false)
       const { start, end } = getVisibleDateRange(view, currentDate);
       const updatedParams = new URLSearchParams(searchParams.toString());
       updatedParams.set("active_gte", moment(start).toISOString());
@@ -303,10 +304,12 @@ export default function EventCalendar({
     [getLocalFilterValue, trackerDate]
   );
   const handleNavigate = (date: Date) => {
+    setShowEventList(false);
     setCurrentDate(date);
   };
 
   const handleViewChange = (newView: string) => {
+    setShowEventList(false);
     setView(newView);
   };
 

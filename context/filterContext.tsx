@@ -11,13 +11,11 @@ import React, {
 import { usePathname, useRouter } from "next/navigation";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useEventsService } from "@/services/eventsService";
-import { toast } from "react-toastify";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import {
   generateSearchFilters,
   searchFilters,
 } from "@/public/data/searchFilters";
-import { RecentSearchItem } from "@/types/events/recentSearches";
 import { endOfMonth } from "date-fns";
 import { addMonths } from "date-fns";
 import { startOfMonth } from "date-fns";
@@ -206,26 +204,23 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         const data = await getFilterConfiguration();
         setEnabledFilters(data || {});
       } catch (e) {
-
-
         console.error("Error fetching filters:", e);
         setEnabledFilters({});
       }
     };
-
     getEnabledFilters();
   }, []);
 
   useEffect(() => {
     if (enabledFilters) {
-      // console.log("Enabled Filters:", enabledFilters);
+     console.log("Enabled Filters:", enabledFilters);
       setMorphedData(generateSearchFilters(enabledFilters) as any);
     }
   }, [enabledFilters]);
   
   const setLocalFilter = useCallback(
     (key: keyof Filters, value: string) => {
-      // console.log(key);
+      console.log(key);
 
       const mapping: Record<keyof Filter, string> = {
         eventTypes: "eventTypes",
@@ -254,10 +249,12 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
               typeof value === "string" &&
               value.split(",").length <= 1))
         ) {
+          console.log(value);
+          
           toast({
-            title: "error",
+            title: "Error",
             description: "At least one filter must be selected",
-            variant: "default",
+            variant: "destructive",
           });
           return prev;
         }
@@ -419,3 +416,9 @@ export const useFilterContext = () => {
   }
   return context;
 };
+
+
+
+
+
+

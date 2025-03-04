@@ -1,32 +1,37 @@
-import { Cross, Edit, EllipsisVerticalIcon, Trash, X } from "lucide-react";
-import CILSearch from "/public/cil_search.svg";
-import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ToastAction } from "@/components/ui/toast";
+import { useFilterContext } from "@/context/filterContext";
+import { useToast } from "@/hooks/use-toast";
+import { useFilterState } from "@/hooks/useFilterState";
+import { sessionService } from "@/services/sessionService";
+import { useTrendsService } from "@/services/trendsService";
 import {
+  BaseFilterValue,
   CreateFilterValue,
   GetSaveTrendData,
   TrackerData,
   ViewBound,
-  BaseFilterValue,
 } from "@/types";
-import { useTrendsService } from "@/services/trendsService";
+import { renderFormattedDates } from "@/utils/dateFormat";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
+import { format } from "date-fns";
+import {
+  Edit,
+  EllipsisVerticalIcon,
+  FilterIcon,
+  Trash,
+  X
+} from "lucide-react";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
-import { useFilterState } from "@/hooks/useFilterState";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useFilterContext } from "@/context/filterContext";
-import { sessionService } from "@/services/sessionService";
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-import { Pagination, Autoplay, Navigation } from "swiper/modules";
-import { GeoLocation } from "@/components/search/location";
+import { Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 const SavedTrendCard = ({
   activeCard,
@@ -51,7 +56,8 @@ const SavedTrendCard = ({
   } = useFilterContext();
   const { deleteSavedTrend } = useTrendsService();
   const { getLastSearchedLocation } = sessionService();
-  const { locationIds, viewBound } = filterValues;
+  const { locationIds, viewBound, active_gte, active_lte, eventTypes } =
+    filterValues;
   const locationDetail = locationIds && Object.values(locationIds);
   const viewBoundDetail: ViewBound = viewBound && JSON.parse(viewBound);
   const displayName =
@@ -59,6 +65,23 @@ const SavedTrendCard = ({
     (viewBoundDetail &&
       viewBoundDetail.properties &&
       viewBoundDetail.properties.name) ||
+    "";
+  const locationCount =
+    locationDetail && locationDetail.length > 1 ? locationDetail.length - 1 : 0;
+  const startDate = active_gte
+    ? format(new Date(active_gte), "dd MMM yyyy")
+    : "";
+
+  const endDate = active_lte ? format(new Date(active_lte), "dd MMM yyyy") : "";
+  const eventTypeCount =
+    eventTypes && Object.keys(eventTypes).length > 1
+      ? Object.keys(eventTypes).length - 1
+      : 0;
+
+  const savedTrendEventTypes =
+    (eventTypes &&
+      Object.keys(eventTypes).length &&
+      Object.values(eventTypes).map((eventType) => eventType.name)) ||
     "";
 
   const isActiveCard = useMemo(() => {
@@ -235,7 +258,7 @@ const SavedTrendCard = ({
   };
   return (
     <li
-      className={`flex justify-between h-28 gap-4 pl-6 pr-1 py-3 border rounded-sm w-60 bg-white cursor-pointer marker ${
+      className={`flex justify-between h-36 gap-4 pl-6 pr-1 py-3 border rounded-sm w-60 bg-white cursor-pointer marker ${
         isActiveCard ? "border-primary" : "border-[var(--neutral-light-color)]"
       } hover:border-primary ${
         activeCard !== id && editTrend === true
@@ -244,7 +267,7 @@ const SavedTrendCard = ({
       }`}
     >
       <div
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-3"
         onClick={
           activeCard !== id && editTrend === true
             ? () => {}
@@ -252,16 +275,31 @@ const SavedTrendCard = ({
         }
       >
         <div className="flex justify-between items-center">
-          <div className="flex gap-2 items-center">
-            <Image src={CILSearch} width={15} height={15} alt="CIL Search" />
-            <p className="text-sm text-primary font-bold">Analyse Trend</p>
-          </div>
-        </div>
-        <div>
           <p className="font-bold">{name}</p>
-          <span className="text-[#696B83] font-medium text-sm line-clamp-1">
-            {displayName}
-          </span>
+        </div>
+        <div className="flex flex-col gap-3">
+          <p className="text-[#696B83] flex items-center gap-1 font-medium text-sm line-clamp-1">
+            <FilterIcon width={13} height={13} color="#000000" />
+            <span className="rounded-full border-primary bg-white text-primary font-medium">
+              {displayName}
+            </span>
+            {locationCount > 0 && <span>+ {locationCount}</span>}
+          </p>
+          <p className="text-[#696B83] flex items-center gap-1 font-medium text-sm line-clamp-1">
+            <FilterIcon width={13} height={13} color="#000000" />
+            <span className="rounded-full border-primary bg-white text-primary font-medium">
+              {renderFormattedDates(startDate, endDate)}
+            </span>
+          </p>
+          <p className="text-[#696B83] flex items-center gap-1 font-medium text-sm line-clamp-1">
+            <FilterIcon width={13} height={13} color="#000000" />
+            {savedTrendEventTypes.length > 0 && (
+              <span className="rounded-full border-primary bg-white text-primary font-medium">
+                {savedTrendEventTypes[0]}
+              </span>
+            )}
+            {eventTypeCount > 0 && <span>+{eventTypeCount}</span>}
+          </p>
         </div>
       </div>
 
@@ -351,8 +389,6 @@ const SwiperCarousel = ({
             />
           </SwiperSlide>
         ))}
-
-        {/* <div className="custom-pagination flex justify-center mt-4"></div> */}
       </Swiper>
       <div className="custom-prev-ranking flex justify-center items-center absolute -left-9 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer bg-gray-300 rounded-full w-7 h-7">
         &#8592;
@@ -383,16 +419,6 @@ const SavedTrendsList = ({
         queryParams={queryParams}
         savedTrendsList={savedTrendsList}
       />
-      {/* <ul className="flex gap-4 w-full overflow-x-auto scrollbar pb-4">
-        {savedTrendsList.map((savedTrend) => (
-          <SavedTrendCard
-            activeCard={activeCard}
-            key={savedTrend.id}
-            data={savedTrend}
-            queryParams={queryParams}
-          />
-        ))}
-      </ul> */}
     </div>
   );
 };

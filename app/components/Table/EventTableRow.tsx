@@ -1,4 +1,5 @@
 import type React from "react";
+import {useState, useEffect} from "react"
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,7 +22,10 @@ interface EventTableRowProps {
   event: Event;
   trackerId?: string;
   show: Show[];
-  type?: stirng;
+  type?: string;
+  setEventId?: any;
+  setInterest?: any;
+  view?:string;
 }
 
 function getForecastedStatus(data: any) {
@@ -44,7 +48,7 @@ function displayValue(value: any) {
   }
   return value;
 }
-function getTrackerAssociation(trackerMatchInfo, info) {
+function getTrackerAssociation(trackerMatchInfo:any, info:string) {
   if (info === "peopleFinderPersonAssociationPercentage") {
     return [trackerMatchInfo?.peopleFinderPersonAssociationPercentage];
   }
@@ -55,7 +59,7 @@ function getTrackerAssociation(trackerMatchInfo, info) {
   if(info==="speakerPersonAssociationPercentage") 
     if(trackerMatchInfo?.[info]==="") return "-"
     else return [trackerMatchInfo?.[info]];
-  const result = trackerMatchInfo?.[info]?.map((item) => 
+  const result = trackerMatchInfo?.[info]?.map((item:string) => 
     item
       .split("_")
       .map((i) => `${i.charAt(0).toUpperCase()}${i.slice(1)}`).join("_")
@@ -77,7 +81,7 @@ function getOrdinalSuffix(number: number): string {
 
 
 function formatExhibitorCount(value: string | number | null): string {
-  if (value === null || value === undefined) return "--";
+  if (value === null || value === undefined) return "-";
 
   const stringValue = String(value);
   const values = stringValue.split("-");
@@ -90,7 +94,7 @@ function formatExhibitorCount(value: string | number | null): string {
 }
 
 function getAssociationColor(value: string) {
-  switch (value.toLowerCase()) {
+  switch (value?.toLowerCase()) {
     case "high":
       return "flex items-center justify-center text-green-500 bg-[var(--success-background-color)] px-6 py-2 rounded-[var(--border-radius-lg)]";
     case "medium":
@@ -108,12 +112,20 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   show,
   trackerId,
   type,
+  setEventId,
+  setInterest,
+  view
 }) => {
+  
+  // console.log(interest);
+  
+  console.log(event);
+  
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
       <TableCell
-        className="sticky left-0 z-0 bg-slate-50 dark:bg-slate-900 max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-slate-100 dark:group-hover:bg-slate-800"
+        className="sticky left-0 z-0 bg-[var(--heading-background-color)] max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] group-hover:bg-[var(--heading-background-color)]"
         style={{ zIndex: 0 }}
       >
         <div className="flex gap-4">
@@ -257,9 +269,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
       {/* Estimated Exhibitors Column */}
       {show.includes(Show.estimatedExhibitors) &&
-        event.advance?.estimatedExhibitors !== undefined && (
+        event.insights?.estimatedExhibitors !== undefined && (
           <TableCell className="text-center">
-            {formatExhibitorCount(event.advance?.estimatedExhibitors)}
+            {formatExhibitorCount(event.insights?.estimatedExhibitors)}
           </TableCell>
         )}
 
@@ -447,7 +459,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             </div>
           </TableCell>
         )}
-      {type==="T_PEOPLE_FINDER" &&
+      {(type==="T_PEOPLE_FINDER" && view!=="bookmarked") &&
       <>
       <TableCell
         className="sticky right-20 bg-background z-0"
@@ -474,7 +486,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       </TableCell>
       </>
       }
-      {type==="T_SPEAKING_OPPORTUNITY" &&
+      {(type==="T_SPEAKING_OPPORTUNITY" && view!=="bookmarked") &&
       <>
       <TableCell
         className="sticky right-20 bg-background z-0"
@@ -501,20 +513,20 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       </TableCell>
       </>
       }
-      {type==="T_COMPETITOR" &&
+      {(type==="T_COMPETITOR" && view!=="bookmarked") &&
       <>
       <TableCell
         className="sticky right-20 bg-background z-0"
-        style={{ zIndex: 0 }}
+        style={{ zIndex: 0, width:"90px" }}
       >
         <TooltipProvider>
           <Tooltip>
           <TooltipTrigger>
-  {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName")[0].split("_")[0]}
+  {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName")?.[0].split("_")[0]}
   </TooltipTrigger>
             <TooltipContent>
-            {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName").map((item)=>(
-              <div>
+            {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName")?.map((item:string, index:number)=>(
+              <div key={index}>
                 {item.split("_")[1].toLowerCase()} ({item.split("_")[0]})
               </div>
             ))}
@@ -525,7 +537,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       </TableCell>
       <TableCell
         className="sticky right-10 bg-background z-0"
-        style={{ zIndex: 0 }}
+        style={{ zIndex: 0, width:"130px" }}
       >
         <span className={getAssociationColor(getTrackerAssociation(event.trackerMatchInfo, "competitorPercentage")[0])}>
        {getTrackerAssociation(event.trackerMatchInfo, "competitorPercentage")[0] ?? "-"}
@@ -533,7 +545,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       </TableCell>
       </>
       }
-      {type==="T_PRODUCT_KEYWORDS"&&
+      {(type==="T_PRODUCT_KEYWORDS" && view!=="bookmarked")&&
       <>
       <TableCell className="sticky right-20 bg-background z-0" style={{ zIndex: 0 }}>
   <TooltipProvider>
@@ -573,6 +585,9 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         style={{ zIndex: 0 }}
       >
         <ActionPopover
+          view={view}
+          setEventId={setEventId}
+          setInterest={setInterest}
           trackerId={trackerId}
           eventId={event.basic.id}
           interests={event.interests}

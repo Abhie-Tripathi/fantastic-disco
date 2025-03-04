@@ -464,7 +464,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
           ),
         
       },
-  
+
       eventFormats: {
         isEnabled: true,
         options: searchFilters?.eventFormats?.options?.map((format) => ({
@@ -608,6 +608,3 @@ export const generateSearchFilters=(apiResponse: any)=> {
     },
   };
 };
-
-
-// console.log(getUpdatedSearchFilters(apiResponse));

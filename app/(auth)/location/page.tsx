@@ -1,27 +1,8 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import styles from "./locationForm.module.css";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import RemoveIcon from "/public/remove.svg";
-import AddIcon from "/public/plus_radius.svg";
-import { notFound, useRouter, useSearchParams } from "next/navigation";
-import { SaveLocationDTO } from "@/types/locations";
-import { EventCount } from "@/types/events";
-import { Plus } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { endOfMonth, startOfMonth } from "date-fns";
 import AutocompleteInput from "@/components/search/AutocompleteInput";
-import { useLocationService } from "@/services/locationService";
-import { useEventsService } from "@/services/eventsService";
-import { industryData } from "@/data/onboardingDropdownsData";
-import { sessionService } from "@/services/sessionService";
 import { LocationItem as LOCATION_ITEM } from "@/components/search/location";
-import { EventQuery } from "@/types/events/dto/event-query.dto";
-import { useTrackerServices } from "@/services/trackerServices";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -30,7 +11,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ToastAction } from "@/components/ui/toast";
 import { isEventeli } from "@/config";
+import { industryData } from "@/data/onboardingDropdownsData";
+import { useToast } from "@/hooks/use-toast";
+import { useEventsService } from "@/services/eventsService";
+import { useLocationService } from "@/services/locationService";
+import { sessionService } from "@/services/sessionService";
+import { useTrackerServices } from "@/services/trackerServices";
+import { EventCount } from "@/types/events";
+import { EventQuery } from "@/types/events/dto/event-query.dto";
+import { SaveLocationDTO } from "@/types/locations";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { endOfMonth, startOfMonth } from "date-fns";
+import { Plus } from "lucide-react";
+import Image from "next/image";
+import { notFound, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
+import styles from "./locationForm.module.css";
+import AddIcon from "/public/plus_radius.svg";
+import RemoveIcon from "/public/remove.svg";
 
 type GeoLocationType = "city" | "center" | "";
 interface PinPointLocation {
@@ -51,7 +51,6 @@ export interface GeoLocation {
 }
 
 export type EventCountPartial = Pick<EventCount, "count">;
-type EventCountResponse = { data: EventCountPartial };
 
 export type Location = GeoLocation | LocationItem[];
 
