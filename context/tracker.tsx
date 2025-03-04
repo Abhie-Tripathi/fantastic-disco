@@ -10,24 +10,7 @@ import { usePathname } from "next/navigation";
 import { Tracker } from "@/types/trackers";
 import { useFilterState } from "@/hooks/useFilterState";
 
-interface TrackerContextType {
-  isNewCall: boolean;
-  isLoading: boolean;
-  savedEventCount: number;
-  setSavedEventCount: (count: number) => void;
-  setIsNewCall: (value: boolean) => void;
-  editTrue: boolean;
-  setEditTrue: (value: boolean) => void;
-  setTrackerId: (id: string) => void;
-  data: Tracker | null;
-  setData: (data: Tracker | null) => void;
-  skip: number;
-  setSkip: (skip: number) => void;
-  searchValue: string;
-  setSearchValue: (value: string) => void;
-}
-
-const trackerValues: TrackerContextType = {
+const trackerValues: any = {
   isNewCall: false,
   isLoading: false,
   savedEventCount: 0,
@@ -44,7 +27,7 @@ const trackerValues: TrackerContextType = {
   setSearchValue: () => {},
 };
 
-export const TrackerContext = createContext<TrackerContextType>(trackerValues);
+export const TrackerContext = createContext(trackerValues);
 
 export const TrackerContextProvider = ({ children }: any) => {
   const { getTrackerDetail, error, isLoading } = useTrackerServices();
