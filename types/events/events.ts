@@ -88,6 +88,8 @@ const BasicEventSchema = z.object({
   logoUrl: z.string().nullable(),
   bannerUrl: z.string().nullable(),
   timings: z.string().nullable(),
+  matchedKeywords: z.array(z.string()).nullable(),
+  matchedKeywordsPercentage: z.number().nullable(),
   lastVerifiedOn: z.string().nullable(),
   eventPageUrl: z.string().nullable(),
   rating: z.number(),
@@ -169,7 +171,6 @@ const AdvanceEventSchema = z.object({
 
 const InsightsEventSchema = z.object({
   yoyGrowth: z.number().nullable(),
-  estimatedExhibitors: z.string(),
   sponsorsCount: z.number(),
   speakersCount: z.number(),
   exhibitorsCount: z.number(),

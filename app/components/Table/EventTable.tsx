@@ -4,7 +4,7 @@ import { PaginationComponent } from "@/components/pagination";
 import { Event } from "@/types/events";
 import { EventTableRow } from "./EventTableRow";
 import { useEvents } from "@/hooks/useEvents";
-import {useTrackerEvents} from "@/hooks/useTrackerEvents";
+import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { EventTableHeader } from "./EventTableHeader";
 import { useFilterState } from "@/hooks/useFilterState";
 import Loading from "@/components/ui/Loading";
@@ -18,22 +18,26 @@ import { useFilterContext } from "@/context/filterContext";
 interface EventTableProps {
   trackerId?: string;
   source?: string;
-  eventType?:string;
+  eventType?: string;
 }
-const EventTable = ({source, trackerId, eventType}:EventTableProps) => {
-  // const { theme } = useTheme();
-  const { searchParams, getFilterValue, setMultipleFilters, setFilter } = useFilterState();
-  const {setLocalFilter} = useFilterContext();
-  const {data} = useTrackerContext();
+const EventTable = ({ source, trackerId, eventType }: EventTableProps) => {
+  const { searchParams, getFilterValue, setMultipleFilters } = useFilterState();
+  const { localFilters } = useFilterContext();
+  const { data } = useTrackerContext();
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
+  delete query.show;
   console.log(trackerId);
   let events, totalEvents, isLoading, error;
 
   if (source === "tracker") {
-  ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId,eventType));
+    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
+      query,
+      trackerId,
+      eventType
+    ));
   } else {
-  ({ events, totalEvents, isLoading, error } = useEvents.list(query));
+    ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
   // console.log(isLoading);
   const mapping = {
@@ -46,32 +50,32 @@ const EventTable = ({source, trackerId, eventType}:EventTableProps) => {
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings",
-  }
-  let showsData:string[] =[];
-  Object.entries(mapping).forEach(([key,value])=>{
-    if(data?.filterValues?.show?.includes(key)){
+  };
+  let showsData: string[] = [];
+  Object.entries(mapping).forEach(([key, value]) => {
+    if (data?.filterValues?.show?.includes(key)) {
       showsData.push(value);
-      
     }
-  })
+  });
   // console.log(show.join(","));
   // if(showsData.length>0){
   //   setLocalFilter("show",showsData?.join(","))
   // setFilter("show",showsData?.join(","));
   // }
   // console.log(data.filterValues.show);
-  
+
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
-  let  showValues: Show[] = getFilterValue("show")
+  let showValues: Show[] = getFilterValue("show")
     .split(",")
     .filter(Boolean)
     .map((show) => Show[show as keyof typeof Show]);
-  if(source==="tracker"){
-    showValues = showsData.filter(Boolean)
-    .map((show) => Show[show as keyof typeof Show]);
+  if (source === "tracker") {
+    showValues = showsData
+      .filter(Boolean)
+      .map((show) => Show[show as keyof typeof Show]);
   }
   const handlePageChange = (page: number) => {
     setMultipleFilters({
@@ -87,42 +91,43 @@ const EventTable = ({source, trackerId, eventType}:EventTableProps) => {
   };
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading className="h-24 text-primary" />;
   }
 
   if (error) {
     return <ZeroState text={(error as ApiError).message} />;
   }
 
-  if (events.length === 0) { 
-    if(source==="tracker"){
-      return( <NullState
-      image={TrackerNullState}
-      title="We couldn't find any events matching your tracker criteria at the moment."
-      text="Try adjusting your filters or checking back later, as new events are added frequently."
-      buttonText="Manage Configurations"
-      buttonUrl={`/internal/trackers/${
-        trackerId
-      }/editTracker?type=${query.type}`}
-    />)
-    }else 
-    return <ZeroState text="No events found" />;
+  if (events.length === 0) {
+    if (source === "tracker") {
+      return (
+        <NullState
+          image={TrackerNullState}
+          title="We couldn't find any events matching your tracker criteria at the moment."
+          text="Try adjusting your filters or checking back later, as new events are added frequently."
+          buttonText="Manage Configurations"
+          buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
+        />
+      );
+    } else return <ZeroState text="No events found" />;
   }
-console.log(isLoading);
+  console.log(isLoading);
 
   return (
     <div className="w-full">
       <div className="rounded-md border bg-background">
         <div className="overflow-auto max-h-[calc(100vh-198px)]">
           <Table>
-            <EventTableHeader show={showValues} />
+            <EventTableHeader show={showValues} localFilters={localFilters} />
             <TableBody>
               {events.map((event: Event) => (
                 <EventTableRow
                   key={event.basic.id}
                   event={event}
                   show={showValues}
-                trackerId={trackerId} />
+                  localFilters={localFilters}
+                  trackerId={trackerId}
+                />
               ))}
             </TableBody>
           </Table>

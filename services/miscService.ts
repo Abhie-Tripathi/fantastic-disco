@@ -46,7 +46,7 @@ export const useMiscService = () => {
       `${endpoints.suggestions.designation}`,
       {
         method: "GET",
-        params: { name: input, take: 100 },
+        params: { query: input, take: 100 },
       }
     );
     return response;

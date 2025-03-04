@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Star, Radio, TicketPercent } from "lucide-react";
+import { Star, Radio, TicketPercent, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Event } from "@/types/events/events";
@@ -31,7 +31,7 @@ import { ActionPopover } from "@/app/components/Table/ActionPopover";
 import { formattedDateRange } from "@/utils/date";
 import { useEvents } from "@/hooks/useEvents";
 import { useSearchParams } from "next/navigation";
-import Loading from "../ui/Loading";
+import Loading from "@/app/components/UI/Loading";
 import ZeroState from "@/app/components/zerostate";
 import { ApiError } from "@/types/api";
 import Image from "next/image";
@@ -115,8 +115,9 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const query = Object.fromEntries(searchParams.entries());
+  delete query.show;
   let events, totalEvents, isLoading, error;
-  const {data} = useTrackerContext();
+  const { data } = useTrackerContext();
   if (source === "tracker") {
     ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
       query,
@@ -135,26 +136,26 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings",
-  }
-  let showsData:string[] =[];
-  Object.entries(mapping).forEach(([key,value])=>{
-    if(data?.filterValues?.show?.includes(key)){
+  };
+  let showsData: string[] = [];
+  Object.entries(mapping).forEach(([key, value]) => {
+    if (data?.filterValues?.show?.includes(key)) {
       showsData.push(value);
-      
     }
-  })
+  });
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
 
-  let  showValues: Show[] = getFilterValue("show")
+  let showValues: Show[] = getFilterValue("show")
     .split(",")
     .filter(Boolean)
     .map((show) => Show[show as keyof typeof Show]);
-  if(source==="tracker"){
-    showValues = showsData.filter(Boolean)
-    .map((show) => Show[show as keyof typeof Show]);
+  if (source === "tracker") {
+    showValues = showsData
+      .filter(Boolean)
+      .map((show) => Show[show as keyof typeof Show]);
   }
 
   const handlePageChange = (page: number) => {
@@ -169,10 +170,9 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
       limit: newItemsPerPage,
     });
   };
-  console.log(data?.filterValues?.show);
-  
+
   if (isLoading) {
-    return <Loading />;
+    return <Loading className="h-24 text-primary" />;
   }
 
   if (error) {
@@ -236,10 +236,14 @@ const EventListItem = ({
         {[
           event.basic.eventLocation.venue?.name || "TBA",
           event.basic.eventLocation.city?.name,
-          event.basic.eventLocation.state?.name !== event.basic.eventLocation.city?.name ? 
-            event.basic.eventLocation.state?.name : null,
-          event.basic.eventLocation.country?.name !== event.basic.eventLocation.city?.name ? 
-            event.basic.eventLocation.country?.name : null,
+          event.basic.eventLocation.state?.name !==
+          event.basic.eventLocation.city?.name
+            ? event.basic.eventLocation.state?.name
+            : null,
+          event.basic.eventLocation.country?.name !==
+          event.basic.eventLocation.city?.name
+            ? event.basic.eventLocation.country?.name
+            : null,
         ]
           .filter(Boolean)
           .join(", ")}
@@ -248,10 +252,14 @@ const EventListItem = ({
       [
         event.basic.eventLocation.venue?.name,
         event.basic.eventLocation.city?.name,
-        event.basic.eventLocation.state?.name !== event.basic.eventLocation.city?.name ? 
-          event.basic.eventLocation.state?.name : null,
-        event.basic.eventLocation.country?.name !== event.basic.eventLocation.city?.name ? 
-          event.basic.eventLocation.country?.name : null,
+        event.basic.eventLocation.state?.name !==
+        event.basic.eventLocation.city?.name
+          ? event.basic.eventLocation.state?.name
+          : null,
+        event.basic.eventLocation.country?.name !==
+        event.basic.eventLocation.city?.name
+          ? event.basic.eventLocation.country?.name
+          : null,
       ]
         .filter(Boolean)
         .join(", ")
@@ -331,20 +339,20 @@ const EventListItem = ({
                 alt={`${event.basic.name} website favicon`}
                 className="w-24 h-24 object-contain p-2 border rounded-md bg-white shadow-sm"
                 onError={(e) => {
-                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.style.display = "none";
                   // This will trigger the fallback div to show
-                  e.currentTarget.dataset.error = 'true';
+                  e.currentTarget.dataset.error = "true";
                 }}
               />
               {/* Fallback that shows when image errors */}
-              <div 
+              <div
                 className="w-24 h-24 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
                 ref={(el) => {
                   if (el) {
                     const img = el.previousSibling as HTMLImageElement;
-                    if (img && img.dataset.error === 'true') {
-                      el.style.display = 'flex';
+                    if (img && img.dataset.error === "true") {
+                      el.style.display = "flex";
                     }
                   }
                 }}
@@ -743,14 +751,14 @@ const EventListItem = ({
                   <div className="flex items-center justify-between w-full">
                     <div className="flex flex-col justify-end gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
-                        event.advance?.estimatedExhibitors !== undefined && (
+                        event.insights?.estimatedExhibitors !== undefined && (
                           <div>
                             <p className="text-xs text-gray-600 font-medium">
                               Estimated Exhibitors
                             </p>
                             <p className="text-lg font-semibold text-primary">
                               {formatExhibitorCount(
-                                event.advance?.estimatedExhibitors
+                                event.insights?.estimatedExhibitors
                               )}
                             </p>
                           </div>
