@@ -18,11 +18,14 @@ import { Badge } from "@/components/ui/badge";
 import { formatEstimatedSpend } from "@/utils/formater";
 import { lightenColor } from "@/lib/utils";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import { Filters } from "@/context/filterContext";
+import * as Flags from "country-flag-icons/react/3x2";
 
 interface EventTableRowProps {
   event: Event;
   trackerId?: string;
   show: Show[];
+  localFilters: Filters;
 }
 
 function getForecastedStatus(data: any) {
@@ -71,10 +74,11 @@ function formatExhibitorCount(value: string | number | null): string {
 export const EventTableRow: React.FC<EventTableRowProps> = ({
   event,
   show,
+  localFilters,
   trackerId,
 }) => {
   console.log(event.insights?.scores?.impactScore);
-  
+
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
@@ -222,26 +226,25 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       </TableCell>
 
       {/* Keywords Column - if enabled */}
-      {/* {event.insights?.keywords && (
+      {event.basic.tags && (
         <TableCell>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                {event.insights.keywords[0]}
-                {event.insights.keywords.length > 1 && (
-                  <span className="text-xs font-bold">
-                    {" "}
-                    +{event.insights.keywords.length - 1}
+          {event.basic.tags[0].name}
+          {event.basic.tags.length > 1 && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <span className="text-xs text-primary font-medium ml-1">
+                    +{event.basic.tags.length - 1}
                   </span>
-                )}
-              </TooltipTrigger>
-              <TooltipContent>
-                {event.insights.keywords.join(" | ")}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  {event.basic.tags.map((tag) => tag.name).join(" | ")}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </TableCell>
-      )} */}
+      )}
 
       {/* Category Column */}
       <TableCell>
@@ -371,6 +374,19 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         </TableCell>
       )}
 
+      {/* Match Column */}
+      {localFilters.includeKeywords && (
+        <TableCell className="text-center">
+          {event.basic.matchedKeywords?.join(" | ")}
+        </TableCell>
+      )}
+
+      {localFilters.includeKeywords && (
+        <TableCell className="text-center">
+          {event.basic.matchedKeywordsPercentage}
+        </TableCell>
+      )}
+
       {/* Maturity Column */}
       {show.includes(Show.maturity) &&
         event.advance?.maturity !== undefined && (
@@ -389,7 +405,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.scores) &&
         event.insights?.scores?.impactScore !== undefined && (
           <TableCell className="text-center">
-            {(event.insights?.scores?.impactScore !== 0 && event.insights?.scores?.impactScore!==null)
+            {event.insights?.scores?.impactScore !== 0 &&
+            event.insights?.scores?.impactScore !== null
               ? event.insights?.scores?.impactScore
               : "-"}
           </TableCell>
@@ -399,7 +416,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.scores) &&
         event.insights?.scores?.inboundScore !== undefined && (
           <TableCell className="text-center">
-            {(event.insights?.scores?.inboundScore !== 0 && event.insights?.scores?.inboundScore!==null)
+            {event.insights?.scores?.inboundScore !== 0 &&
+            event.insights?.scores?.inboundScore !== null
               ? event.insights?.scores?.inboundScore
               : "-"}
           </TableCell>
@@ -409,7 +427,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.scores) &&
         event.insights?.scores?.internationalScore !== undefined && (
           <TableCell className="text-center">
-            {(event.insights?.scores?.internationalScore !== 0 && event.insights?.scores?.internationalScore!==null)
+            {event.insights?.scores?.internationalScore !== 0 &&
+            event.insights?.scores?.internationalScore !== null
               ? event.insights?.scores?.internationalScore
               : "-"}
           </TableCell>
@@ -437,33 +456,31 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </TableCell>
         )}
 
-      {show.includes(Show.audienceSpread) &&
+      {localFilters.audienceSpread &&
         event.audience?.audienceSpread !== undefined && (
           <TableCell className="text-center">
             <div className="flex gap-2 items-center justify-center">
               {event.audience?.audienceSpread &&
-            Object.entries(event.audience?.audienceSpread).length > 0
-              ? Object.entries(event.audience?.audienceSpread).map(
-                  ([key, { iso, name, count, percentage }]) => (
-                    <span
-                      key={key}
-                      className="inline-block rounded overflow-hidden"
-                      title={name}
-                    >
-                      <Image
-                        src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`}
-                        alt="flag"
-                        width={25}
-                        height={18}
-                        className="object-cover"
-                      />
-                    </span>
-                  )
-                )
-              : "-"}
-          </div>
-        </TableCell>
-      )}
+              Object.entries(event.audience?.audienceSpread).length > 0
+                ? Object.entries(event.audience?.audienceSpread)
+                    .slice(0, 5)
+                    .map(([key, { iso, name, count, percentage }]) => {
+                      if (iso === "UK") iso = "GB";
+                      const Flag = Flags[iso as keyof typeof Flags];
+                      return (
+                        <span
+                          key={key}
+                          className="inline-block rounded overflow-hidden"
+                          title={name}
+                        >
+                          {Flag && <Flag className="w-[25px] h-[18px]" />}
+                        </span>
+                      );
+                    })
+                : "-"}
+            </div>
+          </TableCell>
+        )}
 
       <TableCell
         className="sticky right-0 bg-background z-0"
