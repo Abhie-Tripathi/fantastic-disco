@@ -176,7 +176,7 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
     return (
         <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal || formState.capacityModal ? styles.modalBody : ""}`}>
             {eventFlow === "side" && <div className={styles.globalSearch}>
-                <GlobalSearch widgetId='123' handleChange={handleChange} />
+                <GlobalSearch widgetId='123' handleChange={handleChange} formTheme={formTheme}/>
             </div>}
 
             <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal ? styles.modalOpen : ""}`} >
