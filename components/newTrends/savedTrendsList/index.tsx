@@ -20,9 +20,12 @@ import { renderFormattedDates } from "@/utils/dateFormat";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
+  BriefcaseBusiness,
+  Calendar,
   Edit,
   EllipsisVerticalIcon,
   FilterIcon,
+  MapPin,
   Trash,
   X
 } from "lucide-react";
@@ -258,7 +261,7 @@ const SavedTrendCard = ({
   };
   return (
     <li
-      className={`flex justify-between h-36 gap-4 pl-6 pr-1 py-3 border rounded-sm w-60 bg-white cursor-pointer marker ${
+      className={`flex justify-between h-36 gap-4 pl-6 pr-1 py-3 border rounded-sm w-72 bg-white cursor-pointer marker ${
         isActiveCard ? "border-primary" : "border-[var(--neutral-light-color)]"
       } hover:border-primary ${
         activeCard !== id && editTrend === true
@@ -278,21 +281,21 @@ const SavedTrendCard = ({
           <p className="font-bold">{name}</p>
         </div>
         <div className="flex flex-col gap-3">
-          <p className="text-[#696B83] flex items-center gap-1 font-medium text-sm line-clamp-1">
-            <FilterIcon width={13} height={13} color="#000000" />
+          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm line-clamp-1">
+            <MapPin width={14} height={14} color="#000000" />
             <span className="rounded-full border-primary bg-white text-primary font-medium">
               {displayName}
             </span>
-            {locationCount > 0 && <span>+ {locationCount}</span>}
+            {locationCount > 0 && <span>+{locationCount}</span>}
           </p>
-          <p className="text-[#696B83] flex items-center gap-1 font-medium text-sm line-clamp-1">
-            <FilterIcon width={13} height={13} color="#000000" />
+          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm line-clamp-1">
+            <Calendar width={13} height={13} color="#000000" />
             <span className="rounded-full border-primary bg-white text-primary font-medium">
               {renderFormattedDates(startDate, endDate)}
             </span>
           </p>
-          <p className="text-[#696B83] flex items-center gap-1 font-medium text-sm line-clamp-1">
-            <FilterIcon width={13} height={13} color="#000000" />
+          <p className="text-[#696B83] flex items-center gap-2 font-medium text-sm line-clamp-1">
+            <BriefcaseBusiness width={13} height={13} color="#000000" />
             {savedTrendEventTypes.length > 0 && (
               <span className="rounded-full border-primary bg-white text-primary font-medium">
                 {savedTrendEventTypes[0]}

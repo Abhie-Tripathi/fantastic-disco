@@ -41,11 +41,8 @@ import ZeroStateDataIcon from "/public/zero_state_data.svg";
 const EventTrends = () => {
   const { searchParams } = useDefaultFilters();
   const { getEventTrends, getSavedTrends } = useTrendsService();
-  const {
-    applyFilters,
-    setLocalFilter,
-    getLocalFilterValue,
-  } = useFilterContext();
+  const { applyFilters, setLocalFilter, getLocalFilterValue } =
+    useFilterContext();
   const columns = searchParams.get("columns");
   const editTrend = searchParams.get("editTrend");
   const enableEditTrend = editTrend ? Boolean(editTrend) : false;
@@ -257,6 +254,8 @@ const EventTrends = () => {
   const handleSelectChange = (value: TEventColumnType) => {
     setSelectedEventType(value);
   };
+
+  console.log(graphData);
 
   return (
     <div className="flex flex-col p-4">
