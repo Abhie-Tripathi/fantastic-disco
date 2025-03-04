@@ -9,6 +9,7 @@ import EventTypeSelector from "@/components/search/eventType";
 import LocationSelector from "@/components/search/location";
 import LineChartComponent from "@/components/trends/lineChart";
 import { Button } from "@/components/ui/button";
+import Loading from "@/components/ui/Loading";
 import { isEventeli } from "@/config";
 import { useFilterContext } from "@/context/filterContext";
 import { columnsDropdown } from "@/data/trends";
@@ -41,11 +42,8 @@ import ZeroStateDataIcon from "/public/zero_state_data.svg";
 const EventTrends = () => {
   const { searchParams } = useDefaultFilters();
   const { getEventTrends, getSavedTrends } = useTrendsService();
-  const {
-    applyFilters,
-    setLocalFilter,
-    getLocalFilterValue,
-  } = useFilterContext();
+  const { applyFilters, setLocalFilter, getLocalFilterValue } =
+    useFilterContext();
   const columns = searchParams.get("columns");
   const editTrend = searchParams.get("editTrend");
   const enableEditTrend = editTrend ? Boolean(editTrend) : false;
@@ -263,7 +261,7 @@ const EventTrends = () => {
       {savedTrendsList && savedTrendsList?.trackers.length > 0 && (
         <SavedTrendsList savedTrendsList={savedTrendsList?.trackers || []} />
       )}
-      <div>
+      <div className="relative">
         <div className="grid grid-cols-5 max-lg:grid-cols-2 gap-4 pt-4 pb-6 border-b items-end">
           <EventTypeSelector />
           <div className="flex flex-col gap-2 items-start">
@@ -300,7 +298,19 @@ const EventTrends = () => {
             />
           </div>
         </div>
-        {graphData && graphData.length > 0 && !isLoading ? (
+        {isLoading ? (
+          <Loading className="absolute right-1/2 -bottom-3/4" />
+        ) : error ? (
+          <div className={styles.zeroState_container}>
+            <Image
+              src={ZeroStateIcon}
+              alt="zerostate"
+              width={150}
+              height={150}
+            />
+            <div>Set filters to view data</div>
+          </div>
+        ) : graphData && graphData.length > 0 ? (
           <div className="pt-8">
             <div className={styles.predictedAttendence_container}>
               <LineChartComponent
@@ -329,7 +339,7 @@ const EventTrends = () => {
               </div>
             </div>
           </div>
-        ) : graphData && graphData.length <= 0 ? (
+        ) : (
           <div className={styles.zeroState_container}>
             <Image
               src={ZeroStateDataIcon}
@@ -347,18 +357,6 @@ const EventTrends = () => {
               view events.
             </Text>
           </div>
-        ) : (
-          error && (
-            <div className={styles.zeroState_container}>
-              <Image
-                src={ZeroStateIcon}
-                alt="zerostate"
-                width={150}
-                height={150}
-              />
-              <div>Set filters to view data</div>
-            </div>
-          )
         )}
       </div>
     </div>

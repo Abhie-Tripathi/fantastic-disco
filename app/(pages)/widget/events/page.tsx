@@ -476,6 +476,38 @@ const observerRef = useRef<IntersectionObserver | null>(null);
 const isFetchingRef = useRef(false);
 
 
+// useEffect(() => {
+//   if (!sentinelRef.current) return;
+
+//   // Prevent observer from being created multiple times
+//   if (observerRef.current) observerRef.current.disconnect();
+
+//   observerRef.current = new IntersectionObserver(
+//     (entries) => {
+//       const entry = entries[0];
+
+//       if (entry.isIntersecting && !isFetchingRef.current) {
+//         isFetchingRef.current = true; // Block new requests until done
+
+//         setPage((prevPage) => {
+//           // Stop fetching if all data is loaded
+//           if (prevPage * page >= filteredUpcomingEvents.length) return prevPage;
+
+//           return prevPage + 1; 
+//         });
+
+//         setTimeout(() => (isFetchingRef.current = false), 500); // Allow new requests after some delay
+//       }
+//     },
+//     { threshold: 1.0 }
+//   );
+
+//   observerRef.current.observe(sentinelRef.current);
+
+//   return () => observerRef.current?.disconnect();
+// }, [filteredUpcomingEvents]);
+
+
 useEffect(() => {
   if (!sentinelRef.current) return;
 
@@ -488,13 +520,21 @@ useEffect(() => {
 
       if (entry.isIntersecting && !isFetchingRef.current) {
         isFetchingRef.current = true; // Block new requests until done
-
-        setPage((prevPage) => {
-          // Stop fetching if all data is loaded
-          if (prevPage * page >= filteredUpcomingEvents.length) return prevPage;
-
-          return prevPage + 1; 
-        });
+        if(activeTab === "upcoming"){
+          setPage((prevPage) => {
+            // Stop fetching if all data is loaded
+            if (prevPage * page >= filteredUpcomingEvents.length) return prevPage;
+  
+            return prevPage + 1; 
+          });
+        }
+        if(activeTab === "past"){
+          setPage((prevPage) => {
+            if (prevPage * page >= filteredPastEvents.length) return prevPage;
+  
+            return prevPage + 1; 
+          });
+        }
 
         setTimeout(() => (isFetchingRef.current = false), 500); // Allow new requests after some delay
       }
@@ -505,7 +545,42 @@ useEffect(() => {
   observerRef.current.observe(sentinelRef.current);
 
   return () => observerRef.current?.disconnect();
-}, [filteredUpcomingEvents]);
+}, [filteredUpcomingEvents,filteredPastEvents]);
+
+
+// useEffect(() => {
+//   if (!sentinelRef.current) return;
+
+//   // Prevent observer from being created multiple times
+//   if (observerRef.current) observerRef.current.disconnect();
+
+//   observerRef.current = new IntersectionObserver(
+//     (entries) => {
+//       const entry = entries[0];
+
+//       if (entry.isIntersecting && !isFetchingRef.current) {
+//         isFetchingRef.current = true; // Block new requests until done
+
+//         setPage((prevPage) => {
+//           const maxUpcomingPages = Math.ceil(filteredUpcomingEvents.length / page);
+//           const maxPastPages = Math.ceil(filteredPastEvents.length / page);
+
+//           // Stop fetching if all data is loaded
+//           if (prevPage >= maxUpcomingPages && prevPage >= maxPastPages) return prevPage;
+
+//           return prevPage + 1;
+//         });
+
+//         setTimeout(() => (isFetchingRef.current = false), 500); // Allow new requests after some delay
+//       }
+//     },
+//     { threshold: 1.0 }
+//   );
+
+//   observerRef.current.observe(sentinelRef.current);
+
+//   return () => observerRef.current?.disconnect();
+// }, [filteredUpcomingEvents, filteredPastEvents]);
 
 
   const handleDeleteModal = (
