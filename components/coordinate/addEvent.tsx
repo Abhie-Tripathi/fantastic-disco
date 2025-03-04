@@ -29,31 +29,63 @@ export default function AddEventModal() {
     <div>
       <Button onClick={() => setIsOpen(true)}>+ Add Event</Button>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="">
+        <DialogContent className="sm:max-w-[825px]">
           <DialogHeader>
             <DialogTitle className="tracking-normal">Add Event</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div>Choose Your Event Type</div>
-            <div>
-              Choose Your Mode of Participation
+            <div className="flex justify-between">
+              <span className="text-[var(--secondary-text-color)]">
+                Choose Your Event Type
+              </span>
               <div className="flex gap-3">
+                {["Tradeshow", "Conference", "Workshop"].map((type) => (
+                  <label
+                    key={type}
+                    className="flex gap-2 items-center text-base"
+                  >
+                    <input
+                      type="radio"
+                      name="eventType"
+                      value={type}
+                      // checked={selectedEventType === type}
+                      // onChange={handleOptionChange}
+                      // className={styles.radio}
+                    />
+                    {type}
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <span className="text-[var(--secondary-text-color)]">
+                Choose Your Mode of Participation
+              </span>
+              <div className="flex gap-3 my-2">
                 {participationOptions.map((option) => (
                   <div
                     key={option.value}
-                    className="p-2 border rounded-sm flex gap-3 cursor-pointer border-[var(--border-color)]"
+                    className="p-2 border rounded-sm flex items-center gap-3 cursor-pointer border-[var(--border-color)]"
                     // onClick={() => handleSelection(option.value)}
                   >
                     <Image
                       src={option.icon}
                       alt={`${option.label} icon`}
-                      height={20}
-                      width={20}
+                      height={30}
+                      width={30}
                     />
                     <span>{option.label}</span>
                   </div>
                 ))}
               </div>
+            </div>
+
+            <div>
+              <textarea
+                className="outline-none resize-none text-4xl font-semibold w-full h-12"
+                maxLength={80}
+                placeholder="Event Name"
+              />
             </div>
           </div>
           <div className="flex justify-end gap-3">
