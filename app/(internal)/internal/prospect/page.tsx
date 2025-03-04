@@ -34,7 +34,7 @@ import PeopleFilter from "@/app/components/prospect/Filters/peopleFilter";
 import { PeopleList } from "@/app/components/prospect/PeopleList";
 import { useFilterState } from "@/hooks/useFilterState";
 import { CompanyListResponse } from "@/types/prospect";
-import JobFilter from "@/app/components/prospect/Filters/JobFilter";
+import DesignationFilter from "@/app/components/prospect/Filters/designation";
 
 interface ProspectFilters {
   id: string;
@@ -145,93 +145,6 @@ const sortedPeopleFilters = [...allFilters]
   .filter((filter) => filter.peoplePosition !== -1)
   .sort((a, b) => a.peoplePosition - b.peoplePosition);
 
-// const companyFilters: ProspectFilters[] = [
-//   {
-//     id: "item-1",
-//     label: "Category",
-//     enabled: true,
-//     filterName: "eventCategoryIds",
-//   },
-//   {
-//     id: "item-2",
-//     label: "Location",
-//     enabled: true,
-//     filterName: "companyLocationIds",
-//   },
-//   {
-//     id: "item-3",
-//     label: "Product & Topics",
-//     enabled: true,
-//     filterName: "eventProductIds",
-//   },
-//   {
-//     id: "item-4",
-//     label: "Followers",
-//     filterName: "communitySize",
-//     enabled: true,
-//   },
-//   {
-//     id: "item-5",
-//     label: "Company Type",
-//     filterName: "eventParticipationType",
-//     enabled: true,
-//   },
-//   // {
-//   //   id: "item-6",
-//   //   label: "Established Year",
-//   //   filterName: "establishedYear",
-//   //   enabled: false,
-//   // },
-// ];
-
-// const eventFilters: ProspectFilters[] = [
-//   {
-//     id: "item-2",
-//     label: "Location",
-//     filterName: "eventLocationIds",
-//     enabled: true,
-//   },
-//   {
-//     id: "item-3",
-//     label: "Category",
-//     filterName: "eventCategoryIds",
-//     enabled: true,
-//   },
-//   {
-//     id: "item-4",
-//     label: "Followers",
-//     filterName: "eventFollowers",
-//     enabled: true,
-//   },
-//   // {
-//   //   id: "item-5",
-//   //   label: "Participation Type",
-//   //   filterName: "eventParticipationType",
-//   //   enabled: true,
-//   // },
-// ];
-
-// const peopleFilters: ProspectFilters[] = [
-//   {
-//     id: "item-1",
-//     label: "User Name",
-//     filterName: "userNames",
-//     enabled: true,
-//   },
-//   {
-//     id: "item-2",
-//     label: "Job Title",
-//     filterName: "userJobTitle",
-//     enabled: true,
-//   },
-//   {
-//     id: "item-3",
-//     label: "LinkedIn",
-//     filterName: "userSocialLink",
-//     enabled: true,
-//   },
-// ];
-
 const Prospect = () => {
   const searchParams = useSearchParams();
   const companyService = useCompanyService();
@@ -339,7 +252,6 @@ const Prospect = () => {
             {/* Tabs */}
             <div className="h-[75%] overflow-y-auto w-full mt-0">
               <div className="p-3 bg-[var(--background-secondary-color)]">
-
                 <div className="text-xs flex gap-2 items-center p-2 pb-4 font-medium text-[var(--secondary-text-color)]">
                   <Filter
                     color="var(--muted-foreground)"
@@ -353,8 +265,11 @@ const Prospect = () => {
                   type="single"
                   className="bg-background border border-[var(--neutral-light-color)] rounded-sm"
                   collapsible
-                  >
-                  {(selectedView === "user" ? sortedPeopleFilters : sortedCompanyFilters).map((item) => (
+                >
+                  {(selectedView === "user"
+                    ? sortedPeopleFilters
+                    : sortedCompanyFilters
+                  ).map((item) => (
                     <AccordionItem
                       value={item.id}
                       key={item.id}
@@ -408,7 +323,7 @@ const Prospect = () => {
                         ) : item.filterName === "eventLocationIds" ? (
                           <LocationSelector filterName={item.filterName} />
                         ) : item.filterName === "userJobTitle" ? (
-                          <JobFilter />
+                          <DesignationFilter />
                         ) : item.filterName === "userNames" ||
                           item.filterName === "userSocialLink" ? (
                           <PeopleFilter filterName={item.filterName} />
@@ -419,207 +334,6 @@ const Prospect = () => {
                     </AccordionItem>
                   ))}
                 </Accordion>
-                
-                {/* <div className="text-xs flex gap-2 items-center p-2 pb-4 font-medium text-[var(--secondary-text-color)]">
-                  <Filter
-                    color="var(--muted-foreground)"
-                    width="12px"
-                    height="12px"
-                  />
-                  COMPANY FILTERS
-                </div> */}
-
-                {/* <Accordion
-                  type="single"
-                  className="bg-background border border-[var(--neutral-light-color)] rounded-sm"
-                  collapsible
-                >
-                  {companyFilters.map((item) => (
-                    <AccordionItem
-                      value={item.id}
-                      key={item.id}
-                      disabled={!item?.enabled}
-                    >
-                      <div className="flex items-center group relative">
-                        <div className="w-4/6">
-                          <AccordionTrigger
-                            className="hover:no-underline p-2 py-3 font-normal text-sm justify-start whitespace-nowrap w-full"
-                            iconPosition="start"
-                          >
-                            {item.label}
-                            <span className="ml-4 bg-[#EBF5FF] text-[var(--info-text-color)] px-1 rounded-sm font-semibold text-xs">
-                              {item?.filterName &&
-                                getLocalFilterValue(item?.filterName) &&
-                                getLocalFilterValue(item?.filterName).split(",")
-                                  .length}
-                            </span>
-                          </AccordionTrigger>
-                        </div>
-                        {item?.filterName &&
-                          getLocalFilterValue(item?.filterName) && (
-                            <span
-                              className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 text-primary underline font-medium text-xs w-2/6"
-                              onClick={() => handleClearFilter(item.filterName)}
-                            >
-                              Remove Filter
-                            </span>
-                          )}
-                        {!item.enabled && (
-                          <LockClosedSmall color="var(--secondary-text-color)" />
-                        )}
-                      </div>
-                      <AccordionContent
-                        className={`"h-fit pb-1 overflow-x-hidden`}
-                      >
-                        {item.filterName === "eventCategoryIds" ? (
-                          <Industry filterName={item.filterName} />
-                        ) : item.filterName === "eventProductIds" ? (
-                          <ProductTopics />
-                        ) : item.filterName === "eventParticipationType" ? (
-                          <ParticipationType />
-                        ) : item.filterName === "communitySize" ? (
-                          <CompanySize />
-                        ) : item.filterName === "establishedYear" ? (
-                          <EstablishedYear />
-                        ) : item.filterName === "companyLocationIds" ? (
-                          <LocationSelector filterName={item.filterName} />
-                        ) : (
-                          <></>
-                        )}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion> */}
-
-                {/* <div className="text-xs flex gap-2 items-center p-2 py-4 font-medium text-[var(--secondary-text-color)]">
-                  <Filter
-                    color="var(--muted-foreground)"
-                    width="12px"
-                    height="12px"
-                  />
-                  EVENT FILTERS
-                </div>
-
-                <Accordion
-                  type="single"
-                  className="bg-background border border-[var(--neutral-light-color)] rounded-sm"
-                  collapsible
-                >
-                  {eventFilters.map((item) => (
-                    <AccordionItem
-                      value={item.id}
-                      key={item.id}
-                      disabled={!item?.enabled}
-                    >
-                      <div className="flex items-center group relative">
-                        <div className="w-4/6">
-                          <AccordionTrigger
-                            className="hover:no-underline p-2 py-3 font-normal text-sm justify-start whitespace-nowrap w-full"
-                            iconPosition="start"
-                          >
-                            {item.label}
-                            <span className="ml-4 bg-[#EBF5FF] text-[var(--info-text-color)] px-1 rounded-sm font-semibold text-xs">
-                              {item?.filterName &&
-                                getLocalFilterValue(item?.filterName) &&
-                                getLocalFilterValue(item?.filterName).split(",")
-                                  .length}
-                            </span>
-                          </AccordionTrigger>
-                        </div>
-                        {item?.filterName &&
-                          getLocalFilterValue(item?.filterName) && (
-                            <span
-                              className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 text-primary underline font-medium text-xs w-2/6"
-                              onClick={() => handleClearFilter(item.filterName)}
-                            >
-                              Remove Filter
-                            </span>
-                          )}
-                        {!item.enabled && (
-                          <LockClosedSmall color="var(--secondary-text-color)" />
-                        )}
-                      </div>
-                      <AccordionContent
-                        className={`"h-fit pb-1 overflow-x-hidden`}
-                      >
-                        {item.filterName === "eventCategoryIds" ? (
-                          <Industry filterName={item.filterName} />
-                        ) : item.filterName === "eventParticipationType" ? (
-                          <ParticipationType />
-                        ) : item.filterName === "eventFollowers" ? (
-                          <EventFollowers />
-                        ) : item.filterName === "eventLocationIds" ? (
-                          <LocationSelector filterName={item.filterName} />
-                        ) : (
-                          <></>
-                        )}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-
-                <div className="text-xs flex gap-2 items-center p-2 py-4 font-medium text-[var(--secondary-text-color)]">
-                  <Filter
-                    color="var(--muted-foreground)"
-                    width="12px"
-                    height="12px"
-                  />
-                  PEOPLE FILTERS
-                </div>
-                <Accordion
-                  type="single"
-                  className="bg-background border border-[var(--neutral-light-color)] rounded-sm"
-                  collapsible
-                >
-                  {peopleFilters.map((item) => (
-                    <AccordionItem
-                      value={item.id}
-                      key={item.id}
-                      disabled={!item?.enabled}
-                    >
-                      <div className="flex items-center group relative">
-                        <div className="w-4/6">
-                          <AccordionTrigger
-                            className="hover:no-underline p-2 py-3 font-normal text-sm justify-start whitespace-nowrap w-full"
-                            iconPosition="start"
-                          >
-                            {item.label}
-                            <span className="ml-4 bg-[#EBF5FF] text-[var(--info-text-color)] px-1 rounded-sm font-semibold text-xs">
-                              {item?.filterName &&
-                                getLocalFilterValue(item?.filterName) &&
-                                getLocalFilterValue(item?.filterName).split(",")
-                                  .length}
-                            </span>
-                          </AccordionTrigger>
-                        </div>
-                        {item?.filterName &&
-                          getLocalFilterValue(item?.filterName) && (
-                            <span
-                              className="cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/10 text-primary underline font-medium text-xs w-2/6"
-                              onClick={() => handleClearFilter(item.filterName)}
-                            >
-                              Remove Filter
-                            </span>
-                          )}
-                        {!item.enabled && (
-                          <LockClosedSmall color="var(--secondary-text-color)" />
-                        )}
-                      </div>
-                      <AccordionContent
-                        className={`"h-fit pb-1 overflow-x-hidden`}
-                      >
-                        {item.filterName === "userJobTitle" ? (
-                          <Designation />
-                        ) : item.filterName === "userNames" ||
-                          item.filterName === "userSocialLink" ? (
-                          <PeopleFilter filterName={item.filterName} />
-                        ) : (
-                          <></>
-                        )}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion> */}
               </div>
             </div>
 
