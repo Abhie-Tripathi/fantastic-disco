@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Star, Radio, TicketPercent } from "lucide-react";
+import { Star, Radio, TicketPercent, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Event } from "@/types/events/events";
@@ -31,7 +31,7 @@ import { ActionPopover } from "@/app/components/Table/ActionPopover";
 import { formattedDateRange } from "@/utils/date";
 import { useEvents } from "@/hooks/useEvents";
 import { useSearchParams } from "next/navigation";
-import Loading from "../ui/Loading";
+import Loading from "@/app/components/UI/Loading";
 import ZeroState from "@/app/components/zerostate";
 import { ApiError } from "@/types/api";
 import Image from "next/image";
@@ -115,6 +115,7 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const query = Object.fromEntries(searchParams.entries());
+  delete query.show;
   let events, totalEvents, isLoading, error;
   const { data } = useTrackerContext();
   if (source === "tracker") {
@@ -169,10 +170,9 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
       limit: newItemsPerPage,
     });
   };
-  console.log(data?.filterValues?.show);
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading className="h-24 text-primary" />;
   }
 
   if (error) {

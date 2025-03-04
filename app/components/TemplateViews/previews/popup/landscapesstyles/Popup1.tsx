@@ -99,11 +99,11 @@ const Popup1: React.FC<Props> = ({ cardBgColor = "#ffffff",
             </div>
             <div className={styles.line}></div>
             <div className={styles.name_locationContainer}>
-              <div className={styles.locationContainer}>
+              <div style={{display:"flex"}} className={`${styles.locationContainer} ${styles.eventName}`} data-name={fetchedAddedEvents![0] && `${fetchedAddedEvents![0]?.cityName}, ${fetchedAddedEvents![0]?.countryName}`}>
                 <LocationIcon color={fontSettings?.subheading.fontColor || "black"} iconSize={fontSettings?.subheading.fontSize || 14}/>
                 <div className={`${styles.location} ${styles.truncate}`} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].eventFormat === "Virtual" ? "Virtual" : fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : demoLocation}</div>
               </div>
-              <div className={styles.eventName} data-name={fetchedAddedEvents![0] ? fetchedAddedEvents![0].name : demoEventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""}` : demoEventName}</div>
+              <div className={styles.eventName} data-name={fetchedAddedEvents![0] && fetchedAddedEvents![0].name } style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 30)} ${fetchedAddedEvents[0].name.length > 30 ? "..." : ""}` : demoEventName}</div>
             </div>
           </div>
           <div className={styles.dateRange_typeContainer}>

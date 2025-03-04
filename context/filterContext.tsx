@@ -61,7 +61,7 @@ interface EventFilterData {
     isAudienceEnabled?: boolean;
   };
 }
-interface Filters {
+export interface Filters {
   // interest?: string;
   show?: string;
   // liked?: string;

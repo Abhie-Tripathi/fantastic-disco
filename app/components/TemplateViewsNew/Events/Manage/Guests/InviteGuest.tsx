@@ -50,6 +50,7 @@ const InviteGuest = ({ eventId, setInviteGuestModal, fetchGuests }: Props) => {
   const fetchInviteCount = async () => {
     // const {data, error} = await myFetch(`${baseUrl}/invite?invites=true`)
     const data: any = await getInviteCount()
+    console.log("invite_count",data)
     if (data) {
       setCount(data.inviteCount)
     } else {
@@ -85,6 +86,7 @@ const InviteGuest = ({ eventId, setInviteGuestModal, fetchGuests }: Props) => {
 
     // })
     const data = await sendInvite(newObj)
+    console.log("121212",data)
     if (data) {
       showToast('success', "Invitation sent")
       setInviteGuestModal(false)

@@ -304,7 +304,7 @@ export function useDefaultFilters() {
       const enabledFilters =
         response && "filter" in response ? response : { filter: {} };
 
-      if (enabledFilters) {
+      if (Object.keys(enabledFilters.filter).length > 0) {
         const params = new URLSearchParams(searchParams.toString());
         const enabledFilterParams = mapEnabledFiltersToParams(
           enabledFilters.filter

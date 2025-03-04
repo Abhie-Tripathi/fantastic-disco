@@ -22,17 +22,17 @@ import { useTrackerContext } from "@/context/tracker";
 interface ActionPopoverProps {
   eventId: string;
   interests: Interest | undefined;
-  trackerId?:string;
+  trackerId?: string;
 }
 
 export function ActionPopover({
   eventId,
   interests,
-  trackerId
+  trackerId,
 }: ActionPopoverProps) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const {setSavedEventCount, savedEventCount}=useTrackerContext(); 
+  const { setSavedEventCount, savedEventCount } = useTrackerContext();
   const {
     interestConfiguration,
     isLoading: isConfigLoading,
@@ -55,7 +55,13 @@ export function ActionPopover({
   );
   const [isOpen, setIsOpen] = useState(false);
 
-  const actions = interestConfiguration?.interest || [];
+  const actions = interestConfiguration?.interest
+    ? [
+        ...interestConfiguration?.interest,
+        { status: "BOOKMARK", label: "Bookmark" },
+      ]
+    : [];
+
 
   const handleSubmit = () => {
     if (selectedAction) {
@@ -68,10 +74,8 @@ export function ActionPopover({
         },
         {
           onSuccess: () => {
-            console.log('success ho gaya');
-            
             queryClient.invalidateQueries({ queryKey: eventsKeys.all });
-            setSavedEventCount(savedEventCount+1);
+            setSavedEventCount(savedEventCount + 1);
             setIsOpen(false);
             toast({
               title: "Success",
@@ -80,6 +84,7 @@ export function ActionPopover({
             });
           },
           onError: (error) => {
+            console.log("error hai", error);
             toast({
               title: "Error",
               description: "Failed to record your interest. Please try again.",

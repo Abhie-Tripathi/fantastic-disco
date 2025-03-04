@@ -296,6 +296,7 @@ const AllEvents = ({
 
   useEffect(() => {
     const handleScroll = () => {
+      console.log("adasdasdasd_______________________________________________________________________@121212",)
       const scrollableDiv = scrollableDivRef.current;
       if (scrollableDiv) {
         const { scrollTop, clientHeight, scrollHeight } = scrollableDiv;
@@ -334,6 +335,7 @@ const AllEvents = ({
 
           // If no more events are fetched, stop further fetching
           if (newLength === prevLength) {
+            console.log("sdfsdfsdf____________________________________________________@@2222222222222222222222222222222")
             setHasMore(false);
           }
         };
@@ -890,7 +892,7 @@ const AllEvents = ({
       showToast("success", "Event successfully added to the widget");
       if (typeof fetchEvents === "function") {
         fetchEvents(0, "update").then(() => {
-          // window.location.reload();
+          window.location.reload();
         });
       }
       // fetchEvents(0, "update");
