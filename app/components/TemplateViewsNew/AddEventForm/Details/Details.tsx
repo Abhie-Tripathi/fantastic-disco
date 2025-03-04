@@ -217,7 +217,7 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
       <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.exhibitorModal || formState.registerModal || formState.capacityModal ? styles.modalOpen : ""}`} >
 
         <div>
-          <div><EventType prefilledEvent={prefilledEvent} mainEventType={formState.event_type} handleChange={handleChange} /></div>
+          <div><EventType formTheme={formTheme} prefilledEvent={prefilledEvent} mainEventType={formState.event_type} handleChange={handleChange} /></div>
           <div> {formState.isEventTypeEmpty && <p className={styles.errorMessage}>Please select any event type</p>}</div>
         </div>
         <div>
@@ -250,8 +250,8 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
               <HashtagContainer formTheme={formTheme} loadingState={loadingState} hashtags={formState.hashtags}
                 handleChange={handleChange} handleTagsGenerate={handleTagsGenerate} />
             </div>
-            <div className={styles.shareContainer}>
-              <div className={styles.heading}>Share</div>
+            <div className={`${styles.shareContainer} flex flex-col gap-3`}>
+              <div className={`text-sm font-medium ${formTheme === "light" ? "text-[var(--tertiary-text-color)]" : "text-[#ffffff]"}`}>Share</div>
               <ShareButtons formTheme={formTheme} copyIcon disabled={true} shareUrl='www.10times.com' />
             </div>
           </div>
@@ -291,15 +291,15 @@ const Details = ({ formTheme, formState, handleChange, prefilledEvent, eventFont
               {formState.isTextValueMessageEmpty && formState.isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
             </div>
             {
-              formState.participationType === "Organiser" ? <WaitListAndCap waitlisting={formState.waitlisting} approval={formState.approval} capacity={formState.capacity} handleChange={handleChange} /> : ""
+              formState.participationType === "Organiser" ? <WaitListAndCap formTheme={formTheme} waitlisting={formState.waitlisting} approval={formState.approval} capacity={formState.capacity} handleChange={handleChange} /> : ""
             }
 
             {
-              formState.participationType === "Organiser" ? <div className={styles.speakerProfileContainer}><ExhibitorDetails exhibitorDetailsData={formState.exhibitor} handlePrefillExhibitorDetails={handlePrefillExhibitorDetails} handleChange={handleChange} />
+              formState.participationType === "Organiser" ? <div className={styles.speakerProfileContainer}><ExhibitorDetails formTheme={formTheme} exhibitorDetailsData={formState.exhibitor} handlePrefillExhibitorDetails={handlePrefillExhibitorDetails} handleChange={handleChange} />
               </div> : ""
             }
 
-            {formState.participationType === "Speaker" || formState.participationType === "Organiser" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speaker}
+            {formState.participationType === "Speaker" || formState.participationType === "Organiser" ? <div className={styles.speakerProfileContainer}><SpeakerProfile formTheme={formTheme} speakerProfilesData={formState.speaker}
               // setSpeakerModal={setSpeakerModal} 
               handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
                 <ExhibitorContainer formTheme={formTheme} handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}

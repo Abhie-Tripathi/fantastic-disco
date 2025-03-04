@@ -107,7 +107,7 @@
 }
 
 .purblue {
-    background: radial-gradient(circle, rgba(149, 166, 251, 1) 0%, rgba(152, 169, 214, 1) 25%, rgba(129, 159, 201, 1) 52%, rgba(173, 155, 197, 1) 78%, rgba(254, 152, 173, 1) 100%);
+    background: radial-gradient(circle, rgb(213, 219, 255) 0%, rgb(190, 197, 236) 25%, rgb(213, 219, 255) 52%, rgba(173, 155, 197, 1) 78%, rgb(251, 183, 197) 100%);
     background-size: 200% 200%;
     animation: gradientMove 5s ease infinite;
     transition: all .3s ease-in-out;
