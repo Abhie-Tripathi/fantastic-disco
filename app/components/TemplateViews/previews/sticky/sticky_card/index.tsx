@@ -123,7 +123,7 @@ const StickyCard = ({
             fontFamily: fontSettings.heading.fontFamily,
             fontWeight: fontSettings.heading.fontWeight,
           }}
-          data-name={fetchedEvent![0]? fetchedEvent![0].name :demoEventName}
+          data-name={fetchedEvent![0]&&fetchedEvent![0]? fetchedEvent![0].name :demoEventName}
         >
           {/* {fetchedEvent && fetchedEvent.length > 0
             ? fetchedEvent[0]?.name.substring(0, 40)
@@ -141,13 +141,16 @@ const StickyCard = ({
         <div className={styles.locationContainer}>
           <LocationIcon color={fontSettings.subheading.fontColor} iconSize={fontSettings.subheading.fontSize} />
           <div
-            className={styles.location}
+            className={`${styles.location} ${styles.eventName}`}
             style={{
               fontSize: fontSettings.subheading.fontSize,
               color: fontSettings.subheading.fontColor,
               fontFamily: fontSettings.subheading.fontFamily,
               fontWeight: fontSettings.subheading.fontWeight,
             }}
+            data-name={
+              fetchedEvent&&`${fetchedEvent[0]?.cityName || ""}${fetchedEvent[0]?.cityName && fetchedEvent[0]?.countryName ? ", " : ""}${fetchedEvent[0]?.countryName || ""}`
+            }
           >
             {fetchedEvent && fetchedEvent.length > 0
               ? fetchedEvent[0]?.eventFormat === "Virtual"

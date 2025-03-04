@@ -81,9 +81,9 @@ const Popup2: React.FC<Props> = ({ cardBgColor = "#ffffff",
     <div className={smallCard ? styles.smallCard : styles.card} style={{ backgroundColor: cardBgColor, borderRadius: cardBorderRadius }}>
       <Image width={smallCard ? 250 : 350} height={smallCard ? 285 : 385} src={fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].bannerUrl : demoBanner} alt='banner' className={`${styles.banner} shadow-md`} />
       <div className={styles.details}>
-        <div className={styles.eventName} data-name={fetchedAddedEvents![0] ? fetchedAddedEvents![0].name : demoEventName} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 40)} ${fetchedAddedEvents[0].name.length > 40 ? "..." : ""}` : demoEventName}</div>
+        <div className={styles.eventName} data-name={fetchedAddedEvents![0]&& fetchedAddedEvents![0].name} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? `${fetchedAddedEvents[0].name.substring(0, 40)} ${fetchedAddedEvents[0].name.length > 40 ? "..." : ""}` : demoEventName}</div>
         <div className={styles.location_dateContainer}>
-          <div className={styles.locationContainer}>
+          <div style={{display:"flex"}} className={`${styles.locationContainer} ${styles.eventName}`} data-name={fetchedAddedEvents![0] && `${fetchedAddedEvents![0]?.cityName}, ${fetchedAddedEvents![0]?.countryName}`}>
             <LocationIcon color={fontSettings.subheading.fontColor} iconSize={fontSettings?.subheading.fontSize || 14}/>
             <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>{fetchedAddedEvents && fetchedAddedEvents.length > 0 ? fetchedAddedEvents[0].eventFormat === "Virtual" ? "Virtual" : fetchedAddedEvents[0].cityName + ", " + fetchedAddedEvents[0].countryName : demoLocation}</div>
           </div>

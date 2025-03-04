@@ -80,7 +80,7 @@ export const InsightsAndScores = ({
                 economicImpactBreakdown &&
                 Object.keys(economicImpactBreakdown).length > 0
                   ? "w-1/2 grid-cols-2 grid-rows-2"
-                  : "w-full grid-rows-1 grid-cols-4 h-fit max-xl:grid-cols-2 max-xl:grid-rows-2"
+                  : "w-full grid-cols-4 grid-rows-subgrid h-fit max-xl:grid-cols-2"
               }  gap-6 max-xl:w-full`}
             >
               <>

@@ -48,9 +48,7 @@ export const AudienceIntel = ({
   const { audienceSpread, designationSpread } =
     (eventDetails && eventDetails.audience) || {};
 
-  const { estimatedAttendance } = (eventDetails && eventDetails.insights) || {};
-
-  const { estimatedExhibitors } = (eventDetails && eventDetails.advance) || {};
+  const { estimatedAttendance, estimatedExhibitors } = (eventDetails && eventDetails.insights) || {};
 
   const parseEstimatedExhibitor = (
     value: string | number | undefined | null
@@ -81,18 +79,20 @@ export const AudienceIntel = ({
     );
 
   const [minValue, maxValue] = (estimatedAttendance &&
-    estimatedAttendance.split("-").map((v) => Number(v.trim()))) || [0, 0];
+    estimatedAttendance
+      .split("-")
+      .map((v) => Number(v.trim().replace(/[+*/]/g, "")))) || [0, 0];
 
   const hasEstimatedVisitor =
-    estimatedVisitors &&
-    minValue &&
-    maxValue &&
-    estimatedVisitors.options.some(
-      (option: { min: number; max: number | null; isEnabled: boolean }) =>
-        option.min <= maxValue &&
-        (option.max === null || option.max >= minValue) &&
-        option.isEnabled
-    );
+    (estimatedVisitors &&
+      (minValue || maxValue) &&
+      estimatedVisitors.options.some(
+        (option: { min: number; max: number | null; isEnabled: boolean }) =>
+          option.min <= maxValue &&
+          (option.max === null || option.max >= minValue) &&
+          option.isEnabled
+      )) ||
+    true;
 
   const isEstimatedExhibitorEnabled =
     estimatedExhibitor && estimatedExhibitor.isEnabled && hasEstimatedExhibitor;
