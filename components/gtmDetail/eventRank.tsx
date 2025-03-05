@@ -1,10 +1,9 @@
 "use client";
 import { useFilterContext } from "@/context/filterContext";
 import {
-  DetailRanking,
   Event,
   OverallRankingsDetail,
-  RankingData,
+  RankingData
 } from "@/types/events";
 import { format } from "date-fns";
 import { ArrowDown, ArrowUp } from "lucide-react";
@@ -330,11 +329,9 @@ const RankContainer = ({
 };
 
 export const EventRank = ({
-  rankings,
   eventDetails,
   eventRankingDetails,
 }: {
-  rankings: DetailRanking;
   eventDetails: Event;
   eventRankingDetails: OverallRankingsDetail;
 }) => {
@@ -343,62 +340,11 @@ export const EventRank = ({
 
   const enableEventRank = eventRanking?.isEnabled || true;
 
-  const { categories, eventLocation } =
-    (eventDetails && eventDetails.basic) || {};
-
-  const minCategory =
-    rankings &&
-    rankings.categories &&
-    rankings.categories.reduce((min, category) => {
-      return category < min ? category : min;
-    }, rankings.categories[0]);
-
-  const minCategoryCountry =
-    rankings &&
-    rankings.category_country &&
-    rankings.category_country.reduce((min, category) => {
-      return category < min ? category : min;
-    }, rankings.category_country[0]);
-
-  const categoryRank =
-    minCategory &&
-    Object.assign(minCategory, {
-      rank: minCategory.rank,
-      category: categories?.find(
-        (category) => category.id === minCategory.id
-      )?.name,
-    });
-
-  const countryRank = rankings &&
-    rankings.country && {
-      rank: rankings.country?.rank,
-      country:
-        eventLocation &&
-        eventLocation.country &&
-        eventLocation?.country.id === rankings.country?.id
-          ? eventLocation?.country.name
-          : "",
-    };
-
-  const categoryCountryRank =
-    minCategoryCountry &&
-    Object.assign(minCategoryCountry, {
-      rank: minCategoryCountry.rank,
-      category: categories?.find(
-        (category) => category.id === minCategoryCountry?.categoryId
-      )?.name,
-      country:
-        eventLocation &&
-        eventLocation.country &&
-        eventLocation?.country.id === minCategoryCountry?.countryId &&
-        eventLocation?.country.name,
-    });
-
   const { category, category_country, country } = eventRankingDetails;
 
   const rankComponents = (
     <div className="flex flex-row justify-center max-[1400px]:hidden">
-      {countryRank && country && Object.keys(country).length > 0 && (
+      {country && Object.keys(country).length > 0 && (
         <RankContainer
           rankData={country}
           eventDetails={eventDetails}
@@ -407,7 +353,7 @@ export const EventRank = ({
           enableEventRank={enableEventRank}
         />
       )}
-      {categoryRank && category && Object.keys(category).length > 0 && (
+      {category && Object.keys(category).length > 0 && (
         <RankContainer
           rankData={category}
           rankType={"Category Rank"}
@@ -416,17 +362,15 @@ export const EventRank = ({
           enableEventRank={enableEventRank}
         />
       )}
-      {categoryCountryRank &&
-        category_country &&
-        Object.keys(category_country).length > 0 && (
-          <RankContainer
-            rankData={category_country}
-            rankType={"Country + Category Rank"}
-            rankSlug={"country_category"}
-            eventDetails={eventDetails}
-            enableEventRank={enableEventRank}
-          />
-        )}
+      {category_country && Object.keys(category_country).length > 0 && (
+        <RankContainer
+          rankData={category_country}
+          rankType={"Country + Category Rank"}
+          rankSlug={"country_category"}
+          eventDetails={eventDetails}
+          enableEventRank={enableEventRank}
+        />
+      )}
     </div>
   );
 
@@ -448,7 +392,7 @@ export const EventRank = ({
           el: ".custom-pagination",
         }}
       >
-        {countryRank && country && Object.keys(country).length > 0 && (
+        {country && Object.keys(country).length > 0 && (
           <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
             <RankContainer
               rankData={country}
@@ -459,7 +403,7 @@ export const EventRank = ({
             />
           </SwiperSlide>
         )}
-        {categoryRank && category && Object.keys(category).length > 0 && (
+        {category && Object.keys(category).length > 0 && (
           <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
             <RankContainer
               rankData={category}
@@ -470,19 +414,17 @@ export const EventRank = ({
             />
           </SwiperSlide>
         )}
-        {categoryCountryRank &&
-          category_country &&
-          Object.keys(category_country).length > 0 && (
-            <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
-              <RankContainer
-                rankData={category_country}
-                rankType={"Country + Category Rank"}
-                rankSlug={"country_category"}
-                eventDetails={eventDetails}
-                enableEventRank={enableEventRank}
-              />
-            </SwiperSlide>
-          )}
+        {category_country && Object.keys(category_country).length > 0 && (
+          <SwiperSlide style={{ display: "flex", justifyContent: "center" }}>
+            <RankContainer
+              rankData={category_country}
+              rankType={"Country + Category Rank"}
+              rankSlug={"country_category"}
+              eventDetails={eventDetails}
+              enableEventRank={enableEventRank}
+            />
+          </SwiperSlide>
+        )}
         <div className="custom-prev-ranking flex justify-center items-center absolute left-0 top-16 transform -translate-y-1/2 z-10 cursor-pointer bg-gray-300 dark:bg-[#292929] rounded-full w-8 h-8">
           &#8592;
         </div>
@@ -495,7 +437,7 @@ export const EventRank = ({
   );
   return (
     <>
-      {(countryRank || categoryRank || categoryCountryRank) && (
+      {(country || category || category_country) && (
         <div className="flex flex-col gap-6 relative border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] p-3 rounded-sm w-fill h-auto">
           <h1 className="text-[1rem] font-medium w-full">Event Ranking</h1>
           {rankComponents}

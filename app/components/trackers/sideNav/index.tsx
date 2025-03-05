@@ -70,6 +70,9 @@ const Index = () => {
   // }, [secondLast]);
   const handleClick = (view:string) => {
     setView(view);
+    if(last==="savedevents"){
+      router.push(`/internal/trackers/savedevents?view=${view}`);
+    }else
     router.push(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&view=${view}&eventType=${typeOfEvent}`);
   };
   // const fetchData=async()=>{
@@ -97,11 +100,14 @@ const Index = () => {
             <Image style={{ display: "flex" }} src={Back} alt="back" />
             
           </Link>
+          {last==="savedevents"?
+          <div className={styles.tooltipContainer}>Saved Events</div>:
           <div className={styles.tooltipContainer} style={{ cursor: data?.tracker?.name?.length > 20 ? "pointer" : "default" }}>
             {data?.name?.length > 20 ? data?.name?.substring(0, 20) + '...' : data?.name}
             {data?.name?.length > 20 && <span className={styles.tooltipText}>{data?.name}</span>}
 
           </div>
+          }
           {/* </Button> */}
         </div>
 
@@ -122,6 +128,8 @@ const Index = () => {
                 </div>
               </div>
               {/* </Link> */}
+              {last!=="savedevents" &&
+              <>
               <div className="cursor-pointer">
               <div className={`${styles.viewsTab} ${view === "map" ? styles.tabActive : ""}`} onClick={()=>handleClick("map")}>
               <Globe className="h-4 w-4" />
@@ -141,6 +149,7 @@ const Index = () => {
               <div className={`${styles.viewsTab} ${view === "calendar" ? styles.tabActive : ""}`} onClick={()=>handleClick("calendar")}>
               <CalendarIcon className="h-4 w-4" />
                 Calendar</div>
+              
               {/* <div className={styles.viewsTab}>
               <CalendarIcon className="h-4 w-4" />
               Calendar
@@ -149,6 +158,8 @@ const Index = () => {
               </div> */}
 
               </div>
+              </>
+              }
             </div>
             {/* <Link href={`/internal/trackers/${secondLast}/trackedEvents?type=${type}`}
               onClick={() => {
@@ -196,6 +207,8 @@ const Index = () => {
 
           </div>
           <div className={styles.configAccess}>
+            {last!=="savedevents"&&
+            <>
             <Link href={`/internal/trackers/${secondLast}/editTracker?type=${type}`}
               onClick={() => {
                 GAEvent(
@@ -225,6 +238,8 @@ const Index = () => {
                 <span>Manage Access</span>
               </div>
             </Link>
+            </>
+            }
           </div>
         </>
 

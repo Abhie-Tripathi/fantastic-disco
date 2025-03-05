@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useTheme } from '@/context/theme'
 import { myFetch} from '@/utils/myFetch';
 import { baseUrl } from '@/constants';
-import Table from '@/app/components/Table/EventTable';
+import Table from "@/app/components/Table/EventTable";
 import Trackers from '@/app/components/internal/trackers/CommonTrackerCard'
 import { showToast } from '@/utils/showToast';
 import router from 'next/router';
@@ -301,7 +301,7 @@ const Page = ({ params }: { params: any }) => {
       {/* <div className={styles.innerLeft}><Trackers /></div>  */}
       <div className={styles.innerRight}>
         <div className='dummyDiv' style={{height:"120px"}}></div>
-   {/* <Table  showInsights={showInsights}/> */}
+   <Table/>
    </div>
    </div>
     </div>

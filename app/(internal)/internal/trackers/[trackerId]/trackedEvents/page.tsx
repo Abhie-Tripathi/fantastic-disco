@@ -68,7 +68,7 @@ const Map = lazy(() => import("@/components/map"));
 // }
 interface LocationObject  { [id: string]: string };
 const Page = ({ params }: { params: any }) => {
-  const {data, savedEventCount}=useTrackerContext();
+  const {data, savedEventCount, setIsNewCall, editTrue}=useTrackerContext();
   // console.log(data);
   const [share,setShare]=useState(false);
   const pathname = usePathname();
@@ -99,6 +99,10 @@ const Page = ({ params }: { params: any }) => {
   const [view, setView] = useState<string | null>(
     ["table", "list", "map", "calendar"].includes(viewType || "") ? viewType : "table"
   );
+  useEffect(() => {
+    if (editTrue)
+      setIsNewCall(true);
+  }, [editTrue])
   const [eventCount, setEventCount] = useState<{ type: string; totalCount: number; newCount: number }[]>([]);
   const [urlQueryString, setUrlQueryString] = useState<string>("");
   const trackerType: string = searchParams.get("type") || "";
@@ -256,7 +260,7 @@ const Page = ({ params }: { params: any }) => {
     }
     
     setLoading(true);
-  }, [data]);
+  }, [data, savedEventCount]);
   // useEffect(()=>{
   //   if(typeOfEvent==="savedEvent") setActive("Saved Events");
   // },[typeOfEvent])
@@ -491,6 +495,7 @@ if (!share) {
   closeShareModal();
 }
 };
+
   return (
     <div className="flex w-[calc(100vw-134px)]">
     {/* <SideNav/> */}

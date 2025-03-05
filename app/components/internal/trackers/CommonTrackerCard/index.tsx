@@ -18,6 +18,8 @@ import { GAEvent } from "@/utils/GAEvent";
 import ShareWidget from "../ShareWidget";
 import { useTrackerServices } from "@/services/trackerServices";
 import { useTrackerContext } from "@/context/tracker";
+import { Button } from "@/components/ui/button";
+import { Share2 } from "lucide-react";
 // import { useTheme } from '@/context/theme';
 const CommonTrackerCard = () => {
   const {data: item}=useTrackerContext();
@@ -275,7 +277,11 @@ const formatCount = (count: number ) => {
           
         </div>
         {/* <ShareWidget/> */}
-        <div onClick={()=>setShare(!share)} className={styles.shareTracker}>Share Tracker</div>
+        <Button variant="outline" className="flex gap-1" onClick={()=>setShare(!share)}>
+          <Share2 width={16} height={16}/>
+          Share 
+          </Button>
+        {/* <div onClick={()=>setShare(!share)} className={styles.shareTracker}>Share Tracker</div> */}
         {share && 
         <div className={styles.shareModal} onClick={closeModal}>
           <ShareModal id={id} setId={setId} closeShareModal={closeShareModal} share={share} setShare={setShare} shareFunction={shareFunction}/>

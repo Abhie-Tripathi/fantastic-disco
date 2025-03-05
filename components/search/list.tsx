@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Star, Radio, TicketPercent, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
@@ -9,6 +9,8 @@ import { format } from "date-fns";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { useEventsService } from "@/services/eventsService";
+import NullState from "@/app/components/trackers/nullState";
+import TrackerNullState from "@/public/trackerNullState.svg";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "../ui/toast";
 import { cn, lightenColor } from "@/lib/utils";
@@ -111,20 +113,21 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
 interface EventListProps {
   trackerId?: string;
   source?: string;
+  view?:string;
 }
 
-export default function EventAccordion({ source, trackerId }: EventListProps) {
+export default function EventAccordion({ source, trackerId, view }: EventListProps) {
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const query = Object.fromEntries(searchParams.entries());
   delete query.show;
+  const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
+  const [interest, setInterest]=useState();
+  const [eventId, setEventId] = useState();
   let events, totalEvents, isLoading, error;
   const { data } = useTrackerContext();
   if (source === "tracker") {
-    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
-      query,
-      trackerId
-    ));
+    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId, view));
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
@@ -159,7 +162,43 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
       .filter(Boolean)
       .map((show) => Show[show as keyof typeof Show]);
   }
+  useEffect(() => {
+    if (events) {
+      setUpdatedEvents(events);
+    }
+  }, [events]);
 
+  useEffect(() => {
+    if (!events) return;
+  
+    setUpdatedEvents((prevEvents) => {
+      let newEvents = prevEvents ? [...prevEvents] : [...events];
+  
+      if (query.eventType === "bookmarked") {
+        newEvents = newEvents.filter((event: Event) => event.basic.id !== eventId);
+      } else {
+        newEvents = newEvents.map((event: Event) => {
+          if (event.basic.id === eventId) {
+            return {
+              ...event,
+              interests: {
+                ...event.interests,
+                ...(interest
+                  ? Object.keys(interest).reduce((acc, key) => {
+                      acc[key] = interest[key];
+                      return acc;
+                    }, {} as Record<string, any>)
+                  : {}),
+              },
+            };
+          }
+          return event;
+        });
+      }
+  
+      return newEvents;
+    });
+  }, [eventId, interest]);
   const handlePageChange = (page: number) => {
     setMultipleFilters({
       offset: ((page - 1) * itemsPerPage).toString(),
@@ -178,10 +217,33 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
   }
 
   if (error) {
+    if(source==="tracker"){
+      return( <NullState
+        image={TrackerNullState}
+        title={(error as ApiError).message}
+      />)
+    }else 
     return <ZeroState text={(error as ApiError).message} />;
   }
 
   if (events.length === 0) {
+    if(source==="tracker"){
+      if(query.eventType==="bookmarked"){
+        return( <NullState
+          image={TrackerNullState}
+          title="No events saved yet! Start saving events to easily track and revisit them here."
+        />)
+      }else
+      return( <NullState
+      image={TrackerNullState}
+      title="We couldn't find any events matching your tracker criteria at the moment."
+      text="Try adjusting your filters or checking back later, as new events are added frequently."
+      buttonText="Manage Configurations"
+      buttonUrl={`/internal/trackers/${
+        trackerId
+      }/editTracker?type=${query.type}`}
+    />)
+    }else 
     return <ZeroState text="No events found" />;
   }
 
@@ -189,8 +251,12 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
     <div className="flex flex-col h-full">
       <div className="flex-grow overflow-y-auto">
         <ul className="w-full space-y-6 list-none">
-          {events?.map((event) => (
+          {events?.map((event: Event) => (
             <EventListItem
+              trackerId={trackerId}
+              view={query.eventType}
+              setEventId={setEventId}
+              setInterest={setInterest}
               key={event.basic.id}
               event={event}
               showValues={showValues}
@@ -215,9 +281,17 @@ export default function EventAccordion({ source, trackerId }: EventListProps) {
 }
 
 const EventListItem = ({
+  view,
+  trackerId,
+  setEventId,
+  setInterest,
   event,
   showValues,
 }: {
+  trackerId?:string;
+  view?:string;
+  setEventId:any;
+  setInterest:any;
   event: Event;
   showValues: Show[];
 }) => {

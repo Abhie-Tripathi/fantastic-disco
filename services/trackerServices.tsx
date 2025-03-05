@@ -21,7 +21,11 @@ interface UserAccess {
   accessType: string;
   accessId: string;
 }
-
+interface BookmarkResponse {
+  interest: string;
+  id: string;
+  eventId:string;
+}
 interface UserAccessData {
   superAdmin: UserAccess[];
   others: UserAccess[];
@@ -84,23 +88,21 @@ export const useTrackerServices = () => {
     };
     
     const globalSavedEvents = async (
-      params: string
-    ): Promise<GetSavedEventsResponse | undefined> => {
-      const response = await api.request<{ result: EventTableType[]; count: number  }>(
-        `${endpoints.tracker.getSavedEvents}/saved-events?${params}`,
+      params: any
+    )=> {
+      console.log(params);
+      
+      const response = await api.request<EventResponse>(
+        `https://api.dev.gtm.whr.ai/me/account/saved-events`,
         {
           method: "GET"
         }
       );
     
-      if (getFilterValue("view") === "table") {
         return response;
-      }
-    
-      const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
       // return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
     };
-    
+   
     const getTrackerDetail=(trackerId:string, params?:string):Promise<Tracker| undefined>=>{
       return api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}${params ? `?${params}` : ''}?refresh=true`,
@@ -114,6 +116,11 @@ export const useTrackerServices = () => {
         }
       );
     }
+    const removeBookmark = async (id: string): Promise<BookmarkResponse | undefined> => {
+      return api.request(`${endpoints.intent.userEventInterest}/${id}`, {
+        method: "DELETE",
+      });
+    };
     const getShareAccess = async (trackerId: string, accessEntity: string): Promise<UserAccessData> => {
       const response = await api.request<UserAccessData>(`${endpoints.tracker.commonUrl}/${trackerId}/users`);
       
@@ -323,6 +330,7 @@ export const useTrackerServices = () => {
     //   return EventsAdapter.adaptEventCountResponse(response);
     // };
     return {
+      removeBookmark,
       createTracker,
       globalSavedEvents,
       getMapViewData,
