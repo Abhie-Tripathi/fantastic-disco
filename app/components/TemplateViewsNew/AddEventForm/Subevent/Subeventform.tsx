@@ -109,7 +109,7 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
     const handleGeneratePoster = () => {
         if (!isLoading) { // if poster is in generaing state, the handle poster function should not work
             if (formState.eventName && formState.event_type) {
-                generatePromptSubevent(formState.eventName,formState.event_type, 1024, 1024)
+                generatePromptSubevent(formState.eventName, formState.event_type, 1024, 1024)
             } else {
                 showToast("error", "Please provide Event name and select Event type to generate the Banner");
             }
@@ -174,12 +174,12 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
     };
 
     return (
-        <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal || formState.capacityModal  ? styles.modalBody : ""}`}>
+        <div className={`${styles.body} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal || formState.capacityModal ? styles.modalBody : ""}`}>
             {eventFlow === "side" && <div className={styles.globalSearch}>
-                <GlobalSearch widgetId='123' handleChange={handleChange} />
+                <GlobalSearch widgetId='123' handleChange={handleChange} formTheme={formTheme}/>
             </div>}
 
-            <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal  ? styles.modalOpen : ""}`} >
+            <div className={`${styles.detailsContainer} ${formState.descriptionModal || formState.speakerModal || formState.registerModal || formState.capacityModal ? styles.modalOpen : ""}`} >
                 <div>
                     <div className={`${styles.participationContainer}`}>
                         <ParticipationContainer formTheme={formTheme}
@@ -211,7 +211,7 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
                             handleChange={handleChange} handleTagsGenerate={handleTagsGenerate} />
                     </div>
                     <div className={styles.shareContainer}>
-                        <div className={styles.heading}>Share</div>
+                        <div className={`text-sm font-medium ${formTheme === "light" ? "text-[var(--tertiary-text-color)]" : "text-[#ffffff]"}`}>Share</div>
                         <ShareButtons formTheme={formTheme} copyIcon disabled={true} shareUrl='www.10times.com' />
                     </div>
                 </div>
@@ -250,8 +250,8 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
                             handleChange={handleChange} /></div>
                         {formState.isTextValueMessageEmpty && formState.isEventDescriptionEmpty && <span className={styles.errorMessage}>Event description is required.</span>}
                     </div>
-                    <div className={styles.resgitrationContainer}><WaitListAndCap waitlisting={formState.waitlisting} approval={formState.approval} capacity={formState.capacity} handleChange={handleChange} /></div>
-                    {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile speakerProfilesData={formState.speaker}
+                    <div className={styles.resgitrationContainer}><WaitListAndCap formTheme={formTheme} waitlisting={formState.waitlisting} approval={formState.approval} capacity={formState.capacity} handleChange={handleChange} /></div>
+                    {formState.participationType === "Speaker" ? <div className={styles.speakerProfileContainer}><SpeakerProfile formTheme={formTheme} speakerProfilesData={formState.speaker}
                         // setSpeakerModal={setSpeakerModal} 
                         handlePrefill={handlePrefill} handleChange={handleChange} /></div> : formState.participationType === "Exhibitor" ? <div>
                             <ExhibitorContainer formTheme={formTheme} handleChange={handleChange} boothNumber={formState.boothNumber} /></div> : <></>}
@@ -263,7 +263,7 @@ const Subeventform = ({ formTheme, handleChange, formState, prefilledEvent, even
                             zoom={6}
                             source='detail'
                             height={200}
-                            />
+                        />
                     }
                 </div>
             </div>

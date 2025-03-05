@@ -55,7 +55,7 @@ const RegistrationForm = ({
                     <div className={styles.heading}>Customize your event registration form</div>
                 </div>
                 <div className={styles.header}>
-                    <div>Join us at the event</div>
+                    <div className={formTheme === "dark" ? "text-[#ffffff]" : "text-[#000000]"}>Join us at the event</div>
                     <Image src={EditIcon} alt='edit' onClick={() => handleChange('registerModal', true)} />
                 </div>
                 <div className={`${styles.formSubHeading} ${formTheme === "dark" ? styles.darkFormsubheading : ""}`}>{registerMessage}
