@@ -172,7 +172,7 @@ console.log(events);
   return (
     <div className="w-full">
       <div className="rounded-md border bg-background">
-      <div className={`overflow-auto ${view === "global" ? "h-[calc(100vh-165px)]" : "max-h-[calc(100vh-264px)]"}`}>
+      <div className={`overflow-auto ${view === "global" ? "h-[calc(100vh-165px)]" : "max-h-[calc(100vh-198px)]"}`}>
 
           <Table>
             <EventTableHeader show={showValues} type={query.type} view={query.eventType} localFilters={localFilters}/>
