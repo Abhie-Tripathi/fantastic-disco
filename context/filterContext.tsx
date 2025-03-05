@@ -208,20 +208,19 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
         setEnabledFilters({});
       }
     };
-
     getEnabledFilters();
   }, []);
 
   useEffect(() => {
     if (enabledFilters) {
-      // console.log("Enabled Filters:", enabledFilters);
+     console.log("Enabled Filters:", enabledFilters);
       setMorphedData(generateSearchFilters(enabledFilters) as any);
     }
   }, [enabledFilters]);
   
   const setLocalFilter = useCallback(
     (key: keyof Filters, value: string) => {
-      // console.log(key);
+      console.log(key);
 
       const mapping: Record<keyof Filter, string> = {
         eventTypes: "eventTypes",
@@ -250,6 +249,8 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
               typeof value === "string" &&
               value.split(",").length <= 1))
         ) {
+          console.log(value);
+          
           toast({
             title: "Error",
             description: "At least one filter must be selected",
@@ -415,4 +416,9 @@ export const useFilterContext = () => {
   }
   return context;
 };
+
+
+
+
+
 

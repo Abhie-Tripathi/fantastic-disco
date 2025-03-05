@@ -3,8 +3,9 @@ import styles from './shareModal.style.module.css';
 import Account from '/public/account.svg';
 import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { showToast } from "@/utils/showToast";
+// import { showToast } from "@/utils/showToast";
 import { baseUrl } from '@/constants';
+import { useToast } from "@/hooks/use-toast";
 import { myFetch } from '@/utils/myFetch';
 import { GAEvent } from '@/utils/GAEvent';
 import { useTrackerServices } from '@/services/trackerServices';
@@ -32,6 +33,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
 }) => {
     const [currentUrl, setCurrentUrl] = useState('');
     const {shareTrackerInvite,createNewAccess, error, isLoading}= useTrackerServices();
+     const { toast } = useToast();
     const [filteredData, setFilteredData] = useState([]);
     const [filter, setFilter] = useState('');
     const [drop,setDrop]=useState(true);
@@ -75,9 +77,9 @@ const ShareModal: React.FC<ShareModalProps> = ({
         }, [filter, data]);
         useEffect(() => {
             if (typeof window !== 'undefined') {
-                const url = window.location.href;
+                const url = window.location.origin;
                 const baseUrl = url.substring(0, url.lastIndexOf('/'));
-                setCurrentUrl(`${baseUrl}/trackedEvents?type=${type}`);
+                setCurrentUrl(`${url}`);
             }
         }, []);
         const handleFilterChange = (e: any) => {
@@ -97,7 +99,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
             const formData={
                 accessReceiverEmail: filter,
                 accessType: "admin",
-                redirectDomain: `http://localhost:3000`
+                redirectDomain: currentUrl
             }
               
             
@@ -110,7 +112,11 @@ const ShareModal: React.FC<ShareModalProps> = ({
                                         "Share",
                                         "Invite"
                                       );
-                                      showToast("success","Tracker shared successfully!")
+                                      toast({
+                                        title: "Success",
+                                        description: "Tracker shared successfully!",
+                                        variant: "default",
+                                      });
                                       fetchAccess();
                                       if(shareFunction)
                                       shareFunction();
@@ -122,8 +128,11 @@ const ShareModal: React.FC<ShareModalProps> = ({
                                 console.log(isLoading);
                                 
             } catch (error:any) {
-                console.error('Error fetching data:', error);
-                            showToast("error",error.response);
+                            toast({
+                                title: "Error",
+                                description: error.message,
+                                variant: "destructive",
+                              });
                             fetchAccess?.();
                               setFilter('');
                               setIsClicked(false);
@@ -154,8 +163,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
         }, [id, isClicked]);
         useEffect(() => {
             if (error) {
-              console.error('API Error:', error); // This logs the error from `useApi`'s state.
-              showToast('error', error.message || 'An error occurred'); // Display error in toast
+              console.error('API Error:', error);
             }
           }, [error]);  
         

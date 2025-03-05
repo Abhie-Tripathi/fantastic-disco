@@ -464,7 +464,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
           ),
         
       },
-  
+
       eventFormats: {
         isEnabled: true,
         options: searchFilters?.eventFormats?.options?.map((format) => ({
@@ -488,7 +488,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
       options: searchFilters?.eventStatus?.options?.map((status) => ({
         ...status,
         isEnabled:
-          data?.status?.enabledValue?.includes(status.id.toUpperCase()) ??
+          data?.status?.enabledValue?.includes(status.id) ??
           true,
       })),
     },
@@ -507,7 +507,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
       options: searchFilters?.eventEntries?.options?.map((entry) => ({
         ...entry,
         isEnabled:
-          data?.entryType?.enabledValue?.includes(entry.id.toUpperCase()) ??
+          data?.entryType?.enabledValue?.includes(entry.id) ??
           true,
       })),
     },
