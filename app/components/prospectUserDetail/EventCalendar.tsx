@@ -52,6 +52,8 @@ export const EventCalendar = ({
   pastEventsCount,
   loadMoreEvents,
 }: Props) => {
+
+  const activeTab = upcomingEventsCount > 0 ? "upcoming" : "past";
   return (
     <div className="flex gap-6 max-xl:flex-col">
       <div className="flex flex-1 flex-col gap-4 border border-[#EBEBEB] dark:bg-transparent dark:border-[var(--border-color)] rounded-md p-4 w-full">
@@ -68,7 +70,7 @@ export const EventCalendar = ({
 
         <div>
           <Tabs
-            defaultValue={"upcoming"}
+            defaultValue={activeTab}
             className="h-full overflow-y-auto w-full"
           >
             <div className="flex w-full justify-between">
@@ -115,7 +117,7 @@ export const EventCalendar = ({
                         {event.basic.name}
                       </Text>
                     </Link>
-                    <p className="flex items-center gap-2 text-[12px]">
+                    <p className="flex items-center gap-1 text-[12px]">
                       <Location
                         color="var(--muted-foreground)"
                         width="12px"
@@ -188,7 +190,7 @@ export const EventCalendar = ({
               {upcomingEvents.length === 0 && (
                 <span className="text-[#666666] text-sm flex items-center gap-2 my-4">
                   <CircleSlash width={15} height={15} />
-                  No data available
+                  Events spoken and attended by user will be listed here
                 </span>
               )}
             </TabsContent>
@@ -210,7 +212,7 @@ export const EventCalendar = ({
                         {event.basic.name}
                       </Text>
                     </Link>
-                    <p className="flex items-center gap-2 text-[12px]">
+                    <p className="flex items-center gap-1 text-[12px]">
                       <Location
                         color="var(--muted-foreground)"
                         width="12px"
@@ -282,7 +284,7 @@ export const EventCalendar = ({
               {pastEvents.length === 0 && (
                 <span className="text-[#666666] text-sm flex items-center gap-2 my-4">
                   <CircleSlash width={15} height={15} />
-                  No data available
+                  Events spoken and attended by user will be listed here
                 </span>
               )}
             </TabsContent>
