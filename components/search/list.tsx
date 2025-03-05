@@ -240,7 +240,6 @@ export default function EventAccordion({
   }
 
   if (events.length === 0) {
-<<<<<<< HEAD
     if(source==="tracker"){
       if(query.eventType==="bookmarked"){
         return( <NullState
@@ -259,27 +258,6 @@ export default function EventAccordion({
     />)
     }else 
     return <ZeroState text="No events found" />;
-=======
-    if (source === "tracker") {
-      if (query.eventType === "bookmarked") {
-        return (
-          <NullState
-            image={TrackerNullState}
-            title="No events saved yet! Start saving events to easily track and revisit them here."
-          />
-        );
-      } else
-        return (
-          <NullState
-            image={TrackerNullState}
-            title="We couldn't find any events matching your tracker criteria at the moment."
-            text="Try adjusting your filters or checking back later, as new events are added frequently."
-            buttonText="Manage Configurations"
-            buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
-          />
-        );
-    } else return <ZeroState text="No events found" />;
->>>>>>> 09996d156e431cf457238f9a7f407e1722384561
   }
 
   return (
