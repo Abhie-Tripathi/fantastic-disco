@@ -192,7 +192,6 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             <div className="truncate font-medium">
               <Link
                 href={`/internal/event/${event.basic.id}`}
-                target="_blank"
                 className="hover:text-primary transition-colors"
               >
                 {event.basic.name}

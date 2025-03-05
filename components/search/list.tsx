@@ -39,6 +39,8 @@ import { ApiError } from "@/types/api";
 import Image from "next/image";
 import holiday from "/public/eventType/holiday.svg";
 import { useTrackerContext } from "@/context/tracker";
+import { isEventeli } from "@/config";
+import { Button } from "../ui/button";
 
 interface CircularProgressProps {
   value: number | null;
@@ -108,24 +110,34 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
     </div>
   );
 };
+
 interface EventListProps {
   trackerId?: string;
   source?: string;
-  view?:string;
+  view?: string;
 }
 
-export default function EventAccordion({ source, trackerId, view }: EventListProps) {
+export default function EventAccordion({
+  source,
+  trackerId,
+  view,
+}: EventListProps) {
   const searchParams = useSearchParams();
+  const { data: trackerData } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const query = Object.fromEntries(searchParams.entries());
   delete query.show;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
-  const [interest, setInterest]=useState();
+  const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
   let events, totalEvents, isLoading, error;
   const { data } = useTrackerContext();
   if (source === "tracker") {
-    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId, view));
+    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
+      query,
+      trackerId,
+      view
+    ));
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
@@ -142,7 +154,7 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
   };
   let showsData: string[] = [];
   Object.entries(mapping).forEach(([key, value]) => {
-    if (data?.filterValues?.show?.includes(key)) {
+    if ((data?.filterValues as any)?.show?.includes(key)) {
       showsData.push(value);
     }
   });
@@ -168,12 +180,14 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
 
   useEffect(() => {
     if (!events) return;
-  
+
     setUpdatedEvents((prevEvents) => {
       let newEvents = prevEvents ? [...prevEvents] : [...events];
-  
+
       if (query.eventType === "bookmarked") {
-        newEvents = newEvents.filter((event: Event) => event.basic.id !== eventId);
+        newEvents = newEvents.filter(
+          (event: Event) => event.basic.id !== eventId
+        );
       } else {
         newEvents = newEvents.map((event: Event) => {
           if (event.basic.id === eventId) {
@@ -193,7 +207,7 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
           return event;
         });
       }
-  
+
       return newEvents;
     });
   }, [eventId, interest]);
@@ -215,16 +229,18 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
   }
 
   if (error) {
-    if(source==="tracker"){
-      return( <NullState
-        image={TrackerNullState}
-        title={(error as ApiError).message}
-      />)
-    }else 
-    return <ZeroState text={(error as ApiError).message} />;
+    if (source === "tracker") {
+      return (
+        <NullState
+          image={TrackerNullState}
+          title={(error as ApiError).message}
+        />
+      );
+    } else return <ZeroState text={(error as ApiError).message} />;
   }
 
   if (events.length === 0) {
+<<<<<<< HEAD
     if(source==="tracker"){
       if(query.eventType==="bookmarked"){
         return( <NullState
@@ -243,6 +259,27 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
     />)
     }else 
     return <ZeroState text="No events found" />;
+=======
+    if (source === "tracker") {
+      if (query.eventType === "bookmarked") {
+        return (
+          <NullState
+            image={TrackerNullState}
+            title="No events saved yet! Start saving events to easily track and revisit them here."
+          />
+        );
+      } else
+        return (
+          <NullState
+            image={TrackerNullState}
+            title="We couldn't find any events matching your tracker criteria at the moment."
+            text="Try adjusting your filters or checking back later, as new events are added frequently."
+            buttonText="Manage Configurations"
+            buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
+          />
+        );
+    } else return <ZeroState text="No events found" />;
+>>>>>>> 09996d156e431cf457238f9a7f407e1722384561
   }
 
   return (
@@ -286,17 +323,13 @@ const EventListItem = ({
   event,
   showValues,
 }: {
-  trackerId?:string;
-  view?:string;
-  setEventId:any;
-  setInterest:any;
+  trackerId?: string;
+  view?: string;
+  setEventId: any;
+  setInterest: any;
   event: Event;
   showValues: Show[];
 }) => {
-  const { saveEvent } = useEventsService();
-  const { toast } = useToast();
-  const [isSaved, setIsSaved] = useState(Boolean(event.insights?.rankings));
-
   const address = event.basic.eventLocation ? (
     event.basic.eventLocation.venue?.name === "Online" ||
     event.basic.format === "online" ? (
@@ -344,31 +377,6 @@ const EventListItem = ({
 
   const isCancelled = event.basic.status === "cancelled";
   const isPostponed = event.basic.status === "postponed";
-
-  const handleSaveEvent = async (eventId: string) => {
-    try {
-      await saveEvent(eventId);
-      setIsSaved(true);
-      toast({
-        title: "Event saved",
-        description: "Event has been added to your saved events",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error saving event",
-        description: error.message,
-        variant: "destructive",
-        action: (
-          <ToastAction
-            onClick={() => handleSaveEvent(eventId)}
-            altText="Try again"
-          >
-            Try again
-          </ToastAction>
-        ),
-      });
-    }
-  };
 
   function getOrdinalSuffix(number: number): string {
     const j = number % 10;
@@ -819,11 +827,34 @@ const EventListItem = ({
               </div>
             </div>
 
-            <div className="col-span-5">
-              <div className="flex items-center justify-end">
-                {showValues.includes(Show.scores) && event.insights?.scores ? (
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex flex-col justify-end gap-4">
+            <div className="col-span-5 flex flex-col gap-2 justify-between">
+              {event.alerts && event.alerts?.length > 0 && (
+                <div className="flex items-center justify-end gap-2">
+                  {event.alerts?.map((alert) => (
+                    <Badge
+                      key={alert.id}
+                      variant="outline"
+                      className={cn(
+                        "capitalize text-sm border-2",
+                        getAlertLevelBorderColor(alert.level)
+                      )}
+                    >
+                      <span>{alertIcons[alert.type]}</span>
+                      <span className="ml-1 font-medium">
+                        {alert.name.toLowerCase()}
+                      </span>
+                    </Badge>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex items-start justify-end h-full">
+                {showValues.includes(Show.scores) &&
+                event.insights?.scores &&
+                (event.insights?.scores.inboundScore !== null ||
+                  event.insights?.scores.internationalScore !== null) ? (
+                  <div className="flex justify-end gap-6 w-full">
+                    <div className="flex flex-col gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
                         event.insights?.estimatedExhibitors !== undefined && (
                           <div>
@@ -837,48 +868,36 @@ const EventListItem = ({
                             </p>
                           </div>
                         )}
-                      {event.insights?.estimatedAttendance && (
+                      {event.insights?.estimatedAttendance !== undefined && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
                             Estimated Visitors
                           </p>
                           <p className="text-lg font-semibold text-primary">
-                            {event.insights?.estimatedAttendance || "--"}
+                            {event.insights?.estimatedAttendance == "0"
+                              ? "--"
+                              : event.insights?.estimatedAttendance}
                           </p>
                         </div>
                       )}
-                      {showValues.includes(Show.economicImpact) &&
-                        event.insights?.economicImpact && (
-                          <div>
-                            <p className="text-xs text-gray-600 font-medium">
-                              Est. Economic Impact
-                            </p>
-                            <p className="text-lg font-semibold text-primary">
-                              {formatEstimatedSpend(
-                                event.insights?.economicImpact || "--"
-                              )}
-                            </p>
-                          </div>
-                        )}
+                      {event.insights?.economicImpact !== undefined && (
+                        <div>
+                          <p className="text-xs text-gray-600 font-medium">
+                            Economic Impact
+                          </p>
+                          <p className="text-lg font-semibold text-primary">
+                            {formatEstimatedSpend(
+                              event.insights?.economicImpact
+                            )}
+                          </p>
+                        </div>
+                      )}
                     </div>
 
-                    <div className="flex flex-col gap-4">
-                      <div
-                        className="flex items-center justify-end"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <ActionPopover
-                          eventId={event.basic.id}
-                          interests={event.interests}
-                        />
-                      </div>
+                    <div className="space-y-4">
                       {showValues.includes(Show.scores) &&
                         event.insights?.scores && (
-                          <div className="grid grid-cols-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] dark:bg-[#171717] p-2 rounded">
-                            {/* <CircularProgress
-                              value={event.insights?.scores.impactScore}
-                              label="EIS"
-                            /> */}
+                          <div className="grid grid-rows-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
                             <CircularProgress
                               value={event.insights?.scores.inboundScore}
                               label="Inbound"
@@ -890,59 +909,69 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
+
+                    <div
+                      className="flex items-start justify-end"
+                      onClick={(e) => e.preventDefault()}
+                    >
+                      <ActionPopover
+                        eventId={event.basic.id}
+                        interests={event.interests}
+                      />
+                    </div>
                   </div>
                 ) : (
-                  <div className="grid grid-row-2 items-end gap-4">
-                    <div className="flex flex-col gap-4">
-                      <div
-                        className="flex items-center justify-end"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        <ActionPopover
-                        trackerId={trackerId}
-                        view={view}
-                        setEventId={setEventId}
-                        setInterest={setInterest}
-                          eventId={event.basic.id}
-                          interests={event.interests}
-                        />
-                      </div>
+                  <div className="flex justify-end w-full gap-6">
+                    <div className="grid grid-row-2 items-end gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
-                        event.insights?.exhibitorsCount !== undefined && (
+                        event.insights?.estimatedExhibitors !== undefined && (
                           <div>
                             <p className="text-xs text-gray-600 font-medium">
                               Estimated Exhibitors
                             </p>
                             <p className="text-lg font-semibold text-primary">
-                              {formatExhibitorCount(
-                                event.insights?.exhibitorsCount
-                              )}
+                              {event.insights?.estimatedExhibitors == "0" ||
+                              event.insights?.estimatedExhibitors == null
+                                ? "--"
+                                : event.insights?.estimatedExhibitors}
                             </p>
                           </div>
                         )}
-                      {event.insights?.estimatedAttendance && (
+                      {event.insights?.estimatedAttendance !== undefined && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
                             Estimated Visitors
                           </p>
                           <p className="text-lg font-semibold text-primary">
-                            {event.insights?.estimatedAttendance || "--"}
+                            {event.insights?.estimatedAttendance == "0" ||
+                            event.insights?.estimatedAttendance == null
+                              ? "--"
+                              : event.insights?.estimatedAttendance}
                           </p>
                         </div>
                       )}
                       {showValues.includes(Show.economicImpact) &&
-                        event.insights?.economicImpact && (
+                        event.insights?.economicImpact !== undefined && (
                           <div>
                             <p className="text-xs text-gray-600 font-medium">
                               Economic Impact
                             </p>
                             <p className="text-lg font-semibold text-primary">
                               {formatEstimatedSpend(
-                                event.insights?.economicImpact || "--"
+                                event.insights?.economicImpact
                               )}
                             </p>
                           </div>
                         )}
+                    </div>
+                    <div
+                      className="flex items-start justify-end"
+                      onClick={(e) => e.preventDefault()}
+                    >
+                      <ActionPopover
+                        eventId={event.basic.id}
+                        interests={event.interests}
+                      />
                     </div>
                   </div>
                 )}
@@ -1042,7 +1071,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                   </Badge>
                 ))}
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
+              {/* <div className="flex flex-wrap gap-2 mt-2">
                 <Badge
                   variant="outline"
                   className="text-gray-600 capitalize rounded-sm"
@@ -1050,7 +1079,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                 >
                   <span className="ml-1">Regional Holiday</span>
                 </Badge>
-              </div>
+              </div> */}
             </div>
           </div>
           <div className="col-span-5 flex flex-col justify-between">
@@ -1072,32 +1101,35 @@ const UnplannedCard = ({ event }: { event: Event }) => {
               ))} */}
             </div>
             <div className="flex items-center justify-end">
-              {event.insights?.scores ? (
-                <div className="flex items-center justify-end w-full">
-                  <div className="space-y-4">
-                    {event.insights?.scores && (
-                      <div className="grid grid-cols-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
-                        <CircularProgress value={-39} label="Business Score" />
-                        <CircularProgress value={80} label="Social Score" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="grid grid-row-2 items-end gap-4">
-                  {event.insights?.estimatedAttendance !== undefined && (
-                    <div>
-                      <p className="text-xs text-gray-600 font-medium">
-                        Estimated Visitors
-                      </p>
-                      <p className="text-lg font-semibold text-primary">
-                        {event.insights?.estimatedAttendance == "0"
-                          ? "--"
-                          : event.insights?.estimatedAttendance}
-                      </p>
+              {/* {event.insights?.scores ? (
+                  <div className="flex items-center justify-end w-full">
+                    <div className="space-y-4">
+                      {event.insights?.scores && (
+                        <div className="grid grid-cols-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
+                          <CircularProgress
+                            value={-39}
+                            label="Business Score"
+                          />
+                          <CircularProgress value={80} label="Social Score" />
+                        </div>
+                      )}
                     </div>
-                  )}
-                  {/* {event.economicImpact !== undefined && (
+                  </div>
+                ) : ( */}
+              <div className="grid grid-row-2 items-end gap-4">
+                {/* {event.insights?.estimatedAttendance !== undefined && (
+                      <div>
+                        <p className="text-xs text-gray-600 font-medium">
+                          Estimated Visitors
+                        </p>
+                        <p className="text-lg font-semibold text-primary">
+                          {event.insights?.estimatedAttendance == "0"
+                            ? "--"
+                            : event.insights?.estimatedAttendance}
+                        </p>
+                      </div>
+                    )} */}
+                {/* {event.economicImpact !== undefined && (
                       <div>
                         <p className="text-xs text-gray-600 font-medium">
                           Economic Impact
@@ -1107,8 +1139,8 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                         </p>
                       </div>
                     )} */}
-                </div>
-              )}
+              </div>
+              {/* )} */}
             </div>
           </div>
         </div>

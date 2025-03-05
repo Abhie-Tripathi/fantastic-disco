@@ -147,8 +147,7 @@ export const Overview = ({
               </Text>
             ) : (
               <span className="text-[#666666] text-sm flex items-center gap-2">
-                <CircleSlash width={15} height={15} />
-                No data available
+                Description will appear here
               </span>
             )}
           </div>
@@ -166,10 +165,13 @@ export const Overview = ({
               </ul>
             </div>
           )}
-          <div>
-            <h1 className="text-[1rem] mb-2 font-medium">Event Keywords</h1>
-            <ExpandableTags tags={filteredTags ?? []} />
-          </div>
+          {filteredTags.length > 0 && (
+            <div>
+              <h1 className="text-[1rem] mb-2 font-medium">Event Keywords</h1>
+              <ExpandableTags tags={filteredTags ?? []} />
+            </div>
+          )}
+
           <div className="flex flex-row gap-6">
             <div className="flex flex-col border border-[var(--neutral-light-color)] bg-[#FAFAFA] dark:bg-transparent dark:border-[var(--border-color)] p-3 rounded-sm w-fill">
               <h1 className="text-[1rem] mb-2 font-medium border-b-[1px] pb-2">

@@ -18,8 +18,6 @@
     /* font-size: var(--font-size-small); */
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-default);
-    color: var(--tertiary-text-color);
-
 }
 .body img{
     cursor: pointer;

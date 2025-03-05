@@ -15,8 +15,7 @@ interface Props {
 }
 
 const ShareButtons = ({ formTheme, copyIcon, shareUrl, title, hashtags, emailSubject, emailBody, disabled }: Props) => {
-  console.log("share url is : ", shareUrl)
-  console.log("title is : ", title)
+
   const [copyClick, setCopyClick] = useState(false)
   const handleCopy = () => {
     if (!disabled) {
@@ -25,10 +24,6 @@ const ShareButtons = ({ formTheme, copyIcon, shareUrl, title, hashtags, emailSub
       navigator.clipboard.writeText(textToCopy);
     }
   };
-  // const description = `This is the description for this event. ${hashtags ? hashtags[0] : "event"}`
-  // const description = `This is the description for this event. ${hashtags ? hashtags[0] : "event"}`
-  // const twitterArr = [];
-  // twitterArr.push(description)
 
   return (
     <div className={styles.shareIconContainer}>
