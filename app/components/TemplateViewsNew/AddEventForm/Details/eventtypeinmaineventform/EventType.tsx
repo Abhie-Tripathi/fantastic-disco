@@ -6,6 +6,7 @@ const EventTypeSelector = ({
   mainEventType,
   handleChange,
   prefilledEvent,
+  formTheme
 }: any) => {
   const [selectedEventType, setSelectedEventType] = useState("");
 
@@ -27,11 +28,11 @@ const EventTypeSelector = ({
     <div className={styles.container}>
       <div className={styles.icon_container}>
         <Image src={eventTypeSVG} alt="event type" className={styles.icon} />
-        <label className={styles.label}>Choose Your Event Type</label>
+        <label className={`${styles.label} ${formTheme === "light" ? "text-[var(--tertiary-text-color)]" : "text-[#e0e0de]"}`}>Choose Your Event Type</label>
       </div>
       <div className={styles.optionsContainer}>
         {["Tradeshow", "Conference", "Workshop"].map((type) => (
-          <label key={type} className={styles.optionLabel}>
+          <label key={type} className={`${styles.optionLabel} ${formTheme === "light" ? "text-[var(--tertiary-text-color)]" : "text-[#e0e0de]"}`}>
             <input
               type="radio"
               name="eventType"
