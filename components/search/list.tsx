@@ -874,11 +874,11 @@ const EventListItem = ({
                       </div>
                       {showValues.includes(Show.scores) &&
                         event.insights?.scores && (
-                          <div className="grid grid-cols-3 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] dark:bg-[#171717] p-2 rounded">
-                            <CircularProgress
+                          <div className="grid grid-cols-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] dark:bg-[#171717] p-2 rounded">
+                            {/* <CircularProgress
                               value={event.insights?.scores.impactScore}
                               label="EIS"
-                            />
+                            /> */}
                             <CircularProgress
                               value={event.insights?.scores.inboundScore}
                               label="Inbound"
