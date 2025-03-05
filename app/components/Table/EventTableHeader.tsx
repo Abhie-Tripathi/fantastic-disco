@@ -95,11 +95,11 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show, type, 
             <div className="font-medium text-foreground ">Maturity</div>
           </TableHead>
         )}
-        {show.includes(Show.scores) && (
+        {/* {show.includes(Show.scores) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Impact</div>
           </TableHead>
-        )}
+        )} */}
         {show.includes(Show.scores) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Inbound</div>
