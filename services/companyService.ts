@@ -7,6 +7,8 @@ import { endpoints } from "@/config/endpoints";
 import { pocDetail } from "@/types/coordinateEventType";
 import externalAxios from "@/lib/externalAxios";
 import { CompanyDetailResponse, CompanyListResponse } from "@/types/prospect";
+import prospectUserData from "@/public/data/prospect/prospectUserData.json";
+import eventData from "@/public/data/prospect/userEventData.json";
 
 interface fnProp {
   offset: number;
@@ -125,6 +127,19 @@ export const useCompanyService = () => {
     }
   };
 
+  const getUserDetailById = (userId: string | number) => {
+    const filteredData = prospectUserData.data.userData.filter((user: any) => user.user_id === userId);
+    return filteredData[0];
+  };
+
+  const getUserEvents = (
+    companyId: string | number,
+    eventType: string,
+    offset: number = 0
+  ) => {
+    return eventData
+  };
+
   return {
     getCompanyList,
     unlockUserDetail,
@@ -134,6 +149,8 @@ export const useCompanyService = () => {
     getCompanyPOC,
     getEventCountByCountry,
     checkCompanyLogo,
+    getUserDetailById,
+    getUserEvents,
     isLoading: api.isLoading,
     // error: api.error as ApiError,
   };

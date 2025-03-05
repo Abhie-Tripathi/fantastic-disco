@@ -45,22 +45,23 @@ export default function AudienceDesAndDepSelector() {
   const { localFilters, setLocalFilter, getLocalFilterValue, morphedData} = useFilterContext();
   const { designations } = useDesignationsAutocomplete(search);
   const enabled = morphedData.audienceProfile.isEnabled;
+  
   const selectedLabels = useMemo(() => {
     const filterDesignations =
       getLocalFilterValue("designations")?.split(",").filter(Boolean) || [];
     return designations.filter((d: Designations) =>
-      filterDesignations.includes(d.id)
+      filterDesignations.includes(d.slug)
     );
   }, [localFilters.designations, designations]);
 
   const handleSelect = (label: Designations) => {
     const currentDesignations =
       localFilters.designations?.split(",").filter(Boolean) || [];
-    const isSelected = currentDesignations.includes(label.id);
+    const isSelected = currentDesignations.includes(label.slug);
 
     const newDesignations = isSelected
-      ? currentDesignations.filter((id) => id !== label.id)
-      : [...currentDesignations, label.id];
+      ? currentDesignations.filter((id) => id !== label.slug)
+      : [...currentDesignations, label.slug];
 
     setLocalFilter("designations", newDesignations.join(","));
   };
@@ -140,7 +141,7 @@ export default function AudienceDesAndDepSelector() {
                   {label.name}
                   <button
                     className="ml-1 hover:text-destructive"
-                    onClick={() => handleRemoveLabel(label.id)}
+                    onClick={() => handleRemoveLabel(label.slug)}
                   >
                     <X className="h-3 w-3" />
                   </button>

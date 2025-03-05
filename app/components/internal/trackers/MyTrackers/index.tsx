@@ -163,7 +163,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             openSearchBar ? "max-h-20 opacity-100 scale-y-100" : "max-h-0 opacity-0 scale-y-95 hidden"
           }`}
         >
-          <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2 mr-7 ml-6 mb-2">
+          <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2 mr-7 ml-6 mb-3">
             <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
             <input
               className="outline-none w-full bg-[var(--primary-foreground)]"

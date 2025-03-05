@@ -24,6 +24,7 @@ interface UserAccess {
 interface BookmarkResponse {
   interest: string;
   id: string;
+  eventId:string;
 }
 interface UserAccessData {
   superAdmin: UserAccess[];
@@ -87,11 +88,11 @@ export const useTrackerServices = () => {
     };
     
     const globalSavedEvents = async (
-      params: string
-    ): Promise<GetSavedEventsResponse | undefined> => {
+      params: any
+    )=> {
       console.log(params);
       
-      const response = await api.request<{ result: EventTableType[]; count: number  }>(
+      const response = await api.request<EventResponse>(
         `https://api.dev.gtm.whr.ai/me/account/saved-events`,
         {
           method: "GET"

@@ -17,6 +17,10 @@ import { ActionPopover } from "./ActionPopover";
 import { Show } from "@/types/events/dto/event-query.dto";
 import { Badge } from "@/components/ui/badge";
 import { formatEstimatedSpend } from "@/utils/formater";
+import { lightenColor } from "@/lib/utils";
+import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
+import { Filters } from "@/context/filterContext";
+import * as Flags from "country-flag-icons/react/3x2";
 
 interface EventTableRowProps {
   event: Event;
@@ -26,6 +30,7 @@ interface EventTableRowProps {
   setEventId?: any;
   setInterest?: any;
   view?:string;
+  localFilters: Filters;
 }
 
 function getForecastedStatus(data: any) {
@@ -110,6 +115,7 @@ function getAssociationColor(value: string) {
 export const EventTableRow: React.FC<EventTableRowProps> = ({
   event,
   show,
+  localFilters,
   trackerId,
   type,
   setEventId,
@@ -137,6 +143,35 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 alt={`${event.basic.name} logo`}
                 className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
               />
+            ) : event.basic.website ? (
+              <div className="w-12 h-12 relative">
+                <img
+                  src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+                  alt={`${event.basic.name} website favicon`}
+                  className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                    e.currentTarget.dataset.error = "true";
+                  }}
+                />
+                {/* Fallback that shows when image errors */}
+                <div
+                  className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+                  style={{ display: "none" }}
+                  ref={(el) => {
+                    if (el) {
+                      const img = el.previousSibling as HTMLImageElement;
+                      if (img && img.dataset.error === "true") {
+                        el.style.display = "flex";
+                      }
+                    }
+                  }}
+                >
+                  <span className="text-[#5055A3] text-lg font-semibold">
+                    {event.basic.name.charAt(0)}
+                  </span>
+                </div>
+              </div>
             ) : (
               <div className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center">
                 <span className="text-[#5055A3] text-lg font-semibold">
@@ -218,26 +253,25 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       </TableCell>
 
       {/* Keywords Column - if enabled */}
-      {/* {event.insights?.keywords && (
+      {event.basic.tags && (
         <TableCell>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                {event.insights.keywords[0]}
-                {event.insights.keywords.length > 1 && (
-                  <span className="text-xs font-bold">
-                    {" "}
-                    +{event.insights.keywords.length - 1}
+          {event.basic.tags?.[0]?.name}
+          {event.basic.tags.length > 1 && (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <span className="text-xs text-primary font-medium ml-1">
+                    +{event.basic.tags.length - 1}
                   </span>
-                )}
-              </TooltipTrigger>
-              <TooltipContent>
-                {event.insights.keywords.join(" | ")}
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  {event.basic.tags.map((tag) => tag.name).join(" | ")}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </TableCell>
-      )} */}
+      )}
 
       {/* Category Column */}
       <TableCell className="text-center">
@@ -365,6 +399,19 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         </TableCell>
       )}
 
+      {/* Match Column */}
+      {localFilters.includeKeywords && (
+        <TableCell className="text-center">
+          {event.basic.matchedKeywords?.join(" | ")}
+        </TableCell>
+      )}
+
+      {localFilters.includeKeywords && (
+        <TableCell className="text-center">
+          {event.basic.matchedKeywordsPercentage}
+        </TableCell>
+      )}
+
       {/* Maturity Column */}
       {show.includes(Show.maturity) &&
         event.advance?.maturity !== undefined && (
@@ -383,7 +430,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.scores) &&
         event.insights?.scores?.impactScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.scores?.impactScore !== 0
+            {event.insights?.scores?.impactScore !== 0 &&
+            event.insights?.scores?.impactScore !== null
               ? event.insights?.scores?.impactScore
               : "-"}
           </TableCell>
@@ -393,7 +441,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.scores) &&
         event.insights?.scores?.inboundScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.scores?.inboundScore !== 0
+            {event.insights?.scores?.inboundScore !== 0 &&
+            event.insights?.scores?.inboundScore !== null
               ? event.insights?.scores?.inboundScore
               : "-"}
           </TableCell>
@@ -403,7 +452,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {show.includes(Show.scores) &&
         event.insights?.scores?.internationalScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.scores?.internationalScore !== 0
+            {event.insights?.scores?.internationalScore !== 0 &&
+            event.insights?.scores?.internationalScore !== null
               ? event.insights?.scores?.internationalScore
               : "-"}
           </TableCell>
@@ -431,30 +481,27 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </TableCell>
         )}
 
-      {/* Audience Spread Column */}
-      {show.includes(Show.audienceSpread) &&
+      {localFilters.audienceSpread &&
         event.audience?.audienceSpread !== undefined && (
           <TableCell className="text-center">
             <div className="flex gap-2">
               {event.audience?.audienceSpread &&
               Object.entries(event.audience?.audienceSpread).length > 0
-                ? Object.entries(event.audience?.audienceSpread).map(
-                    ([key, { iso, name, count, percentage }]) => (
-                      <span
-                        key={key}
-                        className="inline-block rounded overflow-hidden"
-                        title={name}
-                      >
-                        <Image
-                          src={`https://img.10times.com/img/flag/${iso.toLowerCase()}.jpg`}
-                          alt="flag"
-                          width={25}
-                          height={18}
-                          className="object-cover"
-                        />
-                      </span>
-                    )
-                  )
+                ? Object.entries(event.audience?.audienceSpread)
+                    .slice(0, 5)
+                    .map(([key, { iso, name, count, percentage }]) => {
+                      if (iso === "UK") iso = "GB";
+                      const Flag = Flags[iso as keyof typeof Flags];
+                      return (
+                        <span
+                          key={key}
+                          className="inline-block rounded overflow-hidden"
+                          title={name}
+                        >
+                          {Flag && <Flag className="w-[25px] h-[18px]" />}
+                        </span>
+                      );
+                    })
                 : "-"}
             </div>
           </TableCell>
@@ -462,23 +509,23 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {(type==="T_PEOPLE_FINDER" && view!=="bookmarked") &&
       <>
       <TableCell
-        className="sticky right-20 bg-background z-0"
-        style={{ zIndex: 0 }}
+        className="sticky right-[200px] bg-background z-0"
+        style={{ zIndex: 0, minWidth:"90px", textAlign:"center" }}
       >
         <TooltipProvider>
           <Tooltip>
           <TooltipTrigger>
-  {getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociation")[0].split("_")[0]}
+  {getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociation")[0]?.split("_")?.[0]}
 </TooltipTrigger>
             <TooltipContent>
-            {getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociation")[0].split("_").join(" ")}
+            {getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociation")[0]?.split("_")?.join(" ")}
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </TableCell>
       <TableCell
-        className="sticky right-10 bg-background z-0"
-        style={{ zIndex: 0 }}
+        className="sticky right-[68px] bg-background z-0"
+        style={{ zIndex: 0, minWidth:"130px", textAlign:"center"}}
       >
         <span className={getAssociationColor(getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociationPercentage")[0])}>
        {getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociationPercentage")[0]}
@@ -489,8 +536,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {(type==="T_SPEAKING_OPPORTUNITY" && view!=="bookmarked") &&
       <>
       <TableCell
-        className="sticky right-20 bg-background z-0"
-        style={{ zIndex: 0 }}
+        className="sticky right-[200px] bg-background z-0"
+        style={{ zIndex: 0, minWidth:"90px", textAlign:"center" }}
       >
         <TooltipProvider>
           <Tooltip>
@@ -504,8 +551,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         </TooltipProvider>
       </TableCell>
       <TableCell
-        className="sticky right-10 bg-background z-0"
-        style={{ zIndex: 0 }}
+        className="sticky right-[68px] bg-background z-0"
+        style={{ zIndex: 0, minWidth:"132px", textAlign:"center" }}
       >
         <span className={getAssociationColor(getTrackerAssociation(event.trackerMatchInfo, "speakerPersonAssociationPercentage")[0])}>
        {getTrackerAssociation(event.trackerMatchInfo, "speakerPersonAssociationPercentage")[0] ?? "-"}
@@ -516,8 +563,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {(type==="T_COMPETITOR" && view!=="bookmarked") &&
       <>
       <TableCell
-        className="sticky right-20 bg-background z-0"
-        style={{ zIndex: 0, width:"90px" }}
+        className="sticky right-[200px] bg-background z-0"
+        style={{ zIndex: 0, minWidth:"90px", textAlign:"center" }}
       >
         <TooltipProvider>
           <Tooltip>
@@ -536,8 +583,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         </TooltipProvider>
       </TableCell>
       <TableCell
-        className="sticky right-10 bg-background z-0"
-        style={{ zIndex: 0, width:"130px" }}
+        className="sticky right-[68px] bg-background z-0"
+        style={{ zIndex: 0, minWidth:"132px", textAlign:"center" }}
       >
         <span className={getAssociationColor(getTrackerAssociation(event.trackerMatchInfo, "competitorPercentage")[0])}>
        {getTrackerAssociation(event.trackerMatchInfo, "competitorPercentage")[0] ?? "-"}
@@ -547,37 +594,35 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       }
       {(type==="T_PRODUCT_KEYWORDS" && view!=="bookmarked")&&
       <>
-      <TableCell className="sticky right-20 bg-background z-0" style={{ zIndex: 0 }}>
+      <TableCell className="sticky right-[200px] bg-background z-0" style={{ zIndex: 0, minWidth:"90px", textAlign:"center" }}>
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger>
         {event?.basic?.matchedKeywords?.[0]}  {/* Fixed variable name */}
       </TooltipTrigger>
       <TooltipContent>
-      {event?.basic?.matchedKeywords.map((item) => item).join(" | ")}
+      {event?.basic?.matchedKeywords?.map((item) => item).join(" | ")}
       </TooltipContent>
     </Tooltip>
   </TooltipProvider>
 </TableCell>
 
-      <TableCell
-        className="sticky right-10 bg-background z-0"
-        style={{ zIndex: 0 }}
-      >
-       {event.basic.matchedKeywordsPercentage > 20 ? (
-                              <span className={getAssociationColor("high")}>High</span>
-                            ) : event.basic.matchedKeywordsPercentage >= 10 &&
-                            event.basic.matchedKeywordsPercentage <= 20 ? (
-                              <span className={getAssociationColor("medium")}>
-                                Medium
-                              </span>
-                            ) : event.basic.matchedKeywordsPercentage > 0 &&
-                            event.basic.matchedKeywordsPercentage < 10 ? (
-                              <span className={getAssociationColor("low")}>Low</span>
-                            ) : (
-                              "-"
-                            )}
-      </TableCell>
+<TableCell
+  className="sticky right-[68px] bg-background z-0"
+  style={{ zIndex: 0, minWidth: "132px", textAlign: "center" }}
+>
+  {(() => {
+    const percentage = event.basic.matchedKeywordsPercentage ?? null;
+
+    if (percentage === null) return "-";
+    if (percentage > 20) return <span className={getAssociationColor("high")}>High</span>;
+    if (percentage >= 10 && percentage <= 20) return <span className={getAssociationColor("medium")}>Medium</span>;
+    if (percentage > 0 && percentage < 10) return <span className={getAssociationColor("low")}>Low</span>;
+
+    return "-";
+  })()}
+</TableCell>
+
       </>
       }
       <TableCell

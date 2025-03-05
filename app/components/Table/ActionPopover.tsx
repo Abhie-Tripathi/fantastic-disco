@@ -41,7 +41,7 @@ export function ActionPopover({
   const {removeBookmark}=useTrackerServices();
   const queryClient = useQueryClient();
   const { toast } = useToast();
-  const {setSavedEventCount, savedEventCount}=useTrackerContext(); 
+  const { setSavedEventCount, savedEventCount } = useTrackerContext();
   const {
     interestConfiguration,
     isLoading: isConfigLoading,
@@ -78,6 +78,9 @@ export function ActionPopover({
           },
         });
       }
+      setSavedEventCount(savedEventCount - 1);
+      setEventId(response?.eventId);
+      setIsOpen(false);
     } else if (selectedAction) {
       if (selectedAction === "UN-BOOKMARK") {
         const response = await removeBookmark(interests?.bookmark?.interestId || "");
@@ -88,6 +91,8 @@ export function ActionPopover({
             },
           });
         }
+        setEventId(response?.eventId);
+        setIsOpen(false);
         console.log(response);
       } else {
         createUserEventInterest(

@@ -4,7 +4,7 @@ import { PaginationComponent } from "@/components/pagination";
 import { Event } from "@/types/events";
 import { EventTableRow } from "./EventTableRow";
 import { useEvents } from "@/hooks/useEvents";
-import {useTrackerEvents} from "@/hooks/useTrackerEvents";
+import { useTrackerEvents } from "@/hooks/useTrackerEvents";
 import { EventTableHeader } from "./EventTableHeader";
 import { useFilterState } from "@/hooks/useFilterState";
 import Loading from "@/components/ui/Loading";
@@ -24,19 +24,20 @@ interface EventTableProps {
 const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
   // const { theme } = useTheme();
   const { searchParams, getFilterValue, setMultipleFilters, setFilter } = useFilterState();
-  const {setLocalFilter} = useFilterContext();
+  const { localFilters } = useFilterContext();
   const {data} = useTrackerContext();
   const [interest, setInterest]=useState();
   const [eventId, setEventId] = useState();
   const query = Object.fromEntries(searchParams.entries());
   query.view = "list";
+  delete query.show;
   console.log(trackerId);
   let events, totalEvents, isLoading, error;
-
+  const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
   if (source === "tracker") {
   ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId, view));
   } else {
-  ({ events, totalEvents, isLoading, error } = useEvents.list(query));
+    ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
   // console.log(isLoading);
   const mapping = {
@@ -49,32 +50,32 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
     scores: "scores",
     audienceZone: "audienceZone",
     rankings: "rankings",
-  }
-  let showsData:string[] =[];
-  Object.entries(mapping).forEach(([key,value])=>{
-    if(data?.filterValues?.show?.includes(key)){
+  };
+  let showsData: string[] = [];
+  Object.entries(mapping).forEach(([key, value]) => {
+    if (data?.filterValues?.show?.includes(key)) {
       showsData.push(value);
-      
     }
-  })
+  });
   // console.log(show.join(","));
   // if(showsData.length>0){
   //   setLocalFilter("show",showsData?.join(","))
   // setFilter("show",showsData?.join(","));
   // }
   // console.log(data.filterValues.show);
-  
+
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
     Math.floor(parseInt(getFilterValue("offset") || "0") / itemsPerPage) + 1;
   const totalPages = Math.ceil(totalEvents / itemsPerPage);
-  let  showValues: Show[] = getFilterValue("show")
+  let showValues: Show[] = getFilterValue("show")
     .split(",")
     .filter(Boolean)
     .map((show) => Show[show as keyof typeof Show]);
-  if(source==="tracker"){
-    showValues = showsData.filter(Boolean)
-    .map((show) => Show[show as keyof typeof Show]);
+  if (source === "tracker") {
+    showValues = showsData
+      .filter(Boolean)
+      .map((show) => Show[show as keyof typeof Show]);
   }
   const handlePageChange = (page: number) => {
     setMultipleFilters({
@@ -82,42 +83,49 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
       limit: itemsPerPage.toString(),
     });
   };
-  const [updatedEvents, setUpdatedEvents] = useState<Event[]>(events);
-console.log(eventType);
+  useEffect(() => {
+    if (events) {
+      setUpdatedEvents(events);
+    }
+  }, [events]);
 
-useEffect(() => {
-  if (!events) return;
-
-  let newEvents = events;
-
-  if (query.eventType === "bookmarked") {
-    newEvents = events.filter((event: Event) => event.basic.id !== eventId);
-  } else {
-    newEvents = events.map((event: Event) => {
-      if (event.basic.id === eventId) {
-        return {
-          ...event,
-          interests: {
-            ...event.interests,
-            ...(interest
-              ? Object.keys(interest).reduce((acc, key) => {
-                  if (!event.interests?.hasOwnProperty(key)) {
-                    acc[key] = interest[key];
-                  }
-                  return acc;
-                }, {} as Record<string, any>)
-              : {}),
-          },
-        };
-      }
-      return event;
-    });
-  }
-
-  setUpdatedEvents(newEvents);
-}, [eventId, interest, events]);
+  useEffect(() => {
+    if (!events) return;
   
-  console.log(updatedEvents); // Now it will print correctly
+    setUpdatedEvents((prevEvents) => {
+      let newEvents = prevEvents ? [...prevEvents] : [...events];
+  
+      if (query.eventType === "bookmarked") {
+        newEvents = newEvents.filter((event: Event) => event.basic.id !== eventId);
+      } else {
+        newEvents = newEvents.map((event: Event) => {
+          if (event.basic.id === eventId) {
+            return {
+              ...event,
+              interests: {
+                ...event.interests,
+                ...(interest
+                  ? Object.keys(interest).reduce((acc, key) => {
+                      acc[key] = interest[key];
+                      return acc;
+                    }, {} as Record<string, any>)
+                  : {}),
+              },
+            };
+          }
+          return event;
+        });
+      }
+  
+      return newEvents;
+    });
+  }, [eventId, interest]);
+  
+
+
+
+  
+  console.log(events); // Now it will print correctly
   
   const handleItemsPerPageChange = (newItemsPerPage: string) => {
     setMultipleFilters({
@@ -126,7 +134,7 @@ useEffect(() => {
   };
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading className="h-24 text-primary" />;
   }
 
   if (error) {
@@ -167,9 +175,9 @@ console.log(events);
       <div className={`overflow-auto ${view === "global" ? "h-[calc(100vh-165px)]" : "max-h-[calc(100vh-264px)]"}`}>
 
           <Table>
-            <EventTableHeader show={showValues} type={query.type} view={query.eventType}/>
+            <EventTableHeader show={showValues} type={query.type} view={query.eventType} localFilters={localFilters}/>
             <TableBody>
-              {updatedEvents.map((event: Event) => (
+              {updatedEvents && updatedEvents.map((event: Event) => (
                 <EventTableRow
                   view={query.eventType}
                   setEventId={setEventId}
@@ -178,7 +186,9 @@ console.log(events);
                   key={event.basic.id}
                   event={event}
                   show={showValues}
-                trackerId={trackerId} />
+                  localFilters={localFilters}
+                  trackerId={trackerId}
+                />
               ))}
             </TableBody>
           </Table>

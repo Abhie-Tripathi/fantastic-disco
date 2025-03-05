@@ -407,8 +407,9 @@ const Trackers = ({ searchParams }: Search) => {
       <div className="flex flex-row">
   <div className="w-1/2 h-[calc(100vh-67px)]">
     <div className="flex flex-col gap-4 px-5 py-0">
-      <div className="text-sm text-[var(--secondary-text-color)] pt-5">
-        Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations.
+      <div className="text-md text-[var(--secondary-text-color)] pt-5 mb-[-18px]">
+        {/* Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations. */}
+        Saved events and tracker lists you have created.
       </div>
       <div>
       {/* <Button className="text-white w-[100px]" onClick={()=>hideTemplates(false)}>Create</Button> */}
@@ -557,7 +558,7 @@ const Trackers = ({ searchParams }: Search) => {
   />
   </div>
         </div>
-        <div className="flex flex-row gap-3">
+        <div className="flex flex-row gap-3 mb-6">
           <div className="flex w-1/2 items-stretch">
             <NotificationWidget/>
           </div>

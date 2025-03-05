@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
-import { Star, Radio, TicketPercent } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Star, Radio, TicketPercent, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Event } from "@/types/events/events";
@@ -33,7 +33,7 @@ import { ActionPopover } from "@/app/components/Table/ActionPopover";
 import { formattedDateRange } from "@/utils/date";
 import { useEvents } from "@/hooks/useEvents";
 import { useSearchParams } from "next/navigation";
-import Loading from "../ui/Loading";
+import Loading from "@/app/components/UI/Loading";
 import ZeroState from "@/app/components/zerostate";
 import { ApiError } from "@/types/api";
 import Image from "next/image";
@@ -118,6 +118,10 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
   const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const query = Object.fromEntries(searchParams.entries());
+  delete query.show;
+  const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
+  const [interest, setInterest]=useState();
+  const [eventId, setEventId] = useState();
   let events, totalEvents, isLoading, error;
   const { data } = useTrackerContext();
   if (source === "tracker") {
@@ -156,7 +160,43 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
       .filter(Boolean)
       .map((show) => Show[show as keyof typeof Show]);
   }
+  useEffect(() => {
+    if (events) {
+      setUpdatedEvents(events);
+    }
+  }, [events]);
 
+  useEffect(() => {
+    if (!events) return;
+  
+    setUpdatedEvents((prevEvents) => {
+      let newEvents = prevEvents ? [...prevEvents] : [...events];
+  
+      if (query.eventType === "bookmarked") {
+        newEvents = newEvents.filter((event: Event) => event.basic.id !== eventId);
+      } else {
+        newEvents = newEvents.map((event: Event) => {
+          if (event.basic.id === eventId) {
+            return {
+              ...event,
+              interests: {
+                ...event.interests,
+                ...(interest
+                  ? Object.keys(interest).reduce((acc, key) => {
+                      acc[key] = interest[key];
+                      return acc;
+                    }, {} as Record<string, any>)
+                  : {}),
+              },
+            };
+          }
+          return event;
+        });
+      }
+  
+      return newEvents;
+    });
+  }, [eventId, interest]);
   const handlePageChange = (page: number) => {
     setMultipleFilters({
       offset: ((page - 1) * itemsPerPage).toString(),
@@ -169,10 +209,9 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
       limit: newItemsPerPage,
     });
   };
-  console.log(data?.filterValues?.show);
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading className="h-24 text-primary" />;
   }
 
   if (error) {
@@ -212,6 +251,10 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
         <ul className="w-full space-y-6 list-none">
           {events?.map((event: Event) => (
             <EventListItem
+              trackerId={trackerId}
+              view={query.eventType}
+              setEventId={setEventId}
+              setInterest={setInterest}
               key={event.basic.id}
               event={event}
               showValues={showValues}
@@ -236,9 +279,17 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
 }
 
 const EventListItem = ({
+  view,
+  trackerId,
+  setEventId,
+  setInterest,
   event,
   showValues,
 }: {
+  trackerId?:string;
+  view?:string;
+  setEventId:any;
+  setInterest:any;
   event: Event;
   showValues: Show[];
 }) => {
@@ -848,6 +899,10 @@ const EventListItem = ({
                         onClick={(e) => e.preventDefault()}
                       >
                         <ActionPopover
+                        trackerId={trackerId}
+                        view={view}
+                        setEventId={setEventId}
+                        setInterest={setInterest}
                           eventId={event.basic.id}
                           interests={event.interests}
                         />

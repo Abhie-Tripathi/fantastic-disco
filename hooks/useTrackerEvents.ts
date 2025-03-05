@@ -16,8 +16,9 @@ export const useTrackerEvents = {
         view === "global"
       ? trackerService.globalSavedEvents(query)
       : trackerService.getTrackerEvents(query, trackerId || ""),
-      staleTime: 0, 
+      staleTime: 0,
       refetchOnMount: false, 
+      refetchOnWindowFocus: false,
 
           
     });

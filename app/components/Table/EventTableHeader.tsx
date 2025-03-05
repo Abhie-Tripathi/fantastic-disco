@@ -1,13 +1,15 @@
 import type React from "react";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Show } from "@/types/events/dto/event-query.dto";
+import { Filters } from "@/context/filterContext";
 interface EventTableHeaderProps {
   show: Show[];
   type?: string;
   view?:string;
+  localFilters: Filters;
 }
 
-export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show, type, view }) => {
+export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show, type, view, localFilters }) => {
   console.log(view);
   
   return (
@@ -33,7 +35,9 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show, type, 
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Country</div>
         </TableHead>
-        {/* {hasField("insights.keywords") && <TableHead>Keywords</TableHead>} */}
+        <TableHead className="min-w-[120px] h-10">
+          <div className="font-medium text-foreground ">Keywords</div>
+        </TableHead>
         <TableHead className="min-w-[150px] h-10">
           <div className="font-medium text-foreground ">Category</div>
         </TableHead>
@@ -73,6 +77,19 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show, type, 
             <div className="font-medium text-foreground ">Forecasted</div>
           </TableHead>
         )}
+
+        {localFilters.includeKeywords && (
+          <TableHead className="min-w-[150px] text-center">
+            <div className="font-medium text-foreground ">Matched</div>
+          </TableHead>
+        )}
+
+        {localFilters.includeKeywords && (
+          <TableHead className="min-w-[150px] text-center">
+            <div className="font-medium text-foreground ">Match Score</div>
+          </TableHead>
+        )}
+
         {show.includes(Show.maturity) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Maturity</div>
@@ -103,7 +120,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show, type, 
             <div className="font-medium text-foreground ">Audience Zone</div>
           </TableHead>
         )}
-        {show.includes(Show.audienceSpread) && (
+        {localFilters.audienceSpread && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Audience Spread</div>
           </TableHead>
@@ -112,11 +129,11 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show, type, 
     }
         {(type && type!=="T_CUSTOM" && view!=="bookmarked") &&
         <>
-         <TableHead className="sticky right-[130px] z-40 h-12 bg-[var(--heading-background-color)]" style={{ zIndex: 0}}>
+         <TableHead className="sticky right-[200px] z-40 h-12 bg-[var(--heading-background-color)]" style={{ zIndex: 0}}>
            <div className="font-medium text-foreground text-center">Matched</div>
           </TableHead>
 
-        <TableHead className="sticky right-[32px] z-40 h-12 w-[150px] bg-[var(--heading-background-color)]" style={{ zIndex: 0 }}>
+        <TableHead className="sticky right-[68px] z-40 h-12 w-[150px] bg-[var(--heading-background-color)]" style={{ zIndex: 0 }}>
         <div className="font-medium text-foreground text-center">Score</div>
         </TableHead>
         <TableHead
