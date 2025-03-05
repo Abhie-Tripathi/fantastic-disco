@@ -85,16 +85,71 @@ const EventCard = memo(
         <Card className="mb-3 relative hover:shadow-md transition-all duration-200 group overflow-hidden">
           <CardContent className="p-3">
             <div className="flex items-start gap-3">
-              {event.basic.logoUrl ? (
-                <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-50 border border-gray-100">
-                  <img
+            {event.basic.logoUrl ? (
+                <img
                     src={event.basic.logoUrl}
                     alt={`${event.basic.name} logo`}
-                    className="w-full h-full object-contain p-1"
+                    className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
                   />
+              ) : event.basic.website ? (
+                <div className="w-12 h-12 relative">
+                  <img
+                    src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+                    alt={`${event.basic.name} website favicon`}
+                    className="w-12 h-12 object-contain p-1 border rounded-md bg-white shadow-sm"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.dataset.error = "true";
+                    }}
+                  />
+                  {/* Fallback that shows when image errors */}
+                  <div
+                    className="w-12 h-12 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+                    style={{ display: "none" }}
+                    ref={(el) => {
+                      if (el) {
+                        const img = el.previousSibling as HTMLImageElement;
+                        if (img && img.dataset.error === "true") {
+                          el.style.display = "flex";
+                        }
+                      }
+                    }}
+                  >
+                    <span className="text-[#5055A3] text-lg font-semibold">
+                      {event.basic.name.charAt(0)}
+                    </span>
+                  </div>
+                </div>
+              ) : event.basic.website ? (
+                <div className="w-16 h-16 relative">
+                  <img
+                    src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
+                    alt={`${event.basic.name} website favicon`}
+                    className="w-16 h-16 object-contain p-2 border rounded-lg bg-white shadow-sm"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      e.currentTarget.dataset.error = "true";
+                    }}
+                  />
+                  <div
+                    className="w-16 h-16 rounded-lg bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm flex items-center justify-center absolute top-0 left-0"
+                    style={{ display: "none" }}
+                    ref={(el) => {
+                      if (el) {
+                        const img = el.previousSibling as HTMLImageElement;
+                        if (img && img.dataset.error === "true") {
+                          el.style.display = "flex";
+                        }
+                      }
+                    }}
+                  >
+                    <span className="text-[#5055A3] text-2xl font-semibold">
+                      {event.basic.name.charAt(0)}
+                    </span>
+                  </div>
                 </div>
               ) : (
-                <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center bg-gray-50 border border-gray-100">
+                <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm">
                   <span className="text-[#5055A3] text-2xl font-semibold">
                     {event.basic.name.charAt(0)}
                   </span>
@@ -126,7 +181,7 @@ const EventCard = memo(
                     </span>
                     <span>{event.basic.primaryEventType}</span>
                   </Badge>
-                  {event.basic.rating && (
+                  {event.basic.rating > 0 && (
                     <Badge
                       variant="outline"
                       className="text-gray-600 capitalize rounded-sm"
@@ -493,7 +548,7 @@ function EventList({
     return (
       <>
         <div className="p-4 rounded-t-lg">
-          <div className="flex justify-between items-center border-b">
+          <div className="flex justify-between items-center">
             <div className="flex items-center gap-2 my-2">
               <Badge variant="secondary" className="text-white bg-primary">
                 {count}

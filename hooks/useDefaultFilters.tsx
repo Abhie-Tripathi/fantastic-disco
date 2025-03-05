@@ -60,6 +60,7 @@ export function useDefaultFilters() {
       filters.entryType?.enabledValue
         ?.map((item: string) => item.toLowerCase())
         ?.join(",") ?? "",
+   
     ratings: filters.ratings?.enabledValue?.join(",") ?? "",
     maturity: filters.maturity?.enabledValue?.[0] ?? "",
     onlyBranded: filters.branded?.enabledValue?.eventBrand ? "true" : "",
@@ -68,10 +69,10 @@ export function useDefaultFilters() {
     includeKeywords: filters.keywords?.includeKeywords?.join(",") ?? "",
     excludeKeywords: filters.keywords?.excludeKeywords?.join(",") ?? "",
     estimatedVisitorRangeTag:
-      filters.estimatedVisitorRangeTag?.enabledValue?.join(",") ?? "",
+    filters.estimatedVisitorRangeTag?.enabledValue?.join(",") ?? "",
     estimatedExhibitors:
-      filters.estimatedExhibitors?.enabledValue?.join(",") ?? "",
-    show: generateShowParam(filters),
+    filters.estimatedExhibitors?.enabledValue?.join(",") ?? "",
+  show: generateShowParam(filters),
   });
 
   const mapRecentSearchToParams = (recentSearch: RecentSearch) => ({

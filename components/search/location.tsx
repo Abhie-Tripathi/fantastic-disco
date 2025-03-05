@@ -220,7 +220,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
               <AutocompleteInput
                 multiple
                 type="LocationId"
-                placeholder="E.g. Bangalore, Karnataka"
+                placeholder="E.g. Bengaluru, Karnataka"
                 onSelect={setSelectedLocation}
                 value={
                   selectedLocation && Array.isArray(selectedLocation)
@@ -337,7 +337,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
             defaultOpen
             multiple
             type="LocationId"
-            placeholder="E.g. Bangalore, Karnataka"
+            placeholder="E.g. Bengaluru, Karnataka"
             onSelect={setSelectedLocation}
             value={
               selectedLocation && Array.isArray(selectedLocation)

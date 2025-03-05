@@ -21,6 +21,9 @@ export default function EventFormatSelector() {
   const selectedFormats = getLocalFilterValue("eventFormats")
     .split(",")
     .filter(Boolean);
+  console.log(getLocalFilterValue("eventFormats")
+  .split(","));
+  
   const selectedCount = selectedFormats.length;
 
   const handleFormatToggle = (formatId: string) => {

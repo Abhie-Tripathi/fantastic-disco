@@ -19,7 +19,9 @@ export default function CategorySelector() {
   const selectedCategories = getLocalFilterValue("categories")
     .split(",")
     .filter(Boolean);
-
+  console.log(getLocalFilterValue("categories")
+  .split(","));
+  
   const isAnyDisabled = useMemo(() => {
     return categories.some((cat: any) => !cat.isEnabled);
   }, [categories]);

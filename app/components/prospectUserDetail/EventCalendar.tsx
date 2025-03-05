@@ -4,18 +4,18 @@ import { Buildings, Location, Plus, Users } from "geist-icons";
 import { Button } from "@/components/ui/button";
 import { CircleSlash } from "lucide-react";
 import { formatEventDates } from "@/utils/dateFormat";
-// import WorldMap from "./worldMap";
+import WorldMap from "../prospectDetail/worldMap";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Event } from "@/types/events";
 
 interface Props {
   companyId: string;
-  upcomingEvents: Event[];
+  upcomingEvents: (Event & { association: string })[];
   upcomingEventsCount: number;
-  pastEvents: Event[];
+  pastEvents: (Event & { association: string })[];
   pastEventsCount: number;
-  // loadMoreEvents: any;
+  loadMoreEvents: any;
 }
 
 const getMonthFromDate = (dateString: string) => {
@@ -50,8 +50,10 @@ export const EventCalendar = ({
   upcomingEventsCount,
   pastEvents,
   pastEventsCount,
-  // loadMoreEvents,
+  loadMoreEvents,
 }: Props) => {
+
+  const activeTab = upcomingEventsCount > 0 ? "upcoming" : "past";
   return (
     <div className="flex gap-6 max-xl:flex-col">
       <div className="flex flex-1 flex-col gap-4 border border-[#EBEBEB] dark:bg-transparent dark:border-[var(--border-color)] rounded-md p-4 w-full">
@@ -68,7 +70,7 @@ export const EventCalendar = ({
 
         <div>
           <Tabs
-            defaultValue={"upcoming"}
+            defaultValue={activeTab}
             className="h-full overflow-y-auto w-full"
           >
             <div className="flex w-full justify-between">
@@ -82,7 +84,7 @@ export const EventCalendar = ({
                     width="12px"
                     height="12px"
                   />
-                  Attended
+                  Upcoming
                 </TabsTrigger>
                 <TabsTrigger
                   value="past"
@@ -90,7 +92,7 @@ export const EventCalendar = ({
                   // disabled={true}
                 >
                   <Users color="#666666" width="12px" height="12px" />
-                  Spoke
+                  Past
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -115,7 +117,7 @@ export const EventCalendar = ({
                         {event.basic.name}
                       </Text>
                     </Link>
-                    <p className="flex items-center gap-2 text-[12px]">
+                    <p className="flex items-center gap-1 text-[12px]">
                       <Location
                         color="var(--muted-foreground)"
                         width="12px"
@@ -163,6 +165,14 @@ export const EventCalendar = ({
                         Add to my calendar
                       </span>
                     </p> */}
+
+                    <Badge
+                      variant="outline"
+                      className="border-[#FF990A] text-[#FF990A] w-fit"
+                    >
+                      {event.association}
+                    </Badge>
+
                   </div>
                 </div>
               ))}
@@ -170,7 +180,7 @@ export const EventCalendar = ({
               {upcomingEventsCount > upcomingEvents.length && (
                 <Button
                   variant="outline"
-                  // onClick={() => loadMoreEvents("upcoming")}
+                  onClick={() => loadMoreEvents("upcoming")}
                   className="w-full text-primary my-2"
                 >
                   See {upcomingEventsCount - upcomingEvents.length} more events
@@ -180,7 +190,7 @@ export const EventCalendar = ({
               {upcomingEvents.length === 0 && (
                 <span className="text-[#666666] text-sm flex items-center gap-2 my-4">
                   <CircleSlash width={15} height={15} />
-                  No data available
+                  Events spoken and attended by user will be listed here
                 </span>
               )}
             </TabsContent>
@@ -202,7 +212,7 @@ export const EventCalendar = ({
                         {event.basic.name}
                       </Text>
                     </Link>
-                    <p className="flex items-center gap-2 text-[12px]">
+                    <p className="flex items-center gap-1 text-[12px]">
                       <Location
                         color="var(--muted-foreground)"
                         width="12px"
@@ -250,6 +260,13 @@ export const EventCalendar = ({
                         Add to my calendar
                       </span>
                     </p> */}
+
+                    <Badge
+                      variant="outline"
+                      className="border-[#FF990A] text-[#FF990A] w-fit"
+                    >
+                      {event.association}
+                    </Badge>
                   </div>
                 </div>
               ))}
@@ -257,7 +274,7 @@ export const EventCalendar = ({
               {pastEventsCount > pastEvents.length && (
                 <Button
                   variant="outline"
-                  // onClick={() => loadMoreEvents("past")}
+                  onClick={() => loadMoreEvents("past")}
                   className="w-full text-primary my-2"
                 >
                   See {pastEventsCount - pastEvents.length} more events
@@ -267,7 +284,7 @@ export const EventCalendar = ({
               {pastEvents.length === 0 && (
                 <span className="text-[#666666] text-sm flex items-center gap-2 my-4">
                   <CircleSlash width={15} height={15} />
-                  No data available
+                  Events spoken and attended by user will be listed here
                 </span>
               )}
             </TabsContent>
@@ -287,11 +304,7 @@ export const EventCalendar = ({
           </Text>
         </div>
 
-        {/* <WorldMap companyId={companyId} /> */}
-        <span className="text-[#666666] text-sm flex items-center gap-2 my-4">
-          <CircleSlash width={15} height={15} />
-          No data available
-        </span>
+        <WorldMap companyId={companyId} source={"userDetail"} />
 
         {/* <div className="flex justify-between">
           <Text

@@ -27,22 +27,22 @@ interface SortOption {
 }
 
 const sortOptions: SortOption[] = [
+  { value: "score", label: "Popularity" },
   { value: "title", label: "Title" },
   { value: "start", label: "Start Date" },
   { value: "end", label: "End Date" },
-  { value: "added", label: "Date Added" },
+  { value: "added", label: "Newly Added" },
   { value: "updated", label: "Last Updated" },
-  { value: "visitors", label: "Visitors" },
-  { value: "exhibitors", label: "Exhibitors" },
-  { value: "duration", label: "Duration" },
+  { value: "visitors", label: "Estimated Visitors" },
+  { value: "exhibitors", label: "Estimated Exhibitors" },
+  // { value: "duration", label: "Duration" },
+  // { value: "impactScore", label: "Impact Score" },
   { value: "inboundScore", label: "Inbound Score" },
-  { value: "impactScore", label: "Impact Score" },
   { value: "internationalScore", label: "International Score" },
-  { value: "inboundEstimate", label: "Inbound Estimate" },
-  { value: "internationalEstimate", label: "International Estimate" },
+  // { value: "inboundEstimate", label: "Inbound Estimate" },
+  // { value: "internationalEstimate", label: "International Estimate" },
   { value: "distance", label: "Distance" },
   { value: "status", label: "Status" },
-  { value: "score", label: "Popularity" },
 ];
 
 interface SortDropdownProps {
@@ -90,12 +90,19 @@ const SortDropdown = ({
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         {compact ? (
-          <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+          <Button 
+            variant="ghost" 
+            size="xs" 
+            className="h-8 px-3 flex items-center gap-2"
+          >
             {sortOrder === "asc" ? (
               <ArrowUp className="h-4 w-4" />
             ) : (
               <ArrowDown className="h-4 w-4" />
             )}
+            <span className="text-sm">
+              {sortOptions.find(option => option.value === sortField)?.label || 'Sort'}
+            </span>
           </Button>
         ) : (
           <Button variant="outline" className="flex items-center gap-2">
