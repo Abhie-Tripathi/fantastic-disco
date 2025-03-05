@@ -389,7 +389,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                           className="text-gray-600 capitalize py-1 rounded-sm"
                         >
                           <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
-                          <span>{rating}</span>
+                          <span className="mt-[2px]">{rating}</span>
                         </Badge>
                       </TooltipTrigger>
                       <TooltipContent
