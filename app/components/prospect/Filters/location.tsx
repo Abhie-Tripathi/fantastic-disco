@@ -84,10 +84,7 @@ export default function LocationSelector({ filterName }: LocationProps) {
   }, [localFilters[filterName]]);
 
   useEffect(() => {
-    if (
-      selectedLocation &&
-      Array.isArray(selectedLocation))
-      applyHandler();
+    if (selectedLocation && Array.isArray(selectedLocation)) applyHandler();
     // setLocalFilter("locationIds", (selectedLocation as LocationItem[]).map((loc) => loc.id).join(","));
   }, [selectedLocation]);
 
@@ -125,22 +122,20 @@ export default function LocationSelector({ filterName }: LocationProps) {
   };
 
   return (
-    <div className="h-[150px]">
-      <AutocompleteInput
-        defaultOpen
-        multiple
-        type="LocationId"
-        placeholder="E.g. Bangalore, Karnataka"
-        onSelect={setSelectedLocation}
-        value={
-          selectedLocation && Array.isArray(selectedLocation)
-            ? selectedLocation.map((loc) => ({
-                id: loc.id,
-                description: loc.description || "",
-              }))
-            : null
-        }
-      />
-    </div>
+    <AutocompleteInput
+      // defaultOpen
+      multiple
+      type="LocationId"
+      placeholder="E.g. Bangalore, Karnataka"
+      onSelect={setSelectedLocation}
+      value={
+        selectedLocation && Array.isArray(selectedLocation)
+          ? selectedLocation.map((loc) => ({
+              id: loc.id,
+              description: loc.description || "",
+            }))
+          : null
+      }
+    />
   );
 }

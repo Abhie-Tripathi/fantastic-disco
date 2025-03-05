@@ -30,6 +30,8 @@ import {
   Loader2,
   Plus,
   TableIcon,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import {
   lazy,
@@ -47,6 +49,7 @@ import SortDropdown from "@/components/search/sortDropdown";
 import EventCount from "@/components/search/eventCount";
 import { isEventeli } from "@/config";
 import Alerts from "@/components/search/alerts";
+import Filters from "@/components/search/Filters";
 const Map = lazy(() => import("@/components/map"));
 import { useToast } from "@/hooks/use-toast";
 
@@ -60,6 +63,7 @@ const Search = () => {
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [trackerModalOpen, setTrackerModalOpen] = useState<boolean>(false);
   const { toast } = useToast();
+  const [isFiltersPanelOpen, setIsFiltersPanelOpen] = useState(true);
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
@@ -166,179 +170,123 @@ const Search = () => {
   const isLoading = false;
 
   return (
-    <div className="px-6 pt-6">
-      {steps.length > 0 && (
-        <Joyride
-          tooltipComponent={(props) => (
-            <Tooltip {...props} totalSteps={steps.length} />
-          )}
-          steps={steps}
-          run={run}
-          callback={joyrideCallback}
-          continuous
-          spotlightPadding={0}
-          showProgress
-          showSkipButton
-          disableScrolling
-          disableOverlayClose
-        />
-      )}
-      <SearchBar />
-      <div className="w-full grid grid-cols-10 gap-4 border-b pb-6 mt-6">
-        <div className="col-span-8 grid lg:grid-cols-4 grid-cols-3 gap-3">
-          <EventTypeSelector />
-          <CategorySelector />
-          <EventFormatSelector />
-          <LocationSelector />
-          <DateRangeSelector />
-          <StatusSelector />
-          <EventEntrySelector />
-          <UserRatingSelector />
-        </div>
-        <div className="col-span-2 grid grid-cols-2 gap-2">
-          <div className="row-span-2 flex flex-col gap-3">
-            <Button onClick={searchHandler} disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Searching...
-                </>
-              ) : (
-                "Search"
-              )}
-            </Button>
-            <Button
-              ref={saveSearchRef}
-              variant="link"
-              onClick={() => createTrackerHandler()}
-              disabled={Object.keys(localFilters).length === 0}
-            >
-              <Plus
-                width="15"
-                height="15"
-                className="w-4 h-w-4"
-                color="#6750a4"
-              />
-              Save Search
-            </Button>
-          </div>
-          <div className="row-span-2 flex flex-col gap-3">
-            <Button
-              disabled={Object.keys(localFilters).length == 0}
-              variant="link"
-              className="text-primary"
-              onClick={() => clearLocalFilters()}
-            >
-              <FilterX className="w-4 h-4 hidden lg:block" />
-              <span className="ml-1">Reset</span>
-            </Button>
-
-            <Button
-              variant="link"
-              onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className="text-destructive p-0 flex items-center"
-            >
-              <Filter className="h-4 w-4" />
-              <span className="ml-1">
-                {showAdvancedFilters ? (
-                  <span className="hidden lg:block">Hide</span>
-                ) : (
-                  <>
-                    <span className="hidden lg:block">Advanced</span>
-                    <span className="lg:hidden">Adv</span>
-                  </>
-                )}{" "}
-              </span>
-              {filtersCount ? `(${filtersCount})` : ""}
-            </Button>
-          </div>
-        </div>
-      </div>
-      {showAdvancedFilters && (
-        <AdvancedFilters enabledFilters={enabledFilters} />
-      )}
-
-      <Tabs
-        defaultValue="list"
-        value={selectedView}
-        onValueChange={onTabsChange}
-        className="mt-0"
+    <div className="flex relative">
+      <div
+        className={`transition-all duration-300 sticky top-0 h-screen overflow-hidden ${
+          isFiltersPanelOpen ? "w-[342px]" : "w-0"
+        }`}
       >
         <div
-          className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3`}
+          className={`h-full w-[342px] ${
+            isFiltersPanelOpen ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300`}
         >
-          <EventCount />
-          <div className="flex justify-center">
-            <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
-              <TabsTrigger
-                value="table"
-                className="flex items-center gap-2 py-2 px-4"
-              >
-                <TableIcon className="h-4 w-4" />
-                <span>Table</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="list"
-                className="flex items-center gap-2 py-2 px-4"
-              >
-                <ListIcon className="h-4 w-4" />
-                <span>List</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="map"
-                className="flex items-center gap-2 py-2 px-4"
-              >
-                <Globe className="h-4 w-4" />
-                <span>Map</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="calendar"
-                className="flex items-center gap-2 py-2 px-4"
-              >
-                <CalendarIcon className="h-4 w-4" />
-                <span>Calendar</span>
-              </TabsTrigger>
-            </TabsList>
-          </div>
-          <div className="flex justify-end gap-2">
-            <Button
-              variant="outline"
-              className="flex items-center gap-2"
-              disabled
-            >
-              <span className="flex items-center gap-1">
-                <ArrowUpRight className="h-4 w-4" />
-                Export
-              </span>
-            </Button>
-            {(selectedView === "list" ||
-              selectedView === "table" ||
-              selectedView == "") && <SortDropdown />}
-          </div>
+          <Filters />
         </div>
+      </div>
+      <div className="flex-1 relative">
+        <div className={`px-6 transition-all duration-300`}>
+          <Tabs
+            defaultValue="list"
+            value={selectedView}
+            onValueChange={onTabsChange}
+            className="mt-0"
+          >
+            <div
+              className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3`}
+            >
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsFiltersPanelOpen(!isFiltersPanelOpen)}
+                  className="flex items-center gap-2"
+                >
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Filters</span>
+                  {isFiltersPanelOpen ? (
+                    <ChevronLeft className="h-4 w-4 text-muted-foreground ml-1" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4 text-muted-foreground ml-1" />
+                  )}
+                </Button>
+                <EventCount />
+              </div>
+              <div className="flex justify-center">
+                <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
+                  <TabsTrigger
+                    value="table"
+                    className="flex items-center gap-2 py-2 px-4"
+                  >
+                    <TableIcon className="h-4 w-4" />
+                    <span>Table</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="list"
+                    className="flex items-center gap-2 py-2 px-4"
+                  >
+                    <ListIcon className="h-4 w-4" />
+                    <span>List</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="map"
+                    className="flex items-center gap-2 py-2 px-4"
+                  >
+                    <Globe className="h-4 w-4" />
+                    <span>Map</span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="calendar"
+                    className="flex items-center gap-2 py-2 px-4"
+                  >
+                    <CalendarIcon className="h-4 w-4" />
+                    <span>Calendar</span>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button
+                  variant="outline"
+                  className="flex items-center gap-2"
+                  disabled
+                >
+                  <span className="flex items-center gap-1">
+                    <ArrowUpRight className="h-4 w-4" />
+                    Export
+                  </span>
+                </Button>
+                {(selectedView === "list" ||
+                  selectedView === "table" ||
+                  selectedView == "") && <SortDropdown />}
+              </div>
+            </div>
 
-        <TabsContent value="list" className="flex-grow overflow-hidden mt-0">
-          {isEventeli && <Alerts />}
-          <List />
-        </TabsContent>
-        <TabsContent value="table" className="flex-grow overflow-hidden">
-          {isEventeli && <Alerts />}
-          <Table />
-        </TabsContent>
-        <TabsContent value="map">
-          <Map />
-        </TabsContent>
-        <TabsContent value="calendar">
-          <Suspense fallback={<Loading />}>
-            <EventCalendar />
-          </Suspense>
-        </TabsContent>
-      </Tabs>
+            <TabsContent
+              value="list"
+              className="flex-grow overflow-hidden mt-0"
+            >
+              {isEventeli && <Alerts />}
+              <List />
+            </TabsContent>
+            <TabsContent value="table" className="flex-grow overflow-hidden">
+              {isEventeli && <Alerts />}
+              <Table />
+            </TabsContent>
+            <TabsContent value="map">
+              <Map />
+            </TabsContent>
+            <TabsContent value="calendar">
+              <Suspense fallback={<Loading />}>
+                <EventCalendar />
+              </Suspense>
+            </TabsContent>
+          </Tabs>
 
-      <CreateTrackerDialog
-        open={trackerModalOpen}
-        onOpenChange={setTrackerModalOpen}
-      />
+          <CreateTrackerDialog
+            open={trackerModalOpen}
+            onOpenChange={setTrackerModalOpen}
+          />
+        </div>
+      </div>
     </div>
   );
 };

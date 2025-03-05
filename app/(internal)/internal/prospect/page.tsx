@@ -23,7 +23,6 @@ import { ProspectList } from "@/app/components/prospect/ProspectList";
 import Industry from "@/app/components/prospect/Filters/industryFilter";
 import { useFilterContext } from "@/context/filterContext";
 import ProductTopics from "@/app/components/prospect/Filters/productTopics";
-import CompanyType from "@/app/components/prospect/Filters/companyType";
 import CompanySize from "@/app/components/prospect/Filters/companySize";
 import EstablishedYear from "@/app/components/prospect/Filters/establishedYear";
 import EventFollowers from "@/app/components/prospect/Filters/eventFollowers";
