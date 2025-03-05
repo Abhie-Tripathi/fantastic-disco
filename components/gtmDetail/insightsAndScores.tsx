@@ -6,12 +6,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useFilterContext } from "@/context/filterContext";
-import {
-  DetailRanking,
-  Event,
-  OverallRankingsDetail,
-  TTabs,
-} from "@/types/events";
+import { Event, OverallRankingsDetail, TTabs } from "@/types/events";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { CircularProgressBar } from "../eventDetail/circularProgressBar";
@@ -31,13 +26,8 @@ export const InsightsAndScores = ({
   scrollSection,
   setActiveTab,
 }: Props) => {
-  const {
-    scores,
-    economicImpact,
-    rankings,
-    economicImpactBreakdown,
-    trustScore,
-  } = (eventDetails && eventDetails.insights) || {};
+  const { scores, economicImpact, economicImpactBreakdown, trustScore } =
+    (eventDetails && eventDetails.insights) || {};
   const estimatedEconomicImpact = parseFloat(
     economicImpact?.replace(/[$,]/g, "") ?? "0"
   );
@@ -79,7 +69,7 @@ export const InsightsAndScores = ({
                 economicImpact.trim() !== "" &&
                 economicImpactBreakdown &&
                 Object.keys(economicImpactBreakdown).length > 0
-                  ? "w-1/2 grid-cols-2 grid-rows-2"
+                  ? "w-1/2 grid-cols-2 grid-rows-subgrid xl:grid-rows-2"
                   : "w-full grid-cols-4 grid-rows-subgrid h-fit max-xl:grid-cols-2"
               }  gap-6 max-xl:w-full`}
             >
@@ -204,7 +194,7 @@ export const InsightsAndScores = ({
               <div
                 className={`${
                   (scores &&
-                    Object.values(scores).every((value) => value === null)) ||
+                    Object.values(scores).some((value) => value !== null)) ||
                   (trustScore !== null &&
                     trustScore !== undefined &&
                     trustScore > 0)
@@ -284,7 +274,6 @@ export const InsightsAndScores = ({
             )}
         </div>
         <EventRank
-          rankings={rankings as DetailRanking}
           eventDetails={eventDetails}
           eventRankingDetails={eventRankingDetails}
         />

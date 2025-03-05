@@ -287,7 +287,7 @@ export const EventCalendar = ({
           </Text>
         </div>
 
-        <WorldMap companyId={companyId} />
+        <WorldMap companyId={companyId} source={"companyDetail"} />
 
         {/* <div className="flex justify-between">
           <Text
