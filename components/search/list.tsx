@@ -54,7 +54,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   value = 0,
   label,
 }) => {
-  const radius = 22;
+  const radius = 16;
   const circumference = 2 * Math.PI * radius;
 
   const getColorByValue = (value: number | null): string => {
@@ -70,19 +70,19 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   return (
     <div className="text-center">
       <div className="relative inline-flex">
-        <svg className="w-[52px] h-[52px]" aria-hidden="true">
+        <svg className="w-10 h-10" aria-hidden="true">
           <circle
             className="text-gray-200"
-            strokeWidth="4"
+            strokeWidth="3"
             stroke="currentColor"
             fill="transparent"
             r={radius}
-            cx="26"
-            cy="26"
+            cx="20"
+            cy="20"
           />
           <circle
             className={className}
-            strokeWidth="4"
+            strokeWidth="3"
             strokeDasharray={circumference}
             strokeDashoffset={
               circumference - (value ? (value / 100) * circumference : 0)
@@ -91,18 +91,18 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
             stroke="currentColor"
             fill="transparent"
             r={radius}
-            cx="26"
-            cy="26"
+            cx="20"
+            cy="20"
           />
         </svg>
         <span
-          className="absolute inset-0 flex items-center justify-center text-sm font-semibold"
+          className="absolute inset-0 flex items-center justify-center text-xs font-semibold"
           aria-hidden="true"
         >
           {value ? value : "-"}
         </span>
       </div>
-      <p className="text-xs border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded p-1">
+      <p className="text-[10px] border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded px-1.5 py-0.5">
         {label}
       </p>
     </div>
@@ -718,249 +718,150 @@ const EventListItem = ({
               </div>
             </div>
 
-            {!isEventeli ? (
-              <div className="col-span-5">
-                <div className="flex items-center justify-end">
-                  {showValues.includes(Show.scores) &&
-                  event.insights?.scores ? (
-                    <div className="flex items-center justify-between w-full">
-                      <div className="flex flex-col justify-end gap-4">
-                        {showValues.includes(Show.estimatedExhibitors) &&
-                          event.insights?.estimatedExhibitors !== undefined && (
-                            <div>
-                              <p className="text-xs text-gray-600 font-medium">
-                                Estimated Exhibitors
-                              </p>
-                              <p className="text-lg font-semibold text-primary">
-                                {formatExhibitorCount(
-                                  event.insights?.estimatedExhibitors
-                                )}
-                              </p>
-                            </div>
-                          )}
-                        {event.insights?.estimatedAttendance && (
-                          <div>
-                            <p className="text-xs text-gray-600 font-medium">
-                              Estimated Visitors
-                            </p>
-                            <p className="text-lg font-semibold text-primary">
-                              {event.insights?.estimatedAttendance || "--"}
-                            </p>
-                          </div>
-                        )}
-                        {showValues.includes(Show.economicImpact) &&
-                          event.insights?.economicImpact && (
-                            <div>
-                              <p className="text-xs text-gray-600 font-medium">
-                                Est. Economic Impact
-                              </p>
-                              <p className="text-lg font-semibold text-primary">
-                                {formatEstimatedSpend(
-                                  event.insights?.economicImpact || "--"
-                                )}
-                              </p>
-                            </div>
-                          )}
-                      </div>
-
-                      <div className="flex flex-col gap-4">
-                        <div
-                          className="flex items-center justify-end"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <ActionPopover
-                            eventId={event.basic.id}
-                            interests={event.interests}
-                          />
-                        </div>
-                        {showValues.includes(Show.scores) &&
-                          event.insights?.scores && (
-                            <div className="grid grid-cols-3 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] dark:bg-[#171717] p-2 rounded">
-                              <CircularProgress
-                                value={event.insights?.scores.impactScore}
-                                label="EIS"
-                              />
-                              <CircularProgress
-                                value={event.insights?.scores.inboundScore}
-                                label="Inbound"
-                              />
-                              <CircularProgress
-                                value={
-                                  event.insights?.scores.internationalScore
-                                }
-                                label="International"
-                              />
-                            </div>
-                          )}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="grid grid-row-2 items-end gap-4">
-                      <div className="flex flex-col gap-4">
-                        <div
-                          className="flex items-center justify-end"
-                          onClick={(e) => e.preventDefault()}
-                        >
-                          <ActionPopover
-                            eventId={event.basic.id}
-                            interests={event.interests}
-                          />
-                        </div>
-                        {showValues.includes(Show.estimatedExhibitors) &&
-                          event.insights?.exhibitorsCount !== undefined && (
-                            <div>
-                              <p className="text-xs text-gray-600 font-medium">
-                                Estimated Exhibitors
-                              </p>
-                              <p className="text-lg font-semibold text-primary">
-                                {formatExhibitorCount(
-                                  event.insights?.exhibitorsCount
-                                )}
-                              </p>
-                            </div>
-                          )}
-                        {event.insights?.estimatedAttendance && (
-                          <div>
-                            <p className="text-xs text-gray-600 font-medium">
-                              Estimated Visitors
-                            </p>
-                            <p className="text-lg font-semibold text-primary">
-                              {event.insights?.estimatedAttendance || "--"}
-                            </p>
-                          </div>
-                        )}
-                        {showValues.includes(Show.economicImpact) &&
-                          event.insights?.economicImpact && (
-                            <div>
-                              <p className="text-xs text-gray-600 font-medium">
-                                Economic Impact
-                              </p>
-                              <p className="text-lg font-semibold text-primary">
-                                {formatEstimatedSpend(
-                                  event.insights?.economicImpact || "--"
-                                )}
-                              </p>
-                            </div>
-                          )}
-                      </div>
-                    </div>
-                  )}
+            <div className="col-span-5 flex flex-col gap-2 justify-between">
+              {event.alerts && event.alerts?.length > 0 && (
+                <div className="flex items-center justify-end gap-2">
+                  {event.alerts?.map((alert) => (
+                    <Badge
+                      key={alert.id}
+                      variant="outline"
+                      className={cn(
+                        "capitalize text-sm border-2",
+                        getAlertLevelBorderColor(alert.level)
+                      )}
+                    >
+                      <span>{alertIcons[alert.type]}</span>
+                      <span className="ml-1 font-medium">
+                        {alert.name.toLowerCase()}
+                      </span>
+                    </Badge>
+                  ))}
                 </div>
-              </div>
-            ) : (
-              <div className="col-span-5 flex flex-col gap-2 justify-between">
-                {event.alerts && event.alerts?.length > 0 && (
-                  <div className="flex items-center justify-end gap-2">
-                    {event.alerts?.map((alert) => (
-                      <Badge
-                        key={alert.id}
-                        variant="outline"
-                        className={cn(
-                          "capitalize text-sm border-2",
-                          getAlertLevelBorderColor(alert.level)
+              )}
+
+              <div className="flex items-center justify-end h-full">
+                {event.insights?.scores &&
+                (event.insights?.scores.inboundScore !== null ||
+                  event.insights?.scores.internationalScore !== null) ? (
+                  <div className="flex justify-end gap-6 w-full">
+                    <div className="flex flex-col gap-4">
+                      {showValues.includes(Show.estimatedExhibitors) &&
+                        event.insights?.estimatedExhibitors !== undefined && (
+                          <div>
+                            <p className="text-xs text-gray-600 font-medium">
+                              Estimated Exhibitors
+                            </p>
+                            <p className="text-lg font-semibold text-primary">
+                              {formatExhibitorCount(
+                                event.insights?.estimatedExhibitors
+                              )}
+                            </p>
+                          </div>
                         )}
-                      >
-                        <span>{alertIcons[alert.type]}</span>
-                        <span className="ml-1 font-medium">
-                          {alert.name.toLowerCase()}
-                        </span>
-                      </Badge>
-                    ))}
+                      {event.insights?.estimatedAttendance !== undefined && (
+                        <div>
+                          <p className="text-xs text-gray-600 font-medium">
+                            Estimated Visitors
+                          </p>
+                          <p className="text-lg font-semibold text-primary">
+                            {event.insights?.estimatedAttendance == "0"
+                              ? "--"
+                              : event.insights?.estimatedAttendance}
+                          </p>
+                        </div>
+                      )}
+                      {event.insights?.economicImpact !== undefined && (
+                        <div>
+                          <p className="text-xs text-gray-600 font-medium">
+                            Economic Impact
+                          </p>
+                          <p className="text-lg font-semibold text-primary">
+                            {formatEstimatedSpend(
+                              event.insights?.economicImpact
+                            )}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-4">
+                      {event.insights?.scores && (
+                        <div
+                          className={`grid ${
+                            isEventeli ? "grid-rows-2" : "grid-rows-3"
+                          } gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded`}
+                        >
+                          {!isEventeli && (
+                            <CircularProgress
+                              value={event.insights?.scores.impactScore}
+                              label="EIS"
+                            />
+                          )}
+                          <CircularProgress
+                            value={event.insights?.scores.inboundScore}
+                            label="Inbound"
+                          />
+                          <CircularProgress
+                            value={event.insights?.scores.internationalScore}
+                            label="International"
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-start justify-end" onClick={(e) => e.preventDefault()}>
+                      <ActionPopover
+                        eventId={event.basic.id}
+                        interests={event.interests}
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex justify-end w-full">
+                    <div className="grid grid-row-2 items-end gap-4">
+                    {event.insights?.estimatedExhibitors !== undefined && (
+                        <div>
+                          <p className="text-xs text-gray-600 font-medium">
+                            Estimated Exhibitors
+                          </p>
+                          <p className="text-lg font-semibold text-primary">
+                            {event.insights?.estimatedExhibitors == "0" ||
+                            event.insights?.estimatedExhibitors == null
+                              ? "--"
+                              : event.insights?.estimatedExhibitors}
+                          </p>
+                        </div>
+                      )}
+                      {event.insights?.estimatedAttendance !== undefined && (
+                        <div>
+                          <p className="text-xs text-gray-600 font-medium">
+                            Estimated Visitors
+                          </p>
+                          <p className="text-lg font-semibold text-primary">
+                            {event.insights?.estimatedAttendance == "0" ||
+                            event.insights?.estimatedAttendance == null
+                              ? "--"
+                              : event.insights?.estimatedAttendance}
+                          </p>
+                        </div>
+                      )}
+                      {event.insights?.economicImpact !== undefined && (
+                        <div>
+                          <p className="text-xs text-gray-600 font-medium">
+                            Economic Impact
+                          </p>
+                          <p className="text-lg font-semibold text-primary">
+                            {formatEstimatedSpend(
+                              event.insights?.economicImpact
+                            )}
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
-
-                <div className="flex items-center justify-end h-full">
-                  {event.insights?.scores &&
-                  (event.insights?.scores.inboundScore !== null ||
-                    event.insights?.scores.internationalScore !== null) ? (
-                    <div className="flex justify-end gap-6 w-full">
-                      <div className="flex flex-col gap-4">
-                        {event.insights?.estimatedAttendance !== undefined && (
-                          <div>
-                            <p className="text-xs text-gray-600 font-medium">
-                              Estimated Visitors
-                            </p>
-                            <p className="text-lg font-semibold text-primary">
-                              {event.insights?.estimatedAttendance == "0"
-                                ? "--"
-                                : event.insights?.estimatedAttendance}
-                            </p>
-                          </div>
-                        )}
-                        {event.insights?.economicImpact !== undefined && (
-                          <div>
-                            <p className="text-xs text-gray-600 font-medium">
-                              Economic Impact
-                            </p>
-                            <p className="text-lg font-semibold text-primary">
-                              {formatEstimatedSpend(
-                                event.insights?.economicImpact
-                              )}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="space-y-4">
-                        {event.insights?.scores && (
-                          <div className="grid grid-rows-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
-                            {/* <CircularProgress
-                        value={event.scores.impactScore}
-                        label="EIS"
-                      /> */}
-                            <CircularProgress
-                              value={event.insights?.scores.inboundScore}
-                              label="Inbound"
-                            />
-                            <CircularProgress
-                              value={event.insights?.scores.internationalScore}
-                              label="International"
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex items-start justify-end">
-                        <ActionPopover
-                          eventId={event.basic.id}
-                          interests={event.interests}
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex justify-end w-full">
-                      <div className="grid grid-row-2 items-end gap-4">
-                        {event.insights?.estimatedAttendance !== undefined && (
-                          <div>
-                            <p className="text-xs text-gray-600 font-medium">
-                              Estimated Visitors
-                            </p>
-                            <p className="text-lg font-semibold text-primary">
-                              {event.insights?.estimatedAttendance == "0" ||
-                              event.insights?.estimatedAttendance == null
-                                ? "--"
-                                : event.insights?.estimatedAttendance}
-                            </p>
-                          </div>
-                        )}
-                        {event.insights?.economicImpact !== undefined && (
-                          <div>
-                            <p className="text-xs text-gray-600 font-medium">
-                              Economic Impact
-                            </p>
-                            <p className="text-lg font-semibold text-primary">
-                              {formatEstimatedSpend(
-                                event.insights?.economicImpact
-                              )}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </Link>
@@ -1055,7 +956,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                   </Badge>
                 ))}
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
+              {/* <div className="flex flex-wrap gap-2 mt-2">
                 <Badge
                   variant="outline"
                   className="text-gray-600 capitalize rounded-sm"
@@ -1063,12 +964,12 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                 >
                   <span className="ml-1">Regional Holiday</span>
                 </Badge>
-              </div>
+              </div> */}
             </div>
           </div>
-            <div className="col-span-5 flex flex-col justify-between">
-              <div className="flex items-center justify-end gap-2">
-                {/* {event.basic.alerts?.map((alert) => (
+          <div className="col-span-5 flex flex-col justify-between">
+            <div className="flex items-center justify-end gap-2">
+              {/* {event.basic.alerts?.map((alert) => (
                 <Badge
                   key={alert.id}
                   variant="outline"
@@ -1083,9 +984,9 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                   </span>
                 </Badge>
               ))} */}
-              </div>
-              <div className="flex items-center justify-end">
-                {/* {event.insights?.scores ? (
+            </div>
+            <div className="flex items-center justify-end">
+              {/* {event.insights?.scores ? (
                   <div className="flex items-center justify-end w-full">
                     <div className="space-y-4">
                       {event.insights?.scores && (
@@ -1100,8 +1001,8 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                     </div>
                   </div>
                 ) : ( */}
-                  <div className="grid grid-row-2 items-end gap-4">
-                    {/* {event.insights?.estimatedAttendance !== undefined && (
+              <div className="grid grid-row-2 items-end gap-4">
+                {/* {event.insights?.estimatedAttendance !== undefined && (
                       <div>
                         <p className="text-xs text-gray-600 font-medium">
                           Estimated Visitors
@@ -1113,7 +1014,7 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                         </p>
                       </div>
                     )} */}
-                    {/* {event.economicImpact !== undefined && (
+                {/* {event.economicImpact !== undefined && (
                       <div>
                         <p className="text-xs text-gray-600 font-medium">
                           Economic Impact
@@ -1123,10 +1024,10 @@ const UnplannedCard = ({ event }: { event: Event }) => {
                         </p>
                       </div>
                     )} */}
-                  </div>
-                {/* )} */}
               </div>
+              {/* )} */}
             </div>
+          </div>
         </div>
       </div>
     </div>
