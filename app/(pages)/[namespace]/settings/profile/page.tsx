@@ -168,10 +168,10 @@ const Profile = () => {
       }
       formData.append("phoneNumber", mobileNo);
       // formData.append("designation", role);
-      formData.append("department", dept);
-      if (picFile !== null) {
-        formData.append("file", picFile);
-      }
+      // formData.append("department", dept);
+      // if (picFile !== null) {
+      //   formData.append("file", picFile);
+      // }
 
       // Save data
       setIsSaving(true);
@@ -384,7 +384,7 @@ const Profile = () => {
                 </div>
 
                 {/* <div className="grid gap-4 sm:grid-cols-2"> */}
-                <div className=" w-100 sm:grid-cols-2">
+                {/* <div className=" w-100 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="department">Department</Label>
                     <Select
@@ -403,7 +403,7 @@ const Profile = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  {/* <div className="space-y-2">
+                  <div className="space-y-2">
                     <Label htmlFor="role">Role</Label>
                     <Select
                       onValueChange={(value) => {
@@ -420,8 +420,8 @@ const Profile = () => {
                         </SelectItem>
                       </SelectContent>
                     </Select>
-                  </div> */}
-                </div>
+                  </div>
+                </div> */}
 
                 {/* <Button>Save Changes</Button> */}
                 <Button

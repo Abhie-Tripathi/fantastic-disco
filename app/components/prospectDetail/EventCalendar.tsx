@@ -115,7 +115,7 @@ export const EventCalendar = ({
                         {event.basic.name}
                       </Text>
                     </Link>
-                    <p className="flex items-center gap-2 text-[12px]">
+                    <p className="flex items-center gap-1 text-[12px]">
                       <Location
                         color="var(--muted-foreground)"
                         width="12px"
@@ -193,7 +193,7 @@ export const EventCalendar = ({
                       {getMonthFromDate(event.basic.startDateTime)}
                     </span>
                     <span className="text-xs font-semibold text-center py-2">
-                      {getMonthFromDate(event.basic.startDateTime)}
+                      {getDayFromDate(event.basic.startDateTime)}
                     </span>
                   </div>
                   <div className="flex flex-col gap-2 flex-1 flex-wrap">
@@ -202,7 +202,7 @@ export const EventCalendar = ({
                         {event.basic.name}
                       </Text>
                     </Link>
-                    <p className="flex items-center gap-2 text-[12px]">
+                    <p className="flex items-center gap-1 text-[12px]">
                       <Location
                         color="var(--muted-foreground)"
                         width="12px"
@@ -287,7 +287,7 @@ export const EventCalendar = ({
           </Text>
         </div>
 
-        <WorldMap companyId={companyId} />
+        <WorldMap companyId={companyId} source={"companyDetail"} />
 
         {/* <div className="flex justify-between">
           <Text

@@ -88,6 +88,8 @@ const BasicEventSchema = z.object({
   logoUrl: z.string().nullable(),
   bannerUrl: z.string().nullable(),
   timings: z.string().nullable(),
+  matchedKeywords: z.array(z.string()).nullable(),
+  matchedKeywordsPercentage: z.number().nullable(),
   lastVerifiedOn: z.string().nullable(),
   eventPageUrl: z.string().nullable(),
   rating: z.number(),
@@ -169,13 +171,13 @@ const AdvanceEventSchema = z.object({
 
 const InsightsEventSchema = z.object({
   yoyGrowth: z.number().nullable(),
-  estimatedExhibitors: z.string(),
   sponsorsCount: z.number(),
   speakersCount: z.number(),
   exhibitorsCount: z.number(),
   economicImpact: z.string(),
   economicImpactBreakdown: z.record(z.number()).nullable(),
   estimatedVisitorRangeTag: z.string().nullable(),
+  estimatedExhibitors: z.string().nullable(),
   repeatSentiment: z.number(),
   trustScore: z.number().nullable(),
   reputationScore: z.number(),
@@ -224,7 +226,9 @@ const AlertSchema = z.object({
   originLongitude: z.string(),
   lastModified: z.string(),
 });
+const TrackerMatchInfoSchema = z.object({
 
+})
 const EventDataSchema = z.object({
   basic: BasicEventSchema,
   advance: AdvanceEventSchema.optional(),
@@ -232,6 +236,7 @@ const EventDataSchema = z.object({
   audience: AudienceSchema.optional(),
   interests: InterestSchema.optional(),
   alerts: z.array(AlertSchema).optional(),
+  trackerMatchInfo: TrackerMatchInfoSchema.optional(),
 });
 
 export interface EventResponse {

@@ -1,16 +1,22 @@
 import type React from "react";
 import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Show } from "@/types/events/dto/event-query.dto";
+import { Filters } from "@/context/filterContext";
 interface EventTableHeaderProps {
   show: Show[];
+  type?: string;
+  view?:string;
+  localFilters: Filters;
 }
 
-export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
+export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show, type, view, localFilters }) => {
+  console.log(view);
+  
   return (
     <TableHeader>
-      <TableRow className="bg-muted/50 hover:bg-muted/50">
+      <TableRow className="bg-[var(--heading-background-color)] hover:bg-muted/50">
         <TableHead
-          className="sticky left-0 bg-slate-50 dark:bg-[#171717]  max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] h-10 after:absolute after:inset-0 after:bg-slate-50 dark:after:bg-[#171717]"
+          className="sticky left-0 bg-[var(--heading-background-color)] max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] h-10 after:absolute after:inset-0 after:bg-[var(--heading-background-color)] "
           style={{ zIndex: 0 }}
         >
           <div className="font-medium text-md text-foreground relative z-[999]">
@@ -29,7 +35,9 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Country</div>
         </TableHead>
-        {/* {hasField("insights.keywords") && <TableHead>Keywords</TableHead>} */}
+        <TableHead className="min-w-[120px] h-10">
+          <div className="font-medium text-foreground ">Keywords</div>
+        </TableHead>
         <TableHead className="min-w-[150px] h-10">
           <div className="font-medium text-foreground ">Category</div>
         </TableHead>
@@ -37,8 +45,9 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
         <TableHead className="min-w-[120px] h-10">
           <div className="font-medium text-foreground ">Est. Visitors</div>
         </TableHead>
-
-        {show.includes(Show.estimatedExhibitors) && (
+    {view!=="bookmarked" &&
+    <>
+        {show.includes(Show.estimatedExhibitors) &&  (
           <TableHead className="min-w-[130px] h-10">
             <div className="font-medium text-foreground ">Est. Exhibitors</div>
           </TableHead>
@@ -68,16 +77,29 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
             <div className="font-medium text-foreground ">Forecasted</div>
           </TableHead>
         )}
+
+        {localFilters.includeKeywords && (
+          <TableHead className="min-w-[150px] text-center">
+            <div className="font-medium text-foreground ">Matched</div>
+          </TableHead>
+        )}
+
+        {localFilters.includeKeywords && (
+          <TableHead className="min-w-[150px] text-center">
+            <div className="font-medium text-foreground ">Match Score</div>
+          </TableHead>
+        )}
+
         {show.includes(Show.maturity) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Maturity</div>
           </TableHead>
         )}
-        {show.includes(Show.scores) && (
+        {/* {show.includes(Show.scores) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Impact</div>
           </TableHead>
-        )}
+        )} */}
         {show.includes(Show.scores) && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Inbound</div>
@@ -98,17 +120,30 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show }) => {
             <div className="font-medium text-foreground ">Audience Zone</div>
           </TableHead>
         )}
-        {show.includes(Show.audienceSpread) && (
+        {localFilters.audienceSpread && (
           <TableHead className="min-w-[150px] text-center">
             <div className="font-medium text-foreground ">Audience Spread</div>
           </TableHead>
         )}
+    </>
+    }
+        {(type && type!=="T_CUSTOM" && view!=="bookmarked") &&
+        <>
+         <TableHead className="sticky right-[200px] z-40 h-12 bg-[var(--heading-background-color)]" style={{ zIndex: 0}}>
+           <div className="font-medium text-foreground text-center">Matched</div>
+          </TableHead>
+
+        <TableHead className="sticky right-[68px] z-40 h-12 w-[150px] bg-[var(--heading-background-color)]" style={{ zIndex: 0 }}>
+        <div className="font-medium text-foreground text-center">Score</div>
+        </TableHead>
         <TableHead
-          className="sticky right-0 bg-muted/50 z-40 h-12"
+          className="sticky right-0 bg-[var(--heading-background-color)]/50 z-40 h-12"
           style={{ zIndex: 0 }}
         >
           {/* Actions */}
         </TableHead>
+        </>
+          }
       </TableRow>
     </TableHeader>
   );

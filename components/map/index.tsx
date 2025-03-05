@@ -624,7 +624,7 @@ console.log(eventType);
                 <ReactMapGL
                   style={{
                     width: "100%",
-                    height: !isGlobal ? "calc(100vh - 178px)" : "300px",
+                    height: !isGlobal ? "calc(100vh - 136px)" : "300px",
                   }}
                   onMove={onMove}
                 

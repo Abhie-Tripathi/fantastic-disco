@@ -150,7 +150,7 @@ export default function EventCalendar({
 
   useEffect(() => {
     setCurrentDate(initialDate());
-  }, [searchParams, trackerDate]);
+  }, [searchParams]);
 
   const { data: unAttendedEvents = { holidays: [], alerts: [] } } = useQuery({
     queryKey: ["unattended-events", searchParams.toString()],
@@ -403,7 +403,7 @@ export default function EventCalendar({
           <div className="px-10 py-5">
             <NullState
               image={TrackerNullState}
-              title="No events saved yet! Start saving events to easily track and revisit them here."
+              title="No events bookmarked yet! Start bookmarking events to easily track and revisit them here."
             />
           </div>
         ) : (

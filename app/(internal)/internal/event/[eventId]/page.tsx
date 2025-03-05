@@ -3,7 +3,6 @@ import { AdvancedDetails } from "@/components/gtmDetail/advancedDetails";
 import { AudienceIntel } from "@/components/gtmDetail/audienceIntel";
 import { InsightsAndScores } from "@/components/gtmDetail/insightsAndScores";
 import { Overview } from "@/components/gtmDetail/overview";
-import Heading from "@/components/new-ui/Heading";
 import Text from "@/components/new-ui/Text";
 import Loading from "@/components/ui/Loading";
 import {
@@ -26,23 +25,21 @@ import { Event, EventPOCDetails, TTabs } from "@/types/events";
 import { renderFormattedDates } from "@/utils/dateFormat";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { ArrowLeft, Globe, Location, StarFill } from "geist-icons";
+import { ArrowLeft, Globe, Location } from "geist-icons";
 import {
   CalendarDays,
-  CircleSlash,
   MailIcon,
   MapPin,
   PhoneIcon,
   Radio,
   Share2,
+  Star
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "react-aria-components";
 import "react-circular-progressbar/dist/styles.css";
-import Disable from "/public/disable.svg";
 
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
@@ -175,8 +172,15 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     name: organizerName,
   } = organizer || {};
 
+  const filteredScores =
+    scores &&
+    Object.fromEntries(
+      Object.entries(scores).filter(([key, _]) => key !== "impactScore")
+    );
+
   const isInsightVisible =
-    (scores && Object.values(scores).every((value) => value !== null)) ||
+    (filteredScores &&
+      Object.values(filteredScores).every((value) => value !== null)) ||
     (trustScore !== null && trustScore !== undefined && trustScore > 0) ||
     (eventRankingDetails && Object.keys(eventRankingDetails).length > 0);
 
@@ -211,11 +215,6 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     ? format(new Date(endDateTime), "dd MMM yyyy")
     : "";
 
-  const formattedDate =
-    eventStartDate === eventEndDate
-      ? eventStartDate
-      : `${eventStartDate} - ${eventEndDate}`;
-
   const isCancelled = status === "cancelled";
   const isPostponed = status === "postponed";
 
@@ -241,9 +240,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   })();
 
   const eventImageSrc =
-    bannerUrl ??
-    eventLogoUrl ??
-    `https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${basic.website}&size=64`;
+    eventLogoUrl ||
+    `https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${
+      website || ""
+    }&size=64`;
 
   const handleShare = () => {
     if (navigator.share) {
@@ -313,41 +313,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             Back to Search
           </span>
         </Button>
-        {(bannerUrl || eventLogoUrl) && (
-          <Image
-            src={eventImageSrc}
-            alt="eventDetails"
-            width={100}
-            height={100}
-            className="h-1/4 w-full rounded-lg aspect-auto border object-contain"
-          />
-        )}
-        <div className="flex justify-between items-center py-4">
-          <div className="flex items-center gap-1">
-            {rating !== null && rating > 0 && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span className="flex items-center gap-1 cursor-pointer">
-                      <StarFill width="16px" height="16px" color="#FFB224" />
-                      <span>{rating}</span>
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    align="end"
-                    alignOffset={-50}
-                    className="tooltip-content-styles"
-                  >
-                    <p className="text-[var(--secondary-text-color)] font-medium">
-                      User Ratings
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-          </div>
-
-          <div className="ml-auto flex gap-4 items-center">
+        <div className="flex items-center py-4">
+          <div className="flex gap-4 items-center">
             {website && (
               <Link href={website} target="_blank" rel="noopener noreferrer">
                 <Globe width="16px" height="16px" color="#666666" />
@@ -358,47 +325,90 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             </button>
           </div>
         </div>
-
-        <div className="flex flex-row gap-3 flex-wrap">
-          {basic && basic.eventTypes && basic.eventTypes.length > 0 && (
-            <ul className="flex flex-row flex-wrap gap-3">
-              {basic.eventTypes.map((type: any) => (
-                <TooltipProvider key={type.id}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <li className="text-[12px] font-semibold py-1 px-3 border-[#CCE6FF] border rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D] dark:border-[#0D3868] cursor-pointer">
-                        {type.name}
-                      </li>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      align="center"
-                      className="tooltip-content-styles"
-                    >
-                      <p className="text-[var(--secondary-text-color)] font-medium">
-                        Event Type
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ))}
-            </ul>
+        <div className="flex mt-4 gap-4 items-start">
+          {!website && !eventLogoUrl ? (
+            <div className="h-24 px-10 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 flex items-center justify-center">
+              <span className="text-[#5055A3] text-2xl font-semibold">
+                {name.replace(/[+*-/"'"]/g, "").charAt(0)}
+              </span>
+            </div>
+          ) : (
+            <img
+              src={eventImageSrc}
+              alt="eventDetails"
+              className="h-24 w-24 rounded-lg aspect-auto border object-contain"
+            />
           )}
-          {/* {isBranded && (
-            <span className="text-[12px] font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-fit text-[#DF2670] bg-[#FEECF2]">
-              Branded Event
-            </span>
-          )}
-          {isSeries && (
-            <span className="text-[12px] font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-fit text-[#398E4A] bg-[#E5FAF6]">
-              Series Event
-            </span>
-          )} */}
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2">
+              <div className="flex flex-row gap-3 flex-wrap">
+                {basic && basic.eventTypes && basic.eventTypes.length > 0 && (
+                  <ul className="flex flex-row flex-wrap gap-3">
+                    {basic.eventTypes.map((type: any) => (
+                      <TooltipProvider key={type.id}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Badge
+                              variant={"outline"}
+                              className="text-xs font-semibold py-1 px-3 border border-[#CCE6FF] rounded-sm w-fit text-[#0062d1] bg-[#EBF5FF] dark:bg-[#10233D] dark:border-[#0D3868] cursor-pointer"
+                            >
+                              {type.name}
+                            </Badge>
+                          </TooltipTrigger>
+                          <TooltipContent
+                            align="center"
+                            className="tooltip-content-styles"
+                          >
+                            <p className="text-[var(--secondary-text-color)] font-medium">
+                              Event Type
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    ))}
+                  </ul>
+                )}
+                {/* {isBranded && (
+                  <span className="text-[12px] font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-fit text-[#DF2670] bg-[#FEECF2]">
+                    Branded Event
+                  </span>
+                )}
+                {isSeries && (
+                  <span className="text-[12px] font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-fit text-[#398E4A] bg-[#E5FAF6]">
+                    Series Event
+                  </span>
+                )} */}
+              </div>
+              <div className="flex items-center gap-1">
+                {rating !== null && rating > 0 && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Badge
+                          variant="outline"
+                          className="text-gray-600 capitalize py-1 rounded-sm"
+                        >
+                          <Star className="w-3 h-3 mr-1" fill="#6F48AD" />
+                          <span className="mt-[2px]">{rating}</span>
+                        </Badge>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        align="center"
+                        alignOffset={-50}
+                        className="tooltip-content-styles"
+                      >
+                        <p className="text-[var(--secondary-text-color)] font-medium">
+                          User Ratings
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+              </div>
+            </div>
+            {name && <p className="text-lg font-medium">{name}</p>}
+          </div>
         </div>
-        {name && (
-          <Heading as="h6" variant="titleNoMargin" className="py-2">
-            {name}
-          </Heading>
-        )}
 
         <div className="flex gap-2 items-center my-4">
           {startDateTime && (
@@ -532,31 +542,24 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                   </div>
                 </div>
               ) : (
-                <p className="text-[#666666] text-sm flex items-center gap-2">
-                  <CircleSlash width={15} height={15} />
-                  No organizer found
+                <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
+                  Organization information will appear here
                 </p>
               )}
-              {eventCoOrganizerDetails && eventCoOrganizerDetails.length > 0 ? (
-                <div className="flex items-center gap-2 border-t-[1px] p-2">
-                  <Text fontWeight="medium" color="secondary">
-                    Co-organizer
-                  </Text>
-                  <span className="text-[12px] bg-[var(--primary-color)] text-[#ffffff] py-[1px] px-2 rounded-full">
-                    {eventCoOrganizerDetails.length > 0 &&
-                    eventCoOrganizerDetails.length < 9
-                      ? `0${eventCoOrganizerDetails.length}`
-                      : eventCoOrganizerDetails.length}
-                  </span>
-                </div>
-              ) : (
-                organizer && (
-                  <p className="text-[#666666] text-sm flex items-center gap-2 border-t-[1px] p-2">
-                    <Image src={Disable} alt="Disable" width={15} height={15} />
-                    No Co-organizers found
-                  </p>
-                )
-              )}
+              {eventCoOrganizerDetails &&
+                eventCoOrganizerDetails.length > 0 && (
+                  <div className="flex items-center gap-2 border-t-[1px] p-2">
+                    <Text fontWeight="medium" color="secondary">
+                      Co-organizer
+                    </Text>
+                    <span className="text-[12px] bg-[var(--primary-color)] text-[#ffffff] py-[1px] px-2 rounded-full">
+                      {eventCoOrganizerDetails.length > 0 &&
+                      eventCoOrganizerDetails.length < 9
+                        ? `0${eventCoOrganizerDetails.length}`
+                        : eventCoOrganizerDetails.length}
+                    </span>
+                  </div>
+                )}
               {eventCoOrganizerDetails.length > 0 &&
                 eventCoOrganizerDetails.map((coOrganizer: any) => (
                   <div
@@ -699,8 +702,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
                 })
               ) : (
                 <p className="text-[#666666] text-sm flex items-center gap-2 p-2">
-                  <CircleSlash width={15} height={15} />
-                  No POC found
+                  POC information will appear here
                 </p>
               )}
             </AccordionContent>

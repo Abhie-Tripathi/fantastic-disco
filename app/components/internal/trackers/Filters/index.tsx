@@ -306,7 +306,7 @@ const templates = [
   {
     name: "T_BRAND_BUILDING",
     templateName: "Brand Building",
-    type: "disabled",
+    type: "enabled",
     description: "Input designations and upload job descriptions to identify relevant events effortles",
     inputAreas: [
       {
@@ -596,7 +596,7 @@ const Pages = () => {
   const handlePresetClick = (presetItem: PresetJsonData, id: number, trackerType: string, trackerName: string) => {
     setHideSuggestion(false);
     // const filteredPresetData = presetTemplateData.filter(item => item.id === id);    
-    if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY') {
+    if (trackerType === 'T_COMPETITOR' || trackerType === 'T_SPEAKING_OPPORTUNITY' || trackerType==="T_BRAND_BUILDING") {
       const presetData: any = [];
 
       presetItem?.data.map((item: any) => {
@@ -604,6 +604,8 @@ const Pages = () => {
         template?.inputAreas?.map((field: InputArea, index: number)=>(
           temp[field.placeholder] = item[index]
         ))
+        console.log(temp);
+        
         presetData.push(temp);
       })      
       setCustomData(presetData);
@@ -735,18 +737,11 @@ const Pages = () => {
       const secondLast = pathName[pathName.length - 2];
      
       if(type==="T_PRODUCT_KEYWORDS" && (trackerName.length === 0 ||(getLocalFilterValue("includeKeywords").length === 0 && getLocalFilterValue("excludeKeywords").length===0))){
-        // console.log(getLocalFilterValue("includeKeywords"), getLocalFilterValue("excludeKeywords"));
-        console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
         return;
       }
       else if (type === "T_LOCATION" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))) {
-        setIsCreating(false);
-        setIsMandatory(true);
-        return;
-       }
-       else if(type==="T_VENUE" && (trackerName.length === 0 || (getLocalFilterValue("locationIds").length === 0 && !getLocalFilterValue("viewBound")))){
         setIsCreating(false);
         setIsMandatory(true);
         return;
@@ -767,12 +762,7 @@ const Pages = () => {
         setIsMandatory(true);
         return;
       }
-      
-      else if (type === defaultType && ( 
-        !getLocalFilterValue("locationIds") || 
-        getLocalFilterValue("locationIds").length === 0 || 
-        trackerName.trim().length === 0 
-      )) {
+      else if (type === defaultType && (getLocalFilterValue("locationIds") && getLocalFilterValue("locationIds").length === 0 || trackerName.length === 0)){
         console.log("Please, Fill all the details");
         setIsCreating(false);
         setIsMandatory(true);
@@ -791,8 +781,9 @@ const Pages = () => {
             setIsCreating(false);
             return;
           }else{
-            setIsNewCall(true);
           router.replace(`/internal/trackers/${secondLast}/trackedEvents?type=${type}&eventType=${isEventeli?"social":"active"}&view=table`);
+          
+         // setIsNewCall(true);
           }
         } else {
           // console.log(error);
@@ -915,13 +906,14 @@ const Pages = () => {
       let toggleOpend: Toggle = {};
       Object.entries(filterValueMapping).reduce((acc, [key, mappedKey]) => {
         const value = editData.filterValues[key];
-      console.log(value);
-        if(typeof value==="object"){
-          setLocalFilter(key as any, JSON.stringify(value));
-        }
-        if (Array.isArray(value)) {
-          setLocalFilter(key as any, value.join(','));
-        } else if (typeof value === "string") {
+      console.log(typeof value, value);
+      if (Array.isArray(value)) {
+        setLocalFilter(key as any, value.map(v => String(v).toLowerCase()).join(','));
+      } 
+      else if (value !== null && typeof value === "object") {
+        console.log("Object detected:", value);
+        setLocalFilter(key as any, JSON.stringify(value));
+      }  else if (typeof value === "string") {
           setLocalFilter(key as any, value);
         } else if (typeof value === "number" || typeof value === "boolean") {
           setLocalFilter(key as any, value.toString());
@@ -939,7 +931,7 @@ const Pages = () => {
       const eventTypes = Object.values(editData?.filterValues?.eventTypes || {}).map((eventType) => {
         return (eventType as { slug: string })?.slug;
       });
-      
+    console.log(eventTypes);
     
     setLocalFilter("eventTypes",eventTypes.join(","))
     if(editData?.filterValues?.locationIds){
@@ -1157,6 +1149,7 @@ const deleteTracker = async () => {
     router.replace(`/internal/trackers`);
   }
 }
+
 return (
   <>
   <div>{isLoading?<Loading/>:
@@ -1214,7 +1207,7 @@ return (
     </div>
     </div>
   </div>
-  <div ref={scrollableDivRef} className="flex flex-col gap-6 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "104px" : "140px" }}>
+  <div ref={scrollableDivRef} className="flex flex-col gap-2 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "104px" : "140px" }}>
     {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
     <div
       className="px-6 py-1 w-full border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)]"
@@ -1295,8 +1288,8 @@ return (
                               />
                             </div>
                           } */}
-        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") && inputValues[0]?.length > 0  &&
-         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={'suggestions/companies'} type={type}/>
+        {(type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP" || type==="T_BRAND_BUILDING") && inputValues[0]?.length > 0  &&
+         <SearchBar searchInput={inputValues[0]} setEventSearchLoader={setEventSearchLoader} handleSelect={addCompany} endpoint={type==="T_BRAND_BUILDING"?'suggestions/designations':'suggestions/companies'} type={type}/>
         }
                         </div>
 

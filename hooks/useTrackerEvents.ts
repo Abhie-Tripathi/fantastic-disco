@@ -4,25 +4,26 @@ import { useTrackerServices } from "@/services/trackerServices";
 
 export const eventsKeys = {
   all: ["events"] as const,
-  list: (query: EventQuery) => [...eventsKeys.all, query] as const,
+  list: (query: EventQuery, trackerId?: string) => [...eventsKeys.all, query, trackerId] as const, 
 };
 
 export const useTrackerEvents = {
-  list: (query: EventQuery, trackerId?:string, eventType?:string) => {
-    const trackerService=useTrackerServices();
+  list: (query: EventQuery, trackerId?: string, view?: string) => {
+    const trackerService = useTrackerServices();
     const EventQuery = useQuery({
-      queryKey: [query],
-      queryFn: () => 
-        trackerService.getTrackerEvents(query, trackerId||""),
-      staleTime: 0, // Always refetch when queryKey changes
-      refetchOnMount: true, // Ensure refetch on mount
+      queryKey: eventsKeys.list(query, trackerId),
+      queryFn: () =>
+        view === "global"
+          ? trackerService.globalSavedEvents(query)
+          : trackerService.getTrackerEvents(query, trackerId || ""),
+          staleTime: 0,
+      refetchOnWindowFocus: false,
 
           
     });
-    console.log(query);
-    
+
     return {
-      events: EventQuery?.data?.events  || [],
+      events: EventQuery?.data?.events || [],
       totalEvents: EventQuery?.data?.count || 0,
       isLoading: EventQuery.isLoading,
       error: EventQuery.error,

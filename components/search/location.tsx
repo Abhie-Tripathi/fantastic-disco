@@ -45,23 +45,19 @@ export interface LocationProps {
 export default function LocationSelector({ type, isMandatory }: LocationProps) {
   const pathName = usePathname();
   const { localFilters } = useFilterContext();
-  const { saveLastSearchedLocation, clearLastSearchedLocation } =
-    sessionService();
+  const { saveLastSearchedLocation, clearLastSearchedLocation } = sessionService();
   const { getLocationName, getLocationDetails } = useLocationService();
   const [activeTab, setActiveTab] = useState("city");
   const [isOpen, setIsOpen] = useState(false);
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
-  const [localSelectedLocation, setLocalSelectedLocation] =
-    useState<Location | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<Location | null>();
-  const { replaceLocalFilter, searchParams, deleteMultipleLocalFilters } =
-    useFilterContext();
+  const { replaceLocalFilter, deleteMultipleLocalFilters } = useFilterContext();
 
   const fetchUrlLocation = async () => {
     const geoCoordinate = JSON.parse(localFilters.geoCoordinates || "null");
     const ids = localFilters?.locationIds?.length
       ? localFilters.locationIds.split(",")
-      : [];
+      : null;
     const locationIds = ids;
 
     if (geoCoordinate) {
@@ -224,7 +220,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
               <AutocompleteInput
                 multiple
                 type="LocationId"
-                placeholder="E.g. Bangalore, Karnataka"
+                placeholder="E.g. Bengaluru, Karnataka"
                 onSelect={setSelectedLocation}
                 value={
                   selectedLocation && Array.isArray(selectedLocation)
@@ -341,7 +337,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
             defaultOpen
             multiple
             type="LocationId"
-            placeholder="E.g. Bangalore, Karnataka"
+            placeholder="E.g. Bengaluru, Karnataka"
             onSelect={setSelectedLocation}
             value={
               selectedLocation && Array.isArray(selectedLocation)
