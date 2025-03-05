@@ -229,7 +229,7 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
       if(query.eventType==="bookmarked"){
         return( <NullState
           image={TrackerNullState}
-          title="No events saved yet! Start saving events to easily track and revisit them here."
+          title="No events bookmarked yet! Start bookmarking events to easily track and revisit them here."
         />)
       }else
       return( <NullState

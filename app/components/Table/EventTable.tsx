@@ -84,7 +84,7 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
     });
   };
   useEffect(() => {
-    if (events) {
+    if (events?.length>0) {
       setUpdatedEvents(events);
     }
   }, [events]);
@@ -152,7 +152,7 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
       if(query.eventType==="bookmarked"){
         return( <NullState
           image={TrackerNullState}
-          title="No events saved yet! Start saving events to easily track and revisit them here."
+          title="No events bookmared yet! Start bookmarking events to easily track and revisit them here."
         />)
       }else
       return( <NullState

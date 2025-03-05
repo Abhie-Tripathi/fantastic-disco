@@ -169,6 +169,8 @@ export const useTrackerServices = () => {
     }
     const getTrackerEvents = async(query:any, trackerId:string
     )=> {
+      console.log(trackerId);
+      
       // console.log(pathname);
       // let active="active";
       // if(query.eventType==="newEvent") active="new";

@@ -125,8 +125,6 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   
   // console.log(interest);
   
-  console.log(event);
-  
   return (
     <TableRow key={event.basic.id}>
       {/* Event Name Column */}
