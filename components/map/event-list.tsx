@@ -548,7 +548,7 @@ function EventList({
     return (
       <>
         <div className="p-4 rounded-t-lg">
-          <div className="flex justify-between items-center border-b">
+          <div className="flex justify-between items-center">
             <div className="flex items-center gap-2 my-2">
               <Badge variant="secondary" className="text-white bg-primary">
                 {count}
