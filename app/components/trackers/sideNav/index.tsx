@@ -87,7 +87,7 @@ const Index = () => {
   
   return (
     <>
-      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[67px] w-[calc(100vw-63px)] bg-[var(--primary-foreground)] z-10 text-h6 left-[63px]">
+      <div className="fixed h-[60px] px-[10px] flex justify-between border-b border-b-[var(--border-color)] top-[67px] w-[calc(100vw-63px)] bg-[var(--primary-foreground)] z-20 text-h6 left-[63px]">
         <div className="flex items-center w-[25%] gap-[var(--spacing-xxs)] text-[var(--primary-color)] font-bold">
           <Link className='flex gap-1 cursor-pointer' href={
               `/internal/trackers?skip=${skip}${searchValue.length > 0 ? `&q=${encodeURIComponent(searchValue)}` : ""}`

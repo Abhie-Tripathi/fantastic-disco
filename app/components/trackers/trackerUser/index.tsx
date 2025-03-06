@@ -119,11 +119,15 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
   
   return (
     <div className="flex w-[100%] p-5 flex-col gap-3 border border-[var(--border-color)] rounded-[12px]">
+      
+      <>
       <div className="flex w-[100%] justify-between items-center">
         <div className="text-[var(--secondary-text-color)] font-medium">{heading}</div>
         {/* <div className={styles.add} onClick={() => setSendInvite(true)}>Add Users</div> */}
       </div>
       <div style={{border:"1px solid var(--border-color)"}}></div>
+      {userData.length==0 ?
+      <div className='flex justify-center text-[var(--secondary-text-color)]'>Share tracker with your team.</div>:
       <div className="flex flex-col gap-6">
         {userData && userData.map((item, index) => (
           <div key={index} className="flex justify-between items-center">
@@ -140,7 +144,7 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
                 {/* <div className={styles.email}>{item?.email}</div> */}
               </div>
             </div>
-            {type==="otherss"?
+            {/* {type==="otherss"?
             <div
               className="text-[var(--primary-color)] text-sm font-medium"
               // ref={dropdownRef}
@@ -154,17 +158,20 @@ const TrackerUser: React.FC<TrackerUserProps> = ({ setSendInvite, userData, fetc
                     <div className={styles.edit} onClick={() => changeAccess(item.accessId, "EDIT", item.accessType )}>Edit</div>
                     <div className={styles.read} onClick={() => changeAccess(item.accessId, "READ", item.accessType)}>Read</div>
                   </div>
-                  {/* <div onClick={() => changeAccess(item.accessId, "ADMIN")}>Admin</div> */}
+                  <div onClick={() => changeAccess(item.accessId, "ADMIN")}>Admin</div>
                 </div>
               )}
             </div>:
             <div className="text-sm text-[var(--primary-color)] font-medium" style={{ textDecoration: "none" }}>
             Super Admin
           </div>
-            }
+            } */}
           </div>
         ))}
       </div>
+      }
+      </>
+      
     </div>
   );
 };

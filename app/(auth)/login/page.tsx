@@ -1,61 +1,38 @@
-"use client"; // Mark this as a Client Component
-import { useEffect, useState } from "react";
+"use client";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-export default function Page({ searchParams}:any) {
-  const { email, otp, target, targetId } = searchParams;
-  const [data, setData] = useState(null);
+import { useSearchParams } from "next/navigation";
+import { useTrackerServices } from "@/services/trackerServices";
+import Loading from "@/app/components/UI/Loading";
+export default function Page() {
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const { verifyAccess } = useTrackerServices(); 
+
+  // Get query params safely
+  const email = searchParams.get("email") || "";
+  const otp = searchParams.get("otp") || "";
+  const target = searchParams.get("target") || "";
+  const targetId = searchParams.get("targetId") || "";
 
   useEffect(() => {
-    const verifyAccess = async () => {
-      const response = await fetch(
-        "https://api.dev.gtm.whr.ai/auth/verify-access",
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, otp, target, targetId }),
+    if (!email || !otp || !target || !targetId) return;
+
+    const verify = async () => {
+      try {
+        const formData = { email, otp, target, targetId };
+        const result = await verifyAccess(formData);
+
+        if (result) {
+          router.push("/internal/trackers?tab=allTrackers&skip=0");
         }
-      );
-
-      const result = await response.json();
-      console.log("API Response:", result);
-
-      // Extract the Set-Cookie header from the response
-      const setCookieHeader = response.headers.get("Set-Cookie");
-      console.log("Set-Cookie Header:", setCookieHeader);
-
-      if (setCookieHeader) {
-        // Extract the cookie value
-        const cookieValue = setCookieHeader.split("=")[1].split(";")[0];
-
-        // Set the cookie in the browser
-        document.cookie = `dev=${cookieValue}; path=/; ${
-          process.env.NODE_ENV === "production" ? "secure" : ""
-        }`;
-        console.log("Cookie set:", `dev=${cookieValue}`);
+      } catch (error) {
+        console.error("Verification failed:", error);
       }
-
-      if (response.ok) {
-        const setCookieHeader = response.headers.get("Set-Cookie");
-      console.log("Set-Cookie Header:", setCookieHeader);
-        // Redirect using Next.js router
-        router.push("/internal/trackers?tab=allTrackers&skip=0");
-      }
-
-      setData(result);
     };
 
-    verifyAccess();
-  }, [email, otp, target, targetId, router]);
+    verify();
+  }, [email, otp, target, targetId, router]); 
 
-  return (
-    <div>
-      {/* <h2>API Response:</h2>
-      <pre>{JSON.stringify(data, null, 2)}</pre> */}
-    </div>
-  );
+  return <div><Loading/></div>;
 }

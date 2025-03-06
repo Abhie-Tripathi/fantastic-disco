@@ -116,6 +116,12 @@ export const useTrackerServices = () => {
         }
       );
     }
+    const verifyAccess=async (formData: {otp: string, email:string, target:string, targetId:string})=>{
+      return await api.request(`${endpoints.tracker.verifyAccess}`, {
+        method:"POST",
+        data:formData,
+      });
+    }
     const removeBookmark = async (id: string): Promise<BookmarkResponse | undefined> => {
       return api.request(`${endpoints.intent.userEventInterest}/${id}`, {
         method: "DELETE",
@@ -348,6 +354,7 @@ export const useTrackerServices = () => {
       removeAccess,
       delTracker,
       getTrackers,
+      verifyAccess,
       saveIntent,
       saveNewEvent,
       deleteNewEvent,
