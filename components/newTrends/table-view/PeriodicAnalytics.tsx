@@ -234,7 +234,7 @@ const PeriodicAnalytics = ({
     }));
   };
   const redirectTo = (url: string, startDate: string, endDate: string) => {
-    const updatedParams = new URLSearchParams(params);
+    const updatedParams = new URLSearchParams(params.toString());
     const formattedStartDate = new Date(startDate).toISOString();
     const formattedEndStartDate = new Date(endDate).toISOString();
 

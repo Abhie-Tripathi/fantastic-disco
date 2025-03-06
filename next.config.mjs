@@ -22,9 +22,6 @@ const config = {
           'im.gifbt.com',
         ],
   },
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
-  },
   reactStrictMode: false,
 
 };

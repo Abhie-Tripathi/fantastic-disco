@@ -282,7 +282,7 @@ export const useTrackerServices = () => {
         return response;
     }
     const getEventsLatLongData = async (trackerId:string,searchParams:string, type:any) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams.toString());
     // const adaptedParams = EventsAdapter.adaptRequestParams(params);
     // console.log(type.get("eventType"));
     const eventType = type.get("eventType");
@@ -297,7 +297,7 @@ export const useTrackerServices = () => {
     };
     const getCalendarViewEvents = async (trackerId:string, searchParams:string, isListing:boolean, viewType?:string)=>{
       // console.log(type);
-      const newParams=new URLSearchParams(searchParams);
+      const newParams=new URLSearchParams(searchParams.toString());
       const type=newParams.get("type");
       newParams.delete("type");
       const entries = Array.from(newParams.entries());
