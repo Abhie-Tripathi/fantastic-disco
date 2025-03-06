@@ -173,41 +173,43 @@ export default function EventAccordion({
       .map((show) => Show[show as keyof typeof Show]);
   }
   useEffect(() => {
-    if (events) {
+    if (events?.length>0) {
       setUpdatedEvents(events);
     }
   }, [events]);
 
   useEffect(() => {
     if (!events) return;
-
+  
     setUpdatedEvents((prevEvents) => {
       let newEvents = prevEvents ? [...prevEvents] : [...events];
-
+  
       if (query.eventType === "bookmarked") {
-        newEvents = newEvents.filter(
-          (event: Event) => event.basic.id !== eventId
-        );
+        newEvents = newEvents.filter((event: Event) => event.basic.id !== eventId);
       } else {
         newEvents = newEvents.map((event: Event) => {
           if (event.basic.id === eventId) {
             return {
               ...event,
-              interests: {
-                ...event.interests,
-                ...(interest
-                  ? Object.keys(interest).reduce((acc, key) => {
-                      acc[key] = interest[key];
+              interests: interest
+                ? (Object.keys(interest) as Array<keyof typeof event.interests>).reduce(
+                    (acc, key) => {
+                      if (event.interests?.[key]) {
+                        delete acc[key];
+                      } else {
+                        acc[key] = interest[key]; 
+                      }
                       return acc;
-                    }, {} as Record<string, any>)
-                  : {}),
-              },
+                    },
+                    { ...event.interests }
+                  )
+                : {},
             };
           }
           return event;
         });
       }
-
+  
       return newEvents;
     });
   }, [eventId, interest]);
@@ -264,7 +266,7 @@ export default function EventAccordion({
     <div className="flex flex-col h-full">
       <div className="flex-grow overflow-y-auto">
         <ul className="w-full space-y-6 list-none">
-          {events?.map((event: Event) => (
+          {updatedEvents?.map((event: Event) => (
             <EventListItem
               trackerId={trackerId}
               view={query.eventType}
@@ -949,6 +951,10 @@ const EventListItem = ({
                       <ActionPopover
                         eventId={event.basic.id}
                         interests={event.interests}
+                        trackerId={trackerId}
+                        setInterest={setInterest}
+                        setEventId={setEventId}
+                        view={view}
                       />
                     </div>
                   </div>

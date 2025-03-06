@@ -102,15 +102,19 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
           if (event.basic.id === eventId) {
             return {
               ...event,
-              interests: {
-                ...event.interests,
-                ...(interest
-                  ? Object.keys(interest).reduce((acc, key) => {
-                      acc[key] = interest[key];
+              interests: interest
+                ? (Object.keys(interest) as Array<keyof typeof event.interests>).reduce(
+                    (acc, key) => {
+                      if (event.interests?.[key]) {
+                        delete acc[key];
+                      } else {
+                        acc[key] = interest[key]; 
+                      }
                       return acc;
-                    }, {} as Record<string, any>)
-                  : {}),
-              },
+                    },
+                    { ...event.interests }
+                  )
+                : {},
             };
           }
           return event;
@@ -120,6 +124,7 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
       return newEvents;
     });
   }, [eventId, interest]);
+  
   
 
 
