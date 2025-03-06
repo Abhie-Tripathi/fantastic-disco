@@ -15,8 +15,14 @@ import Image from "next/image";
 // import DateTimeContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/DateTimeContainer";
 // import { FormState } from "@/types/Formstate";
 import { Input } from "@/components/ui/input";
-import { Share } from "geist-icons";
+import { Calendar, Share } from "geist-icons";
 import { Checkbox } from "@/components/ui/checkbox";
+import eventData from "@/public/data/prospect/userEventData.json";
+import { Event } from "@/types/events";
+import { formatEventDates } from "@/utils/dateFormat";
+import { formattedDateRange } from "@/utils/date";
+import { Radio } from "lucide-react";
+import Modal from "./modal";
 
 const EventForm = () => {
   const participationOptions = [
@@ -82,47 +88,153 @@ const EventForm = () => {
   );
 };
 
+const EventListItem = ({ event }: { event: Event }) => {
+  const address = event.basic.eventLocation ? (
+    event.basic.eventLocation.venue?.name === "Online" ||
+    event.basic.format === "online" ? (
+      <span className="flex items-center">
+        <Radio className="w-4 h-4 mr-1" /> Online
+      </span>
+    ) : event.basic.format === "hybrid" ? (
+      <span className="flex items-center">
+        <Radio className="w-4 h-4 mr-1" />
+        <span>Hybrid&nbsp;-&nbsp;</span>
+        {[
+          event.basic.eventLocation.venue?.name || "TBA",
+          event.basic.eventLocation.city?.name,
+          event.basic.eventLocation.state?.name !==
+          event.basic.eventLocation.city?.name
+            ? event.basic.eventLocation.state?.name
+            : null,
+          event.basic.eventLocation.country?.name !==
+          event.basic.eventLocation.city?.name
+            ? event.basic.eventLocation.country?.name
+            : null,
+        ]
+          .filter(Boolean)
+          .join(", ")}
+      </span>
+    ) : (
+      [
+        event.basic.eventLocation.venue?.name,
+        event.basic.eventLocation.city?.name,
+        event.basic.eventLocation.state?.name !==
+        event.basic.eventLocation.city?.name
+          ? event.basic.eventLocation.state?.name
+          : null,
+        event.basic.eventLocation.country?.name !==
+        event.basic.eventLocation.city?.name
+          ? event.basic.eventLocation.country?.name
+          : null,
+      ]
+        .filter(Boolean)
+        .join(", ")
+    )
+  ) : (
+    "Venue to be announced"
+  );
+
+  return (
+    <div className="col-span-3 w-full cursor-pointer text-[var(--primary-text-color)] bg-[var(--primary-foreground)] p-3 rounded shadow-sm border relative flex gap-3">
+      {event.basic.logoUrl && (
+        <div className="w-14 h-14">
+          <img
+            src={event.basic.logoUrl}
+            alt={`logo`}
+            className="w-14 h-14 object-contain p-2 border rounded-md bg-white shadow-sm"
+          />
+        </div>
+      )}
+      <div className="flex flex-col gap-1 h-full">
+        <div className="text-base font-medium">{event.basic.name}</div>
+        <div className={`text-[var(--tertiary-text-color)] text-sm`}>
+          {event.basic.organizer?.name}
+        </div>
+        <p className="text-sm capitalize">{address}</p>
+        <div
+          className={`flex items-center text-sm text-gray-600 gap-2 leading-6`}
+        >
+          <Calendar
+            height={"14px"}
+            width={"14px"}
+            color="var(--secondary-text-color)"
+          />
+          <div>
+            {formattedDateRange(
+              event.basic.startDateTime,
+              event.basic.endDateTime
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const EventList = () => {
+  const [listExpanded, setListExpanded] = useState<boolean>(false);
   return (
     <div className="grid gap-3">
-      <div className="font-medium text-base">Events Found</div>
-      <div className="rounded-lg border shadow-sm p-3 flex justify-between items-center">
-          Event Card
-          <Button>Save</Button>
-        </div>
+      <div className="font-medium text-base">Events Data</div>
 
-      {/* <div className="w-full cursor-pointer text-[var(--primary-text-color)] bg-[var(--primary-foreground)] p-3 rounded shadow-sm border relative flex gap-3">
-        {task.eventData.logoUrl && (
-          <div className="w-14 h-14">
-            <img
-              src={task.eventData.logoUrl}
-              alt={`logo`}
-              className="w-14 h-14 object-contain p-2 border rounded-md bg-white shadow-sm"
-            />
+      <div className="border rounded-sm">
+        <div className="grid grid-cols-4 p-2 items-center">
+          <div className="col-span-2 ">website name</div>
+          <div className="col-span-1 text-sm">2 events found</div>
+          <Button
+            className="p-0"
+            variant="link"
+            size="sm"
+            onClick={() => setListExpanded((prev) => !prev)}
+          >
+            See events
+          </Button>
+        </div>
+        {listExpanded && (
+          <div className="p-3 grid grid-cols-4 gap-3 max-h-[300px] overflow-y-auto">
+            {eventData.events.map((item: any) => {
+              return (
+                <>
+              <EventListItem event={item} />
+              <div className="col-span-1 flex items-center justify-center text-sm">Added</div>
+              </>
+              );
+            })}
           </div>
         )}
-        <div className="flex flex-col gap-2 h-full">
-          <div className={`text-lg font-medium`}>{name}</div>
-          <div className={`text-[var(--tertiary-text-color)] text-sm`}>
-            {eventCompany}
-          </div>
-          <div
-            className={`flex items-center text-sm text-gray-600 gap-2 leading-6`}
-          >
-            <Calendar
-              height={"14px"}
-              width={"14px"}
-              color="var(--secondary-text-color)"
-            />
-            <div>{formatEventDates(eventStartDate, eventEndDate)}</div>
-          </div>
-        </div>
-      </div> */}
+      </div>
 
-      <div className="rounded-lg border shadow-sm p-3 flex justify-between items-center">
+      <div className="border rounded-sm">
+        <div className="grid grid-cols-4 p-2 items-center">
+          <div className="col-span-2 ">website name</div>
+          <div className="col-span-1 text-sm">2 events found</div>
+          <Button
+            className="p-0"
+            variant="link"
+            size="sm"
+            onClick={() => setListExpanded((prev) => !prev)}
+          >
+            See events
+          </Button>
+        </div>
+        {listExpanded && (
+          <div className="p-3 grid grid-cols-4 gap-3 max-h-[300px] overflow-y-auto">
+            {eventData.events.map((item: any) => {
+              return (
+                <>
+              <EventListItem event={item} />
+              <div className="col-span-1 flex items-center justify-center text-sm">Added</div>
+              </>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* <div className="rounded-lg border shadow-sm p-3 flex justify-between items-center">
         Event Card
         <Button>Save</Button>
-      </div>
+      </div> */}
       <div className="flex gap-2 items-center text-base text-[var(--secondary-text-color)]">
         <Checkbox />
         These events are different create new event.
@@ -163,10 +275,16 @@ export default function AddEventModal() {
     resetForm();
   }, [isOpen]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
   return (
     <div>
-      <Button onClick={() => setIsOpen(true)}>+ Add Event</Button>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Button onClick={openModal}>+ Add Event</Button>
+      {/* <Button onClick={() => setIsOpen(true)}>+ Add Event</Button> */}
+      {/* <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="sm:max-w-[70%] min-h-[50%] flex flex-col gap-6">
           <DialogHeader>
             <DialogTitle className="tracking-normal">Add Event</DialogTitle>
@@ -219,21 +337,71 @@ export default function AddEventModal() {
               {showEventList && <EventList />}
             </div>
           </div>
-
-          {/* <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={() => setIsOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              className="bg-[#6E56CF] hover:bg-[#644fc0]"
-              onClick={saveEventHandler}
-              //   disabled={isLoading || !!error}
-            >
-              Save
-            </Button>
-          </div> */}
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
+
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <div className="grid gap-4 h-full">
+          <div className="flex gap-4">
+            <Input
+              id="name"
+              className=""
+              placeholder="Enter Website"
+              // value={trackerName}
+              // onChange={handleNameChange}
+              // aria-invalid={error ? "true" : "false"}
+              aria-describedby="name-error"
+            />
+            <Button onClick={hadleFetch} disabled={isFetching}>
+              {isFetching ? "Fetching..." : "Fetch Data"}
+            </Button>
+            <Button variant="outline">
+              <Share height="14px" width="14px" className="mr-1" />
+              Bulk Import
+            </Button>
+          </div>
+
+          <Button
+            variant="link"
+            onClick={() => {
+              setEventFormOpen(true);
+              setShowEventList(false);
+            }}
+            className=""
+          >
+            or add details manually
+          </Button>
+
+          <div
+            className={`transition-opacity duration-500 ease-in-out ${
+              eventFormOpen ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {eventFormOpen && <EventForm />}
+          </div>
+
+          <div
+            className={`transition-opacity duration-500 ease-in-out ${
+              showEventList ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {showEventList && <EventList />}
+          </div>
+        </div>
+
+        {/* <div className="flex justify-end gap-3">
+          <Button variant="outline" onClick={closeModal}>
+            Cancel
+          </Button>
+          <Button
+            className="bg-[#6E56CF] hover:bg-[#644fc0]"
+            onClick={saveEventHandler}
+            //   disabled={isLoading || !!error}
+          >
+            Save
+          </Button>
+        </div> */}
+      </Modal>
     </div>
   );
 }
