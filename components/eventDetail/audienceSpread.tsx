@@ -8,9 +8,9 @@ import {
 import { Event } from "@/types/events";
 import { useState } from "react";
 import Restriction from "../eventDetail/restriction";
-import {
-  AudienceSpreadListView,
-} from "./audienceSpreadView";
+import { AudienceSpreadListView, AudienceSpreadMapView } from "./audienceSpreadView";
+import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
+import { Globe, ListIcon } from "lucide-react";
 
 interface Props {
   restrictedData: any;
@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const AudienceSpread = ({ restrictedData, audienceSpread }: Props) => {
-  const [audienceSpreadView, setAudienceSpreadView] = useState("globe");
+  const [audienceSpreadView, setAudienceSpreadView] = useState("list");
   const isEnabled = restrictedData && restrictedData.isEnabled;
 
   return (
@@ -44,7 +44,7 @@ export const AudienceSpread = ({ restrictedData, audienceSpread }: Props) => {
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
-          {/* {isEnabled
+          {isEnabled
             ? audienceSpread &&
               Object.keys(audienceSpread).length > 0 && (
                 <Tabs
@@ -70,10 +70,14 @@ export const AudienceSpread = ({ restrictedData, audienceSpread }: Props) => {
                   </TabsList>
                 </Tabs>
               )
-            : null} */}
+            : null}
         </div>
         {isEnabled ? (
-          <AudienceSpreadListView audienceSpread={audienceSpread} />
+          audienceSpreadView === "list" ? (
+            <AudienceSpreadListView audienceSpread={audienceSpread} />
+          ) : (
+            <AudienceSpreadMapView audienceSpread={audienceSpread} />
+          )
         ) : (
           <Restriction />
         )}
