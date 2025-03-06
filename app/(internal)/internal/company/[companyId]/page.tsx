@@ -54,7 +54,7 @@ const getCompanyIndustries = (asOrganizer: any[], asExhibitor: any[]) => {
 };
 
 const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
-  const referrer = document.referrer;
+  // const referrer = document.referrer;
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
   const tabs = [
@@ -206,7 +206,7 @@ const CompanyDetail = ({ params }: { params: { companyId: string } }) => {
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto shadow-[3px_0px_5px_-5px] dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
         <button
           className="flex items-center gap-2 pb-4 text-[#666666] text-sm"
-          onClick={() => referrer ? router.push(referrer) : router.back()}
+          onClick={() => router.back()}
         >
           <ArrowLeft width="14px" height="14px" color="#6750A4" />
           <span className="text-[var(--primary-color)] font-medium">

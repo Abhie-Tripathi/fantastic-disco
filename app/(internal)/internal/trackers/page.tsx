@@ -409,7 +409,7 @@ const Trackers = ({ searchParams }: Search) => {
     <div className="flex flex-col gap-4 px-5 py-0">
       <div className="text-md text-[var(--secondary-text-color)] pt-5 mb-[-18px]">
         {/* Create trackers that help you keep updated to quickly view the type of events that are impacting your business around these locations. */}
-        Saved events and tracker lists you have created.
+        Bookmarked events and tracker lists you have created.
       </div>
       <div>
       {/* <Button className="text-white w-[100px]" onClick={()=>hideTemplates(false)}>Create</Button> */}
@@ -422,7 +422,7 @@ const Trackers = ({ searchParams }: Search) => {
       </button> */}
       <Link href={`/internal/trackers/savedevents?view=table`}>
       <div className="rounded-lg border relative hover:shadow-md transition-all duration-200 group overflow-hidden flex justify-between p-3 items-center bg-[var(--background-secondary-color)]">
-        Saved Events 
+        Bookmarked Events 
         <MoveUpRight width={16} height={16}/>
       </div>
       </Link>

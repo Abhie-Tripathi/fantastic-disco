@@ -31,6 +31,11 @@ export const InsightsAndScores = ({
   const estimatedEconomicImpact = parseFloat(
     economicImpact?.replace(/[$,]/g, "") ?? "0"
   );
+  const filteredScores =
+    scores &&
+    Object.fromEntries(
+      Object.entries(scores).filter(([key, _]) => key !== "impactScore")
+    );
   const roundedEstimatedEconomicImpact =
     estimatedEconomicImpact && Math.ceil(estimatedEconomicImpact);
   const { morphedData } = useFilterContext();
@@ -60,11 +65,11 @@ export const InsightsAndScores = ({
       />
       <div className="flex flex-col gap-6">
         <div className="flex gap-6 max-xl:flex-col max-xl:h-auto">
-          {((scores &&
-            Object.values(scores).every((value) => value !== null)) ||
+          {((filteredScores &&
+            Object.values(filteredScores).some((value) => value !== null)) ||
             (trustScore !== null && trustScore != null && trustScore > 0)) && (
             <div
-              className={`w-1/2 grid ${
+              className={`grid ${
                 economicImpact &&
                 economicImpact.trim() !== "" &&
                 economicImpactBreakdown &&
@@ -74,7 +79,7 @@ export const InsightsAndScores = ({
               }  gap-6 max-xl:w-full`}
             >
               <>
-                {scores &&
+                {/* {scores &&
                   scores.impactScore !== 0 &&
                   scores.impactScore !== null && (
                     <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
@@ -99,7 +104,7 @@ export const InsightsAndScores = ({
                         <Restriction />
                       )}
                     </div>
-                  )}
+                  )} */}
                 {trustScore !== null &&
                   trustScore !== undefined &&
                   trustScore > 0 && (
@@ -193,8 +198,10 @@ export const InsightsAndScores = ({
             Object.keys(economicImpactBreakdown).length > 0 && (
               <div
                 className={`${
-                  (scores &&
-                    Object.values(scores).some((value) => value !== null)) ||
+                  (filteredScores &&
+                    Object.values(filteredScores).some(
+                      (value) => value !== null
+                    )) ||
                   (trustScore !== null &&
                     trustScore !== undefined &&
                     trustScore > 0)

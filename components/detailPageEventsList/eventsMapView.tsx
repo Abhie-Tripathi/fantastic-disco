@@ -1,22 +1,15 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import styles from "./map.module.css";
-import { Map, Marker } from "react-map-gl";
-import MapPointer from "/public/Marker.svg";
-import Image from "next/image";
-import { Event } from "@/types/events/events";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { useQuery } from "@tanstack/react-query";
-import { useEventsService } from "@/services/eventsService";
-import Text from "../new-ui/Text";
-import { MapEvents } from "@/types/events";
-import { Loader2 } from "lucide-react";
-import { useMiscService } from "@/services/miscService";
-import MapPopup from "../map/popup";
-import { EventStatus } from "@/types/events/dto/event-query.dto";
 import { isEventeli } from "@/config";
 import { useTheme } from "@/context";
+import { useEventsService } from "@/services/eventsService";
+import { MapEvents } from "@/types/events";
+import { Event } from "@/types/events/events";
+import { useQuery } from "@tanstack/react-query";
+import "mapbox-gl/dist/mapbox-gl.css";
+import React, { useEffect, useState } from "react";
+import { Map, Marker } from "react-map-gl";
+import MapPopup from "../map/popup";
 
 interface MapProps {
   startDate: string;

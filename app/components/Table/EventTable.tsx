@@ -84,7 +84,7 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
     });
   };
   useEffect(() => {
-    if (events) {
+    if (events?.length>0) {
       setUpdatedEvents(events);
     }
   }, [events]);
@@ -102,15 +102,19 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
           if (event.basic.id === eventId) {
             return {
               ...event,
-              interests: {
-                ...event.interests,
-                ...(interest
-                  ? Object.keys(interest).reduce((acc, key) => {
-                      acc[key] = interest[key];
+              interests: interest
+                ? (Object.keys(interest) as Array<keyof typeof event.interests>).reduce(
+                    (acc, key) => {
+                      if (event.interests?.[key]) {
+                        delete acc[key];
+                      } else {
+                        acc[key] = interest[key]; 
+                      }
                       return acc;
-                    }, {} as Record<string, any>)
-                  : {}),
-              },
+                    },
+                    { ...event.interests }
+                  )
+                : {},
             };
           }
           return event;
@@ -120,6 +124,7 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
       return newEvents;
     });
   }, [eventId, interest]);
+  
   
 
 
@@ -152,7 +157,7 @@ const EventTable = ({source, trackerId, eventType, view}:EventTableProps) => {
       if(query.eventType==="bookmarked"){
         return( <NullState
           image={TrackerNullState}
-          title="No events saved yet! Start saving events to easily track and revisit them here."
+          title="No events bookmared yet! Start bookmarking events to easily track and revisit them here."
         />)
       }else
       return( <NullState
@@ -172,7 +177,7 @@ console.log(events);
   return (
     <div className="w-full">
       <div className="rounded-md border bg-background">
-      <div className={`overflow-auto ${view === "global" ? "h-[calc(100vh-165px)]" : "max-h-[calc(100vh-264px)]"}`}>
+      <div className={`overflow-auto ${view === "global" ? "h-[calc(100vh-165px)]" : "max-h-[calc(100vh-198px)]"}`}>
 
           <Table>
             <EventTableHeader show={showValues} type={query.type} view={query.eventType} localFilters={localFilters}/>

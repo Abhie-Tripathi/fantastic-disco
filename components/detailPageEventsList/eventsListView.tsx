@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useMemo } from "react";
+import { useEventsService } from "@/services/eventsService";
 import { Event } from "@/types/events/events";
 import { useQuery } from "@tanstack/react-query";
-import { useEventsService } from "@/services/eventsService";
-import Text from "../new-ui/Text";
+import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { format } from "date-fns";
-import { eventType } from "@/data/onboardingDropdownsData";
+import React from "react";
+import Text from "../new-ui/Text";
 
 interface MapProps {
   startDate: string;

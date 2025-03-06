@@ -188,7 +188,7 @@ console.log(selectedLocation);
             <AutocompleteInput
               multiple
               type="LocationId"
-              placeholder="E.g. Bangalore, Karnataka"
+              placeholder="E.g. Bengaluru, Karnataka"
               onSelect={setSelectedLocation}
               value={
                 selectedLocation && Array.isArray(selectedLocation)

@@ -56,7 +56,7 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   value = 0,
   label,
 }) => {
-  const radius = 16;
+  const radius = 22;
   const circumference = 2 * Math.PI * radius;
 
   const getColorByValue = (value: number | null): string => {
@@ -72,19 +72,19 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
   return (
     <div className="text-center">
       <div className="relative inline-flex">
-        <svg className="w-10 h-10" aria-hidden="true">
+        <svg className="w-[52px] h-[52px]" aria-hidden="true">
           <circle
             className="text-gray-200"
-            strokeWidth="3"
+            strokeWidth="4"
             stroke="currentColor"
             fill="transparent"
             r={radius}
-            cx="20"
-            cy="20"
+            cx="26"
+            cy="26"
           />
           <circle
             className={className}
-            strokeWidth="3"
+            strokeWidth="4"
             strokeDasharray={circumference}
             strokeDashoffset={
               circumference - (value ? (value / 100) * circumference : 0)
@@ -93,41 +93,51 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
             stroke="currentColor"
             fill="transparent"
             r={radius}
-            cx="20"
-            cy="20"
+            cx="26"
+            cy="26"
           />
         </svg>
         <span
-          className="absolute inset-0 flex items-center justify-center text-xs font-semibold"
+          className="absolute inset-0 flex items-center justify-center text-sm font-semibold"
           aria-hidden="true"
         >
           {value ? value : "-"}
         </span>
       </div>
-      <p className="text-[10px] border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded px-1.5 py-0.5">
+      <p className="text-xs border-[#EBEBEB] border bg-white dark:bg-[#171717] rounded p-1">
         {label}
       </p>
     </div>
   );
 };
+
 interface EventListProps {
   trackerId?: string;
   source?: string;
-  view?:string;
+  view?: string;
 }
 
-export default function EventAccordion({ source, trackerId, view }: EventListProps) {
+export default function EventAccordion({
+  source,
+  trackerId,
+  view,
+}: EventListProps) {
   const searchParams = useSearchParams();
+  const { data: trackerData } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const query = Object.fromEntries(searchParams.entries());
   delete query.show;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
-  const [interest, setInterest]=useState();
+  const [interest, setInterest] = useState();
   const [eventId, setEventId] = useState();
   let events, totalEvents, isLoading, error;
   const { data } = useTrackerContext();
   if (source === "tracker") {
-    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(query, trackerId, view));
+    ({ events, totalEvents, isLoading, error } = useTrackerEvents.list(
+      query,
+      trackerId,
+      view
+    ));
   } else {
     ({ events, totalEvents, isLoading, error } = useEvents.list(query));
   }
@@ -163,7 +173,7 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
       .map((show) => Show[show as keyof typeof Show]);
   }
   useEffect(() => {
-    if (events) {
+    if (events?.length>0) {
       setUpdatedEvents(events);
     }
   }, [events]);
@@ -181,15 +191,19 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
           if (event.basic.id === eventId) {
             return {
               ...event,
-              interests: {
-                ...event.interests,
-                ...(interest
-                  ? Object.keys(interest).reduce((acc, key) => {
-                      acc[key] = interest[key];
+              interests: interest
+                ? (Object.keys(interest) as Array<keyof typeof event.interests>).reduce(
+                    (acc, key) => {
+                      if (event.interests?.[key]) {
+                        delete acc[key];
+                      } else {
+                        acc[key] = interest[key]; 
+                      }
                       return acc;
-                    }, {} as Record<string, any>)
-                  : {}),
-              },
+                    },
+                    { ...event.interests }
+                  )
+                : {},
             };
           }
           return event;
@@ -217,13 +231,14 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
   }
 
   if (error) {
-    if(source==="tracker"){
-      return( <NullState
-        image={TrackerNullState}
-        title={(error as ApiError).message}
-      />)
-    }else 
-    return <ZeroState text={(error as ApiError).message} />;
+    if (source === "tracker") {
+      return (
+        <NullState
+          image={TrackerNullState}
+          title={(error as ApiError).message}
+        />
+      );
+    } else return <ZeroState text={(error as ApiError).message} />;
   }
 
   if (events.length === 0) {
@@ -231,7 +246,7 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
       if(query.eventType==="bookmarked"){
         return( <NullState
           image={TrackerNullState}
-          title="No events saved yet! Start saving events to easily track and revisit them here."
+          title="No events bookmarked yet! Start bookmarking events to easily track and revisit them here."
         />)
       }else
       return( <NullState
@@ -251,7 +266,7 @@ export default function EventAccordion({ source, trackerId, view }: EventListPro
     <div className="flex flex-col h-full">
       <div className="flex-grow overflow-y-auto">
         <ul className="w-full space-y-6 list-none">
-          {events?.map((event: Event) => (
+          {updatedEvents?.map((event: Event) => (
             <EventListItem
               trackerId={trackerId}
               view={query.eventType}
@@ -288,10 +303,10 @@ const EventListItem = ({
   event,
   showValues,
 }: {
-  trackerId?:string;
-  view?:string;
-  setEventId:any;
-  setInterest:any;
+  trackerId?: string;
+  view?: string;
+  setEventId: any;
+  setInterest: any;
   event: Event;
   showValues: Show[];
 }) => {
@@ -813,8 +828,9 @@ const EventListItem = ({
                 </div>
               )}
 
-              <div className="flex items-center justify-end h-full">
-                {event.insights?.scores &&
+              <div className="flex items-start justify-end h-full">
+                {showValues.includes(Show.scores) &&
+                event.insights?.scores &&
                 (event.insights?.scores.inboundScore !== null ||
                   event.insights?.scores.internationalScore !== null) ? (
                   <div className="flex justify-end gap-6 w-full">
@@ -859,31 +875,25 @@ const EventListItem = ({
                     </div>
 
                     <div className="space-y-4">
-                      {event.insights?.scores && (
-                        <div
-                          className={`grid ${
-                            isEventeli ? "grid-rows-2" : "grid-rows-3"
-                          } gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded`}
-                        >
-                          {!isEventeli && (
+                      {showValues.includes(Show.scores) &&
+                        event.insights?.scores && (
+                          <div className="grid grid-rows-2 gap-2 border border-[#EBEBEB] bg-[#FAFAFA] p-2 rounded">
                             <CircularProgress
-                              value={event.insights?.scores.impactScore}
-                              label="EIS"
+                              value={event.insights?.scores.inboundScore}
+                              label="Inbound"
                             />
-                          )}
-                          <CircularProgress
-                            value={event.insights?.scores.inboundScore}
-                            label="Inbound"
-                          />
-                          <CircularProgress
-                            value={event.insights?.scores.internationalScore}
-                            label="International"
-                          />
-                        </div>
-                      )}
+                            <CircularProgress
+                              value={event.insights?.scores.internationalScore}
+                              label="International"
+                            />
+                          </div>
+                        )}
                     </div>
 
-                    <div className="flex items-start justify-end" onClick={(e) => e.preventDefault()}>
+                    <div
+                      className="flex items-start justify-end"
+                      onClick={(e) => e.preventDefault()}
+                    >
                       <ActionPopover
                         eventId={event.basic.id}
                         interests={event.interests}
@@ -891,21 +901,22 @@ const EventListItem = ({
                     </div>
                   </div>
                 ) : (
-                  <div className="flex justify-end w-full">
+                  <div className="flex justify-end w-full gap-6">
                     <div className="grid grid-row-2 items-end gap-4">
-                    {event.insights?.estimatedExhibitors !== undefined && (
-                        <div>
-                          <p className="text-xs text-gray-600 font-medium">
-                            Estimated Exhibitors
-                          </p>
-                          <p className="text-lg font-semibold text-primary">
-                            {event.insights?.estimatedExhibitors == "0" ||
-                            event.insights?.estimatedExhibitors == null
-                              ? "--"
-                              : event.insights?.estimatedExhibitors}
-                          </p>
-                        </div>
-                      )}
+                      {showValues.includes(Show.estimatedExhibitors) &&
+                        event.insights?.estimatedExhibitors !== undefined && (
+                          <div>
+                            <p className="text-xs text-gray-600 font-medium">
+                              Estimated Exhibitors
+                            </p>
+                            <p className="text-lg font-semibold text-primary">
+                              {event.insights?.estimatedExhibitors == "0" ||
+                              event.insights?.estimatedExhibitors == null
+                                ? "--"
+                                : event.insights?.estimatedExhibitors}
+                            </p>
+                          </div>
+                        )}
                       {event.insights?.estimatedAttendance !== undefined && (
                         <div>
                           <p className="text-xs text-gray-600 font-medium">
@@ -919,18 +930,32 @@ const EventListItem = ({
                           </p>
                         </div>
                       )}
-                      {event.insights?.economicImpact !== undefined && (
-                        <div>
-                          <p className="text-xs text-gray-600 font-medium">
-                            Economic Impact
-                          </p>
-                          <p className="text-lg font-semibold text-primary">
-                            {formatEstimatedSpend(
-                              event.insights?.economicImpact
-                            )}
-                          </p>
-                        </div>
-                      )}
+                      {showValues.includes(Show.economicImpact) &&
+                        event.insights?.economicImpact !== undefined && (
+                          <div>
+                            <p className="text-xs text-gray-600 font-medium">
+                              Economic Impact
+                            </p>
+                            <p className="text-lg font-semibold text-primary">
+                              {formatEstimatedSpend(
+                                event.insights?.economicImpact
+                              )}
+                            </p>
+                          </div>
+                        )}
+                    </div>
+                    <div
+                      className="flex items-start justify-end"
+                      onClick={(e) => e.preventDefault()}
+                    >
+                      <ActionPopover
+                        eventId={event.basic.id}
+                        interests={event.interests}
+                        trackerId={trackerId}
+                        setInterest={setInterest}
+                        setEventId={setEventId}
+                        view={view}
+                      />
                     </div>
                   </div>
                 )}

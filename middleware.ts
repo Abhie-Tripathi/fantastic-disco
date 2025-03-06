@@ -5,10 +5,10 @@ export function middleware(request: NextRequest) {
   if (process.env.IS_LOCAL) {
     return NextResponse.next();
   }
-  const key =
-    (process.env.NEXT_COOKIE_PREFIX
-      ? `${process.env.NEXT_COOKIE_PREFIX}-`
-      : "") + "token";
+
+  const key = process.env.NEXT_COOKIE_PREFIX
+    ? `${process.env.NEXT_COOKIE_PREFIX}-token`
+    : "dev-token";
   const cookie = request.cookies.get(key)?.value;
   
   if (!cookie) {

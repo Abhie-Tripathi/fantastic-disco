@@ -71,7 +71,7 @@ export function ActionPopover({
   const handleSubmit = async () => {
     if (view === "bookmarked") {
       const response = await removeBookmark(interests?.bookmark?.interestId || "");
-      if (response?.interest) {
+      if (response?.interest && setInterest) {
         setInterest({
           [response.interest.toLowerCase()]: {
             interestId: response.id,
@@ -84,13 +84,19 @@ export function ActionPopover({
     } else if (selectedAction) {
       if (selectedAction === "UN-BOOKMARK") {
         const response = await removeBookmark(interests?.bookmark?.interestId || "");
-        if (response?.interest) {
+        if (response?.interest && setInterest) {
+          setSavedEventCount(savedEventCount - 1);
           setInterest({
             [response.interest.toLowerCase()]: {
               interestId: response.id,
             },
           });
         }
+        toast({
+          title: "Success",
+          description: "Your interest has been recorded",
+          variant: "default",
+        });
         setEventId(response?.eventId);
         setIsOpen(false);
         console.log(response);
@@ -104,14 +110,16 @@ export function ActionPopover({
           },
           {
             onSuccess: (response: any) => {
-              if (response?.interest) {
+              if (response?.interest && setInterest) {
                 setInterest({
                   [response.interest.toLowerCase()]: {
                     interestId: response.id,
                   },
                 });
               }
-              setEventId(response?.eventId);
+              if (response?.eventId && setEventId) {
+                setEventId(response?.eventId);
+              }
               setSavedEventCount(savedEventCount + 1);
               setIsOpen(false);
               toast({
@@ -121,9 +129,10 @@ export function ActionPopover({
               });
             },
             onError: (error) => {
+              console.log(error)
               toast({
                 title: "Error",
-                description: "Failed to record your interest. Please try again.",
+                description: error.message,
                 variant: "destructive",
               });
             },
