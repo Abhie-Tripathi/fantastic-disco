@@ -171,77 +171,121 @@ const EventListItem = ({ event }: { event: Event }) => {
   );
 };
 
-const EventList = () => {
+const DuplicateEvent = () => {
   const [listExpanded, setListExpanded] = useState<boolean>(false);
   return (
-    <div className="grid gap-3">
-      <div className="font-medium text-base">Events Data</div>
-
-      <div className="border rounded-sm">
-        <div className="grid grid-cols-4 p-2 items-center">
-          <div className="col-span-2 ">website name</div>
-          <div className="col-span-1 text-sm">2 events found</div>
-          <Button
-            className="p-0"
-            variant="link"
-            size="sm"
-            onClick={() => setListExpanded((prev) => !prev)}
-          >
-            See events
-          </Button>
-        </div>
-        {listExpanded && (
-          <div className="p-3 grid grid-cols-4 gap-3 max-h-[300px] overflow-y-auto">
-            {eventData.events.map((item: any) => {
-              return (
-                <>
-              <EventListItem event={item} />
-              <div className="col-span-1 flex items-center justify-center text-sm">Added</div>
+    <div className="border rounded-sm">
+      <div className="grid grid-cols-4 p-3 items-center">
+        <div className="col-span-2 ">Event Name 1</div>
+        <div className="col-span-1 text-sm">2 duplicate events found</div>
+        <Button
+          className="p-0"
+          variant="link"
+          size="sm"
+          onClick={() => setListExpanded((prev) => !prev)}
+        >
+          See events
+        </Button>
+      </div>
+      {listExpanded && (
+        <div className="p-3 grid grid-cols-4 gap-3 max-h-[300px] overflow-y-auto">
+          {eventData.events.map((item: any) => {
+            return (
+              <>
+                <EventListItem event={item} />
+                <div className="col-span-1 flex items-center justify-center">
+                  <Button size="sm">Add </Button>
+                </div>
               </>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      <div className="border rounded-sm">
-        <div className="grid grid-cols-4 p-2 items-center">
-          <div className="col-span-2 ">website name</div>
-          <div className="col-span-1 text-sm">2 events found</div>
-          <Button
-            className="p-0"
-            variant="link"
-            size="sm"
-            onClick={() => setListExpanded((prev) => !prev)}
-          >
-            See events
-          </Button>
+            );
+          })}
         </div>
-        {listExpanded && (
-          <div className="p-3 grid grid-cols-4 gap-3 max-h-[300px] overflow-y-auto">
-            {eventData.events.map((item: any) => {
-              return (
-                <>
-              <EventListItem event={item} />
-              <div className="col-span-1 flex items-center justify-center text-sm">Added</div>
-              </>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* <div className="rounded-lg border shadow-sm p-3 flex justify-between items-center">
-        Event Card
-        <Button>Save</Button>
-      </div> */}
-      <div className="flex gap-2 items-center text-base text-[var(--secondary-text-color)]">
-        <Checkbox />
-        These events are different create new event.
-      </div>
-      <Button className="w-fit">Create Event</Button>
+      )}
     </div>
   );
+};
+
+const AddedEvent = () => {
+  // const [listExpanded, setListExpanded] = useState<boolean>(false);
+
+  const event = {
+    name: "Test",
+    logoUrl: "",
+    organizer: "organizer",
+    startDateTime: "",
+    endDateTime: "",
+    address: "",
+  };
+  return (
+    <div className="border rounded-sm grid grid-cols-4 items-center">
+      <div className="col-span-3 w-full  p-3  relative flex gap-3">
+        {event.logoUrl && (
+          <div className="w-14 h-14">
+            <img
+              src={event.logoUrl}
+              alt={`logo`}
+              className="w-14 h-14 object-contain p-2 border rounded-md bg-white shadow-sm"
+            />
+          </div>
+        )}
+        <div className="flex flex-col gap-1 h-full">
+          <div className="text-base font-medium">{event.name}</div>
+          <div className={`text-[var(--tertiary-text-color)] text-sm`}>
+            {event.organizer}
+          </div>
+          <p className="text-sm capitalize">{event.address}</p>
+          <div
+            className={`flex items-center text-sm text-gray-600 gap-2 leading-6`}
+          >
+            <Calendar
+              height={"14px"}
+              width={"14px"}
+              color="var(--secondary-text-color)"
+            />
+            <div>
+              {formattedDateRange(event.startDateTime, event.endDateTime)}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="text-primary col-span-1 flex items-center justify-center text-sm">
+        Added
+      </div>
+    </div>
+  );
+
+  // return (
+  //   <div className="col-span-3 w-full cursor-pointer text-[var(--primary-text-color)] bg-[var(--primary-foreground)] p-3 rounded shadow-sm border relative flex gap-3">
+  //     {event.logoUrl && (
+  //       <div className="w-14 h-14">
+  //         <img
+  //           src={event.logoUrl}
+  //           alt={`logo`}
+  //           className="w-14 h-14 object-contain p-2 border rounded-md bg-white shadow-sm"
+  //         />
+  //       </div>
+  //     )}
+  //     <div className="flex flex-col gap-1 h-full">
+  //       <div className="text-base font-medium">{event.name}</div>
+  //       <div className={`text-[var(--tertiary-text-color)] text-sm`}>
+  //         {event.organizer}
+  //       </div>
+  //       <p className="text-sm capitalize">{event.address}</p>
+  //       <div
+  //         className={`flex items-center text-sm text-gray-600 gap-2 leading-6`}
+  //       >
+  //         <Calendar
+  //           height={"14px"}
+  //           width={"14px"}
+  //           color="var(--secondary-text-color)"
+  //         />
+  //         <div>
+  //           {formattedDateRange(event.startDateTime, event.endDateTime)}
+  //         </div>
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 };
 
 export default function AddEventModal() {
@@ -268,7 +312,7 @@ export default function AddEventModal() {
     setTimeout(() => {
       setShowEventList(true);
       setIsFetching(false);
-    }, 1000);
+    }, 500);
   };
 
   useEffect(() => {
@@ -341,7 +385,7 @@ export default function AddEventModal() {
       </Dialog> */}
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <div className="grid gap-4 h-full">
+        <div className="flex flex-col gap-4 h-full">
           <div className="flex gap-4">
             <Input
               id="name"
@@ -385,7 +429,15 @@ export default function AddEventModal() {
               showEventList ? "opacity-100" : "opacity-0"
             }`}
           >
-            {showEventList && <EventList />}
+            {showEventList && (
+              <div className="grid gap-3 h-full overflow-y-auto">
+                <div className="font-medium text-base">Events Data</div>
+                <DuplicateEvent />
+                <DuplicateEvent />
+                <AddedEvent />
+                <AddedEvent />
+              </div>
+            )}
           </div>
         </div>
 
