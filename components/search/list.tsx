@@ -209,7 +209,8 @@ export default function EventAccordion({
           return event;
         });
       }
-  
+      console.log(newEvents);
+      
       return newEvents;
     });
   }, [eventId, interest]);
@@ -261,7 +262,6 @@ export default function EventAccordion({
     }else 
     return <ZeroState text="No events found" />;
   }
-
   return (
     <div className="flex flex-col h-full">
       <div className="flex-grow overflow-y-auto">
@@ -806,9 +806,9 @@ const EventListItem = ({
                 </div>
               </div>
             </div>
-
+            
             <div className="col-span-5 flex flex-col gap-2 justify-between">
-              {event.alerts && event.alerts?.length > 0 && (
+              {(isEventeli && event.alerts && event.alerts?.length > 0) && (
                 <div className="flex items-center justify-end gap-2">
                   {event.alerts?.map((alert) => (
                     <Badge
@@ -897,6 +897,9 @@ const EventListItem = ({
                       <ActionPopover
                         eventId={event.basic.id}
                         interests={event.interests}
+                        trackerId={trackerId}
+                        setInterest={setInterest}
+                        setEventId={setEventId}
                       />
                     </div>
                   </div>
