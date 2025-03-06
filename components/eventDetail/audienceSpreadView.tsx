@@ -7,82 +7,136 @@ import Text from "../new-ui/Text";
 import { Layer, Map, Marker, Source } from "react-map-gl";
 import { useTheme } from "@/context";
 import "mapbox-gl/dist/mapbox-gl.css";
+import * as echarts from "echarts";
+import "@/data/world.json";
 
 interface Props {
   audienceSpread: NonNullable<Event["audience"]>["audienceSpread"] | undefined;
 }
 
+// export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
+//   const mapboxAccessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+//   const { theme } = useTheme();
+//   const [hoveredCountry, setHoveredCountry] = useState<{
+//     name: string;
+//     iso: string;
+//     percentage: number;
+//     coordinates: { lat: number; lng: number };
+//   } | null>(null);
+
+//   const getCountryLayers = useMemo(() => {
+//     if (!audienceSpread || Object.keys(audienceSpread).length === 0)
+//       return null;
+
+//     return Object.values(audienceSpread).map(({ iso }, index) => (
+//       <Layer
+//         key={iso}
+//         id={`country-layer-${iso}`}
+//         type="fill"
+//         source="country-source"
+//         source-layer="country_boundaries"
+//         filter={["==", "iso_3166_1", iso]}
+//         paint={{
+//           "fill-color": index === 0 ? "#6750a4" : "#E7D4E8",
+//           "fill-opacity": 0.9,
+//           "fill-outline-color": "#FCCDE5",
+//         }}
+//       />
+//     ));
+//   }, [audienceSpread]);
+
+//   return (
+//     <div className="h-96 w-full xl:h-full">
+//       <Map
+//         style={{ width: "100%", height: "100%" }}
+//         mapboxAccessToken={mapboxAccessToken}
+//         initialViewState={{
+//           latitude: 0,
+//           longitude: 0,
+//           zoom: 0,
+//         }}
+//         projection={{ name: "mercator" }}
+//         mapStyle={
+//           theme === "light"
+//             ? "mapbox://styles/mapbox/streets-v12"
+//             : "mapbox://styles/mapbox/dark-v11"
+//         }
+//       >
+//         <Source
+//           id="country-source"
+//           type="vector"
+//           url="mapbox://mapbox.country-boundaries-v1"
+//         >
+//           {getCountryLayers}
+//         </Source>
+//         {/* <Source
+//           id="water-source"
+//           type="vector"
+//           url="mapbox://mapbox.mapbox-streets-v8"
+//         >
+//           <Layer
+//             id="water-layer"
+//             source="water-source"
+//             source-layer="water"
+//             type="fill"
+//             paint={{ "fill-color": "#ffffff" }} // Make water white
+//           />
+//         </Source> */}
+//       </Map>
+//     </div>
+//   );
+// };
+
 export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
-  const mapboxAccessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-  const { theme } = useTheme();
-  const [hoveredCountry, setHoveredCountry] = useState<{
-    name: string;
-    iso: string;
-    percentage: number;
-    coordinates: { lat: number; lng: number };
-  } | null>(null);
+  const chartRef = useRef(null);
+  useEffect(() => {
+    const chart = echarts.init(chartRef.current);
 
-  const getCountryLayers = useMemo(() => {
-    if (!audienceSpread || Object.keys(audienceSpread).length === 0)
-      return null;
+    // ✅ Country data (ISO Code -> Value)
+    const data = Object.entries(audienceSpread).map(([_, value]) => ({
+      name: value.name, // Country Name
+      value: value.percentage, // Percentage
+    }));
 
-    return Object.values(audienceSpread).map(({ iso }, index) => (
-      <Layer
-        key={iso}
-        id={`country-layer-${iso}`}
-        type="fill"
-        source="country-source"
-        source-layer="country_boundaries"
-        filter={["==", "iso_3166_1", iso]}
-        paint={{
-          "fill-color": index === 0 ? "#6750a4" : "#E7D4E8",
-          "fill-opacity": 0.9,
-          "fill-outline-color": "#FCCDE5",
-        }}
-      />
-    ));
+    // 🌍 World Map Configuration
+    const option = {
+      tooltip: {
+        trigger: "item",
+        formatter: ({ name, value }) =>
+          `${name}: ${value ? value.toFixed(2) + "%" : "No data"}`,
+      },
+      visualMap: {
+        min: 0,
+        max: 15, // Adjust based on max percentage
+        text: ["High", "Low"],
+        inRange: {
+          color: ["#e0f7fa", "#0288d1"], // Gradient from light to dark blue
+        },
+        calculable: true,
+      },
+      series: [
+        {
+          type: "map",
+          map: "world",
+          roam: true, // Enable zoom & pan
+          emphasis: {
+            label: {
+              show: true,
+              color: "#000",
+            },
+          },
+          data, // Apply country values
+        },
+      ],
+    };
+
+    chart.setOption(option);
+
+    return () => {
+      chart.dispose();
+    };
   }, [audienceSpread]);
-
-  return (
-    <div className="h-96 w-full xl:h-full">
-      <Map
-        style={{ width: "100%", height: "100%" }}
-        mapboxAccessToken={mapboxAccessToken}
-        initialViewState={{
-          latitude: 0,
-          longitude: 0,
-          zoom: 0,
-        }}
-        projection={{ name: "mercator" }}
-        mapStyle={
-          theme === "light"
-            ? "mapbox://styles/mapbox/streets-v12"
-            : "mapbox://styles/mapbox/dark-v11"
-        }
-      >
-        <Source
-          id="country-source"
-          type="vector"
-          url="mapbox://mapbox.country-boundaries-v1"
-        >
-          {getCountryLayers}
-        </Source>
-        {/* <Source
-          id="water-source"
-          type="vector"
-          url="mapbox://mapbox.mapbox-streets-v8"
-        >
-          <Layer
-            id="water-layer"
-            source="water-source"
-            source-layer="water"
-            type="fill"
-            paint={{ "fill-color": "#ffffff" }} // Make water white
-          />
-        </Source> */}
-      </Map>
-    </div>
-  );
+  return <div ref={chartRef} style={{ width: "100%", height: "500px" }} />;
 };
 
 export const AudienceSpreadListView = ({ audienceSpread }: Props) => {
