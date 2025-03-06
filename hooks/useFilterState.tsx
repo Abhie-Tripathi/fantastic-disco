@@ -16,7 +16,7 @@ export function useFilterState() {
 
   const setFilter = useCallback(
     (key: string, value: string) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams.toString());
       if (key !== "offset") {
         params.delete("offset"); // Remove 'skip' when any other filter changes
       }
@@ -32,7 +32,7 @@ export function useFilterState() {
 
   const deleteFilter = useCallback(
     (key: string) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams.toString());
       params.delete(key);
       if (key !== "offset") {
         params.delete("offset"); // Remove 'skip' when any other filter is deleted
@@ -44,7 +44,7 @@ export function useFilterState() {
 
   const deleteMultipleFilters = useCallback(
     (keys: string[]) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams.toString());
       keys.forEach((key) => {
         params.delete(key);
       });
@@ -58,7 +58,7 @@ export function useFilterState() {
 
   const replaceFilter = useCallback(
     (oldKey: string, newKey: string, newValue: string) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams.toString());
       params.delete(oldKey);
       if (newValue) {
         params.set(newKey, newValue);
@@ -73,7 +73,7 @@ export function useFilterState() {
 
   const setMultipleFilters = useCallback(
     (filters: Record<string, string>) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams.toString());
       let offsetChanged = false;
       Object.entries(filters).forEach(([key, value]) => {
         if (key === "offset") offsetChanged = true;

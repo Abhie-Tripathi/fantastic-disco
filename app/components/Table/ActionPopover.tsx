@@ -24,8 +24,8 @@ interface ActionPopoverProps {
   eventId: string;
   interests: Interest | undefined;
   trackerId?:string;
-  setInterest?:any;
-  setEventId?:any;
+  setInterest:any;
+  setEventId:any;
   view?:string;
 }
 
@@ -110,7 +110,7 @@ export function ActionPopover({
           },
           {
             onSuccess: (response: any) => {
-              if (response?.interest && setInterest) {
+              if (response?.interest) {
                 setInterest({
                   [response.interest.toLowerCase()]: {
                     interestId: response.id,

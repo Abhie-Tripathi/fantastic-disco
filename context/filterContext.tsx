@@ -383,7 +383,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
       clearLocalFilters,
       applyFilters,
       getLocalFilterValue: (key: keyof Filters) => localFilters[key] || "",
-      searchParams,
+      searchParams: new URLSearchParams(searchParams.toString()),
       setMultipleLocalFilters,
       deleteMultipleLocalFilters,
       replaceLocalFilter,
