@@ -9,17 +9,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen">
-        <Suspense
-          fallback={
-            <div className="flex justify-center items-center h-screen">
-              <Loader2 className="w-10 h-10 animate-spin text-primary" />
-            </div>
-          }
-        >
-          {children}
-        </Suspense>
-      </body>
+      <body className="min-h-screen">{children}</body>
     </html>
   );
 }
