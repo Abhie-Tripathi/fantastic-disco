@@ -29,18 +29,21 @@ import * as turf from "@turf/turf";
 import { useTrackerServices } from "@/services/trackerServices";
 import SortDropdown from "@/components/search/sortDropdown";
 import { lightenColor } from "@/lib/utils";
+import IntelScore from "@/app/components/Table/IntelScore";
 
 const EventCard = memo(
   ({
     event,
     mapRef,
     onHover,
+    trackerId,
     onLeave,
   }: {
     event: Event;
     mapRef: React.RefObject<MapRef>;
     onHover: () => void;
     onLeave: () => void;
+    trackerId: string|undefined;
   }) => {
     const [mapZoom, setMapZoom] = useState(0);
 
@@ -121,7 +124,7 @@ const EventCard = memo(
                   </div>
                 </div>
               ) : event.basic.website ? (
-                <div className="w-16 h-16 relative">
+                <div className="w-12 h-12 relative">
                   <img
                     src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
                     alt={`${event.basic.name} website favicon`}
@@ -149,14 +152,15 @@ const EventCard = memo(
                   </div>
                 </div>
               ) : (
-                <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm">
+                <div className="w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm">
                   <span className="text-[#5055A3] text-2xl font-semibold">
                     {event.basic.name.charAt(0)}
                   </span>
                 </div>
               )}
-
               <div className="flex-1 min-w-0">
+              <div className="flex">
+                <div className="flex flex-col">
                 <div className="flex items-center gap-2 mb-2">
                   <Badge
                     variant="secondary"
@@ -191,12 +195,20 @@ const EventCard = memo(
                     </Badge>
                   )}
                 </div>
+                
                 <div className="flex items-center justify-between mb-1.5">
                   <h3 className="font-semibold text-sm line-clamp-2">
                     {event.basic.name}
                   </h3>
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
+                </div>
+                {trackerId&&
+                <div>
+                <IntelScore width="85px" height="80px"/>
+                </div>
+                }
+                </div>
                 <div className="flex items-center justify-between">
                   <div className="text-xs font-medium text-primary">
                     {formattedDateRange(
@@ -585,6 +597,7 @@ function EventList({
             return (
               <EventCard
                 key={event.basic.id}
+                trackerId={trackerId}
                 event={event}
                 mapRef={mapRef}
                 onHover={() => handleEventHover(event)}
@@ -630,7 +643,7 @@ function EventList({
 
   return (
     <div
-      className={`absolute z-10 top-0 right-0 h-full w-[345px] bg-white rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
+      className={`absolute z-10 top-0 right-0 h-full ${trackerId?"w-[400px]": "w-[345px]"} bg-white rounded-l-lg shadow-lg transition-transform duration-300 ease-in-out transform border ${
         showEventType ? "translate-x-0" : "translate-x-full"
       }`}
     >

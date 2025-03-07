@@ -14,6 +14,7 @@ import TrackerNullState from "@/public/trackerNullState.svg";
 import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "../ui/toast";
 import { cn, lightenColor } from "@/lib/utils";
+import IntelScore from '@/app/components/Table/IntelScore'
 import {
   alertIcons,
   eventTypeColors,
@@ -833,7 +834,7 @@ const EventListItem = ({
                 event.insights?.scores &&
                 (event.insights?.scores.inboundScore !== null ||
                   event.insights?.scores.internationalScore !== null) ? (
-                  <div className="flex justify-end gap-6 w-full">
+                  <div className="flex justify-end gap-4 w-full">
                     <div className="flex flex-col gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
                         event.insights?.estimatedExhibitors !== undefined && (
@@ -889,7 +890,13 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
-
+                    {trackerId && 
+                    <div className="space-y-4">
+                    <div className="grid grid-rows-2 gap-0 border border-[#EBEBEB] bg-[#FAFAFA] rounded p-2 min-h-[196px]">
+                      <IntelScore width="80px" height="85px"/>
+                      </div>
+                    </div>
+                    }
                     <div
                       className="flex items-start justify-end"
                       onClick={(e) => e.preventDefault()}
@@ -901,11 +908,12 @@ const EventListItem = ({
                         setInterest={setInterest}
                         setEventId={setEventId}
                       />
+                      
                     </div>
                   </div>
                 ) : (
-                  <div className="flex justify-end w-full gap-6">
-                    <div className="grid grid-row-2 items-end gap-4">
+                  <div className="flex justify-end w-full gap-4">
+                    <div className="grid grid-row-2 items-start gap-4">
                       {showValues.includes(Show.estimatedExhibitors) &&
                         event.insights?.estimatedExhibitors !== undefined && (
                           <div>
@@ -947,6 +955,13 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
+                    {trackerId &&
+                    <div className="space-y-4">
+                    <div className="grid grid-rows-1 gap-0 border border-[#EBEBEB] bg-[#FAFAFA] rounded">
+                      <IntelScore width="80px" height="85px"/>
+                      </div>
+                    </div>
+                    }
                     <div
                       className="flex items-start justify-end"
                       onClick={(e) => e.preventDefault()}

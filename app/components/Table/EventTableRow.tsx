@@ -21,6 +21,7 @@ import { lightenColor } from "@/lib/utils";
 import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import { Filters } from "@/context/filterContext";
 import * as Flags from "country-flag-icons/react/3x2";
+import IntelScore from "./IntelScore";
 
 interface EventTableRowProps {
   event: Event;
@@ -503,6 +504,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             </div>
           </TableCell>
         )}
+        <TableCell
+        className="sticky right-[68px] bg-background z-0 flex items-center justify-center align-middle flex-1 w-full h-full min-h-[90px]"
+        style={{ zIndex: 0, minWidth:"132px", textAlign:"center", background:"var(--heading-background-color)", height:"100%" }}
+        >
+        <IntelScore width="100%" height="80px"/>
+        </TableCell>
+
       {(type==="T_PEOPLE_FINDER" && view!=="bookmarked") &&
       <>
       <TableCell
@@ -520,14 +528,20 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </Tooltip>
         </TooltipProvider>
       </TableCell>
-      <TableCell
+      {/* <TableCell
         className="sticky right-[68px] bg-background z-0"
         style={{ zIndex: 0, minWidth:"130px", textAlign:"center", background:"var(--heading-background-color)"}}
       >
         <span className={getAssociationColor(getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociationPercentage")[0])}>
        {getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociationPercentage")[0]}
        </span>
-      </TableCell>
+      </TableCell> */}
+      <TableCell
+        className="sticky right-[68px] bg-background z-0 flex items-center justify-center align-middle flex-1 w-full h-full min-h-[90px]"
+        style={{ zIndex: 0, minWidth:"132px", textAlign:"center", background:"var(--heading-background-color)", height:"100%" }}
+        >
+        <IntelScore width="100%" height="80px"/>
+        </TableCell>
       </>
       }
       {(type==="T_SPEAKING_OPPORTUNITY" && view!=="bookmarked") &&
@@ -579,14 +593,20 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </Tooltip>
         </TooltipProvider>
       </TableCell>
-      <TableCell
+      {/* <TableCell
         className="sticky right-[68px] bg-background z-0"
         style={{ zIndex: 0, minWidth:"132px", textAlign:"center", background:"var(--heading-background-color)" }}
       >
         <span className={getAssociationColor(getTrackerAssociation(event.trackerMatchInfo, "competitorPercentage")[0])}>
        {getTrackerAssociation(event.trackerMatchInfo, "competitorPercentage")[0] ?? "-"}
        </span>
-      </TableCell>
+      </TableCell> */}
+      <TableCell
+        className="sticky right-[68px] bg-background z-0 flex items-center justify-center align-middle flex-1 w-full h-full min-h-[90px]"
+        style={{ zIndex: 0, minWidth:"132px", textAlign:"center", background:"var(--heading-background-color)", height:"100%" }}
+        >
+        <IntelScore width="100%" height="80px"/>
+        </TableCell>
       </>
       }
       {(type==="T_PRODUCT_KEYWORDS" && view!=="bookmarked")&&
@@ -623,7 +643,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       </>
       }
       <TableCell
-        className="sticky right-0 bg-background z-0 w-[68px]"
+        className="sticky right-0 z-0 w-[68px]"
         style={{ zIndex: 0, background:"var(--heading-background-color)" }}
       >
         <ActionPopover

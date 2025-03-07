@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import IntelScore from "@/app/components/Table/IntelScore";
 import { AlertTriangle, Loader2, X, Star } from "lucide-react";
 import {
   Pagination,
@@ -137,7 +138,7 @@ export default function EventList({
                   </div>
                 </div>
               ) : event.basic.website ? (
-                <div className="w-16 h-16 relative">
+                <div className="w-12 h-12 relative">
                   <img
                     src={`https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${event.basic.website}&size=64`}
                     alt={`${event.basic.name} website favicon`}
@@ -165,7 +166,7 @@ export default function EventList({
                   </div>
                 </div>
               ) : (
-                <div className="w-16 h-16 rounded-lg flex-shrink-0 flex items-center justify-center bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm">
+                <div className="w-12 h-12 rounded-lg flex-shrink-0 flex items-center justify-center bg-[#5055A3]/10 border border-[#5055A3]/20 shadow-sm">
                   <span className="text-[#5055A3] text-2xl font-semibold">
                     {event.basic.name.charAt(0)}
                   </span>
@@ -173,6 +174,8 @@ export default function EventList({
               )}
 
               <div className="flex-1 min-w-0">
+              <div className="flex">
+                <div className="flex flex-col">
                 <div className="flex items-center gap-2 mb-2">
                   <Badge
                     variant="secondary"
@@ -213,6 +216,13 @@ export default function EventList({
                   </h3>
                 </div>
                 <div className="text-xs text-gray-600 mb-1">{address}</div>
+                </div>
+                {trackerId&&
+                <div>
+                <IntelScore width="85px" height="80px"/>
+                </div>
+                }
+                </div>
                 <div className="text-xs font-medium text-primary">
                   {formattedDateRange(
                     event.basic.startDateTime,
@@ -406,7 +416,7 @@ export default function EventList({
 
   return (
     <div
-      className={`h-[800px] w-[345px] mt-[66px] bg-[var(--primary-foreground)] rounded-l-lg border`}
+      className={`h-[800px] ${trackerId?"w-[400px]": "w-[345px]"} mt-[66px] bg-[var(--primary-foreground)] rounded-l-lg border`}
     >
       {renderContent()}
     </div>
