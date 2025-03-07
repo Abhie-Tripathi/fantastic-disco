@@ -7,6 +7,8 @@ import { endpoints } from "@/config/endpoints";
 import { pocDetail } from "@/types/coordinateEventType";
 import externalAxios from "@/lib/externalAxios";
 import { CompanyDetailResponse, CompanyListResponse } from "@/types/prospect";
+import prospectUserData from "@/public/data/prospect/prospectUserData.json";
+import eventData from "@/public/data/prospect/userEventData.json";
 
 interface fnProp {
   offset: number;
@@ -101,9 +103,9 @@ export const useCompanyService = () => {
     );
   };
 
-  const getEventCountByCountry = (companyId: string | number) => {
+  const getEventCountByCountry = (companyId: string | number, source: string) => {
     return api.request(
-      `${endpoints.prospect.company.detail}/${companyId}/events?groupBy=country`,
+      `${source === "userDetail" ? endpoints.prospect.users.detail : endpoints.prospect.company.detail}/${companyId}/events?groupBy=country`,
       {
         method: "GET",
       }
@@ -125,6 +127,28 @@ export const useCompanyService = () => {
     }
   };
 
+  const getUserDetailById = (userId: string | number) => {
+    return api.request<any>(
+      `${endpoints.prospect.users.detail}/${userId}`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
+  const getUserEvents = (
+    userId: string | number,
+    eventType: string,
+    offset: number = 0
+  ) => {
+    return api.request(
+      `${endpoints.prospect.users.detail}/${userId}/events?eventOf=${eventType}&limit=10&offset=${offset}`,
+      {
+        method: "GET",
+      }
+    );
+  };
+
   return {
     getCompanyList,
     unlockUserDetail,
@@ -134,6 +158,8 @@ export const useCompanyService = () => {
     getCompanyPOC,
     getEventCountByCountry,
     checkCompanyLogo,
+    getUserDetailById,
+    getUserEvents,
     isLoading: api.isLoading,
     // error: api.error as ApiError,
   };

@@ -6,12 +6,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useFilterContext } from "@/context/filterContext";
-import {
-  DetailRanking,
-  Event,
-  OverallRankingsDetail,
-  TTabs,
-} from "@/types/events";
+import { Event, OverallRankingsDetail, TTabs } from "@/types/events";
 import { Dispatch, SetStateAction, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { CircularProgressBar } from "../eventDetail/circularProgressBar";
@@ -31,16 +26,16 @@ export const InsightsAndScores = ({
   scrollSection,
   setActiveTab,
 }: Props) => {
-  const {
-    scores,
-    economicImpact,
-    rankings,
-    economicImpactBreakdown,
-    trustScore,
-  } = (eventDetails && eventDetails.insights) || {};
+  const { scores, economicImpact, economicImpactBreakdown, trustScore } =
+    (eventDetails && eventDetails.insights) || {};
   const estimatedEconomicImpact = parseFloat(
     economicImpact?.replace(/[$,]/g, "") ?? "0"
   );
+  const filteredScores =
+    scores &&
+    Object.fromEntries(
+      Object.entries(scores).filter(([key, _]) => key !== "impactScore")
+    );
   const roundedEstimatedEconomicImpact =
     estimatedEconomicImpact && Math.ceil(estimatedEconomicImpact);
   const { morphedData } = useFilterContext();
@@ -70,21 +65,21 @@ export const InsightsAndScores = ({
       />
       <div className="flex flex-col gap-6">
         <div className="flex gap-6 max-xl:flex-col max-xl:h-auto">
-          {((scores &&
-            Object.values(scores).every((value) => value !== null)) ||
+          {((filteredScores &&
+            Object.values(filteredScores).some((value) => value !== null)) ||
             (trustScore !== null && trustScore != null && trustScore > 0)) && (
             <div
-              className={`w-1/2 grid ${
+              className={`grid ${
                 economicImpact &&
                 economicImpact.trim() !== "" &&
                 economicImpactBreakdown &&
                 Object.keys(economicImpactBreakdown).length > 0
-                  ? "w-1/2 grid-cols-2 grid-rows-2"
+                  ? "w-1/2 grid-cols-2 grid-rows-subgrid xl:grid-rows-2"
                   : "w-full grid-cols-4 grid-rows-subgrid h-fit max-xl:grid-cols-2"
               }  gap-6 max-xl:w-full`}
             >
               <>
-                {scores &&
+                {/* {scores &&
                   scores.impactScore !== 0 &&
                   scores.impactScore !== null && (
                     <div className="flex flex-col bg-[#FAFAFA] dark:bg-[var(--neutral-light-color)] items-center border border-[var(--neutral-light-color)] p-4 rounded-sm gap-3 w-full h-auto">
@@ -109,7 +104,7 @@ export const InsightsAndScores = ({
                         <Restriction />
                       )}
                     </div>
-                  )}
+                  )} */}
                 {trustScore !== null &&
                   trustScore !== undefined &&
                   trustScore > 0 && (
@@ -203,8 +198,10 @@ export const InsightsAndScores = ({
             Object.keys(economicImpactBreakdown).length > 0 && (
               <div
                 className={`${
-                  (scores &&
-                    Object.values(scores).every((value) => value === null)) ||
+                  (filteredScores &&
+                    Object.values(filteredScores).some(
+                      (value) => value !== null
+                    )) ||
                   (trustScore !== null &&
                     trustScore !== undefined &&
                     trustScore > 0)
@@ -284,7 +281,6 @@ export const InsightsAndScores = ({
             )}
         </div>
         <EventRank
-          rankings={rankings as DetailRanking}
           eventDetails={eventDetails}
           eventRankingDetails={eventRankingDetails}
         />

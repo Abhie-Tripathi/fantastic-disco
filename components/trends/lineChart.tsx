@@ -57,7 +57,6 @@ const LineChartComponent = ({
   showThresholdLines = true,
 }: IProps) => {
   const searchParams = useSearchParams();
-  const params = new URLSearchParams(searchParams);
   const eventTypes = searchParams.get("eventTypes");
   const [link, setLink] = useState("");
   const eventService = useEventsService();
@@ -285,8 +284,8 @@ const LineChartComponent = ({
   }, []);
 
   const setRedirectionLinkOnDate = (date: string): string => {
-    const geoCoordinates = params.get("geoCoordinates");
-    const locationIds = params.get("locationIds");
+    const geoCoordinates = searchParams.get("geoCoordinates");
+    const locationIds = searchParams.get("locationIds");
     const searchEventParams = new URLSearchParams({
       status: "active,cancelled,postponed",
       sortBy: "-visitors",

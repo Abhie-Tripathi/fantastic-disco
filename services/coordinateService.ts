@@ -62,7 +62,7 @@ export const useCoordinateService = () => {
     offset,
     searchParams,
   }: fnProp) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(searchParams.toString());
     const activeGte = params.get("active_gte");
     const activeLte = params.get("active_lte");
     if (activeGte && activeLte) {

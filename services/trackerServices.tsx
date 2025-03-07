@@ -21,7 +21,11 @@ interface UserAccess {
   accessType: string;
   accessId: string;
 }
-
+interface BookmarkResponse {
+  interest: string;
+  id: string;
+  eventId:string;
+}
 interface UserAccessData {
   superAdmin: UserAccess[];
   others: UserAccess[];
@@ -84,23 +88,21 @@ export const useTrackerServices = () => {
     };
     
     const globalSavedEvents = async (
-      params: string
-    ): Promise<GetSavedEventsResponse | undefined> => {
-      const response = await api.request<{ result: EventTableType[]; count: number  }>(
-        `${endpoints.tracker.getSavedEvents}/saved-events?${params}`,
+      params: any
+    )=> {
+      console.log(params);
+      
+      const response = await api.request<EventResponse>(
+        `https://api.dev.gtm.whr.ai/me/account/saved-events`,
         {
           method: "GET"
         }
       );
     
-      if (getFilterValue("view") === "table") {
         return response;
-      }
-    
-      const updatedResponse = TrackersAdapter.adaptTrackerEventData(response);
       // return EventsAdapter.adaptResponse(updatedResponse, new URLSearchParams("view=list"));
     };
-    
+   
     const getTrackerDetail=(trackerId:string, params?:string):Promise<Tracker| undefined>=>{
       return api.request(
         `${endpoints.tracker.commonUrl}/${trackerId}${params ? `?${params}` : ''}?refresh=true`,
@@ -114,6 +116,17 @@ export const useTrackerServices = () => {
         }
       );
     }
+    const verifyAccess=async (formData: {otp: string, email:string, target:string, targetId:string})=>{
+      return await api.request(`${endpoints.tracker.verifyAccess}`, {
+        method:"POST",
+        data:formData,
+      });
+    }
+    const removeBookmark = async (id: string): Promise<BookmarkResponse | undefined> => {
+      return api.request(`${endpoints.intent.userEventInterest}/${id}`, {
+        method: "DELETE",
+      });
+    };
     const getShareAccess = async (trackerId: string, accessEntity: string): Promise<UserAccessData> => {
       const response = await api.request<UserAccessData>(`${endpoints.tracker.commonUrl}/${trackerId}/users`);
       
@@ -162,6 +175,8 @@ export const useTrackerServices = () => {
     }
     const getTrackerEvents = async(query:any, trackerId:string
     )=> {
+      console.log(trackerId);
+      
       // console.log(pathname);
       // let active="active";
       // if(query.eventType==="newEvent") active="new";
@@ -273,7 +288,7 @@ export const useTrackerServices = () => {
         return response;
     }
     const getEventsLatLongData = async (trackerId:string,searchParams:string, type:any) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams.toString());
     // const adaptedParams = EventsAdapter.adaptRequestParams(params);
     // console.log(type.get("eventType"));
     const eventType = type.get("eventType");
@@ -288,7 +303,7 @@ export const useTrackerServices = () => {
     };
     const getCalendarViewEvents = async (trackerId:string, searchParams:string, isListing:boolean, viewType?:string)=>{
       // console.log(type);
-      const newParams=new URLSearchParams(searchParams);
+      const newParams=new URLSearchParams(searchParams.toString());
       const type=newParams.get("type");
       newParams.delete("type");
       const entries = Array.from(newParams.entries());
@@ -323,6 +338,7 @@ export const useTrackerServices = () => {
     //   return EventsAdapter.adaptEventCountResponse(response);
     // };
     return {
+      removeBookmark,
       createTracker,
       globalSavedEvents,
       getMapViewData,
@@ -338,6 +354,7 @@ export const useTrackerServices = () => {
       removeAccess,
       delTracker,
       getTrackers,
+      verifyAccess,
       saveIntent,
       saveNewEvent,
       deleteNewEvent,

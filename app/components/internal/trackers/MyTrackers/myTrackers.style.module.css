@@ -83,3 +83,37 @@
       opacity: 1;
     }
   }
+
+  @keyframes openSearch {
+    from {
+      max-height: 0;
+      opacity: 0;
+      transform: scaleY(0.95);
+    }
+    to {
+      max-height: 100px;
+      opacity: 1;
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes closeSearch {
+    from {
+      max-height: 100px;
+      opacity: 1;
+      transform: scaleY(1);
+    }
+    to {
+      max-height: 0;
+      opacity: 0;
+      transform: scaleY(0.95);
+    }
+  }
+
+  .open {
+    animation: openSearch 0.3s ease-in-out forwards;
+  }
+
+  .close {
+    animation: closeSearch 0.3s ease-in-out forwards;
+  }

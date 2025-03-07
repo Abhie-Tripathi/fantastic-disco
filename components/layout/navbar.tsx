@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./navbar.style.module.css";
 import Image from "next/image";
 import {
@@ -95,22 +95,53 @@ export default function Navbar() {
     }
   };
 
-  const generateProfileName = React.useMemo(() => {
-    if (user) {
-      // const { email } = user;
-      // const [username] = email.split("@");
-      // const parts = username.split(/[.\-_]/);
-      // const abbreviation =
-      //   parts.length > 1
-      //     ? `${parts[0][0]}${parts[1][0]}`
-      //     : username.substring(0, 2);
-      // return abbreviation.toUpperCase();
-      const firstNameInitial = user?.firstname?.[0]?.toUpperCase() || "";
-      const lastNameInitial = user?.lastname?.[0]?.toUpperCase() || "";
+  // const generateProfileName = React.useMemo(() => {
+  //   if (user) {
+  //     // const { email } = user;
+  //     // const [username] = email.split("@");
+  //     // const parts = username.split(/[.\-_]/);
+  //     // const abbreviation =
+  //     //   parts.length > 1
+  //     //     ? `${parts[0][0]}${parts[1][0]}`
+  //     //     : username.substring(0, 2);
+  //     // return abbreviation.toUpperCase();
+  //     const firstNameInitial = user?.firstname?.[0]?.toUpperCase() || "";
+  //     const lastNameInitial = user?.lastname?.[0]?.toUpperCase() || "";
+  //     return `${firstNameInitial}${lastNameInitial}`;
+  //   }
+  //   return "";
+  // }, [user]);
+
+
+  const [storedUser, setStoredUser] = useState(() => {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
+  });
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const user = localStorage.getItem("user");
+      setStoredUser(user ? JSON.parse(user) : null);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    const interval = setInterval(handleStorageChange, 1000);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const generateProfileName = () => {
+    if (storedUser) {
+      const firstNameInitial = storedUser?.firstname?.[0]?.toUpperCase() || "";
+      const lastNameInitial = storedUser?.lastname?.[0]?.toUpperCase() || "";
       return `${firstNameInitial}${lastNameInitial}`;
     }
     return "";
-  }, [user]);
+  };
  
 
   const handleSettingsClick = () => {
@@ -179,7 +210,7 @@ export default function Navbar() {
                     <Search className="h-6 w-6" />
                     <span className="text-xs">Plan</span>
                   </Button>
-                  <div className={(pathname.split("/")[2] !== "company" && pathname.split("/")[2] !== "prospect" && pathname.split("/")[1] === "internal") ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[60px]" : ""}>
+                  <div className={(pathname.split("/")[2] !== "company" && pathname.split("/")[2] !== "prospect" && pathname.split("/")[2] !== "user" && pathname.split("/")[1] === "internal") ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[60px]" : ""}>
                   </div>
                 </div>
                 <div className='border-r-[1px] border-[var(--border-color)] h-[20px]' ></div>
@@ -205,7 +236,7 @@ export default function Navbar() {
                     <span className="text-xs">Prospect</span>
                     <div className="px-2.5 py-0.5 text-xs font-medium rounded-full bg-[#fff0f0] text-[#e5484d]">Beta</div>
                   </Button>
-                  <div className={(pathname === "/internal/prospect" || pathname.startsWith("/internal/company")) ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[80px]" : ""}></div>
+                  <div className={(pathname === "/internal/prospect" || pathname.startsWith("/internal/company") || pathname.startsWith("/internal/user") ) ? "border-b-[2px] border-[var(--primary-color)] rounded-md w-[80px]" : ""}></div>
                 </div>
               </div>
               <div className="hidden max-[570px]:block">
@@ -268,7 +299,7 @@ export default function Navbar() {
                   className="flex items-center bg-transparent p-1 "
                 >
                   <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
-                    {generateProfileName}
+                    {generateProfileName()}
                   </div>
                 </Button>
               </DropdownMenuTrigger>

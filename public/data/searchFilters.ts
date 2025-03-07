@@ -446,8 +446,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
     
     return {
       eventTypes: {
-        isEnabled: data?.eventTypes?.enabledValue?.length > 0 ?? true,
-        // options:searchFiltersg?.eventTypes?.options
+        isEnabled: Boolean(data?.eventTypes?.enabledValue?.length),
         options: Object.fromEntries(
             Object.entries(searchFilters?.eventTypes?.options ?? {}).map(([key, group]) => {
               const updatedGroup = group.map((format) => ({
@@ -464,7 +463,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
           ),
         
       },
-  
+
       eventFormats: {
         isEnabled: true,
         options: searchFilters?.eventFormats?.options?.map((format) => ({
@@ -474,7 +473,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
       },
   
       categories: {
-        isEnabled: data?.categories?.enabledValue?.length > 0 ?? true,
+        isEnabled: Boolean(data?.categories?.enabledValue?.length),
         options: searchFilters?.categories?.options?.map((category) => ({
           ...category,
           isEnabled: data?.categories?.enabledValue?.some(
@@ -484,11 +483,11 @@ export const generateSearchFilters=(apiResponse: any)=> {
     },
 
     eventStatus: {
-      isEnabled: data?.status?.enabledValue?.length > 0 ?? true,
+      isEnabled: Boolean(data?.status?.enabledValue?.length),
       options: searchFilters?.eventStatus?.options?.map((status) => ({
         ...status,
         isEnabled:
-          data?.status?.enabledValue?.includes(status.id.toUpperCase()) ??
+          data?.status?.enabledValue?.includes(status.id) ??
           true,
       })),
     },
@@ -503,11 +502,11 @@ export const generateSearchFilters=(apiResponse: any)=> {
     },
 
     eventEntries: {
-      isEnabled: data?.entryType?.enabledValue?.length > 0 ?? true,
+      isEnabled: Boolean(data?.entryType?.enabledValue?.length),
       options: searchFilters?.eventEntries?.options?.map((entry) => ({
         ...entry,
         isEnabled:
-          data?.entryType?.enabledValue?.includes(entry.id.toUpperCase()) ??
+          data?.entryType?.enabledValue?.includes(entry.id) ??
           true,
       })),
     },
@@ -573,7 +572,7 @@ export const generateSearchFilters=(apiResponse: any)=> {
     },
 
     estimatedVisitors: {
-      isEnabled: data?.eventSize?.enabledValue?.length > 0 ?? true,
+      isEnabled: Boolean(data?.eventSize?.enabledValue?.length),
       options: searchFilters.estimatedVisitors.options.map((visitor) => {
         return {
           ...visitor,

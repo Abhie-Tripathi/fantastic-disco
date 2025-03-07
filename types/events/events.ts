@@ -226,7 +226,9 @@ const AlertSchema = z.object({
   originLongitude: z.string(),
   lastModified: z.string(),
 });
+const TrackerMatchInfoSchema = z.object({
 
+})
 const EventDataSchema = z.object({
   basic: BasicEventSchema,
   advance: AdvanceEventSchema.optional(),
@@ -234,6 +236,7 @@ const EventDataSchema = z.object({
   audience: AudienceSchema.optional(),
   interests: InterestSchema.optional(),
   alerts: z.array(AlertSchema).optional(),
+  trackerMatchInfo: TrackerMatchInfoSchema.optional(),
 });
 
 export interface EventResponse {

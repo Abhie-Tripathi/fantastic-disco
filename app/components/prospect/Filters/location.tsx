@@ -122,20 +122,22 @@ export default function LocationSelector({ filterName }: LocationProps) {
   };
 
   return (
-    <AutocompleteInput
-      // defaultOpen
-      multiple
-      type="LocationId"
-      placeholder="E.g. Bangalore, Karnataka"
-      onSelect={setSelectedLocation}
-      value={
-        selectedLocation && Array.isArray(selectedLocation)
-          ? selectedLocation.map((loc) => ({
-              id: loc.id,
-              description: loc.description || "",
-            }))
-          : null
-      }
-    />
+    <div className="h-[150px]">
+      <AutocompleteInput
+        defaultOpen
+        multiple
+        type="LocationId"
+        placeholder="E.g. Bengaluru, Karnataka"
+        onSelect={setSelectedLocation}
+        value={
+          selectedLocation && Array.isArray(selectedLocation)
+            ? selectedLocation.map((loc) => ({
+                id: loc.id,
+                description: loc.description || "",
+              }))
+            : null
+        }
+      />
+    </div>
   );
 }

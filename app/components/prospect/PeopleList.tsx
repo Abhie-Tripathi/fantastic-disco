@@ -15,6 +15,7 @@ import Loading from "@/components/ui/Loading";
 import NullState from "@/app/components/trackers/nullState";
 import coordinateNullState from "@/public/coordinateNullState.svg";
 import { ApiError } from "@/types/api";
+import Link from "next/link";
 
 /*
 const PeopleCard = ({
@@ -102,133 +103,135 @@ const PeopleCardNew = ({
 
   return (
     <div className="bg-background rounded-xl border shadow-sm relative">
-      <div className="p-4 flex gap-6">
-        {imageSrc !== null && (
-          <img
-            src={imageSrc}
-            alt="eventLogo"
-            className="flex h-16 w-16 rounded-lg shadow-lg border"
-            width={200}
-            height={200}
-            onError={handleError}
-          />
-        )}
-        <div className="flex gap-2 flex-col w-full">
-          <div className="flex justify-between">
-            <div className="text-xl font-semibold">{poc.user_name}</div>
-            {/* {poc?.state !== 2 && (
-              <div className="">
+      <Link href={`/internal/user/${poc.user_id}`} className="block">
+        <div className="p-4 flex gap-6">
+          {imageSrc !== null && (
+            <img
+              src={imageSrc}
+              alt="eventLogo"
+              className="flex h-16 w-16 rounded-lg shadow-lg border"
+              width={200}
+              height={200}
+              onError={handleError}
+            />
+          )}
+          <div className="flex gap-2 flex-col w-full">
+            <div className="flex justify-between">
+              <div className="text-xl font-semibold">{poc.user_name}</div>
+              {/* {poc?.state !== 2 && (
+                <div className="">
+                  <Button
+                    disabled={poc?.state && poc.state === 1 ? true : false}
+                    onClick={() => unlockPoc(poc.user_id)}
+                    variant={"default"}
+                    size={"sm"}
+                    className="blur-none h-7"
+                  >
+                    Show details
+                  </Button>
+                </div>
+              )} */}
+            </div>
+
+            <div className="text-[#6E6F89] text-xs font-medium">
+              {poc.user_designationName}
+              {poc.user_companyName !== null && <>, {poc.user_companyName}</>}
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {(poc?.user_city !== null || poc?.user_country !== null) && (
+                <div className="flex gap-2 items-center w-fit pr-3">
+                  <Location color="#666666" width="14px" height="14px" />
+                  <span className="text-[#6E6F89] text-sm">
+                    {poc.user_city === poc?.user_country
+                      ? poc.user_city
+                      : [poc.user_city, poc.user_country]
+                          .filter(Boolean)
+                          .join(", ")}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {poc?.about && poc?.about.length > 10 && (
+              <div className="text-[#707287] text-sm line-clamp-4">
+                {poc.about}
+              </div>
+            )}
+
+            <div className="flex flex-wrap gap-2 items-center w-fit">
+              {poc.top_event_categories?.length > 0 &&
+                poc.top_event_categories?.slice(0, 2).map((item, index) => (
+                  <span
+                    key={index}
+                    className="whitespace-nowrap text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
+                  >
+                    {item.key}
+                  </span>
+                ))}
+
+              {poc?.top_event_countryZone?.length > 0 &&
+                poc.top_event_countryZone?.slice(0, 2).map((item, index) => (
+                  <Badge
+                    variant="secondary"
+                    className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                    key={index}
+                  >
+                    {item.key}
+                  </Badge>
+                ))}
+
+              {poc?.speakingCount !== null && poc?.speakingCount > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                >
+                  Speaker ({poc?.speakingCount} events)
+                </Badge>
+              )}
+              {poc?.attendCount !== null && poc?.attendCount > 0 && (
+                <Badge
+                  variant="secondary"
+                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
+                >
+                  {poc?.attendCount} events attended
+                </Badge>
+              )}
+            </div>
+
+            {poc?.state !== 2 && (
+              <div className="mt-1">
                 <Button
                   disabled={poc?.state && poc.state === 1 ? true : false}
                   onClick={() => unlockPoc(poc.user_id)}
                   variant={"default"}
                   size={"sm"}
-                  className="blur-none h-7"
+                  className="blur-none"
                 >
-                  Show details
+                  Unlock Contact
                 </Button>
               </div>
-            )} */}
-          </div>
+            )}
 
-          <div className="text-[#6E6F89] text-xs font-medium">
-            {poc.user_designationName}
-            {poc.user_companyName !== null && <>, {poc.user_companyName}</>}
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {(poc?.user_city !== null || poc?.user_country !== null) && (
-              <div className="flex gap-2 items-center w-fit pr-3">
-                <Location color="#666666" width="14px" height="14px" />
-                <span className="text-[#6E6F89] text-sm">
-                  {poc.user_city === poc?.user_country
-                    ? poc.user_city
-                    : [poc.user_city, poc.user_country]
-                        .filter(Boolean)
-                        .join(", ")}
-                </span>
+            {poc?.state === 2 && (
+              <div className={`${poc?.state !== 2 ? "blur-sm" : ""} w-full`}>
+                <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+                  <MailIcon
+                    width="12px"
+                    height="12px"
+                    className="self-start mt-1"
+                  />
+                  <span className="break-all">{poc?.email}</span>
+                </p>
+                <p className="text-[#666666] flex items-center gap-2 text-[12px]">
+                  <PhoneIcon width="12px" height="12px" />
+                  <span>{poc?.phoneNumber ? poc?.phoneNumber : "-"}</span>
+                </p>
               </div>
             )}
           </div>
-
-          {poc?.about && poc?.about.length > 10 && (
-            <div className="text-[#707287] text-sm line-clamp-4">
-              {poc.about}
-            </div>
-          )}
-
-          <div className="flex flex-wrap gap-2 items-center w-fit">
-            {poc.top_event_categories?.length > 0 &&
-              poc.top_event_categories?.slice(0, 2).map((item, index) => (
-                <span
-                  key={index}
-                  className="whitespace-nowrap text-[var(--info-text-color)] dark:border-[#0D3868] bg-[var(--info-background-color)] h-fit font-semibold text-xs py-1 px-4 border-[#CCE6FF] border rounded-md w-fit"
-                >
-                  {item.key}
-                </span>
-              ))}
-
-            {poc?.top_event_countryZone?.length > 0 &&
-              poc.top_event_countryZone?.slice(0, 2).map((item, index) => (
-                <Badge
-                  variant="secondary"
-                  className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
-                  key={index}
-                >
-                  {item.key}
-                </Badge>
-              ))}
-
-            {poc?.speakingCount !== null && poc?.speakingCount > 0 && (
-              <Badge
-                variant="secondary"
-                className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
-              >
-                Speaker ({poc?.speakingCount} events)
-              </Badge>
-            )}
-            {poc?.attendCount !== null && poc?.attendCount > 0 && (
-              <Badge
-                variant="secondary"
-                className="text-[#A35200] bg-[#FFF4D6] capitalize rounded-sm"
-              >
-                {poc?.attendCount} events attended
-              </Badge>
-            )}
-          </div>
-
-          {poc?.state !== 2 && (
-            <div className="mt-1">
-              <Button
-                disabled={poc?.state && poc.state === 1 ? true : false}
-                onClick={() => unlockPoc(poc.user_id)}
-                variant={"default"}
-                size={"sm"}
-                className="blur-none"
-              >
-                Unlock Contact
-              </Button>
-            </div>
-          )}
-
-          {poc?.state === 2 && (
-            <div className={`${poc?.state !== 2 ? "blur-sm" : ""} w-full`}>
-              <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-                <MailIcon
-                  width="12px"
-                  height="12px"
-                  className="self-start mt-1"
-                />
-                <span className="break-all">{poc?.email}</span>
-              </p>
-              <p className="text-[#666666] flex items-center gap-2 text-[12px]">
-                <PhoneIcon width="12px" height="12px" />
-                <span>{poc?.phoneNumber ? poc?.phoneNumber : "-"}</span>
-              </p>
-            </div>
-          )}
         </div>
-      </div>
+      </Link>
     </div>
   );
 };

@@ -55,7 +55,7 @@
     flex-direction: column;
     gap: 5px;
     width: 70%;
-    position: relative;
+    /* position: relative; */
 }
 .locationContainer{
     display: flex;
@@ -129,3 +129,9 @@
     opacity: 0;
   }
   
+  .name_tooltip_container{
+    position: relative;
+}
+  .location_tooltip_contianer{
+    position: relative;
+  }

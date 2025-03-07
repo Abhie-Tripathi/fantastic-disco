@@ -18,18 +18,27 @@ import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { eventsKeys } from "@/hooks/useEvents";
 import { useTrackerContext } from "@/context/tracker";
+import { useTrackerServices } from "@/services/trackerServices";
 
 interface ActionPopoverProps {
   eventId: string;
   interests: Interest | undefined;
-  trackerId?: string;
+  trackerId?:string;
+  setInterest:any;
+  setEventId:any;
+  view?:string;
 }
 
 export function ActionPopover({
   eventId,
   interests,
   trackerId,
+  setInterest,
+  setEventId,
+  view
 }: ActionPopoverProps) {
+  console.log();
+  const {removeBookmark}=useTrackerServices();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const { setSavedEventCount, savedEventCount } = useTrackerContext();
@@ -55,46 +64,84 @@ export function ActionPopover({
   );
   const [isOpen, setIsOpen] = useState(false);
 
-  const actions = interestConfiguration?.interest
-    ? [
-        ...interestConfiguration?.interest,
-        { status: "BOOKMARK", label: "Bookmark" },
-      ]
-    : [];
-
-
-  const handleSubmit = () => {
-    if (selectedAction) {
-      createUserEventInterest(
-        {
-          eventId,
-          interest: selectedAction,
-          sourceModule: trackerId ? "TRACKER" : "RESEARCH",
-          ...(trackerId && { sourceId: trackerId }),
-        },
-        {
-          onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: eventsKeys.all });
-            setSavedEventCount(savedEventCount + 1);
-            setIsOpen(false);
-            toast({
-              title: "Success",
-              description: "Your interest has been recorded",
-              variant: "default",
-            });
+  const actions = [
+    ...interestConfiguration?.interest || [],
+    ...(!interests?.bookmark ? [{ label: "Bookmark", status: "BOOKMARK" }] : [{ label: "Un-Bookmark", status: "UN-BOOKMARK" }]),
+  ];
+  const handleSubmit = async () => {
+    if (view === "bookmarked") {
+      const response = await removeBookmark(interests?.bookmark?.interestId || "");
+      if (response?.interest && setInterest) {
+        setInterest({
+          [response.interest.toLowerCase()]: {
+            interestId: response.id,
           },
-          onError: (error) => {
-            console.log("error hai", error);
-            toast({
-              title: "Error",
-              description: "Failed to record your interest. Please try again.",
-              variant: "destructive",
-            });
-          },
+        });
+      }
+      setSavedEventCount(savedEventCount - 1);
+      setEventId(response?.eventId);
+      setIsOpen(false);
+    } else if (selectedAction) {
+      if (selectedAction === "UN-BOOKMARK") {
+        const response = await removeBookmark(interests?.bookmark?.interestId || "");
+        if (response?.interest && setInterest) {
+          setSavedEventCount(savedEventCount - 1);
+          setInterest({
+            [response.interest.toLowerCase()]: {
+              interestId: response.id,
+            },
+          });
         }
-      );
+        toast({
+          title: "Success",
+          description: "Your interest has been recorded",
+          variant: "default",
+        });
+        setEventId(response?.eventId);
+        setIsOpen(false);
+        console.log(response);
+      } else {
+        createUserEventInterest(
+          {
+            eventId,
+            interest: selectedAction,
+            sourceModule: trackerId ? "TRACKER" : "RESEARCH",
+            ...(trackerId && { sourceId: trackerId }),
+          },
+          {
+            onSuccess: (response: any) => {
+              if (response?.interest) {
+                setInterest({
+                  [response.interest.toLowerCase()]: {
+                    interestId: response.id,
+                  },
+                });
+              }
+              if (response?.eventId && setEventId) {
+                setEventId(response?.eventId);
+              }
+              setSavedEventCount(savedEventCount + 1);
+              setIsOpen(false);
+              toast({
+                title: "Success",
+                description: "Your interest has been recorded",
+                variant: "default",
+              });
+            },
+            onError: (error) => {
+              console.log(error)
+              toast({
+                title: "Error",
+                description: error.message,
+                variant: "destructive",
+              });
+            },
+          }
+        );
+      }
     }
   };
+  
 
   const isSaved =
     interests?.bookmark ||
@@ -110,6 +157,7 @@ export function ActionPopover({
   if (isConfigLoading) {
     return <Skeleton className="w-4 h-4" />;
   }
+console.log(interests);
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>

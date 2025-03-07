@@ -88,18 +88,22 @@ const EventCard1 = ({
                 </div>
                 <div className={styles.line}></div>
                 <div className={styles.name_locationContainer}>
-                    <div style={{display:"flex"}} className={`${styles.locationContainer} ${styles.eventName}`} data-name={ fetchedEvent && `${fetchedEvent?.cityName} ${fetchedEvent?.cityName && ","} ${fetchedEvent?.countryName}`}>
+                   <div className={styles.location_tooltip_contianer}>
+                   <div style={{display:"flex"}} className={`${styles.locationContainer} ${styles.eventName}`} data-name={ fetchedEvent && `${fetchedEvent?.cityName} ${fetchedEvent?.cityName && ","} ${fetchedEvent?.countryName}`}>
                         {/* <Image src={locationIcon} alt='location' /> */}
                         <LocationIcon color={fontSettings.subheading.fontColor} iconSize={fontSettings?.subheading.fontSize || 14}/>
                         <div className={styles.location} style={{ fontSize: fontSettings.subheading.fontSize, color: fontSettings.subheading.fontColor, fontFamily: fontSettings.subheading.fontFamily, fontWeight: fontSettings.subheading.fontWeight }}>
                         {fetchedEvent ? formatLocation(fetchedEvent) : demoLocation}</div>
                     </div>
-                    <div className={styles.eventName}  data-name={fetchedEvent && fetchedEvent.name} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>
+                   </div>
+                   <div className={styles.name_tooltip_container}>
+                   <div className={`${styles.eventName} ${styles.name_container}`}  data-name={fetchedEvent && fetchedEvent.name} style={{ fontSize: fontSettings.heading.fontSize, color: fontSettings.heading.fontColor, fontFamily: fontSettings.heading.fontFamily, fontWeight: fontSettings.heading.fontWeight }}>
                         {/* {fetchedEvent ? fetchedEvent.name.substring(0, 15) : demoEventName} */}
                         {fetchedEvent
               ? `${fetchedEvent.name.substring(0, 15)}${fetchedEvent.name.length > 15 ? "..." : ""}`
               : demoEventName}
                         </div>
+                   </div>
                 </div>
             </div>
             <div className={styles.dividerLine}></div>
