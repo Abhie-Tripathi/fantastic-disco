@@ -388,7 +388,7 @@ input:checked + .slider:before {
   border-radius: var(--border-radius-sm);
   /* border: 1px solid var(--border-color); */
   /* gap:var(--spacing-lg); */
-  width: 50%;
+  width: 100%;
   background-color: var(--background-secondary-color);
 }
 .suggestionBox{

@@ -180,7 +180,7 @@ console.log(events);
       <div className={`overflow-auto ${view === "global" ? "h-[calc(100vh-165px)]" : "max-h-[calc(100vh-198px)]"}`}>
 
           <Table>
-            <EventTableHeader show={showValues} type={query.type} view={query.eventType} localFilters={localFilters}/>
+            <EventTableHeader show={showValues} type={query.type} view={query.eventType} localFilters={localFilters} trackerId={trackerId}/>
             <TableBody>
               {updatedEvents && updatedEvents.map((event: Event) => (
                 <EventTableRow

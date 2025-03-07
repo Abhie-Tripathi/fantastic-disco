@@ -44,6 +44,15 @@ const data = isEventeli ?
   [
     {
       type: "template",
+      domain: "General Tracker",
+      img: Competitor,
+      url: "T_CUSTOM",
+      trackerName: "Custom Tracker",
+      content:
+        "Effortlessly track your custom events with real-time updates and seamless organization.",
+    },
+    {
+      type: "template",
       domain: "Market Research",
       img: Competitor,
       url: "T_COMPETITOR",

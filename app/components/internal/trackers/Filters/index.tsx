@@ -1209,6 +1209,9 @@ return (
   </div>
   <div ref={scrollableDivRef} className="flex flex-col gap-2 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "104px" : "140px" }}>
     {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
+    <div className="grid grid-cols-[1fr_3fr] gap-4">
+    <div className="bg-[var(--heading-background-color)] p-4">one</div>
+    <div className="flex flex-col gap-4">
     <div
       className="px-6 py-1 w-full border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)]"
       style={{
@@ -1224,9 +1227,8 @@ return (
         onChange={(event) => setTrackerName(event.target.value)}
       />
     </div>
-    <TeliTemplates type={type}/>
     {((template && template.inputAreas) || type==="T_PRODUCT_KEYWORDS") &&
-    <div style={{display: 'flex', gap: '25px'}}>
+    <div className="flex gap-4 flex-col">
       <div className={`card ${styles.competitor}`}>
         {/* <div className={styles.competitorHead}>
           <div className={styles.competitorHeading}>Upload custom data </div>
@@ -1377,7 +1379,14 @@ return (
                   <div style={{borderBottom: '1px solid var(--border-color)', margin: '36px 0'}}></div>
                   <span className="absolute text-[10px] -top-1.5 bg-[var(--background-secondary-color)] px-2 font-semibold">OR</span>
                 </div>
-                <div className="flex justify-center items-center h-[140px] border border-dashed rounded-[18px] bg-primary-foreground border-[var(--border-color)]">
+                <div className="flex flex-col justify-center items-center h-[140px] border border-dashed rounded-[18px] bg-primary-foreground border-[var(--border-color)]">
+                {/* <div className={styles.emptyTableText}>
+                Click to browse or drag and drop your files
+                </div> */}
+                {/* <div style={{position: 'relative', color: 'var(--secondary-text-color)'}}>
+                  <div style={{borderBottom: '1px solid var(--border-color)', margin: '36px 0'}}></div>
+                  <span className="absolute text-[10px] -top-1.5 bg-[var(--background-secondary-color)] px-2 font-semibold">OR</span>
+                </div> */}
                   <Button
                     className="text-white gap-1"
                     size="sm"
@@ -1498,117 +1507,14 @@ return (
       </div>
     </div>
     }
-   {
-   <div className={`${type !== defaultType ? `card ${styles.hiddenFiltersOuterContainer}` : ""}`} >
-    {type !== "T_CUSTOM" &&
-    <div className={`${styles.hiddenFilters}`} onClick={()=>setOpend(!opend)} style={{cursor:"pointer"}}>
-    <div className={styles.hiddenFiltersInnerDiv}>
-    {/* <Plus style={{width:"16px", height:"16px"}} className="icons"/> */}
-    <div className={styles.hiddenFilterHeading}>Additional filters</div>
-    </div>
-    <div><ChevronDown className="icons"/></div>
-    </div>
-    }
-  {(type=== defaultType || opend )&&
-    <Suspense fallback={<Loading />}>
-    <div className={styles.container}>
-      <div className={styles.sub_container}>
-        <div className="grid grid-cols-5 gap-3">
-          <EventTypeSelector/>
-          <CategorySelector/>
-          <EventFormatSelector/>
-          <LocationSelector isMandatory={isMandatory}/>
-          {/* <LocationSelector/> */}
-          <DateRangeSelector/>
-          <EventStatusSelector/>
-          <EventEntrySelector/>
-          <UserRatingSelector/>
-        </div>
-      </div>
-
-      {/*   ADVANCE FILTER SECTION */}
-
-          <Tabs
-           defaultValue="list"
-           value={selectedAdvancedView}
-           onValueChange={handleTabChange}
-          >
-            <div className="flex justify-center my-6">
-            <div className="flex justify-center">
-                <TabsList  className={cn(
-              "w-[570px] grid grid-cols-3 h-auto",
-              isEventeli ? "grid-cols-2 w-[386px]" : ""
-            )}>
-                  <TabsTrigger value="advancedDetails" className="text-base">
-                              Advanced Details
-                              {/* {advancedDetailsFiltersCount ? (
-                <Badge className="ml-2">{advancedDetailsFiltersCount}</Badge>
-              ) : (
-                ""
-              )} */}
-                  </TabsTrigger>
-                  <TabsTrigger value="insightsAndScores" className=" text-base">
-                              Insights and Scores
-                              {/* {insightsAndScoresFiltersCount ? (
-                <Badge className="ml-2">{insightsAndScoresFiltersCount}</Badge>
-              ) : (
-                ""
-              )} */}
-                  </TabsTrigger>
-                  {!isEventeli && (
-                  <TabsTrigger value="audienceIntel" className=" text-base">
-                  Audience Intel
-                  {/* {audienceInterFiltersCount ? (
-                  <Badge className="ml-2">{audienceInterFiltersCount}</Badge>
-                   ) : (
-                  ""
-                   )} */}
-                  </TabsTrigger>
-                  )}
-                </TabsList>
-            </div>
-            </div>
-                <TabsContent value="advancedDetails">
-                  <div className="grid grid-cols-5 gap-3 pb-6">
-                    <MaturitySelector/>
-                    <GlobalAndTouringSelector/>
-                    <ForecastedStatusSelector/>
-                    <FrequencySelector/>
-                    {type !== "T_PRODUCT_KEYWORDS" &&
-                    <ProductSelector/>
-                    }
-                  </div>
-                </TabsContent>
-                <TabsContent value="insightsAndScores">
-                  <div className={cn("grid grid-cols-5 gap-3 pb-6", { "grid-cols-4": isEventeli,})}>
-                  <EstimatedVisitorsSelector/>
-                  {!isEventeli && (
-                  <EstimatedExhibitorsSelector/>
-                  )}
-                  <EventAnalyticsSelector/>
-                  <EstimatedEconomicImpactSelector/>
-                  <EventRankingSelector/>
-                  </div>
-                </TabsContent>
-                <TabsContent value="audienceIntel">
-                  <div className={cn("grid grid-cols-5 gap-3 pb-6", {"grid-cols-4": isEventeli,})}>
-                    <AudienceQualitySelector />
-                    <ExhibitorQualitySelector />
-                    <AudienceZoneSelector/>
-                    <AudienceProfileSelector/>
-                    <AudienceSpreadSelector/>
-                    </div>
-                </TabsContent>
-          </Tabs>
-    </div>
-  </Suspense>
-    }
-   
-  </div>
-    }
-      {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY"].includes(type)) &&
+    {(type && ["T_COMPETITOR", "T_PRODUCT_KEYWORDS", "T_SPEAKING_OPPORTUNITY"].includes(type)) &&
+    <div className="border-t pt-4 mt-2">
         <Presets template={template} handlePresetClick={handlePresetClick} /> 
+    </div>
       }
+
+    </div>
+  </div>
   </div>
   </>
   }</div>

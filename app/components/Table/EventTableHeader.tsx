@@ -7,9 +7,10 @@ interface EventTableHeaderProps {
   type?: string;
   view?:string;
   localFilters: Filters;
+  trackerId?:string;
 }
 
-export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show, type, view, localFilters }) => {
+export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show, type, view, localFilters, trackerId }) => {
   console.log(view);
   
   return (
@@ -127,11 +128,13 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({ show, type, 
         )}
     </>
     }
+    {trackerId &&
     <TableHead className="sticky right-[68px] bg-[var(--heading-background-color)] z-40 h-12"
           style={{ zIndex: 0 }}>
            <div className="font-medium text-foreground text-center">Matched</div>
     </TableHead>
-        {(type && type!=="T_CUSTOM" && view!=="bookmarked") &&
+    }
+    {(type && type!=="T_CUSTOM" && view!=="bookmarked") &&
         <>
          <TableHead className="sticky right-[200px] z-40 h-12 bg-[var(--heading-background-color)]" style={{ zIndex: 0}}>
            <div className="font-medium text-foreground text-center">Matched</div>

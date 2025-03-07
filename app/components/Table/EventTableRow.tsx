@@ -504,13 +504,14 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             </div>
           </TableCell>
         )}
+        {trackerId &&
         <TableCell
         className="sticky right-[68px] bg-background z-0 flex items-center justify-center align-middle flex-1 w-full h-full min-h-[90px]"
         style={{ zIndex: 0, minWidth:"132px", textAlign:"center", background:"var(--heading-background-color)", height:"100%" }}
         >
         <IntelScore width="100%" height="80px"/>
         </TableCell>
-
+        }
       {(type==="T_PEOPLE_FINDER" && view!=="bookmarked") &&
       <>
       <TableCell
