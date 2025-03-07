@@ -26,7 +26,6 @@ export default function EventAnalyticsSelector() {
   const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } =
     useFilterContext();
 
-  // Derive show scores from show filter
   const enabled = morphedData.eventAnalytics.isEnabled;
   const showToogle = morphedData.eventAnalytics.isToogleEnabled;
   const showScores = useMemo(() => {

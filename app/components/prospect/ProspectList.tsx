@@ -4,11 +4,17 @@ import { PaginationComponent } from "@/components/pagination";
 import { Badge } from "@/components/ui/badge";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useCompanyService } from "@/services/companyService";
-import { companyListData } from "@/types/prospect";
+import { companyListData, CompanyListResponse } from "@/types/prospect";
+import { useQuery } from "@tanstack/react-query";
 import { Buildings, Location } from "geist-icons";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Loading from "@/components/ui/Loading";
+import NullState from "@/app/components/trackers/nullState";
+import coordinateNullState from "@/public/coordinateNullState.svg";
+import { ApiError } from "@/types/api";
 
 const excludedTags = [
   "Core CRM",
@@ -32,6 +38,8 @@ const ProspectCard = ({
 }) => {
   const { checkCompanyLogo } = useCompanyService();
   const [compLogo, setCompLogo] = useState<string | null>(null);
+
+  console.log("i am getting rendered")
 
   useEffect(() => {
     const fetchLogo = async () => {
@@ -188,14 +196,25 @@ const ProspectCard = ({
   );
 };
 
-export const ProspectList = ({
-  companies,
-  count = 0,
-}: {
-  companies: companyListData[];
-  count: number | undefined;
-}) => {
+export const ProspectList = () => {
+  const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
+  const { getCompanyList } = useCompanyService();
+
+  const {
+    data: companyData,
+    error,
+    isLoading,
+  } = useQuery<CompanyListResponse | undefined>({
+    queryKey: ["prospect", searchParams.toString()],
+    queryFn: () => getCompanyList(searchParams.toString()),
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
+  const companies = companyData?.companyData || [];
+  const count = companyData?.totalCount || 0;
 
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
@@ -214,8 +233,33 @@ export const ProspectList = ({
       limit: newItemsPerPage,
     });
   };
+
+  if (isLoading)
+    return (
+      <div className="flex-1 items-center justify-center min-h-svh">
+        <Loading />
+      </div>
+    );
+
+  if (error)
+    return (
+      <NullState
+        image={coordinateNullState}
+        title={(error as ApiError).message}
+      />
+    );
+
+  if (count == 0)
+    return (
+      <NullState
+        image={coordinateNullState}
+        title="No Results Found"
+        text="Try adjusting the filter criteria to refine your search"
+      />
+    );
+
   return (
-    <div className="flex gap-3 flex-col">
+    <div className="flex-1 flex gap-3 flex-col">
       {companies?.map((item, index) => (
         <ProspectCard companyDetail={item} key={index} />
       ))}

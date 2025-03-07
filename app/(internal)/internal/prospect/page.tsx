@@ -153,9 +153,6 @@ const Prospect = () => {
   } = useQuery<CompanyListResponse | undefined>({
     queryKey: ["prospect", searchParams.toString()],
     queryFn: () => companyService.getCompanyList(searchParams.toString()),
-    // enabled:
-    //   !!searchParams.toString() &&
-    //   !(Array.from(searchParams.values()).length == 0),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
@@ -479,7 +476,7 @@ const Prospect = () => {
                   text="Try adjusting the filter criteria to refine your search"
                 />
               ) : (
-                <ProspectList companies={companies} count={count} />
+                <ProspectList/>
               )}
             </TabsContent>
 
@@ -500,7 +497,7 @@ const Prospect = () => {
                   text="Try adjusting the filter criteria to refine your search"
                 />
               ) : (
-                <PeopleList people={peopleData} count={count} />
+                <PeopleList />
               )}
             </TabsContent>
           </div>

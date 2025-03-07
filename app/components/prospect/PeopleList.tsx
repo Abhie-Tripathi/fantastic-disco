@@ -2,13 +2,19 @@
 
 import { PaginationComponent } from "@/components/pagination";
 import { useFilterState } from "@/hooks/useFilterState";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MailIcon, PhoneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCompanyService } from "@/services/companyService";
 import { Location } from "geist-icons";
 import { Badge } from "@/components/ui/badge";
-import { userListData } from "@/types/prospect";
+import { CompanyListResponse, userListData } from "@/types/prospect";
+import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
+import Loading from "@/components/ui/Loading";
+import NullState from "@/app/components/trackers/nullState";
+import coordinateNullState from "@/public/coordinateNullState.svg";
+import { ApiError } from "@/types/api";
 
 /*
 const PeopleCard = ({
@@ -91,6 +97,8 @@ const PeopleCardNew = ({
   const handleError = (err: any) => {
     setImageSrc("/usersIcon.svg");
   };
+
+  console.log("peoplecard")
 
   return (
     <div className="bg-background rounded-xl border shadow-sm relative">
@@ -225,14 +233,30 @@ const PeopleCardNew = ({
   );
 };
 
-export const PeopleList = ({
-  people,
-  count = 0,
-}: {
-  people: userListData[];
-  count: number | undefined;
-}) => {
-  const [companyUsers, setCompanyUsers] = useState(people);
+export const PeopleList = () => {
+  const searchParams = useSearchParams();
+  const {
+    data: companyData,
+    error,
+    isLoading,
+  } = useQuery<CompanyListResponse | undefined>({
+    queryKey: ["prospect", searchParams.toString()],
+    queryFn: () => companyService.getCompanyList(searchParams.toString()),
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
+  const companies = companyData?.companyData || [];
+  const people = companyData?.userData || [];
+  const count = companyData?.totalCount || 0;
+
+  const [companyUsers, setCompanyUsers] = useState<userListData[]>([]);
+
+  useEffect(() => {
+    setCompanyUsers(people);
+  }, [people]);
+
   const { getFilterValue, setMultipleFilters } = useFilterState();
   const companyService = useCompanyService();
 
@@ -253,6 +277,7 @@ export const PeopleList = ({
       limit: newItemsPerPage,
     });
   };
+
 
   const unlockPoc = async (pocId: number | string) => {
     try {
@@ -281,8 +306,34 @@ export const PeopleList = ({
     }
   };
 
+  if (isLoading)
+    return (
+      <div className="flex-1 items-center justify-center min-h-svh">
+        <Loading />
+      </div>
+    );
+
+  if (error)
+    return (
+      <NullState
+        image={coordinateNullState}
+        title={(error as ApiError).message}
+      />
+    );
+
+  if (count == 0)
+    return (
+      <NullState
+        image={coordinateNullState}
+        title="No Results Found"
+        text="Try adjusting the filter criteria to refine your search"
+      />
+    );
+
+    console.log("people section")
+
   return (
-    <div className="">
+    <div className="flex-1">
       {/* <div className="h-full overflow-y-auto w-full grid grid-cols-[repeat(auto-fill,_220px)] gap-4 pb-3 justify-center">
         {companyUsers.filter((item) => (item.user_name !== null && item.user_profilePicture !== null))?.map((item, index: number) => (
           <PeopleCard poc={item} key={index} unlockPoc={unlockPoc} />
