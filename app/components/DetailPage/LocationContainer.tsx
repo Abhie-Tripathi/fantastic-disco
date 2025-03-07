@@ -25,7 +25,7 @@ const LocationContainer = ({
     // </div>
 
     <div className={styles.body}>
-      {eventFormat === "In-person" ? (
+      {eventFormat === "In-person" || eventFormat === "OFFLINE"? (
         <div className={styles.locationContainer}>
           <LocationIcon />
           <div className={styles.eventLocation}>
@@ -37,7 +37,7 @@ const LocationContainer = ({
             </div>
           </div>
         </div>
-      ) : eventFormat === "Virtual" ? (
+      ) : eventFormat === "Virtual" ||  eventFormat === "ONLINE" ? (
         <div className={styles.virtualContainer}>
           <div className={styles.icon_and_text}>
             <LinkIcon />
