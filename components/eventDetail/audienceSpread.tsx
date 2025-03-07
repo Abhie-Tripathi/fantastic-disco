@@ -54,18 +54,18 @@ export const AudienceSpread = ({ restrictedData, audienceSpread }: Props) => {
                 >
                   <TabsList className="grid w-full grid-cols-2 h-10">
                     <TabsTrigger
-                      value="globe"
-                      className="flex gap-2 items-center h-full"
-                    >
-                      <Globe className="w-3 h-3" />
-                      Globe
-                    </TabsTrigger>
-                    <TabsTrigger
                       value="list"
                       className="flex gap-2 items-center h-full"
                     >
                       <ListIcon className="w-3 h-3" />
                       <span>List</span>
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="globe"
+                      className="flex gap-2 items-center h-full"
+                    >
+                      <Globe className="w-3 h-3" />
+                      Globe
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>

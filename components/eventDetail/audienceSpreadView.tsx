@@ -8,7 +8,11 @@ import { Layer, Map, Marker, Source } from "react-map-gl";
 import { useTheme } from "@/context";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as echarts from "echarts";
-import "@/data/world.json";
+import worldGeoJson from "@/data/world.json";
+import {
+  getCountryName,
+  getUpdatedCountryISOCode,
+} from "@/utils/convertCountryName";
 
 interface Props {
   audienceSpread: NonNullable<Event["audience"]>["audienceSpread"] | undefined;
@@ -89,54 +93,138 @@ interface Props {
 
 export const AudienceSpreadMapView = ({ audienceSpread }: Props) => {
   const chartRef = useRef(null);
+  const chartInstance = useRef<echarts.ECharts | null>(null);
+  echarts.registerMap("world", worldGeoJson as any);
   useEffect(() => {
+    if (!chartRef.current) return;
     const chart = echarts.init(chartRef.current);
+    chartInstance.current = chart;
 
-    // ✅ Country data (ISO Code -> Value)
-    const data = Object.entries(audienceSpread).map(([_, value]) => ({
-      name: value.name, // Country Name
-      value: value.percentage, // Percentage
-    }));
+    const data = audienceSpread
+      ? Object.entries(audienceSpread).map(([_, value]) => ({
+          name: getCountryName(value.iso),
+          value: value.percentage,
+          iso: getUpdatedCountryISOCode(value.iso),
+          itemStyle: {
+            borderColor: "#6750a4",
+            borderWidth: 0.6,
+            opacity: 1,
+          },
+        }))
+      : [];
 
-    // 🌍 World Map Configuration
+    const maxPercentage = Math.max(...data.map((d) => d.value));
+    const minPercentage = Math.min(...data.map((d) => d.value));
+
     const option = {
       tooltip: {
         trigger: "item",
-        formatter: ({ name, value }) =>
-          `${name}: ${value ? value.toFixed(2) + "%" : "No data"}`,
+        backgroundColor: "#fff",
+        borderColor: "#ccc",
+        borderWidth: 1,
+        textStyle: {
+          color: "#333",
+          fontSize: 14,
+        },
+        formatter: ({
+          data,
+        }: {
+          data: { value: number; name: string; iso: string };
+        }) => {
+          if (!data) return null;
+          const { value, name, iso } = data;
+
+          if (!iso) return null;
+          return `
+            <div style="display: flex; align-items: center; gap: 8px; width: 150px;">
+              <img src="https://flagcdn.com/w20/${iso.toLowerCase()}.png" alt="${name} flag"
+              <strong>${name}</strong>
+            </div>
+            <div style="margin-top: 5px; margin-left: auto; display: flex; justify-content: space-between">
+              <p>Visitors</p>
+              <span style="color: #6750a4;font-weight: bold;">${
+                value ? value.toFixed(2) + "%" : "No data"
+              }</span>
+            </div>
+          `;
+        },
       },
       visualMap: {
-        min: 0,
-        max: 15, // Adjust based on max percentage
-        text: ["High", "Low"],
+        min: minPercentage,
+        max: maxPercentage,
         inRange: {
-          color: ["#e0f7fa", "#0288d1"], // Gradient from light to dark blue
+          color: ["#E7D4E8", "#6750a4"],
         },
-        calculable: true,
+        show: false,
       },
       series: [
         {
           type: "map",
           map: "world",
-          roam: true, // Enable zoom & pan
+          roam: true,
+          zoom: 1.3,
+          center: [0, 30],
+          scaleLimit: {
+            min: 1.3,
+            max: 50,
+          },
           emphasis: {
             label: {
-              show: true,
+              show: false,
               color: "#000",
             },
+            itemStyle: {
+              areaColor: "#6750a4",
+              borderColor: "#6750a4",
+              borderWidth: 1,
+            },
           },
-          data, // Apply country values
+          selectedMode: false,
+          itemStyle: {
+            borderWidth: 0.3,
+            opacity: 0.4,
+          },
+          data,
+          // markPoint: {
+          //   symbol: "circle",
+          //   symbolSize: 50, // Marker size
+          //   label: {
+          //     show: true,
+          //     color: "#000",
+          //     formatter: ({ data }) => `${data.value}%`,
+          //     position: "top",
+          //   },
+          //   data: data.map(({ coordinates, value }) => ({
+          //     name: "",
+          //     coord: coordinates,
+          //     value: value.toFixed(2),
+          //     itemStyle: {
+          //       color: "#6750a4",
+          //       borderColor: "#fff",
+          //       borderWidth: 1,
+          //     },
+          //   })),
+          // },
         },
       ],
     };
 
     chart.setOption(option);
 
+    const handleResize = () => {
+      if (chartInstance.current) {
+        chartInstance.current.resize();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+
     return () => {
       chart.dispose();
+      window.removeEventListener("resize", handleResize);
     };
   }, [audienceSpread]);
-  return <div ref={chartRef} style={{ width: "100%", height: "500px" }} />;
+  return <div ref={chartRef} className="w-full h-96 xl:h-full" />;
 };
 
 export const AudienceSpreadListView = ({ audienceSpread }: Props) => {

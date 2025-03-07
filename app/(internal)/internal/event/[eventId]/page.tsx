@@ -340,7 +340,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             />
           )}
           <div className="flex flex-col gap-2">
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <div className="flex flex-row gap-3 flex-wrap">
                 {basic && basic.eventTypes && basic.eventTypes.length > 0 && (
                   <ul className="flex flex-row flex-wrap gap-3">
