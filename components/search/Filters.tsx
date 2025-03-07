@@ -390,7 +390,7 @@ const Prospect = () => {
         value={selectedView}
         onValueChange={handleTabChange}
       >
-        <div className="overflow-y-auto pt-4 pl-6 pr-3 w-[342px] h-[calc(100vh-60px)] flex flex-col">
+        <div className="overflow-y-auto pt-4 pl-6  h-[calc(100vh-60px)] flex flex-col">
           <div className="pb-3 sticky top-0 bg-background z-10">
             <TabsList className="grid grid-cols-3 w-full h-auto bg-[#F8F8FA] p-1 rounded-lg">
               <TabsTrigger

@@ -6,7 +6,6 @@ import { useFilterState } from "@/hooks/useFilterState";
 import { useCompanyService } from "@/services/companyService";
 import { companyListData, CompanyListResponse } from "@/types/prospect";
 import { useQuery } from "@tanstack/react-query";
-import { Buildings, Location } from "geist-icons";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -15,6 +14,24 @@ import Loading from "@/components/ui/Loading";
 import NullState from "@/app/components/trackers/nullState";
 import coordinateNullState from "@/public/coordinateNullState.svg";
 import { ApiError } from "@/types/api";
+import {
+  ArrowUpRight,
+  CalendarIcon,
+  Globe,
+  ListIcon,
+  TableIcon,
+} from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Buildings } from "geist-icons";
+import { Location } from "geist-icons";
 
 const excludedTags = [
   "Core CRM",
@@ -39,7 +56,7 @@ const ProspectCard = ({
   const { checkCompanyLogo } = useCompanyService();
   const [compLogo, setCompLogo] = useState<string | null>(null);
 
-  console.log("i am getting rendered")
+  console.log("i am getting rendered");
 
   useEffect(() => {
     const fetchLogo = async () => {
@@ -259,7 +276,59 @@ export const ProspectList = () => {
     );
 
   return (
-    <div className="flex-1 flex gap-3 flex-col">
+    <div className="flex-1 flex gap-3 flex-col px-6">
+      <div className="flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4">
+        <div className="flex items-center gap-2 text-muted-foreground/60">
+          <Checkbox disabled id="select-results" />
+          <label htmlFor="select-results" className="text-sm">
+            Select Results
+          </label>
+        </div>
+        <Separator orientation="vertical" className="h-4" />
+        <Separator orientation="horizontal" className="h-[1px] w-[60%]" />
+
+        <div className="flex justify-center">
+          <span className="text-sm text-muted-foreground/60">Export Data</span>
+        </div>
+        <Separator orientation="vertical" className="h-4" />
+
+        <div className="flex justify-end gap-2">
+          <Select defaultValue="list">
+            <SelectTrigger className="w-[140px] bg-background border-input hover:bg-accent hover:text-accent-foreground">
+              <div className="flex items-center gap-2">
+                <ListIcon className="h-4 w-4" />
+                <span className="text-sm font-medium">View</span>
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="list">
+                <div className="flex items-center gap-2">
+                  <ListIcon className="h-4 w-4" />
+                  <span>List View</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="table">
+                <div className="flex items-center gap-2">
+                  <TableIcon className="h-4 w-4" />
+                  <span>Table View</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="map">
+                <div className="flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  <span>Map View</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="calendar">
+                <div className="flex items-center gap-2">
+                  <CalendarIcon className="h-4 w-4" />
+                  <span>Calendar View</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
       {companies?.map((item, index) => (
         <ProspectCard companyDetail={item} key={index} />
       ))}

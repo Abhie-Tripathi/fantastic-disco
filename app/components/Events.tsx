@@ -3,38 +3,21 @@ import {
   Suspense,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
 import Table from "@/app/components/Table/EventTable";
 import EventCalendar from "@/components/eventCalendar";
-import AdvancedFilters from "@/components/search/advancedFilters";
-import UserRatingSelector from "@/components/search/userRatingSelector";
-import CategorySelector from "@/components/search/categorySelector";
 import CreateTrackerDialog from "@/components/search/createTrackerDialog";
-import DateRangeSelector from "@/components/search/dateRange";
-import EventEntrySelector from "@/components/search/eventEntry";
-import EventFormatSelector from "@/components/search/eventFormat";
-import EventTypeSelector from "@/components/search/eventType";
-import LocationSelector from "@/components/search/location";
-import SearchBar from "@/components/search/searchbar";
-import StatusSelector from "@/components/search/status";
 import Loading from "@/components/ui/Loading";
 import { Button } from "@/components/ui/button";
 import List from "@/components/search/list";
 import {
   ArrowUpRight,
   CalendarIcon,
-  Filter,
-  FilterX,
   Globe,
   ListIcon,
-  Loader2,
-  Plus,
   TableIcon,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { GAEvent } from "@/utils/GAEvent";
@@ -46,7 +29,8 @@ import { useToast } from "@/hooks/use-toast";
 import Alerts from "@/components/search/alerts";
 import SortDropdown from "@/components/search/sortDropdown";
 import { isEventeli } from "@/config";
-import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
+import { CallBackProps, STATUS, Step } from "react-joyride";
+import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
@@ -157,7 +141,7 @@ const Events = () => {
           className="mt-0"
         >
           <div
-            className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-3`}
+            className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4`}
           >
             <div className="flex items-center gap-2">
               <EventCount />
@@ -228,6 +212,8 @@ const Events = () => {
             </Suspense>
           </TabsContent>
         </Tabs>
+
+      
 
         <CreateTrackerDialog
           open={trackerModalOpen}

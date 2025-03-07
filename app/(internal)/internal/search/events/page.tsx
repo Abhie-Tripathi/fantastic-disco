@@ -13,8 +13,8 @@ const Search = () => {
 
   return (
     <div className="flex relative">
-      <div className="transition-all duration-300 sticky top-0 h-screen overflow-hidden w-[342px]">
-        <div className={`h-full w-[342px] transition-transform duration-300`}>
+      <div className="transition-all duration-300 sticky top-0 h-screen overflow-hidden w-[38%] max-w-[368px]">
+        <div className={`h-full transition-transform duration-300`}>
           <Filters />
         </div>
       </div>
