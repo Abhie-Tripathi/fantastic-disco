@@ -1,19 +1,19 @@
 "use client";
-
-import React, { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
+import React, { useMemo } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { useFilterContext } from "@/context/filterContext";
-import dynamic from "next/dynamic";
 import { LockClosedSmall } from "geist-icons";
+import dynamic from "next/dynamic";
+
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
 
 interface RankCategory {
@@ -22,18 +22,17 @@ interface RankCategory {
 }
 
 export default function EventAnalyticsSelector() {
-  const [open, setOpen] = useState(false);
   const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } =
     useFilterContext();
 
   const enabled = morphedData.eventAnalytics.isEnabled;
   const showToogle = morphedData.eventAnalytics.isToogleEnabled;
+  
   const showScores = useMemo(() => {
     const showFilters = getLocalFilterValue("show").split(",");
     return showFilters.includes("scores");
   }, [getLocalFilterValue]);
 
-  // Derive categories from filters
   const categories = useMemo(
     () => [
       {
@@ -63,7 +62,6 @@ export default function EventAnalyticsSelector() {
 
   const handleRangeChange = (index: number, newRange: [number, number]) => {
     const filters: Record<string, string> = {};
-
     switch (index) {
       case 0:
         filters.impact_score_gte = newRange[0].toString();
@@ -78,7 +76,6 @@ export default function EventAnalyticsSelector() {
         filters.international_score_lte = newRange[1].toString();
         break;
     }
-    
     setMultipleLocalFilters(filters);
   };
 
@@ -93,19 +90,15 @@ export default function EventAnalyticsSelector() {
     const filters: Record<string, string> = {};
     switch (index) {
       case 0:
-        filters[`impact_score_${side === "min" ? "gte" : "lte"}`] =
-          numValue.toString();
+        filters[`impact_score_${side === "min" ? "gte" : "lte"}`] = numValue.toString();
         break;
       case 1:
-        filters[`inbound_score_${side === "min" ? "gte" : "lte"}`] =
-          numValue.toString();
+        filters[`inbound_score_${side === "min" ? "gte" : "lte"}`] = numValue.toString();
         break;
       case 2:
-        filters[`international_score_${side === "min" ? "gte" : "lte"}`] =
-          numValue.toString();
+        filters[`international_score_${side === "min" ? "gte" : "lte"}`] = numValue.toString();
         break;
     }
-
     setMultipleLocalFilters(filters);
   };
 
@@ -120,7 +113,6 @@ export default function EventAnalyticsSelector() {
     };
 
     if (!checked) {
-      // Clear all score filters when toggling off
       filters.impact_score_gte = "";
       filters.impact_score_lte = "";
       filters.inbound_score_gte = "";
@@ -137,81 +129,71 @@ export default function EventAnalyticsSelector() {
       (category) => category.range[0] > 0 || category.range[1] < 100
     ).length;
   };
-  
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={`w-full sm:w-auto justify-between px-3 py-5 text-base font-normal ${
-            open ? "border-primary" : "border-input"
-          }`}
-          aria-expanded={open}
-          disabled={!enabled}
-          aria-haspopup="true"
-        >
-           <div className="flex items-center">
-          {!enabled && 
-              <LockClosedSmall color="var(--secondary-text-color)" />
-            }
-          <span className="mr-2">Event Analytics</span>
-          </div>
-          {showScores && getAppliedFiltersCount() > 0 && (
-            <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
-              {getAppliedFiltersCount()}
-            </span>
-          )}
-          <DynamicSwitch
-            checked={showScores}
-            onCheckedChange={handleShowScoresToggle}
-            aria-label="Show scores"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-80 p-0">
-        {categories.map((category, index) => (
-          <div key={category.name} className="p-4">
-            <Label className="text-sm font-medium mb-2">{category.name}</Label>
-            <Slider
-              min={0}
-              max={100}
-              step={1}
-              value={category.range}
-              onValueChange={(newRange) =>
-                handleRangeChange(index, newRange as [number, number])
+    <Accordion type="single" collapsible>
+      <AccordionItem value="eventAnalytics" className="border no-underline">
+        <AccordionTrigger className="p-2 no-underline" disabled={!enabled}>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center">
+              {!enabled && 
+                <LockClosedSmall color="var(--secondary-text-color)" />
               }
-              className="mb-2"
-              disabled={!showScores}
-            />
-            <div className="flex justify-between">
-              <Input
-                type="number"
-                min={0}
-                max={100}
-                value={category.range[0]}
-                onChange={(e) =>
-                  handleInputChange(index, "min", e.target.value)
-                }
-                className="w-16 text-center"
-                disabled={!showScores}
-              />
-              <span className="mx-2 self-center">-</span>
-              <Input
-                type="number"
-                min={0}
-                max={100}
-                value={category.range[1]}
-                onChange={(e) =>
-                  handleInputChange(index, "max", e.target.value)
-                }
-                className="w-16 text-center"
-                disabled={!showScores}
-              />
+              <span className="mr-2">Event Analytics</span>
+              {showScores && getAppliedFiltersCount() > 0 && (
+                <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
+                  {getAppliedFiltersCount()}
+                </span>
+              )}
             </div>
+            <DynamicSwitch
+              checked={showScores}
+              onCheckedChange={handleShowScoresToggle}
+              aria-label="Show scores"
+              onClick={(e) => e.stopPropagation()}
+            />
           </div>
-        ))}
-      </PopoverContent>
-    </Popover>
+        </AccordionTrigger>
+        <AccordionContent>
+          {categories.map((category, index) => (
+            <div key={category.name} className="p-4">
+              <Label className="text-sm font-medium mb-2">{category.name}</Label>
+              <Slider
+                min={0}
+                max={100}
+                step={1}
+                value={category.range}
+                onValueChange={(newRange) =>
+                  handleRangeChange(index, newRange as [number, number])
+                }
+                className="mb-2"
+                disabled={!showScores}
+              />
+              <div className="flex justify-between">
+                <Input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={category.range[0]}
+                  onChange={(e) => handleInputChange(index, "min", e.target.value)}
+                  className="w-16 text-center"
+                  disabled={!showScores}
+                />
+                <span className="mx-2 self-center">-</span>
+                <Input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={category.range[1]}
+                  onChange={(e) => handleInputChange(index, "max", e.target.value)}
+                  className="w-16 text-center"
+                  disabled={!showScores}
+                />
+              </div>
+            </div>
+          ))}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

@@ -21,6 +21,7 @@ import EventFollowers from "@/app/components/prospect/Filters/eventFollowers";
 import ParticipationType from "@/app/components/prospect/Filters/participationType";
 import DesignationFilter from "@/app/components/prospect/Filters/designation";
 import LocationSelector from "@/app/components/prospect/Filters/location";
+import ResearchLocationSelector from "@/components/search/location";
 import PeopleFilter from "@/app/components/prospect/Filters/peopleFilter";
 import { PeopleList } from "@/app/components/prospect/PeopleList";
 import { useFilterState } from "@/hooks/useFilterState";
@@ -29,6 +30,7 @@ import List from "@/components/search/list";
 import { isEventeli } from "@/config";
 import { Filters } from "@/context/filterContext";
 import EventTypeSelector from "@/components/search/eventType";
+import ResearchEventTypeSelector from "@/components/search/eventType";
 import CategorySelector from "@/components/search/categorySelector";
 import EventFormatSelector from "@/components/search/eventFormat";
 import DateRangeSelector from "@/components/search/dateRange";
@@ -146,7 +148,7 @@ const eventFilters: FilterSection[] = [
       {
         name: "eventTypes",
         label: "Event Type",
-        component: "EventTypeSelector",
+        component: "ResearchEventTypeSelector",
         enabled: true,
       },
       {
@@ -164,7 +166,7 @@ const eventFilters: FilterSection[] = [
       {
         name: "locationIds",
         label: "Location",
-        component: "LocationSelector",
+        component: "ResearchLocationSelector",
         enabled: true,
       },
       {
@@ -327,6 +329,7 @@ const peopleFilters: ProspectFilters[] = [
 const getFilterComponent = (componentName: string) => {
   const components: { [key: string]: React.ComponentType<any> } = {
     EventTypeSelector,
+    ResearchEventTypeSelector,
     CategorySelector,
     EventFormatSelector,
     LocationSelector,
@@ -343,6 +346,7 @@ const getFilterComponent = (componentName: string) => {
     EstimatedExhibitorsSelector,
     EventAnalyticsSelector,
     EstimatedEconomicImpactSelector,
+    ResearchLocationSelector,
     EventRankingSelector,
     AudienceQualitySelector,
     ExhibitorQualitySelector,

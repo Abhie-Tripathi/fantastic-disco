@@ -1,25 +1,24 @@
 "use client";
-
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useFilterContext } from "@/context/filterContext";
 import { LockClosedSmall } from "geist-icons";
-import {EventType} from "@/public/data/searchFilters"
+import { EventType } from "@/public/data/searchFilters";
+
 export default function GlobalAndTouringSelector() {
-  const [isOpen, setIsOpen] = useState(false);
   const { setMultipleLocalFilters, getLocalFilterValue, morphedData } = useFilterContext();
   const globalAndTourings = morphedData.globalAndTourings.options;
   const enabled = morphedData.globalAndTourings.isEnabled;
   const showToogle = morphedData.globalAndTourings.isToogleEnabled;
-  // Derive selected statuses from filters
+
   const selectedStatuses = useMemo(() => {
     const onlyBranded = getLocalFilterValue("onlyBranded") === "true";
     const onlySeries = getLocalFilterValue("onlySeries") === "true";
@@ -29,7 +28,6 @@ export default function GlobalAndTouringSelector() {
     ];
   }, [getLocalFilterValue]);
 
-  // Derive show state from show filter
   const showInFilter = useMemo(() => {
     const showFilters = getLocalFilterValue("show").split(",");
     return showFilters.includes("branded") && showFilters.includes("series");
@@ -65,56 +63,49 @@ export default function GlobalAndTouringSelector() {
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-    <PopoverTrigger asChild>
-      <Button
-        variant="outline"
-        disabled={!enabled}
-        role="combobox"
-        aria-expanded={isOpen}
-        className="w-full justify-between px-3 py-5 text-base font-normal"
-      >
-         <div className="flex items-center">
-          {!enabled && 
-              <LockClosedSmall color="var(--secondary-text-color)" />
-            }
-          <span className="flex items-center gap-2">
-            Brand
-            {selectedStatuses.length > 0 && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                {selectedStatuses.length}
+    <Accordion type="single" collapsible>
+      <AccordionItem value="brand" className="border no-underline">
+        <AccordionTrigger className="p-2 no-underline" disabled={!enabled}>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center">
+              {!enabled && 
+                <LockClosedSmall color="var(--secondary-text-color)" />
+              }
+              <span className="flex items-center gap-2">
+                Brand
+                {selectedStatuses.length > 0 && (
+                  <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+                    {selectedStatuses.length}
+                  </span>
+                )}
               </span>
-            )}
-          </span>
-          </div>
-        <Switch
-          checked={showInFilter}
-          onCheckedChange={handleShowToggle}
-          aria-label="Show Global & Touring in filter"
-          onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-            e.stopPropagation()
-          }
-        />
-      </Button>
-    </PopoverTrigger>
-    <PopoverContent
-      className="w-[var(--radix-popover-trigger-width)] p-0"
-      align="start"
-    >
-      <div className="p-4 space-y-4">
-        {globalAndTourings.map((item: EventType) => (
-          <div key={item.id} className="flex items-center space-x-2">
-            <Checkbox
-              id={item.id}
-              checked={selectedStatuses.includes(item.id)}
-              onCheckedChange={() => handleStatusToggle(item.id)}
-              disabled={!item.isEnabled}
+            </div>
+            <Switch
+              checked={showInFilter}
+              onCheckedChange={handleShowToggle}
+              aria-label="Show Global & Touring in filter"
+              onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
+                e.stopPropagation()
+              }
             />
-            <Label htmlFor={item.id}>{item.label}</Label>
           </div>
-        ))}
-      </div>
-    </PopoverContent>
-  </Popover>
+        </AccordionTrigger>
+        <AccordionContent>
+          <div className="p-4 space-y-4">
+            {globalAndTourings.map((item: EventType) => (
+              <div key={item.id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={item.id}
+                  checked={selectedStatuses.includes(item.id)}
+                  onCheckedChange={() => handleStatusToggle(item.id)}
+                  disabled={!item.isEnabled}
+                />
+                <Label htmlFor={item.id}>{item.label}</Label>
+              </div>
+            ))}
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

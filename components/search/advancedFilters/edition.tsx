@@ -1,126 +1,102 @@
 "use client";
-
-import React, { useMemo, useState } from "react";
+import React, { useEffect } from "react";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Switch } from "@/components/ui/switch";
-import { useFilterContext } from "@/context/filterContext";
-import { LockClosedSmall } from "geist-icons";
-import {EventType} from "@/public/data/searchFilters"
-// const maturityLevels = [
-//   { id: "new", label: "New" },
-//   { id: "growing", label: "Growing" },
-//   { id: "established", label: "Established" },
-//   { id: "flagship", label: "Flagship" },
-// ];
+import { useFilterState } from "@/hooks/useFilterState";
 
-export default function EditionSelector() {
-  const [isOpen, setIsOpen] = useState(false);
-  const { setLocalFilter, getLocalFilterValue, morphedData } = useFilterContext();
-  const maturityLevels = morphedData.maturityLevels.options;
-  const showToggle = morphedData.maturityLevels.isToggleEnabled;
-  const enabled = morphedData.maturityLevels.isEnabled;
-  const selectedStatus = useMemo(
-    () => getLocalFilterValue("maturity"),
-    [getLocalFilterValue]
-  );
+const maturityLevels = [
+  { id: "new", label: "New" },
+  { id: "growing", label: "Growing" },
+  { id: "established", label: "Established" },
+  { id: "flagship", label: "Flagship" },
+];
 
-  const showInFilter = useMemo(() => {
-    const showFilters = getLocalFilterValue("show").split(",");
-    return showFilters.includes("maturity");
-  }, [getLocalFilterValue]);
+interface EditionProps {
+  source: string;
+  selectedStatus?: string;
+  setSelectedStatus?: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function EditionSelector({
+  source,
+  selectedStatus: parentSelectedFormats = "",
+  setSelectedStatus: parentSetSelectedFormats,
+}: EditionProps) {
+  const { setFilter, getFilterValue, searchParams } = useFilterState();
+  const [selectedFormatsLocal, setSelectedFormatsLocal] =
+    React.useState<string>("");
+
+  const selectedStatus =
+    source === "tracker" ? parentSelectedFormats : selectedFormatsLocal;
+  const setSelectedStatus =
+    source === "tracker" ? parentSetSelectedFormats : setSelectedFormatsLocal;
+
+  useEffect(() => {
+    if (source !== "tracker") setSelectedStatus?.(getFilterValue("maturity"));
+  }, [searchParams]);
 
   const handleStatusChange = (value: string) => {
     if (value === selectedStatus) {
-      setLocalFilter("maturity", "");
+      setSelectedStatus?.("");
+      if (source !== "tracker") setFilter("maturity", "");
     } else {
-      setLocalFilter("maturity", value);
+      setSelectedStatus?.(value);
+      if (source !== "tracker") setFilter("maturity", value);
     }
-    setIsOpen(false);
-  };
-
-  const handleShowToggle = (checked: boolean) => {
-    const currentShow = getLocalFilterValue("show").split(",").filter(Boolean);
-    const newShow = checked
-      ? Array.from(new Set([...currentShow, "maturity"]))
-      : currentShow.filter((item: string) => item !== "maturity");
-    setLocalFilter("show", newShow.join(","));
-  };
-
-  const onOpenChange = (open: boolean) => {
-    setIsOpen(open);
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          disabled={!enabled}
-          className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            isOpen ? "border-primary" : "border-input"
-          }`}
-          onClick={() => setIsOpen(!isOpen)}
-          aria-expanded={isOpen}
-          aria-haspopup="true"
-        >
-          <div className="flex items-center">
-          {!enabled &&
-              <LockClosedSmall color="var(--secondary-text-color)" />
-            }
-            <span className="mr-2">
+    <Accordion type="single" collapsible>
+      <AccordionItem value="edition" className="border no-underline">
+        <AccordionTrigger className="p-2 no-underline">
+          <div className="flex items-center justify-between w-full">
+            <span className="flex items-center gap-2">
               Maturity
-              </span>
-            {selectedStatus && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                1
-              </span>
-            )}
+              {selectedStatus && (
+                <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+                  1
+                </span>
+              )}
+            </span>
           </div>
-          <Switch
-            checked={showInFilter}
-            disabled={!enabled}
-            onCheckedChange={handleShowToggle}
-            aria-label="Show Maturity in filter"
-            onClick={(e: React.MouseEvent<HTMLButtonElement>) =>
-              e.stopPropagation()
-            }
-          />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-[var(--radix-popover-trigger-width)] p-4"
-        align="start"
-      >
-        <RadioGroup
-          value={selectedStatus}
-          onValueChange={handleStatusChange}
-          className="space-y-2"
-        >
-          {maturityLevels.map((maturityLevel: EventType) => (
-            <div key={maturityLevel.id} className="flex items-center space-x-2">
-              <RadioGroupItem
-                value={maturityLevel.id}
-                id={maturityLevel.id}
-                onClick={(e) => {
-                  if (selectedStatus === maturityLevel.id) {
-                    e.preventDefault();
-                    handleStatusChange(maturityLevel.id);
-                  }
-                }}
-                disabled={!maturityLevel.isEnabled}
-              />
-              <Label htmlFor={maturityLevel.id}>{maturityLevel.label}</Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </PopoverContent>
-    </Popover>
+        </AccordionTrigger>
+        <AccordionContent>
+          <div className="p-4">
+            <RadioGroup
+              value={selectedStatus}
+              onValueChange={handleStatusChange}
+              className="space-y-2"
+            >
+              {maturityLevels.map((maturityLevel) => (
+                <div
+                  key={maturityLevel.id}
+                  className="flex items-center space-x-2"
+                >
+                  <RadioGroupItem
+                    value={maturityLevel.id}
+                    id={maturityLevel.id}
+                    onClick={(e) => {
+                      if (selectedStatus === maturityLevel.id) {
+                        e.preventDefault();
+                        handleStatusChange(maturityLevel.id);
+                      }
+                    }}
+                  />
+                  <Label htmlFor={maturityLevel.id}>
+                    {maturityLevel.label}
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

@@ -124,7 +124,7 @@ export default function LocationSelector({ filterName }: LocationProps) {
   return (
     <div className="h-[150px]">
       <AutocompleteInput
-        defaultOpen
+        // defaultOpen
         multiple
         type="LocationId"
         placeholder="E.g. Bengaluru, Karnataka"

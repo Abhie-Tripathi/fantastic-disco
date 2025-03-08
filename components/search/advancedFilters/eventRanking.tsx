@@ -1,29 +1,28 @@
 "use client";
-
-import React, { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
+import React, { useMemo } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { ChevronDown } from "lucide-react";
 import { useFilterContext } from "@/context/filterContext";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { LockClosedSmall } from "geist-icons";
-import {EventType} from "@/public/data/searchFilters"
+import { EventType } from "@/public/data/searchFilters";
+
 export default function EventRankingSelector() {
-  const [open, setOpen] = useState(false);
   const { localFilters, setMultipleLocalFilters, getLocalFilterValue, morphedData } =
     useFilterContext();
-    const showToogle = morphedData.eventRanking.isToogleEnabled;
-    const enabled = morphedData.eventRanking.isEnabled;
-    const ranks = morphedData.eventRanking.options;
+  const showToogle = morphedData.eventRanking.isToogleEnabled;
+  const enabled = morphedData.eventRanking.isEnabled;
+  const ranks = morphedData.eventRanking.options;
+
   const showRankings = useMemo(() => {
     const showFilters = getLocalFilterValue("show").split(",");
     return showFilters.includes("rankings");
@@ -93,107 +92,100 @@ export default function EventRankingSelector() {
   };
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          disabled={!enabled}
-          variant="outline"
-          className={`w-full justify-between px-3 py-5 text-base font-normal ${
-            open ? "border-primary" : "border-input"
-          }`}
-        >
-           <div className="flex items-center truncate">
-          {!enabled && 
-              <LockClosedSmall color="var(--secondary-text-color)" />
-            }
-            <span className="mr-2">Event Ranking</span>
-            {getAppliedFiltersCount() > 0 && (
-              <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
-                {getAppliedFiltersCount()}
-              </span>
-            )}
-          </div>
-          <ChevronDown
-            className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
-              open ? "rotate-180 transform" : ""
-            }`}
-          />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-80 p-0 pt-2">
-        <div className="flex items-center justify-between px-4 py-2">
-          <Label htmlFor="show-rank" className="text-sm font-medium">
-            Rank
-          </Label>
-          <Switch
-            id="show-rank"
-            checked={showRankings}
-            onCheckedChange={handleShowRankToggle}
-          />
-        </div>
-
-        <RadioGroup
-          value={selectedRank}
-          onValueChange={handleStatusChange}
-          className="space-y-2 px-4 py-2"
-          disabled={!showRankings}
-        >
-          {ranks.map((rank: EventType) => (
-            <div key={rank.id} className="flex items-center space-x-2">
-              <RadioGroupItem
-                value={rank.id}
-                id={rank.id}
-                onClick={(e) => {
-                  if (selectedRank === rank.id) {
-                    e.preventDefault();
-                    handleStatusChange(rank.id);
-                  }
-                }}
-              />
-              <Label htmlFor={rank.id}>{rank.label}</Label>
+    <Accordion type="single" collapsible>
+      <AccordionItem value="eventRanking" className="border no-underline">
+        <AccordionTrigger className="p-2 no-underline" disabled={!enabled}>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center truncate">
+              {!enabled && 
+                <LockClosedSmall color="var(--secondary-text-color)" />
+              }
+              <span className="mr-2">Event Ranking</span>
+              {getAppliedFiltersCount() > 0 && (
+                <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white mr-1">
+                  {getAppliedFiltersCount()}
+                </span>
+              )}
             </div>
-          ))}
-        </RadioGroup>
-        <Separator className="my-1" />
+          </div>
+        </AccordionTrigger>
+        <AccordionContent>
+          <div className="pt-2">
+            <div className="flex items-center justify-between px-4 py-2">
+              <Label htmlFor="show-rank" className="text-sm font-medium">
+                Rank
+              </Label>
+              <Switch
+                id="show-rank"
+                checked={showRankings}
+                onCheckedChange={handleShowRankToggle}
+              />
+            </div>
 
-        <div className="py-2 px-4">
-          <div className="flex items-center justify-between mb-2">
-            <Label className="text-sm font-medium">Trust Score</Label>
-          </div>
-          <Slider
-            min={0}
-            max={100}
-            step={1}
-            value={trustScoreRange}
-            onValueChange={(newRange) =>
-              handleRangeChange(newRange as [number, number])
-            }
-            className="mb-2"
-            disabled={!showRankings}
-          />
-          <div className="flex justify-between">
-            <Input
-              type="number"
-              min={0}
-              max={100}
-              value={trustScoreRange[0]}
-              onChange={(e) => handleInputChange("min", e.target.value)}
-              className="w-16 text-center"
+            <RadioGroup
+              value={selectedRank}
+              onValueChange={handleStatusChange}
+              className="space-y-2 px-4 py-2"
               disabled={!showRankings}
-            />
-            <span className="mx-2 self-center">-</span>
-            <Input
-              type="number"
-              min={0}
-              max={100}
-              value={trustScoreRange[1]}
-              onChange={(e) => handleInputChange("max", e.target.value)}
-              className="w-16 text-center"
-              disabled={!showRankings}
-            />
+            >
+              {ranks.map((rank: EventType) => (
+                <div key={rank.id} className="flex items-center space-x-2">
+                  <RadioGroupItem
+                    value={rank.id}
+                    id={rank.id}
+                    onClick={(e) => {
+                      if (selectedRank === rank.id) {
+                        e.preventDefault();
+                        handleStatusChange(rank.id);
+                      }
+                    }}
+                  />
+                  <Label htmlFor={rank.id}>{rank.label}</Label>
+                </div>
+              ))}
+            </RadioGroup>
+            <Separator className="my-1" />
+
+            <div className="py-2 px-4">
+              <div className="flex items-center justify-between mb-2">
+                <Label className="text-sm font-medium">Trust Score</Label>
+              </div>
+              <Slider
+                min={0}
+                max={100}
+                step={1}
+                value={trustScoreRange}
+                onValueChange={(newRange) =>
+                  handleRangeChange(newRange as [number, number])
+                }
+                className="mb-2"
+                disabled={!showRankings}
+              />
+              <div className="flex justify-between">
+                <Input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={trustScoreRange[0]}
+                  onChange={(e) => handleInputChange("min", e.target.value)}
+                  className="w-16 text-center"
+                  disabled={!showRankings}
+                />
+                <span className="mx-2 self-center">-</span>
+                <Input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={trustScoreRange[1]}
+                  onChange={(e) => handleInputChange("max", e.target.value)}
+                  className="w-16 text-center"
+                  disabled={!showRankings}
+                />
+              </div>
+            </div>
           </div>
-        </div>
-      </PopoverContent>
-    </Popover>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

@@ -1,50 +1,163 @@
 "use client";
-
-import React, { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { useFilterContext } from "@/context/filterContext";
-import { LockClosedSmall } from "geist-icons";
+import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
+import { useFilterState } from "@/hooks/useFilterState";
+import { useRouter, usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
+
+const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
+
+interface RankCategory {
+  name: string;
+  enabled: boolean;
+  range: [number, number];
+}
 
 export default function EstimatedEconomicSelector() {
-  const { setLocalFilter, getLocalFilterValue, morphedData } =
-    useFilterContext();
-  const enabled = morphedData.economicImpact.isEnabled;
-  const showToogle = morphedData.economicImpact.isToogleEnabled;
-  const isEnabled = useMemo(() => {
-    const showFilters = getLocalFilterValue("show").split(",");
-    return showFilters.includes("economicImpact");
-  }, [getLocalFilterValue]);
+  const { setFilter, getFilterValue, setMultipleFilters, searchParams } = useFilterState();
+  const [category, setCategory] = useState<RankCategory>({
+    name: "Economic Impact",
+    enabled: false,
+    range: [0, 100],
+  });
+  const [showEconomicImpact, setShowEconomicImpact] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const handleToggle = (checked: boolean) => {
-    const showFilters = getLocalFilterValue("show").split(",").filter(Boolean);
+  const handleShowEconomicImpactToggle = (checked: boolean) => {
+    setShowEconomicImpact(checked);
+    const currentShow = getFilterValue("show").split(",").filter(Boolean);
+    const newShow = checked
+      ? [...currentShow, "economicImpact"]
+      : currentShow.filter((item) => item !== "economicImpact");
 
-    if (checked) {
-      setLocalFilter("show", [...showFilters, "economicImpact"].join(","));
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (newShow.length > 0) {
+      params.set("show", newShow.join(","));
     } else {
-      setLocalFilter(
-        "show",
-        showFilters.filter((filter) => filter !== "economicImpact").join(",")
-      );
+      params.delete("show");
     }
+
+    const scoreFilters = ["economic_impact_gte", "economic_impact_lte"];
+
+    if (!checked) {
+      scoreFilters.forEach((key) => params.delete(key));
+    } else {
+      const newFilters = {
+        economic_impact_gte: category.range[0].toString(),
+        economic_impact_lte: category.range[1].toString(),
+      };
+      Object.entries(newFilters).forEach(([key, value]) => {
+        params.set(key, value);
+      });
+    }
+
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  useEffect(() => {
+    const economicImpactLte = getFilterValue("economic_impact_lte");
+    const economicImpactGte = getFilterValue("economic_impact_gte");
+    const showFilter = getFilterValue("show");
+    if (economicImpactLte && economicImpactGte) {
+      setCategory({
+        name: "Economic Impact",
+        enabled: true,
+        range: [Number(economicImpactGte), Number(economicImpactLte)],
+      });
+    }
+    setShowEconomicImpact(showFilter.includes("economicImpact"));
+  }, [getFilterValue]);
+
+  const handleRangeChange = (newRange: [number, number]) => {
+    setCategory((prev) => ({ ...prev, range: newRange }));
+    setMultipleFilters({
+      economic_impact_gte: newRange[0].toString(),
+      economic_impact_lte: newRange[1].toString(),
+    });
+  };
+
+  const handleInputChange = (side: "min" | "max", value: string) => {
+    const numValue = Math.min(Math.max(parseInt(value, 10), 0), 100);
+    if (isNaN(numValue)) return;
+
+    setCategory((prev) => {
+      const newRange: [number, number] = [...prev.range];
+      newRange[side === "min" ? 0 : 1] = numValue;
+      return { ...prev, range: newRange };
+    });
   };
 
   return (
-    <Button
-      variant="outline"
-      className="w-full justify-between px-3 py-5 text-base font-normal"
-      disabled={!enabled}
-    >
-      <div className="flex items-center">
-        {!enabled && <LockClosedSmall color="var(--secondary-text-color)" />}
-        <span className="mr-2">Economic Impact</span>
-      </div>
-      <Switch
-        disabled={!enabled}
-        id="forecasted-status"
-        checked={isEnabled}
-        onCheckedChange={handleToggle}
-      />
-    </Button>
+    <Accordion type="single" collapsible>
+      <AccordionItem value="economicImpact" className="border no-underline">
+        <AccordionTrigger className="p-2 no-underline" disabled>
+          <div className="flex items-center justify-between w-full">
+            <span className="flex items-center gap-2">
+              Economic Impact
+              {category.enabled && showEconomicImpact && (
+                <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-primary-foreground">
+                  ✓
+                </span>
+              )}
+            </span>
+            <DynamicSwitch
+              checked={showEconomicImpact}
+              onCheckedChange={handleShowEconomicImpactToggle}
+              aria-label="Show Economic Impact"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </AccordionTrigger>
+        <AccordionContent>
+          <div className="p-4 space-y-4">
+            <Label htmlFor="economic-impact-toggle" className="text-sm font-medium">
+              {category.name}
+            </Label>
+            <Slider
+              id="economic-impact-slider"
+              min={0}
+              max={100}
+              step={1}
+              value={category.range}
+              onValueChange={(newRange) => handleRangeChange(newRange as [number, number])}
+              className="mb-2"
+              disabled={!showEconomicImpact || !category.enabled}
+            />
+            <div className="flex justify-between">
+              <Input
+                type="number"
+                min={0}
+                max={100}
+                value={category.range[0]}
+                onChange={(e) => handleInputChange("min", e.target.value)}
+                className="w-16 text-center"
+                disabled={!showEconomicImpact || !category.enabled}
+              />
+              <span className="mx-2 self-center">-</span>
+              <Input
+                type="number"
+                min={0}
+                max={100}
+                value={category.range[1]}
+                onChange={(e) => handleInputChange("max", e.target.value)}
+                className="w-16 text-center"
+                disabled={!showEconomicImpact || !category.enabled}
+              />
+            </div>
+          </div>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }
