@@ -4,11 +4,37 @@ import { PaginationComponent } from "@/components/pagination";
 import { Badge } from "@/components/ui/badge";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useCompanyService } from "@/services/companyService";
-import { companyListData } from "@/types/prospect";
-import { Buildings, Location } from "geist-icons";
+import { companyListData, CompanyListResponse } from "@/types/prospect";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Loading from "@/components/ui/Loading";
+import NullState from "@/app/components/trackers/nullState";
+import coordinateNullState from "@/public/coordinateNullState.svg";
+import { ApiError } from "@/types/api";
+import {
+  ArrowUpRight,
+  CalendarIcon,
+  Globe,
+  ListIcon,
+  TableIcon,
+} from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Buildings } from "geist-icons";
+import { Location } from "geist-icons";
+import { Button } from "@/components/ui/button";
+import SortDropdown from "@/components/search/sortDropdown";
+import EventCount from "@/components/search/eventCount";
 
 const excludedTags = [
   "Core CRM",
@@ -32,6 +58,8 @@ const ProspectCard = ({
 }) => {
   const { checkCompanyLogo } = useCompanyService();
   const [compLogo, setCompLogo] = useState<string | null>(null);
+
+  console.log("i am getting rendered");
 
   useEffect(() => {
     const fetchLogo = async () => {
@@ -188,14 +216,25 @@ const ProspectCard = ({
   );
 };
 
-export const ProspectList = ({
-  companies,
-  count = 0,
-}: {
-  companies: companyListData[];
-  count: number | undefined;
-}) => {
+export const ProspectList = () => {
+  const searchParams = useSearchParams();
   const { getFilterValue, setMultipleFilters } = useFilterState();
+  const { getCompanyList } = useCompanyService();
+
+  const {
+    data: companyData,
+    error,
+    isLoading,
+  } = useQuery<CompanyListResponse | undefined>({
+    queryKey: ["prospect", searchParams.toString()],
+    queryFn: () => getCompanyList(searchParams.toString()),
+    refetchOnWindowFocus: false,
+    gcTime: 0,
+    staleTime: 0,
+  });
+
+  const companies = companyData?.companyData || [];
+  const count = companyData?.totalCount || 0;
 
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
@@ -214,8 +253,54 @@ export const ProspectList = ({
       limit: newItemsPerPage,
     });
   };
+
+  if (isLoading)
+    return (
+      <div className="flex-1 items-center justify-center min-h-svh">
+        <Loading />
+      </div>
+    );
+
+  if (error)
+    return (
+      <NullState
+        image={coordinateNullState}
+        title={(error as ApiError).message}
+      />
+    );
+
+  if (count == 0)
+    return (
+      <NullState
+        image={coordinateNullState}
+        title="No Results Found"
+        text="Try adjusting the filter criteria to refine your search"
+      />
+    );
+
   return (
-    <div className="flex gap-3 flex-col">
+    <div className="flex-1 flex gap-3 flex-col px-6">
+      <div
+        className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4`}
+      >
+        <div className="flex items-center gap-2">
+          <EventCount view="companies" />
+        </div>
+        <div className="flex justify-center"></div>
+        <div className="flex justify-end gap-2">
+          <Button
+            variant="outline"
+            className="flex items-center gap-2"
+            disabled
+          >
+            <span className="flex items-center gap-1">
+              <ArrowUpRight className="h-4 w-4" />
+              Export
+            </span>
+          </Button>
+          <SortDropdown />
+        </div>
+      </div>
       {companies?.map((item, index) => (
         <ProspectCard companyDetail={item} key={index} />
       ))}

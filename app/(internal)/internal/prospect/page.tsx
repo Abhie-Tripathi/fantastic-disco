@@ -23,7 +23,6 @@ import { ProspectList } from "@/app/components/prospect/ProspectList";
 import Industry from "@/app/components/prospect/Filters/industryFilter";
 import { useFilterContext } from "@/context/filterContext";
 import ProductTopics from "@/app/components/prospect/Filters/productTopics";
-import CompanyType from "@/app/components/prospect/Filters/companyType";
 import CompanySize from "@/app/components/prospect/Filters/companySize";
 import EstablishedYear from "@/app/components/prospect/Filters/establishedYear";
 import EventFollowers from "@/app/components/prospect/Filters/eventFollowers";
@@ -168,9 +167,6 @@ const Prospect = () => {
   } = useQuery<CompanyListResponse | undefined>({
     queryKey: ["prospect", searchParams.toString()],
     queryFn: () => companyService.getCompanyList(searchParams.toString()),
-    // enabled:
-    //   !!searchParams.toString() &&
-    //   !(Array.from(searchParams.values()).length == 0),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
@@ -376,7 +372,7 @@ const Prospect = () => {
                   text="Try adjusting the filter criteria to refine your search"
                 />
               ) : (
-                <ProspectList companies={companies} count={count} />
+                <ProspectList/>
               )}
             </TabsContent>
 
@@ -397,7 +393,7 @@ const Prospect = () => {
                   text="Try adjusting the filter criteria to refine your search"
                 />
               ) : (
-                <PeopleList people={peopleData} count={count} />
+                <PeopleList />
               )}
             </TabsContent>
           </div>

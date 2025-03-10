@@ -125,7 +125,7 @@ const Internal = ({
         let offset: number = (page - 1) * 10;
         const apiData = await coordinateService.getEventsWithSearchParams({
           offset,
-          searchParams,
+          searchParams: new URLSearchParams(searchParams.toString()),
         });
         if (apiData?.enquiries) {
           if (apiData.enquiries.length === 0 && page === 1) {

@@ -1,8 +1,22 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { useFilterContext } from "@/context/filterContext";
 import { EventType } from "@/public/data/searchFilters";
 
@@ -13,12 +27,13 @@ const filterData = [
     { id: "visitor", label: "Attendee", isEnabled: true },
   ];
 
-export default function ParticipationType() {
-  const { setLocalFilter, getLocalFilterValue, morphedData } =
-    useFilterContext();
+interface ParticipationTypeProps {
+  variant?: "accordion" | "popover";
+}
 
-  const estimatedVisitorsOptions = filterData;
-  // const enabled = morphedData?.estimatedVisitors?.isEnabled;
+export default function ParticipationType({ variant = "accordion" }: ParticipationTypeProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { setLocalFilter, getLocalFilterValue } = useFilterContext();
 
   const selectedRanges = useMemo(
     () => getLocalFilterValue("eventParticipationType").split(",").filter(Boolean),
@@ -29,14 +44,26 @@ export default function ParticipationType() {
     const newRanges = selectedRanges.includes(rangeId)
       ? selectedRanges.filter((id) => id !== rangeId)
       : [...selectedRanges, rangeId];
-
     setLocalFilter("eventParticipationType", newRanges.join(","));
   };
 
-  return (
+  const triggerContent = (
+    <div className="flex items-center justify-between w-full">
+      <span className="flex items-center gap-2">
+        Participation Type
+        {selectedRanges.length > 0 && (
+          <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+            {selectedRanges.length}
+          </span>
+        )}
+      </span>
+    </div>
+  );
+
+  const content = (
     <div className="w-full max-w-[var(--radix-popover-trigger-width)] min-w-[280px] p-0">
       <div className="p-4 space-y-4">
-        {estimatedVisitorsOptions?.map((range: EventType) => (
+        {filterData.map((range: EventType) => (
           <div key={range.id} className="flex items-center space-x-2">
             <Checkbox
               id={range.id}
@@ -49,5 +76,45 @@ export default function ParticipationType() {
         ))}
       </div>
     </div>
+  );
+
+  if (variant === "popover") {
+    return (
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={isOpen}
+            className="w-full justify-between px-3 py-5 text-base font-normal"
+          >
+            {triggerContent}
+            <ChevronDown
+              className={`ml-2 h-4 w-4 shrink-0 transition-transform duration-200 ${
+                isOpen ? "rotate-180" : ""
+              }`}
+            />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+          {content}
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
+  return (
+    <Accordion type="single" collapsible>
+      <AccordionItem value="participationType" className="border rounded-md">
+        <AccordionTrigger 
+          className={cn(buttonVariants({ variant: "outline" }), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
+        >
+          {triggerContent}
+        </AccordionTrigger>
+        <AccordionContent>
+          {content}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

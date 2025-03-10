@@ -84,10 +84,7 @@ export default function LocationSelector({ filterName }: LocationProps) {
   }, [localFilters[filterName]]);
 
   useEffect(() => {
-    if (
-      selectedLocation &&
-      Array.isArray(selectedLocation))
-      applyHandler();
+    if (selectedLocation && Array.isArray(selectedLocation)) applyHandler();
     // setLocalFilter("locationIds", (selectedLocation as LocationItem[]).map((loc) => loc.id).join(","));
   }, [selectedLocation]);
 
@@ -127,7 +124,7 @@ export default function LocationSelector({ filterName }: LocationProps) {
   return (
     <div className="h-[150px]">
       <AutocompleteInput
-        defaultOpen
+        // defaultOpen
         multiple
         type="LocationId"
         placeholder="E.g. Bengaluru, Karnataka"
