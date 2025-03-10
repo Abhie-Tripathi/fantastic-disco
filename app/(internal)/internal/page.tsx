@@ -154,15 +154,17 @@ const Dashboard = () => {
 
   const fetchOutreachMessage = async () => {
     const data = await getLatestComment();
-    const messageData: OutreachLastChat = {
-      eventName: data.event.name,
-      status: data.enquiry.enquiryStatusLabel,
-      comment: data.comment.content,
-      eventId: data.event.id,
-      enquiryId: data.enquiry.enquiryId,
-      enquiryStatus: data.enquiry.enquiryStatus,
-    };
-    setOutreachChat(messageData);
+    if (data && data.comment && data.event && data.enquiry) {
+      const messageData: OutreachLastChat = {
+        eventName: data.event.name,
+        status: data.enquiry.enquiryStatusLabel,
+        comment: data.comment.content,
+        eventId: data.event.id,
+        enquiryId: data.enquiry.enquiryId,
+        enquiryStatus: data.enquiry.enquiryStatus,
+      };
+      setOutreachChat(messageData);
+    }
   };
 
   // const fetchRecentSearch = async () => {
