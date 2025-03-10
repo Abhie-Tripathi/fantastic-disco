@@ -431,7 +431,7 @@ const EventListItem = ({
             </div>
           )}
         </div>
-        <div className="pl-[136px] p-6">
+        <div className="pl-[136px] p-6 pr-3">
           <div className="grid grid-cols-12 gap-4">
             <div className="col-span-7 flex flex-col justify-between gap-3">
               <h2 className="text-2xl font-semibold ">{event.basic.name}</h2>
