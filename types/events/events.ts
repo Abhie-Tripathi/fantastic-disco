@@ -127,10 +127,18 @@ const BasicEventSchema = z.object({
     })
   ),
   eventLocation: z.object({
-    country: CountrySchema.nullable(),
-    venue: VenueSchema.nullable(),
-    city: CitySchema.nullable(),
-    state: StateSchema.nullable(),
+    id: z.string(),
+    name: z.string(),
+    cityId: z.string().nullable(),
+    cityName: z.string().nullable(),
+    stateId: z.string().nullable(),
+    stateName: z.string().nullable(),
+    countryId: z.string().nullable(),
+    countryName: z.string().nullable(),
+    latitude: z.string().nullable(),
+    longitude: z.string().nullable(),
+    address: z.string().nullable(),
+    locationType: z.string(),
   }),
   organizer: z
     .object({
@@ -226,9 +234,7 @@ const AlertSchema = z.object({
   originLongitude: z.string(),
   lastModified: z.string(),
 });
-const TrackerMatchInfoSchema = z.object({
-
-})
+const TrackerMatchInfoSchema = z.object({});
 const EventDataSchema = z.object({
   basic: BasicEventSchema,
   advance: AdvanceEventSchema.optional(),

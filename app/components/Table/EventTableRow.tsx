@@ -234,19 +234,19 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </div>
         )}
         <div>
-          {event.basic.eventLocation.venue?.displayName ||
+          {event.basic.eventLocation?.name ||
             (event.basic.format === "online" ? "Online" : "TBA")}
         </div>
       </TableCell>
 
       {/* City Column */}
       <TableCell>
-        {displayValue(event.basic.eventLocation.city?.name)}
+        {displayValue(event.basic.eventLocation?.cityName)}
       </TableCell>
 
       {/* Country Column */}
       <TableCell>
-        {displayValue(event.basic.eventLocation.country?.name)}
+        {displayValue(event.basic.eventLocation?.countryName)}
       </TableCell>
 
       {/* Keywords Column - if enabled */}

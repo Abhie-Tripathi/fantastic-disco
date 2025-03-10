@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { FilterX, ChevronLeft, ChevronRight } from "lucide-react";
 import { Filter } from "geist-icons";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import Industry from "@/app/components/prospect/Filters/industryFilter";
 import { useFilterContext } from "@/context/filterContext";
 import CompanySize from "@/app/components/prospect/Filters/companySize";
@@ -50,6 +50,9 @@ import whrbotlogo from "@/public/whrbotlogo.svg";
 import Image from "next/image";
 import { isEventeli } from "@/config";
 import Link from "next/link";
+import CreateTrackerDialog from "./createTrackerDialog";
+import { GAEvent } from "@/utils/GAEvent";
+import { toast } from "@/hooks/use-toast";
 
 interface FilterSection {
   id: string;
@@ -416,13 +419,29 @@ interface FiltersProps {
 }
 
 const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
-  const { localFilters, applyFilters, deleteMultipleLocalFilters, setLocalFilter } =
+  const { localFilters, applyFilters, deleteMultipleLocalFilters } =
     useFilterContext();
+
+  const { getFilterValue } = useFilterState();
   const filterCount = Object.keys(localFilters).length;
+  const [trackerModalOpen, setTrackerModalOpen] = useState(false);
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
   }, []);
+
+  const createTrackerHandler = async () => {
+    GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
+
+    if (!getFilterValue("locationIds")) {
+      toast({
+        title: "Please select location",
+        variant: "destructive",
+      });
+    } else {
+      setTrackerModalOpen(true);
+    }
+  };
 
   return (
     <div>
@@ -485,7 +504,10 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
               Let's save this search and help you track efficiently.
             </div>
             <div className="flex items-center">
-              <Switch />
+              <Switch
+                checked={trackerModalOpen}
+                onCheckedChange={createTrackerHandler}
+              />
             </div>
           </div>
         </div>
@@ -551,7 +573,9 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
               <Button
                 variant="ghost"
                 onClick={() => {
-                  deleteMultipleLocalFilters(Object.keys(localFilters) as any[]);
+                  deleteMultipleLocalFilters(
+                    Object.keys(localFilters) as any[]
+                  );
                 }}
                 disabled={Object.keys(localFilters).length === 0}
                 className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
@@ -568,6 +592,11 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
             </Button>
           </div>
         </div>
+
+        <CreateTrackerDialog
+          open={trackerModalOpen}
+          onOpenChange={setTrackerModalOpen}
+        />
       </div>
     </div>
   );

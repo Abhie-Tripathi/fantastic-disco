@@ -98,19 +98,6 @@ const Events = () => {
     setFilter("view", value);
   };
 
-  const createTrackerHandler = async () => {
-    GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
-
-    if (!getFilterValue("locationIds")) {
-      toast({
-        title: "Please select location",
-        variant: "destructive",
-      });
-    } else {
-      setTrackerModalOpen(true);
-    }
-  };
-
   const filtersCount = (function () {
     let count = 0;
     if (
@@ -211,11 +198,6 @@ const Events = () => {
             </Suspense>
           </TabsContent>
         </Tabs>
-
-        <CreateTrackerDialog
-          open={trackerModalOpen}
-          onOpenChange={setTrackerModalOpen}
-        />
       </div>
     </div>
   );

@@ -311,7 +311,6 @@ const EventListItem = ({
   showValues: Show[];
 }) => {
   const address = event.basic.eventLocation ? (
-    event.basic.eventLocation.venue?.name === "Online" ||
     event.basic.format === "online" ? (
       <span className="flex items-center">
         <Radio className="w-4 h-4 mr-1" /> Online
@@ -321,15 +320,15 @@ const EventListItem = ({
         <Radio className="w-4 h-4 mr-1" />
         <span>Hybrid&nbsp;-&nbsp;</span>
         {[
-          event.basic.eventLocation.venue?.name || "TBA",
-          event.basic.eventLocation.city?.name,
-          event.basic.eventLocation.state?.name !==
-          event.basic.eventLocation.city?.name
-            ? event.basic.eventLocation.state?.name
+          event.basic.eventLocation?.name || "TBA",
+          event.basic.eventLocation?.cityName,
+          event.basic.eventLocation?.stateName !==
+          event.basic.eventLocation?.cityName
+            ? event.basic.eventLocation?.stateName
             : null,
-          event.basic.eventLocation.country?.name !==
-          event.basic.eventLocation.city?.name
-            ? event.basic.eventLocation.country?.name
+          event.basic.eventLocation?.countryName !==
+          event.basic.eventLocation?.cityName
+            ? event.basic.eventLocation?.countryName
             : null,
         ]
           .filter(Boolean)
@@ -337,15 +336,15 @@ const EventListItem = ({
       </span>
     ) : (
       [
-        event.basic.eventLocation.venue?.name,
-        event.basic.eventLocation.city?.name,
-        event.basic.eventLocation.state?.name !==
-        event.basic.eventLocation.city?.name
-          ? event.basic.eventLocation.state?.name
+        event.basic.eventLocation?.name,
+        event.basic.eventLocation?.cityName,
+        event.basic.eventLocation?.stateName !==
+        event.basic.eventLocation?.cityName
+          ? event.basic.eventLocation?.stateName
           : null,
-        event.basic.eventLocation.country?.name !==
-        event.basic.eventLocation.city?.name
-          ? event.basic.eventLocation.country?.name
+        event.basic.eventLocation?.countryName !==
+        event.basic.eventLocation?.cityName
+          ? event.basic.eventLocation?.countryName
           : null,
       ]
         .filter(Boolean)
