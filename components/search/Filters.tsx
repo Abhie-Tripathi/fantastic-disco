@@ -213,8 +213,8 @@ const filters: {
   ],
   companies: [
     {
-      id: "company-filters",
-      label: "Company Filters",
+      id: "all-filters",
+      label: "All Filters",
       filters: [
         {
           id: "category",
@@ -235,21 +235,17 @@ const filters: {
           enabled: true,
         },
         {
-          id: "followers",
-          component: "EventFollowers",
-          enabled: true,
-        },
-        {
           id: "companyType",
           component: "CompanyType",
           enabled: true,
         },
-      ],
-    },
-    {
-      id: "event-filters",
-      label: "Event Filters",
-      filters: [
+        {
+          id: "followers",
+          component: "EventFollowers",
+          filterName: "communitySize",
+          enabled: true,
+        },
+        
         {
           id: "locationIds",
           component: "LocationSelector",
@@ -257,26 +253,46 @@ const filters: {
           enabled: true,
         },
         {
-          id: "categoryIds",
-          component: "CategorySelector",
-          filterName: "eventCategoryIds",
-          enabled: true,
-        },
-        {
           id: "followers",
           component: "EventFollowers",
           enabled: true,
         },
+        {
+          id: "userNames",
+          component: "PeopleFilter",
+          filterName: "userNames",
+          enabled: true,
+        },
+        {
+          id: "userSocialLink",
+          component: "PeopleFilter",
+          filterName: "userSocialLink",
+          enabled: true,
+        },
+        {
+          id: "userJobTitle",
+          component: "AudienceDesAndDep",
+          filterName: "userJobTitle",
+          enabled: true,
+        },
       ],
     },
+  ],
+  people: [
     {
-      id: "people-filters",
-      label: "People Filters",
+      id: "all-filters",
+      label: "Filters",
       filters: [
         {
           id: "userNames",
           component: "PeopleFilter",
           filterName: "userNames",
+          enabled: true,
+        },
+        {
+          id: "userSocialLink",
+          component: "PeopleFilter",
+          filterName: "userSocialLink",
           enabled: true,
         },
         {
@@ -286,20 +302,6 @@ const filters: {
           enabled: true,
         },
         {
-          id: "userSocialLink",
-          component: "PeopleFilter",
-          filterName: "userSocialLink",
-          enabled: true,
-        },
-      ],
-    },
-  ],
-  people: [
-    {
-      id: "company-filters",
-      label: "Company Filters",
-      filters: [
-        {
           id: "category",
           component: "CategorySelector",
           enabled: true,
@@ -307,6 +309,7 @@ const filters: {
         {
           id: "location",
           component: "LocationSelector",
+          filterName: "companyLocationIds",
           enabled: true,
         },
         {
@@ -317,56 +320,18 @@ const filters: {
         {
           id: "followers",
           component: "EventFollowers",
+          filterName: "communitySize",
           enabled: true,
         },
-        {
-          id: "companyType",
-          component: "CompanyType",
-          enabled: true,
-        },
-      ],
-    },
-    {
-      id: "event-filters",
-      label: "Event Filters",
-      filters: [
         {
           id: "locationIds",
           component: "LocationSelector",
-          enabled: true,
-        },
-        {
-          id: "categoryIds",
-          component: "CategorySelector",
+          filterName: "eventLocationIds",
           enabled: true,
         },
         {
           id: "followers",
           component: "EventFollowers",
-          enabled: true,
-        },
-      ],
-    },
-    {
-      id: "people-filters",
-      label: "People Filters",
-      filters: [
-        {
-          id: "userNames",
-          component: "PeopleFilter",
-          filterName: "userNames",
-          enabled: true,
-        },
-        {
-          id: "userJobTitle",
-          component: "AudienceDesAndDep",
-          filterName: "userJobTitle",
-          enabled: true,
-        },
-        {
-          id: "userSocialLink",
-          component: "PeopleFilter",
-          filterName: "userSocialLink",
           enabled: true,
         },
       ],
@@ -523,20 +488,21 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                 <AccordionItem
                   key={section.id}
                   value={section.id}
-                  className="border-0"
+                  className="border rounded-lg bg-white shadow-sm transition-all duration-200 hover:shadow-md"
                 >
-                  <AccordionTrigger className="hover:no-underline py-2">
-                    <div className="text-xs flex gap-2 items-center pl-2 uppercase font-medium text-[var(--secondary-text-color)]">
+                  <AccordionTrigger className="hover:no-underline py-3 px-4 transition-all duration-200 [&[data-state=open]]:bg-gray-50">
+                    <div className="text-sm flex gap-2 items-center uppercase font-medium text-gray-700">
                       <Filter
-                        color="var(--muted-foreground)"
-                        width="12px"
-                        height="12px"
+                        color="currentColor"
+                        width="14px"
+                        height="14px"
+                        className="text-primary"
                       />
                       {section.label}
                     </div>
                   </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="bg-background border border-[var(--neutral-light-color)] rounded-sm p-4 space-y-3">
+                  <AccordionContent className="px-4 pb-4">
+                    <div className="space-y-4 border-t pt-4 mt-1">
                       {section.filters.map((filter) => {
                         const Component = getFilterComponent(filter.component);
                         if (!Component) return null;
@@ -544,7 +510,7 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                         return (
                           <div
                             key={filter.id}
-                            className="flex items-center justify-between group relative"
+                            className="flex items-center justify-between group relative transition-opacity duration-200"
                             style={{ opacity: filter.enabled ? 1 : 0.5 }}
                           >
                             <div className="w-full">
@@ -554,7 +520,9 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
                               />
                             </div>
                             {!filter.enabled && (
-                              <LockClosedSmall color="var(--secondary-text-color)" />
+                              <LockClosedSmall 
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-[var(--secondary-text-color)]" 
+                              />
                             )}
                           </div>
                         );

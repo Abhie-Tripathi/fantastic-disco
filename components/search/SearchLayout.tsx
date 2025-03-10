@@ -18,7 +18,7 @@ const SearchLayout = ({ children, type }: SearchLayoutProps) => {
   return (
     <div className="flex relative">
       {isCollapsed && (
-        <div className="fixed left-[82px] top-[84px] z-30 overflow-hidden">
+        <div className="fixed left-[82px] top-[84px] z-30">
           <button
             onClick={() => setIsCollapsed(false)}
             className="group relative bg-white hover:bg-[#F8F8FA] border border-[#E6E6E6] shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"

@@ -30,7 +30,7 @@ export default function PeopleFilter({
   const [isOpen, setIsOpen] = useState(false);
   const { localFilters, setLocalFilter, getLocalFilterValue } = useFilterContext();
 
-  const placeholder = filterName === "userSocialLink" ? "LinkedIn Profile" : "Name";
+  const placeholder = filterName === "userSocialLink" ? "LinkedIn" : "Name";
 
   const inputValue = useMemo(() => {
     return getLocalFilterValue(filterName) ?? "";
@@ -47,7 +47,7 @@ export default function PeopleFilter({
   const triggerContent = (
     <div className="flex items-center justify-between w-full">
       <span className="flex items-center gap-2">
-        {filterName === "userNames" ? "User Name" : "LinkedIn Profile"}
+        {filterName === "userNames" ? "User Name" : "LinkedIn"}
         {inputValue && (
           <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
             1
