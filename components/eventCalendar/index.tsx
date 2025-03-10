@@ -418,7 +418,7 @@ export default function EventCalendar({
           </div>
         )
       ) : (
-        <div className="flex custom-calendar">
+        <div className="flex custom-calendar overflow-y-scroll">
           <div
             className={`flex flex-col  ${
               showEventList ? "w-[calc(100%-345px)]" : "w-full"

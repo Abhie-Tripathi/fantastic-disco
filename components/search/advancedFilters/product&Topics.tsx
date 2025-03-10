@@ -9,6 +9,14 @@ import {
 import { useFilterContext } from "@/context/filterContext";
 import KeywordTabs from "./keywordTabs";
 import styles from "@/app/components/internal/trackers/Filters/filters.style.module.css";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface KeywordSelectorProps {
   type?: string;
@@ -18,13 +26,18 @@ interface KeywordSelectorProps {
   setHideSuggestion?: (value: boolean) => void;
 }
 
+interface KeywordFilterProps extends KeywordSelectorProps {
+  variant?: "accordion" | "popover";
+}
+
 export default function KeywordFilter({
   type,
   fetchAISuggestion,
   suggestions,
   hideSuggestion,
-  setHideSuggestion
-}: KeywordSelectorProps) {
+  setHideSuggestion,
+  variant = "accordion"
+}: KeywordFilterProps) {
   const {
     getLocalFilterValue,
     setMultipleLocalFilters,
@@ -37,6 +50,7 @@ export default function KeywordFilter({
   const [activeTab, setActiveTab] = useState<"include" | "exclude">("include");
   const [includeKeywords, setIncludeKeywords] = useState<string[]>([]);
   const [excludeKeywords, setExcludeKeywords] = useState<string[]>([]);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const includeKeywords = [
@@ -111,20 +125,35 @@ export default function KeywordFilter({
     }
   };
 
+  const triggerContent = (
+    <span className="flex items-center gap-2 font-normal text-normal">
+      Products/Topics
+      {(includeKeywords.length > 0 || excludeKeywords.length > 0) && (
+        <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+          {includeKeywords.length + excludeKeywords.length}
+        </span>
+      )}
+    </span>
+  );
+
+  const content = (
+    <KeywordTabs
+      type={type === "T_PRODUCT_KEYWORDS" ? type : ""}
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
+      handleAddKeyword={handleAddKeyword}
+      inputValue={inputValue}
+      setInputValue={setInputValue}
+      includeKeywords={includeKeywords}
+      excludeKeywords={excludeKeywords}
+      handleRemoveKeyword={handleRemoveKeyword}
+    />
+  );
+
   if (type === "T_PRODUCT_KEYWORDS") {
     return (
       <>
-        <KeywordTabs
-          type="T_PRODUCT_KEYWORDS"
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          handleAddKeyword={handleAddKeyword}
-          inputValue={inputValue}
-          setInputValue={setInputValue}
-          includeKeywords={includeKeywords}
-          excludeKeywords={excludeKeywords}
-          handleRemoveKeyword={handleRemoveKeyword}
-        />
+        {content}
         {(activeTab && suggestions && suggestions.length > 0) && (
           <div className="p-4 bg-[var(--primary-foreground)] border border-border-color rounded-sm mt-3 w-full">
             <div className="text-sm font-[var(--font-weight-medium)] text-[var(--secondary-text-color)] flex gap-1.5 mb-3 items-center">
@@ -142,33 +171,45 @@ export default function KeywordFilter({
     );
   }
 
+  if (variant === "popover") {
+    return (
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={isOpen}
+            className="w-full justify-between px-3 py-5 text-base font-normal"
+          >
+            <div className="flex items-center justify-between w-full">
+              {triggerContent}
+              <ChevronDown
+                className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
+                  isOpen ? "rotate-180" : ""
+                }`}
+              />
+            </div>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+          {content}
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
   return (
     <Accordion type="single" collapsible>
-      <AccordionItem value="productsTopics" className="border no-underline">
-        <AccordionTrigger className="p-2 no-underline">
+      <AccordionItem value="productsTopics" className="border rounded-md">
+        <AccordionTrigger 
+          className={cn(buttonVariants({variant: "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
+        >
           <div className="flex items-center justify-between w-full">
-            <span className="flex items-center gap-2 font-normal text-normal">
-              Products/Topics
-              {(includeKeywords.length > 0 || excludeKeywords.length > 0) && (
-                <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                  {includeKeywords.length + excludeKeywords.length}
-                </span>
-              )}
-            </span>
+            {triggerContent}
           </div>
         </AccordionTrigger>
         <AccordionContent>
-          <KeywordTabs
-            type=""
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            handleAddKeyword={handleAddKeyword}
-            inputValue={inputValue}
-            setInputValue={setInputValue}
-            includeKeywords={includeKeywords}
-            excludeKeywords={excludeKeywords}
-            handleRemoveKeyword={handleRemoveKeyword}
-          />
+          {content}
         </AccordionContent>
       </AccordionItem>
     </Accordion>

@@ -1,40 +1,68 @@
 "use client";
-import React, { useCallback, useMemo } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import React, { useCallback, useMemo, useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useFilterContext } from "@/context/filterContext";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
 
-export default function CategorySelector() {
+interface FlexibleComponentProps {
+  variant?: "accordion" | "popover";
+  filterName?: string;
+  disabled?: boolean;
+}
+
+export default function CategorySelector({
+  variant = "accordion",
+  filterName,
+  disabled,
+}: FlexibleComponentProps) {
   const { setLocalFilter, getLocalFilterValue, morphedData } =
     useFilterContext();
   const categories = morphedData.categories.options;
-  const selectedCategories = getLocalFilterValue("categories")
+  const selectedCategories = getLocalFilterValue(filterName || "categories")
     .split(",")
     .filter(Boolean);
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const isAnyDisabled = useMemo(() => {
     return categories.some((cat: any) => !cat.isEnabled);
   }, [categories]);
+
+  const filteredCategories = useMemo(() => {
+    if (!searchQuery) return categories;
+    return categories.filter((cat: any) =>
+      cat.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [categories, searchQuery]);
 
   const handleCategoryToggle = useCallback(
     (categorySlug: string) => {
       const newCategories = selectedCategories.includes(categorySlug)
         ? selectedCategories.filter((slug) => slug !== categorySlug)
         : [...selectedCategories, categorySlug];
-      setLocalFilter("categories", newCategories.join(","));
+      setLocalFilter(filterName || "categories", newCategories.join(","));
     },
-    [selectedCategories, setLocalFilter]
+    [selectedCategories, setLocalFilter, filterName]
   );
 
   const handleSelectAll = useCallback(
     (isSelected: boolean) => {
       setLocalFilter(
-        "categories",
+        filterName || "categories",
         isSelected
           ? categories
               .filter((cat: any) => cat.isEnabled)
@@ -43,7 +71,7 @@ export default function CategorySelector() {
           : ""
       );
     },
-    [setLocalFilter, categories]
+    [setLocalFilter, categories, filterName]
   );
 
   const isAllSelected = useMemo(
@@ -80,7 +108,7 @@ export default function CategorySelector() {
                 >
                   <Checkbox
                     className="rounded-none"
-                    id={category.slug}
+                    id={`${category.slug}-${variant}`}
                     checked={
                       category.slug === "all"
                         ? isAllSelected
@@ -93,11 +121,12 @@ export default function CategorySelector() {
                     }
                     disabled={
                       (category.slug === "all" && isAnyDisabled) ||
-                      (!category.isEnabled && category.slug !== "all")
+                      (!category.isEnabled && category.slug !== "all") ||
+                      disabled
                     }
                   />
                   <label
-                    htmlFor={category.slug}
+                    htmlFor={`${category.slug}-${variant}`}
                     className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 whitespace-nowrap ${
                       (category.slug === "all" && isAnyDisabled) ||
                       (!category.isEnabled && category.slug !== "all")
@@ -120,27 +149,101 @@ export default function CategorySelector() {
     handleSelectAll,
     categories,
     isAnyDisabled,
+    variant,
+    disabled,
   ]);
 
-  return (
-    <Accordion type="single" collapsible>
-      <AccordionItem value="eventType" className="border no-underline">
-        <AccordionTrigger className="p-2 no-underline">
-          <div className="flex items-center justify-between w-full">
-            <div className="flex items-center">
-              <span className="mr-2">Category</span>
-              {selectedCategories.length > 0 && (
-                <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
-                  {selectedCategories.length}
-                </span>
-              )}
-            </div>
-          </div>
-        </AccordionTrigger>
-        <AccordionContent>
+  const triggerContent = (
+    <div className="flex items-center">
+      <span className="mr-2">Category</span>
+      {selectedCategories.length > 0 && (
+        <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
+          {selectedCategories.length}
+        </span>
+      )}
+    </div>
+  );
+
+  if (variant === "popover") {
+    return (
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={isOpen}
+            className="w-full justify-between px-3 py-5 text-base font-normal"
+            disabled={disabled}
+          >
+            <span className="flex items-center gap-2">{triggerContent}</span>
+            <ChevronDown className="h-4 w-4 shrink-0" />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="w-[var(--radix-popover-trigger-width)] p-0"
+          align="start"
+        >
           <div className="p-4">{renderCategories()}</div>
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+        </PopoverContent>
+      </Popover>
+    );
+  }
+
+  return (
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={isOpen}
+          className="w-full justify-between px-3 py-5 text-base font-normal"
+          disabled={disabled}
+        >
+          <span className="flex items-center gap-2">{triggerContent}</span>
+          <ChevronDown className="h-4 w-4 shrink-0" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-[var(--radix-popover-trigger-width)] p-0"
+        align="start"
+      >
+        <Command>
+          <CommandInput
+            placeholder="Search categories..."
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+            className="h-9"
+          />
+          <CommandEmpty>No categories found.</CommandEmpty>
+          <CommandGroup className="max-h-[300px] overflow-auto">
+            <CommandItem
+              onSelect={() => handleSelectAll(!isAllSelected)}
+              className="flex items-center gap-2 px-2 py-1.5"
+            >
+              <Checkbox checked={isAllSelected} className="rounded-none" />
+              <span>Select All</span>
+            </CommandItem>
+            {filteredCategories.map((category: any) => (
+              <CommandItem
+                key={category.slug}
+                onSelect={() => handleCategoryToggle(category.slug)}
+                className={cn(
+                  "flex items-center gap-2 px-2 py-1.5",
+                  !category.isEnabled && "opacity-50"
+                )}
+                disabled={!category.isEnabled || disabled}
+              >
+                <Checkbox
+                  checked={selectedCategories.includes(category.slug)}
+                  className="rounded-none"
+                  disabled={!category.isEnabled || disabled}
+                />
+                <span>{category.name}</span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 }

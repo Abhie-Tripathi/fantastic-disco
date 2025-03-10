@@ -30,7 +30,6 @@ import Alerts from "@/components/search/alerts";
 import SortDropdown from "@/components/search/sortDropdown";
 import { isEventeli } from "@/config";
 import { CallBackProps, STATUS, Step } from "react-joyride";
-import { Select, SelectContent, SelectItem, SelectTrigger } from "@/components/ui/select";
 const Map = lazy(() => import("@/components/map"));
 
 const Events = () => {
@@ -144,7 +143,7 @@ const Events = () => {
             className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4`}
           >
             <div className="flex items-center gap-2">
-              <EventCount />
+              <EventCount view="events" />
             </div>
             <div className="flex justify-center">
               <TabsList className="grid w-[500px] grid-cols-4 h-auto bg-muted/50 p-1 rounded-lg">
@@ -212,8 +211,6 @@ const Events = () => {
             </Suspense>
           </TabsContent>
         </Tabs>
-
-      
 
         <CreateTrackerDialog
           open={trackerModalOpen}

@@ -18,8 +18,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const DynamicSwitch = dynamic(() => Promise.resolve(Switch), { ssr: false });
 
@@ -146,8 +147,8 @@ export default function UserRatingSelector({ variant = "accordion" }: FlexibleCo
 
   return (
     <Accordion type="single" collapsible>
-      <AccordionItem value="userRating">
-        <AccordionTrigger className="px-3 py-5">
+      <AccordionItem value="userRating" className="border rounded-md">
+        <AccordionTrigger className={cn(buttonVariants({variant : "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}>
           {renderTriggerContent(triggerContent)}
         </AccordionTrigger>
         <AccordionContent>

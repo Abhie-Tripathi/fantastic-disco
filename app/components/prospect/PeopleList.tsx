@@ -3,7 +3,7 @@
 import { PaginationComponent } from "@/components/pagination";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useState, useEffect } from "react";
-import { MailIcon, PhoneIcon } from "lucide-react";
+import { ArrowUpRight, MailIcon, PhoneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCompanyService } from "@/services/companyService";
 import { Location } from "geist-icons";
@@ -16,6 +16,9 @@ import NullState from "@/app/components/trackers/nullState";
 import coordinateNullState from "@/public/coordinateNullState.svg";
 import { ApiError } from "@/types/api";
 import Link from "next/link";
+import { TabsList } from "@/components/ui/tabs";
+import EventCount from "@/components/search/eventCount";
+import SortDropdown from "@/components/search/sortDropdown";
 
 /*
 const PeopleCard = ({
@@ -99,7 +102,7 @@ const PeopleCardNew = ({
     setImageSrc("/usersIcon.svg");
   };
 
-  console.log("peoplecard")
+  console.log("peoplecard");
 
   return (
     <div className="bg-background rounded-xl border shadow-sm relative">
@@ -281,7 +284,6 @@ export const PeopleList = () => {
     });
   };
 
-
   const unlockPoc = async (pocId: number | string) => {
     try {
       setCompanyUsers((prevPocData) =>
@@ -333,7 +335,7 @@ export const PeopleList = () => {
       />
     );
 
-    console.log("people section")
+  console.log("people section");
 
   return (
     <div className="flex-1 px-6 pt-6">
@@ -342,6 +344,28 @@ export const PeopleList = () => {
           <PeopleCard poc={item} key={index} unlockPoc={unlockPoc} />
         ))}
       </div> */}
+
+      <div
+        className={`flex justify-between items-center sticky top-0 bg-background z-50 shadow-[0_1px_4px_-2px_rgba(21,34,50,0.078)] transition-padding duration-200 py-3 pt-4`}
+      >
+        <div className="flex items-center gap-2">
+          <EventCount view="people" />
+        </div>
+        <div className="flex justify-center"></div>
+        <div className="flex justify-end gap-2">
+          <Button
+            variant="outline"
+            className="flex items-center gap-2"
+            disabled
+          >
+            <span className="flex items-center gap-1">
+              <ArrowUpRight className="h-4 w-4" />
+              Export
+            </span>
+          </Button>
+          <SortDropdown />
+        </div>
+      </div>
       <div className="flex gap-3 flex-col">
         {companyUsers
           .filter(
