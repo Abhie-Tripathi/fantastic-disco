@@ -2,7 +2,7 @@
 
 import { PaginationComponent } from "@/components/pagination";
 import { useFilterState } from "@/hooks/useFilterState";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { ArrowUpRight, MailIcon, PhoneIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCompanyService } from "@/services/companyService";
@@ -241,30 +241,30 @@ const PeopleCardNew = ({
 
 export const PeopleList = () => {
   const searchParams = useSearchParams();
+  const { getFilterValue, setMultipleFilters } = useFilterState();
+  const companyService = useCompanyService();
+
   const {
     data: companyData,
     error,
     isLoading,
   } = useQuery<CompanyListResponse | undefined>({
     queryKey: ["prospect", searchParams.toString()],
-    queryFn: () => companyService.getCompanyList(searchParams.toString()),
+    queryFn: () => companyService.getPeopleList(searchParams.toString()),
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
   });
-
-  const companies = companyData?.companyData || [];
-  const people = companyData?.userData || [];
-  const count = companyData?.totalCount || 0;
-
   const [companyUsers, setCompanyUsers] = useState<userListData[]>([]);
 
+  const companies = companyData?.companyData || [];
+  const people = useMemo(() => companyData?.userData || [], [companyData]);
+  const count = companyData?.totalCount || 0;
+
+  console.log("companyData", companyData);
   useEffect(() => {
     setCompanyUsers(people);
   }, [people]);
-
-  const { getFilterValue, setMultipleFilters } = useFilterState();
-  const companyService = useCompanyService();
 
   const itemsPerPage = parseInt(getFilterValue("limit") || "10");
   const currentPage =
@@ -338,7 +338,7 @@ export const PeopleList = () => {
   console.log("people section");
 
   return (
-    <div className="flex-1 px-6 pt-6">
+    <div className="flex-1 px-6">
       {/* <div className="h-full overflow-y-auto w-full grid grid-cols-[repeat(auto-fill,_220px)] gap-4 pb-3 justify-center">
         {companyUsers.filter((item) => (item.user_name !== null && item.user_profilePicture !== null))?.map((item, index: number) => (
           <PeopleCard poc={item} key={index} unlockPoc={unlockPoc} />
@@ -363,7 +363,7 @@ export const PeopleList = () => {
               Export
             </span>
           </Button>
-          <SortDropdown />
+          {/* <SortDropdown /> */}
         </div>
       </div>
       <div className="flex gap-3 flex-col">

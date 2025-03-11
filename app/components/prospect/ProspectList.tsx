@@ -298,7 +298,7 @@ export const ProspectList = () => {
               Export
             </span>
           </Button>
-          <SortDropdown />
+          {/* <SortDropdown /> */}
         </div>
       </div>
       {companies?.map((item, index) => (

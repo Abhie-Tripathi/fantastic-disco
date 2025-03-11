@@ -34,14 +34,15 @@ const filterData = [
 
 interface EventFollowersProps {
   variant?: "accordion" | "popover";
+  filterName?: string;
 }
 
-export default function EventFollowers({ variant = "accordion" }: EventFollowersProps) {
+export default function EventFollowers({ variant = "accordion", filterName = "eventFollowers" }: EventFollowersProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { setLocalFilter, getLocalFilterValue } = useFilterContext();
 
   const selectedRanges = useMemo(
-    () => getLocalFilterValue("eventFollowers").split(",").filter(Boolean),
+    () => getLocalFilterValue(filterName).split(",").filter(Boolean),
     [getLocalFilterValue]
   );
 
@@ -49,13 +50,18 @@ export default function EventFollowers({ variant = "accordion" }: EventFollowers
     const newRanges = selectedRanges.includes(rangeId)
       ? selectedRanges.filter((id) => id !== rangeId)
       : [...selectedRanges, rangeId];
-    setLocalFilter("eventFollowers", newRanges.join(","));
+    setLocalFilter(filterName, newRanges.join(","));
+  };
+
+  const labels: Record<string, string> = {
+    eventFollowers: "Event Followers",
+    communitySize: "Followers",
   };
 
   const triggerContent = (
     <div className="flex items-center justify-between w-full">
       <span className="flex items-center gap-2">
-        Event Followers
+        {labels[filterName as keyof typeof labels] || "Event Followers"}
         {selectedRanges.length > 0 && (
           <span className="grid place-items-center text-xs w-5 h-5 bg-primary rounded-full text-white">
             {selectedRanges.length}

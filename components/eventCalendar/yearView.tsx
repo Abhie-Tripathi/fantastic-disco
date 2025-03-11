@@ -162,7 +162,7 @@ const YearView = ({
                       const backgroundColor =
                         dayTotalEvents > 0
                           ? getHeatmapColor(heatmapCategory)
-                          : theme === "dark" ? "#171717" : "#FAFAFA";
+                          : theme === "dark" ? "#171717" : "#fff";
 
                       return (
                         <td

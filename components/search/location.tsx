@@ -48,6 +48,7 @@ export interface LocationItem {
 export type Location = GeoLocation | LocationItem[];
 export interface LocationProps {
   type?: string;
+  filterName?: string;
   isMandatory?: boolean;
 }
 
@@ -58,6 +59,7 @@ interface FlexibleComponentProps {
 export default function LocationSelector({
   type,
   isMandatory,
+  filterName,
   variant = "accordion",
 }: LocationProps & FlexibleComponentProps) {
   const pathName = usePathname();
@@ -145,6 +147,11 @@ export default function LocationSelector({
     };
   }, [pathName]);
 
+  const labels: Record<string, string> = {
+    companyLocationIds: "Company Location",
+    eventLocationIds: "Event Location",
+  };
+
   const handleLocationChange = () => {
     if (selectedLocation && !Array.isArray(selectedLocation)) {
       const geoLocation = selectedLocation as GeoLocation;
@@ -179,7 +186,9 @@ export default function LocationSelector({
 
   const triggerContent = (
     <div className="flex items-center truncate">
-      <span className="mr-2">Location</span>
+      <span className="mr-2">
+        {labels[filterName as keyof typeof labels] || "location"}
+      </span>
       {selectedLocation && (
         <span className="truncate ml-1 text-xs text-primary font-medium">
           {Array.isArray(selectedLocation) ? (
@@ -385,7 +394,10 @@ export default function LocationSelector({
     <Accordion type="single" collapsible>
       <AccordionItem value="location" className="border rounded-md">
         <AccordionTrigger
-          className={cn(buttonVariants({variant : "outline"}), "no-underline border-none justify-between px-3 py-5 text-base font-normal")}
+          className={cn(
+            buttonVariants({ variant: "outline" }),
+            "no-underline border-none justify-between px-3 py-5 text-base font-normal"
+          )}
         >
           {renderTriggerContent(triggerContent)}
         </AccordionTrigger>
