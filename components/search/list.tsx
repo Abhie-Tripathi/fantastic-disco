@@ -41,6 +41,7 @@ import holiday from "/public/eventType/holiday.svg";
 import { useTrackerContext } from "@/context/tracker";
 import { isEventeli } from "@/config";
 import { Button } from "../ui/button";
+import * as Flags from "country-flag-icons/react/3x2";
 
 interface CircularProgressProps {
   value: number | null;
@@ -125,6 +126,8 @@ export default function EventAccordion({
   const searchParams = useSearchParams();
   const { data: trackerData } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
+  const includeKeywords = getFilterValue("includeKeywords");
+  const audienceSpread = getFilterValue("audienceSpread");
   const query = Object.fromEntries(searchParams.entries());
   delete query.show;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
@@ -173,31 +176,35 @@ export default function EventAccordion({
       .map((show) => Show[show as keyof typeof Show]);
   }
   useEffect(() => {
-    if (events?.length>0) {
+    if (events?.length > 0) {
       setUpdatedEvents(events);
     }
   }, [events]);
 
   useEffect(() => {
     if (!events) return;
-  
+
     setUpdatedEvents((prevEvents) => {
       let newEvents = prevEvents ? [...prevEvents] : [...events];
-  
+
       if (query.eventType === "bookmarked") {
-        newEvents = newEvents.filter((event: Event) => event.basic.id !== eventId);
+        newEvents = newEvents.filter(
+          (event: Event) => event.basic.id !== eventId
+        );
       } else {
         newEvents = newEvents.map((event: Event) => {
           if (event.basic.id === eventId) {
             return {
               ...event,
               interests: interest
-                ? (Object.keys(interest) as Array<keyof typeof event.interests>).reduce(
+                ? (
+                    Object.keys(interest) as Array<keyof typeof event.interests>
+                  ).reduce(
                     (acc, key) => {
                       if (event.interests?.[key]) {
                         delete acc[key];
                       } else {
-                        acc[key] = interest[key]; 
+                        acc[key] = interest[key];
                       }
                       return acc;
                     },
@@ -210,7 +217,7 @@ export default function EventAccordion({
         });
       }
       console.log(newEvents);
-      
+
       return newEvents;
     });
   }, [eventId, interest]);
@@ -243,24 +250,25 @@ export default function EventAccordion({
   }
 
   if (events.length === 0) {
-    if(source==="tracker"){
-      if(query.eventType==="bookmarked"){
-        return( <NullState
-          image={TrackerNullState}
-          title="No events bookmarked yet! Start bookmarking events to easily track and revisit them here."
-        />)
-      }else
-      return( <NullState
-      image={TrackerNullState}
-      title="We couldn't find any events matching your tracker criteria at the moment."
-      text="Try adjusting your filters or checking back later, as new events are added frequently."
-      buttonText="Manage Configurations"
-      buttonUrl={`/internal/trackers/${
-        trackerId
-      }/editTracker?type=${query.type}`}
-    />)
-    }else 
-    return <ZeroState text="No events found" />;
+    if (source === "tracker") {
+      if (query.eventType === "bookmarked") {
+        return (
+          <NullState
+            image={TrackerNullState}
+            title="No events bookmarked yet! Start bookmarking events to easily track and revisit them here."
+          />
+        );
+      } else
+        return (
+          <NullState
+            image={TrackerNullState}
+            title="We couldn't find any events matching your tracker criteria at the moment."
+            text="Try adjusting your filters or checking back later, as new events are added frequently."
+            buttonText="Manage Configurations"
+            buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${query.type}`}
+          />
+        );
+    } else return <ZeroState text="No events found" />;
   }
   return (
     <div className="flex flex-col h-full">
@@ -276,22 +284,22 @@ export default function EventAccordion({
               key={event.basic.id}
               event={event}
               showValues={showValues}
+              audienceSpread={audienceSpread ? true : false}
+              includeKeywords={includeKeywords ? true : false}
             />
           ))}
         </ul>
       </div>
-      {totalPages > 1 && (
-        <div className="sticky bottom-0 bg-background py-3">
-          <PaginationComponent
-            currentPage={currentPage}
-            totalPages={totalPages}
-            itemsPerPage={itemsPerPage}
-            count={totalEvents}
-            onPageChange={handlePageChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
-          />
-        </div>
-      )}
+      <div className="sticky bottom-0 bg-background py-3">
+        <PaginationComponent
+          currentPage={currentPage}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          count={totalEvents}
+          onPageChange={handlePageChange}
+          onItemsPerPageChange={handleItemsPerPageChange}
+        />
+      </div>
     </div>
   );
 }
@@ -304,6 +312,8 @@ const EventListItem = ({
   setInterest,
   event,
   showValues,
+  audienceSpread,
+  includeKeywords,
 }: {
   trackerId?: string;
   view?: string;
@@ -312,6 +322,8 @@ const EventListItem = ({
   event: Event;
   showValues: Show[];
   global?:string;
+  audienceSpread: boolean;
+  includeKeywords: boolean;
 }) => {
   const address = event.basic.eventLocation ? (
     event.basic.eventLocation.venue?.name === "Online" ||
@@ -788,31 +800,82 @@ console.log(view);
                       </TooltipProvider>
                     )}
 
-                  {/* {event.audience?.audienceSpread && (
+                  {includeKeywords && (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
-    
-                            <Badge
-                              variant="outline"
-                              className="text-gray-600 capitalize"
-                            >
-                              {event.audience.(Object.keys(event.audience?.audienceSpread)[0])}
-                              Audience
-                            </Badge>
+                          <Badge
+                            variant="outline"
+                            className="flex items-center gap-2 text-gray-600 capitalize rounded-sm"
+                          >
+                            {event.basic.matchedKeywords?.join(" | ")}
+                          </Badge>
                         </TooltipTrigger>
-                        <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
+                        <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Matched Keywords</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+
+                  {includeKeywords && (
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="flex items-center gap-2 text-gray-600 capitalize rounded-sm"
+                          >
+                            {event.basic.matchedKeywords?.join(" | ")}
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
+                          <p>Matched Keywords</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+
+                  {audienceSpread && event.audience?.audienceSpread && (
+                    <TooltipProvider>
+                      <Tooltip delayDuration={0}>
+                        <TooltipTrigger>
+                          <Badge
+                            variant="outline"
+                            className="flex items-center gap-2 text-gray-600 capitalize rounded-sm"
+                          >
+                            <div className="flex gap-1">
+                              {Object.entries(event.audience.audienceSpread)
+                                .slice(0, 5)
+                                .map(([key, { iso, name }]) => {
+                                  const countryIso = iso === "UK" ? "GB" : iso;
+                                  const Flag =
+                                    Flags[countryIso as keyof typeof Flags];
+                                  return Flag ? (
+                                    <span
+                                      key={key}
+                                      className="inline-block rounded overflow-hidden"
+                                      title={name}
+                                    >
+                                      <Flag className="w-4 h-3 border" />
+                                    </span>
+                                  ) : null;
+                                })}
+                            </div>
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
                           <p>Audience Spread</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                  )} */}
+                  )}
                 </div>
               </div>
             </div>
-            
+
             <div className="col-span-5 flex flex-col gap-2 justify-between">
-              {(isEventeli && event.alerts && event.alerts?.length > 0) && (
+              {isEventeli && event.alerts && event.alerts?.length > 0 && (
                 <div className="flex items-center justify-end gap-2">
                   {event.alerts?.map((alert) => (
                     <Badge
