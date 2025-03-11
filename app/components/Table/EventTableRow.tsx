@@ -22,7 +22,6 @@ import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import { Filters } from "@/context/filterContext";
 import * as Flags from "country-flag-icons/react/3x2";
 import { useFilterState } from "@/hooks/useFilterState";
-import { StarFill } from "geist-icons";
 
 interface EventTableRowProps {
   event: Event;
@@ -123,8 +122,11 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   view,
 }) => {
   const { getFilterValue } = useFilterState();
-  const includeKeywords = getFilterValue("includeKeywords");
-  const audienceSpread = getFilterValue("audienceSpread");
+  const includeKeywords = getFilterValue("includeKeywords").split(",");
+  const excludeKeywords = getFilterValue("excludeKeywords").split(",");
+  const audienceSpread = getFilterValue("audienceSpread").split(",");
+  const showMatchKeywords =
+    includeKeywords.length + excludeKeywords.length >= 5;
 
   return (
     <TableRow key={event.basic.id}>
@@ -218,10 +220,20 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 </TooltipProvider>
               )}
               {show.includes(Show.branded) && event.advance?.isBranded && (
-                <Badge variant="outline">Brand</Badge>
+                <Badge
+                  variant="outline"
+                  className="text-[#DF2670] border-[#F9D7E2] bg-[#FEECF2] capitalize rounded-sm"
+                >
+                  Brand
+                </Badge>
               )}
               {show.includes(Show.series) && event.advance?.isSeries && (
-                <Badge variant="outline">Series</Badge>
+                <Badge
+                  variant="outline"
+                  className="text-[#0D8C7D] border-[#BEF4EB] bg-[#E5FAF6]  capitalize rounded-sm"
+                >
+                  Series
+                </Badge>
               )}
             </div>
             <div className="truncate font-medium">
@@ -370,15 +382,17 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             {event.insights?.reputationScore > 0 && event.basic.rating > 0 ? (
               <div className="grid grid-cols-3 px-4 items-center justify-items-center">
                 {event.insights?.reputationScore > 10 && (
-                  <ArrowUp className="w-4 h-4 text-success-text inline" />
+                  <span className="text-green-500 bg-green-100 rounded-full p-1">
+                    <ArrowUp className="w-4 h-4 inline" />
+                  </span>
                 )}
                 {event.insights?.reputationScore < -10 && (
-                  <ArrowDown className="w-4 h-4 text-danger-text inline" />
+                  <span className="text-red-500 bg-red-100 rounded-full p-1">
+                    <ArrowDown className="w-4 h-4  inline" />
+                  </span>
                 )}
-
                 <span className="col-start-2">{event.basic.rating}</span>
-
-                <StarFill className="w-2 h-2 inline text-primary" />
+                <Star className="inline w-4 h-4 text-primary fill-primary mr-2" />
               </div>
             ) : (
               "-"
@@ -396,12 +410,16 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               event.insights?.repeatSentiment > 0 ? (
                 <div className="text-success-text flex items-center justify-center gap-1">
                   {event.insights?.repeatSentiment}%
-                  <ArrowUp className="w-4 h-4" />
+                  <span className="text-green-500 bg-green-100 rounded-full p-1">
+                    <ArrowUp className="w-4 h-4 inline" />
+                  </span>
                 </div>
               ) : (
                 <div className="text-danger-text flex items-center justify-center gap-1">
                   {event.insights?.repeatSentiment}%
-                  <ArrowDown className="w-4 h-4" />
+                  <span className="text-red-500 bg-red-100 rounded-full p-1">
+                    <ArrowDown className="w-4 h-4  inline" />
+                  </span>
                 </div>
               )
             ) : (
@@ -432,13 +450,13 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       )}
 
       {/* Match Column */}
-      {includeKeywords && (
+      {showMatchKeywords && (
         <TableCell className="text-center">
           {event.basic.matchedKeywords?.join(" | ")}
         </TableCell>
       )}
 
-      {includeKeywords && (
+      {showMatchKeywords && (
         <TableCell className="text-center">
           {(() => {
             const percentage = event.basic.matchedKeywordsPercentage ?? null;

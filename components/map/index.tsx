@@ -69,7 +69,7 @@ interface MapProps {
   isGlobal?: boolean;
   trackerLoc?: string;
   trackerType?: string;
-  eventType?:string;
+  eventType?: string;
 }
 
 interface Coordinates {
@@ -90,17 +90,17 @@ export default function MapComponent({
   isGlobal,
   trackerLoc,
   trackerType,
-  eventType
+  eventType,
 }: MapProps) {
   console.log(eventType);
-  
+
   const searchParams = useSearchParams();
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
-console.log(trackerLoc);
+  console.log(trackerLoc);
 
   const { data } = useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
@@ -151,7 +151,7 @@ console.log(trackerLoc);
 
   const location = useMemo(() => {
     const geoCoordinates = getLocalFilterValue("geoCoordinates");
-    
+
     const locationIds =
       source === "tracker"
         ? trackerLoc?.length > 0
@@ -173,7 +173,8 @@ console.log(trackerLoc);
     }
     return null;
   }, [searchParams, trackerLoc]);
-console.log(eventType);
+
+  console.log(location)
 
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey:
@@ -351,10 +352,9 @@ console.log(eventType);
           };
 
           try {
-            const modifiedSearchParams = searchParams?.toString().replace(
-              /locationIds=[^&]*&?/,
-              ""
-            );
+            const modifiedSearchParams = searchParams
+              ?.toString()
+              .replace(/locationIds=[^&]*&?/, "");
 
             const viewBoundString = encodeURIComponent(
               JSON.stringify(viewBound)
@@ -372,12 +372,8 @@ console.log(eventType);
                 `viewBound=${viewBoundString}`,
                 searchParams
               );
-              console.log(eventsData);
-              
             } else {
               eventsData = await getEventsWithSearchParams(finalSearchParams);
-              console.log(eventsData);
-              
             }
             setEvents((eventsData?.events as MapEvents[]) || []);
           } catch (error) {
@@ -594,7 +590,7 @@ console.log(eventType);
 
   const handleEventLeave = () => {
     setHighlightedEvent(null);
-  };  
+  };
   return (
     <div className="relative">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
@@ -627,7 +623,6 @@ console.log(eventType);
                     height: !isGlobal ? "calc(100vh - 136px)" : "300px",
                   }}
                   onMove={onMove}
-                
                   onLoad={onMapLoad}
                   onClick={handleMapClick}
                   onMouseMove={(e) => {
@@ -724,7 +719,7 @@ console.log(eventType);
                   )}
 
                   <EventList
-                  eventType={eventType}
+                    eventType={eventType}
                     source={source}
                     trackerId={trackerId}
                     searchParam={searchParams}
