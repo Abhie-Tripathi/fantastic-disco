@@ -160,7 +160,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
 
   const {
     scores,
-    repeatSentiment: trustScore,
+    trustScore,
     exhibitorsCount,
     speakersCount,
     sponsorsCount,
