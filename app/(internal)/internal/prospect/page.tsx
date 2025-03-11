@@ -148,11 +148,6 @@ const sortedPeopleFilters = [...allFilters]
   .sort((a, b) => a.peoplePosition - b.peoplePosition);
 
 const Prospect = () => {
-  if (isEventeli) {
-    return (
-      <NotFound />
-    );
-  }
   const searchParams = useSearchParams();
   const companyService = useCompanyService();
 
@@ -181,6 +176,7 @@ const Prospect = () => {
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
+    enabled: !isEventeli,
   });
 
   const companies = companyData?.companyData || [];
@@ -198,6 +194,12 @@ const Prospect = () => {
   const handleTabChange = (prop: string) => {
     setFilter("viewBy", prop);
   };
+
+  if (isEventeli) {
+    return (
+      <NotFound />
+    );
+  }
 
   return (
     <div className="space-y-6">
