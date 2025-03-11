@@ -1,5 +1,6 @@
 import "@/app/globals.css";
 import { getSession } from "next-auth/react";
+import Providers from "./providers";
 
 export default async function RootLayout({
   children,
@@ -10,8 +11,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen">
-        {children}
-        {/* <Providers session={session}>{children}</Providers> */}
+        <Providers session={session}>{children}</Providers>
       </body>
     </html>
   );

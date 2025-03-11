@@ -179,7 +179,7 @@ const GtmSignUpForm = () => {
       <p className="font-semibold text-lg leading-6 text-center mb-5">
         Create your account
       </p>
-      {/* <div className="flex flex-col gap-4 w-96 mx-auto mt-6">
+      <div className="flex flex-col gap-4 w-96 mx-auto mt-6">
         <Button variant={"outline"} className="flex items-center justify-between">
           <Image
             src={GoogleIcon}
@@ -197,7 +197,7 @@ const GtmSignUpForm = () => {
           <span className="flex-1">Continue with LinkedIn</span>
         </Button>
       </div>
-      <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p> */}
+      <p className="text-sm mt-4 text-[var(--tertiary-text-color)]">OR</p>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full mt-4"
