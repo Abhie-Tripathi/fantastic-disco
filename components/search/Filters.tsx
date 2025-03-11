@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { FilterX, ChevronLeft, ChevronRight } from "lucide-react";
 import { Filter } from "geist-icons";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import Industry from "@/app/components/prospect/Filters/industryFilter";
 import { useFilterContext } from "@/context/filterContext";
 import CompanySize from "@/app/components/prospect/Filters/companySize";
@@ -50,6 +50,9 @@ import whrbotlogo from "@/public/whrbotlogo.svg";
 import Image from "next/image";
 import { isEventeli } from "@/config";
 import Link from "next/link";
+import CreateTrackerDialog from "./createTrackerDialog";
+import { GAEvent } from "@/utils/GAEvent";
+import { toast } from "@/hooks/use-toast";
 
 interface FilterSection {
   id: string;
@@ -411,18 +414,35 @@ const getFilterComponent = (componentName: string) => {
 
 interface FiltersProps {
   isCollapsed?: boolean;
+  source?:string;
   onToggleCollapse?: () => void;
   type: "events" | "companies" | "people";
 }
 
-const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
-  const { localFilters, applyFilters, deleteMultipleLocalFilters, setLocalFilter } =
+const Filters = ({ isCollapsed, onToggleCollapse, type, source }: FiltersProps) => {
+  const { localFilters, applyFilters, deleteMultipleLocalFilters } =
     useFilterContext();
+
+  const { getFilterValue } = useFilterState();
   const filterCount = Object.keys(localFilters).length;
+  const [trackerModalOpen, setTrackerModalOpen] = useState(false);
 
   const searchHandler = useCallback(() => {
     applyFilters({ resetPage: true });
   }, []);
+
+  const createTrackerHandler = async () => {
+    GAEvent("research", "Filters", "Saved Filter | Viewed", "Saved Filter");
+
+    if (!getFilterValue("locationIds")) {
+      toast({
+        title: "Please select location",
+        variant: "destructive",
+      });
+    } else {
+      setTrackerModalOpen(true);
+    }
+  };
 
   return (
     <div>
@@ -436,7 +456,8 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
           <ChevronLeft className="w-4 h-4  group-hover:text-primary transition-colors" />
         )}
       </button>
-      <div className="overflow-y-auto pt-4 pl-6 h-[calc(100vh-60px)] flex flex-col">
+      <div className={`overflow-y-auto h-[calc(100vh-60px)] flex flex-col ${source !== "tracker" ? "pt-4 pl-6" : ""}`}>
+        {source!=="tracker" &&
         <div className="pb-3 sticky top-0 bg-background z-10">
           <Tabs defaultValue={type} value={type}>
             <TabsList className="grid grid-cols-3 w-full h-auto bg-[#F8F8FA] p-1 rounded-lg">
@@ -470,7 +491,8 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
             </TabsList>
           </Tabs>
         </div>
-
+      }
+        {source!=="tracker" &&
         <div className="mb-3 bg-[#F7F7FF] rounded-xl p-4 border border-[#E6E6E6]">
           <div className="flex items-center gap-2">
             <Image
@@ -485,11 +507,14 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
               Let's save this search and help you track efficiently.
             </div>
             <div className="flex items-center">
-              <Switch />
+              <Switch
+                checked={trackerModalOpen}
+                onCheckedChange={createTrackerHandler}
+              />
             </div>
           </div>
         </div>
-
+        }   
         <div className="flex-1 overflow-y-auto w-full mt-0">
           <div className="p-3 bg-[var(--background-secondary-color)]">
             <Accordion
@@ -544,14 +569,16 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
             </Accordion>
           </div>
         </div>
-
+        {source!=="tracker" &&
         <div className="w-full sticky bottom-0 bg-background z-10">
           <div className="p-4 border-t bg-white/80 backdrop-blur-sm space-y-3 mb-3">
             <div className="flex items-center justify-between mb-2">
               <Button
                 variant="ghost"
                 onClick={() => {
-                  deleteMultipleLocalFilters(Object.keys(localFilters) as any[]);
+                  deleteMultipleLocalFilters(
+                    Object.keys(localFilters) as any[]
+                  );
                 }}
                 disabled={Object.keys(localFilters).length === 0}
                 className="text-xs text-[#6E6F89] hover:text-primary hover:bg-transparent p-0 h-auto font-normal"
@@ -568,6 +595,11 @@ const Filters = ({ isCollapsed, onToggleCollapse, type }: FiltersProps) => {
             </Button>
           </div>
         </div>
+        }
+        <CreateTrackerDialog
+          open={trackerModalOpen}
+          onOpenChange={setTrackerModalOpen}
+        />
       </div>
     </div>
   );

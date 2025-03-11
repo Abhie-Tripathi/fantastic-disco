@@ -37,7 +37,7 @@ const SearchLayout = ({ children, type }: SearchLayoutProps) => {
           <Filters type={type} isCollapsed={isCollapsed} onToggleCollapse={() => setIsCollapsed(!isCollapsed)} />
         </div>
       </div>
-      <div className={`flex-1 transition-all duration-300 relative ${isCollapsed ? 'pl-12' : ''}`}>
+      <div className={`flex-1 w-[62%] transition-all duration-300 relative ${isCollapsed ? 'pl-12' : ''}`}>
         {children}
       </div>
     </div>

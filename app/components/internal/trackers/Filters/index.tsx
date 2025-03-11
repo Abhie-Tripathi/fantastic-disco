@@ -2,6 +2,7 @@
 import styles from "./filters.style.module.css";
 import React, { useState, useEffect, Suspense, lazy, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Filter } from "lucide-react";
 import { showToast } from '@/utils/showToast';
 import { cn } from "@/lib/utils";
 import { isEventeli } from "@/config";
@@ -80,6 +81,7 @@ import { categories, newCategories } from "@/data/categories";
 import Presets from "./Presets";
 import TeliTemplates from "./teliTemplates";
 import { viewBound } from "@/types/events/dto/event-query.dto";
+import Filters from "@/components/search/Filters";
 type EventGroupType = "social" | "business";
 interface InputArea {
   type: string;
@@ -407,9 +409,9 @@ const templates = [
 const Pages = () => {
   const {searchParams: search} = useDefaultFilters();
   const searchParams = useSearchParams();
-  
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const {data: editData, setEditTrue, setData: setEditData, setIsNewCall} = useTrackerContext();
-  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters} = useFilterContext();
+  const { getLocalFilterValue, setLocalFilter, setMultipleLocalFilters, localFilters} = useFilterContext();
   const {enabledFilters } = useFilterContext();
   const [presetTemplateData, setPresetTemplateData] = useState<PresetJsonData[]>([])
   const {getTrackerDetail,createTracker,editTracker, error, delTracker}=useTrackerServices();
@@ -450,7 +452,7 @@ const Pages = () => {
   const [isCreating, setIsCreating] = useState(false);
   const [isMandatory, setIsMandatory] = useState(false);
   const [designations, setDesignations] = useState("");
-
+  const filterCount = Object.keys(localFilters).length;
   const [suggestions, setSuggestions] = useState<string[]>([]);
   useEffect(() => { 
     if (type === "T_COMPETITOR" || type === "T_CUSTOMER_ICP") {
@@ -1209,9 +1211,29 @@ return (
   </div>
   <div ref={scrollableDivRef} className="flex flex-col gap-2 w-[calc(100vw-134px)]" style={{ marginTop: pathName[pathName.length - 1] === "create" ? "104px" : "140px" }}>
     {/* <div className='fixed top-0 w-[calc(100vw-134px)] bg-[var(--primary-foreground)] h-[224px]' style={{ height: pathName[pathName.length - 1] === "create" ? "124px" : "224px", zIndex:"3"}}></div> */}
-    <div className="grid grid-cols-[1fr_3fr] gap-4">
-    <div className="bg-[var(--heading-background-color)] p-4">one</div>
-    <div className="flex flex-col gap-4">
+    {/* <div> */}
+    <div className="flex gap-4 h-[calc(100vh-174px)]">
+    {isCollapsed && (
+        <div className="fixed left-[82px] top-[84px] z-30 overflow-hidden">
+          <button
+            onClick={() => setIsCollapsed(false)}
+            className="group relative bg-white hover:bg-[#F8F8FA] border border-[#E6E6E6] shadow-sm rounded-full w-9 h-9 flex items-center justify-center transition-all duration-200"
+          >
+            <Filter className="w-4 h-4 text-[#6E6F89] group-hover:text-primary transition-colors" />
+            {filterCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-primary text-[10px] font-medium text-white rounded-full min-w-[20px] h-[20px] flex items-center justify-center px-1.5 border-2 border-white">
+                {filterCount}
+              </span>
+            )}
+          </button>
+        </div>
+      )}
+    <div className={`transition-all duration-300 sticky top-0 h-screen overflow-hidden ${isCollapsed ? 'w-0' : 'w-[100%] max-w-[368px]'}`}>
+        <div className={`h-full transition-transform duration-300 ${isCollapsed ? '-translate-x-full' : 'translate-x-0'}`}>
+    <Filters type="events" isCollapsed={isCollapsed} onToggleCollapse={() => setIsCollapsed(!isCollapsed)} source="tracker"/>
+    </div>
+    </div>
+    <div className={`flex gap-2 flex-col ${isCollapsed ? 'w-[100%]' : 'w-[70%]'} transition-all duration-300 ${isCollapsed ? 'pl-12' : ''}`}>
     <div
       className="px-6 py-1 w-full border border-[var(--input-border-color)] rounded-[var(--border-radius-sm)]"
       style={{

@@ -29,7 +29,7 @@ import TrackerLocation from '@/public/internal/location.svg'
 import Table from "@/app/components/Table/EventTable";
 import TrackerCard from "@/app/components/internal/trackers/TrackerCard";
 import { baseUrl } from "@/constants";
-import Add from "/public/add.svg";
+import Add from "/public/Add.svg";
 import { myFetch } from "@/utils/myFetch";
 import Image from "next/image";
 import Expand from "/public/expand_more.svg";
