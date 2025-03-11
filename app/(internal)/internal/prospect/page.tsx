@@ -35,6 +35,8 @@ import { PeopleList } from "@/app/components/prospect/PeopleList";
 import { useFilterState } from "@/hooks/useFilterState";
 import { CompanyListResponse } from "@/types/prospect";
 import DesignationFilter from "@/app/components/prospect/Filters/designation";
+import { isEventeli } from "@/config";
+import NotFound from "@/app/not-found";
 
 interface ProspectFilters {
   id: string;
@@ -146,6 +148,11 @@ const sortedPeopleFilters = [...allFilters]
   .sort((a, b) => a.peoplePosition - b.peoplePosition);
 
 const Prospect = () => {
+  if (isEventeli) {
+    return (
+      <NotFound />
+    );
+  }
   const searchParams = useSearchParams();
   const companyService = useCompanyService();
 
