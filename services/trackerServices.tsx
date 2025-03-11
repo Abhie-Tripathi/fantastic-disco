@@ -8,7 +8,7 @@ import {CalendarWeekEventsResponse, EventCount, MapEventsResponse, EventResponse
 import { EventTableType } from '@/types/ListViewTable';
 import { useFilterState } from '@/hooks/useFilterState';
 import { usePathname } from 'next/navigation';
-import { isEventeli } from '@/config';
+import { BASE_URL, isEventeli } from '@/config';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
@@ -93,7 +93,7 @@ export const useTrackerServices = () => {
       console.log(params);
       
       const response = await api.request<EventResponse>(
-        `https://gtmdev-api.whr.ai/me/account/saved-events`,
+        `${BASE_URL}/me/account/saved-events?limit=${params.limit|| 10}&offset=${params.offset || 0}`,
         {
           method: "GET"
         }

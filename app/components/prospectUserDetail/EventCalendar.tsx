@@ -134,10 +134,10 @@ export const EventCalendar = ({
                     </p>
 
                     <p className="flex gap-2 items-center text-[#666666] text-[12px]">
-                      <span className={`${event.basic.status === "POSTPONED" || event.basic.status === "CANCELLED" ? "line-through" : ""}`} >
+                      <span className={`${event.basic.status === "postponed" || event.basic.status === "cancelled" ? "line-through" : ""}`} >
                         {formatEventDates(event.basic.startDateTime, event.basic.endDateTime)}
                       </span>
-                      {event.basic.status === "CANCELLED" && (
+                      {event.basic.status === "cancelled" && (
                         <Badge
                           variant="outline"
                           className="border-destructive text-destructive px-1"
@@ -145,7 +145,7 @@ export const EventCalendar = ({
                           Cancelled
                         </Badge>
                       )}
-                      {event.basic.status === "POSTPONED" && (
+                      {event.basic.status === "postponed" && (
                         <Badge
                           variant="outline"
                           className="border-[#FF990A] text-[#FF990A]"
@@ -229,10 +229,10 @@ export const EventCalendar = ({
                     </p>
 
                     <p className="flex gap-2 items-center text-[#666666] text-[12px]">
-                      <span className={`${event.basic.status === "POSTPONED" || event.basic.status === "CANCELLED" ? "line-through" : ""}`} >
+                      <span className={`${event.basic.status === "postponed" || event.basic.status === "cancelled" ? "line-through" : ""}`} >
                         {formatEventDates(event.basic.startDateTime, event.basic.endDateTime)}
                       </span>
-                      {event.basic.status === "CANCELLED" && (
+                      {event.basic.status === "cancelled" && (
                         <Badge
                           variant="outline"
                           className="border-destructive text-destructive px-1"
@@ -240,7 +240,7 @@ export const EventCalendar = ({
                           Cancelled
                         </Badge>
                       )}
-                      {event.basic.status === "POSTPONED" && (
+                      {event.basic.status === "postponed" && (
                         <Badge
                           variant="outline"
                           className="border-[#FF990A] text-[#FF990A]"

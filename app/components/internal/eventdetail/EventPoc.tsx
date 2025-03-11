@@ -78,7 +78,7 @@ const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) 
         <div className={styles.accordian}>
           <div className={styles.allFollowerContainer}>
             {pocData?.length > 0 ? (
-              pocData.slice(0, 5).map((poc) => (
+              pocData.slice(0, 1).map((poc) => (
                 <>
                 {poc!==null &&
                   <div key={poc.id} className="flex flex-row gap-3 p-2">
@@ -144,7 +144,7 @@ const EventPoc = ({ open, eventId, setExpandedTab, pocData, unlockPoc }: Props) 
                 No POC found
               </p>
             )}
-            {pocData?.length > 5 &&
+            {pocData?.length > 1 &&
               <Button
                 variant="link"
                 onClick={() => {
