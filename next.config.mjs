@@ -20,6 +20,7 @@ const config = {
           'login.10times.com',
           'api.dev.gtm.whr.ai',
           'im.gifbt.com',
+          'gtmdev-api.whr.ai',
         ],
   },
   experimental: {

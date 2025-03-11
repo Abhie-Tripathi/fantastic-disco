@@ -306,7 +306,7 @@ const templates = [
   {
     name: "T_BRAND_BUILDING",
     templateName: "Brand Building",
-    type: "enabled",
+    type: "disabled",
     description: "Input designations and upload job descriptions to identify relevant events effortles",
     inputAreas: [
       {
