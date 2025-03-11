@@ -24,7 +24,7 @@ import { GAEvent } from "@/utils/GAEvent";
 import EventDetail from "./eventdetail/EventDetail";
 import ShortlistModal from "./eventdetail/shortlistModal";
 import { endpoints } from "@/config/endpoints";
-import AddEventModal from "@/components/coordinate/addEvent";
+import AddEventModal from "@/components/coordinate/addEvent/AddEventModal";
 
 interface Props {
   coordinateActions: any;

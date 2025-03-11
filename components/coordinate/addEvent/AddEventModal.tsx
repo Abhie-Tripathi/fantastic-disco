@@ -1,92 +1,19 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import AttendeeIcon from "/public/widgetimages/attendeeIcon.svg";
-import SpeakerIcon from "/public/widgetimages/speakerIcon.svg";
-import ExhibitorIcon from "/public/widgetimages/exhibitorIcon.svg";
-import OrganiserIcon from "/public/widgetimages/organiserIcon.svg";
-import Image from "next/image";
-// import DateTimeContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/DateTimeContainer";
-// import { FormState } from "@/types/Formstate";
 import { Input } from "@/components/ui/input";
 import { Calendar, Share } from "geist-icons";
 import { Checkbox } from "@/components/ui/checkbox";
 import eventData from "@/public/data/prospect/userEventData.json";
 import { Event } from "@/types/events";
-import { formatEventDates } from "@/utils/dateFormat";
+// import { formatEventDates } from "@/utils/dateFormat";
 import { formattedDateRange } from "@/utils/date";
 import { Radio } from "lucide-react";
+// import CsvUpload from "./csvUpload";
+import Papa from "papaparse";
+import EventForm from "./EventForm";
 import Modal from "./modal";
-
-const EventForm = () => {
-  const participationOptions = [
-    { label: "Attendee", value: "Attendee", icon: AttendeeIcon },
-    { label: "Speaker", value: "Speaker", icon: SpeakerIcon },
-    { label: "Exhibitor", value: "Exhibitor", icon: ExhibitorIcon },
-    { label: "Organiser", value: "Organiser", icon: OrganiserIcon },
-  ];
-
-  return (
-    <div className="grid gap-4 border rounded-lg p-4 px-6">
-      <div className="flex justify-between">
-        <span className="text-[var(--secondary-text-color)]">
-          Choose Your Event Type
-        </span>
-        <div className="flex gap-3">
-          {["Tradeshow", "Conference", "Workshop"].map((type) => (
-            <label key={type} className="flex gap-2 items-center text-base">
-              <input
-                type="radio"
-                name="eventType"
-                value={type}
-                // checked={selectedEventType === type}
-                // onChange={handleOptionChange}
-                // className={styles.radio}
-              />
-              {type}
-            </label>
-          ))}
-        </div>
-      </div>
-      <div>
-        <span className="text-[var(--secondary-text-color)]">
-          Choose Your Mode of Participation
-        </span>
-        <div className="flex gap-3 my-2">
-          {participationOptions.map((option) => (
-            <div
-              key={option.value}
-              className="p-2 border rounded-sm flex items-center gap-3 cursor-pointer border-[var(--border-color)]"
-              // onClick={() => handleSelection(option.value)}
-            >
-              <Image
-                src={option.icon}
-                alt={`${option.label} icon`}
-                height={30}
-                width={30}
-              />
-              <span>{option.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <textarea
-          className="outline-none resize-none text-4xl font-semibold w-full h-12"
-          maxLength={80}
-          placeholder="Event Name"
-        />
-      </div>
-    </div>
-  );
-};
+import ColMapping from "./colMapping";
 
 const EventListItem = ({ event }: { event: Event }) => {
   const address = event.basic.eventLocation ? (
@@ -171,12 +98,98 @@ const EventListItem = ({ event }: { event: Event }) => {
   );
 };
 
+const EventListItem2 = ({ event }: { event: Event }) => {
+  const address = event.basic.eventLocation ? (
+    event.basic.eventLocation.venue?.name === "Online" ||
+    event.basic.format === "online" ? (
+      <span className="flex items-center">
+        <Radio className="w-4 h-4 mr-1" /> Online
+      </span>
+    ) : event.basic.format === "hybrid" ? (
+      <span className="flex items-center">
+        <Radio className="w-4 h-4 mr-1" />
+        <span>Hybrid&nbsp;-&nbsp;</span>
+        {[
+          event.basic.eventLocation.venue?.name || "TBA",
+          event.basic.eventLocation.city?.name,
+          event.basic.eventLocation.state?.name !==
+          event.basic.eventLocation.city?.name
+            ? event.basic.eventLocation.state?.name
+            : null,
+          event.basic.eventLocation.country?.name !==
+          event.basic.eventLocation.city?.name
+            ? event.basic.eventLocation.country?.name
+            : null,
+        ]
+          .filter(Boolean)
+          .join(", ")}
+      </span>
+    ) : (
+      [
+        event.basic.eventLocation.venue?.name,
+        event.basic.eventLocation.city?.name,
+        event.basic.eventLocation.state?.name !==
+        event.basic.eventLocation.city?.name
+          ? event.basic.eventLocation.state?.name
+          : null,
+        event.basic.eventLocation.country?.name !==
+        event.basic.eventLocation.city?.name
+          ? event.basic.eventLocation.country?.name
+          : null,
+      ]
+        .filter(Boolean)
+        .join(", ")
+    )
+  ) : (
+    "Venue to be announced"
+  );
+
+  return (
+    <div className="col-span-3 w-full cursor-pointer text-[var(--primary-text-color)] bg-[var(--primary-foreground)] p-3 rounded shadow-sm border relative flex gap-3">
+      {event.basic.logoUrl && (
+        <div className="w-14 h-14">
+          <img
+            src={event.basic.logoUrl}
+            alt={`logo`}
+            className="w-14 h-14 object-contain p-2 border rounded-md bg-white shadow-sm"
+          />
+        </div>
+      )}
+      <div className="flex flex-col gap-1 h-full">
+        <div className="text-base font-medium">{event.basic.name}</div>
+        <div className={`text-[var(--tertiary-text-color)] text-sm`}>
+          {event.basic.organizer?.name}
+        </div>
+        <p className="text-sm capitalize">{address}</p>
+        <div
+          className={`flex items-center text-sm text-gray-600 gap-2 leading-6`}
+        >
+          <Calendar
+            height={"14px"}
+            width={"14px"}
+            color="var(--secondary-text-color)"
+          />
+          <div>
+            {formattedDateRange(
+              event.basic.startDateTime,
+              event.basic.endDateTime
+            )}
+          </div>
+        </div>
+      </div>
+      {/* <div className="flex items-center justify-center">
+        <Button size="sm">Add </Button>
+      </div> */}
+    </div>
+  );
+};
+
 const DuplicateEvent = () => {
   const [listExpanded, setListExpanded] = useState<boolean>(false);
   return (
-    <div className="border rounded-sm">
+    <div className="border rounded-sm h-fit">
       <div className="grid grid-cols-4 p-3 items-center">
-        <div className="col-span-2 ">Event Name 1</div>
+        <div className="col-span-2 ">Canada Farm Show</div>
         <div className="col-span-1 text-sm">2 duplicate events found</div>
         <Button
           className="p-0"
@@ -189,7 +202,7 @@ const DuplicateEvent = () => {
       </div>
       {listExpanded && (
         <div className="p-3 grid grid-cols-4 gap-3 max-h-[300px] overflow-y-auto">
-          {eventData.events.map((item: any) => {
+          {eventData.events.slice(0, 2).map((item: any) => {
             return (
               <>
                 <EventListItem event={item} />
@@ -199,25 +212,34 @@ const DuplicateEvent = () => {
               </>
             );
           })}
+          <div className="col-span-4">
+            <div>
+            <Checkbox />
+            These events are different create new event.
+            </div>
+            <Button size="sm">Create New </Button>
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-const AddedEvent = () => {
+const AddedEvent = ({ event }: { event: any }) => {
+  // console.log('event', event);
+
   // const [listExpanded, setListExpanded] = useState<boolean>(false);
 
-  const event = {
-    name: "Test",
-    logoUrl: "",
-    organizer: "organizer",
-    startDateTime: "",
-    endDateTime: "",
-    address: "",
-  };
+  // const event = {
+  //   name: "The Travel and Vacation Show",
+  //   logoUrl: "",
+  //   organizer: "Player Expositions Inc",
+  //   startDateTime: "2025-04-12",
+  //   endDateTime: "2025-04-13",
+  //   address: "Shaw Centre, Ottawa, Canada",
+  // };
   return (
-    <div className="border rounded-sm grid grid-cols-4 items-center">
+    <div className="grid grid-cols-4 items-center rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200">
       <div className="col-span-3 w-full  p-3  relative flex gap-3">
         {event.logoUrl && (
           <div className="w-14 h-14">
@@ -292,6 +314,10 @@ export default function AddEventModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [eventFormOpen, setEventFormOpen] = useState<boolean>(false);
   const [showEventList, setShowEventList] = useState<boolean>(false);
+  const [showDuplicateEventList, setShowDuplicateEventList] =
+    useState<boolean>(false);
+
+  const [showColMapping, setShowColMapping] = useState<boolean>(false);
 
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
@@ -323,6 +349,54 @@ export default function AddEventModal() {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const [csvData, setCsvData] = useState<any[]>([]);
+  const [error, setError] = useState<string>("");
+  const fileInputRef = React.createRef<HTMLInputElement>();
+
+  const scrollableDivRef = useRef<HTMLDivElement>(null);
+
+  // Handle file change event
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    // Parse the CSV file using PapaParse
+    Papa.parse(file, {
+      complete: (result) => {
+        console.log("result.data", result.data);
+
+        setCsvData(result.data);
+        setError("");
+        setShowColMapping(true);
+        // setShowEventList(true);
+      },
+      header: true, // assuming the first row contains headers
+      skipEmptyLines: true, // skip empty lines
+      error: (err) => {
+        setError("Error parsing file");
+        console.error(err);
+      },
+    });
+  };
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleSave = () => {
+    setShowDuplicateEventList(true);
+    setTimeout(() => {
+      if (scrollableDivRef.current) {
+        scrollableDivRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }, 500);
+  };
 
   return (
     <div>
@@ -399,10 +473,17 @@ export default function AddEventModal() {
             <Button onClick={hadleFetch} disabled={isFetching}>
               {isFetching ? "Fetching..." : "Fetch Data"}
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleButtonClick}>
               <Share height="14px" width="14px" className="mr-1" />
               Bulk Import
             </Button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+            />
           </div>
 
           <Button
@@ -416,28 +497,73 @@ export default function AddEventModal() {
             or add details manually
           </Button>
 
-          <div
-            className={`transition-opacity duration-500 ease-in-out ${
-              eventFormOpen ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {eventFormOpen && <EventForm />}
-          </div>
+          <div className="flex flex-col gap-3 overflow-y-auto">
 
-          <div
-            className={`transition-opacity duration-500 ease-in-out ${
-              showEventList ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            {showEventList && (
-              <div className="grid gap-3 h-full overflow-y-auto">
-                <div className="font-medium text-base">Events Data</div>
-                <DuplicateEvent />
-                <DuplicateEvent />
-                <AddedEvent />
-                <AddedEvent />
-              </div>
-            )}
+            <div
+              className={`transition-opacity duration-500 ease-in-out ${
+                showColMapping ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {/* {eventFormOpen && <ColMapping />} */}
+              {showColMapping && <ColMapping csvData={csvData.slice(0, 3)} setShowEventList={setShowEventList} />}
+            </div>
+
+            <div
+              className={`transition-opacity duration-500 ease-in-out ${
+                eventFormOpen ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {eventFormOpen && <EventForm handleSave={handleSave} />}
+            </div>
+
+            {/* Duplicate Event Container */}
+            <div
+              className={`transition-opacity duration-500 ease-in-out ${
+                showDuplicateEventList ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {showDuplicateEventList && (
+                <>
+                  <div
+                    ref={scrollableDivRef}
+                    className="font-medium text-base mb-3 text-destructive"
+                  >
+                    Following duplicate events found
+                  </div>
+                  <div className="flex flex-col gap-3 pr-1 h-[calc(100vh-210px)] overflow-y-auto">
+                    {eventData.events.slice(0, 2).map((item: any) => {
+                      return (
+                          <EventListItem2 event={item} />
+                          
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div
+              className={`transition-opacity duration-500 ease-in-out ${
+                showEventList ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {showEventList && (
+                <>
+                  <div className="font-medium text-base mb-3">Events Data</div>
+                  <div className="flex flex-col gap-3 pr-1 h-[calc(100vh-210px)] overflow-y-auto">
+                    {/* <div className="font-medium text-base">Events Data</div> */}
+                    <DuplicateEvent />
+                    {/* <DuplicateEvent /> */}
+                    {/* <AddedEvent />
+                <AddedEvent /> */}
+                    {csvData.length > 0 &&
+                      csvData.map((item, index) => (
+                        <AddedEvent event={item} key={index} />
+                      ))}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
 
