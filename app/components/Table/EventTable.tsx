@@ -184,6 +184,7 @@ console.log(events);
             <TableBody>
               {updatedEvents && updatedEvents.map((event: Event) => (
                 <EventTableRow
+                  global={view}
                   view={query.eventType}
                   setEventId={setEventId}
                   setInterest={setInterest}

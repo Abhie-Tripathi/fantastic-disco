@@ -29,6 +29,7 @@ import * as turf from "@turf/turf";
 import { useTrackerServices } from "@/services/trackerServices";
 import SortDropdown from "@/components/search/sortDropdown";
 import { lightenColor } from "@/lib/utils";
+import { viewBound } from "@/types/events/dto/event-query.dto";
 
 const EventCard = memo(
   ({
@@ -383,6 +384,7 @@ function EventList({
           radius: mapRadius,
         },
       };
+      console.log(viewBound);
       if (source === "tracker") return JSON.stringify(viewBound).toString();
       params.set("viewBound", JSON.stringify(viewBound));
       params.set("sortBy", sortBy);
@@ -392,7 +394,7 @@ function EventList({
   }, [searchParams, currentPage, showEventType, mapCenter, mapRadius, sortBy]);
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ["events", source==="tracker"?eventType:filteredParams.toString(), currentPage, sortBy],
+    queryKey: ["events", filteredParams.toString(), currentPage, sortBy, eventType],
     queryFn: () =>
       source === "tracker"
         ? getTrackerMapEvents(
@@ -404,7 +406,7 @@ function EventList({
           )
         : eventService.getEventsWithSearchParams(filteredParams.toString()),
   });
-
+  
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };

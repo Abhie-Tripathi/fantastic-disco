@@ -30,7 +30,8 @@ interface EventTableRowProps {
   setEventId?: any;
   setInterest?: any;
   view?:string;
-  localFilters: Filters;
+  localFilters: Filters
+  global?:string;
 }
 
 function getForecastedStatus(data: any) {
@@ -120,7 +121,8 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   type,
   setEventId,
   setInterest,
-  view
+  view,
+  global
 }) => {
   
   // console.log(interest);
@@ -522,7 +524,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       </TableCell>
       <TableCell
         className="sticky right-[68px] bg-background z-0"
-        style={{ zIndex: 0, minWidth:"130px", textAlign:"center", background:"var(--heading-background-color)"}}
+        style={{ zIndex: 0, minWidth:"132px", textAlign:"center", background:"var(--heading-background-color)"}}
       >
         <span className={getAssociationColor(getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociationPercentage")[0])}>
        {getTrackerAssociation(event.trackerMatchInfo, "peopleFinderPersonAssociationPercentage")[0]}
@@ -622,6 +624,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
       </>
       }
+      {global!=="global" &&
       <TableCell
         className="sticky right-0 bg-background z-0 w-[68px]"
         style={{ zIndex: 0, background:"var(--heading-background-color)" }}
@@ -635,6 +638,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           interests={event.interests}
         />
       </TableCell>
+      }
     </TableRow>
   );
 };
