@@ -59,7 +59,7 @@ const SortDropdown = ({
   const { getFilterValue, setFilter } = useFilterState();
   const [open, setOpen] = useState(false);
 
-  const sortParam = value || getFilterValue("sortBy") || "score";
+  const sortParam = value || getFilterValue("sortBy") || "-score";
   const [sortField, setSortField] = useState(sortParam.replace("-", ""));
   const [sortOrder, setSortOrder] = useState(
     sortParam.startsWith("-") ? "desc" : "asc"
