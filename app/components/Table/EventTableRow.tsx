@@ -30,7 +30,7 @@ interface EventTableRowProps {
   type?: string;
   setEventId?: any;
   setInterest?: any;
-  global?:string;
+  global?: string;
   view?: string;
   localFilters: Filters;
 }
@@ -121,14 +121,16 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   setEventId,
   setInterest,
   view,
-  global
+  global,
 }) => {
   const { getFilterValue } = useFilterState();
-  const includeKeywords = getFilterValue("includeKeywords").split(",");
-  const excludeKeywords = getFilterValue("excludeKeywords").split(",");
-  const audienceSpread = getFilterValue("audienceSpread").split(",");
+  const includeKeywords = getFilterValue("includeKeywords").trim().split(",").filter(Boolean);
+  const excludeKeywords = getFilterValue("excludeKeywords").trim().split(",").filter(Boolean);
+  const audienceSpread = getFilterValue("audienceSpread").split(",").filter(Boolean);
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
+
+    console.log(includeKeywords, excludeKeywords)
 
   return (
     <TableRow key={event.basic.id}>
@@ -242,6 +244,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
               <Link
                 href={`/internal/event/${event.basic.id}`}
                 className="hover:text-primary transition-colors"
+                title={event.basic.name}
               >
                 {event.basic.name}
               </Link>
@@ -367,8 +370,14 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                     {getOrdinalSuffix((event.insights.rankings as any).rank)}
                   </sup>
                 </div>
-                <Badge variant="outline" className={`capitalize font-medium badge_warning`}>
-                  {(event.insights.rankings as any).rankType}
+                <Badge
+                  variant="outline"
+                  className={`capitalize font-medium badge_warning`}
+                >
+                  {(event.insights.rankings as any).rankType ===
+                  "category_country"
+                    ? "Category Country"
+                    : (event.insights.rankings as any).rankType}
                 </Badge>
               </span>
             ) : (
@@ -378,40 +387,43 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
         )}
 
       {/* Event Rating Column */}
-      {show.includes(Show.rating) &&
-        event.insights?.reputationScore !== undefined && (
-          <TableCell style={{ textAlign: "center" }}>
-            {event.insights?.reputationScore > 0 && event.basic.rating > 0 ? (
-              <div className="grid grid-cols-3 px-4 items-center justify-items-center">
-                {event.insights?.reputationScore > 10 && (
+      {show.includes(Show.rating) && event.basic.rating !== undefined && (
+        <TableCell style={{ textAlign: "center" }}>
+          {event.basic.rating !== null && event.basic.rating > 0 ? (
+            <div className="grid grid-cols-3 px-4 items-center justify-items-center">
+              {event.insights?.reputationChangePercentage !== undefined &&
+                event.insights?.reputationChangePercentage > 10 && (
                   <span className="text-green-500 bg-green-100 rounded-full p-1">
                     <ArrowUp className="w-4 h-4 inline" />
                   </span>
                 )}
-                {event.insights?.reputationScore < -10 && (
+              {event.insights?.reputationChangePercentage !== undefined &&
+                event.insights?.reputationChangePercentage < -10 && (
                   <span className="text-red-500 bg-red-100 rounded-full p-1">
                     <ArrowDown className="w-4 h-4  inline" />
                   </span>
                 )}
-                <span className="col-start-2">{event.basic.rating}</span>
-                <Star className="inline w-4 h-4 text-primary fill-primary mr-2" />
-              </div>
-            ) : (
-              "-"
-            )}
-          </TableCell>
-        )}
+              <span className="col-start-2">
+                {event.basic.rating.toFixed(1)}
+              </span>
+              <Star className="inline w-4 h-4 text-primary fill-primary mr-2" />
+            </div>
+          ) : (
+            "-"
+          )}
+        </TableCell>
+      )}
 
       {/* Reputation Column */}
       {show.includes(Show.rankings) &&
-        event.insights?.repeatSentiment !== undefined && (
+        event.insights?.trustScore !== undefined && (
           <TableCell className="text-center">
-            {event.insights?.repeatSentiment !== null &&
-            (event.insights?.repeatSentiment > 1 ||
-              event.insights?.repeatSentiment < -1) ? (
-              event.insights?.repeatSentiment > 0 ? (
+            {event.insights?.trustScore !== null &&
+            (event.insights?.trustChangePercentage > 1 ||
+              event.insights?.trustChangePercentage < -1) ? (
+              event.insights?.trustChangePercentage > 0 ? (
                 <div className="text-success-text flex items-center justify-center gap-1">
-                  {event.insights?.repeatSentiment}%
+                  {event.insights?.trustScore}%
                   <span className="text-green-500 bg-green-100 rounded-full p-1">
                     <ArrowUp className="w-4 h-4 inline" />
                   </span>
@@ -454,7 +466,27 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
       {/* Match Column */}
       {showMatchKeywords && (
         <TableCell className="text-center">
-          {event.basic.matchedKeywords?.join(" | ")}
+          {event.basic.matchedKeywords ? (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <span className="flex items-center justify-center gap-1">
+                    {event.basic.matchedKeywords?.[0]}
+                    {event.basic.matchedKeywords?.length > 1 && (
+                      <span className="text-xs font-bold text-muted-foreground">
+                        +{event.basic.matchedKeywords?.length - 1}
+                      </span>
+                    )}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-sm">
+                  {event.basic.matchedKeywords?.join(" | ")}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            "-"
+          )}
         </TableCell>
       )}
 
@@ -545,7 +577,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </TableCell>
         )}
 
-      {audienceSpread && event.audience?.audienceSpread !== undefined && (
+      {audienceSpread.length > 0 && event.audience?.audienceSpread !== undefined && (
         <TableCell className="text-center">
           <div className="flex gap-2">
             {event.audience?.audienceSpread &&
@@ -800,21 +832,21 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </TableCell>
         </>
       )}
-      {global!=="global" &&
-      <TableCell
-        className="sticky right-0 bg-background z-0 w-[68px]"
-        style={{ zIndex: 0, background: "var(--heading-background-color)" }}
-      >
-        <ActionPopover
-          view={view}
-          setEventId={setEventId}
-          setInterest={setInterest}
-          trackerId={trackerId}
-          eventId={event.basic.id}
-          interests={event.interests}
-        />
-      </TableCell>
-      }
+      {global !== "global" && (
+        <TableCell
+          className="sticky right-0 bg-background z-0 w-[68px]"
+          style={{ zIndex: 0, background: "var(--heading-background-color)" }}
+        >
+          <ActionPopover
+            view={view}
+            setEventId={setEventId}
+            setInterest={setInterest}
+            trackerId={trackerId}
+            eventId={event.basic.id}
+            interests={event.interests}
+          />
+        </TableCell>
+      )}
     </TableRow>
   );
 };

@@ -92,15 +92,12 @@ export default function MapComponent({
   trackerType,
   eventType,
 }: MapProps) {
-  console.log(eventType);
-
   const searchParams = useSearchParams();
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
-  console.log(trackerLoc);
 
   const { data } = useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
@@ -174,15 +171,13 @@ export default function MapComponent({
     return null;
   }, [searchParams, trackerLoc]);
 
-  console.log(location)
-
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey:
       source === "tracker"
         ? ["eventCounts", trackerId, currentZoomGroup, eventType]
         : source === "tracker_global"
         ? ["eventCounts", searchParams]
-        : ["eventCounts", currentZoomGroup, searchParams],
+        : ["eventCounts", currentZoomGroup, searchParams, location],
 
     queryFn: async () => {
       if (source === "tracker" || source === "tracker_global") {
@@ -193,7 +188,6 @@ export default function MapComponent({
           ...Object.fromEntries(searchParams.entries()),
           groupBy: "city",
         });
-        console.log("response", response);
         return response || [];
       }
     },
@@ -274,9 +268,7 @@ export default function MapComponent({
           break;
 
         case "unclustered-counts-circle":
-          console.log("unclustered-counts-circle");
           const unclusteredFeature = e.features && e.features[0];
-          console.log(unclusteredFeature);
           if (unclusteredFeature) {
             mapRef.current?.easeTo({
               center: unclusteredFeature.geometry.coordinates as [
@@ -320,7 +312,6 @@ export default function MapComponent({
           break;
 
         default:
-          console.log("Clicked on an unexpected layer:", layerId);
           setPopupInfo(null);
       }
     } else {
@@ -464,8 +455,6 @@ export default function MapComponent({
     }
   }, []);
 
-  console.log(currentZoomGroup);
-
   useEffect(() => {
     const newZoomGroup = determineZoomGroup(viewport.zoom);
     if (newZoomGroup !== currentZoomGroup) {
@@ -537,7 +526,6 @@ export default function MapComponent({
       });
     }
     if (locationBBox) {
-      console.log("zooming in");
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],

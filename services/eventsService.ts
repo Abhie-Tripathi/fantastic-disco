@@ -26,7 +26,17 @@ export const useEventsService = () => {
   const { exhibitorAdapter, speakerAdapter, sponsorAdapter } =
     EventParticpantAdapter();
 
-  const getEvents = async (params?: EventQuery) => {
+  const getEvents = async (params: EventQuery) => {
+    const tempQuery = params;
+    delete tempQuery.view;
+    if (Object.keys(tempQuery).length === 0) {
+      return {
+        events: [],
+        count: 0,
+        isLoading: false,
+        error: null,
+      };
+    }
     const response = await api.request<EventResponse>(endpoints.event.events, {
       method: "GET",
       params,
@@ -40,7 +50,14 @@ export const useEventsService = () => {
     });
   };
 
-  const getEventsCount = async (params?: EventQuery) => {
+  const getEventsCount = async (params: EventQuery) => {
+    const tempQuery = params;
+    delete tempQuery.view;
+    if (Object.keys(tempQuery).length === 0) {
+      return {
+        count: 0,
+      };
+    }
     return await api.request<EventCount[]>(`${endpoints.event.count}`, {
       method: "GET",
       params,
@@ -149,6 +166,7 @@ export const useEventsService = () => {
   };
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {
+    alert("whatsup");
     const response = await api.request(
       `${endpoints.event.events}?${searchParamsString}`,
       {

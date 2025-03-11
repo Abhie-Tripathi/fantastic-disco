@@ -126,9 +126,15 @@ export default function EventAccordion({
   const searchParams = useSearchParams();
   const { data: trackerData } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
-  const includeKeywords = getFilterValue("includeKeywords").split(",");
-  const excludeKeywords = getFilterValue("excludeKeywords").split(",");
-  const audienceSpread = getFilterValue("audienceSpread").split(",");
+  const includeKeywords = getFilterValue("includeKeywords")
+    .trim()
+    .split(",")
+    .filter(Boolean);
+  const excludeKeywords = getFilterValue("excludeKeywords")
+    .trim()
+    .split(",")
+    .filter(Boolean);
+  const audienceSpread = getFilterValue("audienceSpread").split(",").filter(Boolean);
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
   const query = Object.fromEntries(searchParams.entries());
@@ -288,7 +294,7 @@ export default function EventAccordion({
               event={event}
               showValues={showValues}
               showMatchKeywords={showMatchKeywords}
-              showaudienceSpread={audienceSpread ? true : false}
+              showaudienceSpread={audienceSpread.length > 0 ? true : false}
             />
           ))}
         </ul>
@@ -412,7 +418,7 @@ const EventListItem = ({
   if (event.basic.primaryEventType == "holiday") {
     return <UnplannedCard event={event} />;
   }
-console.log(view);
+  console.log(view);
 
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
@@ -773,8 +779,8 @@ console.log(view);
                     )}
 
                   {showValues.includes(Show.rankings) &&
-                  event.insights?.repeatSentiment &&
-                  event.insights?.repeatSentiment > 0 ? (
+                  event.insights?.trustScore &&
+                  event.insights?.trustScore > 0 ? (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -782,7 +788,7 @@ console.log(view);
                             variant="outline"
                             className="text-gray-600 capitalize"
                           >
-                            Trust Score: {event.insights?.repeatSentiment}
+                            Trust Score: {event.insights?.trustScore}
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -795,7 +801,7 @@ console.log(view);
                   )}
 
                   {showValues.includes(Show.rating) &&
-                    event.insights?.reputationScore && (
+                    event.insights?.reputationScore  && (
                       <TooltipProvider>
                         <Tooltip delayDuration={0}>
                           <TooltipTrigger>
@@ -986,20 +992,20 @@ console.log(view);
                           </div>
                         )}
                     </div>
-                    {global!=="global" &&
-                    <div
-                      className="flex items-start justify-end"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <ActionPopover
-                        eventId={event.basic.id}
-                        interests={event.interests}
-                        trackerId={trackerId}
-                        setInterest={setInterest}
-                        setEventId={setEventId}
-                      />
-                    </div>
-                    }
+                    {global !== "global" && (
+                      <div
+                        className="flex items-start justify-end"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <ActionPopover
+                          eventId={event.basic.id}
+                          interests={event.interests}
+                          trackerId={trackerId}
+                          setInterest={setInterest}
+                          setEventId={setEventId}
+                        />
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="flex justify-end w-full gap-6">
@@ -1045,21 +1051,21 @@ console.log(view);
                           </div>
                         )}
                     </div>
-                    {global!=="global" &&
-                    <div
-                      className="flex items-start justify-end"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <ActionPopover
-                        eventId={event.basic.id}
-                        interests={event.interests}
-                        trackerId={trackerId}
-                        setInterest={setInterest}
-                        setEventId={setEventId}
-                        view={view}
-                      />
-                    </div>
-                    }
+                    {global !== "global" && (
+                      <div
+                        className="flex items-start justify-end"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <ActionPopover
+                          eventId={event.basic.id}
+                          interests={event.interests}
+                          trackerId={trackerId}
+                          setInterest={setInterest}
+                          setEventId={setEventId}
+                          view={view}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

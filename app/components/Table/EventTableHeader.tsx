@@ -17,9 +17,9 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   localFilters,
 }) => {
   const { getFilterValue } = useFilterState();
-  const includeKeywords = getFilterValue("includeKeywords").split(",");
-  const excludeKeywords = getFilterValue("excludeKeywords").split(",");
-  const audienceSpread = getFilterValue("audienceSpread").split(",");
+  const includeKeywords = getFilterValue("includeKeywords").trim().split(",").filter(Boolean);
+  const excludeKeywords = getFilterValue("excludeKeywords").trim().split(",").filter(Boolean);
+  const audienceSpread = getFilterValue("audienceSpread").split(",").filter(Boolean);
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
 
@@ -139,7 +139,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
                 </div>
               </TableHead>
             )}
-            {audienceSpread && (
+            {audienceSpread.length > 0 && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">
                   Audience Spread
