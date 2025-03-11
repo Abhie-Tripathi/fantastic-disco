@@ -30,6 +30,7 @@ interface EventTableRowProps {
   type?: string;
   setEventId?: any;
   setInterest?: any;
+  global?:string;
   view?: string;
   localFilters: Filters;
 }
@@ -120,6 +121,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   setEventId,
   setInterest,
   view,
+  global
 }) => {
   const { getFilterValue } = useFilterState();
   const includeKeywords = getFilterValue("includeKeywords").split(",");
@@ -365,7 +367,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                     {getOrdinalSuffix((event.insights.rankings as any).rank)}
                   </sup>
                 </div>
-                <Badge variant="outline" className="capitalize font-medium">
+                <Badge variant="outline" className={`capitalize font-medium badge_warning`}>
                   {(event.insights.rankings as any).rankType}
                 </Badge>
               </span>
@@ -416,7 +418,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
                 </div>
               ) : (
                 <div className="text-danger-text flex items-center justify-center gap-1">
-                  {event.insights?.repeatSentiment}%
+                  {event.insights?.trustScore}%
                   <span className="text-red-500 bg-red-100 rounded-full p-1">
                     <ArrowDown className="w-4 h-4  inline" />
                   </span>
@@ -798,6 +800,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </TableCell>
         </>
       )}
+      {global!=="global" &&
       <TableCell
         className="sticky right-0 bg-background z-0 w-[68px]"
         style={{ zIndex: 0, background: "var(--heading-background-color)" }}
@@ -811,6 +814,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           interests={event.interests}
         />
       </TableCell>
+      }
     </TableRow>
   );
 };

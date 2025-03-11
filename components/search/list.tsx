@@ -279,6 +279,7 @@ export default function EventAccordion({
         <ul className="w-full space-y-6 list-none">
           {updatedEvents?.map((event: Event) => (
             <EventListItem
+              global={view}
               trackerId={trackerId}
               view={query.eventType}
               setEventId={setEventId}
@@ -307,6 +308,7 @@ export default function EventAccordion({
 }
 
 const EventListItem = ({
+  global,
   view,
   trackerId,
   setEventId,
@@ -324,6 +326,7 @@ const EventListItem = ({
   showValues: Show[];
   showMatchKeywords: boolean;
   showaudienceSpread: boolean;
+  global?: string;
 }) => {
   const address = event.basic.eventLocation ? (
     event.basic.eventLocation.venue?.name === "Online" ||
@@ -409,6 +412,7 @@ const EventListItem = ({
   if (event.basic.primaryEventType == "holiday") {
     return <UnplannedCard event={event} />;
   }
+console.log(view);
 
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
@@ -982,7 +986,7 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
-
+                    {global!=="global" &&
                     <div
                       className="flex items-start justify-end"
                       onClick={(e) => e.preventDefault()}
@@ -995,6 +999,7 @@ const EventListItem = ({
                         setEventId={setEventId}
                       />
                     </div>
+                    }
                   </div>
                 ) : (
                   <div className="flex justify-end w-full gap-6">
@@ -1040,6 +1045,7 @@ const EventListItem = ({
                           </div>
                         )}
                     </div>
+                    {global!=="global" &&
                     <div
                       className="flex items-start justify-end"
                       onClick={(e) => e.preventDefault()}
@@ -1053,6 +1059,7 @@ const EventListItem = ({
                         view={view}
                       />
                     </div>
+                    }
                   </div>
                 )}
               </div>
