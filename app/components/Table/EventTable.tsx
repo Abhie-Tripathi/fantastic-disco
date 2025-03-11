@@ -203,20 +203,20 @@ const EventTable = ({
               localFilters={localFilters}
             />
             <TableBody>
-              {updatedEvents &&
-                updatedEvents.map((event: Event) => (
-                  <EventTableRow
-                    view={query.eventType}
-                    setEventId={setEventId}
-                    setInterest={setInterest}
-                    type={query.type}
-                    key={event.basic.id}
-                    event={event}
-                    show={showValues}
-                    localFilters={localFilters}
-                    trackerId={trackerId}
-                  />
-                ))}
+              {updatedEvents && updatedEvents.map((event: Event) => (
+                <EventTableRow
+                  global={view}
+                  view={query.eventType}
+                  setEventId={setEventId}
+                  setInterest={setInterest}
+                  type={query.type}
+                  key={event.basic.id}
+                  event={event}
+                  show={showValues}
+                  localFilters={localFilters}
+                  trackerId={trackerId}
+                />
+              ))}
             </TableBody>
           </Table>
         </div>

@@ -81,7 +81,7 @@ const SortDropdown = ({
   };
 
   useEffect(() => {
-    const newSortParam = value || getFilterValue("sortBy") || "score";
+    const newSortParam = value || getFilterValue("sortBy") || "-score";
     setSortField(newSortParam.replace("-", ""));
     setSortOrder(newSortParam.startsWith("-") ? "desc" : "asc");
   }, [getFilterValue, value]);
