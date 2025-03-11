@@ -43,8 +43,8 @@ interface Props {
   eventFont: string;
   setLoadingState: React.Dispatch<React.SetStateAction<boolean>>;
   fileInputRef: React.RefObject<HTMLInputElement>;
-  setCollapseMainEventForm: React.Dispatch<React.SetStateAction<boolean>>;
-  collapseMainEventForm: boolean;
+  setCollapseMainEventForm?: React.Dispatch<React.SetStateAction<boolean>>;
+  collapseMainEventForm?: boolean;
   handleCollapseForm: (value: string) => void
   // setActiveBtn: (value: string) => void;
   isApproved?: boolean;
