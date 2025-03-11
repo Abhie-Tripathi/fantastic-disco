@@ -93,7 +93,7 @@ export const useTrackerServices = () => {
       console.log(params);
       
       const response = await api.request<EventResponse>(
-        `https://api.dev.gtm.whr.ai/me/account/saved-events`,
+        `https://gtmdev-api.whr.ai/me/account/saved-events`,
         {
           method: "GET"
         }
