@@ -166,7 +166,6 @@ export const useEventsService = () => {
   };
 
   const getEventsWithSearchParams = async (searchParamsString: string) => {
-    alert("whatsup");
     const response = await api.request(
       `${endpoints.event.events}?${searchParamsString}`,
       {
