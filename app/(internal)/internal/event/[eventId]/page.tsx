@@ -33,7 +33,7 @@ import {
   PhoneIcon,
   Radio,
   Share2,
-  Star
+  Star,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -52,7 +52,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     getEventEditionDetails,
     getEventExhibitorDetails,
     getEventSpeakerDetails,
-    getEventSponsorDetails,
+    // getEventSponsorDetails,
     getEventCoOrganizerDetails,
   } = useEventsService();
   const coordinateService = useCoordinateService();
@@ -66,7 +66,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventEditionDataResult,
         eventExhibitorDataResult,
         eventSpeakerDataResult,
-        eventSponsorDataResult,
+        // eventSponsorDataResult,
         eventCoOrganizerDataResult,
       ] = await Promise.allSettled([
         getEventDetailById(params.eventId),
@@ -75,7 +75,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         getEventEditionDetails(params.eventId, 10, 0),
         getEventExhibitorDetails(params.eventId, 3, 0),
         getEventSpeakerDetails(params.eventId, 3, 0),
-        getEventSponsorDetails(params.eventId, 3, 0),
+        // getEventSponsorDetails(params.eventId, 3, 0),
         getEventCoOrganizerDetails(params.eventId),
       ]);
       const eventData =
@@ -106,10 +106,10 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
           ? eventSpeakerDataResult.value
           : null;
 
-      const eventSponsorData =
-        eventSponsorDataResult.status === "fulfilled"
-          ? eventSponsorDataResult.value
-          : null;
+      // const eventSponsorData =
+      //   eventSponsorDataResult.status === "fulfilled"
+      //     ? eventSponsorDataResult.value
+      //     : null;
       return {
         eventData: eventData,
         eventPOCData: eventPOCData,
@@ -118,7 +118,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
         eventEditionData: eventEditionData,
         eventExhibitorData: eventExhibitorData,
         eventSpeakerData: eventSpeakerData,
-        eventSponsorData: eventSponsorData,
+        // eventSponsorData: eventSponsorData,
       };
     },
     refetchOnWindowFocus: false,
@@ -139,7 +139,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     eventEditionData,
     eventExhibitorData,
     eventSpeakerData,
-    eventSponsorData,
+    // eventSponsorData,
   } = event;
   const { basic, advance, insights, audience }: Event = eventData || {};
 
@@ -325,7 +325,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             </button>
           </div>
         </div>
-        <div className="flex mt-4 gap-4 items-start">
+        <div className="flex mt-0 lg:mt-4 gap-4 items-start flex-col lg:flex-row">
           {!website && !eventLogoUrl ? (
             <div className="h-24 px-10 rounded-md bg-[#5055A3]/10 border border-[#5055A3]/20 flex items-center justify-center">
               <span className="text-[#5055A3] text-2xl font-semibold">
@@ -336,11 +336,11 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
             <img
               src={eventImageSrc}
               alt="eventDetails"
-              className="h-24 w-24 rounded-lg aspect-auto border object-contain"
+              className="h-24 w-full lg:w-24 rounded-lg aspect-auto border object-contain"
             />
           )}
           <div className="flex flex-col gap-2">
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               <div className="flex flex-row gap-3 flex-wrap">
                 {basic && basic.eventTypes && basic.eventTypes.length > 0 && (
                   <ul className="flex flex-row flex-wrap gap-3">
@@ -784,7 +784,7 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
               eventDetails={eventData}
               eventExhibitorData={eventExhibitorData}
               eventSpeakerData={eventSpeakerData}
-              eventSponsorData={eventSponsorData}
+              // eventSponsorData={eventSponsorData}
               scrollSection={tabs[2].path}
               setActiveTab={setActiveTab}
             />

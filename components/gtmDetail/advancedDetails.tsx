@@ -233,7 +233,7 @@ const CarouselComponent = ({
                 <div className="flex gap-4 flex-wrap">
                   {isFrequencyEnabled ? (
                     frequency ? (
-                      <span className="text-[#A35200] bg-[#FFF4D6] dark:bg-[#331B00] dark:border-[#4D2A00] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border border-[#FEF0CD] rounded-md w-full xl:w-28 text-center">
+                      <span className="text-[#A35200] bg-[#FFF4D6] dark:bg-[#331B00] dark:border-[#4D2A00] flex items-center justify-center h-7 font-semibold text-sm py-1 px-4 border border-[#FEF0CD] rounded-md w-28 text-center">
                         {capitalize(frequency)}
                       </span>
                     ) : (
@@ -321,7 +321,7 @@ const CarouselComponent = ({
                   <>
                     {isBranded && (
                       <span
-                        className={`text-sm font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-full xl:w-32 ${
+                        className={`text-sm font-semibold py-1 px-3 border-[#F9D7E2] border rounded-sm w-32 ${
                           isBrandEnabled ? "" : "h-7"
                         } text-[#DF2670] bg-[#FEECF2] dark:bg-[#3A1726] dark:border-[#551B33] text-center`}
                       >
@@ -330,7 +330,7 @@ const CarouselComponent = ({
                     )}
                     {isSeries && (
                       <span
-                        className={`text-sm font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-full xl:w-32${
+                        className={`text-sm font-semibold py-1 px-3 border-[#BEF4EB] border rounded-sm w-32${
                           isBrandEnabled ? "" : "h-7"
                         } text-[#0D8C7D] bg-[#E5FAF6] dark:bg-[#062822] dark:border-[#0D8C7D] text-center`}
                       >
