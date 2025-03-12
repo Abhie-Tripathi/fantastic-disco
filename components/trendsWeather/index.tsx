@@ -15,9 +15,10 @@ import { Event } from "@/types/events";
 import { EventDate } from "@/types/events/eventDetail";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { useEffect, useMemo, useRef, useState } from "react";
-import EventsListView from "../detailPageEventsList/eventsListView";
-import EventsMapView from "../detailPageEventsList/eventsMapView";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import EventsListView from "../eventDetail/eventsListView";
+import EventsMapView from "../eventDetail/eventsMapView";
+import { EventDetailMapSkeleton } from "../eventDetail/skeletons";
 interface Props {
   eventDetails: Event;
   venueLocation: Event["basic"]["eventLocation"] | null;
@@ -135,7 +136,7 @@ export const DetailMapComponent = ({
     queryFn: async () =>
       getWeatherData(latitude, longitude, weatherActiveDate ?? ""),
     refetchOnWindowFocus: false,
-    enabled: isEventeli,
+    enabled: false,
     gcTime: 0,
     staleTime: 0,
   });
