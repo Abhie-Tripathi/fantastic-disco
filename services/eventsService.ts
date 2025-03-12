@@ -26,7 +26,7 @@ export const useEventsService = () => {
   const { exhibitorAdapter, speakerAdapter, sponsorAdapter } =
     EventParticpantAdapter();
 
-  const getEvents = async (params: EventQuery) => {
+  const getEvents = async (params: EventQuery, signal?: AbortSignal) => {
     const tempQuery = params;
     delete tempQuery.view;
     if (Object.keys(tempQuery).length === 0) {
@@ -40,6 +40,7 @@ export const useEventsService = () => {
     const response = await api.request<EventResponse>(endpoints.event.events, {
       method: "GET",
       params,
+      signal,
     });
     return response;
   };
