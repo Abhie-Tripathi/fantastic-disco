@@ -14,6 +14,7 @@ import Papa from "papaparse";
 import EventForm from "./EventForm";
 import Modal from "./modal";
 import ColMapping from "./colMapping";
+import { useCoordinateService } from "@/services/coordinateService";
 
 const EventListItem = ({ event }: { event: Event }) => {
   const address = event.basic.eventLocation ? (
@@ -321,6 +322,8 @@ export default function AddEventModal() {
 
   const [isFetching, setIsFetching] = useState<boolean>(false);
 
+  const coordinateService = useCoordinateService();
+
   const saveEventHandler = () => {};
 
   const handleChange = () => {};
@@ -331,7 +334,11 @@ export default function AddEventModal() {
     setIsFetching(false);
   };
 
-  const hadleFetch = () => {
+  const hadleFetch = async() => {
+
+    const eventList = await coordinateService.fetchEvents();
+    console.log('eventList', eventList);
+    
     setIsFetching(true);
     setEventFormOpen(false);
 
@@ -356,6 +363,15 @@ export default function AddEventModal() {
 
   const scrollableDivRef = useRef<HTMLDivElement>(null);
 
+  const [mappedHeaders, setMappedHeaders] = useState<any>({
+    "Name": "",
+    "Start Date": "",
+    "End Date": "",
+    "Location": "",
+    "Participation": "",
+    "Type": "",
+  });
+
   // Handle file change event
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -367,6 +383,12 @@ export default function AddEventModal() {
     Papa.parse(file, {
       complete: (result) => {
         console.log("result.data", result.data);
+
+        const mappedData = result.data.map((item: any) => ({
+          name: item['Name'], // Map to your column names
+          age: item['Age'],
+          email: item['Email'],
+        }));
 
         setCsvData(result.data);
         setError("");
@@ -505,7 +527,7 @@ export default function AddEventModal() {
               }`}
             >
               {/* {eventFormOpen && <ColMapping />} */}
-              {showColMapping && <ColMapping csvData={csvData.slice(0, 3)} setShowEventList={setShowEventList} />}
+              {showColMapping && <ColMapping csvData={csvData.slice(0, 3)} setShowEventList={setShowEventList} mappedHeaders={mappedHeaders} setMappedHeaders={setMappedHeaders} />}
             </div>
 
             <div

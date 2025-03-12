@@ -6,24 +6,42 @@ import {
   TableHead,
   TableHeader,
 } from "@/components/ui/table";
-import { CheckCircleFill } from "geist-icons";
+import { CheckCircle, CheckCircleFill } from "geist-icons";
 import ColSelector from "./ColSelector";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+import { CircleAlert } from "lucide-react";
 
 interface Props {
   csvData: any;
   setShowEventList: any;
+  mappedHeaders: any;
+  setMappedHeaders: any;
 }
 
 const dafaultHeaders = ["Name", "Start Date", "End Date", "Location", "Participation", "Type"];
 
-const ColMapping = ({ csvData, setShowEventList }: Props) => {
+const ColMapping = ({ csvData, setShowEventList, mappedHeaders, setMappedHeaders }: Props) => {
 //   console.log("csvData", csvData);
   const colHeader = csvData[0] ? Object.keys(csvData[0]) : [];
 //   console.log("csvData", csvData, colHeader);
 
+  useEffect(() => {
+    const tempHeader = mappedHeaders;
+    dafaultHeaders.map((item, index)=>(
+      tempHeader[item] = colHeader[index]
+    ))
+    setMappedHeaders(tempHeader);
+  }, [csvData]);
+  
+
   return (
     <>
+    <div className="flex gap-3 mb-4" >
+      <span className="text-base font-semibold" >{colHeader.length} columns detected:</span>
+      <span className="text-sm flex w-fit rounded-full px-2 gap-2 items-center bg-[var(--success-background-color)] text-[var(--success-text-color)] font-medium" ><CheckCircle height="14px" color="var(--secondary-text-color)" /> 4 recognized</span>
+      <span className="text-sm flex w-fit rounded-full px-2 gap-1 items-center bg-[var(--warning-background-color)] text-[var(--warning-text-color)] font-medium" ><CircleAlert height="14px" color="var(--secondary-text-color)" /> 2 need mapping</span>
+    </div>
     <div className="w-full overflow-x-auto">
       <Table>
         <TableHeader>
