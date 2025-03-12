@@ -91,7 +91,7 @@ const BasicEventSchema = z.object({
   matchedKeywords: z.array(z.string()).nullable(),
   matchedKeywordsPercentage: z.number().nullable(),
   lastVerifiedOn: z.string().nullable(),
-  eventPageUrl: z.string().nullable(),
+  "10timesEventPageUrl": z.string().nullable(),
   rating: z.number(),
   name: z.string(),
   website: z.string(),

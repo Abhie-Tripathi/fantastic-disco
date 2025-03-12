@@ -13,7 +13,7 @@ interface Props {
   eventDetails: Event;
   eventExhibitorData: EventParticipantsDetails[];
   eventSpeakerData: EventParticipantsDetails[];
-  eventSponsorData: EventParticipantsDetails[];
+  // eventSponsorData: EventParticipantsDetails[];
   scrollSection: string;
   setActiveTab: Dispatch<SetStateAction<TTabs>>;
 }
@@ -22,7 +22,7 @@ export const AudienceIntel = ({
   eventDetails,
   eventExhibitorData,
   eventSpeakerData,
-  eventSponsorData,
+  // eventSponsorData,
   scrollSection,
   setActiveTab,
 }: Props) => {
@@ -82,7 +82,7 @@ export const AudienceIntel = ({
           eventDetails={eventDetails}
           eventExhibitorData={eventExhibitorData}
           eventSpeakerData={eventSpeakerData}
-          eventSponsorData={eventSponsorData}
+          // eventSponsorData={eventSponsorData}
         />
       </div>
     </div>

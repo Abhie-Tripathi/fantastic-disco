@@ -1,10 +1,6 @@
 "use client";
 import { useFilterContext } from "@/context/filterContext";
-import {
-  Event,
-  OverallRankingsDetail,
-  RankingData
-} from "@/types/events";
+import { Event, OverallRankingsDetail, RankingData } from "@/types/events";
 import { format } from "date-fns";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import Link from "next/link";
@@ -135,7 +131,7 @@ const EventRankCarousel = ({
                   <Link
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`/search/${id}`}
+                    href={`/internal/event/${id}`}
                     className="flex flex-row gap-2 border border-[var(--neutral-light-color)] rounded-sm p-3 dark:border-[var(--border-color)]"
                   >
                     <p className="text-xl font-semibold p-2">
@@ -152,7 +148,12 @@ const EventRankCarousel = ({
                       </Text>
                       <div className="flex justify-between gap-4">
                         <Text color="secondary" variant="noMargin">
-                          {`${location.STATE?.name}, ${location.COUNTRY?.name}`}
+                          {[
+                            location?.STATE?.name || location?.CITY?.name,
+                            location?.COUNTRY?.name,
+                          ]
+                            .filter(Boolean)
+                            .join(", ")}
                         </Text>
                         <Text color="secondary" variant="noMargin">
                           {format(new Date(startDateTime), "MMM dd")}
@@ -167,7 +168,7 @@ const EventRankCarousel = ({
             <Link
               target="_blank"
               rel="noopener noreferrer"
-              href={`/search/${eventId}`}
+              href={`/internal/event/${eventId}`}
               className="flex flex-row gap-2 bg-[#A099E0] border border-[#A099E0] bg-opacity-[0.3] rounded-sm p-3"
             >
               <p className="text-xl font-semibold p-2">
@@ -184,7 +185,7 @@ const EventRankCarousel = ({
                 </Text>
                 <div className="flex justify-between gap-4">
                   <Text color="secondary" variant="noMargin">
-                    {`${STATE?.name}, ${COUNTRY?.name}`}
+                    {[STATE?.name, COUNTRY?.name].filter(Boolean).join(", ")}
                   </Text>
                   <Text color="secondary" variant="noMargin">
                     {format(new Date(startDateTime), "MMM dd")}
@@ -206,7 +207,7 @@ const EventRankCarousel = ({
                   <Link
                     target="_blank"
                     rel="noopener noreferrer"
-                    href={`/search/${id}`}
+                    href={`/internal/event/${id}`}
                     className="flex flex-row gap-2 border border-[var(--neutral-light-color)] dark:border-[var(--border-color)] rounded-sm p-3"
                   >
                     <p className="text-xl font-semibold p-2">
@@ -223,7 +224,12 @@ const EventRankCarousel = ({
                       </Text>
                       <div className="flex justify-between gap-4">
                         <Text color="secondary" variant="noMargin">
-                          {`${location.STATE?.name}, ${location.COUNTRY?.name}`}
+                          {[
+                            location?.STATE?.name || location?.CITY?.name,
+                            location?.COUNTRY?.name,
+                          ]
+                            .filter(Boolean)
+                            .join(", ")}
                         </Text>
                         <Text color="secondary" variant="noMargin">
                           {format(new Date(startDateTime), "MMM dd")}
