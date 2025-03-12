@@ -123,6 +123,10 @@ const EventRankCarousel = ({
             precedingEvents.map((event) => {
               const { id, name, rank, startDateTime, endDateTime, location } =
                 event;
+              const [region, country] = [
+                location?.STATE?.name || location?.CITY?.name,
+                location?.COUNTRY?.name,
+              ].filter(Boolean);
               return (
                 <SwiperSlide
                   className="h-fit w-fit bg-white z-40 dark:bg-[var(--primary-foreground)]"
@@ -148,12 +152,17 @@ const EventRankCarousel = ({
                       </Text>
                       <div className="flex justify-between gap-4">
                         <Text color="secondary" variant="noMargin">
-                          {[
+                          {/* {[
                             location?.STATE?.name || location?.CITY?.name,
                             location?.COUNTRY?.name,
                           ]
                             .filter(Boolean)
-                            .join(", ")}
+                            .join(", ")} */}
+                          {region && country
+                            ? region === country
+                              ? region
+                              : `${region}, ${country}`
+                            : region || country || ""}
                         </Text>
                         <Text color="secondary" variant="noMargin">
                           {format(new Date(startDateTime), "MMM dd")}
@@ -185,7 +194,13 @@ const EventRankCarousel = ({
                 </Text>
                 <div className="flex justify-between gap-4">
                   <Text color="secondary" variant="noMargin">
-                    {[STATE?.name, COUNTRY?.name].filter(Boolean).join(", ")}
+                    {STATE?.name || COUNTRY?.name
+                      ? STATE?.name === "Online" || COUNTRY?.name === "Online"
+                        ? [STATE?.name || COUNTRY?.name].filter(Boolean)
+                        : [STATE?.name, COUNTRY?.name]
+                            .filter(Boolean)
+                            .join(", ")
+                      : ""}
                   </Text>
                   <Text color="secondary" variant="noMargin">
                     {format(new Date(startDateTime), "MMM dd")}
@@ -197,8 +212,12 @@ const EventRankCarousel = ({
           {succeedingEvents &&
             succeedingEvents.length > 0 &&
             succeedingEvents.map((event) => {
-              const { id, name, rank, startDateTime, endDateTime, location } =
+              const { id, name, rank, startDateTime, location } =
                 event;
+              const [region, country] = [
+                location?.STATE?.name || location?.CITY?.name,
+                location?.COUNTRY?.name,
+              ].filter(Boolean);
               return (
                 <SwiperSlide
                   className="h-fit w-fit bg-white z-40 dark:bg-[var(--primary-foreground)]"
@@ -224,12 +243,11 @@ const EventRankCarousel = ({
                       </Text>
                       <div className="flex justify-between gap-4">
                         <Text color="secondary" variant="noMargin">
-                          {[
-                            location?.STATE?.name || location?.CITY?.name,
-                            location?.COUNTRY?.name,
-                          ]
-                            .filter(Boolean)
-                            .join(", ")}
+                          {region && country
+                            ? region === country
+                              ? region
+                              : `${region}, ${country}`
+                            : region || country || ""}
                         </Text>
                         <Text color="secondary" variant="noMargin">
                           {format(new Date(startDateTime), "MMM dd")}
