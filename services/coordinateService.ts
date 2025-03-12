@@ -12,6 +12,7 @@ import { ApiError } from "@/types/api";
 // import { MiscAdapter } from "@/adapters/miscAdapter";
 import externalAxios from "@/lib/externalAxios";
 import { Target, Unmask, UnmaskPocApiParamType, Source } from "@/types/events";
+import websiteSuggestion from "@/public/data/addEvent/websiteSuggestion.json";
 
 interface fnProp {
   offset: number;
@@ -330,6 +331,16 @@ export const useCoordinateService = () => {
     });
   };
 
+  const fetchEvents = () => {
+    // const data = await externalAxios.get(
+    //   `https://stg-serve.10times.com/index.php/v1/event/search?website=10times.com`,
+    //   {
+    //     method: "GET",
+    //   }
+    // );
+    return websiteSuggestion;
+  }
+
   return {
     getEventsWithSearchParams,
     getEvents,
@@ -355,6 +366,7 @@ export const useCoordinateService = () => {
     getEnquiryFollowers,
     setEnquiryFollowers,
     deleteEnquiryActivityIntent,
+    fetchEvents,
     isLoading: api.isLoading,
     // error: api.error as ApiError,
   };
