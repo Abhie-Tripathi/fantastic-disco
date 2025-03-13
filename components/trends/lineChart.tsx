@@ -504,7 +504,7 @@ const LineChartComponent = ({
         </div>
         <div className="flex flex-col px-4 py-2 gap-2 border-b">
           {showEventTypesValueByMetric.map((eventTypesValues) => (
-            <div className="flex justify-between">
+            <div key={eventTypesValues.text} className="flex justify-between">
               <div className="flex gap-2">
                 <div
                   className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
@@ -519,7 +519,7 @@ const LineChartComponent = ({
                 {eventTypesValues.value}
               </p>
             </div>
-          ))}          
+          ))}
         </div>
         <div className="px-4 py-2">
           <p className="text-sm font-medium">TOP EVENTS</p>
