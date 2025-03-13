@@ -118,7 +118,6 @@ export default function MapComponent({
     getEventsCount,
     getEvents,
     getEventsWithSearchParams,
-    getRawEventsWithSearchParams,
   } = useEventsService();
   const [showUnattendedEvents, setShowUnattendedEvents] = useState(false);
   const [locationBBox, setLocationBBox] = useState<any | null>(null);
@@ -538,27 +537,34 @@ export default function MapComponent({
     }
   }, [location, mapRef.current, locationBBox]);
 
-  const circleLayer: LayerProps | null = useMemo(() => {
-    if (location?.type === "viewBound") {
-      const { coordinates, radius } = location;
-      const center = point([Number(coordinates.longitude), Number(coordinates.latitude)]);
-      const circleGeoJSON = circle(center, radius, 50, "kilometers");
+  // const circleLayer: LayerProps | null = useMemo(() => {
+  //   if (location?.type === "viewBound") {
+  //     const { coordinates, radius } = location;
+  //     const longitude = Number(coordinates.longitude);
+  //     const latitude = Number(coordinates.latitude);
+      
+  //     if (isNaN(longitude) || isNaN(latitude) || !radius) {
+  //       return null;
+  //     }
+      
+  //     const center = point([longitude, latitude]);
+  //     const circleGeoJSON = circle(center, radius, 50, "kilometers");
 
-      return {
-        id: "circle-layer",
-        type: "fill" as const,
-        source: {
-          type: "geojson",
-          data: circleGeoJSON,
-        },
-        paint: {
-          "fill-color": "rgba(138, 43, 220, 0.1)",
-          "fill-outline-color": "rgba(138, 43, 220, 0.8)",
-        },
-      };
-    }
-    return null;
-  }, [location]);
+  //     return {
+  //       id: "circle-layer",
+  //       type: "fill" as const,
+  //       source: {
+  //         type: "geojson",
+  //         data: circleGeoJSON,
+  //       },
+  //       paint: {
+  //         "fill-color": "rgba(138, 43, 220, 0.1)",
+  //         "fill-outline-color": "rgba(138, 43, 220, 0.8)",
+  //       },
+  //     };
+  //   }
+  //   return null;
+  // }, [location]);
 
   const onMapLoad = useCallback(({ target: map }) => {
     for (const [key, url] of Object.entries(iconUrls)) {
@@ -595,7 +601,7 @@ export default function MapComponent({
           {source === "tracker" && eventCountsQuery?.data?.length === 0 ? (
             <NullState
               image={TrackerNullState}
-              title="We couldn’t find any events matching your tracker criteria at the moment."
+              title="We couldn't find any events matching your tracker criteria at the moment."
               text="Try adjusting your filters or checking back later, as new events are added frequently."
               buttonText="Manage Configuration"
               buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${trackerType}`}
@@ -739,7 +745,7 @@ export default function MapComponent({
                     />
                   )}
 
-                  {circleLayer && (
+                  {/* {circleLayer && (
                     <Source
                       id="circle-source"
                       type="geojson"
@@ -747,7 +753,7 @@ export default function MapComponent({
                     >
                       <Layer {...circleLayer} />
                     </Source>
-                  )}
+                  )} */}
 
                   {popupInfo && (
                     <MapPopup

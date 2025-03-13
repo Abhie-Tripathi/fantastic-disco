@@ -58,7 +58,6 @@ interface AlertsProps {
 }
 
 const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
-  console.log("selectedAlert", selectedAlert);
   const [open, setOpen] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const eventService = useEventsService();
@@ -77,7 +76,7 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
         coordinates: {
           latitude: viewBound.coordinates.latitude,
           longitude: viewBound.coordinates.longitude,
-          radius: viewBound.radius,
+          radius: viewBound.coordinates.radius,
         },
       })
     );

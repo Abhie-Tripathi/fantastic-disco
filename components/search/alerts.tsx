@@ -39,9 +39,9 @@ export default function Alerts() {
           JSON.stringify({
             boundType: "point",
             coordinates: {
-              latitude: viewBound.latitude,
-              longitude: viewBound.longitude,
-              radius: viewBound.radius,
+              latitude: viewBound.coordinates.latitude,
+              longitude: viewBound.coordinates.longitude,
+              radius: viewBound.coordinates.radius,
             },
           })
         );

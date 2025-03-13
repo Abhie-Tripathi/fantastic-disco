@@ -45,7 +45,8 @@ export interface LocationProps {
 export default function LocationSelector({ type, isMandatory }: LocationProps) {
   const pathName = usePathname();
   const { localFilters } = useFilterContext();
-  const { saveLastSearchedLocation, clearLastSearchedLocation } = sessionService();
+  const { saveLastSearchedLocation, clearLastSearchedLocation } =
+    sessionService();
   const { getLocationName, getLocationDetails } = useLocationService();
   const [activeTab, setActiveTab] = useState("city");
   const [isOpen, setIsOpen] = useState(false);
@@ -54,22 +55,25 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   const { replaceLocalFilter, deleteMultipleLocalFilters } = useFilterContext();
 
   const fetchUrlLocation = async () => {
-    const geoCoordinate = JSON.parse(localFilters.viewBound || "null");
-    const ids = localFilters?.locationIds?.length
+    const geoCoordinate = localFilters?.viewBound
+      ? JSON.parse(localFilters.viewBound)
+      : null;
+    const locationIds = localFilters?.locationIds?.length
       ? localFilters.locationIds.split(",")
       : null;
-    const locationIds = ids;
+
+    if (!geoCoordinate || !locationIds) return;
 
     if (geoCoordinate) {
       const locationName = await getLocationName(
-        geoCoordinate.latitude,
-        geoCoordinate.longitude
+        geoCoordinate.coordinates.latitude,
+        geoCoordinate.coordinates.longitude
       );
       setSelectedLocation?.({
         locationType: "GeoJSON",
-        lat: geoCoordinate.latitude,
-        lng: geoCoordinate.longitude,
-        radius: geoCoordinate.radius,
+        lat: geoCoordinate.coordinates.latitude,
+        lng: geoCoordinate.coordinates.longitude,
+        radius: geoCoordinate.coordinates.radius,
         description: locationName,
       });
     } else if (locationIds) {
