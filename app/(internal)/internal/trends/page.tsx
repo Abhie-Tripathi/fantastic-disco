@@ -297,8 +297,9 @@ const EventTrends = () => {
       {savedTrendsList && savedTrendsList?.trackers.length > 0 && (
         <SavedTrendsList savedTrendsList={savedTrendsList?.trackers || []} />
       )}
-      <div>
-        <div className="grid grid-cols-5 max-lg:grid-cols-2 gap-4 pt-4 pb-6 border-b items-end">
+      <div className="flex gap-6 relative">
+        {/* Left sidebar with filters - made sticky */}
+        <div className="w-[25%] flex flex-col gap-6 border-r pr-6 sticky top-4 h-[calc(100vh-6rem)] overflow-y-auto">
           <EventTypeSelector />
           <div className="flex flex-col gap-2 items-start">
             <LocationSelector />
@@ -312,9 +313,9 @@ const EventTrends = () => {
               handleSelectChange={handleSelectChange}
             />
           </div>
-          <div className="grid grid-cols-2 max-lg:col-end-3 w-full gap-4">
+          <div className="flex flex-col gap-4 mt-auto pt-4 sticky bottom-0 bg-white">
             <Button
-              className="flex-1 py-5"
+              className="w-full py-5"
               onClick={applyHandler}
               disabled={isLoading || isDisabled || enableEditTrend}
             >
@@ -327,7 +328,6 @@ const EventTrends = () => {
                 "Apply"
               )}
             </Button>
-            {/* <Button className="flex-1 py-5">Save</Button> */}
             <SaveTrend
               searchParams={searchParams}
               isLoading={isLoading}
@@ -335,80 +335,68 @@ const EventTrends = () => {
             />
           </div>
         </div>
-        {graphData && graphData.length > 0 && !isLoading ? (
-          <div className="pt-8">
-            {/* <div className="flex justify-between ">
-              <TrendsNotification
-                thresholds={
-                  (eventTrendsData && eventTrendsData.thresholds) || {}
-                }
-                threshold={
-                  (eventTrendsData &&
-                    eventTrendsData.thresholds[selectedEventType]) ??
-                  0
-                }
-                activeColumn={selectedEventType}
-                showNotificationForm={showNotificationForm}
-                setShowNotificationForm={setShowNotificationForm}
-              />
-            </div> */}
 
-            <div className={styles.predictedAttendence_container}>
-              <LineChartComponent
-                predictedData={graphData}
-                selectedEventType={selectedEventType}
-                threshold={
-                  (eventTrendsData &&
-                    eventTrendsData.thresholds[selectedEventType]) ??
-                  0
-                }
-                showLegend
-              />
-            </div>
-            <div className={styles.inner_container}>
-              <div className="py-8">
-                <TestPeriodicAnalytics
-                  isSmartInsightsEnabled={isSmartInsightsEnabled}
-                  smartInsightState={smartInsightState}
-                  setIsSmartInsightsEnabled={setIsSmartInsightsEnabled}
-                  setSmartInsightState={setSmartInsightState}
-                  data={tableData && tableData.length > 0 ? tableData : []}
-                  tableColumns={tableColumns || []}
+        {/* Main content area */}
+        <div className="flex-1 min-h-[calc(100vh-6rem)] w-[75%]">
+          {graphData && graphData.length > 0 && !isLoading ? (
+            <div className="pt-8">
+              <div className={styles.predictedAttendence_container}>
+                <LineChartComponent
+                  predictedData={graphData}
+                  selectedEventType={selectedEventType}
+                  threshold={
+                    (eventTrendsData &&
+                      eventTrendsData.thresholds[selectedEventType]) ??
+                    0
+                  }
+                  showLegend
                 />
               </div>
+              <div className={styles.inner_container}>
+                <div className="py-8">
+                  <TestPeriodicAnalytics
+                    isSmartInsightsEnabled={isSmartInsightsEnabled}
+                    smartInsightState={smartInsightState}
+                    setIsSmartInsightsEnabled={setIsSmartInsightsEnabled}
+                    setSmartInsightState={setSmartInsightState}
+                    data={tableData && tableData.length > 0 ? tableData : []}
+                    tableColumns={tableColumns || []}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-        ) : graphData && graphData.length <= 0 ? (
-          <div className={styles.zeroState_container}>
-            <Image
-              src={ZeroStateDataIcon}
-              alt="zerostateData"
-              width={150}
-              height={150}
-            />
-            <p>No Events Found</p>
-            <Text
-              variant="noMargin"
-              color="secondary"
-              className="w-80 text-center"
-            >
-              Try selecting a different date range or broaden the location to
-              view events.
-            </Text>
-          </div>
-        ) : (
-          error && (
+          ) : graphData && graphData.length <= 0 ? (
             <div className={styles.zeroState_container}>
               <Image
-                src={ZeroStateIcon}
-                alt="zerostate"
+                src={ZeroStateDataIcon}
+                alt="zerostateData"
                 width={150}
                 height={150}
               />
-              <div>Set filters to view data</div>
+              <p>No Events Found</p>
+              <Text
+                variant="noMargin"
+                color="secondary"
+                className="w-80 text-center"
+              >
+                Try selecting a different date range or broaden the location to
+                view events.
+              </Text>
             </div>
-          )
-        )}
+          ) : (
+            error && (
+              <div className={styles.zeroState_container}>
+                <Image
+                  src={ZeroStateIcon}
+                  alt="zerostate"
+                  width={150}
+                  height={150}
+                />
+                <div>Set filters to view data</div>
+              </div>
+            )
+          )}
+        </div>
       </div>
     </div>
   );
