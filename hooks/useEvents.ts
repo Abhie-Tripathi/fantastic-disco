@@ -24,12 +24,3 @@ export const useEvents = {
     };
   },
 };
-
-
-
-
-
-
-
-
-

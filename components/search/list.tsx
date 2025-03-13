@@ -126,8 +126,17 @@ export default function EventAccordion({
   const searchParams = useSearchParams();
   const { data: trackerData } = useTrackerContext();
   const { getFilterValue, setMultipleFilters } = useFilterState();
-  const includeKeywords = getFilterValue("includeKeywords");
-  const audienceSpread = getFilterValue("audienceSpread");
+  const includeKeywords = getFilterValue("includeKeywords")
+    .trim()
+    .split(",")
+    .filter(Boolean);
+  const excludeKeywords = getFilterValue("excludeKeywords")
+    .trim()
+    .split(",")
+    .filter(Boolean);
+  const audienceSpread = getFilterValue("audienceSpread").split(",").filter(Boolean);
+  const showMatchKeywords =
+    includeKeywords.length + excludeKeywords.length >= 5;
   const query = Object.fromEntries(searchParams.entries());
   delete query.show;
   const [updatedEvents, setUpdatedEvents] = useState<Event[]>();
@@ -284,8 +293,8 @@ export default function EventAccordion({
               key={event.basic.id}
               event={event}
               showValues={showValues}
-              audienceSpread={audienceSpread ? true : false}
-              includeKeywords={includeKeywords ? true : false}
+              showMatchKeywords={showMatchKeywords}
+              showaudienceSpread={audienceSpread.length > 0 ? true : false}
             />
           ))}
         </ul>
@@ -312,8 +321,8 @@ const EventListItem = ({
   setInterest,
   event,
   showValues,
-  audienceSpread,
-  includeKeywords,
+  showMatchKeywords,
+  showaudienceSpread,
 }: {
   trackerId?: string;
   view?: string;
@@ -321,9 +330,9 @@ const EventListItem = ({
   setInterest: any;
   event: Event;
   showValues: Show[];
-  global?:string;
-  audienceSpread: boolean;
-  includeKeywords: boolean;
+  showMatchKeywords: boolean;
+  showaudienceSpread: boolean;
+  global?: string;
 }) => {
   const address = event.basic.eventLocation ? (
     event.basic.eventLocation.venue?.name === "Online" ||
@@ -395,10 +404,21 @@ const EventListItem = ({
     return stringValue.toLocaleString();
   }
 
+  const getMatchKeywordsColor = (percentage: number | null) => {
+    if (percentage === null) return "text-gray-500";
+    if (percentage > 20)
+      return "text-green-500 bg-[var(--success-background-color)] ";
+    if (percentage >= 10 && percentage <= 20)
+      return "text-blue-500 bg-[#eeeaf9]";
+    if (percentage > 0 && percentage < 10)
+      return "text-red-500 bg-[var(--danger-background-color)]";
+    return "text-gray-500";
+  };
+
   if (event.basic.primaryEventType == "holiday") {
     return <UnplannedCard event={event} />;
   }
-console.log(view);
+  console.log(view);
 
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
@@ -759,8 +779,8 @@ console.log(view);
                     )}
 
                   {showValues.includes(Show.rankings) &&
-                  event.insights?.repeatSentiment &&
-                  event.insights?.repeatSentiment > 0 ? (
+                  event.insights?.trustScore &&
+                  event.insights?.trustScore > 0 ? (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -768,7 +788,7 @@ console.log(view);
                             variant="outline"
                             className="text-gray-600 capitalize"
                           >
-                            Trust Score: {event.insights?.repeatSentiment}
+                            Trust Score: {event.insights?.trustScore}
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="bg-gray-800 text-gray-100  text-xs px-2 rounded-md shadow-md border border-gray-700">
@@ -781,7 +801,7 @@ console.log(view);
                   )}
 
                   {showValues.includes(Show.rating) &&
-                    event.insights?.reputationScore && (
+                    event.insights?.reputationScore  && (
                       <TooltipProvider>
                         <Tooltip delayDuration={0}>
                           <TooltipTrigger>
@@ -800,7 +820,7 @@ console.log(view);
                       </TooltipProvider>
                     )}
 
-                  {includeKeywords && (
+                  {showMatchKeywords && (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -808,6 +828,7 @@ console.log(view);
                             variant="outline"
                             className="flex items-center gap-2 text-gray-600 capitalize rounded-sm"
                           >
+                            Match Keyword :{" "}
                             {event.basic.matchedKeywords?.join(" | ")}
                           </Badge>
                         </TooltipTrigger>
@@ -818,25 +839,40 @@ console.log(view);
                     </TooltipProvider>
                   )}
 
-                  {includeKeywords && (
+                  {showMatchKeywords && (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
                           <Badge
                             variant="outline"
-                            className="flex items-center gap-2 text-gray-600 capitalize rounded-sm"
+                            className={cn(
+                              "flex items-center gap-2 text-gray-600 capitalize rounded-sm",
+                              getMatchKeywordsColor(
+                                event.basic.matchedKeywordsPercentage
+                              )
+                            )}
                           >
-                            {event.basic.matchedKeywords?.join(" | ")}
+                            {(() => {
+                              const percentage =
+                                event.basic.matchedKeywordsPercentage ?? null;
+                              if (percentage === null) return "-";
+                              if (percentage > 20) return <span>High</span>;
+                              if (percentage >= 10 && percentage <= 20)
+                                return <span>Medium</span>;
+                              if (percentage > 0 && percentage < 10)
+                                return <span>Low</span>;
+                              return "-";
+                            })()}
                           </Badge>
                         </TooltipTrigger>
                         <TooltipContent className="bg-gray-800 text-gray-100 text-xs px-2 rounded-md shadow-md border border-gray-700">
-                          <p>Matched Keywords</p>
+                          <p>Score</p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   )}
 
-                  {audienceSpread && event.audience?.audienceSpread && (
+                  {showaudienceSpread && event.audience?.audienceSpread && (
                     <TooltipProvider>
                       <Tooltip delayDuration={0}>
                         <TooltipTrigger>
@@ -956,20 +992,20 @@ console.log(view);
                           </div>
                         )}
                     </div>
-                    {global!=="global" &&
-                    <div
-                      className="flex items-start justify-end"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <ActionPopover
-                        eventId={event.basic.id}
-                        interests={event.interests}
-                        trackerId={trackerId}
-                        setInterest={setInterest}
-                        setEventId={setEventId}
-                      />
-                    </div>
-                    }
+                    {global !== "global" && (
+                      <div
+                        className="flex items-start justify-end"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <ActionPopover
+                          eventId={event.basic.id}
+                          interests={event.interests}
+                          trackerId={trackerId}
+                          setInterest={setInterest}
+                          setEventId={setEventId}
+                        />
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="flex justify-end w-full gap-6">
@@ -1015,21 +1051,21 @@ console.log(view);
                           </div>
                         )}
                     </div>
-                    {global!=="global" &&
-                    <div
-                      className="flex items-start justify-end"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <ActionPopover
-                        eventId={event.basic.id}
-                        interests={event.interests}
-                        trackerId={trackerId}
-                        setInterest={setInterest}
-                        setEventId={setEventId}
-                        view={view}
-                      />
-                    </div>
-                    }
+                    {global !== "global" && (
+                      <div
+                        className="flex items-start justify-end"
+                        onClick={(e) => e.preventDefault()}
+                      >
+                        <ActionPopover
+                          eventId={event.basic.id}
+                          interests={event.interests}
+                          trackerId={trackerId}
+                          setInterest={setInterest}
+                          setEventId={setEventId}
+                          view={view}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

@@ -319,7 +319,7 @@ function EventList({
   const searchParams = useSearchParams();
   const eventService = useEventsService();
   const [hoveredPopupInfo, setHoveredPopupInfo] = useState<any | null>(null);
-  const [sortBy, setSortBy] = useState("start");
+  const [sortBy, setSortBy] = useState("-score");
 
   useEffect(() => {
     if (!mapRef.current) return;

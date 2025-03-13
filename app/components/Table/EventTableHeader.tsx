@@ -17,14 +17,17 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
   localFilters,
 }) => {
   const { getFilterValue } = useFilterState();
-  const includeKeywords = getFilterValue("includeKeywords");
-  const audienceSpread = getFilterValue("audienceSpread");
+  const includeKeywords = getFilterValue("includeKeywords").trim().split(",").filter(Boolean);
+  const excludeKeywords = getFilterValue("excludeKeywords").trim().split(",").filter(Boolean);
+  const audienceSpread = getFilterValue("audienceSpread").split(",").filter(Boolean);
+  const showMatchKeywords =
+    includeKeywords.length + excludeKeywords.length >= 5;
 
   return (
     <TableHeader>
       <TableRow className="bg-[var(--heading-background-color)] hover:bg-muted/50">
         <TableHead
-          className="sticky left-0 bg-[var(--heading-background-color)] max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] h-10 after:absolute after:inset-0 after:bg-[var(--heading-background-color)] "
+          className="sticky left-0 bg-[var(--heading-background-color)] max-w-[280px]  shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] h-10 after:absolute after:inset-0 after:bg-[var(--heading-background-color)] "
           style={{ zIndex: 0 }}
         >
           <div className="font-medium text-md text-foreground relative z-[999]">
@@ -88,13 +91,13 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
               </TableHead>
             )}
 
-            {includeKeywords && (
+            {showMatchKeywords && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">Matched</div>
               </TableHead>
             )}
 
-            {includeKeywords && (
+            {showMatchKeywords && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">Score</div>
               </TableHead>
@@ -136,7 +139,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
                 </div>
               </TableHead>
             )}
-            {audienceSpread && (
+            {audienceSpread.length > 0 && (
               <TableHead className="min-w-[150px] text-center">
                 <div className="font-medium text-foreground ">
                   Audience Spread
