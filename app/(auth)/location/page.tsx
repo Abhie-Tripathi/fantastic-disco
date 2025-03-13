@@ -301,9 +301,12 @@ const LocationForm = () => {
       const latitude = !Array.isArray(locationToUse) && locationToUse.lat;
       const longitude = !Array.isArray(locationToUse) && locationToUse.lng;
       const viewBound = {
-        latitude: Number(latitude),
-        longitude: Number(longitude),
-        radius: Number(radiusUnit === "miles" ? radius * 1.60934 : radius),
+        boundType: "point",
+        coordinates: {
+          latitude: Number(latitude),
+          longitude: Number(longitude),
+          radius: Number(radiusUnit === "miles" ? radius * 1.60934 : radius),
+        },
       };
       const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
       const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
@@ -316,7 +319,7 @@ const LocationForm = () => {
               locationToUse.map((location) => location.id).join(",")
             }`
           : locationType === "center"
-          ? `&geoCoordinates=${viewBoundString}`
+          ? `&viewBound=${viewBoundString}`
           : ""
       }&view=map`;
       setSearchParams(params);
@@ -400,9 +403,12 @@ const LocationForm = () => {
       const longitude =
         !Array.isArray(selectedLocation) && selectedLocation.lng;
       const viewBound = {
-        latitude: Number(latitude),
-        longitude: Number(longitude),
-        radius: Number(radiusUnit === "miles" ? radius * 1.60934 : radius),
+        boundType: "point",
+        coordinates: {
+          latitude: Number(latitude),
+          longitude: Number(longitude),
+          radius: Number(radiusUnit === "miles" ? radius * 1.60934 : radius),
+        },
       };
       const viewBoundString = encodeURIComponent(JSON.stringify(viewBound));
       const params = `status=active%2Ccancelled%2Cpostponed%2Cpredicted&eventTypes=community%2Cconcert%2Cperforming-arts%2Csport%2Cfestival%2Cworkshops%2Ctradeshows%2Cconferences&active_gte=${new Date(
@@ -415,7 +421,7 @@ const LocationForm = () => {
               selectedLocation.map((location) => location.id).join(",")
             }`
           : locationType === "center"
-          ? `&geoCoordinates=${viewBoundString}`
+          ? `&viewBound=${viewBoundString}`
           : ""
       }&view=map`;
       setSearchParams(params);
