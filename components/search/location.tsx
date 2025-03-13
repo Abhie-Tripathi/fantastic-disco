@@ -119,9 +119,12 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
         "locationIds",
         "viewBound",
         JSON.stringify({
-          latitude: geoLocation.lat,
-          longitude: geoLocation.lng,
-          radius: radiusInKm,
+          boundType: "point",
+          coordinates: {
+            latitude: geoLocation.lat,
+            longitude: geoLocation.lng,
+            radius: radiusInKm,
+          },
         })
       );
       saveLastSearchedLocation(geoLocation);
