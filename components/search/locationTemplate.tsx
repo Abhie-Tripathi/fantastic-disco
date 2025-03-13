@@ -125,7 +125,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
       selectedLocation.length > 0
     ) {
       replaceLocalFilter(
-        "geoCoordinates",
+        "viewBound",
         "locationIds",
         (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
       );

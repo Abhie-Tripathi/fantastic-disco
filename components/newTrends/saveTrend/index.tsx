@@ -226,7 +226,7 @@ const SaveTrend = ({
     const eventTypes = params.get("eventTypes");
     const columns = params.get("columns");
     const locationIds = params.get("locationIds");
-    const geoCoordinate = params.get("geoCoordinates");
+    const geoCoordinate = params.get("viewBound");
     const viewBound = geoCoordinate
       ? JSON.stringify({
           boundType: "point",
@@ -258,10 +258,10 @@ const SaveTrend = ({
 
   const handleEditTrend = (trackerName: string, id: string) => {
     const streetName = getLastSearchedLocation();
-    const viewBound = localFilters.geoCoordinates
+    const viewBound = localFilters.viewBound
       ? JSON.stringify({
           boundType: "point",
-          coordinates: localFilters.geoCoordinates,
+          coordinates: localFilters.viewBound,
           ...(streetName && {
             properties: { name: (streetName as GeoLocation).description },
           }),
@@ -279,7 +279,7 @@ const SaveTrend = ({
       columns: localFilters.columns || "",
       ...(localFilters.locationIds
         ? { locationIds: localFilters.locationIds }
-        : localFilters.geoCoordinates
+        : localFilters.viewBound
         ? { viewBound: viewBound }
         : {}),
     };

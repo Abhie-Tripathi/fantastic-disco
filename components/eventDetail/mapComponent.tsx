@@ -95,11 +95,11 @@ export default function EventDetailMapComponent({ searchParams }: MapProps) {
   );
 
   const location = useMemo(() => {
-    const geoCoordinates = getFilterValue("geoCoordinates");
+    const viewBound = getFilterValue("viewBound");
     const locationIds = getFilterValue("locationIds");
 
-    if (geoCoordinates) {
-      return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
+    if (viewBound) {
+      return { type: "viewBound", ...JSON.parse(viewBound) };
     } else if (locationIds) {
       return { type: "locationId", locationIds };
     }
@@ -313,11 +313,11 @@ export default function EventDetailMapComponent({ searchParams }: MapProps) {
 
   useEffect(() => {
     if (!mapRef.current) return;
-    if (location?.type === "geoCoordinates") {
-      const { latitude, longitude, radius } = location;
+    if (location?.type === "viewBound") {
+      const { coordinates, radius } = location;
       const zoom = Math.log2(360 / (radius / 1000)) - 4.6;
       mapRef.current.flyTo({
-        center: [Number(longitude), Number(latitude)],
+        center: [Number(coordinates.longitude), Number(coordinates.latitude)],
         zoom: zoom,
         duration: 3000,
         essential: true,
@@ -333,10 +333,10 @@ export default function EventDetailMapComponent({ searchParams }: MapProps) {
   }, [location, mapRef.current]);
 
   const circleLayer: LayerProps | null = useMemo(() => {
-    if (location?.type === "geoCoordinates") {
-      const { latitude, longitude, radius } = location;
-      console.log(latitude, longitude, radius);
-      const center = point([Number(longitude), Number(latitude)]);
+    if (location?.type === "viewBound") {
+      const { coordinates, radius } = location;
+      console.log(coordinates, radius);
+      const center = point([Number(coordinates.longitude), Number(coordinates.latitude)]);
       const circleGeoJSON = circle(center, radius, 50, "kilometers");
 
       return {

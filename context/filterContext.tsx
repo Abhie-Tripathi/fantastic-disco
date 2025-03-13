@@ -70,7 +70,6 @@ export interface Filters {
   // status?: string;
   top?: string;
   locationIds?: string;
-  geoCoordinates?: string;
   viewBound?:string;
   view?: string;
   calendar_type?: string;
