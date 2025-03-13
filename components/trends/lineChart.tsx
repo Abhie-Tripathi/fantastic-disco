@@ -284,7 +284,7 @@ const LineChartComponent = ({
   }, []);
 
   const setRedirectionLinkOnDate = (date: string): string => {
-    const geoCoordinates = searchParams.get("geoCoordinates");
+    const geoCoordinates = searchParams.get("viewBound");
     const locationIds = searchParams.get("locationIds");
     const searchEventParams = new URLSearchParams({
       status: "active,cancelled,postponed",

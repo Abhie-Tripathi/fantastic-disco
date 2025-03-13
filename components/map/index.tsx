@@ -539,9 +539,9 @@ export default function MapComponent({
   }, [location, mapRef.current, locationBBox]);
 
   const circleLayer: LayerProps | null = useMemo(() => {
-    if (location?.type === "geoCoordinates") {
-      const { latitude, longitude, radius } = location;
-      const center = point([Number(longitude), Number(latitude)]);
+    if (location?.type === "viewBound") {
+      const { coordinates, radius } = location;
+      const center = point([Number(coordinates.longitude), Number(coordinates.latitude)]);
       const circleGeoJSON = circle(center, radius, 50, "kilometers");
 
       return {
