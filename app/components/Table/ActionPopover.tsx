@@ -24,8 +24,8 @@ interface ActionPopoverProps {
   eventId: string;
   interests: Interest | undefined;
   trackerId?:string;
-  setInterest?:any;
-  setEventId?:any;
+  setInterest:any;
+  setEventId:any;
   view?:string;
 }
 
@@ -85,12 +85,18 @@ export function ActionPopover({
       if (selectedAction === "UN-BOOKMARK") {
         const response = await removeBookmark(interests?.bookmark?.interestId || "");
         if (response?.interest && setInterest) {
+          setSavedEventCount(savedEventCount - 1);
           setInterest({
             [response.interest.toLowerCase()]: {
               interestId: response.id,
             },
           });
         }
+        toast({
+          title: "Success",
+          description: "Your interest has been recorded",
+          variant: "default",
+        });
         setEventId(response?.eventId);
         setIsOpen(false);
         console.log(response);
@@ -104,7 +110,7 @@ export function ActionPopover({
           },
           {
             onSuccess: (response: any) => {
-              if (response?.interest && setInterest) {
+              if (response?.interest) {
                 setInterest({
                   [response.interest.toLowerCase()]: {
                     interestId: response.id,
@@ -126,7 +132,7 @@ export function ActionPopover({
               console.log(error)
               toast({
                 title: "Error",
-                description: "Failed to record your interest. Please try again.",
+                description: error.message,
                 variant: "destructive",
               });
             },

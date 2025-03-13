@@ -71,7 +71,7 @@ const LocationContainer = ({
             </div>
             </div> */}
             {
-                formState.eventFormat === "In-person" && (
+                (formState.eventFormat === "In-person" || formState.eventFormat === "OFFLINE") && (
                     <div className={styles.locationContainer} onClick={() => setDropdown(!dropdown)}>
                         <LocationIcon color={formTheme === "light" ? "#7d7d7d" : "white"} />
                         <div className={styles.eventLocation}>
@@ -83,7 +83,7 @@ const LocationContainer = ({
             }
 
             {
-                formState.eventFormat === "Virtual" && (
+                (formState.eventFormat === "Virtual" || formState.eventFormat === "ONLINE") && (
                     <div className={styles.virtual_location_Container} onClick={() => setDropdown(!dropdown)}>
                         <LinkIcon color={formTheme === "light" ? "#7d7d7d" : "white"} />
                         <div className={styles.eventLocation}>
@@ -94,7 +94,7 @@ const LocationContainer = ({
             }
 
             {
-                formState.eventFormat === "Hybrid" && (
+                (formState.eventFormat === "Hybrid"||formState.eventFormat === "HYBRID") && (
                     <div className={styles.location_details__container}>
                         <div className={styles.locationContainer} onClick={() => setDropdown(!dropdown)}>
                             <LocationIcon color={formTheme === "light" ? "#7d7d7d" : "white"} />

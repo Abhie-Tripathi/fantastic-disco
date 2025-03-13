@@ -133,7 +133,11 @@ export const EventAudienceEstimates = ({
         <p className={`text-[#6750A4] font-semibold text-lg `}>
           {isEstimatedExhibitorEnabled ? (
             estimatedExhibitors ? (
-              estimatedExhibitors
+              minExhibitorValue === maxExhibitorValue ? (
+                maxExhibitorValue
+              ) : (
+                numberWithCommas(estimatedExhibitors)
+              )
             ) : (
               "--"
             )

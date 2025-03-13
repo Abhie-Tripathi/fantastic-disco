@@ -95,7 +95,7 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
       setMultipleFilters({ 
           skip: skip,
           q: searchValue,
-          id: result.trackers[0].id,
+          id: result?.trackers[0]?.id,
         })
     setTotalPage(Math.ceil(result.count / trackerPerPage));
     setTotalCount(result.count)
@@ -115,6 +115,8 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
   }
   },[totalPage])
   const [openSearchBar,setOpenSearchBar]=useState(false);
+  console.log(allTracker);
+  
   return (
     <div className={styles.container} ref={endOfListRef}>
       <div className={styles.containerLeft}>
@@ -154,28 +156,27 @@ const Index = ({setDataPresent, dataPresent, isData, setSingleTrackerData, singl
             <Button variant="outline" onClick={()=>setOpenSearchBar(!openSearchBar)}>
             <Search width={16} height={16} />
             </Button>
-            {/* <SortDropdown/> */}
             </div>
           </div>
-          {openSearchBar &&
           <div
-          className={`overflow-hidden transition-all duration-300 ease-in-out ${
-            openSearchBar ? "max-h-20 opacity-100 scale-y-100" : "max-h-0 opacity-0 scale-y-95 hidden"
-          }`}
-        >
-          <div className="border border-[var(--border-color)] rounded px-3 py-2 flex items-center gap-2 mr-7 ml-6 mb-3">
-            <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
-            <input
-              className="outline-none w-full bg-[var(--primary-foreground)]"
-              placeholder="Enter tracker name"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-            />
-          </div>
-        </div>
-        
-          }
-        <div className="h-[calc(100vh-307px)] overflow-auto pl-6 pr-6 flex flex-col gap-[var(--spacing-md)]">
+  className={`transition-all duration-300 ease-in-out overflow-hidden ${
+    openSearchBar
+      ? "max-h-20 opacity-100 scale-y-100 bg-white"
+      : "max-h-0 opacity-0 scale-y-95 bg-white absolute"
+  }`}
+>
+  <div className="border border-gray-300 rounded px-3 py-2 flex items-center gap-2 mx-6 mb-3">
+    <MagnifyingGlass color="#9CA3AF" width="18px" height="18px" />
+    <input
+      className="outline-none w-full bg-transparent"
+      placeholder="Enter tracker name"
+      value={searchValue}
+      onChange={(e) => setSearchValue(e.target.value)}
+    />
+  </div>
+</div>
+        <div className={`${
+    openSearchBar?"h-[calc(100vh-307px)]": "h-[calc(100vh-252px)]"} overflow-auto pl-6 pr-5 flex flex-col gap-[var(--spacing-md)]`}>
           {(allTracker.length===0 && !loadOne) &&
             <div className="flex justify-center text-[var(--secondary-text-color)] font-semibold">Tracker with the search result is not created yet.</div>
           }

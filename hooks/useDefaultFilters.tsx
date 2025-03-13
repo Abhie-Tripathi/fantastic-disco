@@ -291,7 +291,10 @@ export function useDefaultFilters() {
       return;
     }
 
-    const currentParams = Object.fromEntries(searchParams.entries());
+    const urlparams = new URLSearchParams(searchParams.toString());
+    urlparams.delete("active_lte");
+    urlparams.delete("active_gte");
+    const currentParams = Object.fromEntries(urlparams.entries());
     const hasOnlyViewParam =
       Object.keys(currentParams).length === 1 && "view" in currentParams;
     const isEmptySearch =

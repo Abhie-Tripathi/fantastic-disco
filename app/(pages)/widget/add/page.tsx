@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import styles from './page.style.module.css'
 import Image from 'next/image'
-import RightArrow from '/public/rightArrow.svg'
+import RightArrow from '/public/rightarrow.svg'
 import WidgetOptions from '@/app/components/TemplateViewsNew/WidgetOptions/WidgetOptions'
 import TemplatesPreview from '@/app/components/TemplateViewsNew/TemplatesPreview/TemplatesPreview'
 import DraftWidgets from "@/app/components/TemplateViews/draftwidgets/DraftWidgets";

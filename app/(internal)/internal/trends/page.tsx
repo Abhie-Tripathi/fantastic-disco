@@ -46,6 +46,10 @@ const EventTrends = () => {
     useFilterContext();
   const columns = searchParams.get("columns");
   const editTrend = searchParams.get("editTrend");
+  const eventTypes = searchParams.get("eventTypes");
+  const eventTypesArray = eventTypes ? eventTypes.split(",") : [];
+  const hasHoliday =
+    eventTypesArray.length > 0 ? eventTypesArray.includes("holiday") : false;
   const enableEditTrend = editTrend ? Boolean(editTrend) : false;
   const columnsData = (columns && columns.split(",")) || [];
   const [isSmartInsightsEnabled, setIsSmartInsightsEnabled] =
@@ -111,7 +115,7 @@ const EventTrends = () => {
   const { data: holdiayData } = useQuery({
     queryKey: ["holiday", updatedParams],
     queryFn: async () => await getEventsWithSearchParams(updatedParams),
-    enabled: isEventeli,
+    enabled: isEventeli && hasHoliday,
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,

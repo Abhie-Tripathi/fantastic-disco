@@ -117,10 +117,10 @@ const ShareModal: React.FC<ShareModalProps> = ({
                                         description: "Tracker shared successfully!",
                                         variant: "default",
                                       });
-                                      fetchAccess();
+                                      fetchAccess?.();
                                       if(shareFunction)
                                       shareFunction();
-                                      setId('');
+                                      setId?.('');
                                       setIsClicked(false);
                                       setFilter('');
                                     if(setAccessData)
@@ -142,7 +142,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
             // }
         }
         const saveShareInvite = (id: string, name: string, email:string) => {
-            setId(id);
+            setId?.(id);
             setFilter(name);
             setFilteredData([]);
             setDrop(false);

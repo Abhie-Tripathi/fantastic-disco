@@ -8,7 +8,7 @@ import {CalendarWeekEventsResponse, EventCount, MapEventsResponse, EventResponse
 import { EventTableType } from '@/types/ListViewTable';
 import { useFilterState } from '@/hooks/useFilterState';
 import { usePathname } from 'next/navigation';
-import { isEventeli } from '@/config';
+import { BASE_URL, isEventeli } from '@/config';
 interface OriginalResponse {
   totalEvents: number;
   events: any[];
@@ -93,7 +93,7 @@ export const useTrackerServices = () => {
       console.log(params);
       
       const response = await api.request<EventResponse>(
-        `https://api.dev.gtm.whr.ai/me/account/saved-events`,
+        `${BASE_URL}/me/account/saved-events?limit=${params.limit|| 10}&offset=${params.offset || 0}`,
         {
           method: "GET"
         }
@@ -115,6 +115,12 @@ export const useTrackerServices = () => {
           method:"DELETE"
         }
       );
+    }
+    const verifyAccess=async (formData: {otp: string, email:string, target:string, targetId:string})=>{
+      return await api.request(`${endpoints.tracker.verifyAccess}`, {
+        method:"POST",
+        data:formData,
+      });
     }
     const removeBookmark = async (id: string): Promise<BookmarkResponse | undefined> => {
       return api.request(`${endpoints.intent.userEventInterest}/${id}`, {
@@ -169,6 +175,8 @@ export const useTrackerServices = () => {
     }
     const getTrackerEvents = async(query:any, trackerId:string
     )=> {
+      console.log(trackerId);
+      
       // console.log(pathname);
       // let active="active";
       // if(query.eventType==="newEvent") active="new";
@@ -280,7 +288,7 @@ export const useTrackerServices = () => {
         return response;
     }
     const getEventsLatLongData = async (trackerId:string,searchParams:string, type:any) => {
-      const params = new URLSearchParams(searchParams);
+      const params = new URLSearchParams(searchParams.toString());
     // const adaptedParams = EventsAdapter.adaptRequestParams(params);
     // console.log(type.get("eventType"));
     const eventType = type.get("eventType");
@@ -295,7 +303,7 @@ export const useTrackerServices = () => {
     };
     const getCalendarViewEvents = async (trackerId:string, searchParams:string, isListing:boolean, viewType?:string)=>{
       // console.log(type);
-      const newParams=new URLSearchParams(searchParams);
+      const newParams=new URLSearchParams(searchParams.toString());
       const type=newParams.get("type");
       newParams.delete("type");
       const entries = Array.from(newParams.entries());
@@ -346,6 +354,7 @@ export const useTrackerServices = () => {
       removeAccess,
       delTracker,
       getTrackers,
+      verifyAccess,
       saveIntent,
       saveNewEvent,
       deleteNewEvent,
