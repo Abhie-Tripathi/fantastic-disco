@@ -27,7 +27,7 @@ export interface GeoLocation {
   locationType: "GeoJSON";
   lat: number;
   lng: number;
-  radius: number;
+  radius: number | null;
   description: string;
 }
 
@@ -62,8 +62,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
       ? localFilters.locationIds.split(",")
       : null;
 
-    if (!geoCoordinate || !locationIds) return;
-
+    console.log(geoCoordinate, locationIds);
     if (geoCoordinate) {
       const locationName = await getLocationName(
         geoCoordinate.coordinates.latitude,
@@ -118,7 +117,11 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
     if (selectedLocation && !Array.isArray(selectedLocation)) {
       const geoLocation = selectedLocation as GeoLocation;
       const radiusInKm =
-        radiusUnit === "mi" ? geoLocation.radius * 1.60934 : geoLocation.radius;
+        radiusUnit === "mi" ? (geoLocation.radius || 5) * 1.60934 : geoLocation.radius;
+
+      if (radiusUnit === "mi") {
+        setRadiusUnit("km");
+      }
       replaceLocalFilter(
         "locationIds",
         "viewBound",
@@ -263,7 +266,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
                     id="radius"
                     type="number"
                     className="mt-1"
-                    value={(selectedLocation as GeoLocation)?.radius}
+                    value={(selectedLocation as GeoLocation)?.radius || ""}
                     onChange={(e) =>
                       setSelectedLocation?.((prev) =>
                         prev

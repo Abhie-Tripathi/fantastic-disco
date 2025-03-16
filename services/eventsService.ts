@@ -19,6 +19,7 @@ import {
 import { ApiError } from "@/types/api";
 import { EventQuery } from "@/types/events/dto/event-query.dto";
 import { EventParticpantAdapter } from "@/utils/eventParticipantsAdapter";
+import { isEventeli } from "@/config";
 
 export const useEventsService = () => {
   const api = useApi();
@@ -36,6 +37,10 @@ export const useEventsService = () => {
         isLoading: false,
         error: null,
       };
+    }
+
+    if (isEventeli && (!params.locationIds && !params.viewBound) && !params.eventIds) {
+      throw new Error("Location is required");
     }
     const response = await api.request<EventResponse>(endpoints.event.events, {
       method: "GET",
@@ -59,6 +64,13 @@ export const useEventsService = () => {
         count: 0,
       };
     }
+
+    // if (isEventeli && !params.locationIds) {
+    //   return {
+    //     count: 0,
+    //   };
+    // }
+
     return await api.request<EventCount[]>(`${endpoints.event.count}`, {
       method: "GET",
       params,

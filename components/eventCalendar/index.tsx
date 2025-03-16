@@ -323,6 +323,10 @@ export default function EventCalendar({
     }
   };
 
+  if (isEventeli && !searchParams.get("viewBound") && !searchParams.get("locationIds")) {
+    return <ZeroState text="Location is Mandatory" />;
+  }
+
   const renderCalendarContent = () => {
     if (isEventsLoading) {
       return <Loading />;

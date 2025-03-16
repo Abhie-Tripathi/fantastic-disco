@@ -92,9 +92,8 @@ export default function MapComponent({
   trackerType,
   eventType,
 }: MapProps) {
-  const searchParams = useSearchParams();
   const mapRef = useRef<MapRef>(null);
-  const { getLocalFilterValue } = useFilterContext();
+  const { getLocalFilterValue, searchParams } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
@@ -118,6 +117,7 @@ export default function MapComponent({
     getEventsCount,
     getEvents,
     getEventsWithSearchParams,
+    getRawEventsWithSearchParams,
   } = useEventsService();
   const [showUnattendedEvents, setShowUnattendedEvents] = useState(false);
   const [locationBBox, setLocationBBox] = useState<any | null>(null);
@@ -146,8 +146,7 @@ export default function MapComponent({
   const [highlightedEvent, setHighlightedEvent] = useState<Event | null>(null);
 
   const location = useMemo(() => {
-    const viewBound = getLocalFilterValue("viewBound");
-
+    const geoCoordinates = getLocalFilterValue("viewBound");
     const locationIds =
       source === "tracker"
         ? trackerLoc?.length > 0
@@ -162,8 +161,8 @@ export default function MapComponent({
         zoom: 1,
       });
 
-    if (viewBound) {
-      return { type: "viewBound", ...JSON.parse(viewBound) };
+    if (geoCoordinates) {
+      return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
     } else if (locationIds.length) {
       return { type: "locationIds", locationIds };
     }
@@ -320,7 +319,33 @@ export default function MapComponent({
 
   useEffect(() => {
     const fetchEvents = async () => {
-      if (currentZoomGroup === "event" && mapRef.current) {
+      if (
+        currentZoomGroup === "event" &&
+        mapRef.current &&
+        location?.type === "geoCoordinates" &&
+        searchParams.get("viewBound")
+      ) {
+        try {
+          const modifiedSearchParams = searchParams
+            ?.toString()
+            .replace(/locationIds=[^&]*&?/, "");
+
+          console.log("modifiedSearchParams", modifiedSearchParams);
+
+          let eventsData: any = {};
+          eventsData = await getEventsWithSearchParams(modifiedSearchParams);
+          setEvents((eventsData?.events as MapEvents[]) || []);
+        } catch (error) {
+          console.error("Error fetching events:", error);
+        }
+        return;
+      }
+
+      if (
+        location?.type === "locationIds" &&
+        currentZoomGroup === "event" &&
+        mapRef.current
+      ) {
         const map = mapRef.current.getMap();
         const center = map.getCenter();
         const bounds = map.getBounds();
@@ -344,7 +369,8 @@ export default function MapComponent({
           try {
             const modifiedSearchParams = searchParams
               ?.toString()
-              .replace(/locationIds=[^&]*&?/, "");
+              .replace(/locationIds=[^&]*&?/, "")
+              .replace(/viewBound=[^&]*&?/, "");
 
             const viewBoundString = encodeURIComponent(
               JSON.stringify(viewBound)
@@ -513,9 +539,9 @@ export default function MapComponent({
 
   useEffect(() => {
     if (!mapRef.current) return;
-    if (location?.type === "viewBound") {
-      const { coordinates, radius } = location;
-      const zoom = Math.log2(360 / (radius / 1000)) - 4.6;
+    if (location?.type === "geoCoordinates") {
+      const { coordinates } = location;
+      const zoom = Math.log2(360 / (coordinates.radius / 1000)) - 4.6;
       setCurrentZoomGroup("event");
       mapRef.current.flyTo({
         center: [Number(coordinates.longitude), Number(coordinates.latitude)],
@@ -537,34 +563,35 @@ export default function MapComponent({
     }
   }, [location, mapRef.current, locationBBox]);
 
-  // const circleLayer: LayerProps | null = useMemo(() => {
-  //   if (location?.type === "viewBound") {
-  //     const { coordinates, radius } = location;
-  //     const longitude = Number(coordinates.longitude);
-  //     const latitude = Number(coordinates.latitude);
-      
-  //     if (isNaN(longitude) || isNaN(latitude) || !radius) {
-  //       return null;
-  //     }
-      
-  //     const center = point([longitude, latitude]);
-  //     const circleGeoJSON = circle(center, radius, 50, "kilometers");
+  const circleLayer: LayerProps | null = useMemo(() => {
+    if (location?.type === "geoCoordinates") {
+      const { coordinates } = location;
+      const center = point([
+        Number(coordinates.longitude),
+        Number(coordinates.latitude),
+      ]);
+      const circleGeoJSON = circle(
+        center,
+        coordinates.radius,
+        50,
+        "kilometers"
+      );
 
-  //     return {
-  //       id: "circle-layer",
-  //       type: "fill" as const,
-  //       source: {
-  //         type: "geojson",
-  //         data: circleGeoJSON,
-  //       },
-  //       paint: {
-  //         "fill-color": "rgba(138, 43, 220, 0.1)",
-  //         "fill-outline-color": "rgba(138, 43, 220, 0.8)",
-  //       },
-  //     };
-  //   }
-  //   return null;
-  // }, [location]);
+      return {
+        id: "circle-layer",
+        type: "fill" as const,
+        source: {
+          type: "geojson",
+          data: circleGeoJSON,
+        },
+        paint: {
+          "fill-color": "rgba(138, 43, 220, 0.1)",
+          "fill-outline-color": "rgba(138, 43, 220, 0.8)",
+        },
+      };
+    }
+    return null;
+  }, [location]);
 
   const onMapLoad = useCallback(({ target: map }) => {
     for (const [key, url] of Object.entries(iconUrls)) {
@@ -585,6 +612,14 @@ export default function MapComponent({
   const handleEventLeave = () => {
     setHighlightedEvent(null);
   };
+
+  if (
+    isEventeli &&
+    !searchParams.get("viewBound") &&
+    !searchParams.get("locationIds")
+  ) {
+    return <ZeroState text="Location is Mandatory" />;
+  }
   return (
     <div className="relative">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
@@ -601,7 +636,7 @@ export default function MapComponent({
           {source === "tracker" && eventCountsQuery?.data?.length === 0 ? (
             <NullState
               image={TrackerNullState}
-              title="We couldn't find any events matching your tracker criteria at the moment."
+              title="We couldn’t find any events matching your tracker criteria at the moment."
               text="Try adjusting your filters or checking back later, as new events are added frequently."
               buttonText="Manage Configuration"
               buttonUrl={`/internal/trackers/${trackerId}/editTracker?type=${trackerType}`}
@@ -712,17 +747,19 @@ export default function MapComponent({
                     />
                   )}
 
-                  <EventList
-                    eventType={eventType}
-                    source={source}
-                    trackerId={trackerId}
-                    searchParam={searchParams}
-                    showEventType={showEventList}
-                    onClose={() => setShowEventList("")}
-                    mapRef={mapRef}
-                    onEventHover={handleEventHover}
-                    onEventLeave={handleEventLeave}
-                  />
+                  {showEventList && (
+                    <EventList
+                      eventType={eventType}
+                      source={source}
+                      trackerId={trackerId}
+                      searchParam={searchParams}
+                      showEventType={showEventList}
+                      onClose={() => setShowEventList("")}
+                      mapRef={mapRef}
+                      onEventHover={handleEventHover}
+                      onEventLeave={handleEventLeave}
+                    />
+                  )}
 
                   <EventCountsLayer
                     eventCounts={eventCountsQuery.data || []}
@@ -745,7 +782,7 @@ export default function MapComponent({
                     />
                   )}
 
-                  {/* {circleLayer && (
+                  {circleLayer && (
                     <Source
                       id="circle-source"
                       type="geojson"
@@ -753,7 +790,7 @@ export default function MapComponent({
                     >
                       <Layer {...circleLayer} />
                     </Source>
-                  )} */}
+                  )}
 
                   {popupInfo && (
                     <MapPopup

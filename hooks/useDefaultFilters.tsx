@@ -9,6 +9,8 @@ import { useEventsService } from "@/services/eventsService";
 import { RecentSearch } from "@/types/events/recentSearches";
 import { useFilterContext } from "@/context/filterContext";
 import { useConfigurationService } from "@/services/configurationService";
+import { isEventeli } from "@/config";
+import { getLastSearchWithoutAlert } from "@/utils/recentSearch";
 
 export function useDefaultFilters() {
   const { user } = useAuthContext();
@@ -60,7 +62,7 @@ export function useDefaultFilters() {
       filters.entryType?.enabledValue
         ?.map((item: string) => item.toLowerCase())
         ?.join(",") ?? "",
-   
+
     ratings: filters.ratings?.enabledValue?.join(",") ?? "",
     maturity: filters.maturity?.enabledValue?.[0] ?? "",
     onlyBranded: filters.branded?.enabledValue?.eventBrand ? "true" : "",
@@ -69,10 +71,10 @@ export function useDefaultFilters() {
     includeKeywords: filters.keywords?.includeKeywords?.join(",") ?? "",
     excludeKeywords: filters.keywords?.excludeKeywords?.join(",") ?? "",
     estimatedVisitorRangeTag:
-    filters.estimatedVisitorRangeTag?.enabledValue?.join(",") ?? "",
+      filters.estimatedVisitorRangeTag?.enabledValue?.join(",") ?? "",
     estimatedExhibitors:
-    filters.estimatedExhibitors?.enabledValue?.join(",") ?? "",
-  show: generateShowParam(filters),
+      filters.estimatedExhibitors?.enabledValue?.join(",") ?? "",
+    show: generateShowParam(filters),
   });
 
   const mapRecentSearchToParams = (recentSearch: RecentSearch) => ({
@@ -125,7 +127,9 @@ export function useDefaultFilters() {
       recentSearch.filterValues.audienceSpread?.join(",") ?? undefined,
     designations:
       recentSearch.filterValues.designations?.join(",") ?? undefined,
-    top: recentSearch.filterValues.top ? String(recentSearch.filterValues.top) : undefined,
+    top: recentSearch.filterValues.top
+      ? String(recentSearch.filterValues.top)
+      : undefined,
     show: recentSearch.filterValues.show?.join(",") ?? undefined,
   });
 
@@ -348,9 +352,16 @@ export function useDefaultFilters() {
         recentSearchResponse.recentSearches[0].filterValues
       ) {
         const params = new URLSearchParams(searchParams.toString());
-        const recentFilterParams = mapRecentSearchToParams(
-          recentSearchResponse.recentSearches[0]
-        );
+        let recentSearch: any = {};
+        if (isEventeli) {
+          recentSearch = getLastSearchWithoutAlert(
+            recentSearchResponse.recentSearches
+          );
+          console.log(recentSearch)
+        } else {
+          recentSearch = recentSearchResponse.recentSearches[0];
+        }
+        const recentFilterParams = mapRecentSearchToParams(recentSearch);
         Object.entries(recentFilterParams).forEach(([key, value]) => {
           if (value) params.set(key, String(value));
         });

@@ -30,9 +30,9 @@ const TrackerCard = ({ tracker, small }: Props) => {
 
     function formatNumber(value : number) {
         if (value >= 1000) {
-            return `${(value / 1000).toFixed(1)}k`.replace('.0k', 'k'); // Avoid ".0k"
+        return `${(value / 1000).toFixed(1)}k`.replace('.0k', 'k'); // Avoid ".0k"
         }
-        return value.toString();
+        return value?.toString();
     }
     const router = useRouter()
     const handleRouting = ()=>{
