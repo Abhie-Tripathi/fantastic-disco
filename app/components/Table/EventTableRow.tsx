@@ -22,6 +22,8 @@ import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import { Filters } from "@/context/filterContext";
 import * as Flags from "country-flag-icons/react/3x2";
 import { useFilterState } from "@/hooks/useFilterState";
+import { isEventeli } from "@/config";
+import { groupedEventTypes } from "@/constants";
 
 interface EventTableRowProps {
   event: Event;
@@ -124,13 +126,21 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
   global,
 }) => {
   const { getFilterValue } = useFilterState();
-  const includeKeywords = getFilterValue("includeKeywords").trim().split(",").filter(Boolean);
-  const excludeKeywords = getFilterValue("excludeKeywords").trim().split(",").filter(Boolean);
-  const audienceSpread = getFilterValue("audienceSpread").split(",").filter(Boolean);
+  const includeKeywords = getFilterValue("includeKeywords")
+    .trim()
+    .split(",")
+    .filter(Boolean);
+  const excludeKeywords = getFilterValue("excludeKeywords")
+    .trim()
+    .split(",")
+    .filter(Boolean);
+  const audienceSpread = getFilterValue("audienceSpread")
+    .split(",")
+    .filter(Boolean);
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
 
-    console.log(includeKeywords, excludeKeywords)
+  console.log(includeKeywords, excludeKeywords);
 
   return (
     <TableRow key={event.basic.id}>
@@ -324,23 +334,30 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
 
       {/* Category Column */}
       <TableCell className="text-center">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <span className="flex items-center gap-1">
-                {event.basic.categories[0]?.name}
-                {event.basic.categories.length > 1 && (
-                  <span className="text-xs font-bold text-muted-foreground">
-                    +{event.basic.categories.length - 1}
-                  </span>
-                )}
-              </span>
-            </TooltipTrigger>
-            <TooltipContent>
-              {event.basic.categories.map((item) => item.name).join(" | ")}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        {!(
+          isEventeli &&
+          groupedEventTypes.social.includes(event.basic.primaryEventType)
+        ) ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <span className="flex items-center gap-1">
+                  {event.basic.categories[0]?.name}
+                  {event.basic.categories.length > 1 && (
+                    <span className="text-xs font-bold text-muted-foreground">
+                      +{event.basic.categories.length - 1}
+                    </span>
+                  )}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                {event.basic.categories.map((item) => item.name).join(" | ")}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          "-"
+        )}
       </TableCell>
 
       {/* Event Size Column */}
@@ -577,30 +594,33 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </TableCell>
         )}
 
-      {audienceSpread.length > 0 && event.audience?.audienceSpread !== undefined && (
-        <TableCell className="text-center">
-          <div className="flex gap-2">
-            {event.audience?.audienceSpread &&
-            Object.entries(event.audience?.audienceSpread).length > 0
-              ? Object.entries(event.audience?.audienceSpread)
-                  .slice(0, 5)
-                  .map(([key, { iso, name, count, percentage }]) => {
-                    if (iso === "UK") iso = "GB";
-                    const Flag = Flags[iso as keyof typeof Flags];
-                    return (
-                      <span
-                        key={key}
-                        className="inline-block rounded overflow-hidden"
-                        title={name}
-                      >
-                        {Flag && <Flag className="w-[25px] h-[18px] border" />}
-                      </span>
-                    );
-                  })
-              : "-"}
-          </div>
-        </TableCell>
-      )}
+      {audienceSpread.length > 0 &&
+        event.audience?.audienceSpread !== undefined && (
+          <TableCell className="text-center">
+            <div className="flex gap-2">
+              {event.audience?.audienceSpread &&
+              Object.entries(event.audience?.audienceSpread).length > 0
+                ? Object.entries(event.audience?.audienceSpread)
+                    .slice(0, 5)
+                    .map(([key, { iso, name, count, percentage }]) => {
+                      if (iso === "UK") iso = "GB";
+                      const Flag = Flags[iso as keyof typeof Flags];
+                      return (
+                        <span
+                          key={key}
+                          className="inline-block rounded overflow-hidden"
+                          title={name}
+                        >
+                          {Flag && (
+                            <Flag className="w-[25px] h-[18px] border" />
+                          )}
+                        </span>
+                      );
+                    })
+                : "-"}
+            </div>
+          </TableCell>
+        )}
       {type === "T_PEOPLE_FINDER" && view !== "bookmarked" && (
         <>
           <TableCell
