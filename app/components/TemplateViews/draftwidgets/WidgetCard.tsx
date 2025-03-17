@@ -86,7 +86,7 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
         editData.append('published', 'false')
 
         const { data, error } = await myFetch(
-            `https://gtmdev-api.whr.ai/widget`,
+            `${baseUrl}/widget`,
             {
                 method: 'POST',
                 body: editData,
@@ -124,7 +124,7 @@ const WidgetCard = ({ widgetType, templateId, widgetNumber, widgetId, fetchDraft
         customizeData.append("widgetId", widgetId)
         customizeData.append("status", widgetStatus === "Active" ? "deactivate" : "active")
         const { data, error } = await myFetch(
-            `https://gtmdev-api.whr.ai/widget`,
+            `${baseUrl}/widget`,
             {
                 method: 'POST',
                 body: customizeData,
