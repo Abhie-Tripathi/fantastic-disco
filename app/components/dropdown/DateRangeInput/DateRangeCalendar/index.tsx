@@ -26,7 +26,7 @@ const DateRangeCalendar = ({ setState }: DateRangePickerProps) => {
       aria-label="Date Range"
       className={styles.ariaDaterangepicker}
       onChange={(value) =>
-        setState([
+        value && setState([
           convertToCustomFormat(value.start.toString()),
           convertToCustomFormat(value.end.toString()),
         ])

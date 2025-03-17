@@ -69,7 +69,7 @@ interface MapProps {
   isGlobal?: boolean;
   trackerLoc?: string;
   trackerType?: string;
-  eventType?:string;
+  eventType?: string;
 }
 
 interface Coordinates {
@@ -90,17 +90,14 @@ export default function MapComponent({
   isGlobal,
   trackerLoc,
   trackerType,
-  eventType
+  eventType,
 }: MapProps) {
-  console.log(eventType);
-  
   const searchParams = useSearchParams();
   const mapRef = useRef<MapRef>(null);
   const { getLocalFilterValue } = useFilterContext();
   const { getFilterValue } = useFilterState();
   const { getMapViewData, getEventsLatLongData } = useTrackerServices();
   const id = getFilterValue("id");
-console.log(trackerLoc);
 
   const { data } = useTrackerContext();
   const [viewport, setViewport] = useState<ViewState>({
@@ -150,8 +147,8 @@ console.log(trackerLoc);
   const [highlightedEvent, setHighlightedEvent] = useState<Event | null>(null);
 
   const location = useMemo(() => {
-    const geoCoordinates = getLocalFilterValue("geoCoordinates");
-    
+    const viewBound = getLocalFilterValue("viewBound");
+
     const locationIds =
       source === "tracker"
         ? trackerLoc?.length > 0
@@ -166,14 +163,13 @@ console.log(trackerLoc);
         zoom: 1,
       });
 
-    if (geoCoordinates) {
-      return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
+    if (viewBound) {
+      return { type: "viewBound", ...JSON.parse(viewBound) };
     } else if (locationIds.length) {
       return { type: "locationIds", locationIds };
     }
     return null;
   }, [searchParams, trackerLoc]);
-console.log(eventType);
 
   const eventCountsQuery = useQuery<EventCount[], Error>({
     queryKey:
@@ -181,7 +177,7 @@ console.log(eventType);
         ? ["eventCounts", trackerId, currentZoomGroup, eventType]
         : source === "tracker_global"
         ? ["eventCounts", searchParams]
-        : ["eventCounts", currentZoomGroup, searchParams],
+        : ["eventCounts", currentZoomGroup, searchParams, location],
 
     queryFn: async () => {
       if (source === "tracker" || source === "tracker_global") {
@@ -192,7 +188,6 @@ console.log(eventType);
           ...Object.fromEntries(searchParams.entries()),
           groupBy: "city",
         });
-        console.log("response", response);
         return response || [];
       }
     },
@@ -273,9 +268,7 @@ console.log(eventType);
           break;
 
         case "unclustered-counts-circle":
-          console.log("unclustered-counts-circle");
           const unclusteredFeature = e.features && e.features[0];
-          console.log(unclusteredFeature);
           if (unclusteredFeature) {
             mapRef.current?.easeTo({
               center: unclusteredFeature.geometry.coordinates as [
@@ -319,7 +312,6 @@ console.log(eventType);
           break;
 
         default:
-          console.log("Clicked on an unexpected layer:", layerId);
           setPopupInfo(null);
       }
     } else {
@@ -351,10 +343,9 @@ console.log(eventType);
           };
 
           try {
-            const modifiedSearchParams = searchParams?.toString().replace(
-              /locationIds=[^&]*&?/,
-              ""
-            );
+            const modifiedSearchParams = searchParams
+              ?.toString()
+              .replace(/locationIds=[^&]*&?/, "");
 
             const viewBoundString = encodeURIComponent(
               JSON.stringify(viewBound)
@@ -372,12 +363,8 @@ console.log(eventType);
                 `viewBound=${viewBoundString}`,
                 searchParams
               );
-              console.log(eventsData);
-              
             } else {
               eventsData = await getEventsWithSearchParams(finalSearchParams);
-              console.log(eventsData);
-              
             }
             setEvents((eventsData?.events as MapEvents[]) || []);
           } catch (error) {
@@ -468,8 +455,6 @@ console.log(eventType);
     }
   }, []);
 
-  console.log(currentZoomGroup);
-
   useEffect(() => {
     const newZoomGroup = determineZoomGroup(viewport.zoom);
     if (newZoomGroup !== currentZoomGroup) {
@@ -529,19 +514,18 @@ console.log(eventType);
 
   useEffect(() => {
     if (!mapRef.current) return;
-    if (location?.type === "geoCoordinates") {
-      const { latitude, longitude, radius } = location;
+    if (location?.type === "viewBound") {
+      const { coordinates, radius } = location;
       const zoom = Math.log2(360 / (radius / 1000)) - 4.6;
       setCurrentZoomGroup("event");
       mapRef.current.flyTo({
-        center: [Number(longitude), Number(latitude)],
+        center: [Number(coordinates.longitude), Number(coordinates.latitude)],
         zoom: zoom,
         duration: 3000,
         essential: true,
       });
     }
     if (locationBBox) {
-      console.log("zooming in");
       const [minLng, minLat, maxLng, maxLat] = locationBBox;
       const bounds = new mapboxgl.LngLatBounds(
         [minLng, minLat],
@@ -555,9 +539,9 @@ console.log(eventType);
   }, [location, mapRef.current, locationBBox]);
 
   const circleLayer: LayerProps | null = useMemo(() => {
-    if (location?.type === "geoCoordinates") {
-      const { latitude, longitude, radius } = location;
-      const center = point([Number(longitude), Number(latitude)]);
+    if (location?.type === "viewBound") {
+      const { coordinates, radius } = location;
+      const center = point([Number(coordinates.longitude), Number(coordinates.latitude)]);
       const circleGeoJSON = circle(center, radius, 50, "kilometers");
 
       return {
@@ -594,7 +578,7 @@ console.log(eventType);
 
   const handleEventLeave = () => {
     setHighlightedEvent(null);
-  };  
+  };
   return (
     <div className="relative">
       {eventCountsQuery.isLoading && currentZoomGroup === "city" ? (
@@ -627,7 +611,6 @@ console.log(eventType);
                     height: !isGlobal ? "calc(100vh - 136px)" : "300px",
                   }}
                   onMove={onMove}
-                
                   onLoad={onMapLoad}
                   onClick={handleMapClick}
                   onMouseMove={(e) => {
@@ -724,7 +707,7 @@ console.log(eventType);
                   )}
 
                   <EventList
-                  eventType={eventType}
+                    eventType={eventType}
                     source={source}
                     trackerId={trackerId}
                     searchParam={searchParams}

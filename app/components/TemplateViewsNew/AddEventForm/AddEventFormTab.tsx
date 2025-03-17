@@ -137,9 +137,9 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
                 handleMaineventChanges('isEventNameEmpty', false)
                 // setIsEventNameEmpty(false)
             }
-            if ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid" || mainEventState.eventFormat === "OFFLINE") && !mainEventState.query) {
+            if ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid") && !mainEventState.query) {
                 handleMaineventChanges('isEventFormatEmpty', true);
-            } else if (mainEventState.eventFormat === "Virtual" || mainEventState.eventFormat === "ONLINE") {
+            } else if (mainEventState.eventFormat === "Virtual") {
                 handleMaineventChanges('isEventFormatEmpty', false); // No need for location in virtual format
             }
             if (!mainEventState.description) {
@@ -182,7 +182,7 @@ const AddEventFormTab = ({ uploadedPhoto, snowTheme, leavesTheme, formTheme, set
                 !mainEventState.participationType ||
                 !mainEventState.participationMessage ||
                 // Check location fields only for "In-person" or "Hybrid" events
-                ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid" || mainEventState.eventFormat === "OFFLINE") &&
+                ((mainEventState.eventFormat === "In-person" || mainEventState.eventFormat === "Hybrid" ) &&
                     (!mainEventState.countryName || !mainEventState.timeZone || !mainEventState.latitude || !mainEventState.longitude))
             ) {
                 showToast("error", "Please fill in all the required fields");

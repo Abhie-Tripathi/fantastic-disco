@@ -5,8 +5,8 @@ import { useTheme } from "@/context";
 import CalendarList from "./CalendarList";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
-import LeftArrow from "/public/leftArrow.svg";
-import RightArrow from "/public/rightArrow.svg";
+import LeftArrow from "/public/leftarrow.svg";
+import RightArrow from "/public/rightarrow.svg";
 import Loading from "../../UI/Loading";
 
 interface countObj {

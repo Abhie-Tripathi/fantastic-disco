@@ -91,7 +91,7 @@ const BasicEventSchema = z.object({
   matchedKeywords: z.array(z.string()).nullable(),
   matchedKeywordsPercentage: z.number().nullable(),
   lastVerifiedOn: z.string().nullable(),
-  eventPageUrl: z.string().nullable(),
+  "10timesEventPageUrl": z.string().nullable(),
   rating: z.number(),
   name: z.string(),
   website: z.string(),
@@ -178,7 +178,6 @@ const InsightsEventSchema = z.object({
   economicImpactBreakdown: z.record(z.number()).nullable(),
   estimatedVisitorRangeTag: z.string().nullable(),
   estimatedExhibitors: z.string().nullable(),
-  repeatSentiment: z.number(),
   trustScore: z.number().nullable(),
   reputationScore: z.number(),
   rehostScore: z.number(),
@@ -193,6 +192,10 @@ const InsightsEventSchema = z.object({
       internationalScoreTag: z.string().nullable(),
     })
     .optional(),
+  trustChangeTag: z.string(),
+  reputationChangeTag: z.string(),
+  trustChangePercentage: z.number(),
+  reputationChangePercentage: z.number(),
 });
 
 const AudienceSchema = z.object({
@@ -226,9 +229,7 @@ const AlertSchema = z.object({
   originLongitude: z.string(),
   lastModified: z.string(),
 });
-const TrackerMatchInfoSchema = z.object({
-
-})
+const TrackerMatchInfoSchema = z.object({});
 const EventDataSchema = z.object({
   basic: BasicEventSchema,
   advance: AdvanceEventSchema.optional(),

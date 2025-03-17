@@ -72,6 +72,7 @@ export const endpoints = {
     saveEvent: `${BASE_URL}/tracker/saved-events`,
     getNotes: `${BASE_URL}/trackers`,
     saveNotes: `${BASE_URL}/comments`,
+    verifyAccess: `${BASE_URL}/auth/verify-access`
   },
   coordinate: {
     enquiry: `${BASE_URL}/me/account/enquiries`,

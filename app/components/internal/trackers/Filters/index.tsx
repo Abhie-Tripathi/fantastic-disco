@@ -306,7 +306,7 @@ const templates = [
   {
     name: "T_BRAND_BUILDING",
     templateName: "Brand Building",
-    type: "enabled",
+    type: "disabled",
     description: "Input designations and upload job descriptions to identify relevant events effortles",
     inputAreas: [
       {
@@ -686,7 +686,8 @@ const Pages = () => {
     const filterValues = Object.entries(filterValueMapping as Record<keyof Filters, string>).reduce(
       (acc, [key, mappedKey]) => {
         const value = getLocalFilterValue(key as any);
-    
+       
+        
         if (Array.isArray(value) && value.length > 0) {
           acc[mappedKey] = value;
         } else if (typeof value === "string" && value === "true") {
@@ -722,7 +723,7 @@ const Pages = () => {
     if(userCompany.length>0 ){
       filterValues.userOrgWebsite=userCompany;
     }
-    // console.log(filterValues, showsData);
+    console.log(filterValues, showsData);
     const formData = {
       name: trackerName,
       ...(type && type.length > 0 && {
@@ -908,6 +909,11 @@ const Pages = () => {
         const value = editData.filterValues[key];
       console.log(typeof value, value);
       if (Array.isArray(value)) {
+        if(key==="includeKeywords" || key==="excludeKeywords"){
+          const updatedValue = value.map((item) => item.replaceAll("_", " "));
+          console.log(updatedValue);
+          setLocalFilter(key as any, updatedValue.join(","));
+          }else 
         setLocalFilter(key as any, value.map(v => String(v).toLowerCase()).join(','));
       } 
       else if (value !== null && typeof value === "object") {
@@ -1517,9 +1523,12 @@ return (
           <EventTypeSelector/>
           <CategorySelector/>
           <EventFormatSelector/>
-          <LocationSelector isMandatory={isMandatory}/>
+          {(type!=="T_LOCATION" && type!=="T_VENUE" && type!=="T_GEOTIME") && <LocationSelector isMandatory={isMandatory}/>}
+          
           {/* <LocationSelector/> */}
+          {type!=="T_GEOTIME" &&
           <DateRangeSelector/>
+          }
           <EventStatusSelector/>
           <EventEntrySelector/>
           <UserRatingSelector/>

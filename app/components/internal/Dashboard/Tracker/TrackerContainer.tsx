@@ -12,16 +12,8 @@ import SocialCause from "/public/socialCause.svg";
 import Brand from "/public/brand.svg";
 import TrackerSmall from './TrackerSmall';
 import TrackerSmaller from './TrackerSmaller';
+import { TrackerData } from '@/types/dashboard';
 
-interface TrackerData {
-  id : string;
-  location : string[]
-  name : string;
-  newCount : number;
-  expiredCount : number; 
-  activeCount : number;
-  type :string;
-}
 interface Props {
   width: string, trackers : TrackerData[]
 }

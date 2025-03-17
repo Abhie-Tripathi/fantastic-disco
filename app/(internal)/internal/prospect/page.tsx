@@ -35,6 +35,8 @@ import { PeopleList } from "@/app/components/prospect/PeopleList";
 import { useFilterState } from "@/hooks/useFilterState";
 import { CompanyListResponse } from "@/types/prospect";
 import DesignationFilter from "@/app/components/prospect/Filters/designation";
+import { isEventeli } from "@/config";
+import NotFound from "@/app/not-found";
 
 interface ProspectFilters {
   id: string;
@@ -174,6 +176,7 @@ const Prospect = () => {
     refetchOnWindowFocus: false,
     gcTime: 0,
     staleTime: 0,
+    enabled: !isEventeli,
   });
 
   const companies = companyData?.companyData || [];
@@ -191,6 +194,12 @@ const Prospect = () => {
   const handleTabChange = (prop: string) => {
     setFilter("viewBy", prop);
   };
+
+  if (isEventeli) {
+    return (
+      <NotFound />
+    );
+  }
 
   return (
     <div className="space-y-6">

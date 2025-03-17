@@ -134,3 +134,9 @@ export const trendsNotificationFormDropdown = [
     value: "24hrs",
   },
 ];
+
+export const EVENT_TYPE_GROUPS = {
+  Social: ["festival", "concert", "sport", "performing-arts", "community"],
+  Business: ["tradeshows", "conferences", "workshops"],
+  Holiday: ["holiday"],
+};

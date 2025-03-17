@@ -3,7 +3,7 @@ import Image from "next/image";
 import Calendar from "@/public/vector.svg";
 import person1 from "@/public/person1.svg";
 import person2 from "@/public/person2.svg";
-import rightArrowIcon from "@/public/rightArrow.svg";
+import rightArrowIcon from "@/public/rightarrow.svg";
 import styles from "./upcomingEvents.style.module.css";
 import { useTheme } from "@/context";
 const UpcomingEvents = () => {

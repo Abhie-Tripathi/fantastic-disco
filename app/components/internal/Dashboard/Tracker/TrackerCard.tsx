@@ -3,19 +3,12 @@ import React, { useState } from 'react'
 import Vectore6 from "/public/newVector.svg";
 import Vectore7 from "/public/lucide_timer.svg";
 import Vectore8 from "/public/expired.svg";
-import { Location } from "geist-icons";
+import { Buildings, Globe, Location } from "geist-icons";
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { TrackerData } from '@/types/dashboard';
+import { CloudAlert } from 'lucide-react';
 
-interface TrackerData {
-    id: string;
-    location: string[]
-    name: string;
-    newCount: number;
-    expiredCount: number;
-    activeCount: number;
-    type: string;
-}
 interface Props {
     tracker: TrackerData,
     small: boolean; // if this variable is true will only show cards
@@ -34,6 +27,13 @@ const TrackerCard = ({ tracker, small }: Props) => {
         }
         return value.toString();
     }
+    const formatCount = (count: number ) => {
+        if (count >= 1000) {
+          const value = count / 1000;
+            return `${Math.floor(value)}k`;
+        }
+        return count;
+    };
     const router = useRouter()
     const handleRouting = ()=>{
         router.push(`/internal/trackers/${tracker.id}/trackedEvents?type=${tracker.type}&view=list&eventType=activeEvent`)
@@ -75,37 +75,33 @@ const TrackerCard = ({ tracker, small }: Props) => {
 
                     <div className="badge_info w-fit border border-[var(--info-text-color))]" style={{ fontSize: "var(--font-size-xs)" }}>{formatType(tracker.type)}</div>
                 </div>}
-            <div className={`flex ${small ? "justify-center gap-2" : "gap-2"} text-xs`}>
-                <div className={`flex w-1/3 flex-col gap-1 items-center justify-center h-[82px] w-[66px] border border-[var(--border-color)] rounded-sm bg-[var(--primary-foreground)]`}>
-                    <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[2px] text-[var(--primary-color)] text-[10px]`}>
-                        <Image src={Vectore6} alt="newVector" width={12} height={12} />
-                        New
+            <div className={`flex font-medium ${small ? "justify-center gap-2" : "gap-2 w-[40%]"} text-xs`}>
+                {tracker.eventsCount?.map((item,index) => (
+                    <div key={index} className={`flex w-1/3 flex-col gap-1 items-center justify-center h-[82px] border border-[var(--border-color)] rounded-sm bg-[var(--primary-foreground)]`}>
+                        <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[2px] text-[var(--primary-color)] text-[10px]`}>
+                        { 
+                            item.type === "Business" ? (
+                                <Buildings height="12px" width="12px" color="var(--primary-color)" />
+                            ) : item.type === "Social" ? (
+                                <Globe height="12px" width="12px" color="var(--primary-color)" />
+                            ) : item.type === "Unattended" ? (
+                                <CloudAlert height={12} width={12} color="var(--primary-color)" />
+                            ) : item.type === "New" ? (
+                                <Image src={Vectore6} alt="newVector" width={12} height={12} />
+                            ) : item.type === "Active" ? (
+                                <Image src={Vectore7} alt="newVector" width={12} height={12} />
+                            ) : item.type === "Past" ? (
+                                <Image src={Vectore8} alt="newVector" width={12} height={12} />
+                            ) : ""
+                        }
+                            {item.type}
+                        </div>
+                        <div className='text-[var(--primary-text-color)] text-xs font-[var(--font-weight-semibold)]'>
+                            {formatCount(item?.totalCount)}
+                        </div>
+                        <div className='text-[10px]'>Events</div>
                     </div>
-                    <div className='text-[var(--primary-text-color)] text-xs font-[var(--font-weight-semibold)]'>
-                        {formatNumber(tracker.newCount)}
-                    </div>
-                    <div className='text-[10px]'>Events</div>
-                </div>
-                <div className={`flex w-1/3 flex-col gap-1 items-center justify-center h-[82px] w-[66px] border border-[var(--border-color)] rounded-sm bg-[var(--primary-foreground)]`}>
-                    <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[2px] text-[var(--primary-color)] text-[10px]`}>
-                        <Image src={Vectore7} alt="lucide_timer" width={12} height={12} />
-                        Active
-                    </div>
-                    <div className='text-[var(--primary-text-color)] text-xs font-[var(--font-weight-semibold)]'>
-                        {formatNumber(tracker.activeCount)}
-                    </div>
-                    <div className='text-[10px]'>Events</div>
-                </div>
-                <div className={`flex w-1/3 flex-col gap-1 items-center justify-center h-[82px] w-[66px] border border-[var(--border-color)] rounded-sm bg-[var(--primary-foreground)]`}>
-                    <div className={`flex items-center justify-center gap-1 border-b-[0.39px] pb-[2px] text-[var(--primary-color)] text-[10px]`}>
-                        <Image src={Vectore8} alt="expired" width={12} height={12} />
-                        Past
-                    </div>
-                    <div className='text-[var(--primary-text-color)] text-xs font-[var(--font-weight-semibold)]'>
-                        {formatNumber(tracker.expiredCount)}
-                    </div>
-                    <div className='text-[10px]'>Events</div>
-                </div>
+                ))}
             </div>
         </div>
     )

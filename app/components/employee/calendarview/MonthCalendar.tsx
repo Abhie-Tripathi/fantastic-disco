@@ -6,8 +6,8 @@ import { useTheme } from "@/context";
 import { myFetch } from "@/utils/myFetch";
 import { baseUrl, headers } from "@/constants";
 import Image from "next/image";
-import LeftArrow from "/public/leftArrow.svg";
-import RightArrow from "/public/rightArrow.svg";
+import LeftArrow from "/public/leftarrow.svg";
+import RightArrow from "/public/rightarrow.svg";
 import CalendarList from "./CalendarList";
 import Loading from "../../UI/Loading";
 

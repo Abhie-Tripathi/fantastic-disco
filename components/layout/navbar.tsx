@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./navbar.style.module.css";
 import Image from "next/image";
 import {
@@ -95,22 +95,53 @@ export default function Navbar() {
     }
   };
 
-  const generateProfileName = React.useMemo(() => {
-    if (user) {
-      // const { email } = user;
-      // const [username] = email.split("@");
-      // const parts = username.split(/[.\-_]/);
-      // const abbreviation =
-      //   parts.length > 1
-      //     ? `${parts[0][0]}${parts[1][0]}`
-      //     : username.substring(0, 2);
-      // return abbreviation.toUpperCase();
-      const firstNameInitial = user?.firstname?.[0]?.toUpperCase() || "";
-      const lastNameInitial = user?.lastname?.[0]?.toUpperCase() || "";
+  // const generateProfileName = React.useMemo(() => {
+  //   if (user) {
+  //     // const { email } = user;
+  //     // const [username] = email.split("@");
+  //     // const parts = username.split(/[.\-_]/);
+  //     // const abbreviation =
+  //     //   parts.length > 1
+  //     //     ? `${parts[0][0]}${parts[1][0]}`
+  //     //     : username.substring(0, 2);
+  //     // return abbreviation.toUpperCase();
+  //     const firstNameInitial = user?.firstname?.[0]?.toUpperCase() || "";
+  //     const lastNameInitial = user?.lastname?.[0]?.toUpperCase() || "";
+  //     return `${firstNameInitial}${lastNameInitial}`;
+  //   }
+  //   return "";
+  // }, [user]);
+
+
+  const [storedUser, setStoredUser] = useState(() => {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
+  });
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const user = localStorage.getItem("user");
+      setStoredUser(user ? JSON.parse(user) : null);
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    const interval = setInterval(handleStorageChange, 1000);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const generateProfileName = () => {
+    if (storedUser) {
+      const firstNameInitial = storedUser?.firstname?.[0]?.toUpperCase() || "";
+      const lastNameInitial = storedUser?.lastname?.[0]?.toUpperCase() || "";
       return `${firstNameInitial}${lastNameInitial}`;
     }
     return "";
-  }, [user]);
+  };
  
 
   const handleSettingsClick = () => {
@@ -268,7 +299,7 @@ export default function Navbar() {
                   className="flex items-center bg-transparent p-1 "
                 >
                   <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
-                    {generateProfileName}
+                    {generateProfileName()}
                   </div>
                 </Button>
               </DropdownMenuTrigger>
