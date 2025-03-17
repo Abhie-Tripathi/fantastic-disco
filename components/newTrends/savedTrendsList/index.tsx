@@ -384,7 +384,7 @@ const SwiperCarousel = ({
         }}
       >
         {savedTrendsList.map((savedTrend) => (
-          <SwiperSlide key={savedTrend.id} className="max-w-60 w-full">
+          <SwiperSlide key={savedTrend.id} className="max-w-72 w-full">
             <SavedTrendCard
               activeCard={activeCard}
               data={savedTrend}
