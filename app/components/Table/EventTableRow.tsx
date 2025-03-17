@@ -22,6 +22,7 @@ import { eventTypeColors, eventTypeIcons } from "@/constants/eventTypes";
 import { Filters } from "@/context/filterContext";
 import * as Flags from "country-flag-icons/react/3x2";
 import { useFilterState } from "@/hooks/useFilterState";
+import { isEventeli } from "@/config";
 
 interface EventTableRowProps {
   event: Event;
@@ -601,6 +602,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </div>
         </TableCell>
       )}
+      {!isEventeli &&(<>
       {type === "T_PEOPLE_FINDER" && view !== "bookmarked" && (
         <>
           <TableCell
@@ -637,7 +639,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             className="sticky right-[68px] bg-background z-0"
             style={{
               zIndex: 0,
-              minWidth: "130px",
+              minWidth: "132px",
               textAlign: "center",
               background: "var(--heading-background-color)",
             }}
@@ -832,21 +834,22 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </TableCell>
         </>
       )}
-      {global !== "global" && (
-        <TableCell
-          className="sticky right-0 bg-background z-0 w-[68px]"
-          style={{ zIndex: 0, background: "var(--heading-background-color)" }}
-        >
-          <ActionPopover
-            view={view}
-            setEventId={setEventId}
-            setInterest={setInterest}
-            trackerId={trackerId}
-            eventId={event.basic.id}
-            interests={event.interests}
-          />
-        </TableCell>
-      )}
+      </>)}
+      {global!=="global" &&
+      <TableCell
+        className="sticky right-0 bg-background z-0 w-[68px]"
+        style={{ zIndex: 0, background: "var(--heading-background-color)" }}
+      >
+        <ActionPopover
+          view={view}
+          setEventId={setEventId}
+          setInterest={setInterest}
+          trackerId={trackerId}
+          eventId={event.basic.id}
+          interests={event.interests}
+        />
+      </TableCell>
+      }
     </TableRow>
   );
 };
