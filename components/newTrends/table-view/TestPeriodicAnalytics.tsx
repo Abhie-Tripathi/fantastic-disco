@@ -622,10 +622,16 @@ const TestPeriodicAnalytics = ({
                                         </TooltipTrigger>
                                         <TooltipContent
                                           asChild
-                                          className="w-64 tooltip-content-styles"
+                                          className="w-fit tooltip-content-styles"
                                           side="right"
                                         >
-                                          <ul className="flex flex-col gap-2">
+                                          <ul
+                                            className={`flex flex-col gap-2 ${
+                                              holidays && holidays.length > 1
+                                                ? "list-disc pl-6"
+                                                : "list-none pl-4"
+                                            } pt-2 pr-4`}
+                                          >
                                             {holidays &&
                                               holidays.length > 0 &&
                                               holidays.map((holidayName) => (
