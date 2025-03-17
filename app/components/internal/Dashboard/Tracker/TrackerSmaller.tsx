@@ -6,16 +6,8 @@ import { ArrowRight } from 'geist-icons';
 import TrackerCard from './TrackerCard';
 import TrackerImage from '/public/internal/dashboard/Tracker.png'
 import { useRouter } from 'next/navigation';
+import { TrackerData } from '@/types/dashboard';
 
-interface TrackerData {
-    id : string;
-    location : string[]
-    name : string;
-    newCount : number;
-    expiredCount : number; 
-    activeCount : number;
-    type :string;
-  }
   interface Props{
     trackers : TrackerData[]
   }
