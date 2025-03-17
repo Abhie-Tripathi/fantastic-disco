@@ -320,7 +320,13 @@ const Sidebar = () => {
                         }`}
                         asChild
                       >
-                        <a>
+                        <a
+                          onClick={(e) => {
+                            if (pathname === link.href.split("?")[0]) {
+                              e.preventDefault();
+                            }
+                          }}
+                        >
                           <Icon
                             color={theme == "dark" ? "#fff" : ""}
                             className="flex-shrink-0"
