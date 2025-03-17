@@ -1523,9 +1523,12 @@ return (
           <EventTypeSelector/>
           <CategorySelector/>
           <EventFormatSelector/>
-          <LocationSelector isMandatory={isMandatory}/>
+          {(type!=="T_LOCATION" && type!=="T_VENUE" && type!=="T_GEOTIME") && <LocationSelector isMandatory={isMandatory}/>}
+          
           {/* <LocationSelector/> */}
+          {type!=="T_GEOTIME" &&
           <DateRangeSelector/>
+          }
           <EventStatusSelector/>
           <EventEntrySelector/>
           <UserRatingSelector/>

@@ -372,7 +372,7 @@ export const FilterProvider: React.FC<{ children: React.ReactNode }> = ({
     },
     [filterEmptyValues]
   );
-  console.log(morphedData);
+  console.log(localFilters);
   
   const contextValue = useMemo(
     () => ({

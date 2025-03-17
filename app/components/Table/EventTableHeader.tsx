@@ -3,6 +3,7 @@ import { TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Show } from "@/types/events/dto/event-query.dto";
 import { Filters } from "@/context/filterContext";
 import { useFilterState } from "@/hooks/useFilterState";
+import { isEventeli } from "@/config";
 interface EventTableHeaderProps {
   show: Show[];
   type?: string;
@@ -56,7 +57,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
         {view !== "bookmarked" && (
           <>
             {show.includes(Show.estimatedExhibitors) && (
-              <TableHead className="min-w-[130px] h-10">
+              <TableHead className="min-w-[132px] h-10">
                 <div className="font-medium text-foreground ">
                   Est. Exhibitors
                 </div>
@@ -145,7 +146,7 @@ export const EventTableHeader: React.FC<EventTableHeaderProps> = ({
             )}
           </>
         )}
-        {type && type !== "T_CUSTOM" && view !== "bookmarked" && (
+        {!isEventeli && type && type !== "T_CUSTOM" && view !== "bookmarked" && (
           <>
             <TableHead
               className="sticky right-[200px] z-40 h-12 bg-[var(--heading-background-color)]"
