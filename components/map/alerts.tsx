@@ -1,4 +1,3 @@
-//@ts-nocheck
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -16,6 +15,11 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { alertIcons, getAlertLevelBorderColor } from "@/constants/eventTypes";
 import { Alert } from "@/types/events/alert";
 import { formattedDateRange } from "@/utils/date";
+
+interface AlertResponse {
+  events: Alert[];
+  total: number;
+}
 
 export function AlertItem({
   alert,
@@ -53,12 +57,11 @@ export function AlertItem({
 }
 
 interface AlertsProps {
-  selectedAlert: string;
-  setSelectedAlert: React.Dispatch<React.SetStateAction<string>>;
+  selectedAlert: string | undefined;
+  setSelectedAlert: React.Dispatch<React.SetStateAction<string | undefined>>;
 }
 
 const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
-  console.log("selectedAlert", selectedAlert);
   const [open, setOpen] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const eventService = useEventsService();
@@ -77,7 +80,7 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
         coordinates: {
           latitude: viewBound.coordinates.latitude,
           longitude: viewBound.coordinates.longitude,
-          radius: viewBound.radius,
+          radius: viewBound.coordinates.radius,
         },
       })
     );
@@ -87,18 +90,20 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
     data: alerts,
     error,
     isLoading,
-  } = useQuery({
+  } = useQuery<AlertResponse, Error>({
     queryKey: ["alerts", filteredParams.toString()],
-    queryFn: () =>
-      eventService.getEventsWithSearchParams(filteredParams.toString()),
+    queryFn: async () => {
+      const response = await eventService.getEventsWithSearchParams(filteredParams.toString());
+      return response as AlertResponse;
+    },
     refetchOnWindowFocus: false,
   });
 
   const selectedAlertData = useMemo(() => {
-    return alerts?.events.find((alert) => alert.id === selectedAlert);
+    return alerts?.events.find((alert: Alert) => alert.id === selectedAlert);
   }, [alerts, selectedAlert]);
 
-  if (error || !alerts?.events.length) return null;
+  if (error || !alerts?.events?.length) return null;
 
   const onClickHandler = (id: string) => {
     setSelectedAlert(id);
@@ -111,7 +116,7 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
         <PopoverTrigger asChild>
           {selectedAlertData ? (
             <div className="w-64 p-2 border flex items-center rounded-lg shadow-xl justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors">
-              <AlertItem alert={selectedAlertData as unknown as Alert} />
+              <AlertItem alert={selectedAlertData} />
             </div>
           ) : (
             <div className="w-full p-2 flex items-center text-sm border rounded justify-center bg-white cursor-pointer hover:bg-gray-50 transition-colors">
@@ -128,10 +133,10 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
         <PopoverContent className="w-80 p-2">
           <ScrollArea className="h-[300px] pr-4">
             <div className="[&>*:not(:last-child)]:border-b">
-              {alerts.events.map((alert) => (
+              {alerts.events.map((alert: Alert) => (
                 <AlertItem
                   key={alert.id}
-                  alert={alert as unknown as Alert}
+                  alert={alert}
                   onClick={() => onClickHandler(alert.id)}
                 />
               ))}
