@@ -1,15 +1,18 @@
 import "@/app/globals.css";
-import { Loader2 } from "lucide-react";
-import { Suspense } from "react";
+import { getSession } from "next-auth/react";
+import Providers from "./providers";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
   return (
     <html lang="en">
-      <body className="min-h-screen">{children}</body>
+      <body className="min-h-screen">
+        <Providers session={session}>{children}</Providers>
+      </body>
     </html>
   );
 }

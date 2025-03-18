@@ -612,33 +612,31 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </TableCell>
         )}
 
-      {audienceSpread.length > 0 &&
-        event.audience?.audienceSpread !== undefined && (
-          <TableCell className="text-center">
-            <div className="flex gap-2">
-              {event.audience?.audienceSpread &&
-              Object.entries(event.audience?.audienceSpread).length > 0
-                ? Object.entries(event.audience?.audienceSpread)
-                    .slice(0, 5)
-                    .map(([key, { iso, name, count, percentage }]) => {
-                      if (iso === "UK") iso = "GB";
-                      const Flag = Flags[iso as keyof typeof Flags];
-                      return (
-                        <span
-                          key={key}
-                          className="inline-block rounded overflow-hidden"
-                          title={name}
-                        >
-                          {Flag && (
-                            <Flag className="w-[25px] h-[18px] border" />
-                          )}
-                        </span>
-                      );
-                    })
-                : "-"}
-            </div>
-          </TableCell>
-        )}
+      {audienceSpread.length > 0 && event.audience?.audienceSpread !== undefined && (
+        <TableCell className="text-center">
+          <div className="flex gap-2">
+            {event.audience?.audienceSpread &&
+            Object.entries(event.audience?.audienceSpread).length > 0
+              ? Object.entries(event.audience?.audienceSpread)
+                  .slice(0, 5)
+                  .map(([key, { iso, name, count, percentage }]) => {
+                    if (iso === "UK") iso = "GB";
+                    const Flag = Flags[iso as keyof typeof Flags];
+                    return (
+                      <span
+                        key={key}
+                        className="inline-block rounded overflow-hidden"
+                        title={name}
+                      >
+                        {Flag && <Flag className="w-[25px] h-[18px] border" />}
+                      </span>
+                    );
+                  })
+              : "-"}
+          </div>
+        </TableCell>
+      )}
+      {!isEventeli &&(<>
       {type === "T_PEOPLE_FINDER" && view !== "bookmarked" && (
         <>
           <TableCell
@@ -675,7 +673,7 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
             className="sticky right-[68px] bg-background z-0"
             style={{
               zIndex: 0,
-              minWidth: "130px",
+              minWidth: "132px",
               textAlign: "center",
               background: "var(--heading-background-color)",
             }}
@@ -870,21 +868,22 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </TableCell>
         </>
       )}
-      {global !== "global" && (
-        <TableCell
-          className="sticky right-0 bg-background z-0 w-[68px]"
-          style={{ zIndex: 0, background: "var(--heading-background-color)" }}
-        >
-          <ActionPopover
-            view={view}
-            setEventId={setEventId}
-            setInterest={setInterest}
-            trackerId={trackerId}
-            eventId={event.basic.id}
-            interests={event.interests}
-          />
-        </TableCell>
-      )}
+      </>)}
+      {global!=="global" &&
+      <TableCell
+        className="sticky right-0 bg-background z-0 w-[68px]"
+        style={{ zIndex: 0, background: "var(--heading-background-color)" }}
+      >
+        <ActionPopover
+          view={view}
+          setEventId={setEventId}
+          setInterest={setInterest}
+          trackerId={trackerId}
+          eventId={event.basic.id}
+          interests={event.interests}
+        />
+      </TableCell>
+      }
     </TableRow>
   );
 };

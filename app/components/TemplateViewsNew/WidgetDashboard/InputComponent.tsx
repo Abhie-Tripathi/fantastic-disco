@@ -323,7 +323,7 @@ const InputComponent = forwardRef<HTMLFormElement, Props>(
         const postDomain = {
             url: `https://${cleanDomain}`
         };
-        const { data, error } = await myFetch(`https://gtmdev-api.whr.ai/kit`, {
+        const { data, error } = await myFetch(`${baseUrl}/kit`, {
             method: "POST",
             body: JSON.stringify(postDomain),
             headers: {

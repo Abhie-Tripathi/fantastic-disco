@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowRight } from 'geist-icons';
 import TrackerCard from './TrackerCard';
 import { useRouter } from 'next/navigation';
+import { TrackerData } from '@/types/dashboard';
 
 interface Props {
     templates: {
@@ -19,15 +20,6 @@ interface Props {
     trackers : TrackerData[]
 }
 
-interface TrackerData {
-    id : string;
-    location : string[]
-    name : string;
-    newCount : number;
-    expiredCount : number; 
-    activeCount : number;
-    type :string;
-  }
 const TrackerSmall = ({ templates,trackers }: Props) => {
     // const trackers = [
     //     { name: "Tracker 1", country: "India", type: "Custom", new: 100, past: 40, active: 20 },

@@ -37,13 +37,14 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "react-aria-components";
 import "react-circular-progressbar/dist/styles.css";
 
 const EventDetail = ({ params }: { params: { eventId: string } }) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TTabs>("overview");
+  const [showBackToSearch, setShowBackToSearch] = useState<boolean>(false);
   const [eventPOCDetails, setEventPOCDetails] = useState<EventPOCDetails[]>([]);
   const {
     getEventDetailById,
@@ -124,6 +125,16 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     refetchOnWindowFocus: false,
   });
 
+  useEffect(() => {
+    if (typeof window !== undefined) {
+      if (window.history.length > 1) {
+        setShowBackToSearch(true);
+      } else {
+        setShowBackToSearch(false);
+      }
+    }
+  }, []);
+
   if (isLoading) {
     return <Loading className="absolute right-1/2 top-1/2" />;
   }
@@ -158,13 +169,8 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
     rating,
   } = basic || {};
 
-  const {
-    scores,
-    trustScore,
-    exhibitorsCount,
-    speakersCount,
-    sponsorsCount,
-  } = insights || {};
+  const { scores, trustScore, exhibitorsCount, speakersCount, sponsorsCount } =
+    insights || {};
   const { audienceSpread, designationSpread } = audience || {};
   const {
     logoUrl: organizerLogoUrl,
@@ -304,15 +310,17 @@ const EventDetail = ({ params }: { params: { eventId: string } }) => {
   return (
     <div className="p-6 pt-0">
       <aside className="fixed h-screen w-[24%] pb-24 bg-[var(--primary-foreground)] pt-6 pr-6 overflow-y-auto border-r dark:border-r-2 dark:border-r-[var(--border-color)] max-xl:w-[30%]">
-        <Button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
-          <ArrowLeft width="14px" height="14px" color="#6750A4" />
-          <span
-            className="text-[var(--primary-color)] font-medium"
-            onClick={() => router.back()}
-          >
-            Back to Search
-          </span>
-        </Button>
+        {showBackToSearch && (
+          <Button className="flex items-center gap-2 pb-4 text-[#666666] text-sm">
+            <ArrowLeft width="14px" height="14px" color="#6750A4" />
+            <span
+              className="text-[var(--primary-color)] font-medium"
+              onClick={() => router.back()}
+            >
+              Back to Search
+            </span>
+          </Button>
+        )}
         <div className="flex items-center py-4">
           <div className="flex gap-4 items-center">
             {website && (

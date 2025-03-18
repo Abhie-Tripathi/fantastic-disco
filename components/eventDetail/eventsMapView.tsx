@@ -10,6 +10,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useEffect, useState } from "react";
 import { Map, Marker } from "react-map-gl";
 import MapPopup from "../map/popup";
+import { EventDetailMapSkeleton } from "./skeletons";
 
 interface MapProps {
   startDate: string;
@@ -33,19 +34,8 @@ const EventsMapView: React.FC<MapProps> = ({
   event,
   zoom = 0,
 }) => {
-  const {
-    id: eventId,
-    startDateTime,
-    endDateTime,
-    primaryEventType,
-    eventLocation,
-  } = event;
+  const { id: eventId, primaryEventType, eventLocation } = event;
   const { theme } = useTheme();
-  const [selectedPlace, setSelectedPlace] = useState<any | null>();
-  const [eventDateRange, setEventDateRange] = useState<{
-    startDate: string;
-    endDate: string;
-  }>({ startDate: startDateTime, endDate: endDateTime });
   const { getEvents, getEventDetailById } = useEventsService();
   const [events, setEvents] = useState<MapEvents[]>([]);
   const [popupInfo, setPopupInfo] = useState<updatedEvent | null>(null);
@@ -106,14 +96,14 @@ const EventsMapView: React.FC<MapProps> = ({
   });
 
   useEffect(() => {
-    if (eventsData) {
+    if (!isLoading && eventsData) {
       setEvents((eventsData.events as unknown as MapEvents[]) || []);
     }
-  }, [eventsData]);
+  }, [eventsData, isLoading]);
 
-  const handleMarkerClick = async (eventData: MapEvents) => {
+  const handleMarkerClick = async (id: string) => {
     try {
-      const eventDetails = await getEventDetailById(eventData.id);
+      const eventDetails = await getEventDetailById(id);
       const { eventLocation } = (eventDetails && eventDetails.basic) || {};
       const result = {
         coordinates: {
@@ -139,68 +129,90 @@ const EventsMapView: React.FC<MapProps> = ({
   };
   return (
     <div className="relative">
-      <Map
-        style={style}
-        mapStyle={
-          theme === "light"
-            ? "mapbox://styles/mapbox/streets-v12"
-            : "mapbox://styles/mapbox/dark-v11"
-        }
-        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
-        initialViewState={{
-          longitude: Number(longitude),
-          latitude: Number(latitude),
-          zoom: zoom,
-        }}
-      >
-        <div key={event.id}>
-          {events &&
-            events.length > 0 &&
-            events
-              .filter((event: MapEvents) => event.id !== eventId)
-              .map((event: MapEvents) => {
-                const { id, longitude, latitude, eventType } = event;
-                return (
-                  <Marker
-                    key={id}
-                    onClick={() => handleMarkerClick(event)}
-                    longitude={latitude ? parseFloat(longitude) : 0}
-                    latitude={longitude ? parseFloat(latitude) : 0}
-                    anchor="bottom"
-                  >
-                    <div className="marker">
-                      {eventType && (
-                        <img
-                          src={iconUrls[eventType]}
-                          alt={eventType}
-                          className={"w-6 h-6"}
-                        />
-                      )}
-                    </div>
-                  </Marker>
-                );
-              })}
-          <Marker
-            key={eventId}
-            longitude={parseFloat(longitude || "0")}
-            latitude={parseFloat(latitude || "0")}
-            anchor="bottom"
-          >
-            <div className="marker">
-              {primaryEventType && (
-                <img
-                  src={iconUrls[primaryEventType]}
-                  alt={primaryEventType}
-                  className="w-10 h-10"
-                />
-              )}
-            </div>
-          </Marker>
+      {isLoading ? (
+        <EventDetailMapSkeleton
+          className={isEventeli ? "h-[430px]" : "h-[308px]"}
+        />
+      ) : error ? (
+        <div
+          className={`w-full flex justify-center items-center ${
+            isEventeli ? "h-[430px]" : "h-[308px]"
+          }`}
+        >
+          Failed to fetch the nearby events
         </div>
-        {popupInfo && (
-          <MapPopup popupInfo={popupInfo} setPopupInfo={setPopupInfo} />
-        )}
-      </Map>
+      ) : (
+        <Map
+          style={style}
+          mapStyle={
+            theme === "light"
+              ? "mapbox://styles/mapbox/streets-v12"
+              : "mapbox://styles/mapbox/dark-v11"
+          }
+          mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
+          initialViewState={{
+            longitude: Number(longitude),
+            latitude: Number(latitude),
+            zoom: zoom,
+          }}
+        >
+          <div key={event.id}>
+            {eventsData &&
+              eventsData.events.length > 0 &&
+              eventsData.events
+                .filter((event) => event.basic.id !== eventId)
+                .map((event) => {
+                  const { id, eventLocation, primaryEventType } = event.basic;
+                  const latitude =
+                    eventLocation?.venue?.latitude ??
+                    eventLocation?.city?.latitude ??
+                    eventLocation?.state?.latitude;
+                  const longitude =
+                    eventLocation?.venue?.longitude ??
+                    eventLocation?.city?.longitude ??
+                    eventLocation?.state?.longitude;
+                  return (
+                    <Marker
+                      key={id}
+                      onClick={() => handleMarkerClick(id)}
+                      longitude={longitude ? parseFloat(longitude) : 0}
+                      latitude={latitude ? parseFloat(latitude) : 0}
+                      anchor="bottom"
+                    >
+                      <div className="marker">
+                        {primaryEventType && (
+                          <img
+                            src={iconUrls[primaryEventType]}
+                            alt={primaryEventType}
+                            className={"w-6 h-6"}
+                          />
+                        )}
+                      </div>
+                    </Marker>
+                  );
+                })}
+            <Marker
+              key={eventId}
+              longitude={parseFloat(longitude || "0")}
+              latitude={parseFloat(latitude || "0")}
+              anchor="bottom"
+            >
+              <div className="marker">
+                {primaryEventType && (
+                  <img
+                    src={iconUrls[primaryEventType]}
+                    alt={primaryEventType}
+                    className="w-10 h-10"
+                  />
+                )}
+              </div>
+            </Marker>
+          </div>
+          {popupInfo && (
+            <MapPopup popupInfo={popupInfo} setPopupInfo={setPopupInfo} />
+          )}
+        </Map>
+      )}
     </div>
   );
 };

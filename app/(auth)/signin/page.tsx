@@ -7,10 +7,14 @@ import { SignInFormSchema } from "@/types";
 import { GAEvent } from "@/utils/GAEvent";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertTriangle, Loader2 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as z from "zod";
+import GoogleIcon from "/public/google.svg";
+import LinkedinIcon from "/public/linkedin.svg";
+import { signIn } from "next-auth/react";
 
 type SignInData = z.infer<typeof SignInFormSchema>;
 
@@ -46,10 +50,29 @@ export default function SignInForm() {
   }, [errors.email?.message]);
 
   return (
-    <div className="flex flex-col justify-center items-center w-full space-y-8 h-[80dvh]">
-      <p className="font-semibold text-lg leading-6 text-center">
+    <div className="flex flex-col justify-center items-center w-full space-y-4 h-[80dvh]">
+      <p className="font-semibold text-lg leading-6 text-center mb-5">
         Login to your account
       </p>
+      {/* <div className="flex flex-col gap-4 w-96 mx-auto">
+        <Button
+          onClick={() => signIn("google")}
+          variant={"outline"}
+          className="flex items-center justify-between"
+        >
+          <Image src={GoogleIcon} alt="Google Icon" className="w-5 h-5" />
+          <span className="flex-1">Continue with Google</span>
+        </Button>
+        <Button
+          onClick={() => signIn("linkedin")}
+          variant={"outline"}
+          className="flex items-center"
+        >
+          <Image src={LinkedinIcon} alt="Google Icon" className="w-5 h-5" />
+          <span className="flex-1">Continue with LinkedIn</span>
+        </Button>
+      </div>
+      <p className="text-sm text-[var(--tertiary-text-color)]">OR</p> */}
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-6 w-full"

@@ -6,7 +6,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { isEventeli } from "@/config";
-import { columnsDropdown } from "@/data/trends";
+import { columnsDropdown, EVENT_TYPE_GROUPS } from "@/data/trends";
 import { useEventsService } from "@/services/eventsService";
 import { TableGroupedHoliday } from "@/types";
 import { generateDatesArray, toMidnightISOString } from "@/utils/lineChart";
@@ -29,7 +29,7 @@ import {
   Tooltip,
   TooltipProps,
   XAxis,
-  YAxis
+  YAxis,
 } from "recharts";
 import { CategoricalChartState } from "recharts/types/chart/types";
 import Text from "../new-ui/Text";
@@ -443,9 +443,32 @@ const LineChartComponent = ({
     if (!isTooltipVisible) {
       return null;
     }
+    const showEventTypesValueByMetric = [];
     const { date, total, social, business } = payload && payload[0].payload;
     const matchingHoliday =
       holidayByDates && holidayByDates.find((holiday) => holiday.date === date);
+    const hasSocial = eventTypes
+      ?.split(",")
+      .some((type) => EVENT_TYPE_GROUPS.Social.includes(type));
+    const hasBusiness = eventTypes
+      ?.split(",")
+      .some((type) => EVENT_TYPE_GROUPS.Business.includes(type));
+
+    if (hasSocial) {
+      showEventTypesValueByMetric.push({
+        text: "Social",
+        bg: "--social-color",
+        value: social,
+      });
+    }
+    if (hasBusiness) {
+      showEventTypesValueByMetric.push({
+        text: "Business",
+        bg: "--business-color",
+        value: business,
+      });
+    }
+
     return (
       <div className="border-none shadow-lg bg-[#ffffff] w-72 z-10">
         <div className="px-4 py-2 flex text-lg font-medium border-b">
@@ -480,17 +503,23 @@ const LineChartComponent = ({
           </Text>
         </div>
         <div className="flex flex-col px-4 py-2 gap-2 border-b">
-          <div className="flex justify-between">
-            <div className="flex gap-2 items-center">
-              <div className="bg-[var(--business-color)] w-1 rounded-lg h-5"></div>
-              <p className="font-semibold text-[var(--business-color)]">
-                Business Events
+          {showEventTypesValueByMetric.map((eventTypesValues) => (
+            <div key={eventTypesValues.text} className="flex justify-between">
+              <div className="flex gap-2">
+                <div
+                  className={`bg-[var(${eventTypesValues.bg})] w-1 rounded-lg h-5`}
+                ></div>
+                <p
+                  className={`font-semibold text-[var(${eventTypesValues.bg})]`}
+                >
+                  {eventTypesValues.text} Events
+                </p>
+              </div>
+              <p className={`font-semibold text-[var(${eventTypesValues.bg})]`}>
+                {eventTypesValues.value}
               </p>
             </div>
-            <p className="font-semibold text-[var(--business-color)]">
-              {business}
-            </p>
-          </div>
+          ))}
         </div>
         <div className="px-4 py-2">
           <p className="text-sm font-medium">TOP EVENTS</p>
@@ -502,9 +531,9 @@ const LineChartComponent = ({
                 .slice(0, 4)
                 .map((event: any, index: number) => {
                   const { basic } = event || {};
-                  const { name } = basic || {};
+                  const { name, id } = basic || {};
                   return (
-                    <li key={event.id} className="flex gap-4">
+                    <li key={id} className="flex gap-4">
                       <div className="flex flex-col items-center">
                         <span className="text-[12px] font-semibold">
                           {index + 1}.
