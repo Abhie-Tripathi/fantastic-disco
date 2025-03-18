@@ -13,6 +13,7 @@ import { ApiError } from "@/types/api";
 import externalAxios from "@/lib/externalAxios";
 import { Target, Unmask, UnmaskPocApiParamType, Source } from "@/types/events";
 import websiteSuggestion from "@/public/data/addEvent/websiteSuggestion.json";
+import duplicateEventData from "@/public/data/addEvent/duplicateEventData.json";
 
 interface fnProp {
   offset: number;
@@ -341,6 +342,14 @@ export const useCoordinateService = () => {
     return websiteSuggestion;
   }
 
+  const checkDuplicate = () => {
+    return duplicateEventData;
+  }
+
+  const addEvent = () => {
+    return duplicateEventData;
+  }
+
   return {
     getEventsWithSearchParams,
     getEvents,
@@ -367,6 +376,7 @@ export const useCoordinateService = () => {
     setEnquiryFollowers,
     deleteEnquiryActivityIntent,
     fetchEvents,
+    checkDuplicate,
     isLoading: api.isLoading,
     // error: api.error as ApiError,
   };

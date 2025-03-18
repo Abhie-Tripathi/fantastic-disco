@@ -15,6 +15,7 @@ import EventForm from "./EventForm";
 import Modal from "./modal";
 import ColMapping from "./colMapping";
 import { useCoordinateService } from "@/services/coordinateService";
+import { useToast } from "@/hooks/use-toast";
 
 const EventListItem = ({ event }: { event: Event }) => {
   const address = event.basic.eventLocation ? (
@@ -311,12 +312,122 @@ const AddedEvent = ({ event }: { event: any }) => {
   // );
 };
 
+const AddedEvent2 = ({ eventData }: { eventData: any }) => {
+  // console.log('event', event);
+
+  // const [listExpanded, setListExpanded] = useState<boolean>(false);
+
+  const event = {
+    name: eventData.name,
+    logoUrl: eventData.logo,
+    organizer: eventData.organizer.name,
+    startDateTime: eventData.startDate,
+    endDateTime: eventData.endDate,
+    address: `${eventData.location.venueAddress}, ${eventData.location.state}, ${eventData.location.countryName
+    }` ,
+  };
+  return (
+    <div className="grid grid-cols-4 items-center rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200">
+      <div className="col-span-3 w-full  p-3  relative flex gap-3">
+        {event.logoUrl && (
+          <div className="w-14 h-14">
+            <img
+              src={event.logoUrl}
+              alt={`logo`}
+              className="w-14 h-14 object-contain p-2 border rounded-md bg-white shadow-sm"
+            />
+          </div>
+        )}
+        <div className="flex flex-col gap-1 h-full">
+          <div className="text-base font-medium">{event.name}</div>
+          <div className={`text-[var(--tertiary-text-color)] text-sm`}>
+            {event.organizer}
+          </div>
+          <p className="text-sm capitalize">{event.address}</p>
+          <div
+            className={`flex items-center text-sm text-gray-600 gap-2 leading-6`}
+          >
+            <Calendar
+              height={"14px"}
+              width={"14px"}
+              color="var(--secondary-text-color)"
+            />
+            <div>
+              {formattedDateRange(event.startDateTime, event.endDateTime)}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="text-primary col-span-1 flex items-end justify-center text-sm">
+        <Button size="sm" className="w-fit">Add</Button>
+      </div>
+    </div>
+  );
+
+};
+
+const DuplicateEventCard = ({ eventData }: { eventData: any }) => {
+
+  const event = {
+    name: eventData.name,
+    logoUrl: eventData?.logo,
+    organizer: eventData.companyName,
+    startDateTime: eventData.startDate,
+    endDateTime: eventData.endDate,
+    address: `${eventData.venueName},${eventData.cityName},  ${eventData.state}, ${eventData.countryName
+    }` ,
+  };
+  return (
+    <div className="grid grid-cols-4 items-center rounded-lg border bg-card text-card-foreground shadow-sm hover:shadow-md transition-all duration-200">
+      <div className="col-span-3 w-full  p-3  relative flex gap-3">
+        {event?.logoUrl && (
+          <div className="w-14 h-14">
+            <img
+              src={event?.logoUrl}
+              alt={`logo`}
+              className="w-14 h-14 object-contain p-2 border rounded-md bg-white shadow-sm"
+            />
+          </div>
+        )}
+        <div className="flex flex-col gap-1 h-full">
+          <div className="text-base font-medium">{event.name}</div>
+          <div className={`text-[var(--tertiary-text-color)] text-sm`}>
+            {event.organizer}
+          </div>
+          <p className="text-sm capitalize">{event.address}</p>
+          <div
+            className={`flex items-center text-sm text-gray-600 gap-2 leading-6`}
+          >
+            <Calendar
+              height={"14px"}
+              width={"14px"}
+              color="var(--secondary-text-color)"
+            />
+            <div>
+              {formattedDateRange(event.startDateTime, event.endDateTime)}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="text-primary col-span-1 flex items-end justify-center text-sm">
+        <Button className="w-fit">Add</Button>
+      </div>
+    </div>
+  );
+
+};
+
 export default function AddEventModal() {
+  const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [eventFormOpen, setEventFormOpen] = useState<boolean>(false);
   const [showEventList, setShowEventList] = useState<boolean>(false);
+
+  const [eventSuggestion, setEventSuggestion] = useState<any>([]);
+  const [showEventSuggestion, setShowEventSuggestion] = useState<boolean>(false);
   const [showDuplicateEventList, setShowDuplicateEventList] =
     useState<boolean>(false);
+  const [duplicateEvents, setDuplicateEvents] = useState<any>([]);
 
   const [showColMapping, setShowColMapping] = useState<boolean>(false);
 
@@ -332,25 +443,32 @@ export default function AddEventModal() {
     setEventFormOpen(false);
     setShowEventList(false);
     setIsFetching(false);
+    setShowEventSuggestion(false);
+    setShowDuplicateEventList(false);
+    setShowColMapping(false);
   };
 
-  const hadleFetch = async() => {
-
-    const eventList = await coordinateService.fetchEvents();
-    console.log('eventList', eventList);
-    
-    setIsFetching(true);
-    setEventFormOpen(false);
-
-    setTimeout(() => {
-      setShowEventList(true);
-      setIsFetching(false);
-    }, 500);
-  };
-
-  useEffect(() => {
+  const hadleFetch = () => {
     resetForm();
-  }, [isOpen]);
+    setIsFetching(true);
+    // setEventFormOpen(false);
+
+    setTimeout(async() => {
+      const eventList = await coordinateService.fetchEvents();
+      // console.log('eventList', eventList);
+      setIsFetching(false);
+        if (eventList.data.events.length > 0) {
+          setShowEventSuggestion(true);
+          setEventSuggestion(eventList.data.events);
+        } else {
+          setEventFormOpen(true);
+          toast({
+            title: "No event found, add details manually.",
+            variant: "destructive",
+          });
+        }
+      }, 500);
+  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -363,14 +481,44 @@ export default function AddEventModal() {
 
   const scrollableDivRef = useRef<HTMLDivElement>(null);
 
-  const [mappedHeaders, setMappedHeaders] = useState<any>({
-    "Name": "",
-    "Start Date": "",
-    "End Date": "",
-    "Location": "",
-    "Participation": "",
-    "Type": "",
-  });
+  const [mappedHeaders, setMappedHeaders] = useState([
+    {
+      defaultName: "Name",
+      fieldName: "",
+      suggestions: ["name", "event name", "eventname"],
+      isMatch: false,
+    },
+    {
+      defaultName: "Start Date",
+      fieldName: "",
+      suggestions: ["start date", "start", "startdate", "startDate"],
+      isMatch: false,
+    },
+    {
+      defaultName: "End Date",
+      fieldName: "",
+      suggestions: ["end date", "end", "enddate", "endDate"],
+      isMatch: false,
+    },
+    {
+      defaultName: "Location",
+      fieldName: "",
+      suggestions: ["location", "venue", "address"],
+      isMatch: false,
+    },
+    {
+      defaultName: "Participation",
+      fieldName: "",
+      suggestions: ["participation", "participation type", "participationType", "mode"],
+      isMatch: false,
+    },
+    {
+      defaultName: "Event Type",
+      fieldName: "",
+      suggestions: ["type", "event type", "eventType"],
+      isMatch: false,
+    },
+  ]);
 
   // Handle file change event
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -378,6 +526,7 @@ export default function AddEventModal() {
     if (!file) {
       return;
     }
+    resetForm();
 
     // Parse the CSV file using PapaParse
     Papa.parse(file, {
@@ -391,6 +540,20 @@ export default function AddEventModal() {
         }));
 
         setCsvData(result.data);
+
+        const colHeader = result.data[0] ? Object.keys(result.data[0]) : [];
+
+        const tempHeader2 = mappedHeaders;
+        tempHeader2.map((header, index)=>{
+          // tempHeader[item] = colHeader[index]
+          header.fieldName = colHeader[index];
+          // header.isMatch = true;
+          header.isMatch = header.suggestions.some(item => colHeader[index].toLowerCase().includes(item.toLowerCase()) || colHeader[index].toLowerCase() === item.toLowerCase());
+
+        })
+        setMappedHeaders(tempHeader2);
+        
+
         setError("");
         setShowColMapping(true);
         // setShowEventList(true);
@@ -408,17 +571,33 @@ export default function AddEventModal() {
     fileInputRef.current?.click();
   };
 
-  const handleSave = () => {
-    setShowDuplicateEventList(true);
-    setTimeout(() => {
-      if (scrollableDivRef.current) {
-        scrollableDivRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    }, 500);
+  const handleSave = async() => {
+    
+    const apiData = await coordinateService.checkDuplicate();
+
+    if (apiData.data.review.length > 0) {
+      setShowDuplicateEventList(true);
+      setDuplicateEvents(apiData.data.review);
+
+      setTimeout(() => {
+        if (scrollableDivRef.current) {
+          scrollableDivRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      }, 500);
+    } else {
+      toast({
+        title: "Event Added Successfully",
+        variant: "default",
+      });
+    }
   };
+
+  useEffect(() => {    
+    resetForm();
+  }, [isModalOpen]);
 
   return (
     <div>
@@ -511,8 +690,11 @@ export default function AddEventModal() {
           <Button
             variant="link"
             onClick={() => {
+              // setEventFormOpen(!eventFormOpen);
+              resetForm();
               setEventFormOpen(true);
-              setShowEventList(false);
+              // setShowEventList(false);
+              // setShowEventSuggestion(false);
             }}
             className=""
           >
@@ -538,6 +720,25 @@ export default function AddEventModal() {
               {eventFormOpen && <EventForm handleSave={handleSave} />}
             </div>
 
+            {/* Fetch events based on website */}
+            <div
+              className={`transition-opacity duration-500 ease-in-out ${
+                showEventSuggestion ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              {showEventSuggestion && (
+                <>
+                  <div className="font-medium text-base mb-3">Events</div>
+                  <div className="flex flex-col gap-3 pr-1">
+                    {eventSuggestion.length > 0 &&
+                      eventSuggestion.map((item: any, index: number) => (
+                        <AddedEvent2 eventData={item} key={index} />
+                      ))}
+                  </div>
+                </>
+              )}
+            </div>
+
             {/* Duplicate Event Container */}
             <div
               className={`transition-opacity duration-500 ease-in-out ${
@@ -553,12 +754,17 @@ export default function AddEventModal() {
                     Following duplicate events found
                   </div>
                   <div className="flex flex-col gap-3 pr-1 h-[calc(100vh-210px)] overflow-y-auto">
-                    {eventData.events.slice(0, 2).map((item: any) => {
+                    {/* {eventData.events.slice(0, 2).map((item: any) => {
                       return (
                           <EventListItem2 event={item} />
                           
                       );
-                    })}
+                    })} */}
+                    {duplicateEvents.length > 0 &&
+                      duplicateEvents.map((item: any, index: number) => (
+                        <DuplicateEventCard eventData={item} key={index} />
+                      ))
+                    }
                   </div>
                 </>
               )}

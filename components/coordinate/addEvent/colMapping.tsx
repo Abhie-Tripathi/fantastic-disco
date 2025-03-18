@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
 } from "@/components/ui/table";
-import { CheckCircle, CheckCircleFill } from "geist-icons";
+import { CheckCircle, CheckCircleFill, CrossCircleFill } from "geist-icons";
 import ColSelector from "./ColSelector";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
@@ -21,18 +21,23 @@ interface Props {
 
 const dafaultHeaders = ["Name", "Start Date", "End Date", "Location", "Participation", "Type"];
 
-const ColMapping = ({ csvData, setShowEventList, mappedHeaders, setMappedHeaders }: Props) => {
-//   console.log("csvData", csvData);
-  const colHeader = csvData[0] ? Object.keys(csvData[0]) : [];
-//   console.log("csvData", csvData, colHeader);
+const suggestions = {
+  "Name": ["name", "event name", "eventname"],
+  "Start Date": ["start date", "start", "startdate"],
+};
 
-  useEffect(() => {
-    const tempHeader = mappedHeaders;
-    dafaultHeaders.map((item, index)=>(
-      tempHeader[item] = colHeader[index]
-    ))
-    setMappedHeaders(tempHeader);
-  }, [csvData]);
+const ColMapping = ({ csvData, setShowEventList, mappedHeaders, setMappedHeaders }: Props) => {
+  const colHeader = csvData[0] ? Object.keys(csvData[0]) : [];
+
+  const changeSelectedHeader = (defaultHeader: string, updatedValue: string) => {
+
+    const updatedItems = mappedHeaders.map((item: any) => 
+      item.defaultName === defaultHeader
+        ? { ...item, fieldName: updatedValue }
+        : item
+    );
+    setMappedHeaders(updatedItems);
+  };
   
 
   return (
@@ -46,20 +51,23 @@ const ColMapping = ({ csvData, setShowEventList, mappedHeaders, setMappedHeaders
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-muted/50">
-            {dafaultHeaders.map((header, index) => (
+            {mappedHeaders.map((header: any) => (
               <TableHead
                 className="p-4 px-6 max-w-[280px] shadow-[10px_0_15px_-5px_rgba(0,0,0,0.3)] h-10 after:absolute after:inset-0 border"
                 style={{ zIndex: 0 }}
               >
                 <div className="flex gap-3 items-center text-lg font-semibold text-md text-foreground relative z-[999] mb-3">
                   {/* <span className="line-clamp-1">{header}</span> */}
-                  {header}
+                  {header.defaultName}
                   <span>
-                    <CheckCircleFill color="#00dc8b" />
+                    {header.isMatch ?
+                      <CheckCircleFill color="#00dc8b" /> :
+                        <CrossCircleFill color="var(--danger-text-color)" />
+                    }
                   </span>
                 </div>
                 <div className="font-medium text-md text-foreground relative z-[999]">
-                  <ColSelector options={colHeader} selectedHeader={colHeader[index]} />
+                  <ColSelector options={colHeader} selectedHeader={header} changeSelectedHeader={changeSelectedHeader} />
                 </div>
               </TableHead>
             ))}
