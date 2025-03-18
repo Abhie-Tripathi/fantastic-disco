@@ -3,12 +3,13 @@ import { useAuthContext } from "@/context/auth";
 import { useFilterState } from "@/hooks/useFilterState";
 import { usePathname, useRouter } from "next/navigation";
 import { endOfMonth, startOfMonth, addMonths } from "date-fns";
-import { columnsDropdown } from "@/data/trends";
+import { columnsDropdown, EVENT_TYPE_GROUPS } from "@/data/trends";
 import { sessionService } from "@/services/sessionService";
 import { useEventsService } from "@/services/eventsService";
 import { RecentSearch } from "@/types/events/recentSearches";
 import { useFilterContext } from "@/context/filterContext";
 import { useConfigurationService } from "@/services/configurationService";
+import { isEventeli } from "@/config";
 
 export function useDefaultFilters() {
   const { user } = useAuthContext();
@@ -20,7 +21,9 @@ export function useDefaultFilters() {
   const router = useRouter();
   const { getLastSearchedLocation } = sessionService();
   const eventService = useEventsService();
-  const allowedEventTypes = ["tradeshows", "conferences", "workshops"];
+  const allowedEventTypes = isEventeli
+    ? Object.values(EVENT_TYPE_GROUPS).join(",")
+    : Object.values(EVENT_TYPE_GROUPS.Business).join(",");
   const defaultTrendsParams = {
     locationIds: "e3ef02ad-2f97-5fa6-9033-9addfad3f0ef", //New York, United States
     active_gte: new Date(
@@ -60,7 +63,7 @@ export function useDefaultFilters() {
       filters.entryType?.enabledValue
         ?.map((item: string) => item.toLowerCase())
         ?.join(",") ?? "",
-   
+
     ratings: filters.ratings?.enabledValue?.join(",") ?? "",
     maturity: filters.maturity?.enabledValue?.[0] ?? "",
     onlyBranded: filters.branded?.enabledValue?.eventBrand ? "true" : "",
@@ -69,10 +72,10 @@ export function useDefaultFilters() {
     includeKeywords: filters.keywords?.includeKeywords?.join(",") ?? "",
     excludeKeywords: filters.keywords?.excludeKeywords?.join(",") ?? "",
     estimatedVisitorRangeTag:
-    filters.estimatedVisitorRangeTag?.enabledValue?.join(",") ?? "",
+      filters.estimatedVisitorRangeTag?.enabledValue?.join(",") ?? "",
     estimatedExhibitors:
-    filters.estimatedExhibitors?.enabledValue?.join(",") ?? "",
-  show: generateShowParam(filters),
+      filters.estimatedExhibitors?.enabledValue?.join(",") ?? "",
+    show: generateShowParam(filters),
   });
 
   const mapRecentSearchToParams = (recentSearch: RecentSearch) => ({
@@ -125,7 +128,9 @@ export function useDefaultFilters() {
       recentSearch.filterValues.audienceSpread?.join(",") ?? undefined,
     designations:
       recentSearch.filterValues.designations?.join(",") ?? undefined,
-    top: recentSearch.filterValues.top ? String(recentSearch.filterValues.top) : undefined,
+    top: recentSearch.filterValues.top
+      ? String(recentSearch.filterValues.top)
+      : undefined,
     show: recentSearch.filterValues.show?.join(",") ?? undefined,
   });
 
@@ -158,6 +163,7 @@ export function useDefaultFilters() {
     params: URLSearchParams,
     recentFilterParams?: any
   ) => {
+    console.log(recentFilterParams);
     const trendsParams = new URLSearchParams(params);
     const eventTypesParams = trendsParams.get("eventTypes");
     const locationIdsParams = trendsParams.get("locationIds");
@@ -318,6 +324,7 @@ export function useDefaultFilters() {
           if (value) params.set(key, value);
         });
         const trendsParams = generateTrendsParams(params);
+        console.log(trendsParams);
 
         if (
           pathName.split("/").includes("search") ||
