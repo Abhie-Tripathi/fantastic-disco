@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 interface EventCountsLayerProps {
   eventCounts: EventCount[];
-  currentZoomGroup: string;
+  currentZoomGroup: string | null;
   showEventCount: boolean;
 }
 

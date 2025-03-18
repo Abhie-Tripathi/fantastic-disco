@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { TrackerData } from '@/types/dashboard';
 import { CloudAlert } from 'lucide-react';
+import { isEventeli } from '@/config';
 
 interface Props {
     tracker: TrackerData,
@@ -23,9 +24,9 @@ const TrackerCard = ({ tracker, small }: Props) => {
 
     function formatNumber(value : number) {
         if (value >= 1000) {
-            return `${(value / 1000).toFixed(1)}k`.replace('.0k', 'k'); // Avoid ".0k"
+        return `${(value / 1000).toFixed(1)}k`.replace('.0k', 'k'); // Avoid ".0k"
         }
-        return value.toString();
+        return value?.toString();
     }
     const formatCount = (count: number ) => {
         if (count >= 1000) {
@@ -36,7 +37,7 @@ const TrackerCard = ({ tracker, small }: Props) => {
     };
     const router = useRouter()
     const handleRouting = ()=>{
-        router.push(`/internal/trackers/${tracker.id}/trackedEvents?type=${tracker.type}&view=list&eventType=activeEvent`)
+        router.push(`/internal/trackers/${tracker.id}/trackedEvents?type=${tracker.type}&view=list&eventType=${isEventeli? "social" :"active"}`)
     }
 
     return (

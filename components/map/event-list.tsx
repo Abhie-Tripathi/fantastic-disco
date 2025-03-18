@@ -545,7 +545,6 @@ function EventList({
         </div>
       );
     }
-    console.log(currentPage);
 
     return (
       <>
