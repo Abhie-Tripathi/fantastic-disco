@@ -749,7 +749,7 @@ const Pages = () => {
         if(trackerName.length !== 0)
         toast({
           title: "Error",
-          description: "Location must be seleted.",
+          description: "Location must be selected.",
           variant: "destructive",
         });
         return;
@@ -838,7 +838,7 @@ const Pages = () => {
         setIsMandatory(true);
          toast({
           title: "Error",
-          description: "Location must be seleted.",
+          description: "Location must be selected.",
           variant: "destructive",
         });
         return;
