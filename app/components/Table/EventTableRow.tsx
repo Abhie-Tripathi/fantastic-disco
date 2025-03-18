@@ -11,7 +11,7 @@ import {
 import { formatDate, getEventRating } from "@/utils/eventHelpers";
 import Link from "next/link";
 import { ArrowUp, ArrowDown, Star } from "lucide-react";
-import { Event, EventLocation } from "@/types/events";
+import { Event } from "@/types/events";
 import Image from "next/image";
 import { ActionPopover } from "./ActionPopover";
 import { Show } from "@/types/events/dto/event-query.dto";
@@ -114,28 +114,6 @@ function getAssociationColor(value: string) {
   }
 }
 
-function displayCity(eventLocation: EventLocation | EventLocation[]): string {
-  if (!eventLocation) return "";
-
-  if (Array.isArray(eventLocation)) {
-    return eventLocation.map((loc) => loc.cityName).join(", ");
-  }
-  if (eventLocation.cityName) return eventLocation.cityName;
-  return "-";
-}
-
-function displayCountry(
-  eventLocation: EventLocation | EventLocation[]
-): string {
-  if (!eventLocation) return "";
-
-  if (Array.isArray(eventLocation)) {
-    return eventLocation.map((loc) => loc.countryName).join(", ");
-  }
-  if (eventLocation.countryName) return eventLocation.countryName;
-  return "-";
-}
-
 export const EventTableRow: React.FC<EventTableRowProps> = ({
   event,
   show,
@@ -161,8 +139,6 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
     .filter(Boolean);
   const showMatchKeywords =
     includeKeywords.length + excludeKeywords.length >= 5;
-
-  console.log(includeKeywords, excludeKeywords);
 
   return (
     <TableRow key={event.basic.id}>
@@ -318,16 +294,20 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </div>
         )}
         <div>
-          {event.basic.format ||
+          {event.basic.eventLocation.venue?.displayName ||
             (event.basic.format === "online" ? "Online" : "TBA")}
         </div>
       </TableCell>
 
       {/* City Column */}
-      <TableCell>{displayCity(event.basic.eventLocation)}</TableCell>
+      <TableCell>
+        {displayValue(event.basic.eventLocation.city?.name)}
+      </TableCell>
 
       {/* Country Column */}
-      <TableCell>{displayCountry(event.basic.eventLocation)}</TableCell>
+      <TableCell>
+        {displayValue(event.basic.eventLocation.country?.name)}
+      </TableCell>
 
       {/* Keywords Column - if enabled */}
       {event.basic.tags && (
@@ -612,278 +592,289 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </TableCell>
         )}
 
-      {audienceSpread.length > 0 && event.audience?.audienceSpread !== undefined && (
-        <TableCell className="text-center">
-          <div className="flex gap-2">
-            {event.audience?.audienceSpread &&
-            Object.entries(event.audience?.audienceSpread).length > 0
-              ? Object.entries(event.audience?.audienceSpread)
-                  .slice(0, 5)
-                  .map(([key, { iso, name, count, percentage }]) => {
-                    if (iso === "UK") iso = "GB";
-                    const Flag = Flags[iso as keyof typeof Flags];
+      {audienceSpread.length > 0 &&
+        event.audience?.audienceSpread !== undefined && (
+          <TableCell className="text-center">
+            <div className="flex gap-2">
+              {event.audience?.audienceSpread &&
+              Object.entries(event.audience?.audienceSpread).length > 0
+                ? Object.entries(event.audience?.audienceSpread)
+                    .slice(0, 5)
+                    .map(([key, { iso, name, count, percentage }]) => {
+                      if (iso === "UK") iso = "GB";
+                      const Flag = Flags[iso as keyof typeof Flags];
+                      return (
+                        <span
+                          key={key}
+                          className="inline-block rounded overflow-hidden"
+                          title={name}
+                        >
+                          {Flag && (
+                            <Flag className="w-[25px] h-[18px] border" />
+                          )}
+                        </span>
+                      );
+                    })
+                : "-"}
+            </div>
+          </TableCell>
+        )}
+      {!isEventeli && (
+        <>
+          {type === "T_PEOPLE_FINDER" && view !== "bookmarked" && (
+            <>
+              <TableCell
+                className="sticky right-[200px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "90px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      {
+                        getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "peopleFinderPersonAssociation"
+                        )[0]?.split("_")?.[0]
+                      }
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {getTrackerAssociation(
+                        event.trackerMatchInfo,
+                        "peopleFinderPersonAssociation"
+                      )[0]
+                        ?.split("_")
+                        ?.join(" ")}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </TableCell>
+              <TableCell
+                className="sticky right-[68px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <span
+                  className={getAssociationColor(
+                    getTrackerAssociation(
+                      event.trackerMatchInfo,
+                      "peopleFinderPersonAssociationPercentage"
+                    )[0]
+                  )}
+                >
+                  {
+                    getTrackerAssociation(
+                      event.trackerMatchInfo,
+                      "peopleFinderPersonAssociationPercentage"
+                    )[0]
+                  }
+                </span>
+              </TableCell>
+            </>
+          )}
+          {type === "T_SPEAKING_OPPORTUNITY" && view !== "bookmarked" && (
+            <>
+              <TableCell
+                className="sticky right-[200px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "90px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      {
+                        getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "speakerPersonAssociation"
+                        )[0].split("_")[0]
+                      }
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {getTrackerAssociation(
+                        event.trackerMatchInfo,
+                        "speakerPersonAssociation"
+                      )[0]
+                        .split("_")
+                        .join(" ")}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </TableCell>
+              <TableCell
+                className="sticky right-[68px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <span
+                  className={getAssociationColor(
+                    getTrackerAssociation(
+                      event.trackerMatchInfo,
+                      "speakerPersonAssociationPercentage"
+                    )[0]
+                  )}
+                >
+                  {getTrackerAssociation(
+                    event.trackerMatchInfo,
+                    "speakerPersonAssociationPercentage"
+                  )[0] ?? "-"}
+                </span>
+              </TableCell>
+            </>
+          )}
+          {type === "T_COMPETITOR" && view !== "bookmarked" && (
+            <>
+              <TableCell
+                className="sticky right-[200px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "90px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      {
+                        getTrackerAssociation(
+                          event.trackerMatchInfo,
+                          "competitorDomainOrName"
+                        )?.[0].split("_")[0]
+                      }
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {getTrackerAssociation(
+                        event.trackerMatchInfo,
+                        "competitorDomainOrName"
+                      )?.map((item: string, index: number) => (
+                        <div key={index}>
+                          {item.split("_")[1].toLowerCase()} (
+                          {item.split("_")[0]})
+                        </div>
+                      ))}
+                      {/* {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName")[0].split("_")[1].toLowerCase()} */}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </TableCell>
+              <TableCell
+                className="sticky right-[68px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <span
+                  className={getAssociationColor(
+                    getTrackerAssociation(
+                      event.trackerMatchInfo,
+                      "competitorPercentage"
+                    )[0]
+                  )}
+                >
+                  {getTrackerAssociation(
+                    event.trackerMatchInfo,
+                    "competitorPercentage"
+                  )[0] ?? "-"}
+                </span>
+              </TableCell>
+            </>
+          )}
+          {type === "T_PRODUCT_KEYWORDS" && view !== "bookmarked" && (
+            <>
+              <TableCell
+                className="sticky right-[200px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "90px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      {event?.basic?.matchedKeywords?.[0]}{" "}
+                      {/* Fixed variable name */}
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {event?.basic?.matchedKeywords
+                        ?.map((item) => item)
+                        .join(" | ")}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </TableCell>
+
+              <TableCell
+                className="sticky right-[68px] bg-background z-0"
+                style={{
+                  zIndex: 0,
+                  minWidth: "132px",
+                  textAlign: "center",
+                  background: "var(--heading-background-color)",
+                }}
+              >
+                {(() => {
+                  const percentage =
+                    event.basic.matchedKeywordsPercentage ?? null;
+
+                  if (percentage === null) return "-";
+                  if (percentage > 20)
                     return (
-                      <span
-                        key={key}
-                        className="inline-block rounded overflow-hidden"
-                        title={name}
-                      >
-                        {Flag && <Flag className="w-[25px] h-[18px] border" />}
+                      <span className={getAssociationColor("high")}>High</span>
+                    );
+                  if (percentage >= 10 && percentage <= 20)
+                    return (
+                      <span className={getAssociationColor("medium")}>
+                        Medium
                       </span>
                     );
-                  })
-              : "-"}
-          </div>
+                  if (percentage > 0 && percentage < 10)
+                    return (
+                      <span className={getAssociationColor("low")}>Low</span>
+                    );
+
+                  return "-";
+                })()}
+              </TableCell>
+            </>
+          )}
+        </>
+      )}
+      {global !== "global" && (
+        <TableCell
+          className="sticky right-0 bg-background z-0 w-[68px]"
+          style={{ zIndex: 0, background: "var(--heading-background-color)" }}
+        >
+          <ActionPopover
+            view={view}
+            setEventId={setEventId}
+            setInterest={setInterest}
+            trackerId={trackerId}
+            eventId={event.basic.id}
+            interests={event.interests}
+          />
         </TableCell>
       )}
-      {!isEventeli &&(<>
-      {type === "T_PEOPLE_FINDER" && view !== "bookmarked" && (
-        <>
-          <TableCell
-            className="sticky right-[200px] bg-background z-0"
-            style={{
-              zIndex: 0,
-              minWidth: "90px",
-              textAlign: "center",
-              background: "var(--heading-background-color)",
-            }}
-          >
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  {
-                    getTrackerAssociation(
-                      event.trackerMatchInfo,
-                      "peopleFinderPersonAssociation"
-                    )[0]?.split("_")?.[0]
-                  }
-                </TooltipTrigger>
-                <TooltipContent>
-                  {getTrackerAssociation(
-                    event.trackerMatchInfo,
-                    "peopleFinderPersonAssociation"
-                  )[0]
-                    ?.split("_")
-                    ?.join(" ")}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </TableCell>
-          <TableCell
-            className="sticky right-[68px] bg-background z-0"
-            style={{
-              zIndex: 0,
-              minWidth: "132px",
-              textAlign: "center",
-              background: "var(--heading-background-color)",
-            }}
-          >
-            <span
-              className={getAssociationColor(
-                getTrackerAssociation(
-                  event.trackerMatchInfo,
-                  "peopleFinderPersonAssociationPercentage"
-                )[0]
-              )}
-            >
-              {
-                getTrackerAssociation(
-                  event.trackerMatchInfo,
-                  "peopleFinderPersonAssociationPercentage"
-                )[0]
-              }
-            </span>
-          </TableCell>
-        </>
-      )}
-      {type === "T_SPEAKING_OPPORTUNITY" && view !== "bookmarked" && (
-        <>
-          <TableCell
-            className="sticky right-[200px] bg-background z-0"
-            style={{
-              zIndex: 0,
-              minWidth: "90px",
-              textAlign: "center",
-              background: "var(--heading-background-color)",
-            }}
-          >
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  {
-                    getTrackerAssociation(
-                      event.trackerMatchInfo,
-                      "speakerPersonAssociation"
-                    )[0].split("_")[0]
-                  }
-                </TooltipTrigger>
-                <TooltipContent>
-                  {getTrackerAssociation(
-                    event.trackerMatchInfo,
-                    "speakerPersonAssociation"
-                  )[0]
-                    .split("_")
-                    .join(" ")}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </TableCell>
-          <TableCell
-            className="sticky right-[68px] bg-background z-0"
-            style={{
-              zIndex: 0,
-              minWidth: "132px",
-              textAlign: "center",
-              background: "var(--heading-background-color)",
-            }}
-          >
-            <span
-              className={getAssociationColor(
-                getTrackerAssociation(
-                  event.trackerMatchInfo,
-                  "speakerPersonAssociationPercentage"
-                )[0]
-              )}
-            >
-              {getTrackerAssociation(
-                event.trackerMatchInfo,
-                "speakerPersonAssociationPercentage"
-              )[0] ?? "-"}
-            </span>
-          </TableCell>
-        </>
-      )}
-      {type === "T_COMPETITOR" && view !== "bookmarked" && (
-        <>
-          <TableCell
-            className="sticky right-[200px] bg-background z-0"
-            style={{
-              zIndex: 0,
-              minWidth: "90px",
-              textAlign: "center",
-              background: "var(--heading-background-color)",
-            }}
-          >
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  {
-                    getTrackerAssociation(
-                      event.trackerMatchInfo,
-                      "competitorDomainOrName"
-                    )?.[0].split("_")[0]
-                  }
-                </TooltipTrigger>
-                <TooltipContent>
-                  {getTrackerAssociation(
-                    event.trackerMatchInfo,
-                    "competitorDomainOrName"
-                  )?.map((item: string, index: number) => (
-                    <div key={index}>
-                      {item.split("_")[1].toLowerCase()} ({item.split("_")[0]})
-                    </div>
-                  ))}
-                  {/* {getTrackerAssociation(event.trackerMatchInfo, "competitorDomainOrName")[0].split("_")[1].toLowerCase()} */}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </TableCell>
-          <TableCell
-            className="sticky right-[68px] bg-background z-0"
-            style={{
-              zIndex: 0,
-              minWidth: "132px",
-              textAlign: "center",
-              background: "var(--heading-background-color)",
-            }}
-          >
-            <span
-              className={getAssociationColor(
-                getTrackerAssociation(
-                  event.trackerMatchInfo,
-                  "competitorPercentage"
-                )[0]
-              )}
-            >
-              {getTrackerAssociation(
-                event.trackerMatchInfo,
-                "competitorPercentage"
-              )[0] ?? "-"}
-            </span>
-          </TableCell>
-        </>
-      )}
-      {type === "T_PRODUCT_KEYWORDS" && view !== "bookmarked" && (
-        <>
-          <TableCell
-            className="sticky right-[200px] bg-background z-0"
-            style={{
-              zIndex: 0,
-              minWidth: "90px",
-              textAlign: "center",
-              background: "var(--heading-background-color)",
-            }}
-          >
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  {event?.basic?.matchedKeywords?.[0]}{" "}
-                  {/* Fixed variable name */}
-                </TooltipTrigger>
-                <TooltipContent>
-                  {event?.basic?.matchedKeywords
-                    ?.map((item) => item)
-                    .join(" | ")}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </TableCell>
-
-          <TableCell
-            className="sticky right-[68px] bg-background z-0"
-            style={{
-              zIndex: 0,
-              minWidth: "132px",
-              textAlign: "center",
-              background: "var(--heading-background-color)",
-            }}
-          >
-            {(() => {
-              const percentage = event.basic.matchedKeywordsPercentage ?? null;
-
-              if (percentage === null) return "-";
-              if (percentage > 20)
-                return (
-                  <span className={getAssociationColor("high")}>High</span>
-                );
-              if (percentage >= 10 && percentage <= 20)
-                return (
-                  <span className={getAssociationColor("medium")}>Medium</span>
-                );
-              if (percentage > 0 && percentage < 10)
-                return <span className={getAssociationColor("low")}>Low</span>;
-
-              return "-";
-            })()}
-          </TableCell>
-        </>
-      )}
-      </>)}
-      {global!=="global" &&
-      <TableCell
-        className="sticky right-0 bg-background z-0 w-[68px]"
-        style={{ zIndex: 0, background: "var(--heading-background-color)" }}
-      >
-        <ActionPopover
-          view={view}
-          setEventId={setEventId}
-          setInterest={setInterest}
-          trackerId={trackerId}
-          eventId={event.basic.id}
-          interests={event.interests}
-        />
-      </TableCell>
-      }
     </TableRow>
   );
 };

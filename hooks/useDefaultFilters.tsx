@@ -131,6 +131,9 @@ export function useDefaultFilters() {
       ? String(recentSearch.filterValues.top)
       : undefined,
     show: recentSearch.filterValues.show?.join(",") ?? undefined,
+    viewBound: recentSearch.filterValues.viewBound
+      ? JSON.stringify(recentSearch.filterValues.viewBound)
+      : undefined,
   });
 
   const generateShowParam = (filters: any): string => {
@@ -357,7 +360,7 @@ export function useDefaultFilters() {
           recentSearch = getLastSearchWithoutAlert(
             recentSearchResponse.recentSearches
           );
-          console.log(recentSearch)
+          console.log(recentSearch);
         } else {
           recentSearch = recentSearchResponse.recentSearches[0];
         }

@@ -62,7 +62,6 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
       ? localFilters.locationIds.split(",")
       : null;
 
-    console.log(geoCoordinate, locationIds);
     if (geoCoordinate) {
       const locationName = await getLocationName(
         geoCoordinate.coordinates.latitude,
@@ -73,7 +72,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
         lat: geoCoordinate.coordinates.latitude,
         lng: geoCoordinate.coordinates.longitude,
         radius: geoCoordinate.coordinates.radius,
-        description: locationName,
+        description: geoCoordinate?.properties?.name || locationName,
       });
     } else if (locationIds) {
       const location = await getLocationDetails(locationIds.join(","));
@@ -131,6 +130,9 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
             latitude: geoLocation.lat,
             longitude: geoLocation.lng,
             radius: radiusInKm,
+          },
+          properties: {
+            name: geoLocation.description,
           },
         })
       );
