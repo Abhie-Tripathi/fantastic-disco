@@ -10,16 +10,8 @@ import { ArrowRight } from "geist-icons"
 import { Button } from '@/components/ui/button'
 import TrackerCard from './TrackerCard'
 import { useRouter } from 'next/navigation'
+import { TrackerData } from '@/types/dashboard'
 
-interface TrackerData {
-    id : string;
-    location : string[]
-    name : string;
-    newCount : number;
-    expiredCount : number; 
-    activeCount : number;
-    type :string;
-  }
 interface Props {
     templates: {
         type: string,
@@ -34,14 +26,14 @@ interface Props {
 
 const TrackerLarge = ({ templates,trackers }: Props) => {
 
-    const trackersValue :TrackerData[] = [
-        {id : "asd", name: "Tracker 1", location: ["India"], type: "Custom", newCount: 100, expiredCount: 40, activeCount: 20 },
-        {id : "asd", name: "Tracker 1", location: ["India"], type: "Custom", newCount: 100, expiredCount: 40, activeCount: 20 },
-        {id : "asd", name: "Tracker 1", location: ["India"], type: "Custom", newCount: 100, expiredCount: 40, activeCount: 20 },
-        {id : "asd", name: "Tracker 1", location: ["India"], type: "Custom", newCount: 100, expiredCount: 40, activeCount: 20 },
-        // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
-        // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
-    ]
+    // const trackersValue :TrackerData[] = [
+    //     {id : "asd", name: "Tracker 1", location: ["India"], type: "Custom", newCount: 100, expiredCount: 40, activeCount: 20 },
+    //     {id : "asd", name: "Tracker 1", location: ["India"], type: "Custom", newCount: 100, expiredCount: 40, activeCount: 20 },
+    //     {id : "asd", name: "Tracker 1", location: ["India"], type: "Custom", newCount: 100, expiredCount: 40, activeCount: 20 },
+    //     {id : "asd", name: "Tracker 1", location: ["India"], type: "Custom", newCount: 100, expiredCount: 40, activeCount: 20 },
+    //     // {name :"Tracker 3" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+    //     // {name :"Tracker 4" ,country : "India", type : "Custom", new : 100, past :40, active : 20},
+    // ]
 
     // let events = 1
 

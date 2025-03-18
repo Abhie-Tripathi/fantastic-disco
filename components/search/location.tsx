@@ -56,8 +56,6 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   
   const fetchUrlLocation = async () => {
     const geoCoordinate = JSON.parse(localFilters.viewBound || "null");
-    console.log(geoCoordinate);
-    
     const ids = localFilters?.locationIds?.length
       ? localFilters.locationIds.split(",")
       : [];
@@ -103,7 +101,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   useEffect(() => {
     if (pathName === "/internal" && !localFilters.locationIds) {
       replaceLocalFilter(
-        "geoCoordinates",
+        "viewBound",
         "locationIds",
         "5dc0b154-e2d8-5160-9bd6-dd8175a58c47"
       );
@@ -114,7 +112,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   useEffect(() => {
     return () => {
       if (pathName === "/internal" || pathName === "/internal/search") {
-        replaceLocalFilter("geoCoordinates", "locationIds", "");
+        replaceLocalFilter("viewBound", "locationIds", "");
       }
     };
   }, [pathName]);
@@ -143,13 +141,13 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
       selectedLocation.length > 0
     ) {
       replaceLocalFilter(
-        "geoCoordinates",
+        "viewBound",
         "locationIds",
         (selectedLocation as LocationItem[]).map((loc) => loc.id).join(",")
       );
       saveLastSearchedLocation(selectedLocation);
     } else {
-      deleteMultipleLocalFilters(["locationIds", "geoCoordinates"]);
+      deleteMultipleLocalFilters(["locationIds", "viewBound"]);
       clearLastSearchedLocation();
     }
     setIsOpen(false);

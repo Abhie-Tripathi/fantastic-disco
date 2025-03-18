@@ -147,7 +147,7 @@ export default function MapComponent({
   const [highlightedEvent, setHighlightedEvent] = useState<Event | null>(null);
 
   const location = useMemo(() => {
-    const geoCoordinates = getLocalFilterValue("geoCoordinates");
+    const viewBound = getLocalFilterValue("viewBound");
 
     const locationIds =
       source === "tracker"
@@ -163,8 +163,8 @@ export default function MapComponent({
         zoom: 1,
       });
 
-    if (geoCoordinates) {
-      return { type: "geoCoordinates", ...JSON.parse(geoCoordinates) };
+    if (viewBound) {
+      return { type: "viewBound", ...JSON.parse(viewBound) };
     } else if (locationIds.length) {
       return { type: "locationIds", locationIds };
     }
@@ -514,12 +514,12 @@ export default function MapComponent({
 
   useEffect(() => {
     if (!mapRef.current) return;
-    if (location?.type === "geoCoordinates") {
-      const { latitude, longitude, radius } = location;
+    if (location?.type === "viewBound") {
+      const { coordinates, radius } = location;
       const zoom = Math.log2(360 / (radius / 1000)) - 4.6;
       setCurrentZoomGroup("event");
       mapRef.current.flyTo({
-        center: [Number(longitude), Number(latitude)],
+        center: [Number(coordinates.longitude), Number(coordinates.latitude)],
         zoom: zoom,
         duration: 3000,
         essential: true,
@@ -539,9 +539,9 @@ export default function MapComponent({
   }, [location, mapRef.current, locationBBox]);
 
   const circleLayer: LayerProps | null = useMemo(() => {
-    if (location?.type === "geoCoordinates") {
-      const { latitude, longitude, radius } = location;
-      const center = point([Number(longitude), Number(latitude)]);
+    if (location?.type === "viewBound") {
+      const { coordinates, radius } = location;
+      const center = point([Number(coordinates.longitude), Number(coordinates.latitude)]);
       const circleGeoJSON = circle(center, radius, 50, "kilometers");
 
       return {

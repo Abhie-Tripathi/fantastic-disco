@@ -65,19 +65,19 @@ const Alerts = ({ selectedAlert, setSelectedAlert }: AlertsProps) => {
   const filteredParams = new URLSearchParams(searchParams.toString());
   filteredParams.set("eventTypes", "alert");
   filteredParams.set("view", "list");
-  if (filteredParams.get("geoCoordinates")) {
-    const geoCoordinates = JSON.parse(
-      filteredParams.get("geoCoordinates")?.toString() || "{}"
+  if (filteredParams.get("viewBound")) {
+    const viewBound = JSON.parse(
+      filteredParams.get("viewBound")?.toString() || "{}"
     );
-    filteredParams.delete("geoCoordinates");
+    filteredParams.delete("viewBound");
     filteredParams.set(
       "viewBound",
       JSON.stringify({
         boundType: "point",
         coordinates: {
-          latitude: geoCoordinates.latitude,
-          longitude: geoCoordinates.longitude,
-          radius: geoCoordinates.radius,
+          latitude: viewBound.coordinates.latitude,
+          longitude: viewBound.coordinates.longitude,
+          radius: viewBound.radius,
         },
       })
     );

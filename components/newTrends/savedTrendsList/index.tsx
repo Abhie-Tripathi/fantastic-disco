@@ -97,7 +97,7 @@ const SavedTrendCard = ({
     const eventTypes = params.get("eventTypes");
     const columns = params.get("columns");
     const locationIds = params.get("locationIds");
-    const geoCoordinate = params.get("geoCoordinates");
+    const geoCoordinate = params.get("viewBound");
     const viewBound = geoCoordinate
       ? JSON.stringify({
           ...(geoCoordinate && { coordinates: JSON.parse(geoCoordinate) }),
@@ -210,7 +210,7 @@ const SavedTrendCard = ({
         : null;
 
     if (locationIds) {
-      deleteMultipleLocalFilters(["geoCoordinates"]);
+      deleteMultipleLocalFilters(["viewBound"]);
     }
 
     if (geoCoordinates) {
@@ -384,7 +384,7 @@ const SwiperCarousel = ({
         }}
       >
         {savedTrendsList.map((savedTrend) => (
-          <SwiperSlide key={savedTrend.id} className="max-w-60 w-full">
+          <SwiperSlide key={savedTrend.id} className="max-w-72 w-full">
             <SavedTrendCard
               activeCard={activeCard}
               data={savedTrend}
