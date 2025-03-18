@@ -3,7 +3,8 @@
 // import ExhibitorIcon from "/public/widgetimages/exhibitorIcon.svg";
 // import OrganiserIcon from "/public/widgetimages/organiserIcon.svg";
 import Image from "next/image";
-import placeHolder from "@/public/placeholder.png";
+// import placeHolder from "@/public/placeholder.png";
+import Placeholder from '@/public/placeholder.png'
 import EventType from "./eventType";
 // import ParticipationMode from "./participationMode";
 import DateTimeContainer from "@/app/components/TemplateViewsNew/AddEventForm/Details/dateandtime/DateTimeContainer";
@@ -70,7 +71,7 @@ const EventForm = ({handleSave}: Props) => {
     eventFormat: "In-person",
     boothNumber: "",
     participationMessage:  "",
-    banner: placeHolder,
+    banner: { placeHolder: Placeholder, file: null },
     venue: "",
     latitude: 37.7749,
     longitude: -122.4194,
@@ -100,7 +101,11 @@ const EventForm = ({handleSave}: Props) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [mainEventState, setMainEventState] = useState<FormState>(initialFormState);
 
-  const handleChange = () => {};
+  // const handleChange = () => {};
+
+  const handleChange = (field: keyof FormState, value: any) => {
+    setMainEventState((prev) => ({ ...prev, [field]: value }));
+  };
 
   const setLoadingState = () => {
 
@@ -175,6 +180,9 @@ const EventForm = ({handleSave}: Props) => {
       isApproved={isApproved}
       setIsApproved={setIsApproved}
     />
+      <div className="flex justify-end col-span-4 py-2">
+        <Button onClick={handleSave}>Save and Add Event</Button>
+      </div>
     </div>
   )
 

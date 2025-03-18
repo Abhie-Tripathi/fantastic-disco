@@ -18,15 +18,17 @@ const eventStatuses = [
 
 interface Props {
   options: string[];
-  selectedHeader: string;
+  selectedHeader: any;
+  changeSelectedHeader: any;
 }
 
-export default function ColSelector({ options, selectedHeader }: Props) {
+export default function ColSelector({ options, selectedHeader, changeSelectedHeader }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([selectedHeader]);
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([selectedHeader.fieldName]);
 
   const handleStatusToggle = (statusId: string) => {
-    setSelectedStatuses([statusId]);
+    // setSelectedStatuses([statusId]);
+    changeSelectedHeader(selectedHeader.defaultName, statusId);
   };
 
   const handleApply = () => {
@@ -51,7 +53,7 @@ export default function ColSelector({ options, selectedHeader }: Props) {
           aria-haspopup="true"
         >
           <div className="flex items-center">
-            <span className="mr-2">{selectedStatuses[0]}</span>
+            <span className="mr-2">{selectedHeader.fieldName}</span>
           </div>
           <ChevronDown
             className={`h-4 w-4 shrink-0 transition-transform duration-200 ${
