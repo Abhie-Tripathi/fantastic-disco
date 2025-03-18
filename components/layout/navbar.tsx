@@ -299,7 +299,18 @@ export default function Navbar() {
                   className="flex items-center bg-transparent p-1 "
                 >
                   <div className="bg-primary flex items-center justify-center text-primary-foreground hover:bg-primary rounded-full w-10 h-10">
-                    {generateProfileName()}
+                    {/* {generateProfileName()} */}
+                    {storedUser?.imageUrl === null ? (
+                        <>{generateProfileName()}</>
+                      ) : (
+                        <Image
+                          src={storedUser?.imageUrl}
+                          alt="profile pic"
+                          width={76}
+                          height={76}
+                          className="rounded-full"
+                        />
+                      )}
                   </div>
                 </Button>
               </DropdownMenuTrigger>
