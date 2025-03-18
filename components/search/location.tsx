@@ -27,7 +27,7 @@ export interface GeoLocation {
   locationType: "GeoJSON";
   lat: number;
   lng: number;
-  radius: number;
+  radius: number | null;
   description: string;
 }
 
@@ -45,7 +45,8 @@ export interface LocationProps {
 export default function LocationSelector({ type, isMandatory }: LocationProps) {
   const pathName = usePathname();
   const { localFilters } = useFilterContext();
-  const { saveLastSearchedLocation, clearLastSearchedLocation } = sessionService();
+  const { saveLastSearchedLocation, clearLastSearchedLocation } =
+    sessionService();
   const { getLocationName, getLocationDetails } = useLocationService();
   const [activeTab, setActiveTab] = useState("city");
   const [isOpen, setIsOpen] = useState(false);
@@ -54,11 +55,12 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   const { replaceLocalFilter, deleteMultipleLocalFilters } = useFilterContext();
   
   const fetchUrlLocation = async () => {
-    const geoCoordinate = JSON.parse(localFilters.viewBound || "null");
-    const ids = localFilters?.locationIds?.length
+    const geoCoordinate = localFilters?.viewBound
+      ? JSON.parse(localFilters.viewBound)
+      : null;
+    const locationIds = localFilters?.locationIds?.length
       ? localFilters.locationIds.split(",")
-      : [];
-    const locationIds = ids;
+      : null;
 
     if (geoCoordinate) {
       const locationName = await getLocationName(
@@ -72,7 +74,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
         lat: geoCoordinate.coordinates.latitude,
         lng: geoCoordinate.coordinates.longitude,
         radius: geoCoordinate.coordinates.radius,
-        description: locationName,
+        description: geoCoordinate?.properties?.name || locationName,
       });
     } else if (locationIds) {
       const locations = await Promise.all(
@@ -119,19 +121,26 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
     if (selectedLocation && !Array.isArray(selectedLocation)) {
       const geoLocation = selectedLocation as GeoLocation;
       const radiusInKm =
-        radiusUnit === "mi" ? geoLocation.radius * 1.60934 : geoLocation.radius;
-        replaceLocalFilter(
-          "locationIds",
-          "viewBound",
-          JSON.stringify({
-            boundType:"point",
-            coordinates:{
+        radiusUnit === "mi" ? (geoLocation.radius || 5) * 1.60934 : geoLocation.radius;
+
+      if (radiusUnit === "mi") {
+        setRadiusUnit("km");
+      }
+      replaceLocalFilter(
+        "locationIds",
+        "viewBound",
+        JSON.stringify({
+          boundType: "point",
+          coordinates: {
             latitude: geoLocation.lat,
             longitude: geoLocation.lng,
             radius: radiusInKm,
-            }
-          })
-        );
+          },
+          properties: {
+            name: geoLocation.description,
+          },
+        })
+      );
       saveLastSearchedLocation(geoLocation);
     } else if (
       selectedLocation &&
@@ -264,7 +273,7 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
                     id="radius"
                     type="number"
                     className="mt-1"
-                    value={(selectedLocation as GeoLocation)?.radius}
+                    value={(selectedLocation as GeoLocation)?.radius || ""}
                     onChange={(e) =>
                       setSelectedLocation?.((prev) =>
                         prev
