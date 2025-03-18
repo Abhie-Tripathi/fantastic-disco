@@ -151,6 +151,16 @@ export function useDefaultFilters() {
     return showItems.join(",");
   };
 
+  const cleanEventTypes = (eventTypesString: string | null): string[] => {
+    console.log(eventTypesString);
+    return eventTypesString
+      ? eventTypesString
+          .split(",")
+          // .map((type) => type.trim())
+          .filter((type) => type !== "" && type !== "alert")
+      : [];
+  };
+
   /**
    * This function generates and returns URL search parameters for event trends.
    * The parameters are set using the following priority:
@@ -163,12 +173,18 @@ export function useDefaultFilters() {
     params: URLSearchParams,
     recentFilterParams?: any
   ) => {
-    console.log(recentFilterParams);
     const trendsParams = new URLSearchParams(params);
     const eventTypesParams = trendsParams.get("eventTypes");
     const locationIdsParams = trendsParams.get("locationIds");
     const startDateParams = trendsParams.get("active_gte");
     const endDateParams = trendsParams.get("active_lte");
+    const recentSearchEventTypesArray =
+      recentFilterParams &&
+      recentFilterParams.eventTypes &&
+      cleanEventTypes(recentFilterParams.eventTypes);
+
+    const eventTypesParamsArray =
+      eventTypesParams && cleanEventTypes(eventTypesParams);
     let startDate = "",
       endDate = "";
 
@@ -205,12 +221,13 @@ export function useDefaultFilters() {
 
     // Determine event types based on priority: URL params > recent filters > default.
     const eventTypes =
-      (eventTypesParams && eventTypesParams.split(",")) ||
-      (recentFilterParams &&
-        recentFilterParams.eventTypes &&
-        recentFilterParams.eventTypes.split(",")) ||
+      (eventTypesParamsArray &&
+        eventTypesParamsArray.length > 0 &&
+        eventTypesParamsArray) ||
+      (recentSearchEventTypesArray &&
+        recentSearchEventTypesArray.length > 0 &&
+        recentSearchEventTypesArray) ||
       defaultTrendsParams.eventTypes;
-
     // Determine location IDs based on priority.
     const locationIds =
       locationIdsParams ||
@@ -324,7 +341,6 @@ export function useDefaultFilters() {
           if (value) params.set(key, value);
         });
         const trendsParams = generateTrendsParams(params);
-        console.log(trendsParams);
 
         if (
           pathName.split("/").includes("search") ||
