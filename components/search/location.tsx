@@ -52,34 +52,43 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
   const [selectedLocation, setSelectedLocation] = useState<Location | null>();
   const { replaceLocalFilter, deleteMultipleLocalFilters } = useFilterContext();
-
+  console.log(localFilters);
+  
   const fetchUrlLocation = async () => {
-    const geoCoordinate = JSON.parse(localFilters.geoCoordinates || "null");
+    const geoCoordinate = JSON.parse(localFilters.viewBound || "null");
+    console.log(geoCoordinate);
+    
     const ids = localFilters?.locationIds?.length
       ? localFilters.locationIds.split(",")
-      : null;
+      : [];
     const locationIds = ids;
 
     if (geoCoordinate) {
       const locationName = await getLocationName(
-        geoCoordinate.latitude,
-        geoCoordinate.longitude
+        geoCoordinate.coordinates.latitude,
+        geoCoordinate.coordinates.longitude
       );
+      
+      console.log(locationName);
+      
       setSelectedLocation?.({
         locationType: "GeoJSON",
-        lat: geoCoordinate.latitude,
-        lng: geoCoordinate.longitude,
-        radius: geoCoordinate.radius,
+        lat: geoCoordinate.coordinates.latitude,
+        lng: geoCoordinate.coordinates.longitude,
+        radius: geoCoordinate.coordinates.radius,
         description: locationName,
       });
     } else if (locationIds) {
-      const location = await getLocationDetails(locationIds.join(","));
-      const locations = locationIds.map((id) => ({
-        locationType: "LocationID",
-        id,
-        description: location?.formattedLocations.find((loc) => loc.id === id)
-          ?.displayName,
-      }));
+      const locations = await Promise.all(
+        locationIds.map(async (id) => {
+          const location = await getLocationDetails(id);
+          return {
+            locationType: "LocationID",
+            id,
+            description: location?.formattedLocations[0]?.displayName,
+          };
+        })
+      );
       setSelectedLocation?.(locations as LocationItem[]);
     } else {
       setSelectedLocation?.(null);
@@ -115,15 +124,18 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
       const geoLocation = selectedLocation as GeoLocation;
       const radiusInKm =
         radiusUnit === "mi" ? geoLocation.radius * 1.60934 : geoLocation.radius;
-      replaceLocalFilter(
-        "locationIds",
-        "geoCoordinates",
-        JSON.stringify({
-          latitude: geoLocation.lat,
-          longitude: geoLocation.lng,
-          radius: radiusInKm,
-        })
-      );
+        replaceLocalFilter(
+          "locationIds",
+          "viewBound",
+          JSON.stringify({
+            boundType:"point",
+            coordinates:{
+            latitude: geoLocation.lat,
+            longitude: geoLocation.lng,
+            radius: radiusInKm,
+            }
+          })
+        );
       saveLastSearchedLocation(geoLocation);
     } else if (
       selectedLocation &&

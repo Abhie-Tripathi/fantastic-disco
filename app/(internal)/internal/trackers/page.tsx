@@ -228,7 +228,7 @@ const Trackers = ({ searchParams }: Search) => {
   const [isData, setIsData] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      const data= await getTrackers(`offset=0&limit=0`);
+      const data= await getTrackers(`offset=0&limit=0&type=trackers`);
       
       if (data) setIsLoading(false)
       if (data?.count) {

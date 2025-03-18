@@ -225,14 +225,19 @@ const Page = ({ params }: { params: any }) => {
     // setSavedEventCount(data?.tracker?.savedEventTotalCount);
     setTrackerDetail(data?.tracker);
     console.log(data);
-    
+    const CountValues = {
+      geo : ['social','business','unattended'],
+      // gtm : ['active','new', 'past']
+    }
     // createQueryString();
     if (isEventeli) {
-      const transformedData = Object.keys(data?.groupedEventsCount || {}).map((key) => ({
-        type: key.charAt(0).toUpperCase() + key.slice(1),
-        totalCount: (data?.groupedEventsCount?.[key]?.total as number) || 0,
-        newCount: (data?.groupedEventsCount?.[key]?.new as number) || 0,
-      }));
+      const transformedData =  CountValues.geo.map((key)=>{
+        return {
+          type: key.charAt(0).toUpperCase() + key.slice(1),
+          totalCount :  data?.groupedEventsCount[key].total || 0,
+          newCount : data?.groupedEventsCount[key].new || 0
+        }
+      })
     
       transformedData.push({
         type: "Bookmarked",

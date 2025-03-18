@@ -19,6 +19,8 @@ export const procesEvents = (
   eventsData: any,
   filter: any
 ) => {
+  console.log(view, unattendedEvents, eventsData, filter);
+  
   if (!eventsData?.events) return [];
 
   if (view === Views.WEEK) {
@@ -43,7 +45,7 @@ export const procesEvents = (
       impactScore: 0,
     }));
 
-    const filteredEvents = ((eventsData.events as WeekEvent[]) || []).filter(
+    const filteredEvents = ((eventsData.events as WeekEvent[]) || [])?.filter(
       (event) => event.eventType !== "holiday"
     );
 
