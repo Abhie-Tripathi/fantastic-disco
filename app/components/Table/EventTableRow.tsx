@@ -11,7 +11,7 @@ import {
 import { formatDate, getEventRating } from "@/utils/eventHelpers";
 import Link from "next/link";
 import { ArrowUp, ArrowDown, Star } from "lucide-react";
-import { Event } from "@/types/events";
+import { Event, EventLocation } from "@/types/events";
 import Image from "next/image";
 import { ActionPopover } from "./ActionPopover";
 import { Show } from "@/types/events/dto/event-query.dto";
@@ -112,6 +112,28 @@ function getAssociationColor(value: string) {
     default:
       return "text-gray-500";
   }
+}
+
+function displayCity(eventLocation: EventLocation | EventLocation[]): string {
+  if (!eventLocation) return "";
+
+  if (Array.isArray(eventLocation)) {
+    return eventLocation.map((loc) => loc.cityName).join(", ");
+  }
+  if (eventLocation.cityName) return eventLocation.cityName;
+  return "-";
+}
+
+function displayCountry(
+  eventLocation: EventLocation | EventLocation[]
+): string {
+  if (!eventLocation) return "";
+
+  if (Array.isArray(eventLocation)) {
+    return eventLocation.map((loc) => loc.countryName).join(", ");
+  }
+  if (eventLocation.countryName) return eventLocation.countryName;
+  return "-";
 }
 
 export const EventTableRow: React.FC<EventTableRowProps> = ({
@@ -296,20 +318,16 @@ export const EventTableRow: React.FC<EventTableRowProps> = ({
           </div>
         )}
         <div>
-          {event.basic.eventLocation.venue?.displayName ||
+          {event.basic.format ||
             (event.basic.format === "online" ? "Online" : "TBA")}
         </div>
       </TableCell>
 
       {/* City Column */}
-      <TableCell>
-        {displayValue(event.basic.eventLocation.city?.name)}
-      </TableCell>
+      <TableCell>{displayCity(event.basic.eventLocation)}</TableCell>
 
       {/* Country Column */}
-      <TableCell>
-        {displayValue(event.basic.eventLocation.country?.name)}
-      </TableCell>
+      <TableCell>{displayCountry(event.basic.eventLocation)}</TableCell>
 
       {/* Keywords Column - if enabled */}
       {event.basic.tags && (

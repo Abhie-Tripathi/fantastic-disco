@@ -76,6 +76,28 @@ const VenueSchema = LocationSchema.extend({
   displayName: z.string(),
 });
 
+const EventLocationItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  cityId: z.string().nullable(),
+  cityName: z.string().nullable(),
+  stateId: z.string().nullable(),
+  stateName: z.string().nullable(),
+  countryId: z.string().nullable(),
+  countryName: z.string().nullable(),
+  latitude: z.string().nullable(),
+  longitude: z.string().nullable(),
+  address: z.string().nullable(),
+  locationType: z.string(),
+});
+
+const EventLocationSchema = z
+  .union([
+    EventLocationItemSchema,
+    z.array(EventLocationItemSchema)
+  ])
+  .nullable();
+
 const BasicEventSchema = z.object({
   id: z.string(),
   startDateTime: z.string(),
@@ -126,12 +148,7 @@ const BasicEventSchema = z.object({
       slug: z.string(),
     })
   ),
-  eventLocation: z.object({
-    country: CountrySchema.nullable(),
-    venue: VenueSchema.nullable(),
-    city: CitySchema.nullable(),
-    state: StateSchema.nullable(),
-  }),
+  eventLocation: EventLocationSchema,
   organizer: z
     .object({
       id: z.string(),
@@ -255,3 +272,5 @@ export type Ranking = z.infer<typeof RankingSchema>;
 export type TTabs = "overview" | "insights" | "audience";
 export type DetailRanking = z.infer<typeof DetailRankingSchema>;
 export type Interest = z.infer<typeof InterestSchema>;
+export type EventLocationItem = z.infer<typeof EventLocationItemSchema>;
+export type EventLocation = z.infer<typeof EventLocationSchema>;

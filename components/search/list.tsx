@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Star, Radio, TicketPercent, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { Event } from "@/types/events/events";
+import { Event, EventLocation, EventLocationItem } from "@/types/events/events";
 import { format } from "date-fns";
 import { useFilterState } from "@/hooks/useFilterState";
 import { useTrackerEvents } from "@/hooks/useTrackerEvents";
@@ -337,8 +337,7 @@ const EventListItem = ({
   showaudienceSpread: boolean;
   global?: string;
 }) => {
-  const address = event.basic.eventLocation ? (
-    event.basic.eventLocation.venue?.name === "Online" ||
+  const address = (event.basic.eventLocation as EventLocationItem) ? (
     event.basic.format === "online" ? (
       <span className="flex items-center">
         <Radio className="w-4 h-4 mr-1" /> Online
@@ -348,15 +347,15 @@ const EventListItem = ({
         <Radio className="w-4 h-4 mr-1" />
         <span>Hybrid&nbsp;-&nbsp;</span>
         {[
-          event.basic.eventLocation.venue?.name || "TBA",
-          event.basic.eventLocation.city?.name,
-          event.basic.eventLocation.state?.name !==
-          event.basic.eventLocation.city?.name
-            ? event.basic.eventLocation.state?.name
+          (event.basic.eventLocation as EventLocationItem).name || "TBA",
+          (event.basic.eventLocation as EventLocationItem).cityName,
+          (event.basic.eventLocation as EventLocationItem).stateName !==
+          (event.basic.eventLocation as EventLocationItem).cityName
+            ? (event.basic.eventLocation as EventLocationItem).stateName
             : null,
-          event.basic.eventLocation.country?.name !==
-          event.basic.eventLocation.city?.name
-            ? event.basic.eventLocation.country?.name
+          (event.basic.eventLocation as EventLocationItem).countryName !==
+          (event.basic.eventLocation as EventLocationItem).cityName
+            ? (event.basic.eventLocation as EventLocationItem).countryName
             : null,
         ]
           .filter(Boolean)
@@ -364,15 +363,15 @@ const EventListItem = ({
       </span>
     ) : (
       [
-        event.basic.eventLocation.venue?.name,
-        event.basic.eventLocation.city?.name,
-        event.basic.eventLocation.state?.name !==
-        event.basic.eventLocation.city?.name
-          ? event.basic.eventLocation.state?.name
+        (event.basic.eventLocation as EventLocationItem).name,
+        (event.basic.eventLocation as EventLocationItem).cityName,
+        (event.basic.eventLocation as EventLocationItem).stateName !==
+        (event.basic.eventLocation as EventLocationItem).cityName
+          ? (event.basic.eventLocation as EventLocationItem).stateName
           : null,
-        event.basic.eventLocation.country?.name !==
-        event.basic.eventLocation.city?.name
-          ? event.basic.eventLocation.country?.name
+        (event.basic.eventLocation as EventLocationItem).countryName !==
+        (event.basic.eventLocation as EventLocationItem).cityName
+          ? (event.basic.eventLocation as EventLocationItem).countryName
           : null,
       ]
         .filter(Boolean)
@@ -421,7 +420,6 @@ const EventListItem = ({
   if (event.basic.primaryEventType == "holiday") {
     return <UnplannedCard event={event} />;
   }
-  console.log(view);
 
   return (
     <div className="bg-background rounded-lg border shadow-sm relative">
@@ -1087,30 +1085,42 @@ const EventListItem = ({
 };
 
 const UnplannedCard = ({ event }: { event: Event }) => {
-  function formatAddress(eventLocation: any): string {
-    const addressParts: string[] = [];
-    if (Array.isArray(eventLocation?.city)) {
-      const cities = eventLocation.city.map((s: any) => s.name).join(", ");
-      addressParts.push(cities);
-    } else if (eventLocation?.city) {
-      addressParts.push(eventLocation.city.name);
-    }
+  function formatAddress(eventLocation: EventLocation): string {
+    if (!eventLocation) return "";
 
-    if (Array.isArray(eventLocation?.state)) {
-      const states = eventLocation.state.map((s: any) => s.name).join(", ");
-      addressParts.push(states);
-    } else if (eventLocation?.state) {
-      addressParts.push(eventLocation.state.name);
-    }
+    const formatLocationNames = (
+      location: EventLocationItem | EventLocationItem[] | null
+    ): string[] => {
+      const parts: string[] = [];
 
-    if (Array.isArray(eventLocation?.country)) {
-      const countries = eventLocation.country
-        .map((s: any) => s.name)
-        .join(", ");
-      addressParts.push(countries);
-    } else if (eventLocation?.country) {
-      addressParts.push(eventLocation.country.name);
-    }
+      if (Array.isArray(location)) {
+        const cities = location
+          .map((loc) => loc.cityName)
+          .filter((name): name is string => name !== null)
+          .join(", ");
+        const states = location
+          .map((loc) => loc.stateName)
+          .filter((name): name is string => name !== null)
+          .join(", ");
+        const countries = location
+          .map((loc) => loc.countryName)
+          .filter((name): name is string => name !== null)
+          .join(", ");
+
+        if (cities) parts.push(cities);
+        if (states) parts.push(states);
+        if (countries) parts.push(countries);
+      } else {
+        if (!location) return [];
+        if (location.cityName) parts.push(location.cityName);
+        if (location.stateName) parts.push(location.stateName);
+        if (location.countryName) parts.push(location.countryName);
+      }
+
+      return parts;
+    };
+
+    const addressParts = formatLocationNames(eventLocation);
     return addressParts.join(", ");
   }
 
