@@ -119,7 +119,7 @@ export default function EventCalendar({
     queryKey:
       source !== "tracker"
         ? ["events", view, currentDate, searchParams.toString()]
-        : [currentDate, active, view],
+        : ["events",currentDate, active, view],
     queryFn: async () => {
       setShowEventList(false)
       const { start, end } = getVisibleDateRange(view, currentDate);
@@ -323,7 +323,7 @@ export default function EventCalendar({
     }
   };
 
-  if (isEventeli && !searchParams.get("viewBound") && !searchParams.get("locationIds")) {
+  if (isEventeli && !searchParams.get("viewBound") && !searchParams.get("locationIds") && source!=="tracker") {
     return <ZeroState text="Location is Mandatory" />;
   }
 

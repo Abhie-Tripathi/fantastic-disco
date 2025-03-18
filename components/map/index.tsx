@@ -614,7 +614,7 @@ export default function MapComponent({
   };
 
   if (
-    isEventeli &&
+    isEventeli && source!=="tracker" &&
     !searchParams.get("viewBound") &&
     !searchParams.get("locationIds")
   ) {
