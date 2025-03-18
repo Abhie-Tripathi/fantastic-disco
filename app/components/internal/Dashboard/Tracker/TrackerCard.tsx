@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { TrackerData } from '@/types/dashboard';
 import { CloudAlert } from 'lucide-react';
+import { isEventeli } from '@/config';
 
 interface Props {
     tracker: TrackerData,
@@ -36,7 +37,7 @@ const TrackerCard = ({ tracker, small }: Props) => {
     };
     const router = useRouter()
     const handleRouting = ()=>{
-        router.push(`/internal/trackers/${tracker.id}/trackedEvents?type=${tracker.type}&view=list&eventType=activeEvent`)
+        router.push(`/internal/trackers/${tracker.id}/trackedEvents?type=${tracker.type}&view=list&eventType=${isEventeli? "social" :"active"}`)
     }
 
     return (

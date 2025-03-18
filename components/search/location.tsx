@@ -52,7 +52,6 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
   const [radiusUnit, setRadiusUnit] = useState<string>("km");
   const [selectedLocation, setSelectedLocation] = useState<Location | null>();
   const { replaceLocalFilter, deleteMultipleLocalFilters } = useFilterContext();
-  console.log(localFilters);
   
   const fetchUrlLocation = async () => {
     const geoCoordinate = JSON.parse(localFilters.viewBound || "null");
@@ -67,7 +66,6 @@ export default function LocationSelector({ type, isMandatory }: LocationProps) {
         geoCoordinate.coordinates.longitude
       );
       
-      console.log(locationName);
       
       setSelectedLocation?.({
         locationType: "GeoJSON",
