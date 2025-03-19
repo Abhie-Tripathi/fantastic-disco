@@ -616,7 +616,8 @@ export default function MapComponent({
   if (
     isEventeli && source!=="tracker" &&
     !searchParams.get("viewBound") &&
-    !searchParams.get("locationIds")
+    !searchParams.get("locationIds") &&
+    !searchParams.get("eventIds")
   ) {
     return <ZeroState text="Location is Mandatory" />;
   }
