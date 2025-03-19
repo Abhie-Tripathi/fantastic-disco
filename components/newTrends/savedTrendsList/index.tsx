@@ -21,17 +21,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
   ArrowLeftIcon,
-  ArrowRight,
   ArrowRightIcon,
   BriefcaseBusiness,
   Calendar,
-  CircleArrowLeftIcon,
   Edit,
   EllipsisVerticalIcon,
-  FilterIcon,
   MapPin,
   Trash,
-  X,
+  X
 } from "lucide-react";
 import { ReadonlyURLSearchParams, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -400,11 +397,9 @@ const SwiperCarousel = ({
         ))}
       </Swiper>
       <div className="custom-prev-ranking flex justify-center items-center absolute -left-9 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer bg-gray-300 rounded-full w-7 h-7">
-        {/* &#8592; */}
         <ArrowLeftIcon className="w-4 h-4" />
       </div>
       <div className="custom-next-ranking flex justify-center items-center absolute -right-9 top-1/2 transform -translate-y-1/2 z-10 cursor-pointer bg-gray-300 rounded-full w-7 h-7">
-        {/* &#8594; */}
         <ArrowRightIcon className="w-4 h-4" />
       </div>
     </div>
